@@ -696,6 +696,135 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Books_FirstViewShowsShelfWithoutDumpingLongBodies()
+    {
+        await SeedMortalStateAsync();
+        await SeedBooksReadingFlowStateAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/книги"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("books_shelf_first_view");
+        var firstRendered = _console.Rendered.Count > 0
+            ? ExtractRenderableText(_console.Rendered[0])
+            : string.Empty;
+        Assert.Contains("Письмо с площади", firstRendered, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Записка с рынка", firstRendered, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Памятная книга", firstRendered, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Запечатанное письмо", firstRendered, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Можно читать", firstRendered, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Не прочесть", firstRendered, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("INLINE_FULL_BODY_MARKER", firstRendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("SIDECAR_FULL_BODY_MARKER", firstRendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("JOURNAL_FULL_BODY_MARKER", firstRendered, StringComparison.Ordinal);
+        Assert.Contains(_console.SelectionChoicesHistory, history =>
+            history.Choices.Any(choice => choice.Contains("Письмо с площади", StringComparison.OrdinalIgnoreCase)) &&
+            history.Choices.Any(choice => choice.Contains("Записка с рынка", StringComparison.OrdinalIgnoreCase)) &&
+            history.Choices.Any(choice => choice.Contains("← Назад", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Books_SelectedDocumentShowsOnlyThatDocumentAndReturnsToShelf()
+    {
+        await SeedMortalStateAsync();
+        await SeedBooksReadingFlowStateAsync();
+        _console.QueueSelection("Книги", "📜 Записка с рынка — Можно читать — 1 запись", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/books"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("books_selected_document");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Записка с рынка", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("SIDECAR_FULL_BODY_MARKER", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("INLINE_FULL_BODY_MARKER", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("JOURNAL_FULL_BODY_MARKER", renderedText, StringComparison.Ordinal);
+        Assert.Contains(_console.SelectionChoicesHistory, history =>
+            history.Title.Contains("Книги", StringComparison.OrdinalIgnoreCase) &&
+            history.Choices.Any(choice => choice.Contains("Записка с рынка", StringComparison.OrdinalIgnoreCase)));
+        Assert.True(
+            _console.SelectionChoicesHistory.Count(history =>
+                history.Title.Contains("Книги", StringComparison.OrdinalIgnoreCase)) >= 2,
+            BuildConsoleDiagnostics("books_selected_document_back_navigation"));
+    }
+
+    private async Task SeedBooksReadingFlowStateAsync()
+    {
+        await WriteRawJsonAsync("game_state/inventory/items.json", """
+        {
+          "items": [
+            {
+              "existedId": "doc_inline_1",
+              "itemId": "doc_inline_1",
+              "name": "Письмо с площади",
+              "type": "Документ",
+              "group": "Документы и медиа",
+              "textContent": [
+                "Лира просит встретиться у фонтана до рассвета. Это длинное письмо продолжается подробностями о стороже, мокрой мостовой и тайном знаке. INLINE_FULL_BODY_MARKER"
+              ]
+            },
+            {
+              "existedId": "doc_sidecar_1",
+              "itemId": "doc_sidecar_1",
+              "name": "Записка с рынка",
+              "type": "note",
+              "group": "Документы и медиа",
+              "textContent": null
+            },
+            {
+              "existedId": "doc_journal_1",
+              "itemId": "doc_journal_1",
+              "name": "Памятная книга",
+              "type": "Книга",
+              "group": "Документы и медиа",
+              "textContent": null
+            },
+            {
+              "existedId": "doc_sealed_1",
+              "itemId": "doc_sealed_1",
+              "name": "Запечатанное письмо",
+              "type": "Документ",
+              "group": "Документы и медиа",
+              "textContent": null,
+              "unreadableReason": "Печать не позволяет прочесть письмо сейчас."
+            }
+          ]
+        }
+        """);
+        await WriteRawJsonAsync("game_state/inventory/item_text_updates.json", """
+        {
+          "entries": [
+            {
+              "itemId": "doc_sidecar_1",
+              "itemName": "Не это имя",
+              "textContent": [
+                "На обороте записки указан путь через северные ворота. Это длинная приписка с именами торговцев, часом встречи и предупреждением о дозорных. SIDECAR_FULL_BODY_MARKER"
+              ]
+            }
+          ]
+        }
+        """);
+        await WriteRawJsonAsync("game_state/npcs/item_journals.json", """
+        {
+          "entries": [
+            {
+              "itemId": "doc_journal_1",
+              "itemName": "Другое имя",
+              "journalEntries": [
+                {
+                  "event": "Пробуждение",
+                  "description": "Книга шепчет о владельце. В записи слышен скрип пера, сухой шорох страниц и обещание вернуться к началу. JOURNAL_FULL_BODY_MARKER"
+                }
+              ]
+            }
+          ]
+        }
+        """);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors()
     {

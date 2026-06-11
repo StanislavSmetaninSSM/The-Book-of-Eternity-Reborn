@@ -1832,7 +1832,7 @@ public partial class ExplorerMode
         }
     }
 
-	    private async Task ShowItemTexts()
+    private async Task ShowItemTexts()
     {
         var itemTextDoc = await _stateManager.LoadGameStateFileAsync("game_state/inventory/item_text_updates.json");
         var itemsDoc = await _stateManager.LoadGameStateFileAsync("game_state/inventory/items.json");
@@ -1841,85 +1841,120 @@ public partial class ExplorerMode
         var inventoryRoot = ToJsonNode(itemsDoc);
         var itemTextRoot = ToJsonNode(itemTextDoc);
         var itemJournalRoot = ToJsonNode(itemJournalsDoc);
-        var documents = ReadableInventoryDocumentAuthority.ResolveDocuments(inventoryRoot, itemTextRoot, itemJournalRoot);
-        var sidecarEntries = ReadableInventoryDocumentAuthority
-            .CollectItemTextEntries(itemTextRoot)
-            .Concat(ReadableInventoryDocumentAuthority.CollectItemJournalEntries(itemJournalRoot))
-            .ToList();
+        var shelf = ReadableInventoryDocumentShelfProjection.Build(inventoryRoot, itemTextRoot, itemJournalRoot);
 
-        var text = new List<string>();
-        var renderedBlocks = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var document in documents)
+        if (shelf.Items.Count == 0)
         {
-            IReadOnlyList<string> entryLines = document.HasReadableAuthority
-                ? document.TextEntries.Select(static entry => $"  {Markup.Escape(entry)}").ToList()
-                : [
-                    $"  [yellow]{Markup.Escape(document.UnreadableReason ?? "Текст пока недоступен.")}[/]"
-                ];
-
-            AddReadableTextBlock(
-                text,
-                renderedBlocks,
-                document.ContextIdentity,
-                document.Name,
-                document.HasReadableAuthority ? null : "не прочесть",
-                entryLines);
+            ShowEmptyPanel("Книги и записи", "Нет читаемых предметов (книг, писем, свитков и т.д.)");
+            WaitForKey();
+            return;
         }
 
-        foreach (var sidecar in sidecarEntries
-                     .Where(sidecar => !documents.Any(document => ReadableInventoryDocumentAuthority.SidecarMatchesDocument(sidecar, document))))
+        if (!string.IsNullOrWhiteSpace(_currentCommandRemainder))
         {
-            AddReadableTextBlock(
-                text,
-                renderedBlocks,
-                string.Join("|", sidecar.Identities.DefaultIfEmpty(sidecar.Name)),
-                FirstNonEmpty(sidecar.Name, sidecar.Identities.FirstOrDefault()) ?? "Безымянный текст",
-                "запись",
-                sidecar.TextEntries.Select(static entry => $"  {Markup.Escape(entry)}").ToList());
+            var selectedItem = ReadableInventoryDocumentShelfProjection.FindBySelector(shelf, _currentCommandRemainder);
+            if (selectedItem == null)
+            {
+                MarkupLine("[yellow]Такой документ не найден на книжной полке.[/]");
+                WaitForKey();
+                return;
+            }
+
+            ShowReadableDocumentDetail(selectedItem);
+            WaitForKey();
+            return;
         }
 
-        if (text.Count == 0)
-            text.Add("[dim]Нет читаемых предметов (книг, писем, свитков и т.д.)[/]");
-
-        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
+        while (true)
         {
-            Header = new PanelHeader(" 📜 Книги и записи ", Justify.Center),
-            Border = BoxBorder.Double,
-            BorderStyle = new Style(Color.Yellow),
-            Padding = new Padding(2, 1)
-        };
-        Write(panel);
-        WaitForKey();
+            ShowReadableDocumentShelf(shelf);
+            var choices = shelf.Items
+                .Select(static item => Markup.Escape(item.ChoiceLabel))
+                .Append("← Назад")
+                .ToList();
+            var selected = Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[bold yellow]📜 Книги и записи[/]")
+                    .PageSize(15)
+                    .AddChoices(choices));
 
-        static string? FirstNonEmpty(params string?[] values) =>
-            values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value));
+            if (selected.Contains("← Назад", StringComparison.Ordinal))
+                break;
+
+            var selectedIndex = choices.IndexOf(selected);
+            if (selectedIndex < 0 || selectedIndex >= shelf.Items.Count)
+                break;
+
+            ShowReadableDocumentDetail(shelf.Items[selectedIndex]);
+            WaitForKey();
+        }
 
         static JsonNode? ToJsonNode(JsonDocument? document) =>
             document == null ? null : JsonNode.Parse(document.RootElement.GetRawText());
+    }
 
-        static void AddReadableTextBlock(
-            List<string> text,
-            HashSet<string> renderedBlocks,
-            string identity,
-            string name,
-            string? label,
-            IReadOnlyList<string> entryLines)
+    private void ShowReadableDocumentShelf(ReadableDocumentShelf shelf)
+    {
+        var table = new Table()
+            .Border(TableBorder.Rounded)
+            .BorderColor(Color.Yellow)
+            .Expand()
+            .AddColumn("Документ")
+            .AddColumn("Источник")
+            .AddColumn("Доступ")
+            .AddColumn("Кратко");
+
+        foreach (var item in shelf.Items)
         {
-            if (entryLines.Count == 0)
-                return;
-
-            var signature = $"{identity}|{name}|{string.Join("\n", entryLines)}";
-            if (!renderedBlocks.Add(signature))
-                return;
-
-            var suffix = string.IsNullOrWhiteSpace(label)
-                ? string.Empty
-                : $" [dim]({Markup.Escape(label)})[/]";
-            text.Add($"[bold yellow]📜 {Markup.Escape(name)}[/]{suffix}");
-            text.AddRange(entryLines);
-            text.Add(string.Empty);
+            table.AddRow(
+                GameInterface.SafeMarkupText(item.Title),
+                GameInterface.SafeMarkupText(item.Source),
+                GameInterface.SafeMarkupText(item.AccessStatus),
+                GameInterface.SafeMarkupText(item.Summary));
         }
+
+        Write(new Panel(table)
+        {
+            Header = new PanelHeader(" 📜 Книжная полка ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Yellow),
+            Padding = new Padding(1, 0)
+        });
+    }
+
+    private void ShowReadableDocumentDetail(ReadableDocumentShelfItem item)
+    {
+        var lines = new List<string>
+        {
+            $"[bold yellow]📜 {Markup.Escape(item.Title)}[/]",
+            $"[dim]Источник: {Markup.Escape(item.Source)}[/]",
+            $"[dim]Доступ: {Markup.Escape(item.AccessStatus)}[/]",
+            string.Empty
+        };
+
+        if (item.HasReadableContent)
+        {
+            for (var index = 0; index < item.Entries.Count; index++)
+            {
+                if (item.Entries.Count > 1)
+                    lines.Add($"[dim]Запись {index + 1}[/]");
+
+                lines.Add(Markup.Escape(item.Entries[index]));
+                lines.Add(string.Empty);
+            }
+        }
+        else
+        {
+            lines.Add($"[yellow]{Markup.Escape(item.UnreadableReason ?? "Текст пока недоступен.")}[/]");
+        }
+
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines), "readable document detail"))
+        {
+            Header = new PanelHeader(" Чтение документа ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Yellow),
+            Padding = new Padding(2, 1)
+        });
     }
 }
 

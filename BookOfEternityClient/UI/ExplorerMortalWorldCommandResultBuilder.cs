@@ -82,7 +82,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
             ["/взаимодействия"] = CommandKind.Interactions
         };
 
-    public static bool CanBuild(string command) => CommandKinds.ContainsKey(command.Trim());
+    public static bool CanBuild(string command) =>
+        CommandKinds.ContainsKey(ExplorerCommandCatalog.ExtractCommandToken(command.Trim()));
 
     public static async Task<ExplorerCommandResult?> TryBuildAsync(
         string command,
@@ -90,72 +91,73 @@ public static class ExplorerMortalWorldCommandResultBuilder
         FileSystemManager fs)
     {
         var normalizedCommand = command.Trim();
-        if (!CommandKinds.TryGetValue(normalizedCommand, out var kind))
+        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(normalizedCommand);
+        if (!CommandKinds.TryGetValue(commandToken, out var kind))
             return null;
 
         await stateManager.RefreshGameStateAsync();
 
         return kind switch
         {
-            CommandKind.Inventory => await BuildInventory(normalizedCommand, fs),
-            CommandKind.Npcs => await BuildNpcs(normalizedCommand, fs),
-            CommandKind.Quests => await BuildBundle(normalizedCommand, fs, "Квесты", [
+            CommandKind.Inventory => await BuildInventory(commandToken, fs),
+            CommandKind.Npcs => await BuildNpcs(commandToken, fs),
+            CommandKind.Quests => await BuildBundle(commandToken, fs, "Квесты", [
                 new("game_state/quests/regular_quests.json", "quests|activeQuests", "Активных"),
                 new("game_state/quests/regular_quests.json", "completedQuests", "Завершённых"),
                 new("game_state/quests/quest_history.json", "questHistory|entries", "Исторических записей"),
                 new("game_state/quests/plot_outline.json", "plotOutline|entries", "Сюжетных записей")
             ]),
-            CommandKind.Map => await BuildMap(normalizedCommand, fs),
-            CommandKind.CurrentLocation => await BuildBundle(normalizedCommand, fs, "Где я", [
+            CommandKind.Map => await BuildMap(commandToken, fs),
+            CommandKind.CurrentLocation => await BuildBundle(commandToken, fs, "Где я", [
                 new("game_state/world/current_location.json", "locationName", "Локация"),
                 new("game_state/world/current_location.json", "region", "Регион"),
                 new("game_state/world/current_location.json", "description", "Описание")
             ]),
-            CommandKind.Factions => await BuildBundle(normalizedCommand, fs, "Фракции", [
+            CommandKind.Factions => await BuildBundle(commandToken, fs, "Фракции", [
                 new("game_state/factions/faction_core.json", "factions", "Фракций"),
                 new("game_state/factions/faction_projects.json", "entries", "Проектов"),
                 new("game_state/factions/faction_chronicles.json", "entries", "Хроник"),
                 new("game_state/factions/faction_custom.json", "entries", "Особых состояний")
             ]),
-            CommandKind.Skills => await BuildBundle(normalizedCommand, fs, "Навыки", [
+            CommandKind.Skills => await BuildBundle(commandToken, fs, "Навыки", [
                 new("game_state/player/skills_active.json", "activeSkillChanges|skills", "Активных"),
                 new("game_state/player/skills_passive.json", "passiveSkillChanges|skills", "Пассивных")
             ]),
-            CommandKind.Stats => await BuildStats(normalizedCommand, fs, stateManager),
-            CommandKind.WorldNews => await BuildBundle(normalizedCommand, fs, "Новости мира", [
+            CommandKind.Stats => await BuildStats(commandToken, fs, stateManager),
+            CommandKind.WorldNews => await BuildBundle(commandToken, fs, "Новости мира", [
                 new("game_state/world/world_events.json", "worldEventsLog|events", "Событий"),
                 new("game_state/world/world_flags.json", "worldStateFlags|flags", "Флагов"),
                 new("game_state/world/progression.json", "entries", "Записей прогресса")
             ]),
-            CommandKind.RivalThreads => await BuildBundle(normalizedCommand, fs, "Чужие нити", [
+            CommandKind.RivalThreads => await BuildBundle(commandToken, fs, "Чужие нити", [
                 new(RivalSoulArcService.StatePath, "rivalSoulArcs", "Арк соперников"),
                 new(RivalSoulArcService.StatePath, "arcs", "Арк")
             ]),
-            CommandKind.GuardianCorrections => await BuildBundle(normalizedCommand, fs, "Коррективы Хранителя", [
+            CommandKind.GuardianCorrections => await BuildBundle(commandToken, fs, "Коррективы Хранителя", [
                 new(GuardianCorrectionService.StatePath, "corrections", "Корректив")
             ]),
-            CommandKind.Locations => await BuildLocations(normalizedCommand, fs),
-            CommandKind.Transport => await BuildBundle(normalizedCommand, fs, "Транспорт", [
+            CommandKind.Locations => await BuildLocations(commandToken, fs),
+            CommandKind.Transport => await BuildBundle(commandToken, fs, "Транспорт", [
                 new("game_state/world/world_map.json", "transportRoutes", "Маршрутов"),
                 new("game_state/world/current_location.json", "availableTransport", "Доступного транспорта")
             ]),
-            CommandKind.Effects => await BuildEffects(normalizedCommand, fs, stateManager),
-            CommandKind.Combat => await BuildBundle(normalizedCommand, fs, "Бой", [
+            CommandKind.Effects => await BuildEffects(commandToken, fs, stateManager),
+            CommandKind.Combat => await BuildBundle(commandToken, fs, "Бой", [
                 new("game_state/combat/enemies.json", "enemiesData|enemies", "Врагов"),
                 new("game_state/combat/allies.json", "alliesData|allies", "Союзников"),
                 new("game_state/combat/combat_log.json", "combat_log_markdown|entries", "Записей журнала")
             ]),
-            CommandKind.Weather => await BuildBundle(normalizedCommand, fs, "Время и погода", [
+            CommandKind.Weather => await BuildBundle(commandToken, fs, "Время и погода", [
                 new("game_state/world/world_time.json", "timeOfDay|currentTime", "Время"),
                 new("game_state/world/weather.json", "tendency|currentState", "Погода"),
                 new("game_state/world/weather.json", "description", "Описание")
             ]),
             CommandKind.Books => await BuildBooks(normalizedCommand, fs),
-            CommandKind.StorageAccess => await BuildBundle(normalizedCommand, fs, "Доступ к хранилищам", [
+            CommandKind.StorageAccess => await BuildBundle(commandToken, fs, "Доступ к хранилищам", [
                 new("game_state/misc/storage_access.json", "grantStorageAccess|storages", "Хранилищ"),
                 new("game_state/misc/storage_access.json", "entries", "Записей")
             ]),
-            CommandKind.Interactions => await BuildBundle(normalizedCommand, fs, "Взаимодействия игроков", [
+            CommandKind.Interactions => await BuildBundle(commandToken, fs, "Взаимодействия игроков", [
                 new("game_state/misc/player_interactions.json", "otherPlayersInteractions|interactions", "Взаимодействий"),
                 new("game_state/misc/player_interactions.json", "entries", "Записей")
             ]),
@@ -834,55 +836,58 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static async Task<ExplorerCommandResult> BuildBooks(string command, FileSystemManager fs)
     {
-        const string title = "Книги и тексты";
+        const string title = "Книжная полка";
         var inventoryRead = await ReadJson(fs, "game_state/inventory/items.json");
         var textRead = await ReadJson(fs, "game_state/inventory/item_text_updates.json");
         var journalRead = await ReadJson(fs, "game_state/npcs/item_journals.json");
-        var documents = ReadableInventoryDocumentAuthority.ResolveDocuments(
+        var shelf = ReadableInventoryDocumentShelfProjection.Build(
             inventoryRead.Node,
             textRead.Node,
             journalRead.Node);
-        var itemTextEntries = ReadableInventoryDocumentAuthority.CollectItemTextEntries(textRead.Node);
-        var journalEntries = ReadableInventoryDocumentAuthority.CollectItemJournalEntries(journalRead.Node);
-
-        var rows = new List<UiTableRow>();
-        foreach (var document in documents)
-        {
-            rows.Add(new UiTableRow
-            {
-                Cells =
-                [
-                    document.Name,
-                    document.HasReadableAuthority ? "Можно читать" : "Не прочесть",
-                    document.HasReadableAuthority
-                        ? JoinReadableEntries(document.TextEntries)
-                        : document.UnreadableReason ?? "Текст пока недоступен."
-                ]
-            });
-        }
-
-        foreach (var sidecar in itemTextEntries.Concat(journalEntries)
-                     .Where(sidecar => !documents.Any(document => ReadableInventoryDocumentAuthority.SidecarMatchesDocument(sidecar, document))))
-        {
-            rows.Add(new UiTableRow
-            {
-                Cells =
-                [
-                    FirstNonEmpty(sidecar.Name, sidecar.Identities.FirstOrDefault()) ?? "Безымянный текст",
-                    "Запись",
-                    JoinReadableEntries(sidecar.TextEntries)
-                ]
-            });
-        }
-
+        var selector = ExtractCommandRemainder(command);
         var blocks = new List<UiBlock>();
-        if (rows.Count > 0)
+
+        if (!string.IsNullOrWhiteSpace(selector))
+        {
+            var selected = ReadableInventoryDocumentShelfProjection.FindBySelector(shelf, selector);
+            if (selected == null)
+            {
+                blocks.Add(Message(UiNotificationSeverity.Warning, title, "Такой документ не найден на книжной полке."));
+            }
+            else
+            {
+                blocks.Add(BuildBookDetailBlock(selected));
+                blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /books.", Tone = UiTone.Muted });
+            }
+
+            AddBookReadWarning(blocks, title, inventoryRead);
+            AddBookReadWarning(blocks, title, textRead);
+            AddBookReadWarning(blocks, title, journalRead);
+
+            return Completed(command, blocks, [
+                new UiAction
+                {
+                    Id = "books-back",
+                    Label = "Назад к книжной полке",
+                    Command = "/books",
+                    Style = UiActionStyle.Secondary,
+                    RequiresConfirmation = false
+                }
+            ]);
+        }
+
+        if (shelf.Items.Count > 0)
         {
             blocks.Add(new UiTableBlock
             {
                 Title = title,
-                Columns = ["Предмет", "Доступ", "Запись"],
-                Rows = rows
+                Columns = ["Документ", "Источник", "Доступ", "Кратко"],
+                Rows = shelf.Items
+                    .Select(static item => new UiTableRow
+                    {
+                        Cells = [item.Title, item.Source, item.AccessStatus, item.Summary]
+                    })
+                    .ToList()
             });
         }
         else
@@ -894,7 +899,74 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddBookReadWarning(blocks, title, textRead);
         AddBookReadWarning(blocks, title, journalRead);
 
-        return Completed(command, blocks);
+        return Completed(command, blocks, BuildBookReadActions(shelf));
+    }
+
+    private static UiPanelBlock BuildBookDetailBlock(ReadableDocumentShelfItem item)
+    {
+        var blocks = new List<UiBlock>
+        {
+            new UiKeyValueGridBlock
+            {
+                Items =
+                [
+                    new UiKeyValueItem { Key = "Источник", Value = item.Source },
+                    new UiKeyValueItem { Key = "Доступ", Value = item.AccessStatus }
+                ]
+            }
+        };
+
+        if (item.HasReadableContent)
+        {
+            for (var index = 0; index < item.Entries.Count; index++)
+            {
+                var prefix = item.Entries.Count == 1
+                    ? string.Empty
+                    : $"Запись {index + 1}. ";
+                blocks.Add(new UiTextBlock { Text = prefix + item.Entries[index], Tone = UiTone.Default });
+            }
+        }
+        else
+        {
+            blocks.Add(new UiMessageBlock
+            {
+                Severity = UiNotificationSeverity.Warning,
+                Title = "Текст недоступен",
+                Message = item.UnreadableReason ?? "Текст пока недоступен."
+            });
+        }
+
+        return new UiPanelBlock
+        {
+            Title = $"Чтение: {item.Title}",
+            Blocks = blocks
+        };
+    }
+
+    private static IReadOnlyList<UiAction> BuildBookReadActions(ReadableDocumentShelf shelf)
+    {
+        var actions = new List<UiAction>();
+        foreach (var item in shelf.Items)
+        {
+            actions.Add(new UiAction
+            {
+                Id = "books-read-" + item.Selector,
+                Label = $"Читать «{item.Title}»",
+                Command = "/books " + ReadableInventoryDocumentShelfProjection.FormatCommandArgument(item.Selector),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["documentId"] = item.Selector,
+                    ["title"] = item.Title,
+                    ["source"] = item.Source,
+                    ["accessStatus"] = item.AccessStatus,
+                    ["entryCount"] = item.Entries.Count
+                }
+            });
+        }
+
+        return actions;
     }
 
     private static async Task<ExplorerCommandResult> BuildInventory(string command, FileSystemManager fs)
@@ -1233,8 +1305,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static string EmptyFallback(string? value) =>
         string.IsNullOrWhiteSpace(value) ? "не указано" : value.Trim();
 
-    private static string JoinReadableEntries(IEnumerable<string> entries) =>
-        string.Join("\n", entries.Where(static entry => !string.IsNullOrWhiteSpace(entry)));
+    private static string ExtractCommandRemainder(string command)
+    {
+        var parts = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length == 2 ? parts[1].Trim() : string.Empty;
+    }
 
     private static int SlotOrder(string slotKey)
     {

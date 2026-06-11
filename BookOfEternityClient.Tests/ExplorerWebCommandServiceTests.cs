@@ -1204,6 +1204,65 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [Fact]
     public async Task ExecuteAsync_Books_ShowsReadableInventoryDocumentsAndSealedReasons()
     {
+        await SeedBooksReadingFlowStateAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/книги"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>());
+        Assert.Equal("Книжная полка", table.Title);
+        Assert.Equal(["Документ", "Источник", "Доступ", "Кратко"], table.Columns);
+        Assert.Contains(table.Rows, row => RowContains(row, "Письмо с площади") && RowContains(row, "Можно читать"));
+        Assert.Contains(table.Rows, row => RowContains(row, "Записка с рынка") && RowContains(row, "1 запись"));
+        Assert.Contains(table.Rows, row => RowContains(row, "Памятная книга") && RowContains(row, "1 запись"));
+        Assert.Contains(table.Rows, row => RowContains(row, "Запечатанное письмо") && RowContains(row, "Не прочесть"));
+        Assert.Contains("Письмо с площади", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Записка с рынка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Памятная книга", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Запечатанное письмо", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("INLINE_FULL_BODY_MARKER", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("SIDECAR_FULL_BODY_MARKER", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("JOURNAL_FULL_BODY_MARKER", text, StringComparison.Ordinal);
+        Assert.Contains(result.Actions, action =>
+            action.Label.Contains("Записка с рынка", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/books doc_sidecar_1", StringComparison.OrdinalIgnoreCase) &&
+            action.Style == UiActionStyle.Secondary &&
+            action.RequiresConfirmation == false);
+        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("item_text_updates", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("INLINE_FULL_BODY_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("SIDECAR_FULL_BODY_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("JOURNAL_FULL_BODY_MARKER", payload, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Books_WithStableDocumentId_ShowsOnlySelectedDocumentDetail()
+    {
+        await SeedBooksReadingFlowStateAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/books doc_sidecar_1"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal("/books doc_sidecar_1", result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Записка с рынка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("SIDECAR_FULL_BODY_MARKER", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("INLINE_FULL_BODY_MARKER", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("JOURNAL_FULL_BODY_MARKER", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Книжная полка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Actions, action =>
+            action.Label.Contains("Назад", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/books", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("item_text_updates", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task SeedBooksReadingFlowStateAsync()
+    {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
           "currentRealm": "Mortal World"
@@ -1214,15 +1273,17 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
           "items": [
             {
               "existedId": "doc_inline_1",
+              "itemId": "doc_inline_1",
               "name": "Письмо с площади",
               "type": "Документ",
               "group": "Документы и медиа",
               "textContent": [
-                "Лира просит встретиться у фонтана до рассвета."
+                "Лира просит встретиться у фонтана до рассвета. Это длинное письмо продолжается подробностями о стороже, мокрой мостовой и тайном знаке. INLINE_FULL_BODY_MARKER"
               ]
             },
             {
               "existedId": "doc_sidecar_1",
+              "itemId": "doc_sidecar_1",
               "name": "Записка с рынка",
               "type": "note",
               "group": "Документы и медиа",
@@ -1230,17 +1291,20 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             },
             {
               "existedId": "doc_journal_1",
+              "itemId": "doc_journal_1",
               "name": "Памятная книга",
               "type": "Книга",
+              "group": "Документы и медиа",
               "textContent": null
             },
             {
               "existedId": "doc_sealed_1",
+              "itemId": "doc_sealed_1",
               "name": "Запечатанное письмо",
               "type": "Документ",
-              "description": "Письмо запечатано неизвестной печатью.",
+              "group": "Документы и медиа",
               "textContent": null,
-              "unreadableReason": "Письмо запечатано неизвестной печатью."
+              "unreadableReason": "Печать не позволяет прочесть письмо сейчас."
             }
           ]
         }
@@ -1252,7 +1316,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "itemId": "doc_sidecar_1",
               "itemName": "Не это имя",
               "textContent": [
-                "На обороте записки указан путь через северные ворота."
+                "На обороте записки указан путь через северные ворота. Это длинная приписка с именами торговцев, часом встречи и предупреждением о дозорных. SIDECAR_FULL_BODY_MARKER"
               ]
             }
           ]
@@ -1267,30 +1331,17 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "journalEntries": [
                 {
                   "event": "Пробуждение",
-                  "description": "Книга шепчет о владельце."
+                  "description": "Книга шепчет о владельце. В записи слышен скрип пера, сухой шорох страниц и обещание вернуться к началу. JOURNAL_FULL_BODY_MARKER"
                 }
               ]
             }
           ]
         }
         """);
-
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/книги"));
-        var text = CollectBlockText(result.Blocks);
-
-        Assert.Equal(CommandExecutionState.Completed, result.State);
-        Assert.Contains("Письмо с площади", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Лира просит встретиться у фонтана до рассвета.", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Записка с рынка", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("На обороте записки указан путь через северные ворота.", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Памятная книга", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Книга шепчет о владельце.", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Запечатанное письмо", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Письмо запечатано неизвестной печатью.", text, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("item_text_updates", text, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("DTO", text, StringComparison.OrdinalIgnoreCase);
     }
+
+    private static bool RowContains(UiTableRow row, string value) =>
+        row.Cells.Any(cell => cell.Contains(value, StringComparison.OrdinalIgnoreCase));
 
     [Fact]
     public async Task ExecuteAsync_Books_WithOnlySealedDocument_DoesNotShowEmptyBooksMessage()
