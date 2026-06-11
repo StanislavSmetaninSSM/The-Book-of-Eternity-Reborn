@@ -1623,13 +1623,99 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>());
+        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Персонажи");
         Assert.Equal(new[] { "Раздел", "Состояние" }, table.Columns);
         var row = Assert.Single(table.Rows);
         Assert.Equal(["NPC", "1: Мирра"], row.Cells);
         Assert.DoesNotContain(table.Rows, static candidate => candidate.Cells.Any(static cell => cell.Contains("отсутствует", StringComparison.OrdinalIgnoreCase)));
         Assert.DoesNotContain(table.Rows.SelectMany(static candidate => candidate.Cells), static cell => cell.Contains("game_state/", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(result.Blocks.OfType<UiRawJsonBlock>(), static raw => raw.Title == "Полный JSON game_state/npcs/npc_core.json");
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("game_state/npcs", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcRichDetails_ExposesPlayerFacingDrilldownSections()
+    {
+        await SeedRichNpcDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Empty(result.Actions);
+
+        var sectionTable = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
+        Assert.Equal(["НПС", "Раздел", "Состояние"], sectionTable.Columns);
+        Assert.Contains(sectionTable.Rows, static row =>
+            row.Cells[0] == "Серафина" &&
+            row.Cells[1].Contains("Дневник / мысли", StringComparison.Ordinal) &&
+            row.Cells[2].Contains("2 записи", StringComparison.Ordinal));
+        Assert.Contains(sectionTable.Rows, static row =>
+            row.Cells[0] == "Серафина" &&
+            row.Cells[1].Contains("Личные квесты", StringComparison.Ordinal) &&
+            row.Cells[2].Contains("1 квест", StringComparison.Ordinal));
+        Assert.Contains(sectionTable.Rows, static row =>
+            row.Cells[0] == "Серафина" &&
+            row.Cells[1].Contains("Активности", StringComparison.Ordinal) &&
+            row.Cells[2].Contains("1 активность", StringComparison.Ordinal));
+        Assert.DoesNotContain(sectionTable.Rows, static row =>
+            row.Cells[1].Contains("Инвентарь", StringComparison.OrdinalIgnoreCase));
+
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Серафина — Дневник / мысли", text, StringComparison.Ordinal);
+        Assert.Contains("Сомневается, стоит ли доверять письму.", text, StringComparison.Ordinal);
+        Assert.Contains("Сделка на рассвете", text, StringComparison.Ordinal);
+        Assert.Contains("Доставить письмо в архив", text, StringComparison.Ordinal);
+        Assert.Contains("Получить ключ от боковой двери", text, StringComparison.Ordinal);
+        Assert.Contains("Награда", text, StringComparison.Ordinal);
+        Assert.Contains("Провал", text, StringComparison.Ordinal);
+        Assert.Contains("Проверяет печати у северных ворот", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("game_state/npcs", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(".json", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/npc_talk", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/npc_trade", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcRichDetails_DefaultProjectionHidesInternalFieldsAndMasks()
+    {
+        await SeedNpcInternalLeakDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Contains("Видимый след в памяти", text, StringComparison.Ordinal);
+        Assert.Contains("Клятва у печати", text, StringComparison.Ordinal);
+        Assert.Contains("Получить ключ от боковой двери", text, StringComparison.Ordinal);
+
+        Assert.DoesNotContain("image_prompt", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("prompt-for-gm", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("internal", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("debug", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Dto", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/api/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("reward_serafina_secret", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("memory_serafina_debug", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("mask_serafina_false_face", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Образ доверенного архивариуса", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Скрывает связь с дозором", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Маска", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcMechanicsSection_LabelIncludesInventoryWhenInventoryRowsExist()
+    {
+        await SeedNpcMechanicsDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
+
+        var sectionTable = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
+        Assert.Contains(sectionTable.Rows, static row =>
+            row.Cells[0] == "Серафина" &&
+            row.Cells[1].Contains("Навыки", StringComparison.Ordinal) &&
+            row.Cells[1].Contains("инвентарь", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2606,6 +2692,176 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var fullPath = _fs.ResolvePath(relativePath);
         Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
         File.WriteAllBytes(fullPath, [137, 80, 78, 71, 13, 10, 26, 10]);
+    }
+
+    private async Task SeedRichNpcDrilldownFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_serafina",
+              "name": "Серафина",
+              "shortDescription": "Архивариус северных ворот.",
+              "currentLocation": "Северные ворота",
+              "relationshipLevel": 42,
+              "personalQuests": [
+                {
+                  "questId": "quest_serafina_letter",
+                  "questName": "Сделка на рассвете",
+                  "status": "Active",
+                  "description": "Серафина просит передать письмо без лишних свидетелей.",
+                  "objectives": [
+                    { "description": "Доставить письмо в архив", "status": "Active" }
+                  ],
+                  "rewards": "Получить ключ от боковой двери",
+                  "failureConsequences": "Провал закроет путь через северные ворота"
+                }
+              ],
+              "currentActivity": {
+                "activityName": "Проверка печатей",
+                "description": "Проверяет печати у северных ворот",
+                "timeSpentMinutes": 30,
+                "totalTimeCostMinutes": 60
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_journals.json", """
+        {
+          "NPCJournals": [
+            {
+              "NPCId": "npc_serafina",
+              "NPCName": "Серафина",
+              "lastJournalNote": "Сомневается, стоит ли доверять письму.",
+              "journalEntries": [
+                {
+                  "event": "Первый разговор",
+                  "description": "Заметила осторожность игрока.",
+                  "relationshipChange": "+2"
+                },
+                {
+                  "event": "Письмо найдено",
+                  "description": "Сомневается, стоит ли доверять письму.",
+                  "relationshipChange": "+1"
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_activities.json", """
+        {
+          "entries": [
+            {
+              "NPCId": "npc_serafina",
+              "activityUpdate": {
+                "activityName": "Проверка печатей",
+                "description": "Проверяет печати у северных ворот",
+                "activeState": "active",
+                "timeSpentMinutes": 30,
+                "totalTimeCostMinutes": 60
+              }
+            }
+          ]
+        }
+        """);
+    }
+
+    private async Task SeedNpcInternalLeakDrilldownFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_serafina",
+              "name": "Серафина",
+              "personalQuests": [
+                {
+                  "questName": "Сделка на рассвете",
+                  "status": "Active",
+                  "description": "Серафина просит передать письмо без лишних свидетелей.",
+                  "rewards": {
+                    "displayName": "Получить ключ от боковой двери",
+                    "rewardId": "reward_serafina_secret",
+                    "image_prompt": "image_prompt should stay hidden",
+                    "prompt": "prompt-for-gm reward note",
+                    "debugNotes": "debug reward trace",
+                    "internalMemo": "internal reward memo",
+                    "dtoType": "NpcRewardDto",
+                    "apiPath": "/api/npcs/rewards"
+                  }
+                }
+              ],
+              "masks": [
+                {
+                  "maskId": "mask_serafina_false_face",
+                  "name": "Образ доверенного архивариуса",
+                  "concealedTruth": "Скрывает связь с дозором"
+                }
+              ],
+              "customStates": [
+                {
+                  "name": "Клятва у печати",
+                  "description": "Держит слово у северных ворот",
+                  "debugNotes": "debug custom state"
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_memory.json", """
+        {
+          "entries": [
+            {
+              "NPCId": "npc_serafina",
+              "memoryId": "memory_serafina_debug",
+              "summary": "Видимый след в памяти",
+              "sourcePath": "game_state/npcs/npc_memory.json",
+              "prompt": "prompt-for-gm memory note",
+              "debugNotes": "debug memory trace",
+              "internalMemo": "internal memory memo",
+              "dtoType": "NpcMemoryDto",
+              "apiPath": "/api/npcs/memory"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_masks.json", """
+        {
+          "entries": [
+            {
+              "NPCId": "npc_serafina",
+              "maskId": "mask_serafina_false_face",
+              "name": "Образ доверенного архивариуса",
+              "concealedTruth": "Скрывает связь с дозором"
+            }
+          ]
+        }
+        """);
+    }
+
+    private async Task SeedNpcMechanicsDrilldownFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_serafina",
+              "name": "Серафина",
+              "inventory": [
+                { "name": "Архивный ключ", "description": "Открывает боковую дверь." }
+              ]
+            }
+          ]
+        }
+        """);
     }
 
     private async Task SeedMortalFilesAsync()

@@ -28,6 +28,35 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Npcs_RichNpcShowsDetailSectionMenu()
+    {
+        await SeedRichNpcDrilldownStateAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("npc_detail_drilldown_sections");
+        var sectionPrompt = _console.SelectionChoicesHistory.First(
+            entry => entry.Title.Contains("Разделы НПС", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(sectionPrompt.Choices,
+            choice => choice.Contains("Дневник / мысли", StringComparison.Ordinal) &&
+                      choice.Contains("2 записи", StringComparison.Ordinal));
+        Assert.Contains(sectionPrompt.Choices,
+            choice => choice.Contains("Личные квесты", StringComparison.Ordinal) &&
+                      choice.Contains("1 квест", StringComparison.Ordinal));
+        Assert.Contains(sectionPrompt.Choices,
+            choice => choice.Contains("Активности", StringComparison.Ordinal) &&
+                      choice.Contains("1 активность", StringComparison.Ordinal));
+        Assert.DoesNotContain(sectionPrompt.Choices,
+            choice => choice.Contains("Инвентарь", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(sectionPrompt.Choices,
+            choice => choice.Contains("← Закрыть разделы НПС", StringComparison.Ordinal));
+        Assert.DoesNotContain(sectionPrompt.Choices,
+            choice => choice.Contains("← К списку НПС", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public async Task TryProcessCommand_InventoryEscapesItemTypeInSelectionChoices()
     {
         await SeedMortalStateAsync();
@@ -473,6 +502,84 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains(_console.SelectionChoicesHistory,
             entry => entry.Title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase) &&
                      entry.Choices.Contains("🔁 Выкупить обратно", StringComparer.Ordinal));
+    }
+
+    private async Task SeedRichNpcDrilldownStateAsync()
+    {
+        await SeedMortalStateAsync();
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_serafina",
+              "name": "Серафина",
+              "shortDescription": "Архивариус северных ворот.",
+              "currentLocation": "Северные ворота",
+              "relationshipLevel": 42,
+              "personalQuests": [
+                {
+                  "questId": "quest_serafina_letter",
+                  "questName": "Сделка на рассвете",
+                  "status": "Active",
+                  "description": "Серафина просит передать письмо без лишних свидетелей.",
+                  "objectives": [
+                    { "description": "Доставить письмо в архив", "status": "Active" }
+                  ],
+                  "rewards": "Получить ключ от боковой двери",
+                  "failureConsequences": "Провал закроет путь через северные ворота"
+                }
+              ],
+              "currentActivity": {
+                "activityName": "Проверка печатей",
+                "description": "Проверяет печати у северных ворот",
+                "timeSpentMinutes": 30,
+                "totalTimeCostMinutes": 60
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_journals.json", """
+        {
+          "NPCJournals": [
+            {
+              "NPCId": "npc_serafina",
+              "NPCName": "Серафина",
+              "lastJournalNote": "Сомневается, стоит ли доверять письму.",
+              "journalEntries": [
+                {
+                  "event": "Первый разговор",
+                  "description": "Заметила осторожность игрока.",
+                  "relationshipChange": "+2"
+                },
+                {
+                  "event": "Письмо найдено",
+                  "description": "Сомневается, стоит ли доверять письму.",
+                  "relationshipChange": "+1"
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_activities.json", """
+        {
+          "entries": [
+            {
+              "NPCId": "npc_serafina",
+              "activityUpdate": {
+                "activityName": "Проверка печатей",
+                "description": "Проверяет печати у северных ворот",
+                "activeState": "active",
+                "timeSpentMinutes": 30,
+                "totalTimeCostMinutes": 60
+              }
+            }
+          ]
+        }
+        """);
     }
 
 }

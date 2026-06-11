@@ -418,7 +418,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
     {
         SummarySpec[] specs =
         [
-            new("game_state/npcs/npc_core.json", "npcs", "NPC"),
             new("game_state/npcs/npc_relationships.json", "entries", "Отношений"),
             new("game_state/npcs/npc_activities.json", "entries", "Активностей"),
             new("game_state/npcs/npc_custom_states.json", "entries", "Особых состояний")
@@ -435,7 +434,82 @@ public static class ExplorerMortalWorldCommandResultBuilder
             }
         }
 
-        return await BuildBundle(command, fs, "Персонажи", specs);
+        var reads = new Dictionary<string, JsonReadResult>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["game_state/npcs/npc_core.json"] = coreRead
+        };
+        foreach (var path in specs.Select(static spec => spec.Path).Distinct(StringComparer.OrdinalIgnoreCase))
+            reads[path] = await ReadJson(fs, path);
+
+        reads["game_state/npcs/npc_goals.json"] = await ReadJson(fs, "game_state/npcs/npc_goals.json");
+        reads["game_state/npcs/npc_inventory.json"] = await ReadJson(fs, "game_state/npcs/npc_inventory.json");
+        reads["game_state/npcs/npc_effects.json"] = await ReadJson(fs, "game_state/npcs/npc_effects.json");
+        reads["game_state/npcs/npc_skills.json"] = await ReadJson(fs, "game_state/npcs/npc_skills.json");
+        reads["game_state/npcs/npc_personality.json"] = await ReadJson(fs, "game_state/npcs/npc_personality.json");
+        reads["game_state/npcs/npc_journals.json"] = await ReadJson(fs, "game_state/npcs/npc_journals.json");
+        reads[NpcInteractionJournalState.StatePath] = await ReadJson(fs, NpcInteractionJournalState.StatePath);
+        reads["game_state/npcs/npc_masks.json"] = await ReadJson(fs, "game_state/npcs/npc_masks.json");
+        reads["game_state/npcs/npc_memory.json"] = await ReadJson(fs, "game_state/npcs/npc_memory.json");
+        reads["game_state/npcs/npc_fate_cards.json"] = await ReadJson(fs, "game_state/npcs/npc_fate_cards.json");
+
+        var blocks = new List<UiBlock>();
+        var summaryRows = NpcDetailSectionProjection.BuildNpcOverviewRows(coreRead.Node).ToList();
+        foreach (var spec in specs)
+        {
+            var read = reads[spec.Path];
+            var status = DescribeSpec(read, spec.PropertyName);
+            if (status == "отсутствует")
+                continue;
+
+            summaryRows.Add(new UiTableRow
+            {
+                Cells = [spec.Label, status]
+            });
+        }
+
+        if (summaryRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Персонажи",
+                Columns = ["Раздел", "Состояние"],
+                Rows = summaryRows
+            });
+        }
+
+        var projections = NpcDetailSectionProjection.BuildAll(
+            coreRead.Node,
+            new NpcDetailSectionDocuments(
+                Relationships: reads["game_state/npcs/npc_relationships.json"].Node,
+                Goals: reads["game_state/npcs/npc_goals.json"].Node,
+                Activities: reads["game_state/npcs/npc_activities.json"].Node,
+                Inventory: reads["game_state/npcs/npc_inventory.json"].Node,
+                Effects: reads["game_state/npcs/npc_effects.json"].Node,
+                Skills: reads["game_state/npcs/npc_skills.json"].Node,
+                Personality: reads["game_state/npcs/npc_personality.json"].Node,
+                Journals: reads["game_state/npcs/npc_journals.json"].Node,
+                InteractionJournal: reads[NpcInteractionJournalState.StatePath].Node,
+                Masks: reads["game_state/npcs/npc_masks.json"].Node,
+                Memory: reads["game_state/npcs/npc_memory.json"].Node,
+                FateCards: reads["game_state/npcs/npc_fate_cards.json"].Node,
+                CustomStates: reads["game_state/npcs/npc_custom_states.json"].Node));
+
+        if (projections.Count > 0)
+        {
+            blocks.Add(NpcDetailSectionProjection.BuildSectionSummaryTable(projections));
+            blocks.AddRange(projections.SelectMany(static projection => projection.Sections.SelectMany(static section => section.Blocks)));
+        }
+
+        foreach (var read in reads.Values)
+        {
+            if (read.FileExists && read.Node == null && !string.IsNullOrWhiteSpace(read.Error))
+                blocks.Add(Message(UiNotificationSeverity.Warning, "Персонажи", "Одна из записей НПС найдена, но не разобрана как JSON."));
+        }
+
+        if (blocks.Count == 0)
+            blocks.Add(Message(UiNotificationSeverity.Info, "Персонажи", "Данные ещё не созданы."));
+
+        return Completed(command, blocks);
     }
 
     private static async Task<ExplorerCommandResult> BuildBundle(string command, FileSystemManager fs, string title, IReadOnlyList<SummarySpec> specs)

@@ -903,8 +903,69 @@ private async Task ShowNPCs()
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        var projection = NpcDetailSectionProjection.Build(
+            JsonNode.Parse(npc.GetRawText()),
+            new NpcDetailSectionDocuments(
+                Relationships: ToJsonNode(relDoc),
+                Goals: ToJsonNode(goalDoc),
+                Activities: ToJsonNode(actDoc),
+                Inventory: ToJsonNode(invDoc),
+                Effects: ToJsonNode(effDoc),
+                Skills: ToJsonNode(skillDoc),
+                Personality: ToJsonNode(persDoc),
+                Journals: ToJsonNode(jourDoc),
+                InteractionJournal: ToJsonNode(npcInteractionDoc),
+                Masks: ToJsonNode(maskDoc),
+                Memory: ToJsonNode(memDoc),
+                FateCards: ToJsonNode(fateDoc),
+                CustomStates: ToJsonNode(customDoc)));
+        ShowNpcDetailSectionMenu(name, projection.Sections);
+
         await ShowNpcDetailActions(npc, originalName, npcTradeAvailability.TradeAvailable, invDoc);
     }
+
+    private void ShowNpcDetailSectionMenu(string npcName, IReadOnlyList<NpcDetailSection> sections)
+    {
+        if (sections.Count == 0)
+            return;
+
+        while (true)
+        {
+            var choices = sections
+                .Select(section => ((NpcDetailSection?)section, GameInterface.SafePromptChoice(section.ChoiceLabel)))
+                .ToList();
+            choices.Add((null, "← Закрыть разделы НПС"));
+
+            var selected = Prompt(new SelectionPrompt<string>()
+                .Title($"[bold purple]Разделы НПС: {GameInterface.EscapeMarkup(npcName)}[/]")
+                .PageSize(12)
+                .HighlightStyle(new Style(Color.Purple))
+                .AddChoices(choices.Select(static choice => choice.Item2)));
+
+            if (selected.Contains("←", StringComparison.Ordinal) ||
+                selected.Contains("Назад", StringComparison.OrdinalIgnoreCase) ||
+                selected.Contains("К списку", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var section = choices.FirstOrDefault(choice => choice.Item2 == selected).Item1;
+            if (section == null)
+                return;
+
+            ExplorerCommandResultConsoleRenderer.Render(_console, new ExplorerCommandResult
+            {
+                Command = "/npc",
+                State = CommandExecutionState.Completed,
+                Blocks = section.Blocks.ToList()
+            });
+            WaitForKey();
+        }
+    }
+
+    private static JsonNode? ToJsonNode(JsonDocument? document) =>
+        document == null ? null : JsonNode.Parse(document.RootElement.GetRawText());
 
 
     private async Task ShowNpcDetailActions(JsonElement npc, string npcName, bool tradeAvailable, JsonDocument? invDoc)
