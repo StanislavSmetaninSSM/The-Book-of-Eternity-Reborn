@@ -17,10 +17,38 @@ public sealed class DarenQteRewardProfileService
 
     private static readonly DarenEndingTier[] TierDefinitions =
     [
-        new("shadow_on_the_run", "Тень в бегах", 40, 1, "Дарен выжил и ушёл от погони, но след получился грязным."),
-        new("broken_trail", "Сорванный след", 55, 2, "Дарен сорвал преследование, но оставил заметные улики."),
-        new("clean_heist", "Чистая кража", 75, 4, "Дарен вынес посох и добрался до убежища с управляемыми последствиями."),
-        new("perfect_shadow", "Идеальная тень", 90, 6, "Дарен ушёл с посохом как настоящая тень: чисто, быстро и без следов.")
+        new(
+            "shadow_on_the_run",
+            "Тень в бегах",
+            40,
+            1,
+            "Дарен выжил и ушёл от погони, но след получился грязным.",
+            "Дарен добирается под мост с посохом, но погоня ещё держит его запах: улики мокнут не до конца, свидетели спорят о лице вора, а шум ночи вынуждает его менять убежище до рассвета.",
+            "Книга признаёт постоянный урок Дарена: грязный, но спасённый след. В будущей новой игре этот итог добавит 1 Чернильное Перо к старту."),
+        new(
+            "broken_trail",
+            "Сорванный след",
+            55,
+            2,
+            "Дарен сорвал преследование, но оставил заметные улики.",
+            "След оборван не там, где хотелось бы: Орвальд теряет темп у дворов, но свидетели помнят обрывки плаща, на замке остаются улики, и Дарену приходится закрывать тайник осторожнее обычного.",
+            "Книга сохраняет постоянное достижение Дарена за сорванную погоню и добытый посох. В будущей новой игре этот след принесёт 2 Чернильных Пера на старте."),
+        new(
+            "clean_heist",
+            "Чистая кража",
+            75,
+            4,
+            "Дарен вынес посох и добрался до убежища с управляемыми последствиями.",
+            "Убежище под мостом остаётся тихим: посох ложится в тайник, улики размыты, погоня упирается в пустую воду, и Дарен впервые позволяет себе улыбнуться чистой работе.",
+            "Книга отмечает постоянное достижение Дарена за чистую кражу и управляемый отход. В будущей новой игре этот опыт откроет 4 Чернильных Пера с первого шага."),
+        new(
+            "perfect_shadow",
+            "Идеальная тень",
+            90,
+            6,
+            "Дарен ушёл с посохом как настоящая тень: чисто, быстро и без следов.",
+            "Поместье просыпается слишком поздно: замки молчат, вода не держит отпечатков, Орвальд спорит с пустым двором, а легенда об идеальной тени уходит под мост без следов.",
+            "Книга закрепляет постоянную легенду Дарена о безупречной краже. В будущей новой игре эта тень принесёт 6 Чернильных Перьев на старт.")
     ];
 
     private readonly FileSystemManager _fs;
@@ -44,7 +72,9 @@ public sealed class DarenQteRewardProfileService
                 NormalizedScore: clampedScore,
                 InkFeatherBonus: 0,
                 GrantsReward: false,
-                Summary: "Дарен не достиг безопасного исхода, поэтому постоянная награда не записана.");
+                Summary: "Дарен не достиг безопасного исхода, поэтому постоянная награда не записана.",
+                Epilogue: "Ночь не закрывается: тревога ведёт погоню слишком близко, след уводит к опасному убежищу, и Дарен прячет дыхание вместо посоха. Такая вылазка остаётся уроком выживания, а не победой книги.",
+                RewardExplanation: "Книга не записывает постоянный итог Дарена, потому что безопасный финал не достигнут и будущая новая игра не получает Чернильных Перьев за эту попытку.");
         }
 
         var tier = TierDefinitions
@@ -59,7 +89,9 @@ public sealed class DarenQteRewardProfileService
             NormalizedScore: clampedScore,
             InkFeatherBonus: tier.InkFeatherBonus,
             GrantsReward: true,
-            Summary: tier.Summary);
+            Summary: tier.Summary,
+            Epilogue: tier.Epilogue,
+            RewardExplanation: tier.RewardExplanation);
     }
 
     public async Task<DarenRewardProfileState> ReadProfileAsync()
@@ -87,12 +119,12 @@ public sealed class DarenQteRewardProfileService
     {
         if (!ending.GrantsReward || string.IsNullOrWhiteSpace(ending.TierId))
         {
-            return new DarenRewardProfileWriteResult(false, await ReadProfileAsync(), "Постоянная награда Дарена не записана: безопасный исход не достигнут.");
+            return new DarenRewardProfileWriteResult(false, await ReadProfileAsync(), ending.RewardExplanation);
         }
 
         var tier = FindTier(ending.TierId);
         if (tier == null)
-            return new DarenRewardProfileWriteResult(false, await ReadProfileAsync(), "Постоянная награда Дарена не записана: итог не распознан.");
+            return new DarenRewardProfileWriteResult(false, await ReadProfileAsync(), "Постоянная награда Дарена не записана: итог не распознан и будущая новая игра не получает Чернильных Перьев.");
 
         var profile = await ReadProfileAsync();
         var existing = profile.DarenShowcase;
@@ -101,7 +133,7 @@ public sealed class DarenQteRewardProfileService
             return new DarenRewardProfileWriteResult(
                 false,
                 profile,
-                $"Лучший итог Дарена уже сохранён: {existing.BestTierName}.");
+                $"Книга уже хранит постоянный итог Дарена: {existing.BestTierName}. Будущая новая игра сохранит лучший открытый бонус Чернильных Перьев без повторного сложения.");
         }
 
         profile = new DarenRewardProfileState
@@ -122,7 +154,7 @@ public sealed class DarenQteRewardProfileService
         return new DarenRewardProfileWriteResult(
             true,
             profile,
-            $"Лучший итог Дарена сохранён: {tier.DisplayName}, +{tier.InkFeatherBonus} Чернильных Перьев для будущих новых игр.");
+            tier.RewardExplanation);
     }
 
     public async Task<DarenRewardGrantResult> ApplyBestRewardToNewSoulStateAsync(JsonObject soulRoot)
@@ -158,7 +190,7 @@ public sealed class DarenQteRewardProfileService
         };
         soulRoot["clientRewardGrants"] = grants;
 
-        var message = $"Дарен: {tier.DisplayName} даёт +{tier.InkFeatherBonus} Чернильных Перьев этой новой игре.";
+        var message = $"Постоянный итог Дарена «{tier.DisplayName}» просыпается вместе с новой страницей и добавляет {tier.InkFeatherBonus} Чернильных Перьев этой новой игре.";
         return new DarenRewardGrantResult(true, tier.TierId, tier.DisplayName, tier.InkFeatherBonus, message);
     }
 
@@ -303,7 +335,9 @@ public sealed record DarenEndingTier(
     string DisplayName,
     int MinimumNormalizedScore,
     int InkFeatherBonus,
-    string Summary);
+    string Summary,
+    string Epilogue,
+    string RewardExplanation);
 
 public sealed record DarenEndingResult(
     string OutcomeId,
@@ -312,7 +346,9 @@ public sealed record DarenEndingResult(
     int NormalizedScore,
     int InkFeatherBonus,
     bool GrantsReward,
-    string Summary);
+    string Summary,
+    string Epilogue,
+    string RewardExplanation);
 
 public sealed record DarenRewardProfileWriteResult(
     bool Updated,

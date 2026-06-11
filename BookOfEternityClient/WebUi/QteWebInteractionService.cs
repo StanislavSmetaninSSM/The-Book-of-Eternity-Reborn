@@ -329,6 +329,8 @@ public sealed class QteWebInteractionService
             NormalizedScore = ending.NormalizedScore,
             InkFeatherBonus = ending.InkFeatherBonus,
             GrantsReward = ending.GrantsReward,
+            Epilogue = ending.Epilogue,
+            RewardExplanation = ending.RewardExplanation,
             RewardMessage = ending.RewardMessage
         };
 
@@ -1177,6 +1179,8 @@ public sealed class DarenShowcaseEndingDto
     public int NormalizedScore { get; init; }
     public int InkFeatherBonus { get; init; }
     public bool GrantsReward { get; init; }
+    public string Epilogue { get; init; } = "";
+    public string RewardExplanation { get; init; } = "";
     public string RewardMessage { get; init; } = "";
 }
 

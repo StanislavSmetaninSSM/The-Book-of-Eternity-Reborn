@@ -693,6 +693,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal("daren_qte_showcase", RequiredString(spine, "routeId"));
         Assert.Contains(957, RequiredIntArray(spine, "sourceIssues"));
         Assert.Contains(958, RequiredIntArray(spine, "sourceIssues"));
+        Assert.Contains(960, RequiredIntArray(spine, "sourceIssues"));
         Assert.Contains(956, RequiredIntArray(spine, "sourceIssues"));
         Assert.Contains(955, RequiredIntArray(spine, "sourceIssues"));
         Assert.Contains(919, RequiredIntArray(spine, "sourceIssues"));
@@ -829,6 +830,60 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenEndingResolver_ProvidesDistinctEpiloguesForEveryOutcome()
+    {
+        var endings = RequiredDarenEndingOutcomes();
+        var epilogues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var (outcomeId, ending) in endings)
+        {
+            var epilogue = RequiredStringProperty(ending, "Epilogue");
+
+            Assert.InRange(epilogue.Length, 120, 640);
+            AssertNoPlayerFacingTechnicalTerms($"{outcomeId} epilogue", epilogue);
+            Assert.DoesNotContain("+", epilogue, StringComparison.Ordinal);
+            epilogues.Add(outcomeId, epilogue);
+        }
+
+        Assert.Equal(epilogues.Count, epilogues.Values.Distinct(StringComparer.OrdinalIgnoreCase).Count());
+    }
+
+    [Fact]
+    public void DarenEndingResolver_EpiloguesAndRewardExplanationsCarryTierConsequences()
+    {
+        foreach (var (outcomeId, ending) in RequiredDarenEndingOutcomes())
+        {
+            var epilogue = RequiredStringProperty(ending, "Epilogue");
+            var rewardExplanation = RequiredStringProperty(ending, "RewardExplanation");
+
+            AssertNoPlayerFacingTechnicalTerms($"{outcomeId} reward explanation", rewardExplanation);
+            AssertContainsAny($"{outcomeId} epilogue consequence", epilogue, outcomeId switch
+            {
+                "no_reward_failure" => ["опас", "тревог", "погон", "убежищ", "след"],
+                "shadow_on_the_run" => ["погон", "ули", "свидетел", "шум", "след"],
+                "broken_trail" => ["след", "свидетел", "Орвальд", "погон", "ули"],
+                "clean_heist" => ["чист", "ули", "убежищ", "погон", "тайник"],
+                "perfect_shadow" => ["без след", "чист", "молчит", "легенд", "Орвальд"],
+                _ => throw new InvalidOperationException(outcomeId)
+            });
+
+            if (ending.GrantsReward)
+            {
+                Assert.Contains("Дарен", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+                Assert.Contains("постоян", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+                Assert.Contains("будущ", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+                Assert.Contains("Черниль", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+                Assert.Contains(ending.InkFeatherBonus.ToString(System.Globalization.CultureInfo.InvariantCulture), rewardExplanation, StringComparison.Ordinal);
+            }
+            else
+            {
+                Assert.Contains("не запис", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+                Assert.Contains("постоян", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+    }
+
+    [Fact]
     public async Task DarenProfile_WritesBestTierAndNeverDowngradesOrStacks()
     {
         var first = await _profile.RecordCompletionAsync(
@@ -848,6 +903,9 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.False(worse.Updated);
         Assert.False(same.Updated);
         Assert.True(upgrade.Updated);
+        Assert.Contains("постоян", first.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("будущ", first.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Черниль", first.Message, StringComparison.OrdinalIgnoreCase);
 
         var profile = await _profile.ReadProfileAsync();
         Assert.Equal(1, profile.SchemaVersion);
@@ -956,6 +1014,13 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.NotNull(resolution?.Completion);
         Assert.Equal("perfect_shadow", resolution!.Completion!.OutcomeId);
         Assert.Contains("Идеальная тень", resolution.Completion.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.NotNull(attempt.Ending);
+        var epilogue = RequiredStringProperty(attempt.Ending!, "Epilogue");
+        var rewardExplanation = RequiredStringProperty(attempt.Ending!, "RewardExplanation");
+        Assert.Contains(epilogue, resolution.Completion.Summary, StringComparison.Ordinal);
+        Assert.Contains(rewardExplanation, resolution.Completion.Summary, StringComparison.Ordinal);
+        Assert.Contains(epilogue, resolution.Completion.Response.Response, StringComparison.Ordinal);
+        Assert.Contains(rewardExplanation, attempt.Feedback, StringComparison.Ordinal);
         Assert.Equal(before, after);
         Assert.True(File.Exists(Path.Combine(_rootPath, "client_profile", "qte_showcase_rewards.json")));
         AssertNoCampaignQteFiles();
@@ -1028,6 +1093,30 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public async Task DarenBrowserState_ExposesSharedEndingEpilogueAndRewardExplanation()
+    {
+        var state = await _web.StartDarenShowcaseAsync();
+        while (string.Equals(state.State, "Active", StringComparison.OrdinalIgnoreCase))
+        {
+            var activeAction = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
+            state = await _web.ResolveDarenShowcaseActionAsync(new DarenShowcaseActionRequest(activeAction.ActionId, "success"));
+        }
+
+        Assert.Equal("Completed", state.State);
+        Assert.NotNull(state.Ending);
+        Assert.NotNull(state.Completion);
+        var epilogue = RequiredStringProperty(state.Ending!, "Epilogue");
+        var rewardExplanation = RequiredStringProperty(state.Ending!, "RewardExplanation");
+
+        Assert.Equal("perfect_shadow", state.Ending!.TierId);
+        Assert.True(state.Ending.GrantsReward);
+        Assert.Contains(epilogue, state.Completion!.Summary, StringComparison.Ordinal);
+        Assert.Contains(rewardExplanation, state.Completion.Summary, StringComparison.Ordinal);
+        Assert.Contains("Черниль", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("будущ", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task DarenBrowserState_UsesExistingQteProjectionAndCSharpRewardAuthority()
     {
         var intro = await _web.BuildDarenShowcaseStateAsync();
@@ -1058,6 +1147,9 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var qteExample = ReadRepoFile("Examples", "E_CLI_QTE_Offer.txt");
         var mainMenuSource = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.MainMenu.cs");
         var darenSource = ReadRepoFile("BookOfEternityClient", "Services", "QteSceneService.Daren.cs");
+        var rewardSource = ReadRepoFile("BookOfEternityClient", "Services", "DarenQteRewardProfileService.cs");
+        var browserServiceSource = ReadRepoFile("BookOfEternityClient", "WebUi", "QteWebInteractionService.cs");
+        var frontendDarenSource = ReadRepoFile("BookOfEternityClient.WebFrontend", "src", "components", "DarenShowcaseView.tsx");
 
         foreach (var requiredText in new[]
         {
@@ -1083,6 +1175,15 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.DoesNotContain("/api/", darenSource, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("DTO", darenSource, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("manual-grade", darenSource, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Epilogue", rewardSource, StringComparison.Ordinal);
+        Assert.Contains("RewardExplanation", rewardSource, StringComparison.Ordinal);
+        Assert.Contains("Epilogue", browserServiceSource, StringComparison.Ordinal);
+        Assert.Contains("RewardExplanation", browserServiceSource, StringComparison.Ordinal);
+        Assert.Contains("epilogue", frontendDarenSource, StringComparison.Ordinal);
+        Assert.Contains("rewardExplanation", frontendDarenSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("лучший результат сохранён", frontendDarenSource, StringComparison.OrdinalIgnoreCase);
+        foreach (var forbidden in new[] { "shadow_on_the_run", "broken_trail", "clean_heist", "perfect_shadow", "no_reward_failure" })
+            Assert.DoesNotContain(forbidden, frontendDarenSource, StringComparison.OrdinalIgnoreCase);
 
         var productionGrantCallSites = Directory
             .EnumerateFiles(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient"), "*.cs", SearchOption.AllDirectories)
@@ -1093,6 +1194,23 @@ public sealed class DarenQteShowcaseTests : IDisposable
             .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
             .ToArray();
         Assert.Equal(["BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs", "BookOfEternityClient/Services/DarenQteRewardProfileService.cs"], productionGrantCallSites);
+
+        var productionRewardProfilePaths = Directory
+            .EnumerateFiles(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient"), "*.cs", SearchOption.AllDirectories)
+            .Where(path => !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+            .Where(path => !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+            .Where(path => File.ReadAllText(path).Contains("qte_showcase_rewards.json", StringComparison.Ordinal))
+            .Select(path => Path.GetRelativePath(TestRepoPaths.RepoRoot, path).Replace('\\', '/'))
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        Assert.Equal(["BookOfEternityClient/Services/DarenQteRewardProfileService.cs"], productionRewardProfilePaths);
+
+        foreach (var source in new[] { darenSource, rewardSource, browserServiceSource })
+        {
+            Assert.DoesNotContain("DarenEndingState", source, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("CampaignState", source, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("pending_daren", source, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     private async Task WriteClientProfileAsync(string json)
@@ -1135,6 +1253,29 @@ public sealed class DarenQteShowcaseTests : IDisposable
 
     private static string ReadRepoFile(params string[] relativeParts) =>
         File.ReadAllText(Path.Combine(new[] { TestRepoPaths.RepoRoot }.Concat(relativeParts).ToArray()));
+
+    private static IReadOnlyList<(string OutcomeId, DarenEndingResult Ending)> RequiredDarenEndingOutcomes() =>
+    [
+        ("no_reward_failure", DarenQteRewardProfileService.ResolveEnding(reachedHideout: false, normalizedScore: 100)),
+        ("shadow_on_the_run", DarenQteRewardProfileService.ResolveEnding(reachedHideout: true, normalizedScore: 40)),
+        ("broken_trail", DarenQteRewardProfileService.ResolveEnding(reachedHideout: true, normalizedScore: 55)),
+        ("clean_heist", DarenQteRewardProfileService.ResolveEnding(reachedHideout: true, normalizedScore: 75)),
+        ("perfect_shadow", DarenQteRewardProfileService.ResolveEnding(reachedHideout: true, normalizedScore: 90))
+    ];
+
+    private static string RequiredStringProperty(object instance, string propertyName)
+    {
+        var property = instance.GetType().GetProperty(propertyName);
+        Assert.True(property != null, $"{instance.GetType().Name} must expose shared string property '{propertyName}'.");
+        Assert.True(
+            property!.PropertyType == typeof(string),
+            $"{instance.GetType().Name}.{propertyName} must be a string property.");
+
+        var value = property.GetValue(instance) as string;
+        Assert.False(string.IsNullOrWhiteSpace(value),
+            $"{instance.GetType().Name}.{propertyName} must be non-empty.");
+        return value.Trim();
+    }
 
     private static JsonObject LoadDarenNarrativeSpine()
     {

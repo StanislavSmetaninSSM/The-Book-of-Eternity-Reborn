@@ -203,15 +203,24 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
       {state.completion && (
         <article className="summary-card">
           <h3>{toPlayerFacingText(state.ending?.displayName, 'Вылазка завершена')}</h3>
-          <p>{toPlayerFacingText(state.completion.summary, 'Итог вылазки записан.')}</p>
+          {state.ending ? (
+            <>
+              <p>{toPlayerFacingText(state.ending.epilogue, state.completion.summary)}</p>
+              <p className="composer-notice">{toPlayerFacingText(state.ending.rewardExplanation, 'Итог Дарена записан для будущей новой игры.')}</p>
+            </>
+          ) : (
+            <p>{toPlayerFacingText(state.completion.summary, 'Итог вылазки записан.')}</p>
+          )}
           {state.ending && (
             <p className="composer-notice">
               {state.ending.grantsReward
-                ? `${state.ending.displayName}: +${state.ending.inkFeatherBonus} Чернильных Перьев для будущей новой игры; лучший результат сохранён.`
+                ? `${state.ending.displayName}: счёт ${state.ending.normalizedScore}/100, будущий бонус ${state.ending.inkFeatherBonus} Чернильных Перьев.`
                 : 'Безопасный итог не достигнут, постоянная награда не записана.'}
             </p>
           )}
-          {state.ending?.rewardMessage && <p>{toPlayerFacingText(state.ending.rewardMessage, 'Итог Дарена сохранён.')}</p>}
+          {state.ending?.rewardMessage && state.ending.rewardMessage !== state.ending.rewardExplanation && (
+            <p>{toPlayerFacingText(state.ending.rewardMessage, 'Итог Дарена сохранён.')}</p>
+          )}
           {renderScoreSummary(state.completion.scoreSummary)}
           <div className="phase-chip-grid">
             <button type="button" onClick={() => void retryShowcase()} disabled={busyKey !== null}>Повторить вылазку</button>

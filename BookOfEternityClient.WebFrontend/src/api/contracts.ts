@@ -1115,6 +1115,8 @@ export interface DarenShowcaseEndingDto {
   normalizedScore: number;
   inkFeatherBonus: number;
   grantsReward: boolean;
+  epilogue: string;
+  rewardExplanation: string;
   rewardMessage: string;
 }
 

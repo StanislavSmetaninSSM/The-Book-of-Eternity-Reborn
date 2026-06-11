@@ -92,7 +92,7 @@ public sealed partial class QteSceneService
                 .RecordCompletionAsync(ending, completedAtUtc ?? DateTime.UtcNow);
             var rewardMessage = ending.GrantsReward
                 ? profileResult.Message
-                : ending.Summary;
+                : ending.RewardExplanation;
             var summary = BuildDarenCompletionSummary(ending, rewardMessage, scoreSummary);
 
             resolution = new QteActionResolution
@@ -110,7 +110,7 @@ public sealed partial class QteSceneService
                     Summary = summary,
                     Response = new GameResponse
                     {
-                        Response = $"{ending.DisplayName}. {ending.Summary} {rewardMessage}"
+                        Response = $"{ending.DisplayName}. {ending.Summary} {ending.Epilogue} {rewardMessage}"
                     },
                     ScoreSummary = scoreSummary
                 }
@@ -124,9 +124,11 @@ public sealed partial class QteSceneService
                 ending.NormalizedScore,
                 ending.InkFeatherBonus,
                 ending.GrantsReward,
+                ending.Epilogue,
+                rewardMessage,
                 rewardMessage);
             attempt.FeedbackTitle = ending.DisplayName;
-            attempt.Feedback = $"{ending.Summary} {rewardMessage}";
+            attempt.Feedback = $"{ending.Summary} {ending.Epilogue} {rewardMessage}";
         }
         else
         {
@@ -756,7 +758,7 @@ public sealed partial class QteSceneService
     {
         var rank = ending.GrantsReward ? scoreSummary?.Rank?.Label : ending.DisplayName;
         var rankText = string.IsNullOrWhiteSpace(rank) ? ending.DisplayName : rank;
-        return $"{ending.DisplayName}: {ending.Summary} Счёт вылазки {ending.NormalizedScore}/100. Ранг: {rankText}. {rewardMessage}";
+        return $"{ending.DisplayName}: {ending.Summary} {ending.Epilogue} Счёт вылазки {ending.NormalizedScore}/100. Ранг: {rankText}. {rewardMessage}";
     }
 
     private static QteScoreSummary? BuildDarenFinalScoreSummary(
@@ -788,7 +790,11 @@ public sealed partial class QteSceneService
             DarenRewardNotice
         };
         if (attempt.Ending is { } ending)
-            lines.Add($"Итог: {ending.DisplayName}, счёт {ending.NormalizedScore}/100, бонус +{ending.InkFeatherBonus}.");
+        {
+            lines.Add($"Итог: {ending.DisplayName}, счёт {ending.NormalizedScore}/100.");
+            lines.Add(ending.Epilogue);
+            lines.Add(ending.RewardExplanation);
+        }
 
         AnsiConsole.Write(new Panel(new Markup(Markup.Escape(string.Join("\n", lines))))
         {
@@ -831,6 +837,8 @@ public sealed partial class QteSceneService
         int NormalizedScore,
         int InkFeatherBonus,
         bool GrantsReward,
+        string Epilogue,
+        string RewardExplanation,
         string RewardMessage);
 
     private const string DarenBoundaryNotice =
