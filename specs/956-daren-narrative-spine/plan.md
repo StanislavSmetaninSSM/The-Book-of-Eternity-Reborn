@@ -1,8 +1,8 @@
 # Implementation Plan: Daren Narrative Spine and Scene Map
 
-**Branch**: `work/956-daren-narrative-spine`  
-**Spec**: `specs/956-daren-narrative-spine/spec.md`  
-**Source Issues**: [#956](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/956), parent [#955](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/955), related [#919](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/919)  
+**Branch**: `work/956-daren-narrative-spine`
+**Spec**: `specs/956-daren-narrative-spine/spec.md`
+**Source Issues**: [#956](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/956), parent [#955](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/955), related [#919](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/919)
 **Date**: 2026-06-11
 
 ## Summary
@@ -22,7 +22,7 @@ Create a durable Daren QTE narrative spine/scene-map authority and tests that ke
 
 ### New/Modified Product Artifact
 
-- **Likely create**: `BookOfEternityClient/Content/DarenQteNarrativeSpine.json`  
+- **Likely create**: `BookOfEternityClient/Content/DarenQteNarrativeSpine.json`
   Responsibility: durable machine-readable narrative scene-map authority for #956. JSON keeps structure easy to validate from tests and easy for future agents to read.
 
   Expected shape:
@@ -35,12 +35,12 @@ Create a durable Daren QTE narrative spine/scene-map authority and tests that ke
   - `beats[]` with `beatId`, `phase`, `title`, `dramaticPurpose`, `playerGoal`, `qteType`, `sceneFraming`, `branchPoints`, `consequenceHooks`, `carryForward`, `futureIssueLinks`, and `pacingMinutes`.
   - `handoffNotes` for #957-#961.
 
-- **Maybe modify**: `BookOfEternityClient/Services/QteSceneService.Daren.cs`  
+- **Maybe modify**: `BookOfEternityClient/Services/QteSceneService.Daren.cs`
   Only if a tiny source constant/path helper is useful. Do not move route authority or change reward logic unless required by tests.
 
 ### Tests
 
-- **Modify**: `BookOfEternityClient.Tests/DarenQteShowcaseTests.cs`  
+- **Modify**: `BookOfEternityClient.Tests/DarenQteShowcaseTests.cs`
   Add focused tests that load the scene-map JSON and compare it to `QteSceneService.GetDarenShowcaseRoute()`.
 
   Required assertions:
@@ -56,7 +56,7 @@ Create a durable Daren QTE narrative spine/scene-map authority and tests that ke
 
 ### Spec Kit
 
-- **Modify**: `specs/956-daren-narrative-spine/tasks.md`  
+- **Modify**: `specs/956-daren-narrative-spine/tasks.md`
   Codex should record RED/GREEN evidence for completed implementation tasks but leave Hermes-owned review/PR/merge/issue closure tasks open.
 
 - **Keep aligned**: `specs/956-daren-narrative-spine/spec.md`, `plan.md`, `contracts/daren-narrative-spine.md`.
@@ -110,16 +110,16 @@ Run `npm run verify --prefix BookOfEternityClient.WebFrontend` only if React/fro
 
 ## Risk and Mitigation
 
-- **Risk**: JSON artifact becomes stale when route beats change.  
+- **Risk**: JSON artifact becomes stale when route beats change.
   **Mitigation**: tests compare artifact beat ids and QTE types to `GetDarenShowcaseRoute()`.
 
-- **Risk**: This slice accidentally implements broad #957-#961 content.  
+- **Risk**: This slice accidentally implements broad #957-#961 content.
   **Mitigation**: tasks and tests focus on scene-map authority and structure; future issue links are handoff notes, not completed content.
 
-- **Risk**: New documentation changes GM-authored QTE contract expectations.  
+- **Risk**: New documentation changes GM-authored QTE contract expectations.
   **Mitigation**: keep Daren showcase explicitly client-owned and do not change `Rules/Block_CLI_QTE.txt`, examples, pending/control files, reward profile contract, or normal campaign QTE authoring unless a failing test shows existing docs must be clarified.
 
-- **Risk**: Browser and console diverge.  
+- **Risk**: Browser and console diverge.
   **Mitigation**: scene-map is shared and tested against C# route authority; no browser-only story copy should be added in this slice.
 
 ## Spec Kit Applicability

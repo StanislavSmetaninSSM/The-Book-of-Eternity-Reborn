@@ -1,8 +1,8 @@
 # Feature Specification: Daren Narrative Spine and Scene Map
 
-**Feature Branch**: `work/956-daren-narrative-spine`  
-**Created**: 2026-06-11  
-**Status**: Draft for autonomous implementation  
+**Feature Branch**: `work/956-daren-narrative-spine`
+**Created**: 2026-06-11
+**Status**: Draft for autonomous implementation
 **Source Issues**: [#956](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/956), parent [#955](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/955), base scenario [#919](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/919)
 
 ## Source Issues & Scope

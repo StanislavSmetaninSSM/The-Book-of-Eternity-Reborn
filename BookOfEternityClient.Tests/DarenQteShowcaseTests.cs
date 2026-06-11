@@ -42,6 +42,42 @@ public sealed class DarenQteShowcaseTests : IDisposable
         "LockPinSet"
     ];
 
+    private static readonly string[] RequiredNarrativeArcStages =
+    [
+        "preparation",
+        "approach",
+        "infiltration",
+        "reconnaissance",
+        "security",
+        "complication",
+        "theft",
+        "alarm",
+        "chase",
+        "hideout",
+        "epilogue"
+    ];
+
+    private static readonly string[] RequiredNarrativeCastSlots =
+    [
+        "contact_informant",
+        "estate_staff_guard",
+        "magical_security_authority",
+        "pursuit_figure"
+    ];
+
+    private static readonly int[] FutureDarenIssueIds = [957, 958, 959, 960, 961];
+
+    private static readonly string[] ForbiddenStoryCopyTerms =
+    [
+        "debug",
+        "tutorial",
+        "endpoint",
+        "DTO",
+        "manual-grade",
+        "Spec Kit",
+        "QTE"
+    ];
+
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
     private readonly QteSceneService _qte;
@@ -97,6 +133,115 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal(RequiredQteTypes.OrderBy(type => type, StringComparer.OrdinalIgnoreCase), routeTypes);
         Assert.Equal("approach_manor", route.Offer.StartChapterId);
         Assert.Contains("Дарен", route.Offer.Title, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void DarenNarrativeSpine_ExistsAndDeclaresRouteIssuesAndPlaytime()
+    {
+        var spine = LoadDarenNarrativeSpine();
+
+        Assert.Equal(1, RequiredInt(spine, "schemaVersion"));
+        Assert.Equal("daren_qte_showcase", RequiredString(spine, "routeId"));
+        Assert.Contains(956, RequiredIntArray(spine, "sourceIssues"));
+        Assert.Contains(955, RequiredIntArray(spine, "sourceIssues"));
+        Assert.Contains(919, RequiredIntArray(spine, "sourceIssues"));
+
+        var playtime = RequiredObject(spine, "targetPlaytimeMinutes");
+        Assert.Equal(20, RequiredInt(playtime, "min"));
+        Assert.Equal(30, RequiredInt(playtime, "max"));
+    }
+
+    [Fact]
+    public void DarenNarrativeSpine_BeatsMatchSharedRouteOrderAndQteTypes()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var routeTypesByBeat = route.Offer.Chapters.ToDictionary(
+            chapter => chapter.ChapterId,
+            chapter => Assert.Single(chapter.Actions).Check.Type,
+            StringComparer.OrdinalIgnoreCase);
+        var spineBeats = RequiredObjectArray(LoadDarenNarrativeSpine(), "beats");
+
+        var spineBeatIds = spineBeats.Select(beat => RequiredString(beat, "beatId")).ToArray();
+        Assert.Equal(route.Beats.Select(beat => beat.BeatId), spineBeatIds);
+        Assert.Equal(spineBeatIds.Length, spineBeatIds.Distinct(StringComparer.OrdinalIgnoreCase).Count());
+
+        foreach (var beat in spineBeats)
+        {
+            var beatId = RequiredString(beat, "beatId");
+            Assert.True(routeTypesByBeat.ContainsKey(beatId), $"Narrative spine beat '{beatId}' is not in the Daren route.");
+            Assert.Equal(routeTypesByBeat[beatId], RequiredString(beat, "qteType"));
+        }
+    }
+
+    [Fact]
+    public void DarenNarrativeSpine_BeatsDeclareNarrativeStructureAndConsequences()
+    {
+        foreach (var beat in RequiredObjectArray(LoadDarenNarrativeSpine(), "beats"))
+        {
+            var beatId = RequiredString(beat, "beatId");
+
+            foreach (var field in new[] { "phase", "title", "dramaticPurpose", "playerGoal", "sceneFraming" })
+                AssertStoryCopyLooksAuthored(beatId, field, RequiredString(beat, field));
+
+            foreach (var field in new[] { "branchPoints", "consequenceHooks", "carryForward" })
+            {
+                var values = RequiredStringArray(beat, field);
+                foreach (var value in values)
+                    AssertStoryCopyLooksAuthored(beatId, field, value);
+            }
+
+            var futureLinks = RequiredIntArray(beat, "futureIssueLinks");
+            Assert.All(futureLinks, issue => Assert.Contains(issue, FutureDarenIssueIds));
+            Assert.True(RequiredInt(beat, "pacingMinutes") > 0, $"Narrative spine beat '{beatId}' needs positive pacingMinutes.");
+        }
+    }
+
+    [Fact]
+    public void DarenNarrativeSpine_CoversArcCastHandoffAndSharedRuntimeBoundary()
+    {
+        var spine = LoadDarenNarrativeSpine();
+        var spineBeats = RequiredObjectArray(spine, "beats");
+        var beatIds = spineBeats
+            .Select(beat => RequiredString(beat, "beatId"))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        Assert.Equal(RequiredNarrativeArcStages, RequiredStringArray(spine, "arcStages"));
+        var beatPhaseText = string.Join(" | ", spineBeats.Select(beat => RequiredString(beat, "phase")));
+        foreach (var stage in RequiredNarrativeArcStages)
+            Assert.Contains(stage, beatPhaseText, StringComparison.OrdinalIgnoreCase);
+
+        var targetPlaytime = RequiredObject(spine, "targetPlaytimeMinutes");
+        var totalPacing = spineBeats.Sum(beat => RequiredInt(beat, "pacingMinutes"));
+        Assert.InRange(totalPacing, RequiredInt(targetPlaytime, "min"), RequiredInt(targetPlaytime, "max"));
+
+        var castSlots = RequiredObjectArray(spine, "castSlots");
+        foreach (var slotId in RequiredNarrativeCastSlots)
+        {
+            var slot = Assert.Single(castSlots, item =>
+                string.Equals(RequiredString(item, "slotId"), slotId, StringComparison.OrdinalIgnoreCase));
+            Assert.False(string.IsNullOrWhiteSpace(RequiredString(slot, "role")));
+            Assert.All(RequiredStringArray(slot, "plannedBeatIds"), plannedBeatId =>
+                Assert.Contains(plannedBeatId, beatIds));
+            Assert.Contains(958, RequiredIntArray(slot, "futureIssueLinks"));
+        }
+
+        var allFutureLinks = spineBeats
+            .SelectMany(beat => RequiredIntArray(beat, "futureIssueLinks"))
+            .Concat(castSlots.SelectMany(slot => RequiredIntArray(slot, "futureIssueLinks")))
+            .ToArray();
+        foreach (var issueId in FutureDarenIssueIds)
+            Assert.Contains(issueId, allFutureLinks);
+
+        var contractBoundaries = RequiredStringArray(spine, "contractBoundaries");
+        Assert.Contains(contractBoundaries, item => item.Contains("existing QTE route", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(contractBoundaries, item => item.Contains("console and browser", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(contractBoundaries, item => item.Contains("no new", StringComparison.OrdinalIgnoreCase) && item.Contains("runtime", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(contractBoundaries, item => item.Contains("no new QTE check type", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(contractBoundaries, item => item.Contains("no reward/profile", StringComparison.OrdinalIgnoreCase));
+
+        var handoffNotes = RequiredStringArray(spine, "handoffNotes");
+        foreach (var issueId in FutureDarenIssueIds)
+            Assert.Contains(handoffNotes, note => note.Contains($"#{issueId}", StringComparison.OrdinalIgnoreCase));
     }
 
     [Theory]
@@ -434,6 +579,103 @@ public sealed class DarenQteShowcaseTests : IDisposable
 
     private static string ReadRepoFile(params string[] relativeParts) =>
         File.ReadAllText(Path.Combine(new[] { TestRepoPaths.RepoRoot }.Concat(relativeParts).ToArray()));
+
+    private static JsonObject LoadDarenNarrativeSpine()
+    {
+        var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Content", "DarenQteNarrativeSpine.json");
+        Assert.True(File.Exists(path), $"Missing Daren narrative spine artifact at {path}.");
+        return Assert.IsType<JsonObject>(JsonNode.Parse(File.ReadAllText(path)));
+    }
+
+    private static JsonObject RequiredObject(JsonObject root, string propertyName)
+    {
+        Assert.True(root[propertyName] is JsonObject, $"Expected '{propertyName}' to be an object.");
+        return (JsonObject)root[propertyName]!;
+    }
+
+    private static IReadOnlyList<JsonObject> RequiredObjectArray(JsonObject root, string propertyName)
+    {
+        var array = RequiredArray(root, propertyName);
+        var values = new List<JsonObject>(array.Count);
+        for (var index = 0; index < array.Count; index++)
+        {
+            Assert.True(array[index] is JsonObject, $"Expected '{propertyName}[{index}]' to be an object.");
+            values.Add((JsonObject)array[index]!);
+        }
+
+        Assert.NotEmpty(values);
+        return values;
+    }
+
+    private static IReadOnlyList<string> RequiredStringArray(JsonObject root, string propertyName)
+    {
+        var array = RequiredArray(root, propertyName);
+        var values = new List<string>(array.Count);
+        for (var index = 0; index < array.Count; index++)
+        {
+            Assert.True(array[index] is JsonValue, $"Expected '{propertyName}[{index}]' to be a string.");
+            var value = (JsonValue)array[index]!;
+            Assert.True(value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text),
+                $"Expected '{propertyName}[{index}]' to be a non-empty string.");
+            values.Add(text.Trim());
+        }
+
+        Assert.NotEmpty(values);
+        return values;
+    }
+
+    private static IReadOnlyList<int> RequiredIntArray(JsonObject root, string propertyName)
+    {
+        var array = RequiredArray(root, propertyName);
+        var values = new List<int>(array.Count);
+        for (var index = 0; index < array.Count; index++)
+        {
+            Assert.True(array[index] is JsonValue, $"Expected '{propertyName}[{index}]' to be an integer.");
+            var value = (JsonValue)array[index]!;
+            Assert.True(value.TryGetValue<int>(out var number), $"Expected '{propertyName}[{index}]' to be an integer.");
+            values.Add(number);
+        }
+
+        Assert.NotEmpty(values);
+        return values;
+    }
+
+    private static JsonArray RequiredArray(JsonObject root, string propertyName)
+    {
+        Assert.True(root[propertyName] is JsonArray, $"Expected '{propertyName}' to be an array.");
+        return (JsonArray)root[propertyName]!;
+    }
+
+    private static string RequiredString(JsonObject root, string propertyName)
+    {
+        Assert.True(root[propertyName] is JsonValue, $"Expected '{propertyName}' to be a string.");
+        var value = (JsonValue)root[propertyName]!;
+        Assert.True(value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text),
+            $"Expected '{propertyName}' to be a non-empty string.");
+        return text.Trim();
+    }
+
+    private static int RequiredInt(JsonObject root, string propertyName)
+    {
+        Assert.True(root[propertyName] is JsonValue, $"Expected '{propertyName}' to be an integer.");
+        var value = (JsonValue)root[propertyName]!;
+        Assert.True(value.TryGetValue<int>(out var number), $"Expected '{propertyName}' to be an integer.");
+        return number;
+    }
+
+    private static void AssertStoryCopyLooksAuthored(string beatId, string field, string value)
+    {
+        foreach (var forbidden in ForbiddenStoryCopyTerms)
+        {
+            Assert.DoesNotContain(
+                forbidden,
+                value,
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.True(value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length >= 3,
+            $"Narrative spine beat '{beatId}' field '{field}' should be authored copy, not a bare label.");
+    }
 
     public void Dispose()
     {
