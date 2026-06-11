@@ -69,6 +69,12 @@ internal static class ReadableInventoryDocumentShelfProjection
         if (string.IsNullOrWhiteSpace(normalized))
             return null;
 
+        var exactMatch = shelf.Items.FirstOrDefault(item =>
+            string.Equals(item.Selector, normalized, StringComparison.OrdinalIgnoreCase) ||
+            item.SelectionAliases.Any(alias => string.Equals(alias, normalized, StringComparison.OrdinalIgnoreCase)));
+        if (exactMatch is not null)
+            return exactMatch;
+
         if (int.TryParse(normalized, out var oneBasedIndex) &&
             oneBasedIndex >= 1 &&
             oneBasedIndex <= shelf.Items.Count)
@@ -76,9 +82,7 @@ internal static class ReadableInventoryDocumentShelfProjection
             return shelf.Items[oneBasedIndex - 1];
         }
 
-        return shelf.Items.FirstOrDefault(item =>
-            string.Equals(item.Selector, normalized, StringComparison.OrdinalIgnoreCase) ||
-            item.SelectionAliases.Any(alias => string.Equals(alias, normalized, StringComparison.OrdinalIgnoreCase)));
+        return null;
     }
 
     public static string FormatCommandArgument(string selector) =>

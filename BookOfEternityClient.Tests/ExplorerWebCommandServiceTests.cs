@@ -1261,6 +1261,53 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("item_text_updates", payload, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_Books_WithNumericStableDocumentId_PrefersSelectorOverShelfIndex()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Mortal World"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+        {
+          "items": [
+            {
+              "existedId": "doc_first_1",
+              "itemId": "doc_first_1",
+              "name": "Первая записка",
+              "type": "Документ",
+              "textContent": ["FIRST_SHELF_ROW_BODY_MARKER"]
+            },
+            {
+              "existedId": "doc_second_1",
+              "itemId": "doc_second_1",
+              "name": "Вторая записка",
+              "type": "Документ",
+              "textContent": ["SECOND_SHELF_ROW_BODY_MARKER"]
+            },
+            {
+              "existedId": "2",
+              "itemId": "2",
+              "name": "Письмо с номером",
+              "type": "Документ",
+              "textContent": ["NUMERIC_STABLE_ID_BODY_MARKER"]
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/books 2"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal("/books 2", result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Письмо с номером", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("NUMERIC_STABLE_ID_BODY_MARKER", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("SECOND_SHELF_ROW_BODY_MARKER", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Книжная полка", text, StringComparison.OrdinalIgnoreCase);
+    }
+
     private async Task SeedBooksReadingFlowStateAsync()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
