@@ -1676,6 +1676,49 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_NpcRichDetails_DefaultProjectionHidesInternalFieldsAndMasks()
+    {
+        await SeedNpcInternalLeakDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Contains("Видимый след в памяти", text, StringComparison.Ordinal);
+        Assert.Contains("Клятва у печати", text, StringComparison.Ordinal);
+        Assert.Contains("Получить ключ от боковой двери", text, StringComparison.Ordinal);
+
+        Assert.DoesNotContain("image_prompt", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("prompt-for-gm", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("internal", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("debug", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Dto", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/api/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("reward_serafina_secret", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("memory_serafina_debug", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("mask_serafina_false_face", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Образ доверенного архивариуса", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Скрывает связь с дозором", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Маска", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcMechanicsSection_LabelIncludesInventoryWhenInventoryRowsExist()
+    {
+        await SeedNpcMechanicsDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
+
+        var sectionTable = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
+        Assert.Contains(sectionTable.Rows, static row =>
+            row.Cells[0] == "Серафина" &&
+            row.Cells[1].Contains("Навыки", StringComparison.Ordinal) &&
+            row.Cells[1].Contains("инвентарь", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ExecuteAsync_NpcBundle_WithoutFiles_ShowsNotCreatedMessage()
     {
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
@@ -2722,6 +2765,99 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 "timeSpentMinutes": 30,
                 "totalTimeCostMinutes": 60
               }
+            }
+          ]
+        }
+        """);
+    }
+
+    private async Task SeedNpcInternalLeakDrilldownFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_serafina",
+              "name": "Серафина",
+              "personalQuests": [
+                {
+                  "questName": "Сделка на рассвете",
+                  "status": "Active",
+                  "description": "Серафина просит передать письмо без лишних свидетелей.",
+                  "rewards": {
+                    "displayName": "Получить ключ от боковой двери",
+                    "rewardId": "reward_serafina_secret",
+                    "image_prompt": "image_prompt should stay hidden",
+                    "prompt": "prompt-for-gm reward note",
+                    "debugNotes": "debug reward trace",
+                    "internalMemo": "internal reward memo",
+                    "dtoType": "NpcRewardDto",
+                    "apiPath": "/api/npcs/rewards"
+                  }
+                }
+              ],
+              "masks": [
+                {
+                  "maskId": "mask_serafina_false_face",
+                  "name": "Образ доверенного архивариуса",
+                  "concealedTruth": "Скрывает связь с дозором"
+                }
+              ],
+              "customStates": [
+                {
+                  "name": "Клятва у печати",
+                  "description": "Держит слово у северных ворот",
+                  "debugNotes": "debug custom state"
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_memory.json", """
+        {
+          "entries": [
+            {
+              "NPCId": "npc_serafina",
+              "memoryId": "memory_serafina_debug",
+              "summary": "Видимый след в памяти",
+              "sourcePath": "game_state/npcs/npc_memory.json",
+              "prompt": "prompt-for-gm memory note",
+              "debugNotes": "debug memory trace",
+              "internalMemo": "internal memory memo",
+              "dtoType": "NpcMemoryDto",
+              "apiPath": "/api/npcs/memory"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_masks.json", """
+        {
+          "entries": [
+            {
+              "NPCId": "npc_serafina",
+              "maskId": "mask_serafina_false_face",
+              "name": "Образ доверенного архивариуса",
+              "concealedTruth": "Скрывает связь с дозором"
+            }
+          ]
+        }
+        """);
+    }
+
+    private async Task SeedNpcMechanicsDrilldownFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_serafina",
+              "name": "Серафина",
+              "inventory": [
+                { "name": "Архивный ключ", "description": "Открывает боковую дверь." }
+              ]
             }
           ]
         }

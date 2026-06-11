@@ -306,12 +306,12 @@ internal static class NpcDetailSectionProjection
 
         sections.Add(new NpcDetailSection(
             "mechanics",
-            "Навыки / эффекты / снаряжение",
+            "Навыки / эффекты / инвентарь / снаряжение",
             FormatCount(rows.Count, "запись", "записи", "записей"),
             [
                 new UiTableBlock
                 {
-                    Title = $"{npcName} — Навыки / эффекты / снаряжение",
+                    Title = $"{npcName} — Навыки / эффекты / инвентарь / снаряжение",
                     Columns = ["Раздел", "Подробности"],
                     Rows = rows
                 }
@@ -327,13 +327,10 @@ internal static class NpcDetailSectionProjection
     {
         var rows = new List<UiTableRow>();
         AddNamedArrayRows(rows, "Карта судьбы", npc["fateCards"]);
-        AddNamedArrayRows(rows, "Маска", npc["masks"]);
         AddNamedArrayRows(rows, "Особое состояние", npc["customStates"]);
 
         foreach (var entry in CollectMatchingObjects(documents.Memory, npcId, npcName))
             rows.Add(new UiTableRow { Cells = ["Воспоминание", DescribeNodeValue(entry)] });
-        foreach (var entry in CollectMatchingObjects(documents.Masks, npcId, npcName))
-            rows.Add(new UiTableRow { Cells = ["Маска", DescribeNodeValue(entry)] });
         foreach (var entry in CollectMatchingObjects(documents.FateCards, npcId, npcName))
             rows.Add(new UiTableRow { Cells = ["Карта судьбы", DescribeNodeValue(entry)] });
         foreach (var entry in CollectMatchingObjects(documents.CustomStates, npcId, npcName))
@@ -557,41 +554,79 @@ internal static class NpcDetailSectionProjection
 
     private static string DescribeNodeValue(JsonNode? node)
     {
+        return string.Join("; ", DescribeNodeValues(node)
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Take(5));
+    }
+
+    private static IEnumerable<string> DescribeNodeValues(JsonNode? node)
+    {
         switch (node)
         {
             case null:
-                return string.Empty;
+                yield break;
             case JsonValue value:
-                return TryGetScalarString(value, out var text) ? text : string.Empty;
+                if (TryGetScalarString(value, out var text) && IsPlayerFacingScalar(text))
+                    yield return text.Trim();
+                yield break;
             case JsonArray array:
-                return string.Join(", ", array.Select(DescribeNodeValue).Where(static value => !string.IsNullOrWhiteSpace(value)));
+                foreach (var value in array.Select(DescribeNodeValue).Where(static value => !string.IsNullOrWhiteSpace(value)))
+                    yield return value;
+                yield break;
             case JsonObject obj:
-                var preferred = FirstNonEmpty(
-                    GetNodeString(obj, "displayName"),
-                    GetNodeString(obj, "questName"),
-                    GetNodeString(obj, "activityName"),
-                    GetNodeString(obj, "skillName"),
-                    GetNodeString(obj, "effectType"),
-                    GetNodeString(obj, "itemName"),
-                    GetNodeString(obj, "name"),
-                    GetNodeString(obj, "title"),
-                    GetNodeString(obj, "description"),
-                    GetNodeString(obj, "summary"));
-                var extras = obj
-                    .Where(static prop => !prop.Key.StartsWith("_", StringComparison.Ordinal))
-                    .Where(static prop => !IdentityFieldNames.Contains(prop.Key))
-                    .Select(static prop => DescribeNodeValue(prop.Value))
-                    .Where(static value => !string.IsNullOrWhiteSpace(value))
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
-                    .Take(4)
-                    .ToList();
-                if (!string.IsNullOrWhiteSpace(preferred))
-                    extras.Insert(0, preferred);
+                foreach (var propertyName in PlayerFacingFieldNames)
+                {
+                    if (!obj.TryGetPropertyValue(propertyName, out var value))
+                        continue;
 
-                return string.Join("; ", extras.Distinct(StringComparer.OrdinalIgnoreCase));
+                    foreach (var described in DescribeNodeValues(value))
+                        yield return described;
+                }
+
+                foreach (var propertyName in PlayerFacingContainerFieldNames)
+                {
+                    if (!obj.TryGetPropertyValue(propertyName, out var value))
+                        continue;
+
+                    foreach (var described in DescribeNodeValues(value))
+                        yield return described;
+                }
+
+                yield break;
             default:
-                return string.Empty;
+                yield break;
         }
+    }
+
+    private static bool IsPlayerFacingScalar(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return false;
+
+        var value = text.Trim();
+        var lower = value.ToLowerInvariant();
+        if (lower.Contains("image_prompt", StringComparison.Ordinal) ||
+            lower.Contains("prompt-for-gm", StringComparison.Ordinal) ||
+            lower.Contains("/api/", StringComparison.Ordinal) ||
+            lower.Contains("game_state/", StringComparison.Ordinal) ||
+            lower.Contains(".json", StringComparison.Ordinal) ||
+            lower.Contains("dto", StringComparison.Ordinal) ||
+            lower.Contains("debug", StringComparison.Ordinal) ||
+            lower.Contains("internal", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return !IsLikelyRawIdentifier(value);
+    }
+
+    private static bool IsLikelyRawIdentifier(string value)
+    {
+        if (!value.Contains('_', StringComparison.Ordinal))
+            return false;
+
+        return value.All(static ch => ch is '_' or '-' || char.IsAsciiLetterOrDigit(ch));
     }
 
     private static string GetNpcId(JsonObject npc) =>
@@ -698,15 +733,75 @@ internal static class NpcDetailSectionProjection
         return $"{count} {suffix}";
     }
 
-    private static readonly HashSet<string> IdentityFieldNames = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "NPCId",
-        "npcId",
-        "id",
-        "NPCName",
-        "npcName",
-        "name"
-    };
+    private static readonly string[] PlayerFacingFieldNames =
+    [
+        "displayName",
+        "questName",
+        "activityName",
+        "skillName",
+        "effectName",
+        "effectType",
+        "itemName",
+        "name",
+        "title",
+        "description",
+        "summary",
+        "narrativeSummary",
+        "status",
+        "activeState",
+        "relationshipStatus",
+        "relationshipLevel",
+        "currentReputation",
+        "cap",
+        "lockReason",
+        "breakthroughHint",
+        "value",
+        "count",
+        "quantity",
+        "duration",
+        "condition",
+        "progress",
+        "rank",
+        "tier",
+        "type",
+        "slot",
+        "itemType",
+        "rarity",
+        "reason",
+        "failureConsequences",
+        "questBackground",
+        "emotionalImpact",
+        "relationshipChange"
+    ];
+
+    private static readonly string[] PlayerFacingContainerFieldNames =
+    [
+        "item",
+        "itemUpdate",
+        "items",
+        "equipment",
+        "equippedItems",
+        "skill",
+        "skills",
+        "skillChanges",
+        "effect",
+        "effects",
+        "effectChanges",
+        "relationshipData",
+        "relationshipLock",
+        "objectives",
+        "rewards",
+        "reward",
+        "bonuses",
+        "traits",
+        "states",
+        "customStates",
+        "memories",
+        "activityUpdate",
+        "currentActivity",
+        "completedActivities",
+        "personalQuests"
+    ];
 }
 
 internal sealed record NpcDetailProjection(

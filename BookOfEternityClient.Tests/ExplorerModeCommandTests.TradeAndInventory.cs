@@ -50,6 +50,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                       choice.Contains("1 активность", StringComparison.Ordinal));
         Assert.DoesNotContain(sectionPrompt.Choices,
             choice => choice.Contains("Инвентарь", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(sectionPrompt.Choices,
+            choice => choice.Contains("← Закрыть разделы НПС", StringComparison.Ordinal));
+        Assert.DoesNotContain(sectionPrompt.Choices,
+            choice => choice.Contains("← К списку НПС", StringComparison.Ordinal));
     }
 
     [Fact]

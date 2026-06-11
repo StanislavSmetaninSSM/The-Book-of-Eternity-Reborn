@@ -935,7 +935,7 @@ private async Task ShowNPCs()
             var choices = sections
                 .Select(section => ((NpcDetailSection?)section, GameInterface.SafePromptChoice(section.ChoiceLabel)))
                 .ToList();
-            choices.Add((null, "← К списку НПС"));
+            choices.Add((null, "← Закрыть разделы НПС"));
 
             var selected = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold purple]Разделы НПС: {GameInterface.EscapeMarkup(npcName)}[/]")
