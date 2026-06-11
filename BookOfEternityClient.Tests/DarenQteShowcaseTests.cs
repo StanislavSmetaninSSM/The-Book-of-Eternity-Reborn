@@ -887,6 +887,79 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenWardStewardParley_ReadsAsRenaraWardDialoguePageWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "ward_steward_parley");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "ward_steward_parley");
+        var text = chapter.Narrative?.Trim() ?? "";
+
+        Assert.Equal("Голос Ренары", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("ward_steward_parley_action", action.ActionId);
+        Assert.Equal("PrecisionChoice", action.Check.Type);
+        Assert.Equal(Characteristics.Wisdom, action.Check.PrimaryCharacteristic);
+        Assert.Equal(4, action.Check.BaseDifficulty);
+        Assert.Equal("Ответить Ренаре Вардовой", action.Label);
+        Assert.Equal("physical_pressure", action.Routing.Success.NextChapterId);
+        Assert.Equal("physical_pressure", action.Routing.Partial.NextChapterId);
+        Assert.Equal("physical_pressure", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal("false_seal", RequiredString(config, "correctChoiceId"));
+        var choices = RequiredObjectArray(config, "choices");
+        Assert.Equal(["false_seal", "promise_return", "mock_house"], choices.Select(choice => RequiredString(choice, "id")));
+        Assert.Equal(["success", "partial", "fail"], choices.Select(choice => RequiredString(choice, "grade")));
+        Assert.Equal(["Назвать ложную печать", "Пообещать возврат", "Спорить с домом"], choices.Select(choice => RequiredString(choice, "label")));
+
+        Assert.True(text.Length >= 1500,
+            "Daren ward_steward_parley narrative should be a substantial Renara ward-dialogue page, not a compact synopsis.");
+        Assert.True(CountSentences(text) >= 12,
+            "Daren ward_steward_parley narrative should unfold across a magical-security conversation, not two briefing sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 5,
+            "Daren ward_steward_parley narrative should keep Daren as the active point-of-view protagonist.");
+        Assert.True(CountOccurrences(text, "Ренар") >= 3,
+            "Daren ward_steward_parley narrative should personify Renara Wardova beyond a single mention.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("extinguished rune and glass carry-forward", [["погас", "гас"], ["рун"], ["стекл", "футляр"], ["син", "холод"]]),
+            ("Renara as ward authority", [["Ренар"], ["Вардов", "вард"], ["управ", "хозяйк", "смотрител", "сторож"], ["печать", "защит"]]),
+            ("voice reflection and embodied pressure", [["голос"], ["отраж", "лиц", "силуэт", "стекл"], ["дав", "давлен", "холод", "шеп"], ["дом"]]),
+            ("Daren observation body and intent", [["Дарен"], ["ладон", "пальц", "рук"], ["дых", "вдох", "выдох"], ["смотр", "вид", "замет"], ["реш", "выбр", "подобр", "искал"]]),
+            ("question answer dialogue pressure", [["спрос", "вопрос", "зачем"], ["ответ", "отвеч", "сказал", "произн"], ["молч", "усып", "унять"], ["голос", "имя", "чуж"]]),
+            ("false seal strategy and house-silencing stakes", [["ложн", "стар", "трещ", "провер"], ["печать"], ["сигнал", "тревог"], ["дом"], ["посох"]]),
+            ("PrecisionChoice lead-in toward physical pressure", [["назвать", "пообещ", "спор", "выб"], ["Ренар"], ["ответ"], ["футляр", "ниша", "решет", "посох"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"ward_steward_parley full-page {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 0),
+            ("loot", 2),
+            ("pursuit_control", 3),
+            ("evidence", -2),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 0),
+            ("loot", 1),
+            ("pursuit_control", 1),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -2),
+            ("pursuit_control", -3),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("ward_steward_parley full-page narrative", text);
+    }
+
+    [Fact]
     public void DarenActionResultText_ReadsAsTransitionProse()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -2024,7 +2097,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             string.Equals(chapterId, "stealth_crossing", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "guard_interrogation", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "lock_pick", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(chapterId, "rune_memory", StringComparison.OrdinalIgnoreCase)
+            string.Equals(chapterId, "rune_memory", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "ward_steward_parley", StringComparison.OrdinalIgnoreCase)
             ? 3600
             : 520;
         Assert.InRange(text.Length, 140, maxLength);
