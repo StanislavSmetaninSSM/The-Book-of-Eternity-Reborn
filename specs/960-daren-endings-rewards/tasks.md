@@ -50,7 +50,7 @@
 
 ## Phase 4: Hermes-Owned Review, PR, Merge, Closure
 
-- [ ] T025 Independent review validates #960 acceptance, #955/#956/#957/#958/#959/#919 boundaries, shared ending data, unchanged reward mechanics, browser/console parity, and no accidental #961 broad content-quality work.
+- [x] T025 Independent review validates #960 acceptance, #955/#956/#957/#958/#959/#919 boundaries, shared ending data, unchanged reward mechanics, browser/console parity, and no accidental #961 broad content-quality work. Evidence: first independent review at `E:/Games/codex-runs/20260611-210027-boe-960-daren-endings-rewards-finalreview` returned `CHANGES_REQUIRED` for saved-best future reward presentation; revision commit `af17f318f7704e134df912c66bab21d818ff3758` fixed the presentation and upgraded Daren ending/reward prose; second review at `E:/Games/codex-runs/20260611-213208-boe-960-daren-endings-rewards-v2review` returned `CHANGES_REQUIRED` for an insufficient lower-replay regression; follow-up commit `cd896301401dcb83f6e2de3cc398f1ef037c991b` strengthened the regression to assert the future-reward completion line uses saved best tier/amount. Final independent review at `E:/Games/codex-runs/20260611-214121-boe-960-daren-endings-rewards-v3review` returned `APPROVED`, blocking findings `None`, after checking both prior blockers, #960 acceptance, shared C#/browser data, #919 reward mechanics, Spec Kit artifacts, and scope/source guards.
 - [ ] T026 Create PR with local-gated verification evidence and safe closing wording for #960.
 - [ ] T027 Squash-merge to `main`, verify PR merged and #960 closed/completed, post evidence comment, remove/restore temporary labels as appropriate, and clean up worktree/branches.
 
