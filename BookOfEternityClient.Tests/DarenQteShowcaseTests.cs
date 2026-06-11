@@ -818,6 +818,75 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenRuneMemory_ReadsAsRuneWardMemoryPageWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "rune_memory");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "rune_memory");
+        var text = chapter.Narrative?.Trim() ?? "";
+
+        Assert.Equal("Руны на дверце", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("rune_memory_action", action.ActionId);
+        Assert.Equal("PatternMemory", action.Check.Type);
+        Assert.Equal(Characteristics.Perception, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Equal("Повторить узор защитных рун", action.Label);
+        Assert.Equal("ward_steward_parley", action.Routing.Success.NextChapterId);
+        Assert.Equal("ward_steward_parley", action.Routing.Partial.NextChapterId);
+        Assert.Equal("ward_steward_parley", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal(["q", "w", "e", "space"], RequiredStringArray(config, "alphabet"));
+        Assert.Equal(4, RequiredInt(config, "sequenceLength"));
+        Assert.Equal(2400, RequiredInt(config, "revealMs"));
+        Assert.Equal(6500, RequiredInt(config, "inputTimeoutMs"));
+        Assert.Equal(1, RequiredInt(config, "allowedMistakes"));
+
+        Assert.True(text.Length >= 1500,
+            "Daren rune_memory narrative should be a substantial rune-ward memory page, not a compact synopsis.");
+        Assert.True(CountSentences(text) >= 12,
+            "Daren rune_memory narrative should unfold across a real magical-security scene, not two briefing sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 5,
+            "Daren rune_memory narrative should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("case door glass and cold blue runes", [["футляр"], ["дверц", "стекл"], ["син", "голуб"], ["рун"]]),
+            ("magical ward and watchful house pressure", [["защит", "печат", "замок", "вард"], ["дом"], ["смотр", "слуш", "наблюд", "запом"]]),
+            ("Daren eyes breath memory and body craft", [["глаз", "век", "зрач", "взгляд"], ["дых", "вдох", "выдох"], ["памят", "запом", "счит"], ["пальц", "ладон", "рук", "плеч"]]),
+            ("alarm trace guard stakes before theft", [["тревог", "сигнал"], ["след", "улик", "страж", "караул", "Лукьян"], ["посох", "краж"]]),
+            ("PatternMemory lead-in through ordered rune repetition", [["узор", "последователь", "знак"], ["повтор", "перелож", "назов"], ["поряд", "ошиб"], ["руна"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"rune_memory full-page {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 0),
+            ("loot", 3),
+            ("pursuit_control", 0),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 0),
+            ("loot", 1),
+            ("pursuit_control", 0),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -3),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("rune_memory full-page narrative", text);
+    }
+
+    [Fact]
     public void DarenActionResultText_ReadsAsTransitionProse()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -1954,7 +2023,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             string.Equals(chapterId, "gadget_infiltration", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "stealth_crossing", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "guard_interrogation", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(chapterId, "lock_pick", StringComparison.OrdinalIgnoreCase)
+            string.Equals(chapterId, "lock_pick", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "rune_memory", StringComparison.OrdinalIgnoreCase)
             ? 3600
             : 520;
         Assert.InRange(text.Length, 140, maxLength);
