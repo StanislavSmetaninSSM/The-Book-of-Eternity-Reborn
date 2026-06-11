@@ -473,6 +473,7 @@
     "#958 should use the cast slots for dialogue and NPC reactions without creating a separate route.",
     "#959 should expand branch and consequence text from the hooks already listed here.",
     "#960 should derive ending variations from the accumulated suspicion, evidence, loot, pursuit, and hideout threads.",
+    "#960 revision should keep Daren as the protagonist of substantial dark-fantasy epilogue pages and explain reward memory in-world instead of as short receipts.",
     "#961 should add quality gates that preserve the shared route, pacing range, and story-first presentation."
   ]
 }

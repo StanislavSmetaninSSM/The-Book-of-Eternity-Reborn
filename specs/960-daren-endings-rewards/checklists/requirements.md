@@ -11,14 +11,17 @@
 - [x] Existing #919 reward mechanics are listed as invariants.
 - [x] No new reward profile file, ending-state runtime, QTE check type, campaign-state side effect, or frontend-only ending mapping is allowed by this slice.
 - [x] Objective regression guards are defined for ending epilogue presence/distinctness, reward explanation, shared DTO/console availability, and unchanged mechanics.
+- [x] User correction is captured: short/dry ending summaries are unacceptable, and Daren must remain the protagonist of substantial dark-fantasy ending pages.
 
 ## Player-Facing Ending Boundaries
 
-- [x] Every outcome, including `no_reward_failure`, must have authored epilogue prose.
+- [x] Every outcome, including `no_reward_failure`, must have substantial multi-sentence authored epilogue prose.
+- [x] Ending prose must be Daren-centered and readable outside the game as authored dark-fantasy fiction, with tests guarding only structural proxies.
 - [x] Ending epilogues must distinguish poor, mixed, good, and excellent/perfect outcomes.
 - [x] Ending copy must react to score/performance and consequence categories from the route without inventing a new branch-memory runtime.
-- [x] Reward-granting endings must explain the permanent achievement and future New Game Ink Feather bonus in-world.
+- [x] Reward-granting endings must explain the permanent achievement and future New Game Ink Feather amount in-world, without raw `+N` receipt or "future bonus" wording.
 - [x] No-reward outcomes must explain why no permanent profile write happens.
+- [x] Browser completion must not label a lower replay tier as the saved future New Game reward when a higher best tier is already present.
 
 ## Verification Expectations
 

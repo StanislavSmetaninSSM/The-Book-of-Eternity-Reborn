@@ -2,7 +2,9 @@
 
 ## Contract Purpose
 
-This contract defines the #960 endings/reward-presentation slice for Daren's standalone QTE heist. It consumes the #956 scene map, #957 prose, #958 dialogue/cast, and #959 branch consequences, then expands the final outcome into authored epilogues and in-world reward explanation while preserving #919 reward mechanics.
+This contract defines the #960 endings/reward-presentation slice for Daren's standalone QTE heist. It consumes the #956 scene map, #957 prose, #958 dialogue/cast, and #959 branch consequences, then expands the final outcome into substantial authored Russian dark-fantasy epilogue pages and in-world reward explanation while preserving #919 reward mechanics.
+
+The corrected acceptance bar is explicit: Daren is the main hero of this QTE mode. Ending copy that reads like a short event summary, dry receipt, or system recap fails #960 even if mechanics and tests otherwise pass.
 
 ## Source and Authority
 
@@ -24,13 +26,15 @@ Every Daren completion outcome must expose player-facing ending data from shared
 
 | Outcome | Reward behavior | Required player-visible ending shape |
 | --- | --- | --- |
-| `no_reward_failure` | no profile write, no New Game bonus | Failure epilogue explains unsafe or below-threshold outcome and why no permanent achievement is recorded. |
-| `shadow_on_the_run` | profile may store best tier, +1 Ink Feather for future new games | Low-tier epilogue describes a narrow survival/dirty escape and a modest permanent lesson. |
-| `broken_trail` | profile may store best tier, +2 Ink Feathers for future new games | Mixed-tier epilogue describes a successful escape with visible traces, witnesses, or pursuit pressure. |
-| `clean_heist` | profile may store best tier, +4 Ink Feathers for future new games | Good-tier epilogue describes controlled loot, manageable evidence, and a stronger achievement. |
-| `perfect_shadow` | profile may store best tier, +6 Ink Feathers for future new games | Excellent-tier epilogue describes a clean legendary theft with minimal traces and strongest achievement. |
+| `no_reward_failure` | no profile write, no New Game reward | Failure epilogue page explains unsafe or below-threshold outcome through Daren's failed aftermath and why the Book refuses to record a permanent achievement. |
+| `shadow_on_the_run` | profile may store best tier, 1 Ink Feather for future new games | Low-tier epilogue page describes Daren's narrow survival/dirty escape, pursuit pressure, witnesses, and a modest permanent lesson. |
+| `broken_trail` | profile may store best tier, 2 Ink Feathers for future new games | Mixed-tier epilogue page describes Daren escaping with visible traces, witnesses, ward/pursuit pressure, and a partially controlled aftermath. |
+| `clean_heist` | profile may store best tier, 4 Ink Feathers for future new games | Good-tier epilogue page describes Daren controlling loot, evidence, pursuit, and hideout safety well enough to earn a stronger achievement. |
+| `perfect_shadow` | profile may store best tier, 6 Ink Feathers for future new games | Excellent-tier epilogue page describes Daren as a legendary thief whose clean theft leaves minimal traces and the strongest achievement. |
 
 Required shared fields may be implemented as new record properties or equivalent structured data, but they must be available to both console completion rendering and browser DTO serialization.
+
+Reward explanations must explain the permanent achievement and the future New Game Ink Feather amount through player-facing lore/metaphor. They must not be raw receipts such as `+N Чернильных Перьев`, "future bonus", profile bookkeeping, or system-tier wording.
 
 ## Reward Mechanics Invariants
 
@@ -46,10 +50,11 @@ Required shared fields may be implemented as new record properties or equivalent
 - Unsafe route failure or score below 40 remains no-reward and must not write or upgrade the permanent profile.
 - Profile writes keep best-tier-only semantics; worse or equal completions do not downgrade or stack rewards.
 - New Game grant applies the best saved tier exactly once per newly created session through `clientRewardGrants.darenQteShowcase`.
+- Browser completion copy must align with these semantics. If the saved best tier is higher than the current replay tier, future New Game wording must use the saved best reward or avoid future-grant wording for the current tier.
 
 ## Shared Console/Browser Contract
 
-- Console completion must be able to show ending display name, epilogue, normalized score, reward explanation, and score summary from shared C# data.
+- Console completion must be able to show ending display name, epilogue, normalized score, reward explanation, and score summary from shared C# data without duplicating the same epilogue/reward text in a single completion panel.
 - Browser Daren state must expose the same ending display name, epilogue/reward copy, normalized score, bonus, and grant flag through `DarenShowcaseEndingDto` or an equivalent DTO.
 - Browser/frontend code must not maintain a separate ending-tier text table or reward mapping. React may render fields supplied by C# if needed.
 - #960 should not add a new endpoint or state file; existing Daren browser state is the expected transport.
@@ -69,8 +74,10 @@ Good #960 regression tests should fail when:
 - any Daren outcome lacks epilogue copy;
 - epilogue copy is identical or generic across tiers;
 - reward-granting endings only say `+N Чернильных Перьев` without in-world achievement explanation;
+- reward explanations are too short to read as Daren-centered story pages or contain raw receipt wording;
 - no-reward failure omits why the permanent reward was not recorded;
 - browser DTO state lacks the shared ending epilogue/reward fields after completion;
+- browser completion claims a lower current replay tier is the future New Game reward when a higher best tier is already saved;
 - console completion summary omits the epilogue or reward explanation;
 - reward threshold/profile/New Game semantics drift from #919;
 - implementation adds a new reward profile path, ending-state runtime, frontend-only ending table, or QTE check type.

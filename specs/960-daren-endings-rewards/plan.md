@@ -7,7 +7,9 @@
 
 ## Summary
 
-Expand the Daren standalone QTE heist completion into authored endings and in-world reward presentation. Keep reward thresholds, profile writes, and New Game grants from #919 unchanged while adding shared ending epilogue data that console and browser consume through the same C# contract.
+Expand the Daren standalone QTE heist completion into authored Russian dark-fantasy ending pages and in-world reward presentation centered on Daren as the protagonist. Keep reward thresholds, profile writes, and New Game grants from #919 unchanged while adding shared ending epilogue data that console and browser consume through the same C# contract.
+
+Revision note, 2026-06-11: user correction rejects short, dry Daren epilogues even when tests pass. #960 must now guard against terse summaries with objective structural proxies and fix the browser no-downgrade wording blocker where a lower replay tier was labeled as the future New Game reward despite a higher saved best tier.
 
 ## Technical Context
 
@@ -25,9 +27,10 @@ Expand the Daren standalone QTE heist completion into authored endings and in-wo
 - **Modify**: `BookOfEternityClient/Services/DarenQteRewardProfileService.cs`
   - Responsibility: ending threshold resolution, permanent reward profile writes, and New Game Ink Feather grant messages.
   - Expected changes:
-    - Add shared ending epilogue/reward-presentation fields to `DarenEndingTier` and `DarenEndingResult` if needed.
-    - Author distinct epilogues for `no_reward_failure`, `shadow_on_the_run`, `broken_trail`, `clean_heist`, and `perfect_shadow`.
-    - Make reward messages explain the achievement and future New Game Ink Feather bonus in-world while retaining exact tier ids, thresholds, bonuses, profile path, and one-time New Game marker semantics.
+    - Add or revise shared ending epilogue/reward-presentation fields on `DarenEndingTier` and `DarenEndingResult` if needed.
+    - Author substantial distinct epilogue pages for `no_reward_failure`, `shadow_on_the_run`, `broken_trail`, `clean_heist`, and `perfect_shadow`.
+    - Make reward messages explain the achievement and future New Game Ink Feather amount in-world while retaining exact tier ids, thresholds, bonuses, profile path, and one-time New Game marker semantics.
+    - Avoid raw receipt wording such as `+N` and "future bonus" labels in ending/reward copy.
   - Do not add a new profile file, new threshold table source, reward stacking rule, or campaign-state side effect.
 
 ### Shared Daren Completion Flow
@@ -36,6 +39,7 @@ Expand the Daren standalone QTE heist completion into authored endings and in-wo
   - Responsibility: Daren showcase attempt resolution, completion summary, console rendering, and shared ending object captured in attempt state.
   - Expected changes:
     - Include the new epilogue/reward copy in `QteSceneCompletion`, `DarenShowcaseEnding`, `attempt.Feedback`, and console completion rendering as appropriate.
+    - Avoid duplicating epilogue/reward text in the console panel when `completion.Response.Response` already includes those shared fields.
     - Preserve `ResolveDarenNormalizedScore`, `HadUnsafeRouteFailure`, and existing routing/score model behavior.
     - Keep result text from #959 branch consequences intact; endings should complement them rather than replace route-specific consequence text.
 
@@ -48,7 +52,8 @@ Expand the Daren standalone QTE heist completion into authored endings and in-wo
     - Avoid React-only ending copy or browser-local reward mapping.
 
 - **Modify if needed**: `BookOfEternityClient.WebFrontend/src/`
-  - Only change React if a failing contract/player-facing test proves the current browser renderer cannot display the shared ending epilogue/reward fields already provided by C#.
+  - Change React if a failing contract/player-facing test proves the current browser renderer cannot display the shared ending epilogue/reward fields already provided by C# or mislabels saved-best reward state.
+  - Browser completion must not present `state.ending.inkFeatherBonus` as the future New Game grant when `state.bestReward` carries a higher saved tier.
   - If changed, run `npm run verify --prefix BookOfEternityClient.WebFrontend` and explain the need in `tasks.md` evidence.
 
 ### Narrative Spine / Handoff Artifact
@@ -65,13 +70,17 @@ Expand the Daren standalone QTE heist completion into authored endings and in-wo
   - Add focused RED tests before production changes.
   - Suggested guards:
     - Every Daren outcome has non-empty distinct epilogue copy.
+    - Every Daren outcome has substantial multi-sentence, Daren-centered epilogue copy.
     - Epilogue/reward text contains tier-appropriate consequence terms and not only mechanical `+N` receipt language.
+    - Reward explanations avoid raw receipt wording and use in-world lore for the future Ink Feather amount.
     - Existing thresholds/bonuses/profile write/no-downgrade/New Game idempotency remain unchanged.
     - Completion state and `DarenShowcaseEnding` carry shared epilogue/reward fields for console/browser consumption.
+    - Browser shared-state rendering preserves no-downgrade clarity after a higher saved tier and a lower replay tier.
     - No new reward profile files, ending-state runtime, QTE check types, or frontend-only ending mapping are introduced.
 
 - **Modify if needed**: `BookOfEternityClient.Tests/BrowserApiContractTests.cs`
-  - Add or update browser state tests when `DarenShowcaseEndingDto` gains fields so browser contract coverage proves shared ending data is available.
+    - Add or update browser state tests when `DarenShowcaseEndingDto` gains fields so browser contract coverage proves shared ending data is available.
+    - Add a regression where a saved higher tier remains the effective future reward after a lower replay.
 
 ### GM-Facing Docs / Examples
 

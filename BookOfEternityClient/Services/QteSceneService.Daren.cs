@@ -792,8 +792,6 @@ public sealed partial class QteSceneService
         if (attempt.Ending is { } ending)
         {
             lines.Add($"Итог: {ending.DisplayName}, счёт {ending.NormalizedScore}/100.");
-            lines.Add(ending.Epilogue);
-            lines.Add(ending.RewardExplanation);
         }
 
         AnsiConsole.Write(new Panel(new Markup(Markup.Escape(string.Join("\n", lines))))

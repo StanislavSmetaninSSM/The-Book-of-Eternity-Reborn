@@ -224,6 +224,18 @@ public sealed class DarenQteShowcaseTests : IDisposable
         "QTE"
     ];
 
+    private static readonly string[] ForbiddenRewardReceiptTerms =
+    [
+        "+",
+        "бонус",
+        "стартов",
+        "на старте",
+        "к старту",
+        "профиль",
+        "system",
+        "tier"
+    ];
+
     private static readonly IReadOnlyDictionary<string, string[][]> ChapterSignalGroups =
         new Dictionary<string, string[][]>(StringComparer.OrdinalIgnoreCase)
         {
@@ -839,7 +851,11 @@ public sealed class DarenQteShowcaseTests : IDisposable
         {
             var epilogue = RequiredStringProperty(ending, "Epilogue");
 
-            Assert.InRange(epilogue.Length, 120, 640);
+            Assert.InRange(epilogue.Length, 420, 1600);
+            Assert.True(CountSentences(epilogue) >= 5,
+                $"Daren ending '{outcomeId}' needs a substantial epilogue page, not a short outcome summary.");
+            Assert.True(CountOccurrences(epilogue, "Дарен") >= 2,
+                $"Daren ending '{outcomeId}' should keep Daren centered as the protagonist.");
             AssertNoPlayerFacingTechnicalTerms($"{outcomeId} epilogue", epilogue);
             Assert.DoesNotContain("+", epilogue, StringComparison.Ordinal);
             epilogues.Add(outcomeId, epilogue);
@@ -873,12 +889,45 @@ public sealed class DarenQteShowcaseTests : IDisposable
                 Assert.Contains("постоян", rewardExplanation, StringComparison.OrdinalIgnoreCase);
                 Assert.Contains("будущ", rewardExplanation, StringComparison.OrdinalIgnoreCase);
                 Assert.Contains("Черниль", rewardExplanation, StringComparison.OrdinalIgnoreCase);
-                Assert.Contains(ending.InkFeatherBonus.ToString(System.Globalization.CultureInfo.InvariantCulture), rewardExplanation, StringComparison.Ordinal);
+                AssertContainsInkFeatherAmountSignal(outcomeId, ending.InkFeatherBonus, rewardExplanation);
             }
             else
             {
                 Assert.Contains("не запис", rewardExplanation, StringComparison.OrdinalIgnoreCase);
                 Assert.Contains("постоян", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+    }
+
+    [Fact]
+    public void DarenEndingResolver_RewardExplanationsUseInWorldLoreInsteadOfReceipts()
+    {
+        foreach (var (outcomeId, ending) in RequiredDarenEndingOutcomes())
+        {
+            var rewardExplanation = RequiredStringProperty(ending, "RewardExplanation");
+
+            Assert.InRange(rewardExplanation.Length, 220, 1200);
+            Assert.True(CountSentences(rewardExplanation) >= 3,
+                $"Daren ending '{outcomeId}' reward explanation should read as in-world prose, not a receipt.");
+            Assert.Contains("Книга", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Дарен", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+            AssertNoPlayerFacingTechnicalTerms($"{outcomeId} reward explanation", rewardExplanation);
+            foreach (var forbidden in ForbiddenRewardReceiptTerms)
+            {
+                Assert.DoesNotContain(
+                    forbidden,
+                    rewardExplanation,
+                    StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (ending.GrantsReward)
+            {
+                Assert.Contains("Черниль", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+                AssertContainsInkFeatherAmountSignal(outcomeId, ending.InkFeatherBonus, rewardExplanation);
+            }
+            else
+            {
+                AssertContainsAny($"{outcomeId} book refusal", rewardExplanation, ["отказыва", "не впис", "не бер", "молч"]);
             }
         }
     }
@@ -1093,6 +1142,31 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public async Task DarenBrowserState_ReplayAfterPerfectKeepsBestFutureRewardSeparateFromLowerEnding()
+    {
+        await _profile.RecordCompletionAsync(
+            DarenQteRewardProfileService.ResolveEnding(reachedHideout: true, normalizedScore: 90),
+            new DateTime(2026, 6, 11, 1, 0, 0, DateTimeKind.Utc));
+
+        var state = await _web.StartDarenShowcaseAsync();
+        while (string.Equals(state.State, "Active", StringComparison.OrdinalIgnoreCase))
+        {
+            var activeAction = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
+            state = await _web.ResolveDarenShowcaseActionAsync(new DarenShowcaseActionRequest(activeAction.ActionId, "partial"));
+        }
+
+        Assert.Equal("Completed", state.State);
+        Assert.NotNull(state.BestReward);
+        Assert.NotNull(state.Ending);
+        Assert.Equal("perfect_shadow", state.BestReward!.TierId);
+        Assert.Equal(6, state.BestReward.InkFeatherBonus);
+        Assert.Equal("shadow_on_the_run", state.Ending!.TierId);
+        Assert.Equal(1, state.Ending.InkFeatherBonus);
+        Assert.Contains("луч", state.Ending.RewardMessage, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("1 Черниль", state.Ending.RewardMessage, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task DarenBrowserState_ExposesSharedEndingEpilogueAndRewardExplanation()
     {
         var state = await _web.StartDarenShowcaseAsync();
@@ -1114,6 +1188,16 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Contains(rewardExplanation, state.Completion.Summary, StringComparison.Ordinal);
         Assert.Contains("Черниль", rewardExplanation, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("будущ", rewardExplanation, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void DarenConsoleCompletion_DoesNotDuplicateEndingTextAlreadyInCompletionResponse()
+    {
+        var darenSource = ReadRepoFile("BookOfEternityClient", "Services", "QteSceneService.Daren.cs");
+
+        Assert.Contains("completion.Response.Response ?? completion.Summary", darenSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("lines.Add(ending.Epilogue)", darenSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("lines.Add(ending.RewardExplanation)", darenSource, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1477,6 +1561,35 @@ public sealed class DarenQteShowcaseTests : IDisposable
     private static int CountSentences(string value) =>
         value.Split(['.', '!', '?', '…'], StringSplitOptions.RemoveEmptyEntries)
             .Count(sentence => sentence.Trim().Length >= 10);
+
+    private static int CountOccurrences(string value, string needle)
+    {
+        var count = 0;
+        var searchStart = 0;
+        while (true)
+        {
+            var index = value.IndexOf(needle, searchStart, StringComparison.OrdinalIgnoreCase);
+            if (index < 0)
+                return count;
+
+            count++;
+            searchStart = index + needle.Length;
+        }
+    }
+
+    private static void AssertContainsInkFeatherAmountSignal(string context, int amount, string value)
+    {
+        string[] amountSignals = amount switch
+        {
+            1 => ["1", "одн"],
+            2 => ["2", "дв"],
+            4 => ["4", "четыр"],
+            6 => ["6", "шест"],
+            _ => [amount.ToString(System.Globalization.CultureInfo.InvariantCulture)]
+        };
+
+        AssertContainsAny($"{context} Ink Feather amount", value, amountSignals);
+    }
 
     private static void AssertContainsAny(string context, string value, IReadOnlyList<string> terms)
     {

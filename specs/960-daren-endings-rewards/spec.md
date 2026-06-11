@@ -17,18 +17,19 @@
 - **Related base implementation**: #919 — standalone Daren showcase route, ending thresholds, persistent reward profile, New Game reward grants, console/browser surfaces.
 - **Spec Kit justification**: #960 changes player-facing ending UX and shared console/browser QTE contract presentation for a medium multi-file content/contract slice. It must preserve #919 reward mechanics while adding durable handoff evidence under parent #955, so Spec Kit artifacts are required.
 - **In scope**: authored epilogue text for each Daren ending tier, ending copy that reacts to score/performance and at least some notable choices/consequences, in-world explanation of the permanent achievement and New Game Ink Feather bonus, shared DTO/console/browser presentation updates when needed, and tests/source guards for missing/empty ending prose.
+- **Correction added 2026-06-11**: Daren is the protagonist of this QTE mode. Ending epilogues and reward explanations must read as substantial Russian dark-fantasy prose pages, not short event summaries or dry receipts. A green test suite is not sufficient if the ending copy remains flat, terse, or centered on bookkeeping instead of Daren's heist aftermath.
 - **Out of scope**: new ending thresholds or Ink Feather bonus amounts, new reward profile state files, New Game grant semantics changes, new QTE check types, a separate ending engine, React-only ending data, broad content quality gate infrastructure (#961), and new post-run campaign-state consequences outside the standalone showcase.
 
 ## User Scenarios & Testing
 
 ### Scenario 1 - Ending tier gives a distinct epilogue (Priority: P1)
 
-A player who completes the Daren heist sees an ending that feels like the end of the story, not only a tier name and mechanical score receipt.
+A player who completes the Daren heist sees an ending that feels like the end of a dark-fantasy chapter centered on Daren, not only a tier name and mechanical score receipt.
 
-**Independent Test**: Add focused guards over `DarenQteRewardProfileService.ResolveEnding()` and the Daren showcase completion path that fail unless each reward tier and the no-reward failure outcome has non-empty, distinct epilogue text.
+**Independent Test**: Add focused guards over `DarenQteRewardProfileService.ResolveEnding()` and the Daren showcase completion path that fail unless each reward tier and the no-reward failure outcome has substantial, distinct, multi-sentence Daren-centered epilogue text.
 
 **Acceptance Scenarios**:
-1. **Given** a safe completion with a low score, **When** the ending resolves to `shadow_on_the_run`, **Then** the epilogue describes a narrow survival/dirty escape and not a generic reward receipt.
+1. **Given** a safe completion with a low score, **When** the ending resolves to `shadow_on_the_run`, **Then** the epilogue reads as a substantial dirty-escape page about Daren surviving with noise, witnesses, and pursuit pressure, not a generic reward receipt.
 2. **Given** a mixed or good completion, **When** the ending resolves to `broken_trail` or `clean_heist`, **Then** the epilogue explains the traces, witnesses, loot control, or manageable aftermath that separates the tiers.
 3. **Given** an excellent completion, **When** the ending resolves to `perfect_shadow`, **Then** the epilogue presents a clean legendary theft that is clearly distinct from lower tiers.
 4. **Given** an unsafe or below-threshold run, **When** no reward is granted, **Then** the failure ending explains why no permanent achievement is recorded.
@@ -52,12 +53,13 @@ The ending should reflect the route as an interactive-book heist. At minimum, ti
 
 The permanent Daren achievement and one-time New Game Ink Feather start bonus must be understandable in the fiction while preserving the existing reward profile and New Game grant rules.
 
-**Independent Test**: Add tests that assert reward messages explain the earned achievement, tier, and future New Game Ink Feather bonus in player-facing in-world wording, while existing threshold/profile/New Game idempotency tests keep passing unchanged.
+**Independent Test**: Add tests that assert reward messages explain the earned achievement, tier, and future New Game Ink Feather amount in player-facing in-world wording, reject raw receipt wording such as `+N` or "future bonus" labels, and keep existing threshold/profile/New Game idempotency tests passing unchanged.
 
 **Acceptance Scenarios**:
 1. **Given** a reward-granting ending, **When** the completion summary and browser ending DTO are inspected, **Then** they include the tier name, epilogue, and an in-world explanation that the achievement will add the tier's Ink Feather bonus to future new games.
 2. **Given** the same profile is recorded again with a worse or equal tier, **When** the service handles it, **Then** no stacking or downgrade occurs and the player-facing message remains clear.
 3. **Given** New Game consumes the best saved tier, **When** the grant is applied, **Then** the existing one-time-per-new-session marker and Ink Feather amounts remain unchanged.
+4. **Given** a perfect saved profile exists and a later replay earns a lower reward tier, **When** the browser completion renders, **Then** it must not present the lower current-tier amount as the future New Game reward; it must either render the effective saved best reward from shared state or use wording that clearly describes only the current run.
 
 ---
 
@@ -83,9 +85,9 @@ Console and browser clients should display the same ending epilogue/reward data 
 
 ## Functional Requirements
 
-- **FR-001**: Every Daren ending outcome (`no_reward_failure`, `shadow_on_the_run`, `broken_trail`, `clean_heist`, `perfect_shadow`) MUST have non-empty distinct epilogue prose.
+- **FR-001**: Every Daren ending outcome (`no_reward_failure`, `shadow_on_the_run`, `broken_trail`, `clean_heist`, `perfect_shadow`) MUST have substantial, distinct, multi-sentence Russian epilogue prose centered on Daren as protagonist.
 - **FR-002**: Ending epilogues MUST reflect performance tier and use concrete story consequences such as evidence, suspicion, ward pressure, witnesses, pursuit control, route cleanliness, or hideout safety.
-- **FR-003**: Reward-granting endings MUST present the permanent Daren achievement and future New Game Ink Feather start bonus in-world, not only as a mechanical receipt.
+- **FR-003**: Reward-granting endings MUST present the permanent Daren achievement and future New Game Ink Feather amount in-world, using metaphor/lore instead of raw system bookkeeping such as `+N` receipt copy or "future bonus" labels.
 - **FR-004**: The existing threshold ids, display names, minimum normalized scores, and Ink Feather bonus amounts MUST remain compatible with #919.
 - **FR-005**: Failure/no-reward outcomes MUST clearly explain why no permanent reward profile is written.
 - **FR-006**: Console completion and browser state MUST consume the same ending epilogue/reward data from shared C# authority.
@@ -93,19 +95,20 @@ Console and browser clients should display the same ending epilogue/reward data 
 - **FR-008**: `BookOfEternityClient/Content/DarenQteNarrativeSpine.json` MUST record #960 ending/reward handoff truth without drifting from #956/#957/#958/#959 route invariants.
 - **FR-009**: Tests/source guards MUST fail if ending epilogue copy is empty, generic, identical across tiers, missing from browser DTO/console completion data, or divorced from reward mechanics.
 - **FR-010**: Broad content-quality gate infrastructure remains #961 and MUST NOT be implemented as a side effect beyond focused #960 ending/reward guards.
+- **FR-011**: Browser completion presentation MUST align with #919 no-downgrade mechanics: if a saved best tier is higher than the current replay tier, future New Game reward copy must reflect the saved best tier or avoid claiming the current tier is the future grant.
 
 ## Non-Functional Requirements
 
-- **NFR-001**: Ending copy should be concise enough for console and browser surfaces while still feeling like a story epilogue.
-- **NFR-002**: Tests should verify objective presence, distinctness, tier-specific consequence terms, reward explanation, and shared DTO/console-browser authority rather than subjective literary style.
+- **NFR-001**: Ending copy should be readable in console and browser while still feeling like a dark-fantasy book page; short recap prose is not acceptable for #960 endings.
+- **NFR-002**: Tests should verify objective proxies for the literary bar: minimum length/sentence count, Daren-centered narration, distinctness, tier-specific consequence terms, in-world reward explanation, no raw receipt wording, and shared DTO/console-browser authority rather than pretending to prove subjective art quality.
 - **NFR-003**: Guard failures should name the missing ending tier/outcome and missing field so future agents can repair content drift quickly.
 - **NFR-004**: Changes should stay reviewable and avoid QTE/reward engine refactors unless a failing test proves a narrow shared-data extension is necessary.
 
 ## Success Criteria
 
-- Daren endings include multiple distinct epilogues for failure and every reward tier.
+- Daren endings include substantial literary epilogue pages for failure and every reward tier.
 - Ending text reacts to score/performance and at least some notable consequence categories from the route.
-- Reward presentation explains the permanent achievement and future Ink Feather start bonus in-world.
+- Reward presentation explains the permanent achievement and future Ink Feather amount in-world and does not label a lower replay tier as the saved future reward.
 - Existing reward thresholds, bonuses, profile writes, and New Game one-time grants remain compatible with #919.
 - Console and browser expose/display the same shared ending data.
 - Focused Daren tests and affected QTE/docs/browser slice pass locally with exact counts recorded.
