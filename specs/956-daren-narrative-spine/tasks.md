@@ -34,7 +34,7 @@
 
 ## Phase 4: Hermes-Owned Review, PR, Merge, Closure
 
-- [ ] T018 Independent review validates #956 acceptance, #955/#919 boundaries, scene-map drift guards, and no accidental runtime/reward contract change.
+- [x] T018 Independent review validates #956 acceptance, #955/#919 boundaries, scene-map drift guards, and no accidental runtime/reward contract change. Evidence: independent Codex review run `E:/Games/codex-runs/20260611-164831-boe-956-daren-narrative-spine-finalreview` returned `APPROVED`, blocking findings none; reviewer inspected `git diff origin/main...HEAD`, `DarenQteNarrativeSpine.json`, route source, tests, and Spec Kit artifacts, and reran focused DarenNarrativeSpine 4/4 plus DarenQteShowcaseTests 22/22.
 - [ ] T019 Create PR with local-gated verification evidence and safe closing wording for #956.
 - [ ] T020 Squash-merge to `main`, verify PR merged and #956 closed/completed, post evidence comment, and clean up worktree/branches.
 
