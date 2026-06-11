@@ -43,11 +43,25 @@ describe('DarenShowcaseView #919', () => {
     const html = renderToStaticMarkup(<DarenShowcaseView initialState={completedState()} />);
 
     expect(html).toContain('Идеальная тень');
-    expect(html).toContain('+6');
-    expect(html).toContain('будущей новой игре');
-    expect(html).toContain('лучший результат сохранён');
+    expect(html).toContain('6 Чернильных Перьев');
+    expect(html).toContain('будущ');
+    expect(html).toContain('Книга');
     expect(html).not.toContain('тренировочный счёт');
     expect(html).not.toMatch(/manual grade/i);
+  });
+
+  it('does not present a lower replay tier as the saved future New Game reward', () => {
+    const html = renderToStaticMarkup(<DarenShowcaseView initialState={lowerReplayAfterPerfectState()} />);
+
+    expect(html).toContain('Идеальная тень');
+    expect(html).toContain('6 Чернильных Перьев');
+    expect(html).toContain('Чистая кража');
+    expect(html).toContain(
+      'Будущая новая игра помнит лучший след: Идеальная тень, 6 Чернильных Перьев. Эта вылазка завершилась как Чистая кража, счёт 80/100.'
+    );
+    expect(html).not.toContain('Будущая новая игра помнит лучший след: Чистая кража, 4 Чернильных Пера');
+    expect(html).not.toContain('будущий бонус 4 Чернильных Перьев');
+    expect(html).not.toContain('+4 Чернильных Перьев для будущей новой игры');
   });
 
   it('keeps launcher, route, and typed API wiring explicit', () => {
@@ -156,9 +170,45 @@ function completedState(): DarenShowcaseWebStateDto {
       normalizedScore: 94,
       inkFeatherBonus: 6,
       grantsReward: true,
-      rewardMessage: 'Лучший результат сохранён: +6 Чернильных Перьев для будущей новой игре.'
+      epilogue: 'Дарен уходит под мост без свидетелей. Дом просыпается слишком поздно, а посох уже молчит в тайнике.',
+      rewardExplanation: 'Книга признаёт Дарена тенью этой ночи. На будущей новой странице она развернёт для него шесть Чернильных Перьев. Это не добыча из кармана, а память о краже, которую никто не сумел назвать.',
+      rewardMessage: 'Книга признаёт Дарена тенью этой ночи. На будущей новой странице она развернёт для него шесть Чернильных Перьев.'
     },
     availableOperations: ['retry', 'exit']
+  };
+}
+
+function lowerReplayAfterPerfectState(): DarenShowcaseWebStateDto {
+  return {
+    ...completedState(),
+    bestReward: {
+      tierId: 'perfect_shadow',
+      tierName: 'Идеальная тень',
+      inkFeatherBonus: 6,
+      bestScore: 94,
+      completedAtUtc: '2026-06-11T01:00:00Z'
+    },
+    completion: {
+      qteId: 'daren_qte_showcase',
+      outcomeId: 'clean_heist',
+      summary: 'Чистая кража: Дарен донёс посох, но не переписал лучшую легенду.',
+      scoreSummary: {
+        rank: { id: 'clean_heist', label: 'Чистая кража', summary: 'Посох вынесен с управляемыми следами.' },
+        metrics: [
+          { id: 'normalized_score', label: 'Счёт вылазки', value: 80, min: 0, max: 100, visibility: 'always' }
+        ]
+      }
+    },
+    ending: {
+      tierId: 'clean_heist',
+      displayName: 'Чистая кража',
+      normalizedScore: 80,
+      inkFeatherBonus: 4,
+      grantsReward: true,
+      epilogue: 'Дарен закрывает тайник до рассвета, но помнит, что эта ночь тяжелее прежней легенды.',
+      rewardExplanation: 'Книга уже хранит более чистую тень Дарена. Будущая новая игра сохранит высшую память и не обменяет её на более слабый след.',
+      rewardMessage: 'Книга уже хранит более чистую тень Дарена. Будущая новая игра сохранит высшую память и не обменяет её на более слабый след.'
+    }
   };
 }
 

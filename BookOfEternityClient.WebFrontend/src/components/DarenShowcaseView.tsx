@@ -136,7 +136,7 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
       <p className="muted">{toPlayerFacingText(state.boundaryNotice, 'Это отдельная вылазка: обычная глава не меняется.')}</p>
       {state.bestReward && (
         <p className="composer-notice">
-          Лучший итог уже сохранён: {state.bestReward.tierName}, +{state.bestReward.inkFeatherBonus} Чернильных Перьев для будущей новой игры.
+          Лучший итог уже хранится в Книге: {state.bestReward.tierName}. Будущая новая игра начнётся с памятью Дарена: {formatInkFeatherCount(state.bestReward.inkFeatherBonus)}.
         </p>
       )}
       {state.error && <p className="warning-text">{toPlayerFacingText(state.error, 'Вылазка требует внимания.')}</p>}
@@ -203,15 +203,24 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
       {state.completion && (
         <article className="summary-card">
           <h3>{toPlayerFacingText(state.ending?.displayName, 'Вылазка завершена')}</h3>
-          <p>{toPlayerFacingText(state.completion.summary, 'Итог вылазки записан.')}</p>
+          {state.ending ? (
+            <>
+              <p>{toPlayerFacingText(state.ending.epilogue, state.completion.summary)}</p>
+              <p className="composer-notice">{toPlayerFacingText(state.ending.rewardExplanation, 'Итог Дарена записан для будущей новой игры.')}</p>
+            </>
+          ) : (
+            <p>{toPlayerFacingText(state.completion.summary, 'Итог вылазки записан.')}</p>
+          )}
           {state.ending && (
             <p className="composer-notice">
               {state.ending.grantsReward
-                ? `${state.ending.displayName}: +${state.ending.inkFeatherBonus} Чернильных Перьев для будущей новой игры; лучший результат сохранён.`
+                ? renderDarenFutureRewardLine(state)
                 : 'Безопасный итог не достигнут, постоянная награда не записана.'}
             </p>
           )}
-          {state.ending?.rewardMessage && <p>{toPlayerFacingText(state.ending.rewardMessage, 'Итог Дарена сохранён.')}</p>}
+          {state.ending?.rewardMessage && state.ending.rewardMessage !== state.ending.rewardExplanation && (
+            <p>{toPlayerFacingText(state.ending.rewardMessage, 'Итог Дарена сохранён.')}</p>
+          )}
           {renderScoreSummary(state.completion.scoreSummary)}
           <div className="phase-chip-grid">
             <button type="button" onClick={() => void retryShowcase()} disabled={busyKey !== null}>Повторить вылазку</button>
@@ -299,4 +308,32 @@ function formatScoreValue(value: number): string {
   }
 
   return Number.isInteger(value) ? value.toString() : value.toFixed(2).replace(/\.?0+$/, '');
+}
+
+function renderDarenFutureRewardLine(state: DarenShowcaseWebStateDto): string {
+  if (!state.ending?.grantsReward) {
+    return 'Безопасный итог не достигнут, постоянная награда не записана.';
+  }
+
+  const futureReward = state.bestReward ?? {
+    tierName: state.ending.displayName,
+    inkFeatherBonus: state.ending.inkFeatherBonus
+  };
+  return `Будущая новая игра помнит лучший след: ${futureReward.tierName}, ${formatInkFeatherCount(futureReward.inkFeatherBonus)}. Эта вылазка завершилась как ${state.ending.displayName}, счёт ${state.ending.normalizedScore}/100.`;
+}
+
+function formatInkFeatherCount(value: number): string {
+  const amount = Number.isFinite(value) ? Math.max(0, Math.trunc(value)) : 0;
+  const lastTwo = amount % 100;
+  const lastOne = amount % 10;
+  if (lastTwo < 11 || lastTwo > 14) {
+    if (lastOne === 1) {
+      return `${amount} Чернильное Перо`;
+    }
+    if (lastOne >= 2 && lastOne <= 4) {
+      return `${amount} Чернильных Пера`;
+    }
+  }
+
+  return `${amount} Чернильных Перьев`;
 }
