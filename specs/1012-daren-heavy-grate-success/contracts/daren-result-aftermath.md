@@ -47,3 +47,12 @@ A compliant change includes:
 - `git diff --check origin/main...HEAD` passing;
 - added-line static scan over non-Spec changed files showing no secrets/injection/eval/deserialization/SQL-formatting findings;
 - diff review showing only expected code/test/Spec Kit files changed.
+
+## Implementation Verification Evidence
+
+- Focused RED: `FullyQualifiedName~DarenQteShowcaseTests` failed before the prose rewrite with 51 passed / 1 failed / 0 skipped / 52 total, on the new `DarenPhysicalPressureSuccess_ReadsAsCleanAftermathWithoutMechanicDrift` guard.
+- Focused GREEN: the same command passed after the prose rewrite with 52 passed / 0 failed / 0 skipped / 52 total.
+- Affected slice passed with 321 passed / 0 failed / 0 skipped / 321 total.
+- Client and test-project builds passed with 0 warnings / 0 errors.
+- Added-line static scan over non-Spec code/test changes returned `NO_MATCHES`.
+- Diff review confirmed no route/action/check/config/routing/scoring/reward/frontend/runtime/GM-facing drift and no partial/fail result edits.

@@ -112,6 +112,15 @@ BookOfEternityClient.Tests/DarenQteShowcaseTests.cs
 - Focused Daren baseline command: `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~DarenQteShowcaseTests" --logger "console;verbosity=minimal"` passed: 51 passed / 0 failed / 0 skipped / 51 total.
 - Affected slice baseline command: `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "DarenQteShowcaseTests|QteSceneServiceTests|ValidationServiceQteTests|PromptDocumentationCoverageTests|ExampleDocumentationValidationTests|BrowserApiContractTests|BrowserFrontendWorkspaceTests" --logger "console;verbosity=minimal"` passed: 320 passed / 0 failed / 0 skipped / 320 total.
 
+## Implementation Evidence
+
+- RED: Added `DarenPhysicalPressureSuccess_ReadsAsCleanAftermathWithoutMechanicDrift` before production prose changes. The focused Daren command failed as expected with 51 passed / 1 failed / 0 skipped / 52 total, because the old one-sentence success result was not substantial aftermath prose.
+- GREEN: After replacing only `physical_pressure_action` success text, the focused Daren command passed with 52 passed / 0 failed / 0 skipped / 52 total.
+- Affected slice: `DarenQteShowcaseTests|QteSceneServiceTests|ValidationServiceQteTests|PromptDocumentationCoverageTests|ExampleDocumentationValidationTests|BrowserApiContractTests|BrowserFrontendWorkspaceTests` passed with 321 passed / 0 failed / 0 skipped / 321 total.
+- Builds: client and test project builds passed with 0 warnings / 0 errors.
+- Static scan: added-line scan over non-Spec code/test changes returned `NO_MATCHES`.
+- Scope review: the diff changes only `BookOfEternityClient/Services/QteSceneService.Daren.cs`, `BookOfEternityClient.Tests/DarenQteShowcaseTests.cs`, and this #1012 Spec Kit directory. Partial/fail results and route mechanics remain unchanged.
+
 ## Review Requirements
 
 Independent review must check:

@@ -94,6 +94,15 @@ As a player resolving the "Тяжёлая решётка" QTE with the best outc
 - Affected baseline before #1012 implementation: `DarenQteShowcaseTests|QteSceneServiceTests|ValidationServiceQteTests|PromptDocumentationCoverageTests|ExampleDocumentationValidationTests|BrowserApiContractTests|BrowserFrontendWorkspaceTests` passed 320 / failed 0 / skipped 0 / total 320.
 - Hermes remains responsible for independent review, PR, merge, issue closure, parent #955 boundary confirmation, and cleanup.
 
+## Implementation Evidence
+
+- RED guard: `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~DarenQteShowcaseTests" --logger "console;verbosity=minimal"` failed against the old one-sentence success text with 51 passed / 1 failed / 0 skipped / 52 total.
+- GREEN focused guard: the same focused command passed after replacing only `physical_pressure_action` success prose with 52 passed / 0 failed / 0 skipped / 52 total.
+- Affected C# slice passed with 321 passed / 0 failed / 0 skipped / 321 total.
+- `dotnet build BookOfEternityClient/BookOfEternityClient.csproj --no-restore` and `dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore -p:IsTestProject=true` both passed with 0 warnings / 0 errors.
+- Added-line static scan over non-Spec code/test changes returned `NO_MATCHES`.
+- Diff review found no QTE mechanics, route id/order, action id/check/config, routing, score delta, reward/profile/New Game, endpoint/runtime-state, frontend/browser, GM-facing, partial result, or fail result drift.
+
 ## Assumptions
 
 - Issue #1012 and parent #955 are sufficient tracked tasks; no new GitHub issue is needed.

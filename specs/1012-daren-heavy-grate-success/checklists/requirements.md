@@ -15,23 +15,23 @@
 
 ## Product Requirements
 
-- [ ] Success result text is substantial Russian literary aftermath, not one terse sentence.
-- [ ] Daren remains active POV/protagonist.
-- [ ] Clean/best outcome consequence is visible: held grate, extracted case/staff, no crash, reduced risk.
-- [ ] Prose includes physical/sensory details around iron, body, breath, blood, stone niche, case/staff, and listening house.
-- [ ] Prose bridges naturally toward the alarm-pulse corridor without changing the next scene.
-- [ ] Default prose contains no implementation/debug/mechanic terminology.
+- [X] Success result text is substantial Russian literary aftermath, not one terse sentence.
+- [X] Daren remains active POV/protagonist.
+- [X] Clean/best outcome consequence is visible: held grate, extracted case/staff, no crash, reduced risk.
+- [X] Prose includes physical/sensory details around iron, body, breath, blood, stone niche, case/staff, and listening house.
+- [X] Prose bridges naturally toward the alarm-pulse corridor without changing the next scene.
+- [X] Default prose contains no implementation/debug/mechanic terminology.
 
 ## Engineering Requirements
 
-- [ ] RED focused test fails against current main text for the expected reason.
-- [ ] GREEN focused test passes after implementation.
-- [ ] Affected Daren/QTE/docs/browser C# slice passes.
-- [ ] Client and test-project builds pass.
-- [ ] Spec Kit prerequisite check resolves this feature directory.
-- [ ] `git diff --check origin/main...HEAD` passes.
-- [ ] Added-line static scan over non-Spec changed files has no findings.
-- [ ] Diff preserves QTE mechanics, routing, score deltas, rewards, runtime state, endpoints, frontend code, and sibling result surfaces.
+- [X] RED focused test fails against current main text for the expected reason.
+- [X] GREEN focused test passes after implementation.
+- [X] Affected Daren/QTE/docs/browser C# slice passes.
+- [X] Client and test-project builds pass.
+- [X] Spec Kit prerequisite check resolves this feature directory.
+- [X] `git diff --check origin/main...HEAD` passes.
+- [X] Added-line static scan over non-Spec changed files has no findings.
+- [X] Diff preserves QTE mechanics, routing, score deltas, rewards, runtime state, endpoints, frontend code, and sibling result surfaces.
 
 ## Lifecycle Requirements
 
