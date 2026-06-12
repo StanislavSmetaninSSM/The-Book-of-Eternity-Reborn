@@ -1029,6 +1029,76 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenTimedRhythm_ReadsAsAlarmPulsePageWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "timed_rhythm");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "timed_rhythm");
+        var text = chapter.Narrative?.Trim() ?? "";
+
+        Assert.Equal("Пульс сигнализации", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("timed_rhythm_action", action.ActionId);
+        Assert.Equal("RhythmPulse", action.Check.Type);
+        Assert.Equal(Characteristics.Speed, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Equal("Двигаться между ударами кристалла", action.Label);
+        Assert.Equal("route_decision", action.Routing.Success.NextChapterId);
+        Assert.Equal("route_decision", action.Routing.Partial.NextChapterId);
+        Assert.Equal("route_decision", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal(5, RequiredInt(config, "pulseCount"));
+        Assert.Equal(640, RequiredInt(config, "beatIntervalMs"));
+        Assert.Equal(125, RequiredInt(config, "hitWindowMs"));
+        Assert.Equal(1, RequiredInt(config, "allowedMisses"));
+        Assert.Equal("swing", RequiredString(config, "patternVariation"));
+
+        Assert.True(text.Length >= 1500,
+            "Daren timed_rhythm narrative should be a substantial alarm-pulse literary page, not a compact synopsis.");
+        Assert.True(CountSentences(text) >= 12,
+            "Daren timed_rhythm narrative should unfold across a real rhythm-stealth scene, not two briefing sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 5,
+            "Daren timed_rhythm narrative should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("signal crystal and red corridor", [["кристалл"], ["красн", "ал"], ["коридор"], ["пол", "стен"]]),
+            ("pulse pauses rhythm and intervals", [["пульс", "удар", "вспыш"], ["пауз", "промежут", "интервал"], ["ритм", "счёт"], ["между"]]),
+            ("Daren body breath step and shadow control", [["Дарен"], ["дых", "вдох", "выдох"], ["сапог", "ступн", "шаг"], ["тень", "силуэт"], ["плеч", "ладон", "ребр", "колен"]]),
+            ("staff case and heavy-grate continuity", [["посох"], ["футляр", "добыч"], ["решет", "решёт", "желез"], ["плеч", "кров", "боль", "ладон"]]),
+            ("silence noise alarm guards and trace stakes", [["тиш", "молч"], ["шум", "звон", "скреж", "крик"], ["тревог", "сигнал"], ["страж", "караул", "Лукьян", "Орвальд"], ["след", "улик", "выда", "пойм"]]),
+            ("rhythm action lead-in", [["двиг", "скольз", "шаг", "пересеч"], ["между"], ["удар", "пульс", "вспыш"], ["кристалл"], ["пойм", "схват", "накры"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"timed_rhythm full-page {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 4),
+            ("loot", 0),
+            ("pursuit_control", 2),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 2),
+            ("loot", 0),
+            ("pursuit_control", 1),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -4),
+            ("loot", -2),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("timed_rhythm full-page narrative", text);
+    }
+
+    [Fact]
     public void DarenActionResultText_ReadsAsTransitionProse()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -2176,7 +2246,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             string.Equals(chapterId, "lock_pick", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "rune_memory", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "ward_steward_parley", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase)
+            string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "timed_rhythm", StringComparison.OrdinalIgnoreCase)
             ? 3600
             : 520;
         Assert.InRange(text.Length, 140, maxLength);
