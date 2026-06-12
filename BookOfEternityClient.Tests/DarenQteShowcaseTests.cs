@@ -960,6 +960,75 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenPhysicalPressure_ReadsAsHeavyGratePageWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "physical_pressure");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "physical_pressure");
+        var text = chapter.Narrative?.Trim() ?? "";
+
+        Assert.Equal("Тяжёлая решётка", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("physical_pressure_action", action.ActionId);
+        Assert.Equal("MashInput", action.Check.Type);
+        Assert.Equal(Characteristics.Strength, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Equal("Удержать тяжёлую решётку", action.Label);
+        Assert.Equal("timed_rhythm", action.Routing.Success.NextChapterId);
+        Assert.Equal("timed_rhythm", action.Routing.Partial.NextChapterId);
+        Assert.Equal("timed_rhythm", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal(["space"], RequiredStringArray(config, "keys"));
+        Assert.Equal(3200, RequiredInt(config, "durationMs"));
+        Assert.Equal(13, RequiredInt(config, "targetPresses"));
+        Assert.Equal(0.55, RequiredDouble(config, "partialThreshold"), precision: 2);
+
+        Assert.True(text.Length >= 1500,
+            "Daren physical_pressure narrative should be a substantial heavy-grate physical-pressure page, not a compact synopsis.");
+        Assert.True(CountSentences(text) >= 12,
+            "Daren physical_pressure narrative should unfold across a tactile action scene, not two briefing sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 5,
+            "Daren physical_pressure narrative should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("heavy grate iron weight", [["решет", "решёт"], ["желез", "чугун", "прут"], ["тяж", "вес", "дав", "навис"]]),
+            ("Daren body control", [["Дарен"], ["плеч", "лопат", "ключиц"], ["ладон", "пальц", "рук"], ["дых", "вдох", "выдох"], ["удерж", "упер", "толк", "подня", "держ"]]),
+            ("staff case Renara rune continuity", [["Ренар", "вард", "печать", "голос"], ["рун", "стекл"], ["футляр"], ["посох"], ["ниш"]]),
+            ("silence alarm wing stakes", [["тиш", "молч"], ["грох", "скреж", "звон", "шум"], ["тревог", "сигнал", "крик"], ["страж", "караул", "Лукьян"], ["крыл", "дом", "коридор"]]),
+            ("mechanism last-inch lead-in", [["механизм", "зубец", "противовес", "пружин"], ["дюйм", "палец", "волос", "щель"], ["удерж", "держ", "подним", "выдерж"], ["освобод", "выйд", "выход", "выдвин"], ["футляр", "посох"]]),
+            ("MashInput physical action lead-in", [["рывок", "удар", "нажим", "сила"], ["решет", "решёт"], ["плеч", "рук"], ["последн", "край", "конец"], ["добыч", "посох"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"physical_pressure full-page {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 0),
+            ("loot", 4),
+            ("pursuit_control", 2),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 0),
+            ("loot", 2),
+            ("pursuit_control", 1),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -4),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("physical_pressure full-page narrative", text);
+    }
+
+    [Fact]
     public void DarenActionResultText_ReadsAsTransitionProse()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -2087,6 +2156,14 @@ public sealed class DarenQteShowcaseTests : IDisposable
         return number;
     }
 
+    private static double RequiredDouble(JsonObject root, string propertyName)
+    {
+        Assert.True(root[propertyName] is JsonValue, $"Expected '{propertyName}' to be a number.");
+        var value = (JsonValue)root[propertyName]!;
+        Assert.True(value.TryGetValue<double>(out var number), $"Expected '{propertyName}' to be a number.");
+        return number;
+    }
+
     private static void AssertChapterNarrativeLooksLikeSceneProse(string chapterId, string? value)
     {
         Assert.False(string.IsNullOrWhiteSpace(value), $"Daren chapter '{chapterId}' needs authored narrative prose.");
@@ -2098,7 +2175,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             string.Equals(chapterId, "guard_interrogation", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "lock_pick", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "rune_memory", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(chapterId, "ward_steward_parley", StringComparison.OrdinalIgnoreCase)
+            string.Equals(chapterId, "ward_steward_parley", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase)
             ? 3600
             : 520;
         Assert.InRange(text.Length, 140, maxLength);

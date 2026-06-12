@@ -1,0 +1,21 @@
+# Requirements Checklist: Daren Scene 09 Full Literary Page
+
+- [X] #977 is the only scene closure target.
+- [X] Parent #955 remains open.
+- [X] #978-#983 and result/aftermath scenes remain separate tasks.
+- [X] `physical_pressure` prose is a substantial Russian literary page, not a compact synopsis.
+- [X] Daren remains active protagonist / point of view.
+- [X] The scene is a physical/action pressure beat and does not force an unrelated named social dialogue slot.
+- [X] Renara/rune/glass/staff-case continuity from the previous beat is present where relevant.
+- [X] Heavy grate, iron weight, Daren's body control, silence/noise/alarm stakes, and holding/lifting action are present through grouped motif coverage.
+- [X] The scene naturally leads into the existing `MashInput` physical action.
+- [X] No default player-facing technical implementation terms leak into prose.
+- [X] Existing QTE mechanics, routing, scoring, rewards, profile/New Game grants, endpoints, runtime state, and frontend/backend boundaries remain unchanged.
+- [X] Focused Daren RED run failed for the expected synopsis/content-guard reason before production prose changed.
+- [X] Focused Daren tests pass locally after implementation.
+- [X] Affected Daren/QTE/docs/browser C# slice passes locally.
+- [X] Client and test-project builds pass locally.
+- [X] Spec Kit prerequisite check resolves `specs/977-daren-heavy-grate`.
+- [X] `git diff --check` passes locally for the working tree; final `origin/main...HEAD` check runs after commit.
+- [X] Added-line static scan reports `NO_MATCHES` or exact findings.
+- [ ] Independent review is complete before PR/merge.
