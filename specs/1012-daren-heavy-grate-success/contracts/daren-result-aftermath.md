@@ -1,0 +1,58 @@
+# Contract: Daren Heavy-Grate Success Result Aftermath
+
+## Scope
+
+This contract applies only to the shared C# Daren QTE route data for issue #1012:
+
+- Chapter/beat: `physical_pressure` / "Тяжёлая решётка"
+- Action: `physical_pressure_action` / "Удержать тяжёлую решётку"
+- Result surface: `success`
+
+It does not change route ids, command surfaces, browser endpoints, persistence, reward/profile writes, GM-facing contracts, or frontend runtime behavior.
+
+## Authored Prose Requirements
+
+The success result text must:
+
+1. Be Russian, in-world, player-facing dark-fantasy prose.
+2. Read as a substantial post-QTE aftermath insert, not as a one-sentence result notification.
+3. Keep Daren as the active POV protagonist.
+4. Show the clean/best outcome: the grate is held through the final mechanism movement, the staff case leaves the niche without a crash, Daren controls pain/noise, and risk is reduced.
+5. Use concrete physical/sensory details: iron weight, shoulder/ribs/hands/blood/breath, stone niche, case/staff, oil/metal/stone sounds, and the listening house.
+6. Bridge toward the next alarm-pulse corridor beat without rewriting `timed_rhythm` or altering route order.
+7. Avoid default player-facing implementation terms: `GM`, `DTO`, `API`, `endpoint`, `debug`, `Spec Kit`, `manual-grade`, `client-owned`, `QTE`, `score`, raw ids, or test/agent language.
+
+## Invariants
+
+The implementation must preserve:
+
+- route id and Daren showcase availability;
+- beat id `physical_pressure` and title "Тяжёлая решётка";
+- action id `physical_pressure_action` and label "Удержать тяжёлую решётку";
+- check type `MashInput`, Strength characteristic, base difficulty, and config shape;
+- routing targets for success/partial/fail;
+- score deltas and reward/profile/New Game behavior;
+- partial and fail result texts except for a documented minimal connective fix required by tests;
+- shared C# route authority consumed by both console and browser;
+- absence of new state files, endpoints, frontend-only story forks, or GM-authored contract surfaces.
+
+## Verification Contract
+
+A compliant change includes:
+
+- a RED/GREEN focused guard in `BookOfEternityClient.Tests/DarenQteShowcaseTests.cs` for `physical_pressure_action` success aftermath;
+- focused Daren tests passing;
+- affected Daren/QTE/docs/browser C# slice passing;
+- client and test-project builds passing;
+- `git diff --check origin/main...HEAD` passing;
+- added-line static scan over non-Spec changed files showing no secrets/injection/eval/deserialization/SQL-formatting findings;
+- diff review showing only expected code/test/Spec Kit files changed.
+
+## Implementation Verification Evidence
+
+- Focused RED: `FullyQualifiedName~DarenQteShowcaseTests` failed before the prose rewrite with 51 passed / 1 failed / 0 skipped / 52 total, on the new `DarenPhysicalPressureSuccess_ReadsAsCleanAftermathWithoutMechanicDrift` guard.
+- Focused GREEN: the same command passed after the prose rewrite with 52 passed / 0 failed / 0 skipped / 52 total.
+- Affected slice passed with 321 passed / 0 failed / 0 skipped / 321 total.
+- Client and test-project builds passed with 0 warnings / 0 errors.
+- Added-line static scan over non-Spec code/test changes returned `NO_MATCHES`.
+- Diff review confirmed no route/action/check/config/routing/scoring/reward/frontend/runtime/GM-facing drift and no partial/fail result edits.

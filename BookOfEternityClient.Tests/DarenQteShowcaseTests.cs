@@ -1029,6 +1029,77 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenPhysicalPressureSuccess_ReadsAsCleanAftermathWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "physical_pressure");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "physical_pressure");
+        var text = action.SuccessText?.Trim() ?? "";
+
+        Assert.Equal("Тяжёлая решётка", beat.Title);
+        Assert.Equal("physical_pressure", chapter.ChapterId);
+        Assert.Equal("Удержать тяжёлую решётку", action.Label);
+        Assert.Equal("physical_pressure_action", action.ActionId);
+        Assert.Equal("MashInput", action.Check.Type);
+        Assert.Equal(Characteristics.Strength, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Equal("timed_rhythm", action.Routing.Success.NextChapterId);
+        Assert.Equal("timed_rhythm", action.Routing.Partial.NextChapterId);
+        Assert.Equal("timed_rhythm", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal(["space"], RequiredStringArray(config, "keys"));
+        Assert.Equal(3200, RequiredInt(config, "durationMs"));
+        Assert.Equal(13, RequiredInt(config, "targetPresses"));
+        Assert.Equal(0.55, RequiredDouble(config, "partialThreshold"), precision: 2);
+
+        Assert.Equal("Железо проседает и бьёт Дарена по плечу, но посох уже свободен от каменной ниши.", action.PartialText);
+        Assert.Equal("Решётка падает на камень с тяжёлым грохотом, и Дарену приходится хватать посох под шум тревоги.", action.FailText);
+
+        Assert.True(text.Length >= 900,
+            "Daren physical_pressure success should be a substantial clean-outcome aftermath insert, not a one-sentence result notification.");
+        Assert.True(CountSentences(text) >= 8,
+            "Daren physical_pressure success should unfold as aftermath prose with several scene sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 4,
+            "Daren physical_pressure success should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("heavy-grate resolution", [["решет", "решёт"], ["последн", "край", "ход", "зубец"], ["удерж", "держ", "выдерж"], ["механизм", "противовес", "пружин"]]),
+            ("Daren body breath and control", [["Дарен"], ["плеч", "ребр", "ладон", "пальц", "кров"], ["дых", "вдох", "выдох"], ["боль", "бол"], ["сдерж", "застав", "не позвол", "удерж"]]),
+            ("staff case niche extraction", [["футляр"], ["посох"], ["ниш"], ["выш", "вывел", "освобод"], ["камн", "стекл", "бархат"]]),
+            ("silence no-crash reduced-risk stakes", [["тиш", "молч"], ["без грох", "без звона", "не удар", "не звяк"], ["тревог", "сигнал"], ["страж", "Лукьян", "дом"], ["след", "улик", "погон"]]),
+            ("next-corridor continuity", [["коридор"], ["кристалл", "пульс", "красн", "ал"], ["следующ", "дальше", "за двер"], ["футляр", "посох"], ["плеч", "ладон", "кров", "боль"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"physical_pressure success {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 0),
+            ("loot", 4),
+            ("pursuit_control", 2),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 0),
+            ("loot", 2),
+            ("pursuit_control", 1),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -4),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("physical_pressure success aftermath", text);
+    }
+
+    [Fact]
     public void DarenTimedRhythm_ReadsAsAlarmPulsePageWithoutMechanicDrift()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -2271,7 +2342,12 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var context = $"{chapterId}/{actionId}/{grade}";
         Assert.False(string.IsNullOrWhiteSpace(value), $"Daren action result '{context}' needs transition prose.");
         var text = value.Trim();
-        Assert.InRange(text.Length, 70, 260);
+        var maxLength = string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(actionId, "physical_pressure_action", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase)
+            ? 2600
+            : 260;
+        Assert.InRange(text.Length, 70, maxLength);
         Assert.True(text.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length >= 8,
             $"Daren action result '{context}' is too terse to carry the scene forward.");
         AssertNoPlayerFacingTechnicalTerms(context, text);
