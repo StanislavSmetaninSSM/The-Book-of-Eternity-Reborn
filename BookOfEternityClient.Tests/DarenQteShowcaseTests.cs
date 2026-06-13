@@ -888,6 +888,82 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenRuneMemorySuccess_ReadsAsCleanRuneAftermathWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "rune_memory");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "rune_memory");
+        var text = action.SuccessText?.Trim() ?? "";
+
+        Assert.Equal("Руны на дверце", beat.Title);
+        Assert.Equal("rune_memory", chapter.ChapterId);
+        Assert.Equal("rune_memory_action", action.ActionId);
+        Assert.Equal("Повторить узор защитных рун", action.Label);
+        Assert.Equal("PatternMemory", action.Check.Type);
+        Assert.Equal(Characteristics.Perception, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Equal("ward_steward_parley", action.Routing.Success.NextChapterId);
+        Assert.Equal("ward_steward_parley", action.Routing.Partial.NextChapterId);
+        Assert.Equal("ward_steward_parley", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal(["q", "w", "e", "space"], RequiredStringArray(config, "alphabet"));
+        Assert.Equal(4, RequiredInt(config, "sequenceLength"));
+        Assert.Equal(2400, RequiredInt(config, "revealMs"));
+        Assert.Equal(6500, RequiredInt(config, "inputTimeoutMs"));
+        Assert.Equal(1, RequiredInt(config, "allowedMistakes"));
+
+        Assert.Equal("Одна руна трескается и оставляет след в стекле, но Дарен удерживает порядок знаков, пока дверь открыта.", action.PartialText);
+        Assert.Equal("Руны вспыхивают тревожным светом, и Дарен понимает, что дом уже запомнил его прикосновение.", action.FailText);
+        Assert.NotEqual(action.SuccessText, action.PartialText);
+        Assert.NotEqual(action.SuccessText, action.FailText);
+        Assert.NotEqual(action.PartialText, action.FailText);
+
+        Assert.True(text.Length >= 900,
+            "Daren rune_memory success should be a substantial clean rune aftermath insert, not a one-sentence result notification.");
+        Assert.True(CountSentences(text) >= 8,
+            "Daren rune_memory success should unfold across several aftermath sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 4,
+            "Daren rune_memory success should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("runed glass door and futlar ward pattern", [["рун"], ["стекл", "дверц"], ["футляр"], ["узор", "последователь", "знак"], ["защит", "вард", "печать"]]),
+            ("Daren precise memory and body control", [["Дарен"], ["памят", "запом", "вспомн", "помн"], ["точн", "без ошиб", "верн", "чист"], ["ладон", "пальц", "рук"], ["дых", "вдох", "выдох", "горл"]]),
+            ("obedient extinguishing runes and cold light", [["гас", "погас", "угас", "потух"], ["свет"], ["син", "голуб", "холод"], ["руна", "знак"], ["подчин", "слуш", "послуш"]]),
+            ("quiet house and reduced alarm evidence risk", [["дом"], ["молч", "тиш", "без крик", "не подня"], ["тревог", "сигнал", "погон"], ["след", "улик", "отпечат"], ["меньше", "стер", "снял", "сглад"]]),
+            ("dust stone metal sensory aftermath", [["пыль"], ["камн", "стен"], ["металл", "бронз", "желез"], ["холод"], ["слуш", "прислуш", "слыш"]]),
+            ("quiet access toward Renara voice", [["дверц", "проход", "откры"], ["футляр"], ["дальше", "следующ", "впер"], ["Ренар"], ["голос"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"rune_memory success {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 0),
+            ("loot", 3),
+            ("pursuit_control", 0),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 0),
+            ("loot", 1),
+            ("pursuit_control", 0),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -3),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("rune_memory success aftermath", text);
+    }
+
+    [Fact]
     public void DarenWardStewardParley_ReadsAsRenaraWardDialoguePageWithoutMechanicDrift()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -2714,6 +2790,9 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var isLongAftermathResult =
             string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "physical_pressure_action", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "rune_memory", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(actionId, "rune_memory_action", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "ward_steward_parley", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "ward_steward_parley_action", StringComparison.OrdinalIgnoreCase) &&
             (string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
