@@ -961,6 +961,81 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenWardStewardParleySuccess_ReadsAsCleanSocialAftermathWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "ward_steward_parley");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "ward_steward_parley");
+        var text = action.SuccessText?.Trim() ?? "";
+
+        Assert.Equal("Голос Ренары", beat.Title);
+        Assert.Equal("ward_steward_parley", chapter.ChapterId);
+        Assert.Equal("ward_steward_parley_action", action.ActionId);
+        Assert.Equal("Ответить Ренаре Вардовой", action.Label);
+        Assert.Equal("PrecisionChoice", action.Check.Type);
+        Assert.Equal(Characteristics.Wisdom, action.Check.PrimaryCharacteristic);
+        Assert.Equal(4, action.Check.BaseDifficulty);
+        Assert.Equal("physical_pressure", action.Routing.Success.NextChapterId);
+        Assert.Equal("physical_pressure", action.Routing.Partial.NextChapterId);
+        Assert.Equal("physical_pressure", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal("false_seal", RequiredString(config, "correctChoiceId"));
+        Assert.Equal(7000, RequiredInt(config, "timeoutMs"));
+        Assert.Equal("fail", RequiredString(config, "timeoutGrade"));
+        var choices = RequiredObjectArray(config, "choices");
+        Assert.Equal(["false_seal", "promise_return", "mock_house"], choices.Select(choice => RequiredString(choice, "id")));
+        Assert.Equal(["success", "partial", "fail"], choices.Select(choice => RequiredString(choice, "grade")));
+        Assert.Equal(["Назвать ложную печать", "Пообещать возврат", "Спорить с домом"], choices.Select(choice => RequiredString(choice, "label")));
+
+        Assert.Equal("Ренара отпускает Дарена с холодным предупреждением: дом подождёт, но голос вора она уже держит в рунах.", action.PartialText);
+        Assert.Equal("Ренара отвечает резким светом; дом узнаёт Дарена как нарушителя, и тревога получает почти человеческую волю.", action.FailText);
+
+        Assert.True(text.Length >= 900,
+            "Daren ward_steward_parley success should be a substantial clean social aftermath insert, not a one-sentence result notification.");
+        Assert.True(CountSentences(text) >= 8,
+            "Daren ward_steward_parley success should unfold across several aftermath sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 4,
+            "Daren ward_steward_parley success should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("Renara ward voice scrutiny", [["Ренар"], ["Вардов", "вард"], ["голос"], ["не подня", "не повыс", "не зов", "не крик", "не тревож"]]),
+            ("Daren controlled false-seal answer", [["Дарен"], ["ложн", "трещ", "стар"], ["печать"], ["ответ", "объясн", "назвал"], ["дых", "горл", "ладон", "пальц", "рук"]]),
+            ("accepted explanation and reduced social pressure", [["приня", "повер", "соглас", "не спор"], ["объясн", "верси", "ответ"], ["Ренар"], ["молч", "тиш", "не стала"]]),
+            ("house quiets extra seal and risk", [["дом"], ["печать", "сигнал"], ["гас", "затих", "молч", "умолк"], ["тревог", "погон", "след", "улик"]]),
+            ("cold glass runes and listening stone", [["стекл", "витрин", "футляр"], ["рун"], ["камн", "пыль", "холод", "свет"], ["слуш", "прислуш"]]),
+            ("continuity toward heavy grate", [["решет", "решёт"], ["тяжел", "тяжёл", "желез"], ["футляр", "ниша", "посох", "коридор"], ["дальше", "следующ", "вперёд"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"ward_steward_parley success {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 0),
+            ("loot", 2),
+            ("pursuit_control", 3),
+            ("evidence", -2),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 0),
+            ("loot", 1),
+            ("pursuit_control", 1),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -2),
+            ("pursuit_control", -3),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("ward_steward_parley success aftermath", text);
+    }
+
+    [Fact]
     public void DarenPhysicalPressure_ReadsAsHeavyGratePageWithoutMechanicDrift()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -2485,8 +2560,13 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var context = $"{chapterId}/{actionId}/{grade}";
         Assert.False(string.IsNullOrWhiteSpace(value), $"Daren action result '{context}' needs transition prose.");
         var text = value.Trim();
-        var maxLength = string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(actionId, "physical_pressure_action", StringComparison.OrdinalIgnoreCase)
+        var isLongAftermathResult =
+            string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(actionId, "physical_pressure_action", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "ward_steward_parley", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(actionId, "ward_steward_parley_action", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase);
+        var maxLength = isLongAftermathResult
             ? 2600
             : 260;
         Assert.InRange(text.Length, 70, maxLength);
