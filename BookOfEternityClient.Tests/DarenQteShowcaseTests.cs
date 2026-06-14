@@ -914,7 +914,6 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal(1, RequiredInt(config, "allowedMistakes"));
 
         Assert.Contains("аккуратно погашенную печать", action.SuccessText);
-        Assert.Equal("Руны вспыхивают тревожным светом, и Дарен понимает, что дом уже запомнил его прикосновение.", action.FailText);
         Assert.NotEqual("Одна руна трескается и оставляет след в стекле, но Дарен удерживает порядок знаков, пока дверь открыта.", text);
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.SuccessText, action.FailText);
@@ -965,6 +964,87 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenRuneMemoryFail_ReadsAsDangerousRuneAftermathWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "rune_memory");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "rune_memory");
+        var text = action.FailText?.Trim() ?? "";
+
+        Assert.Equal("Руны на дверце", beat.Title);
+        Assert.Equal("rune_memory", chapter.ChapterId);
+        Assert.Equal("rune_memory_action", action.ActionId);
+        Assert.Equal("Повторить узор защитных рун", action.Label);
+        Assert.Equal("PatternMemory", action.Check.Type);
+        Assert.Equal(Characteristics.Perception, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Equal("ward_steward_parley", action.Routing.Success.NextChapterId);
+        Assert.Equal("ward_steward_parley", action.Routing.Partial.NextChapterId);
+        Assert.Equal("ward_steward_parley", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal(["q", "w", "e", "space"], RequiredStringArray(config, "alphabet"));
+        Assert.Equal(4, RequiredInt(config, "sequenceLength"));
+        Assert.Equal(2400, RequiredInt(config, "revealMs"));
+        Assert.Equal(6500, RequiredInt(config, "inputTimeoutMs"));
+        Assert.Equal(1, RequiredInt(config, "allowedMistakes"));
+
+        Assert.Contains("аккуратно погашенную печать", action.SuccessText);
+        Assert.Contains("синяя трещина в стекле", action.PartialText);
+        Assert.NotEqual(action.SuccessText, action.FailText);
+        Assert.NotEqual(action.PartialText, action.FailText);
+
+        Assert.True(
+            !string.Equals(
+                "Руны вспыхивают тревожным светом, и Дарен понимает, что дом уже запомнил его прикосновение.",
+                text,
+                StringComparison.Ordinal),
+            "Daren rune_memory fail should not keep the old one-sentence result notification.");
+        Assert.True(text.Length >= 900,
+            "Daren rune_memory fail should be a substantial dangerous rune aftermath insert, not a one-sentence result notification.");
+        Assert.True(CountSentences(text) >= 8,
+            "Daren rune_memory fail should unfold across several aftermath sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 4,
+            "Daren rune_memory fail should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("runed glass door and hostile ward flare", [["рун"], ["стекл", "дверц"], ["футляр"], ["син", "голуб"], ["вспых", "свет"], ["защит", "вард", "печать", "узор"]]),
+            ("Daren failed memory and body reaction", [["Дарен"], ["памят", "запом", "вспомн", "помн"], ["ошиб", "сбил", "лом", "провал", "невер"], ["ладон", "пальц", "рук"], ["дых", "вдох", "выдох", "горл"]]),
+            ("house remembers Daren through mark evidence or heat", [["дом"], ["запом", "помнит", "памят"], ["касани", "тепло", "имя", "отпечат"], ["след", "улик", "метк", "знак"]]),
+            ("alarm witness or pursuit pressure escalates", [["тревог", "сигнал", "крик"], ["страж", "свидетел", "Лукьян", "фонар"], ["погон", "Орвальд", "охот"], ["Ренар"]]),
+            ("dust stone metal silence and listening house", [["пыль"], ["камн", "стен"], ["металл", "бронз", "желез"], ["тиш", "молч"], ["слуш", "прислуш", "слыш"]]),
+            ("Renara continuity after the fail opening", [["Ренар"], ["голос"], ["дальше", "следующ", "впер", "ждал", "готов"], ["вард", "печать", "дом"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"rune_memory fail {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 0),
+            ("loot", 3),
+            ("pursuit_control", 0),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 0),
+            ("loot", 1),
+            ("pursuit_control", 0),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -3),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("rune_memory fail aftermath", text);
+    }
+
+    [Fact]
     public void DarenRuneMemorySuccess_ReadsAsCleanRuneAftermathWithoutMechanicDrift()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -991,7 +1071,6 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal(1, RequiredInt(config, "allowedMistakes"));
 
         Assert.NotEqual("Одна руна трескается и оставляет след в стекле, но Дарен удерживает порядок знаков, пока дверь открыта.", action.PartialText);
-        Assert.Equal("Руны вспыхивают тревожным светом, и Дарен понимает, что дом уже запомнил его прикосновение.", action.FailText);
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.SuccessText, action.FailText);
         Assert.NotEqual(action.PartialText, action.FailText);
@@ -2870,7 +2949,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             string.Equals(chapterId, "rune_memory", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "rune_memory_action", StringComparison.OrdinalIgnoreCase) &&
             (string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(grade, "partial", StringComparison.OrdinalIgnoreCase)) ||
+                string.Equals(grade, "partial", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(grade, "fail", StringComparison.OrdinalIgnoreCase)) ||
             string.Equals(chapterId, "ward_steward_parley", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "ward_steward_parley_action", StringComparison.OrdinalIgnoreCase) &&
             (string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
