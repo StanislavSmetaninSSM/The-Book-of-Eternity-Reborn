@@ -859,7 +859,9 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal(11000, RequiredInt(gradeThresholds, "partialMaxTimeMs"));
         Assert.Equal(2, RequiredInt(gradeThresholds, "partialMaxMistakes"));
 
-        Assert.Equal("Замок сдаётся, но отмычка царапает накладку; Дарен уносит этот след вместе с тревогой.", action.PartialText);
+        Assert.Contains("Дарен", action.PartialText);
+        Assert.Contains("царап", action.PartialText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("наклад", action.PartialText, StringComparison.OrdinalIgnoreCase);
         Assert.Equal("Замок щёлкает слишком громко, оставляя улику на накладке, и Дарен слышит, как за стеной меняется дыхание стражи.", action.FailText);
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.SuccessText, action.FailText);
@@ -907,6 +909,106 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("evidence", 4),
             ("hideout_safety", -2));
         AssertNoPlayerFacingTechnicalTerms("lock_pick success aftermath", text);
+    }
+
+    [Fact]
+    public void DarenLockPickPartial_ReadsAsMixedCabinetAftermathWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "lock_pick");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "lock_pick");
+        var text = action.PartialText?.Trim() ?? "";
+
+        Assert.Equal("Замок кабинета", beat.Title);
+        Assert.Equal("lock_pick", chapter.ChapterId);
+        Assert.Equal("lock_pick_action", action.ActionId);
+        Assert.Equal("Выставить штифты замка", action.Label);
+        Assert.Equal("LockPinSet", action.Check.Type);
+        Assert.Equal(Characteristics.Dexterity, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Equal("rune_memory", action.Routing.Success.NextChapterId);
+        Assert.Equal("rune_memory", action.Routing.Partial.NextChapterId);
+        Assert.Equal("rune_memory", action.Routing.Fail.NextChapterId);
+        Assert.True(
+            FindChapterIndex(route.Offer, "lock_pick") < FindChapterIndex(route.Offer, "rune_memory"),
+            "Daren lock_pick should still bridge directly into the rune-memory beat.");
+
+        var config = RequiredConfig(action);
+        Assert.Equal(3, RequiredInt(config, "pinCount"));
+        var pinWindows = RequiredObjectArray(config, "pinWindows");
+        Assert.Equal([1, 2, 3], pinWindows.Select(pin => RequiredInt(pin, "pin")));
+        Assert.Equal([18, 44, 68], pinWindows.Select(pin => RequiredInt(pin, "min")));
+        Assert.Equal([32, 58, 82], pinWindows.Select(pin => RequiredInt(pin, "max")));
+        Assert.Equal(["нижний штифт", "средний штифт", "верхний штифт"], pinWindows.Select(pin => RequiredString(pin, "label")));
+        Assert.Equal(12000, RequiredInt(config, "timerMs"));
+        Assert.Equal(6, RequiredInt(config, "pickDurability"));
+        Assert.Equal(2, RequiredInt(config, "maxMistakes"));
+        Assert.Equal(3, RequiredInt(config, "pinDriftPerSecond"));
+        Assert.Equal("q", RequiredString(config, "adjustKey"));
+        Assert.Equal("space", RequiredString(config, "setKey"));
+        Assert.Equal("штифт", RequiredString(config, "pinLabel"));
+        Assert.Equal("прочность отмычки", RequiredString(config, "durabilityLabel"));
+        Assert.Equal("замок шумит", RequiredString(config, "warningLabel"));
+        var gradeThresholds = RequiredObject(config, "gradeThresholds");
+        Assert.Equal(6500, RequiredInt(gradeThresholds, "successMaxTimeMs"));
+        Assert.Equal(0, RequiredInt(gradeThresholds, "successMaxMistakes"));
+        Assert.Equal(11000, RequiredInt(gradeThresholds, "partialMaxTimeMs"));
+        Assert.Equal(2, RequiredInt(gradeThresholds, "partialMaxMistakes"));
+
+        Assert.Contains("Чистая работа оставляет после себя не победу, а отсутствие истории.", action.SuccessText);
+        Assert.Contains("кабинет, который всё ещё верил, что его замок никто не будил.", action.SuccessText);
+        Assert.Equal("Замок щёлкает слишком громко, оставляя улику на накладке, и Дарен слышит, как за стеной меняется дыхание стражи.", action.FailText);
+        var (_, runeAction) = RequiredChapterAction(route.Offer, "rune_memory");
+        Assert.Contains("аккуратно погашенную печать", runeAction.SuccessText);
+        Assert.Contains("синяя трещина в стекле", runeAction.PartialText);
+        Assert.Contains("дом, который держит в памяти имя Дарена", runeAction.FailText);
+
+        Assert.NotEqual("Замок сдаётся, но отмычка царапает накладку; Дарен уносит этот след вместе с тревогой.", text);
+        Assert.NotEqual(action.SuccessText, action.PartialText);
+        Assert.NotEqual(action.SuccessText, action.FailText);
+        Assert.NotEqual(action.PartialText, action.FailText);
+
+        Assert.True(text.Length >= 900,
+            "Daren lock_pick partial should be a substantial mixed cabinet-lock aftermath insert, not a one-sentence result notification.");
+        Assert.True(CountSentences(text) >= 8,
+            "Daren lock_pick partial should unfold across several aftermath sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 4,
+            "Daren lock_pick partial should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("pins and pick craft", [["штифт"], ["отмыч", "крюч", "щуп"], ["натяж", "поворот", "подд", "выстав"], ["замок", "скваж"]]),
+            ("Daren breath body and hand control", [["Дарен"], ["ладон", "пальц", "рук"], ["дых", "вдох", "выдох", "горл"], ["плеч", "сердц", "пульс", "ребр"]]),
+            ("partial trace cost and later evidence", [["царап", "след", "улик", "шрам"], ["наклад", "пластин", "бронз"], ["тревог", "сомнен", "задерж", "цена", "долг", "опозд"], ["страж", "Лукьян", "свидетел", "утр"]]),
+            ("cabinet opens despite the cost", [["кабин"], ["двер", "створк", "порог"], ["откры", "подал", "впуст", "шагнул"], ["тиш", "молч", "скрип", "щелк", "звук"]]),
+            ("next rune and futlar continuity", [["футляр"], ["рун"], ["дверц"], ["посох"], ["дальше", "следующ", "впер"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"lock_pick partial {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 3),
+            ("loot", 0),
+            ("pursuit_control", 0),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 1),
+            ("loot", 0),
+            ("pursuit_control", 0),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -2),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("lock_pick partial aftermath", text);
     }
 
     [Fact]
@@ -3037,7 +3139,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var isLongAftermathResult =
             string.Equals(chapterId, "lock_pick", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "lock_pick_action", StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
+            (string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(grade, "partial", StringComparison.OrdinalIgnoreCase)) ||
             string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "physical_pressure_action", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "rune_memory", StringComparison.OrdinalIgnoreCase) &&
