@@ -676,9 +676,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.NotEqual(
             "Один страж шевелится от скрипа; сомнение уже тянется к фонарю, но Дарен удерживает тишину до открытых глаз.",
             text);
-        Assert.Equal(
-            "Доска отвечает резким треском, и Дарен видит, как в дальнем крыле поднимается тревожный фонарь со свидетелем.",
-            action.FailText);
+        Assert.False(string.IsNullOrWhiteSpace(action.FailText),
+            "Daren stealth_crossing fail aftermath should remain authored while partial semantics stay distinct.");
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.PartialText, action.FailText);
 
@@ -726,6 +725,93 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenStealthCrossingFail_ReadsAsDangerousGalleryAftermathWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "stealth_crossing");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "stealth_crossing");
+        var text = action.FailText?.Trim() ?? "";
+
+        Assert.Equal("Галерея без звука", beat.Title);
+        Assert.Equal("stealth_crossing", chapter.ChapterId);
+        Assert.Equal("stealth_crossing_action", action.ActionId);
+        Assert.Equal("Пройти галерею без шума", action.Label);
+        Assert.Equal("StealthNoise", action.Check.Type);
+        Assert.Equal(Characteristics.Dexterity, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Equal("guard_interrogation", action.Routing.Success.NextChapterId);
+        Assert.Equal("guard_interrogation", action.Routing.Partial.NextChapterId);
+        Assert.Equal("guard_interrogation", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal(6500, RequiredInt(config, "durationMs"));
+        Assert.Equal(14, RequiredInt(config, "startingNoise"));
+        Assert.Equal(70, RequiredInt(config, "dangerThreshold"));
+        Assert.Equal(9, RequiredInt(config, "noiseDriftPerSecond"));
+        Assert.Equal(12, RequiredInt(config, "recoveryPerInput"));
+        Assert.Equal(800, RequiredInt(config, "allowedOverThresholdMs"));
+        Assert.Equal("space", RequiredString(config, "recoveryKey"));
+        Assert.Equal("приглушить шаг", RequiredString(config, "recoveryLabel"));
+        Assert.Equal("страж слышит шум", RequiredString(config, "warningLabel"));
+        var thresholds = RequiredObject(config, "gradeThresholds");
+        Assert.Equal(48, RequiredInt(thresholds, "successMaxNoise"));
+        Assert.Equal(0, RequiredInt(thresholds, "successMaxOverThresholdMs"));
+        Assert.Equal(76, RequiredInt(thresholds, "partialMaxNoise"));
+        Assert.Equal(850, RequiredInt(thresholds, "partialMaxOverThresholdMs"));
+
+        Assert.NotEqual(
+            "Доска отвечает резким треском, и Дарен видит, как в дальнем крыле поднимается тревожный фонарь со свидетелем.",
+            text);
+        Assert.Contains("Дарен перенёс вес с последней опасной доски", action.SuccessText);
+        Assert.Contains("Дарен успел погасить скрип не сразу", action.PartialText);
+        Assert.NotEqual(action.SuccessText, action.PartialText);
+        Assert.NotEqual(action.SuccessText, action.FailText);
+        Assert.NotEqual(action.PartialText, action.FailText);
+
+        Assert.True(text.Length >= 900,
+            "Daren stealth_crossing fail should be a substantial dangerous gallery aftermath insert, not a one-sentence result notification.");
+        Assert.True(CountSentences(text) >= 8,
+            "Daren stealth_crossing fail should unfold across several aftermath sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 4,
+            "Daren stealth_crossing fail should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("gallery portraits dust and listening surfaces", [["галер"], ["портрет"], ["рам", "стекл"], ["пыл", "воздух"], ["слуш", "тиш", "молч"], ["портьер", "занавес", "штор", "двер"]]),
+            ("floorboard parquet and noise break", [["доск", "пол", "паркет"], ["треск", "скрип", "шум", "звук", "хруст"], ["слом", "сорвал", "рван", "выдал", "разбуд"]]),
+            ("Daren breath body hand and boot control failing", [["Дарен"], ["дых", "вдох", "выдох"], ["ладон", "пальц", "рук"], ["сапог", "ступн", "подошв"], ["вес", "колен", "плеч", "тело", "согнул"]]),
+            ("guard lantern witness alarm pursuit and evidence pressure", [["страж", "караул", "Лукьян"], ["фонар", "свет", "луч"], ["свидетел", "увид", "запом"], ["тревог", "погон", "крик", "оклик"], ["след", "улик", "отпечат", "пыл"]]),
+            ("continued passage to service-door keykeeper under danger", [["добрал", "миновал", "выбрал", "проскольз", "рванул"], ["служебн"], ["двер", "порог"], ["коридор"], ["ключник", "Лукьян"], ["опас", "давл", "спеш", "обход", "подступ"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"stealth_crossing fail {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 5),
+            ("loot", 0),
+            ("pursuit_control", 0),
+            ("evidence", -2),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 2),
+            ("loot", 0),
+            ("pursuit_control", 0),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -5),
+            ("loot", -2),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("stealth_crossing fail aftermath", text);
+    }
+
+    [Fact]
     public void DarenStealthCrossingSuccess_ReadsAsCleanGalleryAftermathWithoutMechanicDrift()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -760,9 +846,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal(76, RequiredInt(thresholds, "partialMaxNoise"));
         Assert.Equal(850, RequiredInt(thresholds, "partialMaxOverThresholdMs"));
 
-        Assert.Equal(
-            "Доска отвечает резким треском, и Дарен видит, как в дальнем крыле поднимается тревожный фонарь со свидетелем.",
-            action.FailText);
+        Assert.False(string.IsNullOrWhiteSpace(action.FailText),
+            "Daren stealth_crossing fail aftermath should remain authored while success semantics stay distinct.");
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.SuccessText, action.FailText);
         Assert.NotEqual(action.PartialText, action.FailText);
@@ -3720,7 +3805,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             (string.Equals(chapterId, "stealth_crossing", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "stealth_crossing_action", StringComparison.OrdinalIgnoreCase) &&
             (string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(grade, "partial", StringComparison.OrdinalIgnoreCase))) ||
+                string.Equals(grade, "partial", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(grade, "fail", StringComparison.OrdinalIgnoreCase))) ||
             (string.Equals(chapterId, "lock_pick", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "lock_pick_action", StringComparison.OrdinalIgnoreCase) &&
             (string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
