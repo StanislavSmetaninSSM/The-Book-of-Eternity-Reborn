@@ -682,7 +682,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ],
             choices.Select(choice => RequiredString(choice, "hint")));
 
-        Assert.Equal("Лукьян пропускает Дарена с сомнением, но его взгляд цепляется за плащ и уже ищет вторую встречу.", action.PartialText);
+        Assert.False(string.IsNullOrWhiteSpace(action.PartialText));
+        Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.Equal("Лукьян поднимает фонарь к лицу Дарена, и в галерее рождается свидетель, которого нельзя назвать случайным.", action.FailText);
 
         Assert.True(text.Length >= 1500,
@@ -776,7 +777,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ],
             choices.Select(choice => RequiredString(choice, "hint")));
 
-        Assert.Equal("Лукьян пропускает Дарена с сомнением, но его взгляд цепляется за плащ и уже ищет вторую встречу.", action.PartialText);
+        Assert.False(string.IsNullOrWhiteSpace(action.PartialText));
         Assert.Equal("Лукьян поднимает фонарь к лицу Дарена, и в галерее рождается свидетель, которого нельзя назвать случайным.", action.FailText);
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.SuccessText, action.FailText);
@@ -827,6 +828,105 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("evidence", 4),
             ("hideout_safety", -2));
         AssertNoPlayerFacingTechnicalTerms("guard_interrogation success aftermath", text);
+    }
+
+    [Fact]
+    public void DarenGuardInterrogationPartial_ReadsAsMixedKeykeeperAftermathWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "guard_interrogation");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "guard_interrogation");
+        var text = action.PartialText?.Trim() ?? "";
+
+        Assert.Equal("Ключник в галерее", beat.Title);
+        Assert.Equal("guard_interrogation", chapter.ChapterId);
+        Assert.Equal("guard_interrogation_action", action.ActionId);
+        Assert.Equal("Успокоить Лукьяна у служебной двери", action.Label);
+        Assert.Equal("PrecisionChoice", action.Check.Type);
+        Assert.Equal(Characteristics.Persuasion, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Equal("lock_pick", action.Routing.Success.NextChapterId);
+        Assert.Equal("lock_pick", action.Routing.Partial.NextChapterId);
+        Assert.Equal("lock_pick", action.Routing.Fail.NextChapterId);
+        Assert.True(
+            FindChapterIndex(route.Offer, "guard_interrogation") < FindChapterIndex(route.Offer, "lock_pick"),
+            "Daren guard_interrogation should still bridge directly into the cabinet lock beat.");
+
+        var config = RequiredConfig(action);
+        Assert.Equal("mira_phrase", RequiredString(config, "correctChoiceId"));
+        Assert.Equal(7000, RequiredInt(config, "timeoutMs"));
+        Assert.Equal("fail", RequiredString(config, "timeoutGrade"));
+        var choices = RequiredObjectArray(config, "choices");
+        Assert.Equal(["mira_phrase", "late_order", "hide_face"], choices.Select(choice => RequiredString(choice, "id")));
+        Assert.Equal(["success", "partial", "fail"], choices.Select(choice => RequiredString(choice, "grade")));
+        Assert.Equal(
+            ["Передать фразу Миры", "Сослаться на поздний приказ", "Спрятать лицо"],
+            choices.Select(choice => RequiredString(choice, "label")));
+        Assert.Equal(
+            [
+                "Дарен говорит тихую фразу, которую Лукьян ждал от ночной связной.",
+                "Дарен изображает посыльного с приказом по дому.",
+                "Дарен пытается пройти мимо без ответа."
+            ],
+            choices.Select(choice => RequiredString(choice, "description")));
+        Assert.Equal(
+            [
+                "Фраза превращает ключника в сонного союзника.",
+                "Приказ звучит правдоподобно, но Лукьян запомнит лицо.",
+                "Молчание для стража громче любого скрипа."
+            ],
+            choices.Select(choice => RequiredString(choice, "hint")));
+
+        Assert.Contains("Зелёная нить не звенит на чужом кольце", action.SuccessText);
+        Assert.Contains("Проход открылся чисто", action.SuccessText);
+        Assert.Equal("Лукьян поднимает фонарь к лицу Дарена, и в галерее рождается свидетель, которого нельзя назвать случайным.", action.FailText);
+        Assert.NotEqual("Лукьян пропускает Дарена с сомнением, но его взгляд цепляется за плащ и уже ищет вторую встречу.", text);
+        Assert.NotEqual(action.SuccessText, action.PartialText);
+        Assert.NotEqual(action.SuccessText, action.FailText);
+        Assert.NotEqual(action.PartialText, action.FailText);
+
+        Assert.True(text.Length >= 900,
+            "Daren guard_interrogation partial should be a substantial mixed keykeeper aftermath insert, not a one-sentence result notification.");
+        Assert.True(CountSentences(text) >= 8,
+            "Daren guard_interrogation partial should unfold across several aftermath sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 4,
+            "Daren guard_interrogation partial should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("late order and imperfect social proof", [["приказ", "поручен", "посыльн"], ["Мир", "фраз", "имен", "связ"], ["правдопод", "запозд", "поздн", "непол", "крив"], ["ответ", "сказал", "произн", "голос"]]),
+            ("Lukyan lantern keys voice and breath", [["Лукьян"], ["фонар"], ["ключ", "связк", "кольц"], ["голос", "хрип", "дых", "выдох"], ["стар", "сед", "ладон", "пальц"]]),
+            ("Daren face voice and body control", [["Дарен"], ["лицо", "капюш", "плащ", "щёк"], ["голос", "сказал", "произн"], ["дых", "плеч", "ладон", "рук"], ["ровн", "спокой", "сдерж", "не улыб"]]),
+            ("sleeping guard gallery silence and service door", [["галер"], ["страж", "карауль"], ["сон", "спящ", "храп"], ["служебн"], ["двер", "порог"], ["тиш", "молч"]]),
+            ("passage with lingering witness evidence risk", [["пропуст", "прош", "проход", "отступ", "отвор"], ["сомнен", "подозр", "недовер"], ["запом", "памят", "лицо", "плащ", "деталь"], ["журнал", "запис", "строк", "помет", "свидетел", "след"], ["потом", "утр", "позже", "втор", "задерж"]]),
+            ("cabinet corridor continuity", [["коридор"], ["кабин"], ["замок", "скваж"], ["дальше", "следующ", "впер"], ["за двер", "позади", "за спин"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"guard_interrogation partial {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 3),
+            ("loot", 0),
+            ("pursuit_control", 0),
+            ("evidence", -2),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 1),
+            ("loot", 0),
+            ("pursuit_control", 0),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -2),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("guard_interrogation partial aftermath", text);
     }
 
     [Fact]
@@ -3346,7 +3446,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
                 string.Equals(grade, "fail", StringComparison.OrdinalIgnoreCase))) ||
             (string.Equals(chapterId, "guard_interrogation", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "guard_interrogation_action", StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase)) ||
+            (string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(grade, "partial", StringComparison.OrdinalIgnoreCase))) ||
             string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "physical_pressure_action", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "rune_memory", StringComparison.OrdinalIgnoreCase) &&
