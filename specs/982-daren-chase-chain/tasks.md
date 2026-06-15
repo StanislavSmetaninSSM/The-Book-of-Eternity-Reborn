@@ -39,7 +39,7 @@
 
 - [X] T017 Independent review of #982 implementation and literary quality bar.
 - [X] T018 Create/update PR with local verification evidence and parent #955 scope boundary.
-- [ ] T019 Squash-merge PR after local gates and review, using local verification rather than GitHub Actions.
+- [X] T019 Squash-merge PR after local gates and review, using local verification rather than GitHub Actions.
 - [ ] T020 Comment closure evidence on #982, close as completed, confirm issue state closed.
 - [ ] T021 Clean up worktree/branches and report next target.
 
@@ -65,3 +65,6 @@
 - T017 Hermes fresh gates before independent review: Spec Kit prerequisite resolved `specs/982-daren-chase-chain`; focused Daren `82/82` passed; affected Daren/QTE/docs/browser slice `351/351` passed; client build `0 warnings / 0 errors`; test build `0 warnings / 0 errors`; `git diff --check origin/main...HEAD` clean; static/prose scans `NO_MATCHES`.
 - T017 independent review: detached Codex review run `E:/Games/codex-runs/20260616-030507-review-boe-982-daren-chase-chain`, worktree `E:/Games/worktrees/boe-982-daren-chase-chain-review-20260616-030507`, verdict `APPROVED`; Critical/Important/Minor findings: none. Review verified expected file scope, beat order, `chase_chain` route/action contract, prose metrics, no technical/meta leakage, and a focused guard passed (`1/1`).
 - T018 PR evidence: PR #1051 was created for `work/982-daren-chase-chain`, read back as `OPEN` / `CLEAN`, with closing references limited to #982. PR body states GitHub Actions are not used/required and lists local gates plus approved independent review; parent #955 and sibling issues are mentioned only as non-closing references.
+- T019 merge evidence: PR #1051 was squash-merged as `512434ec9c11206765281dcac4cec4321868ca91`, and GitHub auto-closed #982 as `CLOSED` / `COMPLETED`.
+- T019 post-merge CRLF follow-up: primary Windows `main` verification initially failed `DarenChapters_HaveLiterarySceneProseForEveryBeat` with `Actual: 3618` over the `3600` cap. Follow-up branch `fix/982-daren-chase-chain-crlf` shortened only two `chase_chain` prose phrases, leaving mechanics unchanged; focused Daren `82/82`, affected Daren/QTE/docs/browser slice `351/351`, `git diff --check`, static scan, and refined prose/meta scan all passed after the trim.
+- T019 fix re-review: detached Codex re-review run `E:/Games/codex-runs/20260616-032342-rereview-boe-982-daren-chase-chain-crlf`, worktree `E:/Games/worktrees/boe-982-daren-chase-chain-crlf-rereview-20260616-032342`, verdict `APPROVED`; Critical/Important/Minor findings: none. Review measured CRLF runtime length `3576/3600`, confirmed mechanics unchanged, and reran focused/affected gates (`82/82`, `351/351`).
