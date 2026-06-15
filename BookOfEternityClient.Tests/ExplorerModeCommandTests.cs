@@ -1265,6 +1265,115 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         return _fs.WriteFileAtomicAsync(relativePath, json.Replace("\n", Environment.NewLine));
     }
 
+    private async Task SeedRichMortalCombatFilesAsync()
+    {
+        await WriteRawJsonAsync("game_state/combat/enemies.json", """
+        {
+          "enemiesData": [
+            {
+              "enemyId": "shadow_messenger",
+              "name": "Теневой посыльный",
+              "type": "elite",
+              "status": "hostile",
+              "currentHealth": 18,
+              "maxHealth": 30,
+              "currentPoise": 4,
+              "maxPoise": 10,
+              "intent": "сорвать концентрацию мага",
+              "targetPriority": "caster",
+              "description": "Скользит между колоннами [red]без права на разметку[/].",
+              "activeDebuffs": [
+                {
+                  "effectType": "burn",
+                  "value": "-2 HP/ход",
+                  "duration": 2,
+                  "sourceSkill": "серебряная стрела",
+                  "effectDescription": "Горит после серебряной стрелы."
+                }
+              ],
+              "actions": [
+                {
+                  "actionName": "Теневой выпад",
+                  "actionCost": "main",
+                  "effects": [
+                    {
+                      "effectType": "damage",
+                      "value": 7,
+                      "targetType": "single_enemy",
+                      "effectDescription": "Удар тенью по открытому боку."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        await WriteRawJsonAsync("game_state/combat/allies.json", """
+        {
+          "alliesData": [
+            {
+              "allyId": "rina_guard",
+              "name": "Рина из Серебряной стражи",
+              "role": "щит",
+              "status": "wounded",
+              "currentHealth": 22,
+              "maxHealth": 28,
+              "currentPoise": 7,
+              "maxPoise": 12,
+              "intent": "защищает мага",
+              "description": "Держит линию у разбитой арки.",
+              "activeBuffs": [
+                {
+                  "effectType": "inspire",
+                  "value": "+1 стойкость",
+                  "duration": 1,
+                  "sourceSkill": "Боевой клич",
+                  "effectDescription": "Боевой клич держит строй."
+                }
+              ],
+              "actions": [
+                {
+                  "actionName": "Прикрыть щитом",
+                  "actionCost": "fast",
+                  "effects": [
+                    {
+                      "effectType": "guard",
+                      "value": "+2 защита",
+                      "targetType": "ally",
+                      "effectDescription": "Закрывает союзника щитом."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        await WriteRawJsonAsync("game_state/combat/combat_log.json", """
+        {
+          "entries": [
+            {
+              "entryId": "log_round_2",
+              "round": 2,
+              "turn": 5,
+              "participants": [
+                "Теневой посыльный",
+                "Рина из Серебряной стражи"
+              ],
+              "summary": "Рина сбила посыльного с фланга.",
+              "result": "Теневой посыльный оглушён и теряет быстрое действие.",
+              "consequences": [
+                "Союзники получают окно для отхода."
+              ]
+            }
+          ]
+        }
+        """);
+    }
+
 
     private string BuildConsoleDiagnostics(string scenario)
     {

@@ -139,11 +139,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             CommandKind.Locations => await BuildLocations(commandToken, fs),
             CommandKind.Transport => await BuildTransport(commandToken, fs),
             CommandKind.Effects => await BuildEffects(commandToken, fs, stateManager),
-            CommandKind.Combat => await BuildBundle(commandToken, fs, "Бой", [
-                new("game_state/combat/enemies.json", "enemiesData|enemies", "Врагов"),
-                new("game_state/combat/allies.json", "alliesData|allies", "Союзников"),
-                new("game_state/combat/combat_log.json", "combat_log_markdown|entries", "Записей журнала")
-            ]),
+            CommandKind.Combat => await BuildCombat(normalizedCommand, fs),
             CommandKind.Weather => await BuildBundle(commandToken, fs, "Время и погода", [
                 new("game_state/world/world_time.json", "timeOfDay|currentTime", "Время"),
                 new("game_state/world/weather.json", "tendency|currentState", "Погода"),
@@ -973,6 +969,779 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {read.Path}. {read.Error}"));
     }
 
+    private static async Task<ExplorerCommandResult> BuildCombat(string command, FileSystemManager fs)
+    {
+        var state = new CombatState(
+            await ReadJson(fs, "game_state/combat/enemies.json"),
+            await ReadJson(fs, "game_state/combat/allies.json"),
+            await ReadJson(fs, "game_state/combat/combat_log.json"));
+        var enemies = EnumerateCombatants(state.Enemies.Node, CombatantKind.Enemy).ToList();
+        var allies = EnumerateCombatants(state.Allies.Node, CombatantKind.Ally).ToList();
+        var logEntries = EnumerateCombatLogEntries(state.Log.Node).ToList();
+        var request = ParseCombatDetailRequest(ExtractCommandRemainder(command));
+
+        if (request.Kind != CombatDetailKind.Overview)
+            return BuildCombatDetail(command, state, enemies, allies, logEntries, request);
+
+        var blocks = new List<UiBlock>
+        {
+            new UiTableBlock
+            {
+                Title = "Боевая обстановка",
+                Columns = ["Раздел", "Состояние"],
+                Rows =
+                [
+                    new UiTableRow { Cells = ["Враги", DescribeCombatCount(enemies.Count, "враг", "врага", "врагов")] },
+                    new UiTableRow { Cells = ["Союзники", DescribeCombatCount(allies.Count, "союзник", "союзника", "союзников")] },
+                    new UiTableRow { Cells = ["Боевой журнал", DescribeCombatCount(logEntries.Count, "запись", "записи", "записей")] }
+                ]
+            }
+        };
+
+        if (enemies.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Враги",
+                Columns = ["Враг", "Состояние", "Намерение", "Подробно"],
+                Rows = enemies
+                    .Select(static combatant => new UiTableRow
+                    {
+                        Cells =
+                        [
+                            combatant.Name,
+                            DescribeCombatantOverview(combatant),
+                            EmptyFallback(DescribeCombatantIntent(combatant.Node)),
+                            BuildCombatDetailCommand(CombatantKind.Enemy, combatant.Selector)
+                        ]
+                    })
+                    .ToList()
+            });
+        }
+
+        if (allies.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Союзники",
+                Columns = ["Союзник", "Состояние", "Действие", "Подробно"],
+                Rows = allies
+                    .Select(static combatant => new UiTableRow
+                    {
+                        Cells =
+                        [
+                            combatant.Name,
+                            DescribeCombatantOverview(combatant),
+                            EmptyFallback(DescribeCombatantIntent(combatant.Node)),
+                            BuildCombatDetailCommand(CombatantKind.Ally, combatant.Selector)
+                        ]
+                    })
+                    .ToList()
+            });
+        }
+
+        if (logEntries.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Боевой журнал",
+                Columns = ["Запись", "Событие", "Подробно"],
+                Rows = logEntries
+                    .Take(10)
+                    .Select(static entry => new UiTableRow
+                    {
+                        Cells =
+                        [
+                            entry.Title,
+                            EmptyFallback(entry.Summary),
+                            BuildCombatLogDetailCommand(entry.Selector)
+                        ]
+                    })
+                    .ToList()
+            });
+        }
+
+        AddCombatReadWarnings(blocks, state);
+
+        if (blocks.Count == 1 && enemies.Count == 0 && allies.Count == 0 && logEntries.Count == 0)
+            blocks.Add(Message(UiNotificationSeverity.Info, "Бой", "Нет данных о бое. Вы не в сражении."));
+
+        AddCombatRawState(blocks, state.Enemies, "Полная запись врагов");
+        AddCombatRawState(blocks, state.Allies, "Полная запись союзников");
+        AddCombatRawState(blocks, state.Log, "Полный боевой журнал");
+        return Completed(command, blocks, BuildCombatOverviewActions(enemies, allies, logEntries));
+    }
+
+    private static ExplorerCommandResult BuildCombatDetail(
+        string command,
+        CombatState state,
+        IReadOnlyList<CombatantSnapshot> enemies,
+        IReadOnlyList<CombatantSnapshot> allies,
+        IReadOnlyList<CombatLogSnapshot> logEntries,
+        CombatDetailRequest request)
+    {
+        var blocks = new List<UiBlock>();
+        switch (request.Kind)
+        {
+            case CombatDetailKind.Enemy:
+            {
+                var enemy = FindCombatant(enemies, request.Selector);
+                if (enemy == null)
+                    blocks.Add(Message(UiNotificationSeverity.Warning, "Враг не найден", "Такой враг не отмечен в текущей боевой обстановке."));
+                else
+                    blocks.Add(BuildCombatantDetailPanel(enemy, "Враг"));
+                break;
+            }
+            case CombatDetailKind.Ally:
+            {
+                var ally = FindCombatant(allies, request.Selector);
+                if (ally == null)
+                    blocks.Add(Message(UiNotificationSeverity.Warning, "Союзник не найден", "Такой союзник не отмечен в текущей боевой обстановке."));
+                else
+                    blocks.Add(BuildCombatantDetailPanel(ally, "Союзник"));
+                break;
+            }
+            case CombatDetailKind.Log:
+            {
+                var entry = FindCombatLogEntry(logEntries, request.Selector);
+                if (entry == null)
+                    blocks.Add(Message(UiNotificationSeverity.Warning, "Запись боя не найдена", "Такая запись не найдена в боевом журнале."));
+                else
+                    blocks.Add(BuildCombatLogDetailPanel(entry));
+                break;
+            }
+            case CombatDetailKind.Unknown:
+                blocks.Add(Message(
+                    UiNotificationSeverity.Warning,
+                    "Бой",
+                    "Не удалось понять, что осмотреть. Используйте /бой враг <метка>, /бой союзник <метка> или /бой журнал <метка>."));
+                break;
+        }
+
+        AddCombatReadWarnings(blocks, state);
+        blocks.Add(new UiTextBlock { Text = "Вернуться к обзору можно командой /бой.", Tone = UiTone.Muted });
+        return Completed(command, blocks, [
+            new UiAction
+            {
+                Id = "combat-back",
+                Label = "Назад к боевой обстановке",
+                Command = "/бой",
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false
+            }
+        ]);
+    }
+
+    private static UiPanelBlock BuildCombatantDetailPanel(CombatantSnapshot combatant, string titlePrefix)
+    {
+        var detailItems = new List<UiKeyValueItem>
+        {
+            new() { Key = "Состояние", Value = EmptyFallback(DescribeCombatantStatus(combatant.Node)) },
+            new() { Key = "Роль / угроза", Value = EmptyFallback(DescribeCombatantRole(combatant.Node)) },
+            new() { Key = "Здоровье", Value = EmptyFallback(DescribeCombatantHealth(combatant.Node)) },
+            new() { Key = "Стойкость", Value = EmptyFallback(DescribeCombatantPoise(combatant.Node)) },
+            new() { Key = "Намерение", Value = EmptyFallback(DescribeCombatantIntent(combatant.Node)) }
+        };
+
+        var description = FirstCombatNodeString(combatant.Node, "description", "notes", "summary");
+        if (!string.IsNullOrWhiteSpace(description))
+            detailItems.Add(new UiKeyValueItem { Key = "Заметки", Value = description });
+
+        var blocks = new List<UiBlock>
+        {
+            new UiKeyValueGridBlock { Items = detailItems }
+        };
+
+        var effectRows = BuildCombatEffectRows(combatant.Node);
+        if (effectRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Эффекты",
+                Columns = ["Раздел", "Эффект", "Сила", "Длительность", "Источник"],
+                Rows = effectRows
+            });
+        }
+
+        var actionRows = BuildCombatActionRows(combatant.Node);
+        if (actionRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Действия",
+                Columns = ["Действие", "Цена", "Эффект"],
+                Rows = actionRows
+            });
+        }
+
+        return new UiPanelBlock
+        {
+            Title = $"{titlePrefix}: {combatant.Name}",
+            Blocks = blocks
+        };
+    }
+
+    private static UiPanelBlock BuildCombatLogDetailPanel(CombatLogSnapshot entry)
+    {
+        var items = new List<UiKeyValueItem>
+        {
+            new() { Key = "Событие", Value = EmptyFallback(entry.Summary) }
+        };
+
+        if (!string.IsNullOrWhiteSpace(entry.Turn))
+            items.Add(new UiKeyValueItem { Key = "Ход", Value = entry.Turn });
+        if (entry.Participants.Count > 0)
+            items.Add(new UiKeyValueItem { Key = "Участники", Value = string.Join(", ", entry.Participants) });
+        if (!string.IsNullOrWhiteSpace(entry.Result))
+            items.Add(new UiKeyValueItem { Key = "Итог", Value = entry.Result });
+        if (entry.Consequences.Count > 0)
+            items.Add(new UiKeyValueItem { Key = "Последствия", Value = string.Join("; ", entry.Consequences) });
+
+        return new UiPanelBlock
+        {
+            Title = $"Запись боя: {entry.Title}",
+            Blocks = [new UiKeyValueGridBlock { Items = items }]
+        };
+    }
+
+    private static List<UiTableRow> BuildCombatEffectRows(JsonObject combatant)
+    {
+        var rows = new List<UiTableRow>();
+        AddCombatEffectRows(rows, combatant["activeBuffs"] as JsonArray, "Усиление");
+        AddCombatEffectRows(rows, combatant["activeDebuffs"] as JsonArray, "Помеха");
+        AddCombatEffectRows(rows, combatant["effects"] as JsonArray, "Эффект");
+        AddCombatEffectRows(rows, combatant["statusEffects"] as JsonArray, "Состояние");
+        return rows;
+    }
+
+    private static void AddCombatEffectRows(List<UiTableRow> rows, JsonArray? effects, string section)
+    {
+        if (effects == null)
+            return;
+
+        foreach (var effect in effects.OfType<JsonObject>())
+        {
+            var source = FirstCombatNodeString(effect, "sourceSkill", "source");
+            var note = FirstCombatNodeString(effect, "effectDescription", "description");
+            rows.Add(new UiTableRow
+            {
+                Cells =
+                [
+                    section,
+                    DescribeCombatEffectType(FirstCombatNodeString(effect, "effectType", "type", "name", "effectName", "description")),
+                    EmptyFallback(FirstCombatNodeString(effect, "value", "amount", "effectValue")),
+                    EmptyFallback(FirstCombatNodeString(effect, "duration", "expiresIn", "remainingTurns")),
+                    EmptyFallback(JoinCombatDetails(source, note))
+                ]
+            });
+        }
+    }
+
+    private static List<UiTableRow> BuildCombatActionRows(JsonObject combatant)
+    {
+        var actions = combatant["actions"] as JsonArray;
+        if (actions == null)
+            return [];
+
+        var rows = new List<UiTableRow>();
+        foreach (var action in actions.OfType<JsonObject>())
+        {
+            rows.Add(new UiTableRow
+            {
+                Cells =
+                [
+                    EmptyFallback(FirstCombatNodeString(action, "actionName", "name", "title")),
+                    DescribeCombatActionCost(FirstCombatNodeString(action, "actionCost", "cost")),
+                    DescribeCombatActionEffects(action)
+                ]
+            });
+        }
+
+        return rows;
+    }
+
+    private static string DescribeCombatActionEffects(JsonObject action)
+    {
+        if (action["effects"] is not JsonArray effects || effects.Count == 0)
+            return EmptyFallback(FirstCombatNodeString(action, "description", "effectDescription", "summary"));
+
+        var parts = new List<string>();
+        foreach (var effect in effects.OfType<JsonObject>())
+        {
+            var type = DescribeCombatEffectType(FirstCombatNodeString(effect, "effectType", "type", "name"));
+            var value = FirstCombatNodeString(effect, "value", "amount");
+            var target = DescribeCombatTarget(FirstCombatNodeString(effect, "targetTypeDisplayName", "targetType"));
+            var description = FirstCombatNodeString(effect, "effectDescription", "description");
+            parts.Add(JoinCombatDetails(type, value, target, description));
+        }
+
+        return EmptyFallback(string.Join("; ", parts.Where(static part => !string.IsNullOrWhiteSpace(part))));
+    }
+
+    private static IReadOnlyList<UiAction> BuildCombatOverviewActions(
+        IReadOnlyList<CombatantSnapshot> enemies,
+        IReadOnlyList<CombatantSnapshot> allies,
+        IReadOnlyList<CombatLogSnapshot> logEntries)
+    {
+        var actions = new List<UiAction>();
+        foreach (var enemy in enemies)
+        {
+            actions.Add(new UiAction
+            {
+                Id = "combat-enemy-" + ToActionIdPart(enemy.Selector),
+                Label = $"Осмотреть врага «{enemy.Name}»",
+                Command = BuildCombatDetailCommand(CombatantKind.Enemy, enemy.Selector),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["kind"] = "enemy",
+                    ["selector"] = enemy.Selector,
+                    ["name"] = enemy.Name
+                }
+            });
+        }
+
+        foreach (var ally in allies)
+        {
+            actions.Add(new UiAction
+            {
+                Id = "combat-ally-" + ToActionIdPart(ally.Selector),
+                Label = $"Осмотреть союзника «{ally.Name}»",
+                Command = BuildCombatDetailCommand(CombatantKind.Ally, ally.Selector),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["kind"] = "ally",
+                    ["selector"] = ally.Selector,
+                    ["name"] = ally.Name
+                }
+            });
+        }
+
+        foreach (var entry in logEntries.Take(10))
+        {
+            actions.Add(new UiAction
+            {
+                Id = "combat-log-" + ToActionIdPart(entry.Selector),
+                Label = $"Открыть запись боя «{entry.Title}»",
+                Command = BuildCombatLogDetailCommand(entry.Selector),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["kind"] = "log",
+                    ["selector"] = entry.Selector,
+                    ["title"] = entry.Title
+                }
+            });
+        }
+
+        return actions;
+    }
+
+    private static IEnumerable<CombatantSnapshot> EnumerateCombatants(JsonNode? node, CombatantKind kind)
+    {
+        var index = 0;
+        foreach (var combatant in EnumerateCombatantObjects(node, kind))
+        {
+            index++;
+            var name = FirstNonEmpty(
+                FirstCombatNodeString(combatant, "name", "displayName"),
+                FirstCombatNodeString(combatant, kind == CombatantKind.Enemy ? "enemyName" : "allyName"),
+                kind == CombatantKind.Enemy ? $"Враг {index}" : $"Союзник {index}");
+            var identity = FirstNonEmpty(
+                FirstCombatNodeString(combatant, kind == CombatantKind.Enemy ? "enemyId" : "allyId"),
+                FirstCombatNodeString(combatant, "combatantId", "actorId", "npcId", "id"),
+                index.ToString());
+            yield return new CombatantSnapshot(kind, index, NormalizeCombatSelector(identity), name, combatant);
+        }
+    }
+
+    private static IEnumerable<JsonObject> EnumerateCombatantObjects(JsonNode? node, CombatantKind kind)
+    {
+        if (node is JsonArray array)
+        {
+            foreach (var combatant in array.OfType<JsonObject>())
+                yield return combatant;
+            yield break;
+        }
+
+        if (node is not JsonObject root)
+            yield break;
+
+        var propertyNames = kind == CombatantKind.Enemy
+            ? new[] { "enemiesData", "enemies", "UpdateEnemies", "enemyUpdates" }
+            : new[] { "alliesData", "allies", "UpdateAllies", "allyUpdates" };
+        foreach (var propertyName in propertyNames)
+        {
+            if (root[propertyName] is JsonArray nested)
+            {
+                foreach (var combatant in nested.OfType<JsonObject>())
+                    yield return combatant;
+            }
+            else if (root[propertyName] is JsonObject obj)
+            {
+                yield return obj;
+            }
+        }
+    }
+
+    private static IEnumerable<CombatLogSnapshot> EnumerateCombatLogEntries(JsonNode? node)
+    {
+        var index = 0;
+        foreach (var logNode in EnumerateCombatLogNodes(node))
+        {
+            index++;
+            if (logNode.Object != null)
+            {
+                var obj = logNode.Object;
+                var round = FirstCombatNodeString(obj, "round", "roundNumber");
+                var turn = FirstCombatNodeString(obj, "turn", "turnNumber", "timestamp");
+                var selector = NormalizeCombatSelector(FirstNonEmpty(
+                    FirstCombatNodeString(obj, "entryId", "logId", "eventId", "id"),
+                    index.ToString()));
+                var title = !string.IsNullOrWhiteSpace(round)
+                    ? $"Раунд {round}"
+                    : FirstNonEmpty(FirstCombatNodeString(obj, "title", "eventTitle"), $"Запись {index}");
+                var summary = FirstNonEmpty(
+                    FirstCombatNodeString(obj, "summary", "description", "message", "narrative"),
+                    FirstCombatNodeString(obj, "result", "outcome"));
+                yield return new CombatLogSnapshot(
+                    selector,
+                    title,
+                    summary,
+                    turn,
+                    EnumerateStringValues(obj["participants"]).ToList(),
+                    FirstCombatNodeString(obj, "result", "outcome"),
+                    EnumerateStringValues(obj["consequences"]).ToList());
+            }
+            else if (!string.IsNullOrWhiteSpace(logNode.Line))
+            {
+                yield return new CombatLogSnapshot(
+                    index.ToString(),
+                    $"Строка {index}",
+                    logNode.Line,
+                    string.Empty,
+                    [],
+                    string.Empty,
+                    []);
+            }
+        }
+    }
+
+    private static IEnumerable<(JsonObject? Object, string Line)> EnumerateCombatLogNodes(JsonNode? node)
+    {
+        if (node is JsonArray array)
+        {
+            foreach (var item in array)
+            {
+                if (item is JsonObject obj)
+                    yield return (obj, string.Empty);
+                else if (TryGetScalarString(item, out var line) && !string.IsNullOrWhiteSpace(line))
+                    yield return (null, line.Trim());
+            }
+            yield break;
+        }
+
+        if (node is not JsonObject root)
+            yield break;
+
+        foreach (var propertyName in new[] { "entries", "combatLog", "combat_log", "logEntries", "combatLogEntries" })
+        {
+            if (root[propertyName] is not JsonArray entries)
+                continue;
+
+            foreach (var entry in entries)
+            {
+                if (entry is JsonObject obj)
+                    yield return (obj, string.Empty);
+                else if (TryGetScalarString(entry, out var text) && !string.IsNullOrWhiteSpace(text))
+                    yield return (null, text.Trim());
+            }
+        }
+
+        var markdown = FirstCombatNodeString(root, "combat_log_markdown", "markdown", "log");
+        if (!string.IsNullOrWhiteSpace(markdown))
+        {
+            foreach (var line in markdown.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                    yield return (null, line);
+            }
+        }
+    }
+
+    private static CombatantSnapshot? FindCombatant(IReadOnlyList<CombatantSnapshot> combatants, string selector)
+    {
+        var normalized = NormalizeCombatSelector(selector);
+        return combatants.FirstOrDefault(combatant =>
+            string.Equals(combatant.Selector, normalized, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(combatant.Index.ToString(), normalized, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(NormalizeCombatSelector(combatant.Name), normalized, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static CombatLogSnapshot? FindCombatLogEntry(IReadOnlyList<CombatLogSnapshot> entries, string selector)
+    {
+        var normalized = NormalizeCombatSelector(selector);
+        return entries.FirstOrDefault(entry =>
+            string.Equals(entry.Selector, normalized, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(NormalizeCombatSelector(entry.Title), normalized, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static CombatDetailRequest ParseCombatDetailRequest(string remainder)
+    {
+        if (string.IsNullOrWhiteSpace(remainder))
+            return new CombatDetailRequest(CombatDetailKind.Overview, string.Empty);
+
+        var (kindToken, selector) = SplitFirstCombatArgument(remainder);
+        var kind = kindToken.Trim().ToLowerInvariant() switch
+        {
+            "enemy" or "enemies" or "враг" or "врага" or "враги" => CombatDetailKind.Enemy,
+            "ally" or "allies" or "союзник" or "союзника" or "союзники" => CombatDetailKind.Ally,
+            "log" or "journal" or "entry" or "журнал" or "запись" or "событие" => CombatDetailKind.Log,
+            _ => CombatDetailKind.Unknown
+        };
+
+        return new CombatDetailRequest(kind, NormalizeCombatSelector(selector));
+    }
+
+    private static (string First, string Remainder) SplitFirstCombatArgument(string value)
+    {
+        var parts = value.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length switch
+        {
+            0 => (string.Empty, string.Empty),
+            1 => (parts[0], string.Empty),
+            _ => (parts[0], parts[1])
+        };
+    }
+
+    private static string DescribeCombatantOverview(CombatantSnapshot combatant) =>
+        EmptyFallback(JoinCombatDetails(
+            DescribeCombatantStatus(combatant.Node),
+            DescribeCombatantHealth(combatant.Node),
+            DescribeCombatantPoise(combatant.Node)));
+
+    private static string DescribeCombatantStatus(JsonObject combatant) =>
+        DescribeCombatStatus(FirstCombatNodeString(combatant, "status", "currentCondition", "state"));
+
+    private static string DescribeCombatantRole(JsonObject combatant) =>
+        FirstNonEmpty(
+            DescribeCombatRole(FirstCombatNodeString(combatant, "type", "role", "threat", "rank")),
+            FirstCombatNodeString(combatant, "roleDescription", "threatDescription"));
+
+    private static string DescribeCombatantHealth(JsonObject combatant)
+    {
+        if (combatant["healthStates"] is JsonArray states && states.Count > 0)
+            return "группа: " + string.Join(", ", states.Select(static state => state?.ToString()).Where(static text => !string.IsNullOrWhiteSpace(text)));
+
+        var current = FirstCombatNodeString(combatant, "currentHealth", "health", "hp", "healthPercentage");
+        var max = FirstCombatNodeString(combatant, "maxHealth", "maxHp");
+        if (!string.IsNullOrWhiteSpace(current) && !string.IsNullOrWhiteSpace(max))
+            return $"{current}/{max}";
+
+        return current;
+    }
+
+    private static string DescribeCombatantPoise(JsonObject combatant)
+    {
+        var current = FirstCombatNodeString(combatant, "currentPoise", "poise", "poisePercentage");
+        var max = FirstCombatNodeString(combatant, "maxPoise");
+        if (!string.IsNullOrWhiteSpace(current) && !string.IsNullOrWhiteSpace(max))
+            return $"{current}/{max}";
+
+        return current;
+    }
+
+    private static string DescribeCombatantIntent(JsonObject combatant) =>
+        FirstNonEmpty(
+            FirstCombatNodeString(combatant, "intent", "currentIntent", "currentAction", "plannedAction"),
+            DescribeCombatTarget(FirstCombatNodeString(combatant, "targetPriority")));
+
+    private static string DescribeCombatCount(int count, string singular, string paucal, string plural)
+    {
+        var abs = Math.Abs(count);
+        var lastTwo = abs % 100;
+        var last = abs % 10;
+        var word = lastTwo is >= 11 and <= 14
+            ? plural
+            : last switch
+            {
+                1 => singular,
+                2 or 3 or 4 => paucal,
+                _ => plural
+            };
+        return $"{count} {word}";
+    }
+
+    private static string DescribeCombatStatus(string status) =>
+        status.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "hostile" => "враждебен",
+            "active" => "в бою",
+            "wounded" => "ранен",
+            "stunned" => "оглушён",
+            "dead" or "defeated" => "повержен",
+            "hidden" => "скрыт",
+            "guarding" => "держит оборону",
+            _ => status.Trim()
+        };
+
+    private static string DescribeCombatRole(string role) =>
+        role.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "boss" => "главная угроза",
+            "elite" => "опасный противник",
+            "strong" => "сильный противник",
+            "moderate" => "средняя угроза",
+            "weak" => "слабая угроза",
+            "frail" => "хрупкая цель",
+            "shield" => "щит",
+            "support" => "поддержка",
+            "healer" => "целитель",
+            "damage" => "ударная роль",
+            _ => role.Trim()
+        };
+
+    private static string DescribeCombatActionCost(string cost) =>
+        cost.Trim().ToLowerInvariant() switch
+        {
+            "" => "не указано",
+            "main" => "основное действие",
+            "fast" => "быстрое действие",
+            "free" => "свободное действие",
+            "reaction" => "реакция",
+            _ => cost.Trim()
+        };
+
+    private static string DescribeCombatEffectType(string effectType) =>
+        effectType.Trim().ToLowerInvariant() switch
+        {
+            "" => "эффект",
+            "damage" => "урон",
+            "burn" => "горение",
+            "bleed" => "кровотечение",
+            "stun" => "оглушение",
+            "guard" => "защита",
+            "inspire" => "воодушевление",
+            "heal" => "лечение",
+            "buff" => "усиление",
+            "debuff" => "помеха",
+            _ => effectType.Trim()
+        };
+
+    private static string DescribeCombatTarget(string target) =>
+        target.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "caster" => "заклинатель",
+            "player" => "игрок",
+            "ally" => "союзник",
+            "allies" => "союзники",
+            "enemy" => "противник",
+            "single_enemy" => "одна цель",
+            "all_enemies" => "все противники",
+            _ => target.Trim()
+        };
+
+    private static string BuildCombatDetailCommand(CombatantKind kind, string selector) =>
+        kind == CombatantKind.Enemy
+            ? "/бой враг " + FormatCombatCommandArgument(selector)
+            : "/бой союзник " + FormatCombatCommandArgument(selector);
+
+    private static string BuildCombatLogDetailCommand(string selector) =>
+        "/бой журнал " + FormatCombatCommandArgument(selector);
+
+    private static string FormatCombatCommandArgument(string selector)
+    {
+        if (selector.All(static ch => char.IsLetterOrDigit(ch) || ch is '_' or '-' or '.'))
+            return selector;
+
+        return "\"" + selector.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal) + "\"";
+    }
+
+    private static string NormalizeCombatSelector(string selector)
+    {
+        var trimmed = selector.Trim();
+        if (trimmed.Length >= 2 && trimmed[0] == '"' && trimmed[^1] == '"')
+            trimmed = trimmed[1..^1].Replace("\\\"", "\"", StringComparison.Ordinal).Replace("\\\\", "\\", StringComparison.Ordinal);
+
+        return trimmed;
+    }
+
+    private static string ToActionIdPart(string value)
+    {
+        var chars = value
+            .Select(static ch => char.IsLetterOrDigit(ch) || ch is '-' or '_' ? ch : '-')
+            .ToArray();
+        var result = new string(chars).Trim('-');
+        return string.IsNullOrWhiteSpace(result) ? "item" : result;
+    }
+
+    private static string FirstCombatNodeString(JsonNode? node, params string[] properties)
+    {
+        foreach (var property in properties)
+        {
+            var value = GetNodeString(node, property);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return string.Empty;
+    }
+
+    private static IEnumerable<string> EnumerateStringValues(JsonNode? node)
+    {
+        if (node is JsonArray array)
+        {
+            foreach (var item in array)
+            {
+                if (TryGetScalarString(item, out var value) && !string.IsNullOrWhiteSpace(value))
+                {
+                    yield return value;
+                    continue;
+                }
+
+                if (item is JsonObject obj)
+                {
+                    var label = FirstCombatNodeString(obj, "displayName", "name", "actorName", "participantName", "id");
+                    if (!string.IsNullOrWhiteSpace(label))
+                        yield return label;
+                }
+            }
+        }
+        else if (TryGetScalarString(node, out var value) && !string.IsNullOrWhiteSpace(value))
+        {
+            yield return value;
+        }
+    }
+
+    private static string JoinCombatDetails(params string[] parts) =>
+        string.Join("; ", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
+
+    private static void AddCombatReadWarnings(List<UiBlock> blocks, CombatState state)
+    {
+        AddCombatReadWarning(blocks, state.Enemies, "врагов");
+        AddCombatReadWarning(blocks, state.Allies, "союзников");
+        AddCombatReadWarning(blocks, state.Log, "боевого журнала");
+    }
+
+    private static void AddCombatReadWarning(List<UiBlock> blocks, JsonReadResult read, string section)
+    {
+        if (read.FileExists && read.Node == null && !string.IsNullOrWhiteSpace(read.Error))
+            blocks.Add(Message(UiNotificationSeverity.Warning, "Бой", $"Запись {section} найдена, но не разобрана как JSON."));
+    }
+
+    private static void AddCombatRawState(List<UiBlock> blocks, JsonReadResult read, string title)
+    {
+        if (read.Node != null)
+            blocks.Add(Raw(title, read.Node));
+    }
+
     private static async Task<ExplorerCommandResult> BuildBooks(string command, FileSystemManager fs)
     {
         const string title = "Книжная полка";
@@ -1479,6 +2248,46 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static string FirstNonEmpty(params string?[] values) =>
         values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+
+    private enum CombatantKind
+    {
+        Enemy,
+        Ally
+    }
+
+    private enum CombatDetailKind
+    {
+        Overview,
+        Enemy,
+        Ally,
+        Log,
+        Unknown
+    }
+
+    private sealed record CombatState(
+        JsonReadResult Enemies,
+        JsonReadResult Allies,
+        JsonReadResult Log);
+
+    private sealed record CombatantSnapshot(
+        CombatantKind Kind,
+        int Index,
+        string Selector,
+        string Name,
+        JsonObject Node);
+
+    private sealed record CombatLogSnapshot(
+        string Selector,
+        string Title,
+        string Summary,
+        string Turn,
+        IReadOnlyList<string> Participants,
+        string Result,
+        IReadOnlyList<string> Consequences);
+
+    private sealed record CombatDetailRequest(
+        CombatDetailKind Kind,
+        string Selector);
 
     private sealed record SummarySpec(string Path, string PropertyName, string Label);
 
