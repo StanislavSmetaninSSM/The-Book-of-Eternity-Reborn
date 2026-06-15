@@ -208,6 +208,112 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_WorldNewsOverview_ExposesEventFlagAndProgressionDrilldownActions()
+    {
+        await SeedRichMortalWorldNewsFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/новости_мира"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Новости мира", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Мировые события", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Угрозы локаций", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Карманники у ворот", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Активности НПС", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Мира Ключница", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Проекты фракций", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ночные патрули", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Флаги мира", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Прогресс мира", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Беспорядки у Северных ворот", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Праздник стих после тревоги", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Дорога к Серебряному броду", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/world", text, StringComparison.OrdinalIgnoreCase);
+
+        var eventAction = Assert.Single(result.Actions, static action => action.Id == "world-news-event-riots_at_gate");
+        Assert.Equal("/новости_мира событие riots_at_gate", eventAction.Command);
+        Assert.Contains("Открыть событие", eventAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Беспорядки у Северных ворот", eventAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(UiActionStyle.Secondary, eventAction.Style);
+        Assert.False(eventAction.RequiresConfirmation);
+
+        var flagAction = Assert.Single(result.Actions, static action => action.Id == "world-news-flag-festival_quiet");
+        Assert.Equal("/новости_мира флаг festival_quiet", flagAction.Command);
+        Assert.Contains("Осмотреть флаг", flagAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Праздник стих после тревоги", flagAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(UiActionStyle.Secondary, flagAction.Style);
+        Assert.False(flagAction.RequiresConfirmation);
+
+        var progressionAction = Assert.Single(result.Actions, static action => action.Id == "world-news-progression-road_silverford");
+        Assert.Equal("/новости_мира прогресс road_silverford", progressionAction.Command);
+        Assert.Contains("Открыть прогресс", progressionAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Дорога к Серебряному броду", progressionAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(UiActionStyle.Secondary, progressionAction.Style);
+        Assert.False(progressionAction.RequiresConfirmation);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WorldNewsEventDetail_RendersPlayerFacingDetailWithoutRawJson()
+    {
+        await SeedRichMortalWorldNewsFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/новости_мира событие riots_at_gate"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Событие: Беспорядки у Северных ворот", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Северные ворота", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Городская стража", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("торговая площадь закрыта до следующего утра", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Капитан ждёт свидетелей", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("eventId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("worldEventsLog", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/world", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WorldNewsFlagDetail_RendersMajorSubsectionDetailWithoutRawJson()
+    {
+        await SeedRichMortalWorldNewsFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/world_news flag festival_quiet"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Флаг мира: Праздник стих после тревоги", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Северный квартал", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Музыканты играют тише после ночного письма", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Площадь открыта только для жителей", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("flagId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("worldStateFlags", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/world", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WorldNewsProgressionDetail_RendersPlayerFacingEntryWithoutRawJson()
+    {
+        await SeedRichMortalWorldNewsFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/новости_мира прогресс road_silverford"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Прогресс мира: Дорога к Серебряному броду", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Караваны возвращаются", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стража разогнала засаду", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Цены на соль упали", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("progressionId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/world", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Transport_TranslatesCanonicalTypeAndAvailabilityInTableCells()
     {
         await SeedCanonicalMortalSummaryFilesAsync();
@@ -3262,6 +3368,108 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "consequences": [
                 "Союзники получают окно для отхода."
               ]
+            }
+          ]
+        }
+        """);
+    }
+
+    private async Task SeedRichMortalWorldNewsFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "riots_at_gate",
+              "title": "Беспорядки у Северных ворот",
+              "timestamp": "день 42, утро",
+              "location": "Северные ворота",
+              "visibility": "public",
+              "status": "active",
+              "category": "городские слухи",
+              "description": "Толпа спорит у ворот [red]без разметки[/].",
+              "summary": "Стража закрыла торговую площадь.",
+              "involvedNPCs": [ "Мира Ключница" ],
+              "affectedFactions": [ "Городская стража" ],
+              "affectedLocations": [ "Северные ворота" ],
+              "consequences": [ "торговая площадь закрыта до следующего утра" ],
+              "followUp": "Капитан ждёт свидетелей."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "name": "Северные ворота",
+          "activeThreats": [
+            {
+              "threatId": "gate_pickpockets",
+              "threatName": "Карманники у ворот",
+              "dangerLevel": "low",
+              "description": "Несколько ловкачей пользуются давкой."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_activities.json", """
+        {
+          "entries": [
+            {
+              "npcId": "npc_mira_key",
+              "npcName": "Мира Ключница",
+              "activityName": "Собирает свидетельства",
+              "status": "active",
+              "location": "Северные ворота",
+              "description": "Записывает имена тех, кто видел письмо."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/factions/faction_projects.json", """
+        {
+          "entries": [
+            {
+              "factionId": "city_watch",
+              "factionName": "Городская стража",
+              "projectName": "Ночные патрули",
+              "status": "active",
+              "description": "Стража усиливает обходы у северной стены."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/world_flags.json", """
+        {
+          "worldStateFlags": [
+            {
+              "flagId": "festival_quiet",
+              "displayName": "Праздник стих после тревоги",
+              "scope": "Северный квартал",
+              "status": "active",
+              "value": "наблюдают стражники",
+              "description": "Музыканты играют тише после ночного письма.",
+              "consequence": "Площадь открыта только для жителей."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/progression.json", """
+        {
+          "entries": [
+            {
+              "progressionId": "road_silverford",
+              "trackerName": "Дорога к Серебряному броду",
+              "stageName": "Караваны возвращаются",
+              "status": "active",
+              "description": "На тракте снова появились торговцы.",
+              "changeReason": "Стража разогнала засаду.",
+              "consequence": "Цены на соль упали.",
+              "timestamp": "день 42"
             }
           ]
         }

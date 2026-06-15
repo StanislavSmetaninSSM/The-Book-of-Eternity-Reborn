@@ -124,11 +124,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 new("game_state/player/skills_passive.json", "passiveSkillChanges|skills", "Пассивных")
             ]),
             CommandKind.Stats => await BuildStats(commandToken, fs, stateManager),
-            CommandKind.WorldNews => await BuildBundle(commandToken, fs, "Новости мира", [
-                new("game_state/world/world_events.json", "worldEventsLog|events", "Событий"),
-                new("game_state/world/world_flags.json", "worldStateFlags|flags", "Флагов"),
-                new("game_state/world/progression.json", "entries", "Записей прогресса")
-            ]),
+            CommandKind.WorldNews => await ExplorerMortalWorldNewsCommandResultBuilder.BuildAsync(normalizedCommand, fs),
             CommandKind.RivalThreads => await BuildBundle(commandToken, fs, "Чужие нити", [
                 new(RivalSoulArcService.StatePath, "rivalSoulArcs", "Арк соперников"),
                 new(RivalSoulArcService.StatePath, "arcs", "Арк")
