@@ -137,10 +137,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 new(GuardianCorrectionService.StatePath, "corrections", "Корректив")
             ]),
             CommandKind.Locations => await BuildLocations(commandToken, fs),
-            CommandKind.Transport => await BuildBundle(commandToken, fs, "Транспорт", [
-                new("game_state/world/world_map.json", "transportRoutes", "Маршрутов"),
-                new("game_state/world/current_location.json", "availableTransport", "Доступного транспорта")
-            ]),
+            CommandKind.Transport => await BuildTransport(commandToken, fs),
             CommandKind.Effects => await BuildEffects(commandToken, fs, stateManager),
             CommandKind.Combat => await BuildBundle(commandToken, fs, "Бой", [
                 new("game_state/combat/enemies.json", "enemiesData|enemies", "Врагов"),
@@ -834,6 +831,148 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {read.Path}. {read.Error}"));
     }
 
+    private static async Task<ExplorerCommandResult> BuildTransport(string command, FileSystemManager fs)
+    {
+        const string title = "Транспорт";
+        var vehiclesRead = await ReadJson(fs, "game_state/misc/vehicles.json");
+        var mapRead = await ReadJson(fs, "game_state/world/world_map.json");
+        var currentRead = await ReadJson(fs, "game_state/world/current_location.json");
+        var blocks = new List<UiBlock>();
+
+        var vehicleRows = EnumerateVehicleObjects(vehiclesRead.Node)
+            .Select(static vehicle => new UiTableRow
+            {
+                Cells =
+                [
+                    FirstNonEmpty(GetNodeString(vehicle, "name"), GetNodeString(vehicle, "vehicleName"), "Безымянный транспорт"),
+                    DescribeVehicleType(vehicle),
+                    DescribeVehicleNode(vehicle)
+                ]
+            })
+            .ToList();
+
+        if (vehicleRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = title,
+                Columns = ["Транспорт", "Тип", "Сведения"],
+                Rows = vehicleRows
+            });
+        }
+
+        var summaryRows = new List<UiTableRow>();
+        AddTransportSummaryRow(summaryRows, vehiclesRead, "vehicles|UpdateVehicles", "Транспорта");
+        AddTransportSummaryRow(summaryRows, mapRead, "transportRoutes", "Маршрутов");
+        AddTransportSummaryRow(summaryRows, currentRead, "availableTransport", "Доступного транспорта");
+        if (summaryRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Сводка транспорта",
+                Columns = ["Раздел", "Состояние"],
+                Rows = summaryRows
+            });
+        }
+
+        if (blocks.Count == 0)
+            blocks.Add(Message(UiNotificationSeverity.Info, title, "Транспорт пока не обнаружен."));
+
+        AddTransportRawState(blocks, title, vehiclesRead);
+        AddTransportRawState(blocks, title, mapRead);
+        AddTransportRawState(blocks, title, currentRead);
+        return Completed(command, blocks);
+    }
+
+    private static IEnumerable<JsonObject> EnumerateVehicleObjects(JsonNode? node)
+    {
+        if (node is JsonArray array)
+        {
+            foreach (var vehicle in array.OfType<JsonObject>())
+                yield return vehicle;
+            yield break;
+        }
+
+        if (node is not JsonObject root)
+            yield break;
+
+        foreach (var propertyName in new[] { "vehicles", "UpdateVehicles" })
+        {
+            if (root[propertyName] is not JsonArray vehicles)
+                continue;
+
+            foreach (var vehicle in vehicles.OfType<JsonObject>())
+                yield return vehicle;
+        }
+    }
+
+    private static string DescribeVehicleNode(JsonObject vehicle)
+    {
+        var parts = new[]
+        {
+            DescribeVehicleAvailability(vehicle),
+            FirstNonEmpty(GetNodeString(vehicle, "currentLocationId"), GetNodeString(vehicle, "currentLocation")),
+            GetNodeString(vehicle, "description") ?? string.Empty,
+            GetNodeString(vehicle, "capacity") ?? string.Empty
+        };
+
+        return EmptyFallback(JoinLocationDetails(parts));
+    }
+
+    private static string DescribeVehicleType(JsonObject vehicle)
+    {
+        var type = FirstNonEmpty(GetNodeString(vehicle, "type"), GetNodeString(vehicle, "vehicleType"));
+        return type.Trim().ToLowerInvariant() switch
+        {
+            "" => "не указано",
+            "mount" => "Ездовое животное",
+            "vehicle" => "Транспорт",
+            "summonable" => "Призываемый",
+            _ => type.Trim()
+        };
+    }
+
+    private static string DescribeVehicleAvailability(JsonObject vehicle)
+    {
+        var availability = FirstNonEmpty(GetNodeString(vehicle, "availability"), GetNodeString(vehicle, "status"));
+        if (!string.IsNullOrWhiteSpace(availability))
+        {
+            return availability.Trim().ToLowerInvariant() switch
+            {
+                "active" => "Активен (оседлан/управляется)",
+                "parked" => "Припаркован",
+                "pocket" => "В кармане (призываемый)",
+                _ => availability.Trim()
+            };
+        }
+
+        if (TryGetNodeBool(vehicle, "isActive", out var isActive))
+            return isActive ? "Активен" : "Неактивен";
+
+        return string.Empty;
+    }
+
+    private static void AddTransportSummaryRow(
+        List<UiTableRow> rows,
+        JsonReadResult read,
+        string propertyName,
+        string label)
+    {
+        var status = DescribeSpec(read, propertyName);
+        if (status == "отсутствует")
+            return;
+
+        rows.Add(new UiTableRow { Cells = [label, status] });
+    }
+
+    private static void AddTransportRawState(List<UiBlock> blocks, string title, JsonReadResult read)
+    {
+        if (read.Node != null)
+            blocks.Add(Raw($"Полный JSON {read.Path}", read.Node));
+        else if (read.FileExists)
+            blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {read.Path}. {read.Error}"));
+    }
+
     private static async Task<ExplorerCommandResult> BuildBooks(string command, FileSystemManager fs)
     {
         const string title = "Книжная полка";
@@ -1209,6 +1348,20 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return null;
 
         return TryGetScalarString(obj[property], out var value) ? value : null;
+    }
+
+    private static bool TryGetNodeBool(JsonNode? node, string property, out bool value)
+    {
+        value = false;
+        if (node is not JsonObject obj ||
+            obj[property] is not JsonValue jsonValue ||
+            !jsonValue.TryGetValue<bool>(out var boolValue))
+        {
+            return false;
+        }
+
+        value = boolValue;
+        return true;
     }
 
     private static async Task<JsonReadResult> ReadJson(FileSystemManager fs, string path)
