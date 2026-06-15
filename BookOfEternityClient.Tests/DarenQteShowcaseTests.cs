@@ -3766,6 +3766,88 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenChaseChain_ReadsAsCourtyardChainPageWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "chase_chain");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "chase_chain");
+        var text = chapter.Narrative?.Trim() ?? "";
+        var sentenceCount = CountSentences(text);
+        var darenMentions = CountOccurrences(text, "Дарен");
+
+        Assert.Equal("daren_qte_showcase", route.RouteId);
+        Assert.Equal("Цепочка дворов", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("chase_chain_action", action.ActionId);
+        Assert.Equal("PromptChain", action.Check.Type);
+        Assert.Equal(Characteristics.Speed, action.Check.PrimaryCharacteristic);
+        Assert.Equal(4, action.Check.BaseDifficulty);
+        Assert.Null(action.Check.Config);
+        Assert.Equal("Повторить цепочку дворов", action.Label);
+        Assert.Equal("hideout_return", action.Routing.Success.NextChapterId);
+        Assert.Equal("hideout_return", action.Routing.Partial.NextChapterId);
+        Assert.Equal("hideout_return", action.Routing.Fail.NextChapterId);
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 0),
+            ("loot", 0),
+            ("pursuit_control", 4),
+            ("evidence", -2),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 0),
+            ("loot", 0),
+            ("pursuit_control", 2),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -2),
+            ("pursuit_control", -4),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+
+        var proseFailures = new List<string>();
+        if (text.Length < 1500)
+            proseFailures.Add($"length {text.Length} chars < 1500");
+        if (sentenceCount < 12)
+            proseFailures.Add($"sentence count {sentenceCount} < 12");
+        if (darenMentions < 5)
+            proseFailures.Add($"Daren mentions {darenMentions} < 5");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("courtyard wall cart alley route", [["задн", "двор"], ["стен"], ["телег", "повоз"], ["алле"]]),
+            ("Daren breath body step rhythm", [["Дарен"], ["дых", "вдох", "выдох"], ["шаг", "ступ", "сапог", "прыж"], ["плеч", "ладон", "ребр", "колен", "тело"], ["ритм", "темп", "считал", "счёт"]]),
+            ("orangerie chosen exit route memory", [["оранжер"], ["служебн", "калитк", "арк", "выход"], ["памят", "маршрут", "выбран", "путь"]]),
+            ("stolen staff case belt balance noise", [["посох", "реликв", "добыч"], ["футляр"], ["рем", "пряж", "пояс"], ["баланс", "равновес", "вес"], ["звон", "звяк", "шум", "грох"]]),
+            ("Orvald guards voices lantern dogs pressure", [["Орвальд", "Шпиль", "капитан"], ["страж", "караул", "преслед"], ["голос", "крик", "оклик", "команд"], ["фонар", "луч", "свет"], ["пёс", "собак", "гонч"]]),
+            ("mud footprints trace evidence", [["гряз", "мокр", "луж"], ["след", "отпечат"], ["улик", "прочит"]]),
+            ("sequence repeat jump turn bridge timing", [["цепоч", "последователь", "поряд"], ["повтор", "запомн", "счит"], ["прыж", "перепрыг", "перемах"], ["поворот", "сверн"], ["мост"], ["точн", "время", "темп", "ритм", "миг"]])
+        })
+        {
+            var missingGroups = termGroups
+                .Select((terms, index) => (terms, index))
+                .Where(group => !ContainsAny(text, group.terms))
+                .Select(group => $"{group.index}:{string.Join("/", group.terms)}")
+                .ToArray();
+            if (missingGroups.Length > 0)
+                proseFailures.Add($"{context} missing groups {string.Join(", ", missingGroups)}");
+        }
+
+        foreach (var forbidden in ForbiddenPlayerFacingTechnicalTerms)
+        {
+            if (text.Contains(forbidden, StringComparison.OrdinalIgnoreCase))
+                proseFailures.Add($"forbidden player-facing term '{forbidden}'");
+        }
+
+        Assert.Empty(proseFailures);
+    }
+
+    [Fact]
     public void DarenActionResultText_ReadsAsTransitionProse()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -4940,7 +5022,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             string.Equals(chapterId, "timed_rhythm", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "route_decision", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "staff_theft", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(chapterId, "pursuit", StringComparison.OrdinalIgnoreCase)
+            string.Equals(chapterId, "pursuit", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "chase_chain", StringComparison.OrdinalIgnoreCase)
             ? 3600
             : 520;
         Assert.InRange(text.Length, 140, maxLength);
