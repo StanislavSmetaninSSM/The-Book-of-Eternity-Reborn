@@ -3699,6 +3699,73 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenPursuit_ReadsAsFirstDashPageWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "pursuit");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "pursuit");
+        var text = chapter.Narrative?.Trim() ?? "";
+        var sentenceCount = CountSentences(text);
+        var darenMentions = CountOccurrences(text, "Дарен");
+
+        Assert.Equal("daren_qte_showcase", route.RouteId);
+        Assert.Equal("Первый рывок", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("pursuit_action", action.ActionId);
+        Assert.Equal("TimingBar", action.Check.Type);
+        Assert.Equal(Characteristics.Speed, action.Check.PrimaryCharacteristic);
+        Assert.Equal(4, action.Check.BaseDifficulty);
+        Assert.Null(action.Check.Config);
+        Assert.Equal("Рвануть в окно погони", action.Label);
+        Assert.Equal("chase_chain", action.Routing.Success.NextChapterId);
+        Assert.Equal("chase_chain", action.Routing.Partial.NextChapterId);
+        Assert.Equal("chase_chain", action.Routing.Fail.NextChapterId);
+
+        Assert.True(text.Length >= 1500,
+            $"Daren pursuit narrative should be a substantial first-dash literary page, not a compact synopsis. Actual: {text.Length} chars, {sentenceCount} sentences, {darenMentions} Daren mentions.");
+        Assert.True(sentenceCount >= 12,
+            $"Daren pursuit narrative should unfold across a real first-dash scene, not two briefing sentences. Actual: {sentenceCount} sentences.");
+        Assert.True(darenMentions >= 5,
+            $"Daren pursuit narrative should keep Daren as the active point-of-view protagonist. Actual: {darenMentions} mentions.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("hall window courtyard escape line", [["зал", "двер"], ["окн", "подокон", "проем"], ["двор"], ["ноч", "воздух", "холод"]]),
+            ("Daren body breath step and exact timing", [["Дарен"], ["дых", "вдох", "выдох"], ["шаг", "ступ", "сапог", "колен"], ["плеч", "ладон", "ребр", "спин"], ["ритм", "темп", "момент", "считал"]]),
+            ("stolen staff case belt balance and noise", [["посох", "реликв", "добыч"], ["футляр"], ["рем", "пряж", "петл"], ["баланс", "равновес", "вес"], ["звон", "звяк", "шум", "грох"]]),
+            ("Orvald Lukyan witness or guard pressure", [["Орвальд", "Шпиль", "капитан"], ["Лукьян", "ключник", "свидетел"], ["страж", "караул"], ["лицо", "имя", "узна", "запом"]]),
+            ("lantern voice and pursuit control", [["фонар", "свет", "луч"], ["голос", "крик", "команд", "оклик"], ["погон", "преслед"], ["сбить", "закры", "смык", "отрез", "не дать"]]),
+            ("natural timing-window lead-in", [["точн", "ровн", "миг", "момент"], ["окно", "полос", "проем"], ["рван", "рывок", "вылет", "брос"], ["ран", "позд", "успеть", "опозда"], ["закро", "смык", "пойма", "накро"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"pursuit full-page {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 1),
+            ("loot", 0),
+            ("pursuit_control", 5),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 0),
+            ("loot", 0),
+            ("pursuit_control", 2),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -2),
+            ("pursuit_control", -5),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("pursuit full-page narrative", text);
+    }
+
+    [Fact]
     public void DarenActionResultText_ReadsAsTransitionProse()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -4872,7 +4939,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "timed_rhythm", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "route_decision", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(chapterId, "staff_theft", StringComparison.OrdinalIgnoreCase)
+            string.Equals(chapterId, "staff_theft", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "pursuit", StringComparison.OrdinalIgnoreCase)
             ? 3600
             : 520;
         Assert.InRange(text.Length, 140, maxLength);
