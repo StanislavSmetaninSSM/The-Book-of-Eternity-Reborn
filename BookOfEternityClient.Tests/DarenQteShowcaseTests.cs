@@ -3547,6 +3547,93 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenRouteDecision_ReadsAsOrangeryRouteChoicePageWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "route_decision");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "route_decision");
+        var text = chapter.Narrative?.Trim() ?? "";
+
+        Assert.Equal("Развилка в оранжерее", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("route_decision_action", action.ActionId);
+        Assert.Equal("PrecisionChoice", action.Check.Type);
+        Assert.Equal(Characteristics.Perception, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Equal("Выбрать выход через оранжерею", action.Label);
+        Assert.Equal("staff_theft", action.Routing.Success.NextChapterId);
+        Assert.Equal("staff_theft", action.Routing.Partial.NextChapterId);
+        Assert.Equal("staff_theft", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal("wet_glass", RequiredString(config, "correctChoiceId"));
+        Assert.Equal(6000, RequiredInt(config, "timeoutMs"));
+        Assert.Equal("fail", RequiredString(config, "timeoutGrade"));
+
+        var choices = RequiredObjectArray(config, "choices");
+        Assert.Equal(3, choices.Count);
+        var choicesById = choices.ToDictionary(choice => RequiredString(choice, "id"), StringComparer.OrdinalIgnoreCase);
+        Assert.Equal(["bright_arch", "servant_gate", "wet_glass"], choicesById.Keys.OrderBy(item => item, StringComparer.OrdinalIgnoreCase));
+        Assert.Equal("Влажная оранжерея", RequiredString(choicesById["wet_glass"], "label"));
+        Assert.Equal("success", RequiredString(choicesById["wet_glass"], "grade"));
+        Assert.Equal("Следы смоет вода из разбитых трубок.", RequiredString(choicesById["wet_glass"], "description"));
+        Assert.Equal("Вода и тень скрывают направление.", RequiredString(choicesById["wet_glass"], "hint"));
+        Assert.Equal("Служебная калитка", RequiredString(choicesById["servant_gate"], "label"));
+        Assert.Equal("partial", RequiredString(choicesById["servant_gate"], "grade"));
+        Assert.Equal("Быстрее, но на земле остаётся грязный след.", RequiredString(choicesById["servant_gate"], "description"));
+        Assert.Equal("Освещённая арка", RequiredString(choicesById["bright_arch"], "label"));
+        Assert.Equal("fail", RequiredString(choicesById["bright_arch"], "grade"));
+        Assert.Equal("Прямой выход виден из караульной.", RequiredString(choicesById["bright_arch"], "description"));
+
+        var decoyHint = Assert.Single(RequiredObjectArray(config, "decoyHints"));
+        Assert.Equal("servant_gate", RequiredString(decoyHint, "choiceId"));
+        Assert.Equal("Быстрый проход не всегда самый чистый.", RequiredString(decoyHint, "hint"));
+
+        Assert.True(text.Length >= 1500,
+            "Daren route_decision narrative should be a substantial orangery route-choice literary page, not a compact synopsis.");
+        Assert.True(CountSentences(text) >= 12,
+            "Daren route_decision narrative should unfold across a real route-choice scene, not two briefing sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 5,
+            "Daren route_decision narrative should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("orangery wet glass plants and condensation", [["оранжер"], ["стекл"], ["влаж", "мокр"], ["раст", "лист", "папорот", "лоз", "стебл", "цвет"], ["конденсат", "капл", "испар", "пар"]]),
+            ("red alarm or moon residue", [["красн", "ал", "лун"], ["тревог", "сигнал", "пульс", "кристалл"], ["свет", "отблеск", "послесвеч", "остат"]]),
+            ("Daren body breath step and route control", [["Дарен"], ["дых", "вдох", "выдох"], ["шаг", "сапог", "ступн"], ["плеч", "ладон", "колен", "ребр"], ["держ", "сдерж", "застав", "замер", "низк"]]),
+            ("three concrete exits or routes", [["три", "трет"], ["мокр", "влаж"], ["стекл"], ["служебн"], ["калитк"], ["ярк", "освещ"], ["арк"]]),
+            ("pursuit trace washing and misdirection stakes", [["погон", "страж", "караул", "Орвальд"], ["след", "улик", "отпечат"], ["смо", "вода", "капл"], ["сбить", "ложн", "направл", "обман", "увест", "не отда"]]),
+            ("PrecisionChoice route-selection lead-in", [["выбр", "выбира", "путь", "выход"], ["влажн", "мокр", "калитк", "арк"], ["посох", "футляр", "добыч"], ["теперь", "пока", "следующ", "дальш"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"route_decision full-page {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 0),
+            ("loot", 0),
+            ("pursuit_control", 4),
+            ("evidence", -2),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 0),
+            ("loot", 0),
+            ("pursuit_control", 2),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -2),
+            ("pursuit_control", -4),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("route_decision full-page narrative", text);
+    }
+
+    [Fact]
     public void DarenActionResultText_ReadsAsTransitionProse()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -4718,7 +4805,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             string.Equals(chapterId, "rune_memory", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "ward_steward_parley", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(chapterId, "timed_rhythm", StringComparison.OrdinalIgnoreCase)
+            string.Equals(chapterId, "timed_rhythm", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "route_decision", StringComparison.OrdinalIgnoreCase)
             ? 3600
             : 520;
         Assert.InRange(text.Length, 140, maxLength);
