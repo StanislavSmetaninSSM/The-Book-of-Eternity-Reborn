@@ -212,7 +212,11 @@ public sealed class DarenQteShowcaseTests : IDisposable
         "manual-grade",
         "client-owned",
         "QTE",
-        "score"
+        "score",
+        "JSON",
+        "files",
+        "tests",
+        "agent"
     ];
 
     private static readonly string[] ForbiddenStoryCopyTerms =
@@ -580,7 +584,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal("stealth_crossing", action.Routing.Partial.NextChapterId);
         Assert.Equal("stealth_crossing", action.Routing.Fail.NextChapterId);
         Assert.False(string.IsNullOrWhiteSpace(action.PartialText));
-        Assert.Equal("Крюк срывается с края; шум будит двор, и Дарен успевает уйти в тень только после собачьего лая.", action.FailText);
+        Assert.False(string.IsNullOrWhiteSpace(action.FailText));
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.SuccessText, action.FailText);
         Assert.NotEqual(action.PartialText, action.FailText);
@@ -660,7 +664,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
 
         Assert.Contains("Крюк лёг за внутренний край балкона мягко", action.SuccessText);
         Assert.Contains("галерея без звука", action.SuccessText, StringComparison.OrdinalIgnoreCase);
-        Assert.Equal("Крюк срывается с края; шум будит двор, и Дарен успевает уйти в тень только после собачьего лая.", action.FailText);
+        Assert.False(string.IsNullOrWhiteSpace(action.FailText));
         Assert.NotEqual(
             "Крюк держит, но леска звенит по камню; Дарен замирает на балконе, слушая двор.",
             text);
@@ -711,6 +715,86 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("hideout_safety", -2));
         AssertDownstreamDarenResultSurfacesPreserved(route.Offer);
         AssertNoPlayerFacingTechnicalTerms("gadget_infiltration partial aftermath", text);
+    }
+
+    [Fact]
+    public void DarenGadgetInfiltrationFail_ReadsAsDangerousHookAftermathWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "gadget_infiltration");
+        var nextBeat = Assert.Single(route.Beats, item => item.BeatId == "stealth_crossing");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "gadget_infiltration");
+        var text = action.FailText?.Trim() ?? "";
+
+        Assert.Equal("Крюк и леска", beat.Title);
+        Assert.Equal("Галерея без звука", nextBeat.Title);
+        Assert.Equal("gadget_infiltration", chapter.ChapterId);
+        Assert.Equal("gadget_infiltration_action", action.ActionId);
+        Assert.Equal("Запустить складной крюк", action.Label);
+        Assert.Equal("ChargeRelease", action.Check.Type);
+        Assert.Equal(Characteristics.Dexterity, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Null(action.Check.Config);
+        Assert.Equal("stealth_crossing", action.Routing.Success.NextChapterId);
+        Assert.Equal("stealth_crossing", action.Routing.Partial.NextChapterId);
+        Assert.Equal("stealth_crossing", action.Routing.Fail.NextChapterId);
+        Assert.True(
+            FindChapterIndex(route.Offer, "gadget_infiltration") < FindChapterIndex(route.Offer, "stealth_crossing"),
+            "Daren gadget_infiltration fail should still bridge directly into the silent gallery beat.");
+
+        Assert.Contains("Крюк лёг за внутренний край балкона мягко", action.SuccessText);
+        Assert.Contains("Складной крюк удержался, но ночь не приняла его молча.", action.PartialText);
+        Assert.NotEqual(
+            "Крюк срывается с края; шум будит двор, и Дарен успевает уйти в тень только после собачьего лая.",
+            text);
+        Assert.NotEqual(action.SuccessText, action.PartialText);
+        Assert.NotEqual(action.SuccessText, action.FailText);
+        Assert.NotEqual(action.PartialText, action.FailText);
+
+        Assert.True(text.Length >= 900,
+            "Daren gadget_infiltration fail should be a substantial dangerous hook aftermath insert, not a one-sentence result notification.");
+        Assert.True(CountSentences(text) >= 8,
+            "Daren gadget_infiltration fail should unfold across several aftermath sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 4,
+            "Daren gadget_infiltration fail should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("folding hook and line fail equipment", [["складн"], ["крюк"], ["леск", "шнур", "корд"], ["натяж", "рван", "сорв", "скольз", "удар", "звен"]]),
+            ("failed launch noise and evidence pressure", [["сорв", "вырв", "скольз", "удар", "рван"], ["звон", "грох", "скреж", "шум", "лязг"], ["двор"], ["ули", "след", "царап", "оскол", "облом", "знак"]]),
+            ("dog guard pursuit pressure", [["пёс", "собач", "лай"], ["страж", "караул", "патрул"], ["погон", "преслед", "оклик", "крик", "тревог"]]),
+            ("Daren breath body and hand control", [["Дарен"], ["дых", "вдох", "выдох", "горл"], ["ладон", "пальц", "рук", "запяст"], ["плеч", "ребр", "колен", "тело"]]),
+            ("courtyard lantern patrol atmosphere", [["двор"], ["фонар", "свет", "луч"], ["мокр", "влаж", "камн", "дожд"], ["страж", "патрул", "караул"]]),
+            ("balcony window continuation under danger", [["балкон"], ["окн", "перил", "дерев", "дос"], ["тень", "проскольз", "добрал", "подня", "перевал", "внутр"], ["опас", "погон", "тревог", "дальш"]]),
+            ("next silent gallery continuity with danger", [["галер"], ["без звука", "тиш", "молч"], ["дальш", "следующ", "порог", "впер"], ["не чист", "след", "погон", "ули", "опас"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"gadget_infiltration fail {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 3),
+            ("loot", 0),
+            ("pursuit_control", 2),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 1),
+            ("loot", 0),
+            ("pursuit_control", 1),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -2),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertDownstreamDarenResultSurfacesPreserved(route.Offer);
+        AssertNoPlayerFacingTechnicalTerms("gadget_infiltration fail aftermath", text);
     }
 
     [Fact]
@@ -3996,7 +4080,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             (string.Equals(chapterId, "gadget_infiltration", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "gadget_infiltration_action", StringComparison.OrdinalIgnoreCase) &&
             (string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(grade, "partial", StringComparison.OrdinalIgnoreCase))) ||
+                string.Equals(grade, "partial", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(grade, "fail", StringComparison.OrdinalIgnoreCase))) ||
             string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "physical_pressure_action", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "rune_memory", StringComparison.OrdinalIgnoreCase) &&
