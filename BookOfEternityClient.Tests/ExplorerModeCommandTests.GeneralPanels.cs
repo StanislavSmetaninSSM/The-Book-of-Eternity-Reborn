@@ -1597,6 +1597,53 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Combat_ConsoleExposesSharedEnemyAllyAndLogDrilldowns()
+    {
+        await SeedMortalStateAsync();
+        await SeedRichMortalCombatFilesAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var overviewResult = await _explorer.TryProcessCommand("/бой");
+
+        Assert.Equal(string.Empty, overviewResult);
+        AssertNoHiddenExplorerErrors("combat_overview_drilldowns");
+        var overviewText = ExtractRenderedText();
+        Assert.Contains("Боевая обстановка", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/бой враг shadow_messenger", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/бой союзник rina_guard", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/бой журнал log_round_2", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/combat", overviewText, StringComparison.OrdinalIgnoreCase);
+
+        _console.Rendered.Clear();
+        _console.MarkupLines.Clear();
+
+        var detailResult = await _explorer.TryProcessCommand("/бой враг shadow_messenger");
+
+        Assert.Equal(string.Empty, detailResult);
+        AssertNoHiddenExplorerErrors("combat_enemy_detail");
+        var detailText = ExtractRenderedText();
+        Assert.Contains("Враг: Теневой посыльный", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("сорвать концентрацию мага", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Горит после серебряной стрелы", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("enemyId", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/combat", detailText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void ConsoleCombatSource_UsesSharedMortalCombatResultBuilder()
+    {
+        var source = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            "ExplorerMode.MetaStoryAndStatus.cs"));
+
+        Assert.Contains("ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(commandLine", source, StringComparison.Ordinal);
+        Assert.Contains("ExplorerCommandResultConsoleRenderer.Render(_console, result)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_Chronicle_RendersWithoutHiddenErrors()
     {

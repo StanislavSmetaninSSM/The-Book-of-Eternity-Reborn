@@ -106,6 +106,108 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_CombatOverview_ExposesEnemyAllyAndLogDrilldownActions()
+    {
+        await SeedRichMortalCombatFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/бой"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Боевая обстановка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Враги", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Союзники", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Боевой журнал", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Теневой посыльный", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Рина из Серебряной стражи", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Раунд 2", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/combat", text, StringComparison.OrdinalIgnoreCase);
+
+        var enemyAction = Assert.Single(result.Actions, static action => action.Id == "combat-enemy-shadow_messenger");
+        Assert.Equal("/бой враг shadow_messenger", enemyAction.Command);
+        Assert.Contains("Осмотреть врага", enemyAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Теневой посыльный", enemyAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(UiActionStyle.Secondary, enemyAction.Style);
+        Assert.False(enemyAction.RequiresConfirmation);
+
+        var allyAction = Assert.Single(result.Actions, static action => action.Id == "combat-ally-rina_guard");
+        Assert.Equal("/бой союзник rina_guard", allyAction.Command);
+        Assert.Contains("Осмотреть союзника", allyAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Рина из Серебряной стражи", allyAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(UiActionStyle.Secondary, allyAction.Style);
+        Assert.False(allyAction.RequiresConfirmation);
+
+        var logAction = Assert.Single(result.Actions, static action => action.Id == "combat-log-log_round_2");
+        Assert.Equal("/бой журнал log_round_2", logAction.Command);
+        Assert.Contains("Открыть запись боя", logAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Раунд 2", logAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(UiActionStyle.Secondary, logAction.Style);
+        Assert.False(logAction.RequiresConfirmation);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_CombatEnemyDetail_RendersPlayerFacingDetailWithoutRawJson()
+    {
+        await SeedRichMortalCombatFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/бой враг shadow_messenger"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Враг: Теневой посыльный", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Здоровье", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("18/30", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Намерение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("сорвать концентрацию мага", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Горит после серебряной стрелы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("урон", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("enemyId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("targetPriority", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/combat", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_CombatAllyDetail_RendersPlayerFacingDetailWithoutRawJson()
+    {
+        await SeedRichMortalCombatFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/бой союзник rina_guard"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Союзник: Рина из Серебряной стражи", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Здоровье", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("22/28", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("защищает мага", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Боевой клич держит строй", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("allyId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/combat", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_CombatLogDetail_RendersPlayerFacingEntryWithoutRawJson()
+    {
+        await SeedRichMortalCombatFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/бой журнал log_round_2"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Запись боя: Раунд 2", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Рина сбила посыльного с фланга", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Теневой посыльный", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("оглушён", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("entryId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/combat", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Transport_TranslatesCanonicalTypeAndAvailabilityInTableCells()
     {
         await SeedCanonicalMortalSummaryFilesAsync();
@@ -3052,6 +3154,115 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         {
           "interactions": [
             { "interactionId": "int_1", "summary": "Игроки встретились на тракте." }
+          ]
+        }
+        """);
+    }
+
+    private async Task SeedRichMortalCombatFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/combat/enemies.json", """
+        {
+          "enemiesData": [
+            {
+              "enemyId": "shadow_messenger",
+              "name": "Теневой посыльный",
+              "type": "elite",
+              "status": "hostile",
+              "currentHealth": 18,
+              "maxHealth": 30,
+              "currentPoise": 4,
+              "maxPoise": 10,
+              "intent": "сорвать концентрацию мага",
+              "targetPriority": "caster",
+              "description": "Скользит между колоннами [red]без права на разметку[/].",
+              "activeDebuffs": [
+                {
+                  "effectType": "burn",
+                  "value": "-2 HP/ход",
+                  "duration": 2,
+                  "sourceSkill": "серебряная стрела",
+                  "effectDescription": "Горит после серебряной стрелы."
+                }
+              ],
+              "actions": [
+                {
+                  "actionName": "Теневой выпад",
+                  "actionCost": "main",
+                  "effects": [
+                    {
+                      "effectType": "damage",
+                      "value": 7,
+                      "targetType": "single_enemy",
+                      "effectDescription": "Удар тенью по открытому боку."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/combat/allies.json", """
+        {
+          "alliesData": [
+            {
+              "allyId": "rina_guard",
+              "name": "Рина из Серебряной стражи",
+              "role": "щит",
+              "status": "wounded",
+              "currentHealth": 22,
+              "maxHealth": 28,
+              "currentPoise": 7,
+              "maxPoise": 12,
+              "intent": "защищает мага",
+              "description": "Держит линию у разбитой арки.",
+              "activeBuffs": [
+                {
+                  "effectType": "inspire",
+                  "value": "+1 стойкость",
+                  "duration": 1,
+                  "sourceSkill": "Боевой клич",
+                  "effectDescription": "Боевой клич держит строй."
+                }
+              ],
+              "actions": [
+                {
+                  "actionName": "Прикрыть щитом",
+                  "actionCost": "fast",
+                  "effects": [
+                    {
+                      "effectType": "guard",
+                      "value": "+2 защита",
+                      "targetType": "ally",
+                      "effectDescription": "Закрывает союзника щитом."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/combat/combat_log.json", """
+        {
+          "entries": [
+            {
+              "entryId": "log_round_2",
+              "round": 2,
+              "turn": 5,
+              "participants": [
+                "Теневой посыльный",
+                "Рина из Серебряной стражи"
+              ],
+              "summary": "Рина сбила посыльного с фланга.",
+              "result": "Теневой посыльный оглушён и теряет быстрое действие.",
+              "consequences": [
+                "Союзники получают окно для отхода."
+              ]
+            }
           ]
         }
         """);

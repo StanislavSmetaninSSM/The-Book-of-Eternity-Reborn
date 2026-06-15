@@ -596,6 +596,17 @@ public partial class ExplorerMode
 
     private async Task ShowCombat()
     {
+        var commandLine = string.IsNullOrWhiteSpace(_currentCommandRemainder)
+            ? "/бой"
+            : "/бой " + _currentCommandRemainder;
+        var result = await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(commandLine, _stateManager, _fs);
+        if (result != null)
+        {
+            ExplorerCommandResultConsoleRenderer.Render(_console, result);
+            WaitForKey();
+            return;
+        }
+
         var text = new List<string>();
 
         // ── Player combat status ──

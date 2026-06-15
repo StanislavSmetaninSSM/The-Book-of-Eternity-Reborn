@@ -51,7 +51,7 @@ Severity uses the project-wide audit scale: `P2` for serious UX/parity drift,
 | `locations` | `/locations` | `/локации` | Interactive current/adjacent/discovered location selector with detailed location panels. | Shared DTO lists current, adjacent, and discovered/updated locations plus raw state. | Browser detail parity gap for an otherwise adequate console reference pattern. | P3 | Follow-up #1057. |
 | `transport` | `/transport` | `/транспорт` | Interactive vehicle selector with per-vehicle health, location, capacity, actions, abilities, inventory, and vehicle-inventory management. | Before #948, generic bundle read only `world_map.transportRoutes` and `current_location.availableTransport`; it missed canonical `game_state/misc/vehicles.json`. | Small browser overview authority gap fixed in #948; remaining browser per-vehicle detail parity is larger. | P2 | Fixed vehicle overview in this branch. Follow-up #1057 for browser detail parity. |
 | `effects` | `/effects` | `/эффекты` | Rich table-style view for active effects, wounds, custom states, stealth, and experience; falls back to visible status when structured effect files are absent. | Shared DTO builds effect summary rows, effect detail rows, visible-status fallback, and raw effect state. | Covered for #948. Per-effect navigation could be improved later, but the command is not raw-only or summary-only now. | P3 | No new follow-up from #948. |
-| `combat` | `/combat` | `/бой` | Large all-in-one panel for player combat state, enemies, allies, actions, effects, wounds, and combat log. | Generic bundle summary plus raw JSON. | Confirmed command-specific drill-down gap. | P2 | Follow-up #1054. |
+| `combat` | `/combat` | `/бой` | Shared command-result renderer now shows a combat overview, enemy/ally/log lists, typed detail commands, and individual enemy/ally/log detail panels. | Shared DTO now shows the same overview/list/detail content and exposes non-mutating detail actions for enemy, ally, and combat-log inspection, with raw sidecars kept as secondary diagnostics. | Covered by #1054. | P2 | Implemented in #1054. |
 | `weather` | `/weather` | `/погода` | Time and weather detail panel. | Generic bundle summary plus raw JSON, but the rich surface is not a repeated entity list. | Covered for #948. | P3 | No new follow-up from #948. |
 | `books` | `/books` | `/книги` | Books/document flow is handled by the dedicated document reading surface. | Shared DTO supports document shelf, read actions, and selected document detail. | Tracked separately. | P2 | Use #947. |
 | `storage_access` | `/storage_access` | `/доступ_к_хранилищам` | Console renders access grants/shares/revokes with readable nested fields. | Generic bundle summary plus raw JSON. | Browser detail parity gap if access records become long, but lower priority than combat/news/interactions. | P3 | Follow-up #1057. |
@@ -73,9 +73,27 @@ Regression coverage:
   keeps this audit artifact synchronized with the Mortal World read-only command
   descriptor set.
 
+## Fix Applied In #1054
+
+The shared Mortal World command-result builder for `/combat` / `/бой` now reads
+`game_state/combat/enemies.json`, `game_state/combat/allies.json`, and
+`game_state/combat/combat_log.json`, renders a preserved combat overview, and
+adds player-facing drill-down commands/actions for one enemy, one ally, and one
+combat-log entry. The console `/бой` path renders the same shared command-result
+surface, so browser buttons and console typed commands stay semantically
+equivalent without changing afterlife spiritual combat.
+
+Regression coverage:
+
+- `ExplorerWebCommandServiceTests` covers enemy, ally, and combat-log overview
+  actions plus individual detail output without raw-JSON dependency.
+- `ExplorerModeCommandTests` covers console discovery of the same typed detail
+  commands and guards the console handler's shared DTO renderer path.
+
 ## Follow-Up Issues Created
 
-- #1054 - `/combat` / `/бой` enemy, ally, and combat-log detail drill-downs.
+- #1054 - `/combat` / `/бой` enemy, ally, and combat-log detail drill-downs
+  (implemented by the #1054 branch).
 - #1055 - `/world_news` / `/новости_мира` event and sub-section detail drill-downs.
 - #1056 - `/interactions` / `/взаимодействия` player/record detail drill-downs.
 - #1057 - browser detail actions for reference-style mortal read-only commands:
