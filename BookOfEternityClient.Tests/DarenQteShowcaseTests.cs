@@ -3634,6 +3634,71 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenStaffTheft_ReadsAsRelicTheftPageWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "staff_theft");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "staff_theft");
+        var text = chapter.Narrative?.Trim() ?? "";
+
+        Assert.Equal("Кража посоха", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("staff_theft_action", action.ActionId);
+        Assert.Equal("BalanceMeter", action.Check.Type);
+        Assert.Equal(Characteristics.Dexterity, action.Check.PrimaryCharacteristic);
+        Assert.Equal(4, action.Check.BaseDifficulty);
+        Assert.Null(action.Check.Config);
+        Assert.Equal("Удержать посох на ремне", action.Label);
+        Assert.Equal("pursuit", action.Routing.Success.NextChapterId);
+        Assert.Equal("pursuit", action.Routing.Partial.NextChapterId);
+        Assert.Equal("pursuit", action.Routing.Fail.NextChapterId);
+
+        Assert.True(text.Length >= 1500,
+            "Daren staff_theft narrative should be a substantial relic-theft literary page, not a compact synopsis.");
+        Assert.True(CountSentences(text) >= 12,
+            "Daren staff_theft narrative should unfold across a real staff theft scene, not two briefing sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 5,
+            "Daren staff_theft narrative should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("staff relic and velvet holders", [["посох", "реликв"], ["бархат"], ["держател", "ложемент", "опор", "скоб"], ["сня", "вынул", "подня", "освобод"]]),
+            ("rings suspension and chime noise", [["кольц"], ["подвес", "цеп", "крепл"], ["звон", "звяк", "перезвон", "голос"], ["тиш", "молч", "шум"]]),
+            ("Daren hands breath body and balance", [["Дарен"], ["ладон", "пальц", "рук"], ["дых", "вдох", "выдох"], ["плеч", "ребр", "колен", "спин"], ["баланс", "равновес", "вес"]]),
+            ("belt strap case securing", [["рем"], ["пряж", "петл", "узел", "креп"], ["футляр", "добыч", "посох"], ["улож", "пристег", "прикреп", "прижал", "закреп"]]),
+            ("old lock scratch and evidence stakes", [["замок"], ["царап"], ["наклад"], ["улик", "след", "пыль", "бархат"]]),
+            ("alarm listening house and pursuit pressure", [["тревог", "сигнал", "крик"], ["дом", "зал", "коридор", "крыл"], ["слуш", "прислуш"], ["страж", "караул", "Орвальд", "погон"]]),
+            ("balance-control theft action lead-in", [["удерж", "держ"], ["баланс", "равновес", "вес"], ["рем"], ["посох"], ["без звона", "не звяк", "молч", "тише"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"staff_theft full-page {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 2),
+            ("loot", 5),
+            ("pursuit_control", 0),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 1),
+            ("loot", 2),
+            ("pursuit_control", 0),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -5),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("staff_theft full-page narrative", text);
+    }
+
+    [Fact]
     public void DarenActionResultText_ReadsAsTransitionProse()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -4806,7 +4871,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             string.Equals(chapterId, "ward_steward_parley", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "physical_pressure", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "timed_rhythm", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(chapterId, "route_decision", StringComparison.OrdinalIgnoreCase)
+            string.Equals(chapterId, "route_decision", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "staff_theft", StringComparison.OrdinalIgnoreCase)
             ? 3600
             : 520;
         Assert.InRange(text.Length, 140, maxLength);
