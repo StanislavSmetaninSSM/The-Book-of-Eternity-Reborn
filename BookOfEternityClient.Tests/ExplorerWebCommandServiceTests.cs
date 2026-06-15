@@ -88,6 +88,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/новости_мира", "Письмо появилось ночью")]
     [InlineData("/чужие_нити", "Лунный претендент")]
     [InlineData("/погода", "08:15")]
+    [InlineData("/транспорт", "Серый конь")]
     [InlineData("/эффекты", "Магический резонанс")]
     [InlineData("/бой", "Теневой посыльный")]
     [InlineData("/доступ_к_хранилищам", "Приватный письменный стол")]
@@ -102,6 +103,25 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var text = CollectBlockText(result.Blocks);
         Assert.Contains(expectedText, text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Данные ещё не созданы", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Transport_TranslatesCanonicalTypeAndAvailabilityInTableCells()
+    {
+        await SeedCanonicalMortalSummaryFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/транспорт"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Транспорт");
+        var row = Assert.Single(table.Rows);
+        Assert.Equal("Серый конь", row.Cells[0]);
+        Assert.Contains("Ездовое животное", row.Cells[1], StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Активен", row.Cells[2], StringComparison.OrdinalIgnoreCase);
+
+        var tableText = string.Join("\n", table.Columns.Concat(table.Rows.SelectMany(static item => item.Cells)));
+        Assert.DoesNotContain("mount", tableText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("active", tableText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -3128,6 +3148,19 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         {
           "tendency": "NO_CHANGE",
           "description": "Утренний туман рассеивается."
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/misc/vehicles.json", """
+        {
+          "vehicles": [
+            {
+              "vehicleId": "vehicle_gray_horse",
+              "name": "Серый конь",
+              "type": "mount",
+              "availability": "active"
+            }
+          ]
         }
         """);
 
