@@ -501,6 +501,130 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenInformantParleySuccess_ReadsAsCleanMiraTrustAftermathWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "informant_parley");
+        var nextBeat = Assert.Single(route.Beats, item => item.BeatId == "gadget_infiltration");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "informant_parley");
+        var text = action.SuccessText?.Trim() ?? "";
+
+        Assert.Equal("Шёпот Миры", beat.Title);
+        Assert.Equal("Крюк и леска", nextBeat.Title);
+        Assert.Equal("informant_parley", chapter.ChapterId);
+        Assert.Equal("informant_parley_action", action.ActionId);
+        Assert.Equal("Ответить Мире Ночной Нити", action.Label);
+        Assert.Equal("PrecisionChoice", action.Check.Type);
+        Assert.Equal(Characteristics.Wisdom, action.Check.PrimaryCharacteristic);
+        Assert.Equal(2, action.Check.BaseDifficulty);
+        Assert.Equal("gadget_infiltration", action.Routing.Success.NextChapterId);
+        Assert.Equal("gadget_infiltration", action.Routing.Partial.NextChapterId);
+        Assert.Equal("gadget_infiltration", action.Routing.Fail.NextChapterId);
+        Assert.True(
+            FindChapterIndex(route.Offer, "informant_parley") < FindChapterIndex(route.Offer, "gadget_infiltration"),
+            "Daren informant_parley success should still bridge directly into the hook-and-line beat.");
+
+        var config = RequiredConfig(action);
+        Assert.Equal("old_captain_shift", RequiredString(config, "correctChoiceId"));
+        Assert.Equal(7000, RequiredInt(config, "timeoutMs"));
+        Assert.Equal("fail", RequiredString(config, "timeoutGrade"));
+        var choices = RequiredObjectArray(config, "choices");
+        Assert.Equal(["old_captain_shift", "pay_for_rumor", "threaten_contact"], choices.Select(choice => RequiredString(choice, "id")));
+        Assert.Equal(["success", "partial", "fail"], choices.Select(choice => RequiredString(choice, "grade")));
+        Assert.Equal(
+            ["Назвать смену караула", "Заплатить за слух", "Прижать информаторку"],
+            choices.Select(choice => RequiredString(choice, "label")));
+        Assert.Equal(
+            [
+                "Дарен подтверждает слух Миры о старшем карауле.",
+                "Дарен предлагает монету вместо пароля.",
+                "Дарен требует ответ силой и торопит разговор."
+            ],
+            choices.Select(choice => RequiredString(choice, "description")));
+        Assert.Equal(
+            [
+                "Точный слух покупает доверие и имя погони.",
+                "Деньги помогут, но Мира оставит часть правды себе.",
+                "Угроза делает Миру свидетелем, а не союзницей."
+            ],
+            choices.Select(choice => RequiredString(choice, "hint")));
+
+        Assert.Equal(
+            "Мира берёт монету Дарена, но отвечает коротко: ключник устал, а имя капитана она оставляет за следующим долгом.",
+            action.PartialText);
+        Assert.Equal(
+            "Мира замолкает после угрозы Дарена; её взгляд обещает, что слух о наглом воре найдёт стражу быстрее него.",
+            action.FailText);
+        Assert.NotEqual(action.SuccessText, action.PartialText);
+        Assert.NotEqual(action.SuccessText, action.FailText);
+        Assert.NotEqual(action.PartialText, action.FailText);
+        Assert.NotEqual(
+            "Мира Ночная Нить принимает точный пароль Дарена и шепчет, что Лукьян дремлет у галереи, а Орвальд ведёт погоню сам.",
+            text);
+
+        Assert.True(text.Length >= 900,
+            "Daren informant_parley success should be a substantial clean Mira trust aftermath insert, not a one-sentence result notification.");
+        Assert.True(CountSentences(text) >= 8,
+            "Daren informant_parley success should unfold across several aftermath sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 4,
+            "Daren informant_parley success should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("Mira Night Thread presence and softened suspicion", [["Мира"], ["Ночная Нить", "нить"], ["подозр", "довер", "повер", "прин", "кив"]]),
+            ("correct password and guard-shift answer", [["парол"], ["смен", "караул"], ["точн", "правильн"], ["назвал", "ответ", "сказал", "произн"]]),
+            ("source protection and reduced exposure risk", [["источник", "связн", "имя"], ["не выда", "не привед", "береж", "сохран", "прикры"], ["страж", "свидетел", "порог"], ["тих", "молч", "без крик", "не разбуд"]]),
+            ("Lukyan and Orvald usable information", [["Лукьян"], ["галер", "ключник"], ["Орвальд"], ["погон", "сам", "вед"]]),
+            ("wet awning social atmosphere", [["навес"], ["мокр", "дожд", "капл"], ["лент"], ["нож", "ладон", "запяст", "пальц"], ["шеп", "голос"]]),
+            ("Daren body voice and breath control", [["Дарен"], ["дых", "вдох", "выдох"], ["голос", "сказал", "произн"], ["ладон", "плеч", "пальц", "тело"], ["ровн", "спокой", "тих"]]),
+            ("hook-and-line continuity", [["крюк"], ["леск", "шнур"], ["стен", "башн", "двор"], ["дальш", "вперёд", "вперед", "ушёл", "пошёл"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"informant_parley success {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 2),
+            ("loot", 0),
+            ("pursuit_control", 2),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 1),
+            ("loot", 0),
+            ("pursuit_control", 1),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -2),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+
+        var (_, approachAction) = RequiredChapterAction(route.Offer, "approach_manor");
+        Assert.Equal(
+            "Дарен скользит в слепой промежуток между фонарями, и стена поместья принимает его без оклика.",
+            approachAction.SuccessText);
+        Assert.Equal(
+            "Сухая ветка ломается под каблуком, но Дарен успевает прижаться к стене, оставляя страже только сомнение.",
+            approachAction.PartialText);
+        Assert.Equal(
+            "Дарен теряет драгоценный миг у освещённой калитки, и патруль начинает смотреть в его сторону.",
+            approachAction.FailText);
+
+        var (_, gadgetAction) = RequiredChapterAction(route.Offer, "gadget_infiltration");
+        Assert.Contains("Складной крюк ушёл в темноту не ударом", gadgetAction.SuccessText);
+        Assert.Contains("Складной крюк удержался, но ночь не приняла его молча", gadgetAction.PartialText);
+        Assert.Contains("Складной крюк ушёл в темноту слишком резко", gadgetAction.FailText);
+        AssertDownstreamDarenResultSurfacesPreserved(route.Offer);
+        AssertNoPlayerFacingTechnicalTerms("informant_parley success aftermath", text);
+    }
+
+    [Fact]
     public void DarenGadgetInfiltration_ReadsAsHookAndLineLiteraryPageWithoutMechanicDrift()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -4062,6 +4186,9 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.False(string.IsNullOrWhiteSpace(value), $"Daren action result '{context}' needs transition prose.");
         var text = value.Trim();
         var isLongAftermathResult =
+            (string.Equals(chapterId, "informant_parley", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(actionId, "informant_parley_action", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase)) ||
             (string.Equals(chapterId, "stealth_crossing", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "stealth_crossing_action", StringComparison.OrdinalIgnoreCase) &&
             (string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
