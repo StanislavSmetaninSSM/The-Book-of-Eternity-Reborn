@@ -45,7 +45,7 @@ Severity uses the project-wide audit scale: `P2` for serious UX/parity drift,
 | `factions` | `/factions` | `/фракции` | Interactive faction selector with detailed faction, projects, resources, bonuses, ranks, and chronicles. | Generic bundle summary plus raw JSON. | Browser detail parity gap for an otherwise adequate console reference pattern. | P3 | Follow-up #1057. |
 | `skills` | `/skills` | `/навыки` | Interactive skill selector with active/passive detail panels and mastery context. | Generic bundle summary plus raw JSON. | Browser detail parity gap for an otherwise adequate console reference pattern. | P3 | Follow-up #1057. |
 | `stats` | `/stats` | `/статы` | Player stat/derived-combat-stat panel. | Shared DTO shows status-derived stats and raw characteristics sidecars. | Covered. No repeated rich entity list requiring drill-down. | P3 | No new follow-up from #948. |
-| `world_news` | `/world_news` | `/новости_мира` | Large all-in-one panels for events, threats, NPC activity, faction projects, flags, and progression. | Generic bundle summary plus raw JSON. | Confirmed command-specific drill-down gap. | P2 | Follow-up #1055. |
+| `world_news` | `/world_news` | `/новости_мира` | Shared command-result renderer now preserves the world-news overview sections for events, location threats, NPC activity, faction projects, flags, and progression, and exposes typed detail commands for events, world flags, and progression entries. | Shared command-result renderer exposes the same overview sections plus non-mutating detail actions for events, world flags, and progression entries, with raw sidecars kept as secondary overview diagnostics. | Covered by #1055. | P2 | Implemented in #1055. |
 | `rival_threads` | `/rival_threads` | `/чужие_нити` | Rival soul thread list/detail flow exists through the console afterlife/mortal story helpers. | Generic bundle summary plus raw JSON. | Browser detail parity gap for rich thread entities. | P3 | Follow-up #1057. |
 | `guardian_corrections` | `/guardian_corrections` | `/коррективы_хранителя` | Console renders the current-life correction record with budgets, claimants, contested slots, and scenario-core context. | Generic bundle summary plus raw JSON. | Browser detail parity gap for a structured current-life correction record. | P3 | Follow-up #1057. |
 | `locations` | `/locations` | `/локации` | Interactive current/adjacent/discovered location selector with detailed location panels. | Shared DTO lists current, adjacent, and discovered/updated locations plus raw state. | Browser detail parity gap for an otherwise adequate console reference pattern. | P3 | Follow-up #1057. |
@@ -90,11 +90,39 @@ Regression coverage:
 - `ExplorerModeCommandTests` covers console discovery of the same typed detail
   commands and guards the console handler's shared DTO renderer path.
 
+## Fix Applied In #1055
+
+The shared Mortal World command-result builder for `/world_news` /
+`/новости_мира` now reads the existing world-news sources used by the command:
+`game_state/world/world_events.json`, current/world-map location threats,
+`game_state/npcs/npc_activities.json`, `game_state/factions/faction_projects.json`,
+`game_state/world/world_flags.json`, and `game_state/world/progression.json`.
+The overview remains player-facing and sectioned, while events, world flags, and
+progression entries receive typed detail commands/actions:
+
+- `/новости_мира событие <метка>` / `/world_news event <selector>`
+- `/новости_мира флаг <метка>` / `/world_news flag <selector>`
+- `/новости_мира прогресс <метка>` / `/world_news progression <selector>`
+
+The console handler now renders the same shared command-result surface as the
+browser path, so typed console commands and browser actions inspect the same
+canonical entries. Raw JSON remains only as secondary overview diagnostics; the
+detail views render Russian player-facing blocks and do not require raw JSON.
+
+Regression coverage:
+
+- `ExplorerWebCommandServiceTests` covers overview actions for a rich
+  world-news fixture, event detail output, a representative world-flag
+  subsection detail, and progression detail output without raw-JSON dependency.
+- `ExplorerModeCommandTests` covers console discovery of the same typed detail
+  commands and guards the console handler's shared DTO renderer path.
+
 ## Follow-Up Issues Created
 
 - #1054 - `/combat` / `/бой` enemy, ally, and combat-log detail drill-downs
   (implemented by the #1054 branch).
-- #1055 - `/world_news` / `/новости_мира` event and sub-section detail drill-downs.
+- #1055 - `/world_news` / `/новости_мира` event and sub-section detail drill-downs
+  (implemented by the #1055 branch).
 - #1056 - `/interactions` / `/взаимодействия` player/record detail drill-downs.
 - #1057 - browser detail actions for reference-style mortal read-only commands:
   `/quests`, `/skills`, `/factions`, `/locations`, `/rival_threads`,
@@ -106,3 +134,9 @@ The #948 branch changes only player-facing command-result rendering for
 `/transport`, adds tests/source guards, and records audit/follow-up decisions.
 It does not change GM-authored response fields, state schema, validation,
 normalizer behavior, prompts, examples, or afterlife contracts.
+
+The #1055 branch changes only player-facing command-result rendering and command
+argument preservation for the existing Mortal World `/world_news` /
+`/новости_мира` read-only command. It does not change GM-authored response
+fields, state schema, validation, normalizer behavior, prompts, examples, or
+afterlife contracts.

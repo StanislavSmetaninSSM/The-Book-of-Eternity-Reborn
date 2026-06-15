@@ -72,6 +72,52 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_WorldNews_ConsoleExposesSharedEventFlagAndProgressionDrilldowns()
+    {
+        await SeedMortalStateAsync();
+        await SeedRichMortalWorldNewsFilesAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var overviewResult = await _explorer.TryProcessCommand("/новости_мира");
+
+        Assert.Equal(string.Empty, overviewResult);
+        AssertNoHiddenExplorerErrors("world_news_overview_drilldowns");
+        var overviewText = ExtractRenderedText();
+        Assert.Contains("Новости мира", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/новости_мира событие riots_at_gate", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/новости_мира флаг festival_quiet", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/новости_мира прогресс road_silverford", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/world", overviewText, StringComparison.OrdinalIgnoreCase);
+
+        _console.Rendered.Clear();
+        _console.MarkupLines.Clear();
+
+        var detailResult = await _explorer.TryProcessCommand("/новости_мира событие riots_at_gate");
+
+        Assert.Equal(string.Empty, detailResult);
+        AssertNoHiddenExplorerErrors("world_news_event_detail");
+        var detailText = ExtractRenderedText();
+        Assert.Contains("Событие: Беспорядки у Северных ворот", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("торговая площадь закрыта до следующего утра", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("eventId", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/world", detailText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void ConsoleWorldNewsSource_UsesSharedMortalWorldNewsResultBuilder()
+    {
+        var source = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            "ExplorerMode.FactionsAndWorldNews.cs"));
+
+        Assert.Contains("ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(commandLine", source, StringComparison.Ordinal);
+        Assert.Contains("ExplorerCommandResultConsoleRenderer.Render(_console, result)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_SoulQuests_ShowsRivalArcMarkerForLinkedSoulQuest()
     {
@@ -320,6 +366,68 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("rival_threads_secret_world_event_only");
         Assert.DoesNotContain(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
             choice => choice.Contains("Скрытый Претендент", StringComparison.Ordinal));
+    }
+
+    private async Task SeedRichMortalWorldNewsFilesAsync()
+    {
+        await WriteJsonAsync("game_state/world/world_events.json", new
+        {
+            worldEventsLog = new[]
+            {
+                new
+                {
+                    eventId = "riots_at_gate",
+                    title = "Беспорядки у Северных ворот",
+                    timestamp = "день 42, утро",
+                    location = "Северные ворота",
+                    visibility = "public",
+                    status = "active",
+                    category = "городские слухи",
+                    description = "Толпа спорит у ворот [red]без разметки[/].",
+                    summary = "Стража закрыла торговую площадь.",
+                    involvedNPCs = new[] { "Мира Ключница" },
+                    affectedFactions = new[] { "Городская стража" },
+                    affectedLocations = new[] { "Северные ворота" },
+                    consequences = new[] { "торговая площадь закрыта до следующего утра" },
+                    followUp = "Капитан ждёт свидетелей."
+                }
+            }
+        });
+
+        await WriteJsonAsync("game_state/world/world_flags.json", new
+        {
+            worldStateFlags = new[]
+            {
+                new
+                {
+                    flagId = "festival_quiet",
+                    displayName = "Праздник стих после тревоги",
+                    scope = "Северный квартал",
+                    status = "active",
+                    value = "наблюдают стражники",
+                    description = "Музыканты играют тише после ночного письма.",
+                    consequence = "Площадь открыта только для жителей."
+                }
+            }
+        });
+
+        await WriteJsonAsync("game_state/world/progression.json", new
+        {
+            entries = new[]
+            {
+                new
+                {
+                    progressionId = "road_silverford",
+                    trackerName = "Дорога к Серебряному броду",
+                    stageName = "Караваны возвращаются",
+                    status = "active",
+                    description = "На тракте снова появились торговцы.",
+                    changeReason = "Стража разогнала засаду.",
+                    consequence = "Цены на соль упали.",
+                    timestamp = "день 42"
+                }
+            }
+        });
     }
 
     [Fact]

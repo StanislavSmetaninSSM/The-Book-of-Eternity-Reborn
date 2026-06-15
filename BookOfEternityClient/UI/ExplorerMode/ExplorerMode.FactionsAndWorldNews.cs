@@ -840,6 +840,17 @@ public partial class ExplorerMode
 
     private async Task ShowWorldNews()
     {
+        var commandLine = string.IsNullOrWhiteSpace(_currentCommandRemainder)
+            ? "/новости_мира"
+            : "/новости_мира " + _currentCommandRemainder;
+        var result = await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(commandLine, _stateManager, _fs);
+        if (result != null)
+        {
+            ExplorerCommandResultConsoleRenderer.Render(_console, result);
+            WaitForKey();
+            return;
+        }
+
         var doc = await _stateManager.LoadGameStateFileAsync("game_state/world/world_events.json");
 
         var text = new List<string>();
