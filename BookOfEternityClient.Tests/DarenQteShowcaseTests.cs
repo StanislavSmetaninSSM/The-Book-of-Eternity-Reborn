@@ -248,6 +248,9 @@ public sealed class DarenQteShowcaseTests : IDisposable
     private const string OldDarenApproachManorPartialText =
         "Сухая ветка ломается под каблуком, но Дарен успевает прижаться к стене, оставляя страже только сомнение.";
 
+    private const string OldDarenApproachManorFailText =
+        "Дарен теряет драгоценный миг у освещённой калитки, и патруль начинает смотреть в его сторону.";
+
     private const string DarenApproachManorSuccessText = """
         Дарен дождался, пока патруль у калитки отвернёт фонарь к дороге, и только тогда дал телу соскользнуть из-под старой липы. Мокрые листья над ним дрогнули без шороха: ладонь уже держала кору, плечо было ниже света, колени приняли тяжесть так мягко, будто земля сама убирала под сапогом камень. Дарен не побежал; он вписал каждый шаг в слепой промежуток между фонарями, где жёлтый луч не доставал стены поместья и тень лежала плотнее сырой шерсти.
 
@@ -268,6 +271,16 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Оклика не последовало. Патруль не нашёл лица, только повод задержаться и переглянуться, словно тень под липой стала чуть тяжелее обычной. Один из стражников провёл сапогом по мокрой земле, другой пробормотал про ветки и ветер, но фонарь ещё дважды вернулся к тому месту, где Дарен удерживал дыхание у самой стены. Сомнение осталось за его спиной не криком, а занозой: маленькой уликой, которую плохая память забудет, а хорошая принесёт капитану утром.
 
         Когда свет наконец ушёл к калитке, Дарен не позволил себе облегчения. Он скользнул дальше вдоль стены медленнее, чем хотел, прижимая поцарапанную ладонь к плащу и выбирая камни, где вода могла разбить отпечаток сапога. До заднего навеса, где ждала Мира Ночная Нить, путь ещё держался открытым, но теперь он вёл не через чистую тишину, а через чужое подозрение. Дарен должен был прийти к её шёпоту быстрее, чем стража решит проверить тень у старой липы ещё раз, и потому каждый следующий шаг он делал так, будто за ним уже тянулась тонкая нитка света.
+        """;
+
+    private const string DarenApproachManorFailText = """
+        Дарен теряет тот самый миг, который должен был стать тенью: фонарь у калитки качается обратно, и жёлтый луч ловит край его плеча под старой липой. Он прижимается к мокрой стене поместья, но поздно: сапог скользит по мху, камень выдыхает короткий хруст, и пёс у конюшни отвечает глухим рыком. Дыхание Дарена сбивается на один удар; ладонь на кладке сжимается так сильно, что под ногтем остаётся сырая известь, а колено всё равно дрожит в открытом свете.
+
+        Патруль не бросается сразу, и от этого опасность становится хуже. Один страж поднимает фонарь выше, другой свистит в сторону будки, и жёлтый круг начинает медленно ощупывать траву у стены, сломанную ветку, смятый мох, место, где Дарен только что пытался стать пустотой. Свидетеля ночь получила не лицом, а движением: чужая память уже держит тёмный силуэт под липой, плечо у калитки и слишком быстрый вдох у камня.
+
+        Дарен уходит не чисто, а на отрезанном дыхании. Он заставляет тело не сорваться в бег, скользит вдоль садовой кладки низко и неровно, стирает рукавом мокрый след ладони, но каждый шаг оставляет за собой больше смысла, чем следовало бы оставить в такой ночи. За спиной стражник называет не ветер, а вора; пёс тянет поводок к траве, где вода ещё не успела затянуть отпечаток.
+
+        Крик не становится общей тревогой только потому, что дождь давит его вниз, к земле. Но погоня уже получила направление, улика уже лежит у старой липы, и фонарь у калитки больше не смотрит в пустоту. Дарен добирается до заднего навеса с холодной болью в пальцах и тёмным пониманием: там, где Мира Ночная Нить должна была ждать его шёпот, он появится не как тень без имени, а как человек, которого начали искать. Дальше нужно будет говорить быстрее шёпота, потому что за его спиной сад, стена и мокрый свет уже складывают для стражи первую историю.
         """;
 
     private static readonly IReadOnlyDictionary<string, string[][]> ChapterSignalGroups =
@@ -530,9 +543,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         }
 
         Assert.Equal(DarenApproachManorPartialText, action.PartialText?.Trim());
-        Assert.Equal(
-            "Дарен теряет драгоценный миг у освещённой калитки, и патруль начинает смотреть в его сторону.",
-            action.FailText);
+        Assert.Equal(DarenApproachManorFailText, action.FailText?.Trim());
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.SuccessText, action.FailText);
         Assert.NotEqual(action.PartialText, action.FailText);
@@ -629,9 +640,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         }
 
         Assert.Equal(DarenApproachManorSuccessText, action.SuccessText?.Trim());
-        Assert.Equal(
-            "Дарен теряет драгоценный миг у освещённой калитки, и патруль начинает смотреть в его сторону.",
-            action.FailText);
+        Assert.Equal(DarenApproachManorFailText, action.FailText?.Trim());
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.SuccessText, action.FailText);
         Assert.NotEqual(action.PartialText, action.FailText);
@@ -669,6 +678,103 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Contains("Складной крюк ушёл в темноту слишком резко", gadgetAction.FailText);
         AssertDownstreamDarenResultSurfacesPreserved(route.Offer);
         AssertNoPlayerFacingTechnicalTerms("approach_manor partial aftermath", text);
+    }
+
+    [Fact]
+    public void DarenApproachManorFail_ReadsAsDangerousStealthAftermathWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "approach_manor");
+        var nextBeat = Assert.Single(route.Beats, item => item.BeatId == "informant_parley");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "approach_manor");
+        var text = action.FailText?.Trim() ?? "";
+
+        Assert.Equal("daren_qte_showcase", route.RouteId);
+        Assert.Equal(RequiredBeatIds, route.Beats.Select(item => item.BeatId));
+        Assert.Equal(RequiredBeatIds, route.Offer.Chapters.Select(item => item.ChapterId));
+        Assert.Equal("approach_manor", route.Offer.StartChapterId);
+        Assert.Equal("Подступ к поместью", beat.Title);
+        Assert.Equal("Шёпот Миры", nextBeat.Title);
+        Assert.Equal("approach_manor", chapter.ChapterId);
+        Assert.Equal("approach_manor_action", action.ActionId);
+        Assert.Equal("Выбрать тень у старой липы", action.Label);
+        Assert.Equal("BranchChoice", action.Check.Type);
+        Assert.Equal(Characteristics.Wisdom, action.Check.PrimaryCharacteristic);
+        Assert.Equal(2, action.Check.BaseDifficulty);
+        Assert.Equal("informant_parley", action.Routing.Success.NextChapterId);
+        Assert.Equal("informant_parley", action.Routing.Partial.NextChapterId);
+        Assert.Equal("informant_parley", action.Routing.Fail.NextChapterId);
+        Assert.True(
+            FindChapterIndex(route.Offer, "approach_manor") < FindChapterIndex(route.Offer, "informant_parley"),
+            "Daren approach_manor fail should still bridge directly into Mira's informant beat.");
+
+        var config = RequiredConfig(action);
+        Assert.Equal("success", RequiredString(config, "choiceGrade"));
+        Assert.False(
+            string.Equals(OldDarenApproachManorFailText, text, StringComparison.Ordinal),
+            "Daren approach_manor fail should reject the old one-sentence result notification.");
+        Assert.Equal(DarenApproachManorFailText, text);
+
+        Assert.True(text.Length >= 800,
+            "Daren approach_manor fail should be a substantial dangerous stealth aftermath insert, not a one-sentence result notification.");
+        Assert.True(CountSentences(text) >= 7,
+            "Daren approach_manor fail should unfold across several aftermath sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 3,
+            "Daren approach_manor fail should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("old linden manor wall setting", [["лип"], ["помест"], ["стен"], ["сад", "камн", "кладк", "трав"]]),
+            ("lantern gate and light exposure", [["фонар"], ["калит"], ["свет", "луч", "освещ", "жёлт"], ["тень", "пустот", "силуэт"]]),
+            ("guard patrol dog or witness pressure", [["патрул", "страж", "караул"], ["пёс", "собак", "конюш"], ["свидетел", "лицо", "оклик", "крик", "свист"], ["фонар", "огонь", "луч"]]),
+            ("fail-grade pursuit and evidence escalation", [["погон", "преслед", "обход"], ["ули", "след", "отпечат", "смят"], ["тревог", "подозр", "запом"], ["искать", "наш", "увид", "слыш"]]),
+            ("Daren body control under danger", [["Дарен"], ["дых", "вдох", "выдох"], ["ладон", "пальц", "рук"], ["плеч", "колен", "тело", "горл"], ["сжал", "прижал", "удерж", "застав"]]),
+            ("wet night stone garden approach", [["мокр", "дожд", "сыр", "влаж"], ["камн", "кладк", "плит", "стен"], ["сад", "трава", "мох", "листь"]]),
+            ("Mira informant continuity under pressure", [["Мира"], ["Ночная Нить", "информ", "шёп", "шеп"], ["навес", "задн", "дорог"], ["дальш", "вперёд", "вперед", "пошёл", "прийти"], ["след", "погон", "свет", "свидетел"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"approach_manor fail {context}", text, termGroups);
+        }
+
+        Assert.Equal(DarenApproachManorSuccessText, action.SuccessText?.Trim());
+        Assert.Equal(DarenApproachManorPartialText, action.PartialText?.Trim());
+        Assert.NotEqual(action.SuccessText, action.PartialText);
+        Assert.NotEqual(action.SuccessText, action.FailText);
+        Assert.NotEqual(action.PartialText, action.FailText);
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 4),
+            ("loot", 0),
+            ("pursuit_control", 0),
+            ("evidence", -2),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 2),
+            ("loot", 0),
+            ("pursuit_control", 0),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -4),
+            ("loot", -2),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+
+        var (_, informantAction) = RequiredChapterAction(route.Offer, "informant_parley");
+        Assert.Contains("Дарен не потянулся к кошелю", informantAction.SuccessText);
+        Assert.Contains("Мира Ночная Нить приняла монету", informantAction.PartialText);
+        Assert.Contains("Дарен сделал тот шаг, которого нельзя было делать", informantAction.FailText);
+
+        var (_, gadgetAction) = RequiredChapterAction(route.Offer, "gadget_infiltration");
+        Assert.Contains("Складной крюк ушёл в темноту не ударом", gadgetAction.SuccessText);
+        Assert.Contains("Складной крюк удержался, но ночь не приняла его молча", gadgetAction.PartialText);
+        Assert.Contains("Складной крюк ушёл в темноту слишком резко", gadgetAction.FailText);
+        AssertDownstreamDarenResultSurfacesPreserved(route.Offer);
+        AssertNoPlayerFacingTechnicalTerms("approach_manor fail aftermath", text);
     }
 
     [Fact]
@@ -831,9 +937,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var (_, approachAction) = RequiredChapterAction(route.Offer, "approach_manor");
         Assert.Equal(DarenApproachManorSuccessText, approachAction.SuccessText?.Trim());
         Assert.Equal(DarenApproachManorPartialText, approachAction.PartialText?.Trim());
-        Assert.Equal(
-            "Дарен теряет драгоценный миг у освещённой калитки, и патруль начинает смотреть в его сторону.",
-            approachAction.FailText);
+        Assert.Equal(DarenApproachManorFailText, approachAction.FailText?.Trim());
 
         var (_, gadgetAction) = RequiredChapterAction(route.Offer, "gadget_infiltration");
         Assert.Contains("Складной крюк ушёл в темноту не ударом", gadgetAction.SuccessText);
@@ -952,9 +1056,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var (_, approachAction) = RequiredChapterAction(route.Offer, "approach_manor");
         Assert.Equal(DarenApproachManorSuccessText, approachAction.SuccessText?.Trim());
         Assert.Equal(DarenApproachManorPartialText, approachAction.PartialText?.Trim());
-        Assert.Equal(
-            "Дарен теряет драгоценный миг у освещённой калитки, и патруль начинает смотреть в его сторону.",
-            approachAction.FailText);
+        Assert.Equal(DarenApproachManorFailText, approachAction.FailText?.Trim());
 
         AssertDownstreamDarenResultSurfacesPreserved(route.Offer);
         AssertNoPlayerFacingTechnicalTerms("informant_parley partial aftermath", text);
@@ -1069,9 +1171,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var (_, approachAction) = RequiredChapterAction(route.Offer, "approach_manor");
         Assert.Equal(DarenApproachManorSuccessText, approachAction.SuccessText?.Trim());
         Assert.Equal(DarenApproachManorPartialText, approachAction.PartialText?.Trim());
-        Assert.Equal(
-            "Дарен теряет драгоценный миг у освещённой калитки, и патруль начинает смотреть в его сторону.",
-            approachAction.FailText);
+        Assert.Equal(DarenApproachManorFailText, approachAction.FailText?.Trim());
 
         var (_, gadgetAction) = RequiredChapterAction(route.Offer, "gadget_infiltration");
         Assert.Contains("Складной крюк ушёл в темноту не ударом", gadgetAction.SuccessText);
@@ -4646,7 +4746,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             (string.Equals(chapterId, "approach_manor", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "approach_manor_action", StringComparison.OrdinalIgnoreCase) &&
             (string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(grade, "partial", StringComparison.OrdinalIgnoreCase))) ||
+                string.Equals(grade, "partial", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(grade, "fail", StringComparison.OrdinalIgnoreCase))) ||
             (string.Equals(chapterId, "informant_parley", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(actionId, "informant_parley_action", StringComparison.OrdinalIgnoreCase) &&
             (string.Equals(grade, "success", StringComparison.OrdinalIgnoreCase) ||
