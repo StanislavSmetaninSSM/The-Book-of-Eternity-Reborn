@@ -1391,6 +1391,73 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_PlayerInteractions_ConsoleExposesSharedPlayerAndRecordDrilldowns()
+    {
+        await SeedMortalStateAsync();
+        await SeedRichMortalPlayerInteractionsFilesAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var overviewResult = await _explorer.TryProcessCommand("/взаимодействия");
+
+        Assert.Equal(string.Empty, overviewResult);
+        AssertNoHiddenExplorerErrors("player_interactions_overview_drilldowns");
+        var overviewText = ExtractRenderedText();
+        Assert.Contains("Взаимодействия игроков", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/взаимодействия игрок player_lienna", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/взаимодействия запись meeting_cipher", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Передача шифра", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/misc", overviewText, StringComparison.OrdinalIgnoreCase);
+
+        _console.Rendered.Clear();
+        _console.MarkupLines.Clear();
+
+        var playerResult = await _explorer.TryProcessCommand("/взаимодействия игрок player_lienna");
+
+        Assert.Equal(string.Empty, playerResult);
+        AssertNoHiddenExplorerErrors("player_interactions_player_detail");
+        var playerText = ExtractRenderedText();
+        Assert.Contains("Игрок: Лианна из янтарной башни", playerText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ждёт ответа у старого фонтана", playerText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Спор у переправы", playerText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Страж Кай", playerText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("playerId", playerText, StringComparison.OrdinalIgnoreCase);
+
+        _console.Rendered.Clear();
+        _console.MarkupLines.Clear();
+
+        var recordResult = await _explorer.TryProcessCommand("/взаимодействия запись meeting_cipher");
+
+        Assert.Equal(string.Empty, recordResult);
+        AssertNoHiddenExplorerErrors("player_interactions_record_detail");
+        var recordText = ExtractRenderedText();
+        Assert.Contains("Запись взаимодействия: Передача шифра", recordText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("шифр спрятан в перчатке", recordText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Можно спросить о знаке Вальмонтов", recordText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("interactionId", recordText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/misc", recordText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void ConsolePlayerInteractionsSource_UsesSharedMortalInteractionsResultBuilder()
+    {
+        var source = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            "ExplorerMode.MetaStoryAndStatus.cs"));
+        var methodStart = source.IndexOf("private async Task ShowPlayerInteractions()", StringComparison.Ordinal);
+        Assert.True(methodStart >= 0, "ShowPlayerInteractions method was not found.");
+        var nextMethodStart = source.IndexOf("\n    //", methodStart, StringComparison.Ordinal);
+        var methodSource = nextMethodStart > methodStart
+            ? source[methodStart..nextMethodStart]
+            : source[methodStart..];
+
+        Assert.Contains("ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(commandLine", methodSource, StringComparison.Ordinal);
+        Assert.Contains("ExplorerCommandResultConsoleRenderer.Render(_console, result)", methodSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_Effects_RendersWithoutHiddenErrors()
     {

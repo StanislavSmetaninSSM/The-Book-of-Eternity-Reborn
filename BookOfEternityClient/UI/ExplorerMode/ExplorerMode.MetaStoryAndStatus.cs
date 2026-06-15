@@ -1617,115 +1617,13 @@ public partial class ExplorerMode
 
     private async Task ShowPlayerInteractions()
     {
-        var doc = await _stateManager.LoadGameStateFileAsync("game_state/misc/player_interactions.json");
-        if (doc == null)
-        {
-            ShowEmptyPanel("Взаимодействия игроков", "Данные взаимодействий недоступны");
-            return;
-        }
+        var commandLine = string.IsNullOrWhiteSpace(_currentCommandRemainder)
+            ? "/взаимодействия"
+            : "/взаимодействия " + _currentCommandRemainder;
+        var result = await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(commandLine, _stateManager, _fs);
+        if (result != null)
+            ExplorerCommandResultConsoleRenderer.Render(_console, result);
 
-        var lines = new List<string> { "[bold magenta]🤝 Взаимодействия игроков[/]" };
-        var root = doc.RootElement;
-        var rendered = false;
-
-	        if (root.TryGetProperty("otherPlayersInteractions", out var interactions))
-	        {
-	            rendered = true;
-	            if (interactions.ValueKind == JsonValueKind.Object)
-	            {
-	                foreach (var playerEntry in interactions.EnumerateObject())
-	                {
-	                    lines.Add("");
-	                    lines.Add($"[bold]👤 Игрок {Markup.Escape(playerEntry.Name)}[/]");
-
-                    void RenderInteractionCommand(string label, JsonElement payload)
-                    {
-                        lines.Add($"  • [cyan]{Markup.Escape(label)}[/]");
-                        if (payload.ValueKind == JsonValueKind.Object)
-                        {
-                            foreach (var prop in payload.EnumerateObject())
-                                RenderReadableJsonValue(lines, prop.Name, prop.Value, "      ");
-                        }
-                        else if (payload.ValueKind == JsonValueKind.Array)
-                        {
-                            var arrIndex = 0;
-                            foreach (var arrItem in payload.EnumerateArray())
-                            {
-                                if (arrItem.ValueKind == JsonValueKind.Object)
-                                {
-                                    lines.Add($"      [dim]элемент {arrIndex + 1}:[/]");
-                                    foreach (var prop in arrItem.EnumerateObject())
-                                        RenderReadableJsonValue(lines, prop.Name, prop.Value, "        ");
-                                }
-                                else if (!string.IsNullOrWhiteSpace(arrItem.ToString()))
-                                {
-                                    lines.Add($"      [dim]{Markup.Escape(arrItem.ToString())}[/]");
-                                }
-	                                arrIndex++;
-	                            }
-	                        }
-	                        else if (!string.IsNullOrWhiteSpace(payload.ToString()))
-	                        {
-	                            lines.Add($"      [dim]{Markup.Escape(payload.ToString())}[/]");
-	                        }
-	                    }
-
-	                    if (playerEntry.Value.ValueKind == JsonValueKind.Object)
-	                    {
-	                        foreach (var command in playerEntry.Value.EnumerateObject())
-	                            RenderInteractionCommand(command.Name, command.Value);
-	                    }
-	                    else if (playerEntry.Value.ValueKind == JsonValueKind.Array)
-	                    {
-	                        foreach (var command in playerEntry.Value.EnumerateArray())
-	                        {
-	                            if (command.ValueKind == JsonValueKind.Object)
-	                            {
-	                                foreach (var prop in command.EnumerateObject())
-	                                    RenderInteractionCommand(prop.Name, prop.Value);
-	                            }
-	                            else
-	                            {
-	                                lines.Add($"  • {Markup.Escape(command.ToString())}");
-	                            }
-                        }
-                    }
-                    else
-                    {
-                        lines.Add($"  [dim]{Markup.Escape(playerEntry.Value.ToString())}[/]");
-                    }
-                }
-            }
-            else if (interactions.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var item in interactions.EnumerateArray())
-                {
-                    var targetPlayer = GetStr(item, "playerId", GetStr(item, "targetPlayerId", "другой игрок"));
-                    lines.Add($"  • [white]{Markup.Escape(targetPlayer)}[/]");
-                    if (item.ValueKind == JsonValueKind.Object)
-                    {
-                        foreach (var prop in item.EnumerateObject())
-                        {
-                            if (prop.Name is "playerId" or "targetPlayerId")
-                                continue;
-                            RenderReadableJsonValue(lines, prop.Name, prop.Value, "    ");
-                        }
-                    }
-                }
-            }
-        }
-
-        if (!rendered)
-            lines.Add("\n[dim]Нет данных о взаимодействиях других игроков[/]");
-
-        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
-        {
-            Header = new PanelHeader(" 🤝 Player Interactions ", Justify.Center),
-            Border = BoxBorder.Rounded,
-            BorderStyle = new Style(Color.Magenta1),
-            Padding = new Padding(2, 1),
-            Expand = true
-        });
         WaitForKey();
     }
 

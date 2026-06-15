@@ -1374,6 +1374,69 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         """);
     }
 
+    private async Task SeedRichMortalPlayerInteractionsFilesAsync()
+    {
+        await WriteRawJsonAsync("game_state/misc/player_interactions.json", """
+        {
+          "otherPlayersInteractions": {
+            "player_lienna": {
+              "playerId": "player_lienna",
+              "displayName": "Лианна из янтарной башни",
+              "relationship": "союзница по тайному письму",
+              "context": "общий след странной печати",
+              "status": "ждёт ответа у старого фонтана",
+              "summary": "Лианна передаёт сведения о печати без лишней огласки.",
+              "currentHooks": [
+                "встретиться после заката",
+                "проверить знак на перчатке"
+              ],
+              "records": [
+                {
+                  "interactionId": "meeting_cipher",
+                  "title": "Передача шифра",
+                  "status": "active",
+                  "turn": 42,
+                  "timestamp": "день 42, вечер",
+                  "location": "Старый фонтан",
+                  "participants": [
+                    "Лианна из янтарной башни",
+                    "герой"
+                  ],
+                  "summary": "Лианна оставила шифр под бронзовой чашей.",
+                  "notes": "шифр спрятан в перчатке",
+                  "outcome": "контакт сохранён",
+                  "nextStep": "Можно спросить о знаке Вальмонтов.",
+                  "tags": [
+                    "тайна",
+                    "печать"
+                  ]
+                },
+                {
+                  "interactionId": "argument_at_ferry",
+                  "title": "Спор у переправы",
+                  "status": "resolved",
+                  "location": "Северная переправа",
+                  "summary": "Лианна отвлекла лодочника от разговора о печати."
+                }
+              ]
+            },
+            "player_kai": {
+              "playerId": "player_kai",
+              "displayName": "Страж Кай",
+              "relationship": "осторожный наблюдатель",
+              "records": [
+                {
+                  "interactionId": "watch_gate",
+                  "title": "Дозор у ворот",
+                  "summary": "Кай следит за слухами у северных ворот."
+                }
+              ]
+            }
+          }
+        }
+        """);
+    }
+
 
     private string BuildConsoleDiagnostics(string scenario)
     {

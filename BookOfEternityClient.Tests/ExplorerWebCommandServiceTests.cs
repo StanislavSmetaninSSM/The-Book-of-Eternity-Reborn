@@ -314,6 +314,109 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_PlayerInteractionsOverview_ExposesPlayerAndRecordDrilldownActions()
+    {
+        await SeedRichMortalPlayerInteractionsFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/взаимодействия"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Взаимодействия игроков", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Лианна из янтарной башни", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Страж Кай", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Передача шифра", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Спор у переправы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/misc", text, StringComparison.OrdinalIgnoreCase);
+
+        var playerAction = Assert.Single(result.Actions, static action => action.Id == "interactions-player-player_lienna");
+        Assert.Equal("/взаимодействия игрок player_lienna", playerAction.Command);
+        Assert.Contains("Лианна из янтарной башни", playerAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(UiActionStyle.Secondary, playerAction.Style);
+        Assert.False(playerAction.RequiresConfirmation);
+
+        var recordAction = Assert.Single(result.Actions, static action => action.Id == "interactions-record-meeting_cipher");
+        Assert.Equal("/взаимодействия запись meeting_cipher", recordAction.Command);
+        Assert.Contains("Передача шифра", recordAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(UiActionStyle.Secondary, recordAction.Style);
+        Assert.False(recordAction.RequiresConfirmation);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_PlayerInteractionPlayerDetail_RendersOnePlayerWithoutRawJson()
+    {
+        await SeedRichMortalPlayerInteractionsFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/взаимодействия игрок player_lienna"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Игрок: Лианна из янтарной башни", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("союзница по тайному письму", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ждёт ответа у старого фонтана", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Передача шифра", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Спор у переправы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Страж Кай", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("playerId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("records", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/misc", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_PlayerInteractionRecordDetail_RendersOneRecordWithoutRawJson()
+    {
+        await SeedRichMortalPlayerInteractionsFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/взаимодействия запись meeting_cipher"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Запись взаимодействия: Передача шифра", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Лианна из янтарной башни", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Старый фонтан", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("день 42, вечер", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("шифр спрятан в перчатке", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Можно спросить о знаке Вальмонтов", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("argument_at_ferry", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("interactionId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("records", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/misc", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_PlayerInteractionRecordDetail_RendersCanonicalCommandPayloadWithoutRawJson()
+    {
+        await SeedCanonicalCommandPlayerInteractionsFilesAsync();
+
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/взаимодействия"));
+
+        Assert.Equal(CommandExecutionState.Completed, overview.State);
+        var recordAction = Assert.Single(overview.Actions, static action => action.Id == "interactions-record-player_mara-1");
+        Assert.Equal("/взаимодействия запись player_mara-1", recordAction.Command);
+        Assert.Contains("Запись", recordAction.Label, StringComparison.OrdinalIgnoreCase);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(recordAction.Command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Запись взаимодействия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("player_mara", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Серебряный ключ", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("покрыт знаками янтарной башни", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("2", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("UpdateInventory", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("UpdateInventory", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/misc", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Transport_TranslatesCanonicalTypeAndAvailabilityInTableCells()
     {
         await SeedCanonicalMortalSummaryFilesAsync();
@@ -3472,6 +3575,90 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "timestamp": "день 42"
             }
           ]
+        }
+        """);
+    }
+
+    private async Task SeedRichMortalPlayerInteractionsFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/misc/player_interactions.json", """
+        {
+          "otherPlayersInteractions": {
+            "player_lienna": {
+              "playerId": "player_lienna",
+              "displayName": "Лианна из янтарной башни",
+              "relationship": "союзница по тайному письму",
+              "context": "общий след странной печати",
+              "status": "ждёт ответа у старого фонтана",
+              "summary": "Лианна передаёт сведения о печати без лишней огласки.",
+              "currentHooks": [
+                "встретиться после заката",
+                "проверить знак на перчатке"
+              ],
+              "records": [
+                {
+                  "interactionId": "meeting_cipher",
+                  "title": "Передача шифра",
+                  "status": "active",
+                  "turn": 42,
+                  "timestamp": "день 42, вечер",
+                  "location": "Старый фонтан",
+                  "participants": [
+                    "Лианна из янтарной башни",
+                    "герой"
+                  ],
+                  "summary": "Лианна оставила шифр под бронзовой чашей.",
+                  "notes": "шифр спрятан в перчатке",
+                  "outcome": "контакт сохранён",
+                  "nextStep": "Можно спросить о знаке Вальмонтов.",
+                  "tags": [
+                    "тайна",
+                    "печать"
+                  ]
+                },
+                {
+                  "interactionId": "argument_at_ferry",
+                  "title": "Спор у переправы",
+                  "status": "resolved",
+                  "location": "Северная переправа",
+                  "summary": "Лианна отвлекла лодочника от разговора о печати."
+                }
+              ]
+            },
+            "player_kai": {
+              "playerId": "player_kai",
+              "displayName": "Страж Кай",
+              "relationship": "осторожный наблюдатель",
+              "records": [
+                {
+                  "interactionId": "watch_gate",
+                  "title": "Дозор у ворот",
+                  "summary": "Кай следит за слухами у северных ворот."
+                }
+              ]
+            }
+          }
+        }
+        """);
+    }
+
+    private async Task SeedCanonicalCommandPlayerInteractionsFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/misc/player_interactions.json", """
+        {
+          "otherPlayersInteractions": {
+            "player_mara": [
+              {
+                "UpdateInventory": [
+                  {
+                    "itemName": "Серебряный ключ",
+                    "quantity": 2,
+                    "description": "покрыт знаками янтарной башни"
+                  }
+                ]
+              }
+            ]
+          }
         }
         """);
     }
