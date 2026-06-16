@@ -111,7 +111,7 @@ public sealed class ExplorerWebCommandService
                 _stateManager,
                 _fs),
             ExplorerCommandBrowserHandlerKind.ChaosSea => await ExplorerChaosSeaCommandResultBuilder.TryBuildAsync(
-                commandToken,
+                descriptor.AcceptsArguments ? parsed.BuilderCommand : commandToken,
                 _stateManager,
                 _fs,
                 request.AdvancedEnabled == true),

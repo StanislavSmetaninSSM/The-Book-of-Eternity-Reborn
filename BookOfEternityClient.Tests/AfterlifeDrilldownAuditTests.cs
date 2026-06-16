@@ -135,6 +135,31 @@ public sealed class AfterlifeDrilldownAuditTests
             string.Join(Environment.NewLine, rowsWithoutIssue));
     }
 
+    [Fact]
+    public void ChaosSeaGuardianAbodeDetailActions_CatalogAllowsReadOnlyDetailArguments()
+    {
+        var commandIds = new[]
+        {
+            "guardians",
+            "abodes",
+            "abode_power",
+            "guardian_projects"
+        };
+
+        foreach (var commandId in commandIds)
+        {
+            var descriptor = ExplorerCommandCatalog.Require(commandId);
+
+            Assert.Equal(ExplorerCommandGroup.ChaosSea, descriptor.Group);
+            Assert.Equal(ExplorerCommandMutationMode.ReadOnly, descriptor.MutationMode);
+            Assert.Equal(ExplorerCommandBrowserHandlerKind.ChaosSea, descriptor.BrowserHandlerKind);
+            Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, descriptor.BrowserStatus);
+            Assert.True(
+                descriptor.AcceptsArguments,
+                $"{commandId} must preserve read-only detail arguments for #1063 / #949 AFD-001 browser detail actions.");
+        }
+    }
+
     private static string ReadAudit()
     {
         var auditPath = Path.Combine(
