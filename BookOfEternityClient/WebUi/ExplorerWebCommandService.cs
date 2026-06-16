@@ -102,7 +102,7 @@ public sealed class ExplorerWebCommandService
         var result = descriptor.BrowserHandlerKind switch
         {
             ExplorerCommandBrowserHandlerKind.UniversalMeta => await ExplorerUniversalMetaCommandResultBuilder.TryBuildAsync(
-                builderCommand,
+                descriptor.AcceptsArguments ? parsed.BuilderCommand : builderCommand,
                 _stateManager,
                 _fs,
                 _localization),

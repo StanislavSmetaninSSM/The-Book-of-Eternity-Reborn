@@ -1901,6 +1901,85 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.False(unequipAction.RequiresConfirmation);
     }
 
+    [Theory]
+    [InlineData("/soul_relics", "soul-relic-detail-relic_memory_blade", "/soul_relics реликвия relic_memory_blade", "Клинок Памяти", "")]
+    [InlineData("/soul_relic_equip", "soul-relic-detail-relic_memory_blade", "/soul_relics реликвия relic_memory_blade", "Клинок Памяти", "confirm_soul_relic_write")]
+    [InlineData("/soul_relic_unequip", "soul-relic-detail-relic_silent_helm", "/soul_relics реликвия relic_silent_helm", "Шлем Тишины", "confirm_soul_relic_write")]
+    [InlineData("/afterlife_archive", "afterlife-archive-detail-archive_lore_001", "/afterlife_archive запись archive_lore_001", "Песнь Первого Маяка", "")]
+    [InlineData("/archive_candidates", "archive-candidate-detail-candidate_mayak", "/archive_candidates кандидат candidate_mayak", "Песня маяка", "")]
+    [InlineData("/archive_consultation", "archive-consultation-detail-guardian_azalia", "/archive_consultation хранитель guardian_azalia", "Азалия", "confirm_archive_consultation")]
+    [InlineData("/archive_project_fuel", "archive-project-fuel-detail-guardian_azalia-project_forge_song", "/archive_project_fuel проект guardian_azalia::project_forge_song", "Песнь кузни", "confirm_archive_project_fuel")]
+    public async Task ExecuteAsync_AfterlifeRelicArchiveOverviews_ExposeIssue1064ReadOnlyDetailActions(
+        string command,
+        string expectedActionId,
+        string expectedDetailCommand,
+        string expectedLabelText,
+        string expectedPromptId)
+    {
+        await SeedRichAfterlifeRelicArchiveDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            command,
+            OwnerId: "browser-issue-1064",
+            OwnerLabel: "Browser issue 1064"));
+
+        Assert.NotEqual(CommandExecutionState.Failed, result.State);
+        Assert.NotEqual(CommandExecutionState.Blocked, result.State);
+        var action = Assert.Single(result.Actions, candidate => candidate.Id == expectedActionId);
+        Assert.Equal(expectedDetailCommand, action.Command);
+        Assert.Contains("Подробно", action.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(expectedLabelText, action.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(UiActionStyle.Secondary, action.Style);
+        Assert.False(action.RequiresConfirmation);
+        Assert.DoesNotContain("/", action.Label, StringComparison.Ordinal);
+        Assert.DoesNotContain("DTO", action.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("API", action.Label, StringComparison.OrdinalIgnoreCase);
+
+        if (!string.IsNullOrWhiteSpace(expectedPromptId))
+            Assert.Contains(result.Prompts, prompt => prompt.Id == expectedPromptId);
+    }
+
+    [Theory]
+    [InlineData("/soul_relics реликвия relic_memory_blade", "Реликвия души: Клинок Памяти", "Память режет тьму", "Шлем Тишины")]
+    [InlineData("/afterlife_archive запись archive_lore_001", "Архив души: Песнь Первого Маяка", "Полный текст маяка", "Запечатанный договор")]
+    [InlineData("/archive_candidates кандидат candidate_mayak", "Кандидат в Архив: Песня маяка", "Кандидат хранит свет", "Тайный договор")]
+    [InlineData("/archive_consultation хранитель guardian_azalia", "Архивная консультация: Азалия", "memory", "Недоверчивый Страж")]
+    [InlineData("/archive_project_fuel проект guardian_azalia::project_forge_song", "Подпитка проекта: Песнь кузни", "lore_research", "Скрытый проект")]
+    public async Task ExecuteAsync_AfterlifeRelicArchiveDetails_RenderFocusedPlayerFacingDetailWithoutRawJson(
+        string command,
+        string expectedTitle,
+        string expectedText,
+        string excludedText)
+    {
+        await SeedRichAfterlifeRelicArchiveDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        AssertNoAfterlifeIssue1064TechnicalLeak(result);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains(expectedTitle, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(expectedText, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(excludedText, text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/soul_relics реликвия missing_relic")]
+    [InlineData("/afterlife_archive запись missing_archive")]
+    [InlineData("/archive_candidates кандидат missing_candidate")]
+    [InlineData("/archive_consultation хранитель missing_guardian")]
+    [InlineData("/archive_project_fuel проект guardian_azalia::missing_project")]
+    public async Task ExecuteAsync_AfterlifeRelicArchiveDetails_UnknownIdsReturnPlayerFacingUnavailableText(string command)
+    {
+        await SeedRichAfterlifeRelicArchiveDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        AssertNoAfterlifeIssue1064TechnicalLeak(result);
+        Assert.Contains("не удалось открыть", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public async Task ExecuteAsync_InventoryEquipAction_OpensPromptSessionWithItemSlotAndConfirmation()
     {
@@ -5376,6 +5455,189 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
           ]
         }
         """);
+    }
+
+    private async Task SeedRichAfterlifeRelicArchiveDrilldownFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 3,
+          "inkFeathers": {
+            "current": 12,
+            "total": 12
+          },
+          "soulRelics": {
+            "stored": [
+              {
+                "relicId": "relic_memory_blade",
+                "name": "Клинок Памяти",
+                "rarity": "Rare",
+                "slot": "mainHand",
+                "compatibleSlots": ["mainHand", "offHand"],
+                "description": "Память режет тьму.",
+                "effectSummary": "Усиливает воспоминания о клятвах.",
+                "tags": ["memory", "blade"],
+                "gameplayStatus": { "equipped": false }
+              }
+            ],
+            "equipped": [
+              {
+                "relicId": "relic_silent_helm",
+                "name": "Шлем Тишины",
+                "quality": "Legendary",
+                "slot": "head",
+                "description": "Шлем хранит тишину.",
+                "gameplayStatus": { "equipped": true, "currentSlot": "head" }
+              }
+            ]
+          },
+          "afterlifeArchive": {
+            "stored": [
+              {
+                "archiveId": "archive_lore_001",
+                "entryType": "lore_fragment",
+                "title": "Песнь Первого Маяка",
+                "summary": "Фрагмент знания о первом свете.",
+                "content": "Полный текст маяка держит путь через серое море.",
+                "rarity": "Rare",
+                "sourceLife": 3,
+                "sourceKind": "codex",
+                "sourceEntryId": "codex_first_lighthouse",
+                "tags": ["lore", "memory"],
+                "acquiredAtUtc": "2026-03-26T00:00:00Z"
+              },
+              {
+                "archiveId": "archive_secret_002",
+                "entryType": "secret_record",
+                "title": "Запечатанный договор",
+                "summary": "Эта запись уже занята другим действием.",
+                "content": "Тайный договор не должен попасть в первый detail.",
+                "rarity": "Uncommon",
+                "sourceLife": 2,
+                "sourceKind": "codex",
+                "sourceEntryId": "codex_sealed_pact",
+                "acquiredAtUtc": "2026-03-25T00:00:00Z",
+                "reservation": {
+                  "reservationKind": "project_fuel",
+                  "requestId": "archive_fuel_existing",
+                  "guardianId": "guardian_other",
+                  "guardianName": "Другой Хранитель",
+                  "targetProjectId": "other_project",
+                  "targetProjectName": "Чужой проект",
+                  "createdAtTurn": 39,
+                  "createdAtUtc": "2026-03-25T00:00:00Z"
+                }
+              }
+            ],
+            "actionReceipts": []
+          },
+          "afterlifeArchiveUpdates": [],
+          "archiveActionResolutions": []
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(AfterlifeArchiveCandidateService.ManifestPath, """
+        {
+          "sourceLife": 3,
+          "lastExtractedAt": "2026-03-27T00:00:00Z",
+          "candidates": [
+            {
+              "candidateId": "candidate_mayak",
+              "sourceKind": "codex",
+              "sourceEntryId": "codex_mayak_song",
+              "sourceLife": 3,
+              "proposedEntryType": "lore_fragment",
+              "title": "Песня маяка",
+              "summary": "Кандидат хранит свет.",
+              "content": "Кандидат хранит свет, чтобы Архив мог решить его судьбу.",
+              "rarity": "Rare",
+              "status": "pending",
+              "discoveredAt": "2026-03-27T00:00:00Z",
+              "tags": ["lore", "light"]
+            },
+            {
+              "candidateId": "candidate_secret",
+              "sourceKind": "codex",
+              "sourceEntryId": "codex_secret_deal",
+              "sourceLife": 3,
+              "proposedEntryType": "secret_record",
+              "title": "Тайный договор",
+              "summary": "Второй кандидат для проверки фокуса.",
+              "content": "Тайный договор скрыт в стороне.",
+              "rarity": "Uncommon",
+              "status": "pending",
+              "discoveredAt": "2026-03-27T00:00:00Z",
+              "tags": ["secret"]
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_azalia",
+              "canonicalName": "Азалия",
+              "domain": "memory",
+              "relationshipData": {
+                "currentReputation": 80
+              }
+            },
+            {
+              "guardianId": "guardian_wary",
+              "canonicalName": "Недоверчивый Страж",
+              "domain": "silence",
+              "relationshipData": {
+                "currentReputation": 49
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [
+            {
+              "guardianId": "guardian_azalia",
+              "project": {
+                "projectId": "project_forge_song",
+                "projectName": "Песнь кузни",
+                "projectType": "lore_research",
+                "projectTier": "minor",
+                "projectMode": "supportive",
+                "progress": 2,
+                "target": 5,
+                "status": "active"
+              }
+            },
+            {
+              "guardianId": "guardian_wary",
+              "project": {
+                "projectId": "project_hidden",
+                "projectName": "Скрытый проект",
+                "projectType": "secret"
+              }
+            }
+          ]
+        }
+        """);
+    }
+
+    private static void AssertNoAfterlifeIssue1064TechnicalLeak(ExplorerCommandResult result)
+    {
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var payload = SerializeResult(result);
+        foreach (var forbidden in new[]
+                 {
+                     ".json", "game_state/", "DTO", "API", "endpoint", "debug", "exception", "UiRawJsonBlock", "pending_"
+                 })
+        {
+            Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     private static string CollectBlockText(IEnumerable<UiBlock> blocks)
