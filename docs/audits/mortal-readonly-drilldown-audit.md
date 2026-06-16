@@ -55,7 +55,7 @@ Severity uses the project-wide audit scale: `P2` for serious UX/parity drift,
 | `weather` | `/weather` | `/погода` | Time and weather detail panel. | Generic bundle summary plus raw JSON, but the rich surface is not a repeated entity list. | Covered for #948. | P3 | No new follow-up from #948. |
 | `books` | `/books` | `/книги` | Books/document flow is handled by the dedicated document reading surface. | Shared DTO supports document shelf, read actions, and selected document detail. | Tracked separately. | P2 | Use #947. |
 | `storage_access` | `/storage_access` | `/доступ_к_хранилищам` | Console renders access grants/shares/revokes with readable nested fields. | Generic bundle summary plus raw JSON. | Browser detail parity gap if access records become long, but lower priority than combat/news/interactions. | P3 | Follow-up #1057. |
-| `interactions` | `/interactions` | `/взаимодействия` | Console expands nested player interaction records in one panel. | Generic bundle summary plus raw JSON. | Confirmed command-specific drill-down gap. | P2 | Follow-up #1056. |
+| `interactions` | `/interactions` | `/взаимодействия` | Shared command-result renderer preserves the interactions overview and exposes typed player and record detail commands for other-player interaction entries. | Shared command-result renderer exposes the same overview plus non-mutating player and record detail actions, with raw state kept as secondary overview diagnostics. | Covered by #1056. | P2 | Implemented in #1056. |
 
 ## Fix Applied In #948
 
@@ -117,13 +117,38 @@ Regression coverage:
 - `ExplorerModeCommandTests` covers console discovery of the same typed detail
   commands and guards the console handler's shared DTO renderer path.
 
+## Fix Applied In #1056
+
+The shared Mortal World command-result builder for `/interactions` /
+`/взаимодействия` now reads `game_state/misc/player_interactions.json`, preserves
+the interactions overview, and adds typed detail commands/actions for player
+entries and nested interaction records:
+
+- `/взаимодействия игрок <метка>` / `/interactions player <selector>`
+- `/взаимодействия запись <метка>` / `/interactions record <selector>`
+
+The console handler now renders the same shared command-result surface as the
+browser path, so typed console commands and browser actions inspect the same
+canonical entries. Raw state remains only as secondary overview diagnostics;
+player and record detail views render Russian player-facing blocks and do not
+require raw JSON.
+
+Regression coverage:
+
+- `ExplorerWebCommandServiceTests` covers rich player-interaction overview
+  actions, one player-entry detail, and one nested record detail without
+  raw-JSON dependency.
+- `ExplorerModeCommandTests` covers console discovery of the same typed detail
+  commands and guards the console handler's shared command-result renderer path.
+
 ## Follow-Up Issues Created
 
 - #1054 - `/combat` / `/бой` enemy, ally, and combat-log detail drill-downs
   (implemented by the #1054 branch).
 - #1055 - `/world_news` / `/новости_мира` event and sub-section detail drill-downs
   (implemented by the #1055 branch).
-- #1056 - `/interactions` / `/взаимодействия` player/record detail drill-downs.
+- #1056 - `/interactions` / `/взаимодействия` player/record detail drill-downs
+  (implemented by the #1056 branch).
 - #1057 - browser detail actions for reference-style mortal read-only commands:
   `/quests`, `/skills`, `/factions`, `/locations`, `/rival_threads`,
   `/guardian_corrections`, `/storage_access`, and `/transport`.
@@ -138,5 +163,11 @@ normalizer behavior, prompts, examples, or afterlife contracts.
 The #1055 branch changes only player-facing command-result rendering and command
 argument preservation for the existing Mortal World `/world_news` /
 `/новости_мира` read-only command. It does not change GM-authored response
+fields, state schema, validation, normalizer behavior, prompts, examples, or
+afterlife contracts.
+
+The #1056 branch changes only player-facing command-result rendering and command
+argument preservation for the existing Mortal World `/interactions` /
+`/взаимодействия` read-only command. It does not change GM-authored response
 fields, state schema, validation, normalizer behavior, prompts, examples, or
 afterlife contracts.

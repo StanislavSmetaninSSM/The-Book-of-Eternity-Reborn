@@ -146,10 +146,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 new("game_state/misc/storage_access.json", "grantStorageAccess|storages", "Хранилищ"),
                 new("game_state/misc/storage_access.json", "entries", "Записей")
             ]),
-            CommandKind.Interactions => await BuildBundle(commandToken, fs, "Взаимодействия игроков", [
-                new("game_state/misc/player_interactions.json", "otherPlayersInteractions|interactions", "Взаимодействий"),
-                new("game_state/misc/player_interactions.json", "entries", "Записей")
-            ]),
+            CommandKind.Interactions => await BuildInteractions(normalizedCommand, fs),
             _ => null
         };
     }
@@ -963,6 +960,746 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Raw($"Полный JSON {read.Path}", read.Node));
         else if (read.FileExists)
             blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {read.Path}. {read.Error}"));
+    }
+
+    private static async Task<ExplorerCommandResult> BuildInteractions(string command, FileSystemManager fs)
+    {
+        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
+        var state = new InteractionState(await ReadJson(fs, "game_state/misc/player_interactions.json"));
+        var players = EnumerateInteractionPlayers(state.PlayerInteractions.Node).ToList();
+        var records = players.SelectMany(static player => player.Records).ToList();
+        var request = ParseInteractionDetailRequest(ExtractCommandRemainder(command));
+
+        return request.Kind == InteractionDetailKind.Overview
+            ? BuildInteractionsOverview(command, commandToken, state, players, records)
+            : BuildInteractionDetail(command, commandToken, state, players, records, request);
+    }
+
+    private static ExplorerCommandResult BuildInteractionsOverview(
+        string command,
+        string commandToken,
+        InteractionState state,
+        IReadOnlyList<InteractionPlayerSnapshot> players,
+        IReadOnlyList<InteractionRecordSnapshot> records)
+    {
+        var blocks = new List<UiBlock>
+        {
+            new UiTableBlock
+            {
+                Title = "Взаимодействия игроков",
+                Columns = ["Раздел", "Состояние"],
+                Rows =
+                [
+                    new UiTableRow { Cells = ["Игроки", DescribeCombatCount(players.Count, "игрок", "игрока", "игроков")] },
+                    new UiTableRow { Cells = ["Записи", DescribeCombatCount(records.Count, "запись", "записи", "записей")] }
+                ]
+            }
+        };
+
+        if (players.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Игроки",
+                Columns = ["Игрок", "Связь / контекст", "Состояние", "Подробно"],
+                Rows = players.Select(player => new UiTableRow
+                {
+                    Cells =
+                    [
+                        player.Name,
+                        EmptyFallback(DescribeInteractionPlayerContext(player.Node)),
+                        EmptyFallback(DescribeInteractionPlayerStatus(player.Node)),
+                        BuildInteractionPlayerDetailCommand(commandToken, player.Selector)
+                    ]
+                }).ToList()
+            });
+        }
+
+        if (records.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Записи взаимодействий",
+                Columns = ["Запись", "Игрок", "Состояние", "Подробно"],
+                Rows = records.Take(12).Select(record => new UiTableRow
+                {
+                    Cells =
+                    [
+                        record.Title,
+                        record.PlayerName,
+                        EmptyFallback(DescribeInteractionRecordStatus(record.Node)),
+                        BuildInteractionRecordDetailCommand(commandToken, record.Selector)
+                    ]
+                }).ToList()
+            });
+        }
+
+        AddInteractionReadWarnings(blocks, state);
+        if (players.Count == 0 && records.Count == 0)
+            blocks.Add(Message(UiNotificationSeverity.Info, "Взаимодействия игроков", "Данные взаимодействий ещё не созданы."));
+
+        AddInteractionRawState(blocks, state.PlayerInteractions, "Полная запись взаимодействий игроков");
+        return Completed(command, blocks, BuildInteractionOverviewActions(commandToken, players, records));
+    }
+
+    private static ExplorerCommandResult BuildInteractionDetail(
+        string command,
+        string commandToken,
+        InteractionState state,
+        IReadOnlyList<InteractionPlayerSnapshot> players,
+        IReadOnlyList<InteractionRecordSnapshot> records,
+        InteractionDetailRequest request)
+    {
+        var blocks = new List<UiBlock>();
+        var actions = new List<UiAction>
+        {
+            new()
+            {
+                Id = "interactions-back",
+                Label = "Назад к взаимодействиям",
+                Command = commandToken,
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false
+            }
+        };
+
+        switch (request.Kind)
+        {
+            case InteractionDetailKind.Player:
+            {
+                var player = FindInteractionPlayer(players, request.Selector);
+                if (player == null)
+                {
+                    blocks.Add(Message(UiNotificationSeverity.Warning, "Игрок не найден", "Такая запись игрока не отмечена во взаимодействиях."));
+                }
+                else
+                {
+                    blocks.Add(BuildInteractionPlayerDetailPanel(commandToken, player));
+                    actions.AddRange(BuildInteractionRecordActions(commandToken, player.Records));
+                }
+                break;
+            }
+            case InteractionDetailKind.Record:
+            {
+                var record = FindInteractionRecord(records, request.Selector);
+                blocks.Add(record == null
+                    ? Message(UiNotificationSeverity.Warning, "Запись не найдена", "Такая запись взаимодействия не отмечена в текущих данных.")
+                    : BuildInteractionRecordDetailPanel(record));
+                break;
+            }
+            case InteractionDetailKind.Unknown:
+                blocks.Add(Message(
+                    UiNotificationSeverity.Warning,
+                    "Взаимодействия игроков",
+                    "Не удалось понять, что открыть. Используйте /взаимодействия игрок <метка> или /взаимодействия запись <метка>."));
+                break;
+        }
+
+        AddInteractionReadWarnings(blocks, state);
+        blocks.Add(new UiTextBlock { Text = $"Вернуться к обзору можно командой {commandToken}.", Tone = UiTone.Muted });
+        return Completed(command, blocks, actions);
+    }
+
+    private static UiPanelBlock BuildInteractionPlayerDetailPanel(string commandToken, InteractionPlayerSnapshot player)
+    {
+        var detailItems = new List<UiKeyValueItem>
+        {
+            new() { Key = "Метка", Value = player.Selector }
+        };
+
+        AddInteractionDetailItem(detailItems, "Связь", FirstInteractionNodeString(player.Node, "relationship", "relation", "relationshipSummary", "attitude"));
+        AddInteractionDetailItem(detailItems, "Контекст", FirstInteractionNodeString(player.Node, "context", "sceneContext", "interactionContext", "role", "faction", "location"));
+        AddInteractionDetailItem(detailItems, "Состояние", DescribeInteractionPlayerStatus(player.Node));
+        AddInteractionDetailItem(detailItems, "Кратко", FirstInteractionNodeString(player.Node, "summary", "description", "notes", "message"));
+        AddInteractionDetailItem(detailItems, "Зацепки", JoinNodeValues(player.Node["currentHooks"] ?? player.Node["hooks"] ?? player.Node["activeHooks"]));
+
+        var blocks = new List<UiBlock>
+        {
+            new UiKeyValueGridBlock { Items = detailItems }
+        };
+
+        if (player.Records.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Записи этого игрока",
+                Columns = ["Запись", "Состояние", "Кратко", "Подробно"],
+                Rows = player.Records.Select(record => new UiTableRow
+                {
+                    Cells =
+                    [
+                        record.Title,
+                        EmptyFallback(DescribeInteractionRecordStatus(record.Node)),
+                        EmptyFallback(DescribeInteractionRecordSummary(record.Node)),
+                        BuildInteractionRecordDetailCommand(commandToken, record.Selector)
+                    ]
+                }).ToList()
+            });
+        }
+
+        return new UiPanelBlock
+        {
+            Title = $"Игрок: {player.Name}",
+            Blocks = blocks
+        };
+    }
+
+    private static UiPanelBlock BuildInteractionRecordDetailPanel(InteractionRecordSnapshot record)
+    {
+        var detailItems = new List<UiKeyValueItem>
+        {
+            new() { Key = "Метка", Value = record.Selector },
+            new() { Key = "Игрок", Value = record.PlayerName }
+        };
+
+        AddInteractionDetailItem(detailItems, "Состояние", DescribeInteractionRecordStatus(record.Node));
+        AddInteractionDetailItem(detailItems, "Когда", JoinInteractionDetails(
+            FirstInteractionNodeString(record.Node, "timestamp", "time", "date", "updatedAt"),
+            FirstInteractionNodeString(record.Node, "turn", "turnNumber")));
+        AddInteractionDetailItem(detailItems, "Где", FirstInteractionNodeString(record.Node, "location", "locationName", "scene", "place"));
+        AddInteractionDetailItem(detailItems, "Участники", JoinNodeValues(record.Node["participants"] ?? record.Node["actors"] ?? record.Node["involvedPlayers"]));
+        AddInteractionDetailItem(detailItems, "Кратко", FirstInteractionNodeString(record.Node, "summary", "message", "narrativeSummary"));
+        AddInteractionDetailItem(detailItems, "Описание", FirstInteractionNodeString(record.Node, "description", "details"));
+        AddInteractionDetailItem(detailItems, "Заметки", FirstInteractionNodeString(record.Node, "notes", "note"));
+        AddInteractionDetailItem(detailItems, "Итог", FirstInteractionNodeString(record.Node, "outcome", "result", "resolution"));
+        AddInteractionDetailItem(detailItems, "Последствия", DescribeNodeForInteractionDetail(record.Node["consequences"] ?? record.Node["effects"] ?? record.Node["impact"]));
+        AddInteractionDetailItem(detailItems, "Следующий шаг", FirstInteractionNodeString(record.Node, "nextStep", "followUp", "hook", "visibleNextStep"));
+        AddInteractionDetailItem(detailItems, "Подробности", DescribeInteractionRecordPayload(record.Node));
+        AddInteractionDetailItem(detailItems, "Метки", JoinNodeValues(record.Node["tags"]));
+
+        return new UiPanelBlock
+        {
+            Title = $"Запись взаимодействия: {record.Title}",
+            Blocks = [new UiKeyValueGridBlock { Items = detailItems }]
+        };
+    }
+
+    private static IReadOnlyList<UiAction> BuildInteractionOverviewActions(
+        string commandToken,
+        IReadOnlyList<InteractionPlayerSnapshot> players,
+        IReadOnlyList<InteractionRecordSnapshot> records)
+    {
+        var actions = new List<UiAction>();
+        foreach (var player in players)
+        {
+            actions.Add(new UiAction
+            {
+                Id = "interactions-player-" + ToActionIdPart(player.Selector),
+                Label = $"Осмотреть игрока «{player.Name}»",
+                Command = BuildInteractionPlayerDetailCommand(commandToken, player.Selector),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["kind"] = "player",
+                    ["selector"] = player.Selector,
+                    ["name"] = player.Name
+                }
+            });
+        }
+
+        actions.AddRange(BuildInteractionRecordActions(commandToken, records.Take(12)));
+        return actions;
+    }
+
+    private static IEnumerable<UiAction> BuildInteractionRecordActions(
+        string commandToken,
+        IEnumerable<InteractionRecordSnapshot> records)
+    {
+        foreach (var record in records)
+        {
+            yield return new UiAction
+            {
+                Id = "interactions-record-" + ToActionIdPart(record.Selector),
+                Label = $"Открыть запись «{record.Title}»",
+                Command = BuildInteractionRecordDetailCommand(commandToken, record.Selector),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["kind"] = "record",
+                    ["selector"] = record.Selector,
+                    ["title"] = record.Title,
+                    ["player"] = record.PlayerName
+                }
+            };
+        }
+    }
+
+    private static IEnumerable<InteractionPlayerSnapshot> EnumerateInteractionPlayers(JsonNode? node)
+    {
+        var index = 0;
+        foreach (var (key, playerNode) in EnumerateInteractionPlayerNodes(node))
+        {
+            if (!IsVisibleInteractionNode(playerNode))
+                continue;
+
+            index++;
+            var name = FirstNonEmpty(
+                FirstInteractionNodeString(playerNode, "displayName", "playerName", "name", "characterName", "targetPlayerName"),
+                key,
+                $"Игрок {index}");
+            var identity = FirstNonEmpty(
+                FirstInteractionNodeString(playerNode, "playerId", "characterId", "targetPlayerId", "sourcePlayerId", "id"),
+                key,
+                index.ToString());
+            var selector = NormalizeInteractionSelector(identity);
+            var records = EnumerateInteractionRecordsForPlayer(selector, name, playerNode).ToList();
+            yield return new InteractionPlayerSnapshot(index, selector, name, playerNode, records);
+        }
+    }
+
+    private static IEnumerable<(string Key, JsonObject Node)> EnumerateInteractionPlayerNodes(JsonNode? node)
+    {
+        if (node is JsonObject root)
+        {
+            if (root["otherPlayersInteractions"] is { } otherPlayers)
+            {
+                foreach (var item in EnumerateInteractionPlayerNodes(otherPlayers))
+                    yield return item;
+            }
+
+            foreach (var propertyName in new[] { "players", "otherPlayers", "playerEntries" })
+            {
+                if (root[propertyName] is { } players)
+                {
+                    foreach (var item in EnumerateInteractionPlayerNodes(players))
+                        yield return item;
+                }
+            }
+
+            foreach (var propertyName in new[] { "interactions", "entries" })
+            {
+                if (root[propertyName] is JsonArray records && records.Count > 0)
+                    yield return ("Записи взаимодействий", WrapInteractionRecords("Записи взаимодействий", records));
+            }
+
+            if (LooksLikeInteractionPlayer(root))
+                yield return (FirstInteractionNodeString(root, "playerId", "id"), root);
+            else if (root["otherPlayersInteractions"] == null && root["players"] == null && root["interactions"] == null && root["entries"] == null)
+            {
+                foreach (var property in root)
+                {
+                    var player = NormalizeInteractionPlayerNode(property.Key, property.Value);
+                    if (player != null)
+                        yield return (property.Key, player);
+                }
+            }
+
+            yield break;
+        }
+
+        if (node is JsonArray array)
+        {
+            var index = 0;
+            var objectItems = array.OfType<JsonObject>().ToList();
+            if (objectItems.Any(LooksLikeInteractionPlayer))
+            {
+                foreach (var item in objectItems)
+                {
+                    index++;
+                    yield return (FirstNonEmpty(FirstInteractionNodeString(item, "playerId", "id"), index.ToString()), item);
+                }
+            }
+            else if (array.Count > 0)
+            {
+                yield return ("Записи взаимодействий", WrapInteractionRecords("Записи взаимодействий", array));
+            }
+        }
+    }
+
+    private static JsonObject? NormalizeInteractionPlayerNode(string key, JsonNode? value)
+    {
+        if (value is JsonObject obj)
+        {
+            var clone = obj.DeepClone() as JsonObject ?? [];
+            if (string.IsNullOrWhiteSpace(FirstInteractionNodeString(clone, "playerId", "displayName", "playerName", "name", "id")))
+            {
+                clone["playerId"] = key;
+                clone["displayName"] = key;
+            }
+
+            return clone;
+        }
+
+        if (value is JsonArray array)
+            return WrapInteractionRecords(key, array);
+
+        if (TryGetScalarString(value, out var scalar) && !string.IsNullOrWhiteSpace(scalar))
+        {
+            return new JsonObject
+            {
+                ["playerId"] = key,
+                ["displayName"] = key,
+                ["summary"] = scalar
+            };
+        }
+
+        return null;
+    }
+
+    private static JsonObject WrapInteractionRecords(string key, JsonArray records) =>
+        new()
+        {
+            ["playerId"] = key,
+            ["displayName"] = key,
+            ["records"] = records.DeepClone()
+        };
+
+    private static bool LooksLikeInteractionPlayer(JsonObject node) =>
+        !string.IsNullOrWhiteSpace(FirstInteractionNodeString(node, "playerId", "displayName", "playerName", "characterId", "targetPlayerId", "name")) ||
+        node["records"] is JsonArray ||
+        node["interactions"] is JsonArray ||
+        node["interactionRecords"] is JsonArray;
+
+    private static IEnumerable<InteractionRecordSnapshot> EnumerateInteractionRecordsForPlayer(
+        string playerSelector,
+        string playerName,
+        JsonObject playerNode)
+    {
+        var index = 0;
+        var consumed = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var propertyName in new[]
+        {
+            "records",
+            "interactions",
+            "interactionRecords",
+            "interactionLog",
+            "history",
+            "events",
+            "payloads",
+            "entries",
+            "sharedQuestHooks"
+        })
+        {
+            if (playerNode[propertyName] is not JsonArray array)
+                continue;
+
+            consumed.Add(propertyName);
+            foreach (var record in EnumerateInteractionRecordObjects(propertyName, array))
+            {
+                if (!IsVisibleInteractionNode(record))
+                    continue;
+
+                index++;
+                yield return CreateInteractionRecordSnapshot(index, playerSelector, playerName, propertyName, record);
+            }
+        }
+
+        foreach (var property in playerNode)
+        {
+            if (consumed.Contains(property.Key) || IsInteractionPlayerMetadataProperty(property.Key))
+                continue;
+
+            if (property.Value is JsonArray array)
+            {
+                foreach (var record in EnumerateInteractionRecordObjects(property.Key, array))
+                {
+                    if (!IsVisibleInteractionNode(record))
+                        continue;
+
+                    index++;
+                    yield return CreateInteractionRecordSnapshot(index, playerSelector, playerName, property.Key, record);
+                }
+            }
+            else if (property.Value is JsonObject obj && LooksLikeInteractionRecord(obj))
+            {
+                if (!IsVisibleInteractionNode(obj))
+                    continue;
+
+                index++;
+                yield return CreateInteractionRecordSnapshot(index, playerSelector, playerName, property.Key, obj);
+            }
+        }
+    }
+
+    private static IEnumerable<JsonObject> EnumerateInteractionRecordObjects(string section, JsonArray array)
+    {
+        var index = 0;
+        foreach (var item in array)
+        {
+            index++;
+            if (item is JsonObject obj)
+            {
+                yield return obj;
+            }
+            else if (TryGetScalarString(item, out var text) && !string.IsNullOrWhiteSpace(text))
+            {
+                yield return new JsonObject
+                {
+                    ["title"] = $"{DescribeInteractionSection(section)} {index}",
+                    ["summary"] = text
+                };
+            }
+        }
+    }
+
+    private static InteractionRecordSnapshot CreateInteractionRecordSnapshot(
+        int index,
+        string playerSelector,
+        string playerName,
+        string section,
+        JsonObject record)
+    {
+        var title = FirstNonEmpty(
+            FirstInteractionNodeString(record, "title", "interactionTitle", "recordTitle", "eventTitle", "questName", "actionName", "name"),
+            FirstInteractionNodeString(record, "summary", "message", "description"),
+            $"{DescribeInteractionSection(section)} {index}");
+        var selector = NormalizeInteractionSelector(FirstNonEmpty(
+            FirstInteractionNodeString(record, "interactionId", "recordId", "payloadId", "entryId", "eventId", "id", "key"),
+            $"{playerSelector}-{index}"));
+        return new InteractionRecordSnapshot(index, selector, title, playerSelector, playerName, record);
+    }
+
+    private static bool LooksLikeInteractionRecord(JsonObject node) =>
+        !string.IsNullOrWhiteSpace(FirstInteractionNodeString(node, "interactionId", "recordId", "title", "summary", "message", "questName", "actionName", "description"));
+
+    private static bool IsInteractionPlayerMetadataProperty(string propertyName) =>
+        propertyName is "playerId" or "characterId" or "targetPlayerId" or "sourcePlayerId" or "id" or
+            "displayName" or "playerName" or "name" or "characterName" or "targetPlayerName" or
+            "relationship" or "relation" or "relationshipSummary" or "attitude" or "context" or
+            "sceneContext" or "interactionContext" or "role" or "faction" or "location" or
+            "status" or "state" or "availability" or "visibility" or "summary" or "description" or
+            "notes" or "message" or "currentHooks" or "hooks" or "activeHooks" or "visibleToPlayer";
+
+    private static InteractionPlayerSnapshot? FindInteractionPlayer(IReadOnlyList<InteractionPlayerSnapshot> players, string selector)
+    {
+        var normalized = NormalizeInteractionSelector(selector);
+        return players.FirstOrDefault(player =>
+            string.Equals(player.Selector, normalized, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(player.Index.ToString(), normalized, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(NormalizeInteractionSelector(player.Name), normalized, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static InteractionRecordSnapshot? FindInteractionRecord(IReadOnlyList<InteractionRecordSnapshot> records, string selector)
+    {
+        var normalized = NormalizeInteractionSelector(selector);
+        return records.FirstOrDefault(record =>
+            string.Equals(record.Selector, normalized, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(record.Index.ToString(), normalized, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(NormalizeInteractionSelector(record.Title), normalized, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static InteractionDetailRequest ParseInteractionDetailRequest(string remainder)
+    {
+        if (string.IsNullOrWhiteSpace(remainder))
+            return new InteractionDetailRequest(InteractionDetailKind.Overview, string.Empty);
+
+        var (kindToken, selector) = SplitFirstCombatArgument(remainder);
+        var kind = kindToken.Trim().ToLowerInvariant() switch
+        {
+            "player" or "players" or "character" or "игрок" or "игрока" or "персонаж" => InteractionDetailKind.Player,
+            "record" or "entry" or "interaction" or "payload" or "запись" or "событие" or "взаимодействие" => InteractionDetailKind.Record,
+            _ => InteractionDetailKind.Unknown
+        };
+
+        return new InteractionDetailRequest(kind, NormalizeInteractionSelector(selector));
+    }
+
+    private static string BuildInteractionPlayerDetailCommand(string commandToken, string selector)
+    {
+        var word = string.Equals(commandToken, "/interactions", StringComparison.OrdinalIgnoreCase)
+            ? "player"
+            : "игрок";
+        return commandToken + " " + word + " " + FormatCombatCommandArgument(selector);
+    }
+
+    private static string BuildInteractionRecordDetailCommand(string commandToken, string selector)
+    {
+        var word = string.Equals(commandToken, "/interactions", StringComparison.OrdinalIgnoreCase)
+            ? "record"
+            : "запись";
+        return commandToken + " " + word + " " + FormatCombatCommandArgument(selector);
+    }
+
+    private static string NormalizeInteractionSelector(string selector) =>
+        NormalizeCombatSelector(selector);
+
+    private static void AddInteractionDetailItem(List<UiKeyValueItem> items, string key, string? value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+            items.Add(new UiKeyValueItem { Key = key, Value = value.Trim() });
+    }
+
+    private static string DescribeInteractionRecordPayload(JsonObject record)
+    {
+        var parts = new List<string>();
+        foreach (var property in record)
+        {
+            if (IsKnownInteractionRecordDetailProperty(property.Key) || IsTechnicalInteractionProperty(property.Key))
+                continue;
+
+            var value = DescribeNodeForInteractionDetail(property.Value);
+            if (!string.IsNullOrWhiteSpace(value))
+                parts.Add($"{DescribeInteractionFieldLabel(property.Key)}: {value}");
+        }
+
+        return string.Join("; ", parts);
+    }
+
+    private static string DescribeInteractionPlayerContext(JsonObject player) =>
+        JoinInteractionDetails(
+            FirstInteractionNodeString(player, "relationship", "relation", "relationshipSummary", "attitude"),
+            FirstInteractionNodeString(player, "context", "sceneContext", "interactionContext", "role", "faction", "location"));
+
+    private static string DescribeInteractionPlayerStatus(JsonObject player) =>
+        JoinInteractionDetails(
+            DescribeInteractionStatus(FirstInteractionNodeString(player, "status", "state", "availability")),
+            DescribeInteractionVisibility(FirstInteractionNodeString(player, "visibility")));
+
+    private static string DescribeInteractionRecordStatus(JsonObject record) =>
+        JoinInteractionDetails(
+            DescribeInteractionStatus(FirstInteractionNodeString(record, "status", "state", "stage", "phase")),
+            DescribeInteractionVisibility(FirstInteractionNodeString(record, "visibility")));
+
+    private static string DescribeInteractionRecordSummary(JsonObject record) =>
+        FirstNonEmpty(
+            FirstInteractionNodeString(record, "summary", "message", "description", "notes"),
+            FirstInteractionNodeString(record, "outcome", "result", "nextStep", "followUp"));
+
+    private static string DescribeInteractionStatus(string status) =>
+        status.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "active" or "open" or "current" => "активно",
+            "pending" or "waiting" => "ожидает",
+            "resolved" or "complete" or "completed" or "closed" => "завершено",
+            "blocked" => "заблокировано",
+            "available" => "доступно",
+            "unavailable" => "недоступно",
+            _ => status.Trim()
+        };
+
+    private static string DescribeInteractionVisibility(string visibility) =>
+        visibility.Trim().ToLowerInvariant() switch
+        {
+            "" or "visible" or "public" or "player" or "player_visible" => string.Empty,
+            "private" => "частная сцена",
+            "hidden" => "скрыто",
+            "gm_only" => "скрыто от игрока",
+            _ => visibility.Trim()
+        };
+
+    private static string DescribeInteractionSection(string section) =>
+        section.Trim().ToLowerInvariant() switch
+        {
+            "records" or "entries" => "Запись",
+            "interactions" or "interactionrecords" or "interactionlog" => "Взаимодействие",
+            "history" => "История",
+            "events" => "Событие",
+            "sharedquesthooks" => "Крючок квеста",
+            "payloads" => "Запись",
+            _ => "Запись"
+        };
+
+    private static string DescribeNodeForInteractionDetail(JsonNode? node)
+    {
+        if (node == null)
+            return string.Empty;
+
+        if (TryGetScalarString(node, out var scalar))
+            return scalar;
+
+        if (node is JsonArray array)
+            return string.Join("; ", array.Select(DescribeNodeForInteractionDetail).Where(static part => !string.IsNullOrWhiteSpace(part)));
+
+        if (node is JsonObject obj)
+        {
+            var parts = new List<string>();
+            foreach (var property in obj)
+            {
+                if (IsTechnicalInteractionProperty(property.Key))
+                    continue;
+
+                var value = DescribeNodeForInteractionDetail(property.Value);
+                if (!string.IsNullOrWhiteSpace(value))
+                    parts.Add($"{DescribeInteractionFieldLabel(property.Key)}: {value}");
+            }
+
+            return string.Join("; ", parts);
+        }
+
+        return string.Empty;
+    }
+
+    private static bool IsTechnicalInteractionProperty(string propertyName) =>
+        propertyName.EndsWith("Id", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("id", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("visibleToPlayer", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsKnownInteractionRecordDetailProperty(string propertyName) =>
+        propertyName is "title" or "interactionTitle" or "recordTitle" or "eventTitle" or "questName" or "actionName" or "name" or
+            "summary" or "message" or "narrativeSummary" or "description" or "details" or
+            "status" or "state" or "stage" or "phase" or "visibility" or
+            "timestamp" or "time" or "date" or "updatedAt" or "turn" or "turnNumber" or
+            "location" or "locationName" or "scene" or "place" or
+            "participants" or "actors" or "involvedPlayers" or
+            "notes" or "note" or "outcome" or "result" or "resolution" or
+            "consequences" or "effects" or "impact" or
+            "nextStep" or "followUp" or "hook" or "visibleNextStep" or "tags";
+
+    private static string DescribeInteractionFieldLabel(string propertyName) =>
+        propertyName switch
+        {
+            "summary" => "кратко",
+            "description" => "описание",
+            "notes" or "note" => "заметка",
+            "outcome" or "result" => "итог",
+            "consequence" or "consequences" => "последствия",
+            "nextStep" or "followUp" => "следующий шаг",
+            "location" or "locationName" => "где",
+            "timestamp" or "time" or "date" => "когда",
+            "status" or "state" => "состояние",
+            "participants" or "actors" => "участники",
+            "tags" => "метки",
+            "UpdateInventory" or "updateInventory" => "инвентарь",
+            "itemName" or "item" => "предмет",
+            "quantity" or "count" or "amount" => "количество",
+            _ => "деталь"
+        };
+
+    private static string JoinNodeValues(JsonNode? node) =>
+        DescribeNodeForInteractionDetail(node);
+
+    private static string JoinInteractionDetails(params string?[] values) =>
+        string.Join("; ", values.Where(static value => !string.IsNullOrWhiteSpace(value)).Select(static value => value!.Trim()));
+
+    private static string FirstInteractionNodeString(JsonNode? node, params string[] properties)
+    {
+        foreach (var property in properties)
+        {
+            var value = GetNodeString(node, property);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return string.Empty;
+    }
+
+    private static bool IsVisibleInteractionNode(JsonObject node)
+    {
+        if (TryGetNodeBool(node, "visibleToPlayer", out var visibleToPlayer) && !visibleToPlayer)
+            return false;
+
+        var visibility = FirstInteractionNodeString(node, "visibility", "visible");
+        return !visibility.Trim().Equals("hidden", StringComparison.OrdinalIgnoreCase) &&
+               !visibility.Trim().Equals("gm_only", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void AddInteractionReadWarnings(List<UiBlock> blocks, InteractionState state)
+    {
+        if (state.PlayerInteractions.FileExists &&
+            state.PlayerInteractions.Node == null &&
+            !string.IsNullOrWhiteSpace(state.PlayerInteractions.Error))
+        {
+            blocks.Add(Message(UiNotificationSeverity.Warning, "Взаимодействия игроков", "Запись взаимодействий найдена, но её не удалось прочитать как JSON."));
+        }
+    }
+
+    private static void AddInteractionRawState(List<UiBlock> blocks, JsonReadResult read, string title)
+    {
+        if (read.Node != null)
+            blocks.Add(Raw(title, read.Node));
     }
 
     private static async Task<ExplorerCommandResult> BuildCombat(string command, FileSystemManager fs)
@@ -2283,6 +3020,35 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private sealed record CombatDetailRequest(
         CombatDetailKind Kind,
+        string Selector);
+
+    private enum InteractionDetailKind
+    {
+        Overview,
+        Player,
+        Record,
+        Unknown
+    }
+
+    private sealed record InteractionState(JsonReadResult PlayerInteractions);
+
+    private sealed record InteractionPlayerSnapshot(
+        int Index,
+        string Selector,
+        string Name,
+        JsonObject Node,
+        IReadOnlyList<InteractionRecordSnapshot> Records);
+
+    private sealed record InteractionRecordSnapshot(
+        int Index,
+        string Selector,
+        string Title,
+        string PlayerSelector,
+        string PlayerName,
+        JsonObject Node);
+
+    private sealed record InteractionDetailRequest(
+        InteractionDetailKind Kind,
         string Selector);
 
     private sealed record SummarySpec(string Path, string PropertyName, string Label);
