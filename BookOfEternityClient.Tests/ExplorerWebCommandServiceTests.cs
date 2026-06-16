@@ -2430,6 +2430,89 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                             message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Theory]
+    [InlineData("/guardians", "guardians-detail-guardian_azalia", "/guardians хранитель guardian_azalia", "Азалия")]
+    [InlineData("/abodes", "abodes-detail-abode_azalia", "/abodes обитель abode_azalia", "Сад Ночных Роз")]
+    [InlineData("/abode_power", "abode-power-detail-power_rose_offering", "/abode_power запись power_rose_offering", "Дар роз")]
+    [InlineData("/guardian_projects", "guardian-projects-detail-guardian_azalia-project_rose_gate", "/guardian_projects проект guardian_azalia::project_rose_gate", "Врата роз")]
+    public async Task ExecuteAsync_ChaosSeaGuardianAbodeOverviews_ExposeReadOnlyDetailActions(
+        string command,
+        string expectedActionId,
+        string expectedDetailCommand,
+        string expectedLabelText)
+    {
+        await SeedRichChaosSeaGuardianAbodeDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains(expectedLabelText, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Подробно", text, StringComparison.OrdinalIgnoreCase);
+
+        var action = Assert.Single(result.Actions, action => action.Id == expectedActionId);
+        Assert.Equal(expectedDetailCommand, action.Command);
+        Assert.Contains("Подробно", action.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(expectedLabelText, action.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(UiActionStyle.Secondary, action.Style);
+        Assert.False(action.RequiresConfirmation);
+    }
+
+    [Theory]
+    [InlineData("/guardians хранитель guardian_azalia", "Хранитель: Азалия", "Покровительница перекрёстков", "Серет")]
+    [InlineData("/abodes обитель abode_azalia", "Обитель: Сад Ночных Роз", "Оранжерея памяти", "Зал Серета")]
+    [InlineData("/abode_power запись power_rose_offering", "Сила Обители: Дар роз", "Чернильные перья укрепили сад", "Врата Серета")]
+    [InlineData("/guardian_projects проект guardian_azalia::project_rose_gate", "Проект Хранителя: Врата роз", "Закрепить проход между розами", "Серет")]
+    public async Task ExecuteAsync_ChaosSeaGuardianAbodeDetails_RenderFocusedPlayerFacingDetailWithoutRawJson(
+        string command,
+        string expectedTitle,
+        string expectedDetail,
+        string excludedOtherEntity)
+    {
+        await SeedRichChaosSeaGuardianAbodeDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains(expectedTitle, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(expectedDetail, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(excludedOtherEntity, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("API", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("endpoint", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("debug", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/guardians хранитель missing_guardian")]
+    [InlineData("/abodes обитель missing_abode")]
+    [InlineData("/abode_power запись missing_power_entry")]
+    [InlineData("/guardian_projects проект guardian_azalia::missing_project")]
+    public async Task ExecuteAsync_ChaosSeaGuardianAbodeDetails_UnknownIdsReturnPlayerFacingUnavailableText(string command)
+    {
+        await SeedRichChaosSeaGuardianAbodeDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("не удалось открыть", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("API", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("endpoint", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("debug", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public async Task ExecuteAsync_Gacha_ReturnsDirectChaosSeaPrompt()
     {
@@ -4054,6 +4137,188 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               }
             ]
           }
+        }
+        """);
+    }
+
+    private async Task SeedRichChaosSeaGuardianAbodeDrilldownFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 4,
+          "inkFeathers": { "current": 18, "total": 55 },
+          "enlightenment": { "currentTier": "Пепельная искра", "experience": 70 }
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "activeGuardian": { "guardianId": "guardian_azalia", "guardianName": "Азалия" },
+          "chaosSeaNavigation": {
+            "currentAbodeId": "abode_azalia",
+            "currentAbodeName": "Сад Ночных Роз",
+            "knownAbodes": [
+              { "abodeId": "abode_azalia", "name": "Сад Ночных Роз", "guardianId": "guardian_azalia" },
+              { "abodeId": "abode_seret", "name": "Зал Серета", "guardianId": "guardian_seret" }
+            ]
+          },
+          "guardians": [
+            {
+              "guardianId": "guardian_azalia",
+              "canonicalName": "Азалия",
+              "domain": "Social",
+              "description": "Покровительница перекрёстков и обещаний, собирающая забытые имена.",
+              "relationshipData": {
+                "currentReputation": 42,
+                "lastInteraction": "Азалия приняла розовую печать."
+              },
+              "abode": {
+                "abodeId": "abode_azalia",
+                "name": "Сад Ночных Роз",
+                "description": "Оранжерея памяти, где каждое обещание пускает корни.",
+                "currentAnchor": "стеклянная теплица над Чёрной водой"
+              },
+              "abodePower": {
+                "currentPower": 57,
+                "maxPower": 100,
+                "tier": "Укреплённая Обитель",
+                "history": [
+                  {
+                    "eventId": "power_rose_offering",
+                    "change": 7,
+                    "reason": "Дар роз",
+                    "summary": "Чернильные перья укрепили сад."
+                  }
+                ]
+              },
+              "questManagement": {
+                "activeQuests": [
+                  {
+                    "questId": "quest_rose_key",
+                    "name": "Ключ из лепестков",
+                    "description": "Найти имя, спрятанное в розовой печати.",
+                    "status": "active"
+                  }
+                ]
+              },
+              "loreFragments": [
+                {
+                  "fragmentId": "azalia_oath",
+                  "title": "Клятва перекрёстка",
+                  "content": "Азалия помнит дорогу к каждому невыполненному обещанию.",
+                  "isUnlocked": true
+                }
+              ]
+            },
+            {
+              "guardianId": "guardian_seret",
+              "canonicalName": "Серет",
+              "domain": "Knowledge",
+              "description": "Серет хранит холодные архивы.",
+              "relationshipData": { "currentReputation": -5 },
+              "abode": {
+                "abodeId": "abode_seret",
+                "name": "Зал Серета",
+                "description": "Тихий зал с зеркальными полками."
+              },
+              "abodePower": { "currentPower": 22, "maxPower": 100 }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardian_projects.json", """
+        {
+          "projects": [
+            {
+              "guardianId": "guardian_azalia",
+              "project": {
+                "projectId": "project_rose_gate",
+                "projectName": "Врата роз",
+                "projectType": "abode_fortification",
+                "projectTier": "major",
+                "projectMode": "internal",
+                "activeState": "binding",
+                "description": "Закрепить проход между розами и берегом Чёрной воды.",
+                "startedTurn": 40,
+                "estimatedCompletionTurn": 45,
+                "workDone": 12,
+                "totalWork": 20,
+                "pressure": 3,
+                "stability": 8,
+                "systemEffectSummary": [
+                  "Обитель лучше удерживает гостей и клятвы."
+                ]
+              }
+            },
+            {
+              "guardianId": "guardian_seret",
+              "project": {
+                "projectId": "project_seret_gate",
+                "projectName": "Врата Серета",
+                "projectType": "lore_research",
+                "activeState": "researching",
+                "description": "Собрать холодные записи в Зале Серета."
+              }
+            }
+          ],
+          "completedProjects": [],
+          "journal": [
+            {
+              "entryId": "journal_rose_gate_1",
+              "guardianId": "guardian_azalia",
+              "projectId": "project_rose_gate",
+              "turn": 41,
+              "title": "Розы приняли первый якорь",
+              "summary": "Корни сада начали держать проход."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardian_project_journal.json", """
+        {
+          "entries": [
+            {
+              "entryId": "journal_rose_gate_1",
+              "guardianId": "guardian_azalia",
+              "projectId": "project_rose_gate",
+              "turn": 41,
+              "title": "Розы приняли первый якорь",
+              "summary": "Корни сада начали держать проход.",
+              "details": [ "Work: 12/20", "Stability: 8" ]
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/abode_power_journal.json", """
+        {
+          "entries": [
+            {
+              "entryId": "power_rose_offering",
+              "eventId": "power_rose_offering",
+              "guardianId": "guardian_azalia",
+              "title": "Дар роз",
+              "summary": "Чернильные перья укрепили сад и подняли решётку у входа.",
+              "reasonType": "offering",
+              "delta": 7,
+              "turn": 41,
+              "appliedAt": "2026-06-01T12:00:00Z"
+            },
+            {
+              "entryId": "power_seret_gate",
+              "eventId": "power_seret_gate",
+              "guardianId": "guardian_seret",
+              "title": "Врата Серета",
+              "summary": "Зал Серета укрепил холодный архив.",
+              "reasonType": "project_completion",
+              "delta": 3,
+              "turn": 42
+            }
+          ]
         }
         """);
     }

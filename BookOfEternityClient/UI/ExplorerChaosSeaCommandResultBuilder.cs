@@ -39,7 +39,11 @@ public static class ExplorerChaosSeaCommandResultBuilder
             ["/обители"] = CommandKind.Abodes
         };
 
-    public static bool CanBuild(string command) => CommandKinds.ContainsKey(command.Trim());
+    public static bool CanBuild(string command)
+    {
+        var request = ParseCommandRequest(command);
+        return request != null && CommandKinds.ContainsKey(request.CommandToken);
+    }
 
     public static async Task<ExplorerCommandResult?> TryBuildAsync(
         string command,
@@ -47,27 +51,23 @@ public static class ExplorerChaosSeaCommandResultBuilder
         FileSystemManager fs,
         bool includeAdvancedDiagnostics = false)
     {
-        var normalizedCommand = command.Trim();
-        if (!CommandKinds.TryGetValue(normalizedCommand, out var kind))
+        var request = ParseCommandRequest(command);
+        if (request == null || !CommandKinds.TryGetValue(request.CommandToken, out var kind))
             return null;
 
         await stateManager.RefreshGameStateAsync();
 
         return kind switch
         {
-            CommandKind.Overview => await BuildOverview(normalizedCommand, fs, stateManager),
-            CommandKind.Guardians => await BuildGuardians(normalizedCommand, fs),
-            CommandKind.AbodePower => await BuildAbodePower(normalizedCommand, fs),
-            CommandKind.GuardianProjects => await BuildBundle(normalizedCommand, fs, "Проекты Хранителей", [
-                new(GuardianProjectState.TrackerPath, "projects", "Проектов"),
-                new(GuardianProjectState.TrackerPath, "journal", "Записей журнала"),
-                new(GuardiansPath, "guardians", "Хранителей")
-            ]),
+            CommandKind.Overview => await BuildOverview(request.Command, fs, stateManager),
+            CommandKind.Guardians => await BuildGuardians(request, fs, includeAdvancedDiagnostics),
+            CommandKind.AbodePower => await BuildAbodePower(request, fs, includeAdvancedDiagnostics),
+            CommandKind.GuardianProjects => await BuildGuardianProjects(request, fs, includeAdvancedDiagnostics),
             CommandKind.GuardianPolitics => await BuildGuardianPolitics(
-                normalizedCommand,
+                request.Command,
                 fs,
                 includeAdvancedDiagnostics || stateManager.Settings.ShowGmThoughts),
-            CommandKind.Abodes => await BuildAbodes(normalizedCommand, fs),
+            CommandKind.Abodes => await BuildAbodes(request, fs, includeAdvancedDiagnostics),
             _ => null
         };
     }
@@ -100,54 +100,212 @@ public static class ExplorerChaosSeaCommandResultBuilder
         return Completed(command, blocks);
     }
 
-    private static async Task<ExplorerCommandResult> BuildGuardians(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildGuardians(
+        CommandRequest request,
+        FileSystemManager fs,
+        bool includeAdvancedDiagnostics)
     {
         var read = await ReadJson(fs, GuardiansPath);
         if (read.Node == null)
-            return MissingOrMalformed(command, "Хранители", read);
+            return DetailUnavailable(request.Command, "Хранители", "не удалось открыть сведения о Хранителях.");
 
-        return Completed(command,
+        var detail = ParseDetailRequest(request.Arguments, "хранитель", "guardian");
+        var guardians = EnumerateGuardians(read.Node).ToList();
+        if (!string.IsNullOrWhiteSpace(detail.Selector))
+            return BuildGuardianDetail(request.Command, guardians, detail.Selector);
+
+        var blocks = new List<UiBlock>
+        {
             Panel("Хранители",
                 Grid(
-                    ("Хранителей", CountArray(read.Node, "guardians").ToString()),
+                    ("Хранителей", guardians.Count.ToString()),
                     ("Активный Хранитель", DescribeActiveGuardian(read.Node)),
                     ("Текущая Обитель", DescribeCurrentAbode(read.Node)),
-                    ("Ожидаемое создание Хранителя", DescribeNodePresence(read.Node["pendingGuardianCreation"])))),
-            Raw($"Полный JSON {GuardiansPath}", read.Node));
+                    ("Ожидаемое создание Хранителя", DescribeNodePresence(read.Node["pendingGuardianCreation"]))))
+        };
+
+        if (guardians.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Обзор Хранителей",
+                Columns = ["Хранитель", "Сфера", "Обитель", "Отношение", "Подробно"],
+                Rows = guardians.Select(static guardian =>
+                {
+                    var selector = GuardianSelector(guardian);
+                    return new UiTableRow
+                    {
+                        Cells =
+                        [
+                            GuardianName(guardian),
+                            EmptyFallback(GetString(guardian, "domain", "sphere", "mantleName")),
+                            AbodeName(guardian["abode"] as JsonObject),
+                            DescribeReputation(guardian),
+                            string.IsNullOrWhiteSpace(selector)
+                                ? "не указано"
+                                : BuildGuardianDetailCommand(selector)
+                        ]
+                    };
+                }).ToList()
+            });
+        }
+
+        if (includeAdvancedDiagnostics)
+            AddRawOrWarning(blocks, $"Полный JSON {GuardiansPath}", read);
+
+        return Completed(request.Command, blocks, BuildGuardianActions(guardians));
     }
 
-    private static async Task<ExplorerCommandResult> BuildAbodePower(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildAbodePower(
+        CommandRequest request,
+        FileSystemManager fs,
+        bool includeAdvancedDiagnostics)
     {
         var guardians = await ReadJson(fs, GuardiansPath);
         var journal = await ReadJson(fs, AbodePowerJournalPath);
+        var entries = EnumerateAbodePowerEntries(guardians.Node, journal.Node).ToList();
+
+        var detail = ParseDetailRequest(request.Arguments, "запись", "entry", "event", "событие");
+        if (!string.IsNullOrWhiteSpace(detail.Selector))
+            return BuildAbodePowerDetail(request.Command, entries, detail.Selector);
 
         var blocks = new List<UiBlock>
         {
             Panel("Сила Обители",
                 Grid(
                     ("Хранителей с данными", CountGuardiansWithObject(guardians.Node, "abodePower").ToString()),
-                    ("Событий силы", CountArray(journal.Node, "guardianPowerEvents").ToString()),
+                    ("Событий силы", entries.Count.ToString()),
                     ("Журнал", DescribePresence(journal))))
         };
 
-        AddRawOrWarning(blocks, $"Полный JSON {GuardiansPath}", guardians);
-        AddRawOrWarning(blocks, $"Полный JSON {AbodePowerJournalPath}", journal);
-        return Completed(command, blocks);
+        if (entries.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Журнал силы Обители",
+                Columns = ["Запись", "Хранитель", "Изменение", "Ход", "Подробно"],
+                Rows = entries.Select(static entry => new UiTableRow
+                {
+                    Cells =
+                    [
+                        entry.Title,
+                        EmptyFallback(entry.GuardianId),
+                        FormatSigned(entry.Delta),
+                        EmptyFallback(entry.Turn),
+                        BuildAbodePowerDetailCommand(entry.Selector)
+                    ]
+                }).ToList()
+            });
+        }
+
+        if (includeAdvancedDiagnostics)
+        {
+            AddRawOrWarning(blocks, $"Полный JSON {GuardiansPath}", guardians);
+            AddRawOrWarning(blocks, $"Полный JSON {AbodePowerJournalPath}", journal);
+        }
+
+        return Completed(request.Command, blocks, BuildAbodePowerActions(entries));
     }
 
-    private static async Task<ExplorerCommandResult> BuildAbodes(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildAbodes(
+        CommandRequest request,
+        FileSystemManager fs,
+        bool includeAdvancedDiagnostics)
     {
         var read = await ReadJson(fs, GuardiansPath);
         if (read.Node == null)
-            return MissingOrMalformed(command, "Обители", read);
+            return DetailUnavailable(request.Command, "Обители", "не удалось открыть сведения об Обителях.");
 
-        return Completed(command,
+        var detail = ParseDetailRequest(request.Arguments, "обитель", "abode");
+        var abodes = EnumerateAbodes(read.Node).ToList();
+        if (!string.IsNullOrWhiteSpace(detail.Selector))
+            return BuildAbodeDetail(request.Command, abodes, detail.Selector);
+
+        var blocks = new List<UiBlock>
+        {
             Panel("Обители Моря Хаоса",
                 Grid(
                     ("Текущая Обитель", DescribeCurrentAbode(read.Node)),
                     ("Известных Обителей", CountKnownAbodes(read.Node).ToString()),
-                    ("Хранителей с Обителью", CountGuardiansWithObject(read.Node, "abode").ToString()))),
-            Raw($"Полный JSON {GuardiansPath}", read.Node));
+                    ("Хранителей с Обителью", CountGuardiansWithObject(read.Node, "abode").ToString())))
+        };
+
+        if (abodes.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Обзор Обителей",
+                Columns = ["Обитель", "Хранитель", "Якорь", "Подробно"],
+                Rows = abodes.Select(static abode => new UiTableRow
+                {
+                    Cells =
+                    [
+                        abode.Name,
+                        EmptyFallback(abode.GuardianName),
+                        EmptyFallback(abode.Anchor),
+                        BuildAbodeDetailCommand(abode.Selector)
+                    ]
+                }).ToList()
+            });
+        }
+
+        if (includeAdvancedDiagnostics)
+            AddRawOrWarning(blocks, $"Полный JSON {GuardiansPath}", read);
+
+        return Completed(request.Command, blocks, BuildAbodeActions(abodes));
+    }
+
+    private static async Task<ExplorerCommandResult> BuildGuardianProjects(
+        CommandRequest request,
+        FileSystemManager fs,
+        bool includeAdvancedDiagnostics)
+    {
+        var tracker = await ReadJson(fs, GuardianProjectState.TrackerPath);
+        var guardians = await ReadJson(fs, GuardiansPath);
+        var journal = await ReadJson(fs, GuardianProjectState.JournalPath);
+        var projects = EnumerateGuardianProjects(tracker.Node, guardians.Node, journal.Node).ToList();
+
+        var detail = ParseDetailRequest(request.Arguments, "проект", "project");
+        if (!string.IsNullOrWhiteSpace(detail.Selector))
+            return BuildGuardianProjectDetail(request.Command, projects, detail.Selector);
+
+        var blocks = new List<UiBlock>
+        {
+            Panel("Проекты Хранителей",
+                Grid(
+                    ("Проектов", projects.Count.ToString()),
+                    ("Хранителей", CountArray(guardians.Node, "guardians").ToString()),
+                    ("Журнал", DescribePresence(journal))))
+        };
+
+        if (projects.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Обзор проектов Хранителей",
+                Columns = ["Проект", "Хранитель", "Статус", "Прогресс", "Подробно"],
+                Rows = projects.Select(static project => new UiTableRow
+                {
+                    Cells =
+                    [
+                        project.Title,
+                        EmptyFallback(project.GuardianName),
+                        EmptyFallback(project.State),
+                        FormatProgress(project.WorkDone, project.TotalWork),
+                        BuildGuardianProjectDetailCommand(project.Selector)
+                    ]
+                }).ToList()
+            });
+        }
+
+        if (includeAdvancedDiagnostics)
+        {
+            AddRawOrWarning(blocks, $"Полный JSON {GuardianProjectState.TrackerPath}", tracker);
+            AddRawOrWarning(blocks, $"Полный JSON {GuardiansPath}", guardians);
+            AddRawOrWarning(blocks, $"Полный JSON {GuardianProjectState.JournalPath}", journal);
+        }
+
+        return Completed(request.Command, blocks, BuildGuardianProjectActions(projects));
     }
 
     private static async Task<ExplorerCommandResult> BuildGuardianPolitics(
@@ -269,6 +427,644 @@ public static class ExplorerChaosSeaCommandResultBuilder
         return Completed(command, blocks);
     }
 
+    private static ExplorerCommandResult BuildGuardianDetail(
+        string command,
+        IReadOnlyList<JsonObject> guardians,
+        string selector)
+    {
+        var guardian = FindGuardian(guardians, selector);
+        if (guardian == null)
+            return DetailUnavailable(command, "Хранитель недоступен", $"не удалось открыть Хранителя «{selector}». Запись не найдена или ещё не раскрыта душой.");
+
+        var relationship = guardian["relationshipData"];
+        var abode = guardian["abode"] as JsonObject;
+        var description = GetString(guardian, "description", "summary");
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Хранитель: {GuardianName(guardian)}",
+                Grid(
+                    ("Сфера", EmptyFallback(GetString(guardian, "domain", "sphere", "mantleName"))),
+                    ("Обитель", AbodeName(abode)),
+                    ("Репутация", DescribeReputation(guardian)),
+                    ("Последняя встреча", EmptyFallback(GetString(relationship, "lastInteraction"))),
+                    ("Сила Обители", DescribeAbodePower(guardian["abodePower"]))))
+        };
+
+        if (!string.IsNullOrWhiteSpace(description))
+            blocks.Add(Message(UiNotificationSeverity.Info, "Образ Хранителя", description));
+
+        AddGuardianQuestBlocks(blocks, guardian);
+        AddGuardianLoreBlocks(blocks, guardian);
+        return Completed(command, blocks, BuildOverviewAction("guardians-overview", "К обзору Хранителей", "/guardians"));
+    }
+
+    private static ExplorerCommandResult BuildAbodeDetail(
+        string command,
+        IReadOnlyList<AbodeSnapshot> abodes,
+        string selector)
+    {
+        var abode = FindAbode(abodes, selector);
+        if (abode == null)
+            return DetailUnavailable(command, "Обитель недоступна", $"не удалось открыть Обитель «{selector}». Запись не найдена или ещё не раскрыта душой.");
+
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Обитель: {abode.Name}",
+                Grid(
+                    ("Хранитель", EmptyFallback(abode.GuardianName)),
+                    ("Якорь", EmptyFallback(abode.Anchor)),
+                    ("Сила", EmptyFallback(abode.Power))))
+        };
+
+        if (!string.IsNullOrWhiteSpace(abode.Description))
+            blocks.Add(Message(UiNotificationSeverity.Info, "Облик Обители", abode.Description));
+
+        return Completed(command, blocks, BuildOverviewAction("abodes-overview", "К обзору Обителей", "/abodes"));
+    }
+
+    private static ExplorerCommandResult BuildAbodePowerDetail(
+        string command,
+        IReadOnlyList<AbodePowerEntrySnapshot> entries,
+        string selector)
+    {
+        var entry = FindAbodePowerEntry(entries, selector);
+        if (entry == null)
+            return DetailUnavailable(command, "Запись силы недоступна", $"не удалось открыть запись силы Обители «{selector}». Запись не найдена или ещё не раскрыта душой.");
+
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Сила Обители: {entry.Title}",
+                Grid(
+                    ("Хранитель", EmptyFallback(entry.GuardianId)),
+                    ("Изменение", FormatSigned(entry.Delta)),
+                    ("Причина", EmptyFallback(entry.Reason)),
+                    ("Ход", EmptyFallback(entry.Turn))))
+        };
+
+        if (!string.IsNullOrWhiteSpace(entry.Summary))
+            blocks.Add(Message(UiNotificationSeverity.Info, "След силы", entry.Summary));
+
+        return Completed(command, blocks, BuildOverviewAction("abode-power-overview", "К обзору силы Обители", "/abode_power"));
+    }
+
+    private static ExplorerCommandResult BuildGuardianProjectDetail(
+        string command,
+        IReadOnlyList<GuardianProjectSnapshot> projects,
+        string selector)
+    {
+        var project = FindGuardianProject(projects, selector);
+        if (project == null)
+            return DetailUnavailable(command, "Проект недоступен", $"не удалось открыть проект Хранителя «{selector}». Запись не найдена или ещё не раскрыта душой.");
+
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Проект Хранителя: {project.Title}",
+                Grid(
+                    ("Хранитель", EmptyFallback(project.GuardianName)),
+                    ("Тип", EmptyFallback(project.Type)),
+                    ("Ранг", EmptyFallback(project.Tier)),
+                    ("Режим", EmptyFallback(project.Mode)),
+                    ("Состояние", EmptyFallback(project.State)),
+                    ("Прогресс", FormatProgress(project.WorkDone, project.TotalWork)),
+                    ("Давление", EmptyFallback(project.Pressure)),
+                    ("Устойчивость", EmptyFallback(project.Stability))))
+        };
+
+        if (!string.IsNullOrWhiteSpace(project.Description))
+            blocks.Add(Message(UiNotificationSeverity.Info, "Замысел проекта", project.Description));
+
+        if (project.Effects.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Следствия проекта",
+                Columns = ["Эффект"],
+                Rows = project.Effects.Select(static effect => new UiTableRow { Cells = [effect] }).ToList()
+            });
+        }
+
+        if (project.Journal.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Журнал проекта",
+                Columns = ["Ход", "Запись", "Сводка"],
+                Rows = project.Journal.Select(static entry => new UiTableRow
+                {
+                    Cells = [EmptyFallback(entry.Turn), entry.Title, entry.Summary]
+                }).ToList()
+            });
+        }
+
+        return Completed(command, blocks, BuildOverviewAction("guardian-projects-overview", "К обзору проектов", "/guardian_projects"));
+    }
+
+    private static IEnumerable<UiAction> BuildGuardianActions(IEnumerable<JsonObject> guardians)
+    {
+        foreach (var guardian in guardians)
+        {
+            var selector = GuardianSelector(guardian);
+            if (string.IsNullOrWhiteSpace(selector))
+                continue;
+
+            yield return DetailAction(
+                "guardians-detail-" + ToActionIdPart(selector),
+                $"Подробно: {GuardianName(guardian)}",
+                BuildGuardianDetailCommand(selector));
+        }
+    }
+
+    private static IEnumerable<UiAction> BuildAbodeActions(IEnumerable<AbodeSnapshot> abodes)
+    {
+        foreach (var abode in abodes)
+        {
+            yield return DetailAction(
+                "abodes-detail-" + ToActionIdPart(abode.Selector),
+                $"Подробно: {abode.Name}",
+                BuildAbodeDetailCommand(abode.Selector));
+        }
+    }
+
+    private static IEnumerable<UiAction> BuildAbodePowerActions(IEnumerable<AbodePowerEntrySnapshot> entries)
+    {
+        foreach (var entry in entries)
+        {
+            yield return DetailAction(
+                "abode-power-detail-" + ToActionIdPart(entry.Selector),
+                $"Подробно: {entry.Title}",
+                BuildAbodePowerDetailCommand(entry.Selector));
+        }
+    }
+
+    private static IEnumerable<UiAction> BuildGuardianProjectActions(IEnumerable<GuardianProjectSnapshot> projects)
+    {
+        foreach (var project in projects)
+        {
+            yield return DetailAction(
+                "guardian-projects-detail-" + ToActionIdPart(project.Selector),
+                $"Подробно: {project.Title}",
+                BuildGuardianProjectDetailCommand(project.Selector));
+        }
+    }
+
+    private static IEnumerable<UiAction> BuildOverviewAction(string id, string label, string command)
+    {
+        yield return DetailAction(id, label, command);
+    }
+
+    private static UiAction DetailAction(string id, string label, string command) =>
+        new()
+        {
+            Id = id,
+            Label = label,
+            Command = command,
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false
+        };
+
+    private static string BuildGuardianDetailCommand(string selector) => $"/guardians хранитель {selector}";
+
+    private static string BuildAbodeDetailCommand(string selector) => $"/abodes обитель {selector}";
+
+    private static string BuildAbodePowerDetailCommand(string selector) => $"/abode_power запись {selector}";
+
+    private static string BuildGuardianProjectDetailCommand(string selector) => $"/guardian_projects проект {selector}";
+
+    private static IEnumerable<JsonObject> EnumerateGuardians(JsonNode? root)
+    {
+        if (root is JsonArray rootArray)
+        {
+            foreach (var item in rootArray.OfType<JsonObject>())
+                yield return item;
+            yield break;
+        }
+
+        if (root?["guardians"] is not JsonArray guardians)
+            yield break;
+
+        foreach (var guardian in guardians.OfType<JsonObject>())
+            yield return guardian;
+    }
+
+    private static JsonObject? FindGuardian(IEnumerable<JsonObject> guardians, string selector)
+    {
+        var normalized = NormalizeSelector(selector);
+        return guardians.FirstOrDefault(guardian =>
+            SelectorMatches(normalized, GuardianSelector(guardian), GuardianName(guardian), GetString(guardian, "canonicalName", "name", "guardianName")));
+    }
+
+    private static IEnumerable<AbodeSnapshot> EnumerateAbodes(JsonNode? root)
+    {
+        var guardians = EnumerateGuardians(root).ToList();
+        var snapshots = new Dictionary<string, AbodeSnapshot>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var guardian in guardians)
+        {
+            if (guardian["abode"] is not JsonObject abode)
+                continue;
+
+            var selector = AbodeSelector(abode);
+            if (string.IsNullOrWhiteSpace(selector))
+                continue;
+
+            snapshots[selector] = new AbodeSnapshot(
+                selector,
+                AbodeName(abode),
+                GuardianSelector(guardian),
+                GuardianName(guardian),
+                GetString(abode, "description", "summary"),
+                GetString(abode, "currentAnchor", "anchor", "location"),
+                DescribeAbodePower(guardian["abodePower"]));
+        }
+
+        if (root?["chaosSeaNavigation"]?["knownAbodes"] is JsonArray knownAbodes)
+        {
+            foreach (var known in knownAbodes.OfType<JsonObject>())
+            {
+                var selector = AbodeSelector(known);
+                if (string.IsNullOrWhiteSpace(selector) || snapshots.ContainsKey(selector))
+                    continue;
+
+                var guardianId = GetString(known, "guardianId");
+                var guardian = FindGuardian(guardians, guardianId);
+                snapshots[selector] = new AbodeSnapshot(
+                    selector,
+                    AbodeName(known),
+                    guardianId,
+                    guardian == null ? guardianId : GuardianName(guardian),
+                    GetString(known, "description", "summary"),
+                    GetString(known, "currentAnchor", "anchor", "location"),
+                    guardian == null ? string.Empty : DescribeAbodePower(guardian["abodePower"]));
+            }
+        }
+
+        return snapshots.Values;
+    }
+
+    private static AbodeSnapshot? FindAbode(IEnumerable<AbodeSnapshot> abodes, string selector)
+    {
+        var normalized = NormalizeSelector(selector);
+        return abodes.FirstOrDefault(abode =>
+            SelectorMatches(normalized, abode.Selector, abode.Name, abode.GuardianId, abode.GuardianName));
+    }
+
+    private static IEnumerable<AbodePowerEntrySnapshot> EnumerateAbodePowerEntries(JsonNode? guardiansRoot, JsonNode? journalRoot)
+    {
+        var snapshots = new Dictionary<string, AbodePowerEntrySnapshot>(StringComparer.OrdinalIgnoreCase);
+
+        AddPowerEntriesFromArray(journalRoot?["entries"] as JsonArray, snapshots);
+        AddPowerEntriesFromArray(journalRoot?["guardianPowerEvents"] as JsonArray, snapshots);
+
+        foreach (var guardian in EnumerateGuardians(guardiansRoot))
+        {
+            if (guardian["abodePower"]?["history"] is not JsonArray history)
+                continue;
+
+            foreach (var historyEntry in history.OfType<JsonObject>())
+            {
+                var selector = PowerEntrySelector(historyEntry);
+                if (string.IsNullOrWhiteSpace(selector) || snapshots.ContainsKey(selector))
+                    continue;
+
+                snapshots[selector] = BuildPowerEntrySnapshot(historyEntry, GuardianSelector(guardian));
+            }
+        }
+
+        return snapshots.Values;
+    }
+
+    private static void AddPowerEntriesFromArray(JsonArray? entries, Dictionary<string, AbodePowerEntrySnapshot> snapshots)
+    {
+        if (entries == null)
+            return;
+
+        foreach (var entry in entries.OfType<JsonObject>())
+        {
+            var selector = PowerEntrySelector(entry);
+            if (string.IsNullOrWhiteSpace(selector) || snapshots.ContainsKey(selector))
+                continue;
+
+            snapshots[selector] = BuildPowerEntrySnapshot(entry, GetString(entry, "guardianId", "ownerGuardianId"));
+        }
+    }
+
+    private static AbodePowerEntrySnapshot BuildPowerEntrySnapshot(JsonObject entry, string guardianId)
+    {
+        var selector = PowerEntrySelector(entry);
+        var title = GetString(entry, "title", "reason", "eventType", "eventId", "entryId");
+        return new AbodePowerEntrySnapshot(
+            selector,
+            EmptyFallback(title),
+            guardianId,
+            GetString(entry, "summary", "description"),
+            GetString(entry, "reason", "reasonType", "source"),
+            FirstNumberOrString(entry, "delta", "change", "powerDelta"),
+            FirstNumberOrString(entry, "turn", "turnNumber"));
+    }
+
+    private static AbodePowerEntrySnapshot? FindAbodePowerEntry(IEnumerable<AbodePowerEntrySnapshot> entries, string selector)
+    {
+        var normalized = NormalizeSelector(selector);
+        return entries.FirstOrDefault(entry =>
+            SelectorMatches(normalized, entry.Selector, entry.Title));
+    }
+
+    private static IEnumerable<GuardianProjectSnapshot> EnumerateGuardianProjects(
+        JsonNode? trackerRoot,
+        JsonNode? guardiansRoot,
+        JsonNode? journalRoot)
+    {
+        var guardianNames = EnumerateGuardians(guardiansRoot)
+            .Select(static guardian => new { Id = GuardianSelector(guardian), Name = GuardianName(guardian) })
+            .Where(static item => !string.IsNullOrWhiteSpace(item.Id))
+            .ToDictionary(static item => item.Id, static item => item.Name, StringComparer.OrdinalIgnoreCase);
+        var journal = EnumerateProjectJournalEntries(trackerRoot, journalRoot).ToList();
+
+        foreach (var item in ProjectArrays(trackerRoot).SelectMany(static array => array.OfType<JsonObject>()))
+        {
+            var project = item["project"] as JsonObject ?? item;
+            var guardianId = GetString(item, "guardianId", "ownerGuardianId");
+            if (string.IsNullOrWhiteSpace(guardianId))
+                guardianId = GetString(project, "guardianId", "ownerGuardianId");
+
+            var projectId = GetString(project, "projectId", "id");
+            if (string.IsNullOrWhiteSpace(projectId))
+                continue;
+
+            var selector = string.IsNullOrWhiteSpace(guardianId) ? projectId : $"{guardianId}::{projectId}";
+            var relatedJournal = journal
+                .Where(entry =>
+                    (string.IsNullOrWhiteSpace(guardianId) || string.Equals(entry.GuardianId, guardianId, StringComparison.OrdinalIgnoreCase)) &&
+                    string.Equals(entry.ProjectId, projectId, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            yield return new GuardianProjectSnapshot(
+                selector,
+                guardianId,
+                guardianNames.TryGetValue(guardianId, out var guardianName) ? guardianName : guardianId,
+                projectId,
+                EmptyFallback(GetString(project, "projectName", "name", "title", "displayName", "projectId")),
+                GetString(project, "projectType", "type"),
+                GetString(project, "projectTier", "tier"),
+                GetString(project, "projectMode", "mode"),
+                GetString(project, "activeState", "status", "state"),
+                GetString(project, "description", "summary"),
+                FirstNumberOrString(project, "workDone", "currentProgress", "progress"),
+                FirstNumberOrString(project, "totalWork", "requiredProgress", "targetProgress"),
+                FirstNumberOrString(project, "pressure"),
+                FirstNumberOrString(project, "stability"),
+                ReadStringArray(project["systemEffectSummary"]),
+                relatedJournal);
+        }
+    }
+
+    private static IEnumerable<JsonArray> ProjectArrays(JsonNode? trackerRoot)
+    {
+        if (trackerRoot is JsonArray rootArray)
+            yield return rootArray;
+        if (trackerRoot?["projects"] is JsonArray projects)
+            yield return projects;
+        if (trackerRoot?["activeProjects"] is JsonArray activeProjects)
+            yield return activeProjects;
+        if (trackerRoot?["completedProjects"] is JsonArray completedProjects)
+            yield return completedProjects;
+    }
+
+    private static IEnumerable<GuardianProjectJournalEntry> EnumerateProjectJournalEntries(JsonNode? trackerRoot, JsonNode? journalRoot)
+    {
+        foreach (var entries in new[] { trackerRoot?["journal"] as JsonArray, journalRoot?["entries"] as JsonArray, journalRoot?["journal"] as JsonArray })
+        {
+            if (entries == null)
+                continue;
+
+            foreach (var entry in entries.OfType<JsonObject>())
+            {
+                yield return new GuardianProjectJournalEntry(
+                    GetString(entry, "guardianId", "ownerGuardianId"),
+                    GetString(entry, "projectId"),
+                    FirstNumberOrString(entry, "turn", "turnNumber"),
+                    EmptyFallback(GetString(entry, "title", "entryId")),
+                    EmptyFallback(GetString(entry, "summary", "description")));
+            }
+        }
+    }
+
+    private static GuardianProjectSnapshot? FindGuardianProject(IEnumerable<GuardianProjectSnapshot> projects, string selector)
+    {
+        var normalized = NormalizeSelector(selector);
+        return projects.FirstOrDefault(project =>
+            SelectorMatches(normalized, project.Selector, project.ProjectId, project.Title));
+    }
+
+    private static void AddGuardianQuestBlocks(List<UiBlock> blocks, JsonObject guardian)
+    {
+        if (guardian["questManagement"]?["activeQuests"] is not JsonArray quests)
+            return;
+
+        var rows = quests.OfType<JsonObject>()
+            .Select(static quest => new UiTableRow
+            {
+                Cells =
+                [
+                    EmptyFallback(GetString(quest, "name", "title", "questId")),
+                    EmptyFallback(GetString(quest, "status")),
+                    EmptyFallback(GetString(quest, "description", "summary"))
+                ]
+            })
+            .ToList();
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = "Поручения Хранителя",
+            Columns = ["Поручение", "Статус", "Суть"],
+            Rows = rows
+        });
+    }
+
+    private static void AddGuardianLoreBlocks(List<UiBlock> blocks, JsonObject guardian)
+    {
+        if (guardian["loreFragments"] is not JsonArray loreFragments)
+            return;
+
+        var rows = loreFragments.OfType<JsonObject>()
+            .Where(static fragment => IsVisibleLore(fragment))
+            .Select(static fragment => new UiTableRow
+            {
+                Cells =
+                [
+                    EmptyFallback(GetString(fragment, "title", "fragmentId")),
+                    EmptyFallback(GetString(fragment, "content", "summary"))
+                ]
+            })
+            .ToList();
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = "Открытые предания",
+            Columns = ["Фрагмент", "Текст"],
+            Rows = rows
+        });
+    }
+
+    private static bool IsVisibleLore(JsonObject fragment)
+    {
+        if (fragment["isUnlocked"] is JsonValue unlocked && unlocked.TryGetValue<bool>(out var isUnlocked))
+            return isUnlocked;
+        if (fragment["isPlayerVisible"] is JsonValue visible && visible.TryGetValue<bool>(out var isVisible))
+            return isVisible;
+        return true;
+    }
+
+    private static CommandRequest? ParseCommandRequest(string command)
+    {
+        var normalized = command.Trim();
+        if (string.IsNullOrWhiteSpace(normalized))
+            return null;
+
+        var split = normalized.IndexOfAny([' ', '\t', '\r', '\n']);
+        if (split < 0)
+            return new CommandRequest(normalized, normalized, string.Empty);
+
+        var token = normalized[..split].Trim();
+        var arguments = normalized[split..].Trim();
+        return string.IsNullOrWhiteSpace(token)
+            ? null
+            : new CommandRequest(normalized, token, arguments);
+    }
+
+    private static DetailRequest ParseDetailRequest(string arguments, params string[] detailTokens)
+    {
+        if (string.IsNullOrWhiteSpace(arguments))
+            return new DetailRequest(string.Empty, string.Empty);
+
+        var normalized = arguments.Trim();
+        var split = normalized.IndexOfAny([' ', '\t', '\r', '\n']);
+        var first = split < 0 ? normalized : normalized[..split].Trim();
+        var rest = split < 0 ? string.Empty : normalized[split..].Trim();
+
+        if (detailTokens.Any(token => string.Equals(token, first, StringComparison.OrdinalIgnoreCase)))
+            return new DetailRequest(first, rest);
+
+        return new DetailRequest(string.Empty, normalized);
+    }
+
+    private static string GuardianSelector(JsonObject guardian) =>
+        GetString(guardian, "guardianId", "id", "key", "canonicalName", "guardianName", "name");
+
+    private static string GuardianName(JsonObject guardian) =>
+        EmptyFallback(GetString(guardian, "canonicalName", "guardianName", "name", "displayName", "guardianId"));
+
+    private static string AbodeSelector(JsonObject? abode) =>
+        GetString(abode, "abodeId", "id", "key", "name");
+
+    private static string AbodeName(JsonObject? abode) =>
+        EmptyFallback(GetString(abode, "name", "abodeName", "displayName", "abodeId"));
+
+    private static string PowerEntrySelector(JsonObject entry) =>
+        GetString(entry, "entryId", "eventId", "id", "title", "reason");
+
+    private static string DescribeReputation(JsonObject guardian)
+    {
+        var reputation = FirstNumberOrString(guardian["relationshipData"], "currentReputation", "reputation");
+        return string.IsNullOrWhiteSpace(reputation) ? "не указано" : reputation;
+    }
+
+    private static string DescribeAbodePower(JsonNode? abodePower)
+    {
+        if (abodePower is not JsonObject power)
+            return "не указано";
+
+        var current = FirstNumberOrString(power, "currentPower", "current");
+        var max = FirstNumberOrString(power, "maxPower", "max");
+        var tier = GetString(power, "tier", "level");
+        var value = string.IsNullOrWhiteSpace(current) && string.IsNullOrWhiteSpace(max)
+            ? string.Empty
+            : $"{EmptyFallback(current)} / {EmptyFallback(max)}";
+        if (!string.IsNullOrWhiteSpace(tier))
+            value = string.IsNullOrWhiteSpace(value) ? tier : $"{value}, {tier}";
+        return EmptyFallback(value);
+    }
+
+    private static string FirstNumberOrString(JsonNode? node, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            var value = GetNumberOrString(node, propertyName);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return string.Empty;
+    }
+
+    private static IReadOnlyList<string> ReadStringArray(JsonNode? node)
+    {
+        if (node is JsonArray array)
+            return array
+                .Select(static item => TryGetScalarString(item, out var value) ? value : string.Empty)
+                .Where(static value => !string.IsNullOrWhiteSpace(value))
+                .ToList();
+
+        if (TryGetScalarString(node, out var text) && !string.IsNullOrWhiteSpace(text))
+            return [text];
+
+        return [];
+    }
+
+    private static bool SelectorMatches(string normalizedSelector, params string[] candidates) =>
+        candidates.Any(candidate => string.Equals(normalizedSelector, NormalizeSelector(candidate), StringComparison.OrdinalIgnoreCase));
+
+    private static string NormalizeSelector(string value) =>
+        string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
+
+    private static string FormatSigned(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "не указано";
+        return value.StartsWith("-", StringComparison.Ordinal) || value.StartsWith("+", StringComparison.Ordinal)
+            ? value
+            : "+" + value;
+    }
+
+    private static string FormatProgress(string workDone, string totalWork)
+    {
+        if (!string.IsNullOrWhiteSpace(workDone) && !string.IsNullOrWhiteSpace(totalWork))
+            return $"{workDone}/{totalWork}";
+        if (!string.IsNullOrWhiteSpace(workDone))
+            return workDone;
+        return "не указано";
+    }
+
+    private static string ToActionIdPart(string value)
+    {
+        var chars = new List<char>(value.Length);
+        var lastWasSeparator = false;
+        foreach (var ch in value.Trim())
+        {
+            if (char.IsLetterOrDigit(ch) || ch == '_' || ch == '-')
+            {
+                chars.Add(ch);
+                lastWasSeparator = false;
+                continue;
+            }
+
+            if (!lastWasSeparator)
+            {
+                chars.Add('-');
+                lastWasSeparator = true;
+            }
+        }
+
+        return new string(chars.ToArray()).Trim('-');
+    }
+
+    private static ExplorerCommandResult DetailUnavailable(string command, string title, string message) =>
+        Completed(command, Message(UiNotificationSeverity.Info, title, message));
+
     private static async Task<ExplorerCommandResult> BuildBundle(string command, FileSystemManager fs, string title, IReadOnlyList<SummarySpec> specs)
     {
         var grouped = specs.GroupBy(static spec => spec.Path, StringComparer.OrdinalIgnoreCase).ToArray();
@@ -364,12 +1160,13 @@ public static class ExplorerChaosSeaCommandResultBuilder
     private static ExplorerCommandResult Completed(string command, params UiBlock[] blocks) =>
         Completed(command, (IEnumerable<UiBlock>)blocks);
 
-    private static ExplorerCommandResult Completed(string command, IEnumerable<UiBlock> blocks) =>
+    private static ExplorerCommandResult Completed(string command, IEnumerable<UiBlock> blocks, IEnumerable<UiAction>? actions = null) =>
         new()
         {
             Command = command,
             State = CommandExecutionState.Completed,
-            Blocks = blocks.ToList()
+            Blocks = blocks.ToList(),
+            Actions = actions?.ToList() ?? []
         };
 
     private static UiPanelBlock Panel(string title, params UiBlock[] blocks) =>
@@ -604,6 +1401,53 @@ public static class ExplorerChaosSeaCommandResultBuilder
 
     private static string EmptyFallback(string? value) =>
         string.IsNullOrWhiteSpace(value) ? "не указано" : value.Trim();
+
+    private sealed record CommandRequest(string Command, string CommandToken, string Arguments);
+
+    private readonly record struct DetailRequest(string Token, string Selector);
+
+    private sealed record AbodeSnapshot(
+        string Selector,
+        string Name,
+        string GuardianId,
+        string GuardianName,
+        string Description,
+        string Anchor,
+        string Power);
+
+    private sealed record AbodePowerEntrySnapshot(
+        string Selector,
+        string Title,
+        string GuardianId,
+        string Summary,
+        string Reason,
+        string Delta,
+        string Turn);
+
+    private sealed record GuardianProjectSnapshot(
+        string Selector,
+        string GuardianId,
+        string GuardianName,
+        string ProjectId,
+        string Title,
+        string Type,
+        string Tier,
+        string Mode,
+        string State,
+        string Description,
+        string WorkDone,
+        string TotalWork,
+        string Pressure,
+        string Stability,
+        IReadOnlyList<string> Effects,
+        IReadOnlyList<GuardianProjectJournalEntry> Journal);
+
+    private sealed record GuardianProjectJournalEntry(
+        string GuardianId,
+        string ProjectId,
+        string Turn,
+        string Title,
+        string Summary);
 
     private sealed record SummarySpec(string Path, string PropertyName, string Label);
 
