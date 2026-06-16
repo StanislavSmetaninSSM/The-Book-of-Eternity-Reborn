@@ -105,7 +105,12 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             ["/воспоминание_способности"] = CommandKind.MemoryScene
         };
 
-    public static bool CanBuild(string command) => CommandKinds.ContainsKey(command.Trim());
+    public static bool CanBuild(string command)
+    {
+        var normalizedCommand = command.Trim();
+        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(normalizedCommand);
+        return CommandKinds.ContainsKey(normalizedCommand) || CommandKinds.ContainsKey(commandToken);
+    }
 
     public static async Task<ExplorerCommandResult?> TryBuildAsync(
         string command,
@@ -114,8 +119,12 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         LocalizationManager loc)
     {
         var normalizedCommand = command.Trim();
-        if (!CommandKinds.TryGetValue(normalizedCommand, out var kind))
+        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(normalizedCommand);
+        if (!CommandKinds.TryGetValue(normalizedCommand, out var kind) &&
+            !CommandKinds.TryGetValue(commandToken, out kind))
+        {
             return null;
+        }
 
         await stateManager.RefreshGameStateAsync();
 
@@ -124,8 +133,8 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             CommandKind.Status => BuildStatus(normalizedCommand, stateManager),
             CommandKind.Soul => await BuildSoul(normalizedCommand, fs),
             CommandKind.SoulRelics => await BuildSoulRelics(normalizedCommand, fs),
-            CommandKind.AfterlifeArchive => await BuildSoulSection(normalizedCommand, fs, "Архив души", "afterlifeArchive"),
-            CommandKind.ArchiveCandidates => await BuildJsonFile(normalizedCommand, fs, "Кандидаты в Архив", AfterlifeArchiveCandidateService.ManifestPath),
+            CommandKind.AfterlifeArchive => await BuildAfterlifeArchive(normalizedCommand, fs),
+            CommandKind.ArchiveCandidates => await BuildArchiveCandidates(normalizedCommand, fs),
             CommandKind.SoulQuests => await BuildJsonFile(normalizedCommand, fs, "Квесты души", "game_state/meta/guardians.json"),
             CommandKind.Codex => await BuildJsonFile(normalizedCommand, fs, "Кодекс", "lore/codex_entries.json", BuildCodexSummary),
             CommandKind.Achievements => await BuildJsonFile(normalizedCommand, fs, "Достижения", "game_state/meta/achievements.json", BuildAchievementsSummary),
@@ -309,9 +318,15 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         var context = await SoulRelicEquipmentService.ReadContextAsync(fs);
         if (context == null)
         {
+            if (TryReadDetailSelector(ReadCommandArguments(command), out _, "реликвия", "relic", "деталь", "detail"))
+                return DetailUnavailable(command, "Реликвия души");
+
             var read = await ReadJson(fs, SoulRelicEquipmentService.SoulStatePath);
             return MissingOrMalformed(command, "Реликвии души", read);
         }
+
+        if (TryReadDetailSelector(ReadCommandArguments(command), out var relicSelector, "реликвия", "relic", "деталь", "detail"))
+            return BuildSoulRelicDetail(command, context, relicSelector);
 
         var rows = new List<UiTableRow>();
         rows.AddRange(context.Equipped.Select(static relic => new UiTableRow
@@ -341,7 +356,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         {
             Panel("Реликвии души",
                 Grid(
-                    ("Источник", SoulRelicEquipmentService.SoulStatePath),
+                    ("Состояние", "каноническое состояние души"),
                     ("Экипировано", context.Equipped.Count.ToString()),
                     ("В хранилище", context.Stored.Count.ToString()))),
             new UiTableBlock
@@ -349,8 +364,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 Title = "Реликвии души",
                 Columns = ["Статус", "Слот", "Реликвия", "Редкость", "ID"],
                 Rows = rows
-            },
-            Raw("JSON: soul_state.soulRelics", context.Root["soulRelics"]?.DeepClone() ?? new JsonObject())
+            }
         };
 
         if (rows.Count == 0)
@@ -375,9 +389,70 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         };
     }
 
+    private static ExplorerCommandResult BuildSoulRelicDetail(
+        string command,
+        SoulRelicEquipmentContext context,
+        string selector)
+    {
+        var detail = FindSoulRelicDetail(context.Root, selector);
+        if (detail == null)
+            return DetailUnavailable(command, "Реликвия души");
+
+        var relic = detail.Value.Relic;
+        var relicId = GetString(relic, "relicId", string.Empty);
+        var name = FirstNonEmpty(GetString(relic, "name", string.Empty), relicId, selector);
+        var rarity = FirstNonEmpty(
+            GetString(relic, "rarity", string.Empty),
+            GetString(relic, "quality", string.Empty),
+            "не указана");
+        var slot = FirstNonEmpty(
+            detail.Value.Slot,
+            GetString(relic, "slot", string.Empty),
+            GetString(relic["gameplayStatus"] as JsonObject, "currentSlot"),
+            "не указан");
+        var description = FirstNonEmpty(
+            GetString(relic, "description", string.Empty),
+            GetString(relic, "summary", string.Empty),
+            GetString(relic, "effectSummary", string.Empty),
+            "Подробное описание реликвии пока не записано.");
+        var effect = FirstNonEmpty(
+            GetString(relic, "effectSummary", string.Empty),
+            GetString(relic, "effect", string.Empty),
+            GetString(relic, "lore", string.Empty));
+
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Реликвия души: {name}",
+                Grid(
+                    ("Состояние", detail.Value.Status),
+                    ("Слот", SoulRelicEquipmentService.FormatSlotLabel(slot)),
+                    ("Редкость", rarity),
+                    ("ID", EmptyFallback(relicId)),
+                    ("Совместимые слоты", DescribeStringArray(relic["compatibleSlots"])))),
+            new UiTextBlock { Text = description, Tone = UiTone.Accent }
+        };
+
+        if (!string.IsNullOrWhiteSpace(effect))
+            blocks.Add(new UiTextBlock { Text = effect, Tone = UiTone.Subtle });
+
+        var tags = DescribeStringArray(relic["tags"]);
+        if (tags != "не указано")
+            blocks.Add(Panel("Метки", Grid(("Метки", tags))));
+
+        return Completed(command, blocks);
+    }
+
     private static List<UiAction> BuildSoulRelicActions(SoulRelicEquipmentContext context)
     {
         var actions = new List<UiAction>();
+        var detailActionIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var relic in context.Equipped.Concat(context.Stored))
+        {
+            var detailAction = BuildSoulRelicDetailAction(relic);
+            if (detailAction != null && detailActionIds.Add(detailAction.Id))
+                actions.Add(detailAction);
+        }
+
         foreach (var relic in context.Stored)
         {
             var identity = FirstNonEmpty(relic.RelicId, relic.Name);
@@ -410,12 +485,275 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         return actions;
     }
 
+    private static UiAction? BuildSoulRelicDetailAction(SoulRelicItem relic)
+    {
+        var identity = FirstNonEmpty(relic.RelicId, relic.Name);
+        if (string.IsNullOrWhiteSpace(identity))
+            return null;
+
+        var label = FirstNonEmpty(relic.Name, relic.RelicId, identity);
+        return new UiAction
+        {
+            Id = SoulRelicEquipmentService.BuildActionId("soul-relic-detail", identity),
+            Label = $"Подробно: «{label}»",
+            Command = "/soul_relics реликвия " + SoulRelicEquipmentService.FormatCommandArgument(identity),
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false
+        };
+    }
+
     private static string DescribeSoulRelicCompatibleSlots(SoulRelicItem relic)
     {
         if (relic.CompatibleSlots.Count == 0)
             return "-";
 
         return string.Join(", ", relic.CompatibleSlots.Select(SoulRelicEquipmentService.FormatSlotLabel));
+    }
+
+    private static SoulRelicJsonDetail? FindSoulRelicDetail(JsonObject root, string selector)
+    {
+        if (root["soulRelics"] is not JsonObject soulRelics || string.IsNullOrWhiteSpace(selector))
+            return null;
+
+        foreach (var relic in EnumerateSoulRelicJsonDetails(soulRelics))
+        {
+            var item = relic.Relic;
+            if (string.Equals(GetString(item, "relicId", string.Empty), selector, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(GetString(item, "name", string.Empty), selector, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(relic.Slot, selector, StringComparison.OrdinalIgnoreCase))
+            {
+                return relic;
+            }
+        }
+
+        return null;
+    }
+
+    private static IEnumerable<SoulRelicJsonDetail> EnumerateSoulRelicJsonDetails(JsonObject soulRelics)
+    {
+        if (soulRelics["equipped"] is JsonArray equipped)
+        {
+            foreach (var relic in equipped.OfType<JsonObject>())
+            {
+                var slot = FirstNonEmpty(
+                    GetString(relic["gameplayStatus"] as JsonObject, "currentSlot"),
+                    GetString(relic, "slot", string.Empty));
+                yield return new SoulRelicJsonDetail(relic, "Экипировано", slot);
+            }
+        }
+
+        if (soulRelics["stored"] is JsonArray stored)
+        {
+            foreach (var relic in stored.OfType<JsonObject>())
+                yield return new SoulRelicJsonDetail(relic, "Хранилище", GetString(relic, "slot", string.Empty));
+        }
+    }
+
+    private static async Task<ExplorerCommandResult> BuildAfterlifeArchive(string command, FileSystemManager fs)
+    {
+        var read = await ReadJson(fs, "game_state/meta/soul_state.json");
+        if (read.Node is not JsonObject root)
+        {
+            if (TryReadDetailSelector(ReadCommandArguments(command), out _, "запись", "entry", "archive", "деталь", "detail"))
+                return DetailUnavailable(command, "Архив души");
+
+            return MissingOrMalformed(command, "Архив души", read);
+        }
+
+        AfterlifeArchiveState.NormalizeShape(root);
+        var stored = AfterlifeArchiveState.EnsureStoredArray(root);
+        if (TryReadDetailSelector(ReadCommandArguments(command), out var archiveSelector, "запись", "entry", "archive", "деталь", "detail"))
+            return BuildAfterlifeArchiveDetail(command, stored, archiveSelector);
+
+        var entries = stored.OfType<JsonObject>().ToList();
+        var blocks = new List<UiBlock>
+        {
+            Panel("Архив души",
+                Grid(
+                    ("Записей", entries.Count.ToString()),
+                    ("Свободно для действий", entries.Count(entry => !AfterlifeArchiveState.IsReserved(entry)).ToString()))),
+            new UiTableBlock
+            {
+                Title = "Записи Архива",
+                Columns = ["Запись", "Тип", "Редкость", "Состояние"],
+                Rows = entries
+                    .Select(static entry => Row(
+                        FirstNonEmpty(GetString(entry, "title", string.Empty), GetString(entry, "archiveId", string.Empty), "без названия"),
+                        AfterlifeArchiveState.GetEntryTypeLabel(GetString(entry, "entryType", string.Empty)),
+                        FirstNonEmpty(GetString(entry, "rarity", string.Empty), "Common"),
+                        DescribeArchiveEntryReservation(entry)))
+                    .ToList()
+            }
+        };
+
+        if (entries.Count == 0)
+        {
+            blocks.Add(Message(
+                UiNotificationSeverity.Info,
+                "Архив души",
+                "Сохранённых записей Архива пока нет."));
+        }
+
+        return Completed(command, blocks, entries.Select(BuildAfterlifeArchiveDetailAction));
+    }
+
+    private static ExplorerCommandResult BuildAfterlifeArchiveDetail(string command, JsonArray stored, string selector)
+    {
+        var entry = AfterlifeArchiveState.FindEntry(stored, selector);
+        if (entry == null)
+            return DetailUnavailable(command, "Архив души");
+
+        var archiveId = GetString(entry, "archiveId", string.Empty);
+        var title = FirstNonEmpty(GetString(entry, "title", string.Empty), archiveId, selector);
+        var summary = FirstNonEmpty(GetString(entry, "summary", string.Empty), "Краткое описание записи пока не добавлено.");
+        var content = GetString(entry, "content", string.Empty);
+        var reservation = AfterlifeArchiveState.GetReservationObject(entry);
+
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Архив души: {title}",
+                Grid(
+                    ("Тип", AfterlifeArchiveState.GetEntryTypeLabel(GetString(entry, "entryType", string.Empty))),
+                    ("Редкость", FirstNonEmpty(GetString(entry, "rarity", string.Empty), "Common")),
+                    ("Источник", AfterlifeArchiveState.GetSourceKindLabel(GetString(entry, "sourceKind", string.Empty))),
+                    ("Жизнь-источник", FirstNonEmpty(GetString(entry, "sourceLife", string.Empty), "не указана")),
+                    ("Связанный фрагмент", EmptyFallback(GetString(entry, "sourceEntryId", string.Empty))),
+                    ("Состояние", DescribeArchiveEntryReservation(entry)))),
+            new UiTextBlock { Text = summary, Tone = UiTone.Accent }
+        };
+
+        if (!string.IsNullOrWhiteSpace(content))
+            blocks.Add(new UiTextBlock { Text = content, Tone = UiTone.Subtle });
+
+        var tags = DescribeStringArray(entry["tags"]);
+        if (tags != "не указано")
+            blocks.Add(Panel("Метки", Grid(("Метки", tags))));
+
+        if (reservation != null)
+        {
+            blocks.Add(Panel("Резерв",
+                Grid(
+                    ("Действие", AfterlifeArchiveState.GetReservationLabel(GetString(reservation, "reservationKind", string.Empty))),
+                    ("Хранитель", EmptyFallback(GetString(reservation, "guardianName", string.Empty))),
+                    ("Проект", EmptyFallback(GetString(reservation, "targetProjectName", string.Empty))))));
+        }
+
+        return Completed(command, blocks);
+    }
+
+    private static UiAction BuildAfterlifeArchiveDetailAction(JsonObject entry)
+    {
+        var archiveId = GetString(entry, "archiveId", string.Empty);
+        var title = FirstNonEmpty(GetString(entry, "title", string.Empty), archiveId);
+        return new UiAction
+        {
+            Id = SoulRelicEquipmentService.BuildActionId("afterlife-archive-detail", archiveId),
+            Label = $"Подробно: «{title}»",
+            Command = "/afterlife_archive запись " + SoulRelicEquipmentService.FormatCommandArgument(archiveId),
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false
+        };
+    }
+
+    private static async Task<ExplorerCommandResult> BuildArchiveCandidates(string command, FileSystemManager fs)
+    {
+        var read = await ReadJson(fs, AfterlifeArchiveCandidateService.ManifestPath);
+        if (read.Node is not JsonObject root)
+        {
+            if (TryReadDetailSelector(ReadCommandArguments(command), out _, "кандидат", "candidate", "деталь", "detail"))
+                return DetailUnavailable(command, "Кандидат в Архив");
+
+            return MissingOrMalformed(command, "Кандидаты в Архив", read);
+        }
+
+        var candidates = root["candidates"] is JsonArray array
+            ? array.OfType<JsonObject>().ToList()
+            : [];
+
+        if (TryReadDetailSelector(ReadCommandArguments(command), out var candidateSelector, "кандидат", "candidate", "деталь", "detail"))
+            return BuildArchiveCandidateDetail(command, candidates, candidateSelector);
+
+        var blocks = new List<UiBlock>
+        {
+            Panel("Кандидаты в Архив",
+                Grid(
+                    ("Жизнь-источник", FirstNonEmpty(GetString(root, "sourceLife", string.Empty), "не указана")),
+                    ("Кандидатов", candidates.Count.ToString()))),
+            new UiTableBlock
+            {
+                Title = "Кандидаты в Архив",
+                Columns = ["Кандидат", "Тип", "Редкость", "Состояние"],
+                Rows = candidates
+                    .Select(static candidate => Row(
+                        FirstNonEmpty(GetString(candidate, "title", string.Empty), GetString(candidate, "candidateId", string.Empty), "без названия"),
+                        AfterlifeArchiveState.GetEntryTypeLabel(GetString(candidate, "proposedEntryType", string.Empty)),
+                        FirstNonEmpty(GetString(candidate, "rarity", string.Empty), "Common"),
+                        DescribeArchiveCandidateStatus(GetString(candidate, "status", string.Empty))))
+                    .ToList()
+            }
+        };
+
+        if (candidates.Count == 0)
+        {
+            blocks.Add(Message(
+                UiNotificationSeverity.Info,
+                "Кандидаты в Архив",
+                "Кандидатов для Архива сейчас нет."));
+        }
+
+        return Completed(command, blocks, candidates.Select(BuildArchiveCandidateDetailAction));
+    }
+
+    private static ExplorerCommandResult BuildArchiveCandidateDetail(
+        string command,
+        IReadOnlyList<JsonObject> candidates,
+        string selector)
+    {
+        var candidate = candidates.FirstOrDefault(item =>
+            string.Equals(GetString(item, "candidateId", string.Empty), selector, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(GetString(item, "title", string.Empty), selector, StringComparison.OrdinalIgnoreCase));
+        if (candidate == null)
+            return DetailUnavailable(command, "Кандидат в Архив");
+
+        var candidateId = GetString(candidate, "candidateId", string.Empty);
+        var title = FirstNonEmpty(GetString(candidate, "title", string.Empty), candidateId, selector);
+        var summary = FirstNonEmpty(GetString(candidate, "summary", string.Empty), "Краткое описание кандидата пока не добавлено.");
+        var content = GetString(candidate, "content", string.Empty);
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Кандидат в Архив: {title}",
+                Grid(
+                    ("Тип", AfterlifeArchiveState.GetEntryTypeLabel(GetString(candidate, "proposedEntryType", string.Empty))),
+                    ("Редкость", FirstNonEmpty(GetString(candidate, "rarity", string.Empty), "Common")),
+                    ("Состояние", DescribeArchiveCandidateStatus(GetString(candidate, "status", string.Empty))),
+                    ("Источник", AfterlifeArchiveState.GetSourceKindLabel(GetString(candidate, "sourceKind", string.Empty))),
+                    ("Жизнь-источник", FirstNonEmpty(GetString(candidate, "sourceLife", string.Empty), "не указана")),
+                    ("Связанный фрагмент", EmptyFallback(GetString(candidate, "sourceEntryId", string.Empty))))),
+            new UiTextBlock { Text = summary, Tone = UiTone.Accent }
+        };
+
+        if (!string.IsNullOrWhiteSpace(content))
+            blocks.Add(new UiTextBlock { Text = content, Tone = UiTone.Subtle });
+
+        var tags = DescribeStringArray(candidate["tags"]);
+        if (tags != "не указано")
+            blocks.Add(Panel("Метки", Grid(("Метки", tags))));
+
+        return Completed(command, blocks);
+    }
+
+    private static UiAction BuildArchiveCandidateDetailAction(JsonObject candidate)
+    {
+        var candidateId = GetString(candidate, "candidateId", string.Empty);
+        var title = FirstNonEmpty(GetString(candidate, "title", string.Empty), candidateId);
+        return new UiAction
+        {
+            Id = SoulRelicEquipmentService.BuildActionId("archive-candidate-detail", candidateId),
+            Label = $"Подробно: «{title}»",
+            Command = "/archive_candidates кандидат " + SoulRelicEquipmentService.FormatCommandArgument(candidateId),
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildChronicle(string command, FileSystemManager fs)
@@ -895,6 +1233,26 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             Blocks = blocks.ToList()
         };
 
+    private static ExplorerCommandResult Completed(
+        string command,
+        IEnumerable<UiBlock> blocks,
+        IEnumerable<UiAction> actions) =>
+        new()
+        {
+            Command = command,
+            State = CommandExecutionState.Completed,
+            Blocks = blocks.ToList(),
+            Actions = actions.ToList()
+        };
+
+    private static ExplorerCommandResult DetailUnavailable(string command, string title) =>
+        Completed(
+            command,
+            Message(
+                UiNotificationSeverity.Warning,
+                title,
+                "Не удалось открыть выбранную подробность: запись уже недоступна, устарела или не видна текущей душе."));
+
     private static UiPanelBlock Panel(string title, params UiBlock[] blocks) =>
         new()
         {
@@ -910,6 +1268,8 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 .ToList()
         };
 
+    private static UiTableRow Row(params string[] cells) => new() { Cells = cells.ToList() };
+
     private static UiMessageBlock Message(UiNotificationSeverity severity, string title, string message) =>
         new()
         {
@@ -923,6 +1283,67 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         {
             Title = title,
             Json = node.DeepClone()
+        };
+
+    private static string ReadCommandArguments(string command)
+    {
+        var parts = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length < 2 ? string.Empty : parts[1].Trim();
+    }
+
+    private static bool TryReadDetailSelector(string arguments, out string selector, params string[] keywords)
+    {
+        selector = string.Empty;
+        var trimmed = arguments.Trim();
+        if (string.IsNullOrWhiteSpace(trimmed))
+            return false;
+
+        var parts = trimmed.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 2 && keywords.Any(keyword => string.Equals(parts[0], keyword, StringComparison.OrdinalIgnoreCase)))
+        {
+            selector = parts[1].Trim().Trim('"');
+            return !string.IsNullOrWhiteSpace(selector);
+        }
+
+        return false;
+    }
+
+    private static string DescribeStringArray(JsonNode? node)
+    {
+        if (node is not JsonArray array)
+            return "не указано";
+
+        var values = array
+            .Select(static item => item switch
+            {
+                JsonValue value when value.TryGetValue<string>(out var text) => text,
+                JsonValue value when value.TryGetValue<int>(out var number) => number.ToString(),
+                _ => string.Empty
+            })
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToArray();
+        return values.Length == 0 ? "не указано" : string.Join(", ", values);
+    }
+
+    private static string DescribeArchiveEntryReservation(JsonObject entry)
+    {
+        var reservation = AfterlifeArchiveState.GetReservationObject(entry);
+        if (reservation == null)
+            return "свободна";
+
+        var kind = AfterlifeArchiveState.GetReservationLabel(GetString(reservation, "reservationKind", string.Empty));
+        var guardian = GetString(reservation, "guardianName", string.Empty);
+        var project = GetString(reservation, "targetProjectName", string.Empty);
+        return JoinNonEmpty(" / ", "зарезервирована", kind, guardian, project);
+    }
+
+    private static string DescribeArchiveCandidateStatus(string status) =>
+        (status ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            AfterlifeArchiveCandidateService.StatusPending => "ожидает выбора",
+            AfterlifeArchiveCandidateService.StatusArchived => "перенесён в Архив",
+            AfterlifeArchiveCandidateService.StatusSkipped => "пропущен",
+            _ => EmptyFallback(status)
         };
 
     private static string GetString(JsonNode? node, string propertyName, string fallback = "не указано") =>
@@ -1156,6 +1577,8 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
     private static string ToRelativeBasePath(FileSystemManager fs, string fullPath) =>
         Path.GetRelativePath(fs.BasePath, fullPath).Replace('\\', '/');
+
+    private readonly record struct SoulRelicJsonDetail(JsonObject Relic, string Status, string Slot);
 
     private sealed record JsonReadResult(string Path, bool FileExists, JsonNode? Node, string Error);
 }

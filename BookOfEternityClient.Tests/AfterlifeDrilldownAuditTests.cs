@@ -160,6 +160,40 @@ public sealed class AfterlifeDrilldownAuditTests
         }
     }
 
+    [Fact]
+    public void SoulRelicArchiveDetailActions_CatalogAllowsIssue1064DetailArguments()
+    {
+        var commandIds = new[]
+        {
+            "soul_relics",
+            "soul_relic_equip",
+            "soul_relic_unequip",
+            "afterlife_archive",
+            "archive_candidates",
+            "archive_consultation",
+            "archive_project_fuel"
+        };
+
+        foreach (var commandId in commandIds)
+        {
+            var descriptor = ExplorerCommandCatalog.Require(commandId);
+
+            if (descriptor.MutationMode == ExplorerCommandMutationMode.ReadOnly)
+            {
+                Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, descriptor.BrowserStatus);
+            }
+            else
+            {
+                Assert.Equal(ExplorerCommandMutationMode.LocalTurn, descriptor.MutationMode);
+                Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, descriptor.BrowserStatus);
+            }
+
+            Assert.True(
+                descriptor.AcceptsArguments,
+                $"{commandId} must preserve read-only selected-detail arguments for #1064 / #949 AFD-003 browser drill-down actions.");
+        }
+    }
+
     private static string ReadAudit()
     {
         var auditPath = Path.Combine(

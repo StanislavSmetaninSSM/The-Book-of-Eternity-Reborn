@@ -2157,6 +2157,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             command,
             localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
             blocks,
+            actions: BuildSoulRelicDetailActions(stored),
             prompts:
             [
                 new UiSelectionPrompt
@@ -2238,6 +2239,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             command,
             localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
             blocks,
+            actions: BuildSoulRelicDetailActions(equipped),
             prompts:
             [
                 new UiSelectionPrompt
@@ -2289,6 +2291,28 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         return slots
             .Select(static slot => Option(slot, SoulRelicEquipmentService.FormatSlotLabel(slot), ""))
             .ToList();
+    }
+
+    private static List<UiAction> BuildSoulRelicDetailActions(IEnumerable<SoulRelicItem> relics)
+    {
+        var actions = new List<UiAction>();
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var relic in relics)
+        {
+            var identity = FirstNonEmpty(relic.RelicId, relic.Name);
+            if (string.IsNullOrWhiteSpace(identity))
+                continue;
+
+            var action = DetailAction(
+                "soul-relic-detail",
+                identity,
+                FirstNonEmpty(relic.Name, relic.RelicId, identity),
+                "/soul_relics реликвия " + SoulRelicEquipmentService.FormatCommandArgument(identity));
+            if (ids.Add(action.Id))
+                actions.Add(action);
+        }
+
+        return actions;
     }
 
     private static async Task<ExplorerCommandResult> BuildCraftAsync(string command, FileSystemManager fs)
@@ -2704,8 +2728,11 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         FileSystemManager fs,
         StateManager stateManager)
     {
-        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         var context = await BrowserAfterlifeArchiveActionContextReader.ReadConsultationAsync(fs, stateManager);
+        if (TryReadDetailSelector(ReadCommandArguments(command), out var guardianSelector, "хранитель", "guardian", "деталь", "detail"))
+            return BuildArchiveConsultationGuardianDetail(command, context, guardianSelector);
+
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         if (context.IsBlocked)
             return ArchiveActionBlockedResult(command, localTurn.Panel, context);
 
@@ -2719,6 +2746,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             command,
             localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
             blocks,
+            actions: BuildArchiveConsultationDetailActions(context),
             prompts:
             [
                 new UiSelectionPrompt
@@ -2755,8 +2783,11 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         FileSystemManager fs,
         StateManager stateManager)
     {
-        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         var context = await BrowserAfterlifeArchiveActionContextReader.ReadProjectFuelAsync(fs, stateManager);
+        if (TryReadDetailSelector(ReadCommandArguments(command), out var projectSelector, "проект", "project", "деталь", "detail"))
+            return await BuildArchiveProjectFuelDetailAsync(command, fs, context, projectSelector);
+
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         if (context.IsBlocked)
             return ArchiveActionBlockedResult(command, localTurn.Panel, context);
 
@@ -2770,6 +2801,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             command,
             localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
             blocks,
+            actions: BuildArchiveProjectFuelDetailActions(context),
             prompts:
             [
                 new UiSelectionPrompt
@@ -2865,6 +2897,198 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             entry.ArchiveId,
             entry.Title,
             $"{AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType)}; редкость: {entry.Rarity}. {entry.Summary}");
+
+    private static List<UiAction> BuildArchiveConsultationDetailActions(BrowserAfterlifeArchiveActionContext context)
+    {
+        var actions = BuildArchiveEntryDetailActions(context.Entries);
+        actions.AddRange(context.Guardians.Select(static guardian =>
+            DetailAction(
+                "archive-consultation-detail",
+                guardian.GuardianId,
+                guardian.GuardianName,
+                "/archive_consultation хранитель " + SoulRelicEquipmentService.FormatCommandArgument(guardian.GuardianId))));
+        return actions;
+    }
+
+    private static List<UiAction> BuildArchiveProjectFuelDetailActions(BrowserAfterlifeArchiveActionContext context)
+    {
+        var actions = BuildArchiveEntryDetailActions(context.Entries);
+        actions.AddRange(context.Guardians
+            .Where(static guardian => guardian.FuelAvailable && !string.IsNullOrWhiteSpace(guardian.TargetProjectId))
+            .Select(static guardian =>
+                DetailAction(
+                    "archive-project-fuel-detail",
+                    $"{guardian.GuardianId}-{guardian.TargetProjectId}",
+                    guardian.TargetProjectName,
+                    "/archive_project_fuel проект " + SoulRelicEquipmentService.FormatCommandArgument($"{guardian.GuardianId}::{guardian.TargetProjectId}"))));
+        return actions;
+    }
+
+    private static List<UiAction> BuildArchiveEntryDetailActions(IEnumerable<BrowserAfterlifeArchiveEntryChoice> entries) =>
+        entries
+            .Select(static entry =>
+                DetailAction(
+                    "afterlife-archive-detail",
+                    entry.ArchiveId,
+                    entry.Title,
+                    "/afterlife_archive запись " + SoulRelicEquipmentService.FormatCommandArgument(entry.ArchiveId)))
+            .ToList();
+
+    private static ExplorerCommandResult BuildArchiveConsultationGuardianDetail(
+        string command,
+        BrowserAfterlifeArchiveActionContext context,
+        string selector)
+    {
+        if (context.IsBlocked)
+            return DetailUnavailable(command, "Архивная консультация");
+
+        var guardian = ResolveArchiveGuardian(context, selector);
+        if (guardian == null)
+            return DetailUnavailable(command, "Архивная консультация");
+
+        return Result(
+            command,
+            CommandExecutionState.Completed,
+            [
+                new UiPanelBlock
+                {
+                    Title = $"Архивная консультация: {guardian.GuardianName}",
+                    Blocks =
+                    [
+                        new UiKeyValueGridBlock
+                        {
+                            Items =
+                            [
+                                KeyValue("Хранитель", guardian.GuardianName),
+                                KeyValue("Домен", FirstNonEmpty(guardian.Domain, "не указан")),
+                                KeyValue("Репутация", guardian.Reputation.ToString()),
+                                KeyValue("Свободных записей Архива", context.Entries.Count.ToString())
+                            ]
+                        },
+                        new UiTextBlock
+                        {
+                            Text = "Этот Хранитель доступен для архивной консультации. Выберите свободную запись Архива в форме, если хотите попросить его раскрыть смысл выбранного фрагмента.",
+                            Tone = UiTone.Accent
+                        },
+                        new UiTableBlock
+                        {
+                            Title = "Свободные записи Архива",
+                            Columns = ["Запись", "Тип", "Редкость"],
+                            Rows = context.Entries
+                                .Select(static entry => Row(entry.Title, AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType), entry.Rarity))
+                                .ToList()
+                        }
+                    ]
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildArchiveProjectFuelDetailAsync(
+        string command,
+        FileSystemManager fs,
+        BrowserAfterlifeArchiveActionContext context,
+        string selector)
+    {
+        if (context.IsBlocked)
+            return DetailUnavailable(command, "Подпитка проекта");
+
+        var (guardianSelector, projectSelector) = SplitArchiveProjectSelector(selector);
+        var guardian = ResolveArchiveGuardian(context, guardianSelector);
+        if (guardian == null ||
+            !guardian.FuelAvailable ||
+            string.IsNullOrWhiteSpace(guardian.TargetProjectId) ||
+            (!string.IsNullOrWhiteSpace(projectSelector) &&
+             !string.Equals(guardian.TargetProjectId, projectSelector, StringComparison.OrdinalIgnoreCase)))
+        {
+            return DetailUnavailable(command, "Подпитка проекта");
+        }
+
+        var project = await ReadArchiveProjectDetailAsync(fs, guardian.GuardianId, guardian.TargetProjectId);
+        if (project == null)
+            return DetailUnavailable(command, "Подпитка проекта");
+
+        var projectName = FirstNonEmpty(GetString(project, "projectName"), guardian.TargetProjectName, guardian.TargetProjectId);
+        return Result(
+            command,
+            CommandExecutionState.Completed,
+            [
+                new UiPanelBlock
+                {
+                    Title = $"Подпитка проекта: {projectName}",
+                    Blocks =
+                    [
+                        new UiKeyValueGridBlock
+                        {
+                            Items =
+                            [
+                                KeyValue("Хранитель", guardian.GuardianName),
+                                KeyValue("Репутация", guardian.Reputation.ToString()),
+                                KeyValue("Проект", projectName),
+                                KeyValue("Тип", FirstNonEmpty(GetString(project, "projectType"), "не указан")),
+                                KeyValue("Ранг", FirstNonEmpty(GetString(project, "projectTier"), "не указан")),
+                                KeyValue("Режим", FirstNonEmpty(GetString(project, "projectMode"), "не указан"))
+                            ]
+                        },
+                        new UiTextBlock
+                        {
+                            Text = "Свободная запись Архива может стать топливом для этого проекта через форму подпитки. Деталь только показывает цель и не создаёт запрос.",
+                            Tone = UiTone.Accent
+                        },
+                        new UiTableBlock
+                        {
+                            Title = "Свободные записи Архива",
+                            Columns = ["Запись", "Тип", "Редкость"],
+                            Rows = context.Entries
+                                .Select(static entry => Row(entry.Title, AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType), entry.Rarity))
+                                .ToList()
+                        }
+                    ]
+                }
+            ]);
+    }
+
+    private static BrowserAfterlifeArchiveGuardianChoice? ResolveArchiveGuardian(
+        BrowserAfterlifeArchiveActionContext context,
+        string selector)
+    {
+        if (string.IsNullOrWhiteSpace(selector))
+            return null;
+
+        return context.Guardians.FirstOrDefault(guardian =>
+                   string.Equals(guardian.GuardianId, selector, StringComparison.OrdinalIgnoreCase)) ??
+               context.Guardians.FirstOrDefault(guardian =>
+                   string.Equals(guardian.GuardianName, selector, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static (string GuardianId, string ProjectId) SplitArchiveProjectSelector(string selector)
+    {
+        var parts = selector.Split("::", 2, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length == 2 ? (parts[0], parts[1]) : (selector.Trim(), string.Empty);
+    }
+
+    private static async Task<JsonObject?> ReadArchiveProjectDetailAsync(
+        FileSystemManager fs,
+        string guardianId,
+        string projectId)
+    {
+        var projectRoot = await ReadJson(fs, GuardianProjectState.TrackerPath);
+        if (projectRoot.Node is not JsonObject root || root["activeProjects"] is not JsonArray activeProjects)
+            return null;
+
+        foreach (var entry in activeProjects.OfType<JsonObject>())
+        {
+            if (!string.Equals(GetString(entry, "guardianId"), guardianId, StringComparison.OrdinalIgnoreCase) ||
+                entry["project"] is not JsonObject project ||
+                !string.Equals(GetString(project, "projectId"), projectId, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            return project;
+        }
+
+        return null;
+    }
 
     private static async Task<ExplorerCommandResult> BuildAbodeOfferingAsync(
         string command,
@@ -3725,6 +3949,44 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
 
     private static UiSelectionOption Option(string value, string label, string description, bool disabled = false) =>
         new() { Value = value, Label = label, Description = description, Disabled = disabled };
+
+    private static UiAction DetailAction(string idPrefix, string identity, string label, string command) =>
+        new()
+        {
+            Id = SoulRelicEquipmentService.BuildActionId(idPrefix, identity),
+            Label = $"Подробно: «{label}»",
+            Command = command,
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false
+        };
+
+    private static ExplorerCommandResult DetailUnavailable(string command, string title) =>
+        Result(
+            command,
+            CommandExecutionState.Completed,
+            [
+                Message(
+                    UiNotificationSeverity.Warning,
+                    title,
+                    "Не удалось открыть выбранную подробность: запись уже недоступна, устарела или не видна текущей душе.")
+            ]);
+
+    private static bool TryReadDetailSelector(string arguments, out string selector, params string[] keywords)
+    {
+        selector = string.Empty;
+        var trimmed = arguments.Trim();
+        if (string.IsNullOrWhiteSpace(trimmed))
+            return false;
+
+        var parts = trimmed.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 2 && keywords.Any(keyword => string.Equals(parts[0], keyword, StringComparison.OrdinalIgnoreCase)))
+        {
+            selector = parts[1].Trim().Trim('"');
+            return !string.IsNullOrWhiteSpace(selector);
+        }
+
+        return false;
+    }
 
     private static UiMessageBlock Message(UiNotificationSeverity severity, string title, string message) =>
         new() { Severity = severity, Title = title, Message = message };
