@@ -129,8 +129,14 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             CommandKind.GatesReroll => await BuildGatesReroll(normalizedCommand, fs, stateManager),
             CommandKind.IncarnationPrepare => await BuildIncarnationPrepare(normalizedCommand, fs, stateManager),
             CommandKind.RelicForge => await BuildRelicForge(normalizedCommand, fs, stateManager),
-            CommandKind.Treasury => await BuildTreasury(normalizedCommand, fs),
-            CommandKind.SourceOfLight => await BuildSourceOfLight(normalizedCommand, fs),
+            CommandKind.Treasury => await BuildTreasury(
+                normalizedCommand,
+                fs,
+                includeAdvancedDiagnostics || stateManager.Settings.ShowGmThoughts),
+            CommandKind.SourceOfLight => await BuildSourceOfLight(
+                normalizedCommand,
+                fs,
+                includeAdvancedDiagnostics || stateManager.Settings.ShowGmThoughts),
             _ => null
         };
     }
@@ -1210,7 +1216,10 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             ]);
     }
 
-    private static async Task<ExplorerCommandResult> BuildTreasury(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildTreasury(
+        string command,
+        FileSystemManager fs,
+        bool includeAdvancedDiagnostics)
     {
         var shining = await ReadJson(fs, ShiningAbodeState.StatePath);
         var soul = await ReadJson(fs, SoulStatePath);
@@ -1220,7 +1229,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         {
             Panel("Казначейство Сияющей Обители",
                 Grid(
-                    ("Режим браузера", "локальные операции доступны через форму"),
+                    ("Доступное действие", "операции казначейства доступны через форму"),
                     ("Чернильные Перья души", DescribeInkFeathers(soul.Node)),
                     ("Искры Света", GetNumberOrString(shining.Node, "lightSparks", "0")),
                     ("Вклад Перьями", GetNumberOrString(treasury, "depositedInkFeathers", "0")),
@@ -1230,12 +1239,21 @@ public static class ExplorerShiningAbodeCommandResultBuilder
                     ("Искр обменяно в цикле", GetNumberOrString(treasury, "exchangeThisCycleLightSparks", "0")))),
             Message(
                 UiNotificationSeverity.Info,
-                "Браузерная запись",
-                "Форма использует общий протокол локальной блокировки/отката UI и блокируется при активном ходе ГМа.")
+                "Запись казначейства",
+                "Выберите операцию и сумму; при активном ходе ГМа запись дождётся завершения текущего ответа.")
         };
 
-        AddRawOrWarning(blocks, $"Полный JSON {ShiningAbodeState.StatePath}", shining);
-        AddRawOrWarning(blocks, $"Полный JSON {SoulStatePath}", soul);
+        if (includeAdvancedDiagnostics)
+        {
+            AddRawOrWarning(blocks, $"Полный JSON {ShiningAbodeState.StatePath}", shining);
+            AddRawOrWarning(blocks, $"Полный JSON {SoulStatePath}", soul);
+        }
+        else
+        {
+            AddPlayerSafeMalformedWarning(blocks, "Казначейство требует проверки", shining);
+            AddPlayerSafeMalformedWarning(blocks, "Сведения души требуют проверки", soul);
+        }
+
         return Result(
             command,
             CommandExecutionState.RequiresInput,
@@ -1264,7 +1282,10 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             ]);
     }
 
-    private static async Task<ExplorerCommandResult> BuildSourceOfLight(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildSourceOfLight(
+        string command,
+        FileSystemManager fs,
+        bool includeAdvancedDiagnostics)
     {
         var shining = await ReadJson(fs, ShiningAbodeState.StatePath);
         var soul = await ReadJson(fs, SoulStatePath);
@@ -1275,20 +1296,30 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         {
             Panel("Источник Света",
                 Grid(
-                    ("Режим браузера", "создание ожидающего запроса доступно через форму"),
+                    ("Доступное действие", "просьба открыть Источник доступна через форму"),
                     ("Статус", status),
                     ("Сияние", DescribeRadiance(shining.Node)),
-                    ("Награда-пассив", SourceOfLightCapstoneState.PassiveId),
-                    ("Награда-реликвия", SourceOfLightCapstoneState.RelicId))),
+                    ("Дар души", "Воплощение Света"),
+                    ("Реликвия души", "Воплощенный Свет"))),
             Message(
                 UiNotificationSeverity.Info,
-                "Браузерная запись",
-                "Форма создаёт pending_source_of_light_capstone.json только если требования полного Сияния выполнены.")
+                "Сцена Источника",
+                "Если требования полного Сияния выполнены, подтверждение попросит ГМ разыграть сцену Источника.")
         };
 
-        AddRawOrWarning(blocks, $"Полный JSON {ShiningAbodeState.StatePath}", shining);
-        AddRawOrWarning(blocks, $"Полный JSON {SoulStatePath}", soul);
-        AddRawOrWarning(blocks, $"Полный JSON {SourceOfLightCapstoneState.PendingRequestPath}", pending);
+        if (includeAdvancedDiagnostics)
+        {
+            AddRawOrWarning(blocks, $"Полный JSON {ShiningAbodeState.StatePath}", shining);
+            AddRawOrWarning(blocks, $"Полный JSON {SoulStatePath}", soul);
+            AddRawOrWarning(blocks, $"Полный JSON {SourceOfLightCapstoneState.PendingRequestPath}", pending);
+        }
+        else
+        {
+            AddPlayerSafeMalformedWarning(blocks, "Состояние Обители требует проверки", shining);
+            AddPlayerSafeMalformedWarning(blocks, "Сведения души требуют проверки", soul);
+            AddPlayerSafeMalformedWarning(blocks, "Ожидание Источника требует проверки", pending);
+        }
+
         return Result(
             command,
             CommandExecutionState.RequiresInput,
@@ -1302,7 +1333,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
                     Required = true,
                     Options =
                     [
-                        Option("open", "Открыть Источник", "Создать клиентский ожидающий запрос для вершинной сцены.")
+                        Option("open", "Открыть Источник", "Попросить ГМ разыграть вершинную сцену полного Сияния.")
                     ]
                 }
             ]);
@@ -1340,6 +1371,17 @@ public static class ExplorerShiningAbodeCommandResultBuilder
     {
         if (read.Node == null && read.FileExists)
             blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {read.Path}. {read.Error}"));
+    }
+
+    private static void AddPlayerSafeMalformedWarning(List<UiBlock> blocks, string title, JsonReadResult read)
+    {
+        if (read.Node == null && read.FileExists)
+        {
+            blocks.Add(Message(
+                UiNotificationSeverity.Warning,
+                title,
+                "Часть сведений повреждена или недоступна. Попросите ГМ проверить состояние перед действием."));
+        }
     }
 
     private static IEnumerable<UiAction> BuildShiningAbodeOverviewActions(JsonNode? shiningRoot, JsonNode? pendingCoreRoot)
@@ -3274,7 +3316,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         if (pending.Node != null)
             return "ожидает закрытия ГМ";
         if (pending.FileExists)
-            return "pending-файл повреждён";
+            return "ожидание Источника повреждено; нужна проверка ГМ";
         if (shiningRoot?[SourceOfLightCapstoneState.ShiningStateProperty]?["completed"] is JsonValue completedValue &&
             completedValue.TryGetValue<bool>(out var completed) &&
             completed)
@@ -3288,7 +3330,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         var tier = GetInt(shiningRoot?["radiance"], "tier");
         return tier >= SourceOfLightCapstoneState.RequiredRadianceTier &&
                experience >= SourceOfLightCapstoneState.RequiredRadianceExperience
-            ? "требования выполнены; создание запроса доступно только через console/local-turn UX"
+            ? "требования выполнены; сцену можно открыть через форму"
             : $"закрыт: нужно {SourceOfLightCapstoneState.RequiredRadianceExperience} опыта и тир {SourceOfLightCapstoneState.RequiredRadianceTier}";
     }
 
