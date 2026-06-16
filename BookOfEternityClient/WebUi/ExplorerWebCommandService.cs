@@ -121,7 +121,7 @@ public sealed class ExplorerWebCommandService
                 _fs,
                 request.AdvancedEnabled == true),
             ExplorerCommandBrowserHandlerKind.AfterlifeCombat => await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(
-                commandToken,
+                descriptor.AcceptsArguments ? parsed.BuilderCommand : commandToken,
                 _stateManager,
                 _fs,
                 request.AdvancedEnabled == true),
