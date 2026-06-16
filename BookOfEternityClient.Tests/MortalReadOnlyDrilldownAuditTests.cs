@@ -36,4 +36,33 @@ public sealed class MortalReadOnlyDrilldownAuditTests
             "The #948 mortal read-only drill-down audit must list every mortal read-only command id and primary alias. Missing: " +
             string.Join(", ", missing));
     }
+
+    [Fact]
+    public void MortalReferenceDetailActions_CatalogAllowsReadOnlyDetailArguments()
+    {
+        var commandIds = new[]
+        {
+            "quests",
+            "skills",
+            "factions",
+            "locations",
+            "rival_threads",
+            "guardian_corrections",
+            "storage_access",
+            "transport"
+        };
+
+        foreach (var commandId in commandIds)
+        {
+            var descriptor = ExplorerCommandCatalog.Require(commandId);
+
+            Assert.Equal(ExplorerCommandGroup.MortalWorld, descriptor.Group);
+            Assert.Equal(ExplorerCommandMutationMode.ReadOnly, descriptor.MutationMode);
+            Assert.Equal(ExplorerCommandBrowserHandlerKind.MortalWorld, descriptor.BrowserHandlerKind);
+            Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, descriptor.BrowserStatus);
+            Assert.True(
+                descriptor.AcceptsArguments,
+                $"{commandId} must preserve read-only detail arguments for #1057 browser detail actions.");
+        }
+    }
 }

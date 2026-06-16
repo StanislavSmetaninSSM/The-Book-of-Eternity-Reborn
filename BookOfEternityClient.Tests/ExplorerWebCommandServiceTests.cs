@@ -416,6 +416,68 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Theory]
+    [InlineData("/квесты", "quests-detail-quest_winged_seal", "/квесты квест quest_winged_seal", "Печать с крыльями")]
+    [InlineData("/навыки", "skills-detail-skill_arcane_sense", "/навыки навык skill_arcane_sense", "Чувство магических потоков")]
+    [InlineData("/фракции", "factions-detail-faction_city_watch", "/фракции фракция faction_city_watch", "Городская стража")]
+    [InlineData("/локации", "locations-detail-loc_square", "/локации локация loc_square", "Старая площадь")]
+    [InlineData("/чужие_нити", "rival-threads-detail-rival_arc_moonlit_claimant", "/чужие_нити нить rival_arc_moonlit_claimant", "Лунный претендент")]
+    [InlineData("/коррективы_хранителя", "guardian-corrections-detail-correction_valmont_slot", "/коррективы_хранителя корректировка correction_valmont_slot", "Спорный слот вмешательства")]
+    [InlineData("/доступ_к_хранилищам", "storage-access-detail-storage_valmont_private_desk", "/доступ_к_хранилищам хранилище storage_valmont_private_desk", "Приватный письменный стол")]
+    [InlineData("/транспорт", "transport-detail-vehicle_gray_horse", "/транспорт транспорт vehicle_gray_horse", "Серый конь")]
+    public async Task ExecuteAsync_MortalReferenceBrowserDetailActions_ExposeDrilldownActions(
+        string command,
+        string expectedActionId,
+        string expectedDetailCommand,
+        string expectedLabelText)
+    {
+        await SeedRichMortalReferenceDetailFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains(expectedLabelText, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Подробно", text, StringComparison.OrdinalIgnoreCase);
+
+        var action = Assert.Single(result.Actions, action => action.Id == expectedActionId);
+        Assert.Equal(expectedDetailCommand, action.Command);
+        Assert.Contains(expectedLabelText, action.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(UiActionStyle.Secondary, action.Style);
+        Assert.False(action.RequiresConfirmation);
+    }
+
+    [Theory]
+    [InlineData("/квесты квест quest_winged_seal", "Квест: Печать с крыльями", "вернуть письмо")]
+    [InlineData("/навыки навык skill_arcane_sense", "Навык: Чувство магических потоков", "Видит слабые печати")]
+    [InlineData("/фракции фракция faction_city_watch", "Фракция: Городская стража", "удерживает северные ворота")]
+    [InlineData("/локации локация loc_square", "Локация: Старая площадь", "тёмным фонтаном")]
+    [InlineData("/чужие_нити нить rival_arc_moonlit_claimant", "Чужая нить: Лунный претендент", "руническую перчатку")]
+    [InlineData("/коррективы_хранителя корректировка correction_valmont_slot", "Корректива Хранителя: Спорный слот вмешательства", "Азалия")]
+    [InlineData("/доступ_к_хранилищам хранилище storage_valmont_private_desk", "Доступ к хранилищу: Приватный письменный стол", "ключ от верхнего ящика")]
+    [InlineData("/транспорт транспорт vehicle_gray_horse", "Транспорт: Серый конь", "Активен")]
+    public async Task ExecuteAsync_MortalReferenceDetail_RendersOneSelectedRecordWithoutRawJson(
+        string command,
+        string expectedTitle,
+        string expectedDetail)
+    {
+        await SeedRichMortalReferenceDetailFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains(expectedTitle, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(expectedDetail, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("API", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("endpoint", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public async Task ExecuteAsync_Transport_TranslatesCanonicalTypeAndAvailabilityInTableCells()
     {
@@ -3659,6 +3721,158 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               }
             ]
           }
+        }
+        """);
+    }
+
+    private async Task SeedRichMortalReferenceDetailFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/quests/regular_quests.json", """
+        {
+          "quests": [
+            {
+              "questId": "quest_winged_seal",
+              "questName": "Печать с крыльями",
+              "status": "Active",
+              "questGiver": "Мира Ключница",
+              "description": "Нужно вернуть письмо с крыльями и полумесяцем.",
+              "objectives": [
+                {
+                  "description": "вернуть письмо в архив Вальмонтов",
+                  "status": "Active"
+                }
+              ],
+              "rewardInfo": {
+                "visibleReward": "доступ к семейному архиву"
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_active.json", """
+        {
+          "activeSkillChanges": [
+            {
+              "skillId": "skill_arcane_sense",
+              "skillName": "Чувство магических потоков",
+              "category": "Восприятие",
+              "level": 2,
+              "skillDescription": "Видит слабые печати на письмах и дверях.",
+              "masteryContext": "Помогает замечать следы Вальмонтов."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", """
+        {
+          "factions": [
+            {
+              "factionId": "faction_city_watch",
+              "name": "Городская стража",
+              "reputation": 180,
+              "level": "II",
+              "description": "Стража удерживает северные ворота и ищет свидетелей.",
+              "playerRank": "доверенный свидетель"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "locationId": "loc_square",
+          "name": "Старая площадь",
+          "region": "Северный квартал",
+          "locationType": "площадь",
+          "description": "Площадь с тёмным фонтаном и следами ночного письма.",
+          "adjacencyMap": [
+            {
+              "targetLocationId": "loc_gate",
+              "targetLocationName": "Северные ворота",
+              "direction": "север",
+              "distance": "10 минут"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
+        {
+          "newLocations": [
+            {
+              "locationId": "loc_archive",
+              "name": "Архив Вальмонтов",
+              "locationType": "архив",
+              "description": "Запертый зал под старой ратушей."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/rival_soul_arcs.json", """
+        {
+          "arcs": [
+            {
+              "arcId": "rival_arc_moonlit_claimant",
+              "objective": "Соперник ищет ту же руническую перчатку.",
+              "status": "active",
+              "visibleClue": "На месте письма найден лунный воск.",
+              "rivalSoul": {
+                "rivalSoulId": "rival_soul_moonlit_claimant",
+                "displayNameOrMoniker": "Лунный претендент"
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/guardian_corrections.json", """
+        {
+          "corrections": [
+            {
+              "correctionId": "correction_valmont_slot",
+              "title": "Спорный слот вмешательства",
+              "status": "contested",
+              "sponsorGuardianRef": {
+                "guardianId": "guardian_azalia",
+                "displayName": "Азалия"
+              },
+              "budget": "1 мягкая правка",
+              "scenarioCore": "Письмо нельзя превратить в прямую подсказку без цены."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/misc/storage_access.json", """
+        {
+          "grantStorageAccess": [
+            {
+              "storageId": "storage_valmont_private_desk",
+              "storageName": "Приватный письменный стол",
+              "accessLevel": "owner",
+              "visibleReason": "Найден ключ от верхнего ящика.",
+              "locationName": "Старая площадь"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/misc/vehicles.json", """
+        {
+          "vehicles": [
+            {
+              "vehicleId": "vehicle_gray_horse",
+              "name": "Серый конь",
+              "type": "mount",
+              "availability": "active",
+              "currentLocation": "Старая площадь",
+              "capacity": "один всадник и сумка писем",
+              "description": "Спокойный конь, обученный не бояться печатей."
+            }
+          ]
         }
         """);
     }

@@ -39,22 +39,22 @@ Severity uses the project-wide audit scale: `P2` for serious UX/parity drift,
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `inventory` | `/inv` | `/инв` | Interactive inventory list with equipment, item selection, local equip/unequip, storage links, and item management flows. | Shared DTO shows inventory table, equipment/resources, raw sidecars, and equip/unequip actions. | Covered for #948. Document reading remains #947; broader item-bonus authority remains separate prior work. | P3 | No new follow-up from #948. |
 | `npcs` | `/npc` | `/нпс` | Interactive NPC selector with rich NPC detail panels and action entry points. | Shared DTO uses NPC overview/section projection and journal fallback, but NPC drill-down sections are already a dedicated task. | Tracked separately. | P2 | Use #946. |
-| `quests` | `/quests` | `/квесты` | Interactive quest selector with active, soul, and history detail panels. | Generic bundle summary plus raw JSON. | Browser detail parity gap for an otherwise adequate console reference pattern. | P3 | Follow-up #1057. |
+| `quests` | `/quests` | `/квесты` | Interactive quest selector with active, soul, and history detail panels. | Shared DTO keeps the overview and exposes read-only quest detail commands/actions for selected quest records. | Covered by #1057. | P3 | Implemented in #1057. |
 | `map` | `/map` | `/карта` | Visual map viewer plus summary. Location details moved to `/locations`. | Shared DTO emits `UiMapBlock` plus summary/raw state. | Covered. The command is map overview, not the location detail surface. | P3 | No new follow-up from #948. |
 | `where_am_i` | `/where_am_i` | `/где_я` | Current-location detail panel with description, threats, time, and weather. | Generic current-location bundle with summary/raw state. | Low-risk parity gap, but not a repeated-entity drill-down surface. | P3 | Fold into #1057 only if browser reference-detail work needs current-location parity. |
-| `factions` | `/factions` | `/фракции` | Interactive faction selector with detailed faction, projects, resources, bonuses, ranks, and chronicles. | Generic bundle summary plus raw JSON. | Browser detail parity gap for an otherwise adequate console reference pattern. | P3 | Follow-up #1057. |
-| `skills` | `/skills` | `/навыки` | Interactive skill selector with active/passive detail panels and mastery context. | Generic bundle summary plus raw JSON. | Browser detail parity gap for an otherwise adequate console reference pattern. | P3 | Follow-up #1057. |
+| `factions` | `/factions` | `/фракции` | Interactive faction selector with detailed faction, projects, resources, bonuses, ranks, and chronicles. | Shared DTO keeps the overview and exposes read-only faction detail commands/actions for selected faction records. | Covered by #1057. | P3 | Implemented in #1057. |
+| `skills` | `/skills` | `/навыки` | Interactive skill selector with active/passive detail panels and mastery context. | Shared DTO keeps the overview and exposes read-only skill detail commands/actions for selected skill records. | Covered by #1057. | P3 | Implemented in #1057. |
 | `stats` | `/stats` | `/статы` | Player stat/derived-combat-stat panel. | Shared DTO shows status-derived stats and raw characteristics sidecars. | Covered. No repeated rich entity list requiring drill-down. | P3 | No new follow-up from #948. |
 | `world_news` | `/world_news` | `/новости_мира` | Shared command-result renderer now preserves the world-news overview sections for events, location threats, NPC activity, faction projects, flags, and progression, and exposes typed detail commands for events, world flags, and progression entries. | Shared command-result renderer exposes the same overview sections plus non-mutating detail actions for events, world flags, and progression entries, with raw sidecars kept as secondary overview diagnostics. | Covered by #1055. | P2 | Implemented in #1055. |
-| `rival_threads` | `/rival_threads` | `/чужие_нити` | Rival soul thread list/detail flow exists through the console afterlife/mortal story helpers. | Generic bundle summary plus raw JSON. | Browser detail parity gap for rich thread entities. | P3 | Follow-up #1057. |
-| `guardian_corrections` | `/guardian_corrections` | `/коррективы_хранителя` | Console renders the current-life correction record with budgets, claimants, contested slots, and scenario-core context. | Generic bundle summary plus raw JSON. | Browser detail parity gap for a structured current-life correction record. | P3 | Follow-up #1057. |
-| `locations` | `/locations` | `/локации` | Interactive current/adjacent/discovered location selector with detailed location panels. | Shared DTO lists current, adjacent, and discovered/updated locations plus raw state. | Browser detail parity gap for an otherwise adequate console reference pattern. | P3 | Follow-up #1057. |
-| `transport` | `/transport` | `/транспорт` | Interactive vehicle selector with per-vehicle health, location, capacity, actions, abilities, inventory, and vehicle-inventory management. | Before #948, generic bundle read only `world_map.transportRoutes` and `current_location.availableTransport`; it missed canonical `game_state/misc/vehicles.json`. | Small browser overview authority gap fixed in #948; remaining browser per-vehicle detail parity is larger. | P2 | Fixed vehicle overview in this branch. Follow-up #1057 for browser detail parity. |
+| `rival_threads` | `/rival_threads` | `/чужие_нити` | Rival soul thread list/detail flow exists through the console afterlife/mortal story helpers. | Shared DTO keeps the overview and exposes read-only rival-thread detail commands/actions for selected thread records. | Covered by #1057. | P3 | Implemented in #1057. |
+| `guardian_corrections` | `/guardian_corrections` | `/коррективы_хранителя` | Console renders the current-life correction record with budgets, claimants, contested slots, and scenario-core context. | Shared DTO keeps the overview and exposes read-only correction detail commands/actions for selected correction records. | Covered by #1057. | P3 | Implemented in #1057. |
+| `locations` | `/locations` | `/локации` | Interactive current/adjacent/discovered location selector with detailed location panels. | Shared DTO lists current, adjacent, and discovered/updated locations, and exposes read-only location detail commands/actions. | Covered by #1057. | P3 | Implemented in #1057. |
+| `transport` | `/transport` | `/транспорт` | Interactive vehicle selector with per-vehicle health, location, capacity, actions, abilities, inventory, and vehicle-inventory management. | Shared DTO reads canonical vehicles, keeps route/current-location overview data, and exposes read-only per-vehicle detail commands/actions. | Covered by #1057, with the #948 vehicle overview authority fix preserved. | P2 | Implemented in #1057. |
 | `effects` | `/effects` | `/эффекты` | Rich table-style view for active effects, wounds, custom states, stealth, and experience; falls back to visible status when structured effect files are absent. | Shared DTO builds effect summary rows, effect detail rows, visible-status fallback, and raw effect state. | Covered for #948. Per-effect navigation could be improved later, but the command is not raw-only or summary-only now. | P3 | No new follow-up from #948. |
 | `combat` | `/combat` | `/бой` | Shared command-result renderer now shows a combat overview, enemy/ally/log lists, typed detail commands, and individual enemy/ally/log detail panels. | Shared DTO now shows the same overview/list/detail content and exposes non-mutating detail actions for enemy, ally, and combat-log inspection, with raw sidecars kept as secondary diagnostics. | Covered by #1054. | P2 | Implemented in #1054. |
 | `weather` | `/weather` | `/погода` | Time and weather detail panel. | Generic bundle summary plus raw JSON, but the rich surface is not a repeated entity list. | Covered for #948. | P3 | No new follow-up from #948. |
 | `books` | `/books` | `/книги` | Books/document flow is handled by the dedicated document reading surface. | Shared DTO supports document shelf, read actions, and selected document detail. | Tracked separately. | P2 | Use #947. |
-| `storage_access` | `/storage_access` | `/доступ_к_хранилищам` | Console renders access grants/shares/revokes with readable nested fields. | Generic bundle summary plus raw JSON. | Browser detail parity gap if access records become long, but lower priority than combat/news/interactions. | P3 | Follow-up #1057. |
+| `storage_access` | `/storage_access` | `/доступ_к_хранилищам` | Console renders access grants/shares/revokes with readable nested fields. | Shared DTO keeps the overview and exposes read-only storage-access detail commands/actions for selected access records. | Covered by #1057. | P3 | Implemented in #1057. |
 | `interactions` | `/interactions` | `/взаимодействия` | Shared command-result renderer preserves the interactions overview and exposes typed player and record detail commands for other-player interaction entries. | Shared command-result renderer exposes the same overview plus non-mutating player and record detail actions, with raw state kept as secondary overview diagnostics. | Covered by #1056. | P2 | Implemented in #1056. |
 
 ## Fix Applied In #948
@@ -141,6 +141,37 @@ Regression coverage:
 - `ExplorerModeCommandTests` covers console discovery of the same typed detail
   commands and guards the console handler's shared command-result renderer path.
 
+## Fix Applied In #1057
+
+The shared Mortal World command-result builder now keeps the existing overview
+outputs and adds browser-safe read-only detail commands/actions for the
+reference-style commands tracked by #1057:
+
+- `/квесты квест <метка>` / `/quests quest <selector>`
+- `/навыки навык <метка>` / `/skills skill <selector>`
+- `/фракции фракция <метка>` / `/factions faction <selector>`
+- `/локации локация <метка>` / `/locations location <selector>`
+- `/чужие_нити нить <метка>` / `/rival_threads thread <selector>`
+- `/коррективы_хранителя корректировка <метка>` /
+  `/guardian_corrections correction <selector>`
+- `/доступ_к_хранилищам хранилище <метка>` /
+  `/storage_access storage <selector>`
+- `/транспорт транспорт <метка>` / `/transport vehicle <selector>`
+
+The browser service now preserves arguments for these read-only commands through
+`ExplorerCommandCatalog`, so browser actions and typed command-result detail
+paths inspect one selected record without depending on raw JSON. Raw JSON remains
+only in the overview diagnostics already used by these command-result surfaces;
+detail results render Russian player-facing blocks and back actions.
+
+Regression coverage:
+
+- `ExplorerWebCommandServiceTests` covers all eight affected commands for
+  overview detail actions and selected-record detail output without raw-JSON
+  dependency.
+- `MortalReadOnlyDrilldownAuditTests` guards that the eight command descriptors
+  remain Mortal World read-only browser commands that accept detail arguments.
+
 ## Follow-Up Issues Created
 
 - #1054 - `/combat` / `/бой` enemy, ally, and combat-log detail drill-downs
@@ -151,7 +182,8 @@ Regression coverage:
   (implemented by the #1056 branch).
 - #1057 - browser detail actions for reference-style mortal read-only commands:
   `/quests`, `/skills`, `/factions`, `/locations`, `/rival_threads`,
-  `/guardian_corrections`, `/storage_access`, and `/transport`.
+  `/guardian_corrections`, `/storage_access`, and `/transport`
+  (implemented by the #1057 branch).
 
 ## Documentation And Contract Impact
 
@@ -171,3 +203,9 @@ argument preservation for the existing Mortal World `/interactions` /
 `/взаимодействия` read-only command. It does not change GM-authored response
 fields, state schema, validation, normalizer behavior, prompts, examples, or
 afterlife contracts.
+
+The #1057 branch changes only player-facing command-result rendering and command
+argument preservation for the existing Mortal World reference-style read-only
+commands listed above. It does not change GM-authored response fields, state
+schema, validation, normalizer behavior, prompts, examples, or afterlife
+contracts.

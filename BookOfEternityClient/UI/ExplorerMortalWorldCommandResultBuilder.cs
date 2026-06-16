@@ -101,39 +101,89 @@ public static class ExplorerMortalWorldCommandResultBuilder
         {
             CommandKind.Inventory => await BuildInventory(commandToken, fs),
             CommandKind.Npcs => await BuildNpcs(commandToken, fs),
-            CommandKind.Quests => await BuildBundle(commandToken, fs, "Квесты", [
+            CommandKind.Quests => await BuildReferenceBundle(normalizedCommand, fs, new ReferenceCommandDefinition(
+                Title: "Квесты",
+                DetailTitlePrefix: "Квест",
+                ActionIdPrefix: "quests",
+                EnglishCommand: "/quests",
+                EnglishDetailToken: "quest",
+                RussianDetailToken: "квест",
+                NotFoundTitle: "Квест не найден",
+                NotFoundMessage: "Такой квест не отмечен в текущих записях.",
+                Specs:
+                [
                 new("game_state/quests/regular_quests.json", "quests|activeQuests", "Активных"),
                 new("game_state/quests/regular_quests.json", "completedQuests", "Завершённых"),
                 new("game_state/quests/quest_history.json", "questHistory|entries", "Исторических записей"),
                 new("game_state/quests/plot_outline.json", "plotOutline|entries", "Сюжетных записей")
-            ]),
+                ])),
             CommandKind.Map => await BuildMap(commandToken, fs),
             CommandKind.CurrentLocation => await BuildBundle(commandToken, fs, "Где я", [
                 new("game_state/world/current_location.json", "locationName", "Локация"),
                 new("game_state/world/current_location.json", "region", "Регион"),
                 new("game_state/world/current_location.json", "description", "Описание")
             ]),
-            CommandKind.Factions => await BuildBundle(commandToken, fs, "Фракции", [
+            CommandKind.Factions => await BuildReferenceBundle(normalizedCommand, fs, new ReferenceCommandDefinition(
+                Title: "Фракции",
+                DetailTitlePrefix: "Фракция",
+                ActionIdPrefix: "factions",
+                EnglishCommand: "/factions",
+                EnglishDetailToken: "faction",
+                RussianDetailToken: "фракция",
+                NotFoundTitle: "Фракция не найдена",
+                NotFoundMessage: "Такая фракция не отмечена в текущих записях.",
+                Specs:
+                [
                 new("game_state/factions/faction_core.json", "factions", "Фракций"),
                 new("game_state/factions/faction_projects.json", "entries", "Проектов"),
                 new("game_state/factions/faction_chronicles.json", "entries", "Хроник"),
                 new("game_state/factions/faction_custom.json", "entries", "Особых состояний")
-            ]),
-            CommandKind.Skills => await BuildBundle(commandToken, fs, "Навыки", [
+                ])),
+            CommandKind.Skills => await BuildReferenceBundle(normalizedCommand, fs, new ReferenceCommandDefinition(
+                Title: "Навыки",
+                DetailTitlePrefix: "Навык",
+                ActionIdPrefix: "skills",
+                EnglishCommand: "/skills",
+                EnglishDetailToken: "skill",
+                RussianDetailToken: "навык",
+                NotFoundTitle: "Навык не найден",
+                NotFoundMessage: "Такой навык не отмечен в текущих записях.",
+                Specs:
+                [
                 new("game_state/player/skills_active.json", "activeSkillChanges|skills", "Активных"),
                 new("game_state/player/skills_passive.json", "passiveSkillChanges|skills", "Пассивных")
-            ]),
+                ])),
             CommandKind.Stats => await BuildStats(commandToken, fs, stateManager),
             CommandKind.WorldNews => await ExplorerMortalWorldNewsCommandResultBuilder.BuildAsync(normalizedCommand, fs),
-            CommandKind.RivalThreads => await BuildBundle(commandToken, fs, "Чужие нити", [
+            CommandKind.RivalThreads => await BuildReferenceBundle(normalizedCommand, fs, new ReferenceCommandDefinition(
+                Title: "Чужие нити",
+                DetailTitlePrefix: "Чужая нить",
+                ActionIdPrefix: "rival-threads",
+                EnglishCommand: "/rival_threads",
+                EnglishDetailToken: "thread",
+                RussianDetailToken: "нить",
+                NotFoundTitle: "Чужая нить не найдена",
+                NotFoundMessage: "Такая нить соперника не отмечена в текущих записях.",
+                Specs:
+                [
                 new(RivalSoulArcService.StatePath, "rivalSoulArcs", "Арк соперников"),
                 new(RivalSoulArcService.StatePath, "arcs", "Арк")
-            ]),
-            CommandKind.GuardianCorrections => await BuildBundle(commandToken, fs, "Коррективы Хранителя", [
+                ])),
+            CommandKind.GuardianCorrections => await BuildReferenceBundle(normalizedCommand, fs, new ReferenceCommandDefinition(
+                Title: "Коррективы Хранителя",
+                DetailTitlePrefix: "Корректива Хранителя",
+                ActionIdPrefix: "guardian-corrections",
+                EnglishCommand: "/guardian_corrections",
+                EnglishDetailToken: "correction",
+                RussianDetailToken: "корректировка",
+                NotFoundTitle: "Корректива не найдена",
+                NotFoundMessage: "Такая корректива Хранителя не отмечена в текущих записях.",
+                Specs:
+                [
                 new(GuardianCorrectionService.StatePath, "corrections", "Корректив")
-            ]),
-            CommandKind.Locations => await BuildLocations(commandToken, fs),
-            CommandKind.Transport => await BuildTransport(commandToken, fs),
+                ])),
+            CommandKind.Locations => await BuildLocations(normalizedCommand, fs),
+            CommandKind.Transport => await BuildTransport(normalizedCommand, fs),
             CommandKind.Effects => await BuildEffects(commandToken, fs, stateManager),
             CommandKind.Combat => await BuildCombat(normalizedCommand, fs),
             CommandKind.Weather => await BuildBundle(commandToken, fs, "Время и погода", [
@@ -142,10 +192,20 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 new("game_state/world/weather.json", "description", "Описание")
             ]),
             CommandKind.Books => await BuildBooks(normalizedCommand, fs),
-            CommandKind.StorageAccess => await BuildBundle(commandToken, fs, "Доступ к хранилищам", [
+            CommandKind.StorageAccess => await BuildReferenceBundle(normalizedCommand, fs, new ReferenceCommandDefinition(
+                Title: "Доступ к хранилищам",
+                DetailTitlePrefix: "Доступ к хранилищу",
+                ActionIdPrefix: "storage-access",
+                EnglishCommand: "/storage_access",
+                EnglishDetailToken: "storage",
+                RussianDetailToken: "хранилище",
+                NotFoundTitle: "Доступ к хранилищу не найден",
+                NotFoundMessage: "Такая запись доступа к хранилищу не отмечена в текущих данных.",
+                Specs:
+                [
                 new("game_state/misc/storage_access.json", "grantStorageAccess|storages", "Хранилищ"),
                 new("game_state/misc/storage_access.json", "entries", "Записей")
-            ]),
+                ])),
             CommandKind.Interactions => await BuildInteractions(normalizedCommand, fs),
             _ => null
         };
@@ -551,6 +611,463 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks);
     }
 
+    private static async Task<ExplorerCommandResult> BuildReferenceBundle(
+        string command,
+        FileSystemManager fs,
+        ReferenceCommandDefinition definition)
+    {
+        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
+        var grouped = definition.Specs.GroupBy(static spec => spec.Path, StringComparer.OrdinalIgnoreCase).ToArray();
+        var reads = new Dictionary<string, JsonReadResult>(StringComparer.OrdinalIgnoreCase);
+        foreach (var group in grouped)
+            reads[group.Key] = await ReadJson(fs, group.Key);
+
+        var entries = BuildReferenceEntries(definition, reads).ToList();
+        var request = ParseReferenceDetailRequest(ExtractCommandRemainder(command), definition);
+        if (request.Kind != ReferenceDetailKind.Overview)
+            return BuildReferenceDetail(command, commandToken, definition, reads.Values, entries, request);
+
+        var rows = new List<UiTableRow>();
+        foreach (var spec in definition.Specs)
+        {
+            var read = reads[spec.Path];
+            var status = DescribeSpec(read, spec.PropertyName);
+            if (status == "отсутствует")
+                continue;
+
+            rows.Add(new UiTableRow
+            {
+                Cells =
+                [
+                    spec.Label,
+                    status
+                ]
+            });
+        }
+
+        var blocks = new List<UiBlock>();
+        if (rows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = definition.Title,
+                Columns = ["Раздел", "Состояние"],
+                Rows = rows
+            });
+        }
+        else
+        {
+            blocks.Add(Message(UiNotificationSeverity.Info, definition.Title, "Данные ещё не созданы."));
+        }
+
+        if (entries.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = $"{definition.Title}: записи",
+                Columns = ["Запись", "Раздел", "Кратко", "Подробно"],
+                Rows = entries.Select(entry => new UiTableRow
+                {
+                    Cells =
+                    [
+                        entry.Title,
+                        entry.Section,
+                        EmptyFallback(entry.Summary),
+                        BuildReferenceDetailCommand(commandToken, definition, entry.Selector)
+                    ]
+                }).ToList()
+            });
+        }
+
+        AddReferenceReadWarnings(blocks, definition.Title, reads.Values);
+        AddReferenceRawState(blocks, definition.Title, reads.Values);
+        return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
+    }
+
+    private static ExplorerCommandResult BuildReferenceDetail(
+        string command,
+        string commandToken,
+        ReferenceCommandDefinition definition,
+        IEnumerable<JsonReadResult> reads,
+        IReadOnlyList<ReferenceEntrySnapshot> entries,
+        ReferenceDetailRequest request)
+    {
+        var blocks = new List<UiBlock>();
+        if (request.Kind == ReferenceDetailKind.Unknown)
+        {
+            blocks.Add(Message(
+                UiNotificationSeverity.Warning,
+                definition.Title,
+                $"Не удалось понять, что открыть. Используйте {commandToken} {DetailTokenForCommand(commandToken, definition)} <метка>."));
+        }
+        else
+        {
+            var entry = FindReferenceEntry(entries, request.Selector);
+            blocks.Add(entry == null
+                ? Message(UiNotificationSeverity.Warning, definition.NotFoundTitle, definition.NotFoundMessage)
+                : BuildReferenceDetailPanel(definition, entry));
+        }
+
+        AddReferenceReadWarnings(blocks, definition.Title, reads);
+        blocks.Add(new UiTextBlock { Text = $"Вернуться к обзору можно командой {commandToken}.", Tone = UiTone.Muted });
+        return Completed(command, blocks, [
+            new UiAction
+            {
+                Id = definition.ActionIdPrefix + "-back",
+                Label = $"Назад: {definition.Title}",
+                Command = commandToken,
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false
+            }
+        ]);
+    }
+
+    private static UiPanelBlock BuildReferenceDetailPanel(
+        ReferenceCommandDefinition definition,
+        ReferenceEntrySnapshot entry)
+    {
+        var detailItems = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = entry.Section },
+            new() { Key = "Метка", Value = entry.Selector }
+        };
+
+        AddReferenceDetailItem(detailItems, "Состояние", DescribeReferenceStatus(FirstReferenceNodeString(entry.Node, "status", "state", "stage", "phase", "accessLevel", "availability")));
+        AddReferenceDetailItem(detailItems, "Где", FirstReferenceNodeString(entry.Node, "location", "locationName", "region", "place", "currentLocation"));
+        AddReferenceDetailItem(detailItems, "Когда", FirstReferenceNodeString(entry.Node, "timestamp", "time", "date", "updatedAt", "completionDate"));
+        AddReferenceDetailItem(detailItems, "Кто связан", JoinReferenceDetails(
+            FirstReferenceNodeString(entry.Node, "questGiver", "owner", "playerName", "targetPlayerName"),
+            DescribeReferenceNamedObject(entry.Node["sponsorGuardianRef"]),
+            DescribeReferenceNamedObject(entry.Node["rivalSoul"])));
+        AddReferenceDetailItem(detailItems, "Кратко", FirstNonEmpty(entry.Summary, FirstReferenceNodeString(entry.Node, "skillDescription", "description", "summary", "objective", "visibleReason", "scenarioCore")));
+        AddReferenceDetailItem(detailItems, "Награда", DescribeNodeForReferenceDetail(entry.Node["rewardInfo"] ?? entry.Node["rewards"] ?? entry.Node["reward"]));
+        AddReferenceDetailItem(detailItems, "Подробности", DescribeReferencePayload(entry.Node));
+
+        return new UiPanelBlock
+        {
+            Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
+            Blocks = [new UiKeyValueGridBlock { Items = detailItems }]
+        };
+    }
+
+    private static IEnumerable<ReferenceEntrySnapshot> BuildReferenceEntries(
+        ReferenceCommandDefinition definition,
+        IReadOnlyDictionary<string, JsonReadResult> reads)
+    {
+        var index = 0;
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var spec in definition.Specs)
+        {
+            var read = reads[spec.Path];
+            var node = read.Node == null
+                ? null
+                : ResolveSpecNode(read.Node, spec.PropertyName) ?? (read.Node is JsonArray ? read.Node : null);
+            if (node == null)
+                continue;
+
+            foreach (var obj in EnumerateReferenceObjects(node))
+            {
+                index++;
+                var title = BuildReferenceTitle(obj, spec.Label, index);
+                var selector = NormalizeCombatSelector(FirstNonEmpty(
+                    FirstReferenceNodeString(
+                        obj,
+                        "questId",
+                        "skillId",
+                        "factionId",
+                        "locationId",
+                        "targetLocationId",
+                        "arcId",
+                        "rivalSoulArcId",
+                        "correctionId",
+                        "storageId",
+                        "vehicleId",
+                        "entryId",
+                        "id",
+                        "key"),
+                    FirstReferenceNodeString(obj["rivalSoul"], "rivalSoulId", "id"),
+                    NormalizeReferenceSelector(title),
+                    index.ToString()));
+                if (!seen.Add(selector))
+                    continue;
+
+                yield return new ReferenceEntrySnapshot(
+                    Index: index,
+                    Selector: selector,
+                    Title: title,
+                    Section: spec.Label,
+                    Summary: DescribeReferenceSummary(obj),
+                    Node: obj);
+            }
+        }
+    }
+
+    private static IEnumerable<JsonObject> EnumerateReferenceObjects(JsonNode node)
+    {
+        if (node is JsonArray array)
+        {
+            foreach (var item in array.OfType<JsonObject>())
+                yield return item;
+            yield break;
+        }
+
+        if (node is JsonObject obj)
+            yield return obj;
+    }
+
+    private static IReadOnlyList<UiAction> BuildReferenceDetailActions(
+        string commandToken,
+        ReferenceCommandDefinition definition,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
+    {
+        var actions = new List<UiAction>();
+        foreach (var entry in entries)
+        {
+            actions.Add(new UiAction
+            {
+                Id = definition.ActionIdPrefix + "-detail-" + ToActionIdPart(entry.Selector),
+                Label = $"Открыть: {entry.Title}",
+                Command = BuildReferenceDetailCommand(commandToken, definition, entry.Selector),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["kind"] = definition.EnglishDetailToken,
+                    ["selector"] = entry.Selector,
+                    ["title"] = entry.Title,
+                    ["section"] = entry.Section
+                }
+            });
+        }
+
+        return actions;
+    }
+
+    private static ReferenceEntrySnapshot? FindReferenceEntry(
+        IReadOnlyList<ReferenceEntrySnapshot> entries,
+        string selector)
+    {
+        var normalized = NormalizeCombatSelector(selector);
+        return entries.FirstOrDefault(entry =>
+            string.Equals(entry.Selector, normalized, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(entry.Index.ToString(), normalized, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(NormalizeReferenceSelector(entry.Title), NormalizeReferenceSelector(normalized), StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static ReferenceDetailRequest ParseReferenceDetailRequest(
+        string remainder,
+        ReferenceCommandDefinition definition)
+    {
+        if (string.IsNullOrWhiteSpace(remainder))
+            return new ReferenceDetailRequest(ReferenceDetailKind.Overview, string.Empty);
+
+        var (kindToken, selector) = SplitFirstCombatArgument(remainder);
+        if (string.IsNullOrWhiteSpace(selector) || !IsReferenceDetailToken(kindToken, definition))
+            return new ReferenceDetailRequest(ReferenceDetailKind.Unknown, string.Empty);
+
+        return new ReferenceDetailRequest(ReferenceDetailKind.Detail, NormalizeCombatSelector(selector));
+    }
+
+    private static bool IsReferenceDetailToken(string token, ReferenceCommandDefinition definition)
+    {
+        var normalized = token.Trim().ToLowerInvariant();
+        return string.Equals(normalized, definition.EnglishDetailToken, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, definition.RussianDetailToken, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string BuildReferenceDetailCommand(
+        string commandToken,
+        ReferenceCommandDefinition definition,
+        string selector) =>
+        commandToken + " " + DetailTokenForCommand(commandToken, definition) + " " + FormatCombatCommandArgument(selector);
+
+    private static string DetailTokenForCommand(string commandToken, ReferenceCommandDefinition definition) =>
+        string.Equals(commandToken, definition.EnglishCommand, StringComparison.OrdinalIgnoreCase)
+            ? definition.EnglishDetailToken
+            : definition.RussianDetailToken;
+
+    private static string BuildReferenceTitle(JsonObject node, string section, int index) =>
+        FirstNonEmpty(
+            FirstReferenceNodeString(node, "title", "questName", "skillName", "factionName", "storageName", "vehicleName", "locationName", "displayName", "displayNameOrMoniker", "name"),
+            FirstReferenceNodeString(node["rivalSoul"], "displayNameOrMoniker", "displayName", "name"),
+            FirstReferenceNodeString(node["sponsorGuardianRef"], "displayName", "name"),
+            FirstReferenceNodeString(node, "objective", "summary", "description"),
+            $"{section} {index}");
+
+    private static string DescribeReferenceSummary(JsonObject node) =>
+        FirstNonEmpty(
+            JoinReferenceDetails(
+                DescribeReferenceStatus(FirstReferenceNodeString(node, "status", "state", "stage", "phase", "accessLevel", "availability")),
+                FirstReferenceNodeString(node, "summary", "description", "skillDescription", "objective", "visibleReason", "scenarioCore")),
+            DescribeNodeForReferenceDetail(node["objectives"]));
+
+    private static string DescribeReferencePayload(JsonObject node)
+    {
+        var parts = new List<string>();
+        foreach (var property in node)
+        {
+            if (IsKnownReferenceDetailProperty(property.Key) || IsTechnicalReferenceProperty(property.Key))
+                continue;
+
+            var value = DescribeNodeForReferenceDetail(property.Value);
+            if (!string.IsNullOrWhiteSpace(value))
+                parts.Add($"{DescribeReferenceFieldLabel(property.Key)}: {value}");
+        }
+
+        return string.Join("; ", parts);
+    }
+
+    private static string DescribeNodeForReferenceDetail(JsonNode? node)
+    {
+        if (node == null)
+            return string.Empty;
+
+        if (TryGetScalarString(node, out var scalar))
+            return scalar;
+
+        if (node is JsonArray array)
+            return string.Join("; ", array.Select(DescribeNodeForReferenceDetail).Where(static part => !string.IsNullOrWhiteSpace(part)));
+
+        if (node is JsonObject obj)
+        {
+            var parts = new List<string>();
+            foreach (var property in obj)
+            {
+                if (IsTechnicalReferenceProperty(property.Key))
+                    continue;
+
+                var value = DescribeNodeForReferenceDetail(property.Value);
+                if (!string.IsNullOrWhiteSpace(value))
+                    parts.Add($"{DescribeReferenceFieldLabel(property.Key)}: {value}");
+            }
+
+            return string.Join("; ", parts);
+        }
+
+        return string.Empty;
+    }
+
+    private static string DescribeReferenceNamedObject(JsonNode? node)
+    {
+        if (node is not JsonObject obj)
+            return string.Empty;
+
+        return FirstReferenceNodeString(obj, "displayNameOrMoniker", "displayName", "name", "canonicalName");
+    }
+
+    private static string DescribeReferenceStatus(string status) =>
+        status.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "active" or "open" or "current" => "активно",
+            "completed" or "complete" or "closed" => "завершено",
+            "failed" => "провалено",
+            "pending" or "waiting" => "ожидает",
+            "contested" => "оспаривается",
+            "owner" => "полный доступ",
+            "shared" => "совместный доступ",
+            "read" or "reader" => "доступ на чтение",
+            _ => status.Trim()
+        };
+
+    private static bool IsKnownReferenceDetailProperty(string propertyName) =>
+        propertyName is "title" or "questName" or "skillName" or "factionName" or "locationName" or
+            "storageName" or "vehicleName" or "displayName" or "displayNameOrMoniker" or "name" or
+            "status" or "state" or "stage" or "phase" or "accessLevel" or "availability" or
+            "summary" or "description" or "skillDescription" or "objective" or "visibleReason" or
+            "scenarioCore" or "location" or "region" or "place" or "currentLocation" or
+            "timestamp" or "time" or "date" or "updatedAt" or "completionDate" or
+            "questGiver" or "owner" or "playerName" or "targetPlayerName" or
+            "rewardInfo" or "rewards" or "reward";
+
+    private static bool IsTechnicalReferenceProperty(string propertyName) =>
+        propertyName.Equals("id", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.EndsWith("Id", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("visibleToPlayer", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.StartsWith("_", StringComparison.OrdinalIgnoreCase);
+
+    private static string DescribeReferenceFieldLabel(string propertyName) =>
+        propertyName switch
+        {
+            "objectives" => "задачи",
+            "objective" => "цель",
+            "description" or "skillDescription" => "описание",
+            "summary" => "кратко",
+            "status" or "state" or "stage" or "phase" => "состояние",
+            "questGiver" => "выдал",
+            "rewardInfo" or "rewards" or "reward" => "награда",
+            "visibleReward" => "награда",
+            "masteryContext" => "мастерство",
+            "category" or "type" => "тип",
+            "level" or "masteryLevel" => "уровень",
+            "reputation" => "репутация",
+            "playerRank" => "ранг героя",
+            "rivalSoul" => "соперник",
+            "visibleClue" => "улика",
+            "sponsorGuardianRef" => "хранитель",
+            "budget" => "ресурс",
+            "accessLevel" => "доступ",
+            "visibleReason" => "причина",
+            "location" or "locationName" or "currentLocation" or "region" => "где",
+            "capacity" => "вместимость",
+            "displayName" or "displayNameOrMoniker" or "name" => "имя",
+            _ => "деталь"
+        };
+
+    private static void AddReferenceDetailItem(List<UiKeyValueItem> items, string key, string? value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+            items.Add(new UiKeyValueItem { Key = key, Value = value.Trim() });
+    }
+
+    private static void AddReferenceReadWarnings(
+        List<UiBlock> blocks,
+        string title,
+        IEnumerable<JsonReadResult> reads)
+    {
+        foreach (var read in reads)
+        {
+            if (read.FileExists && read.Node == null && !string.IsNullOrWhiteSpace(read.Error))
+                blocks.Add(Message(UiNotificationSeverity.Warning, title, "Одна из записей найдена, но её не удалось прочитать как JSON."));
+        }
+    }
+
+    private static void AddReferenceRawState(
+        List<UiBlock> blocks,
+        string title,
+        IEnumerable<JsonReadResult> reads)
+    {
+        foreach (var read in reads)
+        {
+            if (read.Node != null)
+                blocks.Add(Raw($"Полная запись: {title}", read.Node));
+        }
+    }
+
+    private static string FirstReferenceNodeString(JsonNode? node, params string[] properties)
+    {
+        foreach (var property in properties)
+        {
+            var value = GetNodeString(node, property);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return string.Empty;
+    }
+
+    private static string JoinReferenceDetails(params string?[] values) =>
+        string.Join("; ", values.Where(static value => !string.IsNullOrWhiteSpace(value)).Select(static value => value!.Trim()));
+
+    private static string NormalizeReferenceSelector(string value)
+    {
+        var chars = value.Trim().ToLowerInvariant()
+            .Select(static ch => char.IsLetterOrDigit(ch) ? ch : '_')
+            .ToArray();
+        var result = new string(chars).Trim('_');
+        return string.IsNullOrWhiteSpace(result) ? "item" : result;
+    }
+
     private static string DescribeSpec(JsonReadResult read, string propertyName)
     {
         if (read.Node == null)
@@ -659,14 +1176,26 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static async Task<ExplorerCommandResult> BuildLocations(string command, FileSystemManager fs)
     {
         const string title = "Локации";
+        var definition = new ReferenceCommandDefinition(
+            Title: title,
+            DetailTitlePrefix: "Локация",
+            ActionIdPrefix: "locations",
+            EnglishCommand: "/locations",
+            EnglishDetailToken: "location",
+            RussianDetailToken: "локация",
+            NotFoundTitle: "Локация не найдена",
+            NotFoundMessage: "Такая локация не отмечена в текущих записях.",
+            Specs: []);
+        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
         var currentRead = await ReadJson(fs, "game_state/world/current_location.json");
         var mapRead = await ReadJson(fs, "game_state/world/world_map.json");
         var rows = new List<UiTableRow>();
+        var entries = new List<ReferenceEntrySnapshot>();
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         if (UnwrapCurrentLocationNode(currentRead.Node) is { } current)
         {
-            AddLocationRow(rows, seen, "Текущая", current, DescribeCurrentLocation(current));
+            AddLocationRow(rows, entries, seen, commandToken, definition, "Текущая", current, DescribeCurrentLocation(current));
 
             if (current["adjacencyMap"] is JsonArray adjacency)
             {
@@ -683,20 +1212,38 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     var key = FirstNonEmpty(GetLocationNodeString(entry, "targetLocationId"), name);
                     if (seen.Add($"adjacent:{key}"))
                     {
+                        var selector = NormalizeCombatSelector(FirstNonEmpty(GetLocationNodeString(entry, "targetLocationId"), NormalizeReferenceSelector(name)));
                         rows.Add(new UiTableRow
                         {
-                            Cells = ["Рядом", name, EmptyFallback(details)]
+                            Cells =
+                            [
+                                "Рядом",
+                                name,
+                                EmptyFallback(details),
+                                BuildReferenceDetailCommand(commandToken, definition, selector)
+                            ]
                         });
+                        entries.Add(new ReferenceEntrySnapshot(
+                            entries.Count + 1,
+                            selector,
+                            name,
+                            "Рядом",
+                            details,
+                            entry));
                     }
                 }
             }
         }
 
         foreach (var location in EnumerateWorldMapLocationObjects(mapRead.Node, "newLocations"))
-            AddLocationRow(rows, seen, "Открыта", location, DescribeWorldMapLocation(location));
+            AddLocationRow(rows, entries, seen, commandToken, definition, "Открыта", location, DescribeWorldMapLocation(location));
 
         foreach (var location in EnumerateWorldMapLocationObjects(mapRead.Node, "locationUpdates"))
-            AddLocationRow(rows, seen, "Обновлена", location, DescribeWorldMapLocation(location));
+            AddLocationRow(rows, entries, seen, commandToken, definition, "Обновлена", location, DescribeWorldMapLocation(location));
+
+        var request = ParseReferenceDetailRequest(ExtractCommandRemainder(command), definition);
+        if (request.Kind != ReferenceDetailKind.Overview)
+            return BuildReferenceDetail(command, commandToken, definition, [currentRead, mapRead], entries, request);
 
         var blocks = new List<UiBlock>();
         if (rows.Count > 0)
@@ -704,7 +1251,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(new UiTableBlock
             {
                 Title = title,
-                Columns = ["Раздел", "Локация", "Сведения"],
+                Columns = ["Раздел", "Локация", "Сведения", "Подробно"],
                 Rows = rows
             });
         }
@@ -715,7 +1262,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         AddLocationRawState(blocks, title, currentRead);
         AddLocationRawState(blocks, title, mapRead);
-        return Completed(command, blocks);
+        return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
     }
 
     private static JsonObject? UnwrapCurrentLocationNode(JsonNode? node)
@@ -752,7 +1299,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static void AddLocationRow(
         List<UiTableRow> rows,
+        List<ReferenceEntrySnapshot> entries,
         HashSet<string> seen,
+        string commandToken,
+        ReferenceCommandDefinition definition,
         string section,
         JsonObject location,
         string details)
@@ -762,10 +1312,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (!seen.Add(key))
             return;
 
+        var selector = NormalizeCombatSelector(key);
         rows.Add(new UiTableRow
         {
-            Cells = [section, name, EmptyFallback(details)]
+            Cells = [section, name, EmptyFallback(details), BuildReferenceDetailCommand(commandToken, definition, selector)]
         });
+        entries.Add(new ReferenceEntrySnapshot(
+            entries.Count + 1,
+            selector,
+            name,
+            section,
+            details,
+            location));
     }
 
     private static string StableLocationNodeKey(JsonObject location, string fallbackName) =>
@@ -815,27 +1373,45 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static void AddLocationRawState(List<UiBlock> blocks, string title, JsonReadResult read)
     {
         if (read.Node != null)
-            blocks.Add(Raw($"Полный JSON {read.Path}", read.Node));
+            blocks.Add(Raw($"Полная запись: {title}", read.Node));
         else if (read.FileExists)
-            blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {read.Path}. {read.Error}"));
+            blocks.Add(Message(UiNotificationSeverity.Warning, title, "Одна из записей локаций найдена, но не разобрана как JSON."));
     }
 
     private static async Task<ExplorerCommandResult> BuildTransport(string command, FileSystemManager fs)
     {
         const string title = "Транспорт";
+        var definition = new ReferenceCommandDefinition(
+            Title: title,
+            DetailTitlePrefix: "Транспорт",
+            ActionIdPrefix: "transport",
+            EnglishCommand: "/transport",
+            EnglishDetailToken: "vehicle",
+            RussianDetailToken: "транспорт",
+            NotFoundTitle: "Транспорт не найден",
+            NotFoundMessage: "Такая запись транспорта не отмечена в текущих данных.",
+            Specs: []);
+        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
         var vehiclesRead = await ReadJson(fs, "game_state/misc/vehicles.json");
         var mapRead = await ReadJson(fs, "game_state/world/world_map.json");
         var currentRead = await ReadJson(fs, "game_state/world/current_location.json");
         var blocks = new List<UiBlock>();
+        var entries = EnumerateVehicleObjects(vehiclesRead.Node)
+            .Select((vehicle, index) => CreateVehicleSnapshot(index + 1, vehicle))
+            .ToList();
+        var request = ParseReferenceDetailRequest(ExtractCommandRemainder(command), definition);
+        if (request.Kind != ReferenceDetailKind.Overview)
+            return BuildTransportDetail(command, commandToken, definition, [vehiclesRead, mapRead, currentRead], entries, request);
 
-        var vehicleRows = EnumerateVehicleObjects(vehiclesRead.Node)
-            .Select(static vehicle => new UiTableRow
+        var vehicleRows = entries
+            .Select(entry => new UiTableRow
             {
                 Cells =
                 [
-                    FirstNonEmpty(GetNodeString(vehicle, "name"), GetNodeString(vehicle, "vehicleName"), "Безымянный транспорт"),
-                    DescribeVehicleType(vehicle),
-                    DescribeVehicleNode(vehicle)
+                    entry.Title,
+                    DescribeVehicleType(entry.Node),
+                    DescribeVehicleNode(entry.Node),
+                    BuildReferenceDetailCommand(commandToken, definition, entry.Selector)
                 ]
             })
             .ToList();
@@ -845,7 +1421,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(new UiTableBlock
             {
                 Title = title,
-                Columns = ["Транспорт", "Тип", "Сведения"],
+                Columns = ["Транспорт", "Тип", "Сведения", "Подробно"],
                 Rows = vehicleRows
             });
         }
@@ -870,7 +1446,104 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddTransportRawState(blocks, title, vehiclesRead);
         AddTransportRawState(blocks, title, mapRead);
         AddTransportRawState(blocks, title, currentRead);
-        return Completed(command, blocks);
+        return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
+    }
+
+    private static ExplorerCommandResult BuildTransportDetail(
+        string command,
+        string commandToken,
+        ReferenceCommandDefinition definition,
+        IEnumerable<JsonReadResult> reads,
+        IReadOnlyList<ReferenceEntrySnapshot> entries,
+        ReferenceDetailRequest request)
+    {
+        var blocks = new List<UiBlock>();
+        if (request.Kind == ReferenceDetailKind.Unknown)
+        {
+            blocks.Add(Message(
+                UiNotificationSeverity.Warning,
+                definition.Title,
+                $"Не удалось понять, что открыть. Используйте {commandToken} {DetailTokenForCommand(commandToken, definition)} <метка>."));
+        }
+        else
+        {
+            var entry = FindReferenceEntry(entries, request.Selector);
+            blocks.Add(entry == null
+                ? Message(UiNotificationSeverity.Warning, definition.NotFoundTitle, definition.NotFoundMessage)
+                : BuildVehicleDetailPanel(entry));
+        }
+
+        AddReferenceReadWarnings(blocks, definition.Title, reads);
+        blocks.Add(new UiTextBlock { Text = $"Вернуться к обзору можно командой {commandToken}.", Tone = UiTone.Muted });
+        return Completed(command, blocks, [
+            new UiAction
+            {
+                Id = "transport-back",
+                Label = "Назад: Транспорт",
+                Command = commandToken,
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false
+            }
+        ]);
+    }
+
+    private static ReferenceEntrySnapshot CreateVehicleSnapshot(int index, JsonObject vehicle)
+    {
+        var title = FirstNonEmpty(GetNodeString(vehicle, "name"), GetNodeString(vehicle, "vehicleName"), "Безымянный транспорт");
+        var selector = NormalizeCombatSelector(FirstNonEmpty(
+            FirstReferenceNodeString(vehicle, "vehicleId", "id", "key"),
+            NormalizeReferenceSelector(title),
+            index.ToString()));
+
+        return new ReferenceEntrySnapshot(
+            Index: index,
+            Selector: selector,
+            Title: title,
+            Section: "Транспорт",
+            Summary: DescribeVehicleNode(vehicle),
+            Node: vehicle);
+    }
+
+    private static UiPanelBlock BuildVehicleDetailPanel(ReferenceEntrySnapshot entry)
+    {
+        var vehicle = entry.Node;
+        var items = new List<UiKeyValueItem>
+        {
+            new() { Key = "Тип", Value = DescribeVehicleType(vehicle) },
+            new() { Key = "Доступность", Value = EmptyFallback(DescribeVehicleAvailability(vehicle)) }
+        };
+
+        AddReferenceDetailItem(items, "Где", FirstReferenceNodeString(vehicle, "currentLocation", "currentLocationId", "locationName"));
+        AddReferenceDetailItem(items, "Вместимость", FirstReferenceNodeString(vehicle, "capacity"));
+        AddReferenceDetailItem(items, "Описание", FirstReferenceNodeString(vehicle, "description", "summary", "notes"));
+        AddReferenceDetailItem(items, "Подробности", DescribeVehicleExtraPayload(vehicle));
+
+        return new UiPanelBlock
+        {
+            Title = $"Транспорт: {entry.Title}",
+            Blocks = [new UiKeyValueGridBlock { Items = items }]
+        };
+    }
+
+    private static string DescribeVehicleExtraPayload(JsonObject vehicle)
+    {
+        var parts = new List<string>();
+        foreach (var property in vehicle)
+        {
+            if (property.Key is "name" or "vehicleName" or "type" or "vehicleType" or "availability" or "status" or
+                "isActive" or "currentLocation" or "currentLocationId" or "locationName" or "capacity" or
+                "description" or "summary" or "notes" ||
+                IsTechnicalReferenceProperty(property.Key))
+            {
+                continue;
+            }
+
+            var value = DescribeNodeForReferenceDetail(property.Value);
+            if (!string.IsNullOrWhiteSpace(value))
+                parts.Add($"{DescribeReferenceFieldLabel(property.Key)}: {value}");
+        }
+
+        return string.Join("; ", parts);
     }
 
     private static IEnumerable<JsonObject> EnumerateVehicleObjects(JsonNode? node)
@@ -957,9 +1630,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static void AddTransportRawState(List<UiBlock> blocks, string title, JsonReadResult read)
     {
         if (read.Node != null)
-            blocks.Add(Raw($"Полный JSON {read.Path}", read.Node));
+            blocks.Add(Raw($"Полная запись: {title}", read.Node));
         else if (read.FileExists)
-            blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {read.Path}. {read.Error}"));
+            blocks.Add(Message(UiNotificationSeverity.Warning, title, "Одна из записей транспорта найдена, но не разобрана как JSON."));
     }
 
     private static async Task<ExplorerCommandResult> BuildInteractions(string command, FileSystemManager fs)
@@ -3049,6 +3722,36 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private sealed record InteractionDetailRequest(
         InteractionDetailKind Kind,
+        string Selector);
+
+    private enum ReferenceDetailKind
+    {
+        Overview,
+        Detail,
+        Unknown
+    }
+
+    private sealed record ReferenceCommandDefinition(
+        string Title,
+        string DetailTitlePrefix,
+        string ActionIdPrefix,
+        string EnglishCommand,
+        string EnglishDetailToken,
+        string RussianDetailToken,
+        string NotFoundTitle,
+        string NotFoundMessage,
+        IReadOnlyList<SummarySpec> Specs);
+
+    private sealed record ReferenceEntrySnapshot(
+        int Index,
+        string Selector,
+        string Title,
+        string Section,
+        string Summary,
+        JsonObject Node);
+
+    private sealed record ReferenceDetailRequest(
+        ReferenceDetailKind Kind,
         string Selector);
 
     private sealed record SummarySpec(string Path, string PropertyName, string Label);
