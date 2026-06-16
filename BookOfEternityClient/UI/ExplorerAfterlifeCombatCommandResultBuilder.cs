@@ -43,7 +43,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             ["/духовные_искусства"] = CommandKind.Arts
         };
 
-    public static bool CanBuild(string command) => CommandKinds.ContainsKey(command.Trim());
+    public static bool CanBuild(string command)
+    {
+        var request = ParseCommandRequest(command);
+        return request != null && CommandKinds.ContainsKey(request.CommandToken);
+    }
 
     public static async Task<ExplorerCommandResult?> TryBuildAsync(
         string command,
@@ -51,8 +55,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         FileSystemManager fs,
         bool includeAdvancedDiagnostics = false)
     {
-        var normalizedCommand = command.Trim();
-        if (!CommandKinds.TryGetValue(normalizedCommand, out var kind))
+        var request = ParseCommandRequest(command);
+        if (request == null || !CommandKinds.TryGetValue(request.CommandToken, out var kind))
             return null;
 
         await stateManager.RefreshGameStateAsync();
@@ -60,68 +64,83 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         return kind switch
         {
-            CommandKind.Profiles => await BuildProfiles(normalizedCommand, fs, includeRawDiagnostics),
-            CommandKind.Threats => await BuildThreats(normalizedCommand, fs),
-            CommandKind.Chronicles => await BuildChronicles(normalizedCommand, fs, includeRawDiagnostics),
-            CommandKind.Inbox => await BuildInbox(normalizedCommand, fs),
-            CommandKind.Conflict => await BuildConflict(normalizedCommand, fs),
-            CommandKind.CombatLog => await BuildCombatLog(normalizedCommand, fs),
-            CommandKind.Help => BuildHelp(normalizedCommand),
-            CommandKind.Arts => await BuildArts(normalizedCommand, fs, includeRawDiagnostics),
+            CommandKind.Profiles => await BuildProfiles(request, fs, includeRawDiagnostics),
+            CommandKind.Threats => await BuildThreats(request, fs, includeRawDiagnostics),
+            CommandKind.Chronicles => await BuildChronicles(request, fs, includeRawDiagnostics),
+            CommandKind.Inbox => await BuildInbox(request, fs),
+            CommandKind.Conflict => await BuildConflict(request.Command, fs),
+            CommandKind.CombatLog => await BuildCombatLog(request.Command, fs),
+            CommandKind.Help => BuildHelp(request.Command),
+            CommandKind.Arts => await BuildArts(request.Command, fs, includeRawDiagnostics),
             _ => null
         };
     }
 
     private static async Task<ExplorerCommandResult> BuildProfiles(
-        string command,
+        CommandRequest request,
         FileSystemManager fs,
         bool includeRawDiagnostics)
     {
         var read = await ReadJson(fs, AfterlifeEntityProfileState.StatePath);
         var profiles = read.Node?[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray;
+        var allProfiles = profiles?.OfType<JsonObject>().ToList() ?? [];
+        var visibleProfiles = includeRawDiagnostics
+            ? allProfiles
+            : allProfiles.Where(IsProfileVisibleToPlayer).ToList();
+        var detail = ParseDetailRequest(request.Arguments, "профиль", "profile", "сущность", "entity", "деталь", "detail");
+        if (!string.IsNullOrWhiteSpace(detail.Selector))
+            return BuildProfileDetail(request.Command, visibleProfiles, detail.Selector);
+
+        var hiddenCount = Math.Max(0, allProfiles.Count - visibleProfiles.Count);
         var blocks = new List<UiBlock>
         {
             Panel("Профили сущностей посмертия",
                 Grid(
-                    ("Профилей", (profiles?.Count ?? 0).ToString()),
-                    ("Опасных развеивателей души", CountProfilesWithDissipation(profiles).ToString()),
-                    ("Особых духовных искусств", CountNestedArray(profiles, "specialArts").ToString()),
-                    ("Кастомных состояний", CountNestedArray(profiles, AfterlifeEntityProfileState.CustomStatesProperty).ToString()),
-                    ("Открытых карт судьбы", CountUnlockedFateCards(profiles, includeRawDiagnostics).ToString()),
-                    ("Активных личных квестов", CountActiveProfileQuests(profiles).ToString())))
+                    ("Профилей", visibleProfiles.Count.ToString()),
+                    ("Скрытых профилей не показано", hiddenCount.ToString()),
+                    ("Опасных развеивателей души", CountProfilesWithDissipation(visibleProfiles).ToString()),
+                    ("Особых духовных искусств", CountNestedArray(visibleProfiles, "specialArts").ToString()),
+                    ("Кастомных состояний", CountNestedArray(visibleProfiles, AfterlifeEntityProfileState.CustomStatesProperty).ToString()),
+                    ("Открытых карт судьбы", CountUnlockedFateCards(visibleProfiles, includeRawDiagnostics).ToString()),
+                    ("Активных личных квестов", CountActiveProfileQuests(visibleProfiles).ToString())))
         };
 
-        if (profiles is { Count: > 0 })
+        if (visibleProfiles.Count > 0)
         {
             blocks.Add(new UiTableBlock
             {
                 Title = "Сущности",
-                Columns = ["Имя", "Тип", "Область", "Ресурсы", "Прогрессия", "Духовные искусства", "Особые искусства", "Карты судьбы", "Цели/активность", "Опасность"],
-                Rows = profiles.OfType<JsonObject>()
-                    .Select(profile => new UiTableRow
+                Columns = ["Имя", "Тип", "Область", "Ресурсы", "Прогрессия", "Духовные искусства", "Особые искусства", "Карты судьбы", "Цели/активность", "Опасность", "Подробно"],
+                Rows = visibleProfiles
+                    .Select(profile =>
                     {
-                        Cells =
-                        [
-                            GetString(profile, "displayName", "Без имени"),
-                            DescribeActorType(GetString(profile, "actorType", "?")),
-                            DescribeRealm(GetString(profile, "realm", "?")),
-                            DescribeProfileCurrencies(profile),
-                            DescribeProfileProgression(profile),
-                            DescribeStandardArts(profile["standardArts"] as JsonObject),
-                            DescribeSpecialArts(profile["specialArts"] as JsonArray),
-                            DescribeFateCards(profile["fateCards"] as JsonArray, includeRawDiagnostics),
-                            DescribeProfileAgency(profile),
-                            DescribeDissipation(profile)
-                        ]
+                        var selector = ProfileSelector(profile);
+                        return new UiTableRow
+                        {
+                            Cells =
+                            [
+                                GetString(profile, "displayName", "Без имени"),
+                                DescribeActorType(GetString(profile, "actorType", "?")),
+                                DescribeRealm(GetString(profile, "realm", "?")),
+                                DescribeProfileCurrencies(profile),
+                                DescribeProfileProgression(profile),
+                                DescribeStandardArts(profile["standardArts"] as JsonObject),
+                                DescribeSpecialArts(profile["specialArts"] as JsonArray),
+                                DescribeFateCards(profile["fateCards"] as JsonArray, includeRawDiagnostics),
+                                DescribeProfileAgency(profile),
+                                DescribeDissipation(profile),
+                                string.IsNullOrWhiteSpace(selector) ? "не указано" : BuildProfileDetailCommand(selector)
+                            ]
+                        };
                     })
                     .ToList()
             });
 
-            var relationshipsTable = BuildProfileRelationshipsTable(profiles, includeRawDiagnostics);
+            var relationshipsTable = BuildProfileRelationshipsTable(visibleProfiles, includeRawDiagnostics);
             if (relationshipsTable != null)
                 blocks.Add(relationshipsTable);
 
-            var masksTable = BuildProfileMasksTable(profiles, includeRawDiagnostics);
+            var masksTable = BuildProfileMasksTable(visibleProfiles, includeRawDiagnostics);
             if (masksTable != null)
                 blocks.Add(masksTable);
 
@@ -129,7 +148,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             {
                 Title = "Стратегии прокачки",
                 Columns = ["Сущность", "Стратегия", "Приоритеты", "Последний цикл"],
-                Rows = profiles.OfType<JsonObject>()
+                Rows = visibleProfiles
                     .Select(profile =>
                     {
                         var strategy = profile["progressionStrategy"] as JsonObject;
@@ -149,18 +168,33 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         }
         else
         {
-            blocks.Add(Message("Профили не найдены", "ГМ создаёт профили значимых сущностей через afterlifeEntityProfileUpdates."));
+            blocks.Add(Message(
+                "Профили не найдены",
+                allProfiles.Count > 0
+                    ? "Известные записи сейчас скрыты от текущей души."
+                    : "Когда ГМ откроет значимые сущности посмертия, они появятся здесь."));
         }
 
-        AddRawOrWarning(blocks, $"Полный JSON {AfterlifeEntityProfileState.StatePath}", read, includeRawDiagnostics);
-        return Completed(command, blocks);
+        AddRawOrWarning(
+            blocks,
+            includeRawDiagnostics ? $"Полный JSON {AfterlifeEntityProfileState.StatePath}" : "Профили посмертия",
+            read,
+            includeRawDiagnostics);
+        return Completed(request.Command, blocks, BuildProfileActions(visibleProfiles));
     }
 
-    private static async Task<ExplorerCommandResult> BuildThreats(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildThreats(
+        CommandRequest request,
+        FileSystemManager fs,
+        bool includeRawDiagnostics)
     {
         var read = await ReadJson(fs, AfterlifeActiveThreatState.StatePath);
         var threats = read.Node?[AfterlifeActiveThreatState.ThreatsProperty] as JsonArray;
         var visibleThreats = threats?.OfType<JsonObject>().Where(IsThreatVisible).ToList() ?? [];
+        var detail = ParseDetailRequest(request.Arguments, "угроза", "threat", "деталь", "detail");
+        if (!string.IsNullOrWhiteSpace(detail.Selector))
+            return BuildThreatDetail(request.Command, visibleThreats, detail.Selector);
+
         var hiddenCount = Math.Max(0, (threats?.Count ?? 0) - visibleThreats.Count);
         var activeVisible = visibleThreats.Count(threat => threat["currentActivity"] is JsonObject);
 
@@ -171,14 +205,13 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     ("Всего известных системе", (threats?.Count ?? 0).ToString()),
                     ("Видимых игроку", visibleThreats.Count.ToString()),
                     ("Скрытых угроз не показано", hiddenCount.ToString()),
-                    ("Активных видимых действий", activeVisible.ToString()),
-                    ("Источник", AfterlifeActiveThreatState.StatePath)))
+                    ("Активных видимых действий", activeVisible.ToString())))
         };
 
         if (read.FileExists && read.Node == null)
         {
-            blocks.Add(Message("Файл угроз повреждён", $"Не удалось прочитать {AfterlifeActiveThreatState.StatePath}: {read.Error ?? "ошибка JSON"}"));
-            return Completed(command, blocks);
+            blocks.Add(Message("Угрозы сейчас недоступны", "Не удалось прочитать видимые угрозы посмертия. Откройте сводку позже или попросите ГМ обновить состояние."));
+            return Completed(request.Command, blocks);
         }
 
         if (visibleThreats.Count > 0)
@@ -186,20 +219,25 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             blocks.Add(new UiTableBlock
             {
                 Title = "Видимые угрозы",
-                Columns = ["Угроза", "Область", "Масштаб", "Архетип", "Активность", "Давление", "Связи"],
+                Columns = ["Угроза", "Область", "Масштаб", "Архетип", "Активность", "Давление", "Связи", "Подробно"],
                 Rows = visibleThreats
-                    .Select(threat => new UiTableRow
+                    .Select(threat =>
                     {
-                        Cells =
-                        [
-                            GetString(threat, "displayName", GetString(threat, "threatId", "Без названия")),
-                            DescribeRealm(GetString(threat, "realm", "?")),
-                            GetNumberOrString(threat, "intensity", "0"),
-                            DescribeThreatArchetype(threat["threatArchetype"] as JsonObject),
-                            DescribeThreatActivity(threat["currentActivity"] as JsonObject),
-                            DescribeThreatImpact(threat["impactProfile"] as JsonObject),
-                            DescribeThreatLinks(threat)
-                        ]
+                        var selector = ThreatSelector(threat);
+                        return new UiTableRow
+                        {
+                            Cells =
+                            [
+                                GetString(threat, "displayName", GetString(threat, "threatId", "Без названия")),
+                                DescribeRealm(GetString(threat, "realm", "?")),
+                                GetNumberOrString(threat, "intensity", "0"),
+                                DescribeThreatArchetype(threat["threatArchetype"] as JsonObject),
+                                DescribeThreatActivity(threat["currentActivity"] as JsonObject),
+                                DescribeThreatImpact(threat["impactProfile"] as JsonObject),
+                                DescribeThreatLinks(threat),
+                                string.IsNullOrWhiteSpace(selector) ? "не указано" : BuildThreatDetailCommand(selector)
+                            ]
+                        };
                     })
                     .ToList()
             });
@@ -209,11 +247,14 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             blocks.Add(Message("Видимых угроз нет", "Скрытые угрозы, если они есть, не раскрываются обычному интерфейсу до сюжетного раскрытия."));
         }
 
-        return Completed(command, blocks);
+        if (includeRawDiagnostics && read.Node != null)
+            blocks.Add(Raw($"Полный JSON {AfterlifeActiveThreatState.StatePath}", read.Node));
+
+        return Completed(request.Command, blocks, BuildThreatActions(visibleThreats));
     }
 
     private static async Task<ExplorerCommandResult> BuildChronicles(
-        string command,
+        CommandRequest request,
         FileSystemManager fs,
         bool includeRawDiagnostics)
     {
@@ -225,6 +266,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             .OrderByDescending(GetChronicleLastUpdatedTurn)
             .ThenBy(static chronicle => GetString(chronicle, "displayName", GetString(chronicle, "chronicleId", string.Empty)), StringComparer.OrdinalIgnoreCase)
             .ToList() ?? [];
+        var detail = ParseDetailRequest(request.Arguments, "хроника", "chronicle", "событие", "event", "деталь", "detail");
+        if (!string.IsNullOrWhiteSpace(detail.Selector))
+            return BuildChronicleDetail(request.Command, visibleChronicles, detail.Selector);
+
         var totalChronicles = chronicles?.OfType<JsonObject>().Count() ?? 0;
         var hiddenCount = Math.Max(0, totalChronicles - visibleChronicles.Count);
 
@@ -232,7 +277,6 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             Panel("Хроники посмертия",
                 Grid(
-                    ("Источник", AfterlifeChronicleState.StatePath),
                     ("Хроник", totalChronicles.ToString()),
                     ("Показано игроку", visibleChronicles.Count.ToString()),
                     ("Скрытых/служебных записей не показано", hiddenCount.ToString()),
@@ -241,8 +285,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         if (read.FileExists && read.Node == null)
         {
-            blocks.Add(Message("Файл хроник повреждён", $"Не удалось прочитать {AfterlifeChronicleState.StatePath}: {read.Error ?? "ошибка JSON"}"));
-            return Completed(command, blocks);
+            blocks.Add(Message("Хроники сейчас недоступны", "Не удалось прочитать видимые хроники посмертия. Откройте сводку позже или попросите ГМ обновить состояние."));
+            return Completed(request.Command, blocks);
         }
 
         if (visibleChronicles.Count == 0)
@@ -250,8 +294,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             blocks.Add(Message(
                 "Хроники пока пусты",
                 read.FileExists
-                    ? "В afterlife_chronicles.json пока нет записей, видимых игроку."
-                    : "Файл afterlife_chronicles.json пока не создан; когда ГМ запишет события посмертия, они появятся здесь."));
+                    ? "Пока нет записей, видимых текущей душе."
+                    : "Когда ГМ запишет события посмертия, они появятся здесь."));
         }
         else
         {
@@ -265,13 +309,18 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         if (includeRawDiagnostics && read.Node != null)
             blocks.Add(Raw($"Полный JSON {AfterlifeChronicleState.StatePath}", read.Node));
 
-        return Completed(command, blocks);
+        return Completed(request.Command, blocks, BuildChronicleActions(visibleChronicles));
     }
 
-    private static async Task<ExplorerCommandResult> BuildInbox(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildInbox(CommandRequest request, FileSystemManager fs)
     {
         var read = await ReadJson(fs, AfterlifeNotificationState.NotificationsPath);
         var notifications = await AfterlifeNotificationState.ReadAsync(fs);
+        var notificationNodes = BuildNotificationNodeMap(read.Node);
+        var detail = ParseDetailRequest(request.Arguments, "уведомление", "notification", "notice", "деталь", "detail");
+        if (!string.IsNullOrWhiteSpace(detail.Selector))
+            return BuildInboxNotificationDetail(request.Command, notifications, notificationNodes, detail.Selector);
+
         var unread = notifications.Count(static item => string.Equals(item.Status, AfterlifeNotificationState.StatusUnread, StringComparison.OrdinalIgnoreCase));
 
         var blocks = new List<UiBlock>
@@ -288,7 +337,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             blocks.Add(new UiTableBlock
             {
                 Title = "Ответы ГМ и уведомления",
-                Columns = ["Статус", "Тип", "Сводка", "Источник", "Ход"],
+                Columns = ["Статус", "Тип", "Сводка", "Источник", "Ход", "Подробно"],
                 Rows = notifications.Select(notification => new UiTableRow
                 {
                     Cells =
@@ -297,7 +346,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                         AfterlifeNotificationState.GetTypeLabel(notification.NotificationType),
                         EmptyFallback(notification.Summary),
                         DescribeNotificationSource(notification),
-                        notification.CreatedAtTurn > 0 ? notification.CreatedAtTurn.ToString() : "?"
+                        notification.CreatedAtTurn > 0 ? notification.CreatedAtTurn.ToString() : "?",
+                        BuildInboxNotificationDetailCommand(notification.NotificationId)
                     ]
                 }).ToList()
             });
@@ -307,11 +357,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             blocks.Add(Message("Нет уведомлений", "Пока нет ответов Хранителей, Архива, резидентов или Сияющей Обители."));
         }
 
-        AddRawOrWarning(blocks, $"Полный JSON {AfterlifeNotificationState.NotificationsPath}", read);
         return Result(
-            command,
+            request.Command,
             CommandExecutionState.RequiresInput,
             blocks,
+            BuildInboxActions(notifications, notificationNodes),
             prompts:
             [
                 new UiSelectionPrompt
@@ -533,6 +583,358 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     ]
                 }
             ]);
+    }
+
+    private static ExplorerCommandResult BuildProfileDetail(
+        string command,
+        IReadOnlyList<JsonObject> profiles,
+        string selector)
+    {
+        var profile = FindProfile(profiles, selector);
+        if (profile == null)
+            return DetailUnavailable(command, "Профиль недоступен", "не удалось открыть профиль: запись уже недоступна, устарела или не видна текущей душе.");
+
+        var name = ProfileDisplayName(profile, selector);
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Профиль посмертия: {name}",
+                Grid(
+                    ("Тип", DescribeActorType(GetString(profile, "actorType", "?"))),
+                    ("Область", DescribeRealm(GetString(profile, "realm", "?"))),
+                    ("Ресурсы", DescribeProfileCurrencies(profile)),
+                    ("Прогрессия", DescribeProfileProgression(profile)),
+                    ("Духовные искусства", DescribeStandardArts(profile["standardArts"] as JsonObject)),
+                    ("Особые искусства", DescribeSpecialArts(profile["specialArts"] as JsonArray)),
+                    ("Карты судьбы", DescribeFateCards(profile["fateCards"] as JsonArray, includeHiddenDiagnostics: false)),
+                    ("Цели/активность", DescribeProfileAgency(profile)),
+                    ("Опасность", DescribeDissipation(profile))))
+        };
+
+        var activeQuests = (profile["personalQuests"] as JsonArray)?
+            .OfType<JsonObject>()
+            .Where(static quest => string.Equals(GetString(quest, "status", ""), "active", StringComparison.OrdinalIgnoreCase))
+            .ToList() ?? [];
+        if (activeQuests.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Личные квесты",
+                Columns = ["Квест", "Состояние", "Кратко"],
+                Rows = activeQuests.Select(static quest => new UiTableRow
+                {
+                    Cells =
+                    [
+                        GetString(quest, "title", GetString(quest, "questId", "квест")),
+                        DescribeAfterlifeRelationshipQuestStatus(GetString(quest, "status", "active")),
+                        GetString(quest, "planSummary", GetString(quest, "sceneSummary", "не указано"))
+                    ]
+                }).ToList()
+            });
+        }
+
+        return Completed(command, blocks, BuildOverviewAction("afterlife-profiles-overview", "К обзору профилей", "/afterlife_profiles"));
+    }
+
+    private static ExplorerCommandResult BuildThreatDetail(
+        string command,
+        IReadOnlyList<JsonObject> threats,
+        string selector)
+    {
+        var threat = FindThreat(threats, selector);
+        if (threat == null)
+            return DetailUnavailable(command, "Угроза недоступна", "не удалось открыть угрозу: след уже недоступен, устарел или не виден текущей душе.");
+
+        var name = ThreatDisplayName(threat, selector);
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Угроза посмертия: {name}",
+                Grid(
+                    ("Область", DescribeRealm(GetString(threat, "realm", "?"))),
+                    ("Масштаб", GetNumberOrString(threat, "intensity", "0")),
+                    ("Архетип", DescribeThreatArchetype(threat["threatArchetype"] as JsonObject)),
+                    ("Активность", DescribeThreatActivity(threat["currentActivity"] as JsonObject)),
+                    ("Давление", DescribeThreatImpact(threat["impactProfile"] as JsonObject)),
+                    ("Связи", DescribeThreatLinks(threat))))
+        };
+
+        var activity = threat["currentActivity"] as JsonObject;
+        var description = GetString(activity, "description", "");
+        if (!string.IsNullOrWhiteSpace(description))
+            blocks.Add(Message("Текущий след угрозы", description));
+
+        return Completed(command, blocks, BuildOverviewAction("afterlife-threats-overview", "К обзору угроз", "/afterlife_threats"));
+    }
+
+    private static ExplorerCommandResult BuildChronicleDetail(
+        string command,
+        IReadOnlyList<JsonObject> chronicles,
+        string selector)
+    {
+        var chronicle = FindChronicle(chronicles, selector);
+        if (chronicle == null)
+            return DetailUnavailable(command, "Хроника недоступна", "не удалось открыть хронику: запись уже недоступна, устарела или не видна текущей душе.");
+
+        var name = ChronicleDisplayName(chronicle, selector);
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Хроника посмертия: {name}",
+                Grid(
+                    ("Область", DescribeChronicleScope(chronicle)),
+                    ("Последний ход", GetNumberOrString(chronicle, "lastUpdatedTurn", "?")),
+                    ("Последнее событие", SafeChronicleText(GetString(chronicle, "lastEventsDescription", "нет"))),
+                    ("Участники", DescribeChronicleParticipants(chronicle)),
+                    ("Последствия", DescribeChronicleStringArray(chronicle, "persistentConsequences")),
+                    ("Открытые нити", DescribeChronicleStringArray(chronicle, "openThreads"))))
+        };
+
+        var eventRows = EnumerateChronicleTextArray(chronicle, "eventDescriptions")
+            .Select(eventText => new UiTableRow
+            {
+                Cells =
+                [
+                    DescribeChronicleEventTurn(chronicle, eventText, preferLastUpdatedTurn: false),
+                    eventText
+                ]
+            })
+            .ToList();
+        if (eventRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "События хроники",
+                Columns = ["Ход", "Событие"],
+                Rows = eventRows
+            });
+        }
+
+        return Completed(command, blocks, BuildOverviewAction("afterlife-chronicles-overview", "К обзору хроник", "/afterlife_chronicles"));
+    }
+
+    private static ExplorerCommandResult BuildInboxNotificationDetail(
+        string command,
+        IReadOnlyList<AfterlifeNotificationState.NotificationEntry> notifications,
+        IReadOnlyDictionary<string, JsonObject> notificationNodes,
+        string selector)
+    {
+        var notification = notifications.FirstOrDefault(item =>
+            string.Equals(item.NotificationId, selector, StringComparison.OrdinalIgnoreCase));
+        if (notification == null)
+            return DetailUnavailable(command, "Уведомление недоступно", "не удалось открыть уведомление: след уже исчез, устарел или пока не виден текущей душе.");
+
+        notificationNodes.TryGetValue(notification.NotificationId, out var raw);
+        var blocks = new List<UiBlock>
+        {
+            Panel("Уведомление загробья",
+                Grid(
+                    ("Статус", DescribeNotificationStatus(notification.Status)),
+                    ("Тип", AfterlifeNotificationState.GetTypeLabel(notification.NotificationType)),
+                    ("Источник", DescribeNotificationSource(notification)),
+                    ("Ход", notification.CreatedAtTurn > 0 ? notification.CreatedAtTurn.ToString() : "?"),
+                    ("Сводка", EmptyFallback(notification.Summary))))
+        };
+
+        var details = BuildInboxDetailLines(notification, raw).ToList();
+        if (details.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Связанный контекст",
+                Columns = ["Контекст", "Что открывает"],
+                Rows = details.Select(static detail => new UiTableRow { Cells = [detail.Label, detail.Value] }).ToList()
+            });
+        }
+
+        return Completed(command, blocks, BuildInboxActions([notification], notificationNodes));
+    }
+
+    private static IEnumerable<UiAction> BuildProfileActions(IEnumerable<JsonObject> profiles)
+    {
+        foreach (var profile in profiles)
+        {
+            var selector = ProfileSelector(profile);
+            if (string.IsNullOrWhiteSpace(selector))
+                continue;
+
+            yield return DetailAction(
+                "afterlife-profile-detail-" + ToActionIdPart(selector),
+                $"Подробно: {ProfileDisplayName(profile, selector)}",
+                BuildProfileDetailCommand(selector));
+        }
+    }
+
+    private static IEnumerable<UiAction> BuildThreatActions(IEnumerable<JsonObject> threats)
+    {
+        foreach (var threat in threats)
+        {
+            var selector = ThreatSelector(threat);
+            if (string.IsNullOrWhiteSpace(selector))
+                continue;
+
+            yield return DetailAction(
+                "afterlife-threat-detail-" + ToActionIdPart(selector),
+                $"Подробно: {ThreatDisplayName(threat, selector)}",
+                BuildThreatDetailCommand(selector));
+        }
+    }
+
+    private static IEnumerable<UiAction> BuildChronicleActions(IEnumerable<JsonObject> chronicles)
+    {
+        foreach (var chronicle in chronicles)
+        {
+            var selector = ChronicleSelector(chronicle);
+            if (string.IsNullOrWhiteSpace(selector))
+                continue;
+
+            yield return DetailAction(
+                "afterlife-chronicle-detail-" + ToActionIdPart(selector),
+                $"Подробно: {ChronicleDisplayName(chronicle, selector)}",
+                BuildChronicleDetailCommand(selector));
+        }
+    }
+
+    private static IEnumerable<UiAction> BuildInboxActions(
+        IReadOnlyList<AfterlifeNotificationState.NotificationEntry> notifications,
+        IReadOnlyDictionary<string, JsonObject> notificationNodes)
+    {
+        var added = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var notification in notifications)
+        {
+            notificationNodes.TryGetValue(notification.NotificationId, out var raw);
+            foreach (var action in BuildInboxActions(notification, raw))
+            {
+                if (added.Add(action.Id))
+                    yield return action;
+            }
+        }
+    }
+
+    private static IEnumerable<UiAction> BuildInboxActions(
+        AfterlifeNotificationState.NotificationEntry notification,
+        JsonObject? raw)
+    {
+        var notificationId = notification.NotificationId;
+        if (string.IsNullOrWhiteSpace(notificationId))
+            yield break;
+
+        var notificationPart = ToActionIdPart(notificationId);
+        var detailLabel = FirstNonEmpty(DescribeNotificationSource(notification), notification.Summary, "уведомление");
+        yield return DetailAction(
+            "afterlife-inbox-detail-" + notificationPart,
+            $"Подробно: {detailLabel}",
+            BuildInboxNotificationDetailCommand(notificationId));
+
+        if (!string.IsNullOrWhiteSpace(notification.GuardianId))
+        {
+            yield return DetailAction(
+                $"afterlife-inbox-guardian-{notificationPart}-{ToActionIdPart(notification.GuardianId)}",
+                $"Открыть Хранителя: {EmptyFallback(notification.GuardianName, "Хранитель")}",
+                "/guardians хранитель " + FormatCommandArgument(notification.GuardianId));
+        }
+
+        var profileActorId = FirstNonEmpty(GetString(raw, "profileActorId", ""), notification.GuardianId, notification.ResidentId);
+        if (!string.IsNullOrWhiteSpace(profileActorId))
+        {
+            var profileLabel = FirstNonEmpty(GetString(raw, "profileName", ""), notification.GuardianName, notification.ResidentName, "профиль");
+            yield return DetailAction(
+                $"afterlife-inbox-profile-{notificationPart}-{ToActionIdPart(profileActorId)}",
+                $"Профиль: {profileLabel}",
+                BuildProfileDetailCommand(profileActorId));
+        }
+
+        var threatId = GetString(raw, "threatId", "");
+        if (!string.IsNullOrWhiteSpace(threatId))
+        {
+            yield return DetailAction(
+                $"afterlife-inbox-threat-{notificationPart}-{ToActionIdPart(threatId)}",
+                $"Угроза: {FirstNonEmpty(GetString(raw, "threatName", ""), threatId)}",
+                BuildThreatDetailCommand(threatId));
+        }
+
+        var chronicleId = GetString(raw, "chronicleId", "");
+        if (!string.IsNullOrWhiteSpace(chronicleId))
+        {
+            yield return DetailAction(
+                $"afterlife-inbox-chronicle-{notificationPart}-{ToActionIdPart(chronicleId)}",
+                $"Хроника: {FirstNonEmpty(GetString(raw, "chronicleTitle", ""), chronicleId)}",
+                BuildChronicleDetailCommand(chronicleId));
+        }
+
+        if (!string.IsNullOrWhiteSpace(notification.ArchiveId))
+        {
+            yield return DetailAction(
+                $"afterlife-inbox-archive-{notificationPart}-{ToActionIdPart(notification.ArchiveId)}",
+                $"Архив: {EmptyFallback(notification.ArchiveTitle, "запись Архива")}",
+                "/afterlife_archive запись " + FormatCommandArgument(notification.ArchiveId));
+        }
+
+        if (!string.IsNullOrWhiteSpace(notification.TargetProjectId) && !string.IsNullOrWhiteSpace(notification.GuardianId))
+        {
+            var projectSelector = $"{notification.GuardianId}::{notification.TargetProjectId}";
+            yield return DetailAction(
+                $"afterlife-inbox-project-{notificationPart}-{ToActionIdPart(notification.GuardianId)}-{ToActionIdPart(notification.TargetProjectId)}",
+                $"Проект: {EmptyFallback(notification.TargetProjectName, "проект Хранителя")}",
+                "/guardian_projects проект " + FormatCommandArgument(projectSelector));
+        }
+
+        if (!string.IsNullOrWhiteSpace(notification.ResidentId))
+        {
+            yield return DetailAction(
+                $"afterlife-inbox-resident-{notificationPart}-{ToActionIdPart(notification.ResidentId)}",
+                $"Резидент: {EmptyFallback(notification.ResidentName, "обитатель Обители")}",
+                "/resident_interaction " + FormatCommandArgument(notification.ResidentId));
+        }
+
+        if (notification.NotificationType.StartsWith("guardian_trade_", StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrWhiteSpace(notification.GuardianId))
+        {
+            yield return DetailAction(
+                $"afterlife-inbox-trade-{notificationPart}-{ToActionIdPart(notification.GuardianId)}",
+                $"Торговля: {EmptyFallback(notification.GuardianName, "Хранитель")}",
+                "/guardian_trade " + FormatCommandArgument(notification.GuardianId));
+        }
+
+        var shiningFactionId = GetString(raw, "factionId", "");
+        if (notification.NotificationType.StartsWith("shining_trade_", StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrWhiteSpace(shiningFactionId))
+        {
+            yield return DetailAction(
+                $"afterlife-inbox-shining-trade-{notificationPart}-{ToActionIdPart(shiningFactionId)}",
+                $"Сияющая торговля: {FirstNonEmpty(GetString(raw, "factionName", ""), "фракция")}",
+                "/shining_trade " + FormatCommandArgument(shiningFactionId));
+        }
+
+        if (notification.NotificationType.StartsWith("shining_", StringComparison.OrdinalIgnoreCase))
+        {
+            yield return DetailAction(
+                "afterlife-inbox-shining-politics-" + notificationPart,
+                "Открыть Сияющую Обитель",
+                "/shining_politics");
+        }
+    }
+
+    private static IEnumerable<(string Label, string Value)> BuildInboxDetailLines(
+        AfterlifeNotificationState.NotificationEntry notification,
+        JsonObject? raw)
+    {
+        if (!string.IsNullOrWhiteSpace(notification.GuardianName))
+            yield return ("Хранитель", notification.GuardianName);
+        if (!string.IsNullOrWhiteSpace(notification.ResidentName))
+            yield return ("Резидент", notification.ResidentName);
+        if (!string.IsNullOrWhiteSpace(notification.ArchiveTitle))
+            yield return ("Архив", notification.ArchiveTitle);
+        if (!string.IsNullOrWhiteSpace(notification.TargetProjectName))
+            yield return ("Проект", notification.TargetProjectName);
+        if (!string.IsNullOrWhiteSpace(GetString(raw, "threatName", "")))
+            yield return ("Угроза", GetString(raw, "threatName", ""));
+        if (!string.IsNullOrWhiteSpace(GetString(raw, "chronicleTitle", "")))
+            yield return ("Хроника", GetString(raw, "chronicleTitle", ""));
+        if (notification.NotificationType.StartsWith("shining_", StringComparison.OrdinalIgnoreCase))
+            yield return ("Сияющая Обитель", "политика и решения Обители");
+    }
+
+    private static IEnumerable<UiAction> BuildOverviewAction(string id, string label, string command)
+    {
+        yield return DetailAction(id, label, command);
     }
 
     private static UiTableBlock BuildExchangeTable(JsonArray exchangeLog) =>
@@ -815,7 +1217,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         return parts.Count == 0 ? "не указаны" : string.Join(" | ", parts);
     }
 
-    private static UiTableBlock? BuildProfileRelationshipsTable(JsonArray profiles, bool includeHiddenDiagnostics)
+    private static UiTableBlock? BuildProfileRelationshipsTable(IEnumerable<JsonObject> profiles, bool includeHiddenDiagnostics)
     {
         var rows = profiles
             .OfType<JsonObject>()
@@ -1061,7 +1463,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             parts.Add($"{propertyName}={value}");
     }
 
-    private static UiTableBlock? BuildProfileMasksTable(JsonArray profiles, bool includeHiddenDiagnostics)
+    private static UiTableBlock? BuildProfileMasksTable(IEnumerable<JsonObject> profiles, bool includeHiddenDiagnostics)
     {
         var rows = profiles
             .OfType<JsonObject>()
@@ -1318,19 +1720,24 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         new()
         {
             Title = "Ключевые события посмертия",
-            Columns = ["Хроника", "Область", "Ход", "Последнее событие", "Участники", "Последствия", "Открытые нити"],
-            Rows = chronicles.Select(chronicle => new UiTableRow
+            Columns = ["Хроника", "Область", "Ход", "Последнее событие", "Участники", "Последствия", "Открытые нити", "Подробно"],
+            Rows = chronicles.Select(chronicle =>
             {
-                Cells =
-                [
-                    SafeChronicleText(GetString(chronicle, "displayName", GetString(chronicle, "chronicleId", "Без названия"))),
-                    DescribeChronicleScope(chronicle),
-                    GetNumberOrString(chronicle, "lastUpdatedTurn", "?"),
-                    SafeChronicleText(GetString(chronicle, "lastEventsDescription", "нет")),
-                    DescribeChronicleParticipants(chronicle),
-                    DescribeChronicleStringArray(chronicle, "persistentConsequences"),
-                    DescribeChronicleStringArray(chronicle, "openThreads")
-                ]
+                var selector = ChronicleSelector(chronicle);
+                return new UiTableRow
+                {
+                    Cells =
+                    [
+                        SafeChronicleText(GetString(chronicle, "displayName", GetString(chronicle, "chronicleId", "Без названия"))),
+                        DescribeChronicleScope(chronicle),
+                        GetNumberOrString(chronicle, "lastUpdatedTurn", "?"),
+                        SafeChronicleText(GetString(chronicle, "lastEventsDescription", "нет")),
+                        DescribeChronicleParticipants(chronicle),
+                        DescribeChronicleStringArray(chronicle, "persistentConsequences"),
+                        DescribeChronicleStringArray(chronicle, "openThreads"),
+                        string.IsNullOrWhiteSpace(selector) ? "не указано" : BuildChronicleDetailCommand(selector)
+                    ]
+                };
             }).ToList()
         };
 
@@ -1620,19 +2027,6 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             ? "непрочитано"
             : "прочитано";
 
-    private static string DescribeNotificationSource(AfterlifeNotificationState.NotificationEntry notification)
-    {
-        if (!string.IsNullOrWhiteSpace(notification.GuardianName))
-            return notification.GuardianName;
-        if (!string.IsNullOrWhiteSpace(notification.ResidentName))
-            return notification.ResidentName;
-        if (!string.IsNullOrWhiteSpace(notification.ArchiveTitle))
-            return notification.ArchiveTitle;
-        if (!string.IsNullOrWhiteSpace(notification.TargetProjectName))
-            return notification.TargetProjectName;
-        return EmptyFallback(notification.RequestId);
-    }
-
     private static string DescribeAfterlifeRelationshipAxis(string? axis) =>
         axis?.Trim().ToLowerInvariant() switch
         {
@@ -1918,22 +2312,22 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         return items.Length == 0 ? "нет" : string.Join("; ", items);
     }
 
-    private static int CountProfilesWithDissipation(JsonArray? profiles) =>
-        profiles?.OfType<JsonObject>().Count(profile => GetInt(profile["soulDissipationTier"]) > 0) ?? 0;
+    private static int CountProfilesWithDissipation(IEnumerable<JsonObject> profiles) =>
+        profiles.Count(profile => GetInt(profile["soulDissipationTier"]) > 0);
 
-    private static int CountNestedArray(JsonArray? owners, string propertyName) =>
-        owners?.OfType<JsonObject>().Sum(owner => CountArray(owner, propertyName)) ?? 0;
+    private static int CountNestedArray(IEnumerable<JsonObject> owners, string propertyName) =>
+        owners.Sum(owner => CountArray(owner, propertyName));
 
-    private static int CountUnlockedFateCards(JsonArray? profiles, bool includeHiddenDiagnostics) =>
-        profiles?.OfType<JsonObject>()
+    private static int CountUnlockedFateCards(IEnumerable<JsonObject> profiles, bool includeHiddenDiagnostics) =>
+        profiles
             .SelectMany(profile => (profile["fateCards"] as JsonArray)?.OfType<JsonObject>() ?? [])
             .Where(card => includeHiddenDiagnostics || IsFateCardPlayerVisible(card))
-            .Count(card => string.Equals(GetString(card, "status", ""), "unlocked", StringComparison.OrdinalIgnoreCase)) ?? 0;
+            .Count(card => string.Equals(GetString(card, "status", ""), "unlocked", StringComparison.OrdinalIgnoreCase));
 
-    private static int CountActiveProfileQuests(JsonArray? profiles) =>
-        profiles?.OfType<JsonObject>()
+    private static int CountActiveProfileQuests(IEnumerable<JsonObject> profiles) =>
+        profiles
             .SelectMany(profile => (profile["personalQuests"] as JsonArray)?.OfType<JsonObject>() ?? [])
-            .Count(quest => string.Equals(GetString(quest, "status", ""), "active", StringComparison.OrdinalIgnoreCase)) ?? 0;
+            .Count(quest => string.Equals(GetString(quest, "status", ""), "active", StringComparison.OrdinalIgnoreCase));
 
     private static int CountArray(JsonNode? node, string propertyName) =>
         node is JsonObject obj && obj[propertyName] is JsonArray array ? array.Count : 0;
@@ -2037,6 +2431,220 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         return !secret && !string.Equals(status, "hidden", StringComparison.OrdinalIgnoreCase);
     }
 
+    private static CommandRequest? ParseCommandRequest(string command)
+    {
+        var normalized = command.Trim();
+        if (string.IsNullOrWhiteSpace(normalized))
+            return null;
+
+        var split = normalized.IndexOfAny([' ', '\t', '\r', '\n']);
+        if (split < 0)
+            return new CommandRequest(normalized, normalized, string.Empty);
+
+        var token = normalized[..split].Trim();
+        var arguments = normalized[split..].Trim();
+        return string.IsNullOrWhiteSpace(token)
+            ? null
+            : new CommandRequest(normalized, token, arguments);
+    }
+
+    private static DetailRequest ParseDetailRequest(string arguments, params string[] detailTokens)
+    {
+        if (string.IsNullOrWhiteSpace(arguments))
+            return new DetailRequest(string.Empty, string.Empty);
+
+        var normalized = arguments.Trim();
+        var split = normalized.IndexOfAny([' ', '\t', '\r', '\n']);
+        var first = split < 0 ? normalized : normalized[..split].Trim();
+        var rest = split < 0 ? string.Empty : normalized[split..].Trim();
+
+        if (detailTokens.Any(token => string.Equals(token, first, StringComparison.OrdinalIgnoreCase)))
+            return new DetailRequest(first, UnquoteSelector(rest));
+
+        return new DetailRequest(string.Empty, UnquoteSelector(normalized));
+    }
+
+    private static string UnquoteSelector(string value) => value.Trim().Trim('"');
+
+    private static bool IsProfileVisibleToPlayer(JsonObject profile)
+    {
+        if (IsFalseFlag(profile["isPlayerVisible"]) ||
+            IsFalseFlag(profile["playerVisible"]) ||
+            IsFalseFlag(profile["visibleToPlayer"]) ||
+            IsFalseFlag(profile["visibleForPlayer"]))
+        {
+            return false;
+        }
+
+        if (IsTrueFlag(profile["isHidden"]) ||
+            IsTrueFlag(profile["hidden"]) ||
+            IsTrueFlag(profile["isSecret"]) ||
+            IsTrueFlag(profile["secret"]) ||
+            IsTrueFlag(profile["gmOnly"]) ||
+            IsTrueFlag(profile["isGmOnly"]) ||
+            IsTrueFlag(profile["internal"]) ||
+            IsTrueFlag(profile["isInternal"]))
+        {
+            return false;
+        }
+
+        var visibility = GetString(profile, "visibility", "");
+        return !IsHiddenPlayerFacingVisibility(visibility);
+    }
+
+    private static string ProfileSelector(JsonObject profile) =>
+        FirstNonEmpty(
+            GetString(profile, "actorId", ""),
+            GetString(profile, "actorRef", ""),
+            GetString(profile, "profileId", ""),
+            GetString(profile, "id", ""),
+            GetString(profile, "displayName", ""));
+
+    private static string ProfileDisplayName(JsonObject profile, string fallback) =>
+        FirstNonEmpty(GetString(profile, "displayName", ""), ProfileSelector(profile), fallback, "сущность");
+
+    private static JsonObject? FindProfile(IEnumerable<JsonObject> profiles, string selector)
+    {
+        var normalized = NormalizeSelector(selector);
+        if (string.IsNullOrWhiteSpace(normalized))
+            return null;
+
+        return profiles.FirstOrDefault(profile =>
+            SelectorMatches(
+                normalized,
+                ProfileSelector(profile),
+                GetString(profile, "actorId", ""),
+                GetString(profile, "actorRef", ""),
+                GetString(profile, "profileId", ""),
+                GetString(profile, "id", ""),
+                GetString(profile, "displayName", "")));
+    }
+
+    private static string ThreatSelector(JsonObject threat) =>
+        FirstNonEmpty(GetString(threat, "threatId", ""), GetString(threat, "id", ""), GetString(threat, "displayName", ""));
+
+    private static string ThreatDisplayName(JsonObject threat, string fallback) =>
+        FirstNonEmpty(GetString(threat, "displayName", ""), ThreatSelector(threat), fallback, "угроза");
+
+    private static JsonObject? FindThreat(IEnumerable<JsonObject> threats, string selector)
+    {
+        var normalized = NormalizeSelector(selector);
+        if (string.IsNullOrWhiteSpace(normalized))
+            return null;
+
+        return threats.FirstOrDefault(threat =>
+            SelectorMatches(
+                normalized,
+                ThreatSelector(threat),
+                GetString(threat, "threatId", ""),
+                GetString(threat, "id", ""),
+                GetString(threat, "displayName", "")));
+    }
+
+    private static string ChronicleSelector(JsonObject chronicle) =>
+        FirstNonEmpty(GetString(chronicle, "chronicleId", ""), GetString(chronicle, "eventId", ""), GetString(chronicle, "id", ""), GetString(chronicle, "displayName", ""));
+
+    private static string ChronicleDisplayName(JsonObject chronicle, string fallback) =>
+        FirstNonEmpty(SafeChronicleText(GetString(chronicle, "displayName", "")), ChronicleSelector(chronicle), fallback, "хроника");
+
+    private static JsonObject? FindChronicle(IEnumerable<JsonObject> chronicles, string selector)
+    {
+        var normalized = NormalizeSelector(selector);
+        if (string.IsNullOrWhiteSpace(normalized))
+            return null;
+
+        return chronicles.FirstOrDefault(chronicle =>
+            SelectorMatches(
+                normalized,
+                ChronicleSelector(chronicle),
+                GetString(chronicle, "chronicleId", ""),
+                GetString(chronicle, "eventId", ""),
+                GetString(chronicle, "id", ""),
+                GetString(chronicle, "displayName", "")));
+    }
+
+    private static IReadOnlyDictionary<string, JsonObject> BuildNotificationNodeMap(JsonNode? root)
+    {
+        if (root?["notifications"] is not JsonArray notifications)
+            return new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+
+        return notifications
+            .OfType<JsonObject>()
+            .Select(notification => (Id: GetString(notification, "notificationId", ""), Node: notification))
+            .Where(static item => !string.IsNullOrWhiteSpace(item.Id))
+            .GroupBy(static item => item.Id, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(static group => group.Key, static group => group.First().Node, StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static string DescribeNotificationSource(AfterlifeNotificationState.NotificationEntry notification)
+    {
+        if (!string.IsNullOrWhiteSpace(notification.GuardianName))
+            return notification.GuardianName;
+        if (!string.IsNullOrWhiteSpace(notification.ResidentName))
+            return notification.ResidentName;
+        if (!string.IsNullOrWhiteSpace(notification.ArchiveTitle))
+            return notification.ArchiveTitle;
+        if (!string.IsNullOrWhiteSpace(notification.TargetProjectName))
+            return notification.TargetProjectName;
+        if (notification.NotificationType.StartsWith("shining_", StringComparison.OrdinalIgnoreCase))
+            return "Сияющая Обитель";
+        return "не указан";
+    }
+
+    private static string BuildProfileDetailCommand(string selector) =>
+        "/afterlife_profiles профиль " + FormatCommandArgument(selector);
+
+    private static string BuildThreatDetailCommand(string selector) =>
+        "/afterlife_threats угроза " + FormatCommandArgument(selector);
+
+    private static string BuildChronicleDetailCommand(string selector) =>
+        "/afterlife_chronicles хроника " + FormatCommandArgument(selector);
+
+    private static string BuildInboxNotificationDetailCommand(string notificationId) =>
+        "/afterlife_inbox уведомление " + FormatCommandArgument(notificationId);
+
+    private static string FormatCommandArgument(string value)
+    {
+        var trimmed = value.Trim();
+        if (trimmed.Length == 0)
+            return trimmed;
+        return trimmed.Any(char.IsWhiteSpace)
+            ? "\"" + trimmed.Replace("\"", "\\\"", StringComparison.Ordinal) + "\""
+            : trimmed;
+    }
+
+    private static string FirstNonEmpty(params string?[] values) =>
+        values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+
+    private static bool SelectorMatches(string normalizedSelector, params string[] candidates) =>
+        candidates.Any(candidate => string.Equals(normalizedSelector, NormalizeSelector(candidate), StringComparison.OrdinalIgnoreCase));
+
+    private static string NormalizeSelector(string value) =>
+        string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim().Trim('"');
+
+    private static string ToActionIdPart(string value)
+    {
+        var chars = new List<char>(value.Length);
+        var lastWasSeparator = false;
+        foreach (var ch in value.Trim())
+        {
+            if (char.IsLetterOrDigit(ch) || ch == '_' || ch == '-')
+            {
+                chars.Add(ch);
+                lastWasSeparator = false;
+                continue;
+            }
+
+            if (!lastWasSeparator)
+            {
+                chars.Add('-');
+                lastWasSeparator = true;
+            }
+        }
+
+        return new string(chars.ToArray()).Trim('-');
+    }
+
     private static void AddRawOrWarning(
         List<UiBlock> blocks,
         string title,
@@ -2047,6 +2655,16 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             if (includeRawDiagnostics)
                 blocks.Add(Raw(title, read.Node));
+            return;
+        }
+
+        if (!includeRawDiagnostics)
+        {
+            blocks.Add(Message(
+                read.FileExists ? title : "Данные ещё не открыты",
+                read.FileExists
+                    ? $"{title}: не удалось прочитать видимое состояние. Откройте сводку позже или попросите ГМ обновить состояние."
+                    : $"{title}: запись ещё не открыта."));
             return;
         }
 
@@ -2063,16 +2681,24 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     private static ExplorerCommandResult Completed(string command, IEnumerable<UiBlock> blocks) =>
         Result(command, CommandExecutionState.Completed, blocks);
 
+    private static ExplorerCommandResult Completed(
+        string command,
+        IEnumerable<UiBlock> blocks,
+        IEnumerable<UiAction> actions) =>
+        Result(command, CommandExecutionState.Completed, blocks, actions);
+
     private static ExplorerCommandResult Result(
         string command,
         CommandExecutionState state,
         IEnumerable<UiBlock> blocks,
+        IEnumerable<UiAction>? actions = null,
         IEnumerable<UiPrompt>? prompts = null) =>
         new()
         {
             Command = command,
             State = state,
             Blocks = blocks.ToList(),
+            Actions = actions?.ToList() ?? [],
             Prompts = prompts?.ToList() ?? []
         };
 
@@ -2111,6 +2737,23 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
     private static UiSelectionOption Option(string value, string label, string description) =>
         new() { Value = value, Label = label, Description = description };
+
+    private static UiAction DetailAction(string id, string label, string command) =>
+        new()
+        {
+            Id = id,
+            Label = label,
+            Command = command,
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false
+        };
+
+    private static ExplorerCommandResult DetailUnavailable(string command, string title, string message) =>
+        Completed(command, Message(title, message));
+
+    private sealed record CommandRequest(string Command, string CommandToken, string Arguments);
+
+    private sealed record DetailRequest(string Token, string Selector);
 
     private sealed record JsonReadResult(bool FileExists, JsonNode? Node, string? Error);
 }

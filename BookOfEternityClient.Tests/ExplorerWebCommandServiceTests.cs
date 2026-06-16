@@ -2947,7 +2947,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.Contains("Хроники пока пусты", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("afterlife_chronicles.json пока не создан", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Когда ГМ запишет события посмертия, они появятся здесь", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
