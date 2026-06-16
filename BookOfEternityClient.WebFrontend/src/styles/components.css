@@ -992,15 +992,16 @@
 }
 
 .launcher-menu__item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.25rem var(--space-3);
+  align-items: center;
   min-width: 0;
   padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  background: var(--surface-subtle);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--realm-accent, var(--color-gold)) 7%, rgba(12, 15, 16, 0.94)), rgba(8, 11, 12, 0.86));
   cursor: pointer;
   text-align: left;
   overflow-wrap: anywhere;
@@ -1012,9 +1013,59 @@
     transform var(--motion-fast);
 }
 
+.launcher-menu__item strong {
+  grid-column: 1;
+  min-width: 0;
+  color: var(--color-parchment);
+}
+
+.launcher-menu__item-copy {
+  grid-column: 1;
+  min-width: 0;
+  color: var(--color-mist);
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.launcher-menu__item-affordance {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: center;
+  justify-content: center;
+  min-width: 4.9rem;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 32%, rgba(255, 255, 255, 0.08));
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  background: color-mix(in srgb, var(--color-gold) 9%, rgba(0, 0, 0, 0.2));
+  color: var(--color-gold-bright);
+  font-size: 0.72rem;
+  font-weight: 850;
+  line-height: 1;
+  text-transform: uppercase;
+  transition:
+    border-color var(--motion-fast),
+    background var(--motion-fast),
+    color var(--motion-fast),
+    transform var(--motion-fast);
+}
+
+.launcher-menu__item-affordance span {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
 .launcher-menu__item:hover:not(:disabled) {
   background: var(--surface-active);
   border-color: var(--realm-accent, var(--accent-gold));
+  transform: translateX(2px);
+}
+
+.launcher-menu__item:hover:not(:disabled) .launcher-menu__item-affordance,
+.launcher-menu__item:focus-visible .launcher-menu__item-affordance {
+  border-color: color-mix(in srgb, var(--color-gold-bright) 58%, rgba(255, 255, 255, 0.12));
+  background: color-mix(in srgb, var(--color-gold) 16%, rgba(0, 0, 0, 0.22));
   transform: translateX(2px);
 }
 
@@ -1059,6 +1110,29 @@
   background: rgba(255, 255, 255, 0.025);
   box-shadow: none;
   filter: saturate(0.55);
+}
+
+.launcher-menu__item[data-action-state='disabled'] .launcher-menu__item-affordance {
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-mist);
+  transform: none;
+}
+
+.launcher-session-warning {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid color-mix(in srgb, var(--state-warning) 46%, rgba(255, 255, 255, 0.08));
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
+  background: color-mix(in srgb, var(--state-warning) 13%, rgba(6, 8, 9, 0.82));
+  color: var(--color-candle);
+  font-size: 0.86rem;
+  font-weight: 820;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--state-warning) 10%, transparent);
 }
 
 .launcher-mode-panel {
@@ -2239,10 +2313,27 @@
   inset: 0;
   z-index: 0;
   overflow: hidden;
+  background:
+    radial-gradient(ellipse at 18% 18%, color-mix(in srgb, var(--color-gold) 18%, transparent), transparent 36%),
+    radial-gradient(ellipse at 78% 24%, color-mix(in srgb, var(--realm-chaos) 14%, transparent), transparent 40%),
+    linear-gradient(145deg, rgba(13, 17, 18, 0.96), rgba(5, 7, 8, 0.98));
   border-radius: var(--radius-lg);
 }
 
+.launcher-art-bg::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  content: '';
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 84px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 72px);
+  opacity: 0.42;
+}
+
 .launcher-art-bg img {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -2254,6 +2345,7 @@
 .launcher-art-bg::after {
   position: absolute;
   inset: 0;
+  z-index: 2;
   content: '';
   background:
     linear-gradient(to bottom, rgba(6, 8, 9, 0.3), rgba(6, 8, 9, 0.85) 70%, var(--color-ink)),

@@ -287,6 +287,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var styles = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "src", "styles", "components.css"));
         var artifactRoot = PrepareArtifactDirectory();
         var mainMenuBackgroundArtifactPath = Path.Combine(artifactRoot, "main-menu-background-art.html");
+        var homeLauncherHierarchyArtifactPath = Path.Combine(artifactRoot, "home-launcher-hierarchy.html");
 
         Assert.True(
             File.Exists(indexPath),
@@ -299,19 +300,28 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.True(File.Exists(backgroundPath), $"Missing local launcher background art at {backgroundPath}");
         Assert.True(File.Exists(sourceNotePath), $"Missing launcher background source note at {sourceNotePath}");
         Assert.Contains("<div className=\"launcher-art-bg\" aria-hidden=\"true\">", launcher, StringComparison.Ordinal);
-        Assert.Contains("<img src=\"/main-menu-bg.webp\" alt=\"\" />", launcher, StringComparison.Ordinal);
+        Assert.Contains("src=\"/main-menu-bg.webp\"", launcher, StringComparison.Ordinal);
+        Assert.Contains("alt=\"\"", launcher, StringComparison.Ordinal);
+        Assert.Contains("onError={(event) => { event.currentTarget.hidden = true; }}", launcher, StringComparison.Ordinal);
+        Assert.Contains("data-action-state={disabled ? 'disabled' : 'enabled'}", launcher, StringComparison.Ordinal);
+        Assert.Contains("launcher-menu__item-affordance", launcher, StringComparison.Ordinal);
+        Assert.Contains("launcher-session-warning", launcher, StringComparison.Ordinal);
         Assert.Contains(".launcher-art-bg img", styles, StringComparison.Ordinal);
+        Assert.Contains(".launcher-art-bg::before", styles, StringComparison.Ordinal);
         Assert.Contains("object-fit: cover;", styles, StringComparison.Ordinal);
         Assert.Contains("object-position: center 30%;", styles, StringComparison.Ordinal);
         Assert.Contains("filter: saturate(0.7) brightness(0.5);", styles, StringComparison.Ordinal);
         Assert.Contains(".launcher-art-bg::after", styles, StringComparison.Ordinal);
         Assert.Contains("linear-gradient(to bottom", styles, StringComparison.Ordinal);
+        Assert.Contains(".launcher-session-warning", styles, StringComparison.Ordinal);
         Assert.Contains("main-menu-bg.webp", builtScriptBundle, StringComparison.Ordinal);
         Assert.Contains("launcher-art-bg", builtScriptBundle, StringComparison.Ordinal);
+        Assert.Contains("launcher-menu__item-affordance", builtScriptBundle, StringComparison.Ordinal);
         Assert.Contains("Открыть книгу", builtScriptBundle, StringComparison.Ordinal);
         Assert.Contains("Продолжить главу", builtScriptBundle, StringComparison.Ordinal);
 
         await File.WriteAllTextAsync(mainMenuBackgroundArtifactPath, BuildMainMenuBackgroundArtifact());
+        await File.WriteAllTextAsync(homeLauncherHierarchyArtifactPath, BuildHomeLauncherHierarchyArtifact());
 
         Assert.True(File.Exists(mainMenuBackgroundArtifactPath), $"Missing main-menu background-art visual smoke artifact at {mainMenuBackgroundArtifactPath}");
         var mainMenuBackgroundArtifact = await File.ReadAllTextAsync(mainMenuBackgroundArtifactPath);
@@ -324,6 +334,18 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("not an automated screenshot", mainMenuBackgroundArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("BookOfEternityClient.WebFrontend/public/main-menu-bg.webp", mainMenuBackgroundArtifact, StringComparison.Ordinal);
         Assert.DoesNotContain("external runtime dependency", mainMenuBackgroundArtifact, StringComparison.OrdinalIgnoreCase);
+
+        Assert.True(File.Exists(homeLauncherHierarchyArtifactPath), $"Missing home-launcher hierarchy visual smoke artifact at {homeLauncherHierarchyArtifactPath}");
+        var homeLauncherHierarchyArtifact = await File.ReadAllTextAsync(homeLauncherHierarchyArtifactPath);
+        Assert.Contains("data-artifact=\"home-launcher-hierarchy\"", homeLauncherHierarchyArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-action-state=\"enabled\"", homeLauncherHierarchyArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-action-state=\"disabled\"", homeLauncherHierarchyArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-validation=\"warning\"", homeLauncherHierarchyArtifact, StringComparison.Ordinal);
+        Assert.Contains("dependency-light local HTML visual smoke artifact", homeLauncherHierarchyArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("not an automated screenshot", homeLauncherHierarchyArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/api", homeLauncherHierarchyArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", homeLauncherHierarchyArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("raw JSON", homeLauncherHierarchyArtifact, StringComparison.OrdinalIgnoreCase);
     }
 
     private static async Task<SmokeResponse> CaptureAsync(HttpClient client, string path)
@@ -391,6 +413,70 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                 <div class="actions">
                   <article class="action"><strong>Продолжить главу</strong><span>Primary action remains readable.</span></article>
                   <article class="action"><strong>Начать новую главу</strong><span>Secondary actions keep sufficient contrast.</span></article>
+                </div>
+              </div>
+            </section>
+          </main>
+        </body>
+        </html>
+        """;
+    }
+
+    private static string BuildHomeLauncherHierarchyArtifact()
+    {
+        return """
+        <!doctype html>
+        <html lang="ru" data-artifact="home-launcher-hierarchy">
+        <head>
+          <meta charset="utf-8">
+          <title>Browser Home Launcher Hierarchy Visual Smoke</title>
+          <style>
+            :root { color-scheme: dark; font-family: Inter, "Segoe UI", sans-serif; background: #060809; color: #f3e6c8; }
+            body { margin: 0; padding: 24px; background: radial-gradient(circle at top left, rgba(201, 162, 77, 0.18), transparent 34%), #060809; }
+            .artifact { display: grid; gap: 20px; max-width: 1160px; margin: 0 auto; }
+            .note { border: 1px solid rgba(212, 179, 106, 0.32); border-radius: 16px; padding: 13px 16px; background: rgba(10, 14, 16, 0.88); color: rgba(243, 230, 200, 0.8); }
+            .frame { position: relative; overflow: hidden; border: 1px solid rgba(201, 162, 77, 0.28); border-radius: 24px; min-height: 560px; background: radial-gradient(ellipse at 18% 18%, rgba(201, 162, 77, 0.2), transparent 36%), radial-gradient(ellipse at 78% 24%, rgba(139, 95, 212, 0.18), transparent 40%), url('../../BookOfEternityClient.WebFrontend/public/main-menu-bg.webp') center 30% / cover; box-shadow: 0 28px 90px rgba(0, 0, 0, 0.48); }
+            .frame::before { position: absolute; inset: 0; content: ''; background: linear-gradient(to bottom, rgba(6, 8, 9, 0.28), rgba(6, 8, 9, 0.86) 70%, #060809), linear-gradient(to right, rgba(6, 8, 9, 0.36), transparent 56%, rgba(6, 8, 9, 0.36)); }
+            .window { position: relative; z-index: 1; display: grid; gap: 16px; width: min(560px, calc(100% - 48px)); margin: 48px; border: 1px solid rgba(243, 230, 200, 0.16); border-radius: 20px; padding: 22px; background: rgba(6, 8, 9, 0.72); backdrop-filter: blur(10px); }
+            h1, h2, p { margin: 0; }
+            h1 { color: #f5dfa0; font-size: clamp(2rem, 5vw, 4rem); }
+            .eyebrow { color: #c9a24d; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; }
+            .warning { width: fit-content; border: 1px solid rgba(212, 179, 106, 0.46); border-radius: 999px; padding: 8px 12px; background: rgba(212, 179, 106, 0.13); color: #f5dfa0; font-weight: 800; }
+            .actions { display: grid; gap: 10px; }
+            .action { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; border: 1px solid rgba(201, 162, 77, 0.28); border-radius: 15px; padding: 12px 14px; background: linear-gradient(135deg, rgba(201, 162, 77, 0.12), rgba(8, 11, 12, 0.88)); }
+            .action strong { color: #fff6df; }
+            .action span { color: rgba(243, 230, 200, 0.72); }
+            .affordance { grid-column: 2; grid-row: 1 / span 2; border: 1px solid rgba(235, 212, 142, 0.42); border-radius: 999px; padding: 5px 9px; color: #ebd48e; font-size: 0.72rem; font-weight: 850; text-transform: uppercase; }
+            .action[data-action-state="disabled"] { opacity: 0.55; cursor: not-allowed; border-color: rgba(255, 255, 255, 0.06); background: rgba(255, 255, 255, 0.03); filter: saturate(0.55); }
+            .action[data-action-state="disabled"] .affordance { color: rgba(168, 179, 171, 0.82); border-color: rgba(255, 255, 255, 0.06); }
+            .narrow { width: min(100%, 390px); min-height: 640px; margin: 0 auto; }
+            .narrow .window { width: auto; margin: 18px; padding: 18px; }
+          </style>
+        </head>
+        <body>
+          <main class="artifact">
+            <p class="note">This is a dependency-light local HTML visual smoke artifact, not an automated screenshot. It checks Home launcher action hierarchy, disabled reasons, validation warning treatment, and the local ambient art fallback.</p>
+            <section class="frame" data-viewport="desktop" aria-label="Desktop Home launcher hierarchy">
+              <div class="window">
+                <p class="eyebrow">главная книга</p>
+                <h1>Открыть книгу</h1>
+                <p>Выберите продолжение, загрузку или новую главу.</p>
+                <p class="warning" data-validation="warning">Сессия читается, но валидация обнаружила ошибки: 9</p>
+                <div class="actions" aria-label="Действия главного меню">
+                  <article class="action" data-action-state="enabled"><strong>Продолжить главу</strong><span>Вернуться к текущей сохранённой главе.</span><span class="affordance">Открыть →</span></article>
+                  <article class="action" data-action-state="disabled"><strong>Загрузить сохранение</strong><span>Сохранений пока нет. Когда книга найдёт записи, они появятся здесь.</span><span class="affordance">Закрыто</span></article>
+                  <article class="action" data-action-state="disabled"><strong>Начать новую главу</strong><span>Подготовка новой главы пока недоступна из главного меню.</span><span class="affordance">Закрыто</span></article>
+                </div>
+              </div>
+            </section>
+            <section class="frame narrow" data-viewport="narrow" aria-label="Narrow Home launcher hierarchy">
+              <div class="window">
+                <p class="eyebrow">главная книга</p>
+                <h2>Открыть книгу</h2>
+                <p class="warning" data-validation="warning">Проверка книги требует внимания.</p>
+                <div class="actions">
+                  <article class="action" data-action-state="enabled"><strong>Тренировка QTE</strong><span>Свободная тренировка быстрых сцен без наград.</span><span class="affordance">Открыть →</span></article>
+                  <article class="action" data-action-state="disabled"><strong>Начать новую главу</strong><span>Сначала завершите текущий безопасный шаг книги.</span><span class="affordance">Закрыто</span></article>
                 </div>
               </div>
             </section>

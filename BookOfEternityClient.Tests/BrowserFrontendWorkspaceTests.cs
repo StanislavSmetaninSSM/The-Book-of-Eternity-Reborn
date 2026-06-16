@@ -546,13 +546,20 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("No text, logos, or third-party IP", sourceNote, StringComparison.Ordinal);
 
         Assert.Contains("<div className=\"launcher-art-bg\" aria-hidden=\"true\">", launcher, StringComparison.Ordinal);
-        Assert.Contains("<img src=\"/main-menu-bg.webp\" alt=\"\" />", launcher, StringComparison.Ordinal);
+        Assert.Contains("src=\"/main-menu-bg.webp\"", launcher, StringComparison.Ordinal);
+        Assert.Contains("alt=\"\"", launcher, StringComparison.Ordinal);
+        Assert.Contains("onError={(event) => { event.currentTarget.hidden = true; }}", launcher, StringComparison.Ordinal);
+        Assert.Contains("data-action-state={disabled ? 'disabled' : 'enabled'}", launcher, StringComparison.Ordinal);
+        Assert.Contains("launcher-menu__item-affordance", launcher, StringComparison.Ordinal);
+        Assert.Contains("launcher-session-warning", launcher, StringComparison.Ordinal);
         Assert.Contains(".launcher-art-bg img", styles, StringComparison.Ordinal);
+        Assert.Contains(".launcher-art-bg::before", styles, StringComparison.Ordinal);
         Assert.Contains("object-fit: cover;", styles, StringComparison.Ordinal);
         Assert.Contains("object-position: center 30%;", styles, StringComparison.Ordinal);
         Assert.Contains("filter: saturate(0.7) brightness(0.5);", styles, StringComparison.Ordinal);
         Assert.Contains(".launcher-art-bg::after", styles, StringComparison.Ordinal);
         Assert.Contains("linear-gradient(to bottom", styles, StringComparison.Ordinal);
+        Assert.Contains(".launcher-session-warning", styles, StringComparison.Ordinal);
     }
 
     [Fact]
