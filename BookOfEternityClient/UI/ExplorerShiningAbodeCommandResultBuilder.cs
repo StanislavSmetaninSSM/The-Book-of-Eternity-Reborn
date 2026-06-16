@@ -109,9 +109,10 @@ public static class ExplorerShiningAbodeCommandResultBuilder
 
         return kind switch
         {
-            CommandKind.Overview => await BuildOverview(normalizedCommand, fs, stateManager),
+            CommandKind.Overview => await BuildOverview(normalizedCommand, commandArguments, fs, stateManager, includeAdvancedDiagnostics || stateManager.Settings.ShowGmThoughts),
             CommandKind.Politics => await BuildPolitics(
                 normalizedCommand,
+                commandArguments,
                 fs,
                 includeAdvancedDiagnostics || stateManager.Settings.ShowGmThoughts),
             CommandKind.FactionFounding => await BuildFactionFounding(normalizedCommand, fs, stateManager),
@@ -134,7 +135,12 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         };
     }
 
-    private static async Task<ExplorerCommandResult> BuildOverview(string command, FileSystemManager fs, StateManager stateManager)
+    private static async Task<ExplorerCommandResult> BuildOverview(
+        string command,
+        string commandArguments,
+        FileSystemManager fs,
+        StateManager stateManager,
+        bool includeAdvancedDiagnostics)
     {
         var shining = await ReadJson(fs, ShiningAbodeState.StatePath);
         var residents = await ReadJson(fs, GuardianAbodeResidentState.StatePath);
@@ -142,6 +148,15 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         var core = await ReadJson(fs, ShiningCoreActionRequestState.PendingActionsRequestPath);
         var trade = await ReadJson(fs, ShiningTradeRequestState.PendingRequestsPath);
         var source = await ReadJson(fs, SourceOfLightCapstoneState.PendingRequestPath);
+
+        if (TryReadDetailSelector(commandArguments, out var gateSelector, "врата", "gate", "card", "карта", "благословение"))
+            return BuildGatesCardDetail(command, shining.Node, gateSelector);
+        if (TryReadDetailSelector(commandArguments, out var projectSelector, "проект", "project"))
+            return BuildShiningProjectDetail(command, shining.Node, projectSelector);
+        if (TryReadDetailSelector(commandArguments, out var pendingSelector, "ожидание", "pending", "request"))
+            return BuildPendingCoreActionDetail(command, core.Node, pendingSelector);
+        if (TryReadDetailSelector(commandArguments, out var receiptSelector, "исход", "receipt", "result", "итог"))
+            return BuildCoreActionReceiptDetail(command, shining.Node, receiptSelector);
 
         var blocks = new List<UiBlock>
         {
@@ -161,17 +176,33 @@ public static class ExplorerShiningAbodeCommandResultBuilder
                     ("Источник Света", DescribePresence(source))))
         };
 
-        AddRawOrWarning(blocks, $"Полный JSON {ShiningAbodeState.StatePath}", shining);
-        AddRawOrWarning(blocks, $"Полный JSON {GuardianAbodeResidentState.StatePath}", residents);
-        AddRawOrWarning(blocks, $"Полный JSON {SoulStatePath}", soul);
-        AddRawOrWarning(blocks, $"Полный JSON {ShiningCoreActionRequestState.PendingActionsRequestPath}", core);
-        AddRawOrWarning(blocks, $"Полный JSON {ShiningTradeRequestState.PendingRequestsPath}", trade);
-        AddRawOrWarning(blocks, $"Полный JSON {SourceOfLightCapstoneState.PendingRequestPath}", source);
-        return Completed(command, blocks);
+        var actions = BuildShiningAbodeOverviewActions(shining.Node, core.Node).ToList();
+
+        if (includeAdvancedDiagnostics)
+        {
+            AddRawOrWarning(blocks, $"Полный JSON {ShiningAbodeState.StatePath}", shining);
+            AddRawOrWarning(blocks, $"Полный JSON {GuardianAbodeResidentState.StatePath}", residents);
+            AddRawOrWarning(blocks, $"Полный JSON {SoulStatePath}", soul);
+            AddRawOrWarning(blocks, $"Полный JSON {ShiningCoreActionRequestState.PendingActionsRequestPath}", core);
+            AddRawOrWarning(blocks, $"Полный JSON {ShiningTradeRequestState.PendingRequestsPath}", trade);
+            AddRawOrWarning(blocks, $"Полный JSON {SourceOfLightCapstoneState.PendingRequestPath}", source);
+        }
+        else
+        {
+            AddWarningIfMalformed(blocks, $"Полный JSON {ShiningAbodeState.StatePath}", shining);
+            AddWarningIfMalformed(blocks, $"Полный JSON {GuardianAbodeResidentState.StatePath}", residents);
+            AddWarningIfMalformed(blocks, $"Полный JSON {SoulStatePath}", soul);
+            AddWarningIfMalformed(blocks, $"Полный JSON {ShiningCoreActionRequestState.PendingActionsRequestPath}", core);
+            AddWarningIfMalformed(blocks, $"Полный JSON {ShiningTradeRequestState.PendingRequestsPath}", trade);
+            AddWarningIfMalformed(blocks, $"Полный JSON {SourceOfLightCapstoneState.PendingRequestPath}", source);
+        }
+
+        return Completed(command, blocks, actions);
     }
 
     private static async Task<ExplorerCommandResult> BuildPolitics(
         string command,
+        string commandArguments,
         FileSystemManager fs,
         bool includeAdvancedDiagnostics)
     {
@@ -181,6 +212,17 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         var foundings = await ReadJson(fs, ShiningFactionRequestState.PendingFoundingsRequestPath);
         var realignments = await ReadJson(fs, ShiningFactionRequestState.PendingRealignmentsRequestPath);
         var leadership = await ReadJson(fs, ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath);
+
+        if (TryReadDetailSelector(commandArguments, out var factionSelector, "фракция", "faction"))
+            return BuildShiningFactionDetail(command, shining.Node, factionSelector);
+        if (TryReadDetailSelector(commandArguments, out var chronicleSelector, "хроника", "chronicle", "entry"))
+            return BuildShiningChronicleDetail(command, shining.Node, chronicleSelector);
+        if (TryReadDetailSelector(commandArguments, out var resourceSelector, "ресурс", "resource", "ledger"))
+            return BuildShiningResourceDetail(command, shining.Node, resourceSelector);
+        if (TryReadDetailSelector(commandArguments, out var politicalPendingSelector, "ожидание", "pending", "request"))
+            return BuildPoliticalPendingDetail(command, foundings.Node, realignments.Node, leadership.Node, politicalPendingSelector);
+        if (TryReadDetailSelector(commandArguments, out var resolutionSelector, "решение", "resolution", "receipt", "итог"))
+            return BuildPoliticalResolutionDetail(command, shining.Node, resolutionSelector);
 
         var blocks = new List<UiBlock>
         {
@@ -196,6 +238,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         };
 
         AddFactionPoliticalMemoryBlocks(blocks, shining.Node);
+        var actions = BuildShiningPoliticsActions(shining.Node, foundings.Node, realignments.Node, leadership.Node).ToList();
 
         if (includeAdvancedDiagnostics)
         {
@@ -216,7 +259,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             AddWarningIfMalformed(blocks, $"Полный JSON {ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath}", leadership);
         }
 
-        return Completed(command, blocks);
+        return Completed(command, blocks, actions);
     }
 
     private static async Task<ExplorerCommandResult> BuildFactionFounding(
@@ -750,6 +793,9 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             command,
             CommandExecutionState.RequiresInput,
             blocks,
+            actions: projects
+                .Select(static option => BuildProjectDetailAction(option.Value, ExtractProjectLabel(option.Label)))
+                .OfType<UiAction>(),
             prompts:
             [
                 new UiSelectionPrompt
@@ -915,6 +961,9 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             command,
             CommandExecutionState.RequiresInput,
             blocks,
+            actions: optionCards
+                .Select(static card => BuildGateDetailAction(card))
+                .OfType<UiAction>(),
             prompts:
             [
                 new UiSelectionPrompt
@@ -1291,6 +1340,681 @@ public static class ExplorerShiningAbodeCommandResultBuilder
     {
         if (read.Node == null && read.FileExists)
             blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {read.Path}. {read.Error}"));
+    }
+
+    private static IEnumerable<UiAction> BuildShiningAbodeOverviewActions(JsonNode? shiningRoot, JsonNode? pendingCoreRoot)
+    {
+        if (shiningRoot is JsonObject root)
+        {
+            foreach (var card in EnumerateVisibleGateCards(root["gates"] as JsonObject))
+            {
+                var action = BuildGateDetailAction(card);
+                if (action != null)
+                    yield return action;
+            }
+
+            foreach (var faction in GetVisibleFactions(root))
+            {
+                var factionAction = BuildFactionDetailAction(faction);
+                if (factionAction != null)
+                    yield return factionAction;
+
+                var factionId = GetString(faction, "factionId", string.Empty);
+                if (string.IsNullOrWhiteSpace(factionId) || faction["projects"] is not JsonArray projects)
+                    continue;
+
+                foreach (var project in projects.OfType<JsonObject>().Where(IsPlayerVisibleMemoryObject))
+                {
+                    var projectAction = BuildProjectDetailAction(factionId, project);
+                    if (projectAction != null)
+                        yield return projectAction;
+                }
+            }
+
+            foreach (var receipt in EnumerateObjects(root["coreActionReceipts"] as JsonArray))
+            {
+                var action = BuildCoreReceiptDetailAction(receipt);
+                if (action != null)
+                    yield return action;
+            }
+        }
+
+        foreach (var request in EnumerateRequestObjects(pendingCoreRoot))
+        {
+            var action = BuildPendingCoreDetailAction(request);
+            if (action != null)
+                yield return action;
+        }
+    }
+
+    private static IEnumerable<UiAction> BuildShiningPoliticsActions(
+        JsonNode? shiningRoot,
+        JsonNode? pendingFoundingsRoot,
+        JsonNode? pendingRealignmentsRoot,
+        JsonNode? pendingLeadershipRoot)
+    {
+        if (shiningRoot is JsonObject root)
+        {
+            foreach (var faction in GetVisibleFactions(root))
+            {
+                var factionAction = BuildFactionDetailAction(faction);
+                if (factionAction != null)
+                    yield return factionAction;
+
+                foreach (var entry in EnumeratePlayerVisibleChronicleEntries(faction))
+                {
+                    var action = BuildChronicleDetailAction(entry);
+                    if (action != null)
+                        yield return action;
+                }
+
+                foreach (var entry in EnumerateCurrentResourceBalances(faction))
+                {
+                    var action = BuildResourceDetailAction(entry);
+                    if (action != null)
+                        yield return action;
+                }
+            }
+
+            foreach (var receipt in EnumeratePoliticalResolutionReceipts(root))
+            {
+                var action = BuildPoliticalResolutionAction(receipt);
+                if (action != null)
+                    yield return action;
+            }
+        }
+
+        foreach (var request in EnumerateRequestObjects(pendingFoundingsRoot)
+                     .Concat(EnumerateRequestObjects(pendingRealignmentsRoot))
+                     .Concat(EnumerateRequestObjects(pendingLeadershipRoot)))
+        {
+            var action = BuildPoliticalPendingAction(request);
+            if (action != null)
+                yield return action;
+        }
+    }
+
+    private static ExplorerCommandResult BuildGatesCardDetail(string command, JsonNode? shiningRoot, string selector)
+    {
+        var gates = shiningRoot?["gates"] as JsonObject;
+        var card = FindGatesCard(gates, selector);
+        if (card == null || !IsPlayerVisibleMemoryObject(card))
+            return UnavailableDetail(command, "Благословение Врат недоступно");
+
+        var cardId = GetString(card, "cardId", selector);
+        var selected = ReadGatesStringArray(gates, "selectedBlessingCardIds")
+            .Contains(cardId, StringComparer.OrdinalIgnoreCase);
+        var name = GetString(card, "displayName", cardId);
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                $"Благословение Врат: {name}",
+                Grid(
+                    ("Семья эффекта", DescribeEffectFamily(GetString(card, "effectFamily", string.Empty))),
+                    ("Редкость", DescribeRarity(GetString(card, "rarity", string.Empty))),
+                    ("Состояние", selected ? "выбрано" : "доступно")),
+                new UiTextBlock { Text = GetString(card, "displaySummary", "Сводка благословения пока не записана.") })
+        };
+
+        return Completed(command, blocks);
+    }
+
+    private static ExplorerCommandResult BuildShiningProjectDetail(string command, JsonNode? shiningRoot, string selector)
+    {
+        if (shiningRoot is not JsonObject root ||
+            !TryFindVisibleProject(root, selector, out var faction, out var project))
+        {
+            return UnavailableDetail(command, "Проект Сияющей Обители недоступен");
+        }
+
+        var name = ResolveProjectDisplayName(project);
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                $"Проект Сияющей Обители: {name}",
+                Grid(
+                    ("Фракция", ResolveFactionDisplayName(faction)),
+                    ("Состояние", DescribeProjectStatus(project)),
+                    ("Поддержка", DescribeProjectSupport(project)),
+                    ("Тир", GetNumberOrString(project, "tier", "0"))),
+                new UiTextBlock { Text = GetString(project, "summary", "Сводка проекта пока не записана.") })
+        };
+
+        return Completed(command, blocks);
+    }
+
+    private static ExplorerCommandResult BuildPendingCoreActionDetail(string command, JsonNode? pendingRoot, string selector)
+    {
+        var request = FindRequestObject(pendingRoot, selector);
+        if (request == null)
+            return UnavailableDetail(command, "Ожидающее действие Обители недоступно");
+
+        var label = DescribeCoreActionType(GetString(request, "actionType", string.Empty));
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                $"Ожидающее действие Обители: {label}",
+                Grid(
+                    ("Создано", FormatCreatedTurn(request)),
+                    ("Состояние", "ожидает решения ГМ")),
+                new UiTextBlock { Text = GetString(request, "summary", "Сводка ожидания пока не записана.") })
+        };
+
+        return Completed(command, blocks);
+    }
+
+    private static ExplorerCommandResult BuildCoreActionReceiptDetail(string command, JsonNode? shiningRoot, string selector)
+    {
+        var receipt = FindReceiptObject(shiningRoot?["coreActionReceipts"], selector);
+        if (receipt == null)
+            return UnavailableDetail(command, "Итог действия Обители недоступен");
+
+        var summary = GetString(receipt, "summary", string.Empty);
+        var title = FirstNonEmpty(ExtractLeadingTitle(summary), DescribeCoreActionType(GetString(receipt, "actionType", string.Empty)), "действие завершено");
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                $"Итог действия Обители: {title}",
+                Grid(
+                    ("Статус", DescribeResolutionStatus(GetString(receipt, "status", string.Empty))),
+                    ("Ход", GetNumberOrString(receipt, "resolvedAtTurn", "не указан"))),
+                new UiTextBlock { Text = string.IsNullOrWhiteSpace(summary) ? "Сводка итога пока не записана." : summary })
+        };
+
+        return Completed(command, blocks);
+    }
+
+    private static ExplorerCommandResult BuildShiningFactionDetail(string command, JsonNode? shiningRoot, string selector)
+    {
+        if (shiningRoot is not JsonObject root)
+            return UnavailableDetail(command, "Фракция Сияющей Обители недоступна");
+
+        var faction = GetVisibleFactions(root).FirstOrDefault(item => MatchesAnyIdentity(item, selector, "factionId"));
+        if (faction == null)
+            return UnavailableDetail(command, "Фракция Сияющей Обители недоступна");
+
+        var name = ResolveFactionDisplayName(faction);
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                $"Фракция Сияющей Обители: {name}",
+                Grid(
+                    ("Сила", GetNumberOrString(faction, "factionStrength", "0")),
+                    ("Состояние", DescribeFactionLifecycle(faction)),
+                    ("Глава", DescribeFactionLeader(faction))),
+                new UiTextBlock { Text = GetString(faction["charter"], "summary", "Хартия фракции пока не записана.") })
+        };
+
+        return Completed(command, blocks);
+    }
+
+    private static ExplorerCommandResult BuildShiningChronicleDetail(string command, JsonNode? shiningRoot, string selector)
+    {
+        var match = FindVisibleChronicleEntry(shiningRoot, selector);
+        if (match.Entry == null)
+            return UnavailableDetail(command, "Хроника фракции недоступна");
+
+        var title = FirstNonEmpty(GetString(match.Entry, "displayName", string.Empty), TranslateEventType(GetString(match.Entry, "eventType", "событие")));
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                $"Хроника фракции: {title}",
+                Grid(
+                    ("Фракция", ResolveFactionDisplayName(match.Faction!)),
+                    ("Ход", GetNumberOrString(match.Entry, "turnNumber", "0")),
+                    ("Событие", TranslateEventType(GetString(match.Entry, "eventType", "событие"))),
+                    ("Последствия", DescribeConsequences(match.Entry))),
+                new UiTextBlock { Text = GetString(match.Entry, "summary", "Сводка хроники пока не записана.") })
+        };
+
+        return Completed(command, blocks);
+    }
+
+    private static ExplorerCommandResult BuildShiningResourceDetail(string command, JsonNode? shiningRoot, string selector)
+    {
+        var match = FindVisibleResourceEntry(shiningRoot, selector);
+        if (match.Entry == null)
+            return UnavailableDetail(command, "Ресурс фракции недоступен");
+
+        var resourceName = TranslateResourceType(GetString(match.Entry, "resourceType", "resource"));
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                $"Ресурс фракции: {resourceName}",
+                Grid(
+                    ("Фракция", ResolveFactionDisplayName(match.Faction!)),
+                    ("Баланс", GetNumberOrString(match.Entry, "balanceAfter", "0")),
+                    ("Изменение", DescribeSignedDelta(match.Entry["delta"])),
+                    ("Ход", GetNumberOrString(match.Entry, "turnNumber", "0"))),
+                new UiTextBlock { Text = GetString(match.Entry, "reason", "Причина изменения пока не записана.") })
+        };
+
+        return Completed(command, blocks);
+    }
+
+    private static ExplorerCommandResult BuildPoliticalPendingDetail(
+        string command,
+        JsonNode? foundingsRoot,
+        JsonNode? realignmentsRoot,
+        JsonNode? leadershipRoot,
+        string selector)
+    {
+        var request = FindRequestObject(foundingsRoot, selector) ??
+                      FindRequestObject(realignmentsRoot, selector) ??
+                      FindRequestObject(leadershipRoot, selector);
+        if (request == null)
+            return UnavailableDetail(command, "Ожидающее решение фракций недоступно");
+
+        var name = ResolvePoliticalRequestDisplayName(request);
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                $"Ожидающее решение фракций: {name}",
+                Grid(
+                    ("Создано", FormatCreatedTurn(request)),
+                    ("Состояние", "ожидает решения ГМ")),
+                new UiTextBlock { Text = GetString(request, "summary", "Сводка ожидания пока не записана.") })
+        };
+
+        return Completed(command, blocks);
+    }
+
+    private static ExplorerCommandResult BuildPoliticalResolutionDetail(string command, JsonNode? shiningRoot, string selector)
+    {
+        var receipt = FindPoliticalResolutionReceipt(shiningRoot, selector);
+        if (receipt == null)
+            return UnavailableDetail(command, "Решение фракций недоступно");
+
+        var name = ResolvePoliticalReceiptDisplayName(receipt);
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                $"Решение фракций: {name}",
+                Grid(
+                    ("Статус", DescribeResolutionStatus(GetString(receipt, "status", string.Empty))),
+                    ("Ход", GetNumberOrString(receipt, "resolvedAtTurn", "не указан"))),
+                new UiTextBlock { Text = GetString(receipt, "summary", "Сводка решения пока не записана.") })
+        };
+
+        return Completed(command, blocks);
+    }
+
+    private static ExplorerCommandResult UnavailableDetail(string command, string title) =>
+        Completed(command, [Message(UiNotificationSeverity.Info, title, "Не удалось открыть выбранную запись: она скрыта, устарела или уже исчезла из видимой памяти Обители.")]);
+
+    private static IEnumerable<JsonObject> EnumerateVisibleGateCards(JsonObject? gates)
+    {
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var propertyName in new[] { "availableBlessingCards", "allCandidateBlessingCards" })
+        {
+            if (gates?[propertyName] is not JsonArray cards)
+                continue;
+
+            foreach (var card in cards.OfType<JsonObject>().Where(IsPlayerVisibleMemoryObject))
+            {
+                var cardId = GetString(card, "cardId", string.Empty);
+                if (string.IsNullOrWhiteSpace(cardId) || !seen.Add(cardId))
+                    continue;
+                yield return card;
+            }
+        }
+    }
+
+    private static IEnumerable<JsonObject> EnumerateRequestObjects(JsonNode? root)
+    {
+        if (root is JsonArray array)
+            return array.OfType<JsonObject>();
+        return root?["requests"] is JsonArray requests
+            ? requests.OfType<JsonObject>()
+            : Enumerable.Empty<JsonObject>();
+    }
+
+    private static IEnumerable<JsonObject> EnumeratePoliticalResolutionReceipts(JsonObject root)
+    {
+        foreach (var propertyName in new[] { "factionFoundingReceipts", "factionRealignmentReceipts", "politicalResolutionReceipts" })
+        {
+            foreach (var receipt in EnumerateObjects(root[propertyName] as JsonArray))
+                yield return receipt;
+        }
+
+        if (root["factions"] is not JsonArray factions)
+            yield break;
+
+        foreach (var faction in factions.OfType<JsonObject>().Where(IsPlayerVisibleMemoryObject))
+        {
+            foreach (var receipt in EnumerateObjects(faction["leadershipReceipts"] as JsonArray))
+                yield return receipt;
+            foreach (var receipt in EnumerateObjects(faction["politicalResolutionReceipts"] as JsonArray))
+                yield return receipt;
+        }
+    }
+
+    private static UiAction? BuildGateDetailAction(JsonObject card)
+    {
+        var cardId = GetString(card, "cardId", string.Empty);
+        if (string.IsNullOrWhiteSpace(cardId))
+            return null;
+        return DetailAction("shining-gate-detail", cardId, GetString(card, "displayName", cardId), $"/shining_abode врата {cardId}");
+    }
+
+    private static UiAction? BuildFactionDetailAction(JsonObject faction)
+    {
+        var factionId = GetString(faction, "factionId", string.Empty);
+        if (string.IsNullOrWhiteSpace(factionId))
+            return null;
+        return DetailAction("shining-faction-detail", factionId, ResolveFactionDisplayName(faction), $"/shining_politics фракция {factionId}");
+    }
+
+    private static UiAction? BuildProjectDetailAction(string value, string label)
+    {
+        if (!TrySplitProjectSelector(value, out var factionId, out var projectId))
+            return null;
+        return DetailAction(
+            "shining-project-detail",
+            $"{factionId}-{projectId}",
+            label,
+            $"/shining_abode проект {factionId}::{projectId}");
+    }
+
+    private static UiAction? BuildProjectDetailAction(string factionId, JsonObject project)
+    {
+        var projectId = GetString(project, "projectId", string.Empty);
+        return string.IsNullOrWhiteSpace(factionId) || string.IsNullOrWhiteSpace(projectId)
+            ? null
+            : BuildProjectDetailAction($"{factionId}|{projectId}", ResolveProjectDisplayName(project));
+    }
+
+    private static UiAction? BuildPendingCoreDetailAction(JsonObject request)
+    {
+        var identity = FirstNonEmpty(GetString(request, "requestId", string.Empty), GetString(request, "id", string.Empty));
+        if (string.IsNullOrWhiteSpace(identity))
+            return null;
+        return DetailAction("shining-pending-core-detail", identity, DescribeCoreActionType(GetString(request, "actionType", string.Empty)), $"/shining_abode ожидание {identity}");
+    }
+
+    private static UiAction? BuildCoreReceiptDetailAction(JsonObject receipt)
+    {
+        var identity = FirstNonEmpty(GetString(receipt, "receiptId", string.Empty), GetString(receipt, "id", string.Empty));
+        if (string.IsNullOrWhiteSpace(identity))
+            return null;
+        var label = FirstNonEmpty(ExtractLeadingTitle(GetString(receipt, "summary", string.Empty)), DescribeCoreActionType(GetString(receipt, "actionType", string.Empty)), "действие завершено");
+        return DetailAction("shining-core-receipt-detail", identity, label, $"/shining_abode исход {identity}");
+    }
+
+    private static UiAction? BuildChronicleDetailAction(JsonObject entry)
+    {
+        var identity = GetString(entry, "entryId", string.Empty);
+        if (string.IsNullOrWhiteSpace(identity))
+            return null;
+        var label = FirstNonEmpty(GetString(entry, "displayName", string.Empty), GetString(entry, "summary", identity));
+        return DetailAction("shining-chronicle-detail", identity, label, $"/shining_politics хроника {identity}");
+    }
+
+    private static UiAction? BuildResourceDetailAction(JsonObject entry)
+    {
+        var identity = GetString(entry, "entryId", string.Empty);
+        if (string.IsNullOrWhiteSpace(identity))
+            return null;
+        var label = TranslateResourceType(GetString(entry, "resourceType", "resource"));
+        return DetailAction("shining-resource-detail", identity, label, $"/shining_politics ресурс {identity}");
+    }
+
+    private static UiAction? BuildPoliticalPendingAction(JsonObject request)
+    {
+        var identity = FirstNonEmpty(GetString(request, "requestId", string.Empty), GetString(request, "id", string.Empty));
+        if (string.IsNullOrWhiteSpace(identity))
+            return null;
+        return DetailAction("shining-political-pending-detail", identity, ResolvePoliticalRequestDisplayName(request), $"/shining_politics ожидание {identity}");
+    }
+
+    private static UiAction? BuildPoliticalResolutionAction(JsonObject receipt)
+    {
+        var identity = FirstNonEmpty(GetString(receipt, "receiptId", string.Empty), GetString(receipt, "id", string.Empty), GetString(receipt, "requestId", string.Empty));
+        if (string.IsNullOrWhiteSpace(identity))
+            return null;
+        return DetailAction("shining-political-resolution-detail", identity, ResolvePoliticalReceiptDisplayName(receipt), $"/shining_politics решение {identity}");
+    }
+
+    private static UiAction DetailAction(string idPrefix, string identity, string label, string command) =>
+        new()
+        {
+            Id = $"{idPrefix}-{ToActionIdPart(identity)}",
+            Label = $"Подробно: «{label}».",
+            Command = command,
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false
+        };
+
+    private static bool TryReadDetailSelector(string arguments, out string selector, params string[] tokens)
+    {
+        selector = string.Empty;
+        var parts = arguments
+            .Split([' ', '\t', '\r', '\n'], 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (parts.Length != 2)
+            return false;
+
+        if (!tokens.Any(token => string.Equals(parts[0], token, StringComparison.OrdinalIgnoreCase)))
+            return false;
+
+        selector = parts[1].Trim();
+        return !string.IsNullOrWhiteSpace(selector);
+    }
+
+    private static bool TryFindVisibleProject(JsonObject root, string selector, out JsonObject faction, out JsonObject project)
+    {
+        faction = new JsonObject();
+        project = new JsonObject();
+        var hasComposite = TrySplitProjectSelector(selector, out var selectedFactionId, out var selectedProjectId);
+        var selectedProjectOnly = hasComposite ? selectedProjectId : selector;
+
+        foreach (var candidateFaction in GetVisibleFactions(root))
+        {
+            var factionId = GetString(candidateFaction, "factionId", string.Empty);
+            if (hasComposite && !string.Equals(factionId, selectedFactionId, StringComparison.OrdinalIgnoreCase))
+                continue;
+            if (candidateFaction["projects"] is not JsonArray projects)
+                continue;
+
+            foreach (var candidateProject in projects.OfType<JsonObject>().Where(IsPlayerVisibleMemoryObject))
+            {
+                if (!MatchesAnyIdentity(candidateProject, selectedProjectOnly, "projectId", "id", "displayName", "projectName"))
+                    continue;
+
+                faction = candidateFaction;
+                project = candidateProject;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static (JsonObject? Faction, JsonObject? Entry) FindVisibleChronicleEntry(JsonNode? shiningRoot, string selector)
+    {
+        if (shiningRoot is not JsonObject root)
+            return (null, null);
+
+        foreach (var faction in GetVisibleFactions(root))
+        {
+            foreach (var entry in EnumeratePlayerVisibleChronicleEntries(faction))
+            {
+                if (MatchesAnyIdentity(entry, selector, "entryId", "id", "displayName"))
+                    return (faction, entry);
+            }
+        }
+
+        return (null, null);
+    }
+
+    private static (JsonObject? Faction, JsonObject? Entry) FindVisibleResourceEntry(JsonNode? shiningRoot, string selector)
+    {
+        if (shiningRoot is not JsonObject root)
+            return (null, null);
+
+        foreach (var faction in GetVisibleFactions(root))
+        {
+            foreach (var entry in EnumerateCurrentResourceBalances(faction))
+            {
+                if (MatchesAnyIdentity(entry, selector, "entryId", "id", "resourceType"))
+                    return (faction, entry);
+            }
+        }
+
+        return (null, null);
+    }
+
+    private static JsonObject? FindRequestObject(JsonNode? root, string selector) =>
+        EnumerateRequestObjects(root).FirstOrDefault(request =>
+            MatchesAnyIdentity(request, selector, "requestId", "id", "proposedFactionId", "factionId", "proposedFactionName"));
+
+    private static JsonObject? FindReceiptObject(JsonNode? root, string selector) =>
+        (root as JsonArray)?.OfType<JsonObject>().FirstOrDefault(receipt =>
+            MatchesAnyIdentity(receipt, selector, "receiptId", "id", "requestId"));
+
+    private static JsonObject? FindPoliticalResolutionReceipt(JsonNode? shiningRoot, string selector) =>
+        shiningRoot is JsonObject root
+            ? EnumeratePoliticalResolutionReceipts(root).FirstOrDefault(receipt =>
+                MatchesAnyIdentity(receipt, selector, "receiptId", "id", "requestId", "factionId", "factionName"))
+            : null;
+
+    private static bool MatchesAnyIdentity(JsonObject node, string selector, params string[] propertyNames)
+    {
+        if (string.IsNullOrWhiteSpace(selector))
+            return false;
+
+        foreach (var propertyName in propertyNames)
+        {
+            var value = GetString(node, propertyName, string.Empty);
+            if (string.Equals(value, selector, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool TrySplitProjectSelector(string selector, out string factionId, out string projectId)
+    {
+        factionId = string.Empty;
+        projectId = string.Empty;
+        var parts = selector.Split(["::", "|"], 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (parts.Length != 2)
+            return false;
+
+        factionId = parts[0];
+        projectId = parts[1];
+        return !string.IsNullOrWhiteSpace(factionId) && !string.IsNullOrWhiteSpace(projectId);
+    }
+
+    private static string ExtractProjectLabel(string optionLabel)
+    {
+        var markerIndex = optionLabel.IndexOf(" - ", StringComparison.Ordinal);
+        return markerIndex >= 0 && markerIndex + 3 < optionLabel.Length
+            ? optionLabel[(markerIndex + 3)..]
+            : optionLabel;
+    }
+
+    private static string ResolvePoliticalRequestDisplayName(JsonObject request) =>
+        FirstNonEmpty(
+            GetString(request, "proposedFactionName", string.Empty),
+            GetString(request, "factionName", string.Empty),
+            GetString(request, "targetFactionName", string.Empty),
+            GetString(request, "proposedHallName", string.Empty),
+            GetString(request, "requestTitle", string.Empty),
+            "решение фракций");
+
+    private static string ResolvePoliticalReceiptDisplayName(JsonObject receipt) =>
+        FirstNonEmpty(
+            GetString(receipt, "factionName", string.Empty),
+            GetString(receipt, "proposedFactionName", string.Empty),
+            GetString(receipt, "targetFactionName", string.Empty),
+            GetString(receipt, "displayName", string.Empty),
+            "решение фракций");
+
+    private static string FormatCreatedTurn(JsonObject node)
+    {
+        var turn = GetNumberOrString(node, "createdAtTurn", string.Empty);
+        return string.IsNullOrWhiteSpace(turn) ? "ход не указан" : $"создано на ходу {turn}";
+    }
+
+    private static string DescribeCoreActionType(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            ShiningCoreActionRequestState.ActionTypeOpenGates => "Открытие Врат",
+            ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage => "Подготовка новой жизни",
+            ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction => "Открытие нативной фракции",
+            ShiningCoreActionRequestState.ActionTypeInvestInFaction => "Инвестиция во фракцию",
+            ShiningCoreActionRequestState.ActionTypeSupportProject => "Поддержка проекта",
+            ShiningCoreActionRequestState.ActionTypeUnsupportProject => "Снятие поддержки проекта",
+            ShiningCoreActionRequestState.ActionTypeRetireProject => "Проект уходит в историю",
+            ShiningCoreActionRequestState.ActionTypeForgeRelicReshape => "Ковка реликвии",
+            ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty => "Настройка реликвии",
+            ShiningCoreActionRequestState.ActionTypeForgeRelicStrengthenBand => "Усиление реликвии",
+            ShiningCoreActionRequestState.ActionTypeForgeRelicStabilizeEcho => "Стабилизация эха",
+            ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity => "Возвышение реликвии",
+            _ => string.IsNullOrWhiteSpace(value) ? "Действие Обители" : HumanizeProtocolValue(value)
+        };
+
+    private static string DescribeFactionLifecycle(JsonObject faction)
+    {
+        var state = ShiningAbodeState.GetFactionLifecycleState(faction);
+        return state switch
+        {
+            ShiningAbodeState.FactionLifecycleStateActive => "действует",
+            ShiningAbodeState.FactionLifecycleStateBroken => "сломлена",
+            ShiningAbodeState.FactionLifecycleStateDissolved => "распущена",
+            _ => state
+        };
+    }
+
+    private static string DescribeFactionLeader(JsonObject faction)
+    {
+        var leadership = faction["leadership"];
+        var displayName = GetString(leadership, "headDisplayName", string.Empty);
+        if (!string.IsNullOrWhiteSpace(displayName))
+            return displayName;
+
+        var type = GetString(leadership, "headActorType", string.Empty);
+        var identity = GetString(leadership, "headActorId", string.Empty);
+        return string.IsNullOrWhiteSpace(type) && string.IsNullOrWhiteSpace(identity)
+            ? "не указан"
+            : $"{type}:{identity}";
+    }
+
+    private static string DescribeResolutionStatus(string status) =>
+        status.Trim().ToLowerInvariant() switch
+        {
+            "accepted" or "approved" or "complete" or "completed" => "принято",
+            "rejected" or "declined" => "отклонено",
+            "cancelled" or "canceled" => "отменено",
+            _ => string.IsNullOrWhiteSpace(status) ? "не указан" : status
+        };
+
+    private static string ExtractLeadingTitle(string summary)
+    {
+        if (string.IsNullOrWhiteSpace(summary))
+            return string.Empty;
+
+        var trimmed = summary.Trim();
+        foreach (var separator in new[] { " и ", ". ", ";", ":" })
+        {
+            var index = trimmed.IndexOf(separator, StringComparison.Ordinal);
+            if (index > 0)
+                return trimmed[..index].Trim().TrimEnd('.');
+        }
+
+        return trimmed.TrimEnd('.');
+    }
+
+    private static string ToActionIdPart(string value)
+    {
+        var chars = value
+            .Trim()
+            .Select(static ch => char.IsLetterOrDigit(ch) || ch == '_' ? ch : '-')
+            .ToArray();
+        var normalized = new string(chars).Trim('-');
+        while (normalized.Contains("--", StringComparison.Ordinal))
+            normalized = normalized.Replace("--", "-", StringComparison.Ordinal);
+        return string.IsNullOrWhiteSpace(normalized) ? "detail" : normalized;
     }
 
     private static void AddFactionPoliticalMemoryBlocks(List<UiBlock> blocks, JsonNode? shiningRoot)
@@ -2467,8 +3191,11 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         _ => value
     };
 
-    private static ExplorerCommandResult Completed(string command, IEnumerable<UiBlock> blocks) =>
-        Result(command, CommandExecutionState.Completed, blocks);
+    private static ExplorerCommandResult Completed(
+        string command,
+        IEnumerable<UiBlock> blocks,
+        IEnumerable<UiAction>? actions = null) =>
+        Result(command, CommandExecutionState.Completed, blocks, actions: actions);
 
     private static ExplorerCommandResult Blocked(string command, string title, string message) =>
         Result(command, CommandExecutionState.Blocked, [Message(UiNotificationSeverity.Warning, title, message)]);
@@ -2477,12 +3204,14 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         string command,
         CommandExecutionState state,
         IEnumerable<UiBlock> blocks,
-        IEnumerable<UiPrompt>? prompts = null) =>
+        IEnumerable<UiPrompt>? prompts = null,
+        IEnumerable<UiAction>? actions = null) =>
         new()
         {
             Command = command,
             State = state,
             Blocks = blocks.ToList(),
+            Actions = actions?.ToList() ?? [],
             Prompts = prompts?.ToList() ?? []
         };
 
