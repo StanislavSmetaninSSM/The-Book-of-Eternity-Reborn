@@ -68,10 +68,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             CommandKind.Threats => await BuildThreats(request, fs, includeRawDiagnostics),
             CommandKind.Chronicles => await BuildChronicles(request, fs, includeRawDiagnostics),
             CommandKind.Inbox => await BuildInbox(request, fs),
-            CommandKind.Conflict => await BuildConflict(request.Command, fs),
-            CommandKind.CombatLog => await BuildCombatLog(request.Command, fs),
+            CommandKind.Conflict => await BuildConflict(request, fs, includeRawDiagnostics),
+            CommandKind.CombatLog => await BuildCombatLog(request, fs, includeRawDiagnostics),
             CommandKind.Help => BuildHelp(request.Command),
-            CommandKind.Arts => await BuildArts(request.Command, fs, includeRawDiagnostics),
+            CommandKind.Arts => await BuildArts(request, fs, includeRawDiagnostics),
             _ => null
         };
     }
@@ -384,10 +384,26 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             ]);
     }
 
-    private static async Task<ExplorerCommandResult> BuildConflict(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildConflict(
+        CommandRequest request,
+        FileSystemManager fs,
+        bool includeRawDiagnostics)
     {
         var read = await ReadJson(fs, AfterlifeSpiritualConflictState.StatePath);
         var active = read.Node?["activeConflict"] as JsonObject;
+        var exchangeLog = GetVisibleExchangeLog(active);
+        var detail = ParseDetailRequest(request.Arguments, "обмен", "exchange", "запись", "entry", "деталь", "detail");
+        if (!string.IsNullOrWhiteSpace(detail.Selector))
+        {
+            return BuildSpiritualExchangeDetail(
+                request.Command,
+                active,
+                exchangeLog,
+                detail.Selector,
+                "Обмен духовного конфликта",
+                "/spiritual_conflict");
+        }
+
         var blocks = new List<UiBlock>
         {
             Panel("Духовный конфликт",
@@ -400,7 +416,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     ("Напряжение противника", DescribeStrain(GetString(active, "oppositionSideStrain", "clear"))),
                     ("Контроль/оковы", DescribeControlState(active?["controlState"] as JsonObject)),
                     ("ОД", DescribeActionEconomy(active?["actionEconomy"] as JsonObject)),
-                    ("Обменов", CountArray(active, "exchangeLog").ToString())))
+                    ("Обменов", exchangeLog.Count.ToString())))
         };
 
         if (active != null)
@@ -419,47 +435,96 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             var visibleConditions = BuildVisibleCombatConditionsTable(active["combatConditions"] as JsonArray);
             if (visibleConditions != null)
                 blocks.Add(visibleConditions);
+
+            if (exchangeLog.Count > 0)
+                blocks.Add(BuildExchangeTable(exchangeLog, BuildConflictExchangeDetailCommand));
         }
         else
         {
-            blocks.Add(Message("Активного духовного конфликта нет", "ГМ может начать конфликт через afterlifeSpiritualConflictUpdate с mode=start."));
+            blocks.Add(Message("Активного духовного конфликта нет", "Сейчас нет открытого духовного противостояния; когда ГМ начнёт сцену, она появится здесь."));
         }
 
-        AddRawOrWarning(blocks, $"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", SanitizeCombatConditionsForPlayer(read));
-        return Completed(command, blocks);
+        AddRawOrWarning(
+            blocks,
+            "Состояние духовного конфликта",
+            SanitizeCombatConditionsForPlayer(read),
+            includeRawDiagnostics);
+        return Completed(request.Command, blocks, BuildConflictExchangeActions(exchangeLog));
     }
 
-    private static async Task<ExplorerCommandResult> BuildCombatLog(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildCombatLog(
+        CommandRequest request,
+        FileSystemManager fs,
+        bool includeRawDiagnostics)
     {
         var read = await ReadJson(fs, AfterlifeSpiritualConflictState.StatePath);
         var active = read.Node?["activeConflict"] as JsonObject;
-        var exchangeLog = active?["exchangeLog"] as JsonArray;
-        var recent = read.Node?["recentConflicts"] as JsonArray;
+        var exchangeLog = GetVisibleExchangeLog(active);
+        var recent = GetVisibleRecentConflicts(read.Node);
+        var detail = ParseDetailRequest(
+            request.Arguments,
+            "обмен",
+            "exchange",
+            "запись",
+            "entry",
+            "лог",
+            "log",
+            "итог",
+            "result",
+            "recent",
+            "конфликт",
+            "conflict",
+            "деталь",
+            "detail");
+        if (!string.IsNullOrWhiteSpace(detail.Selector))
+        {
+            if (IsRecentConflictDetailToken(detail.Token))
+                return BuildSpiritualRecentConflictDetail(request.Command, recent, detail.Selector);
+
+            var exchange = FindSpiritualExchange(exchangeLog, detail.Selector);
+            if (exchange != null || IsExchangeDetailToken(detail.Token))
+            {
+                return BuildSpiritualExchangeDetail(
+                    request.Command,
+                    active,
+                    exchangeLog,
+                    detail.Selector,
+                    "Запись духовного боя",
+                    "/spiritual_combat_log");
+            }
+
+            return BuildSpiritualRecentConflictDetail(request.Command, recent, detail.Selector);
+        }
+
         var blocks = new List<UiBlock>
         {
             Panel("Журнал духовного боя",
                 Grid(
                     ("Активный конфликт", active == null ? "нет" : GetString(active, "conflictId", "unknown")),
-                    ("Обменов активного конфликта", (exchangeLog?.Count ?? 0).ToString()),
-                    ("Недавних завершённых конфликтов", (recent?.Count ?? 0).ToString()),
-                    ("Источник", AfterlifeSpiritualConflictState.StatePath)))
+                    ("Обменов активного конфликта", exchangeLog.Count.ToString()),
+                    ("Недавних завершённых конфликтов", recent.Count.ToString()),
+                    ("Источник", "журнал духовного боя")))
         };
 
-        if (exchangeLog is { Count: > 0 })
-            blocks.Add(BuildExchangeTable(exchangeLog));
+        if (exchangeLog.Count > 0)
+            blocks.Add(BuildExchangeTable(exchangeLog, BuildCombatLogExchangeDetailCommand));
         if (active?["combatConditions"] is JsonArray combatConditions)
         {
             var visibleConditions = BuildVisibleCombatConditionsTable(combatConditions);
             if (visibleConditions != null)
                 blocks.Add(visibleConditions);
         }
-        if (recent is { Count: > 0 })
-            blocks.Add(BuildRecentConflictTable(recent));
-        if ((exchangeLog?.Count ?? 0) == 0 && (recent?.Count ?? 0) == 0)
+        if (recent.Count > 0)
+            blocks.Add(BuildRecentConflictTable(recent, BuildCombatLogRecentDetailCommand));
+        if (exchangeLog.Count == 0 && recent.Count == 0)
             blocks.Add(Message("Журнал пуст", "Когда ГМ проведёт обмен или завершит конфликт, здесь появятся кубики, позиция, напряжение и награды."));
 
-        AddRawOrWarning(blocks, $"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", SanitizeCombatConditionsForPlayer(read));
-        return Completed(command, blocks);
+        AddRawOrWarning(
+            blocks,
+            "Журнал духовного боя",
+            SanitizeCombatConditionsForPlayer(read),
+            includeRawDiagnostics);
+        return Completed(request.Command, blocks, BuildCombatLogActions(exchangeLog, recent));
     }
 
     private static ExplorerCommandResult BuildHelp(string command) =>
@@ -491,16 +556,37 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             });
 
     private static async Task<ExplorerCommandResult> BuildArts(
-        string command,
+        CommandRequest request,
         FileSystemManager fs,
         bool includeRawDiagnostics)
     {
         var soul = await ReadJson(fs, SoulStatePath);
         var profiles = await ReadJson(fs, AfterlifeEntityProfileState.StatePath);
         var combatProfile = soul.Node?["afterlifeCombatProfile"] as JsonObject;
-        var standardArts = combatProfile?["standardArts"] as JsonObject;
+        var standardArts = ResolveStandardArts(combatProfile);
         var playerProfile = FindPlayerProfile(profiles.Node);
         var learnedSpecialArts = playerProfile?["specialArts"] as JsonArray;
+        var detail = ParseDetailRequest(
+            request.Arguments,
+            "искусство",
+            "art",
+            "приём",
+            "standard",
+            "особое",
+            "special",
+            "деталь",
+            "detail");
+        if (!string.IsNullOrWhiteSpace(detail.Selector))
+        {
+            if (IsSpecialArtDetailToken(detail.Token))
+                return BuildSpecialArtDetail(request.Command, learnedSpecialArts, detail.Selector, soul, profiles);
+
+            var standard = FindStandardSpiritualArt(detail.Selector);
+            if (standard != null || IsStandardArtDetailToken(detail.Token))
+                return BuildStandardArtDetail(request.Command, combatProfile, standardArts, detail.Selector, soul);
+
+            return BuildSpecialArtDetail(request.Command, learnedSpecialArts, detail.Selector, soul, profiles);
+        }
 
         var blocks = new List<UiBlock>
         {
@@ -560,9 +646,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         AddRawOrWarning(blocks, "Полный JSON afterlifeCombatProfile", new JsonReadResult(soul.FileExists, combatProfile, soul.Error), includeRawDiagnostics);
         AddRawOrWarning(blocks, $"Полный JSON {AfterlifeEntityProfileState.StatePath}", profiles, includeRawDiagnostics);
         return Result(
-            command,
+            request.Command,
             CommandExecutionState.RequiresInput,
             blocks,
+            BuildSpiritualArtActions(standardArts, learnedSpecialArts),
             prompts:
             [
                 new UiTextInputPrompt
@@ -745,6 +832,149 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         }
 
         return Completed(command, blocks, BuildInboxActions([notification], notificationNodes));
+    }
+
+    private static ExplorerCommandResult BuildSpiritualExchangeDetail(
+        string command,
+        JsonObject? active,
+        IReadOnlyList<JsonObject> exchanges,
+        string selector,
+        string titlePrefix,
+        string overviewCommand)
+    {
+        if (active == null)
+            return DetailUnavailable(command, "Обмен недоступен", "не удалось открыть обмен: активный духовный конфликт уже завершён или пока не виден текущей душе.");
+
+        var exchange = FindSpiritualExchange(exchanges, selector);
+        if (exchange == null)
+            return DetailUnavailable(command, "Обмен недоступен", "не удалось открыть обмен: запись уже недоступна, устарела или не видна текущей душе.");
+
+        var name = SpiritualExchangeDisplayName(exchange, selector);
+        var blocks = new List<UiBlock>
+        {
+            Panel($"{titlePrefix}: {name}",
+                Grid(
+                    ("Конфликт", SafePlayerText(FirstNonEmpty(GetString(active, "displayName", ""), GetString(active, "conflictId", "")), "активный конфликт")),
+                    ("Сторона души", DescribeConflictLead(active, "playerSide")),
+                    ("Противостояние", DescribeConflictLead(active, "oppositionSide")),
+                    ("Действие", DescribeArt(GetString(exchange, "operationType", "?"))),
+                    ("Заявка души", SafePlayerText(GetString(exchange, "playerAction", ""), "не указана")),
+                    ("Давление противника", SafePlayerText(GetString(exchange, "incomingAction", ""), "не указано")),
+                    ("Исход", DescribeOutcome(GetString(exchange, "outcome", "?"))),
+                    ("Кубики", DescribeDice(exchange["diceAudit"] as JsonObject)),
+                    ("Позиция", DescribeBeforeAfter(exchange, "conflictPosition", DescribeConflictPosition)),
+                    ("Напряжение души", DescribeBeforeAfter(exchange, "playerSideStrain", DescribeStrain)),
+                    ("Напряжение противника", DescribeBeforeAfter(exchange, "oppositionSideStrain", DescribeStrain)),
+                    ("Ответы", DescribeExchangeCounterplay(GetString(exchange, "operationType", "?"))),
+                    ("Стоимость ОД", DescribeExchangeActionPointCost(exchange)),
+                    ("Награда", DescribeRewardWithReason(exchange["rewardAudit"] as JsonObject))))
+        };
+
+        var resultSummary = SafePlayerText(
+            FirstNonEmpty(GetString(exchange, "resultSummary", ""), GetString(exchange, "summary", ""), GetString(exchange, "reason", "")),
+            string.Empty);
+        if (!string.IsNullOrWhiteSpace(resultSummary))
+            blocks.Add(Message("Итог обмена", resultSummary));
+
+        return Completed(
+            command,
+            blocks,
+            BuildOverviewAction(
+                "spiritual-combat-overview",
+                titlePrefix.StartsWith("Запись", StringComparison.OrdinalIgnoreCase)
+                    ? "К журналу духовного боя"
+                    : "К духовному конфликту",
+                overviewCommand));
+    }
+
+    private static ExplorerCommandResult BuildSpiritualRecentConflictDetail(
+        string command,
+        IReadOnlyList<JsonObject> recentConflicts,
+        string selector)
+    {
+        var conflict = FindRecentConflict(recentConflicts, selector);
+        if (conflict == null)
+            return DetailUnavailable(command, "Итог недоступен", "не удалось открыть итог: запись уже недоступна, устарела или не видна текущей душе.");
+
+        var name = RecentConflictDisplayName(conflict, selector);
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Итог духовного боя: {name}",
+                Grid(
+                    ("Состояние", DescribeRecentResolutionState(GetString(conflict, "resolutionState", "?"))),
+                    ("Исход", DescribePlayerOutcome(GetString(conflict, "playerOutcome", GetString(conflict, "outcome", "?")))),
+                    ("Действие", DescribeArt(GetString(conflict, "operationType", "?"))),
+                    ("Ход", GetNumberOrString(conflict, "resolvedAtTurn", "?")),
+                    ("Награда", DescribeRewardWithReason(conflict["rewardAudit"] as JsonObject)),
+                    ("Решение", SafePlayerText(GetString(conflict, "resolutionSummary", ""), "не указано"))))
+        };
+
+        return Completed(command, blocks, BuildOverviewAction("spiritual-combat-log-overview", "К журналу духовного боя", "/spiritual_combat_log"));
+    }
+
+    private static ExplorerCommandResult BuildStandardArtDetail(
+        string command,
+        JsonObject? combatProfile,
+        JsonObject? standardArts,
+        string selector,
+        JsonReadResult soul)
+    {
+        if (soul.FileExists && soul.Node == null)
+            return DetailUnavailable(command, "Искусство недоступно", "не удалось открыть искусство: духовный профиль сейчас не читается. Откройте сводку позже или попросите ГМ обновить состояние.");
+
+        var art = FindStandardSpiritualArt(selector);
+        if (art == null)
+            return DetailUnavailable(command, "Искусство недоступно", "не удалось открыть искусство: запись уже недоступна, устарела или не видна текущей душе.");
+
+        var currentTier = GetArtTier(standardArts, art.ArtId);
+        var maxUnlockedTier = GetMaxUnlockedArtTier(combatProfile);
+        var availability = maxUnlockedTier >= art.MinUnlockTier
+            ? currentTier > 0 ? "доступно и изучено" : "доступно для локальной прокачки"
+            : $"пока закрыто до ранга, открывающего тир {art.MinUnlockTier}";
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Духовное искусство: {DescribeArt(art.ArtId)}",
+                Grid(
+                    ("Тир", currentTier.ToString()),
+                    ("Доступность", availability),
+                    ("Применение", SafePlayerText(DescribeStandardArtUse(art.ArtId), "контекст сцены")),
+                    ("Стоимость и темп", DescribeArtCost(art.ArtId)),
+                    ("Ранг души", DescribeCombatRanks(combatProfile)),
+                    ("Граница действия", "Осмотр ничего не прокачивает; локальная прокачка остаётся через форму /spiritual_arts.")))
+        };
+
+        return Completed(command, blocks, BuildOverviewAction("spiritual-arts-overview", "К духовным искусствам", "/spiritual_arts"));
+    }
+
+    private static ExplorerCommandResult BuildSpecialArtDetail(
+        string command,
+        JsonArray? learnedSpecialArts,
+        string selector,
+        JsonReadResult soul,
+        JsonReadResult profiles)
+    {
+        if ((soul.FileExists && soul.Node == null) || (profiles.FileExists && profiles.Node == null))
+            return DetailUnavailable(command, "Искусство недоступно", "не удалось открыть искусство: духовный профиль сейчас не читается. Откройте сводку позже или попросите ГМ обновить состояние.");
+
+        var art = FindSpecialArt(learnedSpecialArts, selector);
+        if (art == null)
+            return DetailUnavailable(command, "Искусство недоступно", "не удалось открыть искусство: запись уже недоступна, устарела или не видна текущей душе.");
+
+        var name = SpecialArtDisplayName(art, selector);
+        var blocks = new List<UiBlock>
+        {
+            Panel($"Особое духовное искусство: {name}",
+                Grid(
+                    ("Основа", DescribeArt(GetString(art, "baseOperation", "?"))),
+                    ("Тир", GetNumberOrString(art, "tier", "0")),
+                    ("Эффект", SafePlayerText(DescribeSpecialArtEffect(art), "эффект не описан")),
+                    ("Стоимость", DescribeSpecialArtCost(art)),
+                    ("Доступность", "доступно текущей душе"),
+                    ("Применение", SafePlayerText(GetString(art, "effectSummary", ""), "по контексту духовного боя")),
+                    ("Граница действия", "Осмотр ничего не прокачивает; локальная прокачка остаётся через форму /spiritual_arts.")))
+        };
+
+        return Completed(command, blocks, BuildOverviewAction("spiritual-arts-overview", "К духовным искусствам", "/spiritual_arts"));
     }
 
     private static IEnumerable<UiAction> BuildProfileActions(IEnumerable<JsonObject> profiles)
@@ -937,44 +1167,131 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         yield return DetailAction(id, label, command);
     }
 
-    private static UiTableBlock BuildExchangeTable(JsonArray exchangeLog) =>
+    private static IEnumerable<UiAction> BuildConflictExchangeActions(IReadOnlyList<JsonObject> exchanges)
+    {
+        foreach (var exchange in exchanges)
+        {
+            var selector = SpiritualExchangeSelector(exchange);
+            if (string.IsNullOrWhiteSpace(selector))
+                continue;
+
+            yield return DetailAction(
+                "spiritual-conflict-exchange-detail-" + ToActionIdPart(selector),
+                $"Осмотреть обмен: {SpiritualExchangeDisplayName(exchange, selector)}",
+                BuildConflictExchangeDetailCommand(selector));
+        }
+    }
+
+    private static IEnumerable<UiAction> BuildCombatLogActions(
+        IReadOnlyList<JsonObject> exchanges,
+        IReadOnlyList<JsonObject> recentConflicts)
+    {
+        foreach (var exchange in exchanges)
+        {
+            var selector = SpiritualExchangeSelector(exchange);
+            if (string.IsNullOrWhiteSpace(selector))
+                continue;
+
+            yield return DetailAction(
+                "spiritual-combat-log-exchange-detail-" + ToActionIdPart(selector),
+                $"Разобрать запись боя: {SpiritualExchangeDisplayName(exchange, selector)}",
+                BuildCombatLogExchangeDetailCommand(selector));
+        }
+
+        foreach (var conflict in recentConflicts)
+        {
+            var selector = RecentConflictSelector(conflict);
+            if (string.IsNullOrWhiteSpace(selector))
+                continue;
+
+            yield return DetailAction(
+                "spiritual-combat-log-recent-detail-" + ToActionIdPart(selector),
+                $"Разобрать итог: {RecentConflictDisplayName(conflict, selector)}",
+                BuildCombatLogRecentDetailCommand(selector));
+        }
+    }
+
+    private static IEnumerable<UiAction> BuildSpiritualArtActions(JsonObject? standardArts, JsonArray? learnedSpecialArts)
+    {
+        _ = standardArts;
+
+        foreach (var art in AfterlifeSpiritualConflictState.SpiritualArts)
+        {
+            yield return DetailAction(
+                "spiritual-art-detail-" + ToActionIdPart(art.ArtId),
+                $"Осмотреть искусство: {DescribeArt(art.ArtId)}",
+                BuildStandardArtDetailCommand(art.ArtId));
+        }
+
+        if (learnedSpecialArts == null)
+            yield break;
+
+        var added = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var art in learnedSpecialArts.OfType<JsonObject>().Where(IsSpiritualDetailObjectVisibleToPlayer))
+        {
+            var selector = SpecialArtSelector(art);
+            if (string.IsNullOrWhiteSpace(selector) || !added.Add(selector))
+                continue;
+
+            yield return DetailAction(
+                "spiritual-special-art-detail-" + ToActionIdPart(selector),
+                $"Осмотреть искусство: {SpecialArtDisplayName(art, selector)}",
+                BuildSpecialArtDetailCommand(selector));
+        }
+    }
+
+    private static UiTableBlock BuildExchangeTable(
+        IReadOnlyList<JsonObject> exchangeLog,
+        Func<string, string> detailCommandBuilder) =>
         new()
         {
             Title = "Обмены активного конфликта",
-            Columns = ["Обмен", "Действие", "Исход", "Позиция", "Напряжение", "Кубики", "Награда"],
-            Rows = exchangeLog.OfType<JsonObject>()
-                .Select(exchange => new UiTableRow
+            Columns = ["Обмен", "Действие", "Исход", "Позиция", "Напряжение", "Кубики", "Награда", "Подробно"],
+            Rows = exchangeLog
+                .Select(exchange =>
                 {
-                    Cells =
-                    [
-                        GetString(exchange, "exchangeId", "?"),
-                        DescribeArt(GetString(exchange, "operationType", "?")),
-                        DescribeOutcome(GetString(exchange, "outcome", "?")),
-                        DescribeBeforeAfter(exchange, "conflictPosition", DescribeConflictPosition),
-                        DescribeBeforeAfter(exchange, "oppositionSideStrain", DescribeStrain),
-                        DescribeDice(exchange["diceAudit"] as JsonObject),
-                        DescribeReward(exchange["rewardAudit"] as JsonObject)
-                    ]
+                    var selector = SpiritualExchangeSelector(exchange);
+                    return new UiTableRow
+                    {
+                        Cells =
+                        [
+                            SpiritualExchangeDisplayName(exchange, selector),
+                            DescribeArt(GetString(exchange, "operationType", "?")),
+                            DescribeOutcome(GetString(exchange, "outcome", "?")),
+                            DescribeBeforeAfter(exchange, "conflictPosition", DescribeConflictPosition),
+                            DescribeBeforeAfter(exchange, "oppositionSideStrain", DescribeStrain),
+                            DescribeDice(exchange["diceAudit"] as JsonObject),
+                            DescribeReward(exchange["rewardAudit"] as JsonObject),
+                            string.IsNullOrWhiteSpace(selector) ? "не указано" : detailCommandBuilder(selector)
+                        ]
+                    };
                 })
                 .ToList()
         };
 
-    private static UiTableBlock BuildRecentConflictTable(JsonArray recent) =>
+    private static UiTableBlock BuildRecentConflictTable(
+        IReadOnlyList<JsonObject> recent,
+        Func<string, string> detailCommandBuilder) =>
         new()
         {
             Title = "Недавние завершённые конфликты",
-            Columns = ["Конфликт", "Состояние", "Итог", "Ход", "Награда"],
-            Rows = recent.OfType<JsonObject>()
-                .Select(conflict => new UiTableRow
+            Columns = ["Конфликт", "Состояние", "Итог", "Ход", "Награда", "Подробно"],
+            Rows = recent
+                .Select(conflict =>
                 {
-                    Cells =
-                    [
-                        GetString(conflict, "conflictId", "?"),
-                        GetString(conflict, "resolutionState", "?"),
-                        GetString(conflict, "playerOutcome", GetString(conflict, "outcome", "?")),
-                        GetNumberOrString(conflict, "resolvedAtTurn", "?"),
-                        DescribeReward(conflict["rewardAudit"] as JsonObject)
-                    ]
+                    var selector = RecentConflictSelector(conflict);
+                    return new UiTableRow
+                    {
+                        Cells =
+                        [
+                            RecentConflictDisplayName(conflict, selector),
+                            DescribeRecentResolutionState(GetString(conflict, "resolutionState", "?")),
+                            DescribePlayerOutcome(GetString(conflict, "playerOutcome", GetString(conflict, "outcome", "?"))),
+                            GetNumberOrString(conflict, "resolvedAtTurn", "?"),
+                            DescribeReward(conflict["rewardAudit"] as JsonObject),
+                            string.IsNullOrWhiteSpace(selector) ? "не указано" : detailCommandBuilder(selector)
+                        ]
+                    };
                 })
                 .ToList()
         };
@@ -1938,6 +2255,46 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         return end > start && int.TryParse(text[start..end], out turn);
     }
 
+    private static string SafePlayerText(string? value, string fallback)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return fallback;
+
+        var trimmed = value.Trim();
+        return IsPlayerSafeSpiritualText(trimmed) ? trimmed : fallback;
+    }
+
+    private static bool IsPlayerSafeSpiritualText(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return true;
+
+        var lower = value.Trim().ToLowerInvariant();
+        return !lower.Contains("hidden_", StringComparison.Ordinal) &&
+               !lower.Contains("secret_", StringComparison.Ordinal) &&
+               !lower.Contains("internal_", StringComparison.Ordinal) &&
+               !lower.Contains("gm_only", StringComparison.Ordinal) &&
+               !lower.Contains("gm-only", StringComparison.Ordinal) &&
+               !lower.Contains("gm only", StringComparison.Ordinal) &&
+               !lower.Contains("gmonly", StringComparison.Ordinal) &&
+               !lower.Contains("gmthoughts", StringComparison.Ordinal) &&
+               !lower.Contains("gm thoughts", StringComparison.Ordinal) &&
+               !lower.Contains("jsonexception", StringComparison.Ordinal) &&
+               !lower.Contains("json поврежд", StringComparison.Ordinal) &&
+               !lower.Contains("path:", StringComparison.Ordinal) &&
+               !lower.Contains("linenumber", StringComparison.Ordinal) &&
+               !lower.Contains("bytepositioninline", StringComparison.Ordinal) &&
+               !lower.Contains("game_state/", StringComparison.Ordinal) &&
+               !lower.Contains(".json", StringComparison.Ordinal) &&
+               !lower.Contains("dto", StringComparison.Ordinal) &&
+               !lower.Contains("api", StringComparison.Ordinal) &&
+               !lower.Contains("endpoint", StringComparison.Ordinal) &&
+               !lower.Contains("protocol", StringComparison.Ordinal) &&
+               !lower.Contains("debug", StringComparison.Ordinal) &&
+               !lower.Contains("requestid", StringComparison.Ordinal) &&
+               !lower.Contains("actiontype", StringComparison.Ordinal);
+    }
+
     private static string SafeChronicleText(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -2123,6 +2480,155 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         return $"{DescribeCurrency(GetString(audit, "currency", "?"))}: {GetNumberOrString(audit, "finalAmount", "0")}";
     }
+
+    private static string DescribeRewardWithReason(JsonObject? audit)
+    {
+        var reward = DescribeReward(audit);
+        if (audit == null)
+            return reward;
+
+        var reason = SafePlayerText(
+            FirstNonEmpty(GetString(audit, "reason", ""), GetString(audit, "rewardReason", "")),
+            string.Empty);
+        return string.IsNullOrWhiteSpace(reason) ? reward : $"{reward}; {reason}";
+    }
+
+    private static string DescribeConflictLead(JsonObject? active, string sidePropertyName)
+    {
+        var lead = (active?[sidePropertyName] as JsonObject)?["leadContestant"] as JsonObject;
+        if (lead == null)
+            return "не указан";
+
+        var displayName = SafePlayerText(GetString(lead, "displayName", ""), string.Empty);
+        if (!string.IsNullOrWhiteSpace(displayName))
+            return displayName;
+
+        var actorType = GetString(lead, "actorType", "");
+        if (!string.IsNullOrWhiteSpace(actorType))
+            return DescribeActorType(actorType);
+
+        return SafePlayerText(GetString(lead, "actorId", ""), "не указан");
+    }
+
+    private static string DescribeExchangeActionPointCost(JsonObject exchange)
+    {
+        if (exchange["actionPointCost"] is JsonObject cost)
+        {
+            var parts = new List<string>();
+            if (TryGetInt(cost["player"], out var playerCost))
+                parts.Add($"душа {playerCost} ОД");
+            if (TryGetInt(cost["opposition"], out var oppositionCost))
+                parts.Add($"противник {oppositionCost} ОД");
+            if (TryGetInt(cost["total"], out var totalCost))
+                parts.Add($"всего {totalCost} ОД");
+            if (parts.Count > 0)
+                return string.Join("; ", parts);
+        }
+
+        if (TryGetInt(exchange["actionPointCost"], out var plainCost))
+            return $"{plainCost} ОД";
+        if (TryGetInt(exchange["actionPointImpact"], out var impact))
+            return $"{impact} ОД";
+
+        return "не указана";
+    }
+
+    private static string DescribeExchangeCounterplay(string operationType) =>
+        operationType.Trim().ToLowerInvariant() switch
+        {
+            "pressure" => $"{DescribeArt("guard")} или {DescribeArt("counter")} удерживают давление",
+            "guard" => $"{DescribeArt("maneuver")} ищет обход защиты",
+            "counter" => "лучший ответ - не дать явного входящего удара",
+            "maneuver" => $"{DescribeArt("pressure")} или встречный манёвр спорят за позицию",
+            "binding" or "force_binding" => $"{DescribeArt("break_binding")} или {DescribeArt("counter")} ломают оковы",
+            "break_binding" => $"{DescribeArt("pressure")} мешает спокойно снять оковы",
+            _ => "зависит от заявок сторон"
+        };
+
+    private static string DescribeRecentResolutionState(string state) =>
+        state.Trim().ToLowerInvariant() switch
+        {
+            "resolved" or "complete" or "completed" => "решён",
+            "active" => "идёт",
+            "abandoned" => "оставлен",
+            "cancelled" or "canceled" => "отменён",
+            "repair_cancelled" => "отменён восстановлением",
+            "stale" => "устарел",
+            _ => string.IsNullOrWhiteSpace(state) ? "не указано" : state
+        };
+
+    private static string DescribePlayerOutcome(string outcome) =>
+        outcome.Trim().ToLowerInvariant() switch
+        {
+            "victory" or "player_victory" or "success" => "победа",
+            "defeat" or "loss" or "player_defeat" => "поражение",
+            "draw" or "stalemate" => "ничья",
+            "escaped" => "отступление",
+            "abandoned" => "оставлено",
+            "partial_success" => "частичный успех",
+            _ => string.IsNullOrWhiteSpace(outcome) ? "не указано" : outcome
+        };
+
+    private static int GetArtTier(JsonObject? standardArts, string artId) =>
+        standardArts == null ? 0 : GetInt(standardArts[artId]);
+
+    private static int GetMaxUnlockedArtTier(JsonObject? combatProfile)
+    {
+        if (combatProfile == null)
+            return 0;
+
+        var enlightenmentRank = Math.Max(
+            GetInt(combatProfile["enlightenmentTier"]),
+            GetInt(combatProfile["enlightenmentRank"]));
+        var radianceRank = Math.Max(
+            GetInt(combatProfile["radianceTier"]),
+            GetInt(combatProfile["radianceRank"]));
+        var retainedRadianceRank = Math.Max(
+            GetInt(combatProfile["retainedRadianceTier"]),
+            GetInt(combatProfile["retainedRadianceRank"]));
+
+        return Math.Max(
+            ResolveUnlockedTierFromRanks(AfterlifeSpiritualConflictState.EnlightenmentRanks, enlightenmentRank),
+            Math.Max(
+                ResolveUnlockedTierFromRanks(AfterlifeSpiritualConflictState.RadianceRanks, radianceRank),
+                ResolveUnlockedTierFromRanks(AfterlifeSpiritualConflictState.RadianceRanks, retainedRadianceRank)));
+    }
+
+    private static int ResolveUnlockedTierFromRanks(
+        IEnumerable<AfterlifeSpiritualConflictState.RankDefinition> ranks,
+        int rank) =>
+        ranks
+            .Where(definition => definition.Rank <= rank)
+            .Select(definition => definition.UnlocksArtTier)
+            .DefaultIfEmpty(0)
+            .Max();
+
+    private static string DescribeCombatRanks(JsonObject? combatProfile)
+    {
+        if (combatProfile == null)
+            return "нет профиля";
+
+        return $"Просветление {GetNumberOrString(combatProfile, "enlightenmentTier", "0")}; " +
+               $"Сияние {GetNumberOrString(combatProfile, "radianceTier", "0")}; " +
+               $"Средоточие {GetNumberOrString(combatProfile, "spiritFocusTier", "0")}; " +
+               $"открытый тир {GetMaxUnlockedArtTier(combatProfile)}";
+    }
+
+    private static string DescribeStandardArtUse(string artId) =>
+        artId.Trim().ToLowerInvariant() switch
+        {
+            "pressure" => "усиливает прямое духовное давление и ухудшает напряжение противника",
+            "guard" => "держит сторону души от входящего вреда и снижает напряжение",
+            "counter" => "разворачивает конкретное входящее действие в контрприём",
+            "maneuver" => "меняет позицию конфликта без грубого подавления",
+            "binding" => "накладывает оковы, когда душа получила рычаг",
+            "force_binding" => "усиливает контроль и удерживает противника в оковах",
+            "break_binding" => "ломает или ослабляет чужие духовные оковы",
+            "incarnation_resistance" => "сопротивляется принудительному воплощению",
+            "champion_coordination" => "помогает стороне, когда за душу действует чемпион",
+            "recover_spiritual_power" => "собирает Средоточие и возвращает запас ОД",
+            _ => "применяется по контексту духовного боя"
+        };
 
     private static string DescribeArtCost(string artId) =>
         artId.Trim().ToLowerInvariant() switch
@@ -2492,6 +2998,172 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         return !IsHiddenPlayerFacingVisibility(visibility);
     }
 
+    private static IReadOnlyList<JsonObject> GetVisibleExchangeLog(JsonObject? active)
+    {
+        if (active?["exchangeLog"] is not JsonArray exchangeLog)
+            return [];
+
+        return exchangeLog
+            .OfType<JsonObject>()
+            .Where(IsSpiritualDetailObjectVisibleToPlayer)
+            .ToList();
+    }
+
+    private static IReadOnlyList<JsonObject> GetVisibleRecentConflicts(JsonNode? root)
+    {
+        if (root?["recentConflicts"] is not JsonArray recent)
+            return [];
+
+        return recent
+            .OfType<JsonObject>()
+            .Where(IsSpiritualDetailObjectVisibleToPlayer)
+            .ToList();
+    }
+
+    private static bool IsSpiritualDetailObjectVisibleToPlayer(JsonObject item)
+    {
+        if (IsFalseFlag(item["isPlayerVisible"]) ||
+            IsFalseFlag(item["playerVisible"]) ||
+            IsFalseFlag(item["visibleToPlayer"]) ||
+            IsFalseFlag(item["visibleForPlayer"]))
+        {
+            return false;
+        }
+
+        if (IsTrueFlag(item["isHidden"]) ||
+            IsTrueFlag(item["hidden"]) ||
+            IsTrueFlag(item["isSecret"]) ||
+            IsTrueFlag(item["secret"]) ||
+            IsTrueFlag(item["gmOnly"]) ||
+            IsTrueFlag(item["isGmOnly"]) ||
+            IsTrueFlag(item["internal"]) ||
+            IsTrueFlag(item["isInternal"]))
+        {
+            return false;
+        }
+
+        return !IsHiddenPlayerFacingVisibility(GetString(item, "visibility", "")) &&
+               !IsHiddenPlayerFacingVisibility(GetString(item, "audience", ""));
+    }
+
+    private static string SpiritualExchangeSelector(JsonObject exchange) =>
+        FirstSafePlayerText(
+            GetString(exchange, "exchangeId", ""),
+            GetString(exchange, "eventId", ""),
+            GetString(exchange, "id", ""),
+            GetString(exchange, "displayName", ""));
+
+    private static string SpiritualExchangeDisplayName(JsonObject exchange, string fallback) =>
+        SafePlayerText(
+            FirstNonEmpty(GetString(exchange, "displayName", ""), SpiritualExchangeSelector(exchange), fallback),
+            SafePlayerText(fallback, "обмен"));
+
+    private static JsonObject? FindSpiritualExchange(IEnumerable<JsonObject> exchanges, string selector)
+    {
+        var normalized = NormalizeSelector(selector);
+        if (string.IsNullOrWhiteSpace(normalized) || !IsPlayerSafeSpiritualText(normalized))
+            return null;
+
+        return exchanges.FirstOrDefault(exchange =>
+            SelectorMatches(
+                normalized,
+                SpiritualExchangeSelector(exchange),
+                GetString(exchange, "exchangeId", ""),
+                GetString(exchange, "eventId", ""),
+                GetString(exchange, "id", ""),
+                GetString(exchange, "displayName", "")));
+    }
+
+    private static string RecentConflictSelector(JsonObject conflict) =>
+        FirstSafePlayerText(
+            GetString(conflict, "conflictId", ""),
+            GetString(conflict, "eventId", ""),
+            GetString(conflict, "id", ""),
+            GetString(conflict, "displayName", ""));
+
+    private static string RecentConflictDisplayName(JsonObject conflict, string fallback) =>
+        SafePlayerText(
+            FirstNonEmpty(GetString(conflict, "displayName", ""), RecentConflictSelector(conflict), fallback),
+            SafePlayerText(fallback, "итог"));
+
+    private static JsonObject? FindRecentConflict(IEnumerable<JsonObject> conflicts, string selector)
+    {
+        var normalized = NormalizeSelector(selector);
+        if (string.IsNullOrWhiteSpace(normalized) || !IsPlayerSafeSpiritualText(normalized))
+            return null;
+
+        return conflicts.FirstOrDefault(conflict =>
+            SelectorMatches(
+                normalized,
+                RecentConflictSelector(conflict),
+                GetString(conflict, "conflictId", ""),
+                GetString(conflict, "eventId", ""),
+                GetString(conflict, "id", ""),
+                GetString(conflict, "displayName", "")));
+    }
+
+    private static JsonObject? ResolveStandardArts(JsonObject? combatProfile) =>
+        combatProfile?["standardArts"] as JsonObject ??
+        combatProfile?["spiritualArts"] as JsonObject ??
+        combatProfile?["arts"] as JsonObject;
+
+    private static AfterlifeSpiritualConflictState.SpiritualArtDefinition? FindStandardSpiritualArt(string selector)
+    {
+        var normalized = NormalizeSelector(selector);
+        if (string.IsNullOrWhiteSpace(normalized))
+            return null;
+
+        return AfterlifeSpiritualConflictState.SpiritualArts.FirstOrDefault(art =>
+            SelectorMatches(normalized, art.ArtId, art.DisplayName, DescribeArt(art.ArtId)));
+    }
+
+    private static string SpecialArtSelector(JsonObject art) =>
+        FirstSafePlayerText(
+            GetString(art, "artId", ""),
+            GetString(art, "specialArtId", ""),
+            GetString(art, "id", ""),
+            GetString(art, "displayName", ""));
+
+    private static string SpecialArtDisplayName(JsonObject art, string fallback) =>
+        SafePlayerText(
+            FirstNonEmpty(GetString(art, "displayName", ""), SpecialArtSelector(art), fallback),
+            SafePlayerText(fallback, "особое искусство"));
+
+    private static JsonObject? FindSpecialArt(JsonArray? learnedSpecialArts, string selector)
+    {
+        var normalized = NormalizeSelector(selector);
+        if (string.IsNullOrWhiteSpace(normalized) || learnedSpecialArts == null || !IsPlayerSafeSpiritualText(normalized))
+            return null;
+
+        return learnedSpecialArts
+            .OfType<JsonObject>()
+            .Where(IsSpiritualDetailObjectVisibleToPlayer)
+            .FirstOrDefault(art =>
+                SelectorMatches(
+                    normalized,
+                    SpecialArtSelector(art),
+                    GetString(art, "artId", ""),
+                    GetString(art, "specialArtId", ""),
+                    GetString(art, "id", ""),
+                    GetString(art, "displayName", "")));
+    }
+
+    private static bool IsExchangeDetailToken(string token) =>
+        IsDetailToken(token, "обмен", "exchange", "запись", "entry", "лог", "log");
+
+    private static bool IsRecentConflictDetailToken(string token) =>
+        IsDetailToken(token, "итог", "result", "recent", "конфликт", "conflict");
+
+    private static bool IsStandardArtDetailToken(string token) =>
+        IsDetailToken(token, "искусство", "art", "приём", "standard", "деталь", "detail");
+
+    private static bool IsSpecialArtDetailToken(string token) =>
+        IsDetailToken(token, "особое", "special");
+
+    private static bool IsDetailToken(string token, params string[] candidates) =>
+        !string.IsNullOrWhiteSpace(token) &&
+        candidates.Any(candidate => string.Equals(token, candidate, StringComparison.OrdinalIgnoreCase));
+
     private static string ProfileSelector(JsonObject profile) =>
         FirstNonEmpty(
             GetString(profile, "actorId", ""),
@@ -2603,6 +3275,21 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     private static string BuildInboxNotificationDetailCommand(string notificationId) =>
         "/afterlife_inbox уведомление " + FormatCommandArgument(notificationId);
 
+    private static string BuildConflictExchangeDetailCommand(string selector) =>
+        "/spiritual_conflict обмен " + FormatCommandArgument(selector);
+
+    private static string BuildCombatLogExchangeDetailCommand(string selector) =>
+        "/spiritual_combat_log обмен " + FormatCommandArgument(selector);
+
+    private static string BuildCombatLogRecentDetailCommand(string selector) =>
+        "/spiritual_combat_log итог " + FormatCommandArgument(selector);
+
+    private static string BuildStandardArtDetailCommand(string selector) =>
+        "/spiritual_arts искусство " + FormatCommandArgument(selector);
+
+    private static string BuildSpecialArtDetailCommand(string selector) =>
+        "/spiritual_arts особое " + FormatCommandArgument(selector);
+
     private static string FormatCommandArgument(string value)
     {
         var trimmed = value.Trim();
@@ -2615,6 +3302,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
     private static string FirstNonEmpty(params string?[] values) =>
         values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+
+    private static string FirstSafePlayerText(params string?[] values) =>
+        values
+            .Select(static value => SafePlayerText(value, string.Empty))
+            .FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
 
     private static bool SelectorMatches(string normalizedSelector, params string[] candidates) =>
         candidates.Any(candidate => string.Equals(normalizedSelector, NormalizeSelector(candidate), StringComparison.OrdinalIgnoreCase));
