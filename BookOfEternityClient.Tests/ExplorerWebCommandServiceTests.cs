@@ -3179,10 +3179,12 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("remainingUses=1", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("break_binding", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Клятва подсвечена", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("ordinary_visible_roll_reason", payload, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("mark_oath_flare_001", payload, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("visible_condition_roll_source_marker", payload, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("guard_tempo_window_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("ordinary_visible_roll_reason", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("mark_oath_flare_001", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("visible_condition_roll_source_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guard_tempo_window_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("exchange_hidden_roll_source_marker_001", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_condition_marker", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_summary_legacy_marker", text, StringComparison.OrdinalIgnoreCase);
