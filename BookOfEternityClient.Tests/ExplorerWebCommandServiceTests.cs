@@ -106,6 +106,52 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_EffectsOverview_AddsEffectDetailActions()
+    {
+        await SeedMortalEffectsDetailStateAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/эффекты"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains(result.Actions, action =>
+            action.Label.Contains("Магический резонанс", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/эффекты эффект resonance_1", StringComparison.OrdinalIgnoreCase) &&
+            action.Style == UiActionStyle.Secondary &&
+            action.RequiresConfirmation == false);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_EffectDetail_RendersStructuredEffectDetails()
+    {
+        await SeedMortalEffectsDetailStateAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/эффекты эффект resonance_1"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal("/эффекты эффект resonance_1", result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Магический резонанс", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Руническая перчатка подсвечивает следы магии.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Длительность", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("До полудня", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Источник", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Руническая перчатка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Структурные бонусы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тип бонуса", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Восприятие", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Боевые эффекты", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Резонансный толчок", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сбивает концентрацию цели.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Actions, action =>
+            action.Label.Contains("Назад", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/эффекты", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_CombatOverview_ExposesEnemyAllyAndLogDrilldownActions()
     {
         await SeedRichMortalCombatFilesAsync();
@@ -479,6 +525,158 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_PassiveSkillDetail_RendersStructuredBonusesWithLocalizedFields()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_passive.json", """
+        {
+          "passiveSkillChanges": [
+            {
+              "skillId": "skill_aristocratic_etiquette",
+              "skillName": "Аристократический этикет",
+              "skillDescription": "Знание придворных обращений и допустимых угроз в салонах знати.",
+              "type": "Utility",
+              "group": "Социальные навыки",
+              "structuredBonuses": [
+                {
+                  "targetType": "characteristic",
+                  "characteristic": "persuasion",
+                  "valueType": "Flat",
+                  "value": 1,
+                  "source": "Аристократический этикет",
+                  "summary": "Убеждение +1 в сценах с дворянами"
+                }
+              ],
+              "playerStatBonus": "Убеждение +1 в сценах с дворянами"
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/навыки навык skill_aristocratic_etiquette"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Структурные бонусы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тип цели", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("характеристика", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Характеристика", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Убеждение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тип значения", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("плоский бонус", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("persuasion", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("targetType", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("???", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ActiveSkillDetail_LocalizesScalingCharacteristic()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_active.json", """
+        {
+          "activeSkillChanges": [
+            {
+              "skillId": "skill_salon_pressure",
+              "skillName": "Салонное давление",
+              "skillDescription": "Принуждает собеседника уступить, не переходя к открытому конфликту.",
+              "category": "Utility",
+              "level": 2,
+              "scalingCharacteristic": "persuasion"
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/skills skill skill_salon_pressure"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Масштабирование", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Убеждение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("persuasion", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_FactionDetail_RendersCuratedPlayerFacingFieldsWithoutTechnicalDump()
+    {
+        await SeedRichMortalReferenceDetailFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", """
+        {
+          "factions": [
+            {
+              "factionId": "faction_city_watch",
+              "name": "Городская стража",
+              "description": "Стража удерживает северные ворота и ищет свидетелей.",
+              "image_prompt": "A medieval guard barracks with blue banners",
+              "factionColor": "#c79a3b",
+              "isPlayerFaction": false,
+              "developmentArchetype": "Economic",
+              "level": 3,
+              "reputation": 180,
+              "reputationDescription": "Смотрят на героя как на полезного свидетеля.",
+              "playerRank": "доверенный свидетель",
+              "factionStrength": 220,
+              "powerProfile": {
+                "military": 42,
+                "economic": 31,
+                "social": 27,
+                "covert": 12,
+                "logistics": 18,
+                "stability": 35
+              },
+              "metaResources": {
+                "coins": {
+                  "displayName": "Монеты",
+                  "currentStock": 450,
+                  "incomePerTurn": 25,
+                  "upkeepPerTurn": 7
+                }
+              },
+              "ranks": [
+                {
+                  "rankName": "Доверенный свидетель",
+                  "branch": "Городская стража",
+                  "benefits": [
+                    "может просить патруль о помощи"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/фракции фракция faction_city_watch"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Contains("Фракция: Городская стража", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стража удерживает северные ворота", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Репутация", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Смотрят на героя как на полезного свидетеля", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сила фракции", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Монеты", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("может просить патруль о помощи", text, StringComparison.OrdinalIgnoreCase);
+
+        foreach (var forbidden in new[]
+                 {
+                     "деталь:",
+                     "image_prompt",
+                     "factionColor",
+                     "#c79a3b",
+                     "isPlayerFaction",
+                     "developmentArchetype",
+                     "A medieval guard barracks"
+                 })
+        {
+            Assert.DoesNotContain(forbidden, text, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Transport_TranslatesCanonicalTypeAndAvailabilityInTableCells()
     {
         await SeedCanonicalMortalSummaryFilesAsync();
@@ -528,12 +726,171 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         await SeedShiningAbodeFilesAsync();
         await SeedAfterlifeCombatAndEntityFilesAsync();
 
-        var expected = await BuildDirectMigratedResultAsync(command);
-        var actual = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+        var expected = await BuildDirectMigratedResultAsync(command, advancedEnabled: true);
+        var actual = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command, AdvancedEnabled: true));
 
         Assert.True(
             JsonNode.DeepEquals(ToJsonNode(expected), ToJsonNode(WithoutInteractiveSession(actual))),
             $"Web command service diverged from the shared DTO builder for {command}.");
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Status_UsesPlayerFacingRealmLabel()
+    {
+        await SeedUniversalMetaFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/status"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Царство", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Realm", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Stats_RendersCharacteristicsWithoutRawJson()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/misc/characteristics.json", """
+        {
+          "setCharacteristics": {
+            "strength": 3,
+            "perception": 5,
+            "willpower": 4
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/computed_characteristics.json", """
+        {
+          "healthMax": 120,
+          "carryWeight": 18,
+          "arcaneFocus": 7
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/stats", AdvancedEnabled: false));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Характеристики", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сила", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Восприятие", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Воля", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Расчётные показатели", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Максимум здоровья", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Грузоподъёмность", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Магический фокус", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Lives_RendersLifeHistoryRowsWithoutRawJson()
+    {
+        await SeedUniversalMetaFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/lives", AdvancedEnabled: false));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("История жизней", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Первая жизнь", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Инкарнация", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("soul_state", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/codex", "Первый знак", "Тестовая запись кодекса")]
+    [InlineData("/achievements", "Первое испытание", "Проверить браузерный вывод")]
+    [InlineData("/behavior", "Осторожный переговорщик", "избегает насилия")]
+    public async Task ExecuteAsync_GenericJsonMetaCommands_RenderReadableContentWithoutRawJson(
+        string command,
+        string expectedTitle,
+        string expectedDetail)
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/player_behavior.json", """
+        {
+          "playerBehaviorAssessment": {
+            "dominantPattern": "Осторожный переговорщик",
+            "summary": "Игрок избегает насилия и собирает сведения перед риском."
+          },
+          "historyManipulationCoefficient": 1.25
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/achievements.json", """
+        {
+          "unlockedAchievements": [
+            {
+              "achievementName": "Первое испытание",
+              "description": "Проверить браузерный вывод",
+              "status": "unlocked"
+            }
+          ],
+          "trackedProgress": [
+            {
+              "achievementName": "Следующий шаг",
+              "description": "Продолжить аудит команд",
+              "current": 1,
+              "total": 3
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command, AdvancedEnabled: false));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains(expectedTitle, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(expectedDetail, text, StringComparison.OrdinalIgnoreCase);
+        if (command.Equals("/behavior", StringComparison.OrdinalIgnoreCase))
+            Assert.Contains("1.25", text, StringComparison.OrdinalIgnoreCase);
+        foreach (var forbidden in new[] { "JsonObject", "entries", "codexEntries", "unlockedAchievements", "trackedProgress" })
+            Assert.DoesNotContain(forbidden, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [MemberData(nameof(PlayerDefaultReadOnlyCommands))]
+    public async Task ExecuteAsync_PlayerDefaultReadOnlyCommands_RenderPlayerFacingDefaultOutput(
+        string commandId,
+        string command,
+        ExplorerCommandGroup group)
+    {
+        await SeedPlayerDefaultCommandAuditFilesAsync(commandId, group);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command, AdvancedEnabled: false));
+
+        var violations = CollectPlayerFacingOutputViolations(result);
+        Assert.True(
+            violations.Count == 0,
+            $"{commandId} ({command}) has non-player-facing default browser output:{Environment.NewLine}{string.Join(Environment.NewLine, violations)}");
+    }
+
+    [Theory]
+    [MemberData(nameof(PlayerDefaultMutatingCommands))]
+    public async Task ExecuteAsync_PlayerDefaultMutatingCommands_RenderPlayerFacingDefaultPromptOrStatus(
+        string commandId,
+        string command,
+        ExplorerCommandGroup group)
+    {
+        await SeedPlayerDefaultCommandAuditFilesAsync(commandId, group);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command, AdvancedEnabled: false));
+
+        var violations = CollectPlayerFacingOutputViolations(result, allowRequiresInput: true);
+        Assert.True(
+            violations.Count == 0,
+            $"{commandId} ({command}) has non-player-facing default browser prompt/status:{Environment.NewLine}{string.Join(Environment.NewLine, violations)}");
     }
 
     [Fact]
@@ -635,8 +992,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(CommandExecutionState.Pending, result.State);
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Активный ход GM", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("input/turn_request.json", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("game_state/control/pending_turn_snapshot.json", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("input/turn_request.json", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/control/pending_turn_snapshot.json", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -1546,11 +1903,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(table.Rows, static row => row.Cells.SequenceEqual(["Факел", "utility", "2", "100%", "✓"]));
         Assert.Contains(table.Rows, static row => row.Cells.SequenceEqual(["Сломанный лук", "weapon", "1", "0%", "⚠ СЛОМАН"]));
 
-        var rawBlocks = result.Blocks.OfType<UiRawJsonBlock>().ToList();
-        Assert.Contains(rawBlocks, static raw => raw.Title == "Полный JSON items.json");
-        Assert.Contains(rawBlocks, static raw => raw.Title == "Ресурсы предметов");
-        Assert.Contains(rawBlocks, static raw => raw.Title == "Связи предметов");
-        Assert.Contains(rawBlocks, static raw => raw.Title == "Тексты предметов");
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
 
         Assert.DoesNotContain("game_state/inventory/", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
     }
@@ -1586,12 +1939,71 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var table = Assert.Single(result.Blocks.OfType<UiTableBlock>());
         Assert.Equal("📦 Предметы (1)", table.Title);
         Assert.Contains(table.Rows, static row => row.Cells.SequenceEqual(["Факел", "utility", "2", string.Empty, "✓"]));
-        Assert.Contains(result.Blocks.OfType<UiRawJsonBlock>(), static raw => raw.Title == "Полный JSON items.json");
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("отсутствует", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/inventory/", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("item_resources.json", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("item_bonds.json", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("item_text_updates.json", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Inventory_AddsItemDetailActionsForVisibleItems()
+    {
+        await SeedInventoryItemDetailStateAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/инв"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains(result.Actions, action =>
+            action.Label.Contains("Руническая перчатка", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/инв предмет runic_glove_1", StringComparison.OrdinalIgnoreCase) &&
+            action.Style == UiActionStyle.Secondary &&
+            action.RequiresConfirmation == false);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_InventoryItemDetail_RendersReadableItemAndSidecarDetails()
+    {
+        await SeedInventoryItemDetailStateAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/инв предмет runic_glove_1"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal("/инв предмет runic_glove_1", result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Руническая перчатка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("На тыльной стороне перчатки мерцает рунический контур.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тип", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Артефакт", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Качество", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Rare", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Бонусы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Чувство магических потоков +2", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Структурные бонусы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тип бонуса", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тип значения", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тип модификатора", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Боевые эффекты", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Рунный отклик", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сбивает концентрацию цели.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Особые свойства", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Подсвечивает свежие следы.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Содержимое", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("SIDE_TEXT_MARKER", text, StringComparison.Ordinal);
+        Assert.Contains("Связь с владельцем", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("12/100", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Записи", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("JOURNAL_MARKER", text, StringComparison.Ordinal);
+        Assert.Contains(result.Actions, action =>
+            action.Label.Contains("Назад", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/инв", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"structuredBonuses\"", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"combatEffect\"", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -1835,9 +2247,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(UiActionStyle.Secondary, unequipAction.Style);
         Assert.False(unequipAction.RequiresConfirmation);
 
-        Assert.DoesNotContain(result.Actions, action => action.Label.Contains("Факел", StringComparison.OrdinalIgnoreCase));
-        Assert.DoesNotContain(result.Actions, action => action.Label.Contains("Сломанный лук", StringComparison.OrdinalIgnoreCase));
-        Assert.DoesNotContain(result.Actions, action => action.Label.Contains("Реликвия души", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Actions, action => action.Label.StartsWith("Экипировать", StringComparison.OrdinalIgnoreCase) && action.Label.Contains("Факел", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Actions, action => action.Label.StartsWith("Экипировать", StringComparison.OrdinalIgnoreCase) && action.Label.Contains("Сломанный лук", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Actions, action => action.Label.StartsWith("Экипировать", StringComparison.OrdinalIgnoreCase) && action.Label.Contains("Реликвия души", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Actions, action => action.Label.StartsWith("Снять", StringComparison.OrdinalIgnoreCase) && action.Label.Contains("Реликвия души", StringComparison.OrdinalIgnoreCase));
         Assert.All(result.Actions, action =>
         {
             Assert.DoesNotContain("/", action.Label, StringComparison.Ordinal);
@@ -2211,7 +2624,12 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        Assert.Empty(result.Actions);
+        Assert.Contains(result.Actions, action =>
+            action.Label.Contains("Серафина", StringComparison.OrdinalIgnoreCase) &&
+            action.Label.Contains("Дневник / мысли", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/npc section npc_serafina journal", StringComparison.OrdinalIgnoreCase) &&
+            action.Style == UiActionStyle.Secondary &&
+            action.RequiresConfirmation == false);
 
         var sectionTable = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
         Assert.Equal(["НПС", "Раздел", "Состояние"], sectionTable.Columns);
@@ -2243,6 +2661,29 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain(".json", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("/npc_talk", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("/npc_trade", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcSectionDetail_ShowsOnlyRequestedDrilldownSection()
+    {
+        await SeedRichNpcDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc section npc_serafina journal"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal("/npc section npc_serafina journal", result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Серафина — Дневник / мысли", text, StringComparison.Ordinal);
+        Assert.Contains("Сомневается, стоит ли доверять письму.", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Сделка на рассвете", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Проверяет печати у северных ворот", text, StringComparison.Ordinal);
+        Assert.Contains(result.Actions, action =>
+            action.Label.Contains("Назад", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/npc", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("game_state/npcs", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -3205,7 +3646,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         await SeedAfterlifeCombatAndEntityFilesAsync();
         await WriteAfterlifeConflictStateWithCombatConditionsAsync();
 
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_action"));
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_action", AdvancedEnabled: true));
 
         var payload = SerializeResult(result);
         Assert.Equal(CommandExecutionState.RequiresInput, result.State);
@@ -4040,6 +4481,55 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         }
         """);
     }
+
+    private Task SeedMortalEffectsDetailStateAsync() =>
+        _fs.WriteFileAtomicAsync("game_state/player/effects.json", """
+        {
+          "activeEffects": [
+            {
+              "effectId": "resonance_1",
+              "name": "Магический резонанс",
+              "effectDescription": "Руническая перчатка подсвечивает следы магии.",
+              "duration": "До полудня",
+              "source": "Руническая перчатка",
+              "severity": "minor",
+              "remainingTurns": 3,
+              "structuredBonuses": [
+                {
+                  "bonusType": "Characteristic",
+                  "target": "Восприятие",
+                  "value": -1,
+                  "valueType": "Flat",
+                  "modifierType": "temporary",
+                  "source": "Головная боль после тяжёлых снов",
+                  "summary": "Восприятие -1"
+                }
+              ],
+              "combatEffect": {
+                "actionName": "Резонансный толчок",
+                "isActivatedEffect": false,
+                "effects": [
+                  {
+                    "effectType": "PoiseDamage",
+                    "poiseDamage": 1,
+                    "targetTypeDisplayName": "противник",
+                    "effectDescription": "Сбивает концентрацию цели."
+                  }
+                ]
+              }
+            }
+          ],
+          "wounds": [],
+          "temporaryConditions": [
+            {
+              "conditionId": "headache_1",
+              "name": "Головная боль после тяжёлых снов",
+              "effectDescription": "-1 к Восприятию до полудня.",
+              "duration": "До 12:00"
+            }
+          ]
+        }
+        """);
 
     private async Task SeedCanonicalMortalSummaryFilesAsync()
     {
@@ -5459,6 +5949,133 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         """);
     }
 
+    private async Task SeedInventoryItemDetailStateAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+        {
+          "equipment": {
+            "hands": "runic_glove_1"
+          },
+          "items": [
+            {
+              "existedId": "runic_glove_1",
+              "itemId": "runic_glove_1",
+              "name": "Руническая перчатка",
+              "description": "На тыльной стороне перчатки мерцает рунический контур.",
+              "type": "Артефакт",
+              "quality": "Rare",
+              "weight": 0.3,
+              "price": 450,
+              "durability": "95",
+              "maxDurability": "100",
+              "equipmentSlot": "hands",
+              "group": "Аксессуары",
+              "bonuses": [
+                "Чувство магических потоков +2"
+              ],
+              "effects": [
+                { "name": "Откликается на владельца" }
+              ],
+              "structuredBonuses": [
+                {
+                  "bonusType": "Skill",
+                  "target": "Чувство магических потоков",
+                  "value": 2,
+                  "valueType": "Flat",
+                  "modifierType": "skill",
+                  "source": "Руническая перчатка",
+                  "summary": "Чувство магических потоков +2"
+                }
+              ],
+              "combatEffect": {
+                "actionName": "Рунный отклик",
+                "isActivatedEffect": false,
+                "effects": [
+                  {
+                    "effectType": "PoiseDamage",
+                    "value": 0,
+                    "poiseDamage": 1,
+                    "targetTypeDisplayName": "цель",
+                    "effectDescription": "Сбивает концентрацию цели."
+                  }
+                ]
+              },
+              "customProperties": [
+                {
+                  "interactionType": "onUse",
+                  "targetStateName": "магические следы",
+                  "changeValue": "+1",
+                  "description": "Подсвечивает свежие следы."
+                }
+              ],
+              "specialProperties": [
+                "Перчатка реагирует на владельца."
+              ],
+              "lore": "Вышита тусклым золотом."
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/item_resources.json", """
+        {
+          "entries": [
+            {
+              "itemId": "runic_glove_1",
+              "resource": 3,
+              "maximumResource": 5,
+              "resourceType": "заряды"
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/item_bonds.json", """
+        {
+          "entries": [
+            {
+              "itemId": "runic_glove_1",
+              "ownerBondLevelCurrent": 12,
+              "lastBondChangeReason": "Перчатка откликнулась на владельца.",
+              "fateCards": [
+                {
+                  "name": "Память старого мага",
+                  "description": "Открывает дополнительную подсказку при исследовании рун.",
+                  "isUnlocked": true
+                }
+              ]
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/item_text_updates.json", """
+        {
+          "entries": [
+            {
+              "itemId": "runic_glove_1",
+              "textContent": [
+                "SIDE_TEXT_MARKER: внутри шва спрятана короткая инструкция."
+              ]
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/npcs/item_journals.json", """
+        {
+          "entries": [
+            {
+              "itemId": "runic_glove_1",
+              "journalEntries": [
+                {
+                  "event": "Пробуждение",
+                  "description": "JOURNAL_MARKER: перчатка впервые отозвалась на владельца.",
+                  "spiritVoice": "Тонкий голос просит найти серебряную нить."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+    }
+
     private async Task SeedRichAfterlifeRelicArchiveDrilldownFilesAsync()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
@@ -5642,6 +6259,180 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         }
     }
 
+    public static IEnumerable<object[]> PlayerDefaultReadOnlyCommands()
+    {
+        foreach (var descriptor in ExplorerCommandCatalog.Descriptors)
+        {
+            var metadata = BrowserPlayerCommandMenuBuilder.GetCoverageMetadata(descriptor);
+            if (descriptor.MutationMode != ExplorerCommandMutationMode.ReadOnly ||
+                !string.Equals(metadata.Surface, "player-default", StringComparison.OrdinalIgnoreCase) ||
+                !ExplorerCommandMigrationRegistry.IsBrowserExecutable(descriptor.BrowserStatus))
+            {
+                continue;
+            }
+
+            yield return [descriptor.Id, descriptor.PrimaryAlias, descriptor.Group];
+        }
+    }
+
+    public static IEnumerable<object[]> PlayerDefaultMutatingCommands()
+    {
+        foreach (var descriptor in ExplorerCommandCatalog.Descriptors)
+        {
+            var metadata = BrowserPlayerCommandMenuBuilder.GetCoverageMetadata(descriptor);
+            if (descriptor.MutationMode != ExplorerCommandMutationMode.LocalTurn ||
+                !string.Equals(metadata.Surface, "player-default", StringComparison.OrdinalIgnoreCase) ||
+                !ExplorerCommandMigrationRegistry.IsBrowserExecutable(descriptor.BrowserStatus))
+            {
+                continue;
+            }
+
+            yield return [descriptor.Id, descriptor.PrimaryAlias, descriptor.Group];
+        }
+    }
+
+    private async Task SeedPlayerDefaultCommandAuditFilesAsync(string commandId, ExplorerCommandGroup group)
+    {
+        switch (group)
+        {
+            case ExplorerCommandGroup.MortalWorld:
+                await SeedUniversalMetaFilesAsync();
+                await SeedMortalFilesAsync();
+                await SeedCanonicalMortalSummaryFilesAsync();
+                await SeedRichMortalReferenceDetailFilesAsync();
+                await SeedRichMortalCombatFilesAsync();
+                await SeedRichMortalWorldNewsFilesAsync();
+                await SeedRichMortalPlayerInteractionsFilesAsync();
+                await SeedRichNpcDrilldownFilesAsync();
+                if (string.Equals(commandId, "inventory", StringComparison.OrdinalIgnoreCase))
+                    await SeedInventoryEquipmentItemsAsync();
+                if (string.Equals(commandId, "books", StringComparison.OrdinalIgnoreCase))
+                    await SeedBooksReadingFlowStateAsync();
+                break;
+            case ExplorerCommandGroup.ChaosSea:
+                await SeedUniversalMetaFilesAsync();
+                await SeedChaosSeaFilesAsync();
+                await SeedRichChaosSeaGuardianAbodeDrilldownFilesAsync();
+                break;
+            case ExplorerCommandGroup.ShiningAbode:
+                await SeedShiningAbodeFilesAsync();
+                break;
+            case ExplorerCommandGroup.AfterlifeCombatAndEntities:
+                await SeedAfterlifeCombatAndEntityFilesAsync();
+                break;
+            case ExplorerCommandGroup.SarefStory:
+            case ExplorerCommandGroup.UniversalMeta:
+                await SeedUniversalMetaFilesAsync();
+                await SeedRichAfterlifeRelicArchiveDrilldownFilesAsync();
+                await SeedChaosSeaFilesAsync();
+                await SeedShiningAbodeFilesAsync();
+                await SeedAfterlifeCombatAndEntityFilesAsync();
+                break;
+            default:
+                await SeedUniversalMetaFilesAsync();
+                break;
+        }
+    }
+
+    private static List<string> CollectPlayerFacingOutputViolations(
+        ExplorerCommandResult result,
+        bool allowRequiresInput = false)
+    {
+        var violations = new List<string>();
+        var validState = result.State == CommandExecutionState.Completed ||
+                         (allowRequiresInput && result.State is CommandExecutionState.RequiresInput or CommandExecutionState.Pending or CommandExecutionState.Blocked);
+        if (!validState)
+            violations.Add(allowRequiresInput
+                ? $"state is {result.State}, expected Completed/RequiresInput/Pending/Blocked"
+                : $"state is {result.State}, expected Completed");
+        if (result.Blocks.Count == 0)
+            violations.Add("result has no UI blocks");
+
+        var rawBlocks = result.Blocks.OfType<UiRawJsonBlock>().Select(static block => block.Title).ToList();
+        foreach (var title in rawBlocks)
+            violations.Add($"default output contains raw JSON block: {title}");
+
+        var text = CollectBlockText(result.Blocks) + "\n" + CollectPromptAndNotificationText(result);
+        if (string.IsNullOrWhiteSpace(text))
+            violations.Add("default output has no readable text");
+
+        foreach (var marker in new[]
+                 {
+                     "Подробные сведения доступны в расширенном режиме",
+                     "UiRawJsonBlock",
+                     "JsonObject",
+                     "JsonArray",
+                     "JsonValue",
+                     "game_state/",
+                     ".json",
+                     "image_prompt",
+                     "factionColor",
+                     "gm_thoughts",
+                     "currentRealm",
+                     "Realm",
+                     "DTO",
+                     "API",
+                     "endpoint",
+                     "exception",
+                     "console-bound",
+                     "route tag",
+                     "pending",
+                     "interactive/write",
+                     "Браузерная команда",
+                     "Браузерный протокол",
+                     "protocol",
+                     "contract",
+                     "destructive",
+                     "Артефакты протокола"
+                 })
+        {
+            if (text.Contains(marker, StringComparison.OrdinalIgnoreCase))
+                violations.Add($"default visible text leaks technical marker: {marker}");
+        }
+
+        foreach (var line in text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            if (string.Equals(line, "деталь", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(line, "detail", StringComparison.OrdinalIgnoreCase))
+            {
+                violations.Add("default visible text contains generic detail label");
+                break;
+            }
+        }
+
+        return violations;
+    }
+
+    private static string CollectPromptAndNotificationText(ExplorerCommandResult result)
+    {
+        var parts = new List<string>();
+        foreach (var prompt in result.Prompts)
+        {
+            parts.Add(prompt.Prompt);
+            switch (prompt)
+            {
+                case UiTextInputPrompt textInput:
+                    parts.Add(textInput.Placeholder);
+                    break;
+                case UiSelectionPrompt selection:
+                    foreach (var option in selection.Options)
+                    {
+                        parts.Add(option.Label);
+                        parts.Add(option.Description);
+                    }
+                    break;
+            }
+        }
+
+        foreach (var notification in result.Notifications)
+        {
+            parts.Add(notification.Title);
+            parts.Add(notification.Message);
+        }
+
+        return string.Join("\n", parts);
+    }
+
     private static string CollectBlockText(IEnumerable<UiBlock> blocks)
     {
         var parts = new List<string>();
@@ -5765,7 +6556,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         }
     }
 
-    private async Task<ExplorerCommandResult> BuildDirectMigratedResultAsync(string command)
+    private async Task<ExplorerCommandResult> BuildDirectMigratedResultAsync(string command, bool advancedEnabled = false)
     {
         await _stateManager.RefreshGameStateAsync();
         if (string.Equals(command, "/help", StringComparison.OrdinalIgnoreCase) ||
@@ -5803,21 +6594,21 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         if (ExplorerChaosSeaCommandResultBuilder.CanBuild(command))
         {
-            var chaos = await ExplorerChaosSeaCommandResultBuilder.TryBuildAsync(command, _stateManager, _fs);
+            var chaos = await ExplorerChaosSeaCommandResultBuilder.TryBuildAsync(command, _stateManager, _fs, advancedEnabled);
             if (chaos != null)
                 return chaos;
         }
 
         if (ExplorerShiningAbodeCommandResultBuilder.CanBuild(command))
         {
-            var shining = await ExplorerShiningAbodeCommandResultBuilder.TryBuildAsync(command, _stateManager, _fs);
+            var shining = await ExplorerShiningAbodeCommandResultBuilder.TryBuildAsync(command, _stateManager, _fs, advancedEnabled);
             if (shining != null)
                 return shining;
         }
 
         if (ExplorerAfterlifeCombatCommandResultBuilder.CanBuild(command))
         {
-            var afterlife = await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(command, _stateManager, _fs);
+            var afterlife = await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(command, _stateManager, _fs, advancedEnabled);
             if (afterlife != null)
                 return afterlife;
         }
@@ -5838,6 +6629,53 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
     private static JsonNode ToJsonNode(ExplorerCommandResult result) =>
         JsonSerializer.SerializeToNode(result, JsonOptions)!;
+
+    private static ExplorerCommandResult ApplyExpectedDefaultPlayerSurface(ExplorerCommandResult result, string command)
+    {
+        var descriptor = ExplorerCommandCatalog.FindByAlias(command);
+        if (descriptor == null)
+            return result;
+
+        var metadata = BrowserPlayerCommandMenuBuilder.GetCoverageMetadata(descriptor);
+        if (!string.Equals(metadata.Surface, "player-default", StringComparison.OrdinalIgnoreCase))
+            return result;
+
+        return new ExplorerCommandResult
+        {
+            Command = result.Command,
+            State = result.State,
+            Blocks = RemoveRawJsonBlocksForExpectation(result.Blocks),
+            Actions = result.Actions,
+            Prompts = result.Prompts,
+            Notifications = result.Notifications,
+            InteractiveSession = result.InteractiveSession
+        };
+    }
+
+    private static List<UiBlock> RemoveRawJsonBlocksForExpectation(IEnumerable<UiBlock> blocks)
+    {
+        var filtered = new List<UiBlock>();
+        foreach (var block in blocks)
+        {
+            switch (block)
+            {
+                case UiRawJsonBlock:
+                    continue;
+                case UiPanelBlock panel:
+                    filtered.Add(new UiPanelBlock
+                    {
+                        Title = panel.Title,
+                        Blocks = RemoveRawJsonBlocksForExpectation(panel.Blocks)
+                    });
+                    break;
+                default:
+                    filtered.Add(block);
+                    break;
+            }
+        }
+
+        return filtered;
+    }
 
     private static ExplorerCommandResult WithoutInteractiveSession(ExplorerCommandResult result) => new()
     {

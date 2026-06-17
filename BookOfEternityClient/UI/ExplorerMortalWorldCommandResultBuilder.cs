@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
@@ -99,8 +100,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         return kind switch
         {
-            CommandKind.Inventory => await BuildInventory(commandToken, fs),
-            CommandKind.Npcs => await BuildNpcs(commandToken, fs),
+            CommandKind.Inventory => await BuildInventory(normalizedCommand, fs),
+            CommandKind.Npcs => await BuildNpcs(normalizedCommand, fs),
             CommandKind.Quests => await BuildReferenceBundle(normalizedCommand, fs, new ReferenceCommandDefinition(
                 Title: "Квесты",
                 DetailTitlePrefix: "Квест",
@@ -184,7 +185,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 ])),
             CommandKind.Locations => await BuildLocations(normalizedCommand, fs),
             CommandKind.Transport => await BuildTransport(normalizedCommand, fs),
-            CommandKind.Effects => await BuildEffects(commandToken, fs, stateManager),
+            CommandKind.Effects => await BuildEffects(normalizedCommand, fs, stateManager),
             CommandKind.Combat => await BuildCombat(normalizedCommand, fs),
             CommandKind.Weather => await BuildBundle(commandToken, fs, "Время и погода", [
                 new("game_state/world/world_time.json", "timeOfDay|currentTime", "Время"),
@@ -223,9 +224,174 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     ("Равновесие", EmptyFallback(state.PlayerStatus.PoisePercentage))))
         };
 
-        await AddRawJsonIfPresent(blocks, fs, "game_state/misc/characteristics.json", "JSON: characteristics");
-        await AddRawJsonIfPresent(blocks, fs, "game_state/player/computed_characteristics.json", "JSON: computed_characteristics");
+        await AddStatsTableIfPresent(
+            blocks,
+            fs,
+            "game_state/misc/characteristics.json",
+            "Базовые характеристики",
+            TranslateBaseCharacteristicKey);
+        await AddStatsTableIfPresent(
+            blocks,
+            fs,
+            "game_state/player/computed_characteristics.json",
+            "Расчётные показатели",
+            TranslateComputedCharacteristicKey);
         return Completed(command, blocks);
+    }
+
+    private static async Task AddStatsTableIfPresent(
+        List<UiBlock> blocks,
+        FileSystemManager fs,
+        string path,
+        string title,
+        Func<string, string> translateKey)
+    {
+        var read = await ReadJson(fs, path);
+        if (!read.FileExists)
+            return;
+
+        if (read.Node is not JsonObject obj)
+        {
+            blocks.Add(Message(UiNotificationSeverity.Warning, title, "Запись характеристик найдена, но её не удалось прочитать."));
+            return;
+        }
+
+        var rows = EnumerateStatsProperties(obj)
+            .Where(static property => !IsTechnicalStatsProperty(property.Key))
+            .Select(property => new UiTableRow
+            {
+                Cells = [translateKey(property.Key), FormatStatsValue(property.Value)]
+            })
+            .Where(static row => row.Cells.Count >= 2 && !string.IsNullOrWhiteSpace(row.Cells[1]))
+            .ToList();
+
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = title,
+            Columns = ["Показатель", "Значение"],
+            Rows = rows
+        });
+    }
+
+    private static IEnumerable<KeyValuePair<string, JsonNode?>> EnumerateStatsProperties(JsonObject obj)
+    {
+        var expandedContainers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var property in obj)
+        {
+            if (IsStatsContainerProperty(property.Key) && property.Value is JsonObject nested)
+            {
+                expandedContainers.Add(property.Key);
+                foreach (var nestedProperty in nested)
+                    yield return nestedProperty;
+            }
+        }
+
+        foreach (var property in obj)
+        {
+            if (expandedContainers.Contains(property.Key))
+                continue;
+
+            yield return property;
+        }
+    }
+
+    private static bool IsStatsContainerProperty(string propertyName) =>
+        propertyName.Equals("setCharacteristics", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("characteristics", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("baseCharacteristics", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("computedCharacteristics", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("setComputedCharacteristics", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("stats", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsTechnicalStatsProperty(string propertyName) =>
+        propertyName.Equals("schemaVersion", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("updatedAt", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("lastUpdatedAt", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.StartsWith("_", StringComparison.OrdinalIgnoreCase);
+
+    private static string FormatStatsValue(JsonNode? node)
+    {
+        if (TryGetScalarString(node, out var scalar))
+            return FormatInventoryProtocolValue(scalar);
+
+        if (node is JsonArray array)
+        {
+            var values = array
+                .Select(FormatStatsValue)
+                .Where(static value => !string.IsNullOrWhiteSpace(value))
+                .ToList();
+            return values.Count == 0 ? $"{array.Count} записей" : string.Join("; ", values);
+        }
+
+        if (node is JsonObject obj)
+        {
+            var values = obj
+                .Where(static property => !IsTechnicalStatsProperty(property.Key))
+                .Select(static property => $"{TranslateComputedCharacteristicKey(property.Key)}: {FormatStatsValue(property.Value)}")
+                .Where(static value => !string.IsNullOrWhiteSpace(value))
+                .ToList();
+            return values.Count == 0 ? string.Empty : string.Join("; ", values);
+        }
+
+        return string.Empty;
+    }
+
+    private static string TranslateBaseCharacteristicKey(string key) =>
+        key switch
+        {
+            "strength" => "Сила",
+            "dexterity" => "Ловкость",
+            "agility" => "Проворство",
+            "endurance" or "constitution" => "Выносливость",
+            "perception" => "Восприятие",
+            "intelligence" => "Интеллект",
+            "wisdom" => "Мудрость",
+            "willpower" or "will" => "Воля",
+            "charisma" => "Харизма",
+            "luck" => "Удача",
+            "arcana" => "Аркана",
+            "faith" => "Вера",
+            "spirit" => "Дух",
+            "attractiveness" => "Привлекательность",
+            "trade" => "Торговля",
+            "persuasion" => "Убеждение",
+            "speed" => "Скорость",
+            _ => HumanizeStatsKey(key)
+        };
+
+    private static string TranslateComputedCharacteristicKey(string key) =>
+        key switch
+        {
+            "health" or "healthCurrent" => "Здоровье",
+            "healthMax" or "maxHealth" => "Максимум здоровья",
+            "energy" or "energyCurrent" => "Энергия",
+            "energyMax" or "maxEnergy" => "Максимум энергии",
+            "poise" or "poiseCurrent" => "Равновесие",
+            "poiseMax" or "maxPoise" => "Максимум равновесия",
+            "carryWeight" or "maxCarryWeight" => "Грузоподъёмность",
+            "inventoryWeight" or "currentWeight" => "Вес снаряжения",
+            "arcaneFocus" => "Магический фокус",
+            "physicalDamage" => "Физический урон",
+            "magicDamage" => "Магический урон",
+            "defense" or "armor" => "Защита",
+            "resistance" => "Сопротивление",
+            "initiative" => "Инициатива",
+            "speed" => "Скорость",
+            _ => HumanizeStatsKey(key)
+        };
+
+    private static string HumanizeStatsKey(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key))
+            return "Показатель";
+
+        return string.Concat(key.Select((ch, index) =>
+                index > 0 && char.IsUpper(ch) ? " " + ch : ch.ToString()))
+            .Replace('_', ' ')
+            .Trim();
     }
 
     private static async Task<ExplorerCommandResult> BuildMap(string command, FileSystemManager fs)
@@ -276,6 +442,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         FileSystemManager fs,
         StateManager stateManager)
     {
+        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command.Trim());
         const string title = "Эффекты";
         const string effectsPath = "game_state/player/effects.json";
         SummarySpec[] specs =
@@ -287,6 +454,28 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         var read = await ReadJson(fs, effectsPath);
         var blocks = new List<UiBlock>();
+        var effectEntries = BuildEffectSnapshots(read.Node);
+        var detailRequest = ParseEffectDetailRequest(ExtractCommandRemainder(command));
+        if (detailRequest.Kind == EffectDetailKind.Unknown)
+        {
+            return Completed(command, [
+                Message(UiNotificationSeverity.Warning, title, "Для подробностей используйте команду вида /эффекты эффект <идентификатор>.")
+            ], BuildEffectsBackActions(commandToken));
+        }
+
+        if (detailRequest.Kind == EffectDetailKind.Effect)
+        {
+            var selected = FindEffectSnapshot(effectEntries, detailRequest.Selector);
+            if (selected == null)
+            {
+                return Completed(command, [
+                    Message(UiNotificationSeverity.Warning, title, "Такой эффект не найден.")
+                ], BuildEffectsBackActions(commandToken));
+            }
+
+            return Completed(command, BuildEffectDetailBlocks(selected), BuildEffectsBackActions(commandToken));
+        }
+
         var rows = BuildEffectsSummaryRows(read, specs);
         if (rows.Count > 0)
         {
@@ -320,7 +509,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         else if (read.FileExists && !string.IsNullOrWhiteSpace(read.Error))
             blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Запись эффектов найдена, но не разобрана как JSON. {read.Error}"));
 
-        return Completed(command, blocks);
+        return Completed(command, blocks, BuildEffectDetailActions(commandToken, effectEntries));
     }
 
     private static List<UiTableRow> BuildEffectsSummaryRows(JsonReadResult read, IReadOnlyList<SummarySpec> specs)
@@ -462,8 +651,207 @@ public static class ExplorerMortalWorldCommandResultBuilder
         ];
     }
 
+    private static List<EffectSnapshot> BuildEffectSnapshots(JsonNode? node)
+    {
+        var entries = new List<EffectSnapshot>();
+        var usedSelectors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (node is JsonArray array)
+        {
+            AddEffectSnapshots(entries, usedSelectors, "Активный эффект", array);
+            return entries;
+        }
+
+        if (node is not JsonObject root)
+            return entries;
+
+        AddEffectSnapshots(entries, usedSelectors, "Активный эффект", root["activeEffects"] as JsonArray);
+        AddEffectSnapshots(entries, usedSelectors, "Рана", root["wounds"] as JsonArray);
+        AddEffectSnapshots(entries, usedSelectors, "Временное состояние", root["temporaryConditions"] as JsonArray);
+        return entries;
+    }
+
+    private static void AddEffectSnapshots(
+        List<EffectSnapshot> entries,
+        HashSet<string> usedSelectors,
+        string section,
+        JsonArray? effects)
+    {
+        if (effects == null)
+            return;
+
+        foreach (var effect in effects.OfType<JsonObject>())
+        {
+            var name = FirstNonEmpty(
+                GetNodeString(effect, "name"),
+                GetNodeString(effect, "effectName"),
+                GetNodeString(effect, "title"),
+                "Безымянный эффект");
+            var identity = FirstNonEmpty(
+                GetNodeString(effect, "effectId"),
+                GetNodeString(effect, "conditionId"),
+                GetNodeString(effect, "woundId"),
+                GetNodeString(effect, "id"),
+                name);
+            var selector = BuildUniqueEffectSelector(identity, entries.Count, usedSelectors);
+            entries.Add(new EffectSnapshot(entries.Count + 1, selector, section, name, effect));
+        }
+    }
+
+    private static EffectDetailRequest ParseEffectDetailRequest(string remainder)
+    {
+        if (string.IsNullOrWhiteSpace(remainder))
+            return new EffectDetailRequest(EffectDetailKind.Overview, string.Empty);
+
+        var (kindToken, selector) = SplitFirstCombatArgument(remainder);
+        if (string.IsNullOrWhiteSpace(selector) || !IsEffectDetailToken(kindToken))
+            return new EffectDetailRequest(EffectDetailKind.Unknown, string.Empty);
+
+        return new EffectDetailRequest(EffectDetailKind.Effect, NormalizeCombatSelector(selector));
+    }
+
+    private static bool IsEffectDetailToken(string token)
+    {
+        var normalized = token.Trim().ToLowerInvariant();
+        return normalized is "effect" or "эффект" or "condition" or "состояние" or "рана" or "wound" or "detail" or "подробнее";
+    }
+
+    private static EffectSnapshot? FindEffectSnapshot(IReadOnlyList<EffectSnapshot> entries, string selector)
+    {
+        var normalized = NormalizeInventoryLookup(selector);
+        return entries.FirstOrDefault(entry =>
+            string.Equals(entry.Selector, normalized, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(entry.Index.ToString(), normalized, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(NormalizeInventoryLookup(entry.Name), normalized, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static IReadOnlyList<UiBlock> BuildEffectDetailBlocks(EffectSnapshot effect)
+    {
+        var blocks = new List<UiBlock>();
+        var detailBlocks = new List<UiBlock>();
+        var description = FirstNonEmpty(
+            GetNodeString(effect.Node, "effectDescription"),
+            GetNodeString(effect.Node, "description"),
+            GetNodeString(effect.Node, "summary"));
+        if (!string.IsNullOrWhiteSpace(description))
+            detailBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
+
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = effect.Section }
+        };
+        AddInventoryFact(facts, "Длительность", FirstNonEmpty(GetNodeString(effect.Node, "duration"), GetNodeString(effect.Node, "expiresAt")));
+        AddInventoryFact(facts, "Осталось ходов", GetNodeString(effect.Node, "remainingTurns"));
+        AddInventoryFact(facts, "Источник", GetNodeString(effect.Node, "source"));
+        AddInventoryFact(facts, "Серьёзность", GetNodeString(effect.Node, "severity"));
+        AddInventoryFact(facts, "Состояние", FirstNonEmpty(GetNodeString(effect.Node, "status"), GetNodeString(effect.Node, "state")));
+        if (facts.Count > 0)
+            detailBlocks.Add(new UiKeyValueGridBlock { Items = facts });
+
+        AddStructuredBonusBlock(detailBlocks, effect.Node["structuredBonuses"] as JsonArray);
+        AddInventoryCombatEffectBlock(detailBlocks, effect.Node["combatEffect"]);
+        AddInventoryCustomPropertiesBlock(detailBlocks, effect.Node["customProperties"]);
+
+        var hiddenNotes = CollectEffectNarrativeEntries(effect.Node["notes"])
+            .Concat(CollectEffectNarrativeEntries(effect.Node["journalEntries"]))
+            .ToList();
+        if (hiddenNotes.Count > 0)
+        {
+            detailBlocks.Add(new UiPanelBlock
+            {
+                Title = "Заметки",
+                Blocks = hiddenNotes.Select(static note => (UiBlock)new UiTextBlock { Text = note, Tone = UiTone.Muted }).ToList()
+            });
+        }
+
+        if (detailBlocks.Count == 0)
+            detailBlocks.Add(new UiTextBlock { Text = "Подробности эффекта пока не заполнены.", Tone = UiTone.Muted });
+
+        blocks.Add(new UiPanelBlock
+        {
+            Title = $"{effect.Section}: {effect.Name}",
+            Blocks = detailBlocks
+        });
+        blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /эффекты.", Tone = UiTone.Muted });
+        return blocks;
+    }
+
+    private static IReadOnlyList<UiAction> BuildEffectDetailActions(string commandToken, IReadOnlyList<EffectSnapshot> entries)
+    {
+        var actions = new List<UiAction>();
+        foreach (var entry in entries)
+        {
+            actions.Add(new UiAction
+            {
+                Id = "effects-detail-" + ToActionIdPart(entry.Selector),
+                Label = $"Подробнее: «{entry.Name}»",
+                Command = BuildEffectDetailCommand(commandToken, entry.Selector),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["selector"] = entry.Selector,
+                    ["name"] = entry.Name,
+                    ["section"] = entry.Section
+                }
+            });
+        }
+
+        return actions;
+    }
+
+    private static IReadOnlyList<UiAction> BuildEffectsBackActions(string commandToken) =>
+    [
+        new UiAction
+        {
+            Id = "effects-back",
+            Label = "Назад к эффектам",
+            Command = commandToken,
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false
+        }
+    ];
+
+    private static string BuildEffectDetailCommand(string commandToken, string selector)
+    {
+        var detailToken = string.Equals(commandToken, "/effects", StringComparison.OrdinalIgnoreCase)
+            ? "effect"
+            : "эффект";
+        return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(selector);
+    }
+
+    private static IEnumerable<string> CollectEffectNarrativeEntries(JsonNode? node)
+    {
+        if (node is not JsonArray array)
+            yield break;
+
+        foreach (var entry in array)
+        {
+            var text = FormatInventoryNodeValue(entry);
+            if (!string.IsNullOrWhiteSpace(text))
+                yield return text;
+        }
+    }
+
+    private static string BuildUniqueEffectSelector(string value, int index, HashSet<string> usedSelectors)
+    {
+        var baseSelector = NormalizeReferenceSelector(value);
+        if (string.IsNullOrWhiteSpace(baseSelector))
+            baseSelector = $"effect-{index + 1}";
+
+        var selector = baseSelector;
+        var suffix = 2;
+        while (!usedSelectors.Add(selector))
+        {
+            selector = $"{baseSelector}-{suffix}";
+            suffix++;
+        }
+
+        return selector;
+    }
+
     private static async Task<ExplorerCommandResult> BuildNpcs(string command, FileSystemManager fs)
     {
+        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command.Trim());
         SummarySpec[] specs =
         [
             new("game_state/npcs/npc_relationships.json", "entries", "Отношений"),
@@ -542,6 +930,27 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 FateCards: reads["game_state/npcs/npc_fate_cards.json"].Node,
                 CustomStates: reads["game_state/npcs/npc_custom_states.json"].Node));
 
+        var sectionRequest = ParseNpcSectionDetailRequest(ExtractCommandRemainder(command));
+        if (sectionRequest.Kind == NpcSectionDetailKind.Unknown)
+        {
+            return Completed(command, [
+                Message(UiNotificationSeverity.Warning, "Персонажи", "Для подробностей используйте команду вида /npc section <нпс> <раздел>.")
+            ], BuildNpcBackActions(commandToken));
+        }
+
+        if (sectionRequest.Kind == NpcSectionDetailKind.Section)
+        {
+            var selected = FindNpcSection(projections, sectionRequest.NpcSelector, sectionRequest.SectionSelector);
+            if (selected == null)
+            {
+                return Completed(command, [
+                    Message(UiNotificationSeverity.Warning, "Персонажи", "Такой раздел НПС не найден.")
+                ], BuildNpcBackActions(commandToken));
+            }
+
+            return Completed(command, BuildNpcSectionDetailBlocks(selected.Value.Projection, selected.Value.Section), BuildNpcBackActions(commandToken));
+        }
+
         if (projections.Count > 0)
         {
             blocks.Add(NpcDetailSectionProjection.BuildSectionSummaryTable(projections));
@@ -557,7 +966,128 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (blocks.Count == 0)
             blocks.Add(Message(UiNotificationSeverity.Info, "Персонажи", "Данные ещё не созданы."));
 
-        return Completed(command, blocks);
+        return Completed(command, blocks, BuildNpcSectionActions(commandToken, projections));
+    }
+
+    private static NpcSectionDetailRequest ParseNpcSectionDetailRequest(string remainder)
+    {
+        if (string.IsNullOrWhiteSpace(remainder))
+            return new NpcSectionDetailRequest(NpcSectionDetailKind.Overview, string.Empty, string.Empty);
+
+        var (kindToken, detailRemainder) = SplitFirstCombatArgument(remainder);
+        if (!IsNpcSectionDetailToken(kindToken))
+            return new NpcSectionDetailRequest(NpcSectionDetailKind.Unknown, string.Empty, string.Empty);
+
+        var (npcSelector, sectionSelector) = SplitFirstCombatArgument(detailRemainder);
+        if (string.IsNullOrWhiteSpace(npcSelector) || string.IsNullOrWhiteSpace(sectionSelector))
+            return new NpcSectionDetailRequest(NpcSectionDetailKind.Unknown, string.Empty, string.Empty);
+
+        return new NpcSectionDetailRequest(
+            NpcSectionDetailKind.Section,
+            NormalizeCombatSelector(npcSelector),
+            NormalizeCombatSelector(sectionSelector));
+    }
+
+    private static bool IsNpcSectionDetailToken(string token)
+    {
+        var normalized = token.Trim().ToLowerInvariant();
+        return normalized is "section" or "раздел" or "detail" or "подробнее";
+    }
+
+    private static (NpcDetailProjection Projection, NpcDetailSection Section)? FindNpcSection(
+        IReadOnlyList<NpcDetailProjection> projections,
+        string npcSelector,
+        string sectionSelector)
+    {
+        var normalizedNpc = NormalizeInventoryLookup(npcSelector);
+        var normalizedSection = NormalizeInventoryLookup(sectionSelector);
+        foreach (var projection in projections)
+        {
+            var npcMatches =
+                string.Equals(NormalizeInventoryLookup(projection.NpcId), normalizedNpc, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(NormalizeInventoryLookup(projection.NpcName), normalizedNpc, StringComparison.OrdinalIgnoreCase);
+            if (!npcMatches)
+                continue;
+
+            var section = projection.Sections.FirstOrDefault(section =>
+                string.Equals(NormalizeInventoryLookup(section.Id), normalizedSection, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(NormalizeInventoryLookup(section.Label), normalizedSection, StringComparison.OrdinalIgnoreCase));
+            if (section != null)
+                return (projection, section);
+        }
+
+        return null;
+    }
+
+    private static IReadOnlyList<UiBlock> BuildNpcSectionDetailBlocks(NpcDetailProjection projection, NpcDetailSection section)
+    {
+        var blocks = new List<UiBlock>
+        {
+            new UiKeyValueGridBlock
+            {
+                Items =
+                [
+                    new UiKeyValueItem { Key = "НПС", Value = projection.NpcName },
+                    new UiKeyValueItem { Key = "Раздел", Value = section.Label },
+                    new UiKeyValueItem { Key = "Состояние", Value = section.Hint }
+                ]
+            }
+        };
+        blocks.AddRange(section.Blocks);
+        blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /npc.", Tone = UiTone.Muted });
+        return blocks;
+    }
+
+    private static IReadOnlyList<UiAction> BuildNpcSectionActions(
+        string commandToken,
+        IReadOnlyList<NpcDetailProjection> projections)
+    {
+        var actions = new List<UiAction>();
+        foreach (var projection in projections)
+        {
+            var npcSelector = FirstNonEmpty(projection.NpcId, projection.NpcName);
+            foreach (var section in projection.Sections)
+            {
+                actions.Add(new UiAction
+                {
+                    Id = "npc-section-" + ToActionIdPart(npcSelector) + "-" + ToActionIdPart(section.Id),
+                    Label = $"{projection.NpcName}: {section.Label}",
+                    Command = BuildNpcSectionCommand(commandToken, npcSelector, section.Id),
+                    Style = UiActionStyle.Secondary,
+                    RequiresConfirmation = false,
+                    Payload = new JsonObject
+                    {
+                        ["npcSelector"] = npcSelector,
+                        ["npcName"] = projection.NpcName,
+                        ["section"] = section.Id,
+                        ["sectionLabel"] = section.Label
+                    }
+                });
+            }
+        }
+
+        return actions;
+    }
+
+    private static IReadOnlyList<UiAction> BuildNpcBackActions(string commandToken) =>
+    [
+        new UiAction
+        {
+            Id = "npc-back",
+            Label = "Назад к персонажам",
+            Command = commandToken,
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false
+        }
+    ];
+
+    private static string BuildNpcSectionCommand(string commandToken, string npcSelector, string sectionSelector)
+    {
+        var detailToken = string.Equals(commandToken, "/нпс", StringComparison.OrdinalIgnoreCase) ||
+                          string.Equals(commandToken, "/персонажи", StringComparison.OrdinalIgnoreCase)
+            ? "раздел"
+            : "section";
+        return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(npcSelector) + " " + FormatCombatCommandArgument(sectionSelector);
     }
 
     private static async Task<ExplorerCommandResult> BuildBundle(string command, FileSystemManager fs, string title, IReadOnlyList<SummarySpec> specs)
@@ -726,6 +1256,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
         ReferenceCommandDefinition definition,
         ReferenceEntrySnapshot entry)
     {
+        if (string.Equals(definition.DetailTitlePrefix, "Фракция", StringComparison.OrdinalIgnoreCase))
+            return BuildFactionReferenceDetailPanel(definition, entry);
+
         var detailItems = new List<UiKeyValueItem>
         {
             new() { Key = "Раздел", Value = entry.Section },
@@ -740,14 +1273,253 @@ public static class ExplorerMortalWorldCommandResultBuilder
             DescribeReferenceNamedObject(entry.Node["sponsorGuardianRef"]),
             DescribeReferenceNamedObject(entry.Node["rivalSoul"])));
         AddReferenceDetailItem(detailItems, "Кратко", FirstNonEmpty(entry.Summary, FirstReferenceNodeString(entry.Node, "skillDescription", "description", "summary", "objective", "visibleReason", "scenarioCore")));
+        AddReferenceDetailItem(detailItems, "Масштабирование", FormatReferenceCharacteristic(FirstReferenceNodeString(entry.Node, "scalingCharacteristic")));
         AddReferenceDetailItem(detailItems, "Награда", DescribeNodeForReferenceDetail(entry.Node["rewardInfo"] ?? entry.Node["rewards"] ?? entry.Node["reward"]));
         AddReferenceDetailItem(detailItems, "Подробности", DescribeReferencePayload(entry.Node));
+
+        var detailBlocks = new List<UiBlock> { new UiKeyValueGridBlock { Items = detailItems } };
+        AddStructuredBonusBlock(detailBlocks, entry.Node["structuredBonuses"] as JsonArray);
 
         return new UiPanelBlock
         {
             Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
-            Blocks = [new UiKeyValueGridBlock { Items = detailItems }]
+            Blocks = detailBlocks
         };
+    }
+
+    private static UiPanelBlock BuildFactionReferenceDetailPanel(
+        ReferenceCommandDefinition definition,
+        ReferenceEntrySnapshot entry)
+    {
+        var detailItems = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = entry.Section },
+            new() { Key = "Метка", Value = entry.Selector }
+        };
+
+        AddReferenceDetailItem(detailItems, "Описание", FirstNonEmpty(FirstReferenceNodeString(entry.Node, "description", "summary"), entry.Summary));
+        AddReferenceDetailItem(detailItems, "Состояние", DescribeReferenceStatus(FirstReferenceNodeString(entry.Node, "status", "state", "phase")));
+        AddReferenceDetailItem(detailItems, "Уровень", FirstReferenceNodeString(entry.Node, "level", "tier"));
+        AddReferenceDetailItem(detailItems, "Репутация", DescribeFactionReputation(entry.Node));
+        AddReferenceDetailItem(detailItems, "Отношение", FirstReferenceNodeString(entry.Node, "reputationDescription", "attitude", "publicStatus"));
+        AddReferenceDetailItem(detailItems, "Ранг героя", FirstReferenceNodeString(entry.Node, "playerRank", "rankName"));
+        AddReferenceDetailItem(detailItems, "Ветвь героя", FirstReferenceNodeString(entry.Node, "playerBranch", "branch"));
+        AddReferenceDetailItem(detailItems, "Архетип развития", TranslateFactionDevelopmentArchetype(FirstReferenceNodeString(entry.Node, "developmentArchetype")));
+        AddReferenceDetailItem(detailItems, "Сила фракции", FirstReferenceNodeString(entry.Node, "factionStrength", "strength", "power"));
+        AddReferenceDetailItem(detailItems, "Цель", FirstReferenceNodeString(entry.Node, "currentObjective", "objective", "strategy"));
+
+        var blocks = new List<UiBlock> { new UiKeyValueGridBlock { Items = detailItems } };
+
+        var powerRows = BuildFactionPowerRows(entry.Node["powerProfile"]);
+        if (powerRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Профиль силы",
+                Columns = ["Параметр", "Значение"],
+                Rows = powerRows
+            });
+        }
+
+        var resourceRows = BuildFactionResourceRows(entry.Node["metaResources"] ?? entry.Node["resources"] ?? entry.Node["strategicGoods"]);
+        if (resourceRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Ресурсы",
+                Columns = ["Ресурс", "Запас", "Доход/ход", "Содержание/ход"],
+                Rows = resourceRows
+            });
+        }
+
+        var rankRows = BuildFactionRankRows(entry.Node["ranks"] ?? entry.Node["rankLadder"]);
+        if (rankRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Ранги и доступ",
+                Columns = ["Ранг", "Ветвь", "Преимущества"],
+                Rows = rankRows
+            });
+        }
+
+        return new UiPanelBlock
+        {
+            Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
+            Blocks = blocks
+        };
+    }
+
+    private static string DescribeFactionReputation(JsonObject node)
+    {
+        var value = FirstReferenceNodeString(node, "reputation", "standing");
+        var label = FirstReferenceNodeString(node, "reputationName", "reputationTier");
+        return JoinReferenceDetails(value, label);
+    }
+
+    private static List<UiTableRow> BuildFactionPowerRows(JsonNode? node)
+    {
+        if (node is not JsonObject obj)
+            return [];
+
+        var rows = new List<UiTableRow>();
+        foreach (var property in obj)
+        {
+            if (!TryGetScalarString(property.Value, out var value) || string.IsNullOrWhiteSpace(value))
+                continue;
+
+            rows.Add(new UiTableRow
+            {
+                Cells = [TranslateFactionPowerKey(property.Key), value]
+            });
+        }
+
+        return rows;
+    }
+
+    private static List<UiTableRow> BuildFactionResourceRows(JsonNode? node)
+    {
+        if (node is null)
+            return [];
+
+        var rows = new List<UiTableRow>();
+        if (node is JsonObject obj)
+        {
+            foreach (var property in obj)
+            {
+                if (property.Value is JsonObject resource)
+                    AddFactionResourceRow(rows, property.Key, resource);
+                else if (TryGetScalarString(property.Value, out var value) && !string.IsNullOrWhiteSpace(value))
+                    rows.Add(new UiTableRow { Cells = [TranslateFactionResourceKey(property.Key), value, string.Empty, string.Empty] });
+            }
+        }
+        else if (node is JsonArray array)
+        {
+            foreach (var resource in array.OfType<JsonObject>())
+                AddFactionResourceRow(rows, FirstReferenceNodeString(resource, "resourceType", "resourceId", "key"), resource);
+        }
+
+        return rows;
+    }
+
+    private static void AddFactionResourceRow(List<UiTableRow> rows, string key, JsonObject resource)
+    {
+        var name = FirstNonEmpty(
+            FirstReferenceNodeString(resource, "displayName", "name", "resourceName"),
+            TranslateFactionResourceKey(key));
+        var stock = FirstReferenceNodeString(resource, "currentStock", "stock", "amount", "balanceAfter", "quantity");
+        var income = FirstReferenceNodeString(resource, "incomePerTurn", "income", "delta");
+        var upkeep = FirstReferenceNodeString(resource, "upkeepPerTurn", "upkeep", "costPerTurn");
+
+        if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(stock) && string.IsNullOrWhiteSpace(income) && string.IsNullOrWhiteSpace(upkeep))
+            return;
+
+        rows.Add(new UiTableRow
+        {
+            Cells =
+            [
+                EmptyFallback(name),
+                EmptyFallback(stock),
+                EmptyFallback(income),
+                EmptyFallback(upkeep)
+            ]
+        });
+    }
+
+    private static List<UiTableRow> BuildFactionRankRows(JsonNode? node)
+    {
+        if (node is not JsonArray array)
+            return [];
+
+        var rows = new List<UiTableRow>();
+        foreach (var rank in array.OfType<JsonObject>())
+        {
+            var name = FirstReferenceNodeString(rank, "rankName", "name", "title");
+            var branch = FirstReferenceNodeString(rank, "branch", "branchName");
+            var benefits = DescribeNodeForReferenceDetail(rank["benefits"] ?? rank["perks"] ?? rank["permissions"]);
+            if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(branch) && string.IsNullOrWhiteSpace(benefits))
+                continue;
+
+            rows.Add(new UiTableRow
+            {
+                Cells =
+                [
+                    EmptyFallback(name),
+                    EmptyFallback(branch),
+                    EmptyFallback(benefits)
+                ]
+            });
+        }
+
+        return rows;
+    }
+
+    private static string TranslateFactionDevelopmentArchetype(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "economic" => "экономическое развитие",
+            "military" => "военное развитие",
+            "social" => "социальное влияние",
+            "covert" => "скрытое влияние",
+            "arcane" or "arcane_tech" => "магическое развитие",
+            "exploration" => "исследования",
+            _ => value.Trim()
+        };
+
+    private static string TranslateFactionPowerKey(string key) =>
+        key switch
+        {
+            "military" => "Военная сила",
+            "economic" => "Экономика",
+            "social" => "Социальное влияние",
+            "covert" => "Скрытые операции",
+            "logistics" => "Логистика",
+            "stability" => "Устойчивость",
+            "arcane" or "arcaneTech" or "arcane_tech" => "Магия и техника",
+            "exploration" => "Разведка",
+            _ => HumanizeReferenceKey(key)
+        };
+
+    private static string TranslateFactionResourceKey(string key) =>
+        key switch
+        {
+            "coins" => "Монеты",
+            "gold" => "Золото",
+            "influence" => "Влияние",
+            "reputation" => "Репутация",
+            "lightSparks" => "Искры Света",
+            "supplies" => "Припасы",
+            "manpower" => "Люди",
+            "arcaneDust" => "Магическая пыль",
+            _ => HumanizeReferenceKey(key)
+        };
+
+    private static string HumanizeReferenceKey(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key))
+            return string.Empty;
+
+        var parts = new List<char>();
+        var previousWasSeparator = true;
+        foreach (var ch in key.Trim())
+        {
+            if (ch is '_' or '-' or '.')
+            {
+                if (!previousWasSeparator)
+                    parts.Add(' ');
+                previousWasSeparator = true;
+                continue;
+            }
+
+            if (char.IsUpper(ch) && parts.Count > 0 && !previousWasSeparator)
+                parts.Add(' ');
+
+            parts.Add(parts.Count == 0 ? char.ToUpperInvariant(ch) : ch);
+            previousWasSeparator = false;
+        }
+
+        return new string(parts.ToArray()).Trim();
     }
 
     private static IEnumerable<ReferenceEntrySnapshot> BuildReferenceEntries(
@@ -909,7 +1681,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             if (IsKnownReferenceDetailProperty(property.Key) || IsTechnicalReferenceProperty(property.Key))
                 continue;
 
-            var value = DescribeNodeForReferenceDetail(property.Value);
+            var value = DescribeNodeForReferenceDetail(property.Value, property.Key);
             if (!string.IsNullOrWhiteSpace(value))
                 parts.Add($"{DescribeReferenceFieldLabel(property.Key)}: {value}");
         }
@@ -917,16 +1689,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return string.Join("; ", parts);
     }
 
-    private static string DescribeNodeForReferenceDetail(JsonNode? node)
+    private static string DescribeNodeForReferenceDetail(JsonNode? node, string? fieldName = null)
     {
         if (node == null)
             return string.Empty;
 
         if (TryGetScalarString(node, out var scalar))
-            return scalar;
+            return StructuredBonusDisplay.FormatScalar(scalar, fieldName);
 
         if (node is JsonArray array)
-            return string.Join("; ", array.Select(DescribeNodeForReferenceDetail).Where(static part => !string.IsNullOrWhiteSpace(part)));
+            return string.Join("; ", array
+                .Select(item => DescribeNodeForReferenceDetail(item, fieldName))
+                .Where(static part => !string.IsNullOrWhiteSpace(part)));
 
         if (node is JsonObject obj)
         {
@@ -936,9 +1710,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 if (IsTechnicalReferenceProperty(property.Key))
                     continue;
 
-                var value = DescribeNodeForReferenceDetail(property.Value);
+                var value = DescribeNodeForReferenceDetail(property.Value, property.Key);
                 if (!string.IsNullOrWhiteSpace(value))
-                    parts.Add($"{DescribeReferenceFieldLabel(property.Key)}: {value}");
+                    parts.Add($"{DescribeReferenceNestedFieldLabel(property.Key)}: {value}");
             }
 
             return string.Join("; ", parts);
@@ -978,7 +1752,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "scenarioCore" or "location" or "region" or "place" or "currentLocation" or
             "timestamp" or "time" or "date" or "updatedAt" or "completionDate" or
             "questGiver" or "owner" or "playerName" or "targetPlayerName" or
-            "rewardInfo" or "rewards" or "reward";
+            "rewardInfo" or "rewards" or "reward" or "structuredBonuses" or "playerStatBonus" or
+            "scalingCharacteristic";
 
     private static bool IsTechnicalReferenceProperty(string propertyName) =>
         propertyName.Equals("id", StringComparison.OrdinalIgnoreCase) ||
@@ -1013,6 +1788,19 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "displayName" or "displayNameOrMoniker" or "name" => "имя",
             _ => "деталь"
         };
+
+    private static string DescribeReferenceNestedFieldLabel(string propertyName)
+    {
+        var referenceLabel = DescribeReferenceFieldLabel(propertyName);
+        return string.Equals(referenceLabel, "деталь", StringComparison.OrdinalIgnoreCase)
+            ? StructuredBonusDisplay.FieldLabel(propertyName)
+            : referenceLabel;
+    }
+
+    private static string FormatReferenceCharacteristic(string value) =>
+        string.IsNullOrWhiteSpace(value)
+            ? string.Empty
+            : StructuredBonusDisplay.FormatCharacteristicName(value);
 
     private static void AddReferenceDetailItem(List<UiKeyValueItem> items, string key, string? value)
     {
@@ -3285,6 +4073,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static async Task<ExplorerCommandResult> BuildInventory(string command, FileSystemManager fs)
     {
+        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command.Trim());
         var read = await ReadJson(fs, "game_state/inventory/items.json");
         if (read.Node == null)
         {
@@ -3301,6 +4090,28 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return Completed(command, [
                 Message(UiNotificationSeverity.Warning, "Инвентарь", "Файл инвентаря найден, но его корень не похож на обычный инвентарь.")
             ]);
+        }
+
+        var detailRequest = ParseInventoryDetailRequest(ExtractCommandRemainder(command));
+        if (detailRequest.Kind == InventoryDetailKind.Unknown)
+        {
+            return Completed(command, [
+                Message(UiNotificationSeverity.Warning, "Инвентарь", "Для подробностей используйте команду вида /инв предмет <идентификатор>.")
+            ], BuildInventoryBackActions(commandToken));
+        }
+
+        if (detailRequest.Kind == InventoryDetailKind.Item)
+        {
+            var selected = FindInventoryItemNode(root, detailRequest.Selector);
+            if (selected == null)
+            {
+                return Completed(command, [
+                    Message(UiNotificationSeverity.Warning, "Инвентарь", "Такой предмет не найден в инвентаре.")
+                ], BuildInventoryBackActions(commandToken));
+            }
+
+            var sidecars = await ReadInventoryItemSidecarsAsync(fs, selected);
+            return Completed(command, BuildInventoryItemDetailBlocks(selected, sidecars), BuildInventoryBackActions(commandToken));
         }
 
         var totalWeight = GetNodeString(root, "totalWeight");
@@ -3409,15 +4220,35 @@ public static class ExplorerMortalWorldCommandResultBuilder
         await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_bonds.json", "Связи предметов");
         await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_text_updates.json", "Тексты предметов");
 
-        return Completed(command, blocks, BuildInventoryActions(inventoryContext));
+        return Completed(command, blocks, BuildInventoryActions(commandToken, inventoryContext));
     }
 
-    private static IReadOnlyList<UiAction> BuildInventoryActions(InventoryEquipmentContext? inventory)
+    private static IReadOnlyList<UiAction> BuildInventoryActions(string commandToken, InventoryEquipmentContext? inventory)
     {
         if (inventory == null)
             return [];
 
         var actions = new List<UiAction>();
+        foreach (var item in inventory.Items)
+        {
+            var identity = FirstNonEmpty(item.Identity, item.Name);
+            actions.Add(new UiAction
+            {
+                Id = InventoryEquipmentService.BuildActionId("inventory-detail", identity),
+                Label = $"Подробнее: «{item.Name}»",
+                Command = BuildInventoryItemDetailCommand(commandToken, identity),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["itemIdentity"] = item.Identity,
+                    ["itemName"] = item.Name,
+                    ["itemType"] = item.Type,
+                    ["slot"] = item.ResolvedSlot
+                }
+            });
+        }
+
         foreach (var item in inventory.Items
                      .Where(static item => item.IsEquippable &&
                                            string.IsNullOrWhiteSpace(item.EquippedSlot) &&
@@ -3463,6 +4294,717 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         return actions;
     }
+
+    private static IReadOnlyList<UiAction> BuildInventoryBackActions(string commandToken) =>
+    [
+        new UiAction
+        {
+            Id = "inventory-back",
+            Label = "Назад к инвентарю",
+            Command = commandToken,
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false
+        }
+    ];
+
+    private static InventoryDetailRequest ParseInventoryDetailRequest(string remainder)
+    {
+        if (string.IsNullOrWhiteSpace(remainder))
+            return new InventoryDetailRequest(InventoryDetailKind.Overview, string.Empty);
+
+        var (kindToken, selector) = SplitFirstCombatArgument(remainder);
+        if (string.IsNullOrWhiteSpace(selector) || !IsInventoryItemDetailToken(kindToken))
+            return new InventoryDetailRequest(InventoryDetailKind.Unknown, string.Empty);
+
+        return new InventoryDetailRequest(InventoryDetailKind.Item, NormalizeCombatSelector(selector));
+    }
+
+    private static bool IsInventoryItemDetailToken(string token)
+    {
+        var normalized = token.Trim().ToLowerInvariant();
+        return normalized is "item" or "предмет" or "вещь" or "detail" or "подробнее";
+    }
+
+    private static string BuildInventoryItemDetailCommand(string commandToken, string selector)
+    {
+        var detailToken = string.Equals(commandToken, "/inv", StringComparison.OrdinalIgnoreCase) ||
+                          string.Equals(commandToken, "/inventory", StringComparison.OrdinalIgnoreCase)
+            ? "item"
+            : "предмет";
+        return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(selector);
+    }
+
+    private static JsonObject? FindInventoryItemNode(JsonObject root, string selector)
+    {
+        var items = GetInventoryItemsArrayNode(root);
+        if (items == null)
+            return null;
+
+        var normalizedSelector = NormalizeInventoryLookup(selector);
+        for (var index = 0; index < items.Count; index++)
+        {
+            if (items[index] is not JsonObject item)
+                continue;
+
+            if (string.Equals((index + 1).ToString(), normalizedSelector, StringComparison.OrdinalIgnoreCase))
+                return item;
+
+            var identities = new[]
+            {
+                GetInventoryItemIdentity(item),
+                GetInventoryItemName(item),
+                NormalizeReferenceSelector(GetInventoryItemName(item))
+            };
+
+            if (identities.Any(identity =>
+                    !string.IsNullOrWhiteSpace(identity) &&
+                    string.Equals(NormalizeInventoryLookup(identity), normalizedSelector, StringComparison.OrdinalIgnoreCase)))
+            {
+                return item;
+            }
+        }
+
+        return null;
+    }
+
+    private static async Task<InventoryItemSidecars> ReadInventoryItemSidecarsAsync(FileSystemManager fs, JsonObject item)
+    {
+        var identity = GetInventoryItemIdentity(item);
+        var name = GetInventoryItemName(item);
+        var resources = await ReadJson(fs, "game_state/inventory/item_resources.json");
+        var bonds = await ReadJson(fs, "game_state/inventory/item_bonds.json");
+        var texts = await ReadJson(fs, "game_state/inventory/item_text_updates.json");
+        var journals = await ReadJson(fs, "game_state/npcs/item_journals.json");
+
+        return new InventoryItemSidecars(
+            Resource: FindInventorySidecarEntryNode(resources.Node, identity, name, "entries", "inventoryItemsResources"),
+            Bond: FindInventorySidecarEntryNode(bonds.Node, identity, name, "entries", "itemBondLevelChanges", "itemFateCardUnlocks"),
+            Text: FindInventorySidecarEntryNode(texts.Node, identity, name, "entries", "updateItemTextContents"),
+            Journal: FindInventorySidecarEntryNode(journals.Node, identity, name, "entries", "itemJournals", "itemJournalUpdates"));
+    }
+
+    private static IReadOnlyList<UiBlock> BuildInventoryItemDetailBlocks(JsonObject item, InventoryItemSidecars sidecars)
+    {
+        var itemName = GetInventoryItemName(item);
+        var blocks = new List<UiBlock>();
+        var detailBlocks = new List<UiBlock>();
+        var description = FirstNonEmpty(GetNodeString(item, "description"), GetNodeString(item, "lore"));
+        if (!string.IsNullOrWhiteSpace(description))
+            detailBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
+
+        var facts = new List<UiKeyValueItem>();
+        AddInventoryFact(facts, "Тип", GetNodeString(item, "type"));
+        AddInventoryFact(facts, "Качество", FirstNonEmpty(GetNodeString(item, "quality"), GetNodeString(item, "rarity")));
+        AddInventoryFact(facts, "Вес", FormatInventoryMeasure(GetNodeString(item, "weight"), "кг"));
+        AddInventoryFact(facts, "Цена", GetNodeString(item, "price"));
+        AddInventoryFact(facts, "Прочность", FormatInventoryDurability(item));
+        AddInventoryFact(facts, "Количество", FirstNonEmpty(GetNodeString(item, "count"), GetNodeString(item, "quantity")));
+        AddInventoryFact(facts, "Слот", FormatInventorySlot(FirstNonEmpty(
+            GetNodeString(item, "equipmentSlot"),
+            GetNodeString(item, "slot"),
+            GetNodeString(item, "equipSlot"))));
+        AddInventoryFact(facts, "Аксессуар для", GetNodeString(item, "accessoryForSlot"));
+        AddInventoryFact(facts, "Группа", GetNodeString(item, "group"));
+        if (TryGetNodeBool(item, "requiresTwoHands", out var requiresTwoHands) && requiresTwoHands)
+            facts.Add(new UiKeyValueItem { Key = "Хват", Value = "двуручное" });
+        if (TryGetNodeBool(item, "isBroken", out var isBroken) && isBroken)
+            facts.Add(new UiKeyValueItem { Key = "Состояние", Value = "сломано" });
+        if (TryGetNodeBool(item, "isSentient", out var isSentient) && isSentient)
+            facts.Add(new UiKeyValueItem { Key = "Разумность", Value = "разумный предмет" });
+        if (facts.Count > 0)
+            detailBlocks.Add(new UiKeyValueGridBlock { Items = facts });
+
+        AddInventorySummaryList(detailBlocks, "Бонусы", item["bonuses"]);
+        AddInventorySummaryList(detailBlocks, "Эффекты", item["effects"]);
+        AddInventorySummaryList(detailBlocks, "Особые свойства", item["specialProperties"]);
+        AddStructuredBonusBlock(detailBlocks, item["structuredBonuses"] as JsonArray);
+        AddInventoryCombatEffectBlock(detailBlocks, item["combatEffect"]);
+        AddInventoryCustomPropertiesBlock(detailBlocks, item["customProperties"]);
+        AddInventoryContainerBlock(detailBlocks, item);
+        AddInventoryDisassemblyBlock(detailBlocks, item["disassembleTo"] as JsonArray);
+        AddInventoryResourceBlock(detailBlocks, item, sidecars.Resource);
+        AddInventoryBondBlock(detailBlocks, sidecars.Bond);
+        AddInventoryContentBlock(detailBlocks, item["textContent"], sidecars.Text?["textContent"]);
+        AddInventoryJournalBlock(detailBlocks, item["journalEntries"], sidecars.Journal?["journalEntries"]);
+
+        if (detailBlocks.Count == 0)
+            detailBlocks.Add(new UiTextBlock { Text = "Подробная информация по предмету пока не заполнена.", Tone = UiTone.Muted });
+
+        blocks.Add(new UiPanelBlock
+        {
+            Title = $"Предмет: {itemName}",
+            Blocks = detailBlocks
+        });
+        blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /инв.", Tone = UiTone.Muted });
+        return blocks;
+    }
+
+    private static void AddInventoryFact(List<UiKeyValueItem> items, string key, string? value)
+    {
+        if (!string.IsNullOrWhiteSpace(value) && value.Trim() != "1")
+            items.Add(new UiKeyValueItem { Key = key, Value = value.Trim() });
+    }
+
+    private static void AddInventorySummaryList(List<UiBlock> blocks, string title, JsonNode? node)
+    {
+        var items = EnumerateInventorySummaryTexts(node).ToList();
+        if (items.Count == 0)
+            return;
+
+        blocks.Add(new UiPanelBlock
+        {
+            Title = title,
+            Blocks =
+            [
+                new UiListBlock
+                {
+                    Items = items,
+                    Ordered = false
+                }
+            ]
+        });
+    }
+
+    private static IEnumerable<string> EnumerateInventorySummaryTexts(JsonNode? node)
+    {
+        if (node is JsonArray array)
+        {
+            foreach (var item in array)
+            {
+                var text = DescribeInventorySummaryNode(item);
+                if (!string.IsNullOrWhiteSpace(text))
+                    yield return text;
+            }
+        }
+        else
+        {
+            var text = DescribeInventorySummaryNode(node);
+            if (!string.IsNullOrWhiteSpace(text))
+                yield return text;
+        }
+    }
+
+    private static string DescribeInventorySummaryNode(JsonNode? node)
+    {
+        if (TryGetScalarString(node, out var scalar))
+            return FormatInventoryProtocolValue(scalar);
+
+        if (node is not JsonObject obj)
+            return string.Empty;
+
+        return FirstNonEmpty(
+            GetNodeString(obj, "effectDescription"),
+            GetNodeString(obj, "description"),
+            GetNodeString(obj, "summary"),
+            GetNodeString(obj, "name"),
+            GetNodeString(obj, "effect"),
+            GetNodeString(obj, "stat"));
+    }
+
+    private static void AddStructuredBonusBlock(List<UiBlock> blocks, JsonArray? bonuses)
+    {
+        if (bonuses == null || bonuses.Count == 0)
+            return;
+
+        var rows = new List<UiTableRow>();
+        var index = 0;
+        foreach (var bonus in bonuses)
+        {
+            index++;
+            if (bonus is not JsonObject obj)
+            {
+                rows.Add(new UiTableRow
+                {
+                    Cells = [$"Бонус {index}", "Значение", FormatInventoryNodeValue(bonus)]
+                });
+                continue;
+            }
+
+            var title = FirstNonEmpty(GetNodeString(obj, "summary"), $"Бонус {index}");
+            foreach (var property in obj)
+            {
+                rows.Add(new UiTableRow
+                {
+                    Cells = [title, GetStructuredBonusFieldLabel(property.Key), FormatInventoryNodeValue(property.Value, property.Key)]
+                });
+            }
+        }
+
+        if (rows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Структурные бонусы",
+                Columns = ["Бонус", "Поле", "Значение"],
+                Rows = rows
+            });
+        }
+    }
+
+    private static void AddInventoryCombatEffectBlock(List<UiBlock> blocks, JsonNode? node)
+    {
+        var rows = new List<UiTableRow>();
+        AddInventoryCombatEffectRows(rows, node, "Эффект");
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = "Боевые эффекты",
+            Columns = ["Источник", "Тип", "Значение", "Описание"],
+            Rows = rows
+        });
+    }
+
+    private static void AddInventoryCombatEffectRows(List<UiTableRow> rows, JsonNode? node, string source)
+    {
+        if (node is JsonArray array)
+        {
+            foreach (var child in array)
+                AddInventoryCombatEffectRows(rows, child, source);
+            return;
+        }
+
+        if (node is not JsonObject obj)
+            return;
+
+        var actionName = FirstNonEmpty(GetNodeString(obj, "actionName"), source);
+        if (obj["effects"] is JsonArray nestedEffects)
+        {
+            var actionDetails = BuildInventoryCombatActionDetails(obj);
+            if (!string.IsNullOrWhiteSpace(actionDetails))
+            {
+                rows.Add(new UiTableRow
+                {
+                    Cells = [actionName, "Действие", "", actionDetails]
+                });
+            }
+
+            foreach (var effect in nestedEffects)
+                AddInventoryCombatEffectRows(rows, effect, actionName);
+            return;
+        }
+
+        rows.Add(new UiTableRow
+        {
+            Cells =
+            [
+                actionName,
+                FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(obj, "effectType"), GetNodeString(obj, "type"), "Эффект")),
+                FormatInventoryCombatEffectValue(obj),
+                FirstNonEmpty(GetNodeString(obj, "effectDescription"), GetNodeString(obj, "description"))
+            ]
+        });
+    }
+
+    private static string BuildInventoryCombatActionDetails(JsonObject action)
+    {
+        var parts = new List<string>();
+        if (TryGetNodeBool(action, "isActivatedEffect", out var activated))
+            parts.Add(activated ? "активируемый" : "пассивный");
+        var cost = GetNodeString(action, "actionCost");
+        if (!string.IsNullOrWhiteSpace(cost))
+            parts.Add("стоимость: " + FormatInventoryProtocolValue(cost));
+        return string.Join("; ", parts);
+    }
+
+    private static string FormatInventoryCombatEffectValue(JsonObject effect)
+    {
+        var parts = new List<string>();
+        var value = GetNodeString(effect, "value");
+        if (!string.IsNullOrWhiteSpace(value) && value != "0")
+            parts.Add(value);
+        var poise = GetNodeString(effect, "poiseDamage");
+        if (!string.IsNullOrWhiteSpace(poise) && poise != "0")
+            parts.Add($"равновесие -{poise}");
+        var target = FirstNonEmpty(GetNodeString(effect, "targetTypeDisplayName"), GetNodeString(effect, "targetType"));
+        if (!string.IsNullOrWhiteSpace(target))
+            parts.Add("цель: " + target);
+        var duration = GetNodeString(effect, "duration");
+        if (!string.IsNullOrWhiteSpace(duration) && duration != "0")
+            parts.Add("длительность: " + duration);
+        return string.Join("; ", parts);
+    }
+
+    private static void AddInventoryCustomPropertiesBlock(List<UiBlock> blocks, JsonNode? node)
+    {
+        if (node is not JsonArray array || array.Count == 0)
+            return;
+
+        var rows = array
+            .OfType<JsonObject>()
+            .Select(static item => new UiTableRow
+            {
+                Cells =
+                [
+                    FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(item, "interactionType"), "Эффект")),
+                    FirstNonEmpty(GetNodeString(item, "targetStateName"), GetNodeString(item, "target")),
+                    GetNodeString(item, "changeValue") ?? string.Empty,
+                    FirstNonEmpty(GetNodeString(item, "description"), GetNodeString(item, "summary"))
+                ]
+            })
+            .Where(static row => row.Cells.Any(static cell => !string.IsNullOrWhiteSpace(cell)))
+            .ToList();
+
+        if (rows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Особые свойства",
+                Columns = ["Когда", "Цель", "Изменение", "Описание"],
+                Rows = rows
+            });
+        }
+    }
+
+    private static void AddInventoryContainerBlock(List<UiBlock> blocks, JsonObject item)
+    {
+        if (!TryGetNodeBool(item, "isContainer", out var isContainer) || !isContainer)
+            return;
+
+        var facts = new List<UiKeyValueItem>();
+        AddInventoryFact(facts, "Вместимость", GetNodeString(item, "capacity"));
+        AddInventoryFact(facts, "Объём", FormatInventoryMeasure(GetNodeString(item, "volume"), "дм³"));
+        AddInventoryFact(facts, "Вес пустого", FormatInventoryMeasure(GetNodeString(item, "containerWeight"), "кг"));
+        AddInventoryFact(facts, "Снижение веса", FormatInventoryMeasure(GetNodeString(item, "weightReduction"), "%"));
+        if (facts.Count > 0)
+            blocks.Add(Panel("Контейнер", new UiKeyValueGridBlock { Items = facts }));
+    }
+
+    private static void AddInventoryDisassemblyBlock(List<UiBlock> blocks, JsonArray? materials)
+    {
+        if (materials == null || materials.Count == 0)
+            return;
+
+        var rows = new List<UiTableRow>();
+        foreach (var material in materials)
+        {
+            if (TryGetScalarString(material, out var text))
+            {
+                rows.Add(new UiTableRow { Cells = [text, "", "", ""] });
+                continue;
+            }
+
+            if (material is not JsonObject obj)
+                continue;
+
+            rows.Add(new UiTableRow
+            {
+                Cells =
+                [
+                    FirstNonEmpty(GetNodeString(obj, "materialName"), GetNodeString(obj, "name"), "Материал"),
+                    FirstNonEmpty(GetNodeString(obj, "quantity"), "1"),
+                    FormatInventoryMeasure(GetNodeString(obj, "weight"), "кг"),
+                    FirstNonEmpty(GetNodeString(obj, "description"), GetNodeString(obj, "price"))
+                ]
+            });
+        }
+
+        if (rows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Разбирается на",
+                Columns = ["Материал", "Кол-во", "Вес", "Описание"],
+                Rows = rows
+            });
+        }
+    }
+
+    private static void AddInventoryResourceBlock(List<UiBlock> blocks, JsonObject item, JsonObject? resourceEntry)
+    {
+        var resource = FirstNonEmpty(GetNodeString(resourceEntry, "resource"), GetNodeString(item, "resource"));
+        if (string.IsNullOrWhiteSpace(resource))
+            return;
+
+        var max = FirstNonEmpty(GetNodeString(resourceEntry, "maximumResource"), GetNodeString(item, "maximumResource"));
+        var resourceType = FirstNonEmpty(GetNodeString(resourceEntry, "resourceType"), GetNodeString(item, "resourceType"), "заряды");
+        var value = string.IsNullOrWhiteSpace(max) ? resource : $"{resource} / {max}";
+        blocks.Add(Panel("Ресурсы предмета", new UiKeyValueGridBlock
+        {
+            Items =
+            [
+                new UiKeyValueItem { Key = resourceType, Value = value }
+            ]
+        }));
+    }
+
+    private static void AddInventoryBondBlock(List<UiBlock> blocks, JsonObject? bondEntry)
+    {
+        if (bondEntry == null)
+            return;
+
+        var panelBlocks = new List<UiBlock>();
+        var bondLevel = GetNodeString(bondEntry, "ownerBondLevelCurrent");
+        if (!string.IsNullOrWhiteSpace(bondLevel))
+        {
+            panelBlocks.Add(new UiKeyValueGridBlock
+            {
+                Items =
+                [
+                    new UiKeyValueItem { Key = "Уровень", Value = $"{bondLevel}/100" }
+                ]
+            });
+        }
+
+        var reason = GetNodeString(bondEntry, "lastBondChangeReason");
+        if (!string.IsNullOrWhiteSpace(reason))
+            panelBlocks.Add(new UiTextBlock { Text = reason, Tone = UiTone.Muted });
+
+        if (bondEntry["fateCards"] is JsonArray fateCards && fateCards.Count > 0)
+        {
+            panelBlocks.Add(new UiTableBlock
+            {
+                Title = "Карты судьбы предмета",
+                Columns = ["Карта", "Статус", "Описание"],
+                Rows = fateCards
+                    .OfType<JsonObject>()
+                    .Select(static card => new UiTableRow
+                    {
+                        Cells =
+                        [
+                            FirstNonEmpty(GetNodeString(card, "name"), GetNodeString(card, "cardName"), "Карта"),
+                            TryGetNodeBool(card, "isUnlocked", out var unlocked) && unlocked ? "разблокирована" : "закрыта",
+                            FirstNonEmpty(GetNodeString(card, "description"), GetNodeString(card, "summary"))
+                        ]
+                    })
+                    .ToList()
+            });
+        }
+
+        if (panelBlocks.Count > 0)
+            blocks.Add(new UiPanelBlock { Title = "Связь с владельцем", Blocks = panelBlocks });
+    }
+
+    private static void AddInventoryContentBlock(List<UiBlock> blocks, JsonNode? embedded, JsonNode? sidecar)
+    {
+        var entries = CollectInventoryTextEntries(embedded)
+            .Concat(CollectInventoryTextEntries(sidecar))
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+        if (entries.Count == 0)
+            return;
+
+        blocks.Add(new UiPanelBlock
+        {
+            Title = "Содержимое",
+            Blocks = entries.Select(static entry => (UiBlock)new UiTextBlock { Text = entry, Tone = UiTone.Default }).ToList()
+        });
+    }
+
+    private static void AddInventoryJournalBlock(List<UiBlock> blocks, JsonNode? embedded, JsonNode? sidecar)
+    {
+        var entries = CollectInventoryJournalEntries(embedded)
+            .Concat(CollectInventoryJournalEntries(sidecar))
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+        if (entries.Count == 0)
+            return;
+
+        blocks.Add(new UiPanelBlock
+        {
+            Title = "Записи",
+            Blocks = entries.Select(static entry => (UiBlock)new UiTextBlock { Text = entry, Tone = UiTone.Muted }).ToList()
+        });
+    }
+
+    private static IEnumerable<string> CollectInventoryTextEntries(JsonNode? node)
+    {
+        if (node is not JsonArray array)
+            yield break;
+
+        foreach (var entry in array)
+        {
+            var text = FormatInventoryNodeValue(entry);
+            if (!string.IsNullOrWhiteSpace(text))
+                yield return text;
+        }
+    }
+
+    private static IEnumerable<string> CollectInventoryJournalEntries(JsonNode? node)
+    {
+        if (node is not JsonArray array)
+            yield break;
+
+        foreach (var entry in array)
+        {
+            if (TryGetScalarString(entry, out var scalar))
+            {
+                if (!string.IsNullOrWhiteSpace(scalar))
+                    yield return scalar;
+                continue;
+            }
+
+            if (entry is not JsonObject obj)
+                continue;
+
+            var main = FirstNonEmpty(
+                JoinReferenceDetails(GetNodeString(obj, "timestamp"), GetNodeString(obj, "event")),
+                GetNodeString(obj, "event"),
+                "Запись");
+            var body = FirstNonEmpty(
+                GetNodeString(obj, "description"),
+                GetNodeString(obj, "text"),
+                GetNodeString(obj, "content"),
+                GetNodeString(obj, "entry"));
+            var line = !string.IsNullOrWhiteSpace(body) ? $"{main}: {body}" : main;
+            var voice = GetNodeString(obj, "spiritVoice");
+            if (!string.IsNullOrWhiteSpace(voice))
+                line += $" Голос: {voice}";
+            yield return line;
+        }
+    }
+
+    private static JsonArray? GetInventoryItemsArrayNode(JsonObject root)
+    {
+        if (root["items"] is JsonArray items)
+            return items;
+
+        if (root["UpdateInventory"] is JsonArray updateInventory)
+            return updateInventory;
+
+        return null;
+    }
+
+    private static JsonObject? FindInventorySidecarEntryNode(
+        JsonNode? root,
+        string itemIdentity,
+        string itemName,
+        params string[] propertyNames)
+    {
+        foreach (var item in EnumerateInventorySidecarEntryNodes(root, propertyNames))
+        {
+            if (InventoryNodeMatches(item, itemIdentity, itemName))
+                return item;
+        }
+
+        return null;
+    }
+
+    private static IEnumerable<JsonObject> EnumerateInventorySidecarEntryNodes(JsonNode? root, params string[] propertyNames)
+    {
+        if (root is JsonArray array)
+        {
+            foreach (var item in array.OfType<JsonObject>())
+                yield return item;
+            yield break;
+        }
+
+        if (root is not JsonObject obj)
+            yield break;
+
+        foreach (var propertyName in propertyNames)
+        {
+            if (obj[propertyName] is not JsonArray items)
+                continue;
+
+            foreach (var item in items.OfType<JsonObject>())
+                yield return item;
+        }
+    }
+
+    private static bool InventoryNodeMatches(JsonObject item, string itemIdentity, string itemName)
+    {
+        var identity = GetInventoryItemIdentity(item);
+        if (!string.IsNullOrWhiteSpace(itemIdentity) &&
+            string.Equals(identity, itemIdentity, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        var name = GetInventoryItemName(item);
+        return !string.IsNullOrWhiteSpace(itemName) &&
+               string.Equals(name, itemName, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string GetInventoryItemIdentity(JsonNode? item)
+    {
+        return FirstNonEmpty(
+            GetNodeString(item, "existedId"),
+            GetNodeString(item, "itemId"),
+            GetNodeString(item, "id"),
+            GetNodeString(item, "relicId"));
+    }
+
+    private static string GetInventoryItemName(JsonNode? item) =>
+        FirstNonEmpty(GetNodeString(item, "name"), GetNodeString(item, "itemName"), "Безымянный предмет");
+
+    private static string FormatInventoryDurability(JsonObject item)
+    {
+        var durability = GetNodeString(item, "durability");
+        var maxDurability = GetNodeString(item, "maxDurability");
+        if (string.IsNullOrWhiteSpace(durability))
+            return string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(maxDurability))
+            return $"{durability}/{maxDurability}";
+
+        return durability;
+    }
+
+    private static string FormatInventoryMeasure(string? value, string unit)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        return value.Trim().EndsWith(unit, StringComparison.OrdinalIgnoreCase)
+            ? value.Trim()
+            : $"{value.Trim()} {unit}";
+    }
+
+    private static string FormatInventorySlot(string? slot)
+    {
+        if (string.IsNullOrWhiteSpace(slot))
+            return string.Empty;
+
+        return FormatSlotName(slot);
+    }
+
+    private static string FormatInventoryNodeValue(JsonNode? node, string? fieldName = null)
+    {
+        if (TryGetScalarString(node, out var scalar))
+            return StructuredBonusDisplay.FormatScalar(scalar, fieldName);
+
+        if (node is JsonArray array)
+        {
+            return string.Join("; ", array
+                .Select(item => FormatInventoryNodeValue(item, fieldName))
+                .Where(static value => !string.IsNullOrWhiteSpace(value)));
+        }
+
+        if (node is JsonObject obj)
+        {
+            return FirstNonEmpty(
+                GetNodeString(obj, "summary"),
+                GetNodeString(obj, "description"),
+                GetNodeString(obj, "effectDescription"),
+                GetNodeString(obj, "name"),
+                string.Join("; ", obj
+                    .Select(property => $"{GetStructuredBonusFieldLabel(property.Key)}: {FormatInventoryNodeValue(property.Value, property.Key)}")
+                    .Where(static value => !string.IsNullOrWhiteSpace(value))));
+        }
+
+        return string.Empty;
+    }
+
+    private static string FormatInventoryProtocolValue(string value) =>
+        StructuredBonusDisplay.FormatScalar(value);
+
+    private static string GetStructuredBonusFieldLabel(string fieldName) =>
+        StructuredBonusDisplay.FieldLabel(fieldName);
+
+    private static string HumanizeInventoryFieldName(string fieldName)
+    {
+        if (string.IsNullOrWhiteSpace(fieldName))
+            return "Поле";
+
+        var spaced = string.Concat(fieldName.Select((ch, index) =>
+            index > 0 && char.IsUpper(ch) ? " " + ch : ch.ToString()));
+        return spaced.Replace('_', ' ').Trim();
+    }
+
+    private static string NormalizeInventoryLookup(string value) =>
+        NormalizeReferenceSelector(NormalizeCombatSelector(value));
 
     private static async Task AddRawJsonIfPresent(List<UiBlock> blocks, FileSystemManager fs, string path, string title)
     {
@@ -3621,6 +5163,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return true;
         }
 
+        if (jsonValue.TryGetValue<double>(out var doubleValue))
+        {
+            value = doubleValue.ToString("G", CultureInfo.InvariantCulture);
+            return true;
+        }
+
+        if (jsonValue.TryGetValue<decimal>(out var decimalValue))
+        {
+            value = decimalValue.ToString("G", CultureInfo.InvariantCulture);
+            return true;
+        }
+
         if (jsonValue.TryGetValue<bool>(out var boolValue))
         {
             value = boolValue ? "true" : "false";
@@ -3654,6 +5208,53 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static string FirstNonEmpty(params string?[] values) =>
         values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+
+    private enum InventoryDetailKind
+    {
+        Overview,
+        Item,
+        Unknown
+    }
+
+    private sealed record InventoryDetailRequest(
+        InventoryDetailKind Kind,
+        string Selector);
+
+    private sealed record InventoryItemSidecars(
+        JsonObject? Resource,
+        JsonObject? Bond,
+        JsonObject? Text,
+        JsonObject? Journal);
+
+    private enum EffectDetailKind
+    {
+        Overview,
+        Effect,
+        Unknown
+    }
+
+    private sealed record EffectSnapshot(
+        int Index,
+        string Selector,
+        string Section,
+        string Name,
+        JsonObject Node);
+
+    private sealed record EffectDetailRequest(
+        EffectDetailKind Kind,
+        string Selector);
+
+    private enum NpcSectionDetailKind
+    {
+        Overview,
+        Section,
+        Unknown
+    }
+
+    private sealed record NpcSectionDetailRequest(
+        NpcSectionDetailKind Kind,
+        string NpcSelector,
+        string SectionSelector);
 
     private enum CombatantKind
     {

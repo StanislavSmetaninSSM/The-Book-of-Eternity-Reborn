@@ -89,8 +89,8 @@ public static class ExplorerChaosSeaCommandResultBuilder
                     ("Просветление", EmptyFallback(stateManager.CurrentState.EnlightenmentTier)),
                     ("Активный Хранитель", DescribeActiveGuardian(guardians.Node)),
                     ("Текущая Обитель", DescribeCurrentAbode(guardians.Node)),
-                    ("Pending подношение", DescribePresence(offering)),
-                    ("Pending основание мантии", DescribePresence(foundation))))
+                    ("Ожидает подношение", DescribePresence(offering)),
+                    ("Ожидает основание мантии", DescribePresence(foundation))))
         };
 
         AddRawOrWarning(blocks, "JSON: soul_state", soul);

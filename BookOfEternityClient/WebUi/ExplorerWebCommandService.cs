@@ -61,7 +61,8 @@ public sealed class ExplorerWebCommandService
             return BuildBlockedMigrationResult(command, subcommand);
 
         var result = await BuildMigratedResultAsync(parsed, descriptor, effectiveRequest);
-        return await _promptSessions.AttachSessionIfNeededAsync(result, effectiveRequest);
+        var withPromptSession = await _promptSessions.AttachSessionIfNeededAsync(result, effectiveRequest);
+        return ApplyDefaultPlayerSurface(withPromptSession, descriptor, effectiveRequest);
     }
 
     public Task<ExplorerCommandResult> SubmitPromptSessionAsync(ExplorerPromptSessionSubmitRequest request) =>
@@ -141,6 +142,240 @@ public sealed class ExplorerWebCommandService
             UiNotificationSeverity.Error,
             "Команда не подключена",
             "Команда помечена как перенесенная, но web command service пока не знает, как ее построить.");
+    }
+
+    private ExplorerCommandResult ApplyDefaultPlayerSurface(
+        ExplorerCommandResult result,
+        ExplorerCommandDescriptor descriptor,
+        ExplorerWebCommandRequest request)
+    {
+        if (request.AdvancedEnabled == true || _stateManager.Settings.ShowGmThoughts)
+            return result;
+
+        var metadata = BrowserPlayerCommandMenuBuilder.GetCoverageMetadata(descriptor);
+        if (!string.Equals(metadata.Surface, "player-default", StringComparison.OrdinalIgnoreCase))
+            return result;
+
+        return new ExplorerCommandResult
+        {
+            Command = result.Command,
+            State = result.State,
+            Blocks = ProjectPlayerDefaultBlocks(result.Blocks),
+            Actions = result.Actions,
+            Prompts = result.Prompts,
+            Notifications = result.Notifications,
+            InteractiveSession = result.InteractiveSession
+        };
+    }
+
+    private static List<UiBlock> ProjectPlayerDefaultBlocks(IEnumerable<UiBlock> blocks)
+    {
+        var filtered = new List<UiBlock>();
+        foreach (var block in blocks)
+        {
+            switch (block)
+            {
+                case UiRawJsonBlock:
+                    continue;
+                case UiTextBlock text:
+                    if (TryProjectPlayerDefaultText(text.Text, out var playerText))
+                        filtered.Add(new UiTextBlock { Text = playerText, Tone = text.Tone });
+                    break;
+                case UiPanelBlock panel:
+                    var childBlocks = ProjectPlayerDefaultBlocks(panel.Blocks);
+                    if (childBlocks.Count > 0)
+                    {
+                        filtered.Add(new UiPanelBlock
+                        {
+                            Title = ProjectPlayerDefaultText(panel.Title),
+                            Blocks = childBlocks
+                        });
+                    }
+                    break;
+                case UiTableBlock table:
+                    if (TryProjectPlayerDefaultTable(table, out var playerTable))
+                        filtered.Add(playerTable);
+                    break;
+                case UiListBlock list:
+                    var playerItems = list.Items
+                        .Select(ProjectPlayerDefaultText)
+                        .Where(static item => !string.IsNullOrWhiteSpace(item) && !ContainsPlayerDefaultTechnicalMarker(item))
+                        .ToList();
+                    if (playerItems.Count > 0)
+                        filtered.Add(new UiListBlock { Ordered = list.Ordered, Items = playerItems });
+                    break;
+                case UiKeyValueGridBlock grid:
+                    var playerKeyValues = grid.Items
+                        .Select(ProjectPlayerDefaultKeyValue)
+                        .Where(static item => item != null)
+                        .Cast<UiKeyValueItem>()
+                        .ToList();
+                    if (playerKeyValues.Count > 0)
+                        filtered.Add(new UiKeyValueGridBlock { Items = playerKeyValues });
+                    break;
+                case UiMessageBlock message:
+                    if (TryProjectPlayerDefaultMessage(message, out var playerMessage))
+                        filtered.Add(playerMessage);
+                    break;
+                default:
+                    filtered.Add(block);
+                    break;
+            }
+        }
+
+        return filtered;
+    }
+
+    private static bool TryProjectPlayerDefaultText(string text, out string playerText)
+    {
+        playerText = ProjectPlayerDefaultText(text);
+        if (string.IsNullOrWhiteSpace(playerText))
+            return false;
+
+        return !ContainsPlayerDefaultTechnicalMarker(playerText);
+    }
+
+    private static bool TryProjectPlayerDefaultMessage(UiMessageBlock message, out UiMessageBlock playerMessage)
+    {
+        var title = ProjectPlayerDefaultText(message.Title);
+        var text = ProjectPlayerDefaultText(message.Message);
+        if (IsDiagnosticJsonText(message.Title) || IsDiagnosticJsonText(message.Message))
+        {
+            playerMessage = null!;
+            return false;
+        }
+
+        if (ContainsPlayerDefaultTechnicalMarker(title) || ContainsPlayerDefaultTechnicalMarker(text))
+        {
+            playerMessage = null!;
+            return false;
+        }
+
+        playerMessage = new UiMessageBlock
+        {
+            Severity = message.Severity,
+            Title = title,
+            Message = text
+        };
+        return !string.IsNullOrWhiteSpace(title) || !string.IsNullOrWhiteSpace(text);
+    }
+
+    private static bool TryProjectPlayerDefaultTable(UiTableBlock table, out UiTableBlock playerTable)
+    {
+        var title = ProjectPlayerDefaultText(table.Title);
+        var removePathColumn = table.Columns.Any(static column =>
+            string.Equals(column, "Путь", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(column, "Path", StringComparison.OrdinalIgnoreCase));
+        var pathColumnIndex = removePathColumn
+            ? table.Columns.FindIndex(static column =>
+                string.Equals(column, "Путь", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(column, "Path", StringComparison.OrdinalIgnoreCase))
+            : -1;
+
+        var columns = new List<string>();
+        for (var i = 0; i < table.Columns.Count; i++)
+        {
+            if (i == pathColumnIndex)
+                continue;
+            var column = ProjectPlayerDefaultText(table.Columns[i]);
+            if (removePathColumn && i == 0 && string.Equals(column, "Артефакт", StringComparison.OrdinalIgnoreCase))
+                column = "Проверка";
+            if (!string.IsNullOrWhiteSpace(column) && !ContainsPlayerDefaultTechnicalMarker(column))
+                columns.Add(column);
+        }
+
+        var rows = new List<UiTableRow>();
+        foreach (var row in table.Rows)
+        {
+            var cells = new List<string>();
+            for (var i = 0; i < row.Cells.Count; i++)
+            {
+                if (i == pathColumnIndex)
+                    continue;
+
+                var cell = ProjectPlayerDefaultText(row.Cells[i]);
+                cells.Add(ContainsPlayerDefaultTechnicalMarker(cell) ? string.Empty : cell);
+            }
+
+            if (cells.Count > 0)
+                rows.Add(new UiTableRow { Cells = cells });
+        }
+
+        playerTable = new UiTableBlock { Title = title, Columns = columns, Rows = rows };
+        return columns.Count > 0 && rows.Count > 0 && !ContainsPlayerDefaultTechnicalMarker(title);
+    }
+
+    private static UiKeyValueItem? ProjectPlayerDefaultKeyValue(UiKeyValueItem item)
+    {
+        var key = ProjectPlayerDefaultText(item.Key);
+        var value = ProjectPlayerDefaultText(item.Value);
+        if (string.IsNullOrWhiteSpace(key) ||
+            ContainsPlayerDefaultTechnicalMarker(key) ||
+            ContainsPlayerDefaultTechnicalMarker(value))
+        {
+            return null;
+        }
+
+        return new UiKeyValueItem { Key = key, Value = value };
+    }
+
+    private static string ProjectPlayerDefaultText(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return string.Empty;
+
+        var value = text
+            .Replace("Локальный ход / GM-turn protocol", "Локальный ход", StringComparison.OrdinalIgnoreCase)
+            .Replace("Артефакты протокола", "Состояние локальной записи", StringComparison.OrdinalIgnoreCase)
+            .Replace("GM-turn protocol", "GM-ход", StringComparison.OrdinalIgnoreCase)
+            .Replace("Готов terminal error", "Готова ошибка хода", StringComparison.OrdinalIgnoreCase)
+            .Replace("terminal error", "ошибка хода", StringComparison.OrdinalIgnoreCase)
+            .Replace("Validated pending snapshot", "Снимок состояния хода", StringComparison.OrdinalIgnoreCase)
+            .Replace("Копии snapshot файлов", "Копии файлов текущего хода", StringComparison.OrdinalIgnoreCase)
+            .Replace("Локальные rollback backup", "Копии восстановления локальной записи", StringComparison.OrdinalIgnoreCase)
+            .Replace("Browser-write команды должны дождаться завершения, ошибки или отмены этого протокола.", "Дождитесь завершения, ошибки или отмены текущего хода.", StringComparison.OrdinalIgnoreCase)
+            .Replace("Browser DTO может безопасно показать форму локального действия.", "Можно открыть форму локального действия.", StringComparison.OrdinalIgnoreCase)
+            .Replace("Браузерный DTO фиксирует route tag и форму, но не вызывает console-bound отправку хода.", "Форма подготовит описание действия для следующего хода.", StringComparison.OrdinalIgnoreCase)
+            .Replace("Текущий realm", "Текущее царство", StringComparison.OrdinalIgnoreCase)
+            .Replace("Response surface", "Поверхность ответа", StringComparison.OrdinalIgnoreCase)
+            .Replace("State file", "Файл состояния", StringComparison.OrdinalIgnoreCase);
+
+        return value.Trim();
+    }
+
+    private static bool IsDiagnosticJsonText(string text) =>
+        !string.IsNullOrWhiteSpace(text) &&
+        (text.Contains("JSON:", StringComparison.OrdinalIgnoreCase) ||
+         text.Contains("Файл не найден:", StringComparison.OrdinalIgnoreCase) ||
+         text.Contains("Файл пуст или не содержит JSON:", StringComparison.OrdinalIgnoreCase));
+
+    private static bool ContainsPlayerDefaultTechnicalMarker(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return false;
+
+        foreach (var marker in new[]
+                 {
+                     "game_state/",
+                     ".json",
+                     "UiRawJsonBlock",
+                     "image_prompt",
+                     "factionColor",
+                     "gm_thoughts",
+                     "currentRealm",
+                     "DTO",
+                     "API",
+                     "endpoint",
+                     "exception",
+                     "console-bound",
+                     "route tag"
+                 })
+        {
+            if (text.Contains(marker, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
     }
 
     private static ExplorerCommandResult BuildBlockedMigrationResult(string command, ExplorerCommandDescriptor descriptor)

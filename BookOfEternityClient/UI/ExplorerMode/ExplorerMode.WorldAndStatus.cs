@@ -1490,6 +1490,8 @@ public partial class ExplorerMode
         if (!string.IsNullOrEmpty(desc))
             lines.Add($"  {Markup.Escape(desc)}");
 
+        AppendStructuredSkillBonusLines(lines, s);
+
         lines.Add("");
 
         var actionCost = GetStr(s, "actionCost", "");
@@ -1519,7 +1521,7 @@ public partial class ExplorerMode
 
         var scaling = GetStr(s, "scalingCharacteristic", "");
         if (!string.IsNullOrEmpty(scaling))
-            lines.Add($"  📈 Масштабирование: [cyan]{Markup.Escape(scaling)}[/]");
+            lines.Add($"  📈 Масштабирование: [cyan]{Markup.Escape(StructuredBonusDisplay.FormatCharacteristicName(scaling))}[/]");
 
         // Combat effect → effects[]
         if (s.TryGetProperty("combatEffect", out var ce) && ce.ValueKind == JsonValueKind.Object)
@@ -1685,28 +1687,7 @@ public partial class ExplorerMode
             lines.Add($"  {Markup.Escape(desc)}");
         }
 
-        // Structured bonuses
-        if (s.TryGetProperty("structuredBonuses", out var bonuses) && bonuses.ValueKind == JsonValueKind.Array && bonuses.GetArrayLength() > 0)
-        {
-            lines.Add("");
-            lines.Add("  [bold]📊 Бонусы:[/]");
-            foreach (var b in bonuses.EnumerateArray())
-            {
-                var bType = GetStr(b, "bonusType", "???");
-                var bTarget = GetStr(b, "target", "");
-                var bValue = GetStr(b, "value", "");
-                var bApp = GetStr(b, "application", "");
-                var bCond = GetStr(b, "condition", "");
-
-                var bLine = $"    • [cyan]{Markup.Escape(bType)}[/]";
-                if (!string.IsNullOrEmpty(bTarget)) bLine += $" → {Markup.Escape(bTarget)}";
-                if (!string.IsNullOrEmpty(bValue)) bLine += $": [yellow]{Markup.Escape(bValue)}[/]";
-                if (!string.IsNullOrEmpty(bApp)) bLine += $" [dim]({Markup.Escape(bApp)})[/]";
-                lines.Add(bLine);
-                if (!string.IsNullOrEmpty(bCond))
-                    lines.Add($"      [dim]Условие: {Markup.Escape(bCond)}[/]");
-            }
-        }
+        AppendStructuredSkillBonusLines(lines, s);
 
         // Fallback: playerStatBonus (legacy summary) when structuredBonuses is absent
         if (!(s.TryGetProperty("structuredBonuses", out _)))
@@ -1778,6 +1759,40 @@ public partial class ExplorerMode
             Expand = true
         });
         WaitForKey();
+    }
+
+    private static void AppendStructuredSkillBonusLines(List<string> lines, JsonElement skill)
+    {
+        if (!skill.TryGetProperty("structuredBonuses", out var bonuses) ||
+            bonuses.ValueKind != JsonValueKind.Array ||
+            bonuses.GetArrayLength() == 0)
+        {
+            return;
+        }
+
+        lines.Add("");
+        lines.Add("  [bold]📊 Структурные бонусы:[/]");
+        var index = 0;
+        foreach (var bonus in bonuses.EnumerateArray())
+        {
+            index++;
+            if (bonus.ValueKind != JsonValueKind.Object)
+            {
+                lines.Add($"    • [green]{Markup.Escape(StructuredBonusDisplay.FormatValue(bonus))}[/]");
+                continue;
+            }
+
+            var summary = GetStr(bonus, "summary", "");
+            var title = string.IsNullOrWhiteSpace(summary)
+                ? $"Бонус #{index}"
+                : summary;
+            lines.Add($"    • [green]{Markup.Escape(title)}[/]");
+            foreach (var property in bonus.EnumerateObject())
+            {
+                lines.Add(
+                    $"      [dim]{Markup.Escape(StructuredBonusDisplay.FieldLabel(property.Name))}:[/] [white]{Markup.Escape(StructuredBonusDisplay.FormatValue(property.Value, property.Name))}[/]");
+            }
+        }
     }
 
     private void AppendMasteryInfo(List<string> lines, string skillName, JsonElement s, Dictionary<string, JsonElement> masteryLookup)

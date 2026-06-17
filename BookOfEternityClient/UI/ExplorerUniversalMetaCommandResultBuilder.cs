@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -166,7 +167,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         return Completed(command,
             Panel("Статус",
                 Grid(
-                    ("Realm", EmptyFallback(state.CurrentRealm)),
+                    ("Царство", EmptyFallback(state.CurrentRealm)),
                     ("Душа", EmptyFallback(state.SoulName)),
                     ("Инкарнация", state.Incarnation.ToString()),
                     ("Персонаж", EmptyFallback(state.CharacterName)),
@@ -194,7 +195,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             Panel("Душа",
                 Grid(
                     ("Имя души", GetString(read.Node, "soulName")),
-                    ("Realm", GetString(read.Node, "currentRealm")),
+                    ("Царство", GetString(read.Node, "currentRealm")),
                     ("Инкарнация", GetNumberOrString(read.Node, "currentIncarnation")),
                     ("Чернильные Перья", DescribeInkFeathers(read.Node)),
                     ("Просветление", DescribeNested(read.Node, "enlightenment")),
@@ -212,15 +213,161 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         if (read.Node == null)
             return MissingOrMalformed(command, title, read);
 
-        var section = read.Node[propertyName]?.DeepClone();
-        return Completed(command,
+        var section = read.Node[propertyName];
+        var blocks = new List<UiBlock>
+        {
             Panel(title,
                 Grid(
-                    ("Источник", "game_state/meta/soul_state.json"),
-                    ("Поле", propertyName),
-                    ("Статус", section == null ? "не найдено" : "найдено"))),
-            Raw($"JSON: soul_state.{propertyName}", section ?? new JsonObject()));
+                    ("Записей", section is JsonArray array ? array.Count.ToString() : "0"),
+                    ("Статус", section == null ? "не найдено" : "найдено")))
+        };
+
+        if (section is JsonArray { Count: > 0 } history)
+        {
+            var rows = history
+                .OfType<JsonObject>()
+                .Select((life, index) => Row(
+                    FirstNonEmpty(GetNumberOrString(life, "incarnation"), GetNumberOrString(life, "incarnationNumber"), (index + 1).ToString()),
+                    DescribeLifeIdentity(life),
+                    DescribeLifeOutcome(life),
+                    DescribeLifeRewards(life)))
+                .ToList();
+
+            if (rows.Count > 0)
+            {
+                blocks.Add(new UiTableBlock
+                {
+                    Title = title,
+                    Columns = ["Инкарнация", "Кем и где", "Итог", "Награды"],
+                    Rows = rows
+                });
+            }
+        }
+
+        return Completed(command, blocks);
     }
+
+    private static string DescribeLifeIdentity(JsonObject life)
+    {
+        var character = FirstKnown(
+            GetString(life, "characterName", string.Empty),
+            GetString(life, "heroName", string.Empty),
+            GetString(life, "name", string.Empty),
+            GetString(life, "lifeName", string.Empty));
+        var world = FirstKnown(
+            GetString(life, "worldName", string.Empty),
+            GetString(life, "world", string.Empty),
+            GetString(life, "realm", string.Empty),
+            GetString(life, "currentRealm", string.Empty));
+        var role = JoinKnown(" / ",
+            GetString(life, "race", string.Empty),
+            GetString(life, "class", string.Empty));
+
+        return FirstKnown(
+            JoinKnown(" / ", character, world, role),
+            character,
+            world,
+            role);
+    }
+
+    private static string DescribeLifeOutcome(JsonObject life) =>
+        FirstKnown(
+            GetString(life, "summary", string.Empty),
+            GetString(life, "endingSummary", string.Empty),
+            GetString(life, "ending", string.Empty),
+            GetString(life, "finalState", string.Empty),
+            GetString(life, "deathReason", string.Empty),
+            GetString(life, "status", string.Empty));
+
+    private static string DescribeLifeRewards(JsonObject life) =>
+        FirstKnown(
+            DescribeLifeValue(life["rewards"]),
+            DescribeLifeValue(life["reward"]),
+            GetString(life, "rewardInfo", string.Empty),
+            GetString(life, "visibleReward", string.Empty));
+
+    private static string DescribeLifeValue(JsonNode? node)
+    {
+        if (TryGetScalarString(node, out var scalar))
+            return scalar;
+
+        if (node is JsonArray array)
+        {
+            var values = array
+                .Select(DescribeLifeValue)
+                .Where(static value => !IsUnknownValue(value))
+                .Take(5)
+                .ToList();
+            return values.Count == 0 ? "не указано" : string.Join("; ", values);
+        }
+
+        if (node is JsonObject obj)
+        {
+            var direct = FirstKnown(
+                GetString(obj, "displayName", string.Empty),
+                GetString(obj, "title", string.Empty),
+                GetString(obj, "name", string.Empty),
+                GetString(obj, "summary", string.Empty),
+                GetString(obj, "description", string.Empty));
+            if (!IsUnknownValue(direct))
+                return direct;
+
+            var parts = obj
+                .Where(static property => !IsTechnicalLifeProperty(property.Key))
+                .Select(static property => $"{TranslateLifeField(property.Key)}: {DescribeLifeValue(property.Value)}")
+                .Where(static value => !IsUnknownValue(value) && !value.EndsWith(": не указано", StringComparison.OrdinalIgnoreCase))
+                .Take(5)
+                .ToList();
+            return parts.Count == 0 ? "не указано" : string.Join("; ", parts);
+        }
+
+        return "не указано";
+    }
+
+    private static bool IsTechnicalLifeProperty(string propertyName) =>
+        propertyName.Equals("id", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.EndsWith("Id", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("schemaVersion", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.StartsWith("_", StringComparison.OrdinalIgnoreCase);
+
+    private static string TranslateLifeField(string propertyName) =>
+        propertyName switch
+        {
+            "title" or "name" or "displayName" => "Название",
+            "summary" => "Кратко",
+            "description" => "Описание",
+            "status" or "state" => "Состояние",
+            "reward" or "rewards" or "rewardInfo" => "Награда",
+            "world" or "worldName" or "realm" => "Мир",
+            "characterName" or "heroName" => "Персонаж",
+            "ending" or "endingSummary" => "Финал",
+            "deathReason" => "Причина смерти",
+            _ => propertyName.Replace('_', ' ')
+        };
+
+    private static string JoinKnown(string separator, params string[] values)
+    {
+        var parts = values
+            .Where(static value => !IsUnknownValue(value))
+            .Select(static value => value.Trim())
+            .ToArray();
+        return parts.Length == 0 ? "не указано" : string.Join(separator, parts);
+    }
+
+    private static string FirstKnown(params string[] values)
+    {
+        foreach (var value in values)
+        {
+            if (!IsUnknownValue(value))
+                return value.Trim();
+        }
+
+        return "не указано";
+    }
+
+    private static bool IsUnknownValue(string? value) =>
+        string.IsNullOrWhiteSpace(value) ||
+        string.Equals(value.Trim(), "не указано", StringComparison.OrdinalIgnoreCase);
 
     private static async Task<ExplorerCommandResult> BuildInkFeathers(
         string command,
@@ -784,9 +931,8 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             {
                 Cells =
                 [
-                    Path.GetFileName(path),
-                    SafeCountLines(path).ToString(),
-                    ToRelativeGameSessionPath(fs, path)
+                    Path.GetFileNameWithoutExtension(path),
+                    SafeCountLines(path).ToString()
                 ]
             })
             .ToList();
@@ -795,7 +941,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             new UiTableBlock
             {
                 Title = "Рассказ",
-                Columns = ["Файл", "Записей", "Путь"],
+                Columns = ["Рассказ", "Записей"],
                 Rows = rows
             });
     }
@@ -1163,24 +1309,249 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         var blocks = new List<UiBlock>();
         if (summaryBuilder != null)
             blocks.Add(summaryBuilder(read.Node));
-        else
-            blocks.Add(Panel(title, Grid(("Источник", path), ("Статус", "прочитано"))));
 
-        blocks.Add(Raw($"Полный JSON {path}", read.Node));
+        blocks.AddRange(BuildReadableJsonBlocks(title, read.Node));
+        if (blocks.Count == 0)
+            blocks.Add(Panel(title, Grid(("Статус", "прочитано"))));
+
         return Completed(command, blocks);
     }
 
+    private static IReadOnlyList<UiBlock> BuildReadableJsonBlocks(string title, JsonNode node)
+    {
+        var blocks = new List<UiBlock>();
+        if (node is JsonArray rootArray)
+        {
+            AddReadableJsonArrayBlock(blocks, title, "Записи", rootArray);
+            return blocks;
+        }
+
+        if (node is not JsonObject root)
+        {
+            if (TryGetScalarString(node, out var scalar))
+                blocks.Add(Panel(title, Grid(("Значение", scalar))));
+            return blocks;
+        }
+
+        var scalarRows = new List<UiTableRow>();
+        foreach (var property in root)
+        {
+            if (IsTechnicalReadableJsonProperty(property.Key))
+                continue;
+
+            if (property.Value is JsonArray array)
+            {
+                AddReadableJsonArrayBlock(blocks, title, TranslateReadableJsonField(property.Key), array);
+                continue;
+            }
+
+            var value = DescribeReadableJsonValue(property.Value);
+            if (!IsUnknownReadableJsonValue(value))
+                scalarRows.Add(Row(TranslateReadableJsonField(property.Key), value));
+        }
+
+        if (scalarRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = title + ": сведения",
+                Columns = ["Раздел", "Значение"],
+                Rows = scalarRows
+            });
+        }
+
+        return blocks;
+    }
+
+    private static void AddReadableJsonArrayBlock(
+        List<UiBlock> blocks,
+        string title,
+        string sectionLabel,
+        JsonArray array)
+    {
+        if (array.Count == 0)
+            return;
+
+        var rows = array
+            .Take(12)
+            .Select((item, index) => Row(
+                DescribeReadableJsonTitle(item, index),
+                DescribeReadableJsonPrimaryText(item),
+                DescribeReadableJsonSecondaryText(item)))
+            .Where(static row => row.Cells.Any(static cell => !IsUnknownReadableJsonValue(cell)))
+            .ToList();
+
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = title + ": " + sectionLabel,
+            Columns = ["Запись", "Описание", "Детали"],
+            Rows = rows
+        });
+    }
+
+    private static string DescribeReadableJsonTitle(JsonNode? node, int index)
+    {
+        if (node is JsonObject obj)
+        {
+            return FirstReadableJsonValue(
+                GetString(obj, "title", string.Empty),
+                GetString(obj, "displayName", string.Empty),
+                GetString(obj, "name", string.Empty),
+                GetString(obj, "questName", string.Empty),
+                GetString(obj, "achievementName", string.Empty),
+                GetString(obj, "dominantPattern", string.Empty),
+                $"Запись {index + 1}");
+        }
+
+        var value = DescribeReadableJsonValue(node);
+        return IsUnknownReadableJsonValue(value) ? $"Запись {index + 1}" : value;
+    }
+
+    private static string DescribeReadableJsonPrimaryText(JsonNode? node)
+    {
+        if (node is JsonObject obj)
+        {
+            return FirstReadableJsonValue(
+                GetString(obj, "summary", string.Empty),
+                GetString(obj, "description", string.Empty),
+                GetString(obj, "content", string.Empty),
+                GetString(obj, "text", string.Empty),
+                GetString(obj, "details", string.Empty),
+                DescribeReadableJsonValue(obj["playerBehaviorAssessment"]));
+        }
+
+        return DescribeReadableJsonValue(node);
+    }
+
+    private static string DescribeReadableJsonSecondaryText(JsonNode? node)
+    {
+        if (node is not JsonObject obj)
+            return "не указано";
+
+        var parts = obj
+            .Where(static property => IsReadableJsonSecondaryProperty(property.Key))
+            .Select(static property => $"{TranslateReadableJsonField(property.Key)}: {DescribeReadableJsonValue(property.Value)}")
+            .Where(static value => !IsUnknownReadableJsonValue(value) && !value.EndsWith(": не указано", StringComparison.OrdinalIgnoreCase))
+            .Take(5)
+            .ToArray();
+        return parts.Length == 0 ? "не указано" : string.Join("; ", parts);
+    }
+
+    private static string DescribeReadableJsonValue(JsonNode? node)
+    {
+        if (TryGetScalarString(node, out var scalar))
+            return scalar;
+
+        if (node is JsonArray array)
+        {
+            var values = array
+                .Select(DescribeReadableJsonValue)
+                .Where(static value => !IsUnknownReadableJsonValue(value))
+                .Take(5)
+                .ToArray();
+            return values.Length == 0 ? "не указано" : string.Join("; ", values);
+        }
+
+        if (node is JsonObject obj)
+        {
+            var heading = FirstReadableJsonValue(
+                GetString(obj, "title", string.Empty),
+                GetString(obj, "displayName", string.Empty),
+                GetString(obj, "name", string.Empty),
+                GetString(obj, "dominantPattern", string.Empty));
+            var description = FirstReadableJsonValue(
+                GetString(obj, "summary", string.Empty),
+                GetString(obj, "description", string.Empty),
+                GetString(obj, "content", string.Empty));
+            if (!IsUnknownReadableJsonValue(heading) && !IsUnknownReadableJsonValue(description))
+                return heading + " — " + description;
+
+            var direct = FirstReadableJsonValue(
+                heading,
+                description);
+            if (!IsUnknownReadableJsonValue(direct))
+                return direct;
+
+            var parts = obj
+                .Where(static property => !IsTechnicalReadableJsonProperty(property.Key))
+                .Select(static property => $"{TranslateReadableJsonField(property.Key)}: {DescribeReadableJsonValue(property.Value)}")
+                .Where(static value => !IsUnknownReadableJsonValue(value) && !value.EndsWith(": не указано", StringComparison.OrdinalIgnoreCase))
+                .Take(6)
+                .ToArray();
+            return parts.Length == 0 ? "не указано" : string.Join("; ", parts);
+        }
+
+        return "не указано";
+    }
+
+    private static bool IsReadableJsonSecondaryProperty(string propertyName) =>
+        propertyName is "category" or "type" or "status" or "state" or "rarity" or "tags" or
+            "source" or "sourceName" or "sourceKind" or "createdAt" or "updatedAt" or
+            "progress" or "current" or "total";
+
+    private static bool IsTechnicalReadableJsonProperty(string propertyName) =>
+        propertyName.Equals("id", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.EndsWith("Id", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("schemaVersion", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("debugNotes", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.StartsWith("_", StringComparison.OrdinalIgnoreCase);
+
+    private static string TranslateReadableJsonField(string propertyName) =>
+        propertyName switch
+        {
+            "entries" or "codexEntries" => "Записи",
+            "playerBehaviorAssessment" => "Оценка поведения",
+            "dominantPattern" => "Основной паттерн",
+            "historyManipulationCoefficient" => "Коэффициент вмешательства в историю",
+            "unlockedAchievements" => "Открытые достижения",
+            "trackedProgress" => "Прогресс достижений",
+            "worldTitle" => "Название мира",
+            "worldDirectives" => "Директивы мира",
+            "directives" => "Директивы",
+            "rules" => "Правила",
+            "summary" => "Кратко",
+            "description" => "Описание",
+            "content" => "Текст",
+            "category" => "Категория",
+            "type" => "Тип",
+            "status" or "state" => "Состояние",
+            "rarity" => "Редкость",
+            "tags" => "Метки",
+            "source" or "sourceName" or "sourceKind" => "Источник",
+            "createdAt" => "Создано",
+            "updatedAt" => "Обновлено",
+            "progress" => "Прогресс",
+            "current" => "Сейчас",
+            "total" => "Всего",
+            _ => propertyName.Replace('_', ' ')
+        };
+
+    private static string FirstReadableJsonValue(params string[] values)
+    {
+        foreach (var value in values)
+        {
+            if (!IsUnknownReadableJsonValue(value))
+                return value.Trim();
+        }
+
+        return "не указано";
+    }
+
+    private static bool IsUnknownReadableJsonValue(string? value) =>
+        string.IsNullOrWhiteSpace(value) ||
+        string.Equals(value.Trim(), "не указано", StringComparison.OrdinalIgnoreCase);
+
     private static UiBlock BuildCodexSummary(JsonNode node) =>
         Panel("Кодекс", Grid(
-            ("entries", CountArray(node, "entries").ToString()),
-            ("codexEntries", CountArray(node, "codexEntries").ToString()),
-            ("Корневой тип", node.GetType().Name)));
+            ("Записей", (CountArray(node, "entries") + CountArray(node, "codexEntries")).ToString())));
 
     private static UiBlock BuildAchievementsSummary(JsonNode node) =>
         Panel("Достижения", Grid(
             ("Открыто", CountArray(node, "unlockedAchievements").ToString()),
-            ("В процессе", CountArray(node, "trackedProgress").ToString()),
-            ("Корневой тип", node.GetType().Name)));
+            ("В процессе", CountArray(node, "trackedProgress").ToString())));
 
     private static ExplorerCommandResult MissingOrMalformed(string command, string title, JsonReadResult read) =>
         Completed(command,
@@ -1188,8 +1559,8 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 read.FileExists ? UiNotificationSeverity.Warning : UiNotificationSeverity.Info,
                 title,
                 read.FileExists
-                    ? $"Файл найден, но не разобран как JSON: {read.Path}. {read.Error}"
-                    : $"Файл не найден: {read.Path}."));
+                    ? "Запись найдена, но её не удалось прочитать как JSON."
+                    : "Данные пока не созданы."));
 
     private static async Task AddRawJsonIfPresent(List<UiBlock> blocks, FileSystemManager fs, string path, string title)
     {
@@ -1372,6 +1743,18 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         if (jsonValue.TryGetValue<long>(out var longValue))
         {
             value = longValue.ToString();
+            return true;
+        }
+
+        if (jsonValue.TryGetValue<double>(out var doubleValue))
+        {
+            value = doubleValue.ToString("G", CultureInfo.InvariantCulture);
+            return true;
+        }
+
+        if (jsonValue.TryGetValue<decimal>(out var decimalValue))
+        {
+            value = decimalValue.ToString("G", CultureInfo.InvariantCulture);
             return true;
         }
 

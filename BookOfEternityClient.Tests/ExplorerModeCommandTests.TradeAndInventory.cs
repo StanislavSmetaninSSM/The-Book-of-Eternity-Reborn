@@ -230,14 +230,14 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("поврежд", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Структурные бонусы", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Чувство магических потоков +2", renderedText, StringComparison.Ordinal);
-        Assert.Contains("Тип цели: skill", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Тип цели: навык", renderedText, StringComparison.Ordinal);
         Assert.Contains("Навык: Чувство магических потоков", renderedText, StringComparison.Ordinal);
-        Assert.Contains("Тип значения: Flat", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Тип значения: плоский бонус", renderedText, StringComparison.Ordinal);
         Assert.Contains("Значение: 2", renderedText, StringComparison.Ordinal);
         Assert.Contains("Источник: Руническая перчатка", renderedText, StringComparison.Ordinal);
         Assert.Contains("Кратко: Чувство магических потоков +2", renderedText, StringComparison.Ordinal);
         Assert.Contains("Правило сложения: replace [debug]", renderedText, StringComparison.Ordinal);
-        Assert.Contains("experimentalKey: raw [value]", renderedText, StringComparison.Ordinal);
+        Assert.Contains("experimental Key: raw [value]", renderedText, StringComparison.Ordinal);
         Assert.DoesNotContain("targetType:", renderedText, StringComparison.Ordinal);
         Assert.DoesNotContain("valueType:", renderedText, StringComparison.Ordinal);
         Assert.DoesNotContain("stackingRule:", renderedText, StringComparison.Ordinal);

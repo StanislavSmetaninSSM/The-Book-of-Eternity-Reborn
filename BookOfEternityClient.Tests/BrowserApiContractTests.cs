@@ -174,6 +174,17 @@ public sealed class BrowserApiContractTests
     }
 
     [Fact]
+    public void GameScreenIdleTurnState_UsesPlayerFacingRussianCopy()
+    {
+        var state = BrowserGameScreenTurnStateDto.From(BuildLifecycleDashboard(), BuildQteState());
+
+        Assert.Equal("ready", state.State);
+        Assert.Contains("Запись хода", state.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("turn-writer", state.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Браузерный", state.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void FrontendShell_ConsumesTypedApiContractSummaryInsteadOfHardCodedEndpointList()
     {
         var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));

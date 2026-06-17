@@ -515,7 +515,7 @@ public sealed record BrowserGameScreenTurnStateDto(
         return Create(
             state: "ready",
             title: "Можно продолжать",
-            message: "Опишите следующее действие персонажа в прозе. Браузерный turn-writer будет подключён отдельным безопасным шагом.",
+            message: "Опишите следующее действие персонажа в прозе. Запись хода будет подключена отдельным безопасным шагом.",
             canStartBrowserWrite: true,
             lifecycle: lifecycle,
             phase: "idle",

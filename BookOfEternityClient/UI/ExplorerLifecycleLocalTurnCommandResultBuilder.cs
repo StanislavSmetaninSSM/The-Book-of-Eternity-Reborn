@@ -105,7 +105,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         FileSystemManager fs,
         ValidationService validationService)
     {
-        var localTurn = BuildLocalTurnStatus(fs);
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         var issues = await validationService.ValidateGameStateAsync();
         var blocks = new List<UiBlock> { localTurn.Panel };
 
@@ -2337,7 +2337,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 [
                     new UiTextBlock
                     {
-                        Text = "Браузерная команда показывает рецепты и отправляет pending-запрос ремесла через безопасный interactive/write protocol.",
+                        Text = "Выберите известный рецепт или опишите новое ремесленное действие. ГМ разыграет результат в следующем принятом ходе.",
                         Tone = UiTone.Accent
                     },
                     new UiTableBlock
@@ -2357,7 +2357,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             blocks,
             prompts:
             [
-                new UiTextInputPrompt { Id = "recipe_id", Prompt = "Рецепт или название", Placeholder = "recipeId / recipeName" },
+                new UiTextInputPrompt { Id = "recipe_id", Prompt = "Рецепт или название", Placeholder = "Например: Лечебная мазь" },
                 new UiLongTextInputPrompt
                 {
                     Id = "craft_intent",
@@ -2613,7 +2613,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     Message(
                         UiNotificationSeverity.Warning,
                         "Призыв недоступен",
-                        $"Прямой призыв Моря Хаоса доступен только в Ordinary Chaos Sea (currentRealm=Chaos Sea/Море Хаоса). Текущий realm: {FirstNonEmpty(currentRealm, "не определён")}.")
+                        $"Прямой призыв Моря Хаоса доступен только в обычном Море Хаоса. Сейчас душа находится здесь: {FormatRealmForPlayer(currentRealm)}.")
                 ]);
         }
 
@@ -3095,7 +3095,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         FileSystemManager fs,
         StateManager stateManager)
     {
-        var localTurn = BuildLocalTurnStatus(fs);
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         var guardians = await ReadJson(fs, "game_state/meta/guardians.json");
         var pending = await ReadJson(fs, GuardianAbodeOfferingState.PendingRequestPath);
         var guardianRows = CollectObjects(guardians.Node)
@@ -3117,7 +3117,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     new UiTextBlock
                     {
                         Text = stateManager.CurrentState.IsInAfterlifeRealm
-                            ? "Браузерный протокол показывает цель, тип подношения и pending-contract состояние. Запись destructive pending-файла выполняется только через безопасный interactive/write flow."
+                            ? "Выберите Хранителя, тип подношения и подтвердите намерение. ГМ разыграет результат в следующем принятом ходе."
                             : "Подношение Обители доступно только в загробье.",
                         Tone = stateManager.CurrentState.IsInAfterlifeRealm ? UiTone.Accent : UiTone.Warning
                     },
@@ -3138,7 +3138,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             blocks,
             prompts:
             [
-                new UiTextInputPrompt { Id = "guardian_id", Prompt = "ID Хранителя / Обители", Placeholder = "guardianId" },
+                new UiTextInputPrompt { Id = "guardian_id", Prompt = "Хранитель или Обитель", Placeholder = "Имя или идентификатор из списка" },
                 new UiSelectionPrompt
                 {
                     Id = "offering_type",
@@ -3147,9 +3147,9 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     Options =
                     [
                         Option("ink_feathers", "Чернильные Перья", "Подношение валютой в пределах лимита возвращения."),
-                        Option("soul_relic", "Реликвия Души", "Destructive offering: реликвия будет изъята клиентом."),
-                        Option("lore_fragment", "Фрагмент Знания", "Destructive offering: запись Архива будет изъята клиентом."),
-                        Option("secret_record", "Запись Тайны", "Destructive offering: запись Архива будет изъята клиентом.")
+                        Option("soul_relic", "Реликвия Души", "Реликвия будет передана как подношение."),
+                        Option("lore_fragment", "Фрагмент Знания", "Запись Архива будет передана как подношение."),
+                        Option("secret_record", "Запись Тайны", "Запись Архива будет передана как подношение.")
                     ]
                 },
                 new UiTextInputPrompt { Id = "offering_value", Prompt = "Сумма или ID предмета/записи", Placeholder = "50 / relicId / archiveId" }
@@ -3354,6 +3354,21 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
     {
         var fullPath = fs.ResolvePath(path);
         return Directory.Exists(fullPath) && Directory.EnumerateFileSystemEntries(fullPath, "*", SearchOption.AllDirectories).Any();
+    }
+
+    private static string FormatRealmForPlayer(string? realm)
+    {
+        if (string.IsNullOrWhiteSpace(realm))
+            return "не определено";
+
+        return realm.Trim().ToLowerInvariant() switch
+        {
+            "mortal world" => "смертный мир",
+            "chaos sea" => "Море Хаоса",
+            "shining abode" => "Сияющая Обитель",
+            "life evaluation" => "оценка прожитой жизни",
+            _ => realm.Trim()
+        };
     }
 
     private static async Task<JsonReadResult> ReadJson(FileSystemManager fs, string path)

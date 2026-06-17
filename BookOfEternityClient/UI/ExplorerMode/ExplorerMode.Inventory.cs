@@ -481,7 +481,7 @@ public partial class ExplorerMode
                     foreach (var property in b.EnumerateObject())
                     {
                         lines.Add(
-                            $"      [dim]{Markup.Escape(GetStructuredBonusFieldLabel(property.Name))}:[/] [white]{Markup.Escape(FormatStructuredInventoryValue(property.Value))}[/]");
+                            $"      [dim]{Markup.Escape(GetStructuredBonusFieldLabel(property.Name))}:[/] [white]{Markup.Escape(FormatStructuredInventoryValue(property.Value, property.Name))}[/]");
                     }
                 }
             }
@@ -1138,48 +1138,11 @@ public partial class ExplorerMode
                         GetStr(summary, "stat", "")))));
     }
 
-    private static string FormatStructuredInventoryValue(JsonElement value) =>
-        value.ValueKind switch
-        {
-            JsonValueKind.String => value.GetString() ?? "",
-            JsonValueKind.Number => value.GetRawText(),
-            JsonValueKind.True => "true",
-            JsonValueKind.False => "false",
-            JsonValueKind.Null => "null",
-            JsonValueKind.Undefined => "undefined",
-            JsonValueKind.Object or JsonValueKind.Array => value.GetRawText(),
-            _ => value.ToString() ?? ""
-        };
+    private static string FormatStructuredInventoryValue(JsonElement value, string? fieldName = null) =>
+        StructuredBonusDisplay.FormatValue(value, fieldName);
 
     private static string GetStructuredBonusFieldLabel(string fieldName) =>
-        fieldName switch
-        {
-            "bonusId" => "ID бонуса",
-            "bonusType" => "Тип бонуса",
-            "type" => "Тип",
-            "targetType" => "Тип цели",
-            "targetTypeDisplayName" => "Название цели",
-            "target" => "Цель",
-            "skill" => "Навык",
-            "resource" => "Ресурс",
-            "characteristic" => "Характеристика",
-            "stat" => "Показатель",
-            "effect" => "Эффект",
-            "valueType" => "Тип значения",
-            "modifierType" => "Тип модификатора",
-            "value" => "Значение",
-            "application" => "Применение",
-            "condition" => "Условие",
-            "source" => "Источник",
-            "sourceId" => "ID источника",
-            "summary" => "Кратко",
-            "description" => "Описание",
-            "stackingRule" => "Правило сложения",
-            "duration" => "Длительность",
-            "group" => "Группа",
-            "isActive" => "Активен",
-            _ => fieldName
-        };
+        StructuredBonusDisplay.FieldLabel(fieldName);
 
     private static JsonElement? GetPlayerInventoryItemsElement(JsonElement root)
     {
