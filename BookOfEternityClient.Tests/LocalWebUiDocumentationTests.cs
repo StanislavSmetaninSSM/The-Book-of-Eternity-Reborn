@@ -214,6 +214,31 @@ public sealed class LocalWebUiDocumentationTests
     }
 
     [Fact]
+    public void LocalWebHostDocs_DocumentBrowserImagegenAssetCatalogWorkflow()
+    {
+        var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
+        var readme = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "README.md"));
+        var catalogPath = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "public", "browser-ui-assets", "catalog.md");
+
+        Assert.Contains("#929", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("#929", readme, StringComparison.Ordinal);
+        Assert.Contains("public/browser-ui-assets/catalog.md", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("public/browser-ui-assets/catalog.md", readme, StringComparison.Ordinal);
+        Assert.Contains("browser-imagegen-assets.html", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("browser-imagegen-assets.html", readme, StringComparison.Ordinal);
+        Assert.Contains("deterministic local generated/development", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("deterministic local generated/development", readme, StringComparison.OrdinalIgnoreCase);
+
+        Assert.True(File.Exists(catalogPath), $"Missing #929 browser UI asset catalog at {catalogPath}");
+        var catalog = File.ReadAllText(catalogPath);
+        Assert.Contains("scene-hero-fallback", catalog, StringComparison.Ordinal);
+        Assert.Contains("gallery-empty-archive", catalog, StringComparison.Ordinal);
+        Assert.Contains("status-soul-vignette", catalog, StringComparison.Ordinal);
+        Assert.Contains("No runtime dependency", catalog, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no text, watermarks, logos", catalog, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void LocalWebHostDocs_DocumentTypedBrowserApiContractWorkflow()
     {
         var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));

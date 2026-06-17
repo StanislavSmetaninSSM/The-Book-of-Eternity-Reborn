@@ -6,6 +6,7 @@ import { CommandResultView } from './CommandResultView';
 import { useSceneImage } from '../hooks/useSceneImage';
 import { toPlayerFacingText } from '../utils/playerCopy';
 import { formatWorldTimeForPlayer } from '../utils/formatters';
+import { browserUiAssets } from '../browserUiAssets';
 
 export function SceneView() {
   const { readyState, isCommandView, executeCommand } = useShell();
@@ -36,6 +37,7 @@ function SceneContent({ game, onCommand }: {
     <div className="scene-view">
       <SceneHero
         imageUrl={sceneImage.url}
+        fallbackImageUrl={browserUiAssets.sceneHeroFallback.url}
         eyebrow={`Ход ${game.world.turnNumber}`}
         title={game.theme.label}
         subtitle={`${game.world.location || 'Локация уточняется'} · ${formatWorldTimeForPlayer(game.world.worldTime, '')}`}

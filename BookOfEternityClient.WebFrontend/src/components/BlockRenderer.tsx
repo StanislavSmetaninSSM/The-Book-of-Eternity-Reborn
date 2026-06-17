@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { UiBlock, UiTone } from '../api/contracts';
+import { browserUiAssets } from '../browserUiAssets';
 import { sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';
 import { JsonTreeViewer } from './JsonTreeViewer';
 import { MapBlock } from './MapBlock';
@@ -87,11 +88,20 @@ export function BlockRenderer({ block, advancedEnabled = false }: { block: UiBlo
 
     case 'image':
       return (
-        <figure className="block-image">
+        <figure className={`block-image${block.url ? '' : ' block-image--fallback'}`}>
           {block.url ? (
             <img src={block.url} alt={block.altText || block.title} loading="lazy" />
           ) : (
-            <p className="block-text--muted">Изображение недоступно</p>
+            <>
+              <img
+                src={browserUiAssets.galleryEmptyArchive.url}
+                alt=""
+                loading="lazy"
+                aria-hidden="true"
+                onError={(event) => { event.currentTarget.hidden = true; }}
+              />
+              <p className="block-text--muted">Образ пока не проявился.</p>
+            </>
           )}
           {block.title && <figcaption>{toSafeBlockText(block.title, 'Изображение')}</figcaption>}
         </figure>
