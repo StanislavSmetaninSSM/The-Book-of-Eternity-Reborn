@@ -39,11 +39,7 @@ public sealed class ConsoleE2ESmokeTests : IDisposable
             """
             {
               "steps": [
-                { "kind": "key", "key": "Down" },
-                { "kind": "key", "key": "Down" },
-                { "kind": "key", "key": "Down" },
-                { "kind": "key", "key": "Down" },
-                { "kind": "key", "key": "Down" },
+                { "kind": "key", "key": "Up" },
                 { "kind": "key", "key": "Enter" }
               ]
             }
@@ -92,9 +88,9 @@ public sealed class ConsoleE2ESmokeTests : IDisposable
             """
             {
               "steps": [
-                { "kind": "key", "key": "Down" },
-                { "kind": "key", "key": "Down" },
-                { "kind": "key", "key": "Down" },
+                { "kind": "key", "key": "Up" },
+                { "kind": "key", "key": "Up" },
+                { "kind": "key", "key": "Up" },
                 { "kind": "key", "key": "Enter" },
                 { "kind": "key", "key": "Escape" },
                 { "kind": "key", "key": "Down" },
