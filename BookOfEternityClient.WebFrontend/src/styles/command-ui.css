@@ -202,7 +202,32 @@
 .block-message--error { border-color: var(--color-error); background: rgba(248, 81, 73, 0.08); }
 .block-message strong { display: block; margin-bottom: 0.25rem; font-size: 0.85rem; }
 .block-message p { margin: 0; font-size: 0.82rem; color: var(--text-primary); }
-.block-image img { max-width: 100%; border-radius: 8px; }
+.block-image {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.65rem 0;
+}
+.block-image img {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 8px;
+}
+.block-image--fallback {
+  padding: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 22%, var(--border-subtle));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-raised) 86%, var(--color-accent) 6%);
+}
+.block-image--fallback img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.58;
+  filter: saturate(0.62) brightness(0.64);
+}
+.block-image--fallback p {
+  margin: 0;
+}
 .block-image figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 0.25rem; }
 .block-map { margin: 0.5rem 0; }
 .block-map__nodes { list-style: none; padding: 0; font-size: 0.82rem; }
@@ -482,11 +507,37 @@
 .help-command__run { color: var(--text-muted); font-size: 0.7rem; }
 
 /* ===== Status View ===== */
-.status-view { display: flex; flex-direction: column; gap: var(--space-4); }
+.status-view {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  isolation: isolate;
+  overflow: hidden;
+}
+.status-view__ambient-art {
+  position: absolute;
+  top: -4rem;
+  right: -3rem;
+  z-index: 0;
+  width: min(34rem, 82vw);
+  aspect-ratio: 1 / 1;
+  pointer-events: none;
+  opacity: 0.22;
+  mix-blend-mode: screen;
+}
+.status-view__ambient-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.7) brightness(0.72);
+}
 .status-card {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: var(--space-3);
-  background: var(--surface-raised);
+  background: color-mix(in srgb, var(--surface-raised) 92%, transparent);
   border-radius: var(--radius-md);
   padding: var(--space-4);
   border: 1px solid var(--border);

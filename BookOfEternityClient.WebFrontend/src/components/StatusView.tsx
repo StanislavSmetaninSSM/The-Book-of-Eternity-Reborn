@@ -1,4 +1,5 @@
 import { isSuccess, useShell } from '../context/ShellContext';
+import { browserUiAssets } from '../browserUiAssets';
 import { formatWorldTimeForPlayer } from '../utils/formatters';
 
 export function StatusView() {
@@ -33,6 +34,14 @@ export function StatusView() {
 
   return (
     <div className="status-view">
+      <div className="status-view__ambient-art" aria-hidden="true">
+        <img
+          src={browserUiAssets.statusSoulVignette.url}
+          alt=""
+          loading="lazy"
+          onError={(event) => { event.currentTarget.hidden = true; }}
+        />
+      </div>
       <section className="status-card">
         <h3>🎭 Персонаж</h3>
         {hasMissingPlayerIdentity && (

@@ -563,6 +563,67 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void BrowserImagegenAssetCatalog_HasTrackedLocalAssetsAndFallbackWiring()
+    {
+        var catalogPath = Path.Combine(FrontendRoot, "public", "browser-ui-assets", "catalog.md");
+        var assetModulePath = Path.Combine(FrontendRoot, "src", "browserUiAssets.ts");
+        Assert.True(File.Exists(assetModulePath), $"Missing browser UI asset module at {assetModulePath}");
+        var assetModule = File.ReadAllText(assetModulePath);
+        var sceneHero = ReadFrontendSource("components", "SceneHero.tsx");
+        var sceneView = ReadFrontendSource("components", "SceneView.tsx");
+        var blockRenderer = ReadFrontendSource("components", "BlockRenderer.tsx");
+        var statusView = ReadFrontendSource("components", "StatusView.tsx");
+        var styles = ReadFrontendStyles();
+
+        Assert.True(File.Exists(catalogPath), $"Missing #929 browser UI asset catalog at {catalogPath}");
+        var catalog = File.ReadAllText(catalogPath);
+        Assert.Contains("#929", catalog, StringComparison.Ordinal);
+        Assert.Contains("No runtime dependency", catalog, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no text, watermarks, logos", catalog, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("fallback behavior", catalog, StringComparison.OrdinalIgnoreCase);
+
+        var expectedAssets = new[]
+        {
+            new { Id = "scene-hero-fallback", Path = "/browser-ui-assets/scene-hero-fallback.png", Aspect = "16:9" },
+            new { Id = "gallery-empty-archive", Path = "/browser-ui-assets/gallery-empty-archive.png", Aspect = "4:3" },
+            new { Id = "status-soul-vignette", Path = "/browser-ui-assets/status-soul-vignette.png", Aspect = "1:1" }
+        };
+
+        foreach (var asset in expectedAssets)
+        {
+            Assert.Contains(asset.Id, catalog, StringComparison.Ordinal);
+            Assert.Contains(asset.Path, catalog, StringComparison.Ordinal);
+            Assert.Contains(asset.Aspect, catalog, StringComparison.Ordinal);
+            Assert.Contains(asset.Path, assetModule, StringComparison.Ordinal);
+
+            var localPath = Path.Combine(FrontendRoot, "public", asset.Path.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+            Assert.True(File.Exists(localPath), $"Missing local browser UI asset {asset.Id} at {localPath}");
+            Assert.True(new FileInfo(localPath).Length > 16 * 1024, $"{asset.Id} should be a real committed bitmap asset.");
+        }
+
+        Assert.Contains("sceneHeroFallback", assetModule, StringComparison.Ordinal);
+        Assert.Contains("galleryEmptyArchive", assetModule, StringComparison.Ordinal);
+        Assert.Contains("statusSoulVignette", assetModule, StringComparison.Ordinal);
+        Assert.DoesNotContain("http://", assetModule, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("https://", assetModule, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("pollinations", assetModule, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("codex", assetModule, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("imagegen", assetModule, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains("fallbackImageUrl", sceneHero, StringComparison.Ordinal);
+        Assert.Contains("event.currentTarget.hidden = true;", sceneHero, StringComparison.Ordinal);
+        Assert.Contains("fallbackImageUrl={browserUiAssets.sceneHeroFallback.url}", sceneView, StringComparison.Ordinal);
+        Assert.Contains("browserUiAssets.galleryEmptyArchive.url", blockRenderer, StringComparison.Ordinal);
+        Assert.Contains("block-image--fallback", blockRenderer, StringComparison.Ordinal);
+        Assert.Contains("browserUiAssets.statusSoulVignette.url", statusView, StringComparison.Ordinal);
+        Assert.Contains("status-view__ambient-art", statusView, StringComparison.Ordinal);
+
+        Assert.Contains(".scene-hero__image--fallback", styles, StringComparison.Ordinal);
+        Assert.Contains(".block-image--fallback", styles, StringComparison.Ordinal);
+        Assert.Contains(".status-view__ambient-art", styles, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BrowserLegacyRouteAndDashboardContracts_AreNotRevivedBySourceGuards()
     {
         var app = ReadFrontendSource("App.tsx");

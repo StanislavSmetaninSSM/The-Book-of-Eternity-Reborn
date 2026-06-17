@@ -66,6 +66,15 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var assetResponses = new List<SmokeResponse>();
         foreach (var assetPath in assetPaths)
             assetResponses.Add(await CaptureAsync(client, assetPath));
+        var browserUiAssetPaths = new[]
+        {
+            "/browser-ui-assets/scene-hero-fallback.png",
+            "/browser-ui-assets/gallery-empty-archive.png",
+            "/browser-ui-assets/status-soul-vignette.png"
+        };
+        var browserUiAssetResponses = new List<SmokeResponse>();
+        foreach (var browserUiAssetPath in browserUiAssetPaths)
+            browserUiAssetResponses.Add(await CaptureAsync(client, browserUiAssetPath));
 
         var artifactRoot = PrepareArtifactDirectory();
         await File.WriteAllTextAsync(Path.Combine(artifactRoot, "root.html"), root.Body);
@@ -90,6 +99,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                         missingApi.ToArtifact(),
                         missingAsset.ToArtifact()
                     }.Concat(assetResponses.Select(response => response.ToArtifact()))
+                    .Concat(browserUiAssetResponses.Select(response => response.ToArtifact()))
                 },
                 new JsonSerializerOptions { WriteIndented = true }));
         var navigationArtifactPath = Path.Combine(artifactRoot, "navigation-ia.html");
@@ -97,6 +107,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var rebornPanelsArtifactPath = Path.Combine(artifactRoot, "reborn-panels.html");
         var firstScreenVisualQaArtifactPath = Path.Combine(artifactRoot, "first-screen-visual-qa.html");
         var startNewChapterArtifactPath = Path.Combine(artifactRoot, "start-new-chapter-flow.html");
+        var browserImagegenAssetsArtifactPath = Path.Combine(artifactRoot, "browser-imagegen-assets.html");
 
         Assert.Equal(HttpStatusCode.OK, root.StatusCode);
         Assert.Equal(HttpStatusCode.OK, gameRoute.StatusCode);
@@ -116,15 +127,24 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
             response.ContentType?.Contains("javascript", StringComparison.OrdinalIgnoreCase) == true);
         Assert.Contains(assetResponses, response => response.Path.EndsWith(".css", StringComparison.OrdinalIgnoreCase) &&
             response.ContentType?.Contains("text/css", StringComparison.OrdinalIgnoreCase) == true);
+        Assert.All(browserUiAssetResponses, response =>
+        {
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains("image/png", response.ContentType, StringComparison.OrdinalIgnoreCase);
+            Assert.True(response.Body.Length > 16 * 1024, $"{response.Path} should serve a real local visual asset.");
+        });
 
         var menu = JsonNode.Parse(menuResponse.Body)!.AsObject();
         var session = JsonNode.Parse(sessionResponse.Body)!.AsObject();
         var screen = JsonNode.Parse(screenResponse.Body)!.AsObject();
         var frontendSourceRoot = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "src");
         var appSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "App.tsx"));
+        var assetModuleSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "browserUiAssets.ts"));
         var tabBarConfigSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "tabBarConfig.ts"));
         var tabBarSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "TabBar.tsx"));
+        var sceneHeroSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "SceneHero.tsx"));
         var launcherSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "GameLauncher.tsx"));
+        var blockRendererSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "BlockRenderer.tsx"));
         var sceneViewSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "SceneView.tsx"));
         var statusViewSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "StatusView.tsx"));
         var helpViewSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "HelpView.tsx"));
@@ -149,6 +169,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         await File.WriteAllTextAsync(detailSurfaceArtifactPath, BuildDetailSurfaceArtifact(statusViewSource));
         await File.WriteAllTextAsync(rebornPanelsArtifactPath, BuildRebornPanelsArtifact(statusViewSource));
         await File.WriteAllTextAsync(startNewChapterArtifactPath, BuildStartNewChapterFlowArtifact(launcherSource, promptFormSource));
+        await File.WriteAllTextAsync(browserImagegenAssetsArtifactPath, BuildBrowserImagegenAssetsArtifact(assetModuleSource, sceneHeroSource, sceneViewSource, blockRendererSource, statusViewSource));
 
         Assert.True(session["localOnly"]!.GetValue<bool>());
         Assert.Equal("CI-душа", menu["session"]!["soulName"]!.GetValue<string>());
@@ -271,6 +292,23 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.DoesNotContain("raw JSON", startNewChapterArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("debug", startNewChapterArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("screenshot", startNewChapterArtifact, StringComparison.OrdinalIgnoreCase);
+
+        Assert.True(File.Exists(browserImagegenAssetsArtifactPath), $"Missing browser imagegen asset visual smoke artifact at {browserImagegenAssetsArtifactPath}");
+        var browserImagegenAssetsArtifact = await File.ReadAllTextAsync(browserImagegenAssetsArtifactPath);
+        Assert.Contains("data-artifact=\"browser-imagegen-assets\"", browserImagegenAssetsArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"desktop\"", browserImagegenAssetsArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"mobile\"", browserImagegenAssetsArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-state=\"scene-fallback\"", browserImagegenAssetsArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-state=\"gallery-empty\"", browserImagegenAssetsArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-state=\"status-ambient\"", browserImagegenAssetsArtifact, StringComparison.Ordinal);
+        Assert.Contains("local visual-smoke artifact", browserImagegenAssetsArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("not an automated screenshot", browserImagegenAssetsArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("scene-hero-fallback.png", browserImagegenAssetsArtifact, StringComparison.Ordinal);
+        Assert.Contains("gallery-empty-archive.png", browserImagegenAssetsArtifact, StringComparison.Ordinal);
+        Assert.Contains("status-soul-vignette.png", browserImagegenAssetsArtifact, StringComparison.Ordinal);
+        Assert.DoesNotContain("/api/", browserImagegenAssetsArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", browserImagegenAssetsArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("raw JSON", browserImagegenAssetsArtifact, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -638,6 +676,107 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                 <label>Режим подготовки мира<select><option>Создать / редактировать</option></select></label>
                 <label>Название мира<input value="Новый мир" readonly></label>
                 <button type="button">Отправить форму</button>
+              </div>
+            </section>
+          </main>
+        </body>
+        </html>
+        """;
+    }
+
+    private static string BuildBrowserImagegenAssetsArtifact(
+        string assetModuleSource,
+        string sceneHeroSource,
+        string sceneViewSource,
+        string blockRendererSource,
+        string statusViewSource)
+    {
+        Assert.Contains("sceneHeroFallback", assetModuleSource, StringComparison.Ordinal);
+        Assert.Contains("galleryEmptyArchive", assetModuleSource, StringComparison.Ordinal);
+        Assert.Contains("statusSoulVignette", assetModuleSource, StringComparison.Ordinal);
+        Assert.Contains("fallbackImageUrl", sceneHeroSource, StringComparison.Ordinal);
+        Assert.Contains("event.currentTarget.hidden = true;", sceneHeroSource, StringComparison.Ordinal);
+        Assert.Contains("fallbackImageUrl={browserUiAssets.sceneHeroFallback.url}", sceneViewSource, StringComparison.Ordinal);
+        Assert.Contains("browserUiAssets.galleryEmptyArchive.url", blockRendererSource, StringComparison.Ordinal);
+        Assert.Contains("block-image--fallback", blockRendererSource, StringComparison.Ordinal);
+        Assert.Contains("browserUiAssets.statusSoulVignette.url", statusViewSource, StringComparison.Ordinal);
+        Assert.Contains("status-view__ambient-art", statusViewSource, StringComparison.Ordinal);
+
+        return """
+        <!doctype html>
+        <html lang="ru" data-artifact="browser-imagegen-assets">
+        <head>
+          <meta charset="utf-8">
+          <title>Browser Image Asset Visual Smoke</title>
+          <style>
+            :root { color-scheme: dark; font-family: Inter, "Segoe UI", sans-serif; background: #060809; color: #f4e7c9; }
+            body { margin: 0; padding: 24px; background: radial-gradient(circle at 12% 8%, rgba(201, 162, 77, 0.18), transparent 32%), #060809; }
+            .artifact { display: grid; gap: 22px; max-width: 1180px; margin: 0 auto; }
+            .note { border: 1px solid rgba(212, 179, 106, 0.32); border-radius: 16px; padding: 13px 16px; background: rgba(10, 14, 16, 0.88); color: rgba(243, 230, 200, 0.82); line-height: 1.55; }
+            .frame { overflow: hidden; border: 1px solid rgba(201, 162, 77, 0.28); border-radius: 24px; background: rgba(14, 19, 20, 0.88); box-shadow: 0 28px 90px rgba(0, 0, 0, 0.46); }
+            .scene { position: relative; min-height: 430px; background-image: linear-gradient(to top, #060809 6%, rgba(6, 8, 9, 0.88) 30%, rgba(6, 8, 9, 0.18)), linear-gradient(to right, rgba(6, 8, 9, 0.62), rgba(6, 8, 9, 0.08) 62%), url('../../BookOfEternityClient.WebFrontend/public/browser-ui-assets/scene-hero-fallback.png'); background-size: cover; background-position: center 32%; }
+            .scene-copy { position: absolute; left: 32px; right: 32px; bottom: 28px; max-width: 620px; display: grid; gap: 8px; }
+            .eyebrow { margin: 0; color: #c9a24d; font-size: 0.76rem; font-weight: 850; letter-spacing: 0.18em; text-transform: uppercase; }
+            h1, h2, p { margin: 0; }
+            h1 { color: #f5dfa0; font-size: clamp(1.8rem, 4vw, 3.6rem); line-height: 1.05; text-shadow: 0 3px 26px rgba(0, 0, 0, 0.85); }
+            .muted { color: rgba(244, 231, 201, 0.78); line-height: 1.55; }
+            .grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr); gap: 18px; padding: 20px; }
+            .gallery { display: grid; gap: 10px; padding: 14px; border: 1px solid rgba(201, 162, 77, 0.24); border-radius: 18px; background: rgba(255, 255, 255, 0.045); }
+            .gallery img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; opacity: 0.76; filter: saturate(0.7) brightness(0.72); }
+            .status { position: relative; min-height: 360px; padding: 18px; display: grid; gap: 12px; align-content: start; }
+            .status::before { position: absolute; inset: -80px -80px auto auto; width: 430px; aspect-ratio: 1 / 1; content: ""; background-image: url('../../BookOfEternityClient.WebFrontend/public/browser-ui-assets/status-soul-vignette.png'); background-size: cover; opacity: 0.28; mix-blend-mode: screen; }
+            .status-card { position: relative; z-index: 1; border: 1px solid rgba(201, 162, 77, 0.22); border-radius: 16px; padding: 12px; background: rgba(8, 11, 12, 0.82); }
+            .status-card strong { color: #fff6df; }
+            .mobile { width: min(100%, 390px); margin: 0 auto; }
+            .mobile .scene { min-height: 560px; background-position: center 32%; }
+            .mobile .scene-copy { left: 18px; right: 18px; bottom: 22px; }
+            .mobile .grid { grid-template-columns: 1fr; }
+            @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+          </style>
+        </head>
+        <body>
+          <main class="artifact">
+            <p class="note">This is a dependency-light local visual-smoke artifact, not an automated screenshot. It references committed local assets from BookOfEternityClient.WebFrontend/public/browser-ui-assets and checks desktop/mobile crop, fallback framing, and text readability without network calls.</p>
+            <section class="frame scene" data-viewport="desktop" data-state="scene-fallback" aria-label="Desktop scene fallback art">
+              <div class="scene-copy">
+                <p class="eyebrow">ход 12</p>
+                <h1>Мир смертных</h1>
+                <p class="muted">Когда образ сцены ещё не пришёл из главы, локальная подложка остаётся спокойной и не спорит с названием, местом и временем.</p>
+              </div>
+            </section>
+            <section class="frame mobile" data-viewport="mobile" data-state="scene-fallback" aria-label="Mobile scene fallback art">
+              <div class="scene">
+                <div class="scene-copy">
+                  <p class="eyebrow">ход 12</p>
+                  <h1>Мир смертных</h1>
+                  <p class="muted">Узкий кадр сохраняет тёмную нижнюю зону для текста.</p>
+                </div>
+              </div>
+            </section>
+            <section class="frame" data-viewport="desktop" aria-label="Gallery and status asset smoke">
+              <div class="grid">
+                <article class="gallery" data-state="gallery-empty">
+                  <img src="../../BookOfEternityClient.WebFrontend/public/browser-ui-assets/gallery-empty-archive.png" alt="">
+                  <h2>Галерея ждёт образ</h2>
+                  <p class="muted">Подпись находится вне изображения, поэтому архивная пыль не мешает чтению.</p>
+                </article>
+                <article class="status" data-state="status-ambient">
+                  <div class="status-card"><strong>Персонаж</strong><p class="muted">Имя, класс и состояние читаются на отдельной карточке.</p></div>
+                  <div class="status-card"><strong>Душа</strong><p class="muted">Декоративный знак остаётся за карточками и не перекрывает сведения.</p></div>
+                  <div class="status-card"><strong>Посмертие</strong><p class="muted">Сияние, искры и залы остаются игровыми счётчиками.</p></div>
+                </article>
+              </div>
+            </section>
+            <section class="frame mobile" data-viewport="mobile" aria-label="Mobile gallery and status asset smoke">
+              <div class="grid">
+                <article class="gallery" data-state="gallery-empty">
+                  <img src="../../BookOfEternityClient.WebFrontend/public/browser-ui-assets/gallery-empty-archive.png" alt="">
+                  <h2>Образ пока не проявился</h2>
+                  <p class="muted">Фрейм остаётся понятным в узком окне.</p>
+                </article>
+                <article class="status" data-state="status-ambient">
+                  <div class="status-card"><strong>Душа</strong><p class="muted">Карточка перекрывает декоративный фон.</p></div>
+                </article>
               </div>
             </section>
           </main>

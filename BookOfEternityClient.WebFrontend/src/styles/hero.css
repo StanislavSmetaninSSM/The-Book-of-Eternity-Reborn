@@ -29,6 +29,12 @@
   filter: saturate(0.7) brightness(0.5);
 }
 
+.scene-hero__image--fallback img {
+  object-position: center 32%;
+  opacity: 0.38;
+  filter: saturate(0.62) brightness(0.46);
+}
+
 /* Cinematic light beam */
 .scene-hero__beam {
   position: absolute;

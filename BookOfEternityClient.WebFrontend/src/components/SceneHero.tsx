@@ -1,17 +1,26 @@
 interface SceneHeroProps {
   imageUrl?: string | null;
+  fallbackImageUrl?: string | null;
   eyebrow?: string;
   title: string;
   subtitle?: string;
   loading?: boolean;
 }
 
-export function SceneHero({ imageUrl, eyebrow, title, subtitle, loading }: SceneHeroProps) {
+export function SceneHero({ imageUrl, fallbackImageUrl, eyebrow, title, subtitle, loading }: SceneHeroProps) {
+  const resolvedImageUrl = imageUrl ?? fallbackImageUrl ?? null;
+  const isFallbackImage = !imageUrl && Boolean(fallbackImageUrl);
+
   return (
     <header className="scene-hero">
-      {imageUrl && (
-        <div className="scene-hero__image" aria-hidden="true">
-          <img src={imageUrl} alt="" loading="lazy" />
+      {resolvedImageUrl && (
+        <div className={`scene-hero__image${isFallbackImage ? ' scene-hero__image--fallback' : ''}`} aria-hidden="true">
+          <img
+            src={resolvedImageUrl}
+            alt=""
+            loading="lazy"
+            onError={(event) => { event.currentTarget.hidden = true; }}
+          />
         </div>
       )}
       <div className="scene-hero__beam" aria-hidden="true" />
@@ -20,7 +29,7 @@ export function SceneHero({ imageUrl, eyebrow, title, subtitle, loading }: Scene
         {eyebrow && <span className="scene-hero__eyebrow">{eyebrow}</span>}
         <h1 className="scene-hero__title">{title}</h1>
         {subtitle && <p className="scene-hero__subtitle">{subtitle}</p>}
-        {loading && <p className="scene-hero__loading">🎨 Генерация образа…</p>}
+        {loading && <p className="scene-hero__loading">Образ сцены проявляется…</p>}
       </div>
     </header>
   );
