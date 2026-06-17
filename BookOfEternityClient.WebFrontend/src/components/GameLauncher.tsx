@@ -29,6 +29,7 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
   const [launcherNotice, setLauncherNotice] = useState('');
   const [loadingSaveId, setLoadingSaveId] = useState<string | null>(null);
   const isLauncherMountedRef = useRef(true);
+  const sessionWarningText = launcherSessionWarningText(menu.session.validationLabel);
 
   useEffect(() => {
     isLauncherMountedRef.current = true;
@@ -177,13 +178,14 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
   return (
     <article className="game-launcher" aria-labelledby="browser-launcher-title">
       <div className="launcher-art-bg" aria-hidden="true">
-        <img src="/main-menu-bg.webp" alt="" />
+        <img src="/main-menu-bg.webp" alt="" onError={(event) => { event.currentTarget.hidden = true; }} />
       </div>
       <div className="launcher-window">
         <div className="launcher-copy">
           <p className="panel-eyebrow">главная книга</p>
           <h2 id="browser-launcher-title">Открыть книгу</h2>
           <p className="muted">{toPlayerFacingText(menu.session.continueReason, 'Выберите продолжение, загрузку или новую главу.')}</p>
+          {sessionWarningText && <p className="launcher-session-warning" role="status">{sessionWarningText}</p>}
         </div>
 
         <nav className="launcher-menu" aria-label="Действия главного меню">
@@ -192,17 +194,25 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
             const action = findLauncherMenuAction(menu, mode);
             const disabled = Boolean(action && !action.enabled && mode !== 'settings' && mode !== 'about');
             const isActive = activeMode === mode;
+            const actionDescription = launcherActionDescription(menu, mode);
+            const disabledReason = disabled ? launcherActionDisabledReason(menu, mode) : '';
             return (
               <button
                 key={mode}
                 type="button"
-                className={`launcher-menu__item${isActive ? ' is-active' : ''}${mode === primaryAction.mode ? ' is-primary' : ''}`}
+                className={`launcher-menu__item${isActive ? ' is-active' : ''}${mode === primaryAction.mode && !disabled ? ' is-primary' : ''}`}
+                data-launcher-mode={mode}
+                data-action-state={disabled ? 'disabled' : 'enabled'}
                 disabled={disabled}
                 onClick={() => activateLauncherMode(mode)}
                 aria-current={isActive ? 'true' : undefined}
               >
                 <strong>{details.label}</strong>
-                <span className="muted">{disabled ? 'пока недоступно' : details.description}</span>
+                <span className="launcher-menu__item-copy">{disabled ? disabledReason : actionDescription}</span>
+                <span className="launcher-menu__item-affordance" aria-hidden="true">
+                  {disabled ? 'Закрыто' : 'Открыть'}
+                  <span>→</span>
+                </span>
               </button>
             );
           })}
@@ -303,6 +313,23 @@ function NewChapterStartPanel({ modeAction, modeDescription }: { modeAction: Bro
 
 function launcherModeUnavailableReason(modeAction: BrowserMainMenuDto['actions'][number], fallback: string): string {
   return toPlayerFacingText(modeAction.disabledReason || modeAction.description, fallback);
+}
+
+function launcherActionDisabledReason(menu: BrowserMainMenuDto, mode: LauncherMode): string {
+  const action = findLauncherMenuAction(menu, mode);
+  return action ? launcherModeUnavailableReason(action, launcherModeDetails[mode].description) : launcherModeDetails[mode].description;
+}
+
+function launcherSessionWarningText(validationLabel: string): string {
+  const playerText = toPlayerFacingText(validationLabel, '').trim();
+  if (!playerText || isLauncherValidationOkLabel(playerText)) {
+    return '';
+  }
+  return playerText;
+}
+
+function isLauncherValidationOkLabel(playerText: string): boolean {
+  return /валидн/i.test(playerText) && !/(невалидн|ошиб|предупрежд|warning|error)/i.test(playerText);
 }
 
 function toNewChapterNotice(result: ExplorerCommandResult): string {
