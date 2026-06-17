@@ -471,6 +471,9 @@ public partial class ValidationService
                 knownGuardianReferences.Names.Count == 0 &&
                 knownGuardianReferences.BaselineFailureKind != GuardianBaselineFailureKind.None)
             {
+                if (IsIdleStateWithoutActiveTurn(knownGuardianReferences.BaselineFailureKind))
+                    return;
+
                 if (hasNpcSurface)
                 {
                     issues.Add(new ValidationIssue(

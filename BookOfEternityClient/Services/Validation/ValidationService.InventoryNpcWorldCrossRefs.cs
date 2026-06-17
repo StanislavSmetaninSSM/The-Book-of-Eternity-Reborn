@@ -1328,7 +1328,8 @@ public partial class ValidationService
         var guardianBoundaryUnavailable =
             knownGuardianReferences.Ids.Count == 0 &&
             knownGuardianReferences.Names.Count == 0 &&
-            knownGuardianReferences.BaselineFailureKind != GuardianBaselineFailureKind.None;
+            knownGuardianReferences.BaselineFailureKind != GuardianBaselineFailureKind.None &&
+            !IsIdleStateWithoutActiveTurn(knownGuardianReferences.BaselineFailureKind);
         var emittedGuardianBaselineIssue = false;
         foreach (var (path, sections) in new[]
                  {
