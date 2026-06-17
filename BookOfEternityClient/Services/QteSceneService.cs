@@ -3442,7 +3442,7 @@ public sealed partial class QteSceneService
 
         return await RunMiniGameLiveAsync(
             "Balance Meter",
-            $"Удерживайте индикатор в центральной зоне клавишами {QteKeyInput.FormatPromptLabel(ConsoleKey.A)} или {QteKeyInput.FormatPromptLabel(ConsoleKey.D)}.",
+            $"Удерживайте индикатор в центральной зоне: {QteKeyInput.FormatPromptLabel(ConsoleKey.A)} / ← сдвигает на 10 влево, {QteKeyInput.FormatPromptLabel(ConsoleKey.D)} / → сдвигает на 10 вправо.",
             BuildBalanceMeter(value, safeHalfWidth, currentTick: 1, ticks),
             async renderer =>
         {
@@ -3840,7 +3840,15 @@ public sealed partial class QteSceneService
                 parts.Add("[dim]░[/]");
         }
 
-        return $"{string.Join("", parts)}\n[dim]Такт {currentTick}/{totalTicks}[/]";
+        var safeStart = Math.Max(0, 50 - safeHalfWidth);
+        var safeEnd = Math.Min(100, 50 + safeHalfWidth);
+
+        return string.Join("\n", new[]
+        {
+            string.Join("", parts),
+            $"[white]Позиция: {value}/100 | безопасная зона: {safeStart}-{safeEnd}[/]",
+            $"[dim]A/←: -10 | D/→: +10 | Такт {currentTick}/{totalTicks}[/]"
+        });
     }
 
     private static string BuildChargeMeter(int charge, int targetStart, int targetWidth)

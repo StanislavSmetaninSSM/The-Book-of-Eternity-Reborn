@@ -63,6 +63,18 @@ public sealed class QteSceneRenderingSourceGuardTests
         Assert.DoesNotContain("Показ:", methodSource, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void BalanceMeterProgress_MustExplainPositionAndControlStep()
+    {
+        var source = ReadQteSceneServiceSource();
+        var methodSource = ExtractMethodSource(source, "private static string BuildBalanceMeter(");
+
+        Assert.Contains("Позиция:", methodSource, StringComparison.Ordinal);
+        Assert.Contains("безопасная зона", methodSource, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("A/←: -10", methodSource, StringComparison.Ordinal);
+        Assert.Contains("D/→: +10", methodSource, StringComparison.Ordinal);
+    }
+
     private static string ExtractMethodSource(string source, string signature)
     {
         var start = source.IndexOf(signature, StringComparison.Ordinal);
