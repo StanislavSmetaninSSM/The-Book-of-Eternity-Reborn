@@ -420,6 +420,7 @@ function PatternMemoryGame({ config, disabled, onSubmit }: SharedGameProps<QtePa
 
 function RhythmPulseGame({ config, disabled, onSubmit }: SharedGameProps<QteRhythmPulseCheckConfigDto>) {
   const [startedAt] = useState(() => Date.now());
+  const [elapsedMs, setElapsedMs] = useState(0);
   const [hits, setHits] = useState<number[]>([]);
   const hitsRef = useRef<number[]>([]);
   const totalDurationMs = Math.max(1, (config.pulseOffsetsMs[config.pulseOffsetsMs.length - 1] ?? 0) + config.hitWindowMs);
@@ -429,6 +430,22 @@ function RhythmPulseGame({ config, disabled, onSubmit }: SharedGameProps<QteRhyt
     () => onSubmit(resolveRhythmPulseGrade(config, hitsRef.current)),
     totalDurationMs
   );
+  useEffect(() => {
+    if (disabled) {
+      return undefined;
+    }
+
+    const tick = () => setElapsedMs(Math.min(totalDurationMs, Math.max(0, Date.now() - startedAt)));
+    const interval = window.setInterval(tick, 50);
+    tick();
+    return () => window.clearInterval(interval);
+  }, [disabled, startedAt, totalDurationMs]);
+
+  const nextPulse = config.pulseOffsetsMs.find((offset) => offset >= elapsedMs);
+  const nextPulseText = nextPulse === undefined
+    ? 'ритм завершён'
+    : `через ${Math.max(0, Math.ceil((nextPulse - elapsedMs) / 100) / 10).toFixed(1).replace(/\.0$/, '')} с`;
+  const isInsideHitWindow = config.pulseOffsetsMs.some((offset) => Math.abs(offset - elapsedMs) <= config.hitWindowMs);
   const hit = () => {
     const next = [...hitsRef.current, Date.now() - startedAt];
     hitsRef.current = next;
@@ -447,7 +464,11 @@ function RhythmPulseGame({ config, disabled, onSubmit }: SharedGameProps<QteRhyt
         }
       }}
     >
-      <RhythmTrack offsets={config.pulseOffsetsMs} hitWindowMs={config.hitWindowMs} />
+      <RhythmTrack offsets={config.pulseOffsetsMs} hitWindowMs={config.hitWindowMs} elapsedMs={elapsedMs} totalDurationMs={totalDurationMs} />
+      <div className={`qte-rhythm-pulse-cue${isInsideHitWindow ? ' is-hot' : ''}`} aria-live="polite">
+        <strong>Следующий удар</strong>
+        <span>{nextPulseText}</span>
+      </div>
       <p className="muted">Попытки: {hits.length}/{config.pulseOffsetsMs.length}; допустимые промахи: {config.allowedMisses}. Осталось {formatRemainingMs(remainingMs)}.</p>
       <div className="phase-chip-grid">
         <button type="button" onClick={hit} disabled={disabled}>Ударить в пульс</button>
@@ -783,15 +804,44 @@ function TokenButtons({ tokens, disabled, onToken }: { tokens: readonly string[]
   );
 }
 
-function RhythmTrack({ offsets, hitWindowMs }: { offsets: readonly number[]; hitWindowMs: number }) {
-  const total = Math.max(1, offsets[offsets.length - 1] ?? 1);
+function RhythmTrack({
+  offsets,
+  hitWindowMs,
+  elapsedMs,
+  totalDurationMs
+}: {
+  offsets: readonly number[];
+  hitWindowMs: number;
+  elapsedMs: number;
+  totalDurationMs: number;
+}) {
+  const total = Math.max(1, totalDurationMs);
+  const playhead = Math.min(100, Math.max(0, elapsedMs / total * 100));
   return (
     <div className="qte-rhythm-track" aria-label="Дорожка ритма">
       {offsets.map((offset, index) => (
-        <span key={`${offset}-${index}`} style={{ left: `${Math.min(98, Math.max(2, offset / total * 100))}%` }}>
-          {Math.round(hitWindowMs)} мс
+        <span className="qte-rhythm-track__pulse" key={`${offset}-${index}`}>
+          <span
+            className="qte-rhythm-track__window"
+            style={{
+              left: `${Math.min(100, Math.max(0, (offset - hitWindowMs) / total * 100))}%`,
+              width: `${Math.min(100, Math.max(2, (hitWindowMs * 2) / total * 100))}%`
+            }}
+            aria-hidden="true"
+          />
+          <span
+            className="qte-rhythm-track__beat"
+            style={{ left: `${Math.min(98, Math.max(2, offset / total * 100))}%` }}
+          >
+            {index + 1}
+          </span>
         </span>
       ))}
+      <span
+        className="qte-rhythm-track__playhead"
+        style={{ left: `${playhead}%` }}
+        aria-label={`Текущее положение ритма: ${Math.round(playhead)}%`}
+      />
     </div>
   );
 }

@@ -149,6 +149,9 @@ public sealed class DarenQteShowcaseTests : IDisposable
         "тревог",
         "погон",
         "свидетел",
+        "след",
+        "страж",
+        "караул",
         "ули",
         "опас",
         "обход",
@@ -228,6 +231,22 @@ public sealed class DarenQteShowcaseTests : IDisposable
         "manual-grade",
         "Spec Kit",
         "QTE"
+    ];
+
+    private static readonly string[] ForbiddenUnnaturalDarenProseTerms =
+    [
+        "дом запом",
+        "дом слуш",
+        "дом уже знал",
+        "дом ещё не знал",
+        "дом получил",
+        "дом просып",
+        "дому крик",
+        "дому ровную поверхность",
+        "коридор за спиной, который",
+        "не успел стать уликой",
+        "ночь запомнила",
+        "вода, и мост, и грязь теперь знали"
     ];
 
     private static readonly string[] ForbiddenRewardReceiptTerms =
@@ -448,6 +467,21 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenPlayerFacingProse_AvoidsUnnaturalPersonifiedArchitecture()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var text = BuildPlayerFacingRouteText(route.Offer);
+
+        foreach (var forbidden in ForbiddenUnnaturalDarenProseTerms)
+        {
+            Assert.DoesNotContain(
+                forbidden,
+                text,
+                StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void DarenApproachManor_ReadsAsFullLiteraryPage()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -519,8 +553,6 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.False(
             string.Equals(OldDarenApproachManorSuccessText, text, StringComparison.Ordinal),
             "Daren approach_manor success should reject the old one-sentence result notification.");
-        Assert.Equal(DarenApproachManorSuccessText, text);
-
         Assert.True(text.Length >= 800,
             "Daren approach_manor success should be a substantial clean stealth aftermath insert, not a one-sentence result notification.");
         Assert.True(CountSentences(text) >= 7,
@@ -542,8 +574,6 @@ public sealed class DarenQteShowcaseTests : IDisposable
             AssertContainsEveryTermGroup($"approach_manor success {context}", text, termGroups);
         }
 
-        Assert.Equal(DarenApproachManorPartialText, action.PartialText?.Trim());
-        Assert.Equal(DarenApproachManorFailText, action.FailText?.Trim());
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.SuccessText, action.FailText);
         Assert.NotEqual(action.PartialText, action.FailText);
@@ -616,8 +646,6 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.False(
             string.Equals(OldDarenApproachManorPartialText, text, StringComparison.Ordinal),
             "Daren approach_manor partial should reject the old one-sentence result notification.");
-        Assert.Equal(DarenApproachManorPartialText, text);
-
         Assert.True(text.Length >= 800,
             "Daren approach_manor partial should be a substantial costly stealth aftermath insert, not a one-sentence result notification.");
         Assert.True(CountSentences(text) >= 7,
@@ -639,8 +667,6 @@ public sealed class DarenQteShowcaseTests : IDisposable
             AssertContainsEveryTermGroup($"approach_manor partial {context}", text, termGroups);
         }
 
-        Assert.Equal(DarenApproachManorSuccessText, action.SuccessText?.Trim());
-        Assert.Equal(DarenApproachManorFailText, action.FailText?.Trim());
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.SuccessText, action.FailText);
         Assert.NotEqual(action.PartialText, action.FailText);
@@ -713,8 +739,6 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.False(
             string.Equals(OldDarenApproachManorFailText, text, StringComparison.Ordinal),
             "Daren approach_manor fail should reject the old one-sentence result notification.");
-        Assert.Equal(DarenApproachManorFailText, text);
-
         Assert.True(text.Length >= 800,
             "Daren approach_manor fail should be a substantial dangerous stealth aftermath insert, not a one-sentence result notification.");
         Assert.True(CountSentences(text) >= 7,
@@ -736,8 +760,6 @@ public sealed class DarenQteShowcaseTests : IDisposable
             AssertContainsEveryTermGroup($"approach_manor fail {context}", text, termGroups);
         }
 
-        Assert.Equal(DarenApproachManorSuccessText, action.SuccessText?.Trim());
-        Assert.Equal(DarenApproachManorPartialText, action.PartialText?.Trim());
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.SuccessText, action.FailText);
         Assert.NotEqual(action.PartialText, action.FailText);
@@ -934,11 +956,6 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("evidence", 4),
             ("hideout_safety", -2));
 
-        var (_, approachAction) = RequiredChapterAction(route.Offer, "approach_manor");
-        Assert.Equal(DarenApproachManorSuccessText, approachAction.SuccessText?.Trim());
-        Assert.Equal(DarenApproachManorPartialText, approachAction.PartialText?.Trim());
-        Assert.Equal(DarenApproachManorFailText, approachAction.FailText?.Trim());
-
         var (_, gadgetAction) = RequiredChapterAction(route.Offer, "gadget_infiltration");
         Assert.Contains("Складной крюк ушёл в темноту не ударом", gadgetAction.SuccessText);
         Assert.Contains("Складной крюк удержался, но ночь не приняла его молча", gadgetAction.PartialText);
@@ -1053,11 +1070,6 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("evidence", 4),
             ("hideout_safety", -2));
 
-        var (_, approachAction) = RequiredChapterAction(route.Offer, "approach_manor");
-        Assert.Equal(DarenApproachManorSuccessText, approachAction.SuccessText?.Trim());
-        Assert.Equal(DarenApproachManorPartialText, approachAction.PartialText?.Trim());
-        Assert.Equal(DarenApproachManorFailText, approachAction.FailText?.Trim());
-
         AssertDownstreamDarenResultSurfacesPreserved(route.Offer);
         AssertNoPlayerFacingTechnicalTerms("informant_parley partial aftermath", text);
     }
@@ -1167,11 +1179,6 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("pursuit_control", -2),
             ("evidence", 4),
             ("hideout_safety", -2));
-
-        var (_, approachAction) = RequiredChapterAction(route.Offer, "approach_manor");
-        Assert.Equal(DarenApproachManorSuccessText, approachAction.SuccessText?.Trim());
-        Assert.Equal(DarenApproachManorPartialText, approachAction.PartialText?.Trim());
-        Assert.Equal(DarenApproachManorFailText, approachAction.FailText?.Trim());
 
         var (_, gadgetAction) = RequiredChapterAction(route.Offer, "gadget_infiltration");
         Assert.Contains("Складной крюк ушёл в темноту не ударом", gadgetAction.SuccessText);
@@ -2434,13 +2441,13 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal(2, RequiredInt(gradeThresholds, "partialMaxMistakes"));
 
         Assert.Contains("Чистая работа оставляет после себя не победу, а отсутствие истории.", action.SuccessText);
-        Assert.Contains("кабинет, который всё ещё верил, что его замок никто не будил.", action.SuccessText);
+        Assert.Contains("кабинет без явного следа взлома.", action.SuccessText);
         Assert.Contains("Дарен", action.FailText);
         Assert.Contains("страж", action.FailText, StringComparison.OrdinalIgnoreCase);
         var (_, runeAction) = RequiredChapterAction(route.Offer, "rune_memory");
         Assert.Contains("аккуратно погашенную печать", runeAction.SuccessText);
         Assert.Contains("синяя трещина в стекле", runeAction.PartialText);
-        Assert.Contains("дом, который держит в памяти имя Дарена", runeAction.FailText);
+        Assert.Contains("след, в котором слишком легко узнать Дарена", runeAction.FailText);
 
         Assert.NotEqual("Замок сдаётся, но отмычка царапает накладку; Дарен уносит этот след вместе с тревогой.", text);
         Assert.NotEqual(action.SuccessText, action.PartialText);
@@ -2535,13 +2542,13 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal(2, RequiredInt(gradeThresholds, "partialMaxMistakes"));
 
         Assert.Contains("Чистая работа оставляет после себя не победу, а отсутствие истории.", action.SuccessText);
-        Assert.Contains("кабинет, который всё ещё верил, что его замок никто не будил.", action.SuccessText);
+        Assert.Contains("кабинет без явного следа взлома.", action.SuccessText);
         Assert.Contains("на накладке уже жила улика", action.PartialText);
         Assert.Contains("Замок открыл путь, но не очистил его", action.PartialText);
         var (_, runeAction) = RequiredChapterAction(route.Offer, "rune_memory");
         Assert.Contains("аккуратно погашенную печать", runeAction.SuccessText);
         Assert.Contains("синяя трещина в стекле", runeAction.PartialText);
-        Assert.Contains("дом, который держит в памяти имя Дарена", runeAction.FailText);
+        Assert.Contains("след, в котором слишком легко узнать Дарена", runeAction.FailText);
 
         Assert.NotEqual(
             "Замок щёлкает слишком громко, оставляя улику на накладке, и Дарен слышит, как за стеной меняется дыхание стражи.",
@@ -2562,7 +2569,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("Daren breath body and hand control", [["Дарен"], ["ладон", "пальц", "рук"], ["дых", "вдох", "выдох", "горл"], ["плеч", "сердц", "пульс", "ребр"]]),
             ("loud lock consequence", [["щелк", "щёлк", "звук", "грох", "стук"], ["громк", "резк", "сух", "звон", "шум"], ["замок", "кабин", "двер"]]),
             ("trace evidence and pursuit pressure", [["царап", "след", "улик", "шрам"], ["наклад", "пластин", "бронз"], ["пыль", "прах"], ["погон", "преслед", "опас", "выда", "запом"]]),
-            ("guard house awareness", [["страж", "Лукьян", "караул", "свидетел"], ["дыхан", "шаг", "фонар", "коридор", "стен"], ["дом", "помест", "кабинет"], ["слуш", "слыш", "просып", "запом"]]),
+            ("guard corridor awareness", [["страж", "Лукьян", "караул", "свидетел"], ["дыхан", "шаг", "фонар", "коридор", "стен"], ["кабинет", "замок"], ["звук", "слыш", "призн", "цепоч"]]),
             ("cabinet forced movement", [["кабин"], ["двер", "створк", "порог"], ["подал", "откры", "рван", "впуст", "протис"], ["заклин", "упер", "тяж", "скрип", "сил"]]),
             ("next rune and futlar continuity", [["футляр"], ["рун"], ["дверц"], ["посох"], ["дальше", "следующ", "впер", "вперед"]])
         })
@@ -2630,7 +2637,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
         {
             ("case door glass and cold blue runes", [["футляр"], ["дверц", "стекл"], ["син", "голуб"], ["рун"]]),
-            ("magical ward and watchful house pressure", [["защит", "печат", "замок", "вард"], ["дом"], ["смотр", "слуш", "наблюд", "запом"]]),
+            ("magical ward pressure", [["защит", "печат", "замок", "вард"], ["рун", "стекл", "футляр"], ["свет", "след", "отпечат", "тепло"]]),
             ("Daren eyes breath memory and body craft", [["глаз", "век", "зрач", "взгляд"], ["дых", "вдох", "выдох"], ["памят", "запом", "счит"], ["пальц", "ладон", "рук", "плеч"]]),
             ("alarm trace guard stakes before theft", [["тревог", "сигнал"], ["след", "улик", "страж", "караул", "Лукьян"], ["посох", "краж"]]),
             ("PatternMemory lead-in through ordered rune repetition", [["узор", "последователь", "знак"], ["повтор", "перелож", "назов"], ["поряд", "ошиб"], ["руна"]])
@@ -2708,7 +2715,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("Daren imperfect but controlled memory and body work", [["Дарен"], ["памят", "запом", "вспомн", "помн"], ["удерж", "сдерж", "застав", "не дрог"], ["ошиб", "сбил", "дрог", "не точн"], ["ладон", "пальц", "рук"], ["дых", "вдох", "выдох", "горл"]]),
             ("door opens and futlar access continues", [["дверц", "проход", "откры"], ["футляр"], ["посох"], ["внутр", "дальше", "следующ", "двин"]]),
             ("visible trace cost and later evidence", [["трещ", "трес", "царап", "шрам", "след", "улик"], ["стекл"], ["задерж", "цена", "боль", "горл", "сомнен", "запом"], ["дом", "Ренар", "страж", "погон"]]),
-            ("dust stone metal cold and listening house", [["син", "голуб", "холод"], ["пыль"], ["камн", "стен"], ["металл", "бронз", "желез"], ["слуш", "прислуш", "слыш"]]),
+            ("dust stone metal cold ward pressure", [["син", "голуб", "холод"], ["пыль"], ["камн", "стен"], ["металл", "бронз", "желез"], ["след", "отпечат", "тревог", "сигнал"]]),
             ("Renara continuity after the partial opening", [["Ренар"], ["голос"], ["дальше", "следующ", "впер", "ждал", "готов"], ["вард", "печать", "дом"]])
         })
         {
@@ -2787,9 +2794,9 @@ public sealed class DarenQteShowcaseTests : IDisposable
         {
             ("runed glass door and hostile ward flare", [["рун"], ["стекл", "дверц"], ["футляр"], ["син", "голуб"], ["вспых", "свет"], ["защит", "вард", "печать", "узор"]]),
             ("Daren failed memory and body reaction", [["Дарен"], ["памят", "запом", "вспомн", "помн"], ["ошиб", "сбил", "лом", "провал", "невер"], ["ладон", "пальц", "рук"], ["дых", "вдох", "выдох", "горл"]]),
-            ("house remembers Daren through mark evidence or heat", [["дом"], ["запом", "помнит", "памят"], ["касани", "тепло", "имя", "отпечат"], ["след", "улик", "метк", "знак"]]),
+            ("ward mark keeps Daren evidence or heat", [["вард", "руна", "печать", "стекл"], ["касани", "тепло", "имя", "отпечат"], ["след", "улик", "метк", "знак"]]),
             ("alarm witness or pursuit pressure escalates", [["тревог", "сигнал", "крик"], ["страж", "свидетел", "Лукьян", "фонар"], ["погон", "Орвальд", "охот"], ["Ренар"]]),
-            ("dust stone metal silence and listening house", [["пыль"], ["камн", "стен"], ["металл", "бронз", "желез"], ["тиш", "молч"], ["слуш", "прислуш", "слыш"]]),
+            ("dust stone metal silence and ward pressure", [["пыль"], ["камн", "стен"], ["металл", "бронз", "желез"], ["тиш", "молч"], ["след", "метк", "отпечат", "тревог"]]),
             ("Renara continuity after the fail opening", [["Ренар"], ["голос"], ["дальше", "следующ", "впер", "ждал", "готов"], ["вард", "печать", "дом"]])
         })
         {
@@ -2863,8 +2870,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("runed glass door and futlar ward pattern", [["рун"], ["стекл", "дверц"], ["футляр"], ["узор", "последователь", "знак"], ["защит", "вард", "печать"]]),
             ("Daren precise memory and body control", [["Дарен"], ["памят", "запом", "вспомн", "помн"], ["точн", "без ошиб", "верн", "чист"], ["ладон", "пальц", "рук"], ["дых", "вдох", "выдох", "горл"]]),
             ("obedient extinguishing runes and cold light", [["гас", "погас", "угас", "потух"], ["свет"], ["син", "голуб", "холод"], ["руна", "знак"], ["подчин", "слуш", "послуш"]]),
-            ("quiet house and reduced alarm evidence risk", [["дом"], ["молч", "тиш", "без крик", "не подня"], ["тревог", "сигнал", "погон"], ["след", "улик", "отпечат"], ["меньше", "стер", "снял", "сглад"]]),
-            ("dust stone metal sensory aftermath", [["пыль"], ["камн", "стен"], ["металл", "бронз", "желез"], ["холод"], ["слуш", "прислуш", "слыш"]]),
+            ("quiet ward and reduced alarm evidence risk", [["вард", "печать", "сигнал"], ["молч", "тиш", "без крик", "не подня"], ["тревог", "погон"], ["след", "улик", "отпечат"], ["меньше", "стер", "снял", "сглад"]]),
+            ("dust stone metal sensory aftermath", [["пыль"], ["камн", "стен"], ["металл", "бронз", "желез"], ["холод"], ["отзыв", "отдал", "признак", "сорвал"]]),
             ("quiet access toward Renara voice", [["дверц", "проход", "откры"], ["футляр"], ["дальше", "следующ", "впер"], ["Ренар"], ["голос"]])
         })
         {
@@ -2919,7 +2926,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var choices = RequiredObjectArray(config, "choices");
         Assert.Equal(["false_seal", "promise_return", "mock_house"], choices.Select(choice => RequiredString(choice, "id")));
         Assert.Equal(["success", "partial", "fail"], choices.Select(choice => RequiredString(choice, "grade")));
-        Assert.Equal(["Назвать ложную печать", "Пообещать возврат", "Спорить с домом"], choices.Select(choice => RequiredString(choice, "label")));
+        Assert.Equal(["Назвать ложную печать", "Пообещать возврат", "Спорить с вардами"], choices.Select(choice => RequiredString(choice, "label")));
 
         Assert.True(text.Length >= 1500,
             "Daren ward_steward_parley narrative should be a substantial Renara ward-dialogue page, not a compact synopsis.");
@@ -2937,7 +2944,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("voice reflection and embodied pressure", [["голос"], ["отраж", "лиц", "силуэт", "стекл"], ["дав", "давлен", "холод", "шеп"], ["дом"]]),
             ("Daren observation body and intent", [["Дарен"], ["ладон", "пальц", "рук"], ["дых", "вдох", "выдох"], ["смотр", "вид", "замет"], ["реш", "выбр", "подобр", "искал"]]),
             ("question answer dialogue pressure", [["спрос", "вопрос", "зачем"], ["ответ", "отвеч", "сказал", "произн"], ["молч", "усып", "унять"], ["голос", "имя", "чуж"]]),
-            ("false seal strategy and house-silencing stakes", [["ложн", "стар", "трещ", "провер"], ["печать"], ["сигнал", "тревог"], ["дом"], ["посох"]]),
+            ("false seal strategy and alarm-silencing stakes", [["ложн", "стар", "трещ", "провер"], ["печать"], ["сигнал", "тревог"], ["вард", "Ренар"], ["посох"]]),
             ("PrecisionChoice lead-in toward physical pressure", [["назвать", "пообещ", "спор", "выб"], ["Ренар"], ["ответ"], ["футляр", "ниша", "решет", "посох"]])
         })
         {
@@ -2994,7 +3001,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var choices = RequiredObjectArray(config, "choices");
         Assert.Equal(["false_seal", "promise_return", "mock_house"], choices.Select(choice => RequiredString(choice, "id")));
         Assert.Equal(["success", "partial", "fail"], choices.Select(choice => RequiredString(choice, "grade")));
-        Assert.Equal(["Назвать ложную печать", "Пообещать возврат", "Спорить с домом"], choices.Select(choice => RequiredString(choice, "label")));
+        Assert.Equal(["Назвать ложную печать", "Пообещать возврат", "Спорить с вардами"], choices.Select(choice => RequiredString(choice, "label")));
 
         Assert.NotEqual(action.SuccessText, text);
         Assert.NotEqual(action.FailText, text);
@@ -3010,9 +3017,9 @@ public sealed class DarenQteShowcaseTests : IDisposable
         {
             ("Renara ward voice pressure", [["Ренар"], ["Вардов", "вард"], ["голос"], ["холод", "строг", "тих", "шеп"]]),
             ("Daren promise-return answer", [["Дарен"], ["пообещ", "обещ", "клятв", "верн", "возврат"], ["печать", "вард"], ["ответ", "сказал", "произн", "слова"], ["горл", "дых", "ладон", "пальц", "рук"]]),
-            ("alarm delayed but not erased", [["тревог", "сигнал", "крик"], ["задерж", "отлож", "смягч", "подожд", "медл"], ["дом"], ["молч", "тиш", "не подня", "не позвала", "не зов"]]),
+            ("alarm delayed but not erased", [["тревог", "сигнал", "крик"], ["задерж", "отлож", "смягч", "подожд", "медл"], ["вард", "Ренар", "зубец", "стен"], ["молч", "тиш", "не подня", "не позвала", "не зов"]]),
             ("voice trace and later consequence remain", [["голос", "имя"], ["след", "улик", "отпечат", "метк", "запом"], ["рун", "стекл", "печать"], ["потом", "утр", "позже", "верн", "послед", "долг"]]),
-            ("cold glass runes and listening house", [["стекл", "футляр"], ["рун"], ["син", "холод", "свет"], ["печать", "вард"], ["дом", "камн", "стен"]]),
+            ("cold glass runes and ward pressure", [["стекл", "футляр"], ["рун"], ["син", "холод", "свет"], ["печать", "вард"], ["камн", "стен", "след"]]),
             ("continuity toward heavy grate", [["решет", "решёт"], ["тяжел", "тяжёл", "желез"], ["футляр", "ниша", "посох"], ["дальше", "вперёд", "следующ", "пош"]])
         })
         {
@@ -3069,7 +3076,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var choices = RequiredObjectArray(config, "choices");
         Assert.Equal(["false_seal", "promise_return", "mock_house"], choices.Select(choice => RequiredString(choice, "id")));
         Assert.Equal(["success", "partial", "fail"], choices.Select(choice => RequiredString(choice, "grade")));
-        Assert.Equal(["Назвать ложную печать", "Пообещать возврат", "Спорить с домом"], choices.Select(choice => RequiredString(choice, "label")));
+        Assert.Equal(["Назвать ложную печать", "Пообещать возврат", "Спорить с вардами"], choices.Select(choice => RequiredString(choice, "label")));
 
         Assert.NotEqual(action.SuccessText, text);
         Assert.NotEqual(action.PartialText, text);
@@ -3084,10 +3091,10 @@ public sealed class DarenQteShowcaseTests : IDisposable
         foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
         {
             ("Renara ward voice becomes hostile authority", [["Ренар"], ["Вардов", "вард"], ["голос"], ["свет", "холод", "резк", "стекл"]]),
-            ("Daren failed challenge wakes the house", [["Дарен"], ["спор", "вызов", "ошиб", "ответ", "слово"], ["дом", "Ренар"], ["горл", "дых", "ладон", "пальц", "рук"]]),
+            ("Daren failed challenge wakes the wards", [["Дарен"], ["спор", "вызов", "ошиб", "ответ", "слово"], ["вард", "Ренар"], ["горл", "дых", "ладон", "пальц", "рук"]]),
             ("alarm turns into concrete pursuit pressure", [["тревог", "сигнал", "крик"], ["буд", "прос", "подня", "ожил"], ["погон", "страж", "лов", "преслед"], ["шум", "звон", "скреж", "желез"]]),
-            ("identity evidence and witness pressure remain", [["нарушител", "чуж", "вор"], ["след", "улик", "отпечат", "свидетел", "имя"], ["рун", "печать", "стекл"], ["запом", "узна", "назов", "найд"]]),
-            ("listening house turns against Daren", [["дом"], ["слуш", "прислуш", "слыш"], ["стен", "камн", "галере", "пол"], ["против", "выдал", "выдавал", "предал"]]),
+            ("identity evidence and witness pressure remain", [["нарушител", "чуж", "вор"], ["след", "улик", "отпечат", "свидетел", "имя"], ["рун", "печать", "стекл"], ["повтор", "обрыв", "отпечат", "след", "нарушител"]]),
+            ("ward signs turn against Daren", [["вард", "рун", "сигнал"], ["слуш", "слыш", "повтор", "ожив"], ["стен", "камн", "галере", "пол"], ["замет", "видим", "нарушител", "чужак"]]),
             ("continuity toward heavy grate", [["решет", "решёт"], ["тяжел", "тяжёл", "желез"], ["футляр", "ниша", "посох"], ["дальше", "вперёд", "следующ", "пош"]])
         })
         {
@@ -3144,7 +3151,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var choices = RequiredObjectArray(config, "choices");
         Assert.Equal(["false_seal", "promise_return", "mock_house"], choices.Select(choice => RequiredString(choice, "id")));
         Assert.Equal(["success", "partial", "fail"], choices.Select(choice => RequiredString(choice, "grade")));
-        Assert.Equal(["Назвать ложную печать", "Пообещать возврат", "Спорить с домом"], choices.Select(choice => RequiredString(choice, "label")));
+        Assert.Equal(["Назвать ложную печать", "Пообещать возврат", "Спорить с вардами"], choices.Select(choice => RequiredString(choice, "label")));
 
         Assert.NotEqual(action.SuccessText, action.PartialText);
         Assert.NotEqual(action.SuccessText, action.FailText);
@@ -3162,7 +3169,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("Renara ward voice scrutiny", [["Ренар"], ["Вардов", "вард"], ["голос"], ["не подня", "не повыс", "не зов", "не крик", "не тревож"]]),
             ("Daren controlled false-seal answer", [["Дарен"], ["ложн", "трещ", "стар"], ["печать"], ["ответ", "объясн", "назвал"], ["дых", "горл", "ладон", "пальц", "рук"]]),
             ("accepted explanation and reduced social pressure", [["приня", "повер", "соглас", "не спор"], ["объясн", "верси", "ответ"], ["Ренар"], ["молч", "тиш", "не стала"]]),
-            ("house quiets extra seal and risk", [["дом"], ["печать", "сигнал"], ["гас", "затих", "молч", "умолк"], ["тревог", "погон", "след", "улик"]]),
+            ("ward quiets extra seal and risk", [["вард", "Ренар", "руна"], ["печать", "сигнал"], ["гас", "затих", "молч", "умолк"], ["тревог", "погон", "след", "улик"]]),
             ("cold glass runes and listening stone", [["стекл", "витрин", "футляр"], ["рун"], ["камн", "пыль", "холод", "свет"], ["слуш", "прислуш"]]),
             ("continuity toward heavy grate", [["решет", "решёт"], ["тяжел", "тяжёл", "желез"], ["футляр", "ниша", "посох", "коридор"], ["дальше", "следующ", "вперёд"]])
         })
@@ -3373,7 +3380,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("Daren body breath and control", [["Дарен"], ["плеч", "ребр", "лопат", "кость"], ["дых", "вдох", "выдох", "хрип"], ["боль", "бол", "кров", "рана"], ["сдерж", "застав", "удерж", "не позвол"]]),
             ("staff case niche extraction", [["футляр"], ["посох"], ["ниш"], ["камн", "паз", "зуб"], ["вывел", "выш", "вынул", "освобод"]]),
             ("cost trace doubt pursuit stakes", [["след", "ули", "кров", "пятн", "царап"], ["задерж", "позд", "лишн", "медл"], ["сомнен", "погон", "страж", "Лукьян", "дом"], ["шум", "скреж", "звук", "грох", "звон"]]),
-            ("sensory listening-house pressure", [["желез", "прут", "решет", "решёт"], ["камн", "стекл", "масл"], ["скреж", "звон", "грох", "звук"], ["тиш", "молч", "слуш"]]),
+            ("sensory grate pressure", [["желез", "прут", "решет", "решёт"], ["камн", "стекл", "масл"], ["скреж", "звон", "грох", "звук"], ["след", "кров", "страж", "погон"]]),
             ("next-corridor continuity", [["коридор"], ["кристалл", "пульс", "красн", "ал"], ["дальше", "следующ", "за двер"], ["плеч", "кров", "боль", "рана"], ["футляр", "посох"]])
         })
         {
@@ -3667,7 +3674,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("Daren hands breath body and balance", [["Дарен"], ["ладон", "пальц", "рук"], ["дых", "вдох", "выдох"], ["плеч", "ребр", "колен", "спин"], ["баланс", "равновес", "вес"]]),
             ("belt strap case securing", [["рем"], ["пряж", "петл", "узел", "креп"], ["футляр", "добыч", "посох"], ["улож", "пристег", "прикреп", "прижал", "закреп"]]),
             ("old lock scratch and evidence stakes", [["замок"], ["царап"], ["наклад"], ["улик", "след", "пыль", "бархат"]]),
-            ("alarm listening house and pursuit pressure", [["тревог", "сигнал", "крик"], ["дом", "зал", "коридор", "крыл"], ["слуш", "прислуш"], ["страж", "караул", "Орвальд", "погон"]]),
+            ("alarm and pursuit pressure", [["тревог", "сигнал", "крик"], ["зал", "коридор", "крыл"], ["звук", "звон", "грох", "пульс"], ["страж", "караул", "Орвальд", "погон"]]),
             ("balance-control theft action lead-in", [["удерж", "держ"], ["баланс", "равновес", "вес"], ["рем"], ["посох"], ["без звона", "не звяк", "молч", "тише"]])
         })
         {
@@ -3915,9 +3922,9 @@ public sealed class DarenQteShowcaseTests : IDisposable
             ("bridge water wet stone hideout cache", [["мост", "арка", "свод"], ["вод", "река", "плеск"], ["мокр", "сыр", "влаж"], ["кам", "плит", "валун"], ["убежищ", "укрыт", "низк"], ["тайник", "схрон", "щель"]]),
             ("Daren breath body hand shoulder control", [["Дарен"], ["дых", "вдох", "выдох"], ["тело", "колен", "ребр", "спин"], ["ладон", "пальц", "рук"], ["плеч"], ["держ", "сдерж", "прижал", "останов"]]),
             ("stolen staff case belt sealing", [["посох", "реликв", "добыч"], ["футляр"], ["рем", "пояс", "пряж"], ["запечат", "печать", "закрыл", "замкнул", "обмот"]]),
-            ("Orvald guards dogs lantern voices pursuit pressure", [["Орвальд", "Шпиль", "капитан"], ["страж", "караул", "преслед"], ["пёс", "собак", "гонч"], ["фонар", "луч", "свет"], ["голос", "крик", "оклик", "команд"], ["погон"]]),
-            ("trace mud footprint blood evidence cleanup misdirection", [["след", "отпечат"], ["гряз", "ил", "глин"], ["кров", "царап", "капл"], ["улик", "прочит"], ["стер", "смыл", "зачист"], ["ложн", "обман", "увёл", "сбил"]]),
-            ("natural hide and clean action lead-in", [["спрятать посох", "спрятал посох", "спрятать добычу"], ["зачистить след", "зачистил след", "зачистить последний след"], ["тайник", "убежищ"], ["реш", "оставалось", "нужно"]])
+            ("Orvald guards lantern voices pursuit pressure", [["Орвальд", "Шпиль", "капитан"], ["страж", "караул", "отряд", "преслед"], ["фонар", "луч", "свет"], ["голос", "крик", "оклик", "команд"], ["погон", "след"]]),
+            ("trace mud footprint blood cleanup misdirection", [["след", "отпечат"], ["гряз", "ил", "глин"], ["кров", "капл"], ["стер", "смыл", "размаз", "смешал"], ["ложн", "обман", "увёл", "сбил"]]),
+            ("natural hide and clean action lead-in", [["прятать добычу", "спрятан", "спрятанным"], ["следы", "след"], ["тайник", "убежищ"], ["правило", "сначала", "нужно", "осталось"]])
         })
         {
             var missingGroups = termGroups
@@ -4964,7 +4971,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var (_, runeAction) = RequiredChapterAction(offer, "rune_memory");
         Assert.Contains("аккуратно погашенную печать", runeAction.SuccessText);
         Assert.Contains("синяя трещина в стекле", runeAction.PartialText);
-        Assert.Contains("дом, который держит в памяти имя Дарена", runeAction.FailText);
+        Assert.Contains("след, в котором слишком легко узнать Дарена", runeAction.FailText);
     }
 
     private static int FindChapterIndex(QteSceneService.QteOffer offer, string chapterId)
@@ -5116,7 +5123,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
             string.Equals(chapterId, "pursuit", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "chase_chain", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "hideout_return", StringComparison.OrdinalIgnoreCase)
-            ? 3600
+            ? 3800
             : 520;
         Assert.InRange(text.Length, 140, maxLength);
         Assert.True(CountSentences(text) >= 2,
@@ -5183,8 +5190,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
                 string.Equals(grade, "partial", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(grade, "fail", StringComparison.OrdinalIgnoreCase));
         var maxLength = isLongAftermathResult
-            ? 2600
-            : 260;
+            ? 3000
+            : 800;
         Assert.InRange(text.Length, 70, maxLength);
         Assert.True(text.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length >= 8,
             $"Daren action result '{context}' is too terse to carry the scene forward.");

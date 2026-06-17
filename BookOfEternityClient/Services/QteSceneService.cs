@@ -3336,7 +3336,7 @@ public sealed partial class QteSceneService
         var width = 32;
         var successWidth = Math.Clamp(8 - difficulty + statTier, 3, 12);
         var partialWidth = Math.Clamp(successWidth + 4, successWidth + 1, 16);
-        var tickMs = Math.Clamp(110 - (statTier * 5) + (difficulty * 10), 50, 180);
+        var tickMs = Math.Clamp(120 - (difficulty * 12) + (statTier * 8), 45, 170);
         var successStart = (width - successWidth) / 2;
         var partialStart = (width - partialWidth) / 2;
         var position = 0;
@@ -3384,25 +3384,49 @@ public sealed partial class QteSceneService
         var timeoutMs = Math.Clamp(1100 + (statTier * 150) - (difficulty * 120), 450, 1600);
         var prompts = new[] { ConsoleKey.W, ConsoleKey.A, ConsoleKey.S, ConsoleKey.D, ConsoleKey.E, ConsoleKey.Spacebar };
         var random = new Random();
+        var sequence = Enumerable.Range(0, steps)
+            .Select(_ => prompts[random.Next(prompts.Length)])
+            .ToArray();
         var mistakes = 0;
 
-        for (var i = 0; i < steps; i++)
+        return await RunMiniGameLiveAsync(
+            "Цепь знаков",
+            "Нажимайте показанную физическую клавишу до истечения таймера. Esc - безопасный отказ считается провалом.",
+            BuildPromptChainProgress(sequence[0], currentStep: 1, steps, mistakes, allowedMistakes, timeoutMs),
+            async renderer =>
         {
-            var prompt = prompts[random.Next(prompts.Length)];
-            RenderMiniGamePanel(
-                "Prompt Chain",
-                $"Нажмите {DisplayKey(prompt)}. Шаг {i + 1} из {steps}.",
-                $"Тайм-аут: {timeoutMs} мс | Ошибок допустимо: {allowedMistakes}");
+            for (var i = 0; i < sequence.Length; i++)
+            {
+                var prompt = sequence[i];
+                var started = DateTime.UtcNow;
+                ConsoleKeyInfo? pressed = null;
 
-            var pressed = await ReadKeyWithTimeoutAsync(timeoutMs);
-            if (pressed == null || !QteKeyInput.MatchesConsoleKey(pressed.Value, prompt))
-                mistakes++;
+                while ((DateTime.UtcNow - started).TotalMilliseconds < timeoutMs)
+                {
+                    var remainingMs = Math.Max(0, timeoutMs - (int)(DateTime.UtcNow - started).TotalMilliseconds);
+                    renderer.Update(BuildPromptChainProgress(prompt, i + 1, steps, mistakes, allowedMistakes, remainingMs));
 
-            if (mistakes > allowedMistakes)
-                return QteGrade.Fail;
-        }
+                    if (TryReadImmediateKey(out var key))
+                    {
+                        if (key.Key == ConsoleKey.Escape)
+                            return QteGrade.Fail;
 
-        return mistakes == 0 ? QteGrade.Success : QteGrade.Partial;
+                        pressed = key;
+                        break;
+                    }
+
+                    await Task.Delay(20);
+                }
+
+                if (pressed == null || !QteKeyInput.MatchesConsoleKey(pressed.Value, prompt))
+                    mistakes++;
+
+                if (mistakes > allowedMistakes)
+                    return QteGrade.Fail;
+            }
+
+            return mistakes == 0 ? QteGrade.Success : QteGrade.Partial;
+        });
     }
 
     private async Task<QteGrade> RunBalanceMeterAsync(QteCheck check)
@@ -3785,6 +3809,22 @@ public sealed partial class QteSceneService
         }
 
         return string.Join("", parts);
+    }
+
+    private static string BuildPromptChainProgress(
+        ConsoleKey prompt,
+        int currentStep,
+        int totalSteps,
+        int mistakes,
+        int allowedMistakes,
+        int remainingMs)
+    {
+        var remainingSeconds = remainingMs / 1000d;
+        return string.Join("\n", new[]
+        {
+            $"[white]Текущий знак: [bold yellow]{DisplayKey(prompt)}[/][/]",
+            $"[dim]Шаг {currentStep}/{totalSteps} | Ошибки: {mistakes}/{allowedMistakes} | Осталось: {remainingSeconds:0.0} с[/]"
+        });
     }
 
     private static string BuildBalanceMeter(int value, int safeHalfWidth, int currentTick, int totalTicks)

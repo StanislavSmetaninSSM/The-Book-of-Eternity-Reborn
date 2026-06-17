@@ -137,6 +137,22 @@ describe('QteScenePanel browser mini-games #918', () => {
     expect(source).toContain('if (!shouldHandleQteFrameShortcut(event))');
     expect(source).toContain("target.closest('button, a, input, select, textarea, [role=\"button\"], [contenteditable=\"true\"]')");
   });
+
+  it('renders RhythmPulse with visible live timing cues instead of only hidden static ticks', () => {
+    const html = renderToStaticMarkup(
+      <QteScenePanel qte={activeQte([
+        action('RhythmPulse', { kind: 'RhythmPulse', supported: true, pulseOffsetsMs: [500, 1000, 1500], hitWindowMs: 90, allowedMisses: 1 })
+      ])} />
+    );
+
+    expect(html).toContain('qte-rhythm-track__playhead');
+    expect(html).toContain('qte-rhythm-track__window');
+    expect(html).toContain('qte-rhythm-track__beat');
+    expect(html).toContain('qte-rhythm-pulse-cue');
+    expect(html).toContain('Текущее положение ритма');
+    expect(html).toContain('Следующий удар');
+    expect(html).not.toContain('color:transparent');
+  });
 });
 
 describe('QtePracticeView #925', () => {

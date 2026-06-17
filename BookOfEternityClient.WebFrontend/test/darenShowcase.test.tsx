@@ -39,6 +39,22 @@ describe('DarenShowcaseView #919', () => {
     expect(html).not.toContain('StealthNoise');
   });
 
+  it('formats active scene prose without repeating it in the ready gate', () => {
+    const state = activeState();
+    state.activeScene.currentChapter.narrative =
+      'Дарен проверяет ремень с отмычками у стены поместья. За окнами проходит стражник с фонарём. ' +
+      'Ветер несёт запах мокрого камня и гари от сторожевой жаровни. Теперь нужно дождаться пустого промежутка между обходами.';
+
+    const html = renderToStaticMarkup(<DarenShowcaseView initialState={state} />);
+
+    expect(html).toContain('class="daren-showcase-prose"');
+    expect((html.match(/class="daren-showcase-prose__paragraph"/g) ?? []).length).toBeGreaterThanOrEqual(2);
+    expect((html.match(/Дарен проверяет ремень/g) ?? []).length).toBe(1);
+    expect(html).toContain('Нажмите, когда будете готовы.');
+    expect(html).toContain('Таймер начнётся после нажатия.');
+    expect(html).not.toContain('Прочитайте сцену и запускайте таймер');
+  });
+
   it('shows deterministic ending and New Game reward source without practice wording', () => {
     const html = renderToStaticMarkup(<DarenShowcaseView initialState={completedState()} />);
 

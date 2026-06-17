@@ -156,7 +156,7 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
           <header>
             <div>
               <h3>{toPlayerFacingText(activeChapter?.title, activeScene?.title ?? 'Вылазка Дарена')}</h3>
-              <p>{toPlayerFacingText(activeChapter?.narrative, 'Дарен двигается к следующей точке вылазки.')}</p>
+              {renderDarenProse(activeChapter?.narrative, 'Дарен двигается к следующей точке вылазки.')}
             </div>
             <span className="availability-pill">вылазка</span>
           </header>
@@ -178,8 +178,8 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
                 ) : (
                   <div className="qte-practice-ready-gate">
                     <h4>Подготовьтесь перед запуском мини-игры</h4>
-                    <p>{toPlayerFacingText(activeChapter?.narrative, 'Прочитайте сцену и запускайте таймер только когда будете готовы.')}</p>
-                    <p className="muted">Таймер и действия начнутся после этой кнопки. Результат считает клиентская вылазка Дарена, обычная глава не меняется.</p>
+                    <p>Нажмите, когда будете готовы.</p>
+                    <p className="muted">Таймер начнётся после нажатия. Результат считает клиентская вылазка Дарена, обычная глава не меняется.</p>
                     <button type="button" onClick={() => setReadyActionId(activeAction.actionId)} disabled={busyKey !== null}>
                       Начать мини-игру
                     </button>
@@ -265,6 +265,46 @@ function renderScoreSummary(scoreSummary: QteWebScoreSummaryDto | null | undefin
       {renderScoreMetrics(scoreSummary.metrics, 'Итоговый счёт', true)}
     </div>
   );
+}
+
+function renderDarenProse(text: string | null | undefined, fallback: string) {
+  const playerText = toPlayerFacingText(text, fallback);
+  const paragraphs = splitDarenProse(playerText);
+
+  return (
+    <div className="daren-showcase-prose">
+      {paragraphs.map((paragraph, index) => (
+        <p className="daren-showcase-prose__paragraph" key={`${index}-${paragraph.slice(0, 24)}`}>
+          {paragraph}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+function splitDarenProse(text: string): string[] {
+  const explicitParagraphs = text
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+  if (explicitParagraphs.length > 1) {
+    return explicitParagraphs;
+  }
+
+  const sentences = text
+    .match(/[^.!?…]+[.!?…]+(?:["»])?|[^.!?…]+$/g)
+    ?.map((sentence) => sentence.trim())
+    .filter(Boolean) ?? [text];
+  if (sentences.length <= 2) {
+    return [text.trim()];
+  }
+
+  const paragraphs: string[] = [];
+  for (let index = 0; index < sentences.length; index += 2) {
+    paragraphs.push(sentences.slice(index, index + 2).join(' ').trim());
+  }
+
+  return paragraphs.filter(Boolean);
 }
 
 function renderScoreMetrics(metrics: readonly QteWebScoreMetricDto[], title: string, includeFinalMetrics: boolean) {

@@ -24,7 +24,10 @@ public sealed class QteSceneRenderingSourceGuardTests
 
     [Theory]
     [InlineData("RunTimingBarAsync")]
+    [InlineData("RunPromptChainAsync")]
+    [InlineData("RunBalanceMeterAsync")]
     [InlineData("RunMashInputAsync")]
+    [InlineData("RunPatternMemoryAsync")]
     [InlineData("RunRhythmPulseAsync")]
     [InlineData("RunStealthNoiseAsync")]
     [InlineData("RunLockPinSetAsync")]
@@ -36,6 +39,28 @@ public sealed class QteSceneRenderingSourceGuardTests
         Assert.Contains("RunMiniGameLiveAsync", methodSource, StringComparison.Ordinal);
         Assert.Contains(".Update(", methodSource, StringComparison.Ordinal);
         Assert.DoesNotContain("RenderMiniGamePanel(", methodSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TimingBarSpeed_MustGetFasterWhenDifficultyIncreases()
+    {
+        var source = ReadQteSceneServiceSource();
+        var methodSource = ExtractMethodSource(source, "private async Task<QteGrade> RunTimingBarAsync(");
+
+        Assert.Contains("- (difficulty *", methodSource, StringComparison.Ordinal);
+        Assert.Contains("+ (statTier *", methodSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("+ (difficulty * 10)", methodSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void PatternMemoryInputProgress_MustNotRenderOriginalSequence()
+    {
+        var source = ReadQteSceneServiceSource();
+        var methodSource = ExtractMethodSource(source, "private static string BuildPatternMemoryInputProgress(");
+
+        Assert.Contains("Введено", methodSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("FormatPatternMemorySequence", methodSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("Показ:", methodSource, StringComparison.Ordinal);
     }
 
     private static string ExtractMethodSource(string source, string signature)
