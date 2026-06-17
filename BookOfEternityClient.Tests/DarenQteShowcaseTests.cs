@@ -4510,6 +4510,27 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public async Task DarenBrowserState_ExposesSharedBestRewardProfileSummary()
+    {
+        await _profile.RecordCompletionAsync(
+            DarenQteRewardProfileService.ResolveEnding(reachedHideout: true, normalizedScore: 82),
+            new DateTime(2026, 6, 11, 1, 0, 0, DateTimeKind.Utc));
+
+        var state = await _web.BuildDarenShowcaseStateAsync();
+
+        Assert.NotNull(state.BestReward);
+        var summary = RequiredStringProperty(state.BestReward!, "Summary");
+        Assert.Contains("Чистая кража", summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("82/100", summary, StringComparison.OrdinalIgnoreCase);
+        AssertContainsInkFeatherAmountSignal("best reward summary", 4, summary);
+        Assert.Contains("будущ", summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("нов", summary, StringComparison.OrdinalIgnoreCase);
+        AssertContainsAny("best reward permanence", summary, ["постоян", "сохран"]);
+        AssertContainsAny("best reward non-stacking", summary, ["не склады", "не сумм", "один раз"]);
+        AssertNoPlayerFacingTechnicalTerms("best reward summary", summary);
+    }
+
+    [Fact]
     public async Task DarenProfile_NormalizesDuplicateAndCorruptRecordsBeforeGranting()
     {
         await WriteClientProfileAsync("""
@@ -4709,6 +4730,16 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal(1, state.Ending.InkFeatherBonus);
         Assert.Contains("луч", state.Ending.RewardMessage, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("1 Черниль", state.Ending.RewardMessage, StringComparison.OrdinalIgnoreCase);
+
+        var profileSummary = RequiredStringProperty(state.Ending, "RewardProfileSummary");
+        Assert.Contains("Текущ", profileSummary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тень в бегах", profileSummary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Идеальная тень", profileSummary, StringComparison.OrdinalIgnoreCase);
+        AssertContainsInkFeatherAmountSignal("lower replay saved best summary", 6, profileSummary);
+        Assert.Contains("будущ", profileSummary, StringComparison.OrdinalIgnoreCase);
+        AssertContainsAny("lower replay non-downgrade", profileSummary, ["не замен", "не обмен", "не перепис"]);
+        AssertContainsAny("lower replay non-stacking", profileSummary, ["не склады", "не сумм"]);
+        AssertNoPlayerFacingTechnicalTerms("lower replay profile summary", profileSummary);
     }
 
     [Fact]

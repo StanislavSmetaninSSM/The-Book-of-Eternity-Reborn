@@ -136,7 +136,10 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
       <p className="muted">{toPlayerFacingText(state.boundaryNotice, 'Это отдельная вылазка: обычная глава не меняется.')}</p>
       {state.bestReward && (
         <p className="composer-notice">
-          Лучший итог уже хранится в Книге: {state.bestReward.tierName}. Будущая новая игра начнётся с памятью Дарена: {formatInkFeatherCount(state.bestReward.inkFeatherBonus)}.
+          {toPlayerFacingText(
+            state.bestReward.summary,
+            `Постоянный итог Дарена: ${state.bestReward.tierName}. Будущая новая игра получит ${formatInkFeatherCount(state.bestReward.inkFeatherBonus)} один раз при создании новой игры; повторные вылазки не складывают перья.`
+          )}
         </p>
       )}
       {state.error && <p className="warning-text">{toPlayerFacingText(state.error, 'Вылазка требует внимания.')}</p>}
@@ -214,11 +217,11 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
           {state.ending && (
             <p className="composer-notice">
               {state.ending.grantsReward
-                ? renderDarenFutureRewardLine(state)
+                ? toPlayerFacingText(state.ending.rewardProfileSummary, renderDarenFutureRewardLine(state))
                 : 'Безопасный итог не достигнут, постоянная награда не записана.'}
             </p>
           )}
-          {state.ending?.rewardMessage && state.ending.rewardMessage !== state.ending.rewardExplanation && (
+          {state.ending?.rewardMessage && !state.ending.rewardProfileSummary && state.ending.rewardMessage !== state.ending.rewardExplanation && (
             <p>{toPlayerFacingText(state.ending.rewardMessage, 'Итог Дарена сохранён.')}</p>
           )}
           {renderScoreSummary(state.completion.scoreSummary)}

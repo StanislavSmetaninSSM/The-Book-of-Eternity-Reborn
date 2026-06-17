@@ -1107,6 +1107,7 @@ export interface DarenRewardProfileDto {
   inkFeatherBonus: number;
   bestScore: number;
   completedAtUtc: string;
+  summary: string;
 }
 
 export interface DarenShowcaseEndingDto {
@@ -1118,6 +1119,7 @@ export interface DarenShowcaseEndingDto {
   epilogue: string;
   rewardExplanation: string;
   rewardMessage: string;
+  rewardProfileSummary: string;
 }
 
 export interface DarenShowcaseActionRequest {

@@ -1178,7 +1178,8 @@ public sealed class BrowserApiContractTests
                 TierName = "Чистая кража",
                 InkFeatherBonus = 4,
                 BestScore = 82,
-                CompletedAtUtc = SampleUtc
+                CompletedAtUtc = SampleUtc,
+                Summary = "Постоянный итог Дарена: Чистая кража, счёт 82/100. Будущая новая игра получит 4 Чернильных Пера один раз при создании новой игры; повторные вылазки не складывают перья и не заменяют лучший итог более слабым."
             },
             ActiveScene = null,
             Resolution = null,

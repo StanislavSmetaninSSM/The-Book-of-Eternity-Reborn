@@ -93,7 +93,9 @@ public sealed partial class QteSceneService
             var rewardMessage = ending.GrantsReward
                 ? profileResult.Message
                 : ending.RewardExplanation;
-            var summary = BuildDarenCompletionSummary(ending, rewardMessage, scoreSummary);
+            var rewardProfileSummary = profileResult.RewardProfileSummary;
+            var summary = BuildDarenCompletionSummary(ending, rewardMessage, rewardProfileSummary, scoreSummary);
+            var response = BuildDarenCompletionResponse(ending, rewardMessage, rewardProfileSummary);
 
             resolution = new QteActionResolution
             {
@@ -110,7 +112,7 @@ public sealed partial class QteSceneService
                     Summary = summary,
                     Response = new GameResponse
                     {
-                        Response = $"{ending.DisplayName}. {ending.Summary} {ending.Epilogue} {rewardMessage}"
+                        Response = response
                     },
                     ScoreSummary = scoreSummary
                 }
@@ -125,10 +127,11 @@ public sealed partial class QteSceneService
                 ending.InkFeatherBonus,
                 ending.GrantsReward,
                 ending.Epilogue,
+                ending.RewardExplanation,
                 rewardMessage,
-                rewardMessage);
+                rewardProfileSummary);
             attempt.FeedbackTitle = ending.DisplayName;
-            attempt.Feedback = $"{ending.Summary} {ending.Epilogue} {rewardMessage}";
+            attempt.Feedback = response;
         }
         else
         {
@@ -1355,11 +1358,37 @@ public sealed partial class QteSceneService
     private static string BuildDarenCompletionSummary(
         DarenEndingResult ending,
         string rewardMessage,
+        string rewardProfileSummary,
         QteScoreSummary? scoreSummary)
     {
         var rank = ending.GrantsReward ? scoreSummary?.Rank?.Label : ending.DisplayName;
         var rankText = string.IsNullOrWhiteSpace(rank) ? ending.DisplayName : rank;
-        return $"{ending.DisplayName}: {ending.Summary} {ending.Epilogue} Счёт вылазки {ending.NormalizedScore}/100. Ранг: {rankText}. {rewardMessage}";
+        return string.Join(" ", new[]
+        {
+            $"{ending.DisplayName}: {ending.Summary}",
+            ending.Epilogue,
+            $"Счёт вылазки {ending.NormalizedScore}/100.",
+            $"Ранг: {rankText}.",
+            ending.RewardExplanation,
+            string.Equals(rewardMessage, ending.RewardExplanation, StringComparison.Ordinal) ? "" : rewardMessage,
+            rewardProfileSummary
+        }.Where(static part => !string.IsNullOrWhiteSpace(part)));
+    }
+
+    private static string BuildDarenCompletionResponse(
+        DarenEndingResult ending,
+        string rewardMessage,
+        string rewardProfileSummary)
+    {
+        return string.Join(" ", new[]
+        {
+            $"{ending.DisplayName}.",
+            ending.Summary,
+            ending.Epilogue,
+            ending.RewardExplanation,
+            string.Equals(rewardMessage, ending.RewardExplanation, StringComparison.Ordinal) ? "" : rewardMessage,
+            rewardProfileSummary
+        }.Where(static part => !string.IsNullOrWhiteSpace(part)));
     }
 
     private static QteScoreSummary? BuildDarenFinalScoreSummary(
@@ -1438,7 +1467,8 @@ public sealed partial class QteSceneService
         bool GrantsReward,
         string Epilogue,
         string RewardExplanation,
-        string RewardMessage);
+        string RewardMessage,
+        string RewardProfileSummary);
 
     private const string DarenBoundaryNotice =
         "Это отдельная авторская вылазка: обычная глава, обычные ходы и свободная тренировка испытаний не меняются.";

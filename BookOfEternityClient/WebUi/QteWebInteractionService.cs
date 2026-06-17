@@ -318,7 +318,8 @@ public sealed class QteWebInteractionService
             TierName = record.BestTierName,
             InkFeatherBonus = record.InkFeatherBonus,
             BestScore = record.BestScore,
-            CompletedAtUtc = record.CompletedAtUtc
+            CompletedAtUtc = record.CompletedAtUtc,
+            Summary = DarenQteRewardProfileService.BuildProfileSummary(record)
         };
 
     private static DarenShowcaseEndingDto BuildDarenEnding(QteSceneService.DarenShowcaseEnding ending) =>
@@ -331,7 +332,8 @@ public sealed class QteWebInteractionService
             GrantsReward = ending.GrantsReward,
             Epilogue = ending.Epilogue,
             RewardExplanation = ending.RewardExplanation,
-            RewardMessage = ending.RewardMessage
+            RewardMessage = ending.RewardMessage,
+            RewardProfileSummary = ending.RewardProfileSummary
         };
 
     private static QtePracticeCatalogEntryDto BuildPracticeCatalogEntry(QteSceneService.QtePracticeCatalogEntry entry) =>
@@ -1170,6 +1172,7 @@ public sealed class DarenRewardProfileDto
     public int InkFeatherBonus { get; init; }
     public int BestScore { get; init; }
     public DateTime CompletedAtUtc { get; init; }
+    public string Summary { get; init; } = "";
 }
 
 public sealed class DarenShowcaseEndingDto
@@ -1182,6 +1185,7 @@ public sealed class DarenShowcaseEndingDto
     public string Epilogue { get; init; } = "";
     public string RewardExplanation { get; init; } = "";
     public string RewardMessage { get; init; } = "";
+    public string RewardProfileSummary { get; init; } = "";
 }
 
 public sealed class QtePracticeCatalogEntryDto

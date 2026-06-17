@@ -161,10 +161,12 @@ public sealed class DarenQteRewardProfileService
         var existing = profile.DarenShowcase;
         if (existing != null && CompareTierRank(existing.BestTierId, tier.TierId) >= 0)
         {
+            var existingSummary = BuildProfileSummary(existing, ending);
             return new DarenRewardProfileWriteResult(
                 false,
                 profile,
-                $"Книга уже хранит постоянный итог Дарена: {existing.BestTierName}. Будущая новая игра пойдёт за лучшей тенью и не обменяет её на более слабый след; Чернильные Перья не складываются от повторной вылазки.");
+                $"Книга уже хранит постоянный итог Дарена: {existing.BestTierName}. Будущая новая игра пойдёт за лучшей тенью и не обменяет её на более слабый след; Чернильные Перья не складываются от повторной вылазки.",
+                existingSummary);
         }
 
         profile = new DarenRewardProfileState
@@ -185,7 +187,30 @@ public sealed class DarenQteRewardProfileService
         return new DarenRewardProfileWriteResult(
             true,
             profile,
-            tier.RewardExplanation);
+            tier.RewardExplanation,
+            BuildProfileSummary(profile.DarenShowcase, ending));
+    }
+
+    public static string BuildProfileSummary(DarenRewardRecord? record, DarenEndingResult? currentEnding = null)
+    {
+        if (record == null)
+            return "";
+
+        var inkFeathers = FormatInkFeatherCount(record.InkFeatherBonus);
+        if (currentEnding is { GrantsReward: true })
+        {
+            var currentRank = TierRank(currentEnding.TierId);
+            var storedRank = TierRank(record.BestTierId);
+            if (currentRank >= 0 && storedRank >= currentRank &&
+                !string.Equals(record.BestTierId, currentEnding.TierId, StringComparison.OrdinalIgnoreCase))
+            {
+                return $"Текущая вылазка завершилась как {currentEnding.DisplayName} со счётом {currentEnding.NormalizedScore}/100, но постоянный итог остаётся: {record.BestTierName}. " +
+                       $"Будущая новая игра получит {inkFeathers} один раз при создании новой игры; повторная вылазка не заменяет лучший итог более слабым и не складывает Чернильные Перья.";
+            }
+        }
+
+        return $"Постоянный итог Дарена: {record.BestTierName}, счёт {record.BestScore}/100. " +
+               $"Будущая новая игра получит {inkFeathers} один раз при создании новой игры; повторные вылазки не складывают перья и не заменяют лучший итог более слабым.";
     }
 
     public async Task<DarenRewardGrantResult> ApplyBestRewardToNewSoulStateAsync(JsonObject soulRoot)
@@ -359,6 +384,22 @@ public sealed class DarenQteRewardProfileService
 
         return 0;
     }
+
+    private static string FormatInkFeatherCount(int value)
+    {
+        var amount = Math.Max(0, value);
+        var lastTwo = amount % 100;
+        var lastOne = amount % 10;
+        if (lastTwo is < 11 or > 14)
+        {
+            if (lastOne == 1)
+                return $"{amount} Чернильное Перо";
+            if (lastOne is >= 2 and <= 4)
+                return $"{amount} Чернильных Пера";
+        }
+
+        return $"{amount} Чернильных Перьев";
+    }
 }
 
 public sealed record DarenEndingTier(
@@ -384,7 +425,8 @@ public sealed record DarenEndingResult(
 public sealed record DarenRewardProfileWriteResult(
     bool Updated,
     DarenRewardProfileState Profile,
-    string Message);
+    string Message,
+    string RewardProfileSummary = "");
 
 public sealed record DarenRewardGrantResult(
     bool Granted,
