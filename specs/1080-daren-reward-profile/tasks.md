@@ -64,7 +64,7 @@
 - [x] T021 Run focused reopened-issue tests for Daren score-tier and console response readability
 - [x] T022 Run full Daren focused test suite
 - [x] T023 Run frontend player-facing tests/build if shared response changes affect browser DTO/rendering
-- [ ] T024 Review diff, update #1080 with evidence, and merge the branch
+- [x] T024 Review diff, update #1080 with evidence, and merge the branch
 
 ## Dependencies & Execution Order
 
