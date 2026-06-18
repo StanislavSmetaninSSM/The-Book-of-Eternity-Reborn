@@ -4359,7 +4359,9 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Theory]
-    [InlineData(false, 100, null, 0)]
+    [InlineData(false, 39, null, 0)]
+    [InlineData(false, 79, "clean_heist", 4)]
+    [InlineData(false, 100, "perfect_shadow", 6)]
     [InlineData(true, 39, null, 0)]
     [InlineData(true, 40, "shadow_on_the_run", 1)]
     [InlineData(true, 54, "shadow_on_the_run", 1)]
@@ -4635,14 +4637,15 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Contains(epilogue, resolution.Completion.Summary, StringComparison.Ordinal);
         Assert.Contains(rewardExplanation, resolution.Completion.Summary, StringComparison.Ordinal);
         Assert.Contains(epilogue, resolution.Completion.Response.Response, StringComparison.Ordinal);
-        Assert.Contains(rewardExplanation, attempt.Feedback, StringComparison.Ordinal);
+        Assert.Contains("Награда:", attempt.Feedback, StringComparison.Ordinal);
+        Assert.DoesNotContain(rewardExplanation, attempt.Feedback, StringComparison.Ordinal);
         Assert.Equal(before, after);
         Assert.True(File.Exists(Path.Combine(_rootPath, "client_profile", "qte_showcase_rewards.json")));
         AssertNoCampaignQteFiles();
     }
 
     [Fact]
-    public async Task DarenShowcaseAttempt_PreHideoutFailureNeverWritesPermanentRewardEvenWithHighScore()
+    public async Task DarenShowcaseAttempt_PreHideoutFailureUsesScoreTierAndWritesPermanentReward()
     {
         WriteCampaignSentinels();
         var before = SnapshotGameSessionFiles();
@@ -4666,15 +4669,20 @@ public sealed class DarenQteShowcaseTests : IDisposable
 
         var after = SnapshotGameSessionFiles();
         var profile = await _profile.ReadProfileAsync();
+        var ending = attempt.Ending!;
+        var expectedEnding = DarenQteRewardProfileService.ResolveEnding(
+            reachedHideout: true,
+            normalizedScore: ending.NormalizedScore);
 
         Assert.NotNull(resolution?.Completion);
-        Assert.Equal("no_reward_failure", resolution!.Completion!.OutcomeId);
-        Assert.Equal("no_reward_failure", resolution.Completion.ScoreSummary?.Rank?.Id);
-        Assert.Equal("Провал вылазки", resolution.Completion.ScoreSummary?.Rank?.Label);
-        Assert.DoesNotContain("Чистая кража", resolution.Completion.Summary, StringComparison.OrdinalIgnoreCase);
-        Assert.False(attempt.Ending!.GrantsReward);
-        Assert.Null(profile.DarenShowcase);
-        Assert.False(File.Exists(Path.Combine(_rootPath, "client_profile", "qte_showcase_rewards.json")));
+        Assert.Equal(expectedEnding.OutcomeId, resolution!.Completion!.OutcomeId);
+        Assert.Equal(expectedEnding.TierId, resolution.Completion.ScoreSummary?.Rank?.Id);
+        Assert.Equal(expectedEnding.DisplayName, resolution.Completion.ScoreSummary?.Rank?.Label);
+        Assert.Contains(expectedEnding.DisplayName, resolution.Completion.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.True(ending.GrantsReward);
+        Assert.Equal(expectedEnding.InkFeatherBonus, ending.InkFeatherBonus);
+        Assert.Equal(expectedEnding.TierId, profile.DarenShowcase?.BestTierId);
+        Assert.True(File.Exists(Path.Combine(_rootPath, "client_profile", "qte_showcase_rewards.json")));
         Assert.Equal(before, after);
         AssertNoCampaignQteFiles();
     }
@@ -4767,6 +4775,36 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public async Task DarenConsoleCompletion_ResponseIsStructuredForPlayerReadability()
+    {
+        var attempt = _qte.StartDarenShowcaseAttempt();
+        QteSceneService.QteActionResolution? resolution = null;
+        while (attempt.State == "Active")
+        {
+            var chapter = attempt.ActiveScene.Offer!.Chapters.Single(item =>
+                string.Equals(item.ChapterId, attempt.ActiveScene.CurrentChapterId, StringComparison.OrdinalIgnoreCase));
+            var action = chapter.Actions[0];
+            resolution = await _qte.ResolveDarenShowcaseActionAsync(
+                attempt,
+                action.ActionId,
+                "success",
+                completedAtUtc: new DateTime(2026, 6, 11, 2, 0, 0, DateTimeKind.Utc));
+        }
+
+        var response = resolution!.Completion!.Response.Response;
+        Assert.False(string.IsNullOrWhiteSpace(response));
+        var lines = response.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        Assert.Contains(lines, line => line.StartsWith("Итог:", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(lines, line => line.StartsWith("Счёт:", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(lines, line => line.StartsWith("Награда:", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("\n\n", response, StringComparison.Ordinal);
+        Assert.True(lines[0].Length <= 80, "The first result line should be a readable label, not a dense result paragraph.");
+        Assert.True(lines.Length >= 5, "The final Daren response should be split into readable result, reward and epilogue blocks.");
+        AssertNoPlayerFacingTechnicalTerms("Daren structured completion response", response);
+    }
+
+    [Fact]
     public void DarenConsoleCompletion_DoesNotDuplicateEndingTextAlreadyInCompletionResponse()
     {
         var darenSource = ReadRepoFile("BookOfEternityClient", "Services", "QteSceneService.Daren.cs");
@@ -4774,6 +4812,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Contains("completion.Response.Response ?? completion.Summary", darenSource, StringComparison.Ordinal);
         Assert.DoesNotContain("lines.Add(ending.Epilogue)", darenSource, StringComparison.Ordinal);
         Assert.DoesNotContain("lines.Add(ending.RewardExplanation)", darenSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("lines.Add($\"Итог:", darenSource, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -4916,7 +4955,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
 
     private static IReadOnlyList<(string OutcomeId, DarenEndingResult Ending)> RequiredDarenEndingOutcomes() =>
     [
-        ("no_reward_failure", DarenQteRewardProfileService.ResolveEnding(reachedHideout: false, normalizedScore: 100)),
+        ("no_reward_failure", DarenQteRewardProfileService.ResolveEnding(reachedHideout: false, normalizedScore: 39)),
         ("shadow_on_the_run", DarenQteRewardProfileService.ResolveEnding(reachedHideout: true, normalizedScore: 40)),
         ("broken_trail", DarenQteRewardProfileService.ResolveEnding(reachedHideout: true, normalizedScore: 55)),
         ("clean_heist", DarenQteRewardProfileService.ResolveEnding(reachedHideout: true, normalizedScore: 75)),

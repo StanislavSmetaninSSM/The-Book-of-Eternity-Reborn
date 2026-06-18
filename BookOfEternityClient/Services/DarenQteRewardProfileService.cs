@@ -88,7 +88,10 @@ public sealed class DarenQteRewardProfileService
     public static DarenEndingResult ResolveEnding(bool reachedHideout, int normalizedScore)
     {
         var clampedScore = Math.Clamp(normalizedScore, 0, 100);
-        if (!reachedHideout || clampedScore < TierDefinitions[0].MinimumNormalizedScore)
+        // Failed QTE steps already affect the normalized score; keep the parameter for API compatibility.
+        _ = reachedHideout;
+
+        if (clampedScore < TierDefinitions[0].MinimumNormalizedScore)
         {
             return new DarenEndingResult(
                 OutcomeId: "no_reward_failure",
