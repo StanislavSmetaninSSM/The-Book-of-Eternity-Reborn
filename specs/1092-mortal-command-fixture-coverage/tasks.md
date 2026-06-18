@@ -4,6 +4,8 @@
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/mortal-command-fixture-matrix.md
 
+**Source issues**: #1092 original Mortal command fixture coverage; #1095 reusable Mortal World command-display save continuation.
+
 **Tests**: This task is fixture/audit-heavy. Add automated coverage when command coverage can be tested from tracked files; otherwise document manual verification evidence in the issue.
 
 ## Phase 1: Setup (Shared Infrastructure)
@@ -57,6 +59,28 @@
 - [x] T015 [US3] Add or update a lightweight command coverage helper/test if feasible from tracked files
 - [x] T016 [US3] Update `quickstart.md` with final verification commands and any local-session caveats
 - [x] T017 [US3] Comment on GitHub issue #1092 with coverage evidence and remaining follow-ups
+
+---
+
+## Phase 6: #1095 Reusable Mortal World Save Continuation
+
+**Goal**: Package the rich #1092 Mortal World command-display fixture as a tracked reusable save/load-compatible artifact that survives clean checkouts and can be validated/rendered repeatedly.
+
+**Independent Test**: Load the named save into a disposable session root, run validation with zero blocking issues, and run console/browser command-display smoke checks for the #1092-covered command set.
+
+- [x] T021 Confirm source issue #1095, create isolated branch `work/1095-mortal-command-save`, and mark the GitHub issue in progress.
+- [x] T022 Run focused baseline: `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~FileSystemExampleFixtureIntegrityTests|FullyQualifiedName~ExplorerWebCommandServiceTests|FullyQualifiedName~ExplorerModeCommandTests" --logger "console;verbosity=minimal"` => 666 passed / 0 failed / 0 skipped / 666 total.
+- [x] T023 Update active Spec Kit artifacts to reference #1095 and reusable save packaging scope.
+- [x] T024 Inspect save/load code and choose the normal tracked save/package path for the reusable Mortal fixture: `SaveLoadService` uses `saves/manual_saves/*.zip`; tracked source path chosen as `FileSystemExample/game_session/saves/manual_saves/mortal_world_command_display_fixture.zip`.
+- [x] T025 Add RED discoverability/loadability/validation tests for the named reusable save: `MortalCommandDisplaySaveTests.NamedMortalCommandDisplaySave_IsDiscoverableLoadableValidAndRepeatable` failed RED on missing archive, then passed after packaging.
+- [x] T026 Add RED or mutation-backed console/browser command-display smoke coverage for the #1092-covered command set against the loaded save: `MortalCommandDisplaySaveTests.LoadedMortalCommandDisplaySave_RendersCoveredCommandInBrowserAndConsole` covers 77 Mortal aliases + 14 universal Mortal preview commands with browser result and console renderer checks.
+- [x] T027 Create/copy the reusable named Mortal World display-test save and metadata using the discovered save/load-compatible layout: added `mortal_world_command_display_fixture.zip` and `mortal_world_command_display_fixture_metadata.json` under `FileSystemExample/game_session/saves/manual_saves/`.
+- [x] T028 Document save location, loading steps, command coverage matrix, representative invocations, expected visible data, and verification commands in `quickstart.md`, `contracts/mortal-command-fixture-matrix.md`, `data-model.md`, `plan.md`, `spec.md`, and `FileSystemExample/README.md`.
+- [x] T029 Run focused and broader validation/Explorer command tests; record exact GREEN counts: focused reusable save test 92 passed / 0 failed / 0 skipped; Hermes baseline suite 666 passed / 0 failed / 0 skipped; broader validation/Explorer suite 1781 passed / 0 failed / 0 skipped.
+- [x] T030 Run Spec Kit prerequisite check and confirm the helper resolves `FEATURE_DIR` to `specs/1092-mortal-command-fixture-coverage` for this branch.
+- [x] T031 Run build, `git diff --check`, and added-line static scan; record results: client build 0 warnings / 0 errors; test build 0 warnings / 0 errors; `git diff --check` exit 0 with only LF-to-CRLF warnings; static scan found no added-line matches for secrets, shell execution, eval/exec, unsafe deserialization, or SQL string-formatting patterns.
+- [x] T032 Reconcile docs/prompts impact and confirm Chaos Sea #1096 / Shining Abode #1097 remain out of scope: no gameplay mechanics, GM-authored contracts, prompts, examples, Chaos Sea fixture, or Shining Abode fixture changed.
+- [x] T033 Commit #1095 implementation with `[skip ci]`: included in the final implementation commit `test: add reusable Mortal command display save [skip ci]`.
 
 ---
 

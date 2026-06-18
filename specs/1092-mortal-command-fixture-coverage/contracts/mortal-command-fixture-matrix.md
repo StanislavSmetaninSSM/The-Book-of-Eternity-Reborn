@@ -1,8 +1,17 @@
 # Mortal Command Fixture Matrix
 
-Source issue: #1092 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1092
+Source issues: #1092 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1092; #1095 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1095
 
-This matrix is the durable checklist for the ignored local `BookOfEternityClient/game_session` fixture.
+This matrix is the durable checklist for the ignored local `BookOfEternityClient/game_session` fixture and the tracked reusable #1095 save package.
+
+## Reusable #1095 Save Package
+
+- Source archive: `FileSystemExample/game_session/saves/manual_saves/mortal_world_command_display_fixture.zip`
+- Sidecar metadata: `FileSystemExample/game_session/saves/manual_saves/mortal_world_command_display_fixture_metadata.json`
+- Internal save name: `Mortal World Command Display Fixture (#1095)`
+- Normal load path: copy the source archive into `BookOfEternityClient/game_session/saves/manual_saves/`, then load it from the console/browser manual-save list.
+- Repeatability rule: the live-session copy is disposable because the loader replaces `game_session`; recopy from the tracked source archive for repeated manual QA. Automated tests load the tracked source archive directly into disposable roots.
+- Clean-checkout dependency: validation of the save relies on the tracked `BookOfEternityClient/system_guardians` built-in preset library, including the `azalia` Eternal Guardian preset referenced by the rival-thread fixture.
 
 ## Verification Evidence
 
@@ -13,6 +22,13 @@ Last verified against the local ignored fixture on 2026-06-18:
 - Browser command service smoke: all 77 Mortal World aliases returned non-failed, non-blocked command results.
 - Practical universal Mortal preview smoke: 14/14 commands returned non-failed, non-blocked command results.
 - Console command renderer smoke: 91 command results rendered without Spectre markup exceptions.
+
+Last verified against the tracked reusable #1095 save on 2026-06-18:
+
+- `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~MortalCommandDisplaySaveTests" --logger "console;verbosity=minimal"`: 92 passed / 0 failed / 0 skipped / 92 total.
+- `ValidationService.ValidateGameStateAsync()`: zero `IssueSeverity.Error` blocking issues after load in a clean-checkout-like disposable root with tracked `system_guardians`.
+- Browser command service smoke: all 77 cataloged Mortal World aliases plus 14 practical universal Mortal preview commands returned non-failed, non-blocked, non-empty command results.
+- Console command renderer smoke: all 91 covered command results rendered without Spectre markup exceptions.
 
 ## Cataloged Mortal World Commands
 

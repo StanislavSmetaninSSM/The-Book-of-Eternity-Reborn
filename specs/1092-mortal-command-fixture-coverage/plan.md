@@ -6,7 +6,7 @@
 
 ## Summary
 
-Inventory every Mortal World command from the command catalog, map each command to the state files its result builders read, repair the user's local ignored `game_session` fixture so the command surfaces are reviewable, and document repeatable verification steps.
+Inventory every Mortal World command from the command catalog, map each command to the state files its result builders read, repair the user's local ignored `game_session` fixture so the command surfaces are reviewable, document repeatable verification steps, and for #1095 package the rich Mortal World fixture as a tracked reusable save/load-compatible artifact that can be restored from a clean checkout.
 
 ## Technical Context
 
@@ -14,7 +14,7 @@ Inventory every Mortal World command from the command catalog, map each command 
 
 **Primary Dependencies**: Existing command protocol, `ExplorerMortalWorldCommandResultBuilder`, `ExplorerLifecycleLocalTurnCommandResultBuilder`, `ExplorerWebCommandService`, `ValidationService`
 
-**Storage**: File-backed JSON state under `BookOfEternityClient/game_session`
+**Storage**: File-backed JSON state under `BookOfEternityClient/game_session`; for #1095, a tracked reusable save/package path compatible with existing save/load code and tests
 
 **Testing**: xUnit through `dotnet test`, manual console/browser command smoke checks
 
@@ -24,16 +24,17 @@ Inventory every Mortal World command from the command catalog, map each command 
 
 **Performance Goals**: Command smoke checks should complete quickly enough for manual fixture validation; no runtime performance change is expected.
 
-**Constraints**: The live fixture folder is ignored by git, so durable repo output must be matrix/spec/test coverage rather than committed game-session JSON unless the project later changes ignore policy.
+**Constraints**: The original live fixture folder is ignored by git, so durable repo output for #1092 was matrix/spec/test coverage; #1095 must now add a tracked reusable save/package without committing a live mutable session root.
 
 **Scale/Scope**: 34 cataloged `ExplorerCommandGroup.MortalWorld` commands plus practical universal Mortal World preview commands.
 
-**Source Issue(s)**: #1092 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1092
+- **Source Issue(s)**: #1092 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1092; #1095 reusable save continuation - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1095
 
-**Contract Scope**: player-facing, runtime-state fixture, validation, console, browser, docs
+**Contract Scope**: player-facing, runtime-state fixture/save, validation, console, browser, docs
 
 **Verification Commands**:
 
+- `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~MortalCommandDisplaySaveTests" --logger "console;verbosity=minimal"`
 - `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Mortal|BrowserMortalWorld|Inventory|Trade|Storage|ExplorerWebCommandService"`
 - Manual command smoke list in `quickstart.md`
 
@@ -71,10 +72,11 @@ BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs
 BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs
 BookOfEternityClient/WebUi/ExplorerWebCommandService.cs
 BookOfEternityClient/game_session/        # ignored local fixture
+<tracked save/package path>              # #1095 reusable Mortal World display save, exact path discovered from save/load code
 BookOfEternityClient.Tests/               # focused tests if a durable helper is added
 ```
 
-**Structure Decision**: Keep fixture changes in the user's local ignored `game_session` and keep durable coverage documentation in the Spec Kit matrix.
+**Structure Decision**: Keep #1092 fixture coverage/matrix in this Spec Kit directory; for #1095, discover the existing save/load-compatible tracked location and package the rich Mortal World fixture there rather than relying on ignored `BookOfEternityClient/game_session` as the only source.
 
 ## Complexity Tracking
 
