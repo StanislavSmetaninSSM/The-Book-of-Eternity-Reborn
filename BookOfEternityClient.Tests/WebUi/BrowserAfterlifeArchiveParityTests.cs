@@ -257,7 +257,7 @@ public sealed class BrowserAfterlifeArchiveParityTests : IDisposable
 
     [Fact]
     [Trait("Category", "BrowserAfterlifeArchiveParity")]
-    public async Task ExecuteAsync_ArchiveProjectFuel_NoActiveProjectBlocksWithoutWriting()
+    public async Task ExecuteAsync_ArchiveProjectFuel_NoActiveProjectCompletesUnavailableWithoutWriting()
     {
         await SeedArchiveStateAsync();
         await SeedGuardiansAsync();
@@ -268,8 +268,9 @@ public sealed class BrowserAfterlifeArchiveParityTests : IDisposable
             OwnerId: "browser-archive-test",
             OwnerLabel: "Browser archive test"));
 
-        Assert.Equal(CommandExecutionState.Blocked, result.State);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Null(result.InteractiveSession);
+        Assert.Empty(result.Prompts);
         Assert.False(_fs.FileExists(AfterlifeArchiveActionState.ProjectFuelRequestPath));
         Assert.Contains("проект", CollectResultAndPromptText(result), StringComparison.OrdinalIgnoreCase);
         AssertNoBrowserArchiveTechnicalLeak(CollectResultAndPromptText(result));

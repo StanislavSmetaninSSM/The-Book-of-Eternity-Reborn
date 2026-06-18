@@ -1,0 +1,67 @@
+{
+  "saveVersion": "1.0",
+  "gameVersion": "1.0.0",
+  "saveName": "Chaos Sea Command Display Fixture (#1096)",
+  "archiveFile": "chaos_sea_command_display_fixture.zip",
+  "sourceIssues": [
+    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1096"
+  ],
+  "createdFor": "Reusable Chaos Sea afterlife console/browser command-display QA",
+  "timestamp": "2026-06-18T00:00:00Z",
+  "turnNumber": 46,
+  "currentRealm": "Chaos Sea",
+  "currentLocation": "Шелковый Архив Азалии",
+  "currentWorld": "Море Хаоса",
+  "incarnationNumber": 3,
+  "characterName": "Пепельная Искра",
+  "inkFeathers": 90,
+  "fixtureNotes": [
+    "guardian_project_journal.json provides the journal-backed project display target; guardian_projects.json intentionally has no active tracker state because activeProjects require a validated pre-turn tracker baseline that manual saves do not preserve.",
+    "/archive_project_fuel renders the project context plus a clear unavailable reason until a validated active project exists."
+  ],
+  "coverage": {
+    "chaosSeaAliases": "all ExplorerCommandGroup.ChaosSea aliases covered by specs/1092-mortal-command-fixture-coverage/contracts/chaos-sea-command-fixture-checklist.md",
+    "afterlifeCombatAndEntitiesAliases": "all ExplorerCommandGroup.AfterlifeCombatAndEntities aliases covered by specs/1092-mortal-command-fixture-coverage/contracts/chaos-sea-command-fixture-checklist.md",
+    "practicalUniversalCommands": [
+      "/help",
+      "/статус",
+      "/душа",
+      "/реликвии",
+      "/архив_души",
+      "/архив_кандидаты",
+      "/квесты_души",
+      "/достижения",
+      "/хроника",
+      "/story",
+      "/поведение",
+      "/жизни",
+      "/перья",
+      "/кодекс",
+      "/правила_мира",
+      "/галерея",
+      "/валидация",
+      "/настройка_мира"
+    ],
+    "detailTargets": [
+      "/guardians хранитель guardian_azalia",
+      "/abode_power запись power_azalia_archive_oath_001",
+      "/guardian_projects проект guardian_azalia::project_archive_lighthouse",
+      "/abodes обитель abode_azalia",
+      "/afterlife_profiles профиль player_soul",
+      "/afterlife_profiles профиль guardian_azalia",
+      "/afterlife_threats угроза chaos_soul_hunter_pack_example",
+      "/afterlife_chronicles хроника chronicle_chaos_black_tide_example",
+      "/afterlife_inbox уведомление notif_guardian_trade_ready_001",
+      "/spiritual_conflict обмен exchange_chaos_hunter_001",
+      "/spiritual_combat_log обмен exchange_chaos_hunter_001",
+      "/spiritual_combat_log итог recent_conflict_hunter_pack_044",
+      "/spiritual_arts искусство pressure",
+      "/spiritual_arts особое ash_mirror_guard",
+      "/soul_relics реликвия relic_ash_mirror",
+      "/afterlife_archive запись archive_black_tide_oath",
+      "/archive_candidates кандидат candidate_hunter_echo",
+      "/archive_consultation хранитель guardian_azalia",
+      "/archive_project_fuel проект guardian_azalia::project_archive_lighthouse"
+    ]
+  }
+}
