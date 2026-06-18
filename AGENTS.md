@@ -83,5 +83,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 <!-- SPECKIT START -->
 Current Spec Kit plan for this branch:
-`specs/1092-mortal-command-fixture-coverage/plan.md`
+`specs/1104-world-news-selection/plan.md`
 <!-- SPECKIT END -->

@@ -84,10 +84,25 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("world_news_overview_drilldowns");
         var overviewText = ExtractRenderedText();
         Assert.Contains("Новости мира", overviewText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("/новости_мира событие riots_at_gate", overviewText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("/новости_мира флаг festival_quiet", overviewText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("/новости_мира прогресс road_silverford", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полная запись", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("worldEventsLog", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("worldStateFlags", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("updateWorldProgressionTracker", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Карманники у ворот", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Мира Ключница", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Ночные патрули", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Беспорядки у Северных ворот", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Праздник стих после тревоги", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Дорога к Серебряному броду", overviewText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/world", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(_console.SelectionChoicesHistory, history =>
+            history.Title.Contains("Новости мира", StringComparison.OrdinalIgnoreCase) &&
+            history.Choices.Any(choice => choice.Contains("Открыть событие", StringComparison.OrdinalIgnoreCase) &&
+                                          choice.Contains("Беспорядки у Северных ворот", StringComparison.OrdinalIgnoreCase)) &&
+            history.Choices.Any(choice => choice.Contains("Осмотреть флаг", StringComparison.OrdinalIgnoreCase) &&
+                                          choice.Contains("Праздник стих после тревоги", StringComparison.OrdinalIgnoreCase)) &&
+            history.Choices.Any(choice => choice.Contains("Открыть прогресс", StringComparison.OrdinalIgnoreCase) &&
+                                          choice.Contains("Дорога к Серебряному броду", StringComparison.OrdinalIgnoreCase)));
 
         _console.Rendered.Clear();
         _console.MarkupLines.Clear();
@@ -104,6 +119,26 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_WorldNews_ConsoleSelectionRendersSelectedDetail()
+    {
+        await SeedMortalStateAsync();
+        await SeedRichMortalWorldNewsFilesAsync();
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueSelection("Новости мира", "Открыть событие «Беспорядки у Северных ворот»");
+
+        var result = await _explorer.TryProcessCommand("/новости_мира");
+
+        Assert.Equal(string.Empty, result);
+        AssertNoHiddenExplorerErrors("world_news_selection_detail");
+        var text = ExtractRenderedText();
+        Assert.Contains("Новости мира", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Событие: Беспорядки у Северных ворот", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("торговая площадь закрыта до следующего утра", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("worldEventsLog", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/world", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void ConsoleWorldNewsSource_UsesSharedMortalWorldNewsResultBuilder()
     {
         var source = File.ReadAllText(Path.Combine(
@@ -114,7 +149,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             "ExplorerMode.FactionsAndWorldNews.cs"));
 
         Assert.Contains("ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(commandLine", source, StringComparison.Ordinal);
-        Assert.Contains("ExplorerCommandResultConsoleRenderer.Render(_console, result)", source, StringComparison.Ordinal);
+        Assert.Contains("ExplorerCommandResultConsoleRenderer.Render(_console", source, StringComparison.Ordinal);
+        Assert.Contains("PromptWorldNewsDetailAsync(result)", source, StringComparison.Ordinal);
     }
 
     [Fact]
