@@ -104,8 +104,9 @@
 
 ## Phase 6: Independent review and Hermes-owned closure
 
-- [ ] **T020 Independent pre-merge review**
+- [x] **T020 Independent pre-merge review**
   Obtain an independent review against issue #1081, reopen comments, this spec/plan/tasks/contract, and `origin/main...HEAD`. Critical/Important findings must be fixed before PR/merge.
+  Evidence: initial independent review in `E:/Games/codex-runs/20260618-1347-review-boe-1081-qte-live-pacing/final.md` returned `CHANGES_REQUIRED` because the first implementation proved helper/source seams rather than actual live mini-game loops. Follow-up fix-run `E:/Games/codex-runs/20260618-1400-fix-boe-1081-qte-live-harness/` added deterministic live-loop harness evidence. Re-review `E:/Games/codex-runs/20260618-1414-rereview-boe-1081-qte-live-pacing/final.md` returned `VERDICT: APPROVED` with no blocking findings; reviewer confirmed the previous blocker was fixed and that the new tests drive live-loop methods used by `RunMiniGameLiveAsync` with fake renderer/input/clock.
 
 - [ ] **T021 Create PR**
   Push `work/1081-qte-live-pacing`, create a PR to `main` that closes #1081, and include local verification evidence plus `GitHub Actions: not used / not required`.
