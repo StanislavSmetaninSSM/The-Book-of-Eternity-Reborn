@@ -176,12 +176,42 @@ public sealed class BrowserApiContractTests
     [Fact]
     public void GameScreenIdleTurnState_UsesPlayerFacingRussianCopy()
     {
-        var state = BrowserGameScreenTurnStateDto.From(BuildLifecycleDashboard(), BuildQteState());
+        const string expectedMessage = "Опишите следующее действие персонажа в прозе. После подтверждения ход будет подготовлен для ГМ.";
+        const string expectedDescription = "Заполните основной художественный ввод и подтвердите действие, когда будете готовы передать ход ГМ.";
+        var forbiddenTechnicalCopy = new[]
+        {
+            "Браузерный",
+            "DTO",
+            "pending",
+            "protocol",
+            "interactive/write",
+            "API",
+            "подключен"
+        };
 
-        Assert.Equal("ready", state.State);
-        Assert.Contains("Запись хода", state.Message, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("turn-writer", state.Message, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Браузерный", state.Message, StringComparison.OrdinalIgnoreCase);
+        AssertPlayerFacingTurnState(BrowserGameScreenTurnStateDto.From(BuildLifecycleDashboard(), BuildQteState()));
+        AssertPlayerFacingTurnState(BuildGameScreen().TurnState);
+
+        var fixture = JsonSerializer.Deserialize<BrowserGameScreenDto>(
+            File.ReadAllText(Path.Combine(FixtureRoot, "game-screen.json")),
+            WebJsonOptions);
+        Assert.NotNull(fixture);
+        AssertPlayerFacingTurnState(fixture.TurnState);
+
+        void AssertPlayerFacingTurnState(BrowserGameScreenTurnStateDto state)
+        {
+            var action = Assert.Single(state.RecommendedActions);
+
+            Assert.Equal("ready", state.State);
+            Assert.Equal(expectedMessage, state.Message);
+            Assert.Equal(expectedDescription, action.Description);
+
+            foreach (var forbidden in forbiddenTechnicalCopy)
+            {
+                Assert.DoesNotContain(forbidden, state.Message, StringComparison.OrdinalIgnoreCase);
+                Assert.DoesNotContain(forbidden, action.Description, StringComparison.OrdinalIgnoreCase);
+            }
+        }
     }
 
     [Fact]
@@ -822,7 +852,7 @@ public sealed class BrowserApiContractTests
             TurnState: new BrowserGameScreenTurnStateDto(
                 State: "ready",
                 Title: "Можно продолжать",
-                Message: "Опишите следующее действие персонажа в прозе.",
+                Message: "Опишите следующее действие персонажа в прозе. После подтверждения ход будет подготовлен для ГМ.",
                 CanStartBrowserWrite: true,
                 ValidationState: "clean",
                 ValidationLabel: "Состояние валидно",
@@ -835,7 +865,7 @@ public sealed class BrowserApiContractTests
                     new BrowserGameScreenTurnActionDto(
                         Id: "compose-action",
                         Label: "Подготовить действие",
-                        Description: "Заполните основной художественный ввод и подтвердите действие, когда запись хода будет подключена.",
+                        Description: "Заполните основной художественный ввод и подтвердите действие, когда будете готовы передать ход ГМ.",
                         Surface: "player-default",
                         Enabled: true,
                         DisabledReason: string.Empty)

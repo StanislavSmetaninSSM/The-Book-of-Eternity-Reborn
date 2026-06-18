@@ -515,7 +515,7 @@ public sealed record BrowserGameScreenTurnStateDto(
         return Create(
             state: "ready",
             title: "Можно продолжать",
-            message: "Опишите следующее действие персонажа в прозе. Запись хода будет подключена отдельным безопасным шагом.",
+            message: "Опишите следующее действие персонажа в прозе. После подтверждения ход будет подготовлен для ГМ.",
             canStartBrowserWrite: true,
             lifecycle: lifecycle,
             phase: "idle",
@@ -526,7 +526,7 @@ public sealed record BrowserGameScreenTurnStateDto(
                 Action(
                     "compose-action",
                     "Подготовить действие",
-                    "Заполните основной художественный ввод и подтвердите действие, когда запись хода будет подключена.",
+                    "Заполните основной художественный ввод и подтвердите действие, когда будете готовы передать ход ГМ.",
                     "player-default")
             ]);
     }
