@@ -1228,6 +1228,352 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_FactionDrilldown_RichFactionShowsKnowledgeSectionMenu()
+    {
+        await SeedRichFactionDrilldownStateAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/фракции"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("faction_drilldown_sections");
+        var factionPrompt = _console.SelectionChoicesHistory.First(
+            entry => entry.Title.Contains("Фракции", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(factionPrompt.Choices,
+            choice => choice.Contains("Скрытый архивариус", StringComparison.OrdinalIgnoreCase));
+
+        var sectionPrompt = _console.SelectionChoicesHistory.First(
+            entry => entry.Title.Contains("Разделы фракции", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(sectionPrompt.Choices,
+            choice => choice.Contains("Ресурсы и экономика", StringComparison.Ordinal) &&
+                      choice.Contains("2 ресурса", StringComparison.Ordinal));
+        Assert.Contains(sectionPrompt.Choices,
+            choice => choice.Contains("Хроники", StringComparison.Ordinal) &&
+                      choice.Contains("2 записи", StringComparison.Ordinal));
+        Assert.Contains(sectionPrompt.Choices,
+            choice => choice.Contains("Ранги и иерархия", StringComparison.Ordinal) &&
+                      choice.Contains("1 ветвь", StringComparison.Ordinal));
+        Assert.Contains(sectionPrompt.Choices,
+            choice => choice.Contains("Проекты и операции", StringComparison.Ordinal) &&
+                      choice.Contains("2 проекта", StringComparison.Ordinal));
+        Assert.Contains(sectionPrompt.Choices,
+            choice => choice.Contains("Стратегия и память", StringComparison.Ordinal) &&
+                      choice.Contains("2 записи", StringComparison.Ordinal));
+        Assert.Contains(sectionPrompt.Choices,
+            choice => choice.Contains("Территории и влияние", StringComparison.Ordinal) &&
+                      choice.Contains("2 территории", StringComparison.Ordinal));
+        Assert.DoesNotContain(sectionPrompt.Choices,
+            choice => choice.Contains("Показать изображение", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(sectionPrompt.Choices,
+            choice => choice.Contains("← Закрыть разделы фракции", StringComparison.Ordinal));
+        AssertSelectionChoicesAreSpectreMarkupSafe("faction_drilldown_sections", "Разделы фракции");
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_FactionDrilldown_SectionSelectionsRenderResourceProjectAndHierarchyDetails()
+    {
+        await SeedRichFactionDrilldownStateAsync();
+        _console.QueueSelection(
+            "Разделы фракции",
+            "💰 Ресурсы и экономика — 2 ресурса",
+            "🔨 Проекты и операции — 2 проекта",
+            "👑 Ранги и иерархия — 1 ветвь",
+            "← Закрыть разделы фракции");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/фракции"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("faction_drilldown_resource_project_hierarchy");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Ресурсы и экономика", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Казна", renderedText, StringComparison.Ordinal);
+        Assert.Contains("120", renderedText, StringComparison.Ordinal);
+        Assert.Contains("+12/цикл", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Закупка железа", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Проекты и операции", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Сеть наблюдателей", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Контракт караванов", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Ранги и иерархия", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Старший торговец / Старшая торговка", renderedText, StringComparison.Ordinal);
+        Assert.Contains("право вести переговоры", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("resourceLedger", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("project_shadow", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_FactionDrilldown_SectionDetailsHideHiddenChroniclesAndRawStrategicState()
+    {
+        await SeedRichFactionDrilldownStateAsync();
+        _console.QueueSelection(
+            "Разделы фракции",
+            "📜 Хроники — 2 записи",
+            "🧭 Стратегия и память — 2 записи",
+            "🗺 Территории и влияние — 2 территории",
+            "← Закрыть разделы фракции");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/фракции"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("faction_drilldown_hidden_boundaries");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Хроники", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Гильдия открыла северные склады", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Договор с портовыми мастерами", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Стратегия и память", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Сохранять контроль над караванами", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Слухачи подтвердили безопасный маршрут", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Территории и влияние", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Купеческий квартал", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Южная пристань", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Тайная запись о подкупе судьи", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Тайный долговой список", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Скрытый план давления", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("strategicMemory", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("internal", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("debug", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полный JSON", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_FactionDrilldown_SparseFactionSectionsRenderUsefulEmptyStates()
+    {
+        await SeedMortalStateAsync();
+        await WriteRawJsonAsync("game_state/factions/faction_core.json", """
+        [
+          {
+            "factionId": "faction_sparse_001",
+            "name": "Тихая артель",
+            "description": "Малая артель без подробных записей.",
+            "reputation": 15,
+            "level": 1
+          }
+        ]
+        """);
+        _console.QueueSelection(
+            "Разделы фракции",
+            "💰 Ресурсы и экономика — нет данных",
+            "📜 Хроники — нет данных",
+            "← Закрыть разделы фракции");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/фракции"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("faction_drilldown_empty_states");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Ресурсы и экономика", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Открытые сведения о ресурсах этой фракции пока не внесены.", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Хроники", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Открытых хроник этой фракции пока нет.", renderedText, StringComparison.Ordinal);
+    }
+
+    private async Task SeedRichFactionDrilldownStateAsync()
+    {
+        await SeedMortalStateAsync();
+        await WriteRawJsonAsync("game_state/factions/faction_core.json", """
+        [
+          {
+            "factionId": "faction_trade_001",
+            "name": "Серебряная гильдия",
+            "description": "Купеческая сила, удерживающая караваны и склады.",
+            "reputation": 180,
+            "reputationDescription": "Гильдия считает героя полезным союзником.",
+            "level": 3,
+            "experience": 45,
+            "experienceForNextLevel": 90,
+            "isPlayerMember": true,
+            "playerRank": "Старший торговец",
+            "playerBranch": "trade",
+            "developmentArchetype": "economic",
+            "playerStrategyDirective": "Сохранять контроль над караванами без открытой войны.",
+            "powerProfile": {
+              "military": 24,
+              "economic": 72,
+              "social": 58,
+              "covert": 31,
+              "logistics": 64
+            },
+            "controlledTerritories": [
+              {
+                "locationId": "loc_market",
+                "locationName": "Купеческий квартал",
+                "controlLevel": "strong",
+                "influence": 78,
+                "summary": "Гильдия держит склады и весовые."
+              },
+              {
+                "locationId": "loc_south_dock",
+                "locationName": "Южная пристань",
+                "controlLevel": "contested",
+                "influence": 42,
+                "summary": "Портовые мастера ждут выплат."
+              }
+            ],
+            "strategicMemory": [
+              {
+                "title": "Маршрут без засад",
+                "summary": "Слухачи подтвердили безопасный маршрут.",
+                "turn": 14,
+                "visibleToPlayer": true
+              },
+              {
+                "title": "Скрытый план давления",
+                "summary": "Не показывать игроку.",
+                "visibility": "gm_only"
+              }
+            ],
+            "scribeChronicle": [
+              "Гильдия открыла северные склады.",
+              {
+                "title": "Тайный долговой список",
+                "summary": "Не показывать игроку.",
+                "visibility": "gm_only"
+              }
+            ]
+          },
+          {
+            "factionId": "faction_hidden_001",
+            "name": "Скрытый архивариус",
+            "description": "Эта фракция не должна попасть в список.",
+            "isPlayerVisible": false,
+            "visibility": "hidden"
+          }
+        ]
+        """);
+
+        await WriteRawJsonAsync("game_state/factions/faction_resources.json", """
+        [
+          {
+            "factionId": "faction_trade_001",
+            "factionName": "Серебряная гильдия",
+            "metaResources": [
+              {
+                "resourceName": "Казна",
+                "currentStockpile": 120,
+                "incomePerCycle": 12,
+                "upkeepPerCycle": 4
+              },
+              {
+                "resourceName": "Влияние",
+                "currentStockpile": 64,
+                "incomePerCycle": 6,
+                "upkeepPerCycle": 1
+              }
+            ],
+            "resourceLedger": [
+              {
+                "title": "Закупка железа",
+                "resourceName": "Казна",
+                "amount": -20,
+                "balanceAfter": 100,
+                "summary": "Оплачены балки для северных ворот.",
+                "visibleToPlayer": true
+              },
+              {
+                "title": "Скрытая взятка",
+                "resourceName": "Казна",
+                "amount": -30,
+                "summary": "GM-only расход.",
+                "visibility": "gm_only"
+              }
+            ]
+          }
+        ]
+        """);
+
+        await WriteRawJsonAsync("game_state/factions/faction_projects.json", """
+        [
+          {
+            "factionId": "faction_trade_001",
+            "projectId": "project_watchers",
+            "projectName": "Сеть наблюдателей",
+            "activeState": "active",
+            "description": "Смотрители отмечают движение караванов.",
+            "currentStep": 2,
+            "totalSteps": 4,
+            "timeSpentMinutes": 90,
+            "totalTimeCostMinutes": 180,
+            "totalResourceCost": [
+              { "resourceName": "Казна", "totalAmount": 40 }
+            ],
+            "resourcesSpent": [
+              { "resourceName": "Казна", "amountSpent": 20 }
+            ],
+            "visibleToPlayer": true
+          },
+          {
+            "factionId": "faction_trade_001",
+            "projectId": "project_caravans",
+            "projectName": "Контракт караванов",
+            "finalState": "completed",
+            "completionTurn": 13,
+            "description": "Караванщики приняли новые печати.",
+            "visibleToPlayer": true
+          },
+          {
+            "factionId": "faction_trade_001",
+            "projectId": "project_shadow",
+            "projectName": "Скрытый проект давления",
+            "activeState": "active",
+            "visibility": "hidden"
+          }
+        ]
+        """);
+
+        await WriteRawJsonAsync("game_state/factions/faction_structure.json", """
+        [
+          {
+            "factionId": "faction_trade_001",
+            "ranks": {
+              "branches": [
+                {
+                  "branchId": "trade",
+                  "displayName": "Торговая ветвь",
+                  "isCoreBranch": true,
+                  "ranks": [
+                    {
+                      "rankNameMale": "Младший приказчик",
+                      "rankNameFemale": "Младшая приказчица",
+                      "requiredReputation": 30,
+                      "benefits": ["доступ к складским слухам"]
+                    },
+                    {
+                      "rankNameMale": "Старший торговец",
+                      "rankNameFemale": "Старшая торговка",
+                      "requiredReputation": 150,
+                      "unlockCondition": "закрыть спор о караванной пошлине",
+                      "benefits": ["право вести переговоры", "доступ к закрытым складам"]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+        """);
+
+        await WriteRawJsonAsync("game_state/factions/faction_chronicles.json", """
+        [
+          {
+            "factionId": "faction_trade_001",
+            "title": "Портовая сделка",
+            "entry": "Договор с портовыми мастерами закреплён.",
+            "turn": 15,
+            "visibleToPlayer": true
+          },
+          {
+            "factionId": "faction_trade_001",
+            "title": "Скрытая запись",
+            "entry": "Тайная запись о подкупе судьи.",
+            "visibility": "gm_only"
+          }
+        ]
+        """);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_StorageAccess_RendersWithoutHiddenErrors()
     {

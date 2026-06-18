@@ -272,6 +272,22 @@ public sealed class ExplorerModeSourceGuardTests
     }
 
     [Fact]
+    public void ExplorerMode_FactionDrilldownSections_MustStayReadOnlyAndPlayerFacing()
+    {
+        var source = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.FactionsAndWorldNews.cs"));
+
+        Assert.Contains("ShowFactionDetailSectionMenu", source, StringComparison.Ordinal);
+        Assert.Contains("BuildFactionDetailSections", source, StringComparison.Ordinal);
+        Assert.Contains("IsFactionKnowledgeEntryVisible", source, StringComparison.Ordinal);
+        Assert.Contains("GameInterface.SafePromptChoice(section.ChoiceLabel)", source, StringComparison.Ordinal);
+        Assert.Contains("GameInterface.SafeMarkup(string.Join", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteJsonAuditPanel", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("Raw(", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("_fs.WriteFileAtomicAsync", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("Полный JSON", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ExplorerMode_KnownDynamicPromptAndMarkupLineSurfaces_MustEscapePlainText()
     {
         var rootSource = ReadUiSourceFile("ExplorerMode.cs");

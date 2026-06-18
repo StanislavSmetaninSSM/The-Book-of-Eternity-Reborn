@@ -20,6 +20,9 @@ public partial class ExplorerMode
         var factions = new List<(string name, JsonElement el)>();
         EnumerateFactionCoreEntries(doc.RootElement, item =>
         {
+            if (!IsFactionPlayerVisible(item))
+                return;
+
             factions.Add((GetStr(item, "name", "???"), item));
         });
 
@@ -315,7 +318,300 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        ShowFactionDetailSectionMenu(name, BuildFactionDetailSections(f, projDoc, strDoc, chrDoc, resDoc, name, factionId, playerRank));
         await WaitForKeyWithImage("faction", name, GetStr(f, "image_prompt", ""), GetStr(f, "factionId", name));
+    }
+
+    private void ShowFactionDetailSectionMenu(string factionName, IReadOnlyList<FactionDetailSection> sections)
+    {
+        if (sections.Count == 0)
+            return;
+
+        while (true)
+        {
+            var choices = sections
+                .Select(section => (Section: (FactionDetailSection?)section, Choice: GameInterface.SafePromptChoice(section.ChoiceLabel)))
+                .ToList();
+            choices.Add((null, "← Закрыть разделы фракции"));
+
+            var selected = Prompt(new SelectionPrompt<string>()
+                .Title($"[bold orange1]Разделы фракции: {GameInterface.EscapeMarkup(factionName)}[/]")
+                .PageSize(12)
+                .HighlightStyle(new Style(Color.Orange1))
+                .AddChoices(choices.Select(static choice => choice.Choice)));
+
+            if (selected.Contains("←", StringComparison.Ordinal) ||
+                selected.Contains("Назад", StringComparison.OrdinalIgnoreCase) ||
+                selected.Contains("Закрыть", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var section = choices.FirstOrDefault(choice => choice.Choice == selected).Section;
+            if (section == null)
+                return;
+
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", section.Lines), section.Title))
+            {
+                Header = GameInterface.SafePanelHeader($"{section.Title}: {factionName}"),
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Orange1),
+                Padding = new Padding(1, 1),
+                Expand = true
+            });
+            WaitForKey();
+        }
+    }
+
+    private static IReadOnlyList<FactionDetailSection> BuildFactionDetailSections(
+        JsonElement faction,
+        JsonDocument? projDoc,
+        JsonDocument? strDoc,
+        JsonDocument? chrDoc,
+        JsonDocument? resDoc,
+        string factionName,
+        string factionId,
+        string currentPlayerRank) =>
+    [
+        BuildFactionResourcesSection(faction, resDoc, factionName, factionId),
+        BuildFactionChroniclesSection(faction, chrDoc, factionName, factionId),
+        BuildFactionRanksSection(faction, strDoc, factionName, factionId, currentPlayerRank),
+        BuildFactionProjectsSection(faction, projDoc, factionName, factionId),
+        BuildFactionStrategySection(faction),
+        BuildFactionTerritorySection(faction)
+    ];
+
+    private static FactionDetailSection BuildFactionResourcesSection(
+        JsonElement faction,
+        JsonDocument? resDoc,
+        string factionName,
+        string factionId)
+    {
+        var lines = new List<string> { "[bold]💰 Ресурсы и экономика[/]" };
+        var resourceCount = RenderFactionResourceDetailLines(lines, faction, resDoc, factionName, factionId);
+        var ledgerCount = RenderFactionResourceLedgerLines(lines, faction, resDoc, factionName, factionId);
+
+        if (resourceCount == 0 && ledgerCount == 0)
+            lines.Add("[dim]Открытые сведения о ресурсах этой фракции пока не внесены.[/]");
+
+        return CreateFactionDetailSection(
+            "resources",
+            "💰",
+            "Ресурсы и экономика",
+            resourceCount > 0 ? FormatRussianCount(resourceCount, "ресурс", "ресурса", "ресурсов") : "нет данных",
+            lines);
+    }
+
+    private static FactionDetailSection BuildFactionChroniclesSection(
+        JsonElement faction,
+        JsonDocument? chrDoc,
+        string factionName,
+        string factionId)
+    {
+        var entries = CollectFactionChronicleEntries(faction, chrDoc, factionName, factionId);
+        var lines = new List<string> { "[bold]📜 Хроники[/]" };
+        if (entries.Count == 0)
+        {
+            lines.Add("[dim]Открытых хроник этой фракции пока нет.[/]");
+        }
+        else
+        {
+            for (var index = 0; index < entries.Count; index++)
+                lines.Add($"  {index + 1}. {Markup.Escape(entries[index])}");
+        }
+
+        return CreateFactionDetailSection(
+            "chronicles",
+            "📜",
+            "Хроники",
+            entries.Count > 0 ? FormatRussianCount(entries.Count, "запись", "записи", "записей") : "нет данных",
+            lines);
+    }
+
+    private static FactionDetailSection BuildFactionRanksSection(
+        JsonElement faction,
+        JsonDocument? strDoc,
+        string factionName,
+        string factionId,
+        string currentPlayerRank)
+    {
+        var lines = new List<string> { "[bold]👑 Ранги и иерархия[/]" };
+        var before = lines.Count;
+        RenderFactionRanks(lines, faction, strDoc, factionName, factionId, currentPlayerRank);
+        if (lines.Count == before)
+            lines.Add("[dim]Открытая иерархия этой фракции пока не описана.[/]");
+
+        var branchCount = CountFactionRankBranches(faction, strDoc, factionName, factionId);
+        return CreateFactionDetailSection(
+            "ranks",
+            "👑",
+            "Ранги и иерархия",
+            branchCount > 0 ? FormatRussianCount(branchCount, "ветвь", "ветви", "ветвей") : "нет данных",
+            lines);
+    }
+
+    private static FactionDetailSection BuildFactionProjectsSection(
+        JsonElement faction,
+        JsonDocument? projDoc,
+        string factionName,
+        string factionId)
+    {
+        var lines = new List<string> { "[bold]🔨 Проекты и операции[/]" };
+        var before = lines.Count;
+        RenderFactionProjects(lines, faction, projDoc, factionName, factionId);
+        if (lines.Count == before)
+            lines.Add("[dim]Открытых проектов и операций этой фракции пока нет.[/]");
+
+        var (activeProjects, completedProjects) = CollectFactionProjectEntries(faction, projDoc, factionName, factionId);
+        var projectCount = activeProjects.Count + completedProjects.Count;
+        return CreateFactionDetailSection(
+            "projects",
+            "🔨",
+            "Проекты и операции",
+            projectCount > 0 ? FormatRussianCount(projectCount, "проект", "проекта", "проектов") : "нет данных",
+            lines);
+    }
+
+    private static FactionDetailSection BuildFactionStrategySection(JsonElement faction)
+    {
+        var lines = new List<string> { "[bold]🧭 Стратегия и память[/]" };
+        var entryCount = 0;
+
+        var directive = GetStr(faction, "playerStrategyDirective", "");
+        if (!string.IsNullOrWhiteSpace(directive))
+        {
+            lines.Add($"  [cyan]Стратегическая директива:[/] {Markup.Escape(directive)}");
+            entryCount++;
+        }
+
+        var archetype = TranslateFactionDevelopmentArchetypeForConsole(GetStr(faction, "developmentArchetype", ""));
+        if (!string.IsNullOrWhiteSpace(archetype))
+            lines.Add($"  [dim]Архетип развития:[/] {Markup.Escape(archetype)}");
+
+        if (faction.TryGetProperty("customArchetypePriorities", out var priorities) &&
+            priorities.ValueKind == JsonValueKind.Object)
+        {
+            var priorityParts = new[]
+                {
+                    GetStr(priorities, "primary", ""),
+                    GetStr(priorities, "secondary", ""),
+                    GetStr(priorities, "tertiary", "")
+                }
+                .Where(static value => !string.IsNullOrWhiteSpace(value))
+                .ToArray();
+            if (priorityParts.Length > 0)
+                lines.Add($"  [dim]Приоритеты:[/] {Markup.Escape(string.Join(" > ", priorityParts))}");
+        }
+
+        if (faction.TryGetProperty("powerProfile", out var powerProfile) &&
+            powerProfile.ValueKind == JsonValueKind.Object)
+        {
+            lines.Add("");
+            lines.Add("  [bold]Профиль силы:[/]");
+            foreach (var power in powerProfile.EnumerateObject())
+            {
+                if (power.Value.ValueKind != JsonValueKind.Number || !power.Value.TryGetInt32(out var value))
+                    continue;
+
+                lines.Add($"    • {Markup.Escape(TranslateFactionPowerKeyForConsole(power.Name))}: {value} ({Markup.Escape(GetPowerTierLabel(value))})");
+            }
+        }
+
+        var memoryLines = CollectFactionStrategicMemoryLines(faction);
+        if (memoryLines.Count > 0)
+        {
+            lines.Add("");
+            lines.Add("  [bold]Открытая память стратегии:[/]");
+            foreach (var memory in memoryLines)
+                lines.Add($"    • {Markup.Escape(memory)}");
+            entryCount += memoryLines.Count;
+        }
+
+        if (entryCount == 0 && lines.Count == 1)
+            lines.Add("[dim]Открытая стратегия этой фракции пока не описана.[/]");
+
+        return CreateFactionDetailSection(
+            "strategy",
+            "🧭",
+            "Стратегия и память",
+            entryCount > 0 ? FormatRussianCount(entryCount, "запись", "записи", "записей") : "нет данных",
+            lines);
+    }
+
+    private static FactionDetailSection BuildFactionTerritorySection(JsonElement faction)
+    {
+        var lines = new List<string> { "[bold]🗺 Территории и влияние[/]" };
+        var territoryCount = 0;
+
+        if (faction.TryGetProperty("controlledTerritories", out var territories) &&
+            territories.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var territory in territories.EnumerateArray())
+            {
+                if (!IsFactionKnowledgeEntryVisible(territory))
+                    continue;
+
+                var name = GetStr(territory, "locationName", GetStr(territory, "name", GetStr(territory, "region", "")));
+                if (string.IsNullOrWhiteSpace(name))
+                    continue;
+
+                territoryCount++;
+                var details = new List<string>();
+                AddDetailPart(details, "влияние", GetStr(territory, "influence", ""));
+                AddDetailPart(details, "контроль", TranslateFactionTerritoryControl(GetStr(territory, "controlLevel", GetStr(territory, "status", ""))));
+                var summary = GetStr(territory, "summary", GetStr(territory, "description", ""));
+                var line = $"  • [white]{Markup.Escape(name)}[/]";
+                if (details.Count > 0)
+                    line += $" [dim]({Markup.Escape(string.Join(", ", details))})[/]";
+                lines.Add(line);
+                if (!string.IsNullOrWhiteSpace(summary))
+                    lines.Add($"    [dim]{Markup.Escape(summary)}[/]");
+            }
+        }
+
+        var influenceLines = CollectFactionInfluenceLines(faction);
+        if (influenceLines.Count > 0)
+        {
+            lines.Add("");
+            lines.Add("  [bold]Открытая летопись влияния:[/]");
+            foreach (var influence in influenceLines)
+                lines.Add($"    • {Markup.Escape(influence)}");
+        }
+
+        if (territoryCount == 0 && influenceLines.Count == 0)
+            lines.Add("[dim]Открытые сведения о территориях и влиянии этой фракции пока не внесены.[/]");
+
+        return CreateFactionDetailSection(
+            "territory",
+            "🗺",
+            "Территории и влияние",
+            territoryCount > 0 ? FormatRussianCount(territoryCount, "территория", "территории", "территорий") : "нет данных",
+            lines);
+    }
+
+    private static FactionDetailSection CreateFactionDetailSection(
+        string id,
+        string icon,
+        string title,
+        string summary,
+        IReadOnlyList<string> lines) =>
+        new(id, title, $"{icon} {title} — {summary}", lines);
+
+    private sealed class FactionDetailSection
+    {
+        public FactionDetailSection(string id, string title, string choiceLabel, IReadOnlyList<string> lines)
+        {
+            Id = id;
+            Title = title;
+            ChoiceLabel = choiceLabel;
+            Lines = lines;
+        }
+
+        public string Id { get; }
+        public string Title { get; }
+        public string ChoiceLabel { get; }
+        public IReadOnlyList<string> Lines { get; }
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -329,6 +625,505 @@ public partial class ExplorerMode
                !string.IsNullOrWhiteSpace(itemFactionId) &&
                itemFactionId.Equals(factionId, StringComparison.OrdinalIgnoreCase);
     }
+
+    private static bool IsFactionPlayerVisible(JsonElement item) => IsFactionKnowledgeEntryVisible(item);
+
+    private static bool IsFactionKnowledgeEntryVisible(JsonElement item)
+    {
+        if (item.ValueKind != JsonValueKind.Object)
+            return true;
+
+        if (IsFalseFlag(item, "isPlayerVisible") ||
+            IsFalseFlag(item, "playerVisible") ||
+            IsFalseFlag(item, "visibleToPlayer") ||
+            IsTrueFlag(item, "hidden") ||
+            IsTrueFlag(item, "gmOnly") ||
+            IsTrueFlag(item, "isGmOnly"))
+        {
+            return false;
+        }
+
+        var visibility = GetStr(item, "visibility", "");
+        return !IsHiddenFactionVisibility(visibility);
+    }
+
+    private static bool IsFalseFlag(JsonElement item, string propertyName) =>
+        TryGetFactionBool(item, propertyName, out var value) && !value;
+
+    private static bool IsTrueFlag(JsonElement item, string propertyName) =>
+        TryGetFactionBool(item, propertyName, out var value) && value;
+
+    private static bool TryGetFactionBool(JsonElement item, string propertyName, out bool value)
+    {
+        value = false;
+        if (!item.TryGetProperty(propertyName, out var property))
+            return false;
+
+        if (property.ValueKind == JsonValueKind.True || property.ValueKind == JsonValueKind.False)
+        {
+            value = property.GetBoolean();
+            return true;
+        }
+
+        if (property.ValueKind == JsonValueKind.String &&
+            bool.TryParse(property.GetString(), out var parsed))
+        {
+            value = parsed;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsHiddenFactionVisibility(string visibility)
+    {
+        var normalized = visibility.Trim();
+        return normalized.Equals("hidden", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals("gm_only", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals("private", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals("secret", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals("concealed", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals("spoiler", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static int RenderFactionResourceDetailLines(
+        List<string> lines,
+        JsonElement faction,
+        JsonDocument? resDoc,
+        string factionName,
+        string factionId)
+    {
+        var resourceCount = 0;
+        var sidecarAvailable = resDoc != null;
+        var sidecarMatched = false;
+
+        if (resDoc != null)
+        {
+            EnumerateJsonItems(resDoc.RootElement, item =>
+            {
+                if (!FactionSidecarMatches(item, factionName, factionId) || !IsFactionKnowledgeEntryVisible(item))
+                    return;
+
+                sidecarMatched = true;
+                resourceCount += RenderFactionResourceContainer(lines, item);
+            });
+        }
+
+        if ((!sidecarAvailable || !sidecarMatched) &&
+            faction.TryGetProperty("resources", out var resources) &&
+            resources.ValueKind == JsonValueKind.Object)
+        {
+            resourceCount += RenderFactionResourceContainer(lines, resources);
+        }
+
+        if ((!sidecarAvailable || !sidecarMatched) && resourceCount == 0)
+            resourceCount += RenderFactionResourceContainer(lines, faction);
+
+        return resourceCount;
+    }
+
+    private static int RenderFactionResourceContainer(List<string> lines, JsonElement container)
+    {
+        var count = 0;
+        if (container.TryGetProperty("metaResources", out var metaResources))
+            count += RenderFactionResourceArray(lines, metaResources, "Основные ресурсы", "💎");
+        if (container.TryGetProperty("strategicGoods", out var strategicGoods))
+            count += RenderFactionResourceArray(lines, strategicGoods, "Стратегические запасы", "📦");
+        return count;
+    }
+
+    private static int RenderFactionResourceArray(List<string> lines, JsonElement array, string label, string icon)
+    {
+        if (array.ValueKind != JsonValueKind.Array || array.GetArrayLength() == 0)
+            return 0;
+
+        var count = 0;
+        lines.Add("");
+        lines.Add($"  [bold]{Markup.Escape(label)}:[/]");
+        foreach (var resource in array.EnumerateArray())
+        {
+            if (!IsFactionKnowledgeEntryVisible(resource))
+                continue;
+
+            var resourceName = GetStr(resource, "resourceName", GetStr(resource, "displayName", GetStr(resource, "name", "")));
+            if (string.IsNullOrWhiteSpace(resourceName))
+                continue;
+
+            count++;
+            var stock = GetStr(resource, "currentStockpile", GetStr(resource, "currentStock", GetStr(resource, "stock", "")));
+            var income = GetStr(resource, "incomePerCycle", GetStr(resource, "incomePerTurn", GetStr(resource, "income", "")));
+            var upkeep = GetStr(resource, "upkeepPerCycle", GetStr(resource, "upkeepPerTurn", GetStr(resource, "upkeep", "")));
+
+            var parts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(stock))
+                parts.Add($"запас {stock}");
+            if (!string.IsNullOrWhiteSpace(income) && income != "0")
+                parts.Add($"+{income}/цикл");
+            if (!string.IsNullOrWhiteSpace(upkeep) && upkeep != "0")
+                parts.Add($"-{upkeep}/цикл");
+
+            var suffix = parts.Count > 0 ? $" [dim]({Markup.Escape(string.Join(", ", parts))})[/]" : string.Empty;
+            lines.Add($"    {icon} [white]{Markup.Escape(resourceName)}[/]{suffix}");
+        }
+
+        return count;
+    }
+
+    private static int RenderFactionResourceLedgerLines(
+        List<string> lines,
+        JsonElement faction,
+        JsonDocument? resDoc,
+        string factionName,
+        string factionId)
+    {
+        var ledgerCount = 0;
+        if (resDoc != null)
+        {
+            EnumerateJsonItems(resDoc.RootElement, item =>
+            {
+                if (!FactionSidecarMatches(item, factionName, factionId) || !IsFactionKnowledgeEntryVisible(item))
+                    return;
+
+                if (item.TryGetProperty("resourceLedger", out var ledger))
+                    ledgerCount += RenderFactionLedgerArray(lines, ledger);
+            });
+        }
+
+        if (ledgerCount == 0 && faction.TryGetProperty("resourceLedger", out var coreLedger))
+            ledgerCount += RenderFactionLedgerArray(lines, coreLedger);
+
+        return ledgerCount;
+    }
+
+    private static int RenderFactionLedgerArray(List<string> lines, JsonElement ledger)
+    {
+        if (ledger.ValueKind != JsonValueKind.Array || ledger.GetArrayLength() == 0)
+            return 0;
+
+        var count = 0;
+        var ledgerLines = new List<string>();
+        foreach (var entry in ledger.EnumerateArray())
+        {
+            if (!IsFactionKnowledgeEntryVisible(entry))
+                continue;
+
+            var title = GetStr(entry, "title", GetStr(entry, "summary", GetStr(entry, "description", "")));
+            var resourceName = GetStr(entry, "resourceName", GetStr(entry, "resource", ""));
+            var amount = GetStr(entry, "amount", GetStr(entry, "delta", ""));
+            var balance = GetStr(entry, "balanceAfter", GetStr(entry, "stockAfter", ""));
+            if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(resourceName))
+                continue;
+
+            count++;
+            var parts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(resourceName))
+                parts.Add(resourceName);
+            if (!string.IsNullOrWhiteSpace(amount))
+                parts.Add(amount);
+            if (!string.IsNullOrWhiteSpace(balance))
+                parts.Add($"остаток {balance}");
+
+            var line = $"    • {Markup.Escape(FirstNonEmpty(title, resourceName))}";
+            if (parts.Count > 0)
+                line += $" [dim]({Markup.Escape(string.Join(", ", parts))})[/]";
+            ledgerLines.Add(line);
+        }
+
+        if (ledgerLines.Count == 0)
+            return 0;
+
+        lines.Add("");
+        lines.Add("  [bold]Открытый журнал ресурсов:[/]");
+        lines.AddRange(ledgerLines);
+        return count;
+    }
+
+    private static List<string> CollectFactionChronicleEntries(
+        JsonElement faction,
+        JsonDocument? chrDoc,
+        string factionName,
+        string factionId)
+    {
+        var entries = new List<string>();
+
+        if (faction.TryGetProperty("scribeChronicle", out var coreChronicle) &&
+            coreChronicle.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in coreChronicle.EnumerateArray())
+            {
+                if (entry.ValueKind == JsonValueKind.Object && !IsFactionKnowledgeEntryVisible(entry))
+                    continue;
+
+                var text = entry.ValueKind == JsonValueKind.String
+                    ? entry.GetString() ?? string.Empty
+                    : BuildFactionKnowledgeEntryLine(entry);
+                if (!string.IsNullOrWhiteSpace(text) && !entries.Contains(text, StringComparer.Ordinal))
+                    entries.Add(text);
+            }
+        }
+
+        if (chrDoc != null)
+        {
+            EnumerateJsonItems(chrDoc.RootElement, item =>
+            {
+                if (!FactionSidecarMatches(item, factionName, factionId) || !IsFactionKnowledgeEntryVisible(item))
+                    return;
+
+                var entry = BuildFactionKnowledgeEntryLine(item);
+                if (!string.IsNullOrWhiteSpace(entry) && !entries.Contains(entry, StringComparer.Ordinal))
+                    entries.Add(entry);
+            });
+        }
+
+        return entries;
+    }
+
+    private static (List<JsonElement> Active, List<JsonElement> Completed) CollectFactionProjectEntries(
+        JsonElement faction,
+        JsonDocument? projDoc,
+        string factionName,
+        string factionId)
+    {
+        var activeProjects = new List<JsonElement>();
+        var completedProjects = new List<JsonElement>();
+        var sidecarAvailable = projDoc != null;
+        var sidecarMatched = false;
+
+        if (projDoc != null)
+        {
+            EnumerateJsonItems(projDoc.RootElement, item =>
+            {
+                if (!FactionSidecarMatches(item, factionName, factionId) || !IsFactionKnowledgeEntryVisible(item))
+                    return;
+
+                sidecarMatched = true;
+                if (item.TryGetProperty("finalState", out _) || item.TryGetProperty("completionTurn", out _))
+                    completedProjects.Add(item);
+                else
+                    activeProjects.Add(item);
+            });
+        }
+
+        if (!sidecarAvailable || !sidecarMatched)
+        {
+            if (faction.TryGetProperty("activeProjects", out var active) && active.ValueKind == JsonValueKind.Array)
+                foreach (var project in active.EnumerateArray())
+                    if (IsFactionKnowledgeEntryVisible(project))
+                        activeProjects.Add(project);
+            if (faction.TryGetProperty("completedProjects", out var completed) && completed.ValueKind == JsonValueKind.Array)
+                foreach (var project in completed.EnumerateArray())
+                    if (IsFactionKnowledgeEntryVisible(project))
+                        completedProjects.Add(project);
+        }
+
+        return (activeProjects, completedProjects);
+    }
+
+    private static JsonElement? ResolveFactionRanksElement(
+        JsonElement faction,
+        JsonDocument? structureDoc,
+        string factionName,
+        string factionId)
+    {
+        JsonElement? ranksEl = null;
+        var sidecarAvailable = structureDoc != null;
+        var sidecarMatched = false;
+        if (structureDoc != null)
+        {
+            EnumerateJsonItems(structureDoc.RootElement, item =>
+            {
+                if (FactionSidecarMatches(item, factionName, factionId) &&
+                    item.TryGetProperty("ranks", out var sidecarRanks))
+                {
+                    sidecarMatched = true;
+                    ranksEl = sidecarRanks;
+                }
+            });
+        }
+
+        if ((!sidecarAvailable || !sidecarMatched) &&
+            ranksEl == null &&
+            faction.TryGetProperty("ranks", out var ranks))
+        {
+            ranksEl = ranks;
+        }
+
+        return ranksEl;
+    }
+
+    private static int CountFactionRankBranches(
+        JsonElement faction,
+        JsonDocument? structureDoc,
+        string factionName,
+        string factionId)
+    {
+        var ranksEl = ResolveFactionRanksElement(faction, structureDoc, factionName, factionId);
+        if (ranksEl == null)
+            return 0;
+
+        if (ranksEl.Value.ValueKind == JsonValueKind.Object &&
+            ranksEl.Value.TryGetProperty("branches", out var branches) &&
+            branches.ValueKind == JsonValueKind.Array)
+        {
+            return branches.GetArrayLength();
+        }
+
+        if (ranksEl.Value.ValueKind == JsonValueKind.Array && ranksEl.Value.GetArrayLength() > 0)
+            return 1;
+
+        return 0;
+    }
+
+    private static List<string> CollectFactionStrategicMemoryLines(JsonElement faction)
+    {
+        var lines = new List<string>();
+        if (!faction.TryGetProperty("strategicMemory", out var memory))
+            return lines;
+
+        CollectFactionKnowledgeLines(memory, lines);
+        return lines;
+    }
+
+    private static List<string> CollectFactionInfluenceLines(JsonElement faction)
+    {
+        var lines = new List<string>();
+        foreach (var propertyName in new[] { "territorialInfluence", "influenceLedger", "influenceLog" })
+        {
+            if (faction.TryGetProperty(propertyName, out var node))
+                CollectFactionKnowledgeLines(node, lines);
+        }
+
+        return lines;
+    }
+
+    private static void CollectFactionKnowledgeLines(JsonElement node, List<string> lines)
+    {
+        if (node.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in node.EnumerateArray())
+            {
+                if (!IsFactionKnowledgeEntryVisible(item))
+                    continue;
+
+                var entryLine = item.ValueKind == JsonValueKind.String
+                    ? item.GetString() ?? string.Empty
+                    : BuildFactionKnowledgeEntryLine(item);
+                if (!string.IsNullOrWhiteSpace(entryLine))
+                    lines.Add(entryLine);
+            }
+            return;
+        }
+
+        if (node.ValueKind != JsonValueKind.Object || !IsFactionKnowledgeEntryVisible(node))
+            return;
+
+        foreach (var propertyName in new[] { "entries", "memories", "records", "notes" })
+        {
+            if (node.TryGetProperty(propertyName, out var nested) && nested.ValueKind == JsonValueKind.Array)
+            {
+                CollectFactionKnowledgeLines(nested, lines);
+                return;
+            }
+        }
+
+        var line = BuildFactionKnowledgeEntryLine(node);
+        if (!string.IsNullOrWhiteSpace(line))
+            lines.Add(line);
+    }
+
+    private static string BuildFactionKnowledgeEntryLine(JsonElement item)
+    {
+        if (item.ValueKind == JsonValueKind.String)
+            return item.GetString() ?? string.Empty;
+
+        if (item.ValueKind != JsonValueKind.Object)
+            return string.Empty;
+
+        var title = GetStr(item, "title", GetStr(item, "name", ""));
+        var summary = FirstNonEmpty(
+            GetStr(item, "playerVisibleText", ""),
+            GetStr(item, "summary", ""),
+            GetStr(item, "entry", ""),
+            GetStr(item, "chronicle", ""),
+            GetStr(item, "text", ""),
+            GetStr(item, "description", ""),
+            GetStr(item, "memory", ""),
+            GetStr(item, "note", ""));
+        var turn = GetStr(item, "turn", GetStr(item, "turnNumber", ""));
+
+        var prefix = string.IsNullOrWhiteSpace(turn) ? string.Empty : $"ход {turn}: ";
+        if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(summary))
+            return $"{prefix}{title} — {summary}";
+        if (!string.IsNullOrWhiteSpace(summary))
+            return $"{prefix}{summary}";
+        if (!string.IsNullOrWhiteSpace(title))
+            return $"{prefix}{title}";
+
+        return string.Empty;
+    }
+
+    private static string FirstNonEmpty(params string[] values) =>
+        values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+
+    private static void AddDetailPart(List<string> parts, string label, string value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+            parts.Add($"{label}: {value}");
+    }
+
+    private static string FormatRussianCount(int count, string one, string few, string many)
+    {
+        var mod100 = Math.Abs(count) % 100;
+        var mod10 = Math.Abs(count) % 10;
+        var word = mod100 is >= 11 and <= 14
+            ? many
+            : mod10 switch
+            {
+                1 => one,
+                >= 2 and <= 4 => few,
+                _ => many
+            };
+        return $"{count} {word}";
+    }
+
+    private static string TranslateFactionDevelopmentArchetypeForConsole(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "economic" => "экономическое развитие",
+            "military" => "военное развитие",
+            "social" => "социальное влияние",
+            "covert" => "скрытое влияние",
+            "arcane" or "arcane_tech" => "магическое развитие",
+            "exploration" => "исследования",
+            _ => value.Trim()
+        };
+
+    private static string TranslateFactionPowerKeyForConsole(string key) =>
+        key switch
+        {
+            "military" => "Военная сила",
+            "economic" => "Экономика",
+            "social" => "Социальное влияние",
+            "covert" => "Скрытые операции",
+            "logistics" => "Логистика",
+            "stability" => "Устойчивость",
+            "arcane" or "arcaneTech" or "arcane_tech" => "Магия и техника",
+            "exploration" => "Разведка",
+            _ => key
+        };
+
+    private static string TranslateFactionTerritoryControl(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "strong" => "прочный",
+            "contested" => "оспаривается",
+            "weak" => "слабый",
+            "lost" => "утрачен",
+            "secured" => "закреплён",
+            _ => value.Trim()
+        };
 
     private static string ResolveFactionBranchDisplayName(JsonElement faction, JsonDocument? structureDoc,
         string factionName, string factionId, string branchId)
@@ -487,33 +1282,7 @@ public partial class ExplorerMode
 	    private static void RenderFactionProjects(List<string> lines, JsonElement f,
 	        JsonDocument? projDoc, string factionName, string factionId)
 	    {
-	        var activeProjects = new List<JsonElement>();
-	        var completedProjects = new List<JsonElement>();
-            var sidecarAvailable = projDoc != null;
-            var sidecarMatched = false;
-
-	        if (projDoc != null)
-	        {
-	            EnumerateJsonItems(projDoc.RootElement, item =>
-	            {
-	                if (FactionSidecarMatches(item, factionName, factionId))
-	                {
-                        sidecarMatched = true;
-	                    if (item.TryGetProperty("finalState", out _) || item.TryGetProperty("completionTurn", out _))
-	                        completedProjects.Add(item);
-	                    else
-	                        activeProjects.Add(item);
-	                }
-	            });
-	        }
-
-	        if (!sidecarAvailable || !sidecarMatched)
-	        {
-	            if (f.TryGetProperty("activeProjects", out var ap) && ap.ValueKind == JsonValueKind.Array)
-	                foreach (var p in ap.EnumerateArray()) activeProjects.Add(p);
-	            if (f.TryGetProperty("completedProjects", out var cpCore) && cpCore.ValueKind == JsonValueKind.Array)
-	                foreach (var p in cpCore.EnumerateArray()) completedProjects.Add(p);
-	        }
+	        var (activeProjects, completedProjects) = CollectFactionProjectEntries(f, projDoc, factionName, factionId);
 
         if (activeProjects.Count == 0 && completedProjects.Count == 0) return;
 
@@ -821,29 +1590,7 @@ public partial class ExplorerMode
     private static void RenderFactionChronicles(List<string> lines, JsonElement f,
         JsonDocument? chrDoc, string factionName, string factionId)
     {
-        var entries = new List<string>();
-
-        // From core scribeChronicle
-        if (f.TryGetProperty("scribeChronicle", out var sc) && sc.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var e in sc.EnumerateArray())
-            {
-                var txt = e.ValueKind == JsonValueKind.String ? e.GetString() ?? "" : e.ToString();
-                if (!string.IsNullOrEmpty(txt)) entries.Add(txt);
-            }
-        }
-
-        // From faction_chronicles.json
-        if (chrDoc != null)
-        {
-            EnumerateJsonItems(chrDoc.RootElement, item =>
-            {
-                if (!FactionSidecarMatches(item, factionName, factionId)) return;
-                var entry = GetStr(item, "entry", GetStr(item, "chronicle", GetStr(item, "text", "")));
-                if (!string.IsNullOrEmpty(entry) && !entries.Contains(entry))
-                    entries.Add(entry);
-            });
-        }
+        var entries = CollectFactionChronicleEntries(f, chrDoc, factionName, factionId);
 
         if (entries.Count == 0) return;
 
