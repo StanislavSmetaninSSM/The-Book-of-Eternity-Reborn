@@ -251,6 +251,27 @@ public sealed class ExplorerModeSourceGuardTests
     }
 
     [Fact]
+    public void ExplorerMode_FactionDetail_MustUseSharedMetricTablesForAlignedColumns()
+    {
+        var source = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.FactionsAndWorldNews.cs"));
+        var detailPanel = ExtractMethodSource(source, "private async Task ShowFactionDetailPanel(JsonElement f, JsonDocument? projDoc");
+
+        Assert.Contains(
+            "var summaryTable = ConsoleLayout.CreateBarMetricTable(labelWidth: 24, barWidth: 18, valueWidth: 16);",
+            detailPanel,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "var powerTable = ConsoleLayout.CreateBarMetricTable(labelWidth: 18, barWidth: 10, valueWidth: 5);",
+            detailPanel,
+            StringComparison.Ordinal);
+        Assert.Contains("new Markup(\"[cyan]Прогресс развития[/]\")", detailPanel, StringComparison.Ordinal);
+        Assert.Contains("powerTable.AddRow(", detailPanel, StringComparison.Ordinal);
+        Assert.DoesNotContain("ConsoleLayout.CreateInfoTable()", detailPanel, StringComparison.Ordinal);
+        Assert.DoesNotContain("var progressTable = ConsoleLayout.CreateBarMetricTable();", detailPanel, StringComparison.Ordinal);
+        Assert.DoesNotContain("lines.Add($\"    {Markup.Escape(label)}: {PowerBar(val)}", detailPanel, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ExplorerMode_KnownDynamicPromptAndMarkupLineSurfaces_MustEscapePlainText()
     {
         var rootSource = ReadUiSourceFile("ExplorerMode.cs");

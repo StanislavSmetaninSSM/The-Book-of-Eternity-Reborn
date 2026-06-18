@@ -112,28 +112,28 @@ public partial class ExplorerMode
         var isMember = f.TryGetProperty("isPlayerMember", out var pm) && pm.ValueKind == JsonValueKind.True;
         var isPlayerFaction = f.TryGetProperty("isPlayerFaction", out var pf) && pf.ValueKind == JsonValueKind.True;
         var archetype = GetStr(f, "developmentArchetype", "");
-        var summaryTable = ConsoleLayout.CreateInfoTable();
+        var summaryTable = ConsoleLayout.CreateBarMetricTable(labelWidth: 24, barWidth: 18, valueWidth: 16);
 
         // Level + XP bar
         if (lvl > 0)
         {
-            var xpLine = $"[bold yellow]{lvl}[/]";
-            if (!string.IsNullOrEmpty(archetype))
-                xpLine += $" [dim]({Markup.Escape(archetype)})[/]";
-            summaryTable.AddRow(new Markup("[yellow]Уровень развития[/]"), new Markup(xpLine));
+            var archetypeTag = string.IsNullOrEmpty(archetype)
+                ? string.Empty
+                : $"[dim]({Markup.Escape(archetype)})[/]";
+            summaryTable.AddRow(
+                new Markup("[yellow]Уровень развития[/]"),
+                new Markup(string.Empty),
+                new Markup($"[bold yellow]{lvl}[/]"),
+                new Markup(archetypeTag));
 
             if (xpNext > 0)
             {
                 var pct = Math.Min(100, xp * 100 / Math.Max(1, xpNext));
-                var progressTable = ConsoleLayout.CreateBarMetricTable();
-                progressTable.AddRow(
+                summaryTable.AddRow(
                     new Markup("[cyan]Прогресс развития[/]"),
-                    new Markup(ConsoleLayout.CreateBarFromPercent(pct, 16, "cyan")),
+                    new Markup(ConsoleLayout.CreateBarFromPercent(pct, 18, "cyan")),
                     new Markup($"[cyan]{xp}/{xpNext}[/]"),
                     new Markup($"[dim]{pct}%[/]"));
-                content.AddRow(summaryTable);
-                content.AddRow(progressTable);
-                summaryTable = ConsoleLayout.CreateInfoTable();
             }
 
             // Custom archetype priorities (Rule 21.1.2)
@@ -143,38 +143,66 @@ public partial class ExplorerMode
                 var secondary = GetStr(cap, "secondary", "");
                 var tertiary = GetStr(cap, "tertiary", "");
                 if (!string.IsNullOrEmpty(primary))
-                    summaryTable.AddRow(new Markup("[dim]Приоритеты развития[/]"), new Markup($"[bold]{Markup.Escape(primary)}[/] > [yellow]{Markup.Escape(secondary)}[/] > [dim]{Markup.Escape(tertiary)}[/]"));
+                    summaryTable.AddRow(
+                        new Markup("[dim]Приоритеты развития[/]"),
+                        new Markup(string.Empty),
+                        new Markup(string.Empty),
+                        new Markup($"[bold]{Markup.Escape(primary)}[/] > [yellow]{Markup.Escape(secondary)}[/] > [dim]{Markup.Escape(tertiary)}[/]"));
             }
         }
 
         // Reputation with label
         var factionTier = ReputationDisplay.GetTier(ReputationScaleKind.Faction, rep);
-        summaryTable.AddRow(new Markup($"[{factionTier.Color}]Репутация[/]"), new Markup(ReputationDisplay.BuildValueLabelMarkup(rep, ReputationScaleKind.Faction)));
+        summaryTable.AddRow(
+            new Markup($"[{factionTier.Color}]Репутация[/]"),
+            new Markup(ReputationDisplay.BuildBarMarkup(rep, ReputationScaleKind.Faction, 18)),
+            new Markup($"[{factionTier.Color}]{rep}[/]"),
+            new Markup($"[{factionTier.Color}]{Markup.Escape(factionTier.Label)}[/]"));
         if (!string.IsNullOrEmpty(repDesc))
-            summaryTable.AddRow(new Markup("[dim]Пояснение[/]"), new Markup($"[dim]{Markup.Escape(repDesc)}[/]"));
+            summaryTable.AddRow(
+                new Markup("[dim]Пояснение[/]"),
+                new Markup(string.Empty),
+                new Markup(string.Empty),
+                new Markup($"[dim]{Markup.Escape(repDesc)}[/]"));
 
         // Membership
         if (isPlayerFaction)
-            summaryTable.AddRow(new Markup("[gold1]Статус игрока[/]"), new Markup("[bold gold1]Вы — лидер этой фракции[/]"));
+            summaryTable.AddRow(
+                new Markup("[gold1]Статус игрока[/]"),
+                new Markup(string.Empty),
+                new Markup("[bold gold1]Лидер[/]"),
+                new Markup("[bold gold1]Вы — лидер этой фракции[/]"));
         else if (isMember)
         {
-            var memberLine = "[green]Член фракции[/]";
+            var memberDetails = new List<string>();
             if (!string.IsNullOrEmpty(playerRank))
-                memberLine += $" | Ранг: [yellow]{Markup.Escape(playerRank)}[/]";
+                memberDetails.Add($"Ранг: [yellow]{Markup.Escape(playerRank)}[/]");
             if (!string.IsNullOrEmpty(playerBranch))
-                memberLine += $" [dim]({Markup.Escape(ResolveFactionBranchDisplayName(f, strDoc, name, factionId, playerBranch))})[/]";
-            summaryTable.AddRow(new Markup("[green]Статус игрока[/]"), new Markup(memberLine));
+                memberDetails.Add($"[dim]({Markup.Escape(ResolveFactionBranchDisplayName(f, strDoc, name, factionId, playerBranch))})[/]");
+            summaryTable.AddRow(
+                new Markup("[green]Статус игрока[/]"),
+                new Markup(string.Empty),
+                new Markup("[green]Член[/]"),
+                new Markup(string.Join(" | ", memberDetails)));
         }
 
         // Strategy directive
         var directive = GetStr(f, "playerStrategyDirective", "");
         if (!string.IsNullOrEmpty(directive))
         {
-            summaryTable.AddRow(new Markup("[cyan]Стратегическая директива[/]"), new Markup($"[italic cyan]{Markup.Escape(directive)}[/]"));
+            summaryTable.AddRow(
+                new Markup("[cyan]Стратегическая директива[/]"),
+                new Markup(string.Empty),
+                new Markup(string.Empty),
+                new Markup($"[italic cyan]{Markup.Escape(directive)}[/]"));
         }
         else if (isPlayerFaction)
         {
-            summaryTable.AddRow(new Markup("[dim]Стратегическая директива[/]"), new Markup("[dim italic]не задана (используйте /директива_фракции)[/]"));
+            summaryTable.AddRow(
+                new Markup("[dim]Стратегическая директива[/]"),
+                new Markup(string.Empty),
+                new Markup(string.Empty),
+                new Markup("[dim italic]не задана (используйте /директива_фракции)[/]"));
         }
 
         if (summaryTable.Rows.Count > 0)
@@ -183,8 +211,6 @@ public partial class ExplorerMode
         // ═══ Power Profile ═══
         if (f.TryGetProperty("powerProfile", out var pp) && pp.ValueKind == JsonValueKind.Object)
         {
-            lines.Add("");
-            lines.Add("  [bold]📊 Профиль силы:[/]");
             var powerNames = new Dictionary<string, string>
             {
                 ["military"] = "⚔ Военная",
@@ -196,13 +222,25 @@ public partial class ExplorerMode
                 ["arcane_tech"] = "✨ Магия/Тех",
                 ["exploration"] = "🔍 Исследование"
             };
+            var powerTable = ConsoleLayout.CreateBarMetricTable(labelWidth: 18, barWidth: 10, valueWidth: 5);
             foreach (var (key, label) in powerNames)
             {
                 if (pp.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.Number && v.TryGetInt32(out var val))
                 {
                     var tier = GetPowerTierLabel(val);
-                    lines.Add($"    {Markup.Escape(label)}: {PowerBar(val)}  [white]{val}[/] [dim]{tier}[/]");
+                    powerTable.AddRow(
+                        GameInterface.SafeMarkupText(label),
+                        new Markup(PowerBar(val)),
+                        new Markup($"[white]{val}[/]"),
+                        new Markup($"[dim]{Markup.Escape(tier)}[/]"));
                 }
+            }
+
+            if (powerTable.Rows.Count > 0)
+            {
+                content.AddRow(new Markup(""));
+                content.AddRow(new Markup("  [bold]📊 Профиль силы:[/]"));
+                content.AddRow(powerTable);
             }
         }
 
