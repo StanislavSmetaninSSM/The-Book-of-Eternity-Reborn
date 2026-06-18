@@ -2588,12 +2588,56 @@ public partial class ValidationService
         return AbodePowerRules.GetCurrentPower(guardian);
     }
 
-    private static Dictionary<string, string> BuildGuardianAbodeMap(GuardianPolicyContext context, bool preTurn = false)
+    private void AddIdleCurrentGuardianReferenceIds(HashSet<string> knownGuardianIds, HashSet<string>? knownGuardianNames = null)
+    {
+        var context = ResolveGuardianPolicyContextSync();
+        if (!TryGetIdleCurrentGuardianReferenceRoot(context, out var currentRoot))
+            return;
+
+        CollectGuardianIdsFromStateRoot(currentRoot, knownGuardianIds, includeCommandSurfaces: false);
+        if (knownGuardianNames == null)
+            return;
+
+        CollectGuardianIdentityNamesFromStoredGuardians(
+            currentRoot,
+            knownGuardianIds,
+            knownGuardianNames,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+            onlyAuthorizedGuardians: false);
+    }
+
+    private bool TryGetIdleCurrentGuardianReferenceRoot(GuardianPolicyContext context, out JsonElement currentRoot)
+    {
+        currentRoot = default;
+        if (context.PreTurnGuardiansSnapshot.FileStatus != GuardianTrackedSnapshotFileStatus.MissingManifest ||
+            !context.CurrentStateReadable ||
+            !context.HasCurrentRoot ||
+            !context.HasCurrentGuardiansArray ||
+            context.HasCurrentUpdateGuardians ||
+            context.HasCurrentGuardianPowerEvents ||
+            _fs.FileExists("input/turn_request.json") ||
+            _fs.FileExists("game_state/control/pending_turn_snapshot.json") ||
+            AfterlifeLocalActionGuard.HasAnyPendingTurnSnapshotFile(_fs))
+        {
+            return false;
+        }
+
+        currentRoot = context.CurrentRoot;
+        return currentRoot.ValueKind == JsonValueKind.Object;
+    }
+
+    private Dictionary<string, string> BuildGuardianAbodeMap(GuardianPolicyContext context, bool preTurn = false)
     {
         var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var source = preTurn
             ? (HasResolvedGenericSharedStrictPreTurnGuardianAuthority(context) ? context.GenericSharedStrictPreTurnAuthorityRoot : default)
             : (context.HasCurrentAuthorityRoot ? context.CurrentAuthorityRoot : default);
+        if (!preTurn &&
+            source.ValueKind != JsonValueKind.Object &&
+            TryGetIdleCurrentGuardianReferenceRoot(context, out var idleCurrentRoot))
+        {
+            source = idleCurrentRoot;
+        }
 
         if (source.ValueKind != JsonValueKind.Object ||
             !source.TryGetProperty("guardians", out var guardians) ||

@@ -4,7 +4,7 @@
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/mortal-command-fixture-matrix.md
 
-**Source issues**: #1092 original Mortal command fixture coverage; #1095 reusable Mortal World command-display save continuation; #1096 reusable Chaos Sea afterlife command-display save continuation.
+**Source issues**: #1092 original Mortal command fixture coverage; #1095 reusable Mortal World command-display save continuation; #1096 reusable Chaos Sea afterlife command-display save continuation; #1097 reusable Shining Abode afterlife command-display save continuation.
 
 **Tests**: This task is fixture/audit-heavy. Add automated coverage when command coverage can be tested from tracked files; otherwise document manual verification evidence in the issue.
 
@@ -104,6 +104,29 @@
 - [x] T045 Run build, `git diff --check`, and added-line static scan; record exact results. Client build: 0 warnings / 0 errors. Test build: 0 warnings / 0 errors. Working-tree `git diff --check`: exit 0 with only LF-to-CRLF warnings. Added-line static scan: no matches for real secrets, shell/eval execution, unsafe deserialization, or SQL string-formatting patterns.
 - [x] T046 Reconcile docs/prompts impact and confirm no runtime afterlife contract, GM prompt, or dedicated Shining Abode #1097 fixture scope changed. Result: no GM prompts/examples/contracts changed; no afterlife runtime state contract files were added/renamed/removed. Player-facing display behavior changed only for `/archive_project_fuel` default preview when no active project exists, returning completed unavailable output instead of a blocked display result; write paths still block without canonical active project authority. Shining Abode #1097 remains out of scope.
 - [x] T047 Commit #1096 implementation with `[skip ci]`: `test: add reusable Chaos Sea command display save [skip ci]`.
+
+---
+
+## Phase 8: #1097 Reusable Shining Abode Save Continuation
+
+**Goal**: Package representative Shining Abode afterlife command-display state as a tracked reusable save/load-compatible artifact that survives clean checkouts and can be validated/rendered repeatedly without mixing in the dedicated Chaos Sea fixture task.
+
+**Independent Test**: Load the named save into a disposable session root, run validation with zero blocking issues, and run console/browser command-display smoke checks for every command available in the Shining Abode save.
+
+- [x] T048 Confirm source issue #1097, create isolated branch `work/1097-shining-abode-command-save`, and mark the GitHub issue in progress. Evidence: worktree `E:/Games/worktrees/boe-1097-shining-abode-command-save`; labels now include `status: in-progress` and `codex-agent in-progress`.
+- [x] T049 Run focused baseline: `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~FileSystemExampleFixtureIntegrityTests|FullyQualifiedName~FileSystemExampleAfterlifeStateExamplesTests|FullyQualifiedName~ExplorerWebCommandServiceTests|FullyQualifiedName~ExplorerModeCommandTests|FullyQualifiedName~Validation" --logger "console;verbosity=minimal"` => 1780 passed / 0 failed / 0 skipped / 1780 total.
+- [x] T050 Update active Spec Kit artifacts to reference #1097 and reusable Shining Abode save packaging scope.
+- [x] T051 Inspect save/load code, Shining Abode display builders, and existing FileSystemExample afterlife state to confirm the tracked save path `FileSystemExample/game_session/saves/manual_saves/shining_abode_command_display_fixture.zip` plus metadata sidecar. Implementation note: `SaveLoadService` strips live `input/` and `game_state/control/pending_turn_snapshot*` artifacts, so the #1097 fixture is an at-rest manual save.
+- [x] T052 Add RED discoverability/loadability/validation tests for the named reusable Shining Abode save, expected to fail before the archive/metadata exist. RED evidence: focused `ShiningAbodeCommandDisplaySaveTests` initially failed on missing `shining_abode_command_display_fixture.zip`; the narrow discoverability test reported 0 passed / 1 failed / 0 skipped / 1 total for that intended missing-archive reason.
+- [x] T053 Add RED or mutation-backed console/browser command-display smoke coverage for every command available in the loaded Shining Abode save, including relevant universal afterlife/status commands and detail-capable invocations. Coverage: all `ExplorerCommandGroup.ShiningAbode` and `ExplorerCommandGroup.AfterlifeCombatAndEntities` aliases, practical universal afterlife/status commands, and representative detail targets render through browser command service plus console renderer.
+- [x] T054 Create or copy the reusable named Shining Abode display-test save and metadata using the existing save/load-compatible layout: added `shining_abode_command_display_fixture.zip` and `shining_abode_command_display_fixture_metadata.json` under `FileSystemExample/game_session/saves/manual_saves/`.
+- [x] T055 Fill representative Shining Abode state so each available command returns useful player-facing data or a clear in-world unavailable reason; include Chaos Sea data only as historical/contextual references required by Shining Abode output. Implementation note: the archive carries mandatory afterlife bootstrap lore under `lore/chaos_sea/`, but no Chaos Sea command-display state; `ValidationService` now permits idle manual-save guardian references from current stored guardian state only when no live input, pending snapshot, or current guardian mutation surface exists.
+- [x] T056 Document save location, loading steps, command coverage matrix/checklist, representative invocations, expected visible data, and verification commands in `quickstart.md`, the coverage contract/checklist, `data-model.md`, `plan.md`, `spec.md`, and `FileSystemExample/README.md` as needed. Added `contracts/shining-abode-command-fixture-checklist.md`.
+- [x] T057 Run focused and broader validation/Explorer command tests; record exact GREEN counts in this task list and the PR/issue evidence. GREEN evidence: focused `ShiningAbodeCommandDisplaySaveTests` => 101 passed / 0 failed / 0 skipped / 101 total; broader afterlife/fixture/Explorer/Validation gate => 1780 passed / 0 failed / 0 skipped / 1780 total.
+- [x] T058 Run Spec Kit prerequisite check and confirm the helper resolves `FEATURE_DIR` to `specs/1092-mortal-command-fixture-coverage` for this branch: `AVAILABLE_DOCS` included `research.md`, `data-model.md`, `contracts/`, `quickstart.md`, and `tasks.md`.
+- [x] T059 Run build, `git diff --check`, and added-line static scan; record exact results. Client build: 0 warnings / 0 errors. Test build: 0 warnings / 0 errors. Staged `git diff --cached --check`: exit 0. Added-line static scan over staged C# production/test lines: `NO_MATCHES` for hardcoded secrets, shell/eval execution, unsafe deserialization, or SQL string-formatting patterns.
+- [x] T060 Reconcile docs/prompts impact and confirm no runtime afterlife contract, GM prompt, or dedicated Chaos Sea #1096 fixture scope changed. Result: no GM prompts/examples/contracts changed; no afterlife pending/control file, `actionType`, response field, receipt, report, or command behavior contract changed. The only runtime code change is a narrow `ValidationService` idle manual-save reference fallback for loaded saves with no live turn or guardian mutation authority.
+- [x] T061 Commit #1097 implementation with `[skip ci]`: `test: add reusable Shining Abode command display save [skip ci]`.
 
 ---
 

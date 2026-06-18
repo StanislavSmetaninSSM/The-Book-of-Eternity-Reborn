@@ -33,3 +33,4 @@
 
 - The fixture folder is intentionally ignored by git; durable coverage is tracked through the matrix and issue comments.
 - #1096 adds the tracked Chaos Sea manual-save fixture plus `contracts/chaos-sea-command-fixture-checklist.md`; the checklist documents command, source data, representative invocation, expected visible output, and the journal-backed project-fuel unavailable-state caveat.
+- #1097 adds the tracked Shining Abode manual-save fixture plus `contracts/shining-abode-command-fixture-checklist.md`; the checklist documents command, source data, representative invocation, expected visible output, and the at-rest validation boundary for idle manual saves.

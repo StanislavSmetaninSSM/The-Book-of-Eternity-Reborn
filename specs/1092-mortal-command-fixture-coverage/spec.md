@@ -4,17 +4,17 @@
 
 **Created**: 2026-06-17
 
-**Status**: In Progress for #1096 Chaos Sea reusable save continuation
+**Status**: Implemented for #1097 Shining Abode reusable save continuation
 
 **Input**: User description: "Пройдись по всем командам смертных миров и убедись, что на каждую команду у нас есть подходящие тестовые данные. Это нужно, чтобы я мог посмотреть как что отображается. Подчеркиваю, нужно не только популярные команды, а желательно все"
 
 ## Source Issues & Scope *(mandatory)*
 
-- **Source GitHub issue(s)**: #1092 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1092; reusable Mortal World save issue #1095 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1095; reusable Chaos Sea save issue #1096 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1096
+- **Source GitHub issue(s)**: #1092 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1092; reusable Mortal World save issue #1095 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1095; reusable Chaos Sea save issue #1096 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1096; reusable Shining Abode save issue #1097 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1097
 - **Issue type**: task / audit / test-data hardening / reusable save packaging / afterlife command-display fixture coverage
 - **Spec Kit justification**: The task spans the Mortal World command catalog, ignored local game-session state, reusable save/load discoverability, console/browser parity checks, and fixture validation. A durable spec is needed so future agents know the intended fixture coverage and verification path.
 - **Contract scope**: player-facing, runtime-state fixture/save, validation, console, browser, docs
-- **Out of scope**: New gameplay mechanics, redesigning command UI, and changing GM-authored contracts. For #1096, Shining Abode fixture data is out of scope except for historical/context references needed by Chaos Sea output; #1097 owns the dedicated Shining Abode reusable save. If the audit finds command output that cannot be made useful through test data/reusable save packaging alone, create a follow-up issue instead of broadening this task.
+- **Out of scope**: New gameplay mechanics, redesigning command UI, and changing GM-authored contracts. For #1097, Chaos Sea fixture data is out of scope except for historical/context references needed by Shining Abode output; #1096 remains the separate Chaos Sea reusable save. If the audit finds command output that cannot be made useful through test data/reusable save packaging alone, create a follow-up issue instead of broadening this task.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -90,6 +90,23 @@ As the project owner or an autonomous QA agent, I can load a named Chaos Sea com
 
 **Implementation note for #1096**: The reusable Chaos Sea save is an at-rest manual save. It may use `guardian_project_journal.json` to provide a project display target, but it must not rely on live `pending_turn_snapshot` or canonical `activeProjects` tracker authority because save/load removes transient turn snapshots from manual saves. Project-fuel display may therefore show a clear unavailable reason until a validated active project exists.
 
+### User Story 6 - Reuse the Shining Abode fixture as a normal save (Priority: P1 for #1097)
+
+As the project owner or an autonomous QA agent, I can load a named Shining Abode command-display save through the normal save/load-compatible workflow so Shining Abode command output can be inspected from a clean checkout.
+
+**Why this priority**: #1097 requires the same durable afterlife fixture pattern as #1096, but focused on Shining Abode state surfaces such as residents, halls, factions, projects, treasury, trade, forge, politics, gates, offerings, relics, conflicts, logs, and history.
+
+**Independent Test**: From a clean checkout, a test loads the named Shining Abode save into a disposable session root, validates it with zero blocking issues, and runs representative console/browser command-display checks for every command available in that save.
+
+**Acceptance Scenarios**:
+
+1. **Given** the repository has no ignored local `BookOfEternityClient/game_session`, **When** the reusable Shining Abode save is loaded into a disposable root, **Then** the resulting session contains representative Shining Abode afterlife data.
+2. **Given** the reusable Shining Abode save has been loaded, **When** validation and console/browser command-display smoke checks run, **Then** every command available in that save returns useful player-facing data or a clear in-world unavailable reason.
+3. **Given** a Shining Abode command supports detail or drill-down arguments, **When** the representative detail command is executed, **Then** at least one meaningful target renders without raw JSON/debug/path leakage.
+4. **Given** Chaos Sea has its own fixture issue, **When** the Shining Abode save is inspected, **Then** Chaos Sea data appears only as historical/contextual references required by Shining Abode output.
+
+**Implementation note for #1097**: The reusable Shining Abode save is an at-rest manual save. It must use the existing save/load-compatible manual-save layout, avoid committing live `input/` or transient `pending_turn_snapshot` control artifacts, and prefer representative read-only state over inventing new runtime contracts. Idle validation may resolve current guardian cross-references from stored guardian state only when no live input, pending snapshot, or current guardian mutation surface exists.
+
 ### Edge Cases
 
 - The local `BookOfEternityClient/game_session` folder is ignored by git and may not exist in a clean checkout; #1095 must provide a reusable save source that survives clean checkouts.
@@ -99,6 +116,8 @@ As the project owner or an autonomous QA agent, I can load a named Chaos Sea com
 - The Chaos Sea save may contain afterlife state under demo/display fixture paths; this is not a runtime contract migration by itself.
 - The Chaos Sea save must not become the Shining Abode reusable save; #1097 remains the separate Shining Abode command-display fixture task.
 - The Chaos Sea save's guardian project display target may be journal-backed instead of active-tracker-backed, because active guardian projects require validated pre-turn tracker authority that is not part of a reusable at-rest manual save.
+- The Shining Abode save must not become a Chaos Sea fixture; Chaos Sea references are allowed only as historical/contextual support for Shining Abode command output. Mandatory afterlife bootstrap lore under `lore/chaos_sea/` is allowed when validation requires it.
+- Shining Abode commands that need live mutation authority should render useful read-only context or a clear in-world unavailable reason unless existing at-rest save data can open the prompt safely.
 
 ## Requirements *(mandatory)*
 
@@ -120,6 +139,12 @@ As the project owner or an autonomous QA agent, I can load a named Chaos Sea com
 - **FR-014**: Detail-capable Chaos Sea commands MUST include at least one representative detail target.
 - **FR-015**: Browser rendering for the Chaos Sea save MUST not expose raw JSON, debug-only payloads, local paths, DTO/API/protocol wording, or failed/blocked command results in default player-facing mode.
 - **FR-016**: The durable matrix/checklist MUST document each Chaos Sea command covered by #1096, its fixture data source, representative invocation, and expected visible data.
+- **FR-017**: #1097 MUST provide a tracked, named, reusable Shining Abode command-display save or save package that can be loaded into a disposable `game_session` root from a clean checkout.
+- **FR-018**: The Shining Abode save MUST pass `ValidationService.ValidateGameStateAsync()` with zero blocking issues.
+- **FR-019**: Every command available in the loaded Shining Abode save MUST return useful player-facing data or a clear in-world unavailable reason in console and browser command rendering.
+- **FR-020**: Detail-capable Shining Abode commands MUST include at least one representative detail target.
+- **FR-021**: Browser rendering for the Shining Abode save MUST not expose raw JSON, debug-only payloads, local paths, DTO/API/protocol wording, or failed/blocked command results in default player-facing mode.
+- **FR-022**: The durable matrix/checklist MUST document each Shining Abode command covered by #1097, its fixture data source, representative invocation, and expected visible data.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -127,6 +152,7 @@ As the project owner or an autonomous QA agent, I can load a named Chaos Sea com
 - **Local Test Game Session**: The ignored `BookOfEternityClient/game_session` folder used for manual console/browser preview.
 - **Reusable Mortal Command Display Save**: The tracked save/package added for #1095 so the #1092 fixture can be restored from a clean checkout through the normal save/load-compatible workflow.
 - **Reusable Chaos Sea Command Display Save**: The tracked save/package added for #1096 so Chaos Sea afterlife command-display fixture state can be restored from a clean checkout through the normal save/load-compatible workflow.
+- **Reusable Shining Abode Command Display Save**: The tracked save/package added for #1097 so Shining Abode afterlife command-display fixture state can be restored from a clean checkout through the normal save/load-compatible workflow.
 - **Disposable Loaded Session**: A temporary `game_session` root created by tests/QA to validate/render the reusable save without mutating its tracked source.
 - **Fixture Data Surface**: A state file or lore file that feeds one or more command outputs.
 
@@ -143,12 +169,16 @@ As the project owner or an autonomous QA agent, I can load a named Chaos Sea com
 - **SC-007**: #1096 adds a named reusable Chaos Sea save/package that can be loaded repeatedly from a clean checkout and validated with zero blocking issues.
 - **SC-008**: Console and browser command rendering against the loaded #1096 save complete for the available Chaos Sea command set without raw/debug/path leakage or failed/blocked results.
 - **SC-009**: The #1096 matrix/checklist documents command, fixture source, representative invocation, and visible data for every command available in the Chaos Sea save.
+- **SC-010**: #1097 adds a named reusable Shining Abode save/package that can be loaded repeatedly from a clean checkout and validated with zero blocking issues.
+- **SC-011**: Console and browser command rendering against the loaded #1097 save complete for the available Shining Abode command set without raw/debug/path leakage or failed/blocked results.
+- **SC-012**: The #1097 matrix/checklist documents command, fixture source, representative invocation, and visible data for every command available in the Shining Abode save.
 
 ## Verification Plan *(mandatory)*
 
 - **C# verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Mortal|BrowserMortalWorld|Inventory|Trade|Storage|ExplorerWebCommandService"`
 - **#1095 reusable save verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~MortalCommandDisplaySaveTests" --logger "console;verbosity=minimal"`
 - **#1096 reusable Chaos Sea save verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~ChaosSeaCommandDisplaySaveTests" --logger "console;verbosity=minimal"`
+- **#1097 reusable Shining Abode save verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~ShiningAbodeCommandDisplaySaveTests" --logger "console;verbosity=minimal"`
 - **Afterlife fixture verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~FileSystemExampleFixtureIntegrityTests|FullyQualifiedName~FileSystemExampleAfterlifeStateExamplesTests|FullyQualifiedName~ExplorerWebCommandServiceTests|FullyQualifiedName~ExplorerModeCommandTests|FullyQualifiedName~Validation" --logger "console;verbosity=minimal"`
 - **Documentation/contract verification**: Review `specs/1092-mortal-command-fixture-coverage/contracts/mortal-command-fixture-matrix.md` against `BookOfEternityClient/CommandProtocol/ExplorerCommandCatalog.cs`.
 - **Frontend verification**: Browser client manual command smoke check against the local host when needed; no frontend code changes are expected.
