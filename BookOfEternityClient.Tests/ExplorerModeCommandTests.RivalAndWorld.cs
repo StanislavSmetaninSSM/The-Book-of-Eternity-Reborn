@@ -149,6 +149,26 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_WorldNews_DirectDetailSuppressesCommandActionTable()
+    {
+        await SeedMortalStateAsync();
+        await SeedRichMortalWorldNewsFilesAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/новости_мира событие riots_at_gate");
+
+        Assert.Equal(string.Empty, result);
+        AssertNoHiddenExplorerErrors("world_news_direct_detail_no_action_table");
+        var text = ExtractRenderedText();
+        Assert.Contains("Событие: Беспорядки у Северных ворот", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("торговая площадь закрыта до следующего утра", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Доступные действия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Команда", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/новости_мира", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Secondary", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_WorldNews_ConsoleSelectionCanReturnToNewsList()
     {
         await SeedMortalStateAsync();

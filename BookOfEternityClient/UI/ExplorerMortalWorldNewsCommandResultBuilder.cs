@@ -853,20 +853,53 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         if (TryGetScalarString(node, out var scalar))
             return scalar;
         if (node is JsonArray array)
-            return string.Join("; ", array.Select(DescribeNodeForDetail).Where(static value => !string.IsNullOrWhiteSpace(value)));
+            return FormatDetailList(array.Select(DescribeNodeForDetail).Where(static value => !string.IsNullOrWhiteSpace(value)));
         if (node is JsonObject obj)
         {
             var propertyDescriptions = obj
                 .Where(static property => !ShouldSkipAdditionalDetailField(property.Key, EmptyConsumedDetailFields))
-                .Select(static property => $"{WorldNewsFieldLabel(property.Key)}: {DescribeNodeForDetail(property.Value)}")
+                .Select(static property => FormatDetailPair(WorldNewsFieldLabel(property.Key), DescribeNodeForDetail(property.Value)))
                 .Where(static value => !string.IsNullOrWhiteSpace(value))
                 .ToList();
 
-            return string.Join("; ", propertyDescriptions);
+            return string.Join(Environment.NewLine, propertyDescriptions);
         }
 
         return string.Empty;
     }
+
+    private static string FormatDetailList(IEnumerable<string> values)
+    {
+        var items = values
+            .Select(static value => value.Trim())
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+        if (items.Count == 0)
+            return string.Empty;
+        if (items.Count == 1)
+            return items[0];
+
+        return string.Join(Environment.NewLine, items.Select(static item => "• " + IndentContinuationLines(item)));
+    }
+
+    private static string FormatDetailPair(string label, string value)
+    {
+        var clean = value.Trim();
+        if (string.IsNullOrWhiteSpace(clean))
+            return string.Empty;
+
+        return clean.Contains('\n', StringComparison.Ordinal)
+            ? $"{label}:{Environment.NewLine}{IndentMultiline(clean, "  ")}"
+            : $"{label}: {clean}";
+    }
+
+    private static string IndentContinuationLines(string value) =>
+        value.Replace("\r\n", "\n", StringComparison.Ordinal)
+            .Replace("\n", Environment.NewLine + "  ", StringComparison.Ordinal);
+
+    private static string IndentMultiline(string value, string indent) =>
+        indent + value.Replace("\r\n", "\n", StringComparison.Ordinal)
+            .Replace("\n", Environment.NewLine + indent, StringComparison.Ordinal);
 
     private static string WorldNewsFieldLabel(string fieldName)
     {
@@ -884,28 +917,56 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             "stakes" => "Ставки",
             "danger" => "Опасность",
             "deadline" => "Срок",
+            "opportunity" or "opportunities" => "Возможность",
+            "openquestions" or "questions" => "Открытые вопросы",
+            "playerknowledge" or "knownfacts" => "Что знает игрок",
+            "hiddenmeaning" or "hiddentruth" => "Скрытый смысл",
+            "publicsummary" or "playersummary" or "playerfacingsummary" => "Кратко для игрока",
+            "privatedetails" => "Скрытые подробности",
+            "source" or "sources" => "Источник",
+            "sourcerumor" => "Источник слуха",
             "witnessprofile" => "Свидетель",
             "testimony" => "Показания",
             "sealdetails" => "Печать",
             "relatedpeople" => "Связанные лица",
             "role" => "Роль",
+            "reason" => "Причина",
             "rumors" or "rumours" => "Слухи",
             "witnesses" => "Свидетели",
             "evidence" => "Улики",
+            "lead" => "Зацепка",
             "hooks" => "Сюжетные зацепки",
             "playeroptions" or "availableactions" => "Возможные действия",
             "resolutionoptions" => "Варианты развития",
             "currentsituation" => "Текущая ситуация",
             "background" => "Предыстория",
             "notes" => "Заметки",
+            "context" => "Контекст",
             "worldimpact" => "Влияние на мир",
             "factionimpact" => "Влияние на фракции",
             "npcimpact" => "Влияние на НПС",
             "risk" or "risklevel" => "Риск",
             "reward" or "rewards" => "Награда",
             "cost" or "costs" => "Цена",
+            "status" => "Статус",
+            "phase" => "Фаза",
+            "state" => "Состояние",
+            "category" or "eventcategory" => "Категория",
+            "visibility" => "Видимость",
+            "location" or "eventlocation" or "locationname" or "region" => "Место",
+            "affectedfactions" or "factions" => "Фракции",
+            "affectedlocations" or "locations" => "Локации",
+            "involvednpcs" or "actors" or "participants" => "Участники",
+            "consequence" or "consequences" or "effects" => "Последствия",
+            "outcome" or "result" => "Итог",
+            "followup" or "followupevent" or "nextstep" => "Продолжение",
+            "impact" or "impactprofile" => "Влияние",
             "deadlinehint" => "Подсказка по сроку",
             "nextsignals" => "Следующие признаки",
+            "trackername" or "progressionname" => "Запись прогресса",
+            "stagename" or "currentstage" or "stage" => "Стадия",
+            "changereason" or "lastchangereason" => "Причина изменения",
+            "nextmilestone" or "milestone" => "Следующая веха",
             _ => HumanizeWorldNewsFieldName(normalized)
         };
     }
