@@ -66,7 +66,9 @@ game_session/
 │   │   ├── mortal_world_command_display_fixture.zip (#1095 REUSABLE MORTAL COMMAND DISPLAY SAVE)
 │   │   ├── mortal_world_command_display_fixture_metadata.json (#1095 SAVE METADATA)
 │   │   ├── chaos_sea_command_display_fixture.zip (#1096 REUSABLE CHAOS SEA COMMAND DISPLAY SAVE)
-│   │   └── chaos_sea_command_display_fixture_metadata.json (#1096 SAVE METADATA)
+│   │   ├── chaos_sea_command_display_fixture_metadata.json (#1096 SAVE METADATA)
+│   │   ├── shining_abode_command_display_fixture.zip (#1097 REUSABLE SHINING ABODE COMMAND DISPLAY SAVE)
+│   │   └── shining_abode_command_display_fixture_metadata.json (#1097 SAVE METADATA)
 │   └── checkpoint_saves/     # Life transition saves
 ├── output/                   # Client communication
 │   ├── narrative_response.json (DEMO)
@@ -145,8 +147,12 @@ game_session/
 - `saves/manual_saves/mortal_world_command_display_fixture_metadata.json` - Sidecar metadata for the reusable #1095 save
 - `saves/manual_saves/chaos_sea_command_display_fixture.zip` - Reusable named Chaos Sea command-display save for #1096 console/browser QA
 - `saves/manual_saves/chaos_sea_command_display_fixture_metadata.json` - Sidecar metadata for the reusable #1096 save
+- `saves/manual_saves/shining_abode_command_display_fixture.zip` - Reusable named Shining Abode command-display save for #1097 console/browser QA
+- `saves/manual_saves/shining_abode_command_display_fixture_metadata.json` - Sidecar metadata for the reusable #1097 save
 
 The #1096 Chaos Sea save is an at-rest manual save. It uses journal-backed guardian project display data and intentionally avoids live pending-turn snapshots or active project tracker authority, so `/archive_project_fuel` can preview the project context while showing a clear unavailable reason until a validated active project exists.
+
+The #1097 Shining Abode save is an at-rest manual save. It includes representative Shining residents, halls, factions, projects, treasury/trade/forge, politics, gates, offerings, relics, conflicts, logs/history, and shared afterlife surfaces, while avoiding live `input/` and `pending_turn_snapshot*` artifacts. The archive carries mandatory afterlife bootstrap lore under `lore/chaos_sea/`, but does not contain Chaos Sea command-display state.
 
 ## 🎯 Benefits
 

@@ -39,6 +39,18 @@
 - Unavailable-action rule: `/archive_project_fuel` is available as a display command in the save but returns a clear in-world unavailable reason until a validated active project exists.
 - Scope boundary: Dedicated Shining Abode fixture data belongs to #1097; any Shining references in this save must be historical/contextual support for Chaos Sea output rather than the primary Shining command-display scenario.
 
+## Reusable Shining Abode Command Display Save
+
+- Source archive: `FileSystemExample/game_session/saves/manual_saves/shining_abode_command_display_fixture.zip`
+- Sidecar metadata: `FileSystemExample/game_session/saves/manual_saves/shining_abode_command_display_fixture_metadata.json`
+- Internal save name: `Shining Abode Command Display Fixture (#1097)`.
+- Purpose: Tracked save/load-compatible package of representative Shining Abode afterlife command-display fixture state.
+- Load behavior: The tracked archive is the durable source. For manual console/browser QA, copy it into `BookOfEternityClient/game_session/saves/manual_saves/` and load it through the normal save list; recopy from the tracked source before repeated manual loads because the active `game_session` is replaced by the loader.
+- Required property: Loading into a disposable root with clean-checkout tracked dependencies produces a Shining Abode session that has zero blocking validation issues and renders every command available in that save in browser and console with player-facing data or a clear in-world unavailable reason.
+- Fixture surfaces: representative Shining Abode canonical/demo state for residents, halls, factions, projects, treasury, trade, forge, politics, gates, offerings, relics, conflicts, logs, history, afterlife profiles, afterlife threats, afterlife chronicles, afterlife inbox/support, soul state, and practical universal afterlife previews.
+- At-rest authority rule: the save excludes live `input/` and `pending_turn_snapshot*` artifacts; idle manual-save validation may resolve resident and soul-quest guardian references from stored current guardian state only when no live turn or guardian mutation surface is present.
+- Scope boundary: Dedicated Chaos Sea fixture data belongs to #1096. The Shining archive includes mandatory afterlife bootstrap lore under `lore/chaos_sea/`, but any Chaos Sea references in player-facing state must be historical/contextual support for Shining Abode output rather than the primary command-display scenario.
+
 ## Fixture Data Surface
 
 - A JSON or content file under the session root.

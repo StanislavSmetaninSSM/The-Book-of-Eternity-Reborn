@@ -1,0 +1,16 @@
+{
+  "saveName": "Shining Abode Command Display Fixture (#1097)",
+  "archiveFile": "shining_abode_command_display_fixture.zip",
+  "currentRealm": "Shining Abode",
+  "createdFor": "Reusable Shining Abode afterlife command-display QA",
+  "fixtureBoundary": "Dedicated Shining Abode state. Chaos Sea command-display state is intentionally absent; mandatory lore/chaos_sea bootstrap files are present only because afterlife validation expects universal lore dependencies.",
+  "coverageChecklist": "specs/1092-mortal-command-fixture-coverage/contracts/shining-abode-command-fixture-checklist.md",
+  "sourceIssues": [
+    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1097"
+  ],
+  "loadPath": "FileSystemExample/game_session/saves/manual_saves/shining_abode_command_display_fixture.zip",
+  "verificationCommands": [
+    "dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter \"FullyQualifiedName~ShiningAbodeCommandDisplaySaveTests\" --logger \"console;verbosity=minimal\"",
+    "dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter \"FullyQualifiedName~FileSystemExampleFixtureIntegrityTests|FullyQualifiedName~FileSystemExampleAfterlifeStateExamplesTests|FullyQualifiedName~ExplorerWebCommandServiceTests|FullyQualifiedName~ExplorerModeCommandTests|FullyQualifiedName~Validation\" --logger \"console;verbosity=minimal\""
+  ]
+}

@@ -422,7 +422,9 @@ public partial class ValidationService
     private Task<HashSet<string>> ReadKnownGuardianIdsAsync()
     {
         var state = ReadGuardianIdentityValidationState();
-        return Task.FromResult(new HashSet<string>(state.KnownGuardianIds, StringComparer.OrdinalIgnoreCase));
+        var ids = new HashSet<string>(state.KnownGuardianIds, StringComparer.OrdinalIgnoreCase);
+        AddIdleCurrentGuardianReferenceIds(ids);
+        return Task.FromResult(ids);
     }
 
     private sealed record GuardianReferenceValidationState(
@@ -436,10 +438,13 @@ public partial class ValidationService
     {
         var state = ReadGuardianIdentityValidationState();
         var guardianPolicyContext = ResolveGuardianPolicyContextSync();
+        var ids = new HashSet<string>(state.KnownGuardianIds, StringComparer.OrdinalIgnoreCase);
+        var names = new HashSet<string>(state.KnownGuardianNames, StringComparer.OrdinalIgnoreCase);
+        AddIdleCurrentGuardianReferenceIds(ids, names);
         var failureKind = ResolveGuardianBaselineFailureKind(guardianPolicyContext);
         return Task.FromResult(new GuardianReferenceValidationState(
-            new HashSet<string>(state.KnownGuardianIds, StringComparer.OrdinalIgnoreCase),
-            new HashSet<string>(state.KnownGuardianNames, StringComparer.OrdinalIgnoreCase),
+            ids,
+            names,
             failureKind,
             guardianPolicyContext.PreTurnGuardiansSnapshot.FileStatus,
             DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext)));

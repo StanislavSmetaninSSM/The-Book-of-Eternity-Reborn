@@ -4,6 +4,7 @@
 
 - For #1092 local preview, use the real local preview session at `E:\Games\The Book of Eternity Reborn\BookOfEternityClient\game_session`.
 - For #1095 clean-checkout QA, use the tracked reusable save source at `FileSystemExample\game_session\saves\manual_saves\mortal_world_command_display_fixture.zip`.
+- For #1097 clean-checkout QA, use the tracked reusable save source at `FileSystemExample\game_session\saves\manual_saves\shining_abode_command_display_fixture.zip`.
 - Keep the repository worktree clean enough to distinguish tracked Spec Kit/test changes from ignored local fixture changes.
 
 ## Reusable #1095 Save
@@ -75,6 +76,41 @@ Then start the console or browser client and load `Chaos Sea Command Display Fix
 The #1096 save is an at-rest Chaos Sea manual save. It intentionally does not preserve `game_state/control/pending_turn_snapshot/` or live `input/` artifacts because `SaveLoadService` strips transient turn state from saves. Guardian project display uses the validated `game_state/meta/guardian_project_journal.json` entry `project_archive_lighthouse_display_001`; `game_state/meta/guardian_projects.json` remains empty of active tracker authority, so `/archive_project_fuel` renders the project context plus a clear in-world unavailable reason instead of opening a mutation prompt.
 
 Expected visible data includes Chaos Sea navigation, Azalia and Seret guardian context, Azalia's abode and power history, journal-backed guardian project display, guardian politics, the player soul profile, Azalia's afterlife profile, visible active threat and chronicle examples, an afterlife inbox notification, spiritual conflict/combat log details, spiritual arts and a special art, soul relics, archive entries, archive candidates, and practical universal afterlife previews such as `/статус`, `/душа`, `/архив_души`, `/квесты_души`, `/хроника`, `/перья`, `/кодекс`, `/галерея`, and `/валидация`.
+
+## Reusable #1097 Shining Abode Save
+
+Tracked source archive:
+
+```text
+FileSystemExample/game_session/saves/manual_saves/shining_abode_command_display_fixture.zip
+```
+
+Sidecar metadata:
+
+```text
+FileSystemExample/game_session/saves/manual_saves/shining_abode_command_display_fixture_metadata.json
+```
+
+Internal save name:
+
+```text
+Shining Abode Command Display Fixture (#1097)
+```
+
+To make the save visible to the console or browser main-menu load flow from a clean checkout, copy the tracked source archive into the live session's normal manual-save directory:
+
+```powershell
+$source = "FileSystemExample\game_session\saves\manual_saves\shining_abode_command_display_fixture.zip"
+$targetDir = "BookOfEternityClient\game_session\saves\manual_saves"
+New-Item -ItemType Directory -Force -Path $targetDir | Out-Null
+Copy-Item -LiteralPath $source -Destination (Join-Path $targetDir "shining_abode_command_display_fixture.zip") -Force
+```
+
+Then start the console or browser client and load `Shining Abode Command Display Fixture (#1097)` from manual saves.
+
+The #1097 save is an at-rest Shining Abode manual save. It does not preserve `game_state/control/pending_turn_snapshot/` or live `input/` artifacts because `SaveLoadService` strips transient turn state from saves. Commands that require live write authority either open through existing prompt/write services using safe at-rest state or render a clear in-world unavailable reason. Validation resolves idle resident and soul-quest guardian references from the stored current guardian state only when no live input, pending snapshot, or current guardian mutation surface exists.
+
+Expected visible data includes Shining Abode resident and hall context, Дом Фонарей faction/politics state, Проект Рассвета, treasury/trade/forge/relic context, incarnation gates and blessing cards, offerings, Source of Light context, conflicts, logs/history, afterlife profiles/threats/chronicles/inbox, soul state, and practical universal afterlife previews such as `/статус`, `/душа`, `/архив_души`, `/квесты_души`, `/хроника`, `/перья`, `/кодекс`, `/галерея`, and `/валидация`. The archive includes mandatory afterlife bootstrap lore under `lore/chaos_sea/`; this is universal validation support, not Chaos Sea command-display fixture state.
 
 ## Command Inventory
 
@@ -162,6 +198,12 @@ Reusable #1096 Chaos Sea save load, validation, browser command smoke, and conso
 
 ```powershell
 dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~ChaosSeaCommandDisplaySaveTests" --logger "console;verbosity=minimal"
+```
+
+Reusable #1097 Shining Abode save load, validation, browser command smoke, and console renderer smoke:
+
+```powershell
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~ShiningAbodeCommandDisplaySaveTests" --logger "console;verbosity=minimal"
 ```
 
 Broader afterlife/fixture/Explorer command gate:
