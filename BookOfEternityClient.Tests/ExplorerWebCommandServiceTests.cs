@@ -319,9 +319,24 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Городская стража", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("торговая площадь закрыта до следующего утра", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Капитан ждёт свидетелей", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Настроение жителей", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("горожане боятся новых писем", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Зацепки", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("проверить печать на письме", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ставки", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("рынок может вспыхнуть", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("eventId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("worldEventsLog", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/world", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Source path", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("State path", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Source file", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Source url", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("world_events.json", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("sourcePath", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("statePath", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("sourceFile", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("sourceUrl", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -339,6 +354,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Северный квартал", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Музыканты играют тише после ночного письма", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Площадь открыта только для жителей", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Слухи", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("скрипачи ушли до заката", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("flagId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("worldStateFlags", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/world", payload, StringComparison.OrdinalIgnoreCase);
@@ -359,6 +376,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Караваны возвращаются", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Стража разогнала засаду", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Цены на соль упали", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Следующие признаки", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("караван просит охрану", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("progressionId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/world", payload, StringComparison.OrdinalIgnoreCase);
     }
@@ -4167,7 +4186,20 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "affectedFactions": [ "Городская стража" ],
               "affectedLocations": [ "Северные ворота" ],
               "consequences": [ "торговая площадь закрыта до следующего утра" ],
-              "followUp": "Капитан ждёт свидетелей."
+              "followUp": "Капитан ждёт свидетелей.",
+              "publicMood": "горожане боятся новых писем",
+              "possibleLeads": [
+                "проверить печать на письме",
+                "найти курьера у старого рынка"
+              ],
+              "stakes": {
+                "danger": "рынок может вспыхнуть",
+                "deadline": "до полуночи"
+              },
+              "sourcePath": "game_state/world/world_events.json",
+              "statePath": "game_state/world",
+              "sourceFile": "world_events.json",
+              "sourceUrl": "https://internal.example/world_events.json"
             }
           ]
         }
@@ -4226,7 +4258,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "status": "active",
               "value": "наблюдают стражники",
               "description": "Музыканты играют тише после ночного письма.",
-              "consequence": "Площадь открыта только для жителей."
+              "consequence": "Площадь открыта только для жителей.",
+              "rumors": [
+                "скрипачи ушли до заката"
+              ]
             }
           ]
         }
@@ -4243,7 +4278,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "description": "На тракте снова появились торговцы.",
               "changeReason": "Стража разогнала засаду.",
               "consequence": "Цены на соль упали.",
-              "timestamp": "день 42"
+              "timestamp": "день 42",
+              "nextSignals": [
+                "караван просит охрану"
+              ]
             }
           ]
         }

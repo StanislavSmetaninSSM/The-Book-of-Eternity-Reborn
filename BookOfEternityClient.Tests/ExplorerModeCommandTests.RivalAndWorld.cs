@@ -139,6 +139,33 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_WorldNews_ConsoleSelectionCanReturnToNewsList()
+    {
+        await SeedMortalStateAsync();
+        await SeedRichMortalWorldNewsFilesAsync();
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueSelection(
+            "Действие: Новости мира",
+            "Открыть событие «Беспорядки у Северных ворот»",
+            "← Назад");
+        _console.QueueSelection("Новости мира: запись", "← Назад к списку");
+
+        var result = await _explorer.TryProcessCommand("/новости_мира");
+
+        Assert.Equal(string.Empty, result);
+        AssertNoHiddenExplorerErrors("world_news_selection_back_to_list");
+        var text = ExtractRenderedText();
+        Assert.Contains("Событие: Беспорядки у Северных ворот", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(_console.SelectionChoicesHistory, history =>
+            history.Title.Contains("Новости мира: запись", StringComparison.OrdinalIgnoreCase) &&
+            history.Choices.Any(choice => choice.Contains("Назад к списку", StringComparison.OrdinalIgnoreCase)));
+        Assert.True(
+            _console.SelectionChoicesHistory.Count(history =>
+                history.Title.Contains("Действие: Новости мира", StringComparison.OrdinalIgnoreCase)) >= 2,
+            "После возврата из детали список новостей должен быть показан повторно.");
+    }
+
+    [Fact]
     public void ConsoleWorldNewsSource_UsesSharedMortalWorldNewsResultBuilder()
     {
         var source = File.ReadAllText(Path.Combine(

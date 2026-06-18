@@ -14,6 +14,7 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
     private const string WorldMapPath = "game_state/world/world_map.json";
     private const string NpcActivitiesPath = "game_state/npcs/npc_activities.json";
     private const string FactionProjectsPath = "game_state/factions/faction_projects.json";
+    private static readonly HashSet<string> EmptyConsumedDetailFields = new(StringComparer.OrdinalIgnoreCase);
 
     public static async Task<ExplorerCommandResult> BuildAsync(string command, FileSystemManager fs)
     {
@@ -209,6 +210,19 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         AddDetailItem(detailItems, "Итог", FirstWorldNewsNodeString(item.Node, "outcome", "result"));
         AddDetailItem(detailItems, "Продолжение", FirstWorldNewsNodeString(item.Node, "followUp", "followUpEvent", "nextStep"));
         AddDetailItem(detailItems, "Влияние", DescribeNodeForDetail(item.Node["impact"] ?? item.Node["impactProfile"]));
+        AddAdditionalDetailItems(detailItems, item.Node,
+            "eventId", "worldEventId", "id", "key",
+            "eventTitle", "title", "name",
+            "timestamp", "dateTime", "date", "time",
+            "location", "eventLocation", "locationName", "region",
+            "status", "phase", "state", "visibility", "category", "eventCategory", "type",
+            "summary", "narrativeSummary", "description", "details",
+            "involvedNPCs", "actors", "participants",
+            "affectedFactions", "factions",
+            "affectedLocations", "locations",
+            "consequences", "effects", "outcome", "result",
+            "followUp", "followUpEvent", "nextStep",
+            "impact", "impactProfile");
 
         return new UiPanelBlock
         {
@@ -229,6 +243,13 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         AddDetailItem(detailItems, "Значение", DescribeFlagValue(item.Node["value"]));
         AddDetailItem(detailItems, "Описание", FirstWorldNewsNodeString(item.Node, "description", "summary", "note"));
         AddDetailItem(detailItems, "Последствие", FirstWorldNewsNodeString(item.Node, "consequence", "consequences", "effect", "currentEffect"));
+        AddAdditionalDetailItems(detailItems, item.Node,
+            "flagId", "id", "key",
+            "displayName", "flagName", "title", "name",
+            "scope", "location", "locationName", "region", "factionName", "npcName",
+            "status", "state", "value",
+            "description", "summary", "note",
+            "consequence", "consequences", "effect", "currentEffect");
 
         return new UiPanelBlock
         {
@@ -252,6 +273,16 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         AddDetailItem(detailItems, "Причина изменения", FirstWorldNewsNodeString(item.Node, "changeReason", "lastChangeReason", "reason", "source"));
         AddDetailItem(detailItems, "Последствие", FirstWorldNewsNodeString(item.Node, "consequence", "consequences", "outcome", "effect"));
         AddDetailItem(detailItems, "Следующая веха", FirstWorldNewsNodeString(item.Node, "nextMilestone", "milestone", "nextStep"));
+        AddAdditionalDetailItems(detailItems, item.Node,
+            "progressionId", "trackerId", "entryId", "id", "key",
+            "trackerName", "progressionName", "title", "name",
+            "stageName", "currentStage", "stage",
+            "status", "state",
+            "timestamp", "date", "time", "updatedAt",
+            "description", "summary",
+            "changeReason", "lastChangeReason", "reason", "source",
+            "consequence", "consequences", "outcome", "effect",
+            "nextMilestone", "milestone", "nextStep");
 
         return new UiPanelBlock
         {
@@ -661,6 +692,57 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             _ => visibility.Trim()
         };
 
+    private static void AddAdditionalDetailItems(
+        List<UiKeyValueItem> items,
+        JsonObject node,
+        params string[] consumedFields)
+    {
+        var consumed = new HashSet<string>(consumedFields, StringComparer.OrdinalIgnoreCase);
+        foreach (var property in node)
+        {
+            if (ShouldSkipAdditionalDetailField(property.Key, consumed))
+                continue;
+
+            var value = DescribeNodeForDetail(property.Value);
+            if (string.IsNullOrWhiteSpace(value))
+                continue;
+
+            var label = WorldNewsFieldLabel(property.Key);
+            if (items.Any(item => string.Equals(item.Key, label, StringComparison.OrdinalIgnoreCase)))
+                continue;
+
+            items.Add(new UiKeyValueItem { Key = label, Value = value });
+        }
+    }
+
+    private static bool ShouldSkipAdditionalDetailField(string fieldName, HashSet<string> consumedFields)
+    {
+        if (consumedFields.Contains(fieldName))
+            return true;
+
+        var normalized = fieldName.Trim().ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(normalized))
+            return true;
+
+        var compact = normalized.Replace("_", string.Empty, StringComparison.Ordinal)
+            .Replace("-", string.Empty, StringComparison.Ordinal)
+            .Replace(".", string.Empty, StringComparison.Ordinal);
+
+        if (compact is "schemaversion" or "version" or "metadata" or "raw" or "rawjson" or
+            "path" or "file" or "uri" or "url" or
+            "sourcepath" or "statepath" or "canonicalpath" or "sourcefile" or "sourceuri" or "sourceurl")
+            return true;
+
+        return compact.EndsWith("id", StringComparison.Ordinal) ||
+               compact.EndsWith("ids", StringComparison.Ordinal) ||
+               compact.EndsWith("key", StringComparison.Ordinal) ||
+               compact.EndsWith("uri", StringComparison.Ordinal) ||
+               compact.EndsWith("url", StringComparison.Ordinal) ||
+               compact.Contains("debug", StringComparison.Ordinal) ||
+               compact.Contains("filepath", StringComparison.Ordinal) ||
+               compact.Contains("filename", StringComparison.Ordinal);
+    }
+
     private static string DescribeNodeForDetail(JsonNode? node)
     {
         if (node == null)
@@ -676,11 +758,83 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
                 return label;
 
             return string.Join("; ", obj
-                .Select(static property => $"{property.Key}: {DescribeNodeForDetail(property.Value)}")
+                .Where(static property => !ShouldSkipAdditionalDetailField(property.Key, EmptyConsumedDetailFields))
+                .Select(static property => $"{WorldNewsFieldLabel(property.Key)}: {DescribeNodeForDetail(property.Value)}")
                 .Where(static value => !string.IsNullOrWhiteSpace(value)));
         }
 
         return string.Empty;
+    }
+
+    private static string WorldNewsFieldLabel(string fieldName)
+    {
+        var normalized = fieldName.Trim();
+        return normalized.ToLowerInvariant() switch
+        {
+            "publicmood" => "Настроение жителей",
+            "mood" => "Настроение",
+            "possibleleads" or "leads" or "clues" => "Зацепки",
+            "stakes" => "Ставки",
+            "danger" => "Опасность",
+            "deadline" => "Срок",
+            "rumors" or "rumours" => "Слухи",
+            "witnesses" => "Свидетели",
+            "evidence" => "Улики",
+            "hooks" => "Сюжетные зацепки",
+            "playeroptions" or "availableactions" => "Возможные действия",
+            "resolutionoptions" => "Варианты развития",
+            "currentsituation" => "Текущая ситуация",
+            "background" => "Предыстория",
+            "notes" => "Заметки",
+            "worldimpact" => "Влияние на мир",
+            "factionimpact" => "Влияние на фракции",
+            "npcimpact" => "Влияние на НПС",
+            "risk" or "risklevel" => "Риск",
+            "reward" or "rewards" => "Награда",
+            "cost" or "costs" => "Цена",
+            "deadlinehint" => "Подсказка по сроку",
+            "nextsignals" => "Следующие признаки",
+            _ => HumanizeWorldNewsFieldName(normalized)
+        };
+    }
+
+    private static string HumanizeWorldNewsFieldName(string fieldName)
+    {
+        if (string.IsNullOrWhiteSpace(fieldName))
+            return string.Empty;
+
+        var words = new List<string>();
+        var current = new List<char>();
+        for (var index = 0; index < fieldName.Length; index++)
+        {
+            var ch = fieldName[index];
+            if (ch is '_' or '-' or '.')
+            {
+                FlushWord(words, current);
+                continue;
+            }
+
+            if (current.Count > 0 && char.IsUpper(ch) && !char.IsUpper(current[^1]))
+                FlushWord(words, current);
+
+            current.Add(ch);
+        }
+
+        FlushWord(words, current);
+        if (words.Count == 0)
+            return fieldName;
+
+        var label = string.Join(" ", words).ToLowerInvariant();
+        return char.ToUpperInvariant(label[0]) + label[1..];
+    }
+
+    private static void FlushWord(List<string> words, List<char> current)
+    {
+        if (current.Count == 0)
+            return;
+
+        words.Add(new string(current.ToArray()));
+        current.Clear();
     }
 
     private static string JoinNodeValues(JsonNode? node) => DescribeNodeForDetail(node);
