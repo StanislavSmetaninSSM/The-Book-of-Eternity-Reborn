@@ -33,6 +33,7 @@ public sealed partial class QteSceneService
     internal const int PatternMemoryMinInputTimeoutMs = 1000;
     internal const int PatternMemoryMaxInputTimeoutMs = 30000;
     internal const int PatternMemoryMinInputMsPerSymbol = 300;
+    private const int BalanceMeterMovementStep = 10;
     internal const int RhythmPulseMinPulseCount = 2;
     internal const int RhythmPulseMaxPulseCount = 16;
     internal const int RhythmPulseMinBeatIntervalMs = 300;
@@ -1530,10 +1531,11 @@ public sealed partial class QteSceneService
             $"{action.ActionId}:{action.Check.BaseDifficulty}:{action.Check.PrimaryCharacteristic}:{string.Join(",", alphabet)}");
 
         var revealStarted = DateTime.UtcNow;
-        var revealCanceled = await RunMiniGameLiveAsync(
+        var inputs = new List<ConsoleKeyInfo>();
+        return await RunMiniGameLiveAsync(
             "Память рун: фаза показа",
             "Запомните порядок знаков. Ввод начнётся после показа. Esc - безопасный отказ считается провалом.",
-            BuildPatternMemoryReveal(sequence, effective.RevealMs),
+            BuildPatternMemoryRevealFrame(sequence, effective.RevealMs),
             async renderer =>
         {
             while ((DateTime.UtcNow - revealStarted).TotalMilliseconds < effective.RevealMs)
@@ -1541,28 +1543,21 @@ public sealed partial class QteSceneService
                 while (TryReadImmediateKey(out var revealKey))
                 {
                     if (revealKey.Key == ConsoleKey.Escape)
-                        return true;
+                        return QteGrade.Fail;
                 }
 
                 var remainingMs = Math.Max(0, effective.RevealMs - (int)(DateTime.UtcNow - revealStarted).TotalMilliseconds);
-                renderer.Update(BuildPatternMemoryReveal(sequence, remainingMs));
+                renderer.Update(BuildPatternMemoryRevealFrame(sequence, remainingMs));
 
                 await Task.Delay(20);
             }
 
-            return false;
-        });
-        if (revealCanceled)
-            return QteGrade.Fail;
+            var inputStarted = DateTime.UtcNow;
+            renderer.Update(
+                "Память рун: фаза ввода",
+                "Повторите показанную последовательность по памяти теми же физическими клавишами. Esc - безопасный отказ считается провалом.",
+                BuildPatternMemoryInputLiveFrame(sequence.Count, inputs, effective.AllowedMistakes, effective.InputTimeoutMs));
 
-        var inputs = new List<ConsoleKeyInfo>();
-        var inputStarted = DateTime.UtcNow;
-        return await RunMiniGameLiveAsync(
-            "Память рун: фаза ввода",
-            "Повторите показанную последовательность теми же физическими клавишами. Esc - безопасный отказ считается провалом.",
-            BuildPatternMemoryInputProgress(sequence.Count, inputs, effective.AllowedMistakes, effective.InputTimeoutMs),
-            async renderer =>
-        {
             while ((DateTime.UtcNow - inputStarted).TotalMilliseconds < effective.InputTimeoutMs)
             {
                 while (TryReadImmediateKey(out var inputKey))
@@ -1581,7 +1576,7 @@ public sealed partial class QteSceneService
                 }
 
                 var remainingMs = Math.Max(0, effective.InputTimeoutMs - (int)(DateTime.UtcNow - inputStarted).TotalMilliseconds);
-                renderer.Update(BuildPatternMemoryInputProgress(sequence.Count, inputs, effective.AllowedMistakes, remainingMs));
+                renderer.Update(BuildPatternMemoryInputLiveFrame(sequence.Count, inputs, effective.AllowedMistakes, remainingMs));
 
                 await Task.Delay(20);
             }
@@ -3332,33 +3327,32 @@ public sealed partial class QteSceneService
     private async Task<QteGrade> RunTimingBarAsync(QteCheck check)
     {
         var statTier = await ResolveStatTierAsync(check.PrimaryCharacteristic);
-        var difficulty = Math.Clamp(check.BaseDifficulty, 1, 5);
-        var width = 32;
-        var successWidth = Math.Clamp(8 - difficulty + statTier, 3, 12);
-        var partialWidth = Math.Clamp(successWidth + 4, successWidth + 1, 16);
-        var tickMs = Math.Clamp(120 - (difficulty * 12) + (statTier * 8), 45, 170);
-        var successStart = (width - successWidth) / 2;
-        var partialStart = (width - partialWidth) / 2;
+        var requirement = ComputeTimingBarLiveRequirement(check.BaseDifficulty, statTier);
         var position = 0;
         var direction = 1;
+        var started = DateTime.UtcNow;
 
         return await RunMiniGameLiveAsync(
-            "Timing Bar",
-            $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, когда маркер будет в центральной зоне.",
-            BuildTimingBar(width, position, successStart, successWidth, partialStart, partialWidth),
+            "Полоса реакции",
+            $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, когда маркер будет в центральной зоне. Esc - безопасный отказ считается провалом.",
+            BuildTimingBarLiveFrame(requirement, position, requirement.TimeoutMs),
             async renderer =>
         {
             while (true)
             {
-                renderer.Update(BuildTimingBar(width, position, successStart, successWidth, partialStart, partialWidth));
+                var remainingMs = Math.Max(0, requirement.TimeoutMs - (int)(DateTime.UtcNow - started).TotalMilliseconds);
+                if (remainingMs <= 0)
+                    return QteGrade.Fail;
+
+                renderer.Update(BuildTimingBarLiveFrame(requirement, position, remainingMs));
 
                 if (TryReadImmediateKey(out var key))
                 {
                     if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.Spacebar))
                     {
-                        if (position >= successStart && position < successStart + successWidth)
+                        if (position >= requirement.SuccessStart && position < requirement.SuccessStart + requirement.SuccessWidth)
                             return QteGrade.Success;
-                        if (position >= partialStart && position < partialStart + partialWidth)
+                        if (position >= requirement.PartialStart && position < requirement.PartialStart + requirement.PartialWidth)
                             return QteGrade.Partial;
                         return QteGrade.Fail;
                     }
@@ -3367,21 +3361,54 @@ public sealed partial class QteSceneService
                         return QteGrade.Fail;
                 }
 
-                await Task.Delay(tickMs);
+                await Task.Delay(requirement.TickMs);
                 position += direction;
-                if (position >= width - 1 || position <= 0)
+                if (position >= requirement.Width - 1 || position <= 0)
                     direction *= -1;
             }
         });
     }
 
+    internal sealed record TimingBarLiveRequirement(
+        int Width,
+        int SuccessStart,
+        int SuccessWidth,
+        int PartialStart,
+        int PartialWidth,
+        int TickMs,
+        int TimeoutMs)
+    {
+        public int SuccessWindowMs => SuccessWidth * TickMs;
+    }
+
+    internal static TimingBarLiveRequirement ComputeTimingBarLiveRequirement(int baseDifficulty, int statTier)
+    {
+        var difficulty = Math.Clamp(baseDifficulty, 1, 5);
+        const int width = 32;
+        var successWidth = Math.Clamp(8 - difficulty + statTier, 3, 12);
+        var partialWidth = Math.Clamp(successWidth + 4, successWidth + 1, 16);
+        var tickMs = Math.Clamp(135 - (difficulty * 18) + (statTier * 8), 35, 170);
+        var passCount = Math.Clamp(5 - difficulty + Math.Max(0, statTier / 2), 1, 4);
+        var timeoutMs = Math.Clamp((width - 1) * tickMs * passCount, 1200, 6000);
+        var successStart = (width - successWidth) / 2;
+        var partialStart = (width - partialWidth) / 2;
+
+        return new TimingBarLiveRequirement(
+            width,
+            successStart,
+            successWidth,
+            partialStart,
+            partialWidth,
+            tickMs,
+            timeoutMs);
+    }
+
     private async Task<QteGrade> RunPromptChainAsync(QteCheck check)
     {
         var statTier = await ResolveStatTierAsync(check.PrimaryCharacteristic);
-        var difficulty = Math.Clamp(check.BaseDifficulty, 1, 5);
-        var steps = Math.Clamp(3 + difficulty - Math.Max(0, statTier - 1), 2, 7);
-        var allowedMistakes = statTier >= 2 ? 1 : 0;
-        var timeoutMs = Math.Clamp(1100 + (statTier * 150) - (difficulty * 120), 450, 1600);
+        var requirement = ComputePromptChainLiveRequirement(check.BaseDifficulty, statTier);
+        var steps = requirement.Steps;
+        var allowedMistakes = requirement.AllowedMistakes;
         var prompts = new[] { ConsoleKey.W, ConsoleKey.A, ConsoleKey.S, ConsoleKey.D, ConsoleKey.E, ConsoleKey.Spacebar };
         var random = new Random();
         var sequence = Enumerable.Range(0, steps)
@@ -3392,18 +3419,19 @@ public sealed partial class QteSceneService
         return await RunMiniGameLiveAsync(
             "Цепь знаков",
             "Нажимайте показанную физическую клавишу до истечения таймера. Esc - безопасный отказ считается провалом.",
-            BuildPromptChainProgress(sequence[0], currentStep: 1, steps, mistakes, allowedMistakes, timeoutMs),
+            BuildPromptChainProgress(sequence[0], currentStep: 1, steps, mistakes, allowedMistakes, requirement.FirstPromptTimeoutMs),
             async renderer =>
         {
             for (var i = 0; i < sequence.Length; i++)
             {
                 var prompt = sequence[i];
+                var promptTimeoutMs = requirement.PerPromptTimeoutMs + (i == 0 ? requirement.FirstPromptGraceMs : 0);
                 var started = DateTime.UtcNow;
                 ConsoleKeyInfo? pressed = null;
 
-                while ((DateTime.UtcNow - started).TotalMilliseconds < timeoutMs)
+                while ((DateTime.UtcNow - started).TotalMilliseconds < promptTimeoutMs)
                 {
-                    var remainingMs = Math.Max(0, timeoutMs - (int)(DateTime.UtcNow - started).TotalMilliseconds);
+                    var remainingMs = Math.Max(0, promptTimeoutMs - (int)(DateTime.UtcNow - started).TotalMilliseconds);
                     renderer.Update(BuildPromptChainProgress(prompt, i + 1, steps, mistakes, allowedMistakes, remainingMs));
 
                     if (TryReadImmediateKey(out var key))
@@ -3429,6 +3457,26 @@ public sealed partial class QteSceneService
         });
     }
 
+    internal sealed record PromptChainLiveRequirement(
+        int Steps,
+        int AllowedMistakes,
+        int PerPromptTimeoutMs,
+        int FirstPromptGraceMs)
+    {
+        public int FirstPromptTimeoutMs => PerPromptTimeoutMs + FirstPromptGraceMs;
+    }
+
+    internal static PromptChainLiveRequirement ComputePromptChainLiveRequirement(int baseDifficulty, int statTier)
+    {
+        var difficulty = Math.Clamp(baseDifficulty, 1, 5);
+        var steps = Math.Clamp(3 + difficulty - Math.Max(0, statTier - 1), 2, 7);
+        var allowedMistakes = statTier >= 2 ? 1 : 0;
+        var perPromptTimeoutMs = Math.Clamp(1350 + (statTier * 150) - (difficulty * 115), 750, 1800);
+        var firstPromptGraceMs = Math.Clamp(420 + (Math.Max(0, -statTier) * 60) - (difficulty * 20), 250, 600);
+
+        return new PromptChainLiveRequirement(steps, allowedMistakes, perPromptTimeoutMs, firstPromptGraceMs);
+    }
+
     private async Task<QteGrade> RunBalanceMeterAsync(QteCheck check)
     {
         var statTier = await ResolveStatTierAsync(check.PrimaryCharacteristic);
@@ -3441,9 +3489,9 @@ public sealed partial class QteSceneService
         var safeTicks = 0;
 
         return await RunMiniGameLiveAsync(
-            "Balance Meter",
-            $"Удерживайте индикатор в центральной зоне: {QteKeyInput.FormatPromptLabel(ConsoleKey.A)} / ← сдвигает на 10 влево, {QteKeyInput.FormatPromptLabel(ConsoleKey.D)} / → сдвигает на 10 вправо.",
-            BuildBalanceMeter(value, safeHalfWidth, currentTick: 1, ticks),
+            "Равновесие",
+            $"Удерживайте индикатор в центральной зоне: {FormatCompactPhysicalKeyLabel(ConsoleKey.A)} или ← ведёт влево, {FormatCompactPhysicalKeyLabel(ConsoleKey.D)} или → ведёт вправо.",
+            BuildBalanceMeter(value, safeHalfWidth, currentTick: 1, ticks, BalanceMeterMovementStep),
             async renderer =>
         {
             for (var i = 0; i < ticks; i++)
@@ -3451,9 +3499,9 @@ public sealed partial class QteSceneService
                 if (TryReadImmediateKey(out var key))
                 {
                     if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.A) || key.Key == ConsoleKey.LeftArrow)
-                        value = Math.Max(0, value - 10);
+                        value = Math.Max(0, value - BalanceMeterMovementStep);
                     else if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.D) || key.Key == ConsoleKey.RightArrow)
-                        value = Math.Min(100, value + 10);
+                        value = Math.Min(100, value + BalanceMeterMovementStep);
                     else if (key.Key == ConsoleKey.Escape)
                         return QteGrade.Fail;
                 }
@@ -3462,7 +3510,7 @@ public sealed partial class QteSceneService
                 if (Math.Abs(value - 50) <= safeHalfWidth)
                     safeTicks++;
 
-                renderer.Update(BuildBalanceMeter(value, safeHalfWidth, i + 1, ticks));
+                renderer.Update(BuildBalanceMeter(value, safeHalfWidth, i + 1, ticks, BalanceMeterMovementStep));
 
                 await Task.Delay(tickMs);
             }
@@ -3811,6 +3859,22 @@ public sealed partial class QteSceneService
         return string.Join("", parts);
     }
 
+    private static string BuildTimingBarLiveFrame(TimingBarLiveRequirement requirement, int position, int remainingMs)
+    {
+        var remainingSeconds = remainingMs / 1000d;
+        return string.Join("\n", new[]
+        {
+            BuildTimingBar(
+                requirement.Width,
+                position,
+                requirement.SuccessStart,
+                requirement.SuccessWidth,
+                requirement.PartialStart,
+                requirement.PartialWidth),
+            $"[dim]Окно успеха: {requirement.SuccessWindowMs} мс | Осталось: {remainingSeconds:0.0} с[/]"
+        });
+    }
+
     private static string BuildPromptChainProgress(
         ConsoleKey prompt,
         int currentStep,
@@ -3827,7 +3891,20 @@ public sealed partial class QteSceneService
         });
     }
 
-    private static string BuildBalanceMeter(int value, int safeHalfWidth, int currentTick, int totalTicks)
+    internal static string BuildBalanceMeterLiveFrame(
+        int value,
+        int safeHalfWidth,
+        int currentTick,
+        int totalTicks,
+        int movementStep) =>
+        BuildBalanceMeter(value, safeHalfWidth, currentTick, totalTicks, movementStep);
+
+    private static string BuildBalanceMeter(
+        int value,
+        int safeHalfWidth,
+        int currentTick,
+        int totalTicks,
+        int movementStep)
     {
         var parts = new List<string>();
         for (var i = 0; i <= 100; i += 5)
@@ -3847,7 +3924,8 @@ public sealed partial class QteSceneService
         {
             string.Join("", parts),
             $"[white]Позиция: {value}/100 | безопасная зона: {safeStart}-{safeEnd}[/]",
-            $"[dim]A/←: -10 | D/→: +10 | Такт {currentTick}/{totalTicks}[/]"
+            $"[dim]{FormatCompactPhysicalKeyLabel(ConsoleKey.A)} или ←: влево на {movementStep} | {FormatCompactPhysicalKeyLabel(ConsoleKey.D)} или →: вправо на {movementStep}[/]",
+            $"[dim]Шаг управления: {movementStep} | Такт {currentTick}/{totalTicks}[/]"
         });
     }
 
@@ -3883,6 +3961,9 @@ public sealed partial class QteSceneService
         });
     }
 
+    internal static string BuildPatternMemoryRevealFrame(IReadOnlyList<string> sequence, int remainingMs) =>
+        BuildPatternMemoryReveal(sequence, remainingMs);
+
     private static string BuildPatternMemoryReveal(IReadOnlyList<string> sequence, int remainingMs)
     {
         var labels = FormatPatternMemorySequence(sequence);
@@ -3893,6 +3974,13 @@ public sealed partial class QteSceneService
             $"[dim]Запомните {sequence.Count} знака. До ввода: {remainingSeconds:0.0} с[/]"
         });
     }
+
+    internal static string BuildPatternMemoryInputLiveFrame(
+        int sequenceLength,
+        IReadOnlyList<ConsoleKeyInfo> inputs,
+        int allowedMistakes,
+        int remainingMs) =>
+        BuildPatternMemoryInputProgress(sequenceLength, inputs, allowedMistakes, remainingMs);
 
     private static string BuildPatternMemoryInputProgress(
         int sequenceLength,
@@ -4097,6 +4185,9 @@ public sealed partial class QteSceneService
 
     private static string FormatMashInputKeyLabels(IEnumerable<string> acceptedTokens) =>
         string.Join(" или ", acceptedTokens.Select(QteKeyInput.FormatPromptLabel));
+
+    private static string FormatCompactPhysicalKeyLabel(ConsoleKey key) =>
+        QteKeyInput.FormatPromptLabel(key).Replace(" / ", "/", StringComparison.Ordinal);
 
     private bool TryReadImmediateKey(out ConsoleKeyInfo key)
     {

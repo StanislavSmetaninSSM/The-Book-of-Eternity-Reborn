@@ -1,8 +1,8 @@
 # Feature Specification: Console QTE Live Playability
 
-**Feature Branch**: `work/1081-qte-live-pacing`  
-**Created**: 2026-06-18  
-**Status**: Draft for autonomous implementation  
+**Feature Branch**: `work/1081-qte-live-pacing`
+**Created**: 2026-06-18
+**Status**: Draft for autonomous implementation
 **Input**: GitHub issue [#1081](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1081)
 
 ## Source Issues & Scope

@@ -46,10 +46,34 @@ public sealed class QteSceneRenderingSourceGuardTests
     {
         var source = ReadQteSceneServiceSource();
         var methodSource = ExtractMethodSource(source, "private async Task<QteGrade> RunTimingBarAsync(");
+        var requirementSource = ExtractMethodSource(source, "internal static TimingBarLiveRequirement ComputeTimingBarLiveRequirement(");
 
-        Assert.Contains("- (difficulty *", methodSource, StringComparison.Ordinal);
-        Assert.Contains("+ (statTier *", methodSource, StringComparison.Ordinal);
-        Assert.DoesNotContain("+ (difficulty * 10)", methodSource, StringComparison.Ordinal);
+        Assert.Contains("ComputeTimingBarLiveRequirement", methodSource, StringComparison.Ordinal);
+        Assert.Contains("TimeoutMs", methodSource, StringComparison.Ordinal);
+        Assert.Contains("- (difficulty *", requirementSource, StringComparison.Ordinal);
+        Assert.Contains("+ (statTier *", requirementSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("+ (difficulty * 10)", requirementSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void PromptChainStartup_MustUseReadableFirstPromptWindow()
+    {
+        var source = ReadQteSceneServiceSource();
+        var methodSource = ExtractMethodSource(source, "private async Task<QteGrade> RunPromptChainAsync(");
+
+        Assert.Contains("ComputePromptChainLiveRequirement", methodSource, StringComparison.Ordinal);
+        Assert.Contains("FirstPromptGraceMs", methodSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void PatternMemory_MustReplaceRevealWithInputInSameLiveDisplay()
+    {
+        var source = ReadQteSceneServiceSource();
+        var methodSource = ExtractMethodSource(source, "private async Task<QteGrade> RunPatternMemoryAsync(");
+
+        Assert.Equal(1, CountOccurrences(methodSource, "RunMiniGameLiveAsync"));
+        Assert.Contains("renderer.Update(", methodSource, StringComparison.Ordinal);
+        Assert.Contains("Память рун: фаза ввода", methodSource, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -71,8 +95,22 @@ public sealed class QteSceneRenderingSourceGuardTests
 
         Assert.Contains("Позиция:", methodSource, StringComparison.Ordinal);
         Assert.Contains("безопасная зона", methodSource, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("A/←: -10", methodSource, StringComparison.Ordinal);
-        Assert.Contains("D/→: +10", methodSource, StringComparison.Ordinal);
+        Assert.Contains("влево на", methodSource, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("вправо на", methodSource, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Шаг управления", methodSource, StringComparison.Ordinal);
+    }
+
+    private static int CountOccurrences(string source, string value)
+    {
+        var count = 0;
+        var index = 0;
+        while ((index = source.IndexOf(value, index, StringComparison.Ordinal)) >= 0)
+        {
+            count++;
+            index += value.Length;
+        }
+
+        return count;
     }
 
     private static string ExtractMethodSource(string source, string signature)
