@@ -2,8 +2,44 @@
 
 ## Prerequisites
 
-- Use the real local preview session at `E:\Games\The Book of Eternity Reborn\BookOfEternityClient\game_session`.
+- For #1092 local preview, use the real local preview session at `E:\Games\The Book of Eternity Reborn\BookOfEternityClient\game_session`.
+- For #1095 clean-checkout QA, use the tracked reusable save source at `FileSystemExample\game_session\saves\manual_saves\mortal_world_command_display_fixture.zip`.
 - Keep the repository worktree clean enough to distinguish tracked Spec Kit/test changes from ignored local fixture changes.
+
+## Reusable #1095 Save
+
+Tracked source archive:
+
+```text
+FileSystemExample/game_session/saves/manual_saves/mortal_world_command_display_fixture.zip
+```
+
+Sidecar metadata:
+
+```text
+FileSystemExample/game_session/saves/manual_saves/mortal_world_command_display_fixture_metadata.json
+```
+
+Internal save name:
+
+```text
+Mortal World Command Display Fixture (#1095)
+```
+
+To make the save visible to the console or browser main-menu load flow from a clean checkout, copy the tracked source archive into the live session's normal manual-save directory:
+
+```powershell
+$source = "FileSystemExample\game_session\saves\manual_saves\mortal_world_command_display_fixture.zip"
+$targetDir = "BookOfEternityClient\game_session\saves\manual_saves"
+New-Item -ItemType Directory -Force -Path $targetDir | Out-Null
+Copy-Item -LiteralPath $source -Destination (Join-Path $targetDir "mortal_world_command_display_fixture.zip") -Force
+```
+
+Then start the console or browser client and load `Mortal World Command Display Fixture (#1095)` from manual saves.
+
+The copied live-session archive is disposable. `SaveLoadService.LoadGameAsync()` replaces the active `game_session` with the archive contents, so repeated manual QA should recopy from the tracked `FileSystemExample/.../mortal_world_command_display_fixture.zip` source before each main-menu load. Automated tests load the tracked archive directly into disposable roots and verify the source archive hash remains unchanged.
+
+Expected visible data includes the #1092 Mortal World command fixture surfaces: inventory/equipment and readable books, NPCs and NPC trade/talk prompts, quests, map/location/weather/world news, rival threads, guardian corrections, factions/directives, skills/stats/distribution, combat, storage/transport item movement, interactions, craft prompts, ink-feather fate previews, and practical universal Mortal previews such as `/статус`, `/душа`, `/хроника`, `/кодекс`, `/галерея`, `/моды`, and `/валидация`.
 
 ## Command Inventory
 
@@ -80,6 +116,12 @@ Also smoke-test these universal Mortal World preview commands:
 ```
 
 ## Automated Verification
+
+Reusable #1095 save load, validation, browser command smoke, and console renderer smoke:
+
+```powershell
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~MortalCommandDisplaySaveTests" --logger "console;verbosity=minimal"
+```
 
 Local fixture smoke, including JSON/JSONL syntax, `ValidationService`, Mortal World command aliases, practical universal preview commands, and console renderer markup safety:
 

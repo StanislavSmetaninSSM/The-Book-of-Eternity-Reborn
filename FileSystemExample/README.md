@@ -62,7 +62,9 @@ game_session/
 ├── saves/                    # Save/load system
 │   ├── autosaves/            # Automatic saves
 │   ├── manual_saves/         # Player manual saves
-│   │   └── first_character_save_metadata.json (DEMO)
+│   │   ├── first_character_save_metadata.json (DEMO)
+│   │   ├── mortal_world_command_display_fixture.zip (#1095 REUSABLE MORTAL COMMAND DISPLAY SAVE)
+│   │   └── mortal_world_command_display_fixture_metadata.json (#1095 SAVE METADATA)
 │   └── checkpoint_saves/     # Life transition saves
 ├── output/                   # Client communication
 │   ├── narrative_response.json (DEMO)
@@ -137,6 +139,8 @@ game_session/
 
 ### **Save System Examples:**
 - `saves/manual_saves/first_character_save_metadata.json` - Save file metadata
+- `saves/manual_saves/mortal_world_command_display_fixture.zip` - Reusable named Mortal World command-display save for #1095 console/browser QA
+- `saves/manual_saves/mortal_world_command_display_fixture_metadata.json` - Sidecar metadata for the reusable #1095 save
 
 ## 🎯 Benefits
 

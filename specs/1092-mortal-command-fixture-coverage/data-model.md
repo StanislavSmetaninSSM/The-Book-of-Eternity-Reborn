@@ -17,6 +17,15 @@
 - Purpose: Manual preview state for console and browser clients.
 - Required property: Valid enough that command screens render without blocking errors or malformed markup.
 
+## Reusable Mortal Command Display Save
+
+- Source archive: `FileSystemExample/game_session/saves/manual_saves/mortal_world_command_display_fixture.zip`
+- Sidecar metadata: `FileSystemExample/game_session/saves/manual_saves/mortal_world_command_display_fixture_metadata.json`
+- Internal save name: `Mortal World Command Display Fixture (#1095)`.
+- Purpose: Tracked save/load-compatible package of the rich #1092 Mortal World command-display fixture.
+- Load behavior: The tracked archive is the durable source. For manual console/browser QA, copy it into `BookOfEternityClient/game_session/saves/manual_saves/` and load it through the normal save list; recopy from the tracked source before repeated manual loads because the active `game_session` is replaced by the loader.
+- Required property: Loading into a disposable root with clean-checkout tracked dependencies produces a Mortal World session that has zero blocking validation issues and renders the covered command set in browser and console.
+
 ## Fixture Data Surface
 
 - A JSON or content file under the session root.

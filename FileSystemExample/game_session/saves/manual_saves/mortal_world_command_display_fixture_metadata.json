@@ -1,0 +1,38 @@
+{
+  "saveVersion": "1.0",
+  "gameVersion": "1.0.0",
+  "saveName": "Mortal World Command Display Fixture (#1095)",
+  "archiveFile": "mortal_world_command_display_fixture.zip",
+  "sourceIssues": [
+    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1092",
+    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1095"
+  ],
+  "createdFor": "Reusable Mortal World console/browser command-display QA",
+  "timestamp": "2026-06-18T00:00:00Z",
+  "turnNumber": 42,
+  "currentRealm": "Mortal World",
+  "currentLocation": "Покои виконта де Вальмонта",
+  "currentWorld": "Этерния",
+  "incarnationNumber": 2,
+  "characterName": "Пепельная Искра",
+  "inkFeathers": 80,
+  "coverage": {
+    "mortalWorldAliases": "all ExplorerCommandGroup.MortalWorld aliases covered by specs/1092-mortal-command-fixture-coverage/contracts/mortal-command-fixture-matrix.md",
+    "practicalUniversalCommands": [
+      "/help",
+      "/статус",
+      "/душа",
+      "/достижения",
+      "/хроника",
+      "/story",
+      "/поведение",
+      "/жизни",
+      "/перья",
+      "/кодекс",
+      "/правила_мира",
+      "/галерея",
+      "/моды",
+      "/валидация"
+    ]
+  }
+}
