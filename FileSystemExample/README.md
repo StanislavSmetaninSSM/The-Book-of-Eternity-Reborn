@@ -64,7 +64,9 @@ game_session/
 │   ├── manual_saves/         # Player manual saves
 │   │   ├── first_character_save_metadata.json (DEMO)
 │   │   ├── mortal_world_command_display_fixture.zip (#1095 REUSABLE MORTAL COMMAND DISPLAY SAVE)
-│   │   └── mortal_world_command_display_fixture_metadata.json (#1095 SAVE METADATA)
+│   │   ├── mortal_world_command_display_fixture_metadata.json (#1095 SAVE METADATA)
+│   │   ├── chaos_sea_command_display_fixture.zip (#1096 REUSABLE CHAOS SEA COMMAND DISPLAY SAVE)
+│   │   └── chaos_sea_command_display_fixture_metadata.json (#1096 SAVE METADATA)
 │   └── checkpoint_saves/     # Life transition saves
 ├── output/                   # Client communication
 │   ├── narrative_response.json (DEMO)
@@ -141,6 +143,10 @@ game_session/
 - `saves/manual_saves/first_character_save_metadata.json` - Save file metadata
 - `saves/manual_saves/mortal_world_command_display_fixture.zip` - Reusable named Mortal World command-display save for #1095 console/browser QA
 - `saves/manual_saves/mortal_world_command_display_fixture_metadata.json` - Sidecar metadata for the reusable #1095 save
+- `saves/manual_saves/chaos_sea_command_display_fixture.zip` - Reusable named Chaos Sea command-display save for #1096 console/browser QA
+- `saves/manual_saves/chaos_sea_command_display_fixture_metadata.json` - Sidecar metadata for the reusable #1096 save
+
+The #1096 Chaos Sea save is an at-rest manual save. It uses journal-backed guardian project display data and intentionally avoids live pending-turn snapshots or active project tracker authority, so `/archive_project_fuel` can preview the project context while showing a clear unavailable reason until a validated active project exists.
 
 ## 🎯 Benefits
 

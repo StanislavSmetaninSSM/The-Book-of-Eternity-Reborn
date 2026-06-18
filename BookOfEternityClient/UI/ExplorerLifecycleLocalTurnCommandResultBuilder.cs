@@ -2789,7 +2789,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
 
         var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         if (context.IsBlocked)
-            return ArchiveActionBlockedResult(command, localTurn.Panel, context);
+            return ArchiveActionUnavailableResult(command, localTurn.Panel, context);
 
         var blocks = BuildArchiveActionBlocks(
             localTurn.Panel,
@@ -2840,6 +2840,18 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         Result(
             command,
             CommandExecutionState.Blocked,
+            [
+                localTurnPanel,
+                Message(UiNotificationSeverity.Warning, context.BlockerTitle, context.BlockerMessage)
+            ]);
+
+    private static ExplorerCommandResult ArchiveActionUnavailableResult(
+        string command,
+        UiPanelBlock localTurnPanel,
+        BrowserAfterlifeArchiveActionContext context) =>
+        Result(
+            command,
+            CommandExecutionState.Completed,
             [
                 localTurnPanel,
                 Message(UiNotificationSeverity.Warning, context.BlockerTitle, context.BlockerMessage)
@@ -2989,10 +3001,47 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         BrowserAfterlifeArchiveActionContext context,
         string selector)
     {
-        if (context.IsBlocked)
-            return DetailUnavailable(command, "Подпитка проекта");
-
         var (guardianSelector, projectSelector) = SplitArchiveProjectSelector(selector);
+        if (context.IsBlocked)
+        {
+            if (string.IsNullOrWhiteSpace(guardianSelector) || string.IsNullOrWhiteSpace(projectSelector))
+                return DetailUnavailable(command, "Подпитка проекта");
+
+            var blockedProject = await ReadArchiveProjectDetailAsync(fs, guardianSelector, projectSelector);
+            if (blockedProject == null)
+                return DetailUnavailable(command, "Подпитка проекта");
+
+            var blockedProjectName = FirstNonEmpty(GetString(blockedProject, "projectName"), projectSelector);
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    new UiPanelBlock
+                    {
+                        Title = $"Подпитка проекта: {blockedProjectName}",
+                        Blocks =
+                        [
+                            new UiKeyValueGridBlock
+                            {
+                                Items =
+                                [
+                                    KeyValue("Хранитель", guardianSelector),
+                                    KeyValue("Проект", blockedProjectName),
+                                    KeyValue("Тип", FirstNonEmpty(GetString(blockedProject, "projectType"), "не указан")),
+                                    KeyValue("Ранг", FirstNonEmpty(GetString(blockedProject, "projectTier"), "не указан")),
+                                    KeyValue("Режим", FirstNonEmpty(GetString(blockedProject, "projectMode"), "не указан"))
+                                ]
+                            },
+                            new UiTextBlock
+                            {
+                                Text = context.BlockerMessage,
+                                Tone = UiTone.Warning
+                            }
+                        ]
+                    }
+                ]);
+        }
+
         var guardian = ResolveArchiveGuardian(context, guardianSelector);
         if (guardian == null ||
             !guardian.FuelAvailable ||
@@ -3072,22 +3121,60 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         string projectId)
     {
         var projectRoot = await ReadJson(fs, GuardianProjectState.TrackerPath);
-        if (projectRoot.Node is not JsonObject root || root["activeProjects"] is not JsonArray activeProjects)
-            return null;
+        if (projectRoot.Node is JsonObject root)
+        {
+            foreach (var entry in EnumerateArchiveProjectDetailCandidates(root))
+            {
+                if (!string.Equals(GetString(entry, "guardianId"), guardianId, StringComparison.OrdinalIgnoreCase) ||
+                    entry["project"] is not JsonObject project ||
+                    !string.Equals(GetString(project, "projectId"), projectId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
 
-        foreach (var entry in activeProjects.OfType<JsonObject>())
+                return project;
+            }
+        }
+
+        var journalRoot = await ReadJson(fs, GuardianProjectState.JournalPath);
+        if (journalRoot.Node is not JsonObject journal ||
+            journal["entries"] is not JsonArray entries)
+        {
+            return null;
+        }
+
+        foreach (var entry in entries.OfType<JsonObject>())
         {
             if (!string.Equals(GetString(entry, "guardianId"), guardianId, StringComparison.OrdinalIgnoreCase) ||
-                entry["project"] is not JsonObject project ||
-                !string.Equals(GetString(project, "projectId"), projectId, StringComparison.OrdinalIgnoreCase))
+                !string.Equals(GetString(entry, "projectId"), projectId, StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
 
-            return project;
+            return new JsonObject
+            {
+                ["projectId"] = projectId,
+                ["projectName"] = FirstNonEmpty(GetString(entry, "title"), projectId),
+                ["projectType"] = FirstNonEmpty(GetString(entry, "eventType"), "journal"),
+                ["projectTier"] = FirstNonEmpty(GetString(entry, "visibility"), "visible"),
+                ["projectMode"] = "display",
+                ["summary"] = GetString(entry, "summary")
+            };
         }
 
         return null;
+    }
+
+    private static IEnumerable<JsonObject> EnumerateArchiveProjectDetailCandidates(JsonObject root)
+    {
+        foreach (var propertyName in new[] { "activeProjects", "projects", "completedProjects" })
+        {
+            if (root[propertyName] is not JsonArray projects)
+                continue;
+
+            foreach (var entry in projects.OfType<JsonObject>())
+                yield return entry;
+        }
     }
 
     private static async Task<ExplorerCommandResult> BuildAbodeOfferingAsync(

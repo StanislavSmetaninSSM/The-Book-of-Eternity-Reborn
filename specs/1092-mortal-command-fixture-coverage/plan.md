@@ -6,7 +6,7 @@
 
 ## Summary
 
-Inventory every Mortal World command from the command catalog, map each command to the state files its result builders read, repair the user's local ignored `game_session` fixture so the command surfaces are reviewable, document repeatable verification steps, and for #1095 package the rich Mortal World fixture as a tracked reusable save/load-compatible artifact that can be restored from a clean checkout.
+Inventory every Mortal World command from the command catalog, map each command to the state files its result builders read, repair the user's local ignored `game_session` fixture so the command surfaces are reviewable, document repeatable verification steps, package the rich Mortal World fixture as a tracked reusable save/load-compatible artifact for #1095, and extend the reusable-save pattern to a dedicated Chaos Sea afterlife command-display save for #1096.
 
 ## Technical Context
 
@@ -14,7 +14,7 @@ Inventory every Mortal World command from the command catalog, map each command 
 
 **Primary Dependencies**: Existing command protocol, `ExplorerMortalWorldCommandResultBuilder`, `ExplorerLifecycleLocalTurnCommandResultBuilder`, `ExplorerWebCommandService`, `ValidationService`
 
-**Storage**: File-backed JSON state under `BookOfEternityClient/game_session`; for #1095, a tracked reusable save/package path compatible with existing save/load code and tests
+**Storage**: File-backed JSON state under `BookOfEternityClient/game_session`; for #1095 and #1096, tracked reusable save/package paths compatible with existing save/load code and tests
 
 **Testing**: xUnit through `dotnet test`, manual console/browser command smoke checks
 
@@ -24,23 +24,27 @@ Inventory every Mortal World command from the command catalog, map each command 
 
 **Performance Goals**: Command smoke checks should complete quickly enough for manual fixture validation; no runtime performance change is expected.
 
-**Constraints**: The original live fixture folder is ignored by git, so durable repo output for #1092 was matrix/spec/test coverage; #1095 must now add a tracked reusable save/package without committing a live mutable session root.
+**Constraints**: The original live fixture folder is ignored by git, so durable repo output for #1092 was matrix/spec/test coverage; #1095 and #1096 add tracked reusable save/packages without committing a live mutable session root. #1096 must stay focused on Chaos Sea and avoid becoming the Shining Abode fixture owned by #1097.
 
-**Scale/Scope**: 34 cataloged `ExplorerCommandGroup.MortalWorld` commands plus practical universal Mortal World preview commands.
+**Scale/Scope**: 34 cataloged `ExplorerCommandGroup.MortalWorld` commands plus practical universal Mortal World preview commands; for #1096, every command available in the loaded Chaos Sea afterlife save plus relevant universal afterlife/status commands.
 
-- **Source Issue(s)**: #1092 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1092; #1095 reusable save continuation - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1095
+- **Source Issue(s)**: #1092 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1092; #1095 reusable Mortal World save continuation - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1095; #1096 reusable Chaos Sea save continuation - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1096
 
 **Contract Scope**: player-facing, runtime-state fixture/save, validation, console, browser, docs
+
+**#1096 Implementation Note**: The Chaos Sea save is an at-rest manual save. It uses validated Chaos Sea/afterlife state plus `guardian_project_journal.json` for project display, while leaving canonical `guardian_projects.json` free of active tracker state because manual save/load strips the validated pre-turn tracker baseline required for `activeProjects`. No GM prompt, runtime afterlife contract, or dedicated Shining Abode #1097 fixture scope changes are planned.
 
 **Verification Commands**:
 
 - `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~MortalCommandDisplaySaveTests" --logger "console;verbosity=minimal"`
+- `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~ChaosSeaCommandDisplaySaveTests" --logger "console;verbosity=minimal"`
+- `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~FileSystemExampleFixtureIntegrityTests|FullyQualifiedName~FileSystemExampleAfterlifeStateExamplesTests|FullyQualifiedName~ExplorerWebCommandServiceTests|FullyQualifiedName~ExplorerModeCommandTests|FullyQualifiedName~Validation" --logger "console;verbosity=minimal"`
 - `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Mortal|BrowserMortalWorld|Inventory|Trade|Storage|ExplorerWebCommandService"`
 - Manual command smoke list in `quickstart.md`
 
 ## Constitution Check
 
-- **GitHub traceability**: Pass. Source issue #1092 is linked in spec, plan, and tasks.
+- **GitHub traceability**: Pass. Source issues #1092, #1095, and #1096 are linked in spec, plan, tasks, and the relevant reusable save metadata/checklist artifacts.
 - **Spec Kit fit**: Pass. This is cross-command fixture coverage with console/browser preview implications.
 - **Player-facing integrity**: Pass. Fixture data must produce Russian player-facing command output, not raw-only debug views.
 - **Contract/state authority**: Pass. No contract changes are planned; gaps that require command/validator behavior changes become follow-up issues.
@@ -60,7 +64,8 @@ specs/1092-mortal-command-fixture-coverage/
 ├── data-model.md
 ├── quickstart.md
 ├── contracts/
-│   └── mortal-command-fixture-matrix.md
+│   ├── mortal-command-fixture-matrix.md
+│   └── chaos-sea-command-fixture-checklist.md
 └── tasks.md
 ```
 
@@ -72,11 +77,13 @@ BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs
 BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs
 BookOfEternityClient/WebUi/ExplorerWebCommandService.cs
 BookOfEternityClient/game_session/        # ignored local fixture
-<tracked save/package path>              # #1095 reusable Mortal World display save, exact path discovered from save/load code
+FileSystemExample/game_session/saves/manual_saves/mortal_world_command_display_fixture.zip
+FileSystemExample/game_session/saves/manual_saves/chaos_sea_command_display_fixture.zip
+FileSystemExample/game_session/saves/manual_saves/chaos_sea_command_display_fixture_metadata.json
 BookOfEternityClient.Tests/               # focused tests if a durable helper is added
 ```
 
-**Structure Decision**: Keep #1092 fixture coverage/matrix in this Spec Kit directory; for #1095, discover the existing save/load-compatible tracked location and package the rich Mortal World fixture there rather than relying on ignored `BookOfEternityClient/game_session` as the only source.
+**Structure Decision**: Keep #1092 fixture coverage/matrix in this Spec Kit directory; for #1095 and #1096, use the existing save/load-compatible tracked manual-save location and package dedicated command-display fixtures there rather than relying on ignored `BookOfEternityClient/game_session` as the only source.
 
 ## Complexity Tracking
 

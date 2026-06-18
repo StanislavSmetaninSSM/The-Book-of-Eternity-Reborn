@@ -779,6 +779,7 @@ public static class ExplorerChaosSeaCommandResultBuilder
             .Where(static item => !string.IsNullOrWhiteSpace(item.Id))
             .ToDictionary(static item => item.Id, static item => item.Name, StringComparer.OrdinalIgnoreCase);
         var journal = EnumerateProjectJournalEntries(trackerRoot, journalRoot).ToList();
+        var emittedSelectors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var item in ProjectArrays(trackerRoot).SelectMany(static array => array.OfType<JsonObject>()))
         {
@@ -792,6 +793,9 @@ public static class ExplorerChaosSeaCommandResultBuilder
                 continue;
 
             var selector = string.IsNullOrWhiteSpace(guardianId) ? projectId : $"{guardianId}::{projectId}";
+            if (!emittedSelectors.Add(selector))
+                continue;
+
             var relatedJournal = journal
                 .Where(entry =>
                     (string.IsNullOrWhiteSpace(guardianId) || string.Equals(entry.GuardianId, guardianId, StringComparison.OrdinalIgnoreCase)) &&
@@ -814,6 +818,43 @@ public static class ExplorerChaosSeaCommandResultBuilder
                 FirstNumberOrString(project, "pressure"),
                 FirstNumberOrString(project, "stability"),
                 ReadStringArray(project["systemEffectSummary"]),
+                relatedJournal);
+        }
+
+        foreach (var entry in journal)
+        {
+            if (string.IsNullOrWhiteSpace(entry.ProjectId))
+                continue;
+
+            var selector = string.IsNullOrWhiteSpace(entry.GuardianId)
+                ? entry.ProjectId
+                : $"{entry.GuardianId}::{entry.ProjectId}";
+            if (!emittedSelectors.Add(selector))
+                continue;
+
+            var relatedJournal = journal
+                .Where(other =>
+                    string.Equals(other.ProjectId, entry.ProjectId, StringComparison.OrdinalIgnoreCase) &&
+                    (string.IsNullOrWhiteSpace(entry.GuardianId) ||
+                     string.Equals(other.GuardianId, entry.GuardianId, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+            yield return new GuardianProjectSnapshot(
+                selector,
+                entry.GuardianId,
+                guardianNames.TryGetValue(entry.GuardianId, out var guardianName) ? guardianName : entry.GuardianId,
+                entry.ProjectId,
+                EmptyFallback(entry.Title),
+                "journal",
+                EmptyFallback(entry.Visibility),
+                EmptyFallback(entry.EventType),
+                "journaled",
+                EmptyFallback(entry.Summary),
+                "",
+                "",
+                "",
+                "",
+                [],
                 relatedJournal);
         }
     }
@@ -843,6 +884,8 @@ public static class ExplorerChaosSeaCommandResultBuilder
                     GetString(entry, "guardianId", "ownerGuardianId"),
                     GetString(entry, "projectId"),
                     FirstNumberOrString(entry, "turn", "turnNumber"),
+                    GetString(entry, "eventType"),
+                    GetString(entry, "visibility"),
                     EmptyFallback(GetString(entry, "title", "entryId")),
                     EmptyFallback(GetString(entry, "summary", "description")));
             }
@@ -1446,6 +1489,8 @@ public static class ExplorerChaosSeaCommandResultBuilder
         string GuardianId,
         string ProjectId,
         string Turn,
+        string EventType,
+        string Visibility,
         string Title,
         string Summary);
 

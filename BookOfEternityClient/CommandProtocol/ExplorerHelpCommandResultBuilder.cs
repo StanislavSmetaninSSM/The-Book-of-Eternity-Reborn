@@ -224,7 +224,6 @@ internal static class ExplorerHelpCommandResultBuilder
         Add(table, "/math", "/математик", "Локальный Математик: вычислить формулу без изменения состояния, например /math 2 + 3 * 5 или /math base * tier base=10 tier=3");
         Add(table, "/options", "/опции", "Игровое меню");
         Add(table, "/gm", "/гм", "Мысли Мастера Игры");
-        Add(table, "/debug", "/отладка", "Отладка");
         Add(table, "/help", "/помощь", "Эта справка");
         Add(table, "/refresh", "/обновить", "Перечитать все данные и перерисовать экран");
     }
