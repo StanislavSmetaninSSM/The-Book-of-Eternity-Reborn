@@ -262,8 +262,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
-        var summaryTable = Assert.Single(result.Blocks.OfType<UiTableBlock>());
-        Assert.Equal("Новости мира", summaryTable.Title);
+        Assert.Contains(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Новости мира");
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Новости мира", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Мировые события", text, StringComparison.OrdinalIgnoreCase);
@@ -272,19 +271,26 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Проекты фракций", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Флаги мира", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Прогресс мира", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Беспорядки у Северных ворот", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стража закрыла торговую площадь", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Праздник стих после тревоги", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Музыканты играют тише после ночного письма", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Дорога к Серебряному броду", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("На тракте снова появились торговцы", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Карманники у ворот", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Мира Ключница", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Ночные патрули", text, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Беспорядки у Северных ворот", text, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Праздник стих после тревоги", text, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Дорога к Серебряному броду", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Полная запись", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("riots_at_gate", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("festival_quiet", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("road_silverford", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/world", text, StringComparison.OrdinalIgnoreCase);
 
         var eventAction = Assert.Single(result.Actions, static action => action.Id == "world-news-event-riots_at_gate");
         Assert.Equal("/новости_мира событие riots_at_gate", eventAction.Command);
         Assert.Contains("Открыть событие", eventAction.Label, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Беспорядки у Северных ворот", eventAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стража закрыла торговую площадь", eventAction.Label, StringComparison.OrdinalIgnoreCase);
         Assert.Equal(UiActionStyle.Secondary, eventAction.Style);
         Assert.False(eventAction.RequiresConfirmation);
 
@@ -292,6 +298,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal("/новости_мира флаг festival_quiet", flagAction.Command);
         Assert.Contains("Осмотреть флаг", flagAction.Label, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Праздник стих после тревоги", flagAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Музыканты играют тише после ночного письма", flagAction.Label, StringComparison.OrdinalIgnoreCase);
         Assert.Equal(UiActionStyle.Secondary, flagAction.Style);
         Assert.False(flagAction.RequiresConfirmation);
 
@@ -299,6 +306,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal("/новости_мира прогресс road_silverford", progressionAction.Command);
         Assert.Contains("Открыть прогресс", progressionAction.Label, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Дорога к Серебряному броду", progressionAction.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("На тракте снова появились торговцы", progressionAction.Label, StringComparison.OrdinalIgnoreCase);
         Assert.Equal(UiActionStyle.Secondary, progressionAction.Style);
         Assert.False(progressionAction.RequiresConfirmation);
     }
@@ -325,7 +333,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("проверить печать на письме", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Ставки", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("рынок может вспыхнуть", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Свидетель", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Старый писарь", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("видел курьера у северных ворот", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("eventId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("npcId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("worldEventsLog", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/world", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Source path", text, StringComparison.OrdinalIgnoreCase);
@@ -4195,6 +4207,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "stakes": {
                 "danger": "рынок может вспыхнуть",
                 "deadline": "до полуночи"
+              },
+              "witnessProfile": {
+                "name": "Старый писарь",
+                "testimony": "видел курьера у северных ворот",
+                "npcId": "npc_old_scribe"
               },
               "sourcePath": "game_state/world/world_events.json",
               "statePath": "game_state/world",
