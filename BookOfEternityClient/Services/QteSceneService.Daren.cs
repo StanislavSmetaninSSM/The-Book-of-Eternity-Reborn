@@ -76,8 +76,6 @@ public sealed partial class QteSceneService
             _ => action.Routing.Fail
         };
         var resultText = ResolveResultText(action, grade);
-        if (grade == QteGrade.Fail)
-            attempt.HadUnsafeRouteFailure = true;
         ApplyScoreDeltas(active.ScoreState, action, grade);
 
         QteActionResolution resolution;
@@ -85,7 +83,7 @@ public sealed partial class QteSceneService
         {
             var normalizedScore = ResolveDarenNormalizedScore(active.ScoreState);
             var ending = DarenQteRewardProfileService.ResolveEnding(
-                reachedHideout: !attempt.HadUnsafeRouteFailure,
+                reachedHideout: true,
                 normalizedScore);
             var scoreSummary = BuildDarenFinalScoreSummary(offer.ScoreModel, active.ScoreState, ending);
             var profileResult = await new DarenQteRewardProfileService(_fs)
@@ -95,7 +93,7 @@ public sealed partial class QteSceneService
                 : ending.RewardExplanation;
             var rewardProfileSummary = profileResult.RewardProfileSummary;
             var summary = BuildDarenCompletionSummary(ending, rewardMessage, rewardProfileSummary, scoreSummary);
-            var response = BuildDarenCompletionResponse(ending, rewardMessage, rewardProfileSummary);
+            var response = BuildDarenCompletionResponse(ending, rewardProfileSummary);
 
             resolution = new QteActionResolution
             {
@@ -1363,33 +1361,61 @@ public sealed partial class QteSceneService
     {
         var rank = ending.GrantsReward ? scoreSummary?.Rank?.Label : ending.DisplayName;
         var rankText = string.IsNullOrWhiteSpace(rank) ? ending.DisplayName : rank;
-        return string.Join(" ", new[]
+        var parts = new List<string>
         {
-            $"{ending.DisplayName}: {ending.Summary}",
-            ending.Epilogue,
-            $"Счёт вылазки {ending.NormalizedScore}/100.",
+            $"Итог: {ending.DisplayName}. {ending.Summary}",
+            $"Счёт: {ending.NormalizedScore}/100.",
             $"Ранг: {rankText}.",
-            ending.RewardExplanation,
-            string.Equals(rewardMessage, ending.RewardExplanation, StringComparison.Ordinal) ? "" : rewardMessage,
-            rewardProfileSummary
-        }.Where(static part => !string.IsNullOrWhiteSpace(part)));
+            BuildDarenRewardLine(ending),
+            "",
+            ending.Epilogue,
+            "",
+            $"Пояснение награды: {ending.RewardExplanation}",
+        };
+        if (!string.Equals(rewardMessage, ending.RewardExplanation, StringComparison.Ordinal))
+            parts.Add($"Запись профиля: {rewardMessage}");
+        if (!string.IsNullOrWhiteSpace(rewardProfileSummary))
+            parts.Add($"Постоянный итог: {rewardProfileSummary}");
+
+        return string.Join("\n", parts);
     }
 
     private static string BuildDarenCompletionResponse(
         DarenEndingResult ending,
-        string rewardMessage,
         string rewardProfileSummary)
     {
-        return string.Join(" ", new[]
+        var parts = new List<string>
         {
-            $"{ending.DisplayName}.",
-            ending.Summary,
-            ending.Epilogue,
-            ending.RewardExplanation,
-            string.Equals(rewardMessage, ending.RewardExplanation, StringComparison.Ordinal) ? "" : rewardMessage,
-            rewardProfileSummary
-        }.Where(static part => !string.IsNullOrWhiteSpace(part)));
+            $"Итог: {ending.DisplayName}.",
+            $"Счёт: {ending.NormalizedScore}/100.",
+            BuildDarenRewardLine(ending),
+            "",
+            ending.Epilogue
+        };
+        if (!string.IsNullOrWhiteSpace(rewardProfileSummary))
+        {
+            parts.Add("");
+            parts.Add($"Постоянный итог: {rewardProfileSummary}");
+        }
+
+        return string.Join("\n", parts);
     }
+
+    private static string BuildDarenRewardLine(DarenEndingResult ending)
+    {
+        if (!ending.GrantsReward)
+            return "Награда: не записана; итоговый счёт ниже 40/100.";
+
+        return $"Награда: {FormatDarenInkFeatherCount(ending.InkFeatherBonus)} для будущей новой игры.";
+    }
+
+    private static string FormatDarenInkFeatherCount(int count) =>
+        count switch
+        {
+            1 => "одно Чернильное Перо",
+            >= 2 and <= 4 => $"{count} Чернильных Пера",
+            _ => $"{count} Чернильных Перьев"
+        };
 
     private static QteScoreSummary? BuildDarenFinalScoreSummary(
         QteScoreModel? scoreModel,
@@ -1419,11 +1445,6 @@ public sealed partial class QteSceneService
             DarenBoundaryNotice,
             DarenRewardNotice
         };
-        if (attempt.Ending is { } ending)
-        {
-            lines.Add($"Итог: {ending.DisplayName}, счёт {ending.NormalizedScore}/100.");
-        }
-
         AnsiConsole.Write(new Panel(new Markup(Markup.Escape(string.Join("\n", lines))))
         {
             Header = new PanelHeader(" Итог вылазки Дарена "),
@@ -1452,7 +1473,6 @@ public sealed partial class QteSceneService
         public QteActionResolution? LastResolution { get; set; }
         public QteSceneCompletion? LastCompletion { get; set; }
         public DarenShowcaseEnding? Ending { get; set; }
-        public bool HadUnsafeRouteFailure { get; set; }
         public string FeedbackTitle { get; set; } = "";
         public string Feedback { get; set; } = "";
         public string BoundaryNotice { get; init; } = DarenBoundaryNotice;
