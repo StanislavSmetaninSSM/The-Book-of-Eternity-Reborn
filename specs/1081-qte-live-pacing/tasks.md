@@ -117,3 +117,41 @@
 
 - [ ] **T023 Post issue evidence comment and cleanup**
   Comment closure evidence on #1081, remove the temporary worktree/local branch, prune stale branches, and report in Russian with next target selection rationale.
+
+## Phase 7: Follow-up QTE feel fixes after live retest
+
+- [x] **T024 Reopen #1081 for hard TimingBar, BalanceMeter feedback, ChargeRelease distinctness, and StealthNoise threshold defaults**
+  Evidence: user retest on 2026-06-18 reported TimingBar still trivial on hard, BalanceMeter cause/effect unclear, TimingBar and ChargeRelease visually too similar, and StealthNoise default `dangerThreshold` 70 too forgiving. Issue #1081 was reopened, relabeled `status: in-progress` and `codex-agent in-progress`, and commented with the new acceptance scope.
+
+- [x] **T025 Add RED coverage for follow-up QTE feel issues**
+  RED Evidence: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore -p:IsTestProject=true --filter "QteLive|QteSceneRenderingSourceGuardTests|QtePracticeModeTests|DarenStealthCrossing|PromptDocumentationCoverageTests" --logger "console;verbosity=minimal"` failed before production edits with 11 failed / 54 passed / 0 skipped / 65 total. Failures covered missing `BuildChargeReleaseLiveFrame`, docs still using `"dangerThreshold": 70`, Daren/practice StealthNoise configs still using 70, BalanceMeter missing separated input/drift/net lines, and hard high-stat TimingBar still exceeding the required tight window.
+
+- [x] **T026 Fix TimingBar hard high-stat pacing**
+  Tighten hard-difficulty success width/tick math so stat bonuses do not make hard TimingBar trivially easy. Preserve easy/normal fairness and existing grade semantics.
+  Evidence: `QteLive_TimingBarHardDifficultyStaysTightWithHighStat` now passes; hard high-stat TimingBar keeps success width <= 4 and success window <= 240 ms while remaining faster than normal boosted difficulty.
+
+- [x] **T027 Fix BalanceMeter cause/effect display**
+  Render player input delta, drift delta, and net movement in the live frame, while preserving existing A/D and arrow controls.
+  Evidence: `QteLive_BalanceMeterFrameSeparatesPlayerInputFromDrift` now passes and captures `Игрок: вправо +10`, `Помеха: -7`, and `Итог: +3` in the live frame.
+
+- [x] **T028 Make ChargeRelease visually distinct from TimingBar**
+  Use a Russian title and charge-specific frame (`Заряд`, `Целевая сила`, release prompt, marker) instead of the bare TimingBar-like line.
+  Evidence: `ChargeRelease_MustUseDistinctChargePresentation` now passes; `RunChargeReleaseAsync` uses `Накопление силы` plus `BuildChargeReleaseLiveFrame`.
+
+- [x] **T029 Tune and document StealthNoise default/example thresholds**
+  Keep `dangerThreshold` GM-authored, but move Daren and practice defaults to meaningful thresholds and update GM-facing docs/examples.
+  Evidence: Daren StealthNoise tests now expect threshold 55 / success max 44 / partial max 70, practice StealthNoise expects easy 65, normal 55, hard 50, and `PromptDocumentationCoverageTests` expects the example threshold 55.
+
+- [x] **T030 Verify follow-up fixes GREEN before merge**
+  Run focused QTE/docs tests, build, diff hygiene, and review before push/PR/merge.
+  Evidence:
+  - Focused GREEN: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore -p:IsTestProject=true --filter "QteLive|QteSceneRenderingSourceGuardTests|QtePracticeModeTests|DarenStealthCrossing|PromptDocumentationCoverageTests" --logger "console;verbosity=minimal"` passed with 0 failed / 65 passed / 0 skipped / 65 total.
+  - Broad QTE/docs GREEN: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore -p:IsTestProject=true --filter "QteSceneServiceTests|QteSceneRenderingSourceGuardTests|QteLive|QtePracticeModeTests|DarenQteShowcaseTests|ValidationServiceQteTests|PromptDocumentationCoverageTests|ExampleDocumentationValidationTests|BrowserQteMiniGameContractTests" --logger "console;verbosity=minimal"` passed with 0 failed / 366 passed / 0 skipped / 366 total.
+  - Build GREEN: `dotnet build BookOfEternityClient\BookOfEternityClient.csproj --no-restore` passed with 0 warnings / 0 errors.
+  - Diff hygiene GREEN: `git diff --check` passed with CRLF normalization warnings only.
+  - Spec Kit prerequisites GREEN: `SPECIFY_FEATURE_DIRECTORY=specs/1081-qte-live-pacing .\.specify\scripts\powershell\check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks` returned the expected feature dir and `["contracts/","tasks.md"]`.
+  - Added-line static scan: 0 findings over added lines.
+  - Local review found one ChargeRelease UX issue where filled charge hid the target band; fixed before final focused/broad test reruns. Reviewer subagent was not spawned because the available multi-agent tool forbids spawning subagents unless the user explicitly asks for subagents/delegation.
+
+- [ ] **T031 Push, PR, merge, and post #1081 follow-up evidence**
+  Commit the follow-up fixes, push branch, create/merge PR, verify main/issue state, and comment final evidence on #1081.

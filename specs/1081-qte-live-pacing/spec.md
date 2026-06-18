@@ -24,6 +24,13 @@ Still reported by the user:
 3. **BalanceMeter / Равновесие** remains poorly legible; A/D movement step is hard to understand in live play.
 4. **PatternMemory / Память Рун** still exposes the sequence during input, removing the memorization challenge.
 
+Follow-up retest on 2026-06-18 found the first pass still insufficient for QTE feel:
+
+1. **TimingBar / Полоса реакции** is still too easy on hard difficulty, especially when stat bonuses widen the timing window.
+2. **BalanceMeter / Равновесие** still has weak game design feedback because player input and random drift are collapsed into one unclear marker movement.
+3. **TimingBar / Полоса реакции** and **ChargeRelease / Накопление силы** look too similar in the console client.
+4. **StealthNoise / Тихий проход** already supports GM-authored `dangerThreshold`, but the shipped/default 70 threshold is too forgiving and must be documented as intentionally easy rather than normal.
+
 ## User Scenarios & Testing
 
 ### User Story 1 - TimingBar Difficulty Matters (Priority: P1)
@@ -114,6 +121,10 @@ Maintainers need evidence that the real path the player sees was checked, becaus
 - **FR-006**: The branch MUST include focused RED/GREEN regression coverage for each reported bug where practical.
 - **FR-007**: The branch MUST include live console/manual or deterministic harness evidence for each of the four reported mini-games; static source guards alone are insufficient closure evidence.
 - **FR-008**: Verification MUST include focused QTE tests, any new live/harness tests or artifacts, client build, `git diff --check`, added-line static scan, independent review, and post-merge focused verification before issue closure.
+- **FR-009**: TimingBar high difficulty MUST remain meaningfully tight even when a high stat tier grants a bonus.
+- **FR-010**: BalanceMeter live frames MUST separate player input delta, environmental drift, and net movement so the player can understand cause and effect.
+- **FR-011**: ChargeRelease MUST use a distinct Russian-titled charge presentation instead of visually reading like another TimingBar.
+- **FR-012**: StealthNoise examples/defaults MUST show a meaningful danger threshold and document that the GM can tune it per scene.
 
 ### Key Entities
 

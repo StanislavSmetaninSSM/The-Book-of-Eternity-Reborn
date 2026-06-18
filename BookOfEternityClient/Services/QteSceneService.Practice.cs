@@ -448,7 +448,7 @@ public sealed partial class QteSceneService
         {
             ["durationMs"] = difficulty.DifficultyId == "hard" ? 8500 : difficulty.DifficultyId == "easy" ? 5000 : 6500,
             ["startingNoise"] = difficulty.DifficultyId == "hard" ? 24 : 12,
-            ["dangerThreshold"] = 70,
+            ["dangerThreshold"] = difficulty.DifficultyId == "hard" ? 50 : difficulty.DifficultyId == "easy" ? 65 : 55,
             ["noiseDriftPerSecond"] = difficulty.DifficultyId == "hard" ? 12 : difficulty.DifficultyId == "easy" ? 6 : 9,
             ["recoveryPerInput"] = difficulty.DifficultyId == "hard" ? 10 : 12,
             ["allowedOverThresholdMs"] = difficulty.DifficultyId == "hard" ? 500 : difficulty.DifficultyId == "easy" ? 1100 : 800,
@@ -457,10 +457,10 @@ public sealed partial class QteSceneService
             ["warningLabel"] = "опасный шум",
             ["gradeThresholds"] = new JsonObject
             {
-                ["successMaxNoise"] = difficulty.DifficultyId == "hard" ? 42 : 50,
+                ["successMaxNoise"] = difficulty.DifficultyId == "hard" ? 38 : difficulty.DifficultyId == "easy" ? 50 : 44,
                 ["successMaxOverThresholdMs"] = 0,
-                ["partialMaxNoise"] = 78,
-                ["partialMaxOverThresholdMs"] = difficulty.DifficultyId == "hard" ? 600 : 900
+                ["partialMaxNoise"] = difficulty.DifficultyId == "hard" ? 65 : difficulty.DifficultyId == "easy" ? 72 : 70,
+                ["partialMaxOverThresholdMs"] = difficulty.DifficultyId == "hard" ? 600 : difficulty.DifficultyId == "easy" ? 900 : 700
             }
         },
         "LockPinSet" => new JsonObject
