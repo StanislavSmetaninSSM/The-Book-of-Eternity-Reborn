@@ -2051,7 +2051,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Тип", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Артефакт", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Качество", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Rare", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("редкое", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Бонусы", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Чувство магических потоков +2", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Структурные бонусы", text, StringComparison.OrdinalIgnoreCase);
@@ -2077,6 +2077,100 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("\"structuredBonuses\"", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("\"combatEffect\"", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_InventoryItemDetail_TranslatesRawMechanicalTypeValues()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+        {
+          "items": [
+            {
+              "existedId": "raw_weapon_1",
+              "itemId": "raw_weapon_1",
+              "name": "Клинок с печатью",
+              "description": "Рукоять холодна даже у огня.",
+              "type": "Weapon",
+              "quality": "Good",
+              "structuredBonuses": [
+                {
+                  "bonusType": "Skill",
+                  "target": "stealth",
+                  "value": 1,
+                  "valueType": "Flat",
+                  "modifierType": "skill",
+                  "summary": "Скрытность +1"
+                }
+              ],
+              "combatEffect": [
+                {
+                  "actionName": "Резонансная зарубка",
+                  "actionCost": "Main",
+                  "effects": [
+                    {
+                      "effectType": "PoiseDamage",
+                      "poiseDamage": 2,
+                      "targetType": "Enemy",
+                      "duration": 1,
+                      "effectDescription": "Сбивает стойку противника."
+                    }
+                  ]
+                },
+                {
+                  "actionName": "Быстрая перевязь",
+                  "actionCost": "Fast",
+                  "effects": [
+                    {
+                      "effectType": "Heal",
+                      "value": 1,
+                      "targetType": "Self",
+                      "duration": 1,
+                      "effectDescription": "Собирает дыхание владельца."
+                    }
+                  ]
+                }
+              ],
+              "customProperties": [
+                {
+                  "interactionType": "onUse",
+                  "targetStateName": "печать",
+                  "changeValue": "+1",
+                  "description": "Печать становится заметнее."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/inventory item raw_weapon_1"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        var defaultOutput = text + "\n" + payload;
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Оружие", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("хорошее", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Скрытность", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("плоский бонус", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("урон равновесию", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("лечение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("противник", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("сам персонаж", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("основное действие", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("быстрое действие", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("при использовании", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Weapon", defaultOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Good", defaultOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Main", defaultOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Fast", defaultOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Enemy", defaultOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Self", defaultOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("stealth", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Skill", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Flat", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("PoiseDamage", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("onUse", text, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -2111,6 +2205,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("item_text_updates", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("DTO", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("doc_inline_1", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("doc_sidecar_1", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("doc_journal_1", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("doc_sealed_1", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("INLINE_FULL_BODY_MARKER", payload, StringComparison.Ordinal);
         Assert.DoesNotContain("SIDECAR_FULL_BODY_MARKER", payload, StringComparison.Ordinal);
         Assert.DoesNotContain("JOURNAL_FULL_BODY_MARKER", payload, StringComparison.Ordinal);
@@ -2136,6 +2234,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             action.Label.Contains("Назад", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(action.Command, "/books", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("doc_sidecar_1", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("item_text_updates", payload, StringComparison.OrdinalIgnoreCase);
     }
 
