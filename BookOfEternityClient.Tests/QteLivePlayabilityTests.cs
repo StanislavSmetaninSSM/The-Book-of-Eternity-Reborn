@@ -36,6 +36,18 @@ public sealed class QteLivePlayabilityTests
     }
 
     [Fact]
+    public void QteLive_TimingBarHardDifficultyStaysTightWithHighStat()
+    {
+        var normalBoosted = QteSceneService.ComputeTimingBarLiveRequirement(3, statTier: 3);
+        var hardBoosted = QteSceneService.ComputeTimingBarLiveRequirement(5, statTier: 3);
+
+        Assert.True(hardBoosted.TickMs < normalBoosted.TickMs);
+        Assert.True(hardBoosted.SuccessWidth <= 4);
+        Assert.True(hardBoosted.SuccessWindowMs <= 240);
+        Assert.True(hardBoosted.TimeoutMs < normalBoosted.TimeoutMs);
+    }
+
+    [Fact]
     public async Task QteLive_PromptChainFirstPromptSurvivesPastBaseTimeoutThroughLiveLoop()
     {
         var requirement = QteSceneService.ComputePromptChainLiveRequirement(5, statTier: 0);
@@ -93,6 +105,33 @@ public sealed class QteLivePlayabilityTests
             frame.Body.Contains("D/В или →: вправо на 10", StringComparison.Ordinal) &&
             frame.Body.Contains("A/Ф или ←: влево на 10", StringComparison.Ordinal) &&
             frame.Body.Contains("Шаг управления: 10", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task QteLive_BalanceMeterFrameSeparatesPlayerInputFromDrift()
+    {
+        var requirement = QteSceneService.ComputeBalanceMeterLiveRequirement(baseDifficulty: 3, statTier: 0);
+        var clock = new FakeLiveClock();
+        var input = new ScheduledConsoleInputSource(clock, [
+            new ScheduledKey(0, Key(ConsoleKey.D))
+        ]);
+        var renderer = new RecordingLiveRenderer(
+            "Равновесие",
+            "Удерживайте индикатор в центральной зоне.",
+            "");
+
+        _ = await QteSceneService.RunBalanceMeterLiveLoopAsync(
+            requirement,
+            input,
+            renderer,
+            clock,
+            nextDrift: (_, _) => -7);
+
+        Assert.Contains(renderer.Frames, frame =>
+            frame.Body.Contains("Позиция: 53/100", StringComparison.Ordinal) &&
+            frame.Body.Contains("Игрок: вправо +10", StringComparison.Ordinal) &&
+            frame.Body.Contains("Помеха: -7", StringComparison.Ordinal) &&
+            frame.Body.Contains("Итог: +3", StringComparison.Ordinal));
     }
 
     [Fact]

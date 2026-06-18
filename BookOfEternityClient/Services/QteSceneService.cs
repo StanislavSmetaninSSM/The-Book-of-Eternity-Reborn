@@ -3432,10 +3432,19 @@ public sealed partial class QteSceneService
     {
         var difficulty = Math.Clamp(baseDifficulty, 1, 5);
         const int width = 32;
-        var successWidth = Math.Clamp(8 - difficulty + statTier, 3, 12);
-        var partialWidth = Math.Clamp(successWidth + 4, successWidth + 1, 16);
-        var tickMs = Math.Clamp(135 - (difficulty * 18) + (statTier * 8), 35, 170);
-        var passCount = Math.Clamp(5 - difficulty + Math.Max(0, statTier / 2), 1, 4);
+        var statWindowBonus = Math.Clamp(statTier, 0, 3) / 2;
+        var successWidth = Math.Clamp(7 - difficulty + statWindowBonus, 3, 10);
+        if (difficulty >= 5)
+            successWidth = Math.Min(successWidth, 4);
+
+        var partialWidth = Math.Clamp(successWidth + (difficulty >= 4 ? 3 : 4), successWidth + 1, 15);
+        var tickMs = Math.Clamp(120 - (difficulty * 18) + (statTier * 5), 35, 170);
+        if (difficulty >= 5)
+            tickMs = Math.Min(tickMs, 55);
+
+        var passCount = difficulty >= 5
+            ? 1
+            : Math.Clamp(5 - difficulty + Math.Max(0, statTier / 3), 1, 4);
         var timeoutMs = Math.Clamp((width - 1) * tickMs * passCount, 1200, 6000);
         var successStart = (width - successWidth) / 2;
         var partialStart = (width - partialWidth) / 2;
@@ -3559,7 +3568,9 @@ public sealed partial class QteSceneService
                 requirement.SafeHalfWidth,
                 currentTick: 1,
                 requirement.Ticks,
-                requirement.MovementStep),
+                requirement.MovementStep,
+                playerDelta: null,
+                driftDelta: null),
             async renderer =>
                 ParseGrade(await RunBalanceMeterLiveLoopAsync(
                     requirement,
@@ -3601,20 +3612,32 @@ public sealed partial class QteSceneService
 
         for (var i = 0; i < requirement.Ticks; i++)
         {
+            var playerDelta = 0;
             if (TryReadImmediateKey(inputSource, out var key))
             {
                 if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.A) || key.Key == ConsoleKey.LeftArrow)
+                {
+                    var before = value;
                     value = Math.Max(0, value - requirement.MovementStep);
+                    playerDelta = value - before;
+                }
                 else if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.D) || key.Key == ConsoleKey.RightArrow)
+                {
+                    var before = value;
                     value = Math.Min(100, value + requirement.MovementStep);
+                    playerDelta = value - before;
+                }
                 else if (key.Key == ConsoleKey.Escape)
                     return "fail";
             }
 
+            var beforeDrift = value;
+            var rawDrift = nextDrift(requirement.DriftMinInclusive, requirement.DriftMaxExclusive);
             value = Math.Clamp(
-                value + nextDrift(requirement.DriftMinInclusive, requirement.DriftMaxExclusive),
+                value + rawDrift,
                 0,
                 100);
+            var driftDelta = value - beforeDrift;
             if (Math.Abs(value - 50) <= requirement.SafeHalfWidth)
                 safeTicks++;
 
@@ -3623,7 +3646,9 @@ public sealed partial class QteSceneService
                 requirement.SafeHalfWidth,
                 i + 1,
                 requirement.Ticks,
-                requirement.MovementStep));
+                requirement.MovementStep,
+                playerDelta,
+                driftDelta));
 
             await clock.DelayAsync(requirement.TickMs);
         }
@@ -3648,19 +3673,19 @@ public sealed partial class QteSceneService
         var charging = false;
 
         return await RunMiniGameLiveAsync(
-            "Charge Release",
+            "Накопление силы",
             $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, чтобы начать заряд.",
-            BuildChargeMeter(charge, targetStart, targetWidth),
+            BuildChargeReleaseLiveFrame(charge, targetStart, targetWidth, charging),
             async renderer =>
         {
             while (true)
             {
                 renderer.Update(
-                    "Charge Release",
+                    "Накопление силы",
                     charging
                         ? $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)} ещё раз, чтобы отпустить заряд."
                         : $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, чтобы начать заряд.",
-                    BuildChargeMeter(charge, targetStart, targetWidth));
+                    BuildChargeReleaseLiveFrame(charge, targetStart, targetWidth, charging));
 
                 if (TryReadImmediateKey(out var key))
                 {
@@ -4008,15 +4033,19 @@ public sealed partial class QteSceneService
         int safeHalfWidth,
         int currentTick,
         int totalTicks,
-        int movementStep) =>
-        BuildBalanceMeter(value, safeHalfWidth, currentTick, totalTicks, movementStep);
+        int movementStep,
+        int? playerDelta = null,
+        int? driftDelta = null) =>
+        BuildBalanceMeter(value, safeHalfWidth, currentTick, totalTicks, movementStep, playerDelta, driftDelta);
 
     private static string BuildBalanceMeter(
         int value,
         int safeHalfWidth,
         int currentTick,
         int totalTicks,
-        int movementStep)
+        int movementStep,
+        int? playerDelta = null,
+        int? driftDelta = null)
     {
         var parts = new List<string>();
         for (var i = 0; i <= 100; i += 5)
@@ -4035,26 +4064,59 @@ public sealed partial class QteSceneService
         return string.Join("\n", new[]
         {
             string.Join("", parts),
-            $"[white]Позиция: {value}/100 | безопасная зона: {safeStart}-{safeEnd}[/]",
+            $"[white]Позиция: {value}/100 | цель: 50 | безопасная зона: {safeStart}-{safeEnd}[/]",
             $"[dim]{FormatCompactPhysicalKeyLabel(ConsoleKey.A)} или ←: влево на {movementStep} | {FormatCompactPhysicalKeyLabel(ConsoleKey.D)} или →: вправо на {movementStep}[/]",
+            $"[dim]Игрок: {FormatBalancePlayerDelta(playerDelta)} | Помеха: {FormatSignedDelta(driftDelta)} | Итог: {FormatSignedDelta((playerDelta ?? 0) + (driftDelta ?? 0))}[/]",
             $"[dim]Шаг управления: {movementStep} | Такт {currentTick}/{totalTicks}[/]"
         });
     }
 
-    private static string BuildChargeMeter(int charge, int targetStart, int targetWidth)
-    {
-        var parts = new List<string>();
-        for (var i = 0; i <= 100; i += 5)
+    private static string FormatBalancePlayerDelta(int? delta) =>
+        delta switch
         {
-            if (Math.Abs(i - charge) < 3)
-                parts.Add("[bold yellow]●[/]");
-            else if (i >= targetStart && i <= targetStart + targetWidth)
-                parts.Add("[green]█[/]");
+            null => "нет ввода",
+            > 0 => $"вправо {FormatSignedDelta(delta)}",
+            < 0 => $"влево {FormatSignedDelta(delta)}",
+            _ => "без сдвига"
+        };
+
+    private static string FormatSignedDelta(int? delta)
+    {
+        var value = delta ?? 0;
+        return value > 0
+            ? $"+{value.ToString(CultureInfo.InvariantCulture)}"
+            : value.ToString(CultureInfo.InvariantCulture);
+    }
+
+    internal static string BuildChargeReleaseLiveFrame(int charge, int targetStart, int targetWidth, bool charging)
+    {
+        const int step = 5;
+        var targetEnd = Math.Min(100, targetStart + targetWidth);
+        var parts = new List<string>();
+        for (var i = 0; i <= 100; i += step)
+        {
+            if (i >= targetStart && i <= targetEnd)
+                parts.Add(i <= charge ? "[bold green]█[/]" : "[green]▒[/]");
+            else if (i <= charge)
+                parts.Add("[cyan]█[/]");
             else
-                parts.Add("[dim]░[/]");
+                parts.Add("[dim]·[/]");
         }
 
-        return string.Join("", parts);
+        var markerOffset = Math.Clamp((int)Math.Round(charge / (double)step), 0, parts.Count - 1);
+        var marker = string.Concat(Enumerable.Repeat(" ", markerOffset)) + "[bold yellow]▲[/]";
+        var instruction = charging
+            ? $"[dim]Отпустите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)} в зелёном диапазоне.[/]"
+            : $"[dim]Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, чтобы начать накопление.[/]";
+
+        return string.Join("\n", new[]
+        {
+            $"[white]Заряд: {charge}/100[/]",
+            string.Join("", parts),
+            marker,
+            $"[white]Целевая сила: {targetStart}-{targetEnd}[/]",
+            instruction
+        });
     }
 
     private static string BuildMashInputProgress(int matchedPresses, int successTarget, int partialTarget, int remainingMs)

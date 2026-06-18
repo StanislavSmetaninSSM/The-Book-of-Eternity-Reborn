@@ -112,6 +112,22 @@ public sealed class QteSceneRenderingSourceGuardTests
         Assert.Contains("Шаг управления", methodSource, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void ChargeRelease_MustUseDistinctChargePresentation()
+    {
+        var source = ReadQteSceneServiceSource();
+        var methodSource = ExtractMethodSource(source, "private async Task<QteGrade> RunChargeReleaseAsync(");
+        var frameSource = ExtractMethodSource(source, "internal static string BuildChargeReleaseLiveFrame(");
+
+        Assert.Contains("\"Накопление силы\"", methodSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"Charge Release\"", methodSource, StringComparison.Ordinal);
+        Assert.Contains("BuildChargeReleaseLiveFrame", methodSource, StringComparison.Ordinal);
+        Assert.Contains("Заряд:", frameSource, StringComparison.Ordinal);
+        Assert.Contains("Целевая сила:", frameSource, StringComparison.Ordinal);
+        Assert.Contains("Отпустите", frameSource, StringComparison.Ordinal);
+        Assert.Contains("▲", frameSource, StringComparison.Ordinal);
+    }
+
     private static int CountOccurrences(string source, string value)
     {
         var count = 0;

@@ -119,6 +119,26 @@ public sealed class QtePracticeModeTests : IDisposable
             !string.Equals(issue.Code, "qte_missing_pending_manifest", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Theory]
+    [InlineData("easy", 65, 50, 72)]
+    [InlineData("normal", 55, 44, 70)]
+    [InlineData("hard", 50, 38, 65)]
+    public void PracticeStealthNoise_UsesMeaningfulDifficultyThresholds(
+        string difficultyId,
+        int expectedDangerThreshold,
+        int expectedSuccessMaxNoise,
+        int expectedPartialMaxNoise)
+    {
+        var attempt = _service.StartPracticeAttempt("StealthNoise", difficultyId);
+        var action = Assert.Single(Assert.Single(attempt.ActiveScene.Offer!.Chapters).Actions);
+        var config = action.Check.Config!;
+        var thresholds = config["gradeThresholds"]!.AsObject();
+
+        Assert.Equal(expectedDangerThreshold, config["dangerThreshold"]!.GetValue<int>());
+        Assert.Equal(expectedSuccessMaxNoise, thresholds["successMaxNoise"]!.GetValue<int>());
+        Assert.Equal(expectedPartialMaxNoise, thresholds["partialMaxNoise"]!.GetValue<int>());
+    }
+
     [Fact]
     public void PracticeAttempt_BranchChoiceUsesAuthoredChoiceGradeWhenBrowserGradeOmitted()
     {

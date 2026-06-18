@@ -542,7 +542,7 @@
             "config": {
               "durationMs": 8000,
               "startingNoise": 18,
-              "dangerThreshold": 70,
+              "dangerThreshold": 55,
               "noiseDriftPerSecond": 9,
               "recoveryPerInput": 12,
               "allowedOverThresholdMs": 900,
@@ -550,10 +550,10 @@
               "recoveryLabel": "замереть и распределить вес",
               "warningLabel": "Доски начинают отвечать резким скрипом.",
               "gradeThresholds": {
-                "successMaxNoise": 48,
+                "successMaxNoise": 44,
                 "successMaxOverThresholdMs": 0,
                 "partialMaxNoise": 70,
-                "partialMaxOverThresholdMs": 900
+                "partialMaxOverThresholdMs": 700
               }
             }
           },

@@ -381,7 +381,7 @@ public sealed class PromptDocumentationCoverageTests
             "\"type\": \"StealthNoise\"",
             "\"durationMs\": 8000",
             "\"startingNoise\": 18",
-            "\"dangerThreshold\": 70",
+            "\"dangerThreshold\": 55",
             "\"noiseDriftPerSecond\": 9",
             "\"recoveryPerInput\": 12",
             "\"allowedOverThresholdMs\": 900",

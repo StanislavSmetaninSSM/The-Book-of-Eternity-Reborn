@@ -1253,6 +1253,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - `check.config.durationMs` must be an integer from 1000 to 30000.
   - `startingNoise` must be a number from 0 to 100 and must not begin above `dangerThreshold`.
   - `dangerThreshold` must be a number from 1 to 100.
+    This is GM-authored per scene: 50-65 is the recommended meaningful stealth band, while values near 70 are intentionally forgiving.
   - `noiseDriftPerSecond` and `recoveryPerInput` must be positive numbers from 1 to 100.
   - `allowedOverThresholdMs` must be an integer from 0 to `durationMs`.
   - `gradeThresholds` must contain `successMaxNoise`, `successMaxOverThresholdMs`, `partialMaxNoise`, and `partialMaxOverThresholdMs`; partial thresholds must be at least as permissive as success thresholds.

@@ -1507,7 +1507,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var config = RequiredConfig(action);
         Assert.Equal(6500, RequiredInt(config, "durationMs"));
         Assert.Equal(14, RequiredInt(config, "startingNoise"));
-        Assert.Equal(70, RequiredInt(config, "dangerThreshold"));
+        Assert.Equal(55, RequiredInt(config, "dangerThreshold"));
         Assert.Equal(9, RequiredInt(config, "noiseDriftPerSecond"));
         Assert.Equal(12, RequiredInt(config, "recoveryPerInput"));
         Assert.Equal(800, RequiredInt(config, "allowedOverThresholdMs"));
@@ -1515,10 +1515,10 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal("приглушить шаг", RequiredString(config, "recoveryLabel"));
         Assert.Equal("страж слышит шум", RequiredString(config, "warningLabel"));
         var thresholds = RequiredObject(config, "gradeThresholds");
-        Assert.Equal(48, RequiredInt(thresholds, "successMaxNoise"));
+        Assert.Equal(44, RequiredInt(thresholds, "successMaxNoise"));
         Assert.Equal(0, RequiredInt(thresholds, "successMaxOverThresholdMs"));
-        Assert.Equal(76, RequiredInt(thresholds, "partialMaxNoise"));
-        Assert.Equal(850, RequiredInt(thresholds, "partialMaxOverThresholdMs"));
+        Assert.Equal(70, RequiredInt(thresholds, "partialMaxNoise"));
+        Assert.Equal(700, RequiredInt(thresholds, "partialMaxOverThresholdMs"));
 
         Assert.True(text.Length >= 1500,
             "Daren stealth_crossing narrative should be a substantial gallery stealth page, not a compact synopsis.");
@@ -1585,7 +1585,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var config = RequiredConfig(action);
         Assert.Equal(6500, RequiredInt(config, "durationMs"));
         Assert.Equal(14, RequiredInt(config, "startingNoise"));
-        Assert.Equal(70, RequiredInt(config, "dangerThreshold"));
+        Assert.Equal(55, RequiredInt(config, "dangerThreshold"));
         Assert.Equal(9, RequiredInt(config, "noiseDriftPerSecond"));
         Assert.Equal(12, RequiredInt(config, "recoveryPerInput"));
         Assert.Equal(800, RequiredInt(config, "allowedOverThresholdMs"));
@@ -1593,10 +1593,10 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal("приглушить шаг", RequiredString(config, "recoveryLabel"));
         Assert.Equal("страж слышит шум", RequiredString(config, "warningLabel"));
         var thresholds = RequiredObject(config, "gradeThresholds");
-        Assert.Equal(48, RequiredInt(thresholds, "successMaxNoise"));
+        Assert.Equal(44, RequiredInt(thresholds, "successMaxNoise"));
         Assert.Equal(0, RequiredInt(thresholds, "successMaxOverThresholdMs"));
-        Assert.Equal(76, RequiredInt(thresholds, "partialMaxNoise"));
-        Assert.Equal(850, RequiredInt(thresholds, "partialMaxOverThresholdMs"));
+        Assert.Equal(70, RequiredInt(thresholds, "partialMaxNoise"));
+        Assert.Equal(700, RequiredInt(thresholds, "partialMaxOverThresholdMs"));
 
         Assert.NotEqual(
             "Один страж шевелится от скрипа; сомнение уже тянется к фонарю, но Дарен удерживает тишину до открытых глаз.",
@@ -1671,7 +1671,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var config = RequiredConfig(action);
         Assert.Equal(6500, RequiredInt(config, "durationMs"));
         Assert.Equal(14, RequiredInt(config, "startingNoise"));
-        Assert.Equal(70, RequiredInt(config, "dangerThreshold"));
+        Assert.Equal(55, RequiredInt(config, "dangerThreshold"));
         Assert.Equal(9, RequiredInt(config, "noiseDriftPerSecond"));
         Assert.Equal(12, RequiredInt(config, "recoveryPerInput"));
         Assert.Equal(800, RequiredInt(config, "allowedOverThresholdMs"));
@@ -1679,10 +1679,10 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal("приглушить шаг", RequiredString(config, "recoveryLabel"));
         Assert.Equal("страж слышит шум", RequiredString(config, "warningLabel"));
         var thresholds = RequiredObject(config, "gradeThresholds");
-        Assert.Equal(48, RequiredInt(thresholds, "successMaxNoise"));
+        Assert.Equal(44, RequiredInt(thresholds, "successMaxNoise"));
         Assert.Equal(0, RequiredInt(thresholds, "successMaxOverThresholdMs"));
-        Assert.Equal(76, RequiredInt(thresholds, "partialMaxNoise"));
-        Assert.Equal(850, RequiredInt(thresholds, "partialMaxOverThresholdMs"));
+        Assert.Equal(70, RequiredInt(thresholds, "partialMaxNoise"));
+        Assert.Equal(700, RequiredInt(thresholds, "partialMaxOverThresholdMs"));
 
         Assert.NotEqual(
             "Доска отвечает резким треском, и Дарен видит, как в дальнем крыле поднимается тревожный фонарь со свидетелем.",
@@ -1758,7 +1758,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var config = RequiredConfig(action);
         Assert.Equal(6500, RequiredInt(config, "durationMs"));
         Assert.Equal(14, RequiredInt(config, "startingNoise"));
-        Assert.Equal(70, RequiredInt(config, "dangerThreshold"));
+        Assert.Equal(55, RequiredInt(config, "dangerThreshold"));
         Assert.Equal(9, RequiredInt(config, "noiseDriftPerSecond"));
         Assert.Equal(12, RequiredInt(config, "recoveryPerInput"));
         Assert.Equal(800, RequiredInt(config, "allowedOverThresholdMs"));
@@ -1766,10 +1766,10 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal("приглушить шаг", RequiredString(config, "recoveryLabel"));
         Assert.Equal("страж слышит шум", RequiredString(config, "warningLabel"));
         var thresholds = RequiredObject(config, "gradeThresholds");
-        Assert.Equal(48, RequiredInt(thresholds, "successMaxNoise"));
+        Assert.Equal(44, RequiredInt(thresholds, "successMaxNoise"));
         Assert.Equal(0, RequiredInt(thresholds, "successMaxOverThresholdMs"));
-        Assert.Equal(76, RequiredInt(thresholds, "partialMaxNoise"));
-        Assert.Equal(850, RequiredInt(thresholds, "partialMaxOverThresholdMs"));
+        Assert.Equal(70, RequiredInt(thresholds, "partialMaxNoise"));
+        Assert.Equal(700, RequiredInt(thresholds, "partialMaxOverThresholdMs"));
 
         Assert.False(string.IsNullOrWhiteSpace(action.FailText),
             "Daren stealth_crossing fail aftermath should remain authored while success semantics stay distinct.");

@@ -1294,7 +1294,7 @@ public sealed partial class QteSceneService
         {
             ["durationMs"] = 6500,
             ["startingNoise"] = 14,
-            ["dangerThreshold"] = 70,
+            ["dangerThreshold"] = 55,
             ["noiseDriftPerSecond"] = 9,
             ["recoveryPerInput"] = 12,
             ["allowedOverThresholdMs"] = 800,
@@ -1303,10 +1303,10 @@ public sealed partial class QteSceneService
             ["warningLabel"] = "страж слышит шум",
             ["gradeThresholds"] = new JsonObject
             {
-                ["successMaxNoise"] = 48,
+                ["successMaxNoise"] = 44,
                 ["successMaxOverThresholdMs"] = 0,
-                ["partialMaxNoise"] = 76,
-                ["partialMaxOverThresholdMs"] = 850
+                ["partialMaxNoise"] = 70,
+                ["partialMaxOverThresholdMs"] = 700
             }
         };
 
