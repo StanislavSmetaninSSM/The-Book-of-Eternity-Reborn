@@ -864,6 +864,34 @@ public partial class ExplorerMode
         if (overviewResult.Actions.Count == 0)
             return;
 
+        while (true)
+        {
+            var selectedAction = PromptWorldNewsAction(overviewResult);
+            if (selectedAction == null)
+                return;
+
+            var detailResult = await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(selectedAction.Command, _stateManager, _fs);
+            if (detailResult == null)
+                return;
+
+            WriteLine();
+            ExplorerCommandResultConsoleRenderer.Render(_console, WithoutActions(detailResult));
+
+            var next = Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[bold cyan]Новости мира: запись[/]")
+                    .PageSize(3)
+                    .AddChoices("← Назад к списку", "← Закрыть"));
+
+            if (!next.Contains("списку", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            WriteLine();
+        }
+    }
+
+    private UiAction? PromptWorldNewsAction(ExplorerCommandResult overviewResult)
+    {
         const string backChoice = "← Назад";
         var choices = new List<string>();
         var actionsByChoice = new Dictionary<string, UiAction>(StringComparer.Ordinal);
@@ -881,7 +909,7 @@ public partial class ExplorerMode
         }
 
         if (choices.Count == 0)
-            return;
+            return null;
 
         choices.Add(backChoice);
         var selected = Prompt(
@@ -893,15 +921,10 @@ public partial class ExplorerMode
         if (string.Equals(selected, backChoice, StringComparison.Ordinal) ||
             !actionsByChoice.TryGetValue(selected, out var selectedAction))
         {
-            return;
+            return null;
         }
 
-        var detailResult = await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(selectedAction.Command, _stateManager, _fs);
-        if (detailResult == null)
-            return;
-
-        WriteLine();
-        ExplorerCommandResultConsoleRenderer.Render(_console, WithoutActions(detailResult));
+        return selectedAction;
     }
 
     private static ExplorerCommandResult WithoutActions(ExplorerCommandResult result) =>
