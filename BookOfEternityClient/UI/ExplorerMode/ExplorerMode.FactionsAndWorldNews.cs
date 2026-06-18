@@ -890,7 +890,7 @@ public partial class ExplorerMode
         }
 
         var isOverview = string.IsNullOrWhiteSpace(_currentCommandRemainder);
-        ExplorerCommandResultConsoleRenderer.Render(_console, isOverview ? WithoutActions(result) : result);
+        ExplorerCommandResultConsoleRenderer.Render(_console, WithoutActions(result));
         if (isOverview)
             await PromptWorldNewsDetailAsync(result);
 

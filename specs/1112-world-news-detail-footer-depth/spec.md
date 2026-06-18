@@ -30,6 +30,8 @@ A player selects a world news entry and sees meaningful details instead of a nea
 
 1. **Given** a world event has player-facing detail fields, **When** the player opens it, **Then** the panel shows the details with readable labels.
 2. **Given** a world event has technical ids, **When** the player opens it, **Then** those ids are not shown as detail content.
+3. **Given** a world event has nested objects or arrays, **When** the player opens it, **Then** nested values are formatted as readable rows or bullet-like lines rather than one long semicolon-separated blob.
+4. **Given** a world event has known English contract keys, **When** the player opens it, **Then** those keys are rendered with Russian player-facing labels.
 
 ### User Story 2 - Clean Console Navigation (Priority: P2)
 
@@ -43,6 +45,7 @@ A player opens a world news detail from the console selector and sees only the d
 
 1. **Given** a player opens an event from `/новости_мира`, **When** the detail is shown, **Then** no stray "Вернуться к сводке..." footer appears in the rendered detail.
 2. **Given** the detail is shown, **When** the navigation prompt appears, **Then** the choices are `Назад к списку` and `Закрыть`.
+3. **Given** a player opens an event directly through `/новости_мира событие <id>`, **When** the detail is rendered in the console, **Then** no generic command/action table is shown at the bottom.
 
 ### Edge Cases
 
@@ -59,6 +62,8 @@ A player opens a world news detail from the console selector and sees only the d
 - **FR-003**: Console interactive world news detail MUST NOT render confusing footer text before the detail navigation prompt.
 - **FR-004**: Detail actions/back navigation MUST remain available for browser/shared DTO consumers.
 - **FR-005**: Technical ids/raw/debug/path/url fields MUST remain hidden from player-facing detail content.
+- **FR-006**: Console world-news detail MUST suppress generic `Actions` tables; browser/shared DTO actions may remain available.
+- **FR-007**: Known world-news contract keys MUST have Russian labels instead of English fallback labels.
 
 ### Key Entities
 
@@ -72,6 +77,8 @@ A player opens a world news detail from the console selector and sees only the d
 - **SC-001**: A selected Valmont world event displays at least five player-facing detail rows beyond marker/time/status.
 - **SC-002**: The console rendered detail output contains no footer/prompt text collision.
 - **SC-003**: Focused automated tests cover rich detail fields, footer suppression, and return-to-list navigation.
+- **SC-004**: Focused automated tests fail if direct console detail renders `Доступные действия`, `Команда`, `/новости_мира`, or `Secondary` as a bottom action table.
+- **SC-005**: Focused automated tests fail if known fields such as `opportunity`, `openQuestions`, or `playerKnowledge` render as English labels.
 
 ## Verification Plan *(mandatory)*
 

@@ -37,3 +37,21 @@
   - `dotnet build BookOfEternityClient\BookOfEternityClient.csproj ...` passed with 0 warnings / 0 errors.
   - `git diff --check` passed.
 - [ ] T013 Review diff, commit, push, PR, merge if clean, and update #1112 labels
+
+## Phase 5: Follow-up Polish After User Review
+
+- [x] T014 Reopen #1112 after user reported the detail screen still had ugly data, English labels, and a confusing bottom command/action hint
+- [x] T015 Add RED tests for localized rich fields and direct console detail without an actions table
+  - RED evidence: `WorldNewsValmontEventDetail|WorldNews_DirectDetailSuppressesCommandActionTable` failed on missing `Возможность` and on rendered `Доступные действия`.
+- [x] T016 Suppress console world-news action tables and localize additional known world-news fields
+  - Console `/новости_мира` now renders shared blocks without generic actions; browser/shared DTO actions remain intact.
+  - Nested world-news objects/arrays render as readable lines instead of a semicolon blob.
+- [x] T017 Enrich ignored local `game_session` event data with `opportunity`, `openQuestions`, and `playerKnowledge`
+- [x] T018 Run focused and broader verification for the polish branch
+  - RED evidence before production changes: focused filter failed on missing `Возможность` and rendered `Доступные действия`.
+  - GREEN evidence: `dotnet test ... --filter "WorldNewsValmontEventDetail|WorldNews_DirectDetailSuppressesCommandActionTable"` passed: 2/2.
+  - `dotnet test ... --filter "WorldNews"` passed: 11/11.
+  - `dotnet test ... --filter "WorldNews|ExplorerWebCommandServiceTests|ExplorerModeCommandTests"` passed: 668/668.
+  - `dotnet build BookOfEternityClient\BookOfEternityClient.csproj ...` passed with 0 warnings / 0 errors.
+  - `git diff --check` passed.
+- [ ] T019 Commit, push, PR, merge if clean, and update #1112 labels again

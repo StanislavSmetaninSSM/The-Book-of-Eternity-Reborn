@@ -370,10 +370,19 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Сравнить печать с семейным архивом", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Ставки", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("кто-то проверяет реакцию рунической перчатки", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Возможность", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("перехватить ночного посланника", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Открытые вопросы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("кто знает семейный шифр", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Что знает игрок", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("письмо появилось после полуночи", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Связанные лица", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Мариус де Вальмонт", text, StringComparison.OrdinalIgnoreCase);
 
         Assert.DoesNotContain("Метка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Opportunity", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Open questions", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Player knowledge", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("world_event_valmont_letter", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("eventId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("npcId", payload, StringComparison.OrdinalIgnoreCase);
@@ -4672,8 +4681,14 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               ],
               "stakes": {
                 "danger": "кто-то проверяет реакцию рунической перчатки",
-                "deadline": "до ухода утренних слуг"
+                "deadline": "до ухода утренних слуг",
+                "opportunity": "перехватить ночного посланника до смены караула"
               },
+              "openQuestions": [
+                "кто знает семейный шифр",
+                "почему печать реагирует на перчатку"
+              ],
+              "playerKnowledge": "Асуран знает, что письмо появилось после полуночи и не похоже на письмо слуг.",
               "relatedPeople": [
                 {
                   "name": "Мариус де Вальмонт",
