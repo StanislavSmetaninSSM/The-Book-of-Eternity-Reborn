@@ -35,9 +35,17 @@ public sealed class QteSceneRenderingSourceGuardTests
     {
         var source = ReadQteSceneServiceSource();
         var methodSource = ExtractMethodSource(source, $"private async Task<QteGrade> {methodName}(");
+        var updateSource = methodSource;
+        var liveLoopName = methodName.Replace("Async", "LiveLoopAsync", StringComparison.Ordinal);
 
         Assert.Contains("RunMiniGameLiveAsync", methodSource, StringComparison.Ordinal);
-        Assert.Contains(".Update(", methodSource, StringComparison.Ordinal);
+        if (!updateSource.Contains(".Update(", StringComparison.Ordinal) &&
+            methodSource.Contains(liveLoopName, StringComparison.Ordinal))
+        {
+            updateSource = ExtractMethodSource(source, $"internal static async Task<string> {liveLoopName}(");
+        }
+
+        Assert.Contains(".Update(", updateSource, StringComparison.Ordinal);
         Assert.DoesNotContain("RenderMiniGamePanel(", methodSource, StringComparison.Ordinal);
     }
 
@@ -60,9 +68,11 @@ public sealed class QteSceneRenderingSourceGuardTests
     {
         var source = ReadQteSceneServiceSource();
         var methodSource = ExtractMethodSource(source, "private async Task<QteGrade> RunPromptChainAsync(");
+        var loopSource = ExtractMethodSource(source, "internal static async Task<string> RunPromptChainLiveLoopAsync(");
 
         Assert.Contains("ComputePromptChainLiveRequirement", methodSource, StringComparison.Ordinal);
-        Assert.Contains("FirstPromptGraceMs", methodSource, StringComparison.Ordinal);
+        Assert.Contains("RunPromptChainLiveLoopAsync", methodSource, StringComparison.Ordinal);
+        Assert.Contains("FirstPromptGraceMs", loopSource, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -70,10 +80,12 @@ public sealed class QteSceneRenderingSourceGuardTests
     {
         var source = ReadQteSceneServiceSource();
         var methodSource = ExtractMethodSource(source, "private async Task<QteGrade> RunPatternMemoryAsync(");
+        var loopSource = ExtractMethodSource(source, "internal static async Task<string> RunPatternMemoryLiveLoopAsync(");
 
         Assert.Equal(1, CountOccurrences(methodSource, "RunMiniGameLiveAsync"));
-        Assert.Contains("renderer.Update(", methodSource, StringComparison.Ordinal);
-        Assert.Contains("Память рун: фаза ввода", methodSource, StringComparison.Ordinal);
+        Assert.Contains("RunPatternMemoryLiveLoopAsync", methodSource, StringComparison.Ordinal);
+        Assert.Contains("renderer.Update(", loopSource, StringComparison.Ordinal);
+        Assert.Contains("Память рун: фаза ввода", loopSource, StringComparison.Ordinal);
     }
 
     [Fact]

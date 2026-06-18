@@ -89,6 +89,27 @@ public sealed partial class QteSceneService
         public Dictionary<string, string> NormalizerBackupsByPath { get; } = new(StringComparer.OrdinalIgnoreCase);
     }
 
+    internal interface IQteMiniGameLiveRenderer
+    {
+        void Update(string body);
+        void Update(string title, string instructions, string body);
+    }
+
+    internal interface IQteLiveClock
+    {
+        DateTime UtcNow { get; }
+        Task DelayAsync(int milliseconds);
+    }
+
+    private sealed class SystemQteLiveClock : IQteLiveClock
+    {
+        public static readonly SystemQteLiveClock Instance = new();
+
+        public DateTime UtcNow => DateTime.UtcNow;
+
+        public Task DelayAsync(int milliseconds) => Task.Delay(milliseconds);
+    }
+
     public QteSceneService(
         FileSystemManager fs,
         GameSettings settings,
@@ -1530,63 +1551,77 @@ public sealed partial class QteSceneService
             effective.SequenceLength,
             $"{action.ActionId}:{action.Check.BaseDifficulty}:{action.Check.PrimaryCharacteristic}:{string.Join(",", alphabet)}");
 
-        var revealStarted = DateTime.UtcNow;
-        var inputs = new List<ConsoleKeyInfo>();
         return await RunMiniGameLiveAsync(
             "Память рун: фаза показа",
             "Запомните порядок знаков. Ввод начнётся после показа. Esc - безопасный отказ считается провалом.",
             BuildPatternMemoryRevealFrame(sequence, effective.RevealMs),
             async renderer =>
+                ParseGrade(await RunPatternMemoryLiveLoopAsync(
+                    sequence,
+                    effective,
+                    _inputSource,
+                    renderer,
+                    SystemQteLiveClock.Instance)));
+    }
+
+    internal static async Task<string> RunPatternMemoryLiveLoopAsync(
+        IReadOnlyList<string> sequence,
+        PatternMemoryEffectiveRequirement effective,
+        IConsoleInputSource inputSource,
+        IQteMiniGameLiveRenderer renderer,
+        IQteLiveClock clock)
+    {
+        var revealStarted = clock.UtcNow;
+        var inputs = new List<ConsoleKeyInfo>();
+
+        while ((clock.UtcNow - revealStarted).TotalMilliseconds < effective.RevealMs)
         {
-            while ((DateTime.UtcNow - revealStarted).TotalMilliseconds < effective.RevealMs)
+            while (TryReadImmediateKey(inputSource, out var revealKey))
             {
-                while (TryReadImmediateKey(out var revealKey))
-                {
-                    if (revealKey.Key == ConsoleKey.Escape)
-                        return QteGrade.Fail;
-                }
-
-                var remainingMs = Math.Max(0, effective.RevealMs - (int)(DateTime.UtcNow - revealStarted).TotalMilliseconds);
-                renderer.Update(BuildPatternMemoryRevealFrame(sequence, remainingMs));
-
-                await Task.Delay(20);
+                if (revealKey.Key == ConsoleKey.Escape)
+                    return "fail";
             }
 
-            var inputStarted = DateTime.UtcNow;
-            renderer.Update(
-                "Память рун: фаза ввода",
-                "Повторите показанную последовательность по памяти теми же физическими клавишами. Esc - безопасный отказ считается провалом.",
-                BuildPatternMemoryInputLiveFrame(sequence.Count, inputs, effective.AllowedMistakes, effective.InputTimeoutMs));
+            var remainingMs = Math.Max(0, effective.RevealMs - (int)(clock.UtcNow - revealStarted).TotalMilliseconds);
+            renderer.Update(BuildPatternMemoryRevealFrame(sequence, remainingMs));
 
-            while ((DateTime.UtcNow - inputStarted).TotalMilliseconds < effective.InputTimeoutMs)
+            await clock.DelayAsync(20);
+        }
+
+        var inputStarted = clock.UtcNow;
+        renderer.Update(
+            "Память рун: фаза ввода",
+            "Повторите показанную последовательность по памяти теми же физическими клавишами. Esc - безопасный отказ считается провалом.",
+            BuildPatternMemoryInputLiveFrame(sequence.Count, inputs, effective.AllowedMistakes, effective.InputTimeoutMs));
+
+        while ((clock.UtcNow - inputStarted).TotalMilliseconds < effective.InputTimeoutMs)
+        {
+            while (TryReadImmediateKey(inputSource, out var inputKey))
             {
-                while (TryReadImmediateKey(out var inputKey))
+                if (inputKey.Key == ConsoleKey.Escape)
+                    return "fail";
+
+                inputs.Add(inputKey);
+                if (inputs.Count >= sequence.Count)
                 {
-                    if (inputKey.Key == ConsoleKey.Escape)
-                        return QteGrade.Fail;
-
-                    inputs.Add(inputKey);
-                    if (inputs.Count >= sequence.Count)
-                    {
-                        return ParseGrade(ResolvePatternMemoryGrade(
-                            sequence,
-                            effective.AllowedMistakes,
-                            inputs));
-                    }
+                    return ResolvePatternMemoryGrade(
+                        sequence,
+                        effective.AllowedMistakes,
+                        inputs);
                 }
-
-                var remainingMs = Math.Max(0, effective.InputTimeoutMs - (int)(DateTime.UtcNow - inputStarted).TotalMilliseconds);
-                renderer.Update(BuildPatternMemoryInputLiveFrame(sequence.Count, inputs, effective.AllowedMistakes, remainingMs));
-
-                await Task.Delay(20);
             }
 
-            return ParseGrade(ResolvePatternMemoryGrade(
-                sequence,
-                effective.AllowedMistakes,
-                inputs,
-                timedOut: true));
-        });
+            var remainingMs = Math.Max(0, effective.InputTimeoutMs - (int)(clock.UtcNow - inputStarted).TotalMilliseconds);
+            renderer.Update(BuildPatternMemoryInputLiveFrame(sequence.Count, inputs, effective.AllowedMistakes, remainingMs));
+
+            await clock.DelayAsync(20);
+        }
+
+        return ResolvePatternMemoryGrade(
+            sequence,
+            effective.AllowedMistakes,
+            inputs,
+            timedOut: true);
     }
 
     internal sealed record PatternMemoryEffectiveRequirement(
@@ -3328,45 +3363,57 @@ public sealed partial class QteSceneService
     {
         var statTier = await ResolveStatTierAsync(check.PrimaryCharacteristic);
         var requirement = ComputeTimingBarLiveRequirement(check.BaseDifficulty, statTier);
-        var position = 0;
-        var direction = 1;
-        var started = DateTime.UtcNow;
 
         return await RunMiniGameLiveAsync(
             "Полоса реакции",
             $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, когда маркер будет в центральной зоне. Esc - безопасный отказ считается провалом.",
-            BuildTimingBarLiveFrame(requirement, position, requirement.TimeoutMs),
+            BuildTimingBarLiveFrame(requirement, position: 0, requirement.TimeoutMs),
             async renderer =>
+                ParseGrade(await RunTimingBarLiveLoopAsync(
+                    requirement,
+                    _inputSource,
+                    renderer,
+                    SystemQteLiveClock.Instance)));
+    }
+
+    internal static async Task<string> RunTimingBarLiveLoopAsync(
+        TimingBarLiveRequirement requirement,
+        IConsoleInputSource inputSource,
+        IQteMiniGameLiveRenderer renderer,
+        IQteLiveClock clock)
+    {
+        var position = 0;
+        var direction = 1;
+        var started = clock.UtcNow;
+
+        while (true)
         {
-            while (true)
+            var remainingMs = Math.Max(0, requirement.TimeoutMs - (int)(clock.UtcNow - started).TotalMilliseconds);
+            if (remainingMs <= 0)
+                return "fail";
+
+            renderer.Update(BuildTimingBarLiveFrame(requirement, position, remainingMs));
+
+            if (TryReadImmediateKey(inputSource, out var key))
             {
-                var remainingMs = Math.Max(0, requirement.TimeoutMs - (int)(DateTime.UtcNow - started).TotalMilliseconds);
-                if (remainingMs <= 0)
-                    return QteGrade.Fail;
-
-                renderer.Update(BuildTimingBarLiveFrame(requirement, position, remainingMs));
-
-                if (TryReadImmediateKey(out var key))
+                if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.Spacebar))
                 {
-                    if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.Spacebar))
-                    {
-                        if (position >= requirement.SuccessStart && position < requirement.SuccessStart + requirement.SuccessWidth)
-                            return QteGrade.Success;
-                        if (position >= requirement.PartialStart && position < requirement.PartialStart + requirement.PartialWidth)
-                            return QteGrade.Partial;
-                        return QteGrade.Fail;
-                    }
-
-                    if (key.Key == ConsoleKey.Escape)
-                        return QteGrade.Fail;
+                    if (position >= requirement.SuccessStart && position < requirement.SuccessStart + requirement.SuccessWidth)
+                        return "success";
+                    if (position >= requirement.PartialStart && position < requirement.PartialStart + requirement.PartialWidth)
+                        return "partial";
+                    return "fail";
                 }
 
-                await Task.Delay(requirement.TickMs);
-                position += direction;
-                if (position >= requirement.Width - 1 || position <= 0)
-                    direction *= -1;
+                if (key.Key == ConsoleKey.Escape)
+                    return "fail";
             }
-        });
+
+            await clock.DelayAsync(requirement.TickMs);
+            position += direction;
+            if (position >= requirement.Width - 1 || position <= 0)
+                direction *= -1;
+        }
     }
 
     internal sealed record TimingBarLiveRequirement(
@@ -3421,40 +3468,61 @@ public sealed partial class QteSceneService
             "Нажимайте показанную физическую клавишу до истечения таймера. Esc - безопасный отказ считается провалом.",
             BuildPromptChainProgress(sequence[0], currentStep: 1, steps, mistakes, allowedMistakes, requirement.FirstPromptTimeoutMs),
             async renderer =>
+                ParseGrade(await RunPromptChainLiveLoopAsync(
+                    requirement,
+                    sequence,
+                    _inputSource,
+                    renderer,
+                    SystemQteLiveClock.Instance)));
+    }
+
+    internal static async Task<string> RunPromptChainLiveLoopAsync(
+        PromptChainLiveRequirement requirement,
+        IReadOnlyList<ConsoleKey> sequence,
+        IConsoleInputSource inputSource,
+        IQteMiniGameLiveRenderer renderer,
+        IQteLiveClock clock)
+    {
+        var mistakes = 0;
+
+        for (var i = 0; i < sequence.Count; i++)
         {
-            for (var i = 0; i < sequence.Length; i++)
+            var prompt = sequence[i];
+            var promptTimeoutMs = requirement.PerPromptTimeoutMs + (i == 0 ? requirement.FirstPromptGraceMs : 0);
+            var started = clock.UtcNow;
+            ConsoleKeyInfo? pressed = null;
+
+            while ((clock.UtcNow - started).TotalMilliseconds < promptTimeoutMs)
             {
-                var prompt = sequence[i];
-                var promptTimeoutMs = requirement.PerPromptTimeoutMs + (i == 0 ? requirement.FirstPromptGraceMs : 0);
-                var started = DateTime.UtcNow;
-                ConsoleKeyInfo? pressed = null;
+                var remainingMs = Math.Max(0, promptTimeoutMs - (int)(clock.UtcNow - started).TotalMilliseconds);
+                renderer.Update(BuildPromptChainProgress(
+                    prompt,
+                    i + 1,
+                    sequence.Count,
+                    mistakes,
+                    requirement.AllowedMistakes,
+                    remainingMs));
 
-                while ((DateTime.UtcNow - started).TotalMilliseconds < promptTimeoutMs)
+                if (TryReadImmediateKey(inputSource, out var key))
                 {
-                    var remainingMs = Math.Max(0, promptTimeoutMs - (int)(DateTime.UtcNow - started).TotalMilliseconds);
-                    renderer.Update(BuildPromptChainProgress(prompt, i + 1, steps, mistakes, allowedMistakes, remainingMs));
+                    if (key.Key == ConsoleKey.Escape)
+                        return "fail";
 
-                    if (TryReadImmediateKey(out var key))
-                    {
-                        if (key.Key == ConsoleKey.Escape)
-                            return QteGrade.Fail;
-
-                        pressed = key;
-                        break;
-                    }
-
-                    await Task.Delay(20);
+                    pressed = key;
+                    break;
                 }
 
-                if (pressed == null || !QteKeyInput.MatchesConsoleKey(pressed.Value, prompt))
-                    mistakes++;
-
-                if (mistakes > allowedMistakes)
-                    return QteGrade.Fail;
+                await clock.DelayAsync(20);
             }
 
-            return mistakes == 0 ? QteGrade.Success : QteGrade.Partial;
-        });
+            if (pressed == null || !QteKeyInput.MatchesConsoleKey(pressed.Value, prompt))
+                mistakes++;
+
+            if (mistakes > requirement.AllowedMistakes)
+                return "fail";
+        }
+
+        return mistakes == 0 ? "success" : "partial";
     }
 
     internal sealed record PromptChainLiveRequirement(
@@ -3480,49 +3548,93 @@ public sealed partial class QteSceneService
     private async Task<QteGrade> RunBalanceMeterAsync(QteCheck check)
     {
         var statTier = await ResolveStatTierAsync(check.PrimaryCharacteristic);
-        var difficulty = Math.Clamp(check.BaseDifficulty, 1, 5);
+        var requirement = ComputeBalanceMeterLiveRequirement(check.BaseDifficulty, statTier);
         var random = new Random();
-        var value = 50;
-        var safeHalfWidth = Math.Clamp(18 - (difficulty * 2) + (statTier * 2), 8, 24);
-        var tickMs = Math.Clamp(140 - (statTier * 5) + (difficulty * 10), 70, 220);
-        var ticks = 18 + (difficulty * 2);
-        var safeTicks = 0;
 
         return await RunMiniGameLiveAsync(
             "Равновесие",
             $"Удерживайте индикатор в центральной зоне: {FormatCompactPhysicalKeyLabel(ConsoleKey.A)} или ← ведёт влево, {FormatCompactPhysicalKeyLabel(ConsoleKey.D)} или → ведёт вправо.",
-            BuildBalanceMeter(value, safeHalfWidth, currentTick: 1, ticks, BalanceMeterMovementStep),
+            BuildBalanceMeter(
+                value: 50,
+                requirement.SafeHalfWidth,
+                currentTick: 1,
+                requirement.Ticks,
+                requirement.MovementStep),
             async renderer =>
+                ParseGrade(await RunBalanceMeterLiveLoopAsync(
+                    requirement,
+                    _inputSource,
+                    renderer,
+                    SystemQteLiveClock.Instance,
+                    random.Next)));
+    }
+
+    internal sealed record BalanceMeterLiveRequirement(
+        int SafeHalfWidth,
+        int TickMs,
+        int Ticks,
+        int MovementStep,
+        int DriftMinInclusive,
+        int DriftMaxExclusive);
+
+    internal static BalanceMeterLiveRequirement ComputeBalanceMeterLiveRequirement(int baseDifficulty, int statTier)
+    {
+        var difficulty = Math.Clamp(baseDifficulty, 1, 5);
+        return new BalanceMeterLiveRequirement(
+            SafeHalfWidth: Math.Clamp(18 - (difficulty * 2) + (statTier * 2), 8, 24),
+            TickMs: Math.Clamp(140 - (statTier * 5) + (difficulty * 10), 70, 220),
+            Ticks: 18 + (difficulty * 2),
+            MovementStep: BalanceMeterMovementStep,
+            DriftMinInclusive: -7 - difficulty,
+            DriftMaxExclusive: 8 + difficulty);
+    }
+
+    internal static async Task<string> RunBalanceMeterLiveLoopAsync(
+        BalanceMeterLiveRequirement requirement,
+        IConsoleInputSource inputSource,
+        IQteMiniGameLiveRenderer renderer,
+        IQteLiveClock clock,
+        Func<int, int, int> nextDrift)
+    {
+        var value = 50;
+        var safeTicks = 0;
+
+        for (var i = 0; i < requirement.Ticks; i++)
         {
-            for (var i = 0; i < ticks; i++)
+            if (TryReadImmediateKey(inputSource, out var key))
             {
-                if (TryReadImmediateKey(out var key))
-                {
-                    if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.A) || key.Key == ConsoleKey.LeftArrow)
-                        value = Math.Max(0, value - BalanceMeterMovementStep);
-                    else if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.D) || key.Key == ConsoleKey.RightArrow)
-                        value = Math.Min(100, value + BalanceMeterMovementStep);
-                    else if (key.Key == ConsoleKey.Escape)
-                        return QteGrade.Fail;
-                }
-
-                value = Math.Clamp(value + random.Next(-7 - difficulty, 8 + difficulty), 0, 100);
-                if (Math.Abs(value - 50) <= safeHalfWidth)
-                    safeTicks++;
-
-                renderer.Update(BuildBalanceMeter(value, safeHalfWidth, i + 1, ticks, BalanceMeterMovementStep));
-
-                await Task.Delay(tickMs);
+                if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.A) || key.Key == ConsoleKey.LeftArrow)
+                    value = Math.Max(0, value - requirement.MovementStep);
+                else if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.D) || key.Key == ConsoleKey.RightArrow)
+                    value = Math.Min(100, value + requirement.MovementStep);
+                else if (key.Key == ConsoleKey.Escape)
+                    return "fail";
             }
 
-            var ratio = (double)safeTicks / ticks;
-            return ratio switch
-            {
-                >= 0.70 => QteGrade.Success,
-                >= 0.45 => QteGrade.Partial,
-                _ => QteGrade.Fail
-            };
-        });
+            value = Math.Clamp(
+                value + nextDrift(requirement.DriftMinInclusive, requirement.DriftMaxExclusive),
+                0,
+                100);
+            if (Math.Abs(value - 50) <= requirement.SafeHalfWidth)
+                safeTicks++;
+
+            renderer.Update(BuildBalanceMeter(
+                value,
+                requirement.SafeHalfWidth,
+                i + 1,
+                requirement.Ticks,
+                requirement.MovementStep));
+
+            await clock.DelayAsync(requirement.TickMs);
+        }
+
+        var ratio = (double)safeTicks / requirement.Ticks;
+        return ratio switch
+        {
+            >= 0.70 => "success",
+            >= 0.45 => "partial",
+            _ => "fail"
+        };
     }
 
     private async Task<QteGrade> RunChargeReleaseAsync(QteCheck check)
@@ -3768,7 +3880,7 @@ public sealed partial class QteSceneService
         string title,
         string instructions,
         string initialBody,
-        Func<QteMiniGameLiveRenderer, Task<T>> runAsync)
+        Func<IQteMiniGameLiveRenderer, Task<T>> runAsync)
     {
         var renderer = new QteMiniGameLiveRenderer(title, instructions, initialBody);
         if (!AnsiConsole.Profile.Capabilities.Interactive)
@@ -3789,7 +3901,7 @@ public sealed partial class QteSceneService
             });
     }
 
-    private sealed class QteMiniGameLiveRenderer(string title, string instructions, string body)
+    private sealed class QteMiniGameLiveRenderer(string title, string instructions, string body) : IQteMiniGameLiveRenderer
     {
         private LiveDisplayContext? _context;
         private string _title = title;
@@ -4191,11 +4303,16 @@ public sealed partial class QteSceneService
 
     private bool TryReadImmediateKey(out ConsoleKeyInfo key)
     {
+        return TryReadImmediateKey(_inputSource, out key);
+    }
+
+    private static bool TryReadImmediateKey(IConsoleInputSource inputSource, out ConsoleKeyInfo key)
+    {
         key = default;
-        if (!_inputSource.KeyAvailable)
+        if (!inputSource.KeyAvailable)
             return false;
 
-        key = _inputSource.ReadKey(intercept: true);
+        key = inputSource.ReadKey(intercept: true);
         return true;
     }
 
