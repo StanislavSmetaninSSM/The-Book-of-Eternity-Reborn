@@ -153,5 +153,6 @@
   - Added-line static scan: 0 findings over added lines.
   - Local review found one ChargeRelease UX issue where filled charge hid the target band; fixed before final focused/broad test reruns. Reviewer subagent was not spawned because the available multi-agent tool forbids spawning subagents unless the user explicitly asks for subagents/delegation.
 
-- [ ] **T031 Push, PR, merge, and post #1081 follow-up evidence**
+- [x] **T031 Push, PR, merge, and post #1081 follow-up evidence**
   Commit the follow-up fixes, push branch, create/merge PR, verify main/issue state, and comment final evidence on #1081.
+  Evidence: follow-up branch `fix/1081-qte-playability-followup` was pushed, PR [#1103](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1103) was created and squash-merged into `main` at `f43498b6c424901dfcbb97357e038471a92ccfe4`, remote branch was deleted by `gh pr merge --delete-branch`, issue [#1081](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1081) is `CLOSED` with `status: verified`, and closure evidence was posted in https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1081#issuecomment-4740838267. Post-merge focused QTE/docs verification on `main` passed with 0 failed / 65 passed / 0 skipped / 65 total; post-merge build passed with 0 warnings / 0 errors.
