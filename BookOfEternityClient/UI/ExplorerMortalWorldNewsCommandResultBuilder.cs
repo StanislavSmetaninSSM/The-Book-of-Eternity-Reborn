@@ -7,6 +7,7 @@ namespace BookOfEternityClient.UI;
 
 internal static class ExplorerMortalWorldNewsCommandResultBuilder
 {
+    private const int OverviewSummaryMaxLength = 140;
     private const string EventsPath = "game_state/world/world_events.json";
     private const string FlagsPath = "game_state/world/world_flags.json";
     private const string ProgressionPath = "game_state/world/progression.json";
@@ -64,6 +65,8 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
                 Rows = summaryRows
             });
         }
+
+        AddWorldNewsOverviewTables(blocks, events, flags, progression);
 
         var actions = BuildWorldNewsOverviewActions(commandToken, events, flags, progression);
         if (actions.Count > 0)
@@ -156,6 +159,67 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         AddSummaryRow(rows, "Флаги мира", state.Flags, flagCount, "флаг", "флага", "флагов");
         AddSummaryRow(rows, "Прогресс мира", state.Progression, progressionCount, "запись", "записи", "записей");
         return rows;
+    }
+
+    private static void AddWorldNewsOverviewTables(
+        List<UiBlock> blocks,
+        IReadOnlyList<WorldEventSnapshot> events,
+        IReadOnlyList<WorldFlagSnapshot> flags,
+        IReadOnlyList<ProgressionSnapshot> progression)
+    {
+        var eventRows = events
+            .Select(item => new UiTableRow
+            {
+                Cells =
+                [
+                    item.Title,
+                    BuildWorldEventOverviewSummary(item.Node)
+                ]
+            })
+            .ToList();
+        if (eventRows.Count > 0)
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Мировые события",
+                Columns = ["Событие", "Кратко"],
+                Rows = eventRows
+            });
+
+        var flagRows = flags
+            .Select(item => new UiTableRow
+            {
+                Cells =
+                [
+                    item.Title,
+                    BuildWorldFlagOverviewSummary(item.Node)
+                ]
+            })
+            .ToList();
+        if (flagRows.Count > 0)
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Флаги мира",
+                Columns = ["Флаг", "Кратко"],
+                Rows = flagRows
+            });
+
+        var progressionRows = progression
+            .Select(item => new UiTableRow
+            {
+                Cells =
+                [
+                    item.Title,
+                    BuildProgressionOverviewSummary(item)
+                ]
+            })
+            .ToList();
+        if (progressionRows.Count > 0)
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Прогресс мира",
+                Columns = ["Запись", "Кратко"],
+                Rows = progressionRows
+            });
     }
 
     private static void AddSummaryRow(
@@ -300,10 +364,11 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         var actions = new List<UiAction>();
         foreach (var item in events)
         {
+            var summary = BuildWorldEventOverviewSummary(item.Node);
             actions.Add(new UiAction
             {
                 Id = "world-news-event-" + ToActionIdPart(item.Selector),
-                Label = $"Открыть событие «{item.Title}»",
+                Label = BuildWorldNewsActionLabel("Открыть событие", item.Title, summary),
                 Command = BuildWorldNewsDetailCommand(commandToken, WorldNewsDetailKind.Event, item.Selector),
                 Style = UiActionStyle.Secondary,
                 RequiresConfirmation = false,
@@ -318,10 +383,11 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
 
         foreach (var item in flags)
         {
+            var summary = BuildWorldFlagOverviewSummary(item.Node);
             actions.Add(new UiAction
             {
                 Id = "world-news-flag-" + ToActionIdPart(item.Selector),
-                Label = $"Осмотреть флаг «{item.Title}»",
+                Label = BuildWorldNewsActionLabel("Осмотреть флаг", item.Title, summary),
                 Command = BuildWorldNewsDetailCommand(commandToken, WorldNewsDetailKind.Flag, item.Selector),
                 Style = UiActionStyle.Secondary,
                 RequiresConfirmation = false,
@@ -336,10 +402,11 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
 
         foreach (var item in progression)
         {
+            var summary = BuildProgressionOverviewSummary(item);
             actions.Add(new UiAction
             {
                 Id = "world-news-progression-" + ToActionIdPart(item.Selector),
-                Label = $"Открыть прогресс «{item.Title}»",
+                Label = BuildWorldNewsActionLabel("Открыть прогресс", item.Title, summary),
                 Command = BuildWorldNewsDetailCommand(commandToken, WorldNewsDetailKind.Progression, item.Selector),
                 Style = UiActionStyle.Secondary,
                 RequiresConfirmation = false,
@@ -354,6 +421,50 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
 
         return actions;
     }
+
+    private static string BuildWorldNewsActionLabel(string verb, string title, string summary)
+    {
+        var label = $"{verb} «{title}»";
+        return string.IsNullOrWhiteSpace(summary)
+            ? label
+            : $"{label} — {summary}";
+    }
+
+    private static string BuildWorldEventOverviewSummary(JsonObject item) =>
+        ShortenOverviewText(FirstNonEmpty(
+            FirstWorldNewsNodeString(item, "summary", "narrativeSummary"),
+            FirstWorldNewsNodeString(item, "description", "details"),
+            JoinNodeValues(item["consequences"] ?? item["effects"]),
+            DescribeEventStatus(item)));
+
+    private static string BuildWorldFlagOverviewSummary(JsonObject item) =>
+        ShortenOverviewText(FirstNonEmpty(
+            FirstWorldNewsNodeString(item, "description", "summary", "note"),
+            FirstWorldNewsNodeString(item, "consequence", "consequences", "effect", "currentEffect"),
+            DescribeFlagState(item),
+            DescribeFlagScope(item)));
+
+    private static string BuildProgressionOverviewSummary(ProgressionSnapshot item) =>
+        ShortenOverviewText(FirstNonEmpty(
+            FirstWorldNewsNodeString(item.Node, "description", "summary"),
+            FirstWorldNewsNodeString(item.Node, "consequence", "consequences", "outcome", "effect"),
+            FirstWorldNewsNodeString(item.Node, "nextMilestone", "milestone", "nextStep"),
+            FirstWorldNewsNodeString(item.Node, "changeReason", "lastChangeReason", "reason", "source"),
+            item.Stage,
+            DescribeWorldNewsStatus(item.Status)));
+
+    private static string ShortenOverviewText(string value)
+    {
+        var text = NormalizeWhitespace(value);
+        if (text.Length <= OverviewSummaryMaxLength)
+            return text;
+
+        return text[..(OverviewSummaryMaxLength - 1)].TrimEnd() + "…";
+    }
+
+    private static string NormalizeWhitespace(string value) =>
+        string.Join(" ", value
+            .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
 
     private static IEnumerable<WorldEventSnapshot> EnumerateWorldEvents(JsonNode? node)
     {
@@ -753,14 +864,13 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             return string.Join("; ", array.Select(DescribeNodeForDetail).Where(static value => !string.IsNullOrWhiteSpace(value)));
         if (node is JsonObject obj)
         {
-            var label = FirstWorldNewsNodeString(obj, "name", "title", "displayName", "summary", "description", "value");
-            if (!string.IsNullOrWhiteSpace(label))
-                return label;
-
-            return string.Join("; ", obj
+            var propertyDescriptions = obj
                 .Where(static property => !ShouldSkipAdditionalDetailField(property.Key, EmptyConsumedDetailFields))
                 .Select(static property => $"{WorldNewsFieldLabel(property.Key)}: {DescribeNodeForDetail(property.Value)}")
-                .Where(static value => !string.IsNullOrWhiteSpace(value)));
+                .Where(static value => !string.IsNullOrWhiteSpace(value))
+                .ToList();
+
+            return string.Join("; ", propertyDescriptions);
         }
 
         return string.Empty;
@@ -771,12 +881,19 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         var normalized = fieldName.Trim();
         return normalized.ToLowerInvariant() switch
         {
+            "name" or "displayname" => "Имя",
+            "title" => "Название",
+            "summary" => "Кратко",
+            "description" => "Описание",
+            "value" => "Значение",
             "publicmood" => "Настроение жителей",
             "mood" => "Настроение",
             "possibleleads" or "leads" or "clues" => "Зацепки",
             "stakes" => "Ставки",
             "danger" => "Опасность",
             "deadline" => "Срок",
+            "witnessprofile" => "Свидетель",
+            "testimony" => "Показания",
             "rumors" or "rumours" => "Слухи",
             "witnesses" => "Свидетели",
             "evidence" => "Улики",

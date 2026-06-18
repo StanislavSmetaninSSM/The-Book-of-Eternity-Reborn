@@ -88,21 +88,30 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("worldEventsLog", overviewText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("worldStateFlags", overviewText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("updateWorldProgressionTracker", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Беспорядки у Северных ворот", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стража закрыла торговую площадь", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Праздник стих после тревоги", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Музыканты играют тише после ночного письма", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Дорога к Серебряному броду", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("На тракте снова появились торговцы", overviewText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Карманники у ворот", overviewText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Мира Ключница", overviewText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Ночные патрули", overviewText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Беспорядки у Северных ворот", overviewText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Праздник стих после тревоги", overviewText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Дорога к Серебряному броду", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("riots_at_gate", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("festival_quiet", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("road_silverford", overviewText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/world", overviewText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(_console.SelectionChoicesHistory, history =>
             history.Title.Contains("Новости мира", StringComparison.OrdinalIgnoreCase) &&
             history.Choices.Any(choice => choice.Contains("Открыть событие", StringComparison.OrdinalIgnoreCase) &&
-                                          choice.Contains("Беспорядки у Северных ворот", StringComparison.OrdinalIgnoreCase)) &&
+                                          choice.Contains("Беспорядки у Северных ворот", StringComparison.OrdinalIgnoreCase) &&
+                                          choice.Contains("Стража закрыла торговую площадь", StringComparison.OrdinalIgnoreCase)) &&
             history.Choices.Any(choice => choice.Contains("Осмотреть флаг", StringComparison.OrdinalIgnoreCase) &&
-                                          choice.Contains("Праздник стих после тревоги", StringComparison.OrdinalIgnoreCase)) &&
+                                          choice.Contains("Праздник стих после тревоги", StringComparison.OrdinalIgnoreCase) &&
+                                          choice.Contains("Музыканты играют тише после ночного письма", StringComparison.OrdinalIgnoreCase)) &&
             history.Choices.Any(choice => choice.Contains("Открыть прогресс", StringComparison.OrdinalIgnoreCase) &&
-                                          choice.Contains("Дорога к Серебряному броду", StringComparison.OrdinalIgnoreCase)));
+                                          choice.Contains("Дорога к Серебряному броду", StringComparison.OrdinalIgnoreCase) &&
+                                          choice.Contains("На тракте снова появились торговцы", StringComparison.OrdinalIgnoreCase)));
 
         _console.Rendered.Clear();
         _console.MarkupLines.Clear();
@@ -124,7 +133,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         await SeedMortalStateAsync();
         await SeedRichMortalWorldNewsFilesAsync();
         await _stateManager.RefreshGameStateAsync();
-        _console.QueueSelection("Новости мира", "Открыть событие «Беспорядки у Северных ворот»");
+        _console.QueueSelection("Новости мира", "Открыть событие «Беспорядки у Северных ворот» — Стража закрыла торговую площадь.");
 
         var result = await _explorer.TryProcessCommand("/новости_мира");
 
@@ -146,7 +155,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         await _stateManager.RefreshGameStateAsync();
         _console.QueueSelection(
             "Действие: Новости мира",
-            "Открыть событие «Беспорядки у Северных ворот»",
+            "Открыть событие «Беспорядки у Северных ворот» — Стража закрыла торговую площадь.",
             "← Назад");
         _console.QueueSelection("Новости мира: запись", "← Назад к списку");
 
