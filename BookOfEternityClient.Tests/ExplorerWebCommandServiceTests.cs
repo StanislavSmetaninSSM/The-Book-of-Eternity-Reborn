@@ -85,7 +85,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [Theory]
     [InlineData("/квесты", "Печать с крыльями")]
     [InlineData("/навыки", "Чувство магических потоков")]
-    [InlineData("/новости_мира", "Письмо появилось ночью")]
+    [InlineData("/новости_мира", "1 событие")]
     [InlineData("/чужие_нити", "Лунный претендент")]
     [InlineData("/погода", "08:15")]
     [InlineData("/транспорт", "Серый конь")]
@@ -261,20 +261,24 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/новости_мира"));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var summaryTable = Assert.Single(result.Blocks.OfType<UiTableBlock>());
+        Assert.Equal("Новости мира", summaryTable.Title);
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Новости мира", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Мировые события", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Угрозы локаций", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Карманники у ворот", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Активности НПС", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Мира Ключница", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Проекты фракций", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Ночные патрули", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Флаги мира", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Прогресс мира", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Беспорядки у Северных ворот", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Праздник стих после тревоги", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Дорога к Серебряному броду", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Карманники у ворот", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Мира Ключница", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Ночные патрули", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Беспорядки у Северных ворот", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Праздник стих после тревоги", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Дорога к Серебряному броду", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полная запись", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/world", text, StringComparison.OrdinalIgnoreCase);
 
         var eventAction = Assert.Single(result.Actions, static action => action.Id == "world-news-event-riots_at_gate");

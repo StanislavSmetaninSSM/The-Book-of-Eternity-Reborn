@@ -64,111 +64,20 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             });
         }
 
-        if (events.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
+        var actions = BuildWorldNewsOverviewActions(commandToken, events, flags, progression);
+        if (actions.Count > 0)
+            blocks.Add(new UiTextBlock
             {
-                Title = "Мировые события",
-                Columns = ["Событие", "Когда и где", "Статус", "Подробно"],
-                Rows = events.Select(item => new UiTableRow
-                {
-                    Cells =
-                    [
-                        item.Title,
-                        EmptyFallback(DescribeEventWhenWhere(item.Node)),
-                        EmptyFallback(DescribeEventStatus(item.Node)),
-                        BuildWorldNewsDetailCommand(commandToken, WorldNewsDetailKind.Event, item.Selector)
-                    ]
-                }).ToList()
+                Text = "Выберите запись из списка действий, чтобы открыть подробности.",
+                Tone = UiTone.Muted
             });
-        }
-
-        if (threats.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Угрозы локаций",
-                Columns = ["Локация", "Угроза", "Опасность", "Описание"],
-                Rows = threats.Select(static item => new UiTableRow
-                {
-                    Cells = [item.Location, item.Name, EmptyFallback(DescribeThreatSeverity(item.Severity)), EmptyFallback(item.Description)]
-                }).ToList()
-            });
-        }
-
-        if (npcActivities.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Активности НПС",
-                Columns = ["НПС", "Активность", "Где", "Состояние"],
-                Rows = npcActivities.Select(static item => new UiTableRow
-                {
-                    Cells = [item.NpcName, item.Activity, EmptyFallback(item.Location), EmptyFallback(DescribeWorldNewsStatus(item.Status))]
-                }).ToList()
-            });
-        }
-
-        if (factionProjects.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Проекты фракций",
-                Columns = ["Фракция", "Проект", "Состояние", "Описание"],
-                Rows = factionProjects.Select(static item => new UiTableRow
-                {
-                    Cells = [EmptyFallback(item.Faction), item.Project, EmptyFallback(DescribeWorldNewsStatus(item.Status)), EmptyFallback(item.Description)]
-                }).ToList()
-            });
-        }
-
-        if (flags.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Флаги мира",
-                Columns = ["Флаг", "Область", "Состояние", "Подробно"],
-                Rows = flags.Select(item => new UiTableRow
-                {
-                    Cells =
-                    [
-                        item.Title,
-                        EmptyFallback(DescribeFlagScope(item.Node)),
-                        EmptyFallback(DescribeFlagState(item.Node)),
-                        BuildWorldNewsDetailCommand(commandToken, WorldNewsDetailKind.Flag, item.Selector)
-                    ]
-                }).ToList()
-            });
-        }
-
-        if (progression.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Прогресс мира",
-                Columns = ["Запись", "Стадия", "Что изменилось", "Подробно"],
-                Rows = progression.Select(item => new UiTableRow
-                {
-                    Cells =
-                    [
-                        item.Title,
-                        EmptyFallback(item.Stage),
-                        EmptyFallback(FirstWorldNewsNodeString(item.Node, "changeReason", "lastChangeReason", "reason", "description", "summary")),
-                        BuildWorldNewsDetailCommand(commandToken, WorldNewsDetailKind.Progression, item.Selector)
-                    ]
-                }).ToList()
-            });
-        }
 
         AddWorldNewsReadWarnings(blocks, state);
 
         if (blocks.Count == 0)
             blocks.Add(Message(UiNotificationSeverity.Info, "Новости мира", "Данные ещё не созданы."));
 
-        AddWorldNewsRawState(blocks, state.Events, "Полная запись мировых событий");
-        AddWorldNewsRawState(blocks, state.Flags, "Полная запись флагов мира");
-        AddWorldNewsRawState(blocks, state.Progression, "Полная запись прогресса мира");
-        return Completed(command, blocks, BuildWorldNewsOverviewActions(commandToken, events, flags, progression));
+        return Completed(command, blocks, actions);
     }
 
     private static ExplorerCommandResult BuildDetail(
@@ -691,11 +600,6 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
     private static bool IsEnglishWorldNewsCommand(string commandToken) =>
         string.Equals(commandToken, "/world_news", StringComparison.OrdinalIgnoreCase);
 
-    private static string DescribeEventWhenWhere(JsonObject item) =>
-        JoinWorldNewsDetails(
-            FirstWorldNewsNodeString(item, "timestamp", "dateTime", "date", "time"),
-            FirstWorldNewsNodeString(item, "location", "eventLocation", "locationName", "region"));
-
     private static string DescribeEventStatus(JsonObject item) =>
         JoinWorldNewsDetails(
             DescribeWorldNewsStatus(FirstWorldNewsNodeString(item, "status", "phase", "state")),
@@ -755,17 +659,6 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             "secret" => "скрыто от героя",
             "faction-internal" => "внутри фракции",
             _ => visibility.Trim()
-        };
-
-    private static string DescribeThreatSeverity(string severity) =>
-        severity.Trim().ToLowerInvariant() switch
-        {
-            "" => string.Empty,
-            "low" => "низкая",
-            "medium" => "средняя",
-            "high" => "высокая",
-            "critical" => "крайняя",
-            _ => severity.Trim()
         };
 
     private static string DescribeNodeForDetail(JsonNode? node)
@@ -945,12 +838,6 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
     private static bool StateHasReadError(JsonReadResult read) =>
         read.FileExists && read.Node == null && !string.IsNullOrWhiteSpace(read.Error);
 
-    private static void AddWorldNewsRawState(List<UiBlock> blocks, JsonReadResult read, string title)
-    {
-        if (read.Node != null)
-            blocks.Add(Raw(title, read.Node));
-    }
-
     private static async Task<JsonReadResult> ReadJson(FileSystemManager fs, string path)
     {
         var raw = await fs.ReadFileAsync(path);
@@ -985,13 +872,6 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             Severity = severity,
             Title = title,
             Message = message
-        };
-
-    private static UiRawJsonBlock Raw(string title, JsonNode node) =>
-        new()
-        {
-            Title = title,
-            Json = node.DeepClone()
         };
 
     private enum WorldNewsDetailKind

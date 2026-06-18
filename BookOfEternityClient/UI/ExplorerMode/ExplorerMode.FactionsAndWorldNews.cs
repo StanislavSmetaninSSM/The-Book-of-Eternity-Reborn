@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.CommandProtocol;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 using BookOfEternityClient.Core;
@@ -844,192 +845,75 @@ public partial class ExplorerMode
             ? "/новости_мира"
             : "/новости_мира " + _currentCommandRemainder;
         var result = await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(commandLine, _stateManager, _fs);
-        if (result != null)
+        if (result == null)
         {
-            ExplorerCommandResultConsoleRenderer.Render(_console, result);
-            WaitForKey();
+            ShowEmptyPanel(_loc.T("world_news"), "Данные новостей мира недоступны");
             return;
         }
 
-        var doc = await _stateManager.LoadGameStateFileAsync("game_state/world/world_events.json");
-
-        var text = new List<string>();
-        if (doc != null)
-        {
-            EnumerateArray(doc.RootElement, "events", item => RenderWorldEventDetailed(text, item));
-            // Also try root-level array
-            if (text.Count == 0)
-                EnumerateJsonItems(doc.RootElement, item => RenderWorldEventDetailed(text, item));
-        }
-
-        // Remove trailing empty spacer
-        while (text.Count > 0 && string.IsNullOrEmpty(text[^1])) text.RemoveAt(text.Count - 1);
-        if (text.Count == 0) text.Add("[dim]Нет мировых событий[/]");
-
-        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
-        {
-            Header = new PanelHeader($" 🌍 {_loc.T("world_news")} ", Justify.Center),
-            Border = BoxBorder.Rounded,
-            BorderStyle = new Style(Color.Yellow),
-            Padding = new Padding(2, 1),
-            Expand = true
-        });
-
-        // ═══ Active location threats across ALL known locations ═══
-        var threatLines = new List<string>();
-        var locDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/current_location.json");
-        var mapDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/world_map.json");
-
-        void CollectThreats(JsonElement rawLoc)
-        {
-            var loc = GetCurrentLocationRoot(rawLoc);
-            if (!loc.TryGetProperty("activeThreats", out var threats) ||
-                threats.ValueKind != JsonValueKind.Array || threats.GetArrayLength() == 0) return;
-            var locName = GetStr(loc, "name", "?");
-            threatLines.Add($"  📍 [bold white]{Markup.Escape(locName)}[/]");
-            foreach (var t in threats.EnumerateArray())
-                RenderThreatFull(threatLines, t);
-        }
-
-        if (locDoc != null) CollectThreats(locDoc.RootElement);
-        if (mapDoc != null)
-        {
-            var mapRoot = mapDoc.RootElement.TryGetProperty("worldMapUpdates", out var wm) && wm.ValueKind == JsonValueKind.Object
-                ? wm
-                : mapDoc.RootElement;
-            EnumerateArray(mapRoot, "newLocations", CollectThreats);
-            EnumerateArray(mapRoot, "locationUpdates", CollectThreats);
-        }
-
-        if (threatLines.Count > 0)
-        {
-            WriteLine();
-            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", threatLines)))
-            {
-                Header = new PanelHeader(" 🔥 Угрозы локаций ", Justify.Center),
-                Border = BoxBorder.Rounded,
-                BorderStyle = new Style(Color.Red),
-                Padding = new Padding(1, 0),
-                Expand = true
-            });
-        }
-
-        // ═══ NPC Activities ═══
-        var actDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_activities.json");
-        if (actDoc != null)
-        {
-            var npcActLines = new List<string>();
-            EnumerateJsonItems(actDoc.RootElement, item => RenderNpcActivityNewsDetailed(npcActLines, item));
-
-            if (npcActLines.Count > 0)
-            {
-                WriteLine();
-                Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", npcActLines)))
-                {
-                    Header = new PanelHeader(" 🏃 Активности НПС ", Justify.Center),
-                    Border = BoxBorder.Rounded,
-                    BorderStyle = new Style(Color.Cyan1),
-                    Padding = new Padding(1, 0),
-                    Expand = true
-                });
-            }
-        }
-
-        // ═══ Faction Projects (active) ═══
-        var projDoc = await _stateManager.LoadGameStateFileAsync("game_state/factions/faction_projects.json");
-        if (projDoc != null)
-        {
-            var projLines = new List<string>();
-            EnumerateJsonItems(projDoc.RootElement, item => RenderFactionProjectNewsDetailed(projLines, item));
-
-            if (projLines.Count > 0)
-            {
-                WriteLine();
-                Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", projLines)))
-                {
-                    Header = new PanelHeader(" 🔨 Проекты фракций ", Justify.Center),
-                    Border = BoxBorder.Rounded,
-                    BorderStyle = new Style(Color.Orange1),
-                    Padding = new Padding(1, 0),
-                    Expand = true
-                });
-            }
-        }
-
-        // ═══ World flags ═══
-        var flagDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/world_flags.json");
-        if (flagDoc != null)
-        {
-            var flagText = new List<string>();
-            EnumerateJsonItems(flagDoc.RootElement, item =>
-            {
-                // Block 21.5: flagId, displayName, value, description
-                var displayName = GetStr(item, "displayName", GetStr(item, "flagName", GetStr(item, "name", "")));
-                var flagId = GetStr(item, "flagId", GetStr(item, "id", ""));
-                var desc = GetStr(item, "description", "");
-                var value = GetStr(item, "value", "");
-                if (string.IsNullOrEmpty(displayName) && string.IsNullOrEmpty(flagId)) return;
-                var label = !string.IsNullOrEmpty(displayName) ? displayName : flagId;
-                var line = $"  🏁 [white]{Markup.Escape(label)}[/]";
-                if (!string.IsNullOrEmpty(value) && value != "true" && value != "True")
-                    line += $": [yellow]{Markup.Escape(value)}[/]";
-                if (!string.IsNullOrEmpty(desc))
-                    line += $" — [dim]{Markup.Escape(desc)}[/]";
-                flagText.Add(line);
-            });
-            if (flagText.Count > 0)
-            {
-                WriteLine();
-                Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", flagText)))
-                {
-                    Header = new PanelHeader(" 🏁 Флаги мира ", Justify.Center),
-                    Border = BoxBorder.Rounded,
-                    BorderStyle = new Style(Color.Yellow),
-                    Padding = new Padding(1, 0),
-                    Expand = true
-                });
-            }
-        }
-
-        // ═══ World progression ═══
-        var progDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/progression.json");
-        if (progDoc != null)
-        {
-            var progText = new List<string>();
-            if (progDoc.RootElement.TryGetProperty("updateWorldProgressionTracker", out var worldTrackers))
-            {
-                if (worldTrackers.ValueKind == JsonValueKind.Array)
-                    foreach (var item in worldTrackers.EnumerateArray())
-                        RenderWorldProgressNewsDetailed(progText, item, "🌍 Мир");
-                else if (worldTrackers.ValueKind == JsonValueKind.Object)
-                    RenderWorldProgressNewsDetailed(progText, worldTrackers, "🌍 Мир");
-            }
-            if (progDoc.RootElement.TryGetProperty("updateFactionProgressionTracker", out var factionTrackers))
-            {
-                if (factionTrackers.ValueKind == JsonValueKind.Array)
-                    foreach (var item in factionTrackers.EnumerateArray())
-                        RenderWorldProgressNewsDetailed(progText, item, "🏛️ Фракции");
-                else if (factionTrackers.ValueKind == JsonValueKind.Object)
-                    RenderWorldProgressNewsDetailed(progText, factionTrackers, "🏛️ Фракции");
-            }
-            if (progText.Count == 0)
-                EnumerateJsonItems(progDoc.RootElement, item => RenderWorldProgressNewsDetailed(progText, item, "📈"));
-            if (progText.Count > 0)
-            {
-                WriteLine();
-                Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", progText)))
-                {
-                    Header = new PanelHeader(" 📈 Прогресс мира ", Justify.Center),
-                    Border = BoxBorder.Rounded,
-                    BorderStyle = new Style(Color.Cyan1),
-                    Padding = new Padding(1, 0),
-                    Expand = true
-                });
-            }
-        }
+        var isOverview = string.IsNullOrWhiteSpace(_currentCommandRemainder);
+        ExplorerCommandResultConsoleRenderer.Render(_console, isOverview ? WithoutActions(result) : result);
+        if (isOverview)
+            await PromptWorldNewsDetailAsync(result);
 
         WaitForKey();
     }
+
+    private async Task PromptWorldNewsDetailAsync(ExplorerCommandResult overviewResult)
+    {
+        if (overviewResult.Actions.Count == 0)
+            return;
+
+        const string backChoice = "← Назад";
+        var choices = new List<string>();
+        var actionsByChoice = new Dictionary<string, UiAction>(StringComparer.Ordinal);
+        foreach (var action in overviewResult.Actions)
+        {
+            if (string.IsNullOrWhiteSpace(action.Command) || string.IsNullOrWhiteSpace(action.Label))
+                continue;
+
+            var label = action.Label;
+            if (actionsByChoice.ContainsKey(label))
+                label = $"{label} ({action.Command})";
+
+            choices.Add(label);
+            actionsByChoice[label] = action;
+        }
+
+        if (choices.Count == 0)
+            return;
+
+        choices.Add(backChoice);
+        var selected = Prompt(
+            new SelectionPrompt<string>()
+                .Title("[bold cyan]Действие: Новости мира[/]")
+                .PageSize(Math.Clamp(choices.Count, 3, 15))
+                .AddChoices(choices));
+
+        if (string.Equals(selected, backChoice, StringComparison.Ordinal) ||
+            !actionsByChoice.TryGetValue(selected, out var selectedAction))
+        {
+            return;
+        }
+
+        var detailResult = await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(selectedAction.Command, _stateManager, _fs);
+        if (detailResult == null)
+            return;
+
+        WriteLine();
+        ExplorerCommandResultConsoleRenderer.Render(_console, WithoutActions(detailResult));
+    }
+
+    private static ExplorerCommandResult WithoutActions(ExplorerCommandResult result) =>
+        new()
+        {
+            Command = result.Command,
+            State = result.State,
+            Blocks = result.Blocks,
+            Prompts = result.Prompts,
+            Notifications = result.Notifications,
+            InteractiveSession = result.InteractiveSession
+        };
 
     private async Task ShowCraftMenu()
     {
