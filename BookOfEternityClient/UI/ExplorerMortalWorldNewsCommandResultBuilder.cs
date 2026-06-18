@@ -129,7 +129,6 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         }
 
         AddWorldNewsReadWarnings(blocks, state);
-        blocks.Add(new UiTextBlock { Text = $"Вернуться к сводке можно командой {commandToken}.", Tone = UiTone.Muted });
         return Completed(command, blocks, [
             new UiAction
             {
@@ -257,10 +256,7 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
 
     private static UiPanelBlock BuildWorldEventDetailPanel(WorldEventSnapshot item)
     {
-        var detailItems = new List<UiKeyValueItem>
-        {
-            new() { Key = "Метка", Value = item.Selector }
-        };
+        var detailItems = new List<UiKeyValueItem>();
 
         AddDetailItem(detailItems, "Когда", FirstWorldNewsNodeString(item.Node, "timestamp", "dateTime", "date", "time"));
         AddDetailItem(detailItems, "Где", FirstWorldNewsNodeString(item.Node, "location", "eventLocation", "locationName", "region"));
@@ -297,10 +293,7 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
 
     private static UiPanelBlock BuildWorldFlagDetailPanel(WorldFlagSnapshot item)
     {
-        var detailItems = new List<UiKeyValueItem>
-        {
-            new() { Key = "Метка", Value = item.Selector }
-        };
+        var detailItems = new List<UiKeyValueItem>();
 
         AddDetailItem(detailItems, "Область", DescribeFlagScope(item.Node));
         AddDetailItem(detailItems, "Состояние", DescribeFlagState(item.Node));
@@ -326,7 +319,6 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
     {
         var detailItems = new List<UiKeyValueItem>
         {
-            new() { Key = "Метка", Value = item.Selector },
             new() { Key = "Раздел", Value = item.Scope }
         };
 
@@ -894,6 +886,9 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             "deadline" => "Срок",
             "witnessprofile" => "Свидетель",
             "testimony" => "Показания",
+            "sealdetails" => "Печать",
+            "relatedpeople" => "Связанные лица",
+            "role" => "Роль",
             "rumors" or "rumours" => "Слухи",
             "witnesses" => "Свидетели",
             "evidence" => "Улики",

@@ -83,5 +83,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 <!-- SPECKIT START -->
 Current Spec Kit plan for this branch:
-`specs/1109-world-news-overview-summaries/plan.md`
+`specs/1112-world-news-detail-footer-depth/plan.md`
 <!-- SPECKIT END -->
