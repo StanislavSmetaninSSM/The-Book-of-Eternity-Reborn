@@ -1,4 +1,5 @@
 import type React from 'react';
+import { motion } from 'framer-motion';
 import { isSuccess, useShell } from '../context/ShellContext';
 import { SceneHero } from './SceneHero';
 import { TurnStatePanel } from './TurnStatePanel';
@@ -7,6 +8,8 @@ import { useSceneImage } from '../hooks/useSceneImage';
 import { toPlayerFacingText } from '../utils/playerCopy';
 import { formatWorldTimeForPlayer } from '../utils/formatters';
 import { browserUiAssets } from '../browserUiAssets';
+import { RuneFrame, OrnamentBorder } from './decorative';
+import { staggerContainer, fadeUp } from '../lib/motion';
 
 export function SceneView() {
   const { readyState, isCommandView, executeCommand } = useShell();
@@ -34,7 +37,12 @@ function SceneContent({ game, onCommand }: {
   const sceneImage = useSceneImage(game.narrative.imagePrompt, game.media.gallery ?? []);
 
   return (
-    <div className="scene-view">
+    <motion.div
+      className="scene-view"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+    >
       <SceneHero
         imageUrl={sceneImage.url}
         fallbackImageUrl={browserUiAssets.sceneHeroFallback.url}
@@ -44,24 +52,30 @@ function SceneContent({ game, onCommand }: {
         loading={sceneImage.loading}
       />
 
-      <article className="scene-narrative">
-        <p>{game.narrative.text || 'Нарратив ещё не получен от ГМа.'}</p>
-      </article>
+      <motion.article className="scene-narrative" variants={fadeUp}>
+        <RuneFrame variant="subtle">
+          <p>{game.narrative.text || 'Нарратив ещё не получен от ГМа.'}</p>
+        </RuneFrame>
+      </motion.article>
 
-      <TurnStatePanel turnState={game.turnState} />
+      <motion.div variants={fadeUp}>
+        <TurnStatePanel turnState={game.turnState} />
+      </motion.div>
 
       {game.narrative.combatLog && (
-        <section className="scene-combat-log">
-          <h3>⚔️ Журнал боя</h3>
-          <div>{game.narrative.combatLog.split('\n').map((line, i) => (
-            <CombatLogLine key={i} line={line} />
-          ))}</div>
-        </section>
+        <motion.section className="scene-combat-log" variants={fadeUp}>
+          <h3>Журнал боя</h3>
+          <RuneFrame variant="subtle">
+            <div>{game.narrative.combatLog.split('\n').map((line, i) => (
+              <CombatLogLine key={i} line={line} />
+            ))}</div>
+          </RuneFrame>
+        </motion.section>
       )}
 
       {game.narrative.dialogueOptions.length > 0 && (
-        <section className="scene-dialogues">
-          <h3>💬 Варианты диалога</h3>
+        <motion.section className="scene-dialogues" variants={fadeUp}>
+          <h3>Варианты диалога</h3>
           <div className="scene-dialogues__list">
             {game.narrative.dialogueOptions.map((opt) => (
               <button
@@ -74,11 +88,11 @@ function SceneContent({ game, onCommand }: {
               </button>
             ))}
           </div>
-        </section>
+        </motion.section>
       )}
 
       {game.actionComposer.canSubmit && game.actionMenu.sections.length > 0 && (
-        <section className="scene-quick-actions">
+        <motion.section className="scene-quick-actions" variants={fadeUp}>
           <h4>Быстрые действия</h4>
           <div className="scene-quick-actions__list">
             {game.actionMenu.sections
@@ -97,9 +111,11 @@ function SceneContent({ game, onCommand }: {
                 </button>
               ))}
           </div>
-        </section>
+        </motion.section>
       )}
-    </div>
+
+      <OrnamentBorder />
+    </motion.div>
   );
 }
 

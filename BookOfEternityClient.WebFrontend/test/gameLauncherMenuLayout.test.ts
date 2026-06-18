@@ -46,12 +46,13 @@ assert(launcherSource.includes("'practice'"), 'GameLauncher should include QTE p
 assert(launcherSource.includes("onActiveRouteChange('practice')"), 'GameLauncher should open QTE practice without entering a campaign route.');
 assert(launcherSource.includes("action.id === 'qte-practice'"), 'GameLauncher should bind the practice mode to the typed main-menu action.');
 
-assert(launcherSource.includes('<nav className="launcher-menu" aria-label="Действия главного меню">'), 'GameLauncher should render a single launcher-menu nav.');
+assert(launcherSource.includes('className="launcher-menu"') || launcherSource.includes('className={`launcher-menu'), 'GameLauncher should render a single launcher-menu nav (may be wrapped in motion.nav for stagger reveals).');
+assert(launcherSource.includes('aria-label="Действия главного меню"'), 'GameLauncher launcher-menu nav should keep the player-facing aria-label.');
 assert(launcherSource.includes('      <div className="launcher-art-bg" aria-hidden="true">'), 'GameLauncher should render the decorative launcher background wrapper.');
 assert(launcherSource.includes('<img'), 'GameLauncher should render the decorative launcher background image.');
 assert(launcherSource.includes('src="/main-menu-bg.webp"'), 'GameLauncher should keep using the tracked local launcher background art.');
 assert(launcherSource.includes('alt=""'), 'GameLauncher decorative launcher background image should stay empty-alt.');
-assert(launcherSource.includes("className={`launcher-menu__item${isActive ? ' is-active' : ''}${mode === primaryAction.mode && !disabled ? ' is-primary' : ''}`}"), 'GameLauncher should expose active and enabled-primary launcher-menu item states.');
+assert(launcherSource.includes("launcher-menu__item${isActive ? ' is-active' : ''}${mode === primaryAction.mode && !disabled ? ' is-primary' : ''}"), 'GameLauncher should expose active and enabled-primary launcher-menu item states.');
 assert(launcherSource.includes("aria-current={isActive ? 'true' : undefined}"), 'GameLauncher menu items should expose aria-current for the active mode.');
 assert(launcherSource.includes("data-launcher-mode={mode}"), 'GameLauncher launcher buttons should expose their typed launcher mode for source and visual hierarchy guards.');
 assert(launcherSource.includes("data-action-state={disabled ? 'disabled' : 'enabled'}"), 'GameLauncher launcher buttons should expose enabled/disabled action state.');

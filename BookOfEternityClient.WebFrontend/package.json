@@ -14,7 +14,9 @@
   },
   "dependencies": {
     "react": "19.2.6",
-    "react-dom": "19.2.6"
+    "react-dom": "19.2.6",
+    "lucide-react": "^0.460.0",
+    "framer-motion": "^11.11.0"
   },
   "devDependencies": {
     "@types/react": "19.2.15",
@@ -22,6 +24,11 @@
     "@vitejs/plugin-react": "6.0.2",
     "typescript": "6.0.3",
     "vite": "8.0.14",
-    "vitest": "^4.1.7"
+    "vitest": "^4.1.7",
+    "@fontsource/cinzel": "^5.1.0",
+    "@fontsource/cinzel-decorative": "^5.1.0",
+    "@fontsource/cormorant-garamond": "^5.1.0",
+    "@fontsource/jetbrains-mono": "^5.1.0",
+    "@fontsource-variable/inter": "^5.1.0"
   }
 }

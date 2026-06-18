@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { motion } from 'framer-motion';
 import { browserApi } from '../api/client';
 import type { BrowserApiResult, BrowserMainMenuDto, ExplorerCommandResult } from '../api/contracts';
 import { isSuccess, useShell } from '../context/ShellContext';
@@ -7,6 +8,8 @@ import { toCommandNotice, toLauncherSaveFailureNotice } from '../utils/formatter
 import { playerLauncherAboutText, toPlayerFacingText } from '../utils/playerCopy';
 import { ActionCommandResult } from './CommandResult';
 import { buildDefaultPromptAnswers, type PromptAnswers } from './PromptForm';
+import { OrnamentBorder } from './decorative';
+import { staggerContainer, fadeUp } from '../lib/motion';
 
 type LauncherMode = 'continue' | 'daren-showcase' | 'practice' | 'load' | 'new-game' | 'settings' | 'about';
 interface LauncherPrimaryAction { mode: LauncherMode; label: string; description: string; enabled: boolean; disabledReason: string; }
@@ -188,7 +191,13 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
           {sessionWarningText && <p className="launcher-session-warning" role="status">{sessionWarningText}</p>}
         </div>
 
-        <nav className="launcher-menu" aria-label="Действия главного меню">
+        <motion.nav
+          className="launcher-menu"
+          aria-label="Действия главного меню"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
           {launcherModes.map((mode) => {
             const details = launcherModeDetails[mode];
             const action = findLauncherMenuAction(menu, mode);
@@ -197,8 +206,9 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
             const actionDescription = launcherActionDescription(menu, mode);
             const disabledReason = disabled ? launcherActionDisabledReason(menu, mode) : '';
             return (
-              <button
+              <motion.button
                 key={mode}
+                variants={fadeUp}
                 type="button"
                 className={`launcher-menu__item${isActive ? ' is-active' : ''}${mode === primaryAction.mode && !disabled ? ' is-primary' : ''}`}
                 data-launcher-mode={mode}
@@ -213,10 +223,12 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
                   {disabled ? 'Закрыто' : 'Открыть'}
                   <span>→</span>
                 </span>
-              </button>
+              </motion.button>
             );
           })}
-        </nav>
+        </motion.nav>
+
+        <OrnamentBorder />
 
         {renderModeContent()}
         {launcherNotice && <p className="composer-notice">{launcherNotice}</p>}

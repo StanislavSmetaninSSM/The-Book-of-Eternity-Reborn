@@ -152,3 +152,54 @@ h1 {
     transition-duration: 1ms !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   BG3 CINEMATIC MOTION — stagger reveals, rune-glow, page transitions
+   ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes rune-glow-bg3 {
+  0%, 100% { text-shadow: 0 0 4px color-mix(in srgb, var(--realm-accent, var(--color-gold)) 50%, transparent); }
+  50% { text-shadow: 0 0 12px color-mix(in srgb, var(--realm-accent, var(--color-gold)) 80%, transparent); }
+}
+
+@keyframes cinematic-page-enter {
+  from { opacity: 0; filter: blur(8px); transform: translateY(8px); }
+  to { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+
+@keyframes cinematic-page-exit {
+  from { opacity: 1; filter: blur(0); }
+  to { opacity: 0; filter: blur(12px); }
+}
+
+.cinematic-page-enter {
+  animation: cinematic-page-enter var(--motion-page) forwards;
+}
+.cinematic-page-exit {
+  animation: cinematic-page-exit calc(var(--motion-page) * 0.6) forwards;
+}
+
+@keyframes glow-pulse-bg3 {
+  0%, 100% { box-shadow: 0 0 12px color-mix(in srgb, var(--realm-accent, var(--color-gold)) 22%, transparent); }
+  50% { box-shadow: 0 0 28px color-mix(in srgb, var(--realm-accent, var(--color-gold)) 40%, transparent); }
+}
+
+/* Honor the .is-reduced-motion class set by the shell (when user opts in
+   via accessibility settings — distinct from prefers-reduced-motion). */
+.is-reduced-motion *,
+.is-reduced-motion *::before,
+.is-reduced-motion *::after {
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+}
+
+.is-reduced-motion .vignette-overlay,
+.is-reduced-motion .film-grain,
+.is-reduced-motion .god-rays {
+  animation: none !important;
+}
+.is-reduced-motion .film-grain {
+  display: none;
+}

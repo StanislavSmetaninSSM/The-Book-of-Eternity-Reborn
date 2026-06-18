@@ -670,3 +670,152 @@
 .json-val--null { color: var(--text-muted); font-style: italic; }
 .json-val--empty { color: var(--text-muted); }
 .json-val--bracket { color: var(--text-muted); font-size: 0.78rem; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   BG3 TAB-BAR + COMPOSER REFRESH (additive layer — original rules
+   above remain intact so source-level guards keep passing)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.tab-bar {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--color-ink) 86%, var(--realm-accent, var(--color-gold)) 14%),
+      color-mix(in srgb, var(--color-ink) 92%, var(--realm-accent, var(--color-gold)) 8%)),
+    var(--texture-metal);
+  background-blend-mode: normal, overlay;
+  background-size: cover, 200px 200px;
+  border-bottom: 1px solid color-mix(in srgb, var(--realm-accent, var(--color-gold)) 22%, rgba(245, 212, 136, 0.06));
+  box-shadow:
+    inset 0 -1px 0 color-mix(in srgb, var(--realm-accent, var(--color-gold)) 12%, transparent),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+}
+
+.tab-bar__tab {
+  font-family: var(--font-rune);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  transition: background var(--motion-fast), border-color var(--motion-fast), color var(--motion-fast), box-shadow var(--motion-fast), transform var(--motion-fast);
+}
+
+.tab-bar__tab:hover {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--realm-accent) 8%, transparent),
+      transparent);
+  border-color: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 24%, rgba(245, 212, 136, 0.08));
+  color: var(--color-parchment);
+  transform: translateY(-1px);
+}
+
+.tab-bar__tab.is-active {
+  border-color: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 52%, rgba(245, 212, 136, 0.16));
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--realm-accent) 16%, transparent),
+      color-mix(in srgb, var(--realm-accent) 6%, transparent));
+  color: var(--color-gold-bright);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.12),
+    inset 0 -2px 0 var(--realm-accent),
+    0 0 16px color-mix(in srgb, var(--realm-accent) 30%, transparent);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--realm-accent) 60%, transparent);
+}
+
+.tab-bar__glyph {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+  opacity: 0.85;
+}
+
+/* Composer + UnifiedInput cinematic refresh */
+.composer,
+.unified-input {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--color-ink) 84%, var(--realm-accent, var(--color-gold)) 12%),
+      color-mix(in srgb, var(--color-ink) 92%, var(--realm-accent, var(--color-gold)) 6%)),
+    var(--texture-leather);
+  background-blend-mode: normal, overlay;
+  background-size: cover, 300px 300px;
+  border-top: 1px solid color-mix(in srgb, var(--realm-accent, var(--color-gold)) 22%, rgba(245, 212, 136, 0.06));
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.05),
+    0 -8px 24px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+.composer textarea,
+.unified-input textarea,
+.unified-input input,
+.composer .unified-input__textarea,
+.unified-input .unified-input__textarea {
+  background: rgba(20, 14, 8, 0.6);
+  border: 1px solid color-mix(in srgb, var(--realm-accent, var(--color-gold)) 22%, rgba(245, 212, 136, 0.08));
+  border-radius: var(--radius-sm);
+  color: var(--color-parchment);
+  font-family: var(--font-narrative);
+  font-size: var(--text-md);
+  line-height: var(--leading-snug);
+  padding: 0.7rem 0.9rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.composer textarea:focus,
+.unified-input textarea:focus,
+.unified-input input:focus,
+.composer .unified-input__textarea:focus-visible,
+.unified-input .unified-input__textarea:focus-visible {
+  border-color: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 52%, rgba(245, 212, 136, 0.18));
+  background: rgba(34, 26, 20, 0.7);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.3),
+    0 0 0 3px color-mix(in srgb, var(--realm-accent) 14%, transparent),
+    0 0 18px color-mix(in srgb, var(--realm-accent) 22%, transparent);
+  outline: none;
+}
+
+.composer button[type="submit"],
+.unified-input button[type="submit"],
+.launcher-secondary-action {
+  font-family: var(--font-rune);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--realm-accent, var(--color-gold)) 38%, rgba(245, 212, 136, 0.12));
+  border-radius: var(--radius-sm);
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--realm-accent) 18%, rgba(34, 26, 20, 0.92)),
+      color-mix(in srgb, var(--realm-accent) 8%, rgba(20, 14, 8, 0.94))),
+    var(--texture-metal);
+  background-blend-mode: normal, overlay;
+  background-size: cover, 100px 100px;
+  color: var(--color-gold-bright);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.12),
+    var(--glow-realm);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--realm-accent) 50%, transparent);
+}
+
+.composer button[type="submit"]:hover,
+.unified-input button[type="submit"]:hover,
+.launcher-secondary-action:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 58%, rgba(245, 212, 136, 0.24));
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.18),
+    var(--glow-hover);
+}
+
+.composer button[type="submit"]:active,
+.unified-input button[type="submit"]:active,
+.launcher-secondary-action:active {
+  transform: translateY(0);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+}

@@ -1,4 +1,6 @@
 @import './styles/tokens.css';
+@import './styles/tokens-bg3.css';
+@import './styles/textures.css';
 @import './styles/base.css';
 @import './styles/layout.css';
 @import './styles/realms.css';
@@ -7,3 +9,4 @@
 @import './styles/sidebar.css';
 @import './styles/hero.css';
 @import './styles/command-ui.css';
+@import './styles/cinematic.css';

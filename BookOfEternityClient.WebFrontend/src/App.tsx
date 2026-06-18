@@ -1,4 +1,5 @@
 import { type CSSProperties } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import './styles.css';
 import { ConnectionBanner } from './components/ConnectionBanner';
 import { ErrorNotice } from './components/ErrorNotice';
@@ -13,6 +14,8 @@ import { SettingsView } from './components/SettingsView';
 import { UnifiedInput } from './components/UnifiedInput';
 import { GameLauncher } from './components/GameLauncher';
 import { ShellProvider, useShell, type TabId } from './context/ShellContext';
+import { VignetteOverlay } from './components/decorative';
+import { pageTransition } from './lib/motion';
 
 export default function App() {
   return (
@@ -39,16 +42,29 @@ function AppShell() {
   } as CSSProperties;
 
   return (
-    <main className={browserShellClassName} data-theme-key={realmTheme.key} style={browserShellStyle}>
-      <ConnectionBanner />
-      {!isLauncherRoute && <TabBar />}
-      <section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live="polite">
-        {shellState.status === 'loading' && <LoadingCard />}
-        {shellState.status === 'error' && <ErrorNotice title="Книга сейчас недоступна" failure={shellState} advancedEnabled={advancedEnabled} />}
-        {readyState && (isLauncherRoute ? <GameLauncher menu={menu} /> : isDarenShowcaseRoute ? <DarenShowcaseView /> : <TabContent activeTab={activeTab} />)}
-      </section>
-      {!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && <UnifiedInput />}
-    </main>
+    <>
+      <VignetteOverlay />
+      <main className={browserShellClassName} data-theme-key={realmTheme.key} style={browserShellStyle}>
+        <ConnectionBanner />
+        {!isLauncherRoute && <TabBar />}
+        <section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live="polite">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`${activeRoute}-${activeTab}`}
+              initial="initial"
+              animate="enter"
+              exit="exit"
+              variants={pageTransition}
+            >
+              {shellState.status === 'loading' && <LoadingCard />}
+              {shellState.status === 'error' && <ErrorNotice title="Книга сейчас недоступна" failure={shellState} advancedEnabled={advancedEnabled} />}
+              {readyState && (isLauncherRoute ? <GameLauncher menu={menu} /> : isDarenShowcaseRoute ? <DarenShowcaseView /> : <TabContent activeTab={activeTab} />)}
+            </motion.div>
+          </AnimatePresence>
+        </section>
+        {!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && <UnifiedInput />}
+      </main>
+    </>
   );
 }
 
