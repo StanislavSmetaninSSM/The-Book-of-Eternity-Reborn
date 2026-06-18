@@ -143,6 +143,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Новости мира", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Событие: Беспорядки у Северных ворот", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("торговая площадь закрыта до следующего утра", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Вернуться к сводке можно командой", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("worldEventsLog", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/world", text, StringComparison.OrdinalIgnoreCase);
     }

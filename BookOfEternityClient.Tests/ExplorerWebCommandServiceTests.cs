@@ -352,6 +352,35 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_WorldNewsValmontEventDetail_RendersUsefulSeededDetails()
+    {
+        await SeedCanonicalMortalSummaryFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/новости_мира событие world_event_valmont_letter"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Contains("Событие: Письмо появилось ночью", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Печать", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("переплетённые крылья и полумесяц", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Зацепки", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сравнить печать с семейным архивом", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ставки", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("кто-то проверяет реакцию рунической перчатки", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Связанные лица", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Мариус де Вальмонт", text, StringComparison.OrdinalIgnoreCase);
+
+        Assert.DoesNotContain("Метка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("world_event_valmont_letter", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("eventId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("npcId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/world", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_WorldNewsFlagDetail_RendersMajorSubsectionDetailWithoutRawJson()
     {
         await SeedRichMortalWorldNewsFilesAsync();
@@ -4634,7 +4663,24 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             {
               "eventId": "world_event_valmont_letter",
               "title": "Письмо появилось ночью",
-              "description": "В покоях найдено письмо с крыльями и полумесяцем."
+              "timestamp": "#[1] - 1 Month of Beginnings 124 г., 08:00",
+              "description": "В покоях найдено письмо с крыльями и полумесяцем.",
+              "sealDetails": "Печать: переплетённые крылья и полумесяц. Символ совпадает с намёками из семейного архива.",
+              "possibleLeads": [
+                "Сравнить печать с семейным архивом.",
+                "Проверить, кто входил в покои после полуночи."
+              ],
+              "stakes": {
+                "danger": "кто-то проверяет реакцию рунической перчатки",
+                "deadline": "до ухода утренних слуг"
+              },
+              "relatedPeople": [
+                {
+                  "name": "Мариус де Вальмонт",
+                  "role": "первый свидетель ночных странностей",
+                  "npcId": "npc_marius_valmont"
+                }
+              ]
             }
           ]
         }
