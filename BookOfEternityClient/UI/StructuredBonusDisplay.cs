@@ -6,6 +6,70 @@ namespace BookOfEternityClient.UI;
 
 public static class StructuredBonusDisplay
 {
+    private static readonly Dictionary<string, string> ExactScalarLabels = new(StringComparer.Ordinal)
+    {
+        ["Skill"] = "Навык",
+        ["Characteristic"] = "Характеристика",
+        ["Resource"] = "Ресурс",
+        ["skill"] = "навык",
+        ["characteristic"] = "характеристика",
+        ["resource"] = "ресурс"
+    };
+
+    private static readonly Dictionary<string, string> ProtocolScalarLabels = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Flat"] = "плоский бонус",
+        ["Fixed"] = "фиксированный бонус",
+        ["Percent"] = "процент",
+        ["Percentage"] = "процент",
+        ["Multiplier"] = "множитель",
+        ["stealth"] = "Скрытность",
+        ["weapon"] = "Оружие",
+        ["armor"] = "Броня",
+        ["helmet"] = "Шлем",
+        ["utility"] = "Полезный предмет",
+        ["consumable"] = "Расходник",
+        ["artifact"] = "Артефакт",
+        ["document"] = "Документ",
+        ["book"] = "Книга",
+        ["note"] = "Записка",
+        ["material"] = "Материал",
+        ["tool"] = "Инструмент",
+        ["container"] = "Контейнер",
+        ["accessory"] = "Аксессуар",
+        ["Trash"] = "хлам",
+        ["Common"] = "обычное",
+        ["Uncommon"] = "необычное",
+        ["Good"] = "хорошее",
+        ["Rare"] = "редкое",
+        ["Epic"] = "эпическое",
+        ["Legendary"] = "легендарное",
+        ["Unique"] = "уникальное",
+        ["temporary"] = "временный",
+        ["permanent"] = "постоянный",
+        ["onUse"] = "при использовании",
+        ["onEquip"] = "при экипировке",
+        ["onConsume"] = "при употреблении",
+        ["PoiseDamage"] = "урон равновесию",
+        ["Damage"] = "урон",
+        ["DamageOverTime"] = "периодический урон",
+        ["Heal"] = "лечение",
+        ["HealOverTime"] = "периодическое лечение",
+        ["Buff"] = "усиление",
+        ["Debuff"] = "ослабление",
+        ["Control"] = "контроль",
+        ["DamageReduction"] = "снижение урона",
+        ["enemy"] = "противник",
+        ["ally"] = "союзник",
+        ["self"] = "сам персонаж",
+        ["target"] = "цель",
+        ["main"] = "основное действие",
+        ["fast"] = "быстрое действие",
+        ["free"] = "свободное действие",
+        ["true"] = "да",
+        ["false"] = "нет"
+    };
+
     public static string FieldLabel(string fieldName) =>
         fieldName switch
         {
@@ -98,53 +162,12 @@ public static class StructuredBonusDisplay
             return characteristic;
         }
 
-        return trimmed switch
-        {
-            "Skill" => "Навык",
-            "Characteristic" => "Характеристика",
-            "Resource" => "Ресурс",
-            "Flat" => "плоский бонус",
-            "Fixed" => "фиксированный бонус",
-            "Percent" => "процент",
-            "Percentage" => "процент",
-            "Multiplier" => "множитель",
-            "skill" => "навык",
-            "characteristic" => "характеристика",
-            "resource" => "ресурс",
-            "stealth" => "Скрытность",
-            "weapon" => "Оружие",
-            "armor" => "Броня",
-            "helmet" => "Шлем",
-            "utility" => "Полезный предмет",
-            "consumable" => "Расходник",
-            "artifact" => "Артефакт",
-            "document" => "Документ",
-            "book" => "Книга",
-            "note" => "Записка",
-            "Common" => "обычное",
-            "Uncommon" => "необычное",
-            "Rare" => "редкое",
-            "Epic" => "эпическое",
-            "Legendary" => "легендарное",
-            "temporary" => "временный",
-            "permanent" => "постоянный",
-            "onUse" => "при использовании",
-            "onEquip" => "при экипировке",
-            "onConsume" => "при употреблении",
-            "PoiseDamage" => "урон равновесию",
-            "Damage" => "урон",
-            "Heal" => "лечение",
-            "enemy" => "противник",
-            "ally" => "союзник",
-            "self" => "сам персонаж",
-            "target" => "цель",
-            "main" => "основное действие",
-            "fast" => "быстрое действие",
-            "free" => "свободное действие",
-            "true" => "да",
-            "false" => "нет",
-            _ => trimmed
-        };
+        if (ExactScalarLabels.TryGetValue(trimmed, out var exactLabel))
+            return exactLabel;
+
+        return ProtocolScalarLabels.TryGetValue(trimmed, out var protocolLabel)
+            ? protocolLabel
+            : trimmed;
     }
 
     public static string FormatCharacteristicName(string value) =>

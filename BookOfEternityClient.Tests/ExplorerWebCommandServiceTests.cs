@@ -2090,9 +2090,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "itemId": "raw_weapon_1",
               "name": "Клинок с печатью",
               "description": "Рукоять холодна даже у огня.",
-              "type": "weapon",
-              "quality": "Rare",
-              "equipmentSlot": "mainHand",
+              "type": "Weapon",
+              "quality": "Good",
               "structuredBonuses": [
                 {
                   "bonusType": "Skill",
@@ -2103,18 +2102,34 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                   "summary": "Скрытность +1"
                 }
               ],
-              "combatEffect": {
-                "actionName": "Резонансная зарубка",
-                "effects": [
-                  {
-                    "effectType": "PoiseDamage",
-                    "poiseDamage": 2,
-                    "targetType": "enemy",
-                    "duration": 1,
-                    "effectDescription": "Сбивает стойку противника."
-                  }
-                ]
-              },
+              "combatEffect": [
+                {
+                  "actionName": "Резонансная зарубка",
+                  "actionCost": "Main",
+                  "effects": [
+                    {
+                      "effectType": "PoiseDamage",
+                      "poiseDamage": 2,
+                      "targetType": "Enemy",
+                      "duration": 1,
+                      "effectDescription": "Сбивает стойку противника."
+                    }
+                  ]
+                },
+                {
+                  "actionName": "Быстрая перевязь",
+                  "actionCost": "Fast",
+                  "effects": [
+                    {
+                      "effectType": "Heal",
+                      "value": 1,
+                      "targetType": "Self",
+                      "duration": 1,
+                      "effectDescription": "Собирает дыхание владельца."
+                    }
+                  ]
+                }
+              ],
               "customProperties": [
                 {
                   "interactionType": "onUse",
@@ -2130,19 +2145,28 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/inventory item raw_weapon_1"));
         var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        var defaultOutput = text + "\n" + payload;
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains("Оружие", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("редкое", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("хорошее", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Скрытность", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("плоский бонус", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("урон равновесию", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("лечение", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("противник", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("сам персонаж", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("основное действие", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("быстрое действие", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("при использовании", text, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("weapon", text, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Rare", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Weapon", defaultOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Good", defaultOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Main", defaultOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Fast", defaultOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Enemy", defaultOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Self", defaultOutput, StringComparison.Ordinal);
         Assert.DoesNotContain("stealth", text, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("enemy", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Skill", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Flat", text, StringComparison.Ordinal);
         Assert.DoesNotContain("PoiseDamage", text, StringComparison.Ordinal);

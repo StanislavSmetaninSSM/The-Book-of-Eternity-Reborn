@@ -52,9 +52,12 @@
 
 ## Phase 5: Review, PR, Merge, Closure
 
-- [ ] T016 Run independent review against issue #1089 acceptance criteria, Spec Kit artifacts, and `git diff origin/main...HEAD`.
-- [ ] T017 Fix any Critical/Important review findings and rerun focused verification.
-- [ ] T018 Create PR with local-gated verification evidence and safe closing reference `Closes #1089`.
+- [x] T016 Run independent review against issue #1089 acceptance criteria, Spec Kit artifacts, and `git diff origin/main...HEAD`.
+  - Evidence: initial independent review verdict `CHANGES_REQUIRED`; Important finding was case-sensitive/incomplete localization for inventory item detail protocol values (`type: "Weapon"`, `quality: "Good"`, combat `actionCost: "Main"` / `"Fast"`). Final re-review after T017 returned `APPROVED` with no Critical/Important/Minor findings.
+- [x] T017 Fix any Critical/Important review findings and rerun focused verification.
+  - Evidence: fixed `StructuredBonusDisplay.FormatScalar(...)` protocol-value localization to handle supported item type/quality and combat action-cost/effect/target values case-insensitively while preserving unknown scalar prose; reran focused inventory localization, regression verification, build, diff hygiene, static/raw-output scan, and final re-review.
+- [x] T018 Create PR with local-gated verification evidence and safe closing reference `Closes #1089`.
+  - Evidence: PR #1117 (`https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1117`) created for `work/1089-browser-inventory-details`; readback showed closing reference exactly #1089 and `mergeStateStatus=CLEAN`.
 - [ ] T019 Squash-merge after local verification + independent review, delete remote branch, verify issue #1089 is closed/completed.
 - [ ] T020 Post issue evidence comment, update labels from `codex-agent in-progress` / `status: in-progress` to `status: verified` if labels exist, and clean up worktrees.
 
@@ -71,3 +74,11 @@
 - 2026-06-19: Frontend verification not run because no `BookOfEternityClient.WebFrontend` files or frontend fixtures changed.
 - 2026-06-19: Working-tree `git diff --check` exited 0; Git reported only CRLF normalization warnings for touched text files.
 - 2026-06-19: Added-line security/raw-output scan over changed C# production/test lines excluding Spec Kit docs found no true findings. Benign matches were test fixture paths/ids (`game_state/inventory/items.json`, `raw_weapon_1`) and new calls to the existing `FormatInventoryProtocolValue` formatter.
+- 2026-06-19: Independent review for #1089 returned verdict `CHANGES_REQUIRED`. Important finding: item detail localization remained case-sensitive/incomplete for supported protocol values, so mixed-case `type`, `quality`, and combat `actionCost` values could leak as raw English in default item detail output.
+- 2026-06-19: RED focused localization command `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~ExecuteAsync_InventoryItemDetail_TranslatesRawMechanicalTypeValues" --logger "console;verbosity=minimal"` failed as expected before the production fix: 0 passed, 1 failed, 0 skipped; failure showed `Оружие` missing for `type: "Weapon"`.
+- 2026-06-19: GREEN focused localization command `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~ExecuteAsync_InventoryItemDetail_TranslatesRawMechanicalTypeValues" --logger "console;verbosity=minimal"` passed after the formatter fix: 1 passed, 0 failed, 0 skipped.
+- 2026-06-19: Post-review focused regression command `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~ExecuteAsync_InventoryItemDetail_RendersReadableItemAndSidecarDetails|FullyQualifiedName~ExecuteAsync_InventoryItemDetail_TranslatesRawMechanicalTypeValues|FullyQualifiedName~ExecuteAsync_Books_ShowsReadableInventoryDocumentsAndSealedReasons|FullyQualifiedName~ExecuteAsync_Books_WithStableDocumentId_ShowsOnlySelectedDocumentDetail|FullyQualifiedName~ExecuteAsync_Books_WithNumericStableDocumentId_PrefersSelectorOverShelfIndex" --logger "console;verbosity=minimal"` passed: 5 passed, 0 failed, 0 skipped.
+- 2026-06-19: Post-review broader affected C# command `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~Inventory|FullyQualifiedName~Books|FullyQualifiedName~ReadableInventoryDocument|FullyQualifiedName~ExplorerWebCommandServiceTests|FullyQualifiedName~BrowserApiContractTests" --logger "console;verbosity=minimal"` passed: 482 passed, 0 failed, 0 skipped.
+- 2026-06-19: Post-review build command `dotnet build BookOfEternityClient/BookOfEternityClient.csproj --no-restore --verbosity minimal` passed: 0 warnings, 0 errors.
+- 2026-06-19: Post-review `git diff --check origin/main...HEAD` exited 0.
+- 2026-06-19: Post-review added-line security/raw-output scan over changed C# lines found no true findings. Benign matches were mixed-case test fixture protocol values, explicit `Assert.DoesNotContain(...)` guards for those values, and formatter dictionary keys; no secret-like hits or unguarded raw default-output leaks found.
