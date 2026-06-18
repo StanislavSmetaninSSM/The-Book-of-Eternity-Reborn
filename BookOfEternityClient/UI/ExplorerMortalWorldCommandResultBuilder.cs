@@ -4393,8 +4393,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
             detailBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
 
         var facts = new List<UiKeyValueItem>();
-        AddInventoryFact(facts, "Тип", GetNodeString(item, "type"));
-        AddInventoryFact(facts, "Качество", FirstNonEmpty(GetNodeString(item, "quality"), GetNodeString(item, "rarity")));
+        AddInventoryFact(facts, "Тип", FormatInventoryProtocolValue(GetNodeString(item, "type") ?? string.Empty));
+        AddInventoryFact(facts, "Качество", FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(item, "quality"), GetNodeString(item, "rarity"))));
         AddInventoryFact(facts, "Вес", FormatInventoryMeasure(GetNodeString(item, "weight"), "кг"));
         AddInventoryFact(facts, "Цена", GetNodeString(item, "price"));
         AddInventoryFact(facts, "Прочность", FormatInventoryDurability(item));
@@ -4619,7 +4619,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             parts.Add($"равновесие -{poise}");
         var target = FirstNonEmpty(GetNodeString(effect, "targetTypeDisplayName"), GetNodeString(effect, "targetType"));
         if (!string.IsNullOrWhiteSpace(target))
-            parts.Add("цель: " + target);
+            parts.Add("цель: " + FormatInventoryProtocolValue(target));
         var duration = GetNodeString(effect, "duration");
         if (!string.IsNullOrWhiteSpace(duration) && duration != "0")
             parts.Add("длительность: " + duration);

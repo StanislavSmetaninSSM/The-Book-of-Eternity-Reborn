@@ -31,7 +31,7 @@ internal static class ReadableInventoryDocumentShelfProjection
             items.Add(CreateItem(
                 selector,
                 document.Name,
-                $"Предмет: {document.ContextIdentity}",
+                $"Предмет: {document.Name}",
                 document.TextEntries,
                 document.UnreadableReason,
                 aliases));
@@ -47,8 +47,8 @@ internal static class ReadableInventoryDocumentShelfProjection
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
             var selector = BuildUniqueSelector(FirstNonEmpty(sidecar.Identities) ?? title, items.Count, usedSelectors);
-            var source = sidecar.Identities.Count > 0
-                ? $"Запись: {sidecar.Identities[0]}"
+            var source = !string.IsNullOrWhiteSpace(sidecar.Name)
+                ? $"Запись: {sidecar.Name}"
                 : "Отдельная запись";
 
             items.Add(CreateItem(
