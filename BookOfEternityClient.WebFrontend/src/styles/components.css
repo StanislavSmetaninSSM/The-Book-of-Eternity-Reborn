@@ -797,12 +797,14 @@
   pointer-events: none;
 }
 
-.qte-mini-game:focus-visible {
+.qte-mini-game:focus-visible,
+.qte-mini-game:focus {
   border-color: color-mix(in srgb, var(--color-gold-bright) 62%, rgba(255, 255, 255, 0.16));
   box-shadow:
     var(--shadow-panel),
     0 0 0 2px color-mix(in srgb, var(--state-qte) 36%, transparent),
     inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+  outline: none;
 }
 
 .qte-mini-game__header {

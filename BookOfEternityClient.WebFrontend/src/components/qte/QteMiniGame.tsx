@@ -669,10 +669,23 @@ function MiniGameFrame({
   onToken?: (token: string) => void;
   onKeyDown?: (event: KeyboardEvent<HTMLDivElement>) => void;
 }) {
+  const frameRef = useRef<HTMLDivElement>(null);
+
+  // The frame mounts only once the player opens the mini-game, so claiming
+  // focus here means keyboard input works immediately — without it the player
+  // has to click the frame first to make keys land. Guarded so server render
+  // and a missing ref never throw.
+  useEffect(() => {
+    frameRef.current?.focus({ preventScroll: true });
+  }, []);
+
   return (
     <div
+      ref={frameRef}
       className="qte-mini-game"
       data-qte-mini-game={kind}
+      role="application"
+      aria-label={`Мини-игра: ${title}`}
       tabIndex={0}
       onKeyDown={(event) => {
         if (disabled) {
