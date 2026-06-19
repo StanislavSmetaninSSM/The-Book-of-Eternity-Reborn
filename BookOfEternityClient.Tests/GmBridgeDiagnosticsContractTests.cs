@@ -52,6 +52,16 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("GmWorkerBridgeProfiles", source, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void ConsoleOptions_ExposeGmWorkerBridgeProfileDiagnostics()
+    {
+        var source = ReadRepoFile("BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs");
+
+        Assert.Contains("gm_worker_profiles", source, StringComparison.Ordinal);
+        Assert.Contains("ShowGmWorkerBridgeDiagnostics", source, StringComparison.Ordinal);
+        Assert.Contains("GmWorkerBridgeProfiles", source, StringComparison.Ordinal);
+    }
+
     private static string ReadRepoFile(string relativePath)
     {
         var root = LocateRepoRoot();

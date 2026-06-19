@@ -103,4 +103,49 @@ public static class GmWorkerTaskPacketBuilder
 
         return task;
     }
+
+    public static WorkerTaskPacket BuildAnalysisTask(
+        WorkerBridgeProfile profile,
+        string taskId,
+        WorkerTurnReference sourceTurn,
+        string analysisGoal,
+        IReadOnlyList<string> questions,
+        IReadOnlyList<WorkerFileReference> contextFiles,
+        string createdAtUtc)
+    {
+        var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
+        if (!profileValidation.IsValid)
+            throw new ArgumentException(string.Join(Environment.NewLine, profileValidation.Errors), nameof(profile));
+        if (!profile.Permissions.TaskTypes.Contains(WorkerTaskType.Analysis))
+            throw new ArgumentException("Worker profile cannot handle analysis tasks.", nameof(profile));
+        if (!profile.Permissions.ProposalOnly)
+            throw new ArgumentException("Analysis workers must be proposal-only.", nameof(profile));
+        if (string.IsNullOrWhiteSpace(analysisGoal))
+            throw new ArgumentException("Analysis goal is required.", nameof(analysisGoal));
+
+        var questionText = questions.Count == 0
+            ? "No explicit questions were provided."
+            : string.Join(Environment.NewLine, questions.Select((question, index) => $"{index + 1}. {question}"));
+
+        var task = new WorkerTaskPacket
+        {
+            TaskId = taskId,
+            WorkerId = profile.WorkerId,
+            TaskType = WorkerTaskType.Analysis,
+            CreatedAtUtc = createdAtUtc,
+            SourceTurn = sourceTurn,
+            ContextFiles = contextFiles,
+            AllowedProposalPaths = [],
+            Instructions =
+                "Return a worker-proposal-v1 JSON proposal with findings only. " +
+                "This is proposal-only: do not include changedFiles and do not edit canonical game_session files directly. " +
+                $"Analysis goal: {analysisGoal}{Environment.NewLine}Questions:{Environment.NewLine}{questionText}"
+        };
+
+        var taskValidation = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+        if (!taskValidation.IsValid)
+            throw new InvalidOperationException(string.Join(Environment.NewLine, taskValidation.Errors));
+
+        return task;
+    }
 }

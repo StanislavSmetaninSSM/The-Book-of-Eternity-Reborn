@@ -15,7 +15,7 @@
 - [X] T001 Confirm source issue #1141, branch `1113-gm-worker-bridges`, `git status --short`, and active Spec Kit path `specs/1113-gm-worker-bridges/`.
 - [X] T002 Read `AGENTS.md`, `.specify/memory/constitution.md`, `specs/1113-gm-worker-bridges/spec.md`, `specs/1113-gm-worker-bridges/plan.md`, and GitHub issue #1141.
 - [X] T003 [P] Read existing GM bridge runtime in `BookOfEternityGMBridge/Program.cs` and current bridge settings in `BookOfEternityClient/Configuration/GameSettings.cs`.
-- [ ] T004 [P] Read accepted-turn validation and repair-related tests in `BookOfEternityClient.Tests/AgentConsoleLiveSmokeTests.cs`, `BookOfEternityClient.Tests/GameEngineTurnLifecycleTests.cs`, and validation tests under `BookOfEternityClient.Tests/`.
+- [X] T004 [P] Read accepted-turn validation and repair-related tests in `BookOfEternityClient.Tests/AgentConsoleLiveSmokeTests.cs`, `BookOfEternityClient.Tests/GameEngineTurnLifecycleTests.cs`, and validation tests under `BookOfEternityClient.Tests/`.
 - [ ] T005 Create an implementation note in the first commit message tying the work to #1141 and the MVP scope: validation repair plus proposal-only narrative drafting.
 
 ---
@@ -83,7 +83,7 @@
 - [X] T028 [US2] Add worker profile load/save behavior in `BookOfEternityClient/Core/StateManager.cs`.
 - [X] T029 [US2] Implement worker lifecycle coordinator with hidden/background process launch defaults in `BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs`.
 - [X] T030 [US2] Extend `BookOfEternityGMBridge/Program.cs` to expose worker-ready/worker-failed status without changing main bridge behavior.
-- [ ] T031 [US2] Add console advanced diagnostics for worker profiles in `BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs`.
+- [X] T031 [US2] Add console advanced diagnostics for worker profiles in `BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs`.
 - [X] T032 [US2] Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "StateManagerTests|GmWorkerBridgeLifecycleTests|GmBridgeDiagnosticsContractTests"`.
 
 **Checkpoint**: Worker profiles and lifecycle diagnostics work without requiring validation repair dispatch.
@@ -105,7 +105,7 @@
 ### Implementation for User Story 3
 
 - [X] T036 [US3] Add proposal-only task types, including `narrative-draft`, to `BookOfEternityClient/Services/GmWorkers/GmWorkerModels.cs`.
-- [ ] T037 [US3] Extend `GmWorkerTaskPacketBuilder` in `BookOfEternityClient/Services/GmWorkers/GmWorkerTaskPacketBuilder.cs` to build read-only narrative-draft and analysis packets.
+- [X] T037 [US3] Extend `GmWorkerTaskPacketBuilder` in `BookOfEternityClient/Services/GmWorkers/GmWorkerTaskPacketBuilder.cs` to build read-only narrative-draft and analysis packets.
 - [X] T038 [US3] Extend `GmWorkerApplyGate` in `BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs` to reject file changes for proposal-only policies while preserving findings.
 - [X] T039 [US3] Add routing failure diagnostics in `BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs`.
 - [X] T040 [US3] Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmWorkerProposalOnlyTests|GmWorkerTaskRoutingTests"`.
@@ -131,7 +131,7 @@
 
 **Purpose**: Stabilize the feature before merge.
 
-- [ ] T047 Verify quickstart scenario 1 with automated or scripted evidence: no worker profiles preserve existing single-GM behavior.
+- [X] T047 Verify quickstart scenario 1 with automated or scripted evidence: no worker profiles preserve existing single-GM behavior.
 - [X] T048 Verify quickstart scenario 2 with automated or scripted evidence: worker repairs a validation failure and audit records acceptance.
 - [X] T049 Verify quickstart scenario 3 with automated or scripted evidence: forbidden worker proposal is rejected.
 - [X] T050 Verify quickstart scenario 4 with automated or scripted evidence: worker drafts narration, main GM can inspect it, and no canonical files change.

@@ -44,6 +44,27 @@ internal static class GmWorkerBridgeTestFixtures
         }
     };
 
+    public static WorkerBridgeProfile AnalysisCodexProfile() => new()
+    {
+        WorkerId = "analysis_codex",
+        DisplayName = "Codex analysis worker",
+        LaunchCommand = "codex --dangerously-bypass-approvals-and-sandbox",
+        Role = WorkerRole.Analysis,
+        Enabled = true,
+        LaunchVisibility = WorkerLaunchVisibility.Hidden,
+        TimeoutSeconds = 120,
+        MaxConcurrentTasks = 1,
+        Permissions = new WorkerScopePolicy
+        {
+            TaskTypes = [WorkerTaskType.Analysis],
+            ReadPaths = ["game_state/**", "lore/**", "Rules/**", "TaskGuides/**"],
+            ProposalWritePaths = [],
+            ProposalOnly = true,
+            RequiresValidation = false
+        }
+    };
+
+
     public static WorkerTaskPacket ValidationRepairTask() => new()
     {
         TaskId = "worker_task_20260620_0001",

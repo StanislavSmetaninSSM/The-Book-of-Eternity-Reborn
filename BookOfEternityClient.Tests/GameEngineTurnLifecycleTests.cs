@@ -156,6 +156,33 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Equal(workerTask.TaskId, dispatch.TaskId);
     }
 
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_WithoutWorkerProfiles_PreservesSingleGmRepairFlow()
+    {
+        var engine = CreateGameEngine();
+        var issue = new ValidationIssue(
+            "game_state/world/weather.json",
+            IssueSeverity.Error,
+            "normalizedWeatherState.description is required.",
+            code: "normalized_weather_missing_description");
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "state validation", new List<ValidationIssue> { issue }, 1 })!);
+
+        await task;
+
+        Assert.True(_fs.FileExists("game_state/control/validation_repair_request.json"));
+        Assert.False(_fs.FileExists("game_state/control/gm_worker_latest_validation_repair_task.json"));
+        Assert.False(_fs.FileExists(GmWorkerAuditLog.AuditLogPath));
+        Assert.False(Directory.Exists(_fs.ResolvePath(GmWorkerBridgePool.TaskRoot)));
+        Assert.False(Directory.Exists(_fs.ResolvePath(GmWorkerBridgePool.ProposalInboxRoot)));
+    }
+
 
     [Theory]
     [InlineData("[ABODE_OFFERING] Игрок подносит Реликвию Души.", true)]

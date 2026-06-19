@@ -41,6 +41,35 @@ public sealed class GmWorkerProposalOnlyTests
     }
 
     [Fact]
+    public void BuildAnalysisTask_ProducesReadOnlyProposalOnlyPacket()
+    {
+        var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile();
+        var task = GmWorkerTaskPacketBuilder.BuildAnalysisTask(
+            profile,
+            "worker_task_analysis",
+            new WorkerTurnReference
+            {
+                SessionId = "test-session",
+                RequestId = "test-request",
+                TurnNumber = 13
+            },
+            "Review whether NPC quest details are sufficiently exposed to the player.",
+            ["Which commands need additional detail menus?", "Which data should remain hidden from the player?"],
+            [new WorkerFileReference { Path = "game_state/npcs/npc_journals.json", Sha256 = "sha-npc-journals" }],
+            "2026-06-20T00:30:00Z");
+
+        Assert.Equal(WorkerTaskType.Analysis, task.TaskType);
+        Assert.Empty(task.AllowedProposalPaths);
+        Assert.Null(task.DraftRequest);
+        Assert.Contains("proposal-only", task.Instructions, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("NPC quest details", task.Instructions, StringComparison.Ordinal);
+        Assert.Contains("detail menus", task.Instructions, StringComparison.Ordinal);
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Errors));
+    }
+
+    [Fact]
     public async Task ApplyAsync_RejectsProposalOnlyChangedFilesWithoutWritingCanonicalFile()
     {
         var root = CreateTempRoot();
