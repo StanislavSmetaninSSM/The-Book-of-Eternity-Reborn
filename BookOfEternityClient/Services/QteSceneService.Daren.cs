@@ -160,7 +160,7 @@ public sealed partial class QteSceneService
     {
         while (true)
         {
-            AnsiConsole.Clear();
+            SpectreConsoleSafe.Clear();
             AnsiConsole.Write(new Panel(new Markup(
                 "[bold cyan]Ограбление поместья Дареном[/]\n\n" +
                 "Отдельная QTE-вылазка: обычная глава не меняется. Лучший итог сохраняет бонус Чернильных Перьев для будущей новой игры."))

@@ -8,8 +8,7 @@ This directory demonstrates the CLI file-based architecture for "The Book of Ete
 
 ```
 game_session/
-├── input/                    # CLI monitoring entry point
-│   └── turn_request.json     # Turn processing trigger (DEMO)
+├── input/                    # CLI monitoring entry point; no stale live turn trigger is checked in
 ├── game_state/               # Distributed game data and state examples
 │   ├── core/                 # Narrative, player status, manifests (4 files)
 │   │   ├── player_status.json (DEMO)
@@ -36,14 +35,12 @@ game_session/
 │   ├── chaos_sea/            # Chaos Sea display-state examples
 │   │   └── guardian_politics.json (DEMO)
 │   ├── misc/                 # Vehicles & storage (2 files)
-│   └── control/              # Game flow control (3 files)
-│       └── incarnation_world_setup.json (DEMO CLIENT-AUTHORED PENDING SETUP)
+│   └── control/              # Game flow control; no pending next-life setup is checked into the active fixture
 ├── lore/                     # Lore and active world dossiers
 │   ├── chaos_sea/            # Persistent meta-lore (across incarnations)
 │   │   └── cosmology.json (DEMO)
 │   ├── current_world/        # Current incarnation world lore
 │   │   ├── world_setting.json (DEMO)
-│   │   ├── world_directives.json (DEMO CLIENT/PLAYER-AUTHORED DOSSIER)
 │   │   └── world_directives_draft_example.md (TEXT DRAFT EXAMPLE)
 ├── world_profiles/           # Reusable mortal-world templates
 │   ├── example_world_profile.json (DEMO JSON PROFILE)
@@ -74,9 +71,7 @@ game_session/
 │   ├── narrative_response.json (DEMO)
 │   ├── interface_updates.json (OPTIONAL, omitted when the turn has no dialogue/image payload)
 │   └── debug_logs.json (DEMO)
-└── ready/                    # Processing completion signals
-    ├── turn_complete.json (DEMO)
-    └── turn_error.json (OPTIONAL example surface, not included in minimal demo)
+└── ready/                    # Processing completion signals; no stale terminal signal is checked in
 ```
 
 ## 🔧 How It Works
@@ -105,13 +100,13 @@ game_session/
 ## 📁 Demo Files Included
 
 ### **Input Example:**
-- `turn_request.json` - Sample player action (осматриваю местность)
+- `input/turn_request.json` is intentionally not checked into the active `game_session` fixture. The client creates it for live turns.
 
 ### **Output Example:**  
 - `narrative_response.json` - Sample narrative response in Russian
 - `interface_updates.json` - Optional dialogue/image payload for the current turn; omitted in the minimal success demo when not needed
 - `debug_logs.json` - Required GM reasoning/debug markdown for an accepted turn; included in the minimal success demo pack
-- `turn_complete.json` / `turn_error.json` - Terminal success/failure signals; only `turn_complete.json` is checked into the minimal success demo
+- `turn_complete.json` / `turn_error.json` - Terminal success/failure signals; neither is checked into the active `game_session` fixture because stale terminal files make live E2E unsafe.
 
 ### **Game State Examples:**
 - `core/player_status.json` - Player health, poise, energy, conditions
@@ -126,7 +121,7 @@ game_session/
 - `shining_abode/faction_chronicles.json` - Shining faction chronicle and political memory examples with visible and hidden entries
 - `chaos_sea/guardian_politics.json` - Chaos Sea Guardian politics examples with known, hidden, and GM-only surfaces
 - `core/system_mods.json` - Canonical active system mods manifest for the GM
-- `control/incarnation_world_setup.json` - Pending pre-incarnation world setup
+- Pending pre-incarnation world setup examples live under `validator_fixtures/client_owned_world_setup/`, not in the active `game_session` fixture.
 
 ### **Lore System Examples:**
 - `lore/chaos_sea/cosmology.json` - Universal laws and cosmic structure
@@ -137,7 +132,6 @@ game_session/
 - `world_profiles/example_world_profile.json` - Example reusable mortal-world profile in canonical JSON form
 - `world_profiles/example_world_profile.txt` - Example reusable mortal-world profile as simple plain text
 - `world_profiles/example_world_profile.md` - Example reusable mortal-world profile as Markdown
-- `lore/current_world/world_directives.json` - Example canonical active world dossier materialized from player setup
 - `lore/current_world/world_directives_draft_example.md` - Human-readable draft example showing how to think about current-world directives before or while editing the JSON dossier
 - `validator_fixtures/` - Broken/fixed validator scenarios with expected error manifests
 
@@ -170,10 +164,9 @@ The #1097 Shining Abode save is an at-rest manual save. It includes representati
 
 - If you want a **global rule layer** that affects the whole game, create a file in `mods/`.
 - If you want a **reusable template for a future mortal world**, create a file in `world_profiles/`.
-- If you want to **guide one конкретную текущую жизнь**, edit `lore/current_world/world_directives.json`.
 - For `mods/` and `world_profiles/`, both plain text (`.txt` / `.md`) and JSON are supported.
-- For the active current-world dossier, the canonical runtime file is JSON: `world_directives.json`.
-- The sibling `world_directives_draft_example.md` is only a human drafting example, not the canonical runtime file.
+- For client-owned pending world setup and active `world_directives.json` examples, use `validator_fixtures/client_owned_world_setup/` or create them through the in-game setup flow so pending-turn snapshots can track them.
+- `lore/current_world/world_directives_draft_example.md` is only a human drafting example, not canonical runtime state for this active fixture.
 - `validator_fixtures/` is the recommended place to study typical contract failures and their corrected versions.
 
 ## 📖 Integration with Existing Rules

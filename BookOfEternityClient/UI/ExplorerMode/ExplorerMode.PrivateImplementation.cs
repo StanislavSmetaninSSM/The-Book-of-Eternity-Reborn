@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Spectre.Console;
 using Spectre.Console.Rendering;
+using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
@@ -21,6 +22,8 @@ public partial class ExplorerMode
     private const string ExplorerLocalTurnRollbackRoot = "game_state/control/explorer_local_turn_rollback";
 
     private readonly IExplorerConsole _console;
+    private readonly AgentConsoleLiveInputSource? _agentConsoleInputSource;
+    private readonly AgentConsoleRecordingExplorerConsole? _agentConsoleCapture;
     private readonly StateManager _stateManager;
     private readonly FileSystemManager _fs;
     private readonly LocalizationManager _loc;
@@ -48,6 +51,7 @@ public partial class ExplorerMode
     private string? _pendingGmAction;
     private string _currentCommandRemainder = string.Empty;
     private PendingLocalTurnRollbackSnapshot? _pendingLocalTurnRollbackSnapshot;
+    private int _agentConsoleWaitKeyScreenIndex;
     // Set by Reveal Fate so Rewrite Fate becomes available
     private bool _diceRevealed;
 
@@ -199,9 +203,20 @@ public partial class ExplorerMode
 
     private async Task SafeExecute(Func<Task> handler, string commandName)
     {
+        _agentConsoleCapture?.ClearCapture();
+        var waitKeyIndexBefore = _agentConsoleWaitKeyScreenIndex;
+
         try
         {
             await handler();
+            if (_agentConsoleInputSource is not null &&
+                _agentConsoleCapture is not null &&
+                _agentConsoleWaitKeyScreenIndex == waitKeyIndexBefore &&
+                _pendingGmAction == null &&
+                !string.IsNullOrWhiteSpace(_agentConsoleCapture.ReadCapturedText()))
+            {
+                WaitForKey();
+            }
         }
         catch (Exception ex)
         {
@@ -1042,7 +1057,44 @@ public partial class ExplorerMode
     {
         WriteLine();
         MarkupLine("[grey]Нажмите любую клавишу...[/]");
+        PublishAgentConsoleWaitKeySnapshot();
         ReadKey();
+        _agentConsoleCapture?.ClearCapture();
+    }
+
+    private void PublishAgentConsoleWaitKeySnapshot()
+    {
+        if (_agentConsoleInputSource is null || _agentConsoleCapture is null)
+            return;
+
+        var text = _agentConsoleCapture.ReadCapturedText();
+        if (string.IsNullOrWhiteSpace(text))
+            text = "Нажмите любую клавишу...";
+
+        var now = DateTimeOffset.UtcNow;
+        var snapshot = new AgentConsoleSnapshot
+        {
+            ScreenId = $"explorer-command-{++_agentConsoleWaitKeyScreenIndex}",
+            Mode = AgentConsoleMode.TextPrompt,
+            Title = "Результат команды",
+            PlainText = text,
+            AwaitingInput = true,
+            InputKind = AgentConsoleInputKind.Key,
+            Actions =
+            [
+                new AgentConsoleAction
+                {
+                    Id = "continue",
+                    Label = "Продолжить",
+                    Shortcut = "Enter",
+                    IsDefault = true
+                }
+            ],
+            RenderedAtUtc = now,
+            UpdatedAtUtc = now
+        };
+
+        _agentConsoleInputSource.PublishSnapshot(snapshot, "Rendered explorer command result.");
     }
 
     /// <summary>

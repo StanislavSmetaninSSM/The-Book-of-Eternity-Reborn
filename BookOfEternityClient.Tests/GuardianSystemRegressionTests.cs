@@ -84,6 +84,64 @@ public sealed partial class GuardianSystemRegressionTests : IDisposable
           }
         }
         """);
+        EnsureBootstrapFile("lore/current_world/geography.json", """
+        {
+          "regions": [
+            {
+              "regionId": "eternia_capital",
+              "name": "Этерния",
+              "type": "capital_city",
+              "description": "Столица Валендрии: каменные набережные, туманные кварталы, дворянские особняки и гильдейские склады.",
+              "knownLocations": [
+                "Поместье Вальмонт",
+                "Купеческий квартал",
+                "Никельная набережная",
+                "Северные ворота"
+              ]
+            }
+          ]
+        }
+        """);
+        EnsureBootstrapFile("lore/current_world/history.json", """
+        {
+          "eras": [],
+          "recentEvents": [
+            {
+              "eventId": "valmont_letter_night",
+              "title": "Письмо в покоях Вальмонта",
+              "summary": "В покоях Асурана обнаружено письмо с незнакомой печатью: переплетенные крылья и полумесяц."
+            }
+          ]
+        }
+        """);
+        EnsureBootstrapFile("lore/current_world/cultures.json", """
+        {
+          "cultures": [
+            {
+              "cultureId": "valendrian_nobility",
+              "name": "Валендрийская знать",
+              "values": [
+                "родовая честь",
+                "долги крови",
+                "сдержанная демонстрация власти"
+              ],
+              "description": "Знать Валендрии говорит намеками, хранит семейные архивы и предпочитает решать опасные дела без публичного скандала."
+            }
+          ]
+        }
+        """);
+        EnsureBootstrapFile("lore/current_world/threats.json", """
+        {
+          "threats": [
+            {
+              "threatId": "court_intrigue_valmont",
+              "name": "Интрига вокруг дома Вальмонт",
+              "severity": "local",
+              "description": "Письмо, руническая перчатка и ночной гость связывают личную безопасность Асурана с более широким заговором."
+            }
+          ]
+        }
+        """);
         EnsureBootstrapFile("lore/chaos_sea/soul_system_lore.json", """
         {
           "soulLifecycle": {

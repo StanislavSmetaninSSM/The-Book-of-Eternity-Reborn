@@ -5350,6 +5350,7 @@ public partial class ValidationService
         ValidateWorldTimeObject(root, contextPrefix, issues, "setWorldTime");
         ValidateDirectWorldTimeState(root, contextPrefix, issues);
         ValidateWeatherObject(root, contextPrefix, issues, "weatherChange");
+        ValidateWeatherObject(root, contextPrefix, issues, "normalizedWeatherState");
         ValidateDirectWeatherState(root, contextPrefix, issues);
         ValidateObjectOrArrayOfObjectsField(root, contextPrefix, issues, "updateWorldProgressionTracker");
         ValidateObjectOrArrayOfObjectsField(root, contextPrefix, issues, "updateFactionProgressionTracker");

@@ -323,7 +323,7 @@ public partial class GameEngine
 
     private int RenderOptionsStaticFrame()
     {
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Rule("[cyan]⚙️ Опции[/]").RuleStyle("cyan"));
         AnsiConsole.WriteLine();
 
@@ -446,7 +446,7 @@ public partial class GameEngine
     {
         var current = string.IsNullOrWhiteSpace(currentValue) ? "gemini" : currentValue.Trim();
 
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Rule($"[cyan]{Markup.Escape(_loc.T("opt_gm_cli_launch_command"))}[/]").RuleStyle("cyan"));
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine($"[dim]{Markup.Escape(_loc.T("gm_cli_launch_command_hint"))}[/]");
@@ -476,7 +476,7 @@ public partial class GameEngine
 
     private async Task ShowDifficultySelection()
     {
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Rule("[cyan]⚔️ Сложность[/]").RuleStyle("cyan"));
         AnsiConsole.WriteLine();
 
@@ -535,7 +535,7 @@ public partial class GameEngine
         var selectedIndex = 0;
         while (true)
         {
-            AnsiConsole.Clear();
+            SpectreConsoleSafe.Clear();
             var mods = await _systemModService.GetAvailableModsAsync(includeContent: false);
             var modsDir = _systemModService.GetModsDirectoryPath();
 
@@ -734,7 +734,7 @@ public partial class GameEngine
 
     private int RenderGenericMenuStaticFrame(string title, string? footer)
     {
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Rule($"[cyan]{Markup.Escape(title)}[/]").RuleStyle("cyan"));
         AnsiConsole.WriteLine();
 
@@ -966,7 +966,7 @@ public partial class GameEngine
 
     private void ShowAbout()
     {
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         var panel = new Panel(new Markup(_loc.T("about_text")))
         {
             Header = new PanelHeader(" ℹ️ ", Justify.Center),
@@ -981,4 +981,3 @@ public partial class GameEngine
         _inputSource.ReadKey(intercept: true);
     }
 }
-

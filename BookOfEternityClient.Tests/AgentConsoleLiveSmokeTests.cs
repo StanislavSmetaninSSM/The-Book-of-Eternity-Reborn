@@ -135,6 +135,366 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
         }
     }
 
+    [Fact]
+    public async Task AgentConsoleLiveControl_ContinuePublishesInGameTextPromptSnapshot()
+    {
+        var repoRoot = FindRepositoryRoot();
+        var fixtureGameSessionPath = Path.Combine(repoRoot, "FileSystemExample", "game_session");
+        using var sandbox = ConsoleE2ESandbox.CreateFromFixture(
+            fixtureGameSessionPath,
+            _tempRoot,
+            preserveArtifacts: true);
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        var token = "agent-console-smoke-" + Guid.NewGuid().ToString("N");
+        using var process = StartAgentConsoleClient(repoRoot, sandbox.BasePath, url, token);
+        var stdoutTask = process.StandardOutput.ReadToEndAsync();
+        var stderrTask = process.StandardError.ReadToEndAsync();
+
+        try
+        {
+            using var client = new HttpClient
+            {
+                BaseAddress = new Uri(url),
+                Timeout = TimeSpan.FromSeconds(2)
+            };
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var mainMenu = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(30),
+                snapshot => string.Equals(snapshot["screenId"]?.GetValue<string>(), "main-menu", StringComparison.Ordinal));
+
+            var continueAction = mainMenu["actions"]!.AsArray()[0]!.AsObject();
+            Assert.Contains("Продолжить", continueAction["label"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+
+            using var continueResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
+            {
+                actionId = continueAction["id"]!.GetValue<string>(),
+                screenId = mainMenu["screenId"]!.GetValue<string>(),
+                inputKind = "menuSelection"
+            });
+            Assert.True(
+                continueResponse.IsSuccessStatusCode,
+                $"Expected Continue action endpoint success, got {(int)continueResponse.StatusCode}: {await continueResponse.Content.ReadAsStringAsync()}");
+
+            var inGameSnapshot = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    !string.Equals(snapshot["screenId"]?.GetValue<string>(), "main-menu", StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "text", StringComparison.Ordinal));
+
+            Assert.Equal("textPrompt", inGameSnapshot["mode"]!.GetValue<string>());
+            Assert.True(inGameSnapshot["awaitingInput"]!.GetValue<bool>());
+            Assert.Contains("Ваш ход", inGameSnapshot["title"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("/статус", inGameSnapshot["plainText"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            if (!process.HasExited)
+            {
+                try
+                {
+                    process.Kill(entireProcessTree: true);
+                }
+                catch
+                {
+                    // Best-effort cleanup; assertions above record the failed workflow.
+                }
+            }
+
+            var stdout = await stdoutTask;
+            var stderr = await stderrTask;
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stdout.txt"), stdout);
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stderr.txt"), stderr);
+        }
+    }
+
+    [Fact]
+    public async Task AgentConsoleLiveControl_EndOfLifePublishesConfirmationAndAcceptsYesAction()
+    {
+        var repoRoot = FindRepositoryRoot();
+        var fixtureGameSessionPath = Path.Combine(repoRoot, "FileSystemExample", "game_session");
+        using var sandbox = ConsoleE2ESandbox.CreateFromFixture(
+            fixtureGameSessionPath,
+            _tempRoot,
+            preserveArtifacts: true);
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        var token = "agent-console-smoke-" + Guid.NewGuid().ToString("N");
+        using var process = StartAgentConsoleClient(repoRoot, sandbox.BasePath, url, token);
+        var stdoutTask = process.StandardOutput.ReadToEndAsync();
+        var stderrTask = process.StandardError.ReadToEndAsync();
+
+        try
+        {
+            using var client = new HttpClient
+            {
+                BaseAddress = new Uri(url),
+                Timeout = TimeSpan.FromSeconds(2)
+            };
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            await ContinueToGameLoopAsync(client);
+
+            using var endLifeResponse = await client.PostAsJsonAsync("/api/agent-console/text", new { text = "/конец_жизни" });
+            Assert.True(
+                endLifeResponse.IsSuccessStatusCode,
+                $"Expected /конец_жизни endpoint success, got {(int)endLifeResponse.StatusCode}: {await endLifeResponse.Content.ReadAsStringAsync()}");
+
+            var confirmation = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(10),
+                snapshot =>
+                    string.Equals(snapshot["mode"]?.GetValue<string>(), "confirmation", StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "confirmation", StringComparison.Ordinal));
+
+            Assert.Equal("end-of-life-confirmation", confirmation["screenId"]!.GetValue<string>());
+            Assert.True(confirmation["awaitingInput"]!.GetValue<bool>());
+            Assert.Contains("завершить смертную жизнь", confirmation["plainText"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+            var yesAction = confirmation["actions"]!.AsArray()[0]!.AsObject();
+            var noAction = confirmation["actions"]!.AsArray()[1]!.AsObject();
+            Assert.Equal("Да", yesAction["label"]!.GetValue<string>());
+            Assert.Equal("y", yesAction["shortcut"]!.GetValue<string>());
+            Assert.Equal("Нет", noAction["label"]!.GetValue<string>());
+            Assert.Equal("n", noAction["shortcut"]!.GetValue<string>());
+            Assert.True(noAction["isDefault"]!.GetValue<bool>());
+
+            using var yesResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
+            {
+                actionId = yesAction["id"]!.GetValue<string>(),
+                screenId = confirmation["screenId"]!.GetValue<string>(),
+                inputKind = "confirmation"
+            });
+            Assert.True(
+                yesResponse.IsSuccessStatusCode,
+                $"Expected Yes action endpoint success, got {(int)yesResponse.StatusCode}: {await yesResponse.Content.ReadAsStringAsync()}");
+
+            var summaryPrompt = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(10),
+                snapshot =>
+                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "end-of-life-summary", StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "text", StringComparison.Ordinal));
+
+            Assert.Contains("Итоги смертной жизни", summaryPrompt["plainText"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            if (!process.HasExited)
+            {
+                try
+                {
+                    process.Kill(entireProcessTree: true);
+                }
+                catch
+                {
+                    // Best-effort cleanup; assertions above record the failed workflow.
+                }
+            }
+
+            var stdout = await stdoutTask;
+            var stderr = await stderrTask;
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stdout.txt"), stdout);
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stderr.txt"), stderr);
+        }
+    }
+
+    [Fact]
+    public async Task AgentConsoleLiveControl_CommandResultPublishesWaitKeySnapshot()
+    {
+        var repoRoot = FindRepositoryRoot();
+        var fixtureGameSessionPath = Path.Combine(repoRoot, "FileSystemExample", "game_session");
+        using var sandbox = ConsoleE2ESandbox.CreateFromFixture(
+            fixtureGameSessionPath,
+            _tempRoot,
+            preserveArtifacts: true);
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        var token = "agent-console-smoke-" + Guid.NewGuid().ToString("N");
+        using var process = StartAgentConsoleClient(repoRoot, sandbox.BasePath, url, token);
+        var stdoutTask = process.StandardOutput.ReadToEndAsync();
+        var stderrTask = process.StandardError.ReadToEndAsync();
+
+        try
+        {
+            using var client = new HttpClient
+            {
+                BaseAddress = new Uri(url),
+                Timeout = TimeSpan.FromSeconds(2)
+            };
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var mainMenu = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(30),
+                snapshot => string.Equals(snapshot["screenId"]?.GetValue<string>(), "main-menu", StringComparison.Ordinal));
+
+            var continueAction = mainMenu["actions"]!.AsArray()[0]!.AsObject();
+            using var continueResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
+            {
+                actionId = continueAction["id"]!.GetValue<string>(),
+                screenId = mainMenu["screenId"]!.GetValue<string>(),
+                inputKind = "menuSelection"
+            });
+            Assert.True(
+                continueResponse.IsSuccessStatusCode,
+                $"Expected Continue action endpoint success, got {(int)continueResponse.StatusCode}: {await continueResponse.Content.ReadAsStringAsync()}");
+
+            var inGameSnapshot = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "text", StringComparison.Ordinal));
+
+            using var commandResponse = await client.PostAsJsonAsync("/api/agent-console/text", new { text = "/статус" });
+            Assert.True(
+                commandResponse.IsSuccessStatusCode,
+                $"Expected text endpoint success, got {(int)commandResponse.StatusCode}: {await commandResponse.Content.ReadAsStringAsync()}");
+
+            var commandSnapshot = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    !string.Equals(snapshot["screenId"]?.GetValue<string>(), inGameSnapshot["screenId"]?.GetValue<string>(), StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "key", StringComparison.Ordinal));
+
+            Assert.Equal("textPrompt", commandSnapshot["mode"]!.GetValue<string>());
+            Assert.True(commandSnapshot["awaitingInput"]!.GetValue<bool>());
+            Assert.Contains("Статус персонажа", commandSnapshot["plainText"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Здоровье", commandSnapshot["plainText"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Нажмите любую клавишу", commandSnapshot["plainText"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+
+            using var keyResponse = await client.PostAsJsonAsync("/api/agent-console/key", new { key = "Enter" });
+            Assert.True(
+                keyResponse.IsSuccessStatusCode,
+                $"Expected key endpoint success, got {(int)keyResponse.StatusCode}: {await keyResponse.Content.ReadAsStringAsync()}");
+
+            var commandUpdatedAt = commandSnapshot["updatedAtUtc"]!.GetValue<DateTimeOffset>();
+            var returnedPrompt = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "text", StringComparison.Ordinal) &&
+                    snapshot["updatedAtUtc"]?.GetValue<DateTimeOffset>() > commandUpdatedAt);
+
+            Assert.Contains("/статус", returnedPrompt["plainText"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            if (!process.HasExited)
+            {
+                try
+                {
+                    process.Kill(entireProcessTree: true);
+                }
+                catch
+                {
+                    // Best-effort cleanup; assertions above record the failed workflow.
+                }
+            }
+
+            var stdout = await stdoutTask;
+            var stderr = await stderrTask;
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stdout.txt"), stdout);
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stderr.txt"), stderr);
+        }
+    }
+
+    [Fact]
+    public async Task AgentConsoleLiveControl_CommandCaptureDoesNotLeakAndSelectionPromptsDoNotThrow()
+    {
+        var repoRoot = FindRepositoryRoot();
+        var fixtureGameSessionPath = Path.Combine(repoRoot, "FileSystemExample", "game_session");
+        using var sandbox = ConsoleE2ESandbox.CreateFromFixture(
+            fixtureGameSessionPath,
+            _tempRoot,
+            preserveArtifacts: true);
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        var token = "agent-console-smoke-" + Guid.NewGuid().ToString("N");
+        using var process = StartAgentConsoleClient(repoRoot, sandbox.BasePath, url, token);
+        var stdoutTask = process.StandardOutput.ReadToEndAsync();
+        var stderrTask = process.StandardError.ReadToEndAsync();
+
+        try
+        {
+            using var client = new HttpClient
+            {
+                BaseAddress = new Uri(url),
+                Timeout = TimeSpan.FromSeconds(2)
+            };
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var gameLoop = await ContinueToGameLoopAsync(client);
+
+            using var inventoryResponse = await client.PostAsJsonAsync("/api/agent-console/text", new { text = "/инв" });
+            Assert.True(
+                inventoryResponse.IsSuccessStatusCode,
+                $"Expected /инв endpoint success, got {(int)inventoryResponse.StatusCode}: {await inventoryResponse.Content.ReadAsStringAsync()}");
+
+            var inventorySnapshot = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    !string.Equals(snapshot["screenId"]?.GetValue<string>(), gameLoop["screenId"]?.GetValue<string>(), StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "key", StringComparison.Ordinal));
+
+            var inventoryText = inventorySnapshot["plainText"]!.GetValue<string>();
+            Assert.Contains("Инвентарь", inventoryText, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Cannot show selection prompt", inventoryText, StringComparison.OrdinalIgnoreCase);
+
+            using var continueAfterInventory = await client.PostAsJsonAsync("/api/agent-console/key", new { key = "Enter" });
+            Assert.True(continueAfterInventory.IsSuccessStatusCode);
+
+            await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "text", StringComparison.Ordinal));
+
+            using var questsResponse = await client.PostAsJsonAsync("/api/agent-console/text", new { text = "/квесты" });
+            Assert.True(
+                questsResponse.IsSuccessStatusCode,
+                $"Expected /квесты endpoint success, got {(int)questsResponse.StatusCode}: {await questsResponse.Content.ReadAsStringAsync()}");
+
+            var questsSnapshot = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    !string.Equals(snapshot["screenId"]?.GetValue<string>(), inventorySnapshot["screenId"]?.GetValue<string>(), StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "key", StringComparison.Ordinal));
+
+            var questsText = questsSnapshot["plainText"]!.GetValue<string>();
+            Assert.DoesNotContain("Cannot show selection prompt", questsText, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("NotSupportedException", questsText, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Инвентарь пуст", questsText, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            if (!process.HasExited)
+            {
+                try
+                {
+                    process.Kill(entireProcessTree: true);
+                }
+                catch
+                {
+                    // Best-effort cleanup; assertions above record the failed workflow.
+                }
+            }
+
+            var stdout = await stdoutTask;
+            var stderr = await stderrTask;
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stdout.txt"), stdout);
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stderr.txt"), stderr);
+        }
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_tempRoot))
@@ -211,6 +571,32 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
         Assert.Fail(
             $"Timed out waiting for Agent Console snapshot. Last body: {lastBody ?? "<none>"}. Last exception: {lastException?.Message ?? "<none>"}");
         throw new UnreachableException();
+    }
+
+    private static async Task<JsonObject> ContinueToGameLoopAsync(HttpClient client)
+    {
+        var mainMenu = await WaitForSnapshotAsync(
+            client,
+            TimeSpan.FromSeconds(30),
+            snapshot => string.Equals(snapshot["screenId"]?.GetValue<string>(), "main-menu", StringComparison.Ordinal));
+
+        var continueAction = mainMenu["actions"]!.AsArray()[0]!.AsObject();
+        using var continueResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
+        {
+            actionId = continueAction["id"]!.GetValue<string>(),
+            screenId = mainMenu["screenId"]!.GetValue<string>(),
+            inputKind = "menuSelection"
+        });
+        Assert.True(
+            continueResponse.IsSuccessStatusCode,
+            $"Expected Continue action endpoint success, got {(int)continueResponse.StatusCode}: {await continueResponse.Content.ReadAsStringAsync()}");
+
+        return await WaitForSnapshotAsync(
+            client,
+            TimeSpan.FromSeconds(20),
+            snapshot =>
+                string.Equals(snapshot["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) &&
+                string.Equals(snapshot["inputKind"]?.GetValue<string>(), "text", StringComparison.Ordinal));
     }
 
     private static (JsonObject Action, int Index) FindExitAction(JsonObject snapshot)

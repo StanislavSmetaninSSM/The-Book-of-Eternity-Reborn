@@ -1,5 +1,5 @@
 {
-  "itemJournals": [
+  "entries": [
     {
       "itemId": "item_ancient_sword",
       "itemName": "Древний меч",
@@ -14,7 +14,7 @@
         },
         {
           "entryId": "sword_002",
-          "timestamp": "2023-05-21T12:20:00Z", 
+          "timestamp": "2023-05-21T12:20:00Z",
           "event": "first_combat",
           "description": "В битве меч показал свою истинную мощь. Пламя обволакивало клинок.",
           "magicalResonance": "very_high",

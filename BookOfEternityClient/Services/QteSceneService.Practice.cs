@@ -152,7 +152,7 @@ public sealed partial class QteSceneService
     {
         while (true)
         {
-            AnsiConsole.Clear();
+            SpectreConsoleSafe.Clear();
             AnsiConsole.Write(new Panel(new Markup(
                 "[bold cyan]Свободная тренировка QTE[/]\n\n" +
                 "Выберите мини-игру. Попытки используют обычные QTE проверки, но не меняют сюжет, награды, опыт, предметы или прогресс."))

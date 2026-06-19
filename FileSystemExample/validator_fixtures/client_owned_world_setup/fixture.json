@@ -31,7 +31,18 @@
       "mode": "Replace"
     }
   ],
-  "fixed": [],
+  "fixed": [
+    {
+      "source": "shared/incarnation_world_setup_backup.json",
+      "target": "game_state/control/incarnation_world_setup.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/world_directives_backup.json",
+      "target": "lore/current_world/world_directives.json",
+      "mode": "Replace"
+    }
+  ],
   "expectedBrokenCodes": [
     "client_owned_world_setup_state_modified"
   ],

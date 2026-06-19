@@ -2257,6 +2257,10 @@ public partial class ValidationService
                 availableQuests,
                 $"{questContext}.availableQuests",
                 issues);
+            ValidateGuardianLiveQuestIdentity(
+                availableQuests,
+                $"{questContext}.availableQuests",
+                issues);
 
             if (HasTrackerBackedQuestOrigins(availableQuests) &&
                 TryEnsureQuestTrackerValidationRoot($"{questContext}.availableQuests"))
@@ -2280,6 +2284,10 @@ public partial class ValidationService
         {
             RequireArrayOfObjects(activeQuests, $"{questContext}.activeQuests", issues);
             ValidateGuardianActiveQuestStatuses(
+                activeQuests,
+                $"{questContext}.activeQuests",
+                issues);
+            ValidateGuardianLiveQuestIdentity(
                 activeQuests,
                 $"{questContext}.activeQuests",
                 issues);
@@ -2356,6 +2364,33 @@ public partial class ValidationService
             trackerRoot,
             hasTrackerValidationRoot,
             issues);
+    }
+
+    private void ValidateGuardianLiveQuestIdentity(JsonElement questArray, string arrayContext, List<ValidationIssue> issues)
+    {
+        if (questArray.ValueKind != JsonValueKind.Array)
+            return;
+
+        var index = 0;
+        foreach (var quest in questArray.EnumerateArray())
+        {
+            var questContext = $"{arrayContext}[{index++}]";
+            if (!RequireObject(quest, questContext, issues))
+                continue;
+
+            if (!HasNonEmptyString(quest, "questId"))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{questContext}.questId",
+                    IssueSeverity.Error,
+                    "Guardian live quest должен содержать stable questId",
+                    code: "guardian_live_quest_missing_quest_id",
+                    section: "Guardians",
+                    expected: "non-empty questId",
+                    actual: quest.TryGetProperty("questId", out var actualValue) ? actualValue.ValueKind.ToString() : "missing",
+                    repairHint: "Сохраняй stable questId для availableQuests и activeQuests, чтобы UI, валидатор и журнал могли связать краткую запись с подробностями."));
+            }
+        }
     }
 
 

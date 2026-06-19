@@ -601,7 +601,7 @@ public partial class GameEngine
         while (true)
         {
             var shownCandidates = BuildMemorySelectionWindow(candidates, batchStart, displayCount);
-            AnsiConsole.Clear();
+            SpectreConsoleSafe.Clear();
             var lines = new List<string>
             {
                 "[bold gold1]🧠 Эхо-память Сияющей Обители[/]",
@@ -971,4 +971,3 @@ public partial class GameEngine
     /// allocate available points. Used at incarnation (8 pts) and level-up (5 pts).
     /// </summary>
 }
-

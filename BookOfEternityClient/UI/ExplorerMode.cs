@@ -1,4 +1,5 @@
 using BookOfEternityClient.CommandProtocol;
+using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -31,7 +32,18 @@ public partial class ExplorerMode
         LocalUiSessionLockService? localUiSessionLockService = null,
         LocalUiSessionLockOwner? localUiSessionLockOwner = null)
     {
-        _console = console ?? new SpectreExplorerConsole(clipboardService, inputSource);
+        var baseConsole = console ?? new SpectreExplorerConsole(clipboardService, inputSource);
+        _agentConsoleInputSource = inputSource as AgentConsoleLiveInputSource;
+        if (_agentConsoleInputSource is not null)
+        {
+            _agentConsoleCapture = new AgentConsoleRecordingExplorerConsole(baseConsole);
+            _console = _agentConsoleCapture;
+        }
+        else
+        {
+            _console = baseConsole;
+        }
+
         _stateManager = stateManager;
         _validator = validator;
         _charService = charService;

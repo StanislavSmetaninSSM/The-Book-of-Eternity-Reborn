@@ -17,7 +17,7 @@ public sealed class SpectreExplorerConsole : IExplorerConsole
         _inputSource = inputSource ?? SystemConsoleInputSource.Instance;
     }
 
-    public void Clear() => AnsiConsole.Clear();
+    public void Clear() => SpectreConsoleSafe.Clear();
 
     public void Write(IRenderable content) => AnsiConsole.Write(content);
 

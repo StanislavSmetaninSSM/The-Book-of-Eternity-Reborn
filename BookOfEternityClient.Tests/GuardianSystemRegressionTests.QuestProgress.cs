@@ -32,6 +32,7 @@ public sealed partial class GuardianSystemRegressionTests
               "currentIncarnation": 2
             }
             """);
+        await SnapshotCurrentChaosSeaLoreForMortalTurnAsync("ready_to_turn_in");
 
         const string preTurnGuardiansJson = """
         {
@@ -162,6 +163,7 @@ public sealed partial class GuardianSystemRegressionTests
               "currentIncarnation": 2
             }
             """);
+        await SnapshotCurrentChaosSeaLoreForMortalTurnAsync("partial_command");
 
         const string preTurnGuardiansJson = """
         {
@@ -1039,6 +1041,27 @@ public sealed partial class GuardianSystemRegressionTests
             string.Equals(issue.Code, "guardian_complete_quest_not_ready_to_turn_in", StringComparison.OrdinalIgnoreCase));
 
         Assert.Equal(shouldRejectStatusOutcome, hasStatusOutcomeIssue);
+    }
+
+    private async Task SnapshotCurrentChaosSeaLoreForMortalTurnAsync(string suffix)
+    {
+        foreach (var path in new[]
+        {
+            "lore/chaos_sea/soul_system_lore.json",
+            "lore/chaos_sea/cosmology.json",
+            "lore/chaos_sea/guardians_lore.json",
+            "lore/chaos_sea/player_chronicle.json"
+        })
+        {
+            var content = await _fs.ReadFileAsync(path);
+            if (string.IsNullOrWhiteSpace(content))
+                continue;
+
+            await WritePreTurnTrackedFileAsync(
+                path,
+                $"test_backups/preturn_{suffix}_{path.Replace('/', '_')}",
+                content);
+        }
     }
 
 }

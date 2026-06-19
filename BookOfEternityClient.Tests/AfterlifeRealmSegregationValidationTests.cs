@@ -153,6 +153,148 @@ public sealed class AfterlifeRealmSegregationValidationTests : IDisposable
             issue.Actual?.Contains(relativePath, StringComparison.OrdinalIgnoreCase) == true);
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_MortalWorldTurnCreatingOutputFile_DoesNotRequireValidatedBaseline()
+    {
+        const string preTurnSoul = """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "MortalWorldProfile"
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await _fs.WriteFileAtomicAsync("output/interface_updates.json", """
+        {
+          "statusChanges": [],
+          "availableActions": []
+        }
+        """);
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await WriteValidatedSnapshotManifestAsync(("game_state/meta/soul_state.json", preTurnSoul));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "realm_segregation_missing_validated_tracked_baseline", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "output/interface_updates.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MortalWorldTurnWithoutGuardianPowerEvents_DoesNotRequireAbodePowerJournal()
+    {
+        const string preTurnSoul = """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Mortal World"
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [],
+          "activeGuardian": null,
+          "chaosSeaNavigation": {
+            "currentAbodeId": null
+          }
+        }
+        """);
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await WriteSnapshotFileAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [],
+          "activeGuardian": null,
+          "chaosSeaNavigation": {
+            "currentAbodeId": null
+          }
+        }
+        """);
+        await WriteValidatedSnapshotManifestAsync(
+            ("game_state/meta/soul_state.json", preTurnSoul),
+            ("game_state/meta/guardians.json", """
+            {
+              "guardians": [],
+              "activeGuardian": null,
+              "chaosSeaNavigation": {
+                "currentAbodeId": null
+              }
+            }
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_resonance_invalid_current_journal", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ItemJournalReferencingCanonicalItemWithNullContentsPath_IsAccepted()
+    {
+        const string preTurnSoul = """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Mortal World"
+        }
+        """;
+        const string inventory = """
+        {
+          "items": [
+            {
+              "existedId": "item_ancient_sword",
+              "itemId": "item_ancient_sword",
+              "id": "item_ancient_sword",
+              "name": "Древний меч",
+              "itemName": "Древний меч",
+              "description": "Старинный клинок с потемневшими рунами у гарды.",
+              "image_prompt": "ancient rune etched sword",
+              "quality": "Rare",
+              "durability": "95%",
+              "price": 120,
+              "count": 1,
+              "weight": 1.8,
+              "volume": 1.0,
+              "contentsPath": null,
+              "isContainer": false,
+              "isConsumption": false,
+              "requiresTwoHands": false
+            }
+          ]
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", inventory);
+        await _fs.WriteFileAtomicAsync("game_state/npcs/item_journals.json", """
+        {
+          "entries": [
+            {
+              "itemId": "item_ancient_sword",
+              "itemName": "Древний меч",
+              "journalEntries": [
+                {
+                  "entryId": "sword_001",
+                  "timestamp": "2023-05-20T16:45:00Z",
+                  "event": "first_touch",
+                  "description": "Меч отозвался на прикосновение."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await WriteSnapshotFileAsync("game_state/inventory/items.json", inventory);
+        await WriteValidatedSnapshotManifestAsync(
+            ("game_state/meta/soul_state.json", preTurnSoul),
+            ("game_state/inventory/items.json", inventory));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "item_journal_unknown_item_reference", StringComparison.OrdinalIgnoreCase));
+    }
+
     private Task WriteSnapshotFileAsync(string logicalPath, string json)
     {
         return _fs.WriteFileAtomicAsync($"game_state/control/pending_turn_snapshot/{logicalPath}", json);

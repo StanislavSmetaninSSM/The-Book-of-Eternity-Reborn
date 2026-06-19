@@ -176,6 +176,57 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void GameInterfaceTransitions_MustUseHeadlessSafeConsoleClear()
+    {
+        var source = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
+            "GameInterface.cs"));
+
+        Assert.DoesNotContain("AnsiConsole.Clear();", source, StringComparison.Ordinal);
+        Assert.Contains("SpectreConsoleSafe.Clear();", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void LifeEvaluationRewardScreen_MustUseHeadlessSafeConsoleClear()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var methodStart = source.IndexOf("private async Task ShowLifeEvaluationRewards(", StringComparison.Ordinal);
+        Assert.True(methodStart >= 0, "ShowLifeEvaluationRewards must exist.");
+        var nextMethodStart = source.IndexOf("    private async Task", methodStart + 1, StringComparison.Ordinal);
+        Assert.True(nextMethodStart > methodStart, "ShowLifeEvaluationRewards method boundary must be discoverable.");
+        var methodSource = source[methodStart..nextMethodStart];
+
+        Assert.DoesNotContain("AnsiConsole.Clear();", methodSource, StringComparison.Ordinal);
+        Assert.Contains("SpectreConsoleSafe.Clear();", methodSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ClientRuntimeCode_MustRouteConsoleClearThroughHeadlessSafeWrapper()
+    {
+        var clientRoot = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient");
+        var offenders = Directory
+            .EnumerateFiles(clientRoot, "*.cs", SearchOption.AllDirectories)
+            .Where(path => !path.EndsWith(Path.Combine("UI", "SpectreConsoleSafe.cs"), StringComparison.OrdinalIgnoreCase))
+            .Where(path => File.ReadAllText(path).Contains("AnsiConsole.Clear();", StringComparison.Ordinal))
+            .Select(path => Path.GetRelativePath(TestRepoPaths.RepoRoot, path))
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        Assert.Empty(offenders);
+    }
+
+    [Fact]
+    public void GameEngineRuntimeConfirmations_MustUseAgentConsoleObservableHelper()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.Equal(1, source.Split("AnsiConsole.Confirm(", StringSplitOptions.None).Length - 1);
+        Assert.Contains("return AnsiConsole.Confirm(promptMarkup, defaultValue);", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void RuntimePrompt_MustRequireCurrentLocationInRelevantNpcReasoningBlocks()
     {
         var source = ReadGameEngineSource();
@@ -257,12 +308,58 @@ public sealed class GameEngineSourceGuardTests
         var acceptedTurnAnchor = source.IndexOf("// Turn accepted — backup no longer needed", StringComparison.Ordinal);
         Assert.True(acceptedTurnAnchor >= 0);
 
-        var lifeTransitionIndex = source.IndexOf("await CheckLifeTransitions();", acceptedTurnAnchor, StringComparison.Ordinal);
+        var lifeTransitionIndex = source.IndexOf("await CheckLifeTransitions(activeSnapshotContext);", acceptedTurnAnchor, StringComparison.Ordinal);
         var cleanupIndex = source.IndexOf("await CleanupPendingTurnSnapshotAsync();", acceptedTurnAnchor, StringComparison.Ordinal);
 
         Assert.True(lifeTransitionIndex >= 0);
         Assert.True(cleanupIndex >= 0);
         Assert.True(lifeTransitionIndex < cleanupIndex, "accepted-turn pending snapshot cleanup must happen after CheckLifeTransitions()");
+    }
+
+    [Fact]
+    public void AcceptedTurnHappyPath_MustKeepRollbackBackupAliveUntilLifeTransitionChecksFinish()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var acceptedTurnAnchor = source.IndexOf("// Turn accepted — backup no longer needed", StringComparison.Ordinal);
+        Assert.True(acceptedTurnAnchor >= 0);
+
+        var lifeTransitionIndex = source.IndexOf("await CheckLifeTransitions(activeSnapshotContext);", acceptedTurnAnchor, StringComparison.Ordinal);
+        var cleanupBackupIndex = source.IndexOf("CleanupBackup(backedUpFiles);", acceptedTurnAnchor, StringComparison.Ordinal);
+
+        Assert.True(lifeTransitionIndex >= 0);
+        Assert.True(cleanupBackupIndex >= 0);
+        Assert.True(lifeTransitionIndex < cleanupBackupIndex, "accepted-turn rollback backup files must remain readable until TriggerLifeEnd authority checks finish.");
+    }
+
+    [Fact]
+    public void AcceptedTurnHappyPath_MustPassValidatedSnapshotContextToLifeTransitionChecks()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var acceptedTurnAnchor = source.IndexOf("// Turn accepted — backup no longer needed", StringComparison.Ordinal);
+        Assert.True(acceptedTurnAnchor >= 0);
+
+        var lifeTransitionIndex = source.IndexOf("await CheckLifeTransitions(activeSnapshotContext);", acceptedTurnAnchor, StringComparison.Ordinal);
+
+        Assert.True(lifeTransitionIndex >= 0, "accepted-turn TriggerLifeEnd checks must use the already validated pending snapshot context because repair cleanup can remove active request marker files before lifecycle processing.");
+    }
+
+    [Fact]
+    public void CheckLifeTransitions_MustClearAcceptedTurnReadySignalBeforeDispatchingLifeEvaluation()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var transitionAnchor = source.IndexOf("private async Task CheckLifeTransitions", StringComparison.Ordinal);
+        Assert.True(transitionAnchor >= 0, "CheckLifeTransitions must exist.");
+
+        var deleteLifeTransitionIndex = source.IndexOf("_fs.DeleteFile(\"game_state/control/life_transitions.json\");", transitionAnchor, StringComparison.Ordinal);
+        var clearReadyIndex = source.IndexOf("ClearReadySignals();", transitionAnchor, StringComparison.Ordinal);
+        var writeEvaluationRequestIndex = source.IndexOf("await _fs.WriteFileAtomicAsync(\"input/turn_request.json\"", transitionAnchor, StringComparison.Ordinal);
+
+        Assert.True(deleteLifeTransitionIndex >= 0, "CheckLifeTransitions must delete consumed life_transitions.json before dispatching Life Evaluation.");
+        Assert.True(clearReadyIndex >= 0, "CheckLifeTransitions must clear stale accepted-turn ready signals before dispatching Life Evaluation.");
+        Assert.True(writeEvaluationRequestIndex >= 0, "CheckLifeTransitions must dispatch a Life Evaluation request.");
+        Assert.True(
+            deleteLifeTransitionIndex < clearReadyIndex && clearReadyIndex < writeEvaluationRequestIndex,
+            "Life Evaluation dispatch must remove stale ready/turn_complete.json from the accepted TriggerLifeEnd turn before writing the new input/turn_request.json.");
     }
 
     [Fact]
@@ -297,7 +394,8 @@ public sealed class GameEngineSourceGuardTests
         var source = ReadGameEngineSource();
 
         Assert.Contains("var currentSoulStateJson = await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\");", source, StringComparison.Ordinal);
-        Assert.Contains("currentSoulStateRoot);", source, StringComparison.Ordinal);
+        Assert.Contains("currentSoulStateRoot)", source, StringComparison.Ordinal);
+        Assert.Contains("CanonicalStateNormalizer.TryReadStrictCurrentRealm(currentSoulStateJson)", source, StringComparison.Ordinal);
         Assert.DoesNotContain("transJson,\r\n                _stateManager.CurrentState.CurrentRealm", source, StringComparison.Ordinal);
     }
 
@@ -313,14 +411,16 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
-    public void AcceptedTurnCanonicalBaselineRefresh_MustRequireFullCanonicalCoverage()
+    public void AcceptedTurnCanonicalBaselineRefresh_MustRequireRollbackBaselineCanonicalCoverage()
     {
         var source = ReadGameEngineSource();
 
         Assert.Contains("PendingTurnSnapshotAuthority.HasValidatedSnapshotCoverage(", source, StringComparison.Ordinal);
-        Assert.DoesNotContain("if (!rollbackBaselineFiles.Contains(relativePath))", source, StringComparison.Ordinal);
+        Assert.Contains("var baselineCanonicalFiles = payload.RollbackBaselineFiles", source, StringComparison.Ordinal);
+        Assert.Contains("canonicalFiles.Contains(path)", source, StringComparison.Ordinal);
+        Assert.Contains("requireRollbackBaselineRegistration: true", source, StringComparison.Ordinal);
         Assert.Contains("TryAddOptionalCanonicalBaselineSnapshotAsync(", source, StringComparison.Ordinal);
-        Assert.Contains("return snapshot.Count >= canonicalFiles.Count ? snapshot : null;", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("return snapshot.Count >= canonicalFiles.Count ? snapshot : null;", source, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -411,6 +511,31 @@ public sealed class GameEngineSourceGuardTests
         Assert.DoesNotContain("$repair.gmInstructions -and $repair.gmInstructions.Contains(\"служат только для диагностики\")", source, StringComparison.Ordinal);
         Assert.DoesNotContain("$failure.gmInstructions -and $failure.gmInstructions.Contains(\"служат только для диагностики\")", source, StringComparison.Ordinal);
         Assert.DoesNotContain("with matching sessionId/requestId/turnNumber copied from the CURRENT repair request. If your ready file is malformed or mismatched", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DaemonRepairPrompt_MustKeepCodexGmFocusedOnTerminalRepairMarker()
+    {
+        var source = ReadGameMasterDaemonSource();
+
+        Assert.Contains("REPAIR MODE", source, StringComparison.Ordinal);
+        Assert.Contains("Do NOT run unrelated git or repository tasks", source, StringComparison.Ordinal);
+        Assert.Contains("Do NOT wait for another prompt after files are fixed", source, StringComparison.Ordinal);
+        Assert.Contains("as the LAST action", source, StringComparison.Ordinal);
+        Assert.Contains("If the files already satisfy the listed errors", source, StringComparison.Ordinal);
+        Assert.Contains("weather_direct_state_missing_required_fields", source, StringComparison.Ordinal);
+        Assert.Contains("never write ready/turn_complete.json for repair", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DaemonInitialTurnPrompt_MustPreemptWeatherDirectRootRepairLoop()
+    {
+        var source = ReadGameMasterDaemonSource();
+
+        Assert.Contains("Weather contract:", source, StringComparison.Ordinal);
+        Assert.Contains("game_state/world/weather.json direct root", source, StringComparison.Ordinal);
+        Assert.Contains("both non-empty description and canonical tendency", source, StringComparison.Ordinal);
+        Assert.Contains("Do not wait for weather_direct_state_missing_required_fields repair", source, StringComparison.Ordinal);
     }
 
     [Fact]

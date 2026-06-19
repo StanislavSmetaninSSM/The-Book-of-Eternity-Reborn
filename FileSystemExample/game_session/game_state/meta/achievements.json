@@ -1,0 +1,24 @@
+{
+  "unlockedAchievements": [],
+  "trackedProgress": [],
+  "stats": {
+    "totalUnlocked": 0,
+    "byCategory": {
+      "combat": 0,
+      "exploration": 0,
+      "story": 0,
+      "social": 0,
+      "crafting": 0,
+      "meta": 0,
+      "death": 0,
+      "secret": 0
+    },
+    "byRarity": {
+      "common": 0,
+      "uncommon": 0,
+      "rare": 0,
+      "epic": 0,
+      "legendary": 0
+    }
+  }
+}

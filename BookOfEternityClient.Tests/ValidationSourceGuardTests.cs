@@ -146,7 +146,8 @@ public sealed class ValidationSourceGuardTests
 
         Assert.DoesNotContain("if (previous == null)\r\n            return !string.IsNullOrWhiteSpace(current);", source, StringComparison.Ordinal);
         Assert.Contains("ValidatedTrackedFileChangeStatus.MissingValidatedBaseline", source, StringComparison.Ordinal);
-        Assert.Contains("IsTrackedByValidatedBaseline(manifest, relativePath) || !string.IsNullOrWhiteSpace(current)", source, StringComparison.Ordinal);
+        Assert.Contains("if (IsTrackedByValidatedBaseline(manifest, relativePath))", source, StringComparison.Ordinal);
+        Assert.Contains("? ValidatedTrackedFileChangeStatus.Changed", source, StringComparison.Ordinal);
     }
 
     [Fact]

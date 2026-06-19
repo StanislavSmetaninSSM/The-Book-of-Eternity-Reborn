@@ -1485,6 +1485,406 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task UpdateSoulStateRealm_MortalLifeEnd_WithSparseLiveFixtureMovesSoulToChaosSea()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Пепельная Искра",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            enlightenment = new { currentTier = "Новичок", experience = 0, level = 0 },
+            inkFeathers = new { current = 0, total = 0 },
+            soulRelics = new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() },
+            afterlifeArchive = new { stored = Array.Empty<object>() },
+            livesHistory = Array.Empty<object>(),
+            pendingMemoryLegacy = (object?)null
+        });
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            activeGuardian = (object?)null,
+            guardians = Array.Empty<object>()
+        });
+        var engine = CreateGameEngine();
+
+        var updated = await InvokePrivateAsync<bool>(
+            engine,
+            "UpdateSoulStateRealm",
+            "Chaos Sea",
+            "Ходов прожито: 1. Заметка игрока: live regression.",
+            false);
+
+        Assert.True(updated);
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Equal("Chaos Sea", soulRoot["currentRealm"]?.GetValue<string>());
+        var livesHistory = Assert.IsType<JsonArray>(soulRoot["livesHistory"]);
+        Assert.Single(livesHistory);
+    }
+
+    [Fact]
+    public async Task UpdateSoulStateRealm_MortalLifeEnd_WithPendingScenarioCoreAndCurrentWorldLoreMovesSoulToChaosSea()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Пепельная Искра",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            enlightenment = new { currentTier = "Новичок", experience = 0, level = 0 },
+            inkFeathers = new { current = 0, total = 0 },
+            soulRelics = new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() },
+            afterlifeArchive = new { stored = Array.Empty<object>() },
+            livesHistory = Array.Empty<object>(),
+            pendingMemoryLegacy = (object?)null
+        });
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            activeGuardian = (object?)null,
+            guardians = Array.Empty<object>(),
+            chaosSeaNavigation = new { currentAbodeId = (string?)null }
+        });
+        await WriteJsonAsync(WorldDirectiveService.PendingSetupPath, new
+        {
+            mode = "mixed",
+            profileId = "victorian-occult-capital",
+            profileName = "Викторианская оккультная столица",
+            worldDirectives = new { worldTitle = "Серебряный Город" }
+        });
+        await WriteJsonAsync(ScenarioCoreService.ManifestPath, new
+        {
+            sourcePath = WorldDirectiveService.PendingSetupPath,
+            sourceLastUpdated = "2026-03-13T00:00:00Z",
+            lastExtractedAt = "2026-06-19T01:00:00Z",
+            candidateAssertions = Array.Empty<object>(),
+            scenarioCoreAssertions = new[]
+            {
+                new
+                {
+                    assertionId = "core_world",
+                    category = "world_premise",
+                    value = "Серебряный Город",
+                    @explicit = true,
+                    source = "structured_field"
+                }
+            },
+            openCorrectionSlots = Array.Empty<object>()
+        });
+        await WriteJsonAsync("lore/current_world/world_setting.json", new
+        {
+            title = "Серебряный Город"
+        });
+        await WriteJsonAsync("lore/current_world/history/era.json", new
+        {
+            era = "Late 19th century"
+        });
+        var engine = CreateGameEngine();
+
+        var updated = await InvokePrivateAsync<bool>(
+            engine,
+            "UpdateSoulStateRealm",
+            "Chaos Sea",
+            "Ходов прожито: 1. Заметка игрока: live regression.",
+            false);
+
+        Assert.True(updated);
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Equal("Chaos Sea", soulRoot["currentRealm"]?.GetValue<string>());
+        Assert.False(_fs.FileExists(ScenarioCoreService.ManifestPath));
+        Assert.False(_fs.FileExists("lore/current_world/world_setting.json"));
+        Assert.False(_fs.FileExists("lore/current_world/history/era.json"));
+    }
+
+    [Fact]
+    public async Task CheckLifeTransitions_VoluntaryEnd_DispatchesAutomaticLifeEvaluationInsteadOfReturningToMortalWorld()
+    {
+        const string acceptedSessionId = "session_voluntary_end";
+        const string acceptedRequestId = "request_voluntary_end";
+        const int acceptedTurnNumber = 2;
+        var preTurnSoul = new
+        {
+            soulName = "Пепельная Искра",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            enlightenment = new { currentTier = "Новичок", experience = 0, level = 0 },
+            inkFeathers = new { current = 0, total = 0 },
+            soulRelics = new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() },
+            afterlifeArchive = new { stored = Array.Empty<object>() },
+            livesHistory = Array.Empty<object>(),
+            pendingMemoryLegacy = (object?)null
+        };
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", preTurnSoul);
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            activeGuardian = (object?)null,
+            guardians = Array.Empty<object>(),
+            chaosSeaNavigation = new { currentAbodeId = (string?)null }
+        });
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = acceptedSessionId,
+            requestId = acceptedRequestId,
+            turnNumber = acceptedTurnNumber,
+            playerAction = "Я осознанно завершаю эту смертную жизнь."
+        });
+        await WritePendingTurnSnapshotManifestAsync(
+            acceptedSessionId,
+            acceptedRequestId,
+            acceptedTurnNumber,
+            "game_state/meta/soul_state.json");
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId = acceptedSessionId,
+            requestId = acceptedRequestId,
+            turnNumber = acceptedTurnNumber,
+            status = "success",
+            timestamp = "2026-06-19T01:00:00Z",
+            filesModified = new[] { "game_state/control/life_transitions.json", "output/narrative_response.json" }
+        });
+        await WriteJsonAsync("game_state/control/life_transitions.json", new
+        {
+            reason = "Voluntary",
+            summary = "Добровольное завершение тестовой смертной жизни."
+        });
+        var input = new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4));
+        var engine = CreateGameEngine(input);
+        var manifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+        var acceptedSnapshotContext = await InvokePrivateTaskResultAsync(
+            engine,
+            "LoadValidatedPendingTurnSnapshotContextAsync",
+            manifest,
+            true);
+        var sawEvaluationRequest = false;
+
+        var responder = Task.Run(async () =>
+        {
+            var deadline = DateTime.UtcNow.AddSeconds(10);
+            while (DateTime.UtcNow < deadline)
+            {
+                var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
+                if (!string.IsNullOrWhiteSpace(requestJson) &&
+                    requestJson.Contains("Оценка Жизни", StringComparison.Ordinal))
+                {
+                    sawEvaluationRequest = true;
+                    using var requestDoc = JsonDocument.Parse(requestJson);
+                    var requestRoot = requestDoc.RootElement;
+                    var sessionId = requestRoot.GetProperty("sessionId").GetString();
+                    var requestId = requestRoot.GetProperty("requestId").GetString();
+                    var turnNumber = requestRoot.GetProperty("turnNumber").GetInt32();
+
+                    await WriteAcceptedLifeEvaluationResponseAsync(sessionId, requestId, turnNumber);
+                    return;
+                }
+
+                await Task.Delay(50);
+            }
+        });
+        var lifecycleTask = InvokePrivateTaskAsync(engine, "CheckLifeTransitions", acceptedSnapshotContext);
+
+        var completed = await Task.WhenAny(lifecycleTask, Task.Delay(TimeSpan.FromSeconds(12)));
+        await responder;
+
+        if (!ReferenceEquals(lifecycleTask, completed))
+        {
+            var repairRequest = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json") ?? "<missing>";
+            var turnRequest = await _fs.ReadFileAsync("input/turn_request.json") ?? "<missing>";
+            var errorLogPath = Path.Combine(_fs.GameSessionPath, "error_log.txt");
+            var errorLog = File.Exists(errorLogPath) ? await File.ReadAllTextAsync(errorLogPath) : "<missing>";
+            Assert.Fail(
+                "CheckLifeTransitions did not complete within 12 seconds." +
+                Environment.NewLine + "validation_repair_request.json:" + Environment.NewLine + repairRequest +
+                Environment.NewLine + "input/turn_request.json:" + Environment.NewLine + turnRequest +
+                Environment.NewLine + "error_log.txt:" + Environment.NewLine + errorLog);
+        }
+
+        Assert.Same(lifecycleTask, completed);
+        await lifecycleTask;
+        Assert.True(sawEvaluationRequest, "CheckLifeTransitions must dispatch a separate automatic Life Evaluation request after a valid TriggerLifeEnd.");
+        Assert.False(_fs.FileExists("game_state/control/life_transitions.json"));
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Equal("Chaos Sea", soul["currentRealm"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task CheckLifeTransitions_LifeEvaluationDispatchFailure_WritesErrorLog()
+    {
+        const string acceptedSessionId = "session_life_eval_dispatch_failure";
+        const string acceptedRequestId = "request_life_eval_dispatch_failure";
+        const int acceptedTurnNumber = 3;
+        var preTurnSoul = new
+        {
+            soulName = "Пепельная Искра",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            enlightenment = new { currentTier = "Новичок", experience = 0, level = 0 },
+            inkFeathers = new { current = 0, total = 0 },
+            soulRelics = new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() },
+            afterlifeArchive = new { stored = Array.Empty<object>() },
+            livesHistory = Array.Empty<object>(),
+            pendingMemoryLegacy = (object?)null
+        };
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", preTurnSoul);
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            activeGuardian = (object?)null,
+            guardians = Array.Empty<object>(),
+            chaosSeaNavigation = new { currentAbodeId = (string?)null }
+        });
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = acceptedSessionId,
+            requestId = acceptedRequestId,
+            turnNumber = acceptedTurnNumber,
+            playerAction = "Я осознанно завершаю эту смертную жизнь."
+        });
+        await WritePendingTurnSnapshotManifestAsync(
+            acceptedSessionId,
+            acceptedRequestId,
+            acceptedTurnNumber,
+            "game_state/meta/soul_state.json");
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId = acceptedSessionId,
+            requestId = acceptedRequestId,
+            turnNumber = acceptedTurnNumber,
+            status = "success",
+            timestamp = "2026-06-19T01:00:00Z",
+            filesModified = new[] { "game_state/control/life_transitions.json" }
+        });
+        await WriteJsonAsync("game_state/control/life_transitions.json", new
+        {
+            reason = "Voluntary",
+            summary = "Добровольное завершение тестовой смертной жизни."
+        });
+
+        var input = new QueuedConsoleInputSource(new[] { Key(ConsoleKey.Enter) });
+        var engine = CreateGameEngine(input);
+        var manifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+        var acceptedSnapshotContext = await InvokePrivateTaskResultAsync(
+            engine,
+            "LoadValidatedPendingTurnSnapshotContextAsync",
+            manifest,
+            true);
+        _fs.DeleteFile("input/turn_request.json");
+        Directory.CreateDirectory(Path.Combine(_fs.GameSessionPath, "input", "turn_request.json"));
+
+        await InvokePrivateTaskAsync(engine, "CheckLifeTransitions", acceptedSnapshotContext);
+
+        var logPath = Path.Combine(_fs.GameSessionPath, "error_log.txt");
+        Assert.True(File.Exists(logPath), "Lifecycle dispatch exceptions must be visible in error_log.txt.");
+        var log = await File.ReadAllTextAsync(logPath, Encoding.UTF8);
+        Assert.Contains("UnauthorizedAccessException", log, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task CheckLifeTransitions_FileSystemExampleState_DispatchesAutomaticLifeEvaluation()
+    {
+        const string acceptedSessionId = "session_filesystem_example_voluntary_end";
+        const string acceptedRequestId = "request_filesystem_example_voluntary_end";
+        const int acceptedTurnNumber = 3;
+
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+
+        var preTurnSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.False(string.IsNullOrWhiteSpace(preTurnSoulJson));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            preTurnSoulJson!);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = acceptedSessionId,
+            requestId = acceptedRequestId,
+            turnNumber = acceptedTurnNumber,
+            playerAction = "Я осознанно завершаю эту смертную жизнь."
+        });
+        await WritePendingTurnSnapshotManifestAsync(
+            acceptedSessionId,
+            acceptedRequestId,
+            acceptedTurnNumber,
+            "game_state/meta/soul_state.json");
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId = acceptedSessionId,
+            requestId = acceptedRequestId,
+            turnNumber = acceptedTurnNumber,
+            status = "success",
+            timestamp = "2026-06-19T01:00:00Z",
+            filesModified = new[] { "game_state/control/life_transitions.json", "output/narrative_response.json" }
+        });
+        await WriteJsonAsync("output/narrative_response.json", new
+        {
+            response = "Оценка Жизни в этом ходе не проводится; дальнейший lifecycle-переход передан клиенту.",
+            timestamp = "2026-06-19T01:00:00Z"
+        });
+        await WriteJsonAsync("game_state/control/life_transitions.json", new
+        {
+            reason = "Voluntary",
+            summary = "Добровольное завершение тестовой смертной жизни."
+        });
+
+        var input = new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4));
+        var engine = CreateGameEngine(input);
+        var manifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+        var acceptedSnapshotContext = await InvokePrivateTaskResultAsync(
+            engine,
+            "LoadValidatedPendingTurnSnapshotContextAsync",
+            manifest,
+            true);
+        var sawEvaluationRequest = false;
+
+        var responder = Task.Run(async () =>
+        {
+            var deadline = DateTime.UtcNow.AddSeconds(10);
+            while (DateTime.UtcNow < deadline)
+            {
+                var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
+                if (!string.IsNullOrWhiteSpace(requestJson) &&
+                    requestJson.Contains("Оценка Жизни", StringComparison.Ordinal))
+                {
+                    sawEvaluationRequest = true;
+                    using var requestDoc = JsonDocument.Parse(requestJson);
+                    var requestRoot = requestDoc.RootElement;
+                    var sessionId = requestRoot.GetProperty("sessionId").GetString();
+                    var requestId = requestRoot.GetProperty("requestId").GetString();
+                    var turnNumber = requestRoot.GetProperty("turnNumber").GetInt32();
+
+                    await WriteAcceptedLifeEvaluationResponseAsync(sessionId, requestId, turnNumber);
+                    return;
+                }
+
+                await Task.Delay(50);
+            }
+        });
+        var lifecycleTask = InvokePrivateTaskAsync(engine, "CheckLifeTransitions", acceptedSnapshotContext);
+
+        var completed = await Task.WhenAny(lifecycleTask, Task.Delay(TimeSpan.FromSeconds(12)));
+        await responder;
+
+        if (!ReferenceEquals(lifecycleTask, completed))
+        {
+            var repairRequest = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json") ?? "<missing>";
+            var turnRequest = await _fs.ReadFileAsync("input/turn_request.json") ?? "<missing>";
+            var timeoutErrorLogPath = Path.Combine(_fs.GameSessionPath, "error_log.txt");
+            var timeoutErrorLog = File.Exists(timeoutErrorLogPath) ? await File.ReadAllTextAsync(timeoutErrorLogPath) : "<missing>";
+            Assert.Fail(
+                "CheckLifeTransitions did not complete within 12 seconds." +
+                Environment.NewLine + "validation_repair_request.json:" + Environment.NewLine + repairRequest +
+                Environment.NewLine + "input/turn_request.json:" + Environment.NewLine + turnRequest +
+                Environment.NewLine + "error_log.txt:" + Environment.NewLine + timeoutErrorLog);
+        }
+
+        Assert.Same(lifecycleTask, completed);
+        await lifecycleTask;
+        var errorLogPath = Path.Combine(_fs.GameSessionPath, "error_log.txt");
+        var errorLog = File.Exists(errorLogPath) ? await File.ReadAllTextAsync(errorLogPath, Encoding.UTF8) : string.Empty;
+        Assert.True(sawEvaluationRequest, $"CheckLifeTransitions did not dispatch Life Evaluation. error_log.txt: {errorLog}");
+        Assert.False(_fs.FileExists("game_state/control/life_transitions.json"));
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Equal("Chaos Sea", soul["currentRealm"]?.GetValue<string>());
+    }
+
+    [Fact]
     public async Task TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_SoulWriteFailureRestoresShiningStateAndReturnsFalse()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
@@ -1636,6 +2036,136 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         Assert.False(_fs.FileExists(WorldDirectiveService.PendingSetupPath));
         Assert.False(_fs.FileExists(ScenarioCoreService.ManifestPath));
+    }
+
+    [Fact]
+    public async Task CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot()
+    {
+        const string bridgeStatusPath = "game_state/control/gm_bridge_status.json";
+        await _fs.WriteFileAtomicAsync(bridgeStatusPath, """
+        {
+          "backend": "ConPTYBridge",
+          "state": "Ready",
+          "updatedAtUtc": "2026-06-19T01:00:00Z"
+        }
+        """);
+
+        var engine = CreateGameEngine();
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "gm_bridge_status_runtime");
+        var request = new TurnRequest
+        {
+            SessionId = "session_gm_bridge_status_runtime",
+            RequestId = "request_gm_bridge_status_runtime",
+            TurnNumber = 42,
+            PlayerAction = "ordinary turn while GM bridge status is changing",
+            Timestamp = "2026-06-19T01:00:00Z",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Mortal World" }
+        };
+
+        await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollbackSnapshot, "test");
+
+        var manifestJson = await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        Assert.NotNull(manifestJson);
+        var manifest = Assert.IsType<JsonObject>(JsonNode.Parse(manifestJson!)!);
+        var files = Assert.IsType<JsonObject>(manifest["files"]);
+        var rollbackBackups = Assert.IsType<JsonObject>(manifest["rollbackBackups"]);
+        var rollbackBaselineFiles = Assert.IsType<JsonArray>(manifest["rollbackBaselineFiles"]);
+        var rollbackBaselineSet = rollbackBaselineFiles
+            .Select(node => node?.GetValue<string>() ?? string.Empty)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        Assert.False(files.ContainsKey(bridgeStatusPath));
+        Assert.False(rollbackBackups.ContainsKey(bridgeStatusPath));
+        Assert.DoesNotContain(bridgeStatusPath, rollbackBaselineSet);
+    }
+
+    [Fact]
+    public async Task LoadCanonicalBaselineSnapshotAsync_AbsentCanonicalFiles_DoNotInvalidateExistingBaseline()
+    {
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        const string absentQuestPath = "game_state/quests/regular_quests.json";
+        await _fs.WriteFileAtomicAsync(soulStatePath, """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        _fs.DeleteFile(absentQuestPath);
+
+        var engine = CreateGameEngine();
+        var request = new TurnRequest
+        {
+            SessionId = "session_absent_canonical_baseline",
+            RequestId = "request_absent_canonical_baseline",
+            TurnNumber = 42,
+            PlayerAction = "ordinary turn with sparse canonical state",
+            Timestamp = "2026-06-19T01:00:00Z",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Mortal World" }
+        };
+
+        await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, null, "test");
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "sessionId": "session_absent_canonical_baseline",
+          "requestId": "request_absent_canonical_baseline",
+          "turnNumber": 42,
+          "timestamp": "2026-06-19T01:01:00Z",
+          "status": "success"
+        }
+        """);
+
+        var snapshotObject = await InvokePrivateTaskResultAsync(engine, "LoadCanonicalBaselineSnapshotAsync", 42);
+        var snapshot = Assert.IsAssignableFrom<IDictionary<string, string>>(snapshotObject);
+
+        Assert.Contains(soulStatePath, snapshot.Keys);
+        Assert.DoesNotContain(absentQuestPath, snapshot.Keys);
+    }
+
+    [Fact]
+    public async Task CreateCanonicalBaselineSnapshotAsync_OrdinaryTurnStagingFiles_AreValidationSnapshottedWithoutRollbackBaseline()
+    {
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        const string soulStateJson = """{ "soulName": "Тестовая Душа", "currentRealm": "Mortal World", "currentIncarnation": 1 }""";
+        const string scenarioCoreJson = """{ "scenarioCore": { "summary": "Prepared by client before GM dispatch." } }""";
+        const string pendingDiceJson = """{ "rolls": [{ "kind": "1d20", "value": 12 }] }""";
+
+        var engine = CreateGameEngine();
+        await _fs.WriteFileAtomicAsync(soulStatePath, soulStateJson);
+        _fs.DeleteFile(ScenarioCoreService.ManifestPath);
+        _fs.DeleteFile(PendingTurnStateService.PendingDiceStatePath);
+        Assert.False(_fs.FileExists(ScenarioCoreService.ManifestPath));
+        Assert.False(_fs.FileExists(PendingTurnStateService.PendingDiceStatePath));
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "ordinary_turn_staging");
+        await _fs.WriteFileAtomicAsync(ScenarioCoreService.ManifestPath, scenarioCoreJson);
+        await _fs.WriteFileAtomicAsync(PendingTurnStateService.PendingDiceStatePath, pendingDiceJson);
+        InvokePrivate(engine, "RegisterOrdinaryTurnStagingValidationSnapshotFiles", rollbackSnapshot);
+
+        var request = new TurnRequest
+        {
+            SessionId = "session_ordinary_staging_snapshot",
+            RequestId = "request_ordinary_staging_snapshot",
+            TurnNumber = 42,
+            PlayerAction = "ordinary turn with client staging files",
+            Timestamp = "2026-06-19T01:00:00Z",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Mortal World" }
+        };
+
+        await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollbackSnapshot, "test");
+
+        var manifestJson = await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        Assert.NotNull(manifestJson);
+        var manifest = Assert.IsType<JsonObject>(JsonNode.Parse(manifestJson!)!);
+        var files = Assert.IsType<JsonObject>(manifest["files"]);
+        var rollbackBaselineFiles = Assert.IsType<JsonArray>(manifest["rollbackBaselineFiles"]);
+        var rollbackBaselineSet = rollbackBaselineFiles
+            .Select(node => node?.GetValue<string>() ?? string.Empty)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        Assert.True(files.ContainsKey(ScenarioCoreService.ManifestPath));
+        Assert.True(files.ContainsKey(PendingTurnStateService.PendingDiceStatePath));
+        Assert.DoesNotContain(ScenarioCoreService.ManifestPath, rollbackBaselineSet);
+        Assert.DoesNotContain(PendingTurnStateService.PendingDiceStatePath, rollbackBaselineSet);
     }
 
     [Fact]
@@ -1923,6 +2453,164 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             JsonSerializer.Serialize(payload, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
 
+    private async Task WriteAcceptedLifeEvaluationResponseAsync(string? sessionId, string? requestId, int turnNumber)
+    {
+        await EnsureChaosSeaLifeEvaluationBootstrapAsync();
+
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var inkFeathers = soulRoot["inkFeathers"] as JsonObject ?? new JsonObject();
+        var currentInk = ReadInt(inkFeathers["current"]);
+        var totalInk = ReadInt(inkFeathers["total"]);
+        inkFeathers["current"] = currentInk + 10;
+        inkFeathers["total"] = Math.Max(totalInk + 10, currentInk + 10);
+        soulRoot["inkFeathers"] = inkFeathers;
+
+        var soulRelics = soulRoot["soulRelics"] as JsonObject ?? new JsonObject();
+        var storedRelics = soulRelics["stored"] as JsonArray ?? new JsonArray();
+        soulRelics["stored"] = storedRelics;
+        soulRelics["equipped"] ??= new JsonArray();
+        if (!storedRelics.OfType<JsonObject>().Any(relic =>
+                string.Equals(relic["relicId"]?.GetValue<string>(), "relic_life_evaluation_test", StringComparison.OrdinalIgnoreCase)))
+        {
+            storedRelics.Add(new JsonObject
+            {
+                ["relicId"] = "relic_life_evaluation_test",
+                ["name"] = "След завершенной жизни",
+                ["rarity"] = "Common",
+                ["quality"] = "Common",
+                ["description"] = "Тихая реликвия, оставшаяся после добровольно завершенной тестовой жизни.",
+                ["source"] = "LifeEvaluation"
+            });
+        }
+        soulRoot["soulRelics"] = soulRelics;
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            soulRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        await WriteJsonAsync("lore/chaos_sea/player_chronicle.json", new
+        {
+            entries = new[]
+            {
+                new
+                {
+                    entryId = "life_eval_test_001",
+                    title = "Добровольное завершение жизни",
+                    summary = "Душа завершила тестовую смертную жизнь и вернулась в Море Хаоса с минимальной наградой.",
+                    recordedAtTurn = turnNumber
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/control/progression_report.json", new
+        {
+            progressionProcessingReport = new
+            {
+                sessionId,
+                requestId,
+                turnNumber,
+                worldCyclesProcessed = 0,
+                factionCyclesProcessed = 0,
+                chaosSeaCyclesProcessed = 1,
+                guardianProjectCyclesProcessed = 1,
+                residentAgencyCyclesProcessed = 1,
+                shiningAbodeCyclesProcessed = 0,
+                shiningFactionCyclesProcessed = 0,
+                shiningTradeCyclesProcessed = 0,
+                newLastChaosSeaSimulationOrdinal = 1,
+                newLastGuardianProjectCycleOrdinal = 1,
+                newLastResidentAgencyCycleOrdinal = 1,
+                afterlifeCatchupProcessed = false,
+                afterlifeCatchupSummaryEventsProcessed = 0
+            }
+        });
+        await WriteJsonAsync("output/narrative_response.json", new
+        {
+            response = "Море Хаоса принимает душу после оценки прожитой жизни.",
+            timestamp = "2026-06-19T01:01:00Z"
+        });
+        await WriteJsonAsync("output/debug_logs.json", new
+        {
+            timestamp = "2026-06-19T01:01:00Z",
+            gm_thoughts_markdown = "## Охват NPC-анализа\n- Режим / Mode: Scene-local\n- Релевантные акторы / Relevant actors: нет\n- Почему они релевантны / Why they are relevant: Оценка Жизни закрывает системный переход без участия NPC.\n- Акторы вне охвата / Actors outside scope: Хранители, резиденты Обители\n- Почему они вне охвата / Why they are outside scope: Тестовая оценка не изменяет их состояние.\n\n## Reasoning / Размышления NPC / Guardian Thoughts\n- Structured actor reasoning is not required for this test life evaluation response."
+        });
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber,
+            status = "success",
+            timestamp = "2026-06-19T01:01:00Z",
+            filesModified = new[]
+            {
+                "game_state/meta/soul_state.json",
+                "lore/chaos_sea/player_chronicle.json",
+                "game_state/control/progression_report.json",
+                "output/narrative_response.json",
+                "output/debug_logs.json"
+            }
+        });
+    }
+
+    private async Task EnsureChaosSeaLifeEvaluationBootstrapAsync()
+    {
+        await WriteJsonIfMissingAsync("game_state/meta/achievements.json", new
+        {
+            unlockedAchievements = Array.Empty<object>(),
+            trackedProgress = Array.Empty<object>(),
+            stats = new
+            {
+                totalUnlocked = 0,
+                byCategory = new { combat = 0, exploration = 0, story = 0, social = 0, crafting = 0, meta = 0, death = 0, secret = 0 },
+                byRarity = new { common = 0, uncommon = 0, rare = 0, epic = 0, legendary = 0 }
+            }
+        });
+        await WriteJsonIfMissingAsync("lore/codex_entries.json", new
+        {
+            entries = Array.Empty<object>(),
+            totalEntries = 0,
+            categories = new { cosmology = 0, geography = 0, history = 0, cultures = 0, creatures = 0, characters = 0, artifacts = 0, factions = 0, magic = 0, other = 0 }
+        });
+        await WriteJsonIfMissingAsync("lore/chaos_sea/cosmology.json", new
+        {
+            summary = "Море Хаоса связывает души между смертными жизнями."
+        });
+        await WriteJsonIfMissingAsync("lore/chaos_sea/soul_system_lore.json", new
+        {
+            summary = "Душа сохраняет опыт, Чернильные Перья и Реликвии Души между жизнями."
+        });
+        await WriteJsonIfMissingAsync("lore/chaos_sea/guardians_lore.json", new
+        {
+            entries = Array.Empty<object>()
+        });
+    }
+
+    private async Task WriteJsonIfMissingAsync(string relativePath, object payload)
+    {
+        if (_fs.FileExists(relativePath))
+            return;
+
+        await WriteJsonAsync(relativePath, payload);
+    }
+
+    private static int ReadInt(JsonNode? node)
+    {
+        if (node is JsonValue value && value.TryGetValue<int>(out var intValue))
+            return intValue;
+        if (node is JsonValue longValue && longValue.TryGetValue<long>(out var longResult) && longResult is >= 0 and <= int.MaxValue)
+            return (int)longResult;
+        return 0;
+    }
+
+    private static void CopyDirectory(string sourceDir, string destinationDir)
+    {
+        Directory.CreateDirectory(destinationDir);
+
+        foreach (var directory in Directory.GetDirectories(sourceDir, "*", SearchOption.AllDirectories))
+            Directory.CreateDirectory(directory.Replace(sourceDir, destinationDir));
+
+        foreach (var file in Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories))
+            File.Copy(file, file.Replace(sourceDir, destinationDir), overwrite: true);
+    }
+
     private async Task WritePendingTurnSnapshotManifestAsync(
         string sessionId,
         string requestId,
@@ -1991,7 +2679,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         return Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(content)));
     }
 
-    private GameEngine CreateGameEngine()
+    private GameEngine CreateGameEngine(IConsoleInputSource? inputSource = null)
     {
         var settings = new GameSettings();
         var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
@@ -2062,7 +2750,43 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             pendingTurnState,
             qteSceneService,
             clipboardService,
-            NullLogger<GameEngine>.Instance);
+            NullLogger<GameEngine>.Instance,
+            inputSource);
+    }
+
+    private static ConsoleKeyInfo Key(ConsoleKey key)
+    {
+        var keyChar = key == ConsoleKey.Enter
+            ? '\r'
+            : key == ConsoleKey.Spacebar
+                ? ' '
+                : char.ToLowerInvariant(key.ToString()[0]);
+        return new ConsoleKeyInfo(keyChar, key, shift: false, alt: false, control: false);
+    }
+
+    private sealed class QueuedConsoleInputSource : IConsoleInputSource
+    {
+        private readonly Queue<ConsoleKeyInfo> _keys;
+
+        public QueuedConsoleInputSource(IEnumerable<ConsoleKeyInfo> keys)
+        {
+            _keys = new Queue<ConsoleKeyInfo>(keys);
+        }
+
+        public bool IsScripted => true;
+
+        public bool KeyAvailable => _keys.Count > 0;
+
+        public ConsoleKeyInfo ReadKey(bool intercept = true)
+        {
+            return _keys.Count > 0 ? _keys.Dequeue() : Key(ConsoleKey.Enter);
+        }
+
+        public string? ReadLine() => string.Empty;
+
+        public void AssertCompleted()
+        {
+        }
     }
 
     private static T GetPrivateField<T>(object instance, string fieldName) where T : class

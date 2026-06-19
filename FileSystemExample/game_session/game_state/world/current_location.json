@@ -17,7 +17,11 @@
     "exploration": 30
   },
   "description": "Роскошные покои в поместье Вальмонт в столице Этернии. Сквозь высокие окна пробивается утренний свет, смешанный с легким туманом, окутывающим город.",
-  "lastEventsDescription": "Асуран де Вальмонт пробуждается после тяжелого сна в своих покоях.",
+  "lastEventsDescription": "#[0] - 1 Month of Beginnings 124 г., 07:40: Асуран де Вальмонт пробуждается после тяжелого сна в своих покоях.",
+  "normalizedWeatherState": {
+    "description": "За окнами держится холодный утренний туман; воздух сырой, но ветер почти стих.",
+    "tendency": "NO_CHANGE"
+  },
   "image_prompt": "luxurious nobleman bedroom, morning light, silk sheets, foggy window, classical furniture, 4k, cinematic lighting",
   "factionControl": [],
   "adjacencyMap": [

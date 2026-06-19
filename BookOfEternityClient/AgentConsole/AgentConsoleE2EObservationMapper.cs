@@ -29,14 +29,7 @@ public static class AgentConsoleE2EObservationMapper
                 or AgentConsoleInputKind.Confirmation,
             InputKind = inputKind,
             SelectedIndex = selectedIndex,
-            Actions = observation.Options
-                .Select((label, index) => new AgentConsoleAction
-                {
-                    Id = $"option-{index}",
-                    Label = label,
-                    IsDefault = selectedIndex == index
-                })
-                .ToArray(),
+            Actions = BuildActions(observation.Options, selectedIndex, inputKind),
             Prompt = BuildPrompt(observation, inputKind),
             RenderedAtUtc = observation.CapturedAtUtc,
             UpdatedAtUtc = observation.CapturedAtUtc,
@@ -92,9 +85,33 @@ public static class AgentConsoleE2EObservationMapper
             PromptId = $"e2e:{observation.RunId}:{observation.StepIndex}:prompt",
             Text = observation.PlayerFacingText,
             InputKind = inputKind,
+            DefaultValue = inputKind == AgentConsoleInputKind.Confirmation ? observation.SelectedOption : null,
             Choices = observation.Options.ToArray()
         };
     }
+
+    private static IReadOnlyList<AgentConsoleAction> BuildActions(
+        IReadOnlyList<string> options,
+        int? selectedIndex,
+        AgentConsoleInputKind inputKind)
+    {
+        return options
+            .Select((label, index) => new AgentConsoleAction
+            {
+                Id = $"option-{index}",
+                Label = label,
+                Shortcut = inputKind == AgentConsoleInputKind.Confirmation ? ResolveConfirmationShortcut(index) : null,
+                IsDefault = selectedIndex == index
+            })
+            .ToArray();
+    }
+
+    private static string? ResolveConfirmationShortcut(int optionIndex) => optionIndex switch
+    {
+        0 => "y",
+        1 => "n",
+        _ => null
+    };
 
     private static IReadOnlyList<AgentConsoleDiagnostic> BuildDiagnostics(ConsoleE2EObservationSnapshot observation)
     {

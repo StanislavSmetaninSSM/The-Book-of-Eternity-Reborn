@@ -246,7 +246,7 @@ public partial class GameEngine
 
     private int RenderMainMenuStaticFrame(IReadOnlyList<MainMenuOption> options, int selectedIndex, MainMenuLayoutMode layout)
     {
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.WriteLine();
         AnsiConsole.Write(BuildMainMenuHero(layout));
         try
@@ -739,7 +739,7 @@ public partial class GameEngine
 
     private async Task NewGameFlow()
     {
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Rule("[cyan]🌟 Новая Игра[/]").RuleStyle("cyan"));
         AnsiConsole.WriteLine();
 
@@ -978,7 +978,7 @@ public partial class GameEngine
     /// </summary>
     private async Task HandleIncarnation()
     {
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
 
         // Soul Gates banner
         var gateFiglet = new FigletText("Soul Gates")
@@ -1422,7 +1422,12 @@ public partial class GameEngine
 
         WriteMainMenuJsonAuditPanel("Полный JSON system guardian preset", BuildSystemGuardianPresetAuditNode(preset), Color.Cyan1);
 
-        return AnsiConsole.Confirm("[yellow]Выбрать этого хранителя для новой игры?[/]", true);
+        return ConfirmWithConsoleObservation(
+            "[yellow]Выбрать этого хранителя для новой игры?[/]",
+            "Выбрать этого хранителя для новой игры?",
+            defaultValue: true,
+            slug: "new-game-guardian-confirmation",
+            title: "Выбор хранителя");
     }
 
     private async Task<JsonNode?> BuildIncarnationPendingSetupAfterPreviewAsync(string characterDescription, string worldDescription, string circumstances)
@@ -1645,7 +1650,12 @@ public partial class GameEngine
         });
         WriteMainMenuJsonAuditPanel("Полный JSON-аудит /incarnate contract", audit, Color.Yellow);
 
-        return AnsiConsole.Confirm("[yellow]Отправить этот контракт GM?[/]", true);
+        return ConfirmWithConsoleObservation(
+            "[yellow]Отправить этот контракт GM?[/]",
+            "Отправить этот контракт GM?",
+            defaultValue: true,
+            slug: "incarnation-contract-confirmation",
+            title: "Контракт воплощения");
     }
 
     private static JsonNode? TryParseJsonAuditNode(string? raw)
@@ -1884,13 +1894,25 @@ public partial class GameEngine
     /// </summary>
     private async Task HandleEndOfLife()
     {
-        var confirm = AnsiConsole.Confirm("[yellow]Вы уверены, что хотите завершить смертную жизнь?[/]", false);
+        var confirm = ConfirmWithConsoleObservation(
+            "[yellow]Вы уверены, что хотите завершить смертную жизнь?[/]",
+            "Вы уверены, что хотите завершить смертную жизнь?",
+            defaultValue: false,
+            slug: "end-of-life-confirmation",
+            title: "Завершить смертную жизнь");
         if (!confirm)
             return;
 
         // Ask for brief life summary (Guardian knowledge persistence)
         AnsiConsole.Write(new Rule("[gold1]📜 Итоги смертной жизни[/]").RuleStyle("gold1"));
         AnsiConsole.MarkupLine("[dim]Опишите кратко, чем запомнилась эта жизнь (или оставьте пустым):[/]");
+        RecordConsoleObservation(
+            ConsoleE2EInputMode.TextPrompt,
+            "Итоги смертной жизни",
+            "Итоги смертной жизни\nОпишите кратко, чем запомнилась эта жизнь (или оставьте пустым):\nИтог:",
+            [],
+            selectedOption: null,
+            slug: "end-of-life-summary");
         var lifeSummary = PromptTextInput("[cyan]Итог:[/]", allowEmpty: true, preserveNewlines: true);
 
         var autoSummary = BuildLifeSummary(lifeSummary);
@@ -2883,7 +2905,7 @@ public partial class GameEngine
 
     private async Task LoadGameFlow()
     {
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Rule("[cyan]📂 Загрузка игры[/]").RuleStyle("cyan"));
         AnsiConsole.WriteLine();
 
@@ -2961,4 +2983,3 @@ public partial class GameEngine
     }
 
 }
-

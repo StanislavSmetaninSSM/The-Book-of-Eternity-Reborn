@@ -193,7 +193,7 @@ public sealed partial class QteSceneService
             lines.Add("[dim]Изображение сцены будет доступно после завершения QTE.[/]");
         }
 
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" QTE Offer ", Justify.Center),
@@ -772,7 +772,7 @@ public sealed partial class QteSceneService
         lines.Add("");
         lines.Add("[yellow]Нажмите любую клавишу, когда будете готовы продолжить...[/]");
 
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
         {
             Border = BoxBorder.Double,
@@ -804,7 +804,7 @@ public sealed partial class QteSceneService
                     : "🖼 Сгенерировать и показать изображение");
             choices.Add("➡ Перейти к следующей сцене");
 
-            AnsiConsole.Clear();
+            SpectreConsoleSafe.Clear();
             AnsiConsole.Write(new Panel(new Markup(string.Join("\n", new[]
             {
                 $"[bold yellow]Результат: {Markup.Escape(DisplayGrade(grade))}[/]",
@@ -1111,7 +1111,7 @@ public sealed partial class QteSceneService
                     : "🖼 Сгенерировать и показать изображение");
             choices.Add("✅ Завершить сцену");
 
-            AnsiConsole.Clear();
+            SpectreConsoleSafe.Clear();
             AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
             {
                 Header = new PanelHeader(" Финал QTE ", Justify.Center),

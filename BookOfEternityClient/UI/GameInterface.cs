@@ -28,7 +28,7 @@ public class GameInterface
 
     public void RenderGameScreen(AggregatedGameState state, GameResponse? lastResponse, int turnNumber)
     {
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         
         // Header (realm-aware with distinct visual theme)
         RenderHeader(state, turnNumber);
@@ -81,7 +81,7 @@ public class GameInterface
     public static void RenderRealmTransition(bool enteringChaosSea, IConsoleInputSource? inputSource = null)
     {
         var consoleInput = inputSource ?? SystemConsoleInputSource.Instance;
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.WriteLine();
         AnsiConsole.WriteLine();
 
@@ -260,7 +260,7 @@ public class GameInterface
 
     public static void RenderAscensionTransition()
     {
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.WriteLine();
         AnsiConsole.WriteLine();
         AnsiConsole.Write(new FigletText("Shining Abode")
@@ -289,7 +289,7 @@ public class GameInterface
 
     public static void RenderShiningAbodeReturnTransition()
     {
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.WriteLine();
         AnsiConsole.WriteLine();
         AnsiConsole.Write(new FigletText("Shining Abode")

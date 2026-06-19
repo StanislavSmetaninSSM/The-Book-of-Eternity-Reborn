@@ -518,11 +518,14 @@ public partial class GameEngine
             return null;
 
         var canonicalFiles = new HashSet<string>(CanonicalStateNormalizer.CanonicalAccumulatedFiles, StringComparer.OrdinalIgnoreCase);
+        var baselineCanonicalFiles = payload.RollbackBaselineFiles
+            .Where(path => !string.IsNullOrWhiteSpace(path) && canonicalFiles.Contains(path))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         if (!PendingTurnSnapshotAuthority.HasValidatedSnapshotCoverage(
                 payload,
                 static authorityPayload => authorityPayload.Files,
                 static authorityPayload => authorityPayload.SnapshotFileHashes,
-                canonicalFiles,
+                baselineCanonicalFiles,
                 out _,
                 static authorityPayload => authorityPayload.RollbackBaselineFiles,
                 requireRollbackBaselineRegistration: true))
@@ -531,7 +534,7 @@ public partial class GameEngine
         }
 
         var snapshot = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var relativePath in canonicalFiles)
+        foreach (var relativePath in baselineCanonicalFiles)
         {
             if (!payload.Files.TryGetValue(relativePath, out var snapshotPath) ||
                 string.IsNullOrWhiteSpace(snapshotPath) ||
@@ -583,7 +586,7 @@ public partial class GameEngine
             return null;
         }
 
-        return snapshot.Count >= canonicalFiles.Count ? snapshot : null;
+        return snapshot.Count >= baselineCanonicalFiles.Count ? snapshot : null;
     }
 
     private async Task<bool> TryAddOptionalCanonicalBaselineSnapshotAsync(
@@ -1394,6 +1397,7 @@ public partial class GameEngine
             if (string.Equals(relative, ValidationRepairReadyPath, StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(relative, ValidationRepairRequestPath, StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(relative, "game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(relative, "game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(relative, "game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(relative, PendingTurnSnapshotManifestPath, StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(relative, PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||

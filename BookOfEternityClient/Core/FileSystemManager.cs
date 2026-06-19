@@ -206,6 +206,11 @@ public class FileSystemManager
             return;
 
         foreach (var file in Directory.GetFiles(currentWorldPath, "*", SearchOption.AllDirectories))
+        {
+            if (file.Contains(".rollback.", StringComparison.OrdinalIgnoreCase))
+                continue;
+
             File.Delete(file);
+        }
     }
 }

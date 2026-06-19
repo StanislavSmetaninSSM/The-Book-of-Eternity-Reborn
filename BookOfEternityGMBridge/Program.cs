@@ -111,9 +111,9 @@ internal sealed class BridgeHost : IDisposable
 
     public BridgeHost(string sessionPath, string pipeName)
     {
-        _sessionPath = sessionPath;
+        _sessionPath = Path.GetFullPath(sessionPath);
         _clientRoot = Directory.GetParent(_sessionPath)?.FullName ?? _sessionPath;
-        _repoRoot = Directory.GetParent(_clientRoot)?.FullName ?? _clientRoot;
+        _repoRoot = ResolveRepoRoot(_clientRoot, Environment.CurrentDirectory, AppContext.BaseDirectory);
         _pipeName = pipeName;
         _controlDir = Path.Combine(_sessionPath, "game_state", "control");
         _statusPath = Path.Combine(_controlDir, "gm_bridge_status.json");
@@ -231,6 +231,9 @@ internal sealed class BridgeHost : IDisposable
             case "status":
                 return BridgeResponse.Success(SnapshotStatus());
 
+            case "diagnostics":
+                return BridgeResponse.Success(SnapshotStatus(), SnapshotDiagnostics());
+
             case "setready":
                 SetReady(request.Ready ?? true);
                 return BridgeResponse.Success(SnapshotStatus());
@@ -280,9 +283,8 @@ internal sealed class BridgeHost : IDisposable
                             _cts.Token);
                         if (!visible)
                         {
-                            return BridgeResponse.Failure(
-                                "Prompt text was pasted into the PTY, but it never became visible in the CLI output. Enter was not sent to avoid switching the CLI into a wrong mode.",
-                                SnapshotStatus());
+                            return FailWithLastError(
+                                "Prompt text was pasted into the PTY, but it never became visible in the CLI output. Enter was not sent to avoid switching the CLI into a wrong mode.");
                         }
 
                         await WaitForOutputQuietPeriodAsync(TimeSpan.FromMilliseconds(250), TimeSpan.FromSeconds(2), _cts.Token);
@@ -755,6 +757,28 @@ internal sealed class BridgeHost : IDisposable
         throw new InvalidOperationException("Neither pwsh.exe nor powershell.exe is available for bridge hosting.");
     }
 
+    private static string ResolveRepoRoot(string fallback, params string[] candidates)
+    {
+        foreach (var candidate in candidates.Where(candidate => !string.IsNullOrWhiteSpace(candidate)))
+        {
+            var directory = new DirectoryInfo(candidate);
+            while (directory != null)
+            {
+                if (IsRepoRoot(directory.FullName))
+                    return directory.FullName;
+
+                directory = directory.Parent;
+            }
+        }
+
+        return fallback;
+    }
+
+    private static bool IsRepoRoot(string path) =>
+        File.Exists(Path.Combine(path, "TheBookOfEternityReborn.sln")) ||
+        (Directory.Exists(Path.Combine(path, "BookOfEternityClient")) &&
+         Directory.Exists(Path.Combine(path, "BookOfEternityGMBridge")));
+
     private GameSettings LoadBridgeConfig()
     {
         try
@@ -781,6 +805,35 @@ internal sealed class BridgeHost : IDisposable
         {
             return _status with { };
         }
+    }
+
+    private BridgeDiagnostics SnapshotDiagnostics()
+    {
+        const int tailLimit = 12000;
+        lock (_sync)
+        {
+            var recentOutput = _recentOutput.ToString();
+            if (recentOutput.Length > tailLimit)
+                recentOutput = recentOutput[^tailLimit..];
+
+            return new BridgeDiagnostics
+            {
+                OutputVersion = _outputVersion,
+                RecentOutputTail = recentOutput,
+                VisibleScreenText = ReadVisibleConsoleText()
+            };
+        }
+    }
+
+    private BridgeResponse FailWithLastError(string error)
+    {
+        lock (_sync)
+        {
+            _status.LastError = error;
+            WriteStatusFile();
+        }
+
+        return BridgeResponse.Failure(error, SnapshotStatus(), SnapshotDiagnostics());
     }
 
     private void HandlePtyExited_NoThrow()
@@ -904,6 +957,7 @@ internal sealed class BridgeResponse
     public bool Ok { get; set; }
     public string? Error { get; set; }
     public BridgeStatus? Status { get; set; }
+    public BridgeDiagnostics? Diagnostics { get; set; }
 
     public static BridgeResponse Success(BridgeStatus status) => new()
     {
@@ -911,11 +965,26 @@ internal sealed class BridgeResponse
         Status = status
     };
 
+    public static BridgeResponse Success(BridgeStatus status, BridgeDiagnostics diagnostics) => new()
+    {
+        Ok = true,
+        Status = status,
+        Diagnostics = diagnostics
+    };
+
     public static BridgeResponse Failure(string error, BridgeStatus status) => new()
     {
         Ok = false,
         Error = error,
         Status = status
+    };
+
+    public static BridgeResponse Failure(string error, BridgeStatus status, BridgeDiagnostics diagnostics) => new()
+    {
+        Ok = false,
+        Error = error,
+        Status = status,
+        Diagnostics = diagnostics
     };
 }
 
@@ -932,6 +1001,13 @@ internal sealed record BridgeStatus
     public string StartedAtUtc { get; set; } = DateTimeOffset.UtcNow.ToString("O");
     public string UpdatedAtUtc { get; set; } = DateTimeOffset.UtcNow.ToString("O");
     public string? LastError { get; set; }
+}
+
+internal sealed class BridgeDiagnostics
+{
+    public long OutputVersion { get; set; }
+    public string RecentOutputTail { get; set; } = string.Empty;
+    public string VisibleScreenText { get; set; } = string.Empty;
 }
 
 internal static class NativeMethods

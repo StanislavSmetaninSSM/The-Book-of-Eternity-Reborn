@@ -1737,9 +1737,11 @@ public partial class ValidationService
     {
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var preTurnInventoryItemIds = await ReadPreTurnInventoryItemIdsAsync();
+        var preTurnInventoryJson = await ReadPreTurnTrackedFileAsync("game_state/inventory/items.json");
+        var hasPreTurnInventoryBaseline = !string.IsNullOrWhiteSpace(preTurnInventoryJson);
+        var preTurnInventoryItemIds = ReadInventoryItemIdsFromJson(preTurnInventoryJson);
         RegisterKnownInventoryItemReferencesFromJson(
-            await ReadPreTurnTrackedFileAsync("game_state/inventory/items.json"),
+            preTurnInventoryJson,
             ids,
             names,
             knownExistingItemIds: null,
@@ -1748,8 +1750,8 @@ public partial class ValidationService
             await _fs.ReadFileAsync("game_state/inventory/items.json"),
             ids,
             names,
-            preTurnInventoryItemIds,
-            currentStateNewItemsOnly: true);
+            hasPreTurnInventoryBaseline ? preTurnInventoryItemIds : null,
+            currentStateNewItemsOnly: hasPreTurnInventoryBaseline);
 
         return (ids, names);
     }

@@ -1904,6 +1904,9 @@ public partial class ValidationService
 
     private void ValidateDirectWeatherState(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        if (!contextPrefix.EndsWith("weather.json", StringComparison.OrdinalIgnoreCase))
+            return;
+
         var hasDirectCommandField =
             root.TryGetProperty("tendency", out _) ||
             root.TryGetProperty("description", out _);

@@ -100,7 +100,7 @@ public partial class GameEngine
 
             await ProcessMortalProgressionAfterAcceptedTurnAsync();
 
-            await CheckLifeTransitions();
+            await CheckLifeTransitions(snapshotContext);
             await CheckAscensionTrigger();
 
             await ConsumeAfterlifeReturnProtectionIfNeededAsync(snapshotContext);
@@ -432,7 +432,7 @@ public partial class GameEngine
                         await ExtractStoryEntityRefsAsync(lateAction));
 
                     await ProcessMortalProgressionAfterAcceptedTurnAsync();
-                    await CheckLifeTransitions();
+                    await CheckLifeTransitions(snapshotContext);
                     await CheckAscensionTrigger();
                     if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
                         await FinalizePendingMemoryLegacyConsumptionAsync();
@@ -514,6 +514,8 @@ public partial class GameEngine
                 await _imageService.ProcessSceneImagePrompt(_pendingImagePrompt);
                 _pendingImagePrompt = null;
             }
+
+            RecordGameLoopPromptObservation();
 
             // Get player input (with Shift+Enter for multiline)
             var input = await GetPlayerInput();
@@ -675,6 +677,7 @@ public partial class GameEngine
             };
             request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
             await AttachPendingDiceAndGachaAsync(request);
+            RegisterOrdinaryTurnStagingValidationSnapshotFiles(backedUpFiles);
             var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel);
 
             // Attach computed characteristics for GM reference
@@ -803,8 +806,8 @@ public partial class GameEngine
         }
         var response = await BuildGameResponseFromFiles();
 
-        // Turn accepted — backup no longer needed
-        CleanupBackup(backedUpFiles);
+        // Turn accepted — backup no longer needed after lifecycle readers finish:
+        // pending-turn detached authority still uses rollback backup files as tamper evidence.
         CleanupAfterAcceptedChaosSeaMarkerTurn(action);
 
         _gameLoop.IncrementTurn();
@@ -827,14 +830,17 @@ public partial class GameEngine
         await ProcessMortalProgressionAfterAcceptedTurnAsync();
 
         // Check for GM-triggered life transitions
-        await CheckLifeTransitions();
+        await CheckLifeTransitions(activeSnapshotContext);
         await CheckAscensionTrigger();
 
         await ConsumeAfterlifeReturnProtectionIfNeededAsync(activeSnapshotContext);
 
         var qteHandling = await HandleAcceptedQteOfferAsync(response, activeSnapshotContext);
         if (qteHandling.EarlyExit)
+        {
+            CleanupBackup(backedUpFiles);
             return;
+        }
 
         _lastResponse = qteHandling.Response;
         _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
@@ -847,7 +853,11 @@ public partial class GameEngine
         }
 
         if (await CheckGmIncarnationTrigger(activeSnapshotContext))
+        {
+            CleanupBackup(backedUpFiles);
             return;
+        }
+        CleanupBackup(backedUpFiles);
         await CleanupAcceptedTurnTerminalArtifactsAsync();
     }
 
@@ -866,6 +876,22 @@ public partial class GameEngine
     {
         // Rollback restores pre-turn marker files. Keep system_guardian_attraction.json
         // so a later GM response can still validate against the original contract.
+    }
+
+    private void RegisterOrdinaryTurnStagingValidationSnapshotFiles(RollbackSnapshot? rollbackSnapshot)
+    {
+        if (rollbackSnapshot == null)
+            return;
+
+        foreach (var file in new[]
+                 {
+                     ScenarioCoreService.ManifestPath,
+                     PendingTurnStateService.PendingDiceStatePath
+                 })
+        {
+            if (_fs.FileExists(file))
+                rollbackSnapshot.ValidationSnapshotFiles.Add(file);
+        }
     }
 
     private void OverlayExplorerLocalRollbackSnapshot(
@@ -1212,7 +1238,7 @@ public partial class GameEngine
 
         var completion = await _qteSceneService.StartAcceptedSceneAsync(offer, _gameLoop.TurnNumber);
         await ProcessMortalProgressionAfterAcceptedTurnAsync();
-        await CheckLifeTransitions();
+        await CheckLifeTransitions(snapshotContext);
         await CheckAscensionTrigger();
         return (false, completion.Response);
     }
@@ -1377,7 +1403,7 @@ public partial class GameEngine
     /// Checks for GM-triggered life transitions (death in mortal world → Chaos Sea).
     /// Sends life evaluation request to GM, waits for response with rewards, shows reward screen.
     /// </summary>
-    private async Task CheckLifeTransitions()
+    private async Task CheckLifeTransitions(ValidatedPendingTurnSnapshotContext? acceptedTurnSnapshotContext = null)
     {
         var transJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
         if (transJson == null) return;
@@ -1410,10 +1436,16 @@ public partial class GameEngine
                 }
             }
 
-            var runtimeTriggerAuthority = await CanonicalStateNormalizer.ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
-                _fs,
-                transJson,
-                currentSoulStateRoot);
+            var runtimeTriggerAuthority = acceptedTurnSnapshotContext == null
+                ? await CanonicalStateNormalizer.ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
+                    _fs,
+                    transJson,
+                    currentSoulStateRoot)
+                : ResolveLifecycleAuthorizedTriggerLifeEndFromAcceptedSnapshotContext(
+                    transJson,
+                    currentSoulStateJson,
+                    currentSoulStateRoot,
+                    acceptedTurnSnapshotContext);
             if (!runtimeTriggerAuthority.IsAuthorized)
             {
                 throw new TriggerLifeEndRuntimeContextException(runtimeTriggerAuthority.Description);
@@ -1460,6 +1492,7 @@ public partial class GameEngine
 
             // Clean up transition signal BEFORE sending turn (avoid re-trigger)
             _fs.DeleteFile("game_state/control/life_transitions.json");
+            ClearReadySignals();
 
             // Send life evaluation request to GM
             var evalRequest = new TurnRequest
@@ -1552,7 +1585,9 @@ public partial class GameEngine
         {
             if (!requestDispatched)
                 await CleanupUndispatchedTransitionPrepAsync(rollbackBackups, localStateMutated, manifestCreated);
+            AppendErrorLogEntry(_fs, ex);
             _logger.LogWarning(ex, "Ошибка обработки перехода жизни");
+            AnsiConsole.MarkupLine("[red]⚠ Ошибка обработки перехода жизни записана в error_log.txt.[/]");
         }
     }
 
@@ -1578,6 +1613,32 @@ public partial class GameEngine
 
         failureDescription = string.Empty;
         return false;
+    }
+
+    private CanonicalStateNormalizer.TriggerLifeEndAuthorityResolution ResolveLifecycleAuthorizedTriggerLifeEndFromAcceptedSnapshotContext(
+        string? lifeTransitionsJson,
+        string? currentSoulStateJson,
+        JsonObject? currentSoulStateRoot,
+        ValidatedPendingTurnSnapshotContext snapshotContext)
+    {
+        var currentRealm = currentSoulStateRoot != null
+            ? CanonicalStateNormalizer.TryReadStrictCurrentRealm(currentSoulStateRoot)
+            : CanonicalStateNormalizer.TryReadStrictCurrentRealm(currentSoulStateJson);
+        var snapshotSoulStateJson = ReadPreTurnSnapshotFile(snapshotContext, "game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(snapshotSoulStateJson))
+        {
+            return new CanonicalStateNormalizer.TriggerLifeEndAuthorityResolution(
+                false,
+                "missing_preturn_soul_snapshot",
+                "Canonical TriggerLifeEnd authority requires validated pending snapshot game_state/meta/soul_state.json.",
+                null,
+                currentRealm);
+        }
+
+        return CanonicalStateNormalizer.ResolveLifecycleAuthorizedTriggerLifeEnd(
+            lifeTransitionsJson,
+            CanonicalStateNormalizer.TryReadStrictCurrentRealm(snapshotSoulStateJson),
+            currentRealm);
     }
 
     internal static void HandleInvalidTriggerLifeEndRuntimeFailure(FileSystemManager fs, Exception ex)
@@ -1641,7 +1702,7 @@ public partial class GameEngine
         }
 
         // Build reward panel
-        AnsiConsole.Clear();
+        SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new FigletText("Life Evaluation").Color(Color.Gold1).Centered());
         AnsiConsole.Write(new Rule("[gold1]✦ Оценка Прожитой Жизни ✦[/]").RuleStyle("gold1"));
         AnsiConsole.WriteLine();
@@ -1786,7 +1847,7 @@ public partial class GameEngine
             var circumstances = payload.Circumstances;
 
             // Show the GM-initiated incarnation banner
-            AnsiConsole.Clear();
+            SpectreConsoleSafe.Clear();
             AnsiConsole.Write(new FigletText("Soul Gates").Color(Color.Gold1).Centered());
             AnsiConsole.Write(payload.IsGuardianForced
                 ? new Rule("[darkred]✦ Хранитель насильно распахивает Врата Души ✦[/]").RuleStyle("darkred")
@@ -3008,7 +3069,7 @@ Shining relic gacha consumes the quoted Ink Feather cost from the request and do
 
         while (remaining > 0)
         {
-            AnsiConsole.Clear();
+            SpectreConsoleSafe.Clear();
             AnsiConsole.Write(new Rule($"[gold1]⭐ {title}[/]").RuleStyle("gold1"));
             AnsiConsole.MarkupLine($"\n  [bold yellow]Доступно очков: {remaining}[/]  [dim](↑↓ выбрать, → добавить, ← убрать, Enter подтвердить)[/]\n");
 
@@ -3081,7 +3142,12 @@ Shining relic gacha consumes the quoted Ink Feather cost from the request and do
                     if (remaining == 0)
                         goto done;
                     // If some points remain, ask for confirmation
-                    if (AnsiConsole.Confirm($"[yellow]У вас ещё {remaining} нераспределённых очков. Подтвердить?[/]", false))
+                    if (ConfirmWithConsoleObservation(
+                            $"[yellow]У вас ещё {remaining} нераспределённых очков. Подтвердить?[/]",
+                            $"У вас ещё {remaining} нераспределённых очков. Подтвердить?",
+                            defaultValue: false,
+                            slug: "stat-allocation-confirmation",
+                            title: "Распределение характеристик"))
                         goto done;
                     break;
             }
@@ -3105,4 +3171,3 @@ Shining relic gacha consumes the quoted Ink Feather cost from the request and do
         _inputSource.ReadKey(intercept: true);
     }
 }
-

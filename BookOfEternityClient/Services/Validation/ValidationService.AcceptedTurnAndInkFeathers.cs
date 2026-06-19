@@ -4535,8 +4535,11 @@ public partial class ValidationService
         var hasValidatedRegistration = HasValidatedTrackedSnapshotRegistration(manifest, relativePath);
         if (!hasValidatedRegistration)
         {
-            return IsTrackedByValidatedBaseline(manifest, relativePath) || !string.IsNullOrWhiteSpace(current)
-                ? ValidatedTrackedFileChangeStatus.MissingValidatedBaseline
+            if (IsTrackedByValidatedBaseline(manifest, relativePath))
+                return ValidatedTrackedFileChangeStatus.MissingValidatedBaseline;
+
+            return !string.IsNullOrWhiteSpace(current)
+                ? ValidatedTrackedFileChangeStatus.Changed
                 : ValidatedTrackedFileChangeStatus.Unchanged;
         }
 

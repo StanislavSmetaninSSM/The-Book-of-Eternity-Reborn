@@ -3579,6 +3579,9 @@ public partial class ValidationService
     private async Task ValidateGuardianResonancePowerEventsAsync(List<ValidationIssue> issues)
     {
         var postJournalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
+        if (string.IsNullOrWhiteSpace(postJournalJson))
+            return;
+
         if (!TryReadGuardianPowerJournalEntriesForCurrentSemanticProof(postJournalJson, out var rawPostEntries))
         {
             issues.Add(new ValidationIssue(
@@ -5907,7 +5910,8 @@ public partial class ValidationService
     private static bool IsLikelyFullInventoryItemObject(JsonElement item)
     {
         return HasRequiredNonEmptyStrings(item, "name", "description", "image_prompt", "quality", "durability") &&
-               HasRequiredProperties(item, "price", "count", "weight", "volume", "contentsPath", "isContainer", "isConsumption", "requiresTwoHands");
+               item.TryGetProperty("contentsPath", out _) &&
+               HasRequiredProperties(item, "price", "count", "weight", "volume", "isContainer", "isConsumption", "requiresTwoHands");
     }
 
     private void ValidateOptionalStringOrStringArrayField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)

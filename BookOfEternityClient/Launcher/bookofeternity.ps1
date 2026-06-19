@@ -199,6 +199,12 @@ switch ($Action.ToLowerInvariant()) {
         $status | ConvertTo-Json -Depth 8
         break
     }
+    "diagnostics" {
+        Invoke-BridgeRequest -ResolvedSessionPath $resolvedSessionPath -Payload @{
+            command = "diagnostics"
+        } | ConvertTo-Json -Depth 8
+        break
+    }
     "addtext" {
         $text = ($Arguments -join " ")
         Invoke-BridgeRequest -ResolvedSessionPath $resolvedSessionPath -Payload @{
@@ -252,6 +258,7 @@ switch ($Action.ToLowerInvariant()) {
         Write-Host "Usage:" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 start-bridge [-SessionPath <path>]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 status [-SessionPath <path>]" -ForegroundColor Yellow
+        Write-Host "  .\bookofeternity.ps1 diagnostics [-SessionPath <path>]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 addText <text> [-SessionPath <path>]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 sendEnter [-SessionPath <path>]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 dispatchPrompt <text> [-SessionPath <path>]" -ForegroundColor Yellow
