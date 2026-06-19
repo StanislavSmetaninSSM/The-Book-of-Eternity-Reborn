@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
@@ -133,7 +134,7 @@ public partial class GameEngine
             }
             else if (chosen.Key == "gm_worker_profiles")
             {
-                ShowGmWorkerBridgeDiagnostics();
+                await ShowGmWorkerBridgeDiagnostics();
             }
             else if (chosen.Key == "system_mods")
             {
@@ -483,7 +484,7 @@ public partial class GameEngine
         return $"{enabled}/{profiles.Count} включено; {roleSummary}";
     }
 
-    private void ShowGmWorkerBridgeDiagnostics()
+    private async Task ShowGmWorkerBridgeDiagnostics()
     {
         SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Rule("[cyan]GM worker bridges[/]").RuleStyle("cyan"));
@@ -496,46 +497,87 @@ public partial class GameEngine
         {
             AnsiConsole.MarkupLine("[yellow]Worker-профили не настроены.[/]");
             AnsiConsole.MarkupLine("[dim]Обычный single-GM режим продолжает работать без фоновых worker-процессов.[/]");
-            _inputSource.ReadKey(intercept: true);
-            return;
         }
-
-        var table = new Table()
-            .Border(TableBorder.Rounded)
-            .BorderColor(Color.Grey)
-            .Expand();
-        table.AddColumn(new TableColumn("[bold]ID[/]").NoWrap());
-        table.AddColumn(new TableColumn("[bold]Роль[/]").NoWrap());
-        table.AddColumn(new TableColumn("[bold]Состояние[/]").NoWrap());
-        table.AddColumn(new TableColumn("[bold]Задачи[/]"));
-        table.AddColumn(new TableColumn("[bold]Таймаут[/]").NoWrap());
-        table.AddColumn(new TableColumn("[bold]Команда запуска[/]"));
-        table.AddColumn(new TableColumn("[bold]Scope[/]"));
-
-        foreach (var profile in profiles)
+        else
         {
-            var state = profile.Enabled
-                ? "[green]включен[/]"
-                : "[dim]отключен[/]";
-            var taskTypes = profile.Permissions.TaskTypes.Count == 0
-                ? "[dim]нет[/]"
-                : Markup.Escape(string.Join(", ", profile.Permissions.TaskTypes));
-            var scope = profile.Permissions.ProposalOnly
-                ? "proposal-only"
-                : $"write: {string.Join(", ", profile.Permissions.ProposalWritePaths)}";
-            var launch = $"{TruncateDiagnosticValue(profile.LaunchCommand, 64)} | hidden";
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .BorderColor(Color.Grey)
+                .Expand();
+            table.AddColumn(new TableColumn("[bold]ID[/]").NoWrap());
+            table.AddColumn(new TableColumn("[bold]Роль[/]").NoWrap());
+            table.AddColumn(new TableColumn("[bold]Состояние[/]").NoWrap());
+            table.AddColumn(new TableColumn("[bold]Задачи[/]"));
+            table.AddColumn(new TableColumn("[bold]Таймаут[/]").NoWrap());
+            table.AddColumn(new TableColumn("[bold]Команда запуска[/]"));
+            table.AddColumn(new TableColumn("[bold]Scope[/]"));
 
-            table.AddRow(
-                Markup.Escape(profile.WorkerId),
-                Markup.Escape(profile.Role.ToString()),
-                state,
-                taskTypes,
-                $"{profile.TimeoutSeconds}s",
-                Markup.Escape(launch),
-                Markup.Escape(scope));
+            foreach (var profile in profiles)
+            {
+                var state = profile.Enabled
+                    ? "[green]включен[/]"
+                    : "[dim]отключен[/]";
+                var taskTypes = profile.Permissions.TaskTypes.Count == 0
+                    ? "[dim]нет[/]"
+                    : Markup.Escape(string.Join(", ", profile.Permissions.TaskTypes));
+                var scope = profile.Permissions.ProposalOnly
+                    ? "proposal-only"
+                    : $"write: {string.Join(", ", profile.Permissions.ProposalWritePaths)}";
+                var launch = $"{TruncateDiagnosticValue(profile.LaunchCommand, 64)} | hidden";
+
+                table.AddRow(
+                    Markup.Escape(profile.WorkerId),
+                    Markup.Escape(profile.Role.ToString()),
+                    state,
+                    taskTypes,
+                    $"{profile.TimeoutSeconds}s",
+                    Markup.Escape(launch),
+                    Markup.Escape(scope));
+            }
+
+            AnsiConsole.Write(table);
         }
 
-        AnsiConsole.Write(table);
+        AnsiConsole.WriteLine();
+        AnsiConsole.Write(new Rule("[cyan]Proposal inbox[/]").RuleStyle("cyan"));
+        var proposals = await new GmWorkerProposalInboxService(_fs).ListAsync();
+        if (proposals.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[dim]Worker proposals пока не сохранены.[/]");
+        }
+        else
+        {
+            var proposalTable = new Table()
+                .Border(TableBorder.Rounded)
+                .BorderColor(Color.Grey)
+                .Expand();
+            proposalTable.AddColumn(new TableColumn("[bold]Proposal[/]").NoWrap());
+            proposalTable.AddColumn(new TableColumn("[bold]Worker[/]").NoWrap());
+            proposalTable.AddColumn(new TableColumn("[bold]Задача[/]").NoWrap());
+            proposalTable.AddColumn(new TableColumn("[bold]Режим[/]").NoWrap());
+            proposalTable.AddColumn(new TableColumn("[bold]Состояние[/]").NoWrap());
+            proposalTable.AddColumn(new TableColumn("[bold]Сводка[/]"));
+
+            foreach (var proposal in proposals.Take(12))
+            {
+                var state = proposal.IsReadable
+                    ? string.IsNullOrWhiteSpace(proposal.ApplyState) ? proposal.Status?.ToString() ?? "readable" : proposal.ApplyState
+                    : "unreadable";
+                var summary = proposal.IsReadable
+                    ? proposal.Summary
+                    : proposal.UnreadableReason;
+                proposalTable.AddRow(
+                    Markup.Escape(proposal.ProposalId),
+                    Markup.Escape(proposal.WorkerId),
+                    Markup.Escape(proposal.TaskType?.ToString() ?? "unknown"),
+                    Markup.Escape(proposal.ReviewMode),
+                    Markup.Escape(state),
+                    Markup.Escape(TruncateDiagnosticValue(summary, 96)));
+            }
+
+            AnsiConsole.Write(proposalTable);
+        }
+
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[dim]Proposal-файлы принимаются через BOE_WORKER_PROPOSAL_PATH; canonical state применяет только apply gate.[/]");
         _inputSource.ReadKey(intercept: true);

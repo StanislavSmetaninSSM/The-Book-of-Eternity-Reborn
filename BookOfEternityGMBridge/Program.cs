@@ -4,8 +4,10 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services.GmWorkers;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityGMBridge;
@@ -78,14 +80,16 @@ internal sealed class BridgeHost : IDisposable
         WriteIndented = true,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        PropertyNameCaseInsensitive = true
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.KebabCaseLower) }
     };
     private static readonly JsonSerializerOptions PipeJsonOpts = new()
     {
         WriteIndented = false,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        PropertyNameCaseInsensitive = true
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.KebabCaseLower) }
     };
 
     private readonly string _sessionPath;
@@ -812,18 +816,37 @@ internal sealed class BridgeHost : IDisposable
     private BridgeDiagnostics SnapshotDiagnostics()
     {
         const int tailLimit = 12000;
+        long outputVersion;
+        string recentOutput;
+        string visibleScreenText;
         lock (_sync)
         {
-            var recentOutput = _recentOutput.ToString();
+            recentOutput = _recentOutput.ToString();
             if (recentOutput.Length > tailLimit)
                 recentOutput = recentOutput[^tailLimit..];
+            outputVersion = _outputVersion;
+            visibleScreenText = ReadVisibleConsoleText();
+        }
 
-            return new BridgeDiagnostics
-            {
-                OutputVersion = _outputVersion,
-                RecentOutputTail = recentOutput,
-                VisibleScreenText = ReadVisibleConsoleText()
-            };
+        return new BridgeDiagnostics
+        {
+            OutputVersion = outputVersion,
+            RecentOutputTail = recentOutput,
+            VisibleScreenText = visibleScreenText,
+            WorkerProposalInbox = ReadWorkerProposalInbox()
+        };
+    }
+
+    private List<GmWorkerProposalInboxEntry> ReadWorkerProposalInbox()
+    {
+        try
+        {
+            var fs = new FileSystemManager(_clientRoot, NullLogger<FileSystemManager>.Instance);
+            return new GmWorkerProposalInboxService(fs).ListAsync().GetAwaiter().GetResult().ToList();
+        }
+        catch
+        {
+            return [];
         }
     }
 
@@ -1011,6 +1034,7 @@ internal sealed class BridgeDiagnostics
     public long OutputVersion { get; set; }
     public string RecentOutputTail { get; set; } = string.Empty;
     public string VisibleScreenText { get; set; } = string.Empty;
+    public List<GmWorkerProposalInboxEntry> WorkerProposalInbox { get; set; } = new();
 }
 
 internal static class NativeMethods

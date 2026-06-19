@@ -98,3 +98,25 @@ Worker proposal:
 
 If this proposal includes any `changedFiles`, the apply gate rejects it as a
 proposal-only violation.
+
+Proposal inbox review:
+
+```json
+{
+  "proposalId": "worker_proposal_20260620_0002",
+  "workerId": "narrative_draft_gemini",
+  "taskId": "worker_task_20260620_0002",
+  "taskType": "narrative-draft",
+  "status": "completed",
+  "summary": "Drafted corridor narration for main-GM review.",
+  "reviewMode": "review-only",
+  "hasDraftText": true,
+  "changedFileCount": 0,
+  "findingCount": 1,
+  "applyState": ""
+}
+```
+
+The inbox entry is diagnostic/read-only. It helps the main GM inspect the draft
+without opening raw JSON, but it does not apply the draft or send it to the
+player.

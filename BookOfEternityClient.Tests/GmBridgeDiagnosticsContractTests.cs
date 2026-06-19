@@ -53,6 +53,16 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
+    public void BridgeDiagnostics_ExposeWorkerProposalInbox()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("WorkerProposalInbox", source, StringComparison.Ordinal);
+        Assert.Contains("GmWorkerProposalInboxService", source, StringComparison.Ordinal);
+        Assert.Contains("ListAsync", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ConsoleOptions_ExposeGmWorkerBridgeProfileDiagnostics()
     {
         var source = ReadRepoFile("BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs");
@@ -60,6 +70,8 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("gm_worker_profiles", source, StringComparison.Ordinal);
         Assert.Contains("ShowGmWorkerBridgeDiagnostics", source, StringComparison.Ordinal);
         Assert.Contains("GmWorkerBridgeProfiles", source, StringComparison.Ordinal);
+        Assert.Contains("GmWorkerProposalInboxService", source, StringComparison.Ordinal);
+        Assert.Contains("Proposal inbox", source, StringComparison.Ordinal);
     }
 
     private static string ReadRepoFile(string relativePath)
