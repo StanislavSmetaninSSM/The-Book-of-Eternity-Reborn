@@ -10,6 +10,7 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using Spectre.Console;
@@ -115,6 +116,73 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains("TriggerLifeEndRuntimeContextException", log, StringComparison.Ordinal);
         Assert.Contains("mortal pre-turn realm authority", log, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_WithEnabledWorkerProfile_WritesWorkerTaskAndAudit()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/world/weather.json", "{\"before\":true}");
+        var engine = CreateGameEngine(configureSettings: settings =>
+        {
+            settings.GmWorkerBridgeProfiles.Add(GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile());
+        });
+        var issue = new ValidationIssue(
+            "game_state/world/weather.json",
+            IssueSeverity.Error,
+            "normalizedWeatherState.description is required.",
+            code: "normalized_weather_missing_description");
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "state validation", new List<ValidationIssue> { issue }, 1 })!);
+
+        await task;
+
+        Assert.True(_fs.FileExists("game_state/control/validation_repair_request.json"));
+        var workerTaskJson = await _fs.ReadFileAsync("game_state/control/gm_worker_latest_validation_repair_task.json");
+        Assert.False(string.IsNullOrWhiteSpace(workerTaskJson));
+        var workerTask = GmWorkerJson.Deserialize<WorkerTaskPacket>(workerTaskJson!);
+        Assert.NotNull(workerTask);
+        Assert.Equal("validation_repair_codex", workerTask!.WorkerId);
+        Assert.Equal(WorkerTaskType.ValidationRepair, workerTask.TaskType);
+        Assert.Contains("game_state/world/weather.json", workerTask.AllowedProposalPaths);
+
+        var audit = new GmWorkerAuditLog(_fs);
+        var events = await audit.ReadEventsAsync();
+        var dispatch = Assert.Single(events, evt => evt.EventType == "task-dispatched");
+        Assert.Equal(workerTask.TaskId, dispatch.TaskId);
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_WithoutWorkerProfiles_PreservesSingleGmRepairFlow()
+    {
+        var engine = CreateGameEngine();
+        var issue = new ValidationIssue(
+            "game_state/world/weather.json",
+            IssueSeverity.Error,
+            "normalizedWeatherState.description is required.",
+            code: "normalized_weather_missing_description");
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "state validation", new List<ValidationIssue> { issue }, 1 })!);
+
+        await task;
+
+        Assert.True(_fs.FileExists("game_state/control/validation_repair_request.json"));
+        Assert.False(_fs.FileExists("game_state/control/gm_worker_latest_validation_repair_task.json"));
+        Assert.False(_fs.FileExists(GmWorkerAuditLog.AuditLogPath));
+        Assert.False(Directory.Exists(_fs.ResolvePath(GmWorkerBridgePool.TaskRoot)));
+        Assert.False(Directory.Exists(_fs.ResolvePath(GmWorkerBridgePool.ProposalInboxRoot)));
+    }
+
 
     [Theory]
     [InlineData("[ABODE_OFFERING] Игрок подносит Реликвию Души.", true)]
@@ -2679,9 +2747,12 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         return Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(content)));
     }
 
-    private GameEngine CreateGameEngine(IConsoleInputSource? inputSource = null)
+    private GameEngine CreateGameEngine(
+        IConsoleInputSource? inputSource = null,
+        Action<GameSettings>? configureSettings = null)
     {
         var settings = new GameSettings();
+        configureSettings?.Invoke(settings);
         var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
         var localization = new LocalizationManager { CurrentLanguage = "ru" };
         var gameLoop = new GameLoop();

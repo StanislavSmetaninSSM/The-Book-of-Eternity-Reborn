@@ -42,6 +42,7 @@ function Read-GameConfig {
         GmCliLaunchCommand = "gemini"
         GmBridgeAutoStart = $false
         GmBridgePipeNameOverride = ""
+        GmWorkerBridgeProfiles = @()
     }
 
     if (!(Test-Path $configPath)) {

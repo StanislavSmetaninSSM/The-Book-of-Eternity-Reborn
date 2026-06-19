@@ -1,0 +1,100 @@
+# Example: GM worker narrative-draft
+
+This example shows a proposal-only worker task. The worker drafts prose for the
+main GM, but the main GM decides what to use. The worker is hidden/background
+and never writes canonical game state.
+
+Worker profile:
+
+```json
+{
+  "workerId": "narrative_draft_gemini",
+  "displayName": "Gemini narrative drafter",
+  "launchCommand": "gemini",
+  "role": "narrative-draft",
+  "enabled": true,
+  "launchVisibility": "hidden",
+  "timeoutSeconds": 120,
+  "maxConcurrentTasks": 1,
+  "permissions": {
+    "taskTypes": ["narrative-draft"],
+    "readPaths": ["game_state/**", "lore/**", "Rules/**", "TaskGuides/**"],
+    "proposalWritePaths": [],
+    "proposalOnly": true,
+    "requiresValidation": false
+  }
+}
+```
+
+Task packet:
+
+The worker process receives `BOE_WORKER_TASK_PATH`,
+`BOE_WORKER_PROPOSAL_PATH`, and `BOE_WORKER_SESSION_PATH`. It reads the task
+packet from `BOE_WORKER_TASK_PATH` and writes exactly one proposal JSON to
+`BOE_WORKER_PROPOSAL_PATH`. For proposal-only narrative work it must not write
+canonical state or include `changedFiles`.
+
+```json
+{
+  "schemaVersion": 1,
+  "taskId": "worker_task_20260620_0002",
+  "workerId": "narrative_draft_gemini",
+  "taskType": "narrative-draft",
+  "createdAtUtc": "2026-06-20T00:05:00Z",
+  "sourceTurn": {
+    "sessionId": "test-session",
+    "requestId": "test-request",
+    "turnNumber": 12
+  },
+  "validationIssues": [],
+  "draftRequest": {
+    "sceneGoal": "Draft a tense corridor description before the player chooses how to proceed.",
+    "tone": "dark fantasy, concise, natural Russian prose",
+    "continuityNotes": [
+      "The player is currently inside the mortal world.",
+      "Do not resolve the player's action.",
+      "Do not introduce canonical state changes."
+    ],
+    "targetLength": "120-180 words"
+  },
+  "contextFiles": [
+    {
+      "path": "game_state/world/current_location.json",
+      "sha256": "sha-location"
+    }
+  ],
+  "allowedProposalPaths": [],
+  "responseContract": "worker-proposal-v1",
+  "instructions": "Return draftText and optional findings only. This task is proposal-only; do not include changedFiles."
+}
+```
+
+Worker proposal:
+
+```json
+{
+  "schemaVersion": 1,
+  "proposalId": "worker_proposal_20260620_0002",
+  "taskId": "worker_task_20260620_0002",
+  "workerId": "narrative_draft_gemini",
+  "status": "completed",
+  "summary": "Drafted corridor narration for main-GM review.",
+  "changedFiles": [],
+  "findings": [
+    {
+      "kind": "continuity-note",
+      "message": "Draft avoids resolving the player's next action."
+    }
+  ],
+  "draftText": "Draft prose for the main GM to review. This text is not shown to the player automatically.",
+  "selfCheck": {
+    "scopeReviewed": true,
+    "validationExpectedToPass": true,
+    "notes": ["Proposal-only task; no file changes included."]
+  },
+  "createdAtUtc": "2026-06-20T00:05:20Z"
+}
+```
+
+If this proposal includes any `changedFiles`, the apply gate rejects it as a
+proposal-only violation.

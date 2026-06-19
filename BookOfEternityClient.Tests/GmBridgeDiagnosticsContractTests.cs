@@ -42,6 +42,26 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.DoesNotContain("_repoRoot = Directory.GetParent(_clientRoot)?.FullName ?? _clientRoot;", source, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void BridgeStatus_ExposesConfiguredWorkerStatuses()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("WorkerStatuses", source, StringComparison.Ordinal);
+        Assert.Contains("GmWorkerBridgePool.BuildInitialStatuses", source, StringComparison.Ordinal);
+        Assert.Contains("GmWorkerBridgeProfiles", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ConsoleOptions_ExposeGmWorkerBridgeProfileDiagnostics()
+    {
+        var source = ReadRepoFile("BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs");
+
+        Assert.Contains("gm_worker_profiles", source, StringComparison.Ordinal);
+        Assert.Contains("ShowGmWorkerBridgeDiagnostics", source, StringComparison.Ordinal);
+        Assert.Contains("GmWorkerBridgeProfiles", source, StringComparison.Ordinal);
+    }
+
     private static string ReadRepoFile(string relativePath)
     {
         var root = LocateRepoRoot();

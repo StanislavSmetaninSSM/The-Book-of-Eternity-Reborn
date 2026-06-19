@@ -131,6 +131,10 @@ public partial class GameEngine
             {
                 _stateManager.Settings.GmCliLaunchCommand = PromptGmCliLaunchCommand(_stateManager.Settings.GmCliLaunchCommand);
             }
+            else if (chosen.Key == "gm_worker_profiles")
+            {
+                ShowGmWorkerBridgeDiagnostics();
+            }
             else if (chosen.Key == "system_mods")
             {
                 await ShowSystemModsMenu();
@@ -278,6 +282,7 @@ public partial class GameEngine
         var soundStatus = _stateManager.Settings.SoundEnabled ? _loc.T("enabled") : _loc.T("disabled");
         var systemMods = await _systemModService.GetAvailableModsAsync(includeContent: false);
         var systemModsStatus = _systemModService.GetStatusSummary(systemMods);
+        var workerProfilesStatus = BuildGmWorkerBridgeProfileSummary();
         var imgDisplay = _stateManager.Settings.ShowImagesInConsole ? _loc.T("opt_in_console") : _loc.T("opt_in_viewer");
         var imgProvider = _stateManager.Settings.ImageProvider switch
         {
@@ -305,6 +310,7 @@ public partial class GameEngine
             new("auto_discard", $"🗑️ Авто-выброс сломанных: [{(autoDiscardStatus == _loc.T("enabled") ? "green" : "red")}]{autoDiscardStatus}[/]"),
             new("qte", $"🎬 QTE события: [{(qteStatus == _loc.T("enabled") ? "green" : "red")}]{qteStatus}[/]"),
             new("gm_cli_launch_command", $"🌉 {_loc.T("opt_gm_cli_launch_command")}: [yellow]{Markup.Escape(TruncateDiagnosticValue(_stateManager.Settings.GmCliLaunchCommand, 56))}[/]"),
+            new("gm_worker_profiles", $"🧵 GM worker bridges: [yellow]{Markup.Escape(workerProfilesStatus)}[/]"),
             new("music", $"🎵 {_loc.T("opt_music")}: [{(musicStatus == _loc.T("enabled") ? "green" : "red")}]{musicStatus}[/]"),
             new("music_volume", $"🎚 {_loc.T("opt_music_volume")}: [yellow]{_stateManager.Settings.MusicVolume}%[/]"),
             new("sound", $"🔊 {_loc.T("opt_sound")}: [{(soundStatus == _loc.T("enabled") ? "green" : "red")}]{soundStatus}[/]"),
@@ -458,6 +464,81 @@ public partial class GameEngine
             allowEmpty: false,
             preserveNewlines: false).Trim();
         return string.IsNullOrWhiteSpace(entered) ? current : entered;
+    }
+
+    private string BuildGmWorkerBridgeProfileSummary()
+    {
+        var profiles = _stateManager.Settings.GmWorkerBridgeProfiles;
+        if (profiles.Count == 0)
+            return "не настроены";
+
+        var enabled = profiles.Count(profile => profile.Enabled);
+        var roles = profiles
+            .Where(profile => profile.Enabled)
+            .Select(profile => profile.Role.ToString())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Order(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        var roleSummary = roles.Length == 0 ? "нет активных ролей" : string.Join(", ", roles);
+        return $"{enabled}/{profiles.Count} включено; {roleSummary}";
+    }
+
+    private void ShowGmWorkerBridgeDiagnostics()
+    {
+        SpectreConsoleSafe.Clear();
+        AnsiConsole.Write(new Rule("[cyan]GM worker bridges[/]").RuleStyle("cyan"));
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[dim]Справочная диагностика профилей. Этот экран ничего не запускает и не меняет.[/]");
+        AnsiConsole.WriteLine();
+
+        var profiles = _stateManager.Settings.GmWorkerBridgeProfiles;
+        if (profiles.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[yellow]Worker-профили не настроены.[/]");
+            AnsiConsole.MarkupLine("[dim]Обычный single-GM режим продолжает работать без фоновых worker-процессов.[/]");
+            _inputSource.ReadKey(intercept: true);
+            return;
+        }
+
+        var table = new Table()
+            .Border(TableBorder.Rounded)
+            .BorderColor(Color.Grey)
+            .Expand();
+        table.AddColumn(new TableColumn("[bold]ID[/]").NoWrap());
+        table.AddColumn(new TableColumn("[bold]Роль[/]").NoWrap());
+        table.AddColumn(new TableColumn("[bold]Состояние[/]").NoWrap());
+        table.AddColumn(new TableColumn("[bold]Задачи[/]"));
+        table.AddColumn(new TableColumn("[bold]Таймаут[/]").NoWrap());
+        table.AddColumn(new TableColumn("[bold]Команда запуска[/]"));
+        table.AddColumn(new TableColumn("[bold]Scope[/]"));
+
+        foreach (var profile in profiles)
+        {
+            var state = profile.Enabled
+                ? "[green]включен[/]"
+                : "[dim]отключен[/]";
+            var taskTypes = profile.Permissions.TaskTypes.Count == 0
+                ? "[dim]нет[/]"
+                : Markup.Escape(string.Join(", ", profile.Permissions.TaskTypes));
+            var scope = profile.Permissions.ProposalOnly
+                ? "proposal-only"
+                : $"write: {string.Join(", ", profile.Permissions.ProposalWritePaths)}";
+            var launch = $"{TruncateDiagnosticValue(profile.LaunchCommand, 64)} | hidden";
+
+            table.AddRow(
+                Markup.Escape(profile.WorkerId),
+                Markup.Escape(profile.Role.ToString()),
+                state,
+                taskTypes,
+                $"{profile.TimeoutSeconds}s",
+                Markup.Escape(launch),
+                Markup.Escape(scope));
+        }
+
+        AnsiConsole.Write(table);
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[dim]Proposal-файлы принимаются через BOE_WORKER_PROPOSAL_PATH; canonical state применяет только apply gate.[/]");
+        _inputSource.ReadKey(intercept: true);
     }
 
     private async Task RefreshAudioPlaybackContextAsync()

@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
@@ -415,6 +416,55 @@ public partial class GameEngine
         };
 
         await _fs.WriteFileAtomicAsync(ValidationRepairRequestPath, JsonSerializer.Serialize(request, JsonOpts));
+        await WriteWorkerValidationRepairTaskIfAvailableAsync(prioritizedErrors, requestMetadata, request.DetectedAtUtc, attempt);
+    }
+
+    private async Task WriteWorkerValidationRepairTaskIfAvailableAsync(
+        IReadOnlyList<ValidationIssue> prioritizedErrors,
+        (string SessionId, string RequestId, int TurnNumber) requestMetadata,
+        string createdAtUtc,
+        int attempt)
+    {
+        var routing = GmWorkerBridgePool.SelectWorkerForTask(
+            _stateManager.Settings.GmWorkerBridgeProfiles,
+            WorkerTaskType.ValidationRepair);
+        if (!routing.Found || routing.Profile == null)
+            return;
+
+        try
+        {
+            var contextHashes = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (var path in prioritizedErrors
+                         .Select(issue => issue.FilePath.Replace('\\', '/'))
+                         .Where(GmWorkerContractValidator.IsSafeRelativePath)
+                         .Distinct(StringComparer.Ordinal))
+            {
+                var content = await _fs.ReadFileAsync(path);
+                contextHashes[path] = content == null ? "missing" : ComputeSha256(content);
+            }
+
+            var task = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+                routing.Profile,
+                $"worker_task_validation_repair_{attempt:D4}",
+                new WorkerTurnReference
+                {
+                    SessionId = requestMetadata.SessionId,
+                    RequestId = requestMetadata.RequestId,
+                    TurnNumber = requestMetadata.TurnNumber
+                },
+                prioritizedErrors,
+                contextHashes,
+                createdAtUtc);
+
+            await _fs.WriteFileAtomicAsync(
+                "game_state/control/gm_worker_latest_validation_repair_task.json",
+                GmWorkerJson.Serialize(task));
+            await new GmWorkerAuditLog(_fs).RecordTaskDispatchedAsync(task);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to create GM worker validation repair task packet. Legacy repair loop remains active.");
+        }
     }
 
     private async Task WriteTerminalProtocolFailureRequestAsync(string source, List<ValidationIssue> errors)
