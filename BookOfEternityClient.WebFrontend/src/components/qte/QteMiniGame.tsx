@@ -151,28 +151,12 @@ function TimingBarGame({ config, disabled, onSubmit }: SharedGameProps<QteTiming
 function PromptChainGame({ config, disabled, onSubmit }: SharedGameProps<QtePromptChainCheckConfigDto>) {
   const [entered, setEntered] = useState<string[]>([]);
   const enteredRef = useRef<string[]>([]);
-  // Show the full chain briefly, then hide it: the challenge is to recall the
-  // order under the timer rather than read it off the progress row and click
-  // the matching buttons in sequence (which made the game trivial). The token
-  // buttons stay for keyboard-free accessibility, but upcoming slots are
-  // masked once the reveal ends.
-  const [revealed, setRevealed] = useState(true);
-  const inputActive = !disabled && !revealed;
   const remainingMs = useQteDeadline(
     Math.max(config.timeoutMs, config.timeoutMs * config.sequence.length),
-    inputActive,
+    !disabled,
     () => onSubmit(resolvePromptChainGrade(config.sequence, enteredRef.current, config.allowedMistakes)),
     `${config.timeoutMs}:${config.sequence.length}`
   );
-
-  useEffect(() => {
-    if (disabled) {
-      return undefined;
-    }
-    const showMs = Math.max(700, Math.min(1600, 250 * config.sequence.length));
-    const timeout = window.setTimeout(() => setRevealed(false), showMs);
-    return () => window.clearTimeout(timeout);
-  }, [config.sequence.length, disabled]);
 
   const submitToken = (token: string) => {
     const next = [...enteredRef.current, token];
@@ -187,14 +171,14 @@ function PromptChainGame({ config, disabled, onSubmit }: SharedGameProps<QteProm
     <MiniGameFrame
       kind="PromptChain"
       title="Цепь знаков"
-      instructions={revealed
-        ? `Запомните цепь из ${config.sequence.length} знаков…`
-        : `Введите цепь по памяти. Допустимые промахи: ${config.allowedMistakes}. Осталось ${formatRemainingMs(remainingMs)}.`}
+      instructions={`Введите цепь из ${config.sequence.length} знаков. Допустимые промахи: ${config.allowedMistakes}. Осталось ${formatRemainingMs(remainingMs)}.`}
       disabled={disabled}
       onToken={submitToken}
     >
-      <TokenProgress expected={config.sequence} entered={entered} hideExpected={!revealed} />
-      <TokenButtons tokens={uniqueTokens(config.sequence)} disabled={disabled || revealed} onToken={submitToken} />
+      <TokenProgress expected={config.sequence} entered={entered} />
+      {/* Buttons are SHUFFLED so their order doesn't match the expected chain —
+          the player must find the next sign among the set, not click in order. */}
+      <TokenButtons tokens={shuffledTokenLayout(config.sequence)} disabled={disabled} onToken={submitToken} />
     </MiniGameFrame>
   );
 }
@@ -934,6 +918,52 @@ function LockTrack({ config, currentPin, position, opened }: { config: QteLockPi
 
 function uniqueTokens(tokens: readonly string[]): string[] {
   return Array.from(new Set(tokens));
+}
+
+/**
+ * Deterministically shuffle the unique tokens so the button order does NOT
+ * match the expected sequence. Without this the buttons were laid out left to
+ * right in the exact correct order, so a player could 100% the PromptChain by
+ * clicking them sequentially with zero memory/effort. The shuffle is seeded by
+ * the sequence contents so it stays stable across re-renders of the same
+ * attempt (no visual jitter) while still differing from the expected order.
+ */
+function shuffledTokenLayout(tokens: readonly string[]): string[] {
+  const unique = uniqueTokens(tokens);
+  if (unique.length <= 1) {
+    return unique;
+  }
+
+  // Seeded PRNG (mulberry32) derived from the sequence contents.
+  let seed = 0;
+  for (const token of tokens) {
+    for (let index = 0; index < token.length; index += 1) {
+      seed = (seed * 31 + token.charCodeAt(index)) >>> 0;
+    }
+  }
+
+  const random = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 0xffffffff;
+  };
+
+  const layout = [...unique];
+  for (let passes = 0; passes < 4; passes += 1) {
+    for (let index = layout.length - 1; index > 0; index -= 1) {
+      const swapWith = Math.floor(random() * (index + 1));
+      [layout[index], layout[swapWith]] = [layout[swapWith], layout[index]];
+    }
+  }
+
+  // Guarantee the layout is not exactly the expected order when there's room
+  // to differ (>= 2 unique tokens). The seeded shuffle above already differs in
+  // the vast majority of cases; this is a deterministic fallback.
+  const matchesExpected = layout.every((token, index) => token === unique[index]);
+  if (matchesExpected) {
+    [layout[0], layout[1]] = [layout[1], layout[0]];
+  }
+
+  return layout;
 }
 
 function formatTokenList(tokens: readonly string[]): string {
