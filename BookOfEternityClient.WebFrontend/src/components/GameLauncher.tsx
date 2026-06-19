@@ -14,7 +14,10 @@ import { staggerContainer, fadeUp } from '../lib/motion';
 type LauncherMode = 'continue' | 'daren-showcase' | 'practice' | 'load' | 'new-game' | 'settings' | 'about';
 interface LauncherPrimaryAction { mode: LauncherMode; label: string; description: string; enabled: boolean; disabledReason: string; }
 
-const launcherModes: LauncherMode[] = ['continue', 'daren-showcase', 'practice', 'load', 'new-game', 'settings', 'about'];
+// Real-game options first (continue/load/new-game), then book-keeping
+// (settings/about), then the out-of-canon extras (QTE practice, Daren heist)
+// kept lowest so they never sit above actual gameplay choices.
+const launcherModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about', 'practice', 'daren-showcase'];
 const launcherModeDetails: Record<LauncherMode, { label: string; description: string }> = {
   continue: { label: 'Продолжить главу', description: 'Вернуться к текущей сохранённой главе.' },
   'daren-showcase': { label: 'Вылазка Дарена', description: 'Ограбление поместья с постоянным лучшим итогом.' },
@@ -414,7 +417,10 @@ function sanitizeNewChapterCommandResult(result: BrowserApiResult<ExplorerComman
 }
 
 function selectPrimaryLauncherAction(menu: BrowserMainMenuDto): LauncherPrimaryAction {
-  const preferredModes: LauncherMode[] = ['continue', 'daren-showcase', 'practice', 'load', 'new-game'];
+  // Primary action preference: real-game options first, then the out-of-canon
+  // extras (QTE practice, Daren heist) last so they never become the default
+  // highlighted entry over an actual gameplay choice.
+  const preferredModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about', 'practice', 'daren-showcase'];
   for (const mode of preferredModes) {
     const action = findLauncherMenuAction(menu, mode);
     if (action?.enabled) {
