@@ -2907,6 +2907,18 @@
   100% { opacity: 1; transform: scaleY(1.08); }
 }
 
+/* Rotating rune ring — slow ambient spin around the crest, filling the empty
+   space so the candle doesn't sit alone in a void. */
+.launcher-crest__runes {
+  transform-origin: 50% 50%;
+  animation: launcher-crest-runes 40s linear infinite;
+}
+
+@keyframes launcher-crest-runes {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* Drifting arcane motes — ambient particles that give the launcher life
    without overpowering the background painting. Reduced-motion stops them. */
 .launcher-ambient {
@@ -2946,7 +2958,8 @@
 .is-reduced-motion .launcher-crest,
 .is-reduced-motion .launcher-crest__halo,
 .is-reduced-motion .launcher-crest__flame,
-.is-reduced-motion .launcher-crest__flame-inner {
+.is-reduced-motion .launcher-crest__flame-inner,
+.is-reduced-motion .launcher-crest__runes {
   animation: none !important;
 }
 .is-reduced-motion .launcher-ambient span {

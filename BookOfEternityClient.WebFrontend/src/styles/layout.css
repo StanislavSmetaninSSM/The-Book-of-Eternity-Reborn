@@ -24,7 +24,11 @@
 }
 
 .shell-side-mural--left {
-  left: 0;
+  /* Snug the LEFT mural up to the menu card so it reads in full instead of
+     being half-hidden under the launcher background. Pin its inner (right)
+     edge to just left of the centered content-area. */
+  left: auto;
+  right: calc(50vw + 36rem + 8px);
 }
 
 .shell-side-mural--right {

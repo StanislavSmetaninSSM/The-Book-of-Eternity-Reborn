@@ -190,21 +190,35 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
       </div>
       <div className="launcher-window">
         <div className="launcher-crest" aria-hidden="true">
-          <svg viewBox="0 0 64 64" focusable="false">
+          <svg viewBox="0 0 96 96" focusable="false">
             <defs>
-              <radialGradient id="launcherCrestGlow" cx="50%" cy="42%" r="55%">
+              <radialGradient id="launcherCrestGlow" cx="50%" cy="44%" r="55%">
                 <stop offset="0" stopColor="#f5d488" stopOpacity="0.9" />
                 <stop offset="1" stopColor="#c89b3c" stopOpacity="0" />
               </radialGradient>
             </defs>
-            <circle className="launcher-crest__halo" cx="32" cy="30" r="26" fill="url(#launcherCrestGlow)" opacity="0.55" />
+            <circle className="launcher-crest__halo" cx="48" cy="46" r="40" fill="url(#launcherCrestGlow)" opacity="0.55" />
+            {/* Rotating rune ring */}
+            <g className="launcher-crest__runes">
+              <circle cx="48" cy="46" r="34" fill="none" stroke="#c89b3c" strokeWidth="0.8" opacity="0.35" />
+              <g fill="#d4a84b">
+                <text x="48" y="16" textAnchor="middle" fontSize="6" fontFamily="serif" opacity="0.8">ᚱ</text>
+                <text x="82" y="48" textAnchor="middle" fontSize="6" fontFamily="serif" opacity="0.7">ᛟ</text>
+                <text x="48" y="84" textAnchor="middle" fontSize="6" fontFamily="serif" opacity="0.8">ᛜ</text>
+                <text x="14" y="48" textAnchor="middle" fontSize="6" fontFamily="serif" opacity="0.7">ᛏ</text>
+                <text x="72" y="22" textAnchor="middle" fontSize="5" fontFamily="serif" opacity="0.55">ᛉ</text>
+                <text x="72" y="76" textAnchor="middle" fontSize="5" fontFamily="serif" opacity="0.55">ᛒ</text>
+                <text x="24" y="76" textAnchor="middle" fontSize="5" fontFamily="serif" opacity="0.55">ᛗ</text>
+                <text x="24" y="22" textAnchor="middle" fontSize="5" fontFamily="serif" opacity="0.55">ᚦ</text>
+              </g>
+            </g>
             {/* Open book */}
-            <path d="M14 40 Q32 33 50 40 L50 50 Q32 43 14 50 Z" fill="#1a140c" stroke="#d4a84b" strokeWidth="1.4" />
-            <path d="M32 34 L32 48" stroke="#d4a84b" strokeWidth="1.2" opacity="0.7" />
+            <path d="M30 56 Q48 49 66 56 L66 66 Q48 59 30 66 Z" fill="#1a140c" stroke="#d4a84b" strokeWidth="1.4" />
+            <path d="M48 50 L48 64" stroke="#d4a84b" strokeWidth="1.2" opacity="0.7" />
             {/* Eternal flame — flickers */}
             <g className="launcher-crest__flame">
-              <path d="M32 16 Q26 24 30 30 Q32 27 34 30 Q38 24 32 16 Z" fill="#e07a3a" opacity="0.92" />
-              <path className="launcher-crest__flame-inner" d="M32 20 Q29 25 31 29 Q32 27 33 29 Q35 25 32 20 Z" fill="#f5d488" opacity="0.9" />
+              <path d="M48 32 Q42 40 46 46 Q48 43 50 46 Q54 40 48 32 Z" fill="#e07a3a" opacity="0.92" />
+              <path className="launcher-crest__flame-inner" d="M48 36 Q45 41 47 45 Q48 43 49 45 Q51 41 48 36 Z" fill="#f5d488" opacity="0.9" />
             </g>
           </svg>
         </div>
