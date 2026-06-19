@@ -38,13 +38,13 @@ When a live GM turn fails validation, the main GM can delegate the validation er
 
 The user can define worker bridge profiles with command, role, permissions, and lifecycle policy. Runtime diagnostics show whether each worker is stopped, starting, ready, busy, failed, or disabled.
 
-**Why this priority**: Explicit profiles make the architecture user-controlled and auditable. Without lifecycle visibility, multi-agent support becomes hard to debug.
+**Why this priority**: Explicit profiles make the architecture user-controlled and auditable. Workers must still run hidden/background so the player does not get multiple visible agent windows.
 
 **Independent Test**: A settings fixture defines two workers, starts one, disables another, and verifies status files and console diagnostics show the correct state without starting unauthorized commands.
 
 **Acceptance Scenarios**:
 
-1. **Given** a configured worker profile, **When** the daemon starts the worker pool, **Then** the worker launches with its configured CLI command and role label.
+1. **Given** a configured worker profile, **When** the daemon starts the worker pool, **Then** the worker launches hidden/background with its configured CLI command and role label.
 2. **Given** a worker launch failure, **When** diagnostics are read, **Then** the failure reason is visible and no task is dispatched to that worker.
 3. **Given** a disabled worker profile, **When** the worker pool starts, **Then** the disabled worker is listed but not launched.
 
@@ -76,6 +76,7 @@ The main GM can delegate non-authoritative creative and analytical tasks, such a
 - A worker proposal passes file-scope checks but fails game validation.
 - The main GM restarts while worker tasks are in progress.
 - Worker CLI command contains unsafe shell metacharacters or unsupported paths.
+- Worker CLI command would normally open an interactive console window.
 - Worker tries to edit `game_state/control/` files outside its explicitly granted task scope.
 - Validation repair succeeds but would hide a GM prompt/docs/example contract gap.
 
@@ -97,10 +98,13 @@ The main GM can delegate non-authoritative creative and analytical tasks, such a
 - **FR-012**: Narrative-draft worker output MUST remain invisible to the player until the main GM explicitly uses or rewrites it in the final response.
 - **FR-013**: Worker task routing MUST be role-based so different configured agents can be selected for repair, narration, lore, NPC analysis, QTE design, or console-output audit tasks.
 - **FR-014**: Worker lifecycle diagnostics MUST distinguish stopped, starting, ready, busy, failed, timed out, and disabled states.
-- **FR-015**: The system MUST provide clear failure behavior when no worker is available, a worker fails, or a proposal is rejected.
-- **FR-016**: GM-facing prompts/docs/examples MUST describe when the main GM may delegate, what workers may return, and why the main GM still owns final state.
-- **FR-017**: Tests MUST cover safe acceptance and safe rejection of worker repair proposals.
-- **FR-018**: Tests MUST cover proposal-only narrative tasks that return drafts without changing canonical state.
+- **FR-015**: Worker agent processes MUST launch hidden/background by default so the user sees only the main GM/client window and does not receive multiple visible agent consoles.
+- **FR-016**: Worker diagnostics MUST be visible through main-GM/daemon diagnostics rather than separate player-facing worker windows.
+- **FR-017**: The system MUST provide clear failure behavior when no worker is available, a worker fails, or a proposal is rejected.
+- **FR-018**: GM-facing prompts/docs/examples MUST describe when the main GM may delegate, what workers may return, why worker windows are hidden, and why the main GM still owns final state.
+- **FR-019**: Tests MUST cover safe acceptance and safe rejection of worker repair proposals.
+- **FR-020**: Tests MUST cover proposal-only narrative tasks that return drafts without changing canonical state.
+- **FR-021**: Tests MUST cover hidden/background worker launch options so future process-launch changes do not reintroduce visible worker windows.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -122,13 +126,14 @@ The main GM can delegate non-authoritative creative and analytical tasks, such a
 - **SC-004**: A live E2E repair scenario records an audit trail that identifies the worker, task, proposal, and apply decision.
 - **SC-005**: Existing single-GM gameplay continues to work when no worker profiles are configured.
 - **SC-006**: A narrative-draft worker task returns a draft visible to the main GM in automated or scripted evidence, and no canonical files change.
+- **SC-007**: Worker launch tests prove configured workers are started with hidden/background launch settings and no extra user-visible console windows are required.
 
 ## Verification Plan *(mandatory)*
 
 - **C# verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "WorkerBridge|GmBridge|ValidationRepair|ProposalOnly|AgentConsoleLiveSmokeTests"`
 - **Documentation/contract verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests|SourceGuard"`
 - **Frontend verification**: N/A for MVP; browser UI is out of scope unless diagnostics are later surfaced there.
-- **Manual/player-facing verification**: Run a console live E2E with no worker profiles, one validation-repair worker profile, and one narrative-draft worker profile. Confirm normal single-GM play remains unchanged, delegated repair is auditable, and narrative drafts are visible to the main GM only.
+- **Manual/player-facing verification**: Run a console live E2E with no worker profiles, one validation-repair worker profile, and one narrative-draft worker profile. Confirm normal single-GM play remains unchanged, no extra worker windows are shown to the player, delegated repair is auditable, and narrative drafts are visible to the main GM only.
 
 ## Assumptions
 

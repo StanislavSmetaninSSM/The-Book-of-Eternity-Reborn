@@ -1,5 +1,21 @@
 {
   "version": 1,
+  "gmWorkerBridgeCoverage": [
+    {
+      "contractId": "gm_worker_validation_repair_v1",
+      "file": "E_CLI_GM_Worker_Validation_Repair.txt",
+      "statePath": "game_state/control/gm_worker_audit.jsonl",
+      "responseSurface": "worker-proposal-v1 / apply gate",
+      "description": "Hidden/background validation-repair worker profile, scoped task packet, proposal contentRef, apply gate validation, proposal-applied audit event, and no direct worker writes to canonical game_session files."
+    },
+    {
+      "contractId": "gm_worker_narrative_draft_v1",
+      "file": "E_CLI_GM_Worker_Narrative_Draft.txt",
+      "statePath": "worker_proposals/<proposalId>/proposal.json",
+      "responseSurface": "worker-proposal-v1 draftText",
+      "description": "Hidden/background proposal-only narrative-draft worker profile, read-only task packet, draftText proposal, and rejection of changedFiles for proposal-only tasks."
+    }
+  ],
   "afterlifeEntityProfileCoverage": [
     {
       "contractId": "afterlife_entity_profiles_v1",

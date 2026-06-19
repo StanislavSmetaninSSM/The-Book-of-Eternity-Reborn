@@ -37,13 +37,19 @@ Validate the MVP flow: validation repair and narrative drafting are both delegat
 1. Configure a worker profile with role `narrative-draft`.
 2. Dispatch a scene-drafting task with read-only context and tone/continuity instructions.
 3. Wait for a proposal with draft narration.
-4. Expected result: the draft is visible to the main GM in the proposal inbox, no canonical files change, and nothing is sent to the player until the main GM explicitly uses or rewrites the draft.
+4. Expected result: the draft is visible to the main GM in the proposal inbox, no canonical files change, no extra worker window appears to the player, and nothing is sent to the player until the main GM explicitly uses or rewrites the draft.
 
 ## Scenario 5: Worker Timeout Is Safe
 
 1. Configure a worker profile with a short timeout.
 2. Dispatch a task to a worker that does not answer.
 3. Expected result: worker status becomes `timed-out`, main GM receives a diagnostic, canonical state is unchanged, and ordinary repair/manual handling can continue.
+
+## Scenario 6: Worker Launch Is Hidden
+
+1. Configure validation-repair and narrative-draft workers.
+2. Start the worker pool from the main GM/daemon flow.
+3. Expected result: worker statuses are visible through diagnostics, but no separate worker console windows are shown to the player.
 
 ## Verification Commands
 

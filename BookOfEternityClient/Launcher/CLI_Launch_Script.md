@@ -13,6 +13,7 @@ Read these documents BEFORE processing the first turn:
 7. **OtherGuides/Afterlife_Contract_Matrix.md** -- mandatory contract map for Chaos Sea / Shining Abode turns
 8. **Examples/E_CLI_Afterlife_Turns.txt** -- mandatory worked examples for Chaos Sea / Shining Abode turns, including Shining core action fragments, ordinary living-world turns without pending files, system Guardian attraction, protected return guard turns, freeform Abode search, afterlife spiritual conflict with diceAudit, example 26 for afterlife entity profiles, and example 26B for afterlife external memory chronicles
 9. **OtherGuides/Afterlife_Combat_Terminology_Glossary.md** -- Russian labels for afterlife spiritual conflict, Spiritual Arts, exchange/resolve, diceAudit, forced incarnation, ranks, afterlife entity profiles, special arts, and soul dissipation; keep JSON keys/enums English
+10. **OtherGuides/GM_Worker_Bridges.md** -- hidden/background subordinate worker bridge contract for validation-repair, proposal-only narrative-draft, apply gate, and audit log usage
 
 Reference materials (read as needed):
 - **Rules/Block_*.txt** вЂ” game rules

@@ -12,11 +12,13 @@ Represents a user-configured local worker agent.
 - `permissions`: WorkerScopePolicy reference or inline allowed task/file policy.
 - `timeoutSeconds`: Maximum time for startup and per-task response.
 - `maxConcurrentTasks`: MVP should default to one.
+- `launchVisibility`: Worker process visibility. MVP default is `hidden`; visible worker windows are not part of normal play.
 
 Validation rules:
 
 - `workerId`, `displayName`, `launchCommand`, and `role` are required.
 - Disabled profiles must not launch.
+- Profiles without an explicit `launchVisibility` default to `hidden`.
 - Unknown roles are allowed only if their scope policy is explicit.
 
 ## WorkerScopePolicy
@@ -106,11 +108,13 @@ Runtime status for a worker profile.
 - `currentTaskId`
 - `lastError`
 - `launchCommandDisplay`
+- `launchVisibility`
 
 Validation rules:
 
 - Disabled workers remain `disabled`.
 - Busy workers must name `currentTaskId`.
+- Worker statuses must be observable through main-GM/daemon diagnostics even when the worker process is hidden.
 
 ## WorkerAuditEvent
 

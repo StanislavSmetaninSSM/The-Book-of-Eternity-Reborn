@@ -7,6 +7,7 @@
 3. Worker output enters a proposal inbox.
 4. Canonical changes occur only through the apply gate.
 5. The apply gate rejects out-of-scope changes and failed validation.
+6. Worker processes launch hidden/background by default; the player should not see multiple worker console windows.
 
 ## Worker Profile Contract
 
@@ -19,6 +20,7 @@ Validation repair worker:
   "launchCommand": "codex --dangerously-bypass-approvals-and-sandbox",
   "role": "validation-repair",
   "enabled": true,
+  "launchVisibility": "hidden",
   "timeoutSeconds": 180,
   "maxConcurrentTasks": 1,
   "permissions": {
@@ -49,6 +51,7 @@ Narrative drafting worker:
   "launchCommand": "gemini",
   "role": "narrative-draft",
   "enabled": true,
+  "launchVisibility": "hidden",
   "timeoutSeconds": 120,
   "maxConcurrentTasks": 1,
   "permissions": {

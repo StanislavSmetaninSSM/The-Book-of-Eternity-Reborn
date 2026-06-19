@@ -24,7 +24,7 @@ Add explicit GM worker bridge support so the main GM can delegate validation rep
 
 **Performance Goals**: Worker lifecycle diagnostics visible within 2 seconds; worker dispatch for validation repair or narrative drafting must not block the UI indefinitely
 
-**Constraints**: No cloud dependency; no direct worker writes to canonical state; main GM remains final authority; worker proposals must pass scope gates; repair proposals must pass validation gates; narrative drafts are not player-visible until the main GM uses them
+**Constraints**: No cloud dependency; no direct worker writes to canonical state; main GM remains final authority; worker processes launch hidden/background by default; worker proposals must pass scope gates; repair proposals must pass validation gates; narrative drafts are not player-visible until the main GM uses them
 
 **Scale/Scope**: MVP supports general role-based worker task routing with at least validation repair and proposal-only narrative drafting; broader lore/NPC/QTE/console-output delegation uses the same proposal-only path and can expand after the MVP contract is stable
 
@@ -72,7 +72,7 @@ specs/1113-gm-worker-bridges/
 BookOfEternityClient/
 ├── Configuration/                 # worker profile settings and user configuration
 ├── Core/GameEngine/               # main GM integration, validation repair, and narrative delegation entrypoints
-├── Services/                      # worker task/proposal/apply gate services
+├── Services/                      # worker task/proposal/apply gate and hidden process-launch services
 ├── Services/Validation/           # validation issue packaging and post-proposal validation
 ├── UI/                            # console advanced diagnostics
 └── game_master_daemon.ps1         # daemon launch/config plumbing

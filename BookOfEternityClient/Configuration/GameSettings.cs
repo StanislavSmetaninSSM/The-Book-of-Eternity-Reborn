@@ -1,4 +1,5 @@
 using System.Reflection;
+using BookOfEternityClient.Services.GmWorkers;
 
 namespace BookOfEternityClient.Configuration;
 
@@ -57,6 +58,10 @@ public class GameSettings
     /// </summary>
     public List<GmBridgePasteVisibilityMarker> GmBridgePasteVisibilityMarkers { get; set; } =
         BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.CreateDefaultMarkers();
+    /// <summary>
+    /// Explicit subordinate GM worker bridge profiles. Workers are hidden/background by contract and only return proposals.
+    /// </summary>
+    public List<WorkerBridgeProfile> GmWorkerBridgeProfiles { get; set; } = new();
     public string GameVersion { get; set; } = "1.0.0";
     /// <summary>
     /// Game difficulty: "normal", "hard", or "impossible".
@@ -145,7 +150,29 @@ public class GameSettings
             .ToList() ?? new List<string>();
         GmBridgePasteVisibilityPolicy = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.NormalizePolicy(GmBridgePasteVisibilityPolicy);
         GmBridgePasteVisibilityMarkers = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.NormalizeMarkers(GmBridgePasteVisibilityMarkers);
+        GmWorkerBridgeProfiles = NormalizeWorkerProfiles(loaded.GmWorkerBridgeProfiles);
     }
+
+    private static List<WorkerBridgeProfile> NormalizeWorkerProfiles(IEnumerable<WorkerBridgeProfile>? profiles) =>
+        profiles?
+            .Where(profile => profile != null)
+            .Select(profile =>
+            {
+                var permissions = profile.Permissions ?? new WorkerScopePolicy();
+                return profile with
+                {
+                    LaunchVisibility = WorkerLaunchVisibility.Hidden,
+                    TimeoutSeconds = profile.TimeoutSeconds > 0 ? profile.TimeoutSeconds : 180,
+                    MaxConcurrentTasks = profile.MaxConcurrentTasks > 0 ? profile.MaxConcurrentTasks : 1,
+                    Permissions = permissions with
+                    {
+                        TaskTypes = permissions.TaskTypes ?? [],
+                        ReadPaths = permissions.ReadPaths ?? [],
+                        ProposalWritePaths = permissions.ProposalWritePaths ?? []
+                    }
+                };
+            })
+            .ToList() ?? new List<WorkerBridgeProfile>();
 }
 
 /// <summary>

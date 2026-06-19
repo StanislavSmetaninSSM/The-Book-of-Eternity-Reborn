@@ -1,6 +1,7 @@
 using System.Text.Json;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -73,6 +74,46 @@ public sealed class StateManagerTests
 
             var after = await fs.ReadFileAsync("config.json");
             Assert.Equal(before, after);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task LoadAndSaveSettingsAsync_WorkerBridgeProfiles_RoundTripHiddenProfiles()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var settings = new GameSettings
+            {
+                GmWorkerBridgeProfiles =
+                [
+                    GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile(),
+                    GmWorkerBridgeTestFixtures.NarrativeDraftGeminiProfile()
+                ]
+            };
+            var manager = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
+
+            await manager.SaveSettingsAsync();
+
+            var reloadedSettings = new GameSettings();
+            var reloaded = new StateManager(fs, reloadedSettings, NullLogger<StateManager>.Instance);
+            await reloaded.LoadSettingsAsync();
+
+            Assert.Equal(2, reloadedSettings.GmWorkerBridgeProfiles.Count);
+            Assert.All(reloadedSettings.GmWorkerBridgeProfiles, profile =>
+                Assert.Equal(WorkerLaunchVisibility.Hidden, profile.LaunchVisibility));
+            Assert.Contains(reloadedSettings.GmWorkerBridgeProfiles, profile =>
+                profile.WorkerId == "validation_repair_codex" &&
+                profile.Permissions.TaskTypes.Contains(WorkerTaskType.ValidationRepair));
+            Assert.Contains(reloadedSettings.GmWorkerBridgeProfiles, profile =>
+                profile.WorkerId == "narrative_draft_gemini" &&
+                profile.Permissions.ProposalOnly);
         }
         finally
         {
