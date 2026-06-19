@@ -29,7 +29,6 @@
 
 .shell-side-mural--right {
   right: 0;
-  transform: scaleX(-1);
 }
 
 @media (max-width: 1100px) {
