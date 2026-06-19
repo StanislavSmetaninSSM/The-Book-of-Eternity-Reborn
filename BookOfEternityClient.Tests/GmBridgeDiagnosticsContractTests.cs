@@ -63,6 +63,16 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
+    public void BridgeHost_ExposesProposalOnlyWorkerDispatchCommand()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("case \"dispatchworkertask\":", source, StringComparison.Ordinal);
+        Assert.Contains("GmWorkerProposalOnlyDispatchService", source, StringComparison.Ordinal);
+        Assert.Contains("WorkerDispatch", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ConsoleOptions_ExposeGmWorkerBridgeProfileDiagnostics()
     {
         var source = ReadRepoFile("BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs");

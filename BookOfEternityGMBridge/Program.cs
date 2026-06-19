@@ -243,6 +243,9 @@ internal sealed class BridgeHost : IDisposable
                 SetReady(request.Ready ?? true);
                 return BridgeResponse.Success(SnapshotStatus());
 
+            case "dispatchworkertask":
+                return await DispatchWorkerTaskAsync(request);
+
             case "addtext":
                 EnsureShellAlive();
                 await WriteToPtyAsync(request.Text ?? string.Empty, appendEnter: false);
@@ -850,6 +853,71 @@ internal sealed class BridgeHost : IDisposable
         }
     }
 
+    private async Task<BridgeResponse> DispatchWorkerTaskAsync(BridgeRequest request)
+    {
+        var settings = LoadBridgeConfig();
+        var fs = new FileSystemManager(_clientRoot, NullLogger<FileSystemManager>.Instance);
+        var audit = new GmWorkerAuditLog(fs);
+        var service = new GmWorkerProposalOnlyDispatchService(
+            fs,
+            new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit),
+            audit);
+        var dispatchRequest = BuildWorkerDispatchRequest(request);
+        var result = await service.DispatchAsync(settings.GmWorkerBridgeProfiles, dispatchRequest);
+
+        return BridgeResponse.Success(SnapshotStatus(), SnapshotDiagnostics(), result);
+    }
+
+    private static GmWorkerProposalOnlyDispatchRequest BuildWorkerDispatchRequest(BridgeRequest request)
+    {
+        var taskType = ParseWorkerTaskType(request.WorkerTaskType);
+        var sourceTurn = new WorkerTurnReference
+        {
+            SessionId = string.IsNullOrWhiteSpace(request.SessionId) ? "bridge-manual-dispatch" : request.SessionId!,
+            RequestId = string.IsNullOrWhiteSpace(request.RequestId)
+                ? "worker-dispatch-" + DateTimeOffset.UtcNow.ToString("yyyyMMddHHmmssfff")
+                : request.RequestId!,
+            TurnNumber = request.TurnNumber ?? 0
+        };
+
+        return taskType switch
+        {
+            WorkerTaskType.NarrativeDraft => GmWorkerProposalOnlyDispatchRequest.NarrativeDraft(
+                sourceTurn,
+                request.SceneGoal ?? "",
+                request.Tone ?? "",
+                request.ContinuityNotes,
+                request.TargetLength ?? "",
+                request.ContextPaths),
+            WorkerTaskType.Analysis => GmWorkerProposalOnlyDispatchRequest.Analysis(
+                sourceTurn,
+                request.AnalysisGoal ?? "",
+                request.Questions,
+                request.ContextPaths),
+            _ => new GmWorkerProposalOnlyDispatchRequest
+            {
+                TaskType = taskType,
+                SourceTurn = sourceTurn,
+                ContextPaths = request.ContextPaths
+            }
+        };
+    }
+
+    private static WorkerTaskType ParseWorkerTaskType(string? taskType)
+    {
+        var normalized = (taskType ?? "").Trim().Replace("_", "-", StringComparison.Ordinal).ToLowerInvariant();
+        return normalized switch
+        {
+            "narrative-draft" or "narrativedraft" => WorkerTaskType.NarrativeDraft,
+            "analysis" => WorkerTaskType.Analysis,
+            "validation-repair" or "validationrepair" => WorkerTaskType.ValidationRepair,
+            "lore-consistency" or "loreconsistency" => WorkerTaskType.LoreConsistency,
+            "npc-analysis" or "npcanalysis" => WorkerTaskType.NpcAnalysis,
+            "qte-content" or "qtecontent" => WorkerTaskType.QteContent,
+            _ => WorkerTaskType.Analysis
+        };
+    }
+
     private BridgeResponse FailWithLastError(string error)
     {
         lock (_sync)
@@ -975,6 +1043,17 @@ internal sealed class BridgeRequest
     public string? Text { get; set; }
     public bool AppendEnter { get; set; } = true;
     public bool? Ready { get; set; }
+    public string? WorkerTaskType { get; set; }
+    public string? SessionId { get; set; }
+    public string? RequestId { get; set; }
+    public int? TurnNumber { get; set; }
+    public string? SceneGoal { get; set; }
+    public string? Tone { get; set; }
+    public List<string> ContinuityNotes { get; set; } = new();
+    public string? TargetLength { get; set; }
+    public string? AnalysisGoal { get; set; }
+    public List<string> Questions { get; set; } = new();
+    public List<string> ContextPaths { get; set; } = new();
 }
 
 internal sealed class BridgeResponse
@@ -983,6 +1062,7 @@ internal sealed class BridgeResponse
     public string? Error { get; set; }
     public BridgeStatus? Status { get; set; }
     public BridgeDiagnostics? Diagnostics { get; set; }
+    public GmWorkerProposalOnlyDispatchResult? WorkerDispatch { get; set; }
 
     public static BridgeResponse Success(BridgeStatus status) => new()
     {
@@ -995,6 +1075,17 @@ internal sealed class BridgeResponse
         Ok = true,
         Status = status,
         Diagnostics = diagnostics
+    };
+
+    public static BridgeResponse Success(
+        BridgeStatus status,
+        BridgeDiagnostics diagnostics,
+        GmWorkerProposalOnlyDispatchResult workerDispatch) => new()
+    {
+        Ok = true,
+        Status = status,
+        Diagnostics = diagnostics,
+        WorkerDispatch = workerDispatch
     };
 
     public static BridgeResponse Failure(string error, BridgeStatus status) => new()
