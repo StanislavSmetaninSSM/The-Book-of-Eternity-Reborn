@@ -151,12 +151,29 @@ function TimingBarGame({ config, disabled, onSubmit }: SharedGameProps<QteTiming
 function PromptChainGame({ config, disabled, onSubmit }: SharedGameProps<QtePromptChainCheckConfigDto>) {
   const [entered, setEntered] = useState<string[]>([]);
   const enteredRef = useRef<string[]>([]);
+  // Show the full chain briefly, then hide it: the challenge is to recall the
+  // order under the timer rather than read it off the progress row and click
+  // the matching buttons in sequence (which made the game trivial). The token
+  // buttons stay for keyboard-free accessibility, but upcoming slots are
+  // masked once the reveal ends.
+  const [revealed, setRevealed] = useState(true);
+  const inputActive = !disabled && !revealed;
   const remainingMs = useQteDeadline(
     Math.max(config.timeoutMs, config.timeoutMs * config.sequence.length),
-    !disabled,
+    inputActive,
     () => onSubmit(resolvePromptChainGrade(config.sequence, enteredRef.current, config.allowedMistakes)),
     `${config.timeoutMs}:${config.sequence.length}`
   );
+
+  useEffect(() => {
+    if (disabled) {
+      return undefined;
+    }
+    const showMs = Math.max(700, Math.min(1600, 250 * config.sequence.length));
+    const timeout = window.setTimeout(() => setRevealed(false), showMs);
+    return () => window.clearTimeout(timeout);
+  }, [config.sequence.length, disabled]);
+
   const submitToken = (token: string) => {
     const next = [...enteredRef.current, token];
     enteredRef.current = next;
@@ -170,12 +187,14 @@ function PromptChainGame({ config, disabled, onSubmit }: SharedGameProps<QteProm
     <MiniGameFrame
       kind="PromptChain"
       title="Цепь знаков"
-      instructions={`Повторите цепь: ${formatTokenList(config.sequence)}. Осталось ${formatRemainingMs(remainingMs)}.`}
+      instructions={revealed
+        ? `Запомните цепь из ${config.sequence.length} знаков…`
+        : `Введите цепь по памяти. Допустимые промахи: ${config.allowedMistakes}. Осталось ${formatRemainingMs(remainingMs)}.`}
       disabled={disabled}
       onToken={submitToken}
     >
-      <TokenProgress expected={config.sequence} entered={entered} />
-      <TokenButtons tokens={uniqueTokens(config.sequence)} disabled={disabled} onToken={submitToken} />
+      <TokenProgress expected={config.sequence} entered={entered} hideExpected={!revealed} />
+      <TokenButtons tokens={uniqueTokens(config.sequence)} disabled={disabled || revealed} onToken={submitToken} />
     </MiniGameFrame>
   );
 }
@@ -524,18 +543,49 @@ function StealthNoiseGame({ config, disabled, onSubmit }: SharedGameProps<QteSte
   const [startedAt] = useState(() => Date.now());
   const [recoveries, setRecoveries] = useState<number[]>([]);
   const recoveriesRef = useRef<number[]>([]);
+  // Live noise mirrors the grade model (sampleStealthNoise): it starts at
+  // startingNoise, drifts UP by noiseDriftPerSecond, and each recovery drops it
+  // by recoveryPerInput. Without this the noise bar never moved while idle,
+  // which made the game look broken. The live value is only for the display;
+  // the final grade is still resolved by resolveStealthNoiseGrade from the
+  // recorded recovery offsets.
+  const [noise, setNoise] = useState(() => clampPercent(config.startingNoise));
   const remainingMs = useQteDeadline(
     config.durationMs,
     !disabled,
     () => onSubmit(resolveStealthNoiseGrade(config, recoveriesRef.current)),
     `${config.durationMs}:${config.recoveryPerInput}`
   );
+
+  useEffect(() => {
+    if (disabled) {
+      return undefined;
+    }
+
+    const driftPerTick = (config.noiseDriftPerSecond / 1000) * 100;
+    const interval = window.setInterval(() => {
+      const elapsedMs = Date.now() - startedAt;
+      // Reproduce sampleStealthNoise's climb + per-recovery drop for the live
+      // readout so the bar matches what the grade will see.
+      let live = config.startingNoise + (driftPerTick / 100) * elapsedMs;
+      for (const offset of recoveriesRef.current) {
+        if (offset >= 0 && offset <= elapsedMs) {
+          live -= config.recoveryPerInput;
+        }
+      }
+      setNoise(clampPercent(live));
+    }, 100);
+    return () => window.clearInterval(interval);
+  }, [config.noiseDriftPerSecond, config.recoveryPerInput, config.startingNoise, disabled, startedAt]);
+
   const recover = () => {
     const next = [...recoveriesRef.current, Date.now() - startedAt];
     recoveriesRef.current = next;
     setRecoveries(next);
+    setNoise((current) => clampPercent(current - config.recoveryPerInput));
   };
   const label = toPlayerFacingText(config.recoveryLabel ?? '', 'приглушить шум');
+  const overDanger = noise >= config.dangerThreshold;
 
   return (
     <MiniGameFrame
@@ -549,8 +599,11 @@ function StealthNoiseGame({ config, disabled, onSubmit }: SharedGameProps<QteSte
         }
       }}
     >
-      <NoiseTrack config={config} recoveries={recoveries.length} />
-      <p className="muted">Сбросы шума: {recoveries.length}. Опасный порог: {config.dangerThreshold}. Осталось {formatRemainingMs(remainingMs)}.</p>
+      <div className="qte-meter" aria-label={`Шум ${Math.round(noise)}`}>
+        <span className="qte-meter__danger" style={{ left: `${config.dangerThreshold}%` }} />
+        <span className={`qte-meter__fill${overDanger ? ' is-danger' : ''}`} style={{ width: `${noise}%` }} />
+      </div>
+      <p className="muted">Шум: {Math.round(noise)}/{config.dangerThreshold} опасная метка. Сбросы шума: {recoveries.length}. Осталось {formatRemainingMs(remainingMs)}.</p>
       <div className="phase-chip-grid">
         <button type="button" onClick={recover} disabled={disabled}>{label}</button>
       </div>
@@ -859,14 +912,8 @@ function RhythmTrack({
   );
 }
 
-function NoiseTrack({ config, recoveries }: { config: Pick<QteStealthNoiseCheckConfigDto, 'startingNoise' | 'dangerThreshold'>; recoveries: number }) {
-  const noise = Math.max(0, Math.min(100, config.startingNoise + 25 - recoveries * 8));
-  return (
-    <div className="qte-meter" aria-label={`Шум ${noise}`}>
-      <span className="qte-meter__danger" style={{ left: `${config.dangerThreshold}%` }} />
-      <span className="qte-meter__fill" style={{ width: `${noise}%` }} />
-    </div>
-  );
+function clampPercent(value: number): number {
+  return Math.max(0, Math.min(100, value));
 }
 
 function LockTrack({ config, currentPin, position, opened }: { config: QteLockPinSetCheckConfigDto; currentPin: number; position: number; opened: readonly boolean[] }) {
