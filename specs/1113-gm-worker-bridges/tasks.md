@@ -75,14 +75,14 @@
 
 - [X] T024 [P] [US2] Write failing settings roundtrip test for worker profiles in `BookOfEternityClient.Tests/StateManagerTests.cs`.
 - [ ] T025 [P] [US2] Write failing worker lifecycle test in `BookOfEternityClient.Tests/GmWorkerBridgeLifecycleTests.cs` for disabled, starting, ready, failed, busy, and timed-out states.
-- [ ] T026 [P] [US2] Write failing bridge diagnostics contract test in `BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs` for worker status visibility and hidden/background launch settings.
+- [X] T026 [P] [US2] Write failing bridge diagnostics contract test in `BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs` for worker status visibility and hidden/background launch settings.
 
 ### Implementation for User Story 2
 
 - [X] T027 [US2] Add worker profile settings to `BookOfEternityClient/Configuration/GameSettings.cs`.
 - [X] T028 [US2] Add worker profile load/save behavior in `BookOfEternityClient/Core/StateManager.cs`.
-- [ ] T029 [US2] Implement worker lifecycle coordinator with hidden/background process launch defaults in `BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs`.
-- [ ] T030 [US2] Extend `BookOfEternityGMBridge/Program.cs` to expose worker-ready/worker-failed status without changing main bridge behavior.
+- [X] T029 [US2] Implement worker lifecycle coordinator with hidden/background process launch defaults in `BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs`.
+- [X] T030 [US2] Extend `BookOfEternityGMBridge/Program.cs` to expose worker-ready/worker-failed status without changing main bridge behavior.
 - [ ] T031 [US2] Add console advanced diagnostics for worker profiles in `BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs`.
 - [ ] T032 [US2] Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "StateManagerTests|GmWorkerBridgeLifecycleTests|GmBridgeDiagnosticsContractTests"`.
 

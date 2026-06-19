@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityGMBridge;
@@ -346,6 +347,7 @@ internal sealed class BridgeHost : IDisposable
             _status.ShellPid = pty.ProcessId;
             _status.CliProcessId = null;
             _status.CliLaunchCommand = config.GmCliLaunchCommand;
+            _status.WorkerStatuses = GmWorkerBridgePool.BuildInitialStatuses(config.GmWorkerBridgeProfiles).ToList();
             _status.Ready = false;
             _status.State = "OperatorNotReady";
             _status.LastError = null;
@@ -1001,6 +1003,7 @@ internal sealed record BridgeStatus
     public string StartedAtUtc { get; set; } = DateTimeOffset.UtcNow.ToString("O");
     public string UpdatedAtUtc { get; set; } = DateTimeOffset.UtcNow.ToString("O");
     public string? LastError { get; set; }
+    public List<WorkerBridgeStatus> WorkerStatuses { get; set; } = new();
 }
 
 internal sealed class BridgeDiagnostics
