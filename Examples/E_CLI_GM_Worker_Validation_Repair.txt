@@ -1,7 +1,10 @@
 # Example: GM worker validation-repair
 
-This example shows the MVP worker flow for a validation repair. The worker is a
-hidden/background subordinate process; the player does not see a new console.
+This example shows the live worker flow for a validation repair. The worker is
+a hidden/background subordinate process; the player does not see a new console.
+The client still writes `game_state/control/validation_repair_request.json`
+first. If no enabled worker exists or the worker fails, the legacy repair loop
+continues unchanged.
 
 Worker profile:
 
@@ -118,7 +121,20 @@ Apply gate decision after validation:
 }
 ```
 
-Audit event:
+After an accepted apply-gate decision, the client creates the existing repair
+loop signal itself. The worker must not write this control file directly.
+
+```json
+{
+  "sessionId": "test-session",
+  "requestId": "test-request",
+  "turnNumber": 12,
+  "updatedAtUtc": "2026-06-20T00:00:31Z",
+  "note": "GM worker proposal worker_proposal_20260620_0001 accepted by apply gate."
+}
+```
+
+Audit events:
 
 ```json
 {
@@ -133,6 +149,22 @@ Audit event:
   "details": {
     "appliedFiles": ["game_state/world/weather.json"],
     "rejectionReasons": []
+  }
+}
+```
+
+```json
+{
+  "schemaVersion": 1,
+  "eventId": "worker_audit_20260620_0002",
+  "eventType": "validation-repair-ready-created",
+  "workerId": "validation_repair_codex",
+  "taskId": "worker_task_20260620_0001",
+  "proposalId": "worker_proposal_20260620_0001",
+  "timestampUtc": "2026-06-20T00:00:31Z",
+  "summary": "Created validation_repair_ready.json after accepted GM worker repair proposal.",
+  "details": {
+    "readyPath": ["game_state/control/validation_repair_ready.json"]
   }
 }
 ```

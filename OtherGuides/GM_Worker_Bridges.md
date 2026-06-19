@@ -1,6 +1,6 @@
 # GM Worker Bridges
 
-Tracked issue: #1141.
+Tracked issues: #1141, #1143.
 
 GM worker bridges are subordinate helpers for the main GM. They can be Codex,
 Gemini, or another CLI profile configured by the user. The main GM remains the
@@ -52,11 +52,32 @@ worker. The task packet includes validation issues, context file hashes, and
 references. The apply gate accepts the proposal only if every path is allowed
 and validation passes after applying the change.
 
+Live dispatch status:
+
+- As of #1143, validation-repair is the first task type wired into the live
+  repair loop.
+- The client still writes `game_state/control/validation_repair_request.json`
+  first. This legacy request remains the fallback channel.
+- If no enabled validation-repair profile exists, behavior is unchanged: no
+  worker task, worker inbox, or audit file is created.
+- If a worker is configured, the client launches it hidden/background through
+  `GmWorkerBridgePool`, reads the proposal, and applies it only through the
+  apply gate.
+- If the apply gate accepts the proposal, the client creates
+  `game_state/control/validation_repair_ready.json` with the active
+  session/request/turn metadata so the existing repair loop can revalidate.
+- If the worker times out, exits with an error, writes malformed JSON, returns a
+  rejected proposal, or fails validation, the ready file is not created and the
+  legacy repair loop remains active for the main GM/manual repair path.
+
 ### narrative-draft
 
 Use this when the main GM wants help drafting prose, analysis, or scene options
 without delegating game authority. The task is proposal-only: the worker returns
 `draftText` and optional findings. It must not include `changedFiles`.
+
+Narrative-draft and analysis packets are defined by the bridge contract, but
+they are not yet automatically dispatched from live gameplay by #1143.
 
 ## Main GM Checklist
 

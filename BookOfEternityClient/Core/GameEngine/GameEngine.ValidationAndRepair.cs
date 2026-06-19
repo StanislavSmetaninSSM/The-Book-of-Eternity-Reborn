@@ -1,6 +1,4 @@
 using System.Diagnostics;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -416,54 +414,50 @@ public partial class GameEngine
         };
 
         await _fs.WriteFileAtomicAsync(ValidationRepairRequestPath, JsonSerializer.Serialize(request, JsonOpts));
-        await WriteWorkerValidationRepairTaskIfAvailableAsync(prioritizedErrors, requestMetadata, request.DetectedAtUtc, attempt);
+        await RunWorkerValidationRepairIfAvailableAsync(prioritizedErrors, requestMetadata, request.DetectedAtUtc, attempt);
     }
 
-    private async Task WriteWorkerValidationRepairTaskIfAvailableAsync(
+    private async Task RunWorkerValidationRepairIfAvailableAsync(
         IReadOnlyList<ValidationIssue> prioritizedErrors,
         (string SessionId, string RequestId, int TurnNumber) requestMetadata,
         string createdAtUtc,
         int attempt)
     {
-        var routing = GmWorkerBridgePool.SelectWorkerForTask(
-            _stateManager.Settings.GmWorkerBridgeProfiles,
-            WorkerTaskType.ValidationRepair);
-        if (!routing.Found || routing.Profile == null)
-            return;
-
         try
         {
-            var contextHashes = new Dictionary<string, string>(StringComparer.Ordinal);
-            foreach (var path in prioritizedErrors
-                         .Select(issue => issue.FilePath.Replace('\\', '/'))
-                         .Where(GmWorkerContractValidator.IsSafeRelativePath)
-                         .Distinct(StringComparer.Ordinal))
-            {
-                var content = await _fs.ReadFileAsync(path);
-                contextHashes[path] = content == null ? "missing" : ComputeSha256(content);
-            }
-
-            var task = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
-                routing.Profile,
-                $"worker_task_validation_repair_{attempt:D4}",
+            var audit = new GmWorkerAuditLog(_fs);
+            var delegator = new GmWorkerValidationRepairDelegator(
+                _fs,
+                new GmWorkerBridgePool(_fs, new GmWorkerProposalStore(_fs), audit),
+                new GmWorkerApplyGate(
+                    _fs,
+                    async () => (IReadOnlyList<ValidationIssue>)await _validator.ValidateGameStateAsync(),
+                    audit),
+                audit);
+            var result = await delegator.TryRunAsync(
+                _stateManager.Settings.GmWorkerBridgeProfiles,
+                prioritizedErrors,
                 new WorkerTurnReference
                 {
                     SessionId = requestMetadata.SessionId,
                     RequestId = requestMetadata.RequestId,
                     TurnNumber = requestMetadata.TurnNumber
                 },
-                prioritizedErrors,
-                contextHashes,
-                createdAtUtc);
+                createdAtUtc,
+                attempt);
 
-            await _fs.WriteFileAtomicAsync(
-                "game_state/control/gm_worker_latest_validation_repair_task.json",
-                GmWorkerJson.Serialize(task));
-            await new GmWorkerAuditLog(_fs).RecordTaskDispatchedAsync(task);
+            if (result.Outcome is not GmWorkerValidationRepairOutcome.SkippedNoWorker and
+                not GmWorkerValidationRepairOutcome.Applied)
+            {
+                _logger.LogWarning(
+                    "GM worker validation repair ended with {Outcome}: {Reason}. Legacy repair loop remains active.",
+                    result.Outcome,
+                    result.FallbackReason);
+            }
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Failed to create GM worker validation repair task packet. Legacy repair loop remains active.");
+            _logger.LogWarning(ex, "Failed to run GM worker validation repair. Legacy repair loop remains active.");
         }
     }
 
