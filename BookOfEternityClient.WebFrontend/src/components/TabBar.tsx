@@ -10,7 +10,7 @@ function isShortcutBlockedTarget(target: EventTarget | null): boolean {
 }
 
 export function TabBar() {
-  const { activeTab, setActiveTab, gameScreen } = useShell();
+  const { activeTab, setActiveTab, setActiveRoute, gameScreen } = useShell();
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -33,6 +33,20 @@ export function TabBar() {
 
   return (
     <nav className="tab-bar" role="tablist" aria-label="Навигация">
+      <button
+        type="button"
+        className="tab-bar__home"
+        aria-label="Главное меню"
+        title="Главное меню"
+        onClick={() => setActiveRoute('home')}
+      >
+        <span className="tab-bar__glyph tab-bar__glyph--home" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M4 11.2 12 4l8 7.2V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1Z" />
+          </svg>
+        </span>
+        <span className="tab-bar__label">Главное меню</span>
+      </button>
       <div className="tab-bar__tabs">
         {tabNav.map((tab) => (
           <button

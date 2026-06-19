@@ -696,6 +696,25 @@
   gap: 0.7rem;
 }
 
+/* Dedicated result window shown right after a mini-game ends. It replaces the
+   catalog + attempt cards so the player sees the outcome as its own surface. */
+.qte-practice-result {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 24%, rgba(245, 212, 136, 0.1));
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(155deg, rgba(30, 22, 16, 0.92), rgba(16, 11, 7, 0.95)),
+    var(--texture-leather);
+  background-blend-mode: normal, overlay;
+  background-size: cover, 280px 280px;
+  box-shadow:
+    var(--shadow-panel),
+    inset 0 1px 0 rgba(245, 212, 136, 0.06),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
 .qte-score-summary,
 .qte-score-strip {
   display: grid;
