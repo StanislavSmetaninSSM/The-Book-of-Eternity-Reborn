@@ -47,7 +47,7 @@
   --state-warning: #d4a857;
   --state-danger: #c43838;
   --state-repair: #d48a3a;
-  --state-qte: #c94080;
+  --state-qte: #d97842; /* burnt copper / ember — warm action accent in the BG3 gold/candle family */
 
   /* ── Radii (slightly more rounded for warmth) ── */
   --radius-sm: 0.4rem;
