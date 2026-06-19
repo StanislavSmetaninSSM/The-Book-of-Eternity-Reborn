@@ -26,7 +26,6 @@
 
 .shell-side-mural--right {
   right: 0;
-  transform: scaleX(-1);
 }
 
 /* Hide murals on narrow viewports where there's no gutter to fill. */

@@ -72,6 +72,9 @@ function AppShell() {
         <div className="shell-side-mural shell-side-mural--left" aria-hidden="true">
           <img src="/generated-art/launcher-side-left.png" alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} />
         </div>
+        <div className="shell-side-mural shell-side-mural--right" aria-hidden="true">
+          <img src="/generated-art/launcher-side-right.png" alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} />
+        </div>
         <main className={browserShellClassName} data-theme-key={realmTheme.key} style={browserShellStyle}>
           <ConnectionBanner />
           {!isLauncherRoute && <TabBar />}
