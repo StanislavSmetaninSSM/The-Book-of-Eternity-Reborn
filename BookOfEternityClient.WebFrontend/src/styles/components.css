@@ -651,8 +651,12 @@
     inset 0 0 24px rgba(0, 0, 0, 0.4);
   color: var(--color-parchment);
   font-family: var(--font-narrative);
-  font-size: 1.02rem;
-  line-height: 1.78;
+  /* Story prose is the primary reading surface — size it like book body text
+     (--text-lg), not the generic UI base, so it stays comfortable to read. It
+     still scales with the font-scale setting because --text-lg is rem-based. */
+  font-size: var(--text-lg);
+  line-height: 1.8;
+  letter-spacing: 0.005em;
 }
 
 .daren-showcase-prose__paragraph {
