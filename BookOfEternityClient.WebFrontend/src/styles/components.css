@@ -2808,6 +2808,11 @@
     radial-gradient(ellipse at 78% 24%, color-mix(in srgb, var(--realm-chaos) 14%, transparent), transparent 40%),
     linear-gradient(145deg, rgba(13, 17, 18, 0.96), rgba(5, 7, 8, 0.98));
   border-radius: var(--radius-lg);
+  /* Let the shell-level side murals show through the outer edges so the menu
+     doesn't leave dark-brown gutters next to the murals; the center stays
+     solid to back the launcher card. */
+  -webkit-mask-image: radial-gradient(ellipse 120% 130% at 50% 50%, rgba(0, 0, 0, 1) 60%, transparent 100%);
+  mask-image: radial-gradient(ellipse 120% 130% at 50% 50%, rgba(0, 0, 0, 1) 60%, transparent 100%);
 }
 
 .launcher-art-bg::before {
@@ -2868,6 +2873,40 @@
   50% { filter: drop-shadow(0 0 22px color-mix(in srgb, var(--color-gold) 60%, transparent)); transform: scale(1.04); }
 }
 
+/* Eternal flame flicker — the flame + its halo pulse independently of the
+   crest's slow breathe, so it reads as a living flame, not a static shape. */
+.launcher-crest__halo {
+  transform-origin: 50% 65%;
+  animation: launcher-crest-halo 2.4s ease-in-out infinite;
+}
+
+.launcher-crest__flame {
+  transform-origin: 50% 100%;
+  animation: launcher-crest-flame 0.9s ease-in-out infinite;
+}
+
+.launcher-crest__flame-inner {
+  animation: launcher-crest-flame-inner 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes launcher-crest-halo {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  45% { opacity: 0.72; transform: scale(1.08); }
+  70% { opacity: 0.6; transform: scale(1.03); }
+}
+
+@keyframes launcher-crest-flame {
+  0%, 100% { transform: scaleY(1) scaleX(1) rotate(-1deg); }
+  25% { transform: scaleY(1.12) scaleX(0.94) rotate(1.5deg); }
+  50% { transform: scaleY(0.96) scaleX(1.05) rotate(-1deg); }
+  75% { transform: scaleY(1.08) scaleX(0.97) rotate(1deg); }
+}
+
+@keyframes launcher-crest-flame-inner {
+  0% { opacity: 0.85; transform: scaleY(0.95); }
+  100% { opacity: 1; transform: scaleY(1.08); }
+}
+
 /* Drifting arcane motes — ambient particles that give the launcher life
    without overpowering the background painting. Reduced-motion stops them. */
 .launcher-ambient {
@@ -2904,7 +2943,10 @@
 }
 
 .is-reduced-motion .launcher-ambient,
-.is-reduced-motion .launcher-crest {
+.is-reduced-motion .launcher-crest,
+.is-reduced-motion .launcher-crest__halo,
+.is-reduced-motion .launcher-crest__flame,
+.is-reduced-motion .launcher-crest__flame-inner {
   animation: none !important;
 }
 .is-reduced-motion .launcher-ambient span {

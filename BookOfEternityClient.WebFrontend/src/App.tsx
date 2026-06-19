@@ -77,7 +77,7 @@ function AppShell() {
               <img src="/generated-art/launcher-side-left.png" alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} />
             </div>
             <div className="shell-side-mural shell-side-mural--right" aria-hidden="true">
-              <img src="/generated-art/launcher-side-right.png" alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} />
+              <img src="/generated-art/launcher-side-left.png" alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} />
             </div>
           </>
         )}

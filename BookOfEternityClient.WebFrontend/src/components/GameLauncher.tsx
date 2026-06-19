@@ -197,13 +197,15 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
                 <stop offset="1" stopColor="#c89b3c" stopOpacity="0" />
               </radialGradient>
             </defs>
-            <circle cx="32" cy="30" r="26" fill="url(#launcherCrestGlow)" opacity="0.55" />
+            <circle className="launcher-crest__halo" cx="32" cy="30" r="26" fill="url(#launcherCrestGlow)" opacity="0.55" />
             {/* Open book */}
             <path d="M14 40 Q32 33 50 40 L50 50 Q32 43 14 50 Z" fill="#1a140c" stroke="#d4a84b" strokeWidth="1.4" />
             <path d="M32 34 L32 48" stroke="#d4a84b" strokeWidth="1.2" opacity="0.7" />
-            {/* Eternal flame */}
-            <path d="M32 16 Q26 24 30 30 Q32 27 34 30 Q38 24 32 16 Z" fill="#e07a3a" opacity="0.92" />
-            <path d="M32 20 Q29 25 31 29 Q32 27 33 29 Q35 25 32 20 Z" fill="#f5d488" opacity="0.9" />
+            {/* Eternal flame — flickers */}
+            <g className="launcher-crest__flame">
+              <path d="M32 16 Q26 24 30 30 Q32 27 34 30 Q38 24 32 16 Z" fill="#e07a3a" opacity="0.92" />
+              <path className="launcher-crest__flame-inner" d="M32 20 Q29 25 31 29 Q32 27 33 29 Q35 25 32 20 Z" fill="#f5d488" opacity="0.9" />
+            </g>
           </svg>
         </div>
         <div className="launcher-copy">

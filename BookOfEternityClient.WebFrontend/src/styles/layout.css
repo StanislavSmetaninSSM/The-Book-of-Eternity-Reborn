@@ -8,7 +8,10 @@
   position: fixed;
   top: 0;
   bottom: 0;
-  width: clamp(120px, 20vw, 360px);
+  /* Wide enough to extend under the launcher card so there's no visible
+     dark-brown gap between the mural and the menu — the masked inner edge
+     dissolves into the menu background. */
+  width: clamp(140px, 28vw, 520px);
   z-index: 0;
   pointer-events: none;
 }
@@ -26,6 +29,7 @@
 
 .shell-side-mural--right {
   right: 0;
+  transform: scaleX(-1);
 }
 
 @media (max-width: 1100px) {
