@@ -1,5 +1,5 @@
-import { type CSSProperties } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { type CSSProperties, useEffect } from 'react';
+import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import './styles.css';
 import { ConnectionBanner } from './components/ConnectionBanner';
 import { ErrorNotice } from './components/ErrorNotice';
@@ -30,10 +30,19 @@ function AppShell() {
   const isLauncherRoute = activeRoute === 'home' && menu !== null;
   const isPracticeRoute = activeRoute === 'practice';
   const isDarenShowcaseRoute = activeRoute === 'daren-showcase';
+  const reducedMotion = Boolean(clientSettings?.accessibility.reducedMotion);
+  // Mirror the reduced-motion flag onto the document root so that full-viewport
+  // decorative layers (VignetteOverlay / film-grain) — which render outside the
+  // .browser-shell subtree — also pick up the .is-reduced-motion CSS guards.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle('is-reduced-motion', reducedMotion);
+    return () => root.classList.remove('is-reduced-motion');
+  }, [reducedMotion]);
   const browserShellClassName = [
     'browser-shell',
     isLauncherRoute ? 'is-launcher-route' : '',
-    clientSettings?.accessibility.reducedMotion ? 'is-reduced-motion' : '',
+    reducedMotion ? 'is-reduced-motion' : '',
     clientSettings?.accessibility.contrastFriendly ? 'is-contrast-friendly' : ''
   ].filter(Boolean).join(' ');
   const browserShellStyle = {
@@ -42,29 +51,31 @@ function AppShell() {
   } as CSSProperties;
 
   return (
-    <>
-      <VignetteOverlay />
-      <main className={browserShellClassName} data-theme-key={realmTheme.key} style={browserShellStyle}>
-        <ConnectionBanner />
-        {!isLauncherRoute && <TabBar />}
-        <section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live="polite">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`${activeRoute}-${activeTab}`}
-              initial="initial"
-              animate="enter"
-              exit="exit"
-              variants={pageTransition}
-            >
-              {shellState.status === 'loading' && <LoadingCard />}
-              {shellState.status === 'error' && <ErrorNotice title="Книга сейчас недоступна" failure={shellState} advancedEnabled={advancedEnabled} />}
-              {readyState && (isLauncherRoute ? <GameLauncher menu={menu} /> : isDarenShowcaseRoute ? <DarenShowcaseView /> : <TabContent activeTab={activeTab} />)}
-            </motion.div>
-          </AnimatePresence>
-        </section>
-        {!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && <UnifiedInput />}
-      </main>
-    </>
+    <MotionConfig reducedMotion={reducedMotion ? 'always' : 'never'}>
+      <>
+        <VignetteOverlay />
+        <main className={browserShellClassName} data-theme-key={realmTheme.key} style={browserShellStyle}>
+          <ConnectionBanner />
+          {!isLauncherRoute && <TabBar />}
+          <section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live="polite">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${activeRoute}-${activeTab}`}
+                initial="initial"
+                animate="enter"
+                exit="exit"
+                variants={pageTransition}
+              >
+                {shellState.status === 'loading' && <LoadingCard />}
+                {shellState.status === 'error' && <ErrorNotice title="Книга сейчас недоступна" failure={shellState} advancedEnabled={advancedEnabled} />}
+                {readyState && (isLauncherRoute ? <GameLauncher menu={menu} /> : isDarenShowcaseRoute ? <DarenShowcaseView /> : <TabContent activeTab={activeTab} />)}
+              </motion.div>
+            </AnimatePresence>
+          </section>
+          {!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && <UnifiedInput />}
+        </main>
+      </>
+    </MotionConfig>
   );
 }
 

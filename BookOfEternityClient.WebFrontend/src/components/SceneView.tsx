@@ -34,6 +34,8 @@ function SceneContent({ game, onCommand }: {
   game: NonNullable<ReturnType<typeof useShell>['gameScreen']>;
   onCommand: (cmd: string) => Promise<void>;
 }) {
+  const { clientSettings } = useShell();
+  const reducedMotion = Boolean(clientSettings?.accessibility.reducedMotion);
   const sceneImage = useSceneImage(game.narrative.imagePrompt, game.media.gallery ?? []);
 
   return (
@@ -50,6 +52,7 @@ function SceneContent({ game, onCommand }: {
         title={game.theme.label}
         subtitle={`${game.world.location || 'Локация уточняется'} · ${formatWorldTimeForPlayer(game.world.worldTime, '')}`}
         loading={sceneImage.loading}
+        reducedMotion={reducedMotion}
       />
 
       <motion.article className="scene-narrative" variants={fadeUp}>

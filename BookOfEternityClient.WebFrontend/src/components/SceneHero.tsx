@@ -7,6 +7,8 @@ interface SceneHeroProps {
   title: string;
   subtitle?: string;
   loading?: boolean;
+  /** Disable parallax + entrance animations for reduced-motion users. */
+  reducedMotion?: boolean;
 }
 
 /**

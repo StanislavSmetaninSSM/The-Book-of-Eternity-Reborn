@@ -118,3 +118,19 @@
 .is-reduced-motion .film-grain {
   display: none;
 }
+
+/* Page-transition blur and the hero candle beam loop also run on the
+   framer-motion layer (see App.tsx MotionConfig) plus per-element CSS
+   animations. Make the static shell explicit so the reduced-motion user gets
+   a clean, still frame instead of relying on the 0.01ms animation override. */
+.is-reduced-motion .cinematic-page-enter,
+.is-reduced-motion .cinematic-page-exit {
+  animation: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.is-reduced-motion .cinematic-hero__beam {
+  animation: none !important;
+}

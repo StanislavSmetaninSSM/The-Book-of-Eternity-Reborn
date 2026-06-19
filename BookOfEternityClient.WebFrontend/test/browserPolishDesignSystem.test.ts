@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
@@ -9,6 +9,14 @@ const frontendDir = basename(cwd) === 'BookOfEternityClient.WebFrontend'
 
 function readSource(...relativePath: string[]): string {
   return readFileSync(join(frontendDir, ...relativePath), 'utf-8');
+}
+
+/** Returns the contents of every tracked stylesheet under src/styles. */
+function readAllStyleSheets(): Array<{ name: string; content: string }> {
+  const stylesDir = join(frontendDir, 'src', 'styles');
+  return readdirSync(stylesDir)
+    .filter((file) => file.endsWith('.css'))
+    .map((file) => ({ name: file, content: readFileSync(join(stylesDir, file), 'utf-8') }));
 }
 
 describe('browser polish design system', () => {
@@ -80,5 +88,16 @@ describe('browser polish design system', () => {
     // motion-fast transition props are present in some form.
     expect(commandUi).toMatch(/transition:[^;]*var\(--motion-fast\)/);
     expect(commandUi).not.toContain('transition: all');
+  });
+
+  it('never uses transition: all anywhere in the design system stylesheets', () => {
+    // The BG3 cinematic refresh layers spread transitions across the whole
+    // src/styles directory. `transition: all` forces layout/paint on every
+    // animatable property (including unrelated ones) and can hide reduced-motion
+    // intent, so require explicit transition properties in every stylesheet.
+    const offenders = readAllStyleSheets()
+      .filter(({ content }) => content.includes('transition: all'))
+      .map(({ name }) => name);
+    expect(offenders).toEqual([]);
   });
 });

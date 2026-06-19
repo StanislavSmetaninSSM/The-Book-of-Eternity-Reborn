@@ -369,7 +369,12 @@
 
 .qte-practice-catalog {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  /* Cap at three columns so cards stay wide and short even at large font
+     scales. Without the cap, `auto-fit` packs 5 narrow columns at desktop
+     width, the descriptions wrap heavily, and the bottom difficulty + start
+     button rows get clipped on the first viewport. Narrow viewports drop to
+     fewer columns via the media queries below. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-3);
 }
 
@@ -381,6 +386,13 @@
   border-radius: var(--radius-md);
   padding: var(--space-3);
   background: rgba(8, 11, 12, 0.6);
+}
+
+/* Keep the difficulty selector and the start button compact and on their own
+   line so they never crowd each other when the font scale grows. */
+.qte-practice-card .launcher-secondary-action {
+  justify-self: start;
+  max-width: 100%;
 }
 
 .qte-practice-card header,
@@ -447,6 +459,20 @@
 
 @media (max-width: 760px) {
   .qte-practice-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Responsive catalog columns — drop from 3 to 2 to 1 on narrower viewports so
+   cards stay readable and never overflow horizontally. */
+@media (max-width: 920px) {
+  .qte-practice-catalog {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .qte-practice-catalog {
     grid-template-columns: 1fr;
   }
 }
@@ -3236,7 +3262,7 @@
   background-size: cover, 200px 200px;
   color: var(--color-parchment);
   cursor: pointer;
-  transition: all var(--motion-panel);
+  transition: border-color var(--motion-panel), background var(--motion-panel), transform var(--motion-panel), box-shadow var(--motion-panel);
   box-shadow:
     inset 0 1px 0 rgba(245, 212, 136, 0.04),
     inset 0 0 0 1px rgba(0, 0, 0, 0.3);
@@ -3368,7 +3394,7 @@
   background:
     linear-gradient(155deg, rgba(34, 26, 20, 0.88), rgba(20, 14, 8, 0.92));
   box-shadow: var(--shadow-panel), inset 0 1px 0 rgba(245, 212, 136, 0.05);
-  transition: all var(--motion-panel);
+  transition: border-color var(--motion-panel), transform var(--motion-panel), box-shadow var(--motion-panel);
 }
 
 .launcher-save-card:hover {
@@ -3391,7 +3417,7 @@
   font-size: var(--text-sm);
   font-style: italic;
   cursor: pointer;
-  transition: all var(--motion-fast);
+  transition: border-color var(--motion-fast), background var(--motion-fast), color var(--motion-fast);
   box-shadow: inset 0 1px 0 rgba(245, 212, 136, 0.04);
 }
 

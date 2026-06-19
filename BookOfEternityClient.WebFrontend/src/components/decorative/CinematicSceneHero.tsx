@@ -8,6 +8,8 @@ interface CinematicSceneHeroProps {
   title: string;
   subtitle?: string;
   loading?: boolean;
+  /** Disable parallax + entrance animations for reduced-motion users. */
+  reducedMotion?: boolean;
 }
 
 /**
@@ -29,6 +31,7 @@ export function CinematicSceneHero({
   title,
   subtitle,
   loading,
+  reducedMotion = false,
 }: CinematicSceneHeroProps) {
   const resolvedImageUrl = imageUrl ?? fallbackImageUrl ?? null;
   const isFallbackImage = !imageUrl && Boolean(fallbackImageUrl);
@@ -37,10 +40,17 @@ export function CinematicSceneHero({
     target: ref,
     offset: ['start start', 'end start'],
   });
-  const imageY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.15]);
-  const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '-30%']);
-  const overlayOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.6]);
+  // When reducedMotion is on, keep the image and content static — no
+  // parallax drift/scale on scroll. The overlays collapse to fixed opacity.
+  const imageY = useTransform(scrollYProgress, [0, 1], reducedMotion ? ['0%', '0%'] : ['0%', '20%']);
+  const imageScale = useTransform(scrollYProgress, [0, 1], reducedMotion ? [1.05, 1.05] : [1.05, 1.15]);
+  const contentY = useTransform(scrollYProgress, [0, 1], reducedMotion ? ['0%', '0%'] : ['0%', '-30%']);
+  const overlayOpacity = useTransform(scrollYProgress, [0, 1], reducedMotion ? [1, 1] : [1, 0.6]);
+  // Entrance animations collapse to the visible state so content renders
+  // statically instead of fading/sliding in.
+  const entrance = reducedMotion
+    ? { initial: { opacity: 1, y: 0 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0 } }
+    : {};
 
   return (
     <header className="cinematic-hero" ref={ref}>
@@ -76,6 +86,7 @@ export function CinematicSceneHero({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
+            {...entrance}
           >
             {eyebrow}
           </motion.span>
@@ -85,6 +96,7 @@ export function CinematicSceneHero({
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
+          {...entrance}
         >
           {title}
         </motion.h1>
@@ -94,6 +106,7 @@ export function CinematicSceneHero({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.35 }}
+            {...entrance}
           >
             {subtitle}
           </motion.p>
