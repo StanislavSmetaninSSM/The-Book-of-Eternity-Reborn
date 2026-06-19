@@ -16,7 +16,7 @@
 - [ ] T002 Read `AGENTS.md`, `.specify/memory/constitution.md`, `specs/1113-gm-worker-bridges/spec.md`, `specs/1113-gm-worker-bridges/plan.md`, and GitHub issue #1141.
 - [ ] T003 [P] Read existing GM bridge runtime in `BookOfEternityGMBridge/Program.cs` and current bridge settings in `BookOfEternityClient/Configuration/GameSettings.cs`.
 - [ ] T004 [P] Read accepted-turn validation and repair-related tests in `BookOfEternityClient.Tests/AgentConsoleLiveSmokeTests.cs`, `BookOfEternityClient.Tests/GameEngineTurnLifecycleTests.cs`, and validation tests under `BookOfEternityClient.Tests/`.
-- [ ] T005 Create an implementation note in the first commit message tying the work to #1141 and the MVP validation repair scope.
+- [ ] T005 Create an implementation note in the first commit message tying the work to #1141 and the MVP scope: validation repair plus proposal-only narrative drafting.
 
 ---
 
@@ -90,27 +90,27 @@
 
 ---
 
-## Phase 5: User Story 3 - Route Proposal-Only Creative and Analytical Tasks (Priority: P3)
+## Phase 5: User Story 3 - Route Proposal-Only Narrative and Analytical Tasks (Priority: P2)
 
-**Goal**: Non-repair tasks can be delegated as proposal-only analysis without applying file changes.
+**Goal**: Non-repair tasks can be delegated as proposal-only narrative drafts or analysis without applying file changes.
 
-**Independent Test**: A lore-analysis or console-output-audit task returns findings, records them in the proposal inbox, and rejects file changes.
+**Independent Test**: A narrative-draft task returns draft prose, records it in the proposal inbox, and rejects file changes.
 
 ### Tests for User Story 3
 
-- [ ] T033 [P] [US3] Write failing proposal-only task test in `BookOfEternityClient.Tests/GmWorkerProposalOnlyTests.cs` for findings with no file changes.
+- [ ] T033 [P] [US3] Write failing narrative-draft proposal-only task test in `BookOfEternityClient.Tests/GmWorkerProposalOnlyTests.cs` for `draftText` with no file changes.
 - [ ] T034 [P] [US3] Write failing proposal-only rejection test in `BookOfEternityClient.Tests/GmWorkerProposalOnlyTests.cs` for a worker response that includes file changes.
 - [ ] T035 [P] [US3] Write failing role-routing test in `BookOfEternityClient.Tests/GmWorkerTaskRoutingTests.cs` for no suitable worker available.
 
 ### Implementation for User Story 3
 
-- [ ] T036 [US3] Add proposal-only task types to `BookOfEternityClient/Services/GmWorkers/GmWorkerModels.cs`.
-- [ ] T037 [US3] Extend `GmWorkerTaskPacketBuilder` in `BookOfEternityClient/Services/GmWorkers/GmWorkerTaskPacketBuilder.cs` to build read-only analysis packets.
+- [ ] T036 [US3] Add proposal-only task types, including `narrative-draft`, to `BookOfEternityClient/Services/GmWorkers/GmWorkerModels.cs`.
+- [ ] T037 [US3] Extend `GmWorkerTaskPacketBuilder` in `BookOfEternityClient/Services/GmWorkers/GmWorkerTaskPacketBuilder.cs` to build read-only narrative-draft and analysis packets.
 - [ ] T038 [US3] Extend `GmWorkerApplyGate` in `BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs` to reject file changes for proposal-only policies while preserving findings.
 - [ ] T039 [US3] Add routing failure diagnostics in `BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs`.
 - [ ] T040 [US3] Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmWorkerProposalOnlyTests|GmWorkerTaskRoutingTests"`.
 
-**Checkpoint**: Analytical worker delegation is safe and non-authoritative.
+**Checkpoint**: Narrative and analytical worker delegation is safe and non-authoritative.
 
 ---
 
@@ -118,11 +118,11 @@
 
 **Purpose**: Keep GM-facing contracts synchronized with runtime behavior.
 
-- [ ] T041 [P] Update GM-facing guidance in `OtherGuides/` to explain main-GM authority, worker delegation, proposal-only tasks, and validation repair.
-- [ ] T042 [P] Add `Examples/E_CLI_GM_Worker_Validation_Repair.txt` and register it in `Examples/example_validation_manifest.json`.
+- [ ] T041 [P] Update GM-facing guidance in `OtherGuides/` to explain main-GM authority, worker delegation, proposal-only narrative drafts, analysis tasks, and validation repair.
+- [ ] T042 [P] Add `Examples/E_CLI_GM_Worker_Validation_Repair.txt` and `Examples/E_CLI_GM_Worker_Narrative_Draft.txt`, then register them in `Examples/example_validation_manifest.json`.
 - [ ] T043 [P] Update worker bridge launch guidance in `BookOfEternityClient/Launcher/CLI_Launch_Script.md` and `BookOfEternityClient/game_master_daemon.ps1`.
 - [ ] T044 Add documentation coverage/source guard tests in `BookOfEternityClient.Tests/` proving worker bridge docs/examples are referenced.
-- [ ] T045 Add live E2E coverage in `BookOfEternityClient.Tests/GmWorkerLiveSmokeTests.cs` for fake/local worker repair without external network dependency.
+- [ ] T045 Add live E2E coverage in `BookOfEternityClient.Tests/GmWorkerLiveSmokeTests.cs` for fake/local worker repair and fake/local narrative draft without external network dependency.
 - [ ] T046 Run documentation verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests|SourceGuard|GmWorker"`.
 
 ---
@@ -134,10 +134,11 @@
 - [ ] T047 Verify quickstart scenario 1 with automated or scripted evidence: no worker profiles preserve existing single-GM behavior.
 - [ ] T048 Verify quickstart scenario 2 with automated or scripted evidence: worker repairs a validation failure and audit records acceptance.
 - [ ] T049 Verify quickstart scenario 3 with automated or scripted evidence: forbidden worker proposal is rejected.
-- [ ] T050 Run focused C# verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "WorkerBridge|GmBridge|ValidationRepair|AgentConsoleLiveSmokeTests"`.
-- [ ] T051 Run full C# verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore`.
-- [ ] T052 Run `git diff --check` and inspect `git status --short`.
-- [ ] T053 Reconcile `specs/1113-gm-worker-bridges/tasks.md` with completed implementation and verification evidence before final report.
+- [ ] T050 Verify quickstart scenario 4 with automated or scripted evidence: worker drafts narration, main GM can inspect it, and no canonical files change.
+- [ ] T051 Run focused C# verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "WorkerBridge|GmBridge|ValidationRepair|ProposalOnly|AgentConsoleLiveSmokeTests"`.
+- [ ] T052 Run full C# verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore`.
+- [ ] T053 Run `git diff --check` and inspect `git status --short`.
+- [ ] T054 Reconcile `specs/1113-gm-worker-bridges/tasks.md` with completed implementation and verification evidence before final report.
 
 ---
 
@@ -149,13 +150,13 @@
 - **Foundational (Phase 2)**: Depends on setup and blocks all user stories.
 - **US1 Validation Repair (Phase 3)**: Depends on foundational contracts.
 - **US2 Worker Profiles and Lifecycle (Phase 4)**: Depends on foundational contracts; can partly proceed in parallel with US1 after T009-T011.
-- **US3 Proposal-Only Tasks (Phase 5)**: Depends on US1 apply gate and US2 routing concepts.
+- **US3 Proposal-Only Narrative and Analysis Tasks (Phase 5)**: Depends on US1 apply gate and US2 routing concepts.
 - **Docs/E2E (Phase 6)**: Depends on implemented behavior for accurate examples.
 - **Polish (Phase 7)**: Depends on selected user stories and docs.
 
 ### MVP Scope
 
-Complete Phases 1-3 plus the required documentation/example tasks from Phase 6. This ships validation repair delegation with safe apply gate and audit trail.
+Complete Phases 1-5 plus the required documentation/example tasks from Phase 6. This ships a general worker mechanism proven by validation repair and proposal-only narrative drafting, with safe apply gate and audit trail.
 
 ### Parallel Opportunities
 
@@ -169,7 +170,7 @@ Complete Phases 1-3 plus the required documentation/example tasks from Phase 6. 
 ## Implementation Strategy
 
 1. Build contract models and source guards first.
-2. Ship validation repair MVP before any creative delegation.
+2. Ship validation repair through the apply gate.
 3. Add worker lifecycle/profile diagnostics.
-4. Add proposal-only analysis tasks.
+4. Ship proposal-only narrative drafting in the same MVP wave.
 5. Update GM docs/examples and run live E2E.

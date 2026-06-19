@@ -6,15 +6,15 @@
 
 **Status**: Draft
 
-**Input**: User description: "Add explicit multi-agent architecture where the main GM can launch additional configured bridges, delegate validation repair and scoped work to Codex/Gemini/other agents, receive proposals, and keep the main GM as the single owner of turn and canonical state."
+**Input**: User description: "Add explicit multi-agent architecture where the main GM can launch additional configured bridges, delegate validation repair, narrative drafting, lore/NPC/QTE analysis, console-output review, and other scoped work to Codex/Gemini/other agents, receive proposals, and keep the main GM as the single owner of turn and canonical state."
 
 ## Source Issues & Scope *(mandatory)*
 
 - **Source GitHub issue(s)**: #1141 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1141
 - **Issue type**: epic / enhancement / architecture
-- **Spec Kit justification**: This changes GM bridge orchestration, validation repair flow, runtime state authority, diagnostics, docs, examples, and future agent handoff contracts. It is cross-cutting and expected to span multiple sessions.
+- **Spec Kit justification**: This changes GM bridge orchestration, general worker task dispatch, validation repair flow, proposal-only creative/analysis flow, runtime state authority, diagnostics, docs, examples, and future agent handoff contracts. It is cross-cutting and expected to span multiple sessions.
 - **Contract scope**: GM-facing prompts, runtime-state, validation, docs, examples, console diagnostics, agent-console/e2e.
-- **Out of scope**: Browser UI redesign, direct worker writes to canonical `game_session`, autonomous co-GM control of player turns, remote/cloud orchestration, and creative delegation beyond proposal-only workflows in the first implementation wave.
+- **Out of scope**: Browser UI redesign, direct worker writes to canonical `game_session`, autonomous co-GM control of player turns, remote/cloud orchestration, and automatic acceptance of worker-authored narrative without main-GM review. Proposal-only narrative drafting and analysis are in scope for the first implementation wave.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -50,26 +50,29 @@ The user can define worker bridge profiles with command, role, permissions, and 
 
 ---
 
-### User Story 3 - Route Proposal-Only Creative and Analytical Tasks (Priority: P3)
+### User Story 3 - Route Proposal-Only Narrative and Analytical Tasks (Priority: P2)
 
-After validation repair works, the main GM can optionally delegate non-authoritative analysis tasks, such as NPC consistency review, lore suggestions, QTE scene suggestions, or player-facing console output audits. Workers return suggestions only; the main GM chooses what to use.
+The main GM can delegate non-authoritative creative and analytical tasks, such as drafting scene narration while the GM checks state, NPC consistency review, lore suggestions, QTE scene suggestions, or player-facing console output audits. Workers return suggestions only; the main GM chooses what to use, edits it if needed, and remains responsible for final narration.
 
-**Why this priority**: This expands usefulness while preserving state authority. It should come after the validation repair MVP proves the safety model.
+**Why this priority**: This is the core value of multi-agent orchestration beyond validation repair. It proves that the worker system is a general delegation mechanism while preserving main-GM authority.
 
-**Independent Test**: A lore-analysis task is sent to a worker with read-only context, the worker returns suggestions, and the daemon records them without changing canonical state.
+**Independent Test**: A narrative-draft task is sent to a worker with read-only context, the worker returns a draft scene, and the daemon records it in the proposal inbox without changing canonical state.
 
 **Acceptance Scenarios**:
 
-1. **Given** a proposal-only task type, **When** a worker returns suggestions, **Then** the suggestions appear in the proposal inbox and no files are applied automatically.
-2. **Given** a worker response that includes direct file changes for a proposal-only task, **When** the apply gate evaluates it, **Then** file changes are rejected and the textual suggestions remain available.
-3. **Given** no suitable worker for a task role, **When** the main GM tries to delegate, **Then** the daemon reports a player-safe/GM-safe diagnostic and continues without delegation.
+1. **Given** the main GM is preparing a scene, **When** it delegates a narrative-draft task, **Then** the worker returns draft narration that is visible to the main GM but not automatically sent to the player.
+2. **Given** a proposal-only task type, **When** a worker returns suggestions, **Then** the suggestions appear in the proposal inbox and no files are applied automatically.
+3. **Given** a worker response that includes direct file changes for a proposal-only task, **When** the apply gate evaluates it, **Then** file changes are rejected and the textual suggestions remain available.
+4. **Given** no suitable worker for a task role, **When** the main GM tries to delegate, **Then** the daemon reports a player-safe/GM-safe diagnostic and continues without delegation.
 
 ### Edge Cases
 
 - Worker process starts but never becomes ready.
 - Worker returns malformed JSON or a partial patch.
 - Worker task times out while the main GM is waiting for validation repair.
+- Worker task times out while the main GM is waiting for a narrative draft.
 - Two workers return proposals for the same validation failure.
+- Two workers return competing narrative drafts for the same scene.
 - A worker proposal passes file-scope checks but fails game validation.
 - The main GM restarts while worker tasks are in progress.
 - Worker CLI command contains unsafe shell metacharacters or unsupported paths.
@@ -90,10 +93,14 @@ After validation repair works, the main GM can optionally delegate non-authorita
 - **FR-008**: Worker activity MUST be recorded in an audit trail that identifies worker id, role, task id, start/end time, result, and applied/rejected proposal summary.
 - **FR-009**: Validation repair delegation MUST support dispatching validation errors, relevant state context, and allowed repair scope to a worker.
 - **FR-010**: Proposal-only tasks MUST be recordable without applying any file changes.
-- **FR-011**: Worker lifecycle diagnostics MUST distinguish stopped, starting, ready, busy, failed, timed out, and disabled states.
-- **FR-012**: The system MUST provide clear failure behavior when no worker is available, a worker fails, or a proposal is rejected.
-- **FR-013**: GM-facing prompts/docs/examples MUST describe when the main GM may delegate, what workers may return, and why the main GM still owns final state.
-- **FR-014**: Tests MUST cover safe acceptance and safe rejection of worker repair proposals.
+- **FR-011**: The first implementation wave MUST support at least two worker task classes: validation repair and narrative drafting.
+- **FR-012**: Narrative-draft worker output MUST remain invisible to the player until the main GM explicitly uses or rewrites it in the final response.
+- **FR-013**: Worker task routing MUST be role-based so different configured agents can be selected for repair, narration, lore, NPC analysis, QTE design, or console-output audit tasks.
+- **FR-014**: Worker lifecycle diagnostics MUST distinguish stopped, starting, ready, busy, failed, timed out, and disabled states.
+- **FR-015**: The system MUST provide clear failure behavior when no worker is available, a worker fails, or a proposal is rejected.
+- **FR-016**: GM-facing prompts/docs/examples MUST describe when the main GM may delegate, what workers may return, and why the main GM still owns final state.
+- **FR-017**: Tests MUST cover safe acceptance and safe rejection of worker repair proposals.
+- **FR-018**: Tests MUST cover proposal-only narrative tasks that return drafts without changing canonical state.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -114,18 +121,19 @@ After validation repair works, the main GM can optionally delegate non-authorita
 - **SC-003**: Worker lifecycle status is observable within 2 seconds of launch, failure, timeout, or task completion in local diagnostics.
 - **SC-004**: A live E2E repair scenario records an audit trail that identifies the worker, task, proposal, and apply decision.
 - **SC-005**: Existing single-GM gameplay continues to work when no worker profiles are configured.
+- **SC-006**: A narrative-draft worker task returns a draft visible to the main GM in automated or scripted evidence, and no canonical files change.
 
 ## Verification Plan *(mandatory)*
 
-- **C# verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "WorkerBridge|GmBridge|ValidationRepair|AgentConsoleLiveSmokeTests"`
+- **C# verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "WorkerBridge|GmBridge|ValidationRepair|ProposalOnly|AgentConsoleLiveSmokeTests"`
 - **Documentation/contract verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests|SourceGuard"`
 - **Frontend verification**: N/A for MVP; browser UI is out of scope unless diagnostics are later surfaced there.
-- **Manual/player-facing verification**: Run a console live E2E with no worker profiles and with one validation-repair worker profile. Confirm normal single-GM play remains unchanged and delegated repair is auditable.
+- **Manual/player-facing verification**: Run a console live E2E with no worker profiles, one validation-repair worker profile, and one narrative-draft worker profile. Confirm normal single-GM play remains unchanged, delegated repair is auditable, and narrative drafts are visible to the main GM only.
 
 ## Assumptions
 
 - Worker profiles are local CLI commands; no remote orchestration is introduced.
-- The first implementation wave focuses on validation repair, not creative co-GM behavior.
+- The first implementation wave proves both validation repair and proposal-only narrative drafting.
 - Workers can read task packets and produce structured proposal files through local filesystem/bridge protocols.
 - Main GM and daemon may ask for worker help, but only the main GM/daemon apply gate may accept changes.
 - Existing validation and pending snapshot authority remain the source of truth for accepted-turn correctness.

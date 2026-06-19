@@ -7,7 +7,7 @@ Represents a user-configured local worker agent.
 - `workerId`: Stable id, unique across profiles.
 - `displayName`: Human-readable name.
 - `launchCommand`: Local CLI command to start the worker bridge.
-- `role`: Worker purpose, for example `validation-repair`, `lore-review`, `npc-analysis`, `qte-design`, or `console-output-audit`.
+- `role`: Worker purpose, for example `validation-repair`, `narrative-draft`, `lore-review`, `npc-analysis`, `qte-design`, or `console-output-audit`.
 - `enabled`: Whether the profile may be launched.
 - `permissions`: WorkerScopePolicy reference or inline allowed task/file policy.
 - `timeoutSeconds`: Maximum time for startup and per-task response.
@@ -41,10 +41,11 @@ Scoped request sent to a worker.
 
 - `taskId`: Unique task id.
 - `workerId`: Target worker profile id.
-- `taskType`: For MVP, `validation-repair`.
+- `taskType`: For MVP, `validation-repair` or `narrative-draft`; later `lore-review`, `npc-analysis`, `qte-design`, and `console-output-audit`.
 - `createdAtUtc`: Dispatch time.
 - `sourceTurn`: Optional turn/session metadata.
-- `validationIssues`: Validation issues to repair.
+- `validationIssues`: Validation issues to repair; empty for non-repair tasks.
+- `draftRequest`: Optional narrative or analysis request containing scene goal, tone constraints, continuity context, and expected output length.
 - `contextFiles`: Read-only snapshot references and hashes.
 - `allowedProposalPaths`: Paths the worker may propose changing.
 - `responseContract`: Expected proposal schema version.
@@ -53,7 +54,7 @@ Scoped request sent to a worker.
 Validation rules:
 
 - `taskId`, `taskType`, `createdAtUtc`, and `responseContract` are required.
-- `allowedProposalPaths` must be non-empty for patch-capable tasks.
+- `allowedProposalPaths` must be non-empty for patch-capable tasks and empty for proposal-only narrative tasks.
 - Context file hashes must be recorded for auditability.
 
 ## WorkerProposal
@@ -67,6 +68,7 @@ Worker response to a task packet.
 - `summary`: Human-readable summary.
 - `changedFiles`: List of proposed file changes with path, hash before/after, and patch or replacement reference.
 - `findings`: Optional analysis-only notes.
+- `draftText`: Optional narrative draft text for `narrative-draft` tasks.
 - `selfCheck`: Worker-reported checks and caveats.
 - `createdAtUtc`: Proposal time.
 

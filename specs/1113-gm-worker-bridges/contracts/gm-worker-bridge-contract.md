@@ -10,6 +10,8 @@
 
 ## Worker Profile Contract
 
+Validation repair worker:
+
 ```json
 {
   "workerId": "validation_repair_codex",
@@ -38,7 +40,35 @@
 }
 ```
 
+Narrative drafting worker:
+
+```json
+{
+  "workerId": "narrative_draft_gemini",
+  "displayName": "Gemini narrative drafter",
+  "launchCommand": "gemini",
+  "role": "narrative-draft",
+  "enabled": true,
+  "timeoutSeconds": 120,
+  "maxConcurrentTasks": 1,
+  "permissions": {
+    "taskTypes": ["narrative-draft"],
+    "readPaths": [
+      "game_state/**",
+      "lore/**",
+      "Rules/**",
+      "TaskGuides/**"
+    ],
+    "proposalWritePaths": [],
+    "proposalOnly": true,
+    "requiresValidation": false
+  }
+}
+```
+
 ## Task Packet Contract
+
+Validation repair task:
 
 ```json
 {
@@ -73,7 +103,46 @@
 }
 ```
 
+Narrative draft task:
+
+```json
+{
+  "schemaVersion": 1,
+  "taskId": "worker_task_20260620_0002",
+  "workerId": "narrative_draft_gemini",
+  "taskType": "narrative-draft",
+  "createdAtUtc": "2026-06-20T00:05:00Z",
+  "sourceTurn": {
+    "sessionId": "test-session",
+    "requestId": "test-request",
+    "turnNumber": 12
+  },
+  "validationIssues": [],
+  "draftRequest": {
+    "sceneGoal": "Draft a tense description of the locked manor corridor before the player chooses how to proceed.",
+    "tone": "dark fantasy, concise, natural Russian prose",
+    "continuityNotes": [
+      "The player is currently inside the mortal world.",
+      "Do not resolve the player's action.",
+      "Do not introduce canonical state changes."
+    ],
+    "targetLength": "120-180 words"
+  },
+  "contextFiles": [
+    {
+      "path": "game_state/world/current_location.json",
+      "sha256": "example"
+    }
+  ],
+  "allowedProposalPaths": [],
+  "responseContract": "worker-proposal-v1",
+  "instructions": "Return draftText and optional findings only. Do not include changedFiles."
+}
+```
+
 ## Proposal Contract
+
+Validation repair proposal:
 
 ```json
 {
@@ -99,6 +168,35 @@
     "notes": []
   },
   "createdAtUtc": "2026-06-20T00:00:15Z"
+}
+```
+
+Narrative draft proposal:
+
+```json
+{
+  "schemaVersion": 1,
+  "proposalId": "worker_proposal_20260620_0002",
+  "taskId": "worker_task_20260620_0002",
+  "workerId": "narrative_draft_gemini",
+  "status": "completed",
+  "summary": "Drafted corridor narration for main-GM review.",
+  "changedFiles": [],
+  "findings": [
+    {
+      "kind": "continuity-note",
+      "message": "Draft avoids resolving the player's next action."
+    }
+  ],
+  "draftText": "Черновик сцены для главного ГМа. Этот текст не показывается игроку автоматически.",
+  "selfCheck": {
+    "scopeReviewed": true,
+    "validationExpectedToPass": true,
+    "notes": [
+      "Proposal-only task; no file changes included."
+    ]
+  },
+  "createdAtUtc": "2026-06-20T00:05:20Z"
 }
 ```
 

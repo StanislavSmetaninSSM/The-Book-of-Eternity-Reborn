@@ -2,7 +2,7 @@
 
 ## Goal
 
-Validate the MVP flow: a validation failure is delegated to a configured worker bridge, the worker returns a repair proposal, the apply gate validates and applies it, and the audit trail records the result.
+Validate the MVP flow: validation repair and narrative drafting are both delegated to configured worker bridges, workers return proposals, the apply gate validates repair changes or stores proposal-only drafts, and the audit trail records the result.
 
 ## Prerequisites
 
@@ -32,7 +32,14 @@ Validate the MVP flow: a validation failure is delegated to a configured worker 
 3. Run the apply gate.
 4. Expected result: proposal is rejected, canonical state is unchanged, and audit records the rejection reason.
 
-## Scenario 4: Worker Timeout Is Safe
+## Scenario 4: Worker Drafts Narration Without Owning the Turn
+
+1. Configure a worker profile with role `narrative-draft`.
+2. Dispatch a scene-drafting task with read-only context and tone/continuity instructions.
+3. Wait for a proposal with draft narration.
+4. Expected result: the draft is visible to the main GM in the proposal inbox, no canonical files change, and nothing is sent to the player until the main GM explicitly uses or rewrites the draft.
+
+## Scenario 5: Worker Timeout Is Safe
 
 1. Configure a worker profile with a short timeout.
 2. Dispatch a task to a worker that does not answer.
@@ -41,7 +48,7 @@ Validate the MVP flow: a validation failure is delegated to a configured worker 
 ## Verification Commands
 
 ```powershell
-dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "WorkerBridge|GmBridge|ValidationRepair|AgentConsoleLiveSmokeTests"
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "WorkerBridge|GmBridge|ValidationRepair|ProposalOnly|AgentConsoleLiveSmokeTests"
 dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests|SourceGuard"
 dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore
 ```
