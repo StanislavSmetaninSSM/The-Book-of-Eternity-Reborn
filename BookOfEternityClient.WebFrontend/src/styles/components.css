@@ -330,12 +330,35 @@
 .qte-scene-panel button,
 .qte-practice-view button,
 .media-gallery-card__open {
-  border: 1px solid color-mix(in srgb, var(--realm-accent) 32%, rgba(255, 255, 255, 0.08));
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 28%, rgba(245, 212, 136, 0.1));
   border-radius: var(--radius-md);
-  padding: 0.6rem 0.85rem;
-  background: color-mix(in srgb, var(--realm-accent) 14%, rgba(8, 11, 12, 0.88));
+  padding: 0.6rem 0.95rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-gold) 16%, rgba(30, 22, 16, 0.92)), color-mix(in srgb, var(--color-gold) 4%, rgba(10, 7, 5, 0.95)));
   color: var(--color-parchment);
   font-weight: 800;
+  letter-spacing: 0.01em;
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.1),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast), transform var(--motion-fast), color var(--motion-fast);
+}
+
+.qte-scene-panel button:hover:not(:disabled),
+.qte-practice-view button:hover:not(:disabled),
+.media-gallery-card__open:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-gold-bright) 52%, rgba(255, 255, 255, 0.14));
+  color: var(--color-gold-bright);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.18),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.3),
+    0 0 12px color-mix(in srgb, var(--color-gold) 22%, transparent);
+  transform: translateY(-1px);
+}
+
+.qte-scene-panel button:active:not(:disabled),
+.qte-practice-view button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .qte-scene-panel button:disabled,
@@ -379,13 +402,90 @@
 }
 
 .qte-practice-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--realm-accent, var(--color-gold)) 22%, rgba(245, 212, 136, 0.06));
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  overflow: hidden;
+  background:
+    linear-gradient(155deg, rgba(34, 26, 20, 0.88), rgba(20, 14, 8, 0.92)),
+    var(--texture-leather);
+  background-blend-mode: normal, overlay;
+  background-size: cover, 300px 300px;
+  box-shadow:
+    var(--shadow-panel),
+    inset 0 1px 0 rgba(245, 212, 136, 0.05),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+  transition: border-color var(--motion-panel), transform var(--motion-panel), box-shadow var(--motion-panel);
+}
+
+/* Top accent line — a glowing QTE-tinted filament, mirroring the shell panels. */
+.qte-practice-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1.5px;
+  background: linear-gradient(90deg,
+    transparent,
+    color-mix(in srgb, var(--state-qte) 70%, var(--color-gold)),
+    transparent);
+  filter: blur(0.5px);
+  opacity: 0.6;
+  border-radius: 0 0 2px 2px;
+  pointer-events: none;
+}
+
+.qte-practice-card:hover {
+  border-color: color-mix(in srgb, var(--state-qte) 38%, rgba(245, 212, 136, 0.14));
+  transform: translateY(-2px);
+  box-shadow:
+    var(--shadow-panel-strong),
+    inset 0 1px 0 rgba(245, 212, 136, 0.08),
+    0 0 24px color-mix(in srgb, var(--state-qte) 16%, transparent);
+}
+
+/* Locked / unavailable cards dim toward the ink instead of glowing. */
+.qte-practice-card[data-available='false'] {
+  opacity: 0.62;
+}
+.qte-practice-card[data-available='false']:hover {
+  transform: none;
+  box-shadow: var(--shadow-panel);
+}
+
+/* Crest — the type-glyph medallion in the card's left rail. */
+.qte-practice-card__crest {
+  display: grid;
+  place-items: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 44%, rgba(245, 212, 136, 0.1));
+  background:
+    radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--state-qte) 22%, rgba(34, 26, 20, 0.92)), rgba(10, 7, 5, 0.96));
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35),
+    inset 0 0 12px color-mix(in srgb, var(--state-qte) 26%, transparent),
+    0 0 12px color-mix(in srgb, var(--state-qte) 12%, transparent);
+  color: var(--color-gold-bright);
+}
+
+.qte-practice-card__crest-glyph {
+  width: 1.6rem;
+  height: 1.6rem;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--state-qte) 50%, transparent));
+}
+
+.qte-practice-card__body {
   display: grid;
   gap: var(--space-3);
   min-width: 0;
-  border: 1px solid color-mix(in srgb, var(--state-qte) 24%, rgba(255, 255, 255, 0.08));
-  border-radius: var(--radius-md);
-  padding: var(--space-3);
-  background: rgba(8, 11, 12, 0.6);
 }
 
 /* Keep the difficulty selector and the start button compact and on their own
@@ -404,26 +504,119 @@
   align-items: start;
 }
 
-.qte-practice-card__type {
-  color: var(--color-mist);
-  font-size: 0.78rem;
-  font-weight: 850;
+.qte-practice-card h3 {
+  margin: 0;
+  color: var(--color-parchment);
+  font-family: var(--font-display, var(--font-narrative));
 }
 
+.qte-practice-card__type {
+  margin: 0;
+  color: var(--color-mist);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* Availability pill gets a glyph-free, color-coded treatment tied to state. */
+.qte-practice-card .availability-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 999px;
+  padding: 0.18rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  border: 1px solid color-mix(in srgb, var(--state-success) 44%, rgba(255, 255, 255, 0.08));
+  background: color-mix(in srgb, var(--state-success) 14%, rgba(8, 11, 12, 0.8));
+  color: var(--color-parchment);
+}
+.qte-practice-card .availability-pill::before {
+  content: '';
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: var(--state-success);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--state-success) 70%, transparent);
+}
+.qte-practice-card[data-available='false'] .availability-pill {
+  border-color: color-mix(in srgb, var(--color-mist) 44%, rgba(255, 255, 255, 0.08));
+  background: color-mix(in srgb, var(--color-mist) 10%, rgba(8, 11, 12, 0.8));
+  color: var(--color-mist);
+}
+.qte-practice-card[data-available='false'] .availability-pill::before {
+  background: var(--color-mist);
+  box-shadow: none;
+}
+
+/* Segmented difficulty selector — a single recessed track of pills. */
 .qte-practice-difficulty {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 18%, rgba(0, 0, 0, 0.3));
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+  width: fit-content;
+  max-width: 100%;
 }
 
 .qte-practice-difficulty button {
-  padding: 0.45rem 0.65rem;
+  padding: 0.4rem 0.7rem;
   border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-mist);
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+  transition: background var(--motion-fast), color var(--motion-fast), border-color var(--motion-fast);
+}
+
+.qte-practice-difficulty button:hover:not(.is-active) {
+  color: var(--color-parchment);
+  background: rgba(245, 212, 136, 0.06);
 }
 
 .qte-practice-difficulty button.is-active {
   border-color: color-mix(in srgb, var(--color-gold-bright) 62%, rgba(255, 255, 255, 0.12));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-gold) 26%, rgba(34, 26, 20, 0.9)), color-mix(in srgb, var(--color-gold) 10%, rgba(10, 7, 5, 0.95)));
   color: var(--color-gold-bright);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-gold) 30%, transparent), inset 0 1px 0 rgba(245, 212, 136, 0.18);
+}
+
+/* Golden rune-font CTA for starting a training attempt. */
+.qte-practice-card__start {
+  justify-self: start;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 56%, rgba(245, 212, 136, 0.2));
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-gold) 30%, rgba(34, 26, 20, 0.9)), color-mix(in srgb, var(--color-gold) 8%, rgba(10, 7, 5, 0.95)));
+  color: var(--color-gold-bright);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.2),
+    0 0 12px color-mix(in srgb, var(--color-gold) 18%, transparent);
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast), transform var(--motion-fast), color var(--motion-fast);
+}
+.qte-practice-card__start:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-gold-bright) 72%, rgba(255, 255, 255, 0.24));
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.3),
+    0 0 20px color-mix(in srgb, var(--color-gold) 40%, transparent);
+  transform: translateY(-1px);
+}
+.qte-practice-card__start:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .qte-practice-ready-gate {
@@ -547,19 +740,48 @@
 }
 
 .qte-mini-game {
+  position: relative;
   display: grid;
   gap: var(--space-3);
-  border: 1px solid color-mix(in srgb, var(--state-qte) 28%, rgba(255, 255, 255, 0.08));
+  border: 1px solid color-mix(in srgb, var(--color-gold) 26%, rgba(245, 212, 136, 0.08));
   border-radius: var(--radius-md);
-  padding: var(--space-3);
+  padding: var(--space-4);
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--state-qte) 10%, rgba(8, 11, 12, 0.86)), rgba(4, 7, 8, 0.72));
+    linear-gradient(155deg, rgba(30, 22, 16, 0.92), rgba(16, 11, 7, 0.95)),
+    var(--texture-leather);
+  background-blend-mode: normal, overlay;
+  background-size: cover, 280px 280px;
+  box-shadow:
+    var(--shadow-panel),
+    inset 0 1px 0 rgba(245, 212, 136, 0.06),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35);
   outline: none;
 }
 
+/* Glowing QTE-tinted top filament, same family as catalog cards / shell panels. */
+.qte-mini-game::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 16%;
+  right: 16%;
+  height: 1.5px;
+  background: linear-gradient(90deg,
+    transparent,
+    color-mix(in srgb, var(--state-qte) 70%, var(--color-gold)),
+    transparent);
+  filter: blur(0.5px);
+  opacity: 0.7;
+  border-radius: 0 0 2px 2px;
+  pointer-events: none;
+}
+
 .qte-mini-game:focus-visible {
-  border-color: color-mix(in srgb, var(--state-qte) 62%, rgba(255, 255, 255, 0.12));
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--state-qte) 36%, transparent);
+  border-color: color-mix(in srgb, var(--color-gold-bright) 62%, rgba(255, 255, 255, 0.16));
+  box-shadow:
+    var(--shadow-panel),
+    0 0 0 2px color-mix(in srgb, var(--state-qte) 36%, transparent),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35);
 }
 
 .qte-mini-game__header {
@@ -571,57 +793,78 @@
 }
 
 .qte-mini-game__header strong {
+  font-family: var(--font-display, var(--font-narrative));
   color: var(--color-gold-bright);
+  letter-spacing: 0.02em;
 }
 
 .qte-mini-game__header span {
-  border: 1px solid color-mix(in srgb, var(--state-qte) 24%, rgba(255, 255, 255, 0.08));
+  border: 1px solid color-mix(in srgb, var(--state-qte) 44%, rgba(245, 212, 136, 0.1));
   border-radius: 999px;
-  padding: 0.15rem 0.5rem;
-  color: var(--color-mist);
-  font-size: 0.74rem;
+  padding: 0.15rem 0.6rem;
+  background: color-mix(in srgb, var(--state-qte) 12%, rgba(8, 11, 12, 0.8));
+  color: var(--color-parchment);
+  font-size: 0.7rem;
   font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .qte-mini-game p {
   margin: 0;
 }
 
+/* ── Timing bar — recessed instrument rail with a glowing ember marker ── */
 .qte-bar {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
   gap: 2px;
-  min-height: 1.6rem;
+  min-height: 1.9rem;
+  padding: 3px;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 16%, rgba(0, 0, 0, 0.4));
+  border-radius: var(--radius-sm);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.25));
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .qte-bar__cell {
   min-width: 0.2rem;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(245, 212, 136, 0.05);
 }
 
 .qte-bar__cell.is-partial {
-  background: color-mix(in srgb, var(--state-warning) 42%, rgba(255, 255, 255, 0.06));
+  background: color-mix(in srgb, var(--state-warning) 52%, rgba(245, 212, 136, 0.06));
+  box-shadow: inset 0 0 6px color-mix(in srgb, var(--state-warning) 40%, transparent);
 }
 
 .qte-bar__cell.is-success {
-  background: color-mix(in srgb, var(--state-success) 48%, rgba(255, 255, 255, 0.06));
+  background: color-mix(in srgb, var(--state-success) 56%, rgba(245, 212, 136, 0.06));
+  box-shadow: inset 0 0 8px color-mix(in srgb, var(--state-success) 50%, transparent);
 }
 
 .qte-bar__cell.is-marker {
-  box-shadow: inset 0 0 0 2px var(--color-gold-bright), 0 0 12px color-mix(in srgb, var(--color-gold) 45%, transparent);
+  background: linear-gradient(180deg, var(--color-gold-bright), var(--color-gold));
+  box-shadow:
+    inset 0 0 0 1px var(--color-gold-bright),
+    0 0 14px color-mix(in srgb, var(--color-gold) 70%, transparent),
+    0 0 4px var(--color-gold-bright);
 }
 
+/* ── Meters / progress / rhythm — shared recessed gauge body ── */
 .qte-meter,
 .qte-progress,
 .qte-rhythm-track {
   position: relative;
-  min-height: 1.65rem;
+  min-height: 1.9rem;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 16%, rgba(0, 0, 0, 0.4));
   border-radius: var(--radius-sm);
-  background: rgba(0, 0, 0, 0.3);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.3));
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .qte-meter__safe,
@@ -635,26 +878,39 @@
 }
 
 .qte-meter__safe {
-  background: color-mix(in srgb, var(--state-success) 34%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--state-success) 36%, transparent), color-mix(in srgb, var(--state-success) 18%, transparent));
+  box-shadow: inset 0 0 10px color-mix(in srgb, var(--state-success) 30%, transparent);
 }
 
 .qte-meter__danger {
   width: 2px;
   background: var(--state-danger);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--state-danger) 70%, transparent);
 }
 
 .qte-meter__marker {
   width: 3px;
-  background: var(--color-gold-bright);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-gold) 55%, transparent);
+  background: linear-gradient(180deg, var(--color-gold-bright), var(--color-gold));
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--color-gold) 75%, transparent),
+    0 0 4px var(--color-gold-bright);
+  animation: qte-marker-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes qte-marker-pulse {
+  0%, 100% { box-shadow: 0 0 10px color-mix(in srgb, var(--color-gold) 60%, transparent), 0 0 3px var(--color-gold-bright); }
+  50% { box-shadow: 0 0 18px color-mix(in srgb, var(--color-gold) 90%, transparent), 0 0 6px var(--color-gold-bright); }
 }
 
 .qte-meter__fill,
 .qte-progress span {
   left: 0;
   background: linear-gradient(90deg, var(--state-success), var(--state-warning), var(--state-danger));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
+/* ── Tokens — stone/rune tablets (PromptChain / PatternMemory) ── */
 .qte-token-row {
   display: flex;
   flex-wrap: wrap;
@@ -665,24 +921,41 @@
   display: inline-flex;
   min-width: 3.2rem;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 22%, rgba(245, 212, 136, 0.08));
   border-radius: var(--radius-sm);
-  padding: 0.45rem 0.6rem;
-  background: rgba(0, 0, 0, 0.28);
+  padding: 0.5rem 0.7rem;
+  background:
+    linear-gradient(180deg, rgba(40, 30, 20, 0.9), rgba(20, 14, 8, 0.95));
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.08),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.3);
   color: var(--color-parchment);
+  font-family: var(--font-rune, var(--font-display, serif));
   font-weight: 800;
+  letter-spacing: 0.04em;
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast), color var(--motion-fast);
 }
 
 .qte-token-row span.is-success {
-  border-color: color-mix(in srgb, var(--state-success) 44%, rgba(255, 255, 255, 0.08));
+  border-color: color-mix(in srgb, var(--state-success) 62%, rgba(255, 255, 255, 0.12));
+  color: var(--color-gold-bright);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.18),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.3),
+    0 0 12px color-mix(in srgb, var(--state-success) 40%, transparent);
 }
 
 .qte-token-row span.is-fail {
-  border-color: color-mix(in srgb, var(--state-danger) 44%, rgba(255, 255, 255, 0.08));
+  border-color: color-mix(in srgb, var(--state-danger) 60%, rgba(255, 255, 255, 0.12));
+  color: var(--state-danger);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.3),
+    inset 0 0 10px color-mix(in srgb, var(--state-danger) 30%, transparent);
 }
 
+/* ── Rhythm track — glowing nodes with halos ── */
 .qte-rhythm-track {
-  min-height: 3.4rem;
+  min-height: 3.6rem;
 }
 
 .qte-rhythm-track__pulse {
@@ -698,9 +971,11 @@
 .qte-rhythm-track__window {
   top: 0.62rem;
   bottom: 0.62rem;
-  border: 1px solid color-mix(in srgb, var(--state-success) 44%, rgba(255, 255, 255, 0.08));
+  border: 1px solid color-mix(in srgb, var(--state-success) 50%, rgba(245, 212, 136, 0.08));
   border-radius: 999px;
-  background: color-mix(in srgb, var(--state-success) 16%, transparent);
+  background:
+    radial-gradient(ellipse at center, color-mix(in srgb, var(--state-success) 22%, transparent), color-mix(in srgb, var(--state-success) 6%, transparent));
+  box-shadow: inset 0 0 12px color-mix(in srgb, var(--state-success) 24%, transparent);
 }
 
 .qte-rhythm-track__beat {
@@ -710,13 +985,17 @@
   place-items: center;
   width: 1.75rem;
   transform: translateX(-50%);
-  border: 1px solid color-mix(in srgb, var(--state-qte) 54%, rgba(255, 255, 255, 0.12));
+  border: 1px solid color-mix(in srgb, var(--color-gold-bright) 50%, rgba(255, 255, 255, 0.14));
   border-radius: 999px;
-  background: var(--state-qte);
-  color: var(--color-ink);
+  background:
+    radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--state-qte) 70%, var(--color-ink)), color-mix(in srgb, var(--state-qte) 30%, var(--color-ink)));
+  color: var(--color-gold-bright);
+  font-family: var(--font-rune, var(--font-display, serif));
   font-size: 0.72rem;
   font-weight: 900;
-  box-shadow: 0 0 14px color-mix(in srgb, var(--state-qte) 36%, transparent);
+  box-shadow:
+    0 0 16px color-mix(in srgb, var(--state-qte) 44%, transparent),
+    inset 0 1px 0 rgba(245, 212, 136, 0.22);
 }
 
 .qte-rhythm-track__playhead {
@@ -725,7 +1004,7 @@
   width: 3px;
   transform: translateX(-50%);
   background: var(--color-gold-bright);
-  box-shadow: 0 0 16px color-mix(in srgb, var(--color-gold) 58%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--color-gold) 70%, transparent);
 }
 
 .qte-rhythm-track__playhead::before,
@@ -736,7 +1015,7 @@
   width: 0.62rem;
   height: 0.62rem;
   transform: translateX(-50%) rotate(45deg);
-  border: 1px solid color-mix(in srgb, var(--color-gold-bright) 68%, rgba(255, 255, 255, 0.16));
+  border: 1px solid color-mix(in srgb, var(--color-gold-bright) 78%, rgba(255, 255, 255, 0.2));
   background: rgba(6, 8, 9, 0.96);
 }
 
@@ -754,10 +1033,11 @@
   gap: 0.35rem 0.65rem;
   align-items: baseline;
   width: fit-content;
-  border: 1px solid color-mix(in srgb, var(--state-qte) 30%, rgba(255, 255, 255, 0.08));
+  border: 1px solid color-mix(in srgb, var(--state-qte) 36%, rgba(245, 212, 136, 0.1));
   border-radius: var(--radius-sm);
-  padding: 0.45rem 0.65rem;
-  background: color-mix(in srgb, var(--state-qte) 10%, rgba(0, 0, 0, 0.32));
+  padding: 0.5rem 0.75rem;
+  background: color-mix(in srgb, var(--state-qte) 12%, rgba(8, 11, 12, 0.85));
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
 }
 
 .qte-rhythm-pulse-cue strong {
@@ -771,10 +1051,11 @@
 }
 
 .qte-rhythm-pulse-cue.is-hot {
-  border-color: color-mix(in srgb, var(--state-success) 52%, rgba(255, 255, 255, 0.1));
-  box-shadow: 0 0 18px color-mix(in srgb, var(--state-success) 22%, transparent);
+  border-color: color-mix(in srgb, var(--state-success) 62%, rgba(255, 255, 255, 0.14));
+  box-shadow: 0 0 20px color-mix(in srgb, var(--state-success) 32%, transparent);
 }
 
+/* ── Choice grid — numbered variant cards ── */
 .qte-choice-grid,
 .qte-lock-grid {
   display: grid;
@@ -789,6 +1070,22 @@
   display: grid;
   gap: 0.2rem;
   text-align: left;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 24%, rgba(245, 212, 136, 0.08));
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+  background:
+    linear-gradient(155deg, rgba(34, 26, 20, 0.85), rgba(18, 12, 8, 0.92));
+  box-shadow: inset 0 1px 0 rgba(245, 212, 136, 0.05);
+  color: var(--color-parchment);
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast), transform var(--motion-fast);
+}
+
+.qte-choice-grid button:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-gold-bright) 56%, rgba(255, 255, 255, 0.16));
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.1),
+    0 0 14px color-mix(in srgb, var(--color-gold) 24%, transparent);
 }
 
 .qte-choice-grid small {
@@ -796,21 +1093,36 @@
   font-weight: 600;
 }
 
+/* ── Lock pins — metallic cylinders ── */
 .qte-lock-grid > div {
   display: grid;
   gap: var(--space-2);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 18%, rgba(0, 0, 0, 0.4));
   border-radius: var(--radius-sm);
   padding: var(--space-2);
-  background: rgba(0, 0, 0, 0.2);
+  background:
+    linear-gradient(180deg, rgba(40, 30, 20, 0.6), rgba(16, 11, 7, 0.8));
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
 }
 
 .qte-lock-grid > div.is-current {
-  border-color: color-mix(in srgb, var(--color-gold) 45%, rgba(255, 255, 255, 0.08));
+  border-color: color-mix(in srgb, var(--color-gold-bright) 52%, rgba(255, 255, 255, 0.12));
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.5),
+    0 0 12px color-mix(in srgb, var(--color-gold) 28%, transparent);
 }
 
 .qte-lock-grid > div.is-open {
-  border-color: color-mix(in srgb, var(--state-success) 42%, rgba(255, 255, 255, 0.08));
+  border-color: color-mix(in srgb, var(--state-success) 56%, rgba(255, 255, 255, 0.12));
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.5),
+    0 0 14px color-mix(in srgb, var(--state-success) 34%, transparent);
+}
+
+/* Reduced-motion: stop the only looping QTE animation (marker pulse). */
+.is-reduced-motion .qte-meter__marker {
+  animation: none !important;
 }
 
 .media-gallery-grid {

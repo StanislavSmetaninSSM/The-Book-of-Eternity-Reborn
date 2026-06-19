@@ -5,6 +5,7 @@ import { isSuccess } from '../context/ShellContext';
 import { formatQteActionCheck, formatQteGradeLabel, normalizeQteGrade, type QteAction, type QteGrade } from '../utils/formatters';
 import { toPlayerFacingText } from '../utils/playerCopy';
 import { qteLayoutSupportNote } from '../utils/qteKeyInput';
+import { getQteTypeGlyph } from '../lib/icons';
 import { QteMiniGame } from './qte/QteMiniGame';
 
 interface QtePracticeViewProps {
@@ -147,37 +148,43 @@ export function QtePracticeView({ initialState }: QtePracticeViewProps) {
         <div className="qte-practice-catalog" aria-label="Типы QTE для тренировки">
           {state.catalog.map((entry) => {
             const selectedDifficulty = selectedDifficulties[entry.typeId] ?? entry.difficulties.find((difficulty) => difficulty.difficultyId === 'normal')?.difficultyId ?? entry.difficulties[0]?.difficultyId ?? 'normal';
+            const Glyph = getQteTypeGlyph(entry.typeId);
             return (
-              <article key={entry.typeId} className="qte-practice-card">
-                <header>
-                  <div>
-                    <h3>{toPlayerFacingText(entry.title, entry.typeId)}</h3>
-                    <p className="qte-practice-card__type">Мини-игра без наград</p>
-                  </div>
-                  <span className="availability-pill">{entry.available ? 'доступно' : 'позже'}</span>
-                </header>
-                <p>{toPlayerFacingText(entry.description, 'Тренировка без наград и без изменения прохождения.')}</p>
-                <p className="muted">{toPlayerFacingText(entry.instructions, 'Сыграйте мини-игру и посмотрите тренировочный результат.')}</p>
-                <div className="qte-practice-difficulty" aria-label={`Сложность ${entry.title}`}>
-                  {entry.difficulties.map((difficulty) => (
-                    <button
-                      key={difficulty.difficultyId}
-                      type="button"
-                      className={selectedDifficulty === difficulty.difficultyId ? 'is-active' : ''}
-                      onClick={() => setSelectedDifficulties((current) => ({ ...current, [entry.typeId]: difficulty.difficultyId }))}
-                    >
-                      {difficulty.label}
-                    </button>
-                  ))}
+              <article key={entry.typeId} className="qte-practice-card" data-available={entry.available ? 'true' : 'false'}>
+                <div className="qte-practice-card__crest" aria-hidden="true">
+                  <Glyph className="qte-practice-card__crest-glyph" strokeWidth={1.6} />
                 </div>
-                <button
-                  type="button"
-                  className="launcher-secondary-action"
-                  disabled={!entry.available || busyKey !== null}
-                  onClick={() => void startAttempt(entry, selectedDifficulty)}
-                >
-                  {busyKey === `${entry.typeId}:${selectedDifficulty}` ? 'Готовим…' : 'Начать тренировку'}
-                </button>
+                <div className="qte-practice-card__body">
+                  <header>
+                    <div>
+                      <h3>{toPlayerFacingText(entry.title, entry.typeId)}</h3>
+                      <p className="qte-practice-card__type">Мини-игра без наград</p>
+                    </div>
+                    <span className="availability-pill">{entry.available ? 'доступно' : 'позже'}</span>
+                  </header>
+                  <p>{toPlayerFacingText(entry.description, 'Тренировка без наград и без изменения прохождения.')}</p>
+                  <p className="muted">{toPlayerFacingText(entry.instructions, 'Сыграйте мини-игру и посмотрите тренировочный результат.')}</p>
+                  <div className="qte-practice-difficulty" role="group" aria-label={`Сложность ${entry.title}`}>
+                    {entry.difficulties.map((difficulty) => (
+                      <button
+                        key={difficulty.difficultyId}
+                        type="button"
+                        className={selectedDifficulty === difficulty.difficultyId ? 'is-active' : ''}
+                        onClick={() => setSelectedDifficulties((current) => ({ ...current, [entry.typeId]: difficulty.difficultyId }))}
+                      >
+                        {difficulty.label}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="launcher-secondary-action qte-practice-card__start"
+                    disabled={!entry.available || busyKey !== null}
+                    onClick={() => void startAttempt(entry, selectedDifficulty)}
+                  >
+                    {busyKey === `${entry.typeId}:${selectedDifficulty}` ? 'Готовим…' : 'Начать тренировку'}
+                  </button>
+                </div>
               </article>
             );
           })}
