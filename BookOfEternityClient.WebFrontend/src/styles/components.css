@@ -1547,15 +1547,21 @@
 }
 
 .launcher-menu__item:hover:not(:disabled) {
-  background: var(--surface-active);
-  border-color: var(--realm-accent, var(--accent-gold));
-  transform: translateX(2px);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-gold) 14%, rgba(22, 16, 8, 0.96)), rgba(10, 7, 5, 0.92));
+  border-color: color-mix(in srgb, var(--color-gold-bright) 56%, rgba(255, 255, 255, 0.16));
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.12),
+    0 0 18px color-mix(in srgb, var(--color-gold) 22%, transparent),
+    0 6px 18px rgba(0, 0, 0, 0.4);
 }
 
 .launcher-menu__item:hover:not(:disabled) .launcher-menu__item-affordance,
 .launcher-menu__item:focus-visible .launcher-menu__item-affordance {
-  border-color: color-mix(in srgb, var(--color-gold-bright) 58%, rgba(255, 255, 255, 0.12));
-  background: color-mix(in srgb, var(--color-gold) 16%, rgba(0, 0, 0, 0.22));
+  border-color: color-mix(in srgb, var(--color-gold-bright) 64%, rgba(255, 255, 255, 0.16));
+  background: color-mix(in srgb, var(--color-gold) 20%, rgba(0, 0, 0, 0.22));
+  color: var(--color-gold-bright);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-gold) 35%, transparent);
   transform: translateX(2px);
 }
 
@@ -2847,7 +2853,59 @@
     linear-gradient(to right, rgba(6, 8, 9, 0.2), transparent 50%, rgba(6, 8, 9, 0.2));
 }
 
+/* The launcher menu card styled as an ancient grimoire: layered parchment/
+   metal panel with an ornate gold border, corner studs, and depth so it reads
+   as a crafted artifact worthy of the painted backdrop (instead of buttons
+   floating bare on the background). */
 .launcher-window {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: var(--space-4);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 42%, rgba(245, 212, 136, 0.14));
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(155deg, rgba(30, 22, 16, 0.86), rgba(16, 11, 7, 0.92)),
+    var(--texture-leather);
+  background-blend-mode: normal, overlay;
+  background-size: cover, 320px 320px;
+  box-shadow:
+    var(--shadow-panel-strong),
+    inset 0 1px 0 rgba(245, 212, 136, 0.1),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.4),
+    inset 0 0 60px rgba(0, 0, 0, 0.4);
+}
+
+/* Double-line ornate frame: a thin gold inner outline echoing the outer
+   border, like tooled metalwork. */
+.launcher-window::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 28%, rgba(245, 212, 136, 0.08));
+  border-radius: calc(var(--radius-lg) - 4px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Gold corner studs at the four corners — the metalwork rivets of a grimoire
+   cover. */
+.launcher-window::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle 5px at 18px 18px, var(--color-gold-bright), color-mix(in srgb, var(--color-gold) 60%, transparent) 60%, transparent 72%),
+    radial-gradient(circle 5px at calc(100% - 18px) 18px, var(--color-gold-bright), color-mix(in srgb, var(--color-gold) 60%, transparent) 60%, transparent 72%),
+    radial-gradient(circle 5px at 18px calc(100% - 18px), var(--color-gold-bright), color-mix(in srgb, var(--color-gold) 60%, transparent) 60%, transparent 72%),
+    radial-gradient(circle 5px at calc(100% - 18px) calc(100% - 18px), var(--color-gold-bright), color-mix(in srgb, var(--color-gold) 60%, transparent) 60%, transparent 72%);
+}
+
+/* Keep the inner content above the corner-stud and frame pseudo-elements. */
+.launcher-window > * {
   position: relative;
   z-index: 1;
 }
