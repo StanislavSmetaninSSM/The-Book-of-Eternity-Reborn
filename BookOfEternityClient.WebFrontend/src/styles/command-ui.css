@@ -116,6 +116,13 @@
   margin: 0 auto;
 }
 
+/* On the launcher route, narrow the menu so wide viewports leave real gutters
+   (~360px each side) where the ambient side murals can show in full instead of
+   being clipped under the menu. */
+.content-area--launcher {
+  max-width: min(72rem, 100%);
+}
+
 /* ===== Scene View ===== */
 .scene-view { display: flex; flex-direction: column; gap: var(--space-4); }
 .scene-narrative { color: var(--text-primary); font-size: 1rem; line-height: 1.75; }
