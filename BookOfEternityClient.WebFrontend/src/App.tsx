@@ -65,6 +65,13 @@ function AppShell() {
     <MotionConfig reducedMotion={reducedMotion ? 'always' : 'never'}>
       <>
         <VignetteOverlay />
+        {/* Ambient side murals — pinned to the viewport edges OUTSIDE the
+           content area (left of the sidebar / right to the screen edge) so they
+           fill the empty gutters around the in-game shell without touching the
+           launcher card or scene content. Hidden on narrow viewports. */}
+        <div className="shell-side-mural shell-side-mural--left" aria-hidden="true">
+          <img src="/generated-art/launcher-side-left.png" alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} />
+        </div>
         <main className={browserShellClassName} data-theme-key={realmTheme.key} style={browserShellStyle}>
           <ConnectionBanner />
           {!isLauncherRoute && <TabBar />}

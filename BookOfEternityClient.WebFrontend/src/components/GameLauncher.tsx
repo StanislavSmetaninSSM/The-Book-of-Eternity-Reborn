@@ -183,7 +183,62 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
       <div className="launcher-art-bg" aria-hidden="true">
         <img src="/main-menu-bg.webp" alt="" onError={(event) => { event.currentTarget.hidden = true; }} />
       </div>
+      {/* Atmospheric side flourishes — fill the empty side margins with
+          decorative art so the launcher reads as a full-frame composition
+          instead of a centered card floating on a bare background. */}
+      <div className="launcher-side-flourish launcher-side-flourish--left" aria-hidden="true">
+        <svg viewBox="0 0 120 800" focusable="false" preserveAspectRatio="xMinYMid meet">
+          <defs>
+            <linearGradient id="launcherFlourishLeft" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stopColor="#c89b3c" stopOpacity="0.55" />
+              <stop offset="1" stopColor="#c89b3c" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path d="M10 0 L10 220 Q60 280 30 360 Q0 420 40 480 Q80 540 30 620 Q-10 700 30 800" fill="none" stroke="url(#launcherFlourishLeft)" strokeWidth="2" />
+          <circle cx="12" cy="200" r="4" fill="#d4a84b" opacity="0.7" />
+          <circle cx="18" cy="400" r="3" fill="#d4a84b" opacity="0.6" />
+          <circle cx="14" cy="600" r="4" fill="#d4a84b" opacity="0.65" />
+          <path d="M6 200 l6 -12 l6 12 l-6 12 z" fill="#c89b3c" opacity="0.5" />
+          <path d="M12 600 l6 -12 l6 12 l-6 12 z" fill="#c89b3c" opacity="0.5" />
+        </svg>
+      </div>
+      <div className="launcher-side-flourish launcher-side-flourish--right" aria-hidden="true">
+        <svg viewBox="0 0 120 800" focusable="false" preserveAspectRatio="xMaxYMid meet">
+          <defs>
+            <linearGradient id="launcherFlourishRight" x1="1" y1="0" x2="0" y2="0">
+              <stop offset="0" stopColor="#c89b3c" stopOpacity="0.55" />
+              <stop offset="1" stopColor="#c89b3c" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path d="M110 0 L110 220 Q60 280 90 360 Q120 420 80 480 Q40 540 90 620 Q130 700 90 800" fill="none" stroke="url(#launcherFlourishRight)" strokeWidth="2" />
+          <circle cx="108" cy="300" r="3" fill="#d4a84b" opacity="0.6" />
+          <circle cx="102" cy="500" r="4" fill="#d4a84b" opacity="0.65" />
+          <path d="M102 500 l6 -12 l6 12 l-6 12 z" fill="#c89b3c" opacity="0.5" />
+        </svg>
+      </div>
+      {/* Drifting arcane motes for ambient life (CSS-animated; reduced-motion
+          stops them). */}
+      <div className="launcher-ambient" aria-hidden="true">
+        <span /><span /><span /><span /><span /><span />
+      </div>
       <div className="launcher-window">
+        <div className="launcher-crest" aria-hidden="true">
+          <svg viewBox="0 0 64 64" focusable="false">
+            <defs>
+              <radialGradient id="launcherCrestGlow" cx="50%" cy="42%" r="55%">
+                <stop offset="0" stopColor="#f5d488" stopOpacity="0.9" />
+                <stop offset="1" stopColor="#c89b3c" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+            <circle cx="32" cy="30" r="26" fill="url(#launcherCrestGlow)" opacity="0.55" />
+            {/* Open book */}
+            <path d="M14 40 Q32 33 50 40 L50 50 Q32 43 14 50 Z" fill="#1a140c" stroke="#d4a84b" strokeWidth="1.4" />
+            <path d="M32 34 L32 48" stroke="#d4a84b" strokeWidth="1.2" opacity="0.7" />
+            {/* Eternal flame */}
+            <path d="M32 16 Q26 24 30 30 Q32 27 34 30 Q38 24 32 16 Z" fill="#e07a3a" opacity="0.92" />
+            <path d="M32 20 Q29 25 31 29 Q32 27 33 29 Q35 25 32 20 Z" fill="#f5d488" opacity="0.9" />
+          </svg>
+        </div>
         <div className="launcher-copy">
           <p className="panel-eyebrow">главная книга</p>
           <h2 id="browser-launcher-title">Открыть книгу</h2>
