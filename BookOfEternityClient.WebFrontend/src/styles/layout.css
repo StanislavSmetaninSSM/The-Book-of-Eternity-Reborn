@@ -40,6 +40,42 @@
   }
 }
 
+/* In-game atmospheric backdrop — a very dark painted scene behind the
+   scene/status/help tabs. Fixed full-bleed, below the shell content. Heavily
+   darkened so it stays as receding atmosphere and never competes with reading
+   text. */
+.game-shell-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--color-ink);
+}
+
+.game-shell-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.4;
+  filter: brightness(0.6) saturate(0.8);
+  -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 40%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.5) 100%);
+  mask-image: radial-gradient(ellipse 100% 100% at 50% 40%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+/* Per-tab mood tint — a very faint color wash on the shell background so each
+   tab (scene/status/help) feels distinct without a separate painting. Kept
+   extremely faint via low opacity to preserve readability. */
+.game-shell-bg {
+  transition: background 600ms ease;
+}
+
+.browser-shell[data-active-tab='scene'] .game-shell-bg { background: color-mix(in srgb, var(--color-gold) 7%, var(--color-ink)); }
+.browser-shell[data-active-tab='status'] .game-shell-bg { background: color-mix(in srgb, var(--color-crimson) 7%, var(--color-ink)); }
+.browser-shell[data-active-tab='help'] .game-shell-bg { background: color-mix(in srgb, var(--color-candle) 8%, var(--color-ink)); }
+.browser-shell[data-active-tab='inventory'] .game-shell-bg { background: color-mix(in srgb, var(--state-success) 7%, var(--color-ink)); }
+.browser-shell[data-active-tab='settings'] .game-shell-bg { background: color-mix(in srgb, var(--color-mist) 7%, var(--color-ink)); }
+
 .browser-shell {
   --realm-accent: var(--realm-mortal);
   --browser-font-scale: 1;

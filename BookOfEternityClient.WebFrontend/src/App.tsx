@@ -65,6 +65,14 @@ function AppShell() {
     <MotionConfig reducedMotion={reducedMotion ? 'always' : 'never'}>
       <>
         <VignetteOverlay />
+        {/* In-game atmospheric backdrop — a very dark painted scene behind the
+           scene/status/help tabs (NOT on the launcher, which has its own
+           murals). Stays dim so text readability is unaffected. */}
+        {!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && (
+          <div className="game-shell-bg" aria-hidden="true">
+            <img src="/generated-art/game-shell-bg.png" alt="" onError={(event) => { event.currentTarget.hidden = true; }} />
+          </div>
+        )}
         {/* Ambient side murals — pinned to the viewport EDGES, OUTSIDE the
            centered content-area, so they fill the empty side gutters the
            player sees (the content-area is max-width-constrained and centered,
@@ -81,7 +89,7 @@ function AppShell() {
             </div>
           </>
         )}
-        <main className={browserShellClassName} data-theme-key={realmTheme.key} style={browserShellStyle}>
+        <main className={browserShellClassName} data-active-tab={!isLauncherRoute && !isDarenShowcaseRoute ? activeTab : undefined} data-theme-key={realmTheme.key} style={browserShellStyle}>
           <ConnectionBanner />
           {!isLauncherRoute && <TabBar />}
           <section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live="polite">
