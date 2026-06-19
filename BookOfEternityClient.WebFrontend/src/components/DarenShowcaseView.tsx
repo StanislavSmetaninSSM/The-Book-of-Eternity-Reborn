@@ -157,12 +157,10 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
       ) : !isCompleted ? (
         <article className="summary-card qte-practice-attempt daren-showcase-attempt">
           <header>
-            <div>
-              <h3>{toPlayerFacingText(activeChapter?.title, activeScene?.title ?? 'Вылазка Дарена')}</h3>
-              {renderDarenProse(activeChapter?.narrative, 'Дарен двигается к следующей точке вылазки.')}
-            </div>
+            <h3>{toPlayerFacingText(activeChapter?.title, activeScene?.title ?? 'Вылазка Дарена')}</h3>
             <span className="availability-pill">вылазка</span>
           </header>
+          {renderDarenProse(activeChapter?.narrative, 'Дарен двигается к следующей точке вылазки.')}
           <p className="muted">{qteLayoutSupportNote}</p>
           {renderScoreMetrics(activeScene?.scoreState?.metrics ?? [], 'Счёт вылазки', false)}
           {activeAction ? (
@@ -195,13 +193,6 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
           )}
         </article>
       ) : null}
-
-      {state.resolution && !state.completion && (
-        <article className="summary-card">
-          <h3>Следующий участок</h3>
-          <p>{toPlayerFacingText(state.resolution.resultText, 'Дарен проходит к следующей точке.')}</p>
-        </article>
-      )}
 
       {state.completion && (
         <article className="summary-card">
