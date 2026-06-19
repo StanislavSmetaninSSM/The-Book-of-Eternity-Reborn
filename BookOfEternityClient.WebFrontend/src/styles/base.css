@@ -15,6 +15,12 @@ html {
   min-width: 320px;
   min-height: 100%;
   background: var(--color-ink);
+  /* Drive the rem unit from the browser font-scale setting. App.tsx publishes
+     --browser-font-scale on the document root; scaling it here means EVERY
+     rem-based size in the app (cards, QTE, Daren prose, …) grows with the
+     setting, not only elements that happen to inherit the .browser-shell
+     font-size. Defaults to 1 (100%) when unset. */
+  font-size: calc(1rem * var(--browser-font-scale, 1));
 }
 
 body {

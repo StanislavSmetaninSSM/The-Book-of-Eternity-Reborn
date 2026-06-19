@@ -39,6 +39,17 @@ function AppShell() {
     root.classList.toggle('is-reduced-motion', reducedMotion);
     return () => root.classList.remove('is-reduced-motion');
   }, [reducedMotion]);
+  // Publish the font/ui scale on the document root. The root font-size rule in
+  // layout.css turns --browser-font-scale into the rem unit, so EVERY rem-based
+  // size across the app (cards, QTE, Daren prose, …) scales with the setting —
+  // not only elements that inherit the .browser-shell font-size.
+  const fontScalePercent = clientSettings?.accessibility.fontScalePercent ?? 100;
+  const uiScalePercent = clientSettings?.accessibility.uiScalePercent ?? 100;
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--browser-font-scale', `${fontScalePercent / 100}`);
+    root.style.setProperty('--browser-ui-scale', `${uiScalePercent / 100}`);
+  }, [fontScalePercent, uiScalePercent]);
   const browserShellClassName = [
     'browser-shell',
     isLauncherRoute ? 'is-launcher-route' : '',
