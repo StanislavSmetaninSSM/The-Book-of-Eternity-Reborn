@@ -1,6 +1,6 @@
 # GM Worker Bridges
 
-Tracked issues: #1141, #1143.
+Tracked issues: #1141, #1143, #1145.
 
 GM worker bridges are subordinate helpers for the main GM. They can be Codex,
 Gemini, or another CLI profile configured by the user. The main GM remains the
@@ -23,6 +23,8 @@ game state.
 - Canonical writes happen only through the apply gate.
 - The apply gate checks scope, reads proposal `contentRef` files, applies
   allowed changes, runs validation when required, and rolls back failed repairs.
+- Stored proposals are inspectable through GM worker proposal inbox diagnostics.
+  The inbox is read-only and does not apply proposal-only drafts.
 
 ## Runtime Environment Contract
 
@@ -41,6 +43,18 @@ After validation, the main GM/daemon stores it under
 `changedFiles` must write referenced content under `worker_proposals/<proposalId>/...`
 and use safe relative `contentRef` paths. The worker must not overwrite
 canonical files such as `game_state/...` directly.
+
+## Proposal Inbox Diagnostics
+
+The main GM/daemon can inspect saved proposals through worker proposal inbox
+diagnostics. This surface is for GM review and troubleshooting, not a normal
+player-facing command.
+
+Each readable inbox entry exposes proposal id, worker id, task id, task type,
+status, summary, creation time, draft-text presence, finding count, changed-file
+count, changed file paths, self-check notes, related audit event types, and
+known apply state. Malformed proposal JSON must not crash diagnostics; it
+appears as an unreadable inbox entry with a reason.
 
 ## Supported MVP Tasks
 
@@ -78,6 +92,9 @@ without delegating game authority. The task is proposal-only: the worker returns
 
 Narrative-draft and analysis packets are defined by the bridge contract, but
 they are not yet automatically dispatched from live gameplay by #1143.
+When proposal-only entries exist in the inbox, diagnostics mark them as
+`review-only`; they are suggestions for the main GM and are not applied to
+canonical files.
 
 ## Main GM Checklist
 
