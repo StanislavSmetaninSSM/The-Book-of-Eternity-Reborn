@@ -65,6 +65,22 @@ function AppShell() {
     <MotionConfig reducedMotion={reducedMotion ? 'always' : 'never'}>
       <>
         <VignetteOverlay />
+        {/* Ambient side murals — pinned to the viewport EDGES, OUTSIDE the
+           centered content-area, so they fill the empty side gutters the
+           player sees (the content-area is max-width-constrained and centered,
+           leaving bare strips on wide viewports). Fixed-positioned so they stay
+           put while content scrolls; rendered above the vignette but below the
+           shell content. */}
+        {isLauncherRoute && (
+          <>
+            <div className="shell-side-mural shell-side-mural--left" aria-hidden="true">
+              <img src="/generated-art/launcher-side-left.png" alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} />
+            </div>
+            <div className="shell-side-mural shell-side-mural--right" aria-hidden="true">
+              <img src="/generated-art/launcher-side-right.png" alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} />
+            </div>
+          </>
+        )}
         <main className={browserShellClassName} data-theme-key={realmTheme.key} style={browserShellStyle}>
           <ConnectionBanner />
           {!isLauncherRoute && <TabBar />}

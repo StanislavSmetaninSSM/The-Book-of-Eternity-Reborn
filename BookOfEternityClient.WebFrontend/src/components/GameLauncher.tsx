@@ -181,13 +181,7 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
   return (
     <article className="game-launcher" aria-labelledby="browser-launcher-title">
       <div className="launcher-art-bg" aria-hidden="true">
-        <img className="launcher-art-bg__menu" src="/main-menu-bg.webp" alt="" onError={(event) => { event.currentTarget.hidden = true; }} />
-        {/* Wide side murals live INSIDE the art background so they share the
-           same canvas/composite as the menu painting and read as ONE cohesive
-           backdrop instead of two detached cutoff strips. Masked to fade toward
-           the center. */}
-        <img className="launcher-art-bg__mural launcher-art-bg__mural--left" src="/generated-art/launcher-side-left.png" alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} />
-        <img className="launcher-art-bg__mural launcher-art-bg__mural--right" src="/generated-art/launcher-side-right.png" alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} />
+        <img src="/main-menu-bg.webp" alt="" onError={(event) => { event.currentTarget.hidden = true; }} />
       </div>
       {/* Drifting arcane motes for ambient life (CSS-animated; reduced-motion
           stops them). */}
