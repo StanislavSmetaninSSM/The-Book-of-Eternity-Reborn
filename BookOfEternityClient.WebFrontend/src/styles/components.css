@@ -2852,13 +2852,63 @@
   z-index: 1;
 }
 
+/* Ornamental crest row — the heraldic crest sits in the middle, flanked by
+   decorative gold rules + runes that span the full launcher width so the
+   candle no longer floats alone in empty space. */
+.launcher-crest-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  margin-bottom: var(--space-3);
+}
+
+.launcher-crest-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.launcher-crest-rule--left {
+  justify-content: flex-end;
+}
+
+.launcher-crest-rule--right {
+  justify-content: flex-start;
+}
+
+.launcher-crest-rule__line {
+  flex: 1 1 auto;
+  height: 1px;
+  min-width: 1.5rem;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-gold) 55%, transparent));
+}
+
+.launcher-crest-rule--right .launcher-crest-rule__line {
+  background: linear-gradient(270deg, transparent, color-mix(in srgb, var(--color-gold) 55%, transparent));
+}
+
+.launcher-crest-rule__line--short {
+  flex: 0 0 1.2rem;
+  opacity: 0.5;
+}
+
+.launcher-crest-rule__rune {
+  color: color-mix(in srgb, var(--color-gold-bright) 80%, transparent);
+  font-family: serif;
+  font-size: 1rem;
+  opacity: 0.75;
+}
+
 /* Ornamental crest above the launcher title. */
 .launcher-crest {
   display: grid;
   place-items: center;
+  flex: 0 0 auto;
   width: 4.2rem;
   height: 4.2rem;
-  margin: 0 auto;
   filter: drop-shadow(0 0 14px color-mix(in srgb, var(--color-gold) 45%, transparent));
   animation: launcher-crest-breathe 5.5s ease-in-out infinite;
 }

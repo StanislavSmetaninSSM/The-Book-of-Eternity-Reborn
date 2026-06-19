@@ -189,7 +189,13 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
         <span /><span /><span /><span /><span /><span />
       </div>
       <div className="launcher-window">
-        <div className="launcher-crest" aria-hidden="true">
+        <div className="launcher-crest-row" aria-hidden="true">
+          <div className="launcher-crest-rule launcher-crest-rule--left">
+            <span className="launcher-crest-rule__line" />
+            <span className="launcher-crest-rule__rune">ᚱ</span>
+            <span className="launcher-crest-rule__line launcher-crest-rule__line--short" />
+          </div>
+          <div className="launcher-crest">
           <svg viewBox="0 0 96 96" focusable="false">
             <defs>
               <radialGradient id="launcherCrestGlow" cx="50%" cy="44%" r="55%">
@@ -221,6 +227,12 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
               <path className="launcher-crest__flame-inner" d="M48 36 Q45 41 47 45 Q48 43 49 45 Q51 41 48 36 Z" fill="#f5d488" opacity="0.9" />
             </g>
           </svg>
+          </div>
+          <div className="launcher-crest-rule launcher-crest-rule--right">
+            <span className="launcher-crest-rule__line launcher-crest-rule__line--short" />
+            <span className="launcher-crest-rule__rune">ᛟ</span>
+            <span className="launcher-crest-rule__line" />
+          </div>
         </div>
         <div className="launcher-copy">
           <p className="panel-eyebrow">главная книга</p>
