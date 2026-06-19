@@ -1,6 +1,6 @@
 # GM Worker Bridges
 
-Tracked issues: #1141, #1143, #1145.
+Tracked issues: #1141, #1143, #1145, #1147.
 
 GM worker bridges are subordinate helpers for the main GM. They can be Codex,
 Gemini, or another CLI profile configured by the user. The main GM remains the
@@ -56,6 +56,26 @@ count, changed file paths, self-check notes, related audit event types, and
 known apply state. Malformed proposal JSON must not crash diagnostics; it
 appears as an unreadable inbox entry with a reason.
 
+## Proposal-Only Dispatch
+
+The main GM/daemon can dispatch proposal-only worker tasks for narrative drafts
+and analysis. This is a GM-facing bridge/diagnostic capability, not a normal
+player command.
+
+Supported proposal-only dispatch task types:
+
+- `narrative-draft`: requires scene goal, tone, target length, optional
+  continuity notes, and optional read-only context paths.
+- `analysis`: requires analysis goal, optional questions, and optional
+  read-only context paths.
+
+Dispatch uses existing worker routing and the hidden/background launch path.
+Context paths are sanitized, filtered through the worker profile read scope,
+hashed, and sent as read-only references. Proposal-only workers must return
+findings and/or `draftText` without `changedFiles`; if they return changed
+files, the proposal is rejected by the worker proposal contract and canonical
+state is not modified.
+
 ## Supported MVP Tasks
 
 ### validation-repair
@@ -91,7 +111,8 @@ without delegating game authority. The task is proposal-only: the worker returns
 `draftText` and optional findings. It must not include `changedFiles`.
 
 Narrative-draft and analysis packets are defined by the bridge contract, but
-they are not yet automatically dispatched from live gameplay by #1143.
+they are not automatically dispatched from ordinary gameplay. They can be
+requested through the GM-facing proposal-only dispatch surface.
 When proposal-only entries exist in the inbox, diagnostics mark them as
 `review-only`; they are suggestions for the main GM and are not applied to
 canonical files.

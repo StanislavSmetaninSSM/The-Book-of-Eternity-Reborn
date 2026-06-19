@@ -69,6 +69,28 @@ canonical state or include `changedFiles`.
 }
 ```
 
+GM bridge dispatch request:
+
+```json
+{
+  "command": "dispatchworkertask",
+  "workerTaskType": "narrative-draft",
+  "sceneGoal": "Draft a tense corridor description before the player chooses how to proceed.",
+  "tone": "dark fantasy, concise, natural Russian prose",
+  "continuityNotes": [
+    "The player is currently inside the mortal world.",
+    "Do not resolve the player's action.",
+    "Do not introduce canonical state changes."
+  ],
+  "targetLength": "120-180 words",
+  "contextPaths": ["game_state/world/current_location.json"]
+}
+```
+
+Successful bridge response includes `workerDispatch` with task id, worker id,
+task type, proposal id, and outcome. The proposal itself is available through
+the proposal inbox diagnostics.
+
 Worker proposal:
 
 ```json
