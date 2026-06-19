@@ -74,7 +74,7 @@
 ### Tests for User Story 2
 
 - [X] T024 [P] [US2] Write failing settings roundtrip test for worker profiles in `BookOfEternityClient.Tests/StateManagerTests.cs`.
-- [ ] T025 [P] [US2] Write failing worker lifecycle test in `BookOfEternityClient.Tests/GmWorkerBridgeLifecycleTests.cs` for disabled, starting, ready, failed, busy, and timed-out states.
+- [X] T025 [P] [US2] Write failing worker lifecycle test in `BookOfEternityClient.Tests/GmWorkerBridgeLifecycleTests.cs` for disabled, starting, ready, failed, busy, and timed-out states.
 - [X] T026 [P] [US2] Write failing bridge diagnostics contract test in `BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs` for worker status visibility and hidden/background launch settings.
 
 ### Implementation for User Story 2
@@ -84,7 +84,7 @@
 - [X] T029 [US2] Implement worker lifecycle coordinator with hidden/background process launch defaults in `BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs`.
 - [X] T030 [US2] Extend `BookOfEternityGMBridge/Program.cs` to expose worker-ready/worker-failed status without changing main bridge behavior.
 - [ ] T031 [US2] Add console advanced diagnostics for worker profiles in `BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs`.
-- [ ] T032 [US2] Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "StateManagerTests|GmWorkerBridgeLifecycleTests|GmBridgeDiagnosticsContractTests"`.
+- [X] T032 [US2] Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "StateManagerTests|GmWorkerBridgeLifecycleTests|GmBridgeDiagnosticsContractTests"`.
 
 **Checkpoint**: Worker profiles and lifecycle diagnostics work without requiring validation repair dispatch.
 
@@ -122,7 +122,7 @@
 - [X] T042 [P] Add `Examples/E_CLI_GM_Worker_Validation_Repair.txt` and `Examples/E_CLI_GM_Worker_Narrative_Draft.txt`, then register them in `Examples/example_validation_manifest.json`.
 - [X] T043 [P] Update worker bridge launch guidance in `BookOfEternityClient/Launcher/CLI_Launch_Script.md` and `BookOfEternityClient/game_master_daemon.ps1`.
 - [X] T044 Add documentation coverage/source guard tests in `BookOfEternityClient.Tests/` proving worker bridge docs/examples are referenced.
-- [ ] T045 Add live E2E coverage in `BookOfEternityClient.Tests/GmWorkerLiveSmokeTests.cs` for fake/local worker repair and fake/local narrative draft without external network dependency.
+- [X] T045 Add live E2E coverage in `BookOfEternityClient.Tests/GmWorkerLiveSmokeTests.cs` for fake/local worker repair and fake/local narrative draft without external network dependency.
 - [X] T046 Run documentation verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests|SourceGuard|GmWorker"`.
 
 ---
@@ -132,14 +132,14 @@
 **Purpose**: Stabilize the feature before merge.
 
 - [ ] T047 Verify quickstart scenario 1 with automated or scripted evidence: no worker profiles preserve existing single-GM behavior.
-- [ ] T048 Verify quickstart scenario 2 with automated or scripted evidence: worker repairs a validation failure and audit records acceptance.
-- [ ] T049 Verify quickstart scenario 3 with automated or scripted evidence: forbidden worker proposal is rejected.
-- [ ] T050 Verify quickstart scenario 4 with automated or scripted evidence: worker drafts narration, main GM can inspect it, and no canonical files change.
-- [ ] T051 Verify quickstart scenario 6 with automated or scripted evidence: worker processes use hidden/background launch settings and diagnostics remain available in the main GM/daemon flow.
-- [ ] T052 Run focused C# verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "WorkerBridge|GmBridge|ValidationRepair|ProposalOnly|AgentConsoleLiveSmokeTests"`.
-- [ ] T053 Run full C# verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore`.
-- [ ] T054 Run `git diff --check` and inspect `git status --short`.
-- [ ] T055 Reconcile `specs/1113-gm-worker-bridges/tasks.md` with completed implementation and verification evidence before final report.
+- [X] T048 Verify quickstart scenario 2 with automated or scripted evidence: worker repairs a validation failure and audit records acceptance.
+- [X] T049 Verify quickstart scenario 3 with automated or scripted evidence: forbidden worker proposal is rejected.
+- [X] T050 Verify quickstart scenario 4 with automated or scripted evidence: worker drafts narration, main GM can inspect it, and no canonical files change.
+- [X] T051 Verify quickstart scenario 6 with automated or scripted evidence: worker processes use hidden/background launch settings and diagnostics remain available in the main GM/daemon flow.
+- [X] T052 Run focused C# verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "WorkerBridge|GmBridge|ValidationRepair|ProposalOnly|AgentConsoleLiveSmokeTests"`.
+- [X] T053 Run full C# verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore`.
+- [X] T054 Run `git diff --check` and inspect `git status --short`.
+- [X] T055 Reconcile `specs/1113-gm-worker-bridges/tasks.md` with completed implementation and verification evidence before final report.
 
 ---
 

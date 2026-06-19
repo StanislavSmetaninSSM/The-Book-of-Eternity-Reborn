@@ -200,6 +200,17 @@ public sealed record WorkerBridgeStatus
     public string UpdatedAtUtc { get; init; } = "";
 }
 
+public sealed record GmWorkerTaskRunResult
+{
+    public WorkerBridgeStatus Status { get; init; } = new();
+    public IReadOnlyList<WorkerBridgeStatus> StatusHistory { get; init; } = [];
+    public WorkerProposal? Proposal { get; init; }
+    public int? ExitCode { get; init; }
+    public string StandardOutput { get; init; } = "";
+    public string StandardError { get; init; } = "";
+    public bool TimedOut { get; init; }
+}
+
 public sealed record WorkerAuditEvent
 {
     public int SchemaVersion { get; init; } = 1;

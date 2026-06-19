@@ -28,6 +28,12 @@ Worker profile:
 
 Task packet:
 
+The worker process receives `BOE_WORKER_TASK_PATH`,
+`BOE_WORKER_PROPOSAL_PATH`, and `BOE_WORKER_SESSION_PATH`. It reads the task
+packet from `BOE_WORKER_TASK_PATH` and writes exactly one proposal JSON to
+`BOE_WORKER_PROPOSAL_PATH`. For proposal-only narrative work it must not write
+canonical state or include `changedFiles`.
+
 ```json
 {
   "schemaVersion": 1,

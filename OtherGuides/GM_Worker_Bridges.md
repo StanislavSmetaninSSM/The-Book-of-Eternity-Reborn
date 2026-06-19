@@ -24,6 +24,24 @@ game state.
 - The apply gate checks scope, reads proposal `contentRef` files, applies
   allowed changes, runs validation when required, and rolls back failed repairs.
 
+## Runtime Environment Contract
+
+When the worker pool launches a worker task, it starts the configured
+`launchCommand` hidden/background and provides these environment variables:
+
+- `BOE_WORKER_TASK_PATH`: absolute path to the JSON `WorkerTaskPacket`.
+- `BOE_WORKER_PROPOSAL_PATH`: absolute path where the worker must write one
+  JSON `WorkerProposal`.
+- `BOE_WORKER_SESSION_PATH`: absolute path to the current `game_session`
+  directory.
+
+The proposal file written to `BOE_WORKER_PROPOSAL_PATH` is an inbox response.
+After validation, the main GM/daemon stores it under
+`worker_proposals/<proposalId>/proposal.json`. Repair workers that include
+`changedFiles` must write referenced content under `worker_proposals/<proposalId>/...`
+and use safe relative `contentRef` paths. The worker must not overwrite
+canonical files such as `game_state/...` directly.
+
 ## Supported MVP Tasks
 
 ### validation-repair

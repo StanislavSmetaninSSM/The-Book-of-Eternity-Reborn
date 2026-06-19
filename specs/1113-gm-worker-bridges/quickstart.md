@@ -21,9 +21,12 @@ Validate the MVP flow: validation repair and narrative drafting are both delegat
 1. Configure a worker profile with role `validation-repair`.
 2. Trigger a known validation failure.
 3. Dispatch the validation errors to the worker.
-4. Wait for a `WorkerProposal`.
-5. Run the apply gate.
-6. Expected result: proposal changes only allowed files, validation passes, files are applied, and audit contains dispatch/proposal/decision events.
+4. Confirm the worker reads `BOE_WORKER_TASK_PATH` and writes a proposal to
+   `BOE_WORKER_PROPOSAL_PATH`; content refs are written under
+   `BOE_WORKER_SESSION_PATH/worker_proposals/<proposalId>/...`.
+5. Wait for a `WorkerProposal`.
+6. Run the apply gate.
+7. Expected result: proposal changes only allowed files, validation passes, files are applied, and audit contains dispatch/proposal/decision events.
 
 ## Scenario 3: Worker Proposal Is Rejected
 
@@ -36,8 +39,11 @@ Validate the MVP flow: validation repair and narrative drafting are both delegat
 
 1. Configure a worker profile with role `narrative-draft`.
 2. Dispatch a scene-drafting task with read-only context and tone/continuity instructions.
-3. Wait for a proposal with draft narration.
-4. Expected result: the draft is visible to the main GM in the proposal inbox, no canonical files change, no extra worker window appears to the player, and nothing is sent to the player until the main GM explicitly uses or rewrites the draft.
+3. Confirm the worker reads `BOE_WORKER_TASK_PATH` and writes one proposal to
+   `BOE_WORKER_PROPOSAL_PATH`; `BOE_WORKER_SESSION_PATH` is read-only for this
+   proposal-only task.
+4. Wait for a proposal with draft narration.
+5. Expected result: the draft is visible to the main GM in the proposal inbox, no canonical files change, no extra worker window appears to the player, and nothing is sent to the player until the main GM explicitly uses or rewrites the draft.
 
 ## Scenario 5: Worker Timeout Is Safe
 

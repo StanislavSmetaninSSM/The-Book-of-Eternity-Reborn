@@ -9,6 +9,22 @@
 5. The apply gate rejects out-of-scope changes and failed validation.
 6. Worker processes launch hidden/background by default; the player should not see multiple worker console windows.
 
+## Runtime Launch Protocol
+
+The worker pool starts the configured `launchCommand` hidden/background. For
+each dispatched task, the worker process receives:
+
+- `BOE_WORKER_TASK_PATH`: absolute path to the JSON `WorkerTaskPacket`.
+- `BOE_WORKER_PROPOSAL_PATH`: absolute path where the process must write one
+  JSON `WorkerProposal`.
+- `BOE_WORKER_SESSION_PATH`: absolute path to the current `game_session`.
+
+The proposal path is an inbox handoff path. After the proposal validates, the
+main GM/daemon stores it under `worker_proposals/<proposalId>/proposal.json`.
+Workers that propose file changes write content under
+`worker_proposals/<proposalId>/...` and reference it with safe relative
+`contentRef` values. Workers do not write canonical `game_state/...` files.
+
 ## Worker Profile Contract
 
 Validation repair worker:

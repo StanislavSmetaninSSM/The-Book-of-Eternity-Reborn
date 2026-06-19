@@ -27,6 +27,12 @@ Worker profile:
 
 Task packet sent by the main GM or daemon:
 
+The worker process receives `BOE_WORKER_TASK_PATH`,
+`BOE_WORKER_PROPOSAL_PATH`, and `BOE_WORKER_SESSION_PATH`. It reads the task
+packet from `BOE_WORKER_TASK_PATH`, writes the proposal JSON to
+`BOE_WORKER_PROPOSAL_PATH`, and writes changed file content under
+`worker_proposals/<proposalId>/...` inside `BOE_WORKER_SESSION_PATH`.
+
 ```json
 {
   "schemaVersion": 1,

@@ -31,6 +31,22 @@ public sealed class GmWorkerBridgeDocumentationTests
     }
 
     [Fact]
+    public void GmWorkerBridgeDocs_DocumentWorkerRuntimeEnvironmentProtocol()
+    {
+        var guide = ReadRepoFile("OtherGuides/GM_Worker_Bridges.md");
+        var contract = ReadRepoFile("specs/1113-gm-worker-bridges/contracts/gm-worker-bridge-contract.md");
+        var repair = ReadRepoFile("Examples/E_CLI_GM_Worker_Validation_Repair.txt");
+        var narrative = ReadRepoFile("Examples/E_CLI_GM_Worker_Narrative_Draft.txt");
+
+        foreach (var source in new[] { guide, contract, repair, narrative })
+        {
+            Assert.Contains("BOE_WORKER_TASK_PATH", source, StringComparison.Ordinal);
+            Assert.Contains("BOE_WORKER_PROPOSAL_PATH", source, StringComparison.Ordinal);
+            Assert.Contains("BOE_WORKER_SESSION_PATH", source, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void LauncherAndDaemon_DefaultConfigExposeEmptyWorkerProfiles()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
