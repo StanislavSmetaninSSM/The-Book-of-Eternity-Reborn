@@ -16,6 +16,22 @@ public sealed class GmWorkerBridgeDocumentationTests
     }
 
     [Fact]
+    public void MainGmPrompt_DocumentsExplicitWorkerDelegationFlow()
+    {
+        var launcher = ReadRepoFile("BookOfEternityClient/Launcher/CLI_Launch_Script.md");
+
+        Assert.Contains("dispatchworkertask", launcher, StringComparison.Ordinal);
+        Assert.Contains("validation-repair", launcher, StringComparison.Ordinal);
+        Assert.Contains("narrative-draft", launcher, StringComparison.Ordinal);
+        Assert.Contains("analysis", launcher, StringComparison.Ordinal);
+        Assert.Contains("proposal-only", launcher, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("review", launcher, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("player", launcher, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("apply gate", launcher, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("main GM remains", launcher, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void GmWorkerBridgeExamples_DocumentHiddenWorkersProposalOnlyAndApplyGate()
     {
         var guide = ReadRepoFile("OtherGuides/GM_Worker_Bridges.md");
