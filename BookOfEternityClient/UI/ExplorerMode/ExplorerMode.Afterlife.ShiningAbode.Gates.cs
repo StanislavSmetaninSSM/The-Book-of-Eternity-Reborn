@@ -220,7 +220,7 @@ public partial class ExplorerMode
 
             if (choice.Contains("Осмотреть набор и пакет", StringComparison.OrdinalIgnoreCase))
             {
-                ShowShiningGatesInspectionPanel(context);
+                ShowShiningGatesInspectionPanel(context, includeAuditPayloads: false);
                 WaitForKey();
                 continue;
             }
@@ -428,7 +428,7 @@ public partial class ExplorerMode
         WaitForKey();
     }
 
-    private void ShowShiningGatesInspectionPanel(ShiningContext context)
+    private void ShowShiningGatesInspectionPanel(ShiningContext context, bool includeAuditPayloads)
     {
         var radianceTier = GetNodeInt(context.Root["radiance"]?["tier"]);
         var pickCap = ShiningAbodeState.GetPickCap(radianceTier);
@@ -488,7 +488,11 @@ public partial class ExplorerMode
                 {
                     var cardId = GetNodeString(card["cardId"]);
                     var normalizedCardId = cardId ?? string.Empty;
-                    lines.AddRange(BuildShiningBlessingCardInspectionLines(card, context, selectedIds.Contains(normalizedCardId)));
+                    lines.AddRange(BuildShiningBlessingCardInspectionLines(
+                        card,
+                        context,
+                        selectedIds.Contains(normalizedCardId),
+                        includeAuditDetails: includeAuditPayloads));
                     if (!availableCards.Any(available => string.Equals(GetNodeString(available["cardId"]), normalizedCardId, StringComparison.OrdinalIgnoreCase)))
                         lines.Add("    [dim]Эта карта уже не входит в текущий набор выбора, но остаётся в истории показанных кандидатов Врат.[/]");
                 }
@@ -522,7 +526,11 @@ public partial class ExplorerMode
                 lines.Add("");
                 lines.Add("[bold]Карты подготовленного пакета:[/]");
                 foreach (var card in selectedCards)
-                    lines.AddRange(BuildShiningBlessingCardInspectionLines(card, context, isSelected: true));
+                    lines.AddRange(BuildShiningBlessingCardInspectionLines(
+                        card,
+                        context,
+                        isSelected: true,
+                        includeAuditDetails: includeAuditPayloads));
             }
             else if (selectedIds.Count > 0)
             {
@@ -544,10 +552,10 @@ public partial class ExplorerMode
             Expand = true
         });
 
-        if (context.Root["gates"] is JsonObject gatesAudit)
+        if (includeAuditPayloads && context.Root["gates"] is JsonObject gatesAudit)
             WriteJsonAuditPanel("Полный canonical JSON Врат", gatesAudit, Color.Gold1);
 
-        if (context.Root["preparedIncarnationPackage"] is JsonObject packageAudit)
+        if (includeAuditPayloads && context.Root["preparedIncarnationPackage"] is JsonObject packageAudit)
             WriteJsonAuditPanel("Полный frozen JSON preparedIncarnationPackage", packageAudit, Color.Khaki1);
     }
 
@@ -740,7 +748,11 @@ public partial class ExplorerMode
         return string.Join(", ", cardIds.Select(id => $"{ResolveShiningBlessingCardLabel(root, id)} ({id})"));
     }
 
-    private IEnumerable<string> BuildShiningBlessingCardInspectionLines(JsonObject card, ShiningContext context, bool isSelected)
+    private IEnumerable<string> BuildShiningBlessingCardInspectionLines(
+        JsonObject card,
+        ShiningContext context,
+        bool isSelected,
+        bool includeAuditDetails = true)
     {
         var cardId = GetNodeString(card["cardId"]) ?? string.Empty;
         var name = GetNodeString(card["displayName"]) ?? cardId;
@@ -752,10 +764,8 @@ public partial class ExplorerMode
         var lines = new List<string>
         {
             $"{marker} {Markup.Escape(name)} [{rarityColor}]{Markup.Escape(DescribeRarityLabel(rarity))}[/] [dim]({Markup.Escape(effectFamily)})[/]",
-            $"    Идентификатор карты: [dim]{Markup.Escape(cardId)}[/]",
             $"    Источник: {Markup.Escape(BuildShiningBlessingSourceLabel(card, context))}"
         };
-
         if (!string.IsNullOrWhiteSpace(summary))
             lines.Add($"    Сводка: {Markup.Escape(summary)}");
 

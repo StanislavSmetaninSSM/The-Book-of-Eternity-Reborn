@@ -258,12 +258,18 @@ internal sealed class BridgeHost : IDisposable
 
             case "dispatchprompt":
                 EnsureShellAlive();
+                var dispatchStartedAt = DateTimeOffset.UtcNow;
+                var dispatchStopwatch = Stopwatch.StartNew();
                 lock (_sync)
                 {
                     if (!_status.Ready)
                         return BridgeResponse.Failure("Bridge is not marked ready.", SnapshotStatus());
 
                     _status.State = "Busy";
+                    _status.LastPromptDispatchState = "Dispatching";
+                    _status.LastPromptDispatchStartedAtUtc = dispatchStartedAt.ToString("O");
+                    _status.LastPromptDispatchCompletedAtUtc = null;
+                    _status.LastPromptDispatchElapsedMs = null;
                     WriteStatusFile();
                 }
 
@@ -301,8 +307,14 @@ internal sealed class BridgeHost : IDisposable
                 }
                 finally
                 {
+                    dispatchStopwatch.Stop();
                     lock (_sync)
                     {
+                        _status.LastPromptDispatchCompletedAtUtc = DateTimeOffset.UtcNow.ToString("O");
+                        _status.LastPromptDispatchElapsedMs = dispatchStopwatch.ElapsedMilliseconds;
+                        _status.LastPromptDispatchState = string.Equals(_status.State, "DispatchFailed", StringComparison.Ordinal)
+                            ? "Failed"
+                            : "Completed";
                         if (!string.Equals(_status.State, "DispatchFailed", StringComparison.Ordinal))
                             _status.State = _status.Ready ? "Ready" : "OperatorNotReady";
                         WriteStatusFile();
@@ -332,13 +344,7 @@ internal sealed class BridgeHost : IDisposable
         var config = LoadBridgeConfig();
         var shellExe = ResolveShellExecutable();
         var shellArgs = BuildShellArguments(shellExe);
-        var workingDirectory = Directory.Exists(_repoRoot)
-            ? _repoRoot
-            : Directory.Exists(_clientRoot)
-                ? _clientRoot
-                : Directory.Exists(_sessionPath)
-                    ? _sessionPath
-                    : Environment.CurrentDirectory;
+        var workingDirectory = ResolveGmBridgeShellWorkingDirectory(config.GmBridgeShellWorkingDirectory);
         var (width, height) = GetConsoleSize();
         var pty = ConPtySession.Start(shellExe, shellArgs, workingDirectory, width, height);
         var outputWriter = Console.OpenStandardOutput();
@@ -355,6 +361,7 @@ internal sealed class BridgeHost : IDisposable
             _status.ShellPid = pty.ProcessId;
             _status.CliProcessId = null;
             _status.CliLaunchCommand = config.GmCliLaunchCommand;
+            _status.ShellWorkingDirectory = workingDirectory;
             _status.WorkerStatuses = GmWorkerBridgePool.BuildInitialStatuses(config.GmWorkerBridgeProfiles).ToList();
             _status.Ready = false;
             _status.State = "OperatorNotReady";
@@ -789,6 +796,27 @@ internal sealed class BridgeHost : IDisposable
         (Directory.Exists(Path.Combine(path, "BookOfEternityClient")) &&
          Directory.Exists(Path.Combine(path, "BookOfEternityGMBridge")));
 
+    private string ResolveGmBridgeShellWorkingDirectory(string? configuredWorkingDirectory)
+    {
+        if (!string.IsNullOrWhiteSpace(configuredWorkingDirectory))
+        {
+            var configured = configuredWorkingDirectory.Trim();
+            var fullPath = Path.IsPathRooted(configured)
+                ? Path.GetFullPath(configured)
+                : Path.GetFullPath(Path.Combine(_sessionPath, configured));
+            Directory.CreateDirectory(fullPath);
+            return fullPath;
+        }
+
+        if (Directory.Exists(_sessionPath))
+            return _sessionPath;
+        if (Directory.Exists(_clientRoot))
+            return _clientRoot;
+        if (Directory.Exists(_repoRoot))
+            return _repoRoot;
+        return Environment.CurrentDirectory;
+    }
+
     private GameSettings LoadBridgeConfig()
     {
         try
@@ -1117,6 +1145,11 @@ internal sealed record BridgeStatus
     public int? CliProcessId { get; set; }
     public string PipeName { get; set; } = string.Empty;
     public string CliLaunchCommand { get; set; } = string.Empty;
+    public string ShellWorkingDirectory { get; set; } = string.Empty;
+    public string LastPromptDispatchState { get; set; } = "None";
+    public string? LastPromptDispatchStartedAtUtc { get; set; }
+    public string? LastPromptDispatchCompletedAtUtc { get; set; }
+    public long? LastPromptDispatchElapsedMs { get; set; }
     public string StartedAtUtc { get; set; } = DateTimeOffset.UtcNow.ToString("O");
     public string UpdatedAtUtc { get; set; } = DateTimeOffset.UtcNow.ToString("O");
     public string? LastError { get; set; }

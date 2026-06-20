@@ -38,6 +38,7 @@ public sealed class StateManagerTests
             Assert.Equal("ru", doc.RootElement.GetProperty("language").GetString());
             Assert.Equal("ConPTYBridge", doc.RootElement.GetProperty("gmBridgeBackend").GetString());
             Assert.Equal("custom-gm-cli --resume", doc.RootElement.GetProperty("gmCliLaunchCommand").GetString());
+            Assert.Equal("", doc.RootElement.GetProperty("gmBridgeShellWorkingDirectory").GetString());
             Assert.Equal("ExactTextOrConfiguredMarker", doc.RootElement.GetProperty("gmBridgePasteVisibilityPolicy").GetString());
             Assert.Equal(15, doc.RootElement.GetProperty("gmBridgePromptVisibilityTimeoutSeconds").GetDouble());
             Assert.Contains(
@@ -108,6 +109,32 @@ public sealed class StateManagerTests
             await manager.LoadSettingsAsync();
 
             Assert.Equal(expectedValue, settings.GmBridgePromptVisibilityTimeoutSeconds);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task LoadSettingsAsync_GmBridgeShellWorkingDirectory_PreservesExplicitOverride()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await fs.WriteFileAtomicAsync("config.json", """
+            {
+              "gmBridgeShellWorkingDirectory": "C:\\GM\\isolated"
+            }
+            """);
+            var settings = new GameSettings();
+            var manager = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
+
+            await manager.LoadSettingsAsync();
+
+            Assert.Equal("C:\\GM\\isolated", settings.GmBridgeShellWorkingDirectory);
         }
         finally
         {

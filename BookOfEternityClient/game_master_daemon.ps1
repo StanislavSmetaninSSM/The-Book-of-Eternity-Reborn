@@ -63,6 +63,10 @@ param(
 # ═══════════════════════════════════════════════
 
 $ErrorActionPreference = "Stop"
+$OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+[Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+chcp 65001 > $null
 Add-Type -AssemblyName System.Windows.Forms
 
 $script:TurnCount = 0
@@ -163,6 +167,7 @@ function Get-GameConfig {
         GmBridgeEnabled = $true
         GmBridgeBackend = "ConPTYBridge"
         GmCliLaunchCommand = "codex --dangerously-bypass-approvals-and-sandbox"
+        GmBridgeShellWorkingDirectory = ""
         GmBridgeAutoStart = $false
         GmBridgePipeNameOverride = ""
         GmWorkerBridgeProfiles = New-DefaultGmWorkerBridgeProfiles
