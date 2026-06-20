@@ -1,12 +1,25 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { browserApi } from '../api/client';
-import type { BrowserClientSettingsDto, BrowserClientSettingsUpdateRequest } from '../api/contracts';
+import type { BrowserClientSettingsDto, BrowserClientSettingsUpdateRequest, BrowserMainMenuDto } from '../api/contracts';
 import { isSuccess, useShell } from '../context/ShellContext';
+import { toLauncherSaveFailureNotice } from '../utils/formatters';
+import { toPlayerFacingText } from '../utils/playerCopy';
+import { AudioPanel } from './AudioPanel';
 
 export function SettingsView() {
-  const { readyState, advancedEnabled, setAdvancedEnabled, loadBrowserState } = useShell();
+  const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState } = useShell();
   const [settings, setSettings] = useState<BrowserClientSettingsDto | null>(null);
+  const [saveNotice, setSaveNotice] = useState('');
+  const [loadingSaveId, setLoadingSaveId] = useState<string | null>(null);
   const updateQueue = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (readyState && isSuccess(readyState.settings)) {
@@ -20,6 +33,37 @@ export function SettingsView() {
       void browserApi.updateClientSettings(patch).then(() => void loadBrowserState());
     }, 500);
   }, [loadBrowserState]);
+
+  async function loadSaveSlot(slot: BrowserMainMenuDto['saves'][number]) {
+    setLoadingSaveId(slot.saveId);
+    setSaveNotice('Загружаем выбранное сохранение…');
+    try {
+      const result = await browserApi.loadSave({ saveId: slot.saveId });
+      if (!isMountedRef.current) {
+        return;
+      }
+      if (isSuccess(result) && result.data.success) {
+        setSaveNotice(`Сохранение «${toPlayerFacingText(slot.displayName, 'выбранная запись')}» загружено. Открываем главу…`);
+        setActiveRoute('game');
+        await loadBrowserState();
+        return;
+      }
+      if (isSuccess(result)) {
+        setSaveNotice(toLauncherSaveFailureNotice(result.data.error));
+        return;
+      }
+      setSaveNotice(toLauncherSaveFailureNotice(result.playerMessage));
+    } catch {
+      if (!isMountedRef.current) {
+        return;
+      }
+      setSaveNotice('Сохранение не удалось загрузить. Проверьте, что книга запущена, и попробуйте ещё раз.');
+    } finally {
+      if (isMountedRef.current) {
+        setLoadingSaveId(null);
+      }
+    }
+  }
 
   if (!settings) {
     return <div className="settings-view"><p className="block-text--muted">Загрузка настроек…</p></div>;
@@ -67,31 +111,32 @@ export function SettingsView() {
         </div>
       </section>
 
-      <section className="settings-card">
-        <h3>🔊 Звук</h3>
-        <div className="settings-row">
-          <label>Музыка</label>
-          <input
-            type="checkbox"
-            checked={settings.audio.musicEnabled}
-            onChange={(e) => { setSettings({ ...settings, audio: { ...settings.audio, musicEnabled: e.target.checked } }); debouncedUpdate({ musicEnabled: e.target.checked }); }}
-          />
+      <AudioPanel />
+
+      <section className="settings-card" aria-labelledby="browser-saves-title">
+        <h3 id="browser-saves-title">Сохранения</h3>
+        <p className="block-text--muted">
+          Здесь можно выбрать локальную запись и вернуться к ней без выхода в главное меню.
+        </p>
+        <div className="launcher-save-list settings-save-list">
+          {menu?.saves && menu.saves.length > 0 ? menu.saves.map((slot) => (
+            <article key={slot.saveId} className="launcher-save-card">
+              <div>
+                <h4>{toPlayerFacingText(slot.displayName, 'Сохранение')}</h4>
+                <p>{toPlayerFacingText(slot.description, 'Локальная запись готова к загрузке.')}</p>
+              </div>
+              <dl className="kv-list">
+                <div><dt>Тип</dt><dd>{toPlayerFacingText(slot.scopeLabel, 'сохранение')}</dd></div>
+                <div><dt>Герой</dt><dd>{slot.characterName || 'не указан'}</dd></div>
+                <div><dt>Ход</dt><dd>{toPlayerFacingText(slot.turnLabel, 'ход уточняется')}</dd></div>
+              </dl>
+              <button type="button" className="launcher-secondary-action" disabled={loadingSaveId !== null} onClick={() => void loadSaveSlot(slot)}>
+                {loadingSaveId === slot.saveId ? 'Загружаем…' : 'Загрузить сохранение'}
+              </button>
+            </article>
+          )) : <p className="muted">Сохранений пока нет. Когда локальная книга найдёт ручные или автоматические записи, они появятся здесь.</p>}
         </div>
-        <div className="settings-row">
-          <label>Громкость звуков</label>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={settings.audio.soundVolume}
-            onChange={(e) => {
-              const v = Number(e.target.value);
-              setSettings({ ...settings, audio: { ...settings.audio, soundVolume: v } });
-              debouncedUpdate({ soundVolume: v });
-            }}
-          />
-          <span>{settings.audio.soundVolume}%</span>
-        </div>
+        {saveNotice && <p className="composer-notice">{saveNotice}</p>}
       </section>
 
       <section className="settings-card">
