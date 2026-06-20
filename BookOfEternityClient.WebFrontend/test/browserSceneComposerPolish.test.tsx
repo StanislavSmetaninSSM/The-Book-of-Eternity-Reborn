@@ -246,20 +246,22 @@ describe('browser scene composer polish #1185', () => {
     const commandUi = readSource('src', 'styles', 'command-ui.css');
 
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .content-area");
-    expect(commandUi).toContain('padding-block: clamp(0rem, 0.2vh, 0.2rem);');
+    expect(commandUi).toContain('padding-block: 0;');
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .cinematic-hero");
-    expect(commandUi).toContain('height: clamp(9rem, 22vh, 15rem);');
+    expect(commandUi).toContain('height: clamp(8rem, 20vh, 15rem);');
     expect(commandUi).toContain('min-height: 100%;');
-    expect(commandUi).toContain('gap: clamp(0.6rem, 1.1vh, 0.8rem);');
+    expect(commandUi).toContain('gap: clamp(0.4rem, 0.7vh, 0.55rem);');
+    expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-narrative.scene-post");
+    expect(commandUi).toContain('padding: clamp(0.25rem, 0.7vh, 0.55rem) clamp(0.65rem, 1.4vw, 1rem);');
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-post .rune-frame");
     expect(commandUi).toContain('font-size: calc(var(--text-md) * var(--scene-post-scale, 1));');
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-post-controls");
-    expect(commandUi).toContain('margin-top: 0.35rem;');
+    expect(commandUi).toContain('margin-top: 0.2rem;');
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-dialogues");
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-quick-actions");
-    expect(commandUi).toContain('margin-top: clamp(0.8rem, 1.8vh, 1.25rem);');
+    expect(commandUi).toContain('margin-top: clamp(0.55rem, 1.2vh, 0.9rem);');
     expect(commandUi).toContain('margin-top: auto;');
-    expect(commandUi).toContain('padding-top: clamp(0.95rem, 2vh, 1.4rem);');
+    expect(commandUi).toContain('padding-top: clamp(0.35rem, 0.9vh, 0.7rem);');
     expect(commandUi).toContain('gap: 0.5rem;');
   });
 
