@@ -61,7 +61,8 @@ public class GameSettings
     /// <summary>
     /// Explicit subordinate GM worker bridge profiles. Workers are hidden/background by contract and only return proposals.
     /// </summary>
-    public List<WorkerBridgeProfile> GmWorkerBridgeProfiles { get; set; } = new();
+    public List<WorkerBridgeProfile> GmWorkerBridgeProfiles { get; set; } =
+        GmWorkerBridgeProfileTemplates.CreateDefaultTemplates().ToList();
     public string GameVersion { get; set; } = "1.0.0";
     /// <summary>
     /// Game difficulty: "normal", "hard", or "impossible".
@@ -153,8 +154,9 @@ public class GameSettings
         GmWorkerBridgeProfiles = NormalizeWorkerProfiles(loaded.GmWorkerBridgeProfiles);
     }
 
-    private static List<WorkerBridgeProfile> NormalizeWorkerProfiles(IEnumerable<WorkerBridgeProfile>? profiles) =>
-        profiles?
+    private static List<WorkerBridgeProfile> NormalizeWorkerProfiles(IEnumerable<WorkerBridgeProfile>? profiles)
+    {
+        var normalized = profiles?
             .Where(profile => profile != null)
             .Select(profile =>
             {
@@ -173,6 +175,11 @@ public class GameSettings
                 };
             })
             .ToList() ?? new List<WorkerBridgeProfile>();
+
+        return normalized.Count == 0
+            ? GmWorkerBridgeProfileTemplates.CreateDefaultTemplates().ToList()
+            : normalized;
+    }
 }
 
 /// <summary>

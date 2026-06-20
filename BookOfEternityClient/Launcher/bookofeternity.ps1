@@ -32,6 +32,65 @@ function Resolve-SessionPath {
     return $defaultPath
 }
 
+function New-DefaultGmWorkerBridgeProfiles {
+    $runner = 'BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1'
+    $codex = 'codex --dangerously-bypass-approvals-and-sandbox'
+
+    return @(
+        [ordered]@{
+            workerId = "validation_repair_codex"
+            displayName = "Codex validation repair"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codex`" -TimeoutSeconds 180"
+            role = "validation-repair"
+            enabled = $false
+            launchVisibility = "hidden"
+            timeoutSeconds = 210
+            maxConcurrentTasks = 1
+            permissions = [ordered]@{
+                taskTypes = @("validation-repair")
+                readPaths = @("game_state/**", "lore/**", "input/**", "ready/**")
+                proposalWritePaths = @("game_state/**", "lore/**", "ready/**")
+                proposalOnly = $false
+                requiresValidation = $true
+            }
+        },
+        [ordered]@{
+            workerId = "narrative_draft_gemini"
+            displayName = "Gemini narrative drafter"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"gemini`" -TimeoutSeconds 120"
+            role = "narrative-draft"
+            enabled = $false
+            launchVisibility = "hidden"
+            timeoutSeconds = 150
+            maxConcurrentTasks = 1
+            permissions = [ordered]@{
+                taskTypes = @("narrative-draft")
+                readPaths = @("game_state/**", "lore/**", "Rules/**", "TaskGuides/**")
+                proposalWritePaths = @()
+                proposalOnly = $true
+                requiresValidation = $false
+            }
+        },
+        [ordered]@{
+            workerId = "analysis_codex"
+            displayName = "Codex analysis worker"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codex`" -TimeoutSeconds 120"
+            role = "analysis"
+            enabled = $false
+            launchVisibility = "hidden"
+            timeoutSeconds = 150
+            maxConcurrentTasks = 1
+            permissions = [ordered]@{
+                taskTypes = @("analysis")
+                readPaths = @("game_state/**", "lore/**", "Rules/**", "TaskGuides/**")
+                proposalWritePaths = @()
+                proposalOnly = $true
+                requiresValidation = $false
+            }
+        }
+    )
+}
+
 function Read-GameConfig {
     param([string]$ResolvedSessionPath)
 
@@ -42,7 +101,7 @@ function Read-GameConfig {
         GmCliLaunchCommand = "gemini"
         GmBridgeAutoStart = $false
         GmBridgePipeNameOverride = ""
-        GmWorkerBridgeProfiles = @()
+        GmWorkerBridgeProfiles = New-DefaultGmWorkerBridgeProfiles
     }
 
     if (!(Test-Path $configPath)) {

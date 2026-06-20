@@ -67,13 +67,31 @@ public sealed class GmWorkerBridgeDocumentationTests
     }
 
     [Fact]
-    public void LauncherAndDaemon_DefaultConfigExposeEmptyWorkerProfiles()
+    public void LauncherAndDaemon_DefaultConfigExposeDisabledWorkerProfileTemplates()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
         var launcher = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");
 
-        Assert.Contains("GmWorkerBridgeProfiles", daemon, StringComparison.Ordinal);
-        Assert.Contains("GmWorkerBridgeProfiles", launcher, StringComparison.Ordinal);
+        foreach (var source in new[] { daemon, launcher })
+        {
+            Assert.Contains("GmWorkerBridgeProfiles", source, StringComparison.Ordinal);
+            Assert.Contains("validation_repair_codex", source, StringComparison.Ordinal);
+            Assert.Contains("narrative_draft_gemini", source, StringComparison.Ordinal);
+            Assert.Contains("analysis_codex", source, StringComparison.Ordinal);
+            Assert.Contains("gm_worker_cli_runner.ps1", source, StringComparison.Ordinal);
+            Assert.Contains("enabled = $false", source, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void GmWorkerBridgeGuide_DocumentsDisabledProfileTemplates()
+    {
+        var guide = ReadRepoFile("OtherGuides/GM_Worker_Bridges.md");
+
+        Assert.Contains("disabled worker profile templates", guide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"enabled\": false", guide, StringComparison.Ordinal);
+        Assert.Contains("analysis_codex", guide, StringComparison.Ordinal);
+        Assert.Contains("enable one template explicitly", guide, StringComparison.OrdinalIgnoreCase);
     }
 
     private static string ReadRepoFile(string relativePath)

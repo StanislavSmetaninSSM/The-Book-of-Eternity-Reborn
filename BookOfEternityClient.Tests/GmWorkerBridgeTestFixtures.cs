@@ -4,65 +4,14 @@ namespace BookOfEternityClient.Tests;
 
 internal static class GmWorkerBridgeTestFixtures
 {
-    public static WorkerBridgeProfile ValidationRepairCodexProfile() => new()
-    {
-        WorkerId = "validation_repair_codex",
-        DisplayName = "Codex validation repair",
-        LaunchCommand = "codex --dangerously-bypass-approvals-and-sandbox",
-        Role = WorkerRole.ValidationRepair,
-        Enabled = true,
-        LaunchVisibility = WorkerLaunchVisibility.Hidden,
-        TimeoutSeconds = 180,
-        MaxConcurrentTasks = 1,
-        Permissions = new WorkerScopePolicy
-        {
-            TaskTypes = [WorkerTaskType.ValidationRepair],
-            ReadPaths = ["game_state/**", "lore/**", "input/**", "ready/**"],
-            ProposalWritePaths = ["game_state/**", "lore/**", "ready/**"],
-            ProposalOnly = false,
-            RequiresValidation = true
-        }
-    };
+    public static WorkerBridgeProfile ValidationRepairCodexProfile() =>
+        GmWorkerBridgeProfileTemplates.CreateValidationRepairCodexTemplate() with { Enabled = true };
 
-    public static WorkerBridgeProfile NarrativeDraftGeminiProfile() => new()
-    {
-        WorkerId = "narrative_draft_gemini",
-        DisplayName = "Gemini narrative drafter",
-        LaunchCommand = "gemini",
-        Role = WorkerRole.NarrativeDraft,
-        Enabled = true,
-        LaunchVisibility = WorkerLaunchVisibility.Hidden,
-        TimeoutSeconds = 120,
-        MaxConcurrentTasks = 1,
-        Permissions = new WorkerScopePolicy
-        {
-            TaskTypes = [WorkerTaskType.NarrativeDraft],
-            ReadPaths = ["game_state/**", "lore/**", "Rules/**", "TaskGuides/**"],
-            ProposalWritePaths = [],
-            ProposalOnly = true,
-            RequiresValidation = false
-        }
-    };
+    public static WorkerBridgeProfile NarrativeDraftGeminiProfile() =>
+        GmWorkerBridgeProfileTemplates.CreateNarrativeDraftGeminiTemplate() with { Enabled = true };
 
-    public static WorkerBridgeProfile AnalysisCodexProfile() => new()
-    {
-        WorkerId = "analysis_codex",
-        DisplayName = "Codex analysis worker",
-        LaunchCommand = "codex --dangerously-bypass-approvals-and-sandbox",
-        Role = WorkerRole.Analysis,
-        Enabled = true,
-        LaunchVisibility = WorkerLaunchVisibility.Hidden,
-        TimeoutSeconds = 120,
-        MaxConcurrentTasks = 1,
-        Permissions = new WorkerScopePolicy
-        {
-            TaskTypes = [WorkerTaskType.Analysis],
-            ReadPaths = ["game_state/**", "lore/**", "Rules/**", "TaskGuides/**"],
-            ProposalWritePaths = [],
-            ProposalOnly = true,
-            RequiresValidation = false
-        }
-    };
+    public static WorkerBridgeProfile AnalysisCodexProfile() =>
+        GmWorkerBridgeProfileTemplates.CreateAnalysisCodexTemplate() with { Enabled = true };
 
 
     public static WorkerTaskPacket ValidationRepairTask() => new()
