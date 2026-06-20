@@ -25,11 +25,11 @@
 
 ## Phase 3: Dry Command Sweep (#1176)
 
-- [ ] T012 Identify the safest existing command execution/test harness for non-interactive command rendering.
-- [ ] T013 Add RED tests for dry sweep classification of raw JSON/internal keys/markup errors on representative command output.
-- [ ] T014 Implement or document the dry sweep runner/report format.
-- [ ] T015 Run the sweep on prepared non-QTE command fixtures and save a lightweight report under `docs/audits/`.
-- [ ] T016 Update #1176 with the sweep command, report path, and first findings.
+- [x] T012 Identify the safest existing command execution/test harness for non-interactive command rendering.
+- [x] T013 Add RED tests for dry sweep classification of raw JSON/internal keys/markup errors on representative command output.
+- [x] T014 Implement or document the dry sweep runner/report format.
+- [x] T015 Run the sweep on prepared non-QTE command fixtures and save a lightweight report under `docs/audits/`.
+- [x] T016 Update #1176 with the sweep command, report path, and first findings.
 
 ## Phase 4: Mortal World Output and Navigation Polish (#1177)
 
@@ -75,3 +75,14 @@
 - Spec Kit prerequisite check: `$env:SPECIFY_FEATURE_DIRECTORY='specs/1174-console-polish-9'; .\.specify\scripts\powershell\check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks` returned `FEATURE_DIR=E:\Games\worktrees\boe-1174-console-polish-9\specs\1174-console-polish-9` and `AVAILABLE_DOCS=["tasks.md"]`.
 - Command matrix: `docs/audits/console-command-matrix-1174.md` covers all 91 `ExplorerCommandCatalog` descriptors, excludes QTE/browser, and maps reusable Mortal/Chaos/Shining display-save coverage. No blocking missing-fixture issue was required before dry sweep; universal/Saref/diagnostic gaps are marked as sweep targets in the matrix.
 - GitHub #1175 updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1175#issuecomment-4757658750
+- Dry sweep RED 1: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ConsoleCommandOutputQualityClassifierTests"` failed to compile because `ConsoleCommandOutputQualityClassifier` did not exist.
+- Dry sweep GREEN 1: same classifier filter passed 2, failed 0 after adding `ConsoleCommandOutputQualityClassifier`.
+- Dry sweep RED 2: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Classify_DefaultPlayerOutputFlagsAfterlifeContractMarkers"` failed 1, passed 0 before adding `pending_`, `requestId`, `actionType`, and `protocol` markers.
+- Dry sweep GREEN 2: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ConsoleCommandOutputQualityClassifierTests" --logger "console;verbosity=minimal"` passed 3, failed 0.
+- Dry sweep RED 3: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Classify_DefaultPlayerOutputFlagsDebugMarker" --logger "console;verbosity=minimal"` failed 1, passed 0 before restoring the old afterlife `debug` marker policy in the shared classifier.
+- Dry sweep RED 4: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Classify_DefaultPlayerOutputFlagsNullMarker" --logger "console;verbosity=minimal"` failed 1, passed 0 before adding literal `null` leakage to the shared classifier.
+- Dry sweep GREEN 4: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ConsoleCommandOutputQualityClassifierTests" --logger "console;verbosity=minimal"` passed 5, failed 0.
+- Dry sweep baseline: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ConsoleCommandOutputQualityClassifierTests|MortalCommandDisplaySaveTests|ChaosSeaCommandDisplaySaveTests|ShiningAbodeCommandDisplaySaveTests" --logger "console;verbosity=minimal"` passed 298, failed 0. Report: `docs/audits/console-dry-sweep-1176.md`.
+- GitHub #1176 updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1176#issuecomment-4757691343
+- GitHub #1176 dry-sweep correction updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1176#issuecomment-4757710615
+- GitHub #1176 null-leakage correction updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1176#issuecomment-4757737678
