@@ -159,9 +159,11 @@ export function UnifiedInput() {
             />
           )}
         </div>
-        <button type="submit" disabled={!composerText.trim() || !canSubmit} className="unified-input__submit">
-          Отправить
-        </button>
+        <div className="unified-input__actions">
+          <button type="submit" disabled={!composerText.trim() || !canSubmit} className="unified-input__submit">
+            Отправить
+          </button>
+        </div>
       </form>
     </div>
   );

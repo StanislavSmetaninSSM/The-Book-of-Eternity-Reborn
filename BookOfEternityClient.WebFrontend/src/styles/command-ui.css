@@ -130,7 +130,7 @@
 .scene-narrative { color: var(--text-primary); line-height: 1.75; }
 
 .browser-shell[data-active-tab='scene'] .content-area {
-  padding-block: clamp(0.1rem, 0.35vh, 0.3rem);
+  padding-block: clamp(0rem, 0.2vh, 0.2rem);
 }
 
 .browser-shell[data-active-tab='scene'] .scene-view {
@@ -139,9 +139,9 @@
 
 .browser-shell[data-active-tab='scene'] .cinematic-hero {
   min-height: 0;
-  height: clamp(6rem, 12vh, 9rem);
+  height: clamp(4.5rem, 9vh, 7rem);
   margin-top: 0;
-  margin-bottom: clamp(0.1rem, 0.35vh, 0.25rem);
+  margin-bottom: 0;
   padding: clamp(0.45rem, 1vh, 0.75rem) clamp(0.85rem, 2.4vw, 1.5rem);
 }
 
@@ -179,6 +179,14 @@
 .browser-shell[data-active-tab='scene'] .scene-quick-actions {
   display: grid;
   gap: 0.5rem;
+}
+
+.browser-shell[data-active-tab='scene'] .scene-dialogues {
+  margin-top: clamp(0.8rem, 1.8vh, 1.25rem);
+}
+
+.browser-shell[data-active-tab='scene'] .scene-quick-actions {
+  margin-top: clamp(0.95rem, 2vh, 1.4rem);
 }
 
 .browser-shell[data-active-tab='scene'] .scene-dialogues h3,
@@ -764,6 +772,12 @@
 }
 .unified-input__form { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
 .unified-input__wrapper { position: relative; flex: 1; min-width: 0; }
+.unified-input__actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+}
 .unified-input__textarea {
   width: 100%;
   resize: none;
@@ -797,6 +811,9 @@
   grid-column: 1;
 }
 .unified-input.is-post-mode .unified-input__form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.65rem;
   align-items: stretch;
 }
 .unified-input.is-post-mode .unified-input__textarea {
@@ -805,7 +822,10 @@
   line-height: var(--leading-relaxed);
 }
 .unified-input.is-post-mode .unified-input__submit {
-  align-self: flex-end;
+  min-width: 10rem;
+}
+.unified-input.is-post-mode .unified-input__actions {
+  justify-content: flex-end;
 }
 
 /* ===== Autocomplete ===== */

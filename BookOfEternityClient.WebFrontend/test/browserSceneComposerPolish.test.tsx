@@ -222,9 +222,13 @@ describe('browser scene composer polish #1185', () => {
     expect(unifiedInput).toContain("composerMode === 'command'");
     expect(unifiedInput).toContain('rows={composerMode ===');
     expect(unifiedInput).toContain('!isPostMode && e.key ===');
+    expect(unifiedInput).toContain('className="unified-input__actions"');
     expect(styles).toContain('.unified-input.is-post-mode');
     expect(styles).toContain('.unified-input__mode-toggle');
+    expect(styles).toContain('.unified-input__actions');
+    expect(styles).toContain('.unified-input.is-post-mode .unified-input__actions');
     expect(styles).toContain('.unified-input.is-post-mode .unified-input__textarea');
+    expect(styles).toContain('grid-template-columns: minmax(0, 1fr);');
     expect(styles).toContain('resize: vertical');
   });
 
@@ -238,17 +242,19 @@ describe('browser scene composer polish #1185', () => {
     expect(layout).toContain('overflow: hidden;');
   });
 
-  it('keeps the scene first screen compact before real overflow appears', () => {
+  it('keeps scene blocks visually separated before real overflow appears', () => {
     const commandUi = readSource('src', 'styles', 'command-ui.css');
 
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .content-area");
-    expect(commandUi).toContain('padding-block: clamp(0.1rem, 0.35vh, 0.3rem);');
+    expect(commandUi).toContain('padding-block: clamp(0rem, 0.2vh, 0.2rem);');
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .cinematic-hero");
-    expect(commandUi).toContain('height: clamp(6rem, 12vh, 9rem);');
+    expect(commandUi).toContain('height: clamp(4.5rem, 9vh, 7rem);');
     expect(commandUi).toContain('gap: clamp(0.6rem, 1.1vh, 0.8rem);');
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-post .rune-frame");
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-dialogues");
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-quick-actions");
+    expect(commandUi).toContain('margin-top: clamp(0.8rem, 1.8vh, 1.25rem);');
+    expect(commandUi).toContain('margin-top: clamp(0.95rem, 2vh, 1.4rem);');
     expect(commandUi).toContain('gap: 0.5rem;');
   });
 
