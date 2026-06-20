@@ -100,7 +100,7 @@ public sealed class BrowserClientSettingsService
         if (request.BrowserFontScalePercent.HasValue)
             settings.BrowserFontScalePercent = Math.Clamp(request.BrowserFontScalePercent.Value, 80, 200);
         if (request.BrowserUiScalePercent.HasValue)
-            settings.BrowserUiScalePercent = Math.Clamp(request.BrowserUiScalePercent.Value, 80, 140);
+            settings.BrowserUiScalePercent = Math.Clamp(request.BrowserUiScalePercent.Value, 80, 200);
         if (request.BrowserReducedMotion.HasValue)
             settings.BrowserReducedMotion = request.BrowserReducedMotion.Value;
         if (request.BrowserContrastFriendly.HasValue)
@@ -135,7 +135,7 @@ public sealed class BrowserClientSettingsService
                 SoundVolume: Math.Clamp(settings.SoundVolume, 0, 100)),
             Accessibility: new BrowserClientAccessibilitySettingsDto(
                 FontScalePercent: Math.Clamp(settings.BrowserFontScalePercent, 80, 200),
-                UiScalePercent: Math.Clamp(settings.BrowserUiScalePercent, 80, 140),
+                UiScalePercent: Math.Clamp(settings.BrowserUiScalePercent, 80, 200),
                 ReducedMotion: settings.BrowserReducedMotion,
                 ContrastFriendly: settings.BrowserContrastFriendly),
             Locality: new BrowserClientLocalityDto(

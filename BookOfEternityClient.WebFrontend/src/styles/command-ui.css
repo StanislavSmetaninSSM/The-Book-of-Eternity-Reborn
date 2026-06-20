@@ -144,11 +144,11 @@
 .scene-dialogue-chip, .scene-action-chip {
   background: var(--surface-raised); border: 1px solid var(--border);
   border-radius: 6px; padding: 0.4rem 0.75rem;
-  color: var(--text-primary); font-size: 0.8rem;
+  color: var(--text-primary); font-size: var(--text-lg);
   cursor: pointer; transition: border-color 0.15s;
 }
 .scene-dialogue-chip:hover, .scene-action-chip:hover { border-color: var(--color-accent); }
-.scene-quick-actions h4 { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+.scene-quick-actions h4 { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
 .scene-quick-actions__list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .scene-empty { display: flex; align-items: center; justify-content: center; min-height: 40vh; color: var(--text-muted); }
 
