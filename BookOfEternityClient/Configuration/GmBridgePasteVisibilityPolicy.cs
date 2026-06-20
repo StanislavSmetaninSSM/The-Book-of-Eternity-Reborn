@@ -20,12 +20,6 @@ public static class GmBridgePasteVisibilityPolicy
     [
         new()
         {
-            Name = "Gemini",
-            Kind = "contains",
-            Pattern = "Pasted Text:"
-        },
-        new()
-        {
             Name = "Codex",
             Kind = "regex",
             Pattern = @"\[Pasted Content \d+ chars\]"

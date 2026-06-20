@@ -451,7 +451,7 @@ public partial class GameEngine
 
     private string PromptGmCliLaunchCommand(string currentValue)
     {
-        var current = string.IsNullOrWhiteSpace(currentValue) ? "gemini" : currentValue.Trim();
+        var current = string.IsNullOrWhiteSpace(currentValue) ? "codex --dangerously-bypass-approvals-and-sandbox" : currentValue.Trim();
 
         SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Rule($"[cyan]{Markup.Escape(_loc.T("opt_gm_cli_launch_command"))}[/]").RuleStyle("cyan"));

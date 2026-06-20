@@ -4,12 +4,11 @@ public static class GmWorkerBridgeProfileTemplates
 {
     public const string RunnerRelativePath = "BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1";
     public const string CodexBypassCommand = "codex --dangerously-bypass-approvals-and-sandbox";
-    public const string GeminiCommand = "gemini";
 
     public static IReadOnlyList<WorkerBridgeProfile> CreateDefaultTemplates() =>
     [
         CreateValidationRepairCodexTemplate(),
-        CreateNarrativeDraftGeminiTemplate(),
+        CreateNarrativeDraftCodexTemplate(),
         CreateAnalysisCodexTemplate()
     ];
 
@@ -33,11 +32,11 @@ public static class GmWorkerBridgeProfileTemplates
         }
     };
 
-    public static WorkerBridgeProfile CreateNarrativeDraftGeminiTemplate() => new()
+    public static WorkerBridgeProfile CreateNarrativeDraftCodexTemplate() => new()
     {
-        WorkerId = "narrative_draft_gemini",
-        DisplayName = "Gemini narrative drafter",
-        LaunchCommand = BuildRunnerLaunchCommand(GeminiCommand, timeoutSeconds: 120),
+        WorkerId = "narrative_draft_codex",
+        DisplayName = "Codex narrative drafter",
+        LaunchCommand = BuildRunnerLaunchCommand(CodexBypassCommand, timeoutSeconds: 120),
         Role = WorkerRole.NarrativeDraft,
         Enabled = false,
         LaunchVisibility = WorkerLaunchVisibility.Hidden,

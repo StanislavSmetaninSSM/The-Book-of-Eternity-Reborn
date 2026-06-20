@@ -17,12 +17,13 @@ public sealed class GmBridgePasteVisibilityPolicyTests
     }
 
     [Fact]
-    public void IsPromptVisible_DefaultConfig_AcceptsGeminiPasteMarker()
+    public void IsPromptVisible_DefaultConfig_DoesNotAcceptDeprecatedGeminiPasteMarker()
     {
         var settings = new GameSettings();
         var visibleText = "Gemini CLI\nPasted Text:\n";
 
-        Assert.True(GmBridgePasteVisibilityPolicy.IsPromptVisible("Process turn #42 and read input/turn_request.json", visibleText, settings));
+        Assert.DoesNotContain(settings.GmBridgePasteVisibilityMarkers, marker => string.Equals(marker.Name, "Gemini", StringComparison.OrdinalIgnoreCase));
+        Assert.False(GmBridgePasteVisibilityPolicy.IsPromptVisible("Process turn #42 and read input/turn_request.json", visibleText, settings));
     }
 
     [Fact]

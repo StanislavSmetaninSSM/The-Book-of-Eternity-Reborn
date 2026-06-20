@@ -34,7 +34,7 @@ E:\Games\The Book of Eternity Reborn\BookOfEternityClient\game_session\game_stat
 
 ```powershell
 cd "E:\Games\The Book of Eternity Reborn"
-gemini
+codex --dangerously-bypass-approvals-and-sandbox
 ```
 
 ### 3. Запусти daemon wrapper
@@ -46,7 +46,7 @@ cd "E:\Games\The Book of Eternity Reborn\BookOfEternityClient\Launcher"
 .\Start_GM_Daemon.ps1 -AutoPaste
 ```
 
-Wrapper автоматически пересобирает `CLI_Launch_Script.md` с актуальными путями этой машины перед стартом daemon.
+Wrapper автоматически создаёт session-local `game_state\control\CLI_Launch_Script.generated.md` с актуальными путями этой машины перед стартом daemon.
 По умолчанию автовставка использует `RightClick`.
 Если вашей консоли нужен другой режим, можно попробовать:
 
@@ -90,7 +90,7 @@ Get-Process | Where-Object { $_.MainWindowTitle -match $CliWindowTitle } | Selec
 
 ```powershell
 cd "E:\Games\The Book of Eternity Reborn\BookOfEternityClient\Launcher"
-.\Start_GM_Daemon.ps1 -CliWindowTitle "GM Gemini" -AutoPaste
+.\Start_GM_Daemon.ps1 -CliWindowTitle "GM Codex" -AutoPaste
 ```
 
 Но это именно fallback, а не рекомендуемый основной режим.

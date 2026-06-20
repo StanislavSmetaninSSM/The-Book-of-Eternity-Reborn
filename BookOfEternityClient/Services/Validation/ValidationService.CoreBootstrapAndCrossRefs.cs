@@ -104,6 +104,8 @@ public partial class ValidationService
                     "livesHistory должен быть массивом"));
             }
 
+            ValidateCurrentSoulRelicsCanonicalShape(root, issues);
+
             if (root.TryGetProperty("previousSoulNames", out var previousSoulNames))
             {
                 if (previousSoulNames.ValueKind != JsonValueKind.Array)
@@ -184,5 +186,102 @@ public partial class ValidationService
         {
             _logger.LogDebug(ex, "Не удалось проверить согласованность soul_state.");
         }
+    }
+
+    private void ValidateCurrentSoulRelicsCanonicalShape(JsonElement root, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty("soulRelics", out var soulRelics))
+            return;
+
+        const string soulRelicsPath = "game_state/meta/soul_state.json.soulRelics";
+
+        if (soulRelics.ValueKind != JsonValueKind.Object)
+        {
+            AddInvalidCurrentSoulRelicsShapeIssue(
+                issues,
+                soulRelicsPath,
+                "soulRelics должен быть объектом с equipped[] и stored[]",
+                soulRelics.ValueKind.ToString());
+            return;
+        }
+
+        foreach (var property in soulRelics.EnumerateObject())
+        {
+            if (string.Equals(property.Name, "equipped", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(property.Name, "stored", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            AddInvalidCurrentSoulRelicsShapeIssue(
+                issues,
+                $"{soulRelicsPath}.{property.Name}",
+                "soulRelics содержит неподдерживаемый ключ",
+                property.Name);
+        }
+
+        ValidateCurrentSoulRelicCollection(soulRelics, "equipped", issues);
+        ValidateCurrentSoulRelicCollection(soulRelics, "stored", issues);
+    }
+
+    private void ValidateCurrentSoulRelicCollection(JsonElement soulRelics, string collectionName, List<ValidationIssue> issues)
+    {
+        var collectionPath = $"game_state/meta/soul_state.json.soulRelics.{collectionName}";
+        if (!soulRelics.TryGetProperty(collectionName, out var collection) ||
+            collection.ValueKind != JsonValueKind.Array)
+        {
+            AddInvalidCurrentSoulRelicsShapeIssue(
+                issues,
+                collectionPath,
+                $"soulRelics.{collectionName} должен быть массивом",
+                soulRelics.TryGetProperty(collectionName, out var actual) ? actual.ValueKind.ToString() : "missing");
+            return;
+        }
+
+        var index = 0;
+        foreach (var relic in collection.EnumerateArray())
+        {
+            var relicPath = $"{collectionPath}[{index++}]";
+            if (relic.ValueKind != JsonValueKind.Object)
+            {
+                AddInvalidCurrentSoulRelicsShapeIssue(
+                    issues,
+                    relicPath,
+                    "Soul Relic entry должен быть объектом",
+                    relic.ValueKind.ToString());
+                continue;
+            }
+
+            var scratchIssues = new List<ValidationIssue>();
+            ValidateMinimalSoulRelicObject(relic, relicPath, scratchIssues, "SoulState");
+            if (scratchIssues.Count == 0)
+                continue;
+
+            AddInvalidCurrentSoulRelicsShapeIssue(
+                issues,
+                relicPath,
+                "Soul Relic в текущем soul_state не соответствует canonical форме",
+                string.Join("; ", scratchIssues.Select(static issue =>
+                    string.IsNullOrWhiteSpace(issue.Code)
+                        ? issue.Message
+                        : $"{issue.Code}: {issue.Message}")));
+        }
+    }
+
+    private static void AddInvalidCurrentSoulRelicsShapeIssue(
+        List<ValidationIssue> issues,
+        string path,
+        string message,
+        string actual)
+    {
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: "soul_relic_invalid_canonical_shape",
+            section: "SoulState",
+            expected: "soulRelics object with equipped[]/stored[] arrays of relic objects containing relicId, name, and canonical rarity/quality",
+            actual: actual,
+            repairHint: "Исправь current soul_state.json: используй relicId вместо id и rarity/quality вместо legacy tier, чтобы strict canonical normalizer не падал после accepted turn."));
     }
 }

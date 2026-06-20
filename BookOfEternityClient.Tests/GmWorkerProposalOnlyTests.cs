@@ -11,7 +11,7 @@ public sealed class GmWorkerProposalOnlyTests
     [Fact]
     public void BuildNarrativeDraftTask_ProducesReadOnlyProposalOnlyPacket()
     {
-        var profile = GmWorkerBridgeTestFixtures.NarrativeDraftGeminiProfile();
+        var profile = GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile();
         var task = GmWorkerTaskPacketBuilder.BuildNarrativeDraftTask(
             profile,
             "worker_task_narrative",
@@ -80,7 +80,7 @@ public sealed class GmWorkerProposalOnlyTests
             await fs.WriteFileAtomicAsync(
                 "worker_proposals/worker_proposal_20260620_0002/game_state/world/current_location.json",
                 "{\"after\":true}");
-            var profile = GmWorkerBridgeTestFixtures.NarrativeDraftGeminiProfile();
+            var profile = GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile();
             var task = GmWorkerBridgeTestFixtures.NarrativeDraftTask();
             var proposal = GmWorkerBridgeTestFixtures.NarrativeDraftProposal() with
             {

@@ -8,11 +8,42 @@ public sealed class GmWorkerBridgeDocumentationTests
     public void GmWorkerBridgeGuide_IsReferencedByLauncherAndExamplesManifest()
     {
         var launcher = ReadRepoFile("BookOfEternityClient/Launcher/CLI_Launch_Script.md");
+        var launcherGenerator = ReadRepoFile("BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1");
         var manifest = ReadRepoFile("Examples/example_validation_manifest.json");
 
         Assert.Contains("OtherGuides/GM_Worker_Bridges.md", launcher, StringComparison.Ordinal);
+        Assert.Contains("OtherGuides/GM_Worker_Bridges.md", launcherGenerator, StringComparison.Ordinal);
         Assert.Contains("E_CLI_GM_Worker_Validation_Repair.txt", manifest, StringComparison.Ordinal);
         Assert.Contains("E_CLI_GM_Worker_Narrative_Draft.txt", manifest, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void GmLauncherScript_DoesNotContainStaleWorktreePaths()
+    {
+        var launcher = ReadRepoFile("BookOfEternityClient/Launcher/CLI_Launch_Script.md");
+
+        Assert.Contains("{{REPO_ROOT}}", launcher, StringComparison.Ordinal);
+        Assert.Contains("{{GAME_SESSION}}", launcher, StringComparison.Ordinal);
+        Assert.DoesNotContain("boe-worktrees", launcher, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("E:\\Games\\worktrees\\", launcher, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("1127-agent-console-live-e2e", launcher, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void GmLauncherGenerator_AcceptsExplicitGameSessionPathForSandboxedRuns()
+    {
+        var generator = ReadRepoFile("BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1");
+        var wrapper = ReadRepoFile("BookOfEternityClient/Launcher/Start_GM_Daemon.ps1");
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("[string]$GameSessionPath", generator, StringComparison.Ordinal);
+        Assert.Contains("[switch]$UsePlaceholders", generator, StringComparison.Ordinal);
+        Assert.Contains("Resolve-Path $GameSessionPath", generator, StringComparison.Ordinal);
+        Assert.Contains("CLI_Launch_Script.generated.md", wrapper, StringComparison.Ordinal);
+        Assert.Contains("-OutputPath $generatedLaunchScriptPath", wrapper, StringComparison.Ordinal);
+        Assert.Contains("-GameSessionPath $GameSessionPath", wrapper, StringComparison.Ordinal);
+        Assert.Contains("LaunchScriptPath = $generatedLaunchScriptPath", wrapper, StringComparison.Ordinal);
+        Assert.Contains("[string]$LaunchScriptPath", daemon, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -92,10 +123,36 @@ public sealed class GmWorkerBridgeDocumentationTests
         {
             Assert.Contains("GmWorkerBridgeProfiles", source, StringComparison.Ordinal);
             Assert.Contains("validation_repair_codex", source, StringComparison.Ordinal);
-            Assert.Contains("narrative_draft_gemini", source, StringComparison.Ordinal);
+            Assert.Contains("narrative_draft_codex", source, StringComparison.Ordinal);
             Assert.Contains("analysis_codex", source, StringComparison.Ordinal);
             Assert.Contains("gm_worker_cli_runner.ps1", source, StringComparison.Ordinal);
             Assert.Contains("enabled = $false", source, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void ActiveWorkerGuidance_DoesNotAdvertiseDeprecatedGeminiCli()
+    {
+        var activeGuidance = new[]
+        {
+            "OtherGuides/GM_Worker_Bridges.md",
+            "Examples/E_CLI_GM_Worker_Narrative_Draft.txt",
+            "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+            "BookOfEternityClient/Launcher/CLI_Daemon_Window_Help.md",
+            "BookOfEternityClient/Launcher/GM_Daemon_ConPTY_Proposal.md",
+            "BookOfEternityClient/Launcher/bookofeternity.ps1",
+            "BookOfEternityClient/game_master_daemon.ps1",
+            "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs",
+            "specs/1113-gm-worker-bridges/contracts/gm-worker-bridge-contract.md",
+            "specs/1151-gm-worker-profile-templates/contracts/gm-worker-profile-templates-contract.md",
+            "specs/1151-gm-worker-profile-templates/spec.md"
+        };
+
+        foreach (var relativePath in activeGuidance)
+        {
+            var source = ReadRepoFile(relativePath);
+            Assert.DoesNotContain("gemini", source, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("narrative_draft_gemini", source, StringComparison.OrdinalIgnoreCase);
         }
     }
 

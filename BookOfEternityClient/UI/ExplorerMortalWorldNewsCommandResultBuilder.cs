@@ -789,8 +789,14 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             "" => string.Empty,
             "public" => "известно всем",
             "regional" => "региональные слухи",
+            "local" => "местные новости",
+            "rumor" or "rumour" => "слух",
             "player_known" => "известно герою",
+            "known" => "известно герою",
+            "visible" or "player_visible" => "видно герою",
+            "global" => "известно всем",
             "secret" => "скрыто от героя",
+            "private" => "лично известно",
             "faction-internal" => "внутри фракции",
             _ => visibility.Trim()
         };

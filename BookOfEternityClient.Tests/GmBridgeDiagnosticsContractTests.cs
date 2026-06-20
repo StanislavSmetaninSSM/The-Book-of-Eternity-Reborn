@@ -35,6 +35,15 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
+    public void BridgeHost_UsesConfiguredPromptVisibilityTimeout()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("GmBridgePromptVisibilityTimeoutSeconds", source, StringComparison.Ordinal);
+        Assert.Contains("TimeSpan.FromSeconds(visibilitySettings.GmBridgePromptVisibilityTimeoutSeconds)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void LauncherScript_ExposesDiagnosticsCommand()
     {
         var source = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");

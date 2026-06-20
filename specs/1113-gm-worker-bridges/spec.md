@@ -6,7 +6,7 @@
 
 **Status**: Draft
 
-**Input**: User description: "Add explicit multi-agent architecture where the main GM can launch additional configured bridges, delegate validation repair, narrative drafting, lore/NPC/QTE analysis, console-output review, and other scoped work to Codex/Gemini/other agents, receive proposals, and keep the main GM as the single owner of turn and canonical state."
+**Input**: User description: "Add explicit multi-agent architecture where the main GM can launch additional configured bridges, delegate validation repair, narrative drafting, lore/NPC/QTE analysis, console-output review, and other scoped work to Codex or other configured agents, receive proposals, and keep the main GM as the single owner of turn and canonical state."
 
 ## Source Issues & Scope *(mandatory)*
 

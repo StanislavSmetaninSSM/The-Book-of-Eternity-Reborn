@@ -635,6 +635,7 @@ public partial class GameEngine
                 AnsiConsole.MarkupLine($"\n[red]❌ Ошибка в игровом цикле: {GameInterface.EscapeMarkup(ex.Message)}[/]");
                 AnsiConsole.MarkupLine("[dim]Ошибка сохранена в game_session/error_log.txt. Данные не потеряны.[/]");
                 AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
+                RecordGameLoopErrorObservation(ex);
                 _inputSource.ReadKey(intercept: true);
             }
         }

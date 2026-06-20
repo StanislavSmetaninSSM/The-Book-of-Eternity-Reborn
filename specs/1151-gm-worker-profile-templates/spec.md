@@ -21,7 +21,7 @@
 
 ### User Story 1 - Discover Safe Disabled Worker Templates (Priority: P1)
 
-A user or GM maintainer can inspect settings/diagnostics/docs and see ready-made worker profile templates for Codex validation repair, Gemini narrative drafting, and Codex analysis. They are disabled by default and use the local runner protocol.
+A user or GM maintainer can inspect settings/diagnostics/docs and see ready-made worker profile templates for Codex validation repair, Codex narrative drafting, and Codex analysis. They are disabled by default and use the local runner protocol.
 
 **Why this priority**: The previous runner work is hard to use if the user must hand-write long launch commands and permission scopes.
 
@@ -54,14 +54,14 @@ When a user already configured worker profiles, settings normalization must not 
 ### Functional Requirements
 
 - **FR-001**: The codebase MUST provide reusable default GM worker profile templates.
-- **FR-002**: Templates MUST include validation-repair Codex, narrative-draft Gemini, and analysis Codex profiles.
+- **FR-002**: Templates MUST include validation-repair Codex, narrative-draft Codex, and analysis Codex profiles.
 - **FR-003**: Templates MUST be disabled by default.
 - **FR-004**: Templates MUST use hidden launch visibility.
 - **FR-005**: Templates MUST use `BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1` with `-AgentCommand`.
 - **FR-006**: Templates MUST pass `GmWorkerContractValidator.ValidateProfile`.
 - **FR-007**: Settings normalization MUST preserve configured user profiles.
 - **FR-008**: Settings with no configured worker profiles SHOULD receive disabled templates for discoverability.
-- **FR-009**: Tests/docs/examples MUST stop using bare raw Codex/Gemini launch commands as canonical worker profile examples.
+- **FR-009**: Tests/docs/examples MUST stop using bare raw agent launch commands as canonical worker profile examples.
 - **FR-010**: Documentation MUST state that templates are disabled and safe until the user explicitly enables them.
 
 ### Key Entities
@@ -90,4 +90,4 @@ When a user already configured worker profiles, settings normalization must not 
 
 - Disabled templates are safe to include in default settings because worker routing ignores disabled profiles.
 - Users who want a completely empty list can leave templates disabled; deleting them is not a functional requirement for v1.
-- Real CLI availability remains a user responsibility; templates do not check whether Codex/Gemini is installed.
+- Real CLI availability remains a user responsibility; templates do not check whether Codex is installed.

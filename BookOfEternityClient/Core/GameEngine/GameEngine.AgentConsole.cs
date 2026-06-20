@@ -64,6 +64,17 @@ public partial class GameEngine
             slug: "game-loop");
     }
 
+    private void RecordGameLoopErrorObservation(Exception ex)
+    {
+        RecordConsoleObservation(
+            ConsoleE2EInputMode.Error,
+            "Ошибка игрового цикла",
+            $"Ошибка в игровом цикле: {ex.Message}\nОшибка сохранена в game_session/error_log.txt. Данные не потеряны.\n{_loc.T("press_any_key")}",
+            [],
+            selectedOption: null,
+            slug: "game-loop-error");
+    }
+
     private bool ConfirmWithConsoleObservation(
         string promptMarkup,
         string plainPrompt,

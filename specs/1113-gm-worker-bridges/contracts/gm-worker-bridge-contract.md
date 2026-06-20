@@ -62,9 +62,9 @@ Narrative drafting worker:
 
 ```json
 {
-  "workerId": "narrative_draft_gemini",
-  "displayName": "Gemini narrative drafter",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"gemini\" -TimeoutSeconds 120",
+  "workerId": "narrative_draft_codex",
+  "displayName": "Codex narrative drafter",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex --dangerously-bypass-approvals-and-sandbox\" -TimeoutSeconds 120",
   "role": "narrative-draft",
   "enabled": true,
   "launchVisibility": "hidden",
@@ -128,7 +128,7 @@ Narrative draft task:
 {
   "schemaVersion": 1,
   "taskId": "worker_task_20260620_0002",
-  "workerId": "narrative_draft_gemini",
+  "workerId": "narrative_draft_codex",
   "taskType": "narrative-draft",
   "createdAtUtc": "2026-06-20T00:05:00Z",
   "sourceTurn": {
@@ -197,7 +197,7 @@ Narrative draft proposal:
   "schemaVersion": 1,
   "proposalId": "worker_proposal_20260620_0002",
   "taskId": "worker_task_20260620_0002",
-  "workerId": "narrative_draft_gemini",
+  "workerId": "narrative_draft_codex",
   "status": "completed",
   "summary": "Drafted corridor narration for main-GM review.",
   "changedFiles": [],

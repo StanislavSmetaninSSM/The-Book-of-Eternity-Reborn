@@ -22,6 +22,10 @@
     Fallback-заголовок окна CLI-агента для отправки сообщений.
     Используется только если отсутствует gm_cli_window_binding.json или binding невалиден.
 
+.PARAMETER LaunchScriptPath
+    Optional explicit path to the generated GM launch script. Wrappers should
+    pass a session-local generated file instead of mutating the tracked sample.
+
 .PARAMETER AutoPaste
     Автоматически вставлять команду в окно CLI.
     Если $false — только копирует в буфер обмена и уведомляет.
@@ -38,7 +42,7 @@
 
 .EXAMPLE
     # Fallback по заголовку окна, если binding ещё не зарегистрирован:
-    .\game_master_daemon.ps1 -CliWindowTitle "GM Gemini" -AutoPaste
+    .\game_master_daemon.ps1 -CliWindowTitle "GM Codex" -AutoPaste
 
 #>
 
@@ -50,7 +54,8 @@ param(
     [string]$PasteMode = "RightClick",
     [int]$TurnTimeout = 0,
     [int]$PollingInterval = 500,
-    [string]$LogFile = ""
+    [string]$LogFile = "",
+    [string]$LaunchScriptPath = ""
 )
 
 # ═══════════════════════════════════════════════
@@ -116,9 +121,9 @@ function New-DefaultGmWorkerBridgeProfiles {
             }
         },
         [ordered]@{
-            workerId = "narrative_draft_gemini"
-            displayName = "Gemini narrative drafter"
-            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"gemini`" -TimeoutSeconds 120"
+            workerId = "narrative_draft_codex"
+            displayName = "Codex narrative drafter"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codex`" -TimeoutSeconds 120"
             role = "narrative-draft"
             enabled = $false
             launchVisibility = "hidden"
@@ -157,7 +162,7 @@ function Get-GameConfig {
     $defaults = [ordered]@{
         GmBridgeEnabled = $true
         GmBridgeBackend = "ConPTYBridge"
-        GmCliLaunchCommand = "gemini"
+        GmCliLaunchCommand = "codex --dangerously-bypass-approvals-and-sandbox"
         GmBridgeAutoStart = $false
         GmBridgePipeNameOverride = ""
         GmWorkerBridgeProfiles = New-DefaultGmWorkerBridgeProfiles
@@ -799,6 +804,10 @@ function Process-RepairRequest {
 }
 
 function Get-LaunchScriptPath {
+    if (-not [string]::IsNullOrWhiteSpace($LaunchScriptPath) -and (Test-Path $LaunchScriptPath)) {
+        return (Resolve-Path $LaunchScriptPath).Path
+    }
+
     $candidates = @(
         (Join-Path $PSScriptRoot "Launcher\CLI_Launch_Script.md"),
         (Join-Path (Split-Path $PSScriptRoot -Parent) "Launcher\CLI_Launch_Script.md"),

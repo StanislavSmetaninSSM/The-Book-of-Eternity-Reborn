@@ -8414,6 +8414,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("/status", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/afterlife_inbox", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/guardian_projects", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("полный JSON", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("канонический JSON", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Late-game", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("New Game+ reset", renderedText, StringComparison.OrdinalIgnoreCase);
     }
@@ -8436,9 +8438,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("/status", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("локальные Врата", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("ожидаемую дельту состояния", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Карта аудита Обители", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("полный/канонический JSON", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("жизненный цикл торговли", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Карта Обители", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Карта аудита Обители", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("полный JSON", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("канонический JSON", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("JSON-панели", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("New Game+ reset", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -10220,7 +10224,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task TryProcessCommand_ChaosSeaOverviewEnumeratesFullPendingContracts()
+    public async Task TryProcessCommand_ChaosSeaOverviewSummarizesPendingContractsWithoutRawAuditPayload()
     {
         await SeedGuardianTradeStateAsync(includeTradeInventory: false);
         await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, new
@@ -10249,11 +10253,15 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("chaos_sea_pending_contract_overview");
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Chaos Sea Audit", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("pending_guardian_abode_resident_interactions.json", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("resident_talk_pending_001", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("residentInteractionLogUpdates", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("полные данные", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Море Хаоса: оперативный обзор", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ожидающие решения посмертия", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Разговор/история резидента Обители", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Лиора", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Chaos Sea Audit", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("pending_guardian_abode_resident_interactions.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("resident_talk_pending_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("residentInteractionLogUpdates", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("полные данные", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

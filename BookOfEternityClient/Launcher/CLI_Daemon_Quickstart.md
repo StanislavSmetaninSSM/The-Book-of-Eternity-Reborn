@@ -15,13 +15,13 @@ cd "E:\Games\The Book of Eternity Reborn\BookOfEternityClient\Launcher"
 E:\Games\The Book of Eternity Reborn\BookOfEternityClient\game_session\game_state\control\gm_cli_window_binding.json
 ```
 
-## Шаг 2. В этом же окне запусти Gemini
+## Шаг 2. В этом же окне запусти Codex
 
 В том же окне PowerShell выполни:
 
 ```powershell
 cd "E:\Games\The Book of Eternity Reborn"
-gemini
+codex --dangerously-bypass-approvals-and-sandbox
 ```
 
 Daemon будет работать с этим окном по binding-файлу, а не по меняющемуся заголовку.
@@ -39,8 +39,8 @@ cd "E:\Games\The Book of Eternity Reborn\BookOfEternityClient\Launcher"
 
 - слежение за `BookOfEternityClient\game_session\input\turn_request.json`
 - авто-вставку и авто-Enter в зарегистрированное окно ГМа
-- автоматическую генерацию `Launcher\CLI_Launch_Script.md` под текущие пути этой машины
-- bootstrap message с указанием прочитать `Launcher\CLI_Launch_Script.md`
+- автоматическую генерацию session-local `game_state\control\CLI_Launch_Script.generated.md` под текущие пути этой машины
+- bootstrap message с содержимым сгенерированного launch script
 - авто-пинги ГМа при:
   - новом ходе
   - `validation_repair_request.json`
@@ -78,7 +78,7 @@ dotnet run
 cd "E:\Games\The Book of Eternity Reborn\BookOfEternityClient\Launcher"
 .\Register_GM_CLI_Window.ps1
 cd "E:\Games\The Book of Eternity Reborn"
-gemini
+codex --dangerously-bypass-approvals-and-sandbox
 ```
 
 Окно 2:
@@ -101,5 +101,5 @@ dotnet run
 
 ```powershell
 cd "E:\Games\The Book of Eternity Reborn\BookOfEternityClient\Launcher"
-.\Start_GM_Daemon.ps1 -CliWindowTitle "GM Gemini" -AutoPaste
+.\Start_GM_Daemon.ps1 -CliWindowTitle "GM Codex" -AutoPaste
 ```

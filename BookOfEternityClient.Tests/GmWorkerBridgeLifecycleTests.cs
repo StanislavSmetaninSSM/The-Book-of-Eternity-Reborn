@@ -11,7 +11,7 @@ public sealed class GmWorkerBridgeLifecycleTests
     public void BuildInitialStatuses_ReportsDisabledAndStoppedWorkersWithoutLaunchingVisibleWindows()
     {
         var enabled = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
-        var disabled = GmWorkerBridgeTestFixtures.NarrativeDraftGeminiProfile() with { Enabled = false };
+        var disabled = GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile() with { Enabled = false };
 
         var statuses = GmWorkerBridgePool.BuildInitialStatuses([enabled, disabled]);
 
@@ -82,7 +82,6 @@ public sealed class GmWorkerBridgeLifecycleTests
             Assert.Equal(
                 [
                     WorkerBridgeState.Starting,
-                    WorkerBridgeState.Ready,
                     WorkerBridgeState.Busy,
                     WorkerBridgeState.Stopped
                 ],
@@ -126,7 +125,6 @@ public sealed class GmWorkerBridgeLifecycleTests
             Assert.Equal(
                 [
                     WorkerBridgeState.Starting,
-                    WorkerBridgeState.Ready,
                     WorkerBridgeState.Busy,
                     WorkerBridgeState.Failed
                 ],
@@ -135,6 +133,36 @@ public sealed class GmWorkerBridgeLifecycleTests
                 auditEvents,
                 first => Assert.Equal("task-dispatched", first.EventType),
                 second => Assert.Equal("task-failed", second.EventType));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_WhenWorkerExitsBeforeProtocolAcceptance_NeverReportsReady()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var scriptPath = Path.Combine(root, "fake-worker-exits-before-protocol.ps1");
+            await File.WriteAllTextAsync(scriptPath, "Write-Error 'worker cli exited before accepting task'; exit 13");
+            var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            var result = await pool.RunTaskAsync(profile, task);
+
+            Assert.Equal(WorkerBridgeState.Failed, result.Status.State);
+            Assert.False(result.Status.Ready);
+            Assert.DoesNotContain(result.StatusHistory, status => status.Ready);
+            Assert.DoesNotContain(result.StatusHistory, status => status.State == WorkerBridgeState.Ready);
         }
         finally
         {
@@ -170,7 +198,6 @@ public sealed class GmWorkerBridgeLifecycleTests
             Assert.Equal(
                 [
                     WorkerBridgeState.Starting,
-                    WorkerBridgeState.Ready,
                     WorkerBridgeState.Busy,
                     WorkerBridgeState.TimedOut
                 ],

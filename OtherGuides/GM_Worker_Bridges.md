@@ -2,8 +2,8 @@
 
 Tracked issues: #1141, #1143, #1145, #1147, #1149.
 
-GM worker bridges are subordinate helpers for the main GM. They can be Codex,
-Gemini, or another CLI profile configured by the user. The main GM remains the
+GM worker bridges are subordinate helpers for the main GM. They can be Codex
+or another supported CLI profile configured by the user. The main GM remains the
 only authority for the player turn, narration shown to the player, and canonical
 game state.
 
@@ -47,7 +47,7 @@ canonical files such as `game_state/...` directly.
 ## Local CLI Worker Runner
 
 Worker profiles should prefer the repo-owned runner entrypoint instead of a
-bare raw Codex/Gemini command. The runner reads the same `BOE_WORKER_*`
+bare raw agent command. The runner reads the same `BOE_WORKER_*`
 environment variables, builds a strict prompt with the task packet and proposal
 contract, feeds that prompt to the configured agent command through stdin, and
 requires the agent to write a non-empty proposal handoff file.
@@ -78,13 +78,13 @@ Codex validation-repair example:
 }
 ```
 
-Gemini narrative-draft example:
+Codex narrative-draft example:
 
 ```json
 {
-  "workerId": "narrative_draft_gemini",
-  "displayName": "Gemini narrative drafter",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"gemini\" -TimeoutSeconds 120",
+  "workerId": "narrative_draft_codex",
+  "displayName": "Codex narrative drafter",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex --dangerously-bypass-approvals-and-sandbox\" -TimeoutSeconds 120",
   "role": "narrative-draft",
   "enabled": false,
   "launchVisibility": "hidden",

@@ -74,27 +74,7 @@ public sealed class MortalCommandDisplaySaveTests : IDisposable
         string commandId,
         string command)
     {
-        var sourceArchive = GetSourceArchivePath();
-        Assert.True(File.Exists(sourceArchive), $"Missing reusable Mortal World command display save: {sourceArchive}");
-
-        var loadRoot = CreateIsolatedRoot();
-        var fs = new FileSystemManager(loadRoot, NullLogger<FileSystemManager>.Instance);
-        fs.EnsureDirectoryStructure();
-        CopyCleanCheckoutDependencies(loadRoot);
-        var savePath = fs.ResolvePath(SaveRelativePath);
-        Directory.CreateDirectory(Path.GetDirectoryName(savePath)!);
-        File.Copy(sourceArchive, savePath, overwrite: true);
-
-        var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-        var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
-        Assert.True(await saveLoad.LoadGameAsync(savePath));
-        await stateManager.LoadSettingsAsync();
-        await stateManager.RefreshGameStateAsync();
-
-        var validation = new ValidationService(fs, NullLogger<ValidationService>.Instance);
-        var service = new ExplorerWebCommandService(fs, stateManager, new LocalizationManager(), validation);
-        var result = await service.ExecuteAsync(new ExplorerWebCommandRequest(command, AdvancedEnabled: false));
+        var result = await ExecuteFromLoadedSaveAsync(command);
 
         var violations = CollectDisplayViolations(result);
         Assert.True(
@@ -106,6 +86,21 @@ public sealed class MortalCommandDisplaySaveTests : IDisposable
         var renderException = Record.Exception(() => ExplorerCommandResultConsoleRenderer.Render(console, result));
         Assert.Null(renderException);
         Assert.NotEmpty(console.Rendered);
+    }
+
+    [Theory]
+    [MemberData(nameof(MortalWorldNewsFixtureInvocations))]
+    public async Task LoadedMortalCommandDisplaySave_WorldNewsLocalizesVisibilityEnums(
+        string command,
+        string expectedText,
+        string rawVisibility)
+    {
+        var result = await ExecuteFromLoadedSaveAsync(command);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var visibleText = CollectVisibleText(result);
+        Assert.Contains(expectedText, visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(rawVisibility, visibleText, StringComparison.OrdinalIgnoreCase);
     }
 
     public static IEnumerable<object[]> CoveredMortalCommandInvocations()
@@ -120,6 +115,14 @@ public sealed class MortalCommandDisplaySaveTests : IDisposable
 
         foreach (var (id, command) in PracticalUniversalMortalPreviewCommands())
             yield return [id, command];
+    }
+
+    public static IEnumerable<object[]> MortalWorldNewsFixtureInvocations()
+    {
+        yield return ["/новости_мира", "Письмо появилось ночью", "local"];
+        yield return ["/новости_мира", "Слухи в купеческом квартале", "rumor"];
+        yield return ["/новости_мира событие world_event_valmont_letter", "местные новости", "local"];
+        yield return ["/новости_мира событие world_event_market_whispers", "слух", "rumor"];
     }
 
     public void Dispose()
@@ -144,6 +147,31 @@ public sealed class MortalCommandDisplaySaveTests : IDisposable
 
     private static string GetSourceArchivePath() =>
         Path.Combine(TestRepoPaths.BaseSessionRoot, "saves", "manual_saves", SaveFileName);
+
+    private async Task<ExplorerCommandResult> ExecuteFromLoadedSaveAsync(string command)
+    {
+        var sourceArchive = GetSourceArchivePath();
+        Assert.True(File.Exists(sourceArchive), $"Missing reusable Mortal World command display save: {sourceArchive}");
+
+        var loadRoot = CreateIsolatedRoot();
+        var fs = new FileSystemManager(loadRoot, NullLogger<FileSystemManager>.Instance);
+        fs.EnsureDirectoryStructure();
+        CopyCleanCheckoutDependencies(loadRoot);
+        var savePath = fs.ResolvePath(SaveRelativePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(savePath)!);
+        File.Copy(sourceArchive, savePath, overwrite: true);
+
+        var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
+        Assert.True(await saveLoad.LoadGameAsync(savePath));
+        await stateManager.LoadSettingsAsync();
+        await stateManager.RefreshGameStateAsync();
+
+        var validation = new ValidationService(fs, NullLogger<ValidationService>.Instance);
+        var service = new ExplorerWebCommandService(fs, stateManager, new LocalizationManager(), validation);
+        return await service.ExecuteAsync(new ExplorerWebCommandRequest(command, AdvancedEnabled: false));
+    }
 
     private static void CopyCleanCheckoutDependencies(string loadRoot)
     {

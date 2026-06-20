@@ -132,7 +132,6 @@ public sealed class GmWorkerBridgePool
             }
 
             var processId = process.Id;
-            Track(WorkerBridgeState.Ready, ready: true, processId: processId);
             Track(WorkerBridgeState.Busy, ready: false, processId: processId);
             var outputTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
             var errorTask = process.StandardError.ReadToEndAsync(cancellationToken);
