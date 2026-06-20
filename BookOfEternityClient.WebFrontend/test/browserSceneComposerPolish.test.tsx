@@ -248,13 +248,18 @@ describe('browser scene composer polish #1185', () => {
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .content-area");
     expect(commandUi).toContain('padding-block: clamp(0rem, 0.2vh, 0.2rem);');
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .cinematic-hero");
-    expect(commandUi).toContain('height: clamp(4.5rem, 9vh, 7rem);');
+    expect(commandUi).toContain('height: clamp(9rem, 22vh, 15rem);');
+    expect(commandUi).toContain('min-height: 100%;');
     expect(commandUi).toContain('gap: clamp(0.6rem, 1.1vh, 0.8rem);');
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-post .rune-frame");
+    expect(commandUi).toContain('font-size: calc(var(--text-md) * var(--scene-post-scale, 1));');
+    expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-post-controls");
+    expect(commandUi).toContain('margin-top: 0.35rem;');
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-dialogues");
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-quick-actions");
     expect(commandUi).toContain('margin-top: clamp(0.8rem, 1.8vh, 1.25rem);');
-    expect(commandUi).toContain('margin-top: clamp(0.95rem, 2vh, 1.4rem);');
+    expect(commandUi).toContain('margin-top: auto;');
+    expect(commandUi).toContain('padding-top: clamp(0.95rem, 2vh, 1.4rem);');
     expect(commandUi).toContain('gap: 0.5rem;');
   });
 

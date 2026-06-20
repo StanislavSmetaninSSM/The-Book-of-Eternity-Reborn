@@ -134,24 +134,24 @@
 }
 
 .browser-shell[data-active-tab='scene'] .scene-view {
+  min-height: 100%;
   gap: clamp(0.6rem, 1.1vh, 0.8rem);
 }
 
 .browser-shell[data-active-tab='scene'] .cinematic-hero {
   min-height: 0;
-  height: clamp(4.5rem, 9vh, 7rem);
+  height: clamp(9rem, 22vh, 15rem);
   margin-top: 0;
   margin-bottom: 0;
-  padding: clamp(0.45rem, 1vh, 0.75rem) clamp(0.85rem, 2.4vw, 1.5rem);
+  padding: clamp(0.7rem, 1.8vh, 1.2rem) clamp(1rem, 3vw, 2rem);
 }
 
 .browser-shell[data-active-tab='scene'] .cinematic-hero__eyebrow {
-  margin-bottom: clamp(0.2rem, 0.55vh, 0.4rem);
-  padding: 0.18rem 0.52rem;
+  margin-bottom: clamp(0.35rem, 0.9vh, 0.65rem);
 }
 
 .browser-shell[data-active-tab='scene'] .cinematic-hero__title {
-  font-size: clamp(1.3rem, calc(2.1vw * var(--browser-font-scale, 1)), 2rem);
+  font-size: clamp(1.65rem, calc(3vw * var(--browser-font-scale, 1)), 2.6rem);
 }
 
 .browser-shell[data-active-tab='scene'] .cinematic-hero__subtitle {
@@ -186,7 +186,8 @@
 }
 
 .browser-shell[data-active-tab='scene'] .scene-quick-actions {
-  margin-top: clamp(0.95rem, 2vh, 1.4rem);
+  margin-top: auto;
+  padding-top: clamp(0.95rem, 2vh, 1.4rem);
 }
 
 .browser-shell[data-active-tab='scene'] .scene-dialogues h3,
