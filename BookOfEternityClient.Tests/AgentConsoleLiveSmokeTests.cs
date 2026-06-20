@@ -441,21 +441,14 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
                 TimeSpan.FromSeconds(20),
                 snapshot =>
                     !string.Equals(snapshot["screenId"]?.GetValue<string>(), gameLoop["screenId"]?.GetValue<string>(), StringComparison.Ordinal) &&
-                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "key", StringComparison.Ordinal));
+                    IsCommandResultInput(snapshot));
 
             var inventoryText = inventorySnapshot["plainText"]!.GetValue<string>();
             Assert.Contains("Инвентарь", inventoryText, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("Cannot show selection prompt", inventoryText, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("NotSupportedException", inventoryText, StringComparison.OrdinalIgnoreCase);
 
-            using var continueAfterInventory = await client.PostAsJsonAsync("/api/agent-console/key", new { key = "Enter" });
-            Assert.True(continueAfterInventory.IsSuccessStatusCode);
-
-            await WaitForSnapshotAsync(
-                client,
-                TimeSpan.FromSeconds(20),
-                snapshot =>
-                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) &&
-                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "text", StringComparison.Ordinal));
+            await CloseCommandResultAsync(client, inventorySnapshot);
 
             using var questsResponse = await client.PostAsJsonAsync("/api/agent-console/text", new { text = "/квесты" });
             Assert.True(
@@ -467,22 +460,14 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
                 TimeSpan.FromSeconds(20),
                 snapshot =>
                     !string.Equals(snapshot["screenId"]?.GetValue<string>(), inventorySnapshot["screenId"]?.GetValue<string>(), StringComparison.Ordinal) &&
-                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "key", StringComparison.Ordinal));
+                    IsCommandResultInput(snapshot));
 
             var questsText = questsSnapshot["plainText"]!.GetValue<string>();
             Assert.DoesNotContain("Cannot show selection prompt", questsText, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("NotSupportedException", questsText, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("Инвентарь пуст", questsText, StringComparison.OrdinalIgnoreCase);
 
-            using var continueAfterQuests = await client.PostAsJsonAsync("/api/agent-console/key", new { key = "Enter" });
-            Assert.True(continueAfterQuests.IsSuccessStatusCode);
-
-            await WaitForSnapshotAsync(
-                client,
-                TimeSpan.FromSeconds(20),
-                snapshot =>
-                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) &&
-                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "text", StringComparison.Ordinal));
+            await CloseCommandResultAsync(client, questsSnapshot);
 
             using var locationsResponse = await client.PostAsJsonAsync("/api/agent-console/text", new { text = "/локации" });
             Assert.True(
@@ -494,12 +479,216 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
                 TimeSpan.FromSeconds(20),
                 snapshot =>
                     !string.Equals(snapshot["screenId"]?.GetValue<string>(), questsSnapshot["screenId"]?.GetValue<string>(), StringComparison.Ordinal) &&
-                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "key", StringComparison.Ordinal));
+                    IsCommandResultInput(snapshot));
 
             var locationsText = locationsSnapshot["plainText"]!.GetValue<string>();
             Assert.Contains("Локации", locationsText, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("Cannot show selection prompt", locationsText, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("NotSupportedException", locationsText, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            if (!process.HasExited)
+            {
+                try
+                {
+                    process.Kill(entireProcessTree: true);
+                }
+                catch
+                {
+                    // Best-effort cleanup; assertions above record the failed workflow.
+                }
+            }
+
+            var stdout = await stdoutTask;
+            var stderr = await stderrTask;
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stdout.txt"), stdout);
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stderr.txt"), stderr);
+        }
+    }
+
+    [Fact]
+    public async Task AgentConsoleLiveControl_CommandDrilldownSelectionPromptPublishesMenuSnapshot()
+    {
+        var repoRoot = FindRepositoryRoot();
+        var fixtureGameSessionPath = Path.Combine(repoRoot, "FileSystemExample", "game_session");
+        using var sandbox = ConsoleE2ESandbox.CreateFromFixture(
+            fixtureGameSessionPath,
+            _tempRoot,
+            preserveArtifacts: true);
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        var token = "agent-console-smoke-" + Guid.NewGuid().ToString("N");
+        using var process = StartAgentConsoleClient(repoRoot, sandbox.BasePath, url, token);
+        var stdoutTask = process.StandardOutput.ReadToEndAsync();
+        var stderrTask = process.StandardError.ReadToEndAsync();
+
+        try
+        {
+            using var client = new HttpClient
+            {
+                BaseAddress = new Uri(url),
+                Timeout = TimeSpan.FromSeconds(2)
+            };
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var gameLoop = await ContinueToGameLoopAsync(client);
+
+            using var booksResponse = await client.PostAsJsonAsync("/api/agent-console/text", new { text = "/книги" });
+            Assert.True(
+                booksResponse.IsSuccessStatusCode,
+                $"Expected /книги endpoint success, got {(int)booksResponse.StatusCode}: {await booksResponse.Content.ReadAsStringAsync()}");
+
+            var booksMenu = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    !string.Equals(snapshot["screenId"]?.GetValue<string>(), gameLoop["screenId"]?.GetValue<string>(), StringComparison.Ordinal) &&
+                    string.Equals(snapshot["mode"]?.GetValue<string>(), "menu", StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "menuSelection", StringComparison.Ordinal));
+
+            Assert.True(booksMenu["awaitingInput"]!.GetValue<bool>());
+            Assert.Contains("кни", booksMenu["plainText"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+            Assert.True(booksMenu["actions"]!.AsArray().Count > 0);
+
+            var closeAction = FindActionByLabel(booksMenu, "Закрыть", "Назад", "Back", "Close");
+            using var closeResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
+            {
+                actionId = closeAction.Action["id"]!.GetValue<string>(),
+                screenId = booksMenu["screenId"]!.GetValue<string>(),
+                inputKind = "menuSelection"
+            });
+            Assert.True(
+                closeResponse.IsSuccessStatusCode,
+                $"Expected command drilldown close action success, got {(int)closeResponse.StatusCode}: {await closeResponse.Content.ReadAsStringAsync()}");
+
+            var afterClose = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) ||
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "key", StringComparison.Ordinal));
+
+            if (string.Equals(afterClose["inputKind"]?.GetValue<string>(), "key", StringComparison.Ordinal))
+            {
+                using var continueResponse = await client.PostAsJsonAsync("/api/agent-console/key", new { key = "Enter" });
+                Assert.True(
+                    continueResponse.IsSuccessStatusCode,
+                    $"Expected command-result continue key success, got {(int)continueResponse.StatusCode}: {await continueResponse.Content.ReadAsStringAsync()}");
+            }
+
+            await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "text", StringComparison.Ordinal));
+        }
+        finally
+        {
+            if (!process.HasExited)
+            {
+                try
+                {
+                    process.Kill(entireProcessTree: true);
+                }
+                catch
+                {
+                    // Best-effort cleanup; assertions above record the failed workflow.
+                }
+            }
+
+            var stdout = await stdoutTask;
+            var stderr = await stderrTask;
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stdout.txt"), stdout);
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stderr.txt"), stderr);
+        }
+    }
+
+    [Fact]
+    public async Task AgentConsoleLiveControl_InGameOptionsCommandPublishesMenuSnapshotAndCloses()
+    {
+        var repoRoot = FindRepositoryRoot();
+        var fixtureGameSessionPath = Path.Combine(repoRoot, "FileSystemExample", "game_session");
+        using var sandbox = ConsoleE2ESandbox.CreateFromFixture(
+            fixtureGameSessionPath,
+            _tempRoot,
+            preserveArtifacts: true);
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        var token = "agent-console-smoke-" + Guid.NewGuid().ToString("N");
+        using var process = StartAgentConsoleClient(repoRoot, sandbox.BasePath, url, token);
+        var stdoutTask = process.StandardOutput.ReadToEndAsync();
+        var stderrTask = process.StandardError.ReadToEndAsync();
+
+        try
+        {
+            using var client = new HttpClient
+            {
+                BaseAddress = new Uri(url),
+                Timeout = TimeSpan.FromSeconds(2)
+            };
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var gameLoop = await ContinueToGameLoopAsync(client);
+
+            using var optionsResponse = await client.PostAsJsonAsync("/api/agent-console/text", new { text = "/опции" });
+            Assert.True(
+                optionsResponse.IsSuccessStatusCode,
+                $"Expected /опции endpoint success, got {(int)optionsResponse.StatusCode}: {await optionsResponse.Content.ReadAsStringAsync()}");
+
+            var optionsMenu = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    !string.Equals(snapshot["screenId"]?.GetValue<string>(), gameLoop["screenId"]?.GetValue<string>(), StringComparison.Ordinal) &&
+                    string.Equals(snapshot["mode"]?.GetValue<string>(), "menu", StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "menuSelection", StringComparison.Ordinal));
+
+            Assert.True(optionsMenu["awaitingInput"]!.GetValue<bool>());
+            Assert.Contains("Игровое меню", optionsMenu["title"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+            Assert.True(optionsMenu["actions"]!.AsArray().Count >= 4);
+            Assert.Contains(
+                optionsMenu["actions"]!.AsArray(),
+                action => action!["label"]!.GetValue<string>().Contains("Опции", StringComparison.OrdinalIgnoreCase));
+
+            var backAction = FindActionByLabel(optionsMenu, "Назад", "Back");
+            using var backResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
+            {
+                actionId = backAction.Action["id"]!.GetValue<string>(),
+                screenId = optionsMenu["screenId"]!.GetValue<string>(),
+                inputKind = "menuSelection"
+            });
+            Assert.True(
+                backResponse.IsSuccessStatusCode,
+                $"Expected options back action success, got {(int)backResponse.StatusCode}: {await backResponse.Content.ReadAsStringAsync()}");
+
+            var maybeSelectedBack = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    string.Equals(snapshot["screenId"]?.GetValue<string>(), optionsMenu["screenId"]!.GetValue<string>(), StringComparison.Ordinal) ||
+                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal));
+
+            if (string.Equals(maybeSelectedBack["screenId"]?.GetValue<string>(), optionsMenu["screenId"]!.GetValue<string>(), StringComparison.Ordinal))
+            {
+                using var activateBackResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
+                {
+                    actionId = backAction.Action["id"]!.GetValue<string>(),
+                    screenId = maybeSelectedBack["screenId"]!.GetValue<string>(),
+                    inputKind = "menuSelection"
+                });
+                Assert.True(
+                    activateBackResponse.IsSuccessStatusCode,
+                    $"Expected options back activation success, got {(int)activateBackResponse.StatusCode}: {await activateBackResponse.Content.ReadAsStringAsync()}");
+            }
+
+            await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "text", StringComparison.Ordinal));
         }
         finally
         {
@@ -687,6 +876,82 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
         Assert.Fail(
             $"Timed out waiting for Agent Console snapshot. Last body: {lastBody ?? "<none>"}. Last exception: {lastException?.Message ?? "<none>"}");
         throw new UnreachableException();
+    }
+
+    private static bool IsCommandResultInput(JsonObject snapshot)
+    {
+        var inputKind = snapshot["inputKind"]?.GetValue<string>();
+        return string.Equals(inputKind, "key", StringComparison.Ordinal) ||
+               string.Equals(inputKind, "menuSelection", StringComparison.Ordinal);
+    }
+
+    private static async Task CloseCommandResultAsync(HttpClient client, JsonObject snapshot)
+    {
+        var inputKind = snapshot["inputKind"]?.GetValue<string>();
+        if (string.Equals(inputKind, "key", StringComparison.Ordinal))
+        {
+            using var continueResponse = await client.PostAsJsonAsync("/api/agent-console/key", new { key = "Enter" });
+            Assert.True(
+                continueResponse.IsSuccessStatusCode,
+                $"Expected command-result continue key success, got {(int)continueResponse.StatusCode}: {await continueResponse.Content.ReadAsStringAsync()}");
+        }
+        else if (string.Equals(inputKind, "menuSelection", StringComparison.Ordinal))
+        {
+            await ActivateMenuActionAsync(client, snapshot, "Назад", "Закрыть", "Back", "Close");
+        }
+        else
+        {
+            Assert.Fail($"Expected key or menuSelection command result, got '{inputKind ?? "<none>"}'.");
+        }
+
+        var afterClose = await WaitForSnapshotAsync(
+            client,
+            TimeSpan.FromSeconds(20),
+            candidate =>
+                string.Equals(candidate["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) ||
+                string.Equals(candidate["inputKind"]?.GetValue<string>(), "key", StringComparison.Ordinal) ||
+                string.Equals(candidate["screenId"]?.GetValue<string>(), snapshot["screenId"]?.GetValue<string>(), StringComparison.Ordinal));
+
+        if (string.Equals(afterClose["screenId"]?.GetValue<string>(), snapshot["screenId"]?.GetValue<string>(), StringComparison.Ordinal) &&
+            string.Equals(afterClose["inputKind"]?.GetValue<string>(), "menuSelection", StringComparison.Ordinal))
+        {
+            await ActivateMenuActionAsync(client, afterClose, "Назад", "Закрыть", "Back", "Close");
+            afterClose = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                candidate =>
+                    string.Equals(candidate["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) ||
+                    string.Equals(candidate["inputKind"]?.GetValue<string>(), "key", StringComparison.Ordinal));
+        }
+
+        if (string.Equals(afterClose["inputKind"]?.GetValue<string>(), "key", StringComparison.Ordinal))
+        {
+            using var continueResponse = await client.PostAsJsonAsync("/api/agent-console/key", new { key = "Enter" });
+            Assert.True(
+                continueResponse.IsSuccessStatusCode,
+                $"Expected command-result continue key success, got {(int)continueResponse.StatusCode}: {await continueResponse.Content.ReadAsStringAsync()}");
+        }
+
+        await WaitForSnapshotAsync(
+            client,
+            TimeSpan.FromSeconds(20),
+            candidate =>
+                string.Equals(candidate["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) &&
+                string.Equals(candidate["inputKind"]?.GetValue<string>(), "text", StringComparison.Ordinal));
+    }
+
+    private static async Task ActivateMenuActionAsync(HttpClient client, JsonObject snapshot, params string[] labels)
+    {
+        var action = FindActionByLabel(snapshot, labels).Action;
+        using var response = await client.PostAsJsonAsync("/api/agent-console/action", new
+        {
+            actionId = action["id"]!.GetValue<string>(),
+            screenId = snapshot["screenId"]!.GetValue<string>(),
+            inputKind = "menuSelection"
+        });
+        Assert.True(
+            response.IsSuccessStatusCode,
+            $"Expected menu action success, got {(int)response.StatusCode}: {await response.Content.ReadAsStringAsync()}");
     }
 
     private static async Task<JsonObject> ContinueToGameLoopAsync(HttpClient client)

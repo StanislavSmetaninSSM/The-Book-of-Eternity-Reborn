@@ -36,7 +36,7 @@ public partial class ExplorerMode
         _agentConsoleInputSource = inputSource as AgentConsoleLiveInputSource;
         if (_agentConsoleInputSource is not null)
         {
-            _agentConsoleCapture = new AgentConsoleRecordingExplorerConsole(baseConsole);
+            _agentConsoleCapture = new AgentConsoleRecordingExplorerConsole(baseConsole, _agentConsoleInputSource);
             _console = _agentConsoleCapture;
         }
         else

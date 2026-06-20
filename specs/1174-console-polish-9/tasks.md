@@ -72,8 +72,8 @@
 - [x] T041 Add RED focused dry-sweep coverage for `/сареф` and memory-scene aliases using `ConsoleCommandOutputQualityClassifier`.
 - [x] T042 Replace default `/сареф` raw JSON output with player-facing story detail tables without changing afterlife runtime contracts.
 - [x] T043 Verify Saref and memory-scene focused command quality coverage.
-- [ ] T044 Add RED Agent Console observability tests for command drilldowns/options menu.
-- [ ] T045 Implement Agent Console prompt/menu snapshot fixes without browser or QTE changes.
+- [x] T044 Add RED Agent Console observability tests for command drilldowns/options menu.
+- [x] T045 Implement Agent Console prompt/menu snapshot fixes without browser or QTE changes.
 - [ ] T046 Investigate #1181 GM fact persistence root cause and choose the smallest safe contract/test slice.
 - [ ] T047 Implement #1181 only if it can be fixed without broad narrative/runtime risk; otherwise document the required contract work precisely.
 - [ ] T048 Rerun focused follow-up tests and broad non-browser C# verification before merge.
@@ -133,3 +133,6 @@
 - Follow-up baseline test-project build: `dotnet build BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore` passed with 0 warnings and 0 errors.
 - #1183 RED: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "SarefCommandDisplayQualityTests" --logger "console;verbosity=minimal"` failed 2, passed 4 because `/сареф` and `/saref` returned `UiRawJsonBlock`, leaked `game_state/` and `.json`, and lacked useful story detail text.
 - #1183 GREEN: same filter passed 6, failed 0 after adding focused Saref/memory-scene quality coverage and replacing default `/сареф` raw JSON with player-facing detail tables.
+- #1182 RED: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "AgentConsoleLiveControl_InGameOptionsCommandPublishesMenuSnapshotAndCloses" --logger "console;verbosity=minimal"` timed out on the stale `game-loop` snapshot because `/опции` did not publish a menu observation; `AgentConsoleLiveControl_CommandDrilldownSelectionPromptPublishesMenuSnapshot` timed out on `explorer-command-1` because explorer `SelectionPrompt` drilldowns were flattened into wait-key text snapshots.
+- #1182 GREEN narrow: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "AgentConsoleLiveControl_CommandDrilldownSelectionPromptPublishesMenuSnapshot|AgentConsoleLiveControl_InGameOptionsCommandPublishesMenuSnapshotAndCloses" --logger "console;verbosity=minimal"` passed 2, failed 0 after publishing live menu snapshots for explorer selection prompts and generic single-choice menus.
+- #1182 GREEN adjacent Agent Console suite: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "AgentConsoleLiveControl_CommandCaptureDoesNotLeakAndSelectionPromptsDoNotThrow|AgentConsoleLiveControl_CommandDrilldownSelectionPromptPublishesMenuSnapshot|AgentConsoleLiveControl_InGameOptionsCommandPublishesMenuSnapshotAndCloses|AgentConsoleRecordingExplorerConsoleTests|AgentConsoleLiveInputSourceTests|AgentConsoleObservationTests" --logger "console;verbosity=minimal"` passed 31, failed 0.

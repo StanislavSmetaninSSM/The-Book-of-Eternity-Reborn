@@ -777,6 +777,8 @@ public partial class GameEngine
         var selectedIndex = Math.Clamp(initialIndex, 0, items.Count - 1);
         var headerTop = RenderGenericMenuStaticFrame(title, footer);
         RedrawSingleChoiceMenuArea(items, selectedIndex, headerTop, GetSafeConsoleHeight(), enableCompactMode);
+        var observationSlug = BuildSingleChoiceMenuObservationSlug(title);
+        WriteSingleChoiceMenuObservation(title, items, selectedIndex, observationSlug);
 
         while (true)
         {
@@ -799,11 +801,83 @@ public partial class GameEngine
                 case ConsoleKey.Enter:
                     _audioService.PlayCue(AudioCue.MenuSelect);
                     return items[selectedIndex];
+                default:
+                    if (TryMapMenuNumberSelection(key, items.Count, out var numberIndex))
+                    {
+                        selectedIndex = numberIndex;
+                        selectionChanged = true;
+                    }
+
+                    break;
             }
 
             if (selectionChanged)
+            {
                 RedrawSingleChoiceMenuArea(items, selectedIndex, headerTop, GetSafeConsoleHeight(), enableCompactMode);
+                WriteSingleChoiceMenuObservation(title, items, selectedIndex, observationSlug);
+            }
         }
+    }
+
+    private void WriteSingleChoiceMenuObservation(
+        string title,
+        IReadOnlyList<MenuChoiceItem> items,
+        int selectedIndex,
+        string slug)
+    {
+        var boundedIndex = items.Count == 0
+            ? -1
+            : Math.Clamp(selectedIndex, 0, items.Count - 1);
+        var selectedItem = boundedIndex >= 0 ? items[boundedIndex] : null;
+        var optionTitles = items.Select(item => StripMarkup(item.Label)).ToArray();
+        var selectedOption = selectedItem is null ? null : StripMarkup(selectedItem.Label);
+        var playerText = BuildSingleChoiceMenuObservationText(title, items, boundedIndex);
+
+        RecordConsoleObservation(
+            ConsoleE2EInputMode.Menu,
+            StripMarkup(title),
+            playerText,
+            optionTitles,
+            selectedOption,
+            slug);
+    }
+
+    private string BuildSingleChoiceMenuObservationText(
+        string title,
+        IReadOnlyList<MenuChoiceItem> items,
+        int selectedIndex)
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine(StripMarkup(title));
+        builder.AppendLine("Доступные пункты:");
+
+        for (var index = 0; index < items.Count; index++)
+        {
+            var label = StripMarkup(items[index].Label);
+            var marker = index == selectedIndex ? ">" : " ";
+            var itemDescription = items[index].Description;
+            var description = string.IsNullOrWhiteSpace(itemDescription)
+                ? string.Empty
+                : $" — {StripMarkup(itemDescription)}";
+            builder.AppendLine($"{marker} {index + 1}. {label}{description}");
+        }
+
+        if (selectedIndex >= 0 && selectedIndex < items.Count)
+        {
+            builder.AppendLine();
+            builder.AppendLine($"Выбран пункт: {StripMarkup(items[selectedIndex].Label)}");
+        }
+
+        return builder.ToString().Trim();
+    }
+
+    private static string BuildSingleChoiceMenuObservationSlug(string title)
+    {
+        var plainTitle = StripMarkup(title);
+        var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(plainTitle)))
+            .Substring(0, 8)
+            .ToLowerInvariant();
+        return $"single-choice-menu-{hash}";
     }
 
     private HashSet<string>? ShowMultiChoiceMenu(
