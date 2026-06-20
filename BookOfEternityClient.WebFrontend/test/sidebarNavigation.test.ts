@@ -13,7 +13,7 @@ function readSource(...relativePath: string[]): string {
 }
 
 describe('tab navigation source', () => {
-  it('defines the current five-tab player shell contract with local glyph ids', () => {
+  it('defines the current player shell tabs without duplicate combat or QTE practice entries', () => {
     const navConfig = readSource('src', 'components', 'tabBarConfig.ts');
 
     expect(navConfig).toContain('export interface TabNavItem');
@@ -21,15 +21,20 @@ describe('tab navigation source', () => {
     expect(navConfig).toContain('glyph: TabGlyphId;');
     expect(tabNav).toEqual([
       { id: 'scene', glyph: 'scene', label: 'Сцена', shortcut: '1', description: 'Текущий ход, повествование и быстрые действия.' },
-      { id: 'practice', glyph: 'practice', label: 'Тренировка', shortcut: '2', description: 'Свободная тренировка быстрых сцен без наград.' },
-      { id: 'status', glyph: 'status', label: 'Статус', shortcut: '3', description: 'Персонаж, душа, мир и посмертный прогресс.' },
-      { id: 'help', glyph: 'help', label: 'Помощь', shortcut: '4', description: 'Справка книги и подсказки текущей главы.' },
-      { id: 'settings', glyph: 'settings', label: 'Настройки', shortcut: '5', description: 'Язык, звук, доступность и явный расширенный режим.' }
+      { id: 'status', glyph: 'status', label: 'Статус', shortcut: '2', description: 'Персонаж, душа, мир и посмертный прогресс.' },
+      { id: 'help', glyph: 'help', label: 'Помощь', shortcut: '3', description: 'Справка книги и подсказки текущей главы.' },
+      { id: 'settings', glyph: 'settings', label: 'Настройки', shortcut: '4', description: 'Язык, звук, доступность и явный расширенный режим.' }
     ]);
     expect(resolveTabShortcut('1')).toBe('scene');
-    expect(resolveTabShortcut('5')).toBe('settings');
+    expect(resolveTabShortcut('4')).toBe('settings');
+    expect(resolveTabShortcut('5')).toBeNull();
     expect(resolveTabShortcut('0')).toBeNull();
     expect(resolveTabShortcut('x')).toBeNull();
+
+    expect(navConfig).not.toContain("label: 'Бой'");
+    expect(navConfig).not.toContain("label: 'Тренировка'");
+    expect(navConfig).not.toContain("'combat'");
+    expect(navConfig).not.toContain("'practice', label: 'Тренировка'");
 
     for (const emojiIcon of ['📖', '⚡', '📊', '❓', '⚙️']) {
       expect(navConfig).not.toContain(emojiIcon);

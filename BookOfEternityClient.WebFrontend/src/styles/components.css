@@ -4009,7 +4009,9 @@
     linear-gradient(135deg, rgba(34, 26, 20, 0.85), rgba(20, 14, 8, 0.9));
   color: var(--color-parchment);
   font-family: var(--font-narrative);
-  font-size: var(--text-base);
+  /* Dialogue/action options are the player's primary interactive reading
+     surface — size them like book body text so they're easy to scan and pick. */
+  font-size: var(--text-lg);
   font-style: italic;
   cursor: pointer;
   transition: border-color var(--motion-fast), background var(--motion-fast), color var(--motion-fast);

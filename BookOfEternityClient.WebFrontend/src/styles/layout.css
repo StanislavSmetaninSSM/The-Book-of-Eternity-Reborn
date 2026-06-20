@@ -97,7 +97,7 @@
   padding: 0;
   /* Font scaling lives on :root (base.css) so rem units scale app-wide; do not
      re-apply it here or elements inheriting this size get double-scaled. */
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .browser-shell.is-launcher-route {

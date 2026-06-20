@@ -92,13 +92,6 @@ function renderGlyphPath(glyph: TabGlyphId) {
           <path d="M8 7.6h7.4M8 10.8h6.2M8 14h4.4" />
         </>
       );
-    case 'practice':
-      return (
-        <>
-          <path d="M13.2 3.8 6.4 13h4.7l-1 7.2 7.2-9.7h-4.8l.7-6.7Z" />
-          <path d="M5.5 18.2h4.3M14.5 5.8h4" />
-        </>
-      );
     case 'status':
       return (
         <>
