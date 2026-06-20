@@ -4033,7 +4033,9 @@
 .scene-narrative,
 .narrative-card {
   font-family: var(--font-narrative);
-  font-size: var(--text-md);
+  /* The GM narrative is the primary reading surface, same as Daren prose —
+     size it like book body text (--text-lg), not UI-label size. */
+  font-size: var(--text-lg);
   line-height: var(--leading-relaxed);
   color: var(--color-parchment);
   background:

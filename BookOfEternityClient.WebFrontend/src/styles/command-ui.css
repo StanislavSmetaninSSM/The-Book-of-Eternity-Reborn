@@ -125,7 +125,7 @@
 
 /* ===== Scene View ===== */
 .scene-view { display: flex; flex-direction: column; gap: var(--space-4); }
-.scene-narrative { color: var(--text-primary); font-size: 1rem; line-height: 1.75; }
+.scene-narrative { color: var(--text-primary); line-height: 1.75; }
 .scene-combat-log {
   display: grid;
   gap: var(--space-3);
