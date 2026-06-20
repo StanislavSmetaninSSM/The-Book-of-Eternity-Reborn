@@ -65,9 +65,9 @@
 - [x] T020 [US2] Audit `/эффекты` and `/навыки` for summary/detail authority and localized mechanical fields
 - [x] T021 [US2] Audit `/квесты`, NPC, and faction surfaces for useful summary plus discoverable detailed views
 - [x] T022 [US2] Audit `/карта`, location/navigation, and world-news surfaces for lifecycle-correct messages and useful drill-downs
-- [ ] T023 [US2] Audit combat/QTE entry points if reachable and classify usability issues separately from balance/design wishes
-- [ ] T024 [US2] Audit end-life/afterlife reward surfaces if reachable and record missing discoverability or corruption
-- [ ] T025 [US2] Write a command-output findings table in the run summary artifact and link it from #1157
+- [x] T023 [US2] Audit combat/QTE entry points if reachable and classify usability issues separately from balance/design wishes
+- [x] T024 [US2] Audit end-life/afterlife reward surfaces if reachable and record missing discoverability or corruption
+- [x] T025 [US2] Write a command-output findings table in the run summary artifact and link it from #1157
 
 **Checkpoint**: Command output findings are classified with artifacts.
 

@@ -66,10 +66,10 @@ public partial class ExplorerMode
         {
             "[bold cyan]Духовный конфликт посмертия[/]",
             "",
-            "Это отдельная загробная система конфликтов. Она не использует файлы смертного боя, здоровье, энергию, списки врагов/союзников (enemiesData/alliesData) или смертные боевые навыки.",
+            "Это отдельная загробная система конфликтов. Она не использует здоровье, энергию и смертные боевые навыки.",
             "Конфликт начинает ГМ по роли: по заявке игрока или когда актор посмертия сам инициирует давление.",
             "Победа в проверяемом конфликте может дать награду: в Море Хаоса — Чернильные Перья, в обычной активной Сияющей Обители — Искры Света.",
-            "Награда требует аудит награды (rewardAudit) с формулой сложности; ремонтная отмена (repair_cancel), отсутствие эффекта (no_effect), добровольное отступление и переговоры без состязания не дают валюту.",
+            "Награда появляется только за полноценный проверяемый конфликт; отмена, отсутствие эффекта, добровольное отступление и переговоры без состязания валюту не дают.",
             ""
         };
 
@@ -77,33 +77,31 @@ public partial class ExplorerMode
         {
             lines.Add("[dim]Активного духовного конфликта нет.[/]");
             lines.Add("");
-            lines.Add("ГМ может начать конфликт только через ответ принятого хода:");
-            lines.Add($"  • `{AfterlifeSpiritualConflictState.ResponseField}` с `mode=start`");
-            lines.Add($"  • канонический файл состояния: `{AfterlifeSpiritualConflictState.StatePath}`");
+            lines.Add("Когда в сцене появится проверяемое духовное противостояние, здесь будут видны стороны, позиция, напряжение и доступные действия.");
         }
         else
         {
             var conflictId = AfterlifeSpiritualConflictState.GetNodeString(active["conflictId"]) ?? "unknown";
             lines.Add($"[bold]Активный конфликт:[/] [white]{Markup.Escape(conflictId)}[/]");
-            lines.Add($"  • Область (realm): [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["realm"]) ?? "?")}[/]");
-            lines.Add($"  • Модель сторон (sideModel): [white]{Markup.Escape(FormatSideModelLabel(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"])))}[/]");
-            lines.Add($"  • Позиция конфликта (conflictPosition): [white]{Markup.Escape(FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"])))}[/]");
-            lines.Add($"  • Напряжение стороны игрока (playerSideStrain): [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/]");
-            lines.Add($"  • Напряжение противостоящей стороны (oppositionSideStrain): [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
-            lines.Add($"  • Контроль/оковы (controlState): [white]{Markup.Escape(DescribeControlState(active["controlState"] as JsonObject))}[/]");
-            lines.Add($"  • ОД (actionEconomy): [white]{Markup.Escape(DescribeActionEconomy(active["actionEconomy"] as JsonObject))}[/]");
-            lines.Add($"  • Состояние завершения (resolutionState): [white]{Markup.Escape(FormatResolutionStateLabel(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"])))}[/]");
+            lines.Add($"  • Область: [white]{Markup.Escape(FormatAfterlifeRealmLabel(AfterlifeSpiritualConflictState.GetNodeString(active["realm"])))}[/]");
+            lines.Add($"  • Модель сторон: [white]{Markup.Escape(FormatSideModelLabel(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"])))}[/]");
+            lines.Add($"  • Позиция конфликта: [white]{Markup.Escape(FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"])))}[/]");
+            lines.Add($"  • Напряжение стороны игрока: [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/]");
+            lines.Add($"  • Напряжение противостоящей стороны: [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
+            lines.Add($"  • Контроль/оковы: [white]{Markup.Escape(DescribeControlState(active["controlState"] as JsonObject))}[/]");
+            lines.Add($"  • ОД: [white]{Markup.Escape(DescribeActionEconomy(active["actionEconomy"] as JsonObject))}[/]");
+            lines.Add($"  • Состояние завершения: [white]{Markup.Escape(FormatResolutionStateLabel(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"])))}[/]");
             lines.Add("");
-            AppendConflictSideSummary(lines, "Сторона игрока (playerSide)", active["playerSide"] as JsonObject);
-            AppendConflictSideSummary(lines, "Противостоящая сторона (oppositionSide)", active["oppositionSide"] as JsonObject);
+            AppendConflictSideSummary(lines, "Сторона игрока", active["playerSide"] as JsonObject);
+            AppendConflictSideSummary(lines, "Противостоящая сторона", active["oppositionSide"] as JsonObject);
             AppendVisibleCombatConditions(lines, active["combatConditions"] as JsonArray);
             lines.Add("");
-            lines.Add($"  • Записано обменов действиями (exchangeLog): [white]{(active["exchangeLog"] as JsonArray)?.Count ?? 0}[/]");
+            lines.Add($"  • Записано обменов действиями: [white]{(active["exchangeLog"] as JsonArray)?.Count ?? 0}[/]");
         }
 
         lines.Add("");
         lines.Add("[bold]Команды:[/]");
-        lines.Add("  • /spiritual_combat_log — журнал духовного боя: обмены действиями (exchangeLog), недавние конфликты (recentConflicts), кубики, позиция, напряжение и награды.");
+        lines.Add("  • /spiritual_combat_log — журнал духовного боя: обмены действиями, завершённые конфликты, кубики, позиция, напряжение и награды.");
         lines.Add("  • /spiritual_combat_help — подробная справка: тактика, позиция, кубики, криты, награды и прокачка.");
         lines.Add("  • /spiritual_action — отправить действие в активном духовном конфликте с явным тегом для ГМ.");
         lines.Add("  • Обычная художественная заявка во время активного конфликта тоже должна резолвиться ГМ как действие конфликта.");
@@ -118,9 +116,6 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-
-        if (root != null)
-            WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", BuildPlayerFacingCombatConditionAudit(root), Color.Cyan1);
 
         WaitForKey();
     }
@@ -145,8 +140,7 @@ public partial class ExplorerMode
         {
             "[bold cyan]Журнал духовного боя[/]",
             "",
-            $"Источник: `{AfterlifeSpiritualConflictState.StatePath}`.",
-            "Это не журнал смертного боя: загробный бой хранится в журнале обменов действиями (activeConflict.exchangeLog) и недавних завершённых конфликтах (recentConflicts).",
+            "Это не журнал смертного боя: здесь показаны обмены действиями, завершённые конфликты, броски, позиция, напряжение и награды.",
             ""
         };
 
@@ -155,8 +149,8 @@ public partial class ExplorerMode
         {
             var conflictId = AfterlifeSpiritualConflictState.GetNodeString(active["conflictId"]) ?? "unknown";
             lines.Add($"[bold]Активный конфликт:[/] [white]{Markup.Escape(conflictId)}[/]");
-            lines.Add($"  • Область (realm): [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["realm"]) ?? "?")}[/]");
-            lines.Add($"  • Модель сторон (sideModel): [white]{Markup.Escape(FormatSideModelLabel(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"])))}[/]");
+            lines.Add($"  • Область: [white]{Markup.Escape(FormatAfterlifeRealmLabel(AfterlifeSpiritualConflictState.GetNodeString(active["realm"])))}[/]");
+            lines.Add($"  • Модель сторон: [white]{Markup.Escape(FormatSideModelLabel(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"])))}[/]");
             lines.Add($"  • Текущая позиция: [white]{Markup.Escape(FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"])))}[/]");
             lines.Add($"  • Текущее напряжение: игрок=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/], противник=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
             lines.Add($"  • Текущий контроль/оковы: [white]{Markup.Escape(DescribeControlState(active["controlState"] as JsonObject))}[/]");
@@ -170,7 +164,7 @@ public partial class ExplorerMode
             }
             else
             {
-                lines.Add("  • Обменов в журнале действий (activeConflict.exchangeLog) пока нет.");
+                lines.Add("  • Обменов в журнале действий пока нет.");
             }
         }
 
@@ -185,8 +179,8 @@ public partial class ExplorerMode
 
         if (!wroteEntry)
         {
-            lines.Add("[dim]Журнал духовного боя пуст: нет обменов действий (activeConflict.exchangeLog) и недавних конфликтов (recentConflicts).[/]");
-            lines.Add("Когда ГМ проведёт спорный обмен или завершение конфликта (resolve), запись появится здесь вместе с аудитом кубиков (diceAudit) и аудитом награды (rewardAudit).");
+            lines.Add("[dim]Журнал духовного боя пуст: нет обменов действий и недавних завершённых конфликтов.[/]");
+            lines.Add("Когда ГМ проведёт спорный обмен или завершение конфликта, запись появится здесь вместе с бросками и наградой.");
         }
 
         Clear();
@@ -198,9 +192,6 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-
-        if (playerFacingRoot != null)
-            WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", playerFacingRoot, Color.Cyan1);
 
         WaitForKey();
     }
@@ -221,21 +212,21 @@ public partial class ExplorerMode
             "[bold cyan]Духовный бой посмертия[/]",
             "",
             "[bold]Что это такое[/]",
-            "  • Это ролевая система конфликтов загробной жизни, а не смертный бой: нет здоровья, энергии, списков врагов/союзников (enemiesData/alliesData) и смертных боевых навыков.",
+            "  • Это ролевая система конфликтов загробной жизни, а не смертный бой: нет здоровья, энергии и смертных боевых навыков.",
             "  • Конфликт начинает ГМ по ситуации: по заявке игрока или когда Хранитель, резидент, светозарный актор или другой актор посмертия сам давит на душу.",
             "  • После старта игрок может писать обычную прозу. Команда /spiritual_action только добавляет явный маршрутный тег; она не обязательна, если действие очевидно относится к активному конфликту.",
             "",
             "[bold]Команды игрока[/]",
-            "  • /spiritual_conflict / /духовный_конфликт — показать активный конфликт, стороны, позицию, напряжение и полный JSON-аудит.",
-            "  • /spiritual_combat_log / /журнал_духовного_боя — показать журнал обменов (exchangeLog) и недавних конфликтов (recentConflicts): действия, кубики, позицию, напряжение и награды.",
+            "  • /spiritual_conflict / /духовный_конфликт — показать активный конфликт, стороны, позицию и напряжение.",
+            "  • /spiritual_combat_log / /журнал_духовного_боя — показать журнал обменов и недавних конфликтов: действия, кубики, позицию, напряжение и награды.",
             "  • /spiritual_action / /духовное_действие — отправить ГМ явное действие в активном конфликте.",
             "  • /spiritual_arts / /духовные_искусства — посмотреть и локально прокачать духовные искусства.",
             "  • /spiritual_combat_help / /духовный_бой — эта подробная справка.",
             "",
             "[bold]Как выбирается исход[/]",
-            "  • В спорных обменах ГМ обязан использовать видимые d20 из заранее сгенерированных кубиков (preGeneratedDices1d20) и записать аудит кубиков (diceAudit).",
-            "  • Формула: итог игрока (playerTotal) = d20 игрока + модификаторы; итог противника (oppositionTotal) = d20 противника + модификаторы; разница (margin) = playerTotal - oppositionTotal.",
-            "  • Разница (margin) >= 8 — решительный успех игрока (decisive_player_success); 3..7 — успех игрока (player_success); -2..2 — смешанный или нулевой эффект (mixed_or_no_effect); -7..-3 — успех противника (opposition_success); <= -8 — решительный успех противника (decisive_opposition_success).",
+            "  • В спорных обменах ГМ использует видимые d20 из заранее сгенерированных кубиков и записывает результат так, чтобы журнал мог показать выбранный бросок и отброшенные значения.",
+            "  • Формула: итог игрока = d20 игрока + модификаторы; итог противника = d20 противника + модификаторы; разница = итог игрока минус итог противника.",
+            "  • Разница 8 и выше — решительный успех игрока; 3..7 — успех игрока; -2..2 — смешанный или нулевой эффект; -7..-3 — успех противника; -8 и ниже — решительный успех противника.",
             "  • Модификаторы идут от рангов Просветления/Сияния, уровней духовных искусств, силы ведущего бойца, поддержки, Воплощения Света и контекста сцены.",
             "  • Преимущество и Помеха бывают двух уровней: Преимущество — 2d20 и лучший результат, Великое Преимущество — 3d20 и лучший результат; Помеха — 2d20 и худший результат, Тяжкая Помеха — 3d20 и худший результат.",
             "  • Встречные источники гасятся ступенчато: Великое Преимущество против обычной Помехи становится обычным Преимуществом, Великое Преимущество против Тяжкой Помехи становится обычным броском. Два обычных источника одного направления не превращаются в великий/тяжкий уровень.",
@@ -243,50 +234,50 @@ public partial class ExplorerMode
             "  • Успешная защита против прямого давления дает одноразовое темповое окно: Преимущество на следующее подходящее духовное действие. Оно не применяется к восстановлению ОД, отступлению, сдаче или переговорам.",
             "",
             "[bold]Честные криты[/]",
-            "  • Благоприятный крит для игрока: натуральная 20 игрока или натуральная 1 противника. Если разница (margin) дала результат хуже обычного успеха, итог поднимается только до успеха игрока (player_success).",
-            "  • Неблагоприятный крит для игрока: натуральная 1 игрока или натуральная 20 противника. Если разница (margin) дала результат лучше обычной неудачи, итог опускается только до успеха противника (opposition_success).",
-            "  • Это симметрично: крит сам по себе не создаёт решительный успех игрока (decisive_player_success) или решительный успех противника (decisive_opposition_success). Решительный исход появляется только если разница (margin) уже достаточно велика.",
+            "  • Благоприятный крит для игрока: натуральная 20 игрока или натуральная 1 противника. Если разница дала результат хуже обычного успеха, итог поднимается только до успеха игрока.",
+            "  • Неблагоприятный крит для игрока: натуральная 1 игрока или натуральная 20 противника. Если разница дала результат лучше обычной неудачи, итог опускается только до успеха противника.",
+            "  • Это симметрично: крит сам по себе не создаёт решительный успех игрока или решительный успех противника. Решительный исход появляется только если разница уже достаточно велика.",
             "  • Если обе стороны получают натуральный крит, они отменяют друг друга, и используется обычная категория разницы.",
-            "  • Любой крит, изменивший исход, требует аудит критического исхода (criticalResult) с пределом масштаба (scaleLimit) и нарративным ограничением (narrativeConstraint): результат должен быть правдоподобен для силы сторон. Натуральная 20 комара не превращает его в убийцу дракона.",
+            "  • Любой крит, изменивший исход, должен сохранять правдоподобный масштаб результата для силы сторон. Натуральная 20 комара не превращает его в убийцу дракона.",
             "",
-            "[bold]Позиция конфликта[/] [dim](conflictPosition)[/]",
-            "  • Позиция — это шкала рычага/инициативы: доминирование противника (opposition_dominant), преимущество противника (opposition_advantaged), спорная позиция (contested), преимущество игрока (player_advantaged), доминирование игрока (player_dominant).",
+            "[bold]Позиция конфликта[/]",
+            "  • Позиция — это шкала рычага/инициативы: доминирование противника, преимущество противника, спорная позиция, преимущество игрока, доминирование игрока.",
             "  • Она механически важна: успешный манёвр обязан менять позицию и не должен напрямую менять напряжение.",
-            "  • Она влияет на спорный бросок: преимущество/доминирование игрока (player_advantaged/player_dominant) дают игроку +2/+4, преимущество/доминирование противника (opposition_advantaged/opposition_dominant) дают противнику +2/+4 в аудите кубиков (diceAudit).",
-            "  • Она открывает контроль: наложение оков (binding/force_binding) требует преимущества игрока (player_advantaged), доминирования игрока (player_dominant), подготовки или решительного успеха игрока (decisive_player_success).",
-            "  • Она влияет на награду: победа из плохой стартовой позиции имеет больший множитель риска (riskMultiplier) и уровень вызова (challengeTier); победа из доминирования игрока (player_dominant) платит меньше.",
+            "  • Она влияет на спорный бросок: преимущество/доминирование игрока дают игроку +2/+4, преимущество/доминирование противника дают противнику +2/+4.",
+            "  • Она открывает контроль: обычные и силовые оковы требуют преимущества игрока, доминирования игрока, подготовки или решительного успеха игрока.",
+            "  • Она влияет на награду: победа из плохой стартовой позиции имеет больший риск и уровень вызова; победа из доминирования игрока платит меньше.",
             "  • Она ограничивает масштаб нарратива: крит или успех в плохой позиции обычно даёт правдоподобный прорыв/срыв угрозы, а не мгновенную абсолютную победу.",
             "",
-            "[bold]ОД и стоимость действий[/] [dim](actionEconomy / actionCostAudit)[/]",
+            "[bold]ОД и стоимость действий[/]",
             "  • ОД — очки духовного действия. Это ресурс духовного боя посмертия, не здоровье, не энергия и не выносливость смертного мира.",
-            "  • Активный конфликт хранит ОД обеих сторон в actionEconomy: текущее значение (current), максимум (max) и источник расчёта (source).",
-            "  • Каждый новый обмен, который тратит или восстанавливает ОД игрока, обязан иметь actionCostAudit.player: тип действия, базовую стоимость, уровень искусства, итоговую стоимость, ОД до и после.",
-            "  • Если обмен разрешает активное затратное действие противника, нужен actionCostAudit.opposition в той же форме; журнал боя показывает оба расхода ОД.",
-            "  • Формула стоимости: итоговая стоимость = max(минимальная стоимость, базовая стоимость - уровень искусства). В JSON-аудите это effectiveCost = max(minCost, baseCost - artTier).",
+            "  • Активный конфликт хранит ОД обеих сторон: текущее значение, максимум и источник расчёта.",
+            "  • Каждый новый обмен, который тратит или восстанавливает ОД игрока, должен позволять журналу показать тип действия, базовую стоимость, уровень искусства, итоговую стоимость, ОД до и после.",
+            "  • Если обмен разрешает активное затратное действие противника, журнал боя показывает оба расхода ОД.",
+            "  • Формула стоимости: итоговая стоимость = максимум из минимальной стоимости и разницы между базовой стоимостью и уровнем искусства.",
             "  • Уровни духовных искусств уменьшают стоимость действий; Средоточие Души увеличивает максимум ОД: уровни 0/1/2/3/4/5 дают 6/7/8/10/12/15 ОД. Всё это прокачивается локально через /spiritual_arts.",
             "  • Базовые стоимости: давление 3, защита 2, контрприём 4, манёвр 3, оковы 4, силовые оковы 5, разрыв оков 3, сопротивление воплощению 3, координация чемпиона 2.",
             "  • Собрать Средоточие (recover_spiritual_power) не тратит ОД и восстанавливает ОД: обычно +3 при успехе, +2 при частичном успехе, но не выше максимума.",
             "  • Собрать Средоточие выгодно против защиты, контрприёма, ожидания или пассивности; оно опасно против давления, манёвра, оков, силовых оков и принудительного воплощения — тогда восстановление ограничено 0..1 ОД, а действие противника проходит по своей линии.",
             "  • Отступление, сдача и переговоры остаются допустимыми даже при 0 ОД, если сама сцена позволяет такой выбор.",
             "",
-            "[bold]Контроль и оковы[/] [dim](controlState)[/]",
+            "[bold]Контроль и оковы[/]",
             "  • Контроль — отдельная ось боя, не урон и не позиция. Он ограничивает свободу действий стороны и создаёт рычаг для следующих ходов.",
-            "  • Уровни контроля: нет контроля (none), стеснён (hindered), скован (bound), запечатан (locked). Активный контроль всегда указывает сторону-контролёра (controllerSide), идентификатор (controlId), источник (sourceOperation), ограниченные действия (restrictedOperations) и краткое описание (summary).",
-            "  • Наложение оков (binding) при успехе должно создать или усилить контроль игрока: none -> hindered, hindered -> bound, bound -> locked. Силовые оковы (force_binding) требуют более сильного рычага и дают более широкий контроль: минимум две ограниченные операции.",
-            "  • Разрыв оков (break_binding) при успехе должен ослабить, снять или развернуть контроль против игрока. Если контроль не меняется, это не разрыв оков.",
+            "  • Уровни контроля: нет контроля, стеснён, скован, запечатан. Активный контроль всегда указывает сторону-контролёра, источник, ограниченные действия и краткое описание.",
+            "  • Наложение оков при успехе должно создать или усилить контроль игрока: нет контроля -> стеснён -> скован -> запечатан. Силовые оковы требуют более сильного рычага и дают более широкий контроль: минимум две ограниченные операции.",
+            "  • Разрыв оков при успехе должен ослабить, снять или развернуть контроль против игрока. Если контроль не меняется, это не разрыв оков.",
             "  • Манёвр не проходит бесплатно сквозь активный контроль противника: сначала нужно ослабить контроль через разрыв оков, валидный контрприём, сопротивление воплощению, переговоры или сдачу.",
             "  • Защита может не дать новому входящему контролю усилиться, но не снимает уже наложенные оковы. Для снятия нужны разрыв оков или контрприём против конкретного входящего контроля.",
             "",
             "[bold]Духовные искусства: что выбирать[/]",
-            "  • Давление (pressure) — проактивная атака на устойчивость противника. Главный эффект: ухудшить напряжение противостоящей стороны (oppositionSideStrain). Выбирай, когда хочешь продавить волю/клятву/обет противника.",
-            "  • Контрприём (counter) — реакция на конкретное входящее действие (incomingAction) противника. Его преимущество над давлением (pressure): можно не просто ударить в ответ, а заблокировать, развернуть или наказать уже заявленное действие врага. Успешный контрприём обязан дать выигрыш (counterPayoff): описать выигрыш в counterPayoff, улучшить позицию, ухудшить напряжение противника (oppositionSideStrain), либо ослабить или развернуть уже существующие вражеские оковы/контроль (controlState).",
-            "  • Защита (guard) — снижает или предотвращает напряжение стороны игрока (playerSideStrain) или последствие. Лучше контрприёма (counter), когда нечего разворачивать или нужно пережить удар без риска: даже при провале против прямого давления ухудшение напряжения ограничено одним уровнем.",
+            "  • Давление — проактивная атака на устойчивость противника. Главный эффект: ухудшить напряжение противостоящей стороны. Выбирай, когда хочешь продавить волю/клятву/обет противника.",
+            "  • Контрприём — реакция на конкретное входящее действие противника. Его преимущество над давлением: можно не просто ударить в ответ, а заблокировать, развернуть или наказать уже заявленное действие врага. Успешный контрприём обязан дать выигрыш: улучшить позицию, ухудшить напряжение противника либо ослабить или развернуть уже существующие вражеские оковы/контроль.",
+            "  • Защита — снижает или предотвращает напряжение стороны игрока или последствие. Лучше контрприёма, когда нечего разворачивать или нужно пережить удар без риска: даже при провале против прямого давления ухудшение напряжения ограничено одним уровнем.",
             "  • Манёвр (maneuver) — меняет позицию. Выбирай, когда прямое давление опасно, но можно занять лучший духовный угол, разорвать дистанцию, вывести спор из чужой зоны силы. Под активным контролем противника манёвр сначала требует анти-контрольный ответ.",
-            "  • Наложение оков (binding/force_binding) — контроль после преимущества. Не стартовая кнопка победы: сначала получи рычаг через позицию, подготовку (setup) или решительный успех.",
-            "  • Разрыв оков (break_binding) — ответ на оковы, принудительную передачу/выброс или контекст принуждения. Это не универсальная атака.",
-            "  • Сопротивление воплощению (incarnation_resistance) — только против принудительного воплощения Хранителем (guardian_forced / force_incarnation).",
-            "  • Координация чемпиона (champion_coordination) — когда ведущий боец не игрок, а союзник/чемпион; игрок усиливает сторону, а не превращает сцену в массовый бой.",
-            "  • Собрать Средоточие (recover_spiritual_power) — восстановить ОД в момент, когда противник защищается, ждёт или не давит напрямую. Это не атака и не бесплатный пропуск опасного действия врага.",
+            "  • Наложение оков и силовые оковы — контроль после преимущества. Не стартовая кнопка победы: сначала получи рычаг через позицию, подготовку или решительный успех.",
+            "  • Разрыв оков — ответ на оковы, принудительную передачу/выброс или контекст принуждения. Это не универсальная атака.",
+            "  • Сопротивление воплощению — только против принудительного воплощения Хранителем.",
+            "  • Координация чемпиона — когда ведущий боец не игрок, а союзник/чемпион; игрок усиливает сторону, а не превращает сцену в массовый бой.",
+            "  • Собрать Средоточие — восстановить ОД в момент, когда противник защищается, ждёт или не давит напрямую. Это не атака и не бесплатный пропуск опасного действия врага.",
             "",
             "[bold]Матрица приём-контрприём[/]",
             "  • Давление бьёт манёвр: если враг пытается занять позицию, прямой нажим может сорвать перестроение и ухудшить напряжение противника.",
@@ -298,7 +289,7 @@ public partial class ExplorerMode
             "  • Разрыв оков бьёт контроль: применяй его против оков, принудительной передачи/выброса и другого принуждения, а не вместо обычной защиты.",
             "  • Сопротивление воплощению бьёт только принудительное воплощение; добровольный переход в смертную жизнь не является боем.",
             "  • Собрать Средоточие бьёт пустой темп: защиту, контрприём без входящего действия, ожидание и пассивность. Его бьют давление, манёвр, оковы, силовые оковы и принудительное воплощение.",
-            "  • Каждый новый спорный обмен с кубиками должен иметь аудит сопоставления действий (matchupAudit): что сделал игрок, что сделал противник, какая линия решала исход, профиль риска и краткое объяснение.",
+            "  • Каждый новый спорный обмен с кубиками должен показывать, что сделал игрок, что сделал противник, какая линия решала исход, профиль риска и краткое объяснение.",
             "",
             "[bold]Прокачка[/]",
             "  • /spiritual_arts показывает ранги, текущие уровни искусств и стоимость улучшений.",
@@ -308,8 +299,8 @@ public partial class ExplorerMode
             "",
             "[bold]Награды[/]",
             "  • Победа в проверяемом спорном конфликте может дать валюту: Чернильные Перья в Море Хаоса или Искры Света в Сияющей Обители.",
-            "  • Награда маленькая и формульная: зависит от силы противника, модели сторон, стартовой позиции и категории исхода (outcomeBand).",
-            "  • Нет награды за ремонтную отмену (repair_cancel), отсутствие эффекта (no_effect), добровольную сдачу/отступление, переговоры без состязания или повторную награду за тот же конфликт (conflictId)."
+            "  • Награда маленькая и формульная: зависит от силы противника, модели сторон, стартовой позиции и категории исхода.",
+            "  • Нет награды за ремонтную отмену, отсутствие эффекта, добровольную сдачу/отступление, переговоры без состязания или повторную награду за тот же конфликт."
         };
 
         Clear();
@@ -359,7 +350,6 @@ public partial class ExplorerMode
 
             Clear();
             Write(BuildSpiritualArtsPanel(soulRoot, shiningRoot, profile, quotes, spiritFocusQuote));
-            WriteJsonAuditPanel("Полный JSON afterlifeCombatProfile", profile, Color.Cyan1);
 
             var choice = Prompt(new SelectionPrompt<string>()
                 .Title("[bold cyan]Действие духовных искусств[/]")
@@ -624,7 +614,7 @@ public partial class ExplorerMode
         var conflictRead = await ReadJsonObjectForAfterlifeStatusResultAsync(AfterlifeSpiritualConflictState.StatePath);
         if (conflictRead.Error != null)
         {
-            return $"Прокачка духовных искусств заблокирована: {AfterlifeSpiritualConflictState.StatePath} повреждён ({conflictRead.Error}). Сначала выполните ремонт состояния (repair).";
+            return $"Прокачка духовных искусств заблокирована: состояние духовного конфликта повреждено ({conflictRead.Error}). Сначала выполните ремонт состояния.";
         }
 
         if (conflictRead.Root?["activeConflict"] is JsonObject)
@@ -636,7 +626,7 @@ public partial class ExplorerMode
             conflictRead.Root.TryGetPropertyValue("activeConflict", out var activeConflict) &&
             activeConflict != null)
         {
-            return $"Прокачка духовных искусств заблокирована: {AfterlifeSpiritualConflictState.StatePath}.activeConflict повреждён. Сначала выполните ремонт состояния (repair).";
+            return "Прокачка духовных искусств заблокирована: состояние активного духовного конфликта повреждено. Сначала выполните ремонт состояния.";
         }
 
         var soulRead = await ReadJsonObjectForAfterlifeStatusResultAsync(SoulStatePath);
@@ -1599,9 +1589,9 @@ public partial class ExplorerMode
     private static string FormatSideModelLabel(string? value) =>
         NormalizeKey(value) switch
         {
-            "direct_duel" => "прямой поединок (direct_duel)",
-            "assisted_duel" => "поединок с поддержкой (assisted_duel)",
-            "champion_duel" => "поединок чемпиона/союзника (champion_duel)",
+            "direct_duel" => "прямой поединок",
+            "assisted_duel" => "поединок с поддержкой",
+            "champion_duel" => "поединок чемпиона/союзника",
             "" => "?",
             _ => value ?? "?"
         };
@@ -1609,11 +1599,11 @@ public partial class ExplorerMode
     private static string FormatConflictPositionLabel(string? value) =>
         NormalizeKey(value) switch
         {
-            "opposition_dominant" => "противник доминирует (opposition_dominant)",
-            "opposition_advantaged" => "преимущество противника (opposition_advantaged)",
-            "contested" => "спорная позиция (contested)",
-            "player_advantaged" => "преимущество игрока (player_advantaged)",
-            "player_dominant" => "игрок доминирует (player_dominant)",
+            "opposition_dominant" => "противник доминирует",
+            "opposition_advantaged" => "преимущество противника",
+            "contested" => "спорная позиция",
+            "player_advantaged" => "преимущество игрока",
+            "player_dominant" => "игрок доминирует",
             "" => "?",
             _ => value ?? "?"
         };
@@ -1621,11 +1611,11 @@ public partial class ExplorerMode
     private static string FormatSideStrainLabel(string? value) =>
         NormalizeKey(value) switch
         {
-            "clear" => "устойчиво (clear)",
-            "strained" => "напряжено (strained)",
-            "fractured" => "надломлено (fractured)",
-            "overwhelmed" => "подавлено (overwhelmed)",
-            "broken" => "сломлено (broken)",
+            "clear" => "устойчиво",
+            "strained" => "напряжено",
+            "fractured" => "надломлено",
+            "overwhelmed" => "подавлено",
+            "broken" => "сломлено",
             "" => "?",
             _ => value ?? "?"
         };
@@ -1633,13 +1623,13 @@ public partial class ExplorerMode
     private static string FormatResolutionStateLabel(string? value) =>
         NormalizeKey(value) switch
         {
-            "active" => "активен (active)",
-            "concession_pending" => "уступка ожидает закрытия (concession_pending)",
-            "surrender_pending" => "сдача ожидает закрытия (surrender_pending)",
-            "retreat_pending" => "отступление ожидает закрытия (retreat_pending)",
-            "ready_to_resolve" => "готов к завершению (ready_to_resolve)",
-            "resolved" => "завершён (resolved)",
-            "repair_cancelled" => "отменён ремонтным путём (repair_cancelled)",
+            "active" => "активен",
+            "concession_pending" => "уступка ожидает закрытия",
+            "surrender_pending" => "сдача ожидает закрытия",
+            "retreat_pending" => "отступление ожидает закрытия",
+            "ready_to_resolve" => "готов к завершению",
+            "resolved" => "завершён",
+            "repair_cancelled" => "отменён ремонтным путём",
             "" => "?",
             _ => value ?? "?"
         };
@@ -1764,7 +1754,7 @@ public partial class ExplorerMode
 
     private static void AppendSpiritualExchangeLog(List<string> lines, JsonArray exchangeLog)
     {
-        lines.Add("[bold]Обмены действиями[/] [dim](exchangeLog)[/]");
+        lines.Add("[bold]Обмены действиями[/]");
         var index = 1;
         foreach (var exchange in exchangeLog.OfType<JsonObject>())
         {
@@ -1775,23 +1765,23 @@ public partial class ExplorerMode
             lines.Add($"    Состояние: {Markup.Escape(DescribeExchangeStateDelta(exchange))}");
 
             if (exchange["incomingAction"] is JsonObject incomingAction)
-                lines.Add($"    Входящее действие (incomingAction): {Markup.Escape(DescribeIncomingAction(incomingAction))}");
+                lines.Add($"    Входящее действие: {Markup.Escape(DescribeIncomingAction(incomingAction))}");
 
             if (exchange["counterPayoff"] is JsonObject counterPayoff)
-                lines.Add($"    Выигрыш контрприёма (counterPayoff): {Markup.Escape(counterPayoff.ToJsonString())}");
+                lines.Add($"    Выигрыш контрприёма: {Markup.Escape(DescribeCounterPayoff(counterPayoff))}");
 
             if (exchange["diceAudit"] is JsonObject diceAudit)
-                lines.Add($"    Кубики (diceAudit): {Markup.Escape(DescribeDiceAudit(diceAudit))}");
+                lines.Add($"    Кубики: {Markup.Escape(DescribeDiceAudit(diceAudit))}");
 
             if (exchange["actionCostAudit"] is JsonObject actionCostAudit)
-                lines.Add($"    ОД (actionCostAudit): {Markup.Escape(DescribeActionCostAudit(actionCostAudit))}");
+                lines.Add($"    ОД: {Markup.Escape(DescribeActionCostAudit(actionCostAudit))}");
 
             if (exchange["rewardAudit"] is JsonObject rewardAudit)
-                lines.Add($"    Награда (rewardAudit): {Markup.Escape(DescribeRewardAudit(rewardAudit))}");
+                lines.Add($"    Награда: {Markup.Escape(DescribeRewardAudit(rewardAudit))}");
 
             var summary = AfterlifeSpiritualConflictState.GetNodeString(exchange["summary"]);
             if (!string.IsNullOrWhiteSpace(summary))
-                lines.Add($"    Краткое описание (summary): {Markup.Escape(summary)}");
+                lines.Add($"    Кратко: {Markup.Escape(summary)}");
 
             index++;
         }
@@ -1799,33 +1789,32 @@ public partial class ExplorerMode
 
     private static void AppendSpiritualRecentConflictLog(List<string> lines, JsonArray recentConflicts)
     {
-        lines.Add("[bold]Недавние завершённые конфликты[/] [dim](recentConflicts)[/]");
+        lines.Add("[bold]Недавние завершённые конфликты[/]");
         var index = 1;
         foreach (var conflict in recentConflicts.OfType<JsonObject>())
         {
             var conflictId = AfterlifeSpiritualConflictState.GetNodeString(conflict["conflictId"]) ?? $"recent_conflict_{index}";
-            var mode = AfterlifeSpiritualConflictState.GetNodeString(conflict["mode"]) ?? "?";
             var resolutionState = FormatResolutionStateLabel(AfterlifeSpiritualConflictState.GetNodeString(conflict["resolutionState"]));
             var operationType = FormatOperationTypeLabel(AfterlifeSpiritualConflictState.GetNodeString(conflict["operationType"]));
             var playerOutcome = AfterlifeSpiritualConflictState.GetNodeString(conflict["playerOutcome"]) ??
                                 AfterlifeSpiritualConflictState.GetNodeString(conflict["resolutionKind"]) ??
                                 "?";
-            lines.Add($"  • #{index} [white]{Markup.Escape(conflictId)}[/]: режим (mode)={Markup.Escape(mode)}, {Markup.Escape(resolutionState)}, операция={Markup.Escape(operationType)}, исход игрока (playerOutcome)={Markup.Escape(playerOutcome)}");
-            lines.Add($"    Ход (turn): {Markup.Escape(FormatIntOrUnknown(conflict["resolvedAtTurn"] ?? conflict["turnNumber"]))}");
+            lines.Add($"  • #{index} [white]{Markup.Escape(conflictId)}[/]: {Markup.Escape(resolutionState)}, приём: {Markup.Escape(operationType)}, исход игрока: {Markup.Escape(FormatPlayerOutcomeLabel(playerOutcome))}");
+            lines.Add($"    Ход: {Markup.Escape(FormatIntOrUnknown(conflict["resolvedAtTurn"] ?? conflict["turnNumber"]))}");
 
             if (conflict["diceAudit"] is JsonObject diceAudit)
-                lines.Add($"    Кубики (diceAudit): {Markup.Escape(DescribeDiceAudit(diceAudit))}");
+                lines.Add($"    Кубики: {Markup.Escape(DescribeDiceAudit(diceAudit))}");
 
             if (conflict["rewardAudit"] is JsonObject rewardAudit)
-                lines.Add($"    Награда (rewardAudit): {Markup.Escape(DescribeRewardAudit(rewardAudit))}");
+                lines.Add($"    Награда: {Markup.Escape(DescribeRewardAudit(rewardAudit))}");
 
             var summary = AfterlifeSpiritualConflictState.GetNodeString(conflict["summary"]);
             if (!string.IsNullOrWhiteSpace(summary))
-                lines.Add($"    Краткое описание (summary): {Markup.Escape(summary)}");
+                lines.Add($"    Кратко: {Markup.Escape(summary)}");
 
             if (conflict["exchangeLog"] is JsonArray exchangeLog && exchangeLog.Count > 0)
             {
-                lines.Add("    История обменов (exchangeLog):");
+                lines.Add("    История обменов:");
                 foreach (var exchange in exchangeLog.OfType<JsonObject>())
                 {
                     var exchangeId = AfterlifeSpiritualConflictState.GetNodeString(exchange["exchangeId"]) ?? "?";
@@ -1842,11 +1831,11 @@ public partial class ExplorerMode
         var before = exchange["before"] as JsonObject;
         var after = exchange["after"] as JsonObject;
         return
-            $"позиция (conflictPosition) {FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["conflictPosition"]))} -> {FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["conflictPosition"]))}; " +
-            $"напряжение игрока (playerSideStrain) {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["playerSideStrain"]))} -> {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["playerSideStrain"]))}; " +
-            $"напряжение противника (oppositionSideStrain) {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["oppositionSideStrain"]))} -> {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["oppositionSideStrain"]))}; " +
-            $"контроль/оковы (controlState) {DescribeControlState(before?["controlState"] as JsonObject)} -> {DescribeControlState(after?["controlState"] as JsonObject)}; " +
-            $"ОД (actionEconomy) {DescribeActionEconomy(before?["actionEconomy"] as JsonObject)} -> {DescribeActionEconomy(after?["actionEconomy"] as JsonObject)}";
+            $"позиция {FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["conflictPosition"]))} -> {FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["conflictPosition"]))}; " +
+            $"напряжение игрока {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["playerSideStrain"]))} -> {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["playerSideStrain"]))}; " +
+            $"напряжение противника {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["oppositionSideStrain"]))} -> {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["oppositionSideStrain"]))}; " +
+            $"контроль/оковы {DescribeControlState(before?["controlState"] as JsonObject)} -> {DescribeControlState(after?["controlState"] as JsonObject)}; " +
+            $"ОД {DescribeActionEconomy(before?["actionEconomy"] as JsonObject)} -> {DescribeActionEconomy(after?["actionEconomy"] as JsonObject)}";
     }
 
     private static string DescribeIncomingAction(JsonObject incomingAction)
@@ -1856,10 +1845,26 @@ public partial class ExplorerMode
         var summary = AfterlifeSpiritualConflictState.GetNodeString(incomingAction["summary"]);
         var parts = new List<string> { operationType };
         if (!string.IsNullOrWhiteSpace(actorId))
-            parts.Add($"актор (actorId)={actorId}");
+            parts.Add($"актор={actorId}");
         if (!string.IsNullOrWhiteSpace(summary))
             parts.Add(summary);
         return string.Join("; ", parts);
+    }
+
+    private static string DescribeCounterPayoff(JsonObject counterPayoff)
+    {
+        var summary = AfterlifeSpiritualConflictState.GetNodeString(counterPayoff["summary"]) ??
+                      AfterlifeSpiritualConflictState.GetNodeString(counterPayoff["effect"]) ??
+                      AfterlifeSpiritualConflictState.GetNodeString(counterPayoff["effectSummary"]);
+        if (!string.IsNullOrWhiteSpace(summary))
+            return summary;
+
+        var parts = counterPayoff
+            .Select(property => AfterlifeSpiritualConflictState.GetNodeString(property.Value))
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        return parts.Length == 0 ? "зафиксирован выигрыш контрприёма" : string.Join("; ", parts);
     }
 
     private static string DescribeDiceAudit(JsonObject diceAudit)
@@ -1876,8 +1881,8 @@ public partial class ExplorerMode
             $"d20 игрока={playerDie}",
             $"d20 противника={oppositionDie}",
             $"итоги бросков {playerTotal}/{oppositionTotal}",
-            $"разница (margin)={margin}",
-            $"категория исхода (outcomeBand)={outcomeBand}"
+            $"разница={margin}",
+            $"категория исхода={FormatOutcomeBandLabel(outcomeBand)}"
         };
         if (!string.IsNullOrWhiteSpace(difficulty))
             parts.Add(difficulty);
@@ -1895,11 +1900,11 @@ public partial class ExplorerMode
         var difficulty = FormatDifficultyAudit(rewardAudit["difficultyAudit"] as JsonObject);
         var parts = new List<string>
         {
-            $"{currency}: итог (finalAmount)={finalAmount}",
-            $"база (baseAmount)={baseAmount}",
-            $"уровень вызова (challengeTier)={challengeTier}",
-            $"риск (riskMultiplierPercent)={riskMultiplier}%",
-            $"исход (outcomeMultiplierPercent)={outcomeMultiplier}%"
+            $"{currency}: итог={finalAmount}",
+            $"база={baseAmount}",
+            $"уровень вызова={challengeTier}",
+            $"риск={riskMultiplier}%",
+            $"исход={outcomeMultiplier}%"
         };
         if (!string.IsNullOrWhiteSpace(difficulty))
             parts.Add(difficulty);
@@ -1936,10 +1941,7 @@ public partial class ExplorerMode
 
         var current = FormatIntOrUnknown(pool["current"]);
         var max = FormatIntOrUnknown(pool["max"]);
-        var source = AfterlifeSpiritualConflictState.GetNodeString(pool["source"]);
-        return string.IsNullOrWhiteSpace(source)
-            ? $"{current}/{max}"
-            : $"{current}/{max} ({source})";
+        return $"{current}/{max}";
     }
 
     private static string DescribeActionCostAudit(JsonObject actionCostAudit)
@@ -2114,8 +2116,8 @@ public partial class ExplorerMode
     private static string FormatRewardCurrencyLabel(string? value) =>
         NormalizeKey(value) switch
         {
-            "ink_feathers" => "Чернильные Перья (ink_feathers)",
-            "light_sparks" => "Искры Света (light_sparks)",
+            "ink_feathers" => "Чернильные Перья",
+            "light_sparks" => "Искры Света",
             "" => "?",
             _ => value ?? "?"
         };
@@ -2123,11 +2125,11 @@ public partial class ExplorerMode
     private static string DescribeControlState(JsonObject? controlState)
     {
         if (controlState == null)
-            return "нет контроля (none)";
+            return "нет контроля";
 
         var level = NormalizeKey(AfterlifeSpiritualConflictState.GetNodeString(controlState["level"]));
         if (string.IsNullOrWhiteSpace(level) || level == "none")
-            return "нет контроля (none)";
+            return "нет контроля";
 
         var controllerSide = FormatControlSideLabel(AfterlifeSpiritualConflictState.GetNodeString(controlState["controllerSide"]));
         var controlId = AfterlifeSpiritualConflictState.GetNodeString(controlState["controlId"]);
@@ -2154,18 +2156,18 @@ public partial class ExplorerMode
     private static string FormatControlLevelLabel(string? value) =>
         NormalizeKey(value) switch
         {
-            "hindered" => "стеснён (hindered)",
-            "bound" => "скован (bound)",
-            "locked" => "запечатан (locked)",
-            "none" or "" => "нет контроля (none)",
+            "hindered" => "стеснён",
+            "bound" => "скован",
+            "locked" => "запечатан",
+            "none" or "" => "нет контроля",
             _ => value ?? "?"
         };
 
     private static string FormatControlSideLabel(string? value) =>
         NormalizeKey(value) switch
         {
-            "player" => "игрок (player)",
-            "opposition" => "противник (opposition)",
+            "player" => "игрок",
+            "opposition" => "противник",
             "" => "?",
             _ => value ?? "?"
         };
@@ -2173,20 +2175,20 @@ public partial class ExplorerMode
     private static string FormatOperationTypeLabel(string? value) =>
         NormalizeKey(value) switch
         {
-            "pressure" => "Давление (pressure)",
-            "counter" => "Контрприём (counter)",
-            "guard" => "Защита (guard)",
-            "maneuver" => "Манёвр (maneuver)",
-            "binding" => "Наложение оков (binding)",
-            "force_binding" => "Силовое наложение оков (force_binding)",
-            "break_binding" => "Разрыв оков (break_binding)",
-            "force_incarnation" => "Принудительное воплощение (force_incarnation)",
-            "incarnation_resistance" => "Сопротивление воплощению (incarnation_resistance)",
-            "champion_coordination" => "Координация чемпиона (champion_coordination)",
-            "recover_spiritual_power" => "Собрать Средоточие (recover_spiritual_power)",
-            "withdraw" => "Отступление (withdraw)",
-            "surrender" => "Сдача (surrender)",
-            "negotiate" => "Переговоры (negotiate)",
+            "pressure" => "Давление",
+            "counter" => "Контрприём",
+            "guard" => "Защита",
+            "maneuver" => "Манёвр",
+            "binding" => "Наложение оков",
+            "force_binding" => "Силовое наложение оков",
+            "break_binding" => "Разрыв оков",
+            "force_incarnation" => "Принудительное воплощение",
+            "incarnation_resistance" => "Сопротивление воплощению",
+            "champion_coordination" => "Координация чемпиона",
+            "recover_spiritual_power" => "Собрать Средоточие",
+            "withdraw" => "Отступление",
+            "surrender" => "Сдача",
+            "negotiate" => "Переговоры",
             "" => "?",
             _ => value ?? "?"
         };
@@ -2194,12 +2196,12 @@ public partial class ExplorerMode
     private static string FormatOutcomeLabel(string? value) =>
         NormalizeKey(value) switch
         {
-            "success" => "успех (success)",
-            "partial_success" => "частичный успех (partial_success)",
-            "blocked" => "заблокировано (blocked)",
-            "countered" => "контрировано (countered)",
-            "setback" => "неудача/откат (setback)",
-            "no_effect" => "без эффекта (no_effect)",
+            "success" => "успех",
+            "partial_success" => "частичный успех",
+            "blocked" => "заблокировано",
+            "countered" => "контрировано",
+            "setback" => "неудача/откат",
+            "no_effect" => "без эффекта",
             "" => "?",
             _ => value ?? "?"
         };
@@ -2207,11 +2209,47 @@ public partial class ExplorerMode
     private static string FormatActorTypeLabel(string? value) =>
         NormalizeKey(value) switch
         {
-            "player" => "игрок (player)",
-            "guardian" => "Хранитель (guardian)",
-            "resident" => "резидент Обители (resident)",
-            "radiant_actor" => "светозарный актор (radiant_actor)",
-            "custom_afterlife_actor" => "особый актор посмертия (custom_afterlife_actor)",
+            "player" => "игрок",
+            "guardian" => "Хранитель",
+            "resident" => "резидент Обители",
+            "radiant_actor" => "светозарный актор",
+            "custom_afterlife_actor" => "особый актор посмертия",
+            "" => "?",
+            _ => value ?? "?"
+        };
+
+    private static string FormatAfterlifeRealmLabel(string? value) =>
+        NormalizeKey(value) switch
+        {
+            "chaos sea" or "chaos_sea" or "chaossea" or "море хаоса" => "Море Хаоса",
+            "shining abode" or "shining_abode" or "shiningabode" or "сияющая обитель" => "Сияющая Обитель",
+            "" => "?",
+            _ => value ?? "?"
+        };
+
+    private static string FormatPlayerOutcomeLabel(string? value) =>
+        NormalizeKey(value) switch
+        {
+            "won" or "success" or "player_success" => "победа",
+            "partial_success" => "частичный успех",
+            "lost" or "failure" or "player_failure" => "поражение",
+            "surrendered" or "surrender" => "сдача",
+            "conceded" or "concession" => "уступка",
+            "withdraw" or "withdrew" => "отступление",
+            "no_effect" => "без эффекта",
+            "" => "?",
+            _ => value ?? "?"
+        };
+
+    private static string FormatOutcomeBandLabel(string? value) =>
+        NormalizeKey(value) switch
+        {
+            "player_success" => "успех игрока",
+            "player_decisive_success" or "decisive_player_success" => "решительный успех игрока",
+            "player_partial_success" or "partial_success" => "частичный успех игрока",
+            "opposition_success" => "успех противника",
+            "opposition_decisive_success" or "decisive_opposition_success" => "решительный успех противника",
+            "stalemate" or "draw" => "ничья",
             "" => "?",
             _ => value ?? "?"
         };

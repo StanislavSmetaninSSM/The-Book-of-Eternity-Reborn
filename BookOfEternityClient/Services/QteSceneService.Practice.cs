@@ -166,20 +166,30 @@ public sealed partial class QteSceneService
             var choices = BuildUniqueOptions(PracticeCatalog, entry =>
                 ConsoleLayout.PlainChoiceLabel($"⚡ {entry.Title}", entry.TypeId, "без наград"));
             var exitLabel = "Выйти из тренировки";
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title("[bold]Выберите тип QTE:[/]")
-                .HighlightStyle(new Style(Color.Cyan1))
-                .AddChoices(choices.Select(item => item.Label).Append(exitLabel)));
+            var typeLabels = choices.Select(item => item.Label).Append(exitLabel).ToArray();
+            var selected = PromptQteSelection(
+                "qte-practice-type",
+                "Свободная тренировка QTE",
+                "Выберите мини-игру. Попытки используют обычные QTE проверки, но не меняют сюжет, награды, опыт, предметы или прогресс.",
+                typeLabels,
+                "[bold]Выберите тип QTE:[/]",
+                "Выберите тип QTE:",
+                Color.Cyan1);
             if (string.Equals(selected, exitLabel, StringComparison.Ordinal))
                 return;
 
             var entry = choices.First(item => string.Equals(item.Label, selected, StringComparison.Ordinal)).Value;
             var difficultyChoices = BuildUniqueOptions(PracticeDifficulties, difficulty =>
                 ConsoleLayout.PlainChoiceLabel(difficulty.Label, difficulty.DifficultyId, difficulty.Description));
-            var selectedDifficulty = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title("[bold]Выберите сложность:[/]")
-                .HighlightStyle(new Style(Color.Cyan1))
-                .AddChoices(difficultyChoices.Select(item => item.Label)));
+            var difficultyLabels = difficultyChoices.Select(item => item.Label).ToArray();
+            var selectedDifficulty = PromptQteSelection(
+                "qte-practice-difficulty",
+                "Сложность тренировки QTE",
+                $"Мини-игра: {entry.Title}{Environment.NewLine}{entry.Description}",
+                difficultyLabels,
+                "[bold]Выберите сложность:[/]",
+                "Выберите сложность:",
+                Color.Cyan1);
             var difficulty = difficultyChoices.First(item => string.Equals(item.Label, selectedDifficulty, StringComparison.Ordinal)).Value;
 
             var mode = await RunSinglePracticeAttemptAsync(entry.TypeId, difficulty.DifficultyId);
@@ -208,10 +218,14 @@ public sealed partial class QteSceneService
                 continue;
 
             RenderPracticeCompletion(resolution.Completion);
-            var next = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title("[bold]Что дальше?[/]")
-                .HighlightStyle(new Style(Color.Cyan1))
-                .AddChoices("Повторить", "Сменить сложность", "Выбрать другое QTE", "Выйти"));
+            var next = PromptQteSelection(
+                "qte-practice-next",
+                "Тренировка QTE завершена",
+                resolution.Completion.Summary ?? "Попытка завершена.",
+                ["Повторить", "Сменить сложность", "Выбрать другое QTE", "Выйти"],
+                "[bold]Что дальше?[/]",
+                "Что дальше?",
+                Color.Cyan1);
             return next switch
             {
                 "Повторить" => await RunSinglePracticeAttemptAsync(typeId, difficultyId),

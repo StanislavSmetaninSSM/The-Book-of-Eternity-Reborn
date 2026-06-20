@@ -2562,8 +2562,9 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("spiritFocusTier` sets max ОД", matrix, StringComparison.Ordinal);
         Assert.Contains("+0..1", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
         Assert.Contains("ОД и стоимость действий", uiHelp, StringComparison.Ordinal);
-        Assert.Contains("actionCostAudit", uiHelp, StringComparison.Ordinal);
-        Assert.Contains("actionCostAudit.opposition", uiHelp, StringComparison.Ordinal);
+        Assert.Contains("журнал боя показывает оба расхода ОД", uiHelp, StringComparison.Ordinal);
+        Assert.Contains("actionCostAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("actionCostAudit.opposition", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("no current `actionCostAudit.<side>`", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("validated pre-turn active conflict", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("specialArtAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);

@@ -8942,6 +8942,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Сильнее против", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Контрится", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Shining radiance value: 0", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полный JSON afterlifeCombatProfile", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -9538,7 +9539,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Давление", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Контрприём", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Позиция конфликта", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("binding/force_binding", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("силовые оковы", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("симметрично", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("не создаёт решительный", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Матрица приём-контрприём", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -9547,6 +9548,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("ослабить или развернуть", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("манёвр даёт будущий бонус", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/spiritual_arts", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полный JSON", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("exchangeLog", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("recentConflicts", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("diceAudit", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -9796,11 +9801,20 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("сложность: Тяжёлая", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("модификатор противника +1", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("множитель награды 125%", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("player_success", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("успех игрока", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("противник: защита", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("ОД 6->5", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("recentConflicts", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("ink_feathers", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Недавние завершённые конфликты", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Чернильные Перья", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("afterlife_spiritual_conflict_state.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полный JSON", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("activeConflict", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("recentConflicts", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("exchangeLog", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("sideModel", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("playerOutcome", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("diceAudit", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("rewardAudit", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
