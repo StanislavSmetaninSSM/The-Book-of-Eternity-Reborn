@@ -115,12 +115,12 @@ public class GameSettings
     /// </summary>
     public int ConsoleFontSize { get; set; } = 20;
     /// <summary>
-    /// Browser client font scale from 80 to 140 percent. Stored in shared settings so the browser
+    /// Browser client font scale from 80 to 200 percent. Stored in shared settings so the browser
     /// frontend does not need a separate local-only preferences store.
     /// </summary>
     public int BrowserFontScalePercent { get; set; } = 100;
     /// <summary>
-    /// Browser client UI element scale from 80 to 140 percent. Controls padding, gaps, and button sizes
+    /// Browser client UI element scale from 80 to 200 percent. Controls padding, gaps, and button sizes
     /// independently of font scale.
     /// </summary>
     public int BrowserUiScalePercent { get; set; } = 100;

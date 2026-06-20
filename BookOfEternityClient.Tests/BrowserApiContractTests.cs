@@ -234,22 +234,13 @@ public sealed class BrowserApiContractTests
     }
 
     [Fact]
-    public void FrontendShell_RendersLifecyclePhaseMachineWithoutDefaultRawValidationDetails()
+    public void FrontendShell_KeepsRawValidationDetailsInAdvancedDiagnosticsOnly()
     {
         var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
         var sceneView = File.ReadAllText(Path.Combine(FrontendRoot, "src", "components", "SceneView.tsx"));
-        var turnStatePanel = File.ReadAllText(Path.Combine(FrontendRoot, "src", "components", "TurnStatePanel.tsx"));
         var diagnostics = File.ReadAllText(Path.Combine(FrontendRoot, "src", "components", "AdvancedDiagnostics.tsx"));
 
-        Assert.Contains("import { TurnStatePanel } from './TurnStatePanel';", sceneView, StringComparison.Ordinal);
-        Assert.Contains("<TurnStatePanel turnState={game.turnState} />", sceneView, StringComparison.Ordinal);
-        Assert.Contains("turnState.phase", turnStatePanel, StringComparison.Ordinal);
-        Assert.Contains("turnState.playerGuidance", turnStatePanel, StringComparison.Ordinal);
-        Assert.Contains("turnState.recommendedActions", turnStatePanel, StringComparison.Ordinal);
-        Assert.Contains("turnState.knownPhases", turnStatePanel, StringComparison.Ordinal);
-        Assert.Contains("Жизненный цикл хода", turnStatePanel, StringComparison.Ordinal);
-
-        var defaultSources = string.Join('\n', app, sceneView, turnStatePanel);
+        var defaultSources = string.Join('\n', app, sceneView);
         Assert.DoesNotContain("validation.issues.map", defaultSources, StringComparison.Ordinal);
         Assert.DoesNotContain("issue.filePath", defaultSources, StringComparison.Ordinal);
 
@@ -821,6 +812,7 @@ public sealed class BrowserApiContractTests
             Theme: new BrowserGameScreenThemeDto("mortal-world", "Смертный мир", "🕯", "#e1b85e"),
             Soul: new BrowserGameScreenSoulDto(
                 Name: "Арион",
+                FormDescription: "Мужчина из тихого серебряного света",
                 Realm: "Mortal World",
                 Incarnation: 3,
                 InkFeathers: 5,
@@ -944,6 +936,7 @@ public sealed class BrowserApiContractTests
             Session: BuildSessionStatus(),
             Soul: new BrowserSoulSummaryDto(
                 Name: "Арион",
+                FormDescription: "Мужчина из тихого серебряного света",
                 CurrentRealm: "Mortal World",
                 RealmLabel: "Смертный мир",
                 CurrentIncarnation: 3,

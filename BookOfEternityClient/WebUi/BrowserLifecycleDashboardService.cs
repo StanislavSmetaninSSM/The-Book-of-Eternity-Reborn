@@ -123,6 +123,7 @@ public sealed class BrowserLifecycleDashboardService
         {
             return new BrowserSoulSummaryDto(
                 Name: "Неизвестная душа",
+                FormDescription: string.Empty,
                 CurrentRealm: "unknown",
                 RealmLabel: "Царство не определено",
                 CurrentIncarnation: 0,
@@ -137,6 +138,7 @@ public sealed class BrowserLifecycleDashboardService
             {
                 return new BrowserSoulSummaryDto(
                     Name: "Неизвестная душа",
+                    FormDescription: string.Empty,
                     CurrentRealm: "unknown",
                     RealmLabel: "Царство не определено",
                     CurrentIncarnation: 0,
@@ -147,6 +149,7 @@ public sealed class BrowserLifecycleDashboardService
             var realm = GetString(root, "currentRealm") ?? "unknown";
             return new BrowserSoulSummaryDto(
                 Name: GetString(root, "soulName", "name") ?? "Неизвестная душа",
+                FormDescription: GetString(root, "soulFormDescription") ?? string.Empty,
                 CurrentRealm: realm,
                 RealmLabel: RealmLabel(realm),
                 CurrentIncarnation: GetInt(root, "currentIncarnation") ?? 0,
@@ -157,6 +160,7 @@ public sealed class BrowserLifecycleDashboardService
         {
             return new BrowserSoulSummaryDto(
                 Name: "Неизвестная душа",
+                FormDescription: string.Empty,
                 CurrentRealm: "unknown",
                 RealmLabel: "Царство не определено",
                 CurrentIncarnation: 0,
@@ -314,6 +318,7 @@ public sealed record BrowserLifecycleDashboardDto(
 
 public sealed record BrowserSoulSummaryDto(
     string Name,
+    string FormDescription,
     string CurrentRealm,
     string RealmLabel,
     int CurrentIncarnation,

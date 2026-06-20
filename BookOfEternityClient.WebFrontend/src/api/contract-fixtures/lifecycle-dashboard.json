@@ -42,6 +42,7 @@
 },
   "soul": {
     "name": "Арион",
+    "formDescription": "Мужчина из тихого серебряного света",
     "currentRealm": "Mortal World",
     "realmLabel": "Смертный мир",
     "currentIncarnation": 3,

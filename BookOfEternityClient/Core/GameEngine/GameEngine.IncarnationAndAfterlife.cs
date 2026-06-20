@@ -73,6 +73,7 @@ public partial class GameEngine
             var dict = new Dictionary<string, object?>();
 
             dict["soulName"] = root.TryGetProperty("soulName", out var sn) ? sn.GetString() : "";
+            dict["soulFormDescription"] = root.TryGetProperty("soulFormDescription", out var sfd) ? sfd.GetString() : "";
             dict["previousSoulNames"] = root.TryGetProperty("previousSoulNames", out var previousSoulNames)
                 ? JsonSerializer.Deserialize<object>(previousSoulNames.GetRawText())
                 : Array.Empty<string>();

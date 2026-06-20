@@ -235,7 +235,7 @@ public partial class ValidationService
                 "metaStateUpdates",
                 "afterlifeArchiveUpdates",
                 "archiveActionResolutions",
-                "soulName", "previousSoulNames", "currentRealm", "currentIncarnation", "enlightenment", "soulProgression",
+                "soulName", "previousSoulNames", "soulFormDescription", "currentRealm", "currentIncarnation", "enlightenment", "soulProgression",
                 "inkFeathers", "soulRelics", "afterlifeArchive", "livesHistory", "crossIncarnationData", "currentTier",
                 "soulImprint", "pendingMemoryLegacy", AfterlifeSpiritualConflictState.SoulStateProfileProperty,
                 AfterlifeSpiritualConflictState.TerminalGameOverProperty,

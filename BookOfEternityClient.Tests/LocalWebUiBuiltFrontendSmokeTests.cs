@@ -119,7 +119,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
 
         Assert.Contains("<div id=\"root\"></div>", root.Body, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/assets/", root.Body, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("The Book of Eternity: Reborn", root.Body, StringComparison.Ordinal);
+        Assert.Contains("Книга Вечности: Перерождение", root.Body, StringComparison.Ordinal);
         Assert.Equal(root.Body, gameRoute.Body);
         Assert.NotEmpty(assetPaths);
         Assert.All(assetResponses, response => Assert.Equal(HttpStatusCode.OK, response.StatusCode));
@@ -143,6 +143,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var tabBarConfigSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "tabBarConfig.ts"));
         var tabBarSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "TabBar.tsx"));
         var sceneHeroSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "SceneHero.tsx"));
+        var cinematicSceneHeroSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "decorative", "CinematicSceneHero.tsx"));
         var launcherSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "GameLauncher.tsx"));
         var blockRendererSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "BlockRenderer.tsx"));
         var sceneViewSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "SceneView.tsx"));
@@ -169,7 +170,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         await File.WriteAllTextAsync(detailSurfaceArtifactPath, BuildDetailSurfaceArtifact(statusViewSource));
         await File.WriteAllTextAsync(rebornPanelsArtifactPath, BuildRebornPanelsArtifact(statusViewSource));
         await File.WriteAllTextAsync(startNewChapterArtifactPath, BuildStartNewChapterFlowArtifact(launcherSource, promptFormSource));
-        await File.WriteAllTextAsync(browserImagegenAssetsArtifactPath, BuildBrowserImagegenAssetsArtifact(assetModuleSource, sceneHeroSource, sceneViewSource, blockRendererSource, statusViewSource));
+        await File.WriteAllTextAsync(browserImagegenAssetsArtifactPath, BuildBrowserImagegenAssetsArtifact(assetModuleSource, sceneHeroSource, cinematicSceneHeroSource, sceneViewSource, blockRendererSource, statusViewSource));
 
         Assert.True(session["localOnly"]!.GetValue<bool>());
         Assert.Equal("CI-душа", menu["session"]!["soulName"]!.GetValue<string>());
@@ -186,9 +187,10 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("Загрузить сохранение", launcherSource, StringComparison.Ordinal);
         Assert.Contains("Начать новую главу", launcherSource, StringComparison.Ordinal);
         Assert.Contains("Настроить книгу", launcherSource, StringComparison.Ordinal);
-        Assert.Contains("<TurnStatePanel turnState={game.turnState} />", sceneViewSource, StringComparison.Ordinal);
+        Assert.Contains("className=\"scene-narrative scene-post\"", sceneViewSource, StringComparison.Ordinal);
         Assert.Contains("className=\"scene-quick-actions\"", sceneViewSource, StringComparison.Ordinal);
-        Assert.Contains("placeholder=\"Опишите действие или введите /команду...\"", unifiedInputSource, StringComparison.Ordinal);
+        Assert.Contains("Опишите действие или введите /команду...", unifiedInputSource, StringComparison.Ordinal);
+        Assert.Contains("Художественный пост", unifiedInputSource, StringComparison.Ordinal);
         Assert.Contains("GROUP_LABELS", helpViewSource, StringComparison.Ordinal);
         Assert.Contains("Расширенный режим", settingsViewSource, StringComparison.Ordinal);
         Assert.Contains("browserApi.executeExplorerCommand({ command: startCommand", launcherSource, StringComparison.Ordinal);
@@ -205,7 +207,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("data-artifact=\"browser-navigation-ia\"", navigationArtifact, StringComparison.Ordinal);
         Assert.Contains("data-viewport=\"desktop\"", navigationArtifact, StringComparison.Ordinal);
         Assert.Contains("data-viewport=\"mobile\"", navigationArtifact, StringComparison.Ordinal);
-        Assert.Contains("Сцена → Тренировка → Статус → Помощь → Настройки", navigationArtifact, StringComparison.Ordinal);
+        Assert.Contains("Сцена → Статус → Помощь → Настройки", navigationArtifact, StringComparison.Ordinal);
         Assert.Contains("Текущий ход, повествование и быстрые действия.", navigationArtifact, StringComparison.Ordinal);
         Assert.Contains("Расширенный режим", navigationArtifact, StringComparison.Ordinal);
         Assert.DoesNotContain("Debug", navigationArtifact, StringComparison.OrdinalIgnoreCase);
@@ -254,7 +256,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("Продолжить главу", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("Загрузить сохранение", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("Настроить книгу", firstScreenVisualQaArtifact, StringComparison.Ordinal);
-        Assert.Contains("Сцена → Тренировка → Статус → Помощь → Настройки", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("Сцена → Статус → Помощь → Настройки", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("current minimal tab shell", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("advanced debug secondary", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("data-state=\"fresh-empty\"", firstScreenVisualQaArtifact, StringComparison.Ordinal);
@@ -529,7 +531,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var tabs = ExtractPlayerTabs(tabBarConfigSource);
         var tabSequence = string.Join(" → ", tabs.Select(tab => tab.Label));
 
-        Assert.Equal(new[] { "scene", "practice", "status", "help", "settings" }, tabs.Select(tab => tab.Id));
+        Assert.Equal(new[] { "scene", "status", "help", "settings" }, tabs.Select(tab => tab.Id));
         Assert.Contains("<GameLauncher menu={menu} />", appSource, StringComparison.Ordinal);
         Assert.Contains("Книга Вечности: Перерождение", launcherSource, StringComparison.Ordinal);
         Assert.Contains("Открыть книгу", launcherSource, StringComparison.Ordinal);
@@ -593,7 +595,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                   <h2>Сводка книги</h2>
                   <p class="muted">Слой книги · Герой и душа · Сохранение · Активной главы пока нет.</p>
                   <div class="checks">
-                    <div class="check">current minimal tab shell: launcher, shared tabs, QTE practice, status, help, settings, single command input.</div>
+                    <div class="check">current minimal tab shell: launcher, scene, status, help, settings, single command input.</div>
                     <div class="check">no technical hero copy</div>
                     <div class="check">no repeated unavailable alerts</div>
                     <div class="check">no emoji route icons</div>
@@ -687,6 +689,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
     private static string BuildBrowserImagegenAssetsArtifact(
         string assetModuleSource,
         string sceneHeroSource,
+        string cinematicSceneHeroSource,
         string sceneViewSource,
         string blockRendererSource,
         string statusViewSource)
@@ -695,7 +698,8 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("galleryEmptyArchive", assetModuleSource, StringComparison.Ordinal);
         Assert.Contains("statusSoulVignette", assetModuleSource, StringComparison.Ordinal);
         Assert.Contains("fallbackImageUrl", sceneHeroSource, StringComparison.Ordinal);
-        Assert.Contains("event.currentTarget.hidden = true;", sceneHeroSource, StringComparison.Ordinal);
+        Assert.Contains("CinematicSceneHero", sceneHeroSource, StringComparison.Ordinal);
+        Assert.Contains("event.currentTarget.hidden = true;", cinematicSceneHeroSource, StringComparison.Ordinal);
         Assert.Contains("fallbackImageUrl={browserUiAssets.sceneHeroFallback.url}", sceneViewSource, StringComparison.Ordinal);
         Assert.Contains("browserUiAssets.galleryEmptyArchive.url", blockRendererSource, StringComparison.Ordinal);
         Assert.Contains("block-image--fallback", blockRendererSource, StringComparison.Ordinal);
@@ -910,7 +914,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var tabs = ExtractPlayerTabs(tabBarConfigSource);
         var tabSequence = string.Join(" → ", tabs.Select(tab => tab.Label));
 
-        Assert.Equal(new[] { "scene", "practice", "status", "help", "settings" }, tabs.Select(tab => tab.Id));
+        Assert.Equal(new[] { "scene", "status", "help", "settings" }, tabs.Select(tab => tab.Id));
 
         return $$"""
         <!doctype html>
@@ -996,7 +1000,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                 match.Groups["shortcut"].Value,
                 match.Groups["description"].Value))
             .ToArray();
-        Assert.Equal(5, tabs.Length);
+        Assert.Equal(4, tabs.Length);
         return tabs;
     }
 

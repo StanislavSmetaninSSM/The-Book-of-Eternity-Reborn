@@ -123,6 +123,7 @@ internal static class GuardianPolicyContracts
         "archiveActionResolutions",
         "soulName",
         "previousSoulNames",
+        "soulFormDescription",
         "currentRealm",
         "currentIncarnation",
         "enlightenment",
@@ -146,6 +147,7 @@ internal static class GuardianPolicyContracts
     {
         "soulName",
         "previousSoulNames",
+        "soulFormDescription",
         "currentRealm",
         "currentIncarnation",
         "enlightenment",

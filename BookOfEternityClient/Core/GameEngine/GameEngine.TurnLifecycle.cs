@@ -2899,6 +2899,7 @@ The resulting start must be harsh but survivable. Do NOT create an unwinnable de
 SOUL IDENTITY CONTINUITY:
 If game_state/meta/soul_state.json contains previousSoulNames, they are former names of the SAME soul.
 Do NOT treat a renamed soul as a different person and do NOT reset Guardian continuity because of a soul rename.
+If game_state/meta/soul_state.json contains soulFormDescription, it is player-authored roleplay identity for how the soul appears in afterlife scenes. Use it in prose when relevant, but do NOT overwrite or normalize it from ordinary GM output.
 
 SOUL RELIC GACHA — ANTI-CHEAT PROTOCOL:
 The 'preGeneratedDices1d20' field is the authoritative dice pool for your normal checks. Start from the FIRST die in that list.

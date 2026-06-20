@@ -128,6 +128,7 @@ public class StateManager
         {
             var root = doc.RootElement;
             state.SoulName = GetString(root, "soulName", "");
+            state.SoulFormDescription = GetString(root, "soulFormDescription", "");
             state.CurrentRealm = GetString(root, "currentRealm", "");
             if (root.TryGetProperty("currentIncarnation", out var inc))
                 state.Incarnation = inc.GetInt32();

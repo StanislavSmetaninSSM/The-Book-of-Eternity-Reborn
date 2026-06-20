@@ -169,6 +169,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 Grid(
                     ("Царство", EmptyFallback(state.CurrentRealm)),
                     ("Душа", EmptyFallback(state.SoulName)),
+                    ("Форма души", EmptyFallback(state.SoulFormDescription)),
                     ("Инкарнация", state.Incarnation.ToString()),
                     ("Персонаж", EmptyFallback(state.CharacterName)),
                     ("Класс / раса", JoinNonEmpty(" / ", state.CharacterClass, state.CharacterRace)),
@@ -195,6 +196,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             Panel("Душа",
                 Grid(
                     ("Имя души", GetString(read.Node, "soulName")),
+                    ("Форма души", EmptyFallback(GetString(read.Node, "soulFormDescription"))),
                     ("Царство", GetString(read.Node, "currentRealm")),
                     ("Инкарнация", GetNumberOrString(read.Node, "currentIncarnation")),
                     ("Чернильные Перья", DescribeInkFeathers(read.Node)),

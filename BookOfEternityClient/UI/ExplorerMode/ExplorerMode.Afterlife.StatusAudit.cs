@@ -82,6 +82,7 @@ public partial class ExplorerMode
             $"  • Область (currentRealm): [white]{Markup.Escape(_stateManager.CurrentState.CurrentRealm)}[/]",
             $"  • Ход (turn): [white]{_stateManager.CurrentState.TurnNumber}[/]",
             $"  • Душа: [white]{Markup.Escape(GetNodeString(soulRoot?["soulName"]) ?? _stateManager.CurrentState.CharacterName ?? "не указана")}[/]",
+            $"  • Форма души: [white]{Markup.Escape(GetNodeString(soulRoot?["soulFormDescription"]) ?? "не описана")}[/]",
             $"  • Инкарнация: [white]{GetNodeInt(soulRoot?["currentIncarnation"])}[/]",
             "",
             "[bold]Ресурсы души:[/]",

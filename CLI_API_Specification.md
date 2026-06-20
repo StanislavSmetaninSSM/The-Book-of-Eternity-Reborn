@@ -123,7 +123,7 @@ Afterlife realms use the same "living world" principle as Mortal World progressi
 For every `Chaos Sea` / `Shining Abode` turn, the GM must use `OtherGuides/Afterlife_Contract_Matrix.md` as the operational contract map before writing files. The matrix lists the decision loop, each scheduler contour, pending request file, direct afterlife action, canonical state surface, required receipt/report, living-world outcome selection, and forbidden Mortal World substitution.
 
 The GM must read these state groups before resolving afterlife scheduler debt:
-- `game_state/meta/soul_state.json`: current realm, Soul Relics, Enlightenment, Ink Feathers, afterlife archive, current incarnation metadata.
+- `game_state/meta/soul_state.json`: current realm, player-owned soul identity (`soulName`, `previousSoulNames`, optional `soulFormDescription`), Soul Relics, Enlightenment, Ink Feathers, afterlife archive, current incarnation metadata.
 - `game_state/meta/guardians.json`: Guardian identity, reputation, mood, musings, trade inventory, relationships, buyback relics.
 - `game_state/meta/guardian_projects.json`: active/completed Guardian projects and project pressure.
 - `game_state/meta/guardian_abode_residents.json`: authored residents, resident memory, history, rewards, linked Soul Quests, Shining alignment fields.

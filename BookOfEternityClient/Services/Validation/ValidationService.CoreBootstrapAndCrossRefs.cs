@@ -106,6 +106,32 @@ public partial class ValidationService
 
             ValidateCurrentSoulRelicsCanonicalShape(root, issues);
 
+            if (root.TryGetProperty("soulFormDescription", out var soulFormDescription))
+            {
+                if (soulFormDescription.ValueKind != JsonValueKind.String)
+                {
+                    issues.Add(new ValidationIssue(
+                        "game_state/meta/soul_state.json.soulFormDescription",
+                        IssueSeverity.Error,
+                        "soulFormDescription должен быть строковым описанием формы души",
+                        code: "soul_form_description_invalid_shape",
+                        section: "SoulState",
+                        expected: "non-empty string",
+                        actual: soulFormDescription.ValueKind.ToString(),
+                        repairHint: "Храни форму души как player-authored строку, а не объект, массив или число."));
+                }
+                else if (string.IsNullOrWhiteSpace(soulFormDescription.GetString()))
+                {
+                    issues.Add(new ValidationIssue(
+                        "game_state/meta/soul_state.json.soulFormDescription",
+                        IssueSeverity.Warning,
+                        "soulFormDescription не должен быть пустым, если поле присутствует",
+                        code: "soul_form_description_empty",
+                        section: "SoulState",
+                        repairHint: "Либо удали пустое поле, либо заполни его описанием формы души игрока."));
+                }
+            }
+
             if (root.TryGetProperty("previousSoulNames", out var previousSoulNames))
             {
                 if (previousSoulNames.ValueKind != JsonValueKind.Array)

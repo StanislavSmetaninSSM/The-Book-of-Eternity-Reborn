@@ -299,10 +299,10 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.True(root["showGmThoughts"]!.GetValue<bool>());
         Assert.Equal(100, root["audio"]!["musicVolume"]!.GetValue<int>());
         Assert.Equal(0, root["audio"]!["soundVolume"]!.GetValue<int>());
-        Assert.Equal(140, root["accessibility"]!["fontScalePercent"]!.GetValue<int>());
+        Assert.Equal(175, root["accessibility"]!["fontScalePercent"]!.GetValue<int>());
         Assert.True(config["showGmThoughts"]!.GetValue<bool>());
         Assert.Equal("impossible", config["difficulty"]!.GetValue<string>());
-        Assert.Equal(140, config["browserFontScalePercent"]!.GetValue<int>());
+        Assert.Equal(175, config["browserFontScalePercent"]!.GetValue<int>());
         Assert.True(gmProjection["impossibleMode"]!.GetValue<bool>());
         Assert.Equal("impossible", gmProjection["difficulty"]!.GetValue<string>());
     }

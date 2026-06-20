@@ -106,6 +106,76 @@ public sealed class SoulIdentityServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task UpdateSoulFormDescriptionAsync_WritesNormalizedDescriptionAndPreservesExistingIdentity()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Аурелия",
+          "previousSoulNames": ["Пепельная Искра"],
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1
+        }
+        """);
+
+        var result = await _service.UpdateSoulFormDescriptionAsync("  Женщина из янтарного света.\r\nГолос живого человека.  ");
+
+        Assert.True(result.Success);
+        Assert.True(result.Changed);
+        Assert.Equal("Женщина из янтарного света. Голос живого человека.", result.CurrentSoulFormDescription);
+
+        var updatedSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.NotNull(updatedSoulJson);
+        var soulNode = JsonNode.Parse(updatedSoulJson)!.AsObject();
+        Assert.Equal("Аурелия", soulNode["soulName"]!.GetValue<string>());
+        Assert.Equal("Женщина из янтарного света. Голос живого человека.", soulNode["soulFormDescription"]!.GetValue<string>());
+        Assert.Equal("Пепельная Искра", soulNode["previousSoulNames"]!.AsArray()[0]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task UpdateSoulFormDescriptionAsync_RejectsEmptyDescription()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Аурелия",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1
+        }
+        """);
+
+        var result = await _service.UpdateSoulFormDescriptionAsync("   ");
+
+        Assert.False(result.Success);
+        Assert.False(result.Changed);
+        Assert.Equal("Описание формы души не может быть пустым.", result.ErrorMessage);
+    }
+
+    [Fact]
+    public async Task UpdateSoulFormDescriptionAsync_ReplacesMalformedExistingDescription()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Аурелия",
+          "soulFormDescription": {
+            "gender": "female",
+            "form": "amber light"
+          },
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1
+        }
+        """);
+
+        var result = await _service.UpdateSoulFormDescriptionAsync("Женщина из янтарного света");
+
+        Assert.True(result.Success);
+        Assert.True(result.Changed);
+
+        var updatedSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.NotNull(updatedSoulJson);
+        var soulNode = JsonNode.Parse(updatedSoulJson)!.AsObject();
+        Assert.Equal("Женщина из янтарного света", soulNode["soulFormDescription"]!.GetValue<string>());
+    }
+
+    [Fact]
     public async Task RenameSoulAsync_PreservesUnrelatedTransientCommandRootsButStripsLegacySoulStateRootKeysOnWrite()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
