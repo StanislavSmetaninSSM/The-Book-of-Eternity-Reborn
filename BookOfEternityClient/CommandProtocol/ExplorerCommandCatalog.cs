@@ -20,7 +20,10 @@ public static class ExplorerCommandCatalog
         D("feathers", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/feathers", "/перья"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
         D("world_rules", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/world_rules", "/правила_мира"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
         D("gallery", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/gallery", "/галерея"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
-        D("status", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/status", "/статус"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
+        D("status", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/status", "/статус"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity, acceptsArguments: true, subcommands:
+        [
+            new("audit", ["audit", "аудит"], "/status audit", BrowserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity)
+        ]),
         D("gm", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/gm", "/гм"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
         D("debug", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/debug", "/отладка"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
         D("mods", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/mods", "/моды"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),

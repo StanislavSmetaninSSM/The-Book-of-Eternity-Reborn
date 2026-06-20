@@ -47,6 +47,18 @@ public sealed class GmWorkerBridgeDocumentationTests
     }
 
     [Fact]
+    public void GmDaemonScript_InitializesUtf8ConsoleOutputForRussianDiagnostics()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("$OutputEncoding = [System.Text.UTF8Encoding]::new($false)", daemon, StringComparison.Ordinal);
+        Assert.Contains("[Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)", daemon, StringComparison.Ordinal);
+        Assert.Contains("[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)", daemon, StringComparison.Ordinal);
+        Assert.Contains("chcp 65001", daemon, StringComparison.Ordinal);
+        Assert.Contains("Add-Content -Path $LogFile -Value $logLine -Encoding UTF8", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MainGmPrompt_DocumentsExplicitWorkerDelegationFlow()
     {
         var launcher = ReadRepoFile("BookOfEternityClient/Launcher/CLI_Launch_Script.md");

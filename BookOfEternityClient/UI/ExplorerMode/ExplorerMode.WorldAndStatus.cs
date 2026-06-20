@@ -912,7 +912,7 @@ public partial class ExplorerMode
         var state = _stateManager.CurrentState;
         if (state.IsInAfterlifeRealm)
         {
-            await ShowAfterlifeDetailedStatusAsync();
+            await ShowAfterlifeDetailedStatusAsync(IsAfterlifeStatusAuditRequested(_currentCommandRemainder));
             return;
         }
 

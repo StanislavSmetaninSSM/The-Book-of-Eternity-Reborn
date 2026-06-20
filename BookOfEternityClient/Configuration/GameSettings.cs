@@ -42,6 +42,10 @@ public class GameSettings
     /// </summary>
     public string GmCliLaunchCommand { get; set; } = "codex --dangerously-bypass-approvals-and-sandbox";
     /// <summary>
+    /// Optional explicit working directory for the hidden GM bridge shell. Empty means the game_session directory.
+    /// </summary>
+    public string GmBridgeShellWorkingDirectory { get; set; } = "";
+    /// <summary>
     /// Auto-start the local GM bridge helper when the daemon cannot find a live bridge.
     /// </summary>
     public bool GmBridgeAutoStart { get; set; } = false;
@@ -154,6 +158,7 @@ public class GameSettings
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList() ?? new List<string>();
         GmBridgePasteVisibilityPolicy = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.NormalizePolicy(GmBridgePasteVisibilityPolicy);
+        GmBridgeShellWorkingDirectory = GmBridgeShellWorkingDirectory?.Trim() ?? string.Empty;
         GmBridgePromptVisibilityTimeoutSeconds = loaded.GmBridgePromptVisibilityTimeoutSeconds > 0
             ? Math.Clamp(loaded.GmBridgePromptVisibilityTimeoutSeconds, 1, 60)
             : 15;

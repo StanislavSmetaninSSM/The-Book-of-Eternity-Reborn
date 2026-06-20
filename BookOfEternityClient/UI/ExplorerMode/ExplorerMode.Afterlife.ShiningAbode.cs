@@ -61,19 +61,30 @@ public partial class ExplorerMode
                 choices.Add("🌞 Источник Света");
             }
 
-            if ((context.Root["gates"] is JsonObject gates && GetNodeBool(gates["hasOpenDraft"])) ||
-                context.Root["preparedIncarnationPackage"] is JsonObject)
+            var hasGatesOrPackage = (context.Root["gates"] is JsonObject gates && GetNodeBool(gates["hasOpenDraft"])) ||
+                                    context.Root["preparedIncarnationPackage"] is JsonObject;
+            var hasCoreReceipts = context.Root["coreActionReceipts"] is JsonArray coreReceipts && coreReceipts.Count > 0;
+            var hasCoreRequests = coreRequests.Count > 0;
+
+            if (hasGatesOrPackage)
             {
                 choices.Add("🔎 Осмотреть набор и пакет");
+                choices.Add("🔧 Аудит Врат и пакета");
             }
 
             if ((context.Root["halls"] as JsonArray)?.Count > 0 || (context.Root["shiningPoliticalActors"] as JsonArray)?.Count > 0)
                 choices.Add("🗺 Осмотреть залы и светозарных акторов");
 
-            if (context.Root["coreActionReceipts"] is JsonArray coreReceipts && coreReceipts.Count > 0)
+            if (hasCoreReceipts)
+            {
                 choices.Add("📜 Осмотреть исходы Обители");
-            if (coreRequests.Count > 0)
+                choices.Add("🔧 Аудит исходов Обители");
+            }
+            if (hasCoreRequests)
+            {
                 choices.Add("📝 Осмотреть ожидающие действия Обители");
+                choices.Add("🔧 Аудит ожидающих действий Обители");
+            }
             if ((context.Root["factions"] as JsonArray)?.Count > 0)
                 choices.Add("🧾 Осмотреть торговые циклы");
             if ((context.Root["factions"] as JsonArray)?.Count > 0 || (context.ResidentRoot?["entries"] as JsonArray)?.Count > 0)
@@ -108,23 +119,44 @@ public partial class ExplorerMode
                 continue;
             }
 
+            if (choice.Contains("Аудит Врат", StringComparison.OrdinalIgnoreCase))
+            {
+                ShowShiningGatesInspectionPanel(context, includeAuditPayloads: true);
+                WaitForKey();
+                continue;
+            }
+
             if (choice.Contains("Осмотреть набор и пакет", StringComparison.OrdinalIgnoreCase))
             {
-                ShowShiningGatesInspectionPanel(context);
+                ShowShiningGatesInspectionPanel(context, includeAuditPayloads: false);
+                WaitForKey();
+                continue;
+            }
+
+            if (choice.Contains("Аудит исходов", StringComparison.OrdinalIgnoreCase))
+            {
+                ShowShiningCoreReceiptInspectionPanel(context, includeAuditPayloads: true);
                 WaitForKey();
                 continue;
             }
 
             if (choice.Contains("исходы Обители", StringComparison.OrdinalIgnoreCase))
             {
-                ShowShiningCoreReceiptInspectionPanel(context);
+                ShowShiningCoreReceiptInspectionPanel(context, includeAuditPayloads: false);
+                WaitForKey();
+                continue;
+            }
+
+            if (choice.Contains("Аудит ожидающих", StringComparison.OrdinalIgnoreCase))
+            {
+                ShowShiningPendingCoreActionInspectionPanel(context, coreRequests, includeAuditPayloads: true);
                 WaitForKey();
                 continue;
             }
 
             if (choice.Contains("ожидающие действия", StringComparison.OrdinalIgnoreCase))
             {
-                ShowShiningPendingCoreActionInspectionPanel(context, coreRequests);
+                ShowShiningPendingCoreActionInspectionPanel(context, coreRequests, includeAuditPayloads: false);
                 WaitForKey();
                 continue;
             }
@@ -1389,7 +1421,7 @@ public partial class ExplorerMode
         WriteJsonAuditPanel("Полный JSON фракции: leadership, projects, bindings", faction, Color.Orange1);
     }
 
-    private void ShowShiningCoreReceiptInspectionPanel(ShiningContext context)
+    private void ShowShiningCoreReceiptInspectionPanel(ShiningContext context, bool includeAuditPayloads)
     {
         var receipts = ShiningAbodeState.EnsureCoreActionReceiptsArray(context.Root).OfType<JsonObject>()
             .OrderByDescending(item => GetNodeInt(item["resolvedAtTurn"]))
@@ -1418,7 +1450,7 @@ public partial class ExplorerMode
 
                 lines.Add("");
                 lines.Add($"[bold]{Markup.Escape(BuildShiningCoreReceiptSummary(receipt, context.Root))}[/]");
-                AppendShiningResolutionAuditLines(lines, receipt);
+                AppendShiningResolutionAuditLines(lines, receipt, includeRequestId: includeAuditPayloads);
                 AppendShiningReceiptConsequenceLines(lines, receipt);
 
                 switch (actionType)
@@ -1467,7 +1499,11 @@ public partial class ExplorerMode
                         {
                             lines.Add("  Зафиксированные карты:");
                             foreach (var card in receiptSelectedCards)
-                                lines.AddRange(BuildShiningBlessingCardInspectionLines(card, context, isSelected: true));
+                                lines.AddRange(BuildShiningBlessingCardInspectionLines(
+                                    card,
+                                    context,
+                                    isSelected: true,
+                                    includeAuditDetails: includeAuditPayloads));
                         }
                         else
                         {
@@ -1525,7 +1561,7 @@ public partial class ExplorerMode
             Expand = true
         });
 
-        if (receipts.Count > 0)
+        if (includeAuditPayloads && receipts.Count > 0)
         {
             var receiptAudit = new JsonArray();
             foreach (var receipt in receipts)
@@ -1540,7 +1576,8 @@ public partial class ExplorerMode
 
     private void ShowShiningPendingCoreActionInspectionPanel(
         ShiningContext context,
-        IReadOnlyList<ShiningCoreActionRequestState.PendingShiningCoreActionRequest> requests)
+        IReadOnlyList<ShiningCoreActionRequestState.PendingShiningCoreActionRequest> requests,
+        bool includeAuditPayloads)
     {
         var lines = new List<string>
         {
@@ -1557,7 +1594,8 @@ public partial class ExplorerMode
             foreach (var request in requests)
             {
                 lines.Add($"[bold]{Markup.Escape(DescribeShiningCoreActionLabel(request.ActionType))}[/]");
-                lines.Add($"  Идентификатор запроса: [dim]{Markup.Escape(request.RequestId)}[/]");
+                if (includeAuditPayloads)
+                    lines.Add($"  Идентификатор запроса: [dim]{Markup.Escape(request.RequestId)}[/]");
 
                 if (!string.IsNullOrWhiteSpace(request.FactionId) || !string.IsNullOrWhiteSpace(request.FactionName))
                 {
@@ -1604,13 +1642,22 @@ public partial class ExplorerMode
                     {
                         lines.Add("  Выбранные карты:");
                         foreach (var card in requestSelectedCards)
-                            lines.AddRange(BuildShiningBlessingCardInspectionLines(card, context, isSelected: true));
+                            lines.AddRange(BuildShiningBlessingCardInspectionLines(
+                                card,
+                                context,
+                                isSelected: true,
+                                includeAuditDetails: includeAuditPayloads));
                     }
                     else
                     {
                         lines.Add("  Выбранные карты:");
                         foreach (var cardId in request.SelectedCardIds)
-                            lines.Add($"    [dim]• {Markup.Escape(ResolveShiningBlessingCardLabel(context.Root, cardId))} ({Markup.Escape(cardId)})[/]");
+                        {
+                            var label = ResolveShiningBlessingCardLabel(context.Root, cardId);
+                            lines.Add(includeAuditPayloads
+                                ? $"    [dim]• {Markup.Escape(label)} ({Markup.Escape(cardId)})[/]"
+                                : $"    [dim]• {Markup.Escape(label)}[/]");
+                        }
                     }
                 }
 
@@ -1631,11 +1678,14 @@ public partial class ExplorerMode
                     AppendShiningStringList(lines, "Тоновые метки", projectDraft["toneTags"] as JsonArray);
                 }
 
-                lines.Add("  Полный контракт, который должен закрыть GM:");
-                foreach (var previewLine in BuildShiningCoreActionRequestPreviewLines(context, request)
-                             .Where(line => !string.IsNullOrWhiteSpace(line)))
+                if (includeAuditPayloads)
                 {
-                    lines.Add($"    {previewLine}");
+                    lines.Add("  Полный контракт, который должен закрыть GM:");
+                    foreach (var previewLine in BuildShiningCoreActionRequestPreviewLines(context, request)
+                                 .Where(line => !string.IsNullOrWhiteSpace(line)))
+                    {
+                        lines.Add($"    {previewLine}");
+                    }
                 }
 
                 lines.Add($"  Создан на ходу: [dim]{request.CreatedAtTurn}[/]");
@@ -1654,7 +1704,7 @@ public partial class ExplorerMode
             Expand = true
         });
 
-        if (requests.Count > 0)
+        if (includeAuditPayloads && requests.Count > 0)
         {
             var pendingAudit = new JsonArray();
             var receiptAudit = new JsonArray();
@@ -2171,11 +2221,15 @@ public partial class ExplorerMode
             _ => sourceType ?? string.Empty
         };
 
-    private static void AppendShiningResolutionAuditLines(List<string> lines, JsonObject receipt, int indent = 2)
+    private static void AppendShiningResolutionAuditLines(
+        List<string> lines,
+        JsonObject receipt,
+        int indent = 2,
+        bool includeRequestId = true)
     {
         var indentPrefix = new string(' ', indent);
         var requestId = GetNodeString(receipt["requestId"]);
-        if (!string.IsNullOrWhiteSpace(requestId))
+        if (includeRequestId && !string.IsNullOrWhiteSpace(requestId))
             lines.Add($"{indentPrefix}Запрос: [dim]{Markup.Escape(requestId)}[/]");
 
         var status = GetNodeString(receipt["status"]);

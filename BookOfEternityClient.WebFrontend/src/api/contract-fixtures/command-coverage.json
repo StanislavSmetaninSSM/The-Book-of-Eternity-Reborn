@@ -3,7 +3,7 @@
   "summary": {
     "descriptorCount": 105,
     "aliasCount": 231,
-    "subcommandCount": 8,
+    "subcommandCount": 9,
     "browserExecutableCount": 105,
     "playerDefaultActionCount": 98,
     "advancedOnlyActionCount": 7,
@@ -443,7 +443,34 @@
       "formMode": "none",
       "primaryActionLabel": "\u0421\u0442\u0430\u0442\u0443\u0441",
       "primaryCommand": "/status",
-      "subcommands": [],
+      "subcommands": [
+        {
+          "id": "audit",
+          "aliases": [
+            "audit",
+            "\u0430\u0443\u0434\u0438\u0442"
+          ],
+          "canonicalCommand": "/status audit",
+          "group": "UniversalMeta",
+          "mutationMode": "ReadOnly",
+          "browserStatus": "ReadOnlyParity",
+          "handlerKind": "UniversalMeta",
+          "uxDecision": "contextual-button",
+          "surface": "player-default",
+          "formMode": "none",
+          "primaryActionLabel": "\u0421\u0442\u0430\u0442\u0443\u0441",
+          "primaryCommand": "/status audit",
+          "followUpIssue": "",
+          "reason": "",
+          "auditStatus": "covered",
+          "sampleDataStatus": "Command-coverage fixture records this subcommand row; parent command fixtures exercise the alias and canonical-command path.",
+          "browserEvidence": "Browser executes canonical subcommand /status audit through the parent status C# web command handler.",
+          "consoleEvidence": "Console parser and renderer remain the C# authority for the same canonical subcommand.",
+          "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
+          "readabilityNotes": "Browser keeps the subcommand result in the same typed block renderer as the parent command.",
+          "gapSummary": "No tracked browser parity gap for the audited command scope."
+        }
+      ],
       "followUpIssue": "",
       "reason": "",
       "auditStatus": "covered",

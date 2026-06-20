@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using BookOfEternityClient.Configuration;
 using Spectre.Console;
 
@@ -15,39 +16,158 @@ public partial class ExplorerMode
         string confirmationTitle = "Подтвердить контракт Моря Хаоса",
         string confirmChoice = "✅ Подтвердить и продолжить")
     {
-        Clear();
-        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        var auditLines = lines.ToList();
+        var playerLines = BuildChaosSeaPlayerPreviewLines(auditLines);
+        var showAudit = false;
+        while (true)
         {
-            Header = new PanelHeader($" 🌊 {Markup.Escape(previewTitle)} ", Justify.Center),
-            Border = BoxBorder.Double,
-            BorderStyle = new Style(Color.Cyan1),
-            Padding = new Padding(2, 1),
-            Expand = true
-        });
+            Clear();
+            var renderedTitle = showAudit
+                ? $"Технический контракт: {previewTitle}"
+                : BuildChaosSeaPlayerPreviewTitle(previewTitle);
+            var renderedLines = showAudit ? auditLines : playerLines;
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", renderedLines)))
+            {
+                Header = new PanelHeader($" 🌊 {Markup.Escape(renderedTitle)} ", Justify.Center),
+                Border = BoxBorder.Double,
+                BorderStyle = new Style(Color.Cyan1),
+                Padding = new Padding(2, 1),
+                Expand = true
+            });
 
-        if (auditNode != null)
-            WriteJsonAuditPanel(auditTitle ?? "Полный JSON контракта Моря Хаоса", auditNode, Color.Cyan1);
+            if (showAudit && auditNode != null)
+                WriteJsonAuditPanel(auditTitle ?? "Полный JSON контракта Моря Хаоса", auditNode, Color.Cyan1);
 
-        var choice = Prompt(new SelectionPrompt<string>()
-            .Title($"[bold cyan]{Markup.Escape(confirmationTitle)}[/]")
-            .HighlightStyle(new Style(Color.Cyan1))
-            .AddChoices(confirmChoice, "← Отмена"));
+            var choices = new List<string> { confirmChoice };
+            if (auditNode != null || auditLines.Count != playerLines.Count)
+                choices.Add(showAudit ? "← Вернуться к обычному виду" : "🔧 Показать технический контракт");
+            choices.Add("← Отмена");
 
-        if (choice.Contains("Отмена", StringComparison.OrdinalIgnoreCase) ||
-            choice.Contains("Назад", StringComparison.OrdinalIgnoreCase) ||
-            choice.Contains("←", StringComparison.Ordinal))
+            var choice = Prompt(new SelectionPrompt<string>()
+                .Title($"[bold cyan]{Markup.Escape(confirmationTitle)}[/]")
+                .HighlightStyle(new Style(Color.Cyan1))
+                .AddChoices(choices));
+
+            if (choice.Contains("техническ", StringComparison.OrdinalIgnoreCase))
+            {
+                showAudit = true;
+                continue;
+            }
+
+            if (choice.Contains("обычному виду", StringComparison.OrdinalIgnoreCase))
+            {
+                showAudit = false;
+                continue;
+            }
+
+            if (choice.Contains("Отмена", StringComparison.OrdinalIgnoreCase) ||
+                choice.Contains("Назад", StringComparison.OrdinalIgnoreCase) ||
+                choice.Contains("←", StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            return choice.Contains("Подтверд", StringComparison.OrdinalIgnoreCase) ||
+                   choice.Contains("продолж", StringComparison.OrdinalIgnoreCase) ||
+                   choice.Contains("Создать", StringComparison.OrdinalIgnoreCase) ||
+                   choice.Contains("Выбрать", StringComparison.OrdinalIgnoreCase) ||
+                   choice.Contains("Отправить", StringComparison.OrdinalIgnoreCase) ||
+                   choice.Contains("Да", StringComparison.OrdinalIgnoreCase) ||
+                   !string.IsNullOrWhiteSpace(choice);
+        }
+    }
+
+    private static IReadOnlyList<string> BuildChaosSeaPlayerPreviewLines(IReadOnlyList<string> auditLines)
+    {
+        var result = new List<string>();
+        foreach (var sourceLine in auditLines)
         {
-            return false;
+            if (IsChaosSeaAuditSectionStart(sourceLine))
+                break;
+
+            var line = NormalizeChaosSeaPlayerPreviewLine(sourceLine);
+            if (IsChaosSeaTechnicalPreviewLine(line))
+                continue;
+
+            result.Add(line);
         }
 
-        return choice.Contains("Подтверд", StringComparison.OrdinalIgnoreCase) ||
-               choice.Contains("продолж", StringComparison.OrdinalIgnoreCase) ||
-               choice.Contains("Создать", StringComparison.OrdinalIgnoreCase) ||
-               choice.Contains("Выбрать", StringComparison.OrdinalIgnoreCase) ||
-               choice.Contains("Отправить", StringComparison.OrdinalIgnoreCase) ||
-               choice.Contains("Да", StringComparison.OrdinalIgnoreCase) ||
-               !string.IsNullOrWhiteSpace(choice);
+        while (result.Count > 0 && string.IsNullOrWhiteSpace(result[^1]))
+            result.RemoveAt(result.Count - 1);
+
+        return result.Count == 0
+            ? new[] { "Действие подготовлено. Перед подтверждением можно открыть технический контракт отдельным пунктом." }
+            : result;
     }
+
+    private static string BuildChaosSeaPlayerPreviewTitle(string previewTitle)
+    {
+        var title = previewTitle
+            .Replace("Полный предпросмотр", "Предпросмотр", StringComparison.OrdinalIgnoreCase)
+            .Replace("контракта", "действия", StringComparison.OrdinalIgnoreCase)
+            .Trim();
+        return string.IsNullOrWhiteSpace(title) ? "Предпросмотр действия" : title;
+    }
+
+    private static bool IsChaosSeaAuditSectionStart(string line)
+    {
+        var plain = RemoveSpectreMarkup(line);
+        return plain.Contains("Контракт", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("Техническое закрытие", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("Accepted state changes", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("Canonical accepted outcome", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("Предварительное локальное изменение клиента", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("Матрица правил мира", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("Правила локального предпросмотра", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsChaosSeaTechnicalPreviewLine(string line)
+    {
+        var plain = RemoveSpectreMarkup(line);
+        return plain.Contains("requestId", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("guardianId", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("abodeId", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("residentId", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("archiveId", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("projectId", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("offeringType", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("interactionType", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("transferMode", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("selectionMode", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("requestMode", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("discoveredAbodes", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("pending_", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains("Update", StringComparison.Ordinal) ||
+               plain.Contains("Receipts", StringComparison.OrdinalIgnoreCase) ||
+               plain.Contains(".json", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string NormalizeChaosSeaPlayerPreviewLine(string line)
+    {
+        var normalized = line
+            .Replace("Guardian/Abode:", "Хранитель/Обитель:", StringComparison.Ordinal)
+            .Replace("Source activeGuardian:", "Текущий Хранитель:", StringComparison.Ordinal)
+            .Replace("Source abode:", "Текущая Обитель:", StringComparison.Ordinal)
+            .Replace("Target abode:", "Новая Обитель:", StringComparison.Ordinal)
+            .Replace("Guardian:", "Хранитель:", StringComparison.Ordinal)
+            .Replace("Resident:", "Обитатель:", StringComparison.Ordinal)
+            .Replace("Archive entry:", "Запись Архива:", StringComparison.Ordinal)
+            .Replace("Project:", "Проект:", StringComparison.Ordinal)
+            .Replace("Source:", "Откуда:", StringComparison.Ordinal)
+            .Replace("Target:", "Куда:", StringComparison.Ordinal)
+            .Replace("current devotion/restlessness:", "Текущая преданность/беспокойство:", StringComparison.Ordinal);
+
+        return DimParenthesizedIdentityRegex().Replace(normalized, string.Empty);
+    }
+
+    private static string RemoveSpectreMarkup(string line) =>
+        SpectreMarkupRegex().Replace(line, string.Empty);
+
+    [GeneratedRegex(@"\s*\[dim\]\([^)]*\)\[/\]", RegexOptions.Compiled)]
+    private static partial Regex DimParenthesizedIdentityRegex();
+
+    [GeneratedRegex(@"\[[^\]]+\]", RegexOptions.Compiled)]
+    private static partial Regex SpectreMarkupRegex();
 
     private static JsonNode? ToChaosSeaAuditNode<T>(T value) =>
         JsonSerializer.SerializeToNode(value, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);

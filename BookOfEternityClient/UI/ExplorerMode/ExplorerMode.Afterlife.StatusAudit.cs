@@ -55,7 +55,7 @@ public partial class ExplorerMode
         new(SarefMainStoryState.PendingWingsInfiltrationPath, "Поиск Крыльев Ангелов", "sarefMainStoryUpdate.mode=reveal_wings/refuse_wings/block_wings + wingsInfiltration.status", ShiningOnly: true)
     };
 
-    private async Task ShowAfterlifeDetailedStatusAsync()
+    private async Task ShowAfterlifeDetailedStatusAsync(bool includeAuditPayloads)
     {
         await _stateManager.RefreshGameStateAsync();
         var soulStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync("game_state/meta/soul_state.json");
@@ -70,11 +70,13 @@ public partial class ExplorerMode
         var residentsRoot = residentsStateRead.Root;
         var returnGuardRaw = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
         var shiningContext = await LoadShiningContextAsync();
-        var pendingLines = await BuildAfterlifePendingContractAuditLinesAsync(includeShining: true, includeFullPayload: true);
+        var pendingLines = await BuildAfterlifePendingContractAuditLinesAsync(includeShining: true, includeFullPayload: includeAuditPayloads);
 
         var lines = new List<string>
         {
-            "[bold cyan]Полный статус загробного цикла[/]",
+            includeAuditPayloads
+                ? "[bold cyan]Аудит посмертия[/]"
+                : "[bold cyan]Статус посмертия[/]",
             "",
             "[bold]Область и душа:[/]",
             $"  • Область (currentRealm): [white]{Markup.Escape(_stateManager.CurrentState.CurrentRealm)}[/]",
@@ -89,7 +91,7 @@ public partial class ExplorerMode
             $"  • Архив души: в хранилище (stored) [white]{(soulRoot?["afterlifeArchive"]?["stored"] as JsonArray)?.Count ?? 0}[/], квитанции (actionReceipts) [white]{(soulRoot?["afterlifeArchive"]?["actionReceipts"] as JsonArray)?.Count ?? 0}[/]"
         };
 
-        AppendNextLifePayloadStatusLines(lines, soulRoot);
+        AppendNextLifePayloadStatusLines(lines, soulRoot, includeAuditPayloads);
         AppendChaosSeaStatusLines(lines, guardiansRoot, residentsRoot, returnGuardRaw);
         AppendShiningStatusLines(lines, shiningContext);
         AppendAfterlifeSpiritualConflictStatusLines(lines, spiritualConflictRead.Root);
@@ -97,7 +99,8 @@ public partial class ExplorerMode
         AppendMalformedAfterlifeStateStatusLines(
             lines,
             new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead, entityProfilesRead, globalFlagsRead },
-            shiningContext?.ReadIssues);
+            shiningContext?.ReadIssues,
+            includeAuditPayloads);
         await AppendAfterlifeProgressionStatusLinesAsync(lines);
 
         lines.Add("");
@@ -107,6 +110,10 @@ public partial class ExplorerMode
         lines.Add("  • /chaos_sea — Хранители, Обители, ожидающие/контрольные контракты и действия Моря Хаоса.");
         lines.Add("  • /feathers, /afterlife_archive, /afterlife_inbox, /guardian_projects, /guardian_politics — детальные аудит-панели ресурсов, архива, ответов ГМ, проектов и политики Хранителей.");
         lines.Add("  • /shining_abode, /shining_politics — Сияющая Обитель, Врата, торговля/ковка, фракции, резиденты, проекты и политические квитанции.");
+        if (includeAuditPayloads)
+            lines.Add("  • Обычная игроковая сводка без JSON-аудита: /status или /статус.");
+        else
+            lines.Add("  • Технический аудит и ремонтные payload доступны отдельно: /status audit или /статус аудит.");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -117,27 +124,37 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-        WriteJsonAuditPanel("Полный JSON game_state/meta/soul_state.json", soulRoot, Color.Cyan1);
-        WriteJsonAuditPanel("Полный JSON game_state/meta/guardians.json", guardiansRoot, Color.Cyan1);
-        WriteJsonAuditPanel("Полный JSON game_state/meta/guardian_abode_residents.json", residentsRoot, Color.Cyan1);
-        WriteMalformedAfterlifeStateAuditPanels(
-            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead, entityProfilesRead, globalFlagsRead },
-            shiningContext?.ReadIssues);
-        if (shiningContext != null)
+        if (includeAuditPayloads)
         {
-            WriteJsonAuditPanel("Полный JSON game_state/meta/shining_abode_state.json", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root), Color.Gold1);
-            WriteJsonAuditPanel("Полный JSON привязок резидентов Сияющей Обители", shiningContext.ResidentRoot, Color.Gold1);
-            WriteJsonAuditPanel("Полный JSON Врат Сияющей Обители", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["gates"]), Color.Gold1);
-            WriteJsonAuditPanel("Полный JSON preparedIncarnationPackage", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["preparedIncarnationPackage"]), Color.Gold1);
-            WriteJsonAuditPanel("Полный JSON coreActionReceipts Сияющей Обители", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["coreActionReceipts"]), Color.Gold1);
-            WriteJsonAuditPanel("Полный JSON gachaSystem Сияющей Обители", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["gachaSystem"]), Color.Gold1);
-            WriteJsonAuditPanel("Полный JSON Сокровищницы Сияющей Обители", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["treasury"]), Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON game_state/meta/soul_state.json", soulRoot, Color.Cyan1);
+            WriteJsonAuditPanel("Полный JSON game_state/meta/guardians.json", guardiansRoot, Color.Cyan1);
+            WriteJsonAuditPanel("Полный JSON game_state/meta/guardian_abode_residents.json", residentsRoot, Color.Cyan1);
+            WriteMalformedAfterlifeStateAuditPanels(
+                new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead, entityProfilesRead, globalFlagsRead },
+                shiningContext?.ReadIssues);
+            if (shiningContext != null)
+            {
+                WriteJsonAuditPanel("Полный JSON game_state/meta/shining_abode_state.json", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root), Color.Gold1);
+                WriteJsonAuditPanel("Полный JSON привязок резидентов Сияющей Обители", shiningContext.ResidentRoot, Color.Gold1);
+                WriteJsonAuditPanel("Полный JSON Врат Сияющей Обители", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["gates"]), Color.Gold1);
+                WriteJsonAuditPanel("Полный JSON preparedIncarnationPackage", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["preparedIncarnationPackage"]), Color.Gold1);
+                WriteJsonAuditPanel("Полный JSON coreActionReceipts Сияющей Обители", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["coreActionReceipts"]), Color.Gold1);
+                WriteJsonAuditPanel("Полный JSON gachaSystem Сияющей Обители", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["gachaSystem"]), Color.Gold1);
+                WriteJsonAuditPanel("Полный JSON Сокровищницы Сияющей Обители", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["treasury"]), Color.Gold1);
+            }
+            WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", BuildPlayerFacingCombatConditionAudit(spiritualConflictRead.Root), Color.Cyan1);
+            WriteJsonAuditPanel($"Полный JSON {AfterlifeEntityProfileState.StatePath}", entityProfilesRead.Root, Color.Cyan1);
+            WriteJsonAuditPanel($"Полный JSON {AfterlifeGlobalFlagState.StatePath}", BuildPlayerFacingAfterlifeGlobalFlagsAudit(globalFlagsRead.Root), Color.Cyan1);
+            await WriteAfterlifeProgressionAuditPanelsAsync();
         }
-        WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", BuildPlayerFacingCombatConditionAudit(spiritualConflictRead.Root), Color.Cyan1);
-        WriteJsonAuditPanel($"Полный JSON {AfterlifeEntityProfileState.StatePath}", entityProfilesRead.Root, Color.Cyan1);
-        WriteJsonAuditPanel($"Полный JSON {AfterlifeGlobalFlagState.StatePath}", BuildPlayerFacingAfterlifeGlobalFlagsAudit(globalFlagsRead.Root), Color.Cyan1);
-        await WriteAfterlifeProgressionAuditPanelsAsync();
         WaitForKey();
+    }
+
+    private static bool IsAfterlifeStatusAuditRequested(string commandRemainder)
+    {
+        var normalized = commandRemainder.Trim();
+        return string.Equals(normalized, "audit", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "аудит", StringComparison.OrdinalIgnoreCase);
     }
 
     private static void AppendAfterlifeSpiritualConflictStatusLines(List<string> lines, JsonObject? conflictRoot)
@@ -207,7 +224,8 @@ public partial class ExplorerMode
     private static void AppendMalformedAfterlifeStateStatusLines(
         List<string> lines,
         IEnumerable<AfterlifeStatusJsonReadResult> stateReads,
-        IReadOnlyList<ShiningContextReadIssue>? shiningReadIssues)
+        IReadOnlyList<ShiningContextReadIssue>? shiningReadIssues,
+        bool includeAuditPayloads)
     {
         var issues = stateReads
             .Where(result => !string.IsNullOrWhiteSpace(result.Error))
@@ -229,7 +247,9 @@ public partial class ExplorerMode
         foreach (var issue in issues)
         {
             lines.Add($"  • {Markup.Escape(issue.Path)}: [red]{Markup.Escape(issue.Error)}[/]");
-            lines.Add("    Полные сырые данные выведены ниже отдельной аудит-панелью только для ремонта; ГМ/клиент не должен молча нормализовать или перезаписывать этот файл.");
+            lines.Add(includeAuditPayloads
+                ? "    Полные сырые данные выведены ниже отдельной аудит-панелью только для ремонта; ГМ/клиент не должен молча нормализовать или перезаписывать этот файл."
+                : "    Для ремонта откройте /status audit или /статус аудит; обычная сводка не показывает сырые повреждённые данные.");
         }
     }
 
@@ -521,7 +541,7 @@ public partial class ExplorerMode
         return total;
     }
 
-    private static void AppendNextLifePayloadStatusLines(List<string> lines, JsonObject? soulRoot)
+    private static void AppendNextLifePayloadStatusLines(List<string> lines, JsonObject? soulRoot, bool includeAuditPayloads)
     {
         if (soulRoot == null)
             return;
@@ -533,42 +553,66 @@ public partial class ExplorerMode
 
         lines.Add("");
         lines.Add("[bold]Данные следующей жизни:[/]");
-        lines.Add("  • Эти данные будут применяться в следующей смертной жизни; полный просмотр доступен через /soul.");
+        lines.Add(includeAuditPayloads
+            ? "  • Эти данные будут применяться в следующей смертной жизни; ниже показаны ремонтные идентификаторы и снимки."
+            : "  • Эти данные будут применяться в следующей смертной жизни; технические поля доступны через /status audit или /soul.");
 
         if (soulRoot["pendingMemoryLegacy"] is JsonObject legacy)
         {
-            lines.Add("  • pendingMemoryLegacy:");
-            AddNextLifePayloadField(lines, legacy, "legacyId");
-            AddNextLifePayloadField(lines, legacy, "legacyType");
-            AddNextLifePayloadField(lines, legacy, "grantSource");
-            AddNextLifePayloadField(lines, legacy, "applicationState");
-            AddNextLifePayloadField(lines, legacy, "sourceLifeHint");
-            AddNextLifePayloadField(lines, legacy, "characteristic");
-            AddNextLifePayloadField(lines, legacy, "skillName");
-            AddNextLifePayloadField(lines, legacy, "playerStatBonus");
-            AddNextLifePayloadField(lines, legacy, "bonus");
-            if (legacy["bonus"] is JsonObject bonus)
-                lines.Add($"    bonus: [dim]{Markup.Escape(bonus.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))}[/]");
-            if (legacy["grantSnapshot"] is JsonObject snapshot)
-                lines.Add($"    grantSnapshot: [dim]{Markup.Escape(snapshot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))}[/]");
+            if (!includeAuditPayloads)
+            {
+                var title = GetNodeString(legacy["skillName"])
+                            ?? GetNodeString(legacy["sourceLifeHint"])
+                            ?? GetNodeString(legacy["legacyType"])
+                            ?? "эхо памяти";
+                var bonus = FormatNextLifeMemoryLegacyBonus(legacy);
+                var suffix = string.IsNullOrWhiteSpace(bonus) ? string.Empty : $"; бонус: {bonus}";
+                lines.Add($"  • Память прошлой жизни: [white]{Markup.Escape(title)}[/]{Markup.Escape(suffix)}.");
+            }
+            else
+            {
+                lines.Add("  • pendingMemoryLegacy:");
+                AddNextLifePayloadField(lines, legacy, "legacyId");
+                AddNextLifePayloadField(lines, legacy, "legacyType");
+                AddNextLifePayloadField(lines, legacy, "grantSource");
+                AddNextLifePayloadField(lines, legacy, "applicationState");
+                AddNextLifePayloadField(lines, legacy, "sourceLifeHint");
+                AddNextLifePayloadField(lines, legacy, "characteristic");
+                AddNextLifePayloadField(lines, legacy, "skillName");
+                AddNextLifePayloadField(lines, legacy, "playerStatBonus");
+                AddNextLifePayloadField(lines, legacy, "bonus");
+                if (legacy["bonus"] is JsonObject bonus)
+                    lines.Add($"    bonus: [dim]{Markup.Escape(bonus.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))}[/]");
+                if (legacy["grantSnapshot"] is JsonObject snapshot)
+                    lines.Add($"    grantSnapshot: [dim]{Markup.Escape(snapshot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))}[/]");
+            }
         }
 
         if (soulRoot["soulImprint"] is JsonObject imprint)
         {
-            lines.Add("  • soulImprint:");
-            foreach (var key in new[]
+            if (!includeAuditPayloads)
             {
-                "imprintId", "sourceCompanionId", "companionId", "NPCId", "sourceNpcId", "companionName", "NPCName",
-                "summary", "futureCompanionPrompt", "grantSource", "applicationState"
-            })
-            {
-                AddNextLifePayloadField(lines, imprint, key);
+                var companionName = GetNodeString(imprint["companionName"]) ?? GetNodeString(imprint["NPCName"]) ?? "будущий спутник";
+                var summary = GetNodeString(imprint["summary"]) ?? "связь сохранена для следующей жизни";
+                lines.Add($"  • Отпечаток спутника: [white]{Markup.Escape(companionName)}[/] — {Markup.Escape(summary)}");
             }
-
-            foreach (var key in new[] { "coreTraits", "personalityMarkers", "relationshipMarkers", "appearanceMotifs", "sourceProvenance" })
+            else
             {
-                if (imprint[key] is JsonArray or JsonObject)
-                    lines.Add($"    {key}: [dim]{Markup.Escape(imprint[key]!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))}[/]");
+                lines.Add("  • soulImprint:");
+                foreach (var key in new[]
+                {
+                    "imprintId", "sourceCompanionId", "companionId", "NPCId", "sourceNpcId", "companionName", "NPCName",
+                    "summary", "futureCompanionPrompt", "grantSource", "applicationState"
+                })
+                {
+                    AddNextLifePayloadField(lines, imprint, key);
+                }
+
+                foreach (var key in new[] { "coreTraits", "personalityMarkers", "relationshipMarkers", "appearanceMotifs", "sourceProvenance" })
+                {
+                    if (imprint[key] is JsonArray or JsonObject)
+                        lines.Add($"    {key}: [dim]{Markup.Escape(imprint[key]!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))}[/]");
+                }
             }
         }
     }
@@ -578,6 +622,16 @@ public partial class ExplorerMode
         var value = FormatPendingIdentityValue(root[key]);
         if (!string.IsNullOrWhiteSpace(value))
             lines.Add($"    {key}: [white]{Markup.Escape(value)}[/]");
+    }
+
+    private static string FormatNextLifeMemoryLegacyBonus(JsonObject legacy)
+    {
+        var characteristic = GetNodeString(legacy["characteristic"]);
+        var numericBonus = GetNodeInt(legacy["bonus"]);
+        if (!string.IsNullOrWhiteSpace(characteristic) && numericBonus != 0)
+            return $"{StructuredBonusDisplay.FormatCharacteristicName(characteristic)} {numericBonus:+#;-#;0}";
+
+        return FormatPendingIdentityValue(legacy["bonus"] ?? legacy["playerStatBonus"]) ?? string.Empty;
     }
 
     private static void AppendSelectedShiningCardStatusLines(List<string> lines, JsonObject gates, ShiningContext context)
@@ -674,6 +728,9 @@ public partial class ExplorerMode
             var isWrongRealmShiningContract =
                 entry.Definition.ShiningOnly &&
                 _stateManager.CurrentState.IsInChaosSea;
+            var isWrongRealmMortalContract =
+                !entry.Definition.ShiningOnly &&
+                IsMortalWorldPendingContract(entry.Definition.Path);
             var requestLabel = entry.RequestIndex.HasValue ? $"requests[{entry.RequestIndex.Value}]" : "root";
             lines.Add(includeFullPayload
                 ? $"  • [white]{Markup.Escape(entry.Definition.Label)}[/] — [dim]{Markup.Escape(entry.Definition.Path)}[/] / {Markup.Escape(requestLabel)}"
@@ -681,6 +738,10 @@ public partial class ExplorerMode
             if (isWrongRealmShiningContract)
             {
                 lines.Add("    область: [yellow]только ремонт в неверной области: Море Хаоса[/]; сохранить данные и не закрывать сияющими квитанциями/состоянием, пока область не станет Сияющей Обителью.");
+            }
+            else if (isWrongRealmMortalContract && !includeFullPayload)
+            {
+                lines.Add("    область: [yellow]только ремонт в неверной области посмертия[/]; сохранить данные и не закрывать посмертными квитанциями.");
             }
             if (entry.IsMalformed)
             {
@@ -721,6 +782,8 @@ public partial class ExplorerMode
             {
                 lines.Add(isWrongRealmShiningContract
                     ? "    состояние: [yellow]ожидает Сияющей Обители или ремонта[/]"
+                    : isWrongRealmMortalContract
+                        ? "    состояние: [yellow]ожидает ремонта в неверной области[/]"
                     : "    состояние: ожидает ответа ГМ; подробности появятся в уведомлениях посмертия.");
             }
 
@@ -735,11 +798,17 @@ public partial class ExplorerMode
         return lines;
     }
 
+    private static bool IsMortalWorldPendingContract(string path) =>
+        string.Equals(path, ActorSocialInteractionRequestState.PendingNpcRequestPath, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(path, NpcTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(path, CraftRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase);
+
     private static string BuildPendingContractPlayerSummary(JsonObject payload)
     {
         var parts = new List<string>();
         AddPendingPlayerField(parts, "Хранитель", payload["guardianName"]);
         AddPendingPlayerField(parts, "Обитель", payload["abodeName"]);
+        AddPendingPlayerField(parts, "NPC", payload["npcName"] ?? payload["NPCName"]);
         AddPendingPlayerField(parts, "Резидент", payload["residentName"]);
         AddPendingPlayerField(parts, "Фракция", payload["factionName"]);
         AddPendingPlayerField(parts, "Проект", payload["projectDisplayName"]);

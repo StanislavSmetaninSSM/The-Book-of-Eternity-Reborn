@@ -99,6 +99,7 @@ function Read-GameConfig {
         GmBridgeEnabled = $true
         GmBridgeBackend = "ConPTYBridge"
         GmCliLaunchCommand = "codex --dangerously-bypass-approvals-and-sandbox"
+        GmBridgeShellWorkingDirectory = ""
         GmBridgeAutoStart = $false
         GmBridgePipeNameOverride = ""
         GmWorkerBridgeProfiles = New-DefaultGmWorkerBridgeProfiles

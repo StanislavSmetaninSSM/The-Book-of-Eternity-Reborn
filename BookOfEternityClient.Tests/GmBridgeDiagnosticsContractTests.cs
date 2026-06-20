@@ -73,6 +73,30 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
+    public void BridgeHost_DefaultShellWorkingDirectoryUsesGameSessionIsolation()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("ResolveGmBridgeShellWorkingDirectory", source, StringComparison.Ordinal);
+        Assert.Contains("config.GmBridgeShellWorkingDirectory", source, StringComparison.Ordinal);
+        Assert.Contains("_status.ShellWorkingDirectory = workingDirectory;", source, StringComparison.Ordinal);
+        Assert.Contains("public string ShellWorkingDirectory { get; set; } = string.Empty;", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("var workingDirectory = Directory.Exists(_repoRoot)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BridgeStatus_TracksLastPromptDispatchTiming()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("LastPromptDispatchState", source, StringComparison.Ordinal);
+        Assert.Contains("LastPromptDispatchStartedAtUtc", source, StringComparison.Ordinal);
+        Assert.Contains("LastPromptDispatchCompletedAtUtc", source, StringComparison.Ordinal);
+        Assert.Contains("LastPromptDispatchElapsedMs", source, StringComparison.Ordinal);
+        Assert.Contains("Stopwatch.StartNew()", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BridgeStatus_ExposesConfiguredWorkerStatuses()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
