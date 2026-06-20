@@ -1,10 +1,10 @@
 # Implementation Plan: Console Client Polish Pass 2 to 9/10
 
-**Branch**: `work/1174-console-polish-9` | **Date**: 2026-06-20 | **Spec**: `specs/1174-console-polish-9/spec.md`
+**Branch**: `work/1174-console-polish-9` / follow-up `work/1181-console-followups` | **Date**: 2026-06-20 | **Spec**: `specs/1174-console-polish-9/spec.md`
 
 ## Source Issues
 
-- #1174, #1175, #1176, #1177, #1178, #1179, #1180
+- #1174, #1175, #1176, #1177, #1178, #1179, #1180, #1181, #1182, #1183
 
 ## Summary
 

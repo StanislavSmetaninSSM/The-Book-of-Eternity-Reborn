@@ -6,7 +6,7 @@
 
 **Status**: Draft for autonomous implementation
 
-**Input**: GitHub issues #1174, #1175, #1176, #1177, #1178, #1179, and #1180.
+**Input**: GitHub issues #1174, #1175, #1176, #1177, #1178, #1179, #1180, #1181, #1182, and #1183.
 
 ## Source Issues & Scope
 
@@ -18,6 +18,9 @@
   - #1178 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1178
   - #1179 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1179
   - #1180 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1180
+  - #1181 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1181
+  - #1182 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1182
+  - #1183 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1183
 - **Issue type**: console UX hardening, command coverage audit, dry sweep, live E2E, acceptance scoring.
 - **Spec Kit justification**: Required. The work is an epic, spans multiple issues and sessions, changes player-facing console UX, touches Mortal World and afterlife command surfaces, and requires durable acceptance criteria.
 - **Contract scope**: player-facing console output, command coverage documentation, test fixture coverage, dry command sweep, live console playtest artifacts. Browser and QTE work are explicitly out of scope.

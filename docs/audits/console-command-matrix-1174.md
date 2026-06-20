@@ -163,13 +163,13 @@ Scope: ordinary console-client commands from `ExplorerCommandCatalog`. Browser U
 
 | ID | Aliases | Mode | Fixture/Test Coverage | 9/10 Expectation | Status |
 |---|---|---:|---|---|---|
-| `saref_story` | `/saref`, `/сареф`, `/saref_story`, `/история_сарефа`, `/wings_of_angels`, `/крылья_над_бездной` | ReadOnly + subcommands | Saref focused tests | Hidden-story state and actions must be readable and not expose internal route names by default. | Gap: add dry sweep if fixture allows |
-| `saref_memory_scene` | `/воспоминание`, `/воспоминание_статус`, `/воспоминание_начать`, `/воспоминание_способности` | ReadOnly + subcommands | Memory-scene focused tests | Memory scene status/start/abilities are readable and lifecycle-safe. | Gap: add dry sweep if fixture allows |
+| `saref_story` | `/saref`, `/сареф`, `/saref_story`, `/история_сарефа`, `/wings_of_angels`, `/крылья_над_бездной` | ReadOnly + subcommands | Saref focused tests + `SarefCommandDisplayQualityTests` (#1183) | Hidden-story state and actions must be readable and not expose internal route names by default. | Covered for `/сареф` and `/saref`; write subcommands remain separate mutating prompt tests |
+| `saref_memory_scene` | `/воспоминание`, `/воспоминание_статус`, `/воспоминание_начать`, `/воспоминание_способности` | ReadOnly + subcommands | Memory-scene focused tests + `SarefCommandDisplayQualityTests` (#1183) | Memory scene status/start/abilities are readable and lifecycle-safe. | Covered by focused dry-sweep quality test |
 
 ## Initial Findings for #1175
 
 1. Existing reusable fixtures are strong enough to start #1176 without creating new saves first.
 2. `MortalCommandDisplaySaveTests`, `ChaosSeaCommandDisplaySaveTests`, and `ShiningAbodeCommandDisplaySaveTests` already behave like a partial dry sweep for catalog commands. The #1176 work should consolidate their duplicate violation checks into reusable classification/reporting rather than invent a separate output-quality policy.
-3. Universal commands `math`, `gm`, `debug`, `system_guardians`, and Saref/memory commands need explicit dry-sweep inclusion or an intentional diagnostic/fixture-scope note.
+3. Universal commands `math`, `gm`, `debug`, and `system_guardians` need explicit dry-sweep inclusion or an intentional diagnostic/fixture-scope note. Saref/memory read-only commands now have focused dry-sweep quality coverage in #1183.
 4. LocalTurn commands should be swept as preview/prompt surfaces only. The sweep must not commit real game mutations unless it uses a disposable session and reports it.
 5. The first implementation target should be a shared command-output quality classifier used by the three display-save tests and by a new report artifact.

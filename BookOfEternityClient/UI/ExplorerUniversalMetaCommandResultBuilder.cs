@@ -1146,7 +1146,8 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     "Ты пока не знаешь, что искать."));
         }
 
-        return Completed(command,
+        var blocks = new List<UiBlock>
+        {
             Panel("Крылья над Бездной",
                 Grid(
                     ("Стадия раскрытия", DescribeSarefRevealStage(GetString(root, "revealStage", SarefMainStoryState.RevealStageUnknown))),
@@ -1155,9 +1156,140 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     ("Использований преимуществ", CountArray(root, "sarefAdvantageUses").ToString()),
                     ("Известных агентов", CountNestedArray(root, "factionLinks", "knownAgents").ToString()),
                     ("Финал", DescribeNested(root, "finalConfrontation")),
-                    ("Клятва", DescribeNested(root, "playerOathState")))),
-            Raw($"Полный JSON {SarefMainStoryState.StatePath}", root));
+                    ("Клятва", DescribeNested(root, "playerOathState"))))
+        };
+
+        AddSarefStoryArrayTable(blocks, "Раскрытые фрагменты", root["sarefRevelations"] as JsonArray);
+        AddSarefStoryArrayTable(blocks, "Преимущества", root["sarefAdvantages"] as JsonArray);
+        AddSarefStoryArrayTable(blocks, "Использования преимуществ", root["sarefAdvantageUses"] as JsonArray);
+        AddSarefFactionLinks(blocks, root["factionLinks"] as JsonObject);
+        AddSarefStoryArrayTable(blocks, "Возможные исходы", root["defeatOutcomes"] as JsonArray);
+        AddSarefStoryArrayTable(blocks, "Финалы", root["endings"] as JsonArray);
+
+        return Completed(command, blocks);
     }
+
+    private static void AddSarefFactionLinks(List<UiBlock> blocks, JsonObject? factionLinks)
+    {
+        if (factionLinks == null)
+            return;
+
+        var rows = new List<UiTableRow>();
+        AddSarefStoryRows(rows, "Тени", factionLinks["shadowTraces"] as JsonArray);
+        AddSarefStoryRows(rows, "Агенты", factionLinks["knownAgents"] as JsonArray);
+        AddSarefStoryRows(rows, "Фракции", factionLinks["factions"] as JsonArray);
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = "Связи Сарефа",
+            Columns = ["Раздел", "Описание", "Детали"],
+            Rows = rows
+        });
+    }
+
+    private static void AddSarefStoryArrayTable(List<UiBlock> blocks, string title, JsonArray? array)
+    {
+        if (array == null || array.Count == 0)
+            return;
+
+        var rows = new List<UiTableRow>();
+        AddSarefStoryRows(rows, string.Empty, array);
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = title,
+            Columns = ["Запись", "Описание", "Детали"],
+            Rows = rows
+        });
+    }
+
+    private static void AddSarefStoryRows(List<UiTableRow> rows, string prefix, JsonArray? array)
+    {
+        if (array == null)
+            return;
+
+        foreach (var (item, index) in array.OfType<JsonObject>().Select((item, index) => (item, index)))
+        {
+            var title = FirstReadableJsonValue(
+                GetString(item, "name", string.Empty),
+                GetString(item, "displayName", string.Empty),
+                GetString(item, "title", string.Empty),
+                string.IsNullOrWhiteSpace(prefix) ? $"Запись {index + 1}" : prefix);
+            var summary = FirstReadableJsonValue(
+                GetString(item, "summary", string.Empty),
+                GetString(item, "description", string.Empty),
+                GetString(item, "outcome", string.Empty),
+                GetString(item, "result", string.Empty));
+            var details = BuildSarefStoryDetail(item);
+            if (IsUnknownReadableJsonValue(summary) && IsUnknownReadableJsonValue(details))
+                continue;
+
+            rows.Add(Row(
+                string.IsNullOrWhiteSpace(prefix) ? title : JoinNonEmpty(": ", prefix, title),
+                summary,
+                details));
+        }
+    }
+
+    private static string BuildSarefStoryDetail(JsonObject item)
+    {
+        var parts = new[]
+            {
+                FormatSarefSource(item),
+                GetString(item, "revealedAtTurn", string.Empty) is { Length: > 0 } turn ? $"ход {turn}" : string.Empty,
+                GetString(item, "status", string.Empty) is { Length: > 0 } status ? DescribeSarefGenericStatus(status) : string.Empty,
+                GetString(item, "category", string.Empty) is { Length: > 0 } category ? TranslateSarefCategory(category) : string.Empty
+            }
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToArray();
+
+        return parts.Length == 0 ? "не указано" : string.Join("; ", parts);
+    }
+
+    private static string FormatSarefSource(JsonObject item)
+    {
+        var guardian = GetString(item, "sourceGuardianId", string.Empty);
+        var questOrdinal = GetNumberOrString(item, "sourceQuestOrdinal");
+        if (IsUnknownReadableJsonValue(questOrdinal))
+            questOrdinal = string.Empty;
+        if (string.IsNullOrWhiteSpace(guardian) && string.IsNullOrWhiteSpace(questOrdinal))
+            return string.Empty;
+
+        var parts = new List<string>();
+        if (!string.IsNullOrWhiteSpace(guardian))
+            parts.Add("память Хранителя");
+        if (!string.IsNullOrWhiteSpace(questOrdinal))
+            parts.Add($"квест {questOrdinal}");
+        return string.Join(", ", parts);
+    }
+
+    private static string DescribeSarefGenericStatus(string status) =>
+        status.ToLowerInvariant() switch
+        {
+            "available" => "доступно",
+            "active" => "активно",
+            "used" => "использовано",
+            "completed" => "завершено",
+            "failed" => "провалено",
+            "locked" => "закрыто",
+            "hidden" => "скрыто",
+            _ => EmptyFallback(status)
+        };
+
+    private static string TranslateSarefCategory(string category) =>
+        category.ToLowerInvariant() switch
+        {
+            "identity" => "личность",
+            "faction" => "фракции",
+            "oath" => "клятва",
+            "memory" => "память",
+            "route" => "маршрут",
+            _ => EmptyFallback(category)
+        };
 
     private static async Task<ExplorerCommandResult> BuildSarefMemoryScene(string command, FileSystemManager fs)
     {

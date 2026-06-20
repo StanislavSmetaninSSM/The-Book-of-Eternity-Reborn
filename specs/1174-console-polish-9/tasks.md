@@ -1,6 +1,6 @@
 # Tasks: Console Client Polish Pass 2 to 9/10
 
-**Input**: `specs/1174-console-polish-9/spec.md`, `plan.md`, source GitHub issues #1174-#1180, `AGENTS.md`, `.specify/memory/constitution.md`.
+**Input**: `specs/1174-console-polish-9/spec.md`, `plan.md`, source GitHub issues #1174-#1183, `AGENTS.md`, `.specify/memory/constitution.md`.
 
 **Tests**: Behavior changes require RED/GREEN tests before production edits.
 
@@ -64,7 +64,19 @@
 - [x] T036 Run final build and broad non-browser C# verification.
 - [x] T037 Run `git diff --check` and inspect `git diff --stat`.
 - [x] T038 Update #1180 with score, verification commands, changed files, and residual risks.
-- [ ] T039 Commit with source issue references, open PR, review, merge when verified, and close completed issues only after evidence is inspected.
+- [x] T039 Commit with source issue references, merge after verification evidence, and close completed issues only after evidence is inspected.
+
+## Phase 8: Follow-Up Console 9/10 Gaps (#1181, #1182, #1183)
+
+- [x] T040 Link follow-up issues #1181, #1182, and #1183 in Spec Kit artifacts before implementation.
+- [x] T041 Add RED focused dry-sweep coverage for `/сареф` and memory-scene aliases using `ConsoleCommandOutputQualityClassifier`.
+- [x] T042 Replace default `/сареф` raw JSON output with player-facing story detail tables without changing afterlife runtime contracts.
+- [x] T043 Verify Saref and memory-scene focused command quality coverage.
+- [ ] T044 Add RED Agent Console observability tests for command drilldowns/options menu.
+- [ ] T045 Implement Agent Console prompt/menu snapshot fixes without browser or QTE changes.
+- [ ] T046 Investigate #1181 GM fact persistence root cause and choose the smallest safe contract/test slice.
+- [ ] T047 Implement #1181 only if it can be fixed without broad narrative/runtime risk; otherwise document the required contract work precisely.
+- [ ] T048 Rerun focused follow-up tests and broad non-browser C# verification before merge.
 
 ## Evidence Log
 
@@ -115,3 +127,9 @@
 - Final whitespace check: `git diff --check` exited 0 with CRLF normalization warnings only.
 - Acceptance audit: `docs/audits/console-acceptance-score-1180.md`, score 8/10 with 9/10 conditions tied to #1181, #1182, and #1183.
 - GitHub #1180 acceptance audit updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1180#issuecomment-4758246978
+- Follow-up branch: `E:/Games/worktrees/boe-1181-console-followups`, branch `work/1181-console-followups`, created from `origin/main` at `0dd1899`.
+- Follow-up baseline restore/build note: initial `--no-restore` build failed because the new worktree had no `project.assets.json`; `dotnet restore BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj` restored both projects. Parallel build of client and tests conflicted on a shared `obj` DLL lock, so follow-up builds/tests are run sequentially.
+- Follow-up baseline client build: `dotnet build BookOfEternityClient\BookOfEternityClient.csproj --no-restore` passed with 0 warnings and 0 errors.
+- Follow-up baseline test-project build: `dotnet build BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore` passed with 0 warnings and 0 errors.
+- #1183 RED: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "SarefCommandDisplayQualityTests" --logger "console;verbosity=minimal"` failed 2, passed 4 because `/сареф` and `/saref` returned `UiRawJsonBlock`, leaked `game_state/` and `.json`, and lacked useful story detail text.
+- #1183 GREEN: same filter passed 6, failed 0 after adding focused Saref/memory-scene quality coverage and replacing default `/сареф` raw JSON with player-facing detail tables.
