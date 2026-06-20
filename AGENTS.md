@@ -83,5 +83,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 <!-- SPECKIT START -->
 Current Spec Kit plan for this branch:
-`specs/1174-console-polish-9/plan.md`
+`specs/1190-doc-cleanup/plan.md`
 <!-- SPECKIT END -->
