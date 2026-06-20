@@ -109,13 +109,30 @@
 .content-area {
   flex: 1;
   overflow-y: auto;
-  scrollbar-gutter: stable;
+  scrollbar-gutter: auto;
+  scrollbar-width: none;
   min-height: 0;
   padding: calc(1.25rem * var(--browser-ui-scale)) calc(1.5rem * var(--browser-ui-scale));
   width: 100%;
   min-width: 0;
   max-width: min(94rem, 100%);
   margin: 0 auto;
+}
+
+.content-area::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.content-area:hover,
+.content-area:focus-within {
+  scrollbar-width: thin;
+}
+
+.content-area:hover::-webkit-scrollbar,
+.content-area:focus-within::-webkit-scrollbar {
+  width: 0.55rem;
+  height: 0.55rem;
 }
 
 /* On the launcher route, narrow the menu so wide viewports leave real gutters
@@ -128,6 +145,35 @@
 /* ===== Scene View ===== */
 .scene-view { display: flex; flex-direction: column; gap: var(--space-4); }
 .scene-narrative { color: var(--text-primary); line-height: 1.75; }
+
+.browser-shell[data-active-tab='scene'] .content-area {
+  padding-block: clamp(0.75rem, 1.9vh, 1.25rem);
+}
+
+.browser-shell[data-active-tab='scene'] .scene-view {
+  gap: clamp(0.65rem, 1.5vh, 1rem);
+}
+
+.browser-shell[data-active-tab='scene'] .cinematic-hero {
+  min-height: 0;
+  height: clamp(9rem, 22vh, 15rem);
+  margin-top: 0;
+  margin-bottom: clamp(0.6rem, 1.4vh, 1rem);
+  padding: clamp(0.7rem, 1.8vh, 1.2rem) clamp(1rem, 3vw, 2rem);
+}
+
+.browser-shell[data-active-tab='scene'] .cinematic-hero__eyebrow {
+  margin-bottom: clamp(0.35rem, 0.9vh, 0.65rem);
+}
+
+.browser-shell[data-active-tab='scene'] .cinematic-hero__title {
+  font-size: clamp(1.65rem, calc(3vw * var(--browser-font-scale, 1)), 2.6rem);
+}
+
+.browser-shell[data-active-tab='scene'] .cinematic-hero__subtitle {
+  font-size: var(--text-sm);
+}
+
 .scene-post {
   --scene-post-scale: 1;
 }

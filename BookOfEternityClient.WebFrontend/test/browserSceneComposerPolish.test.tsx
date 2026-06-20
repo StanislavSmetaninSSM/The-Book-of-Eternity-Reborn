@@ -228,12 +228,31 @@ describe('browser scene composer polish #1185', () => {
     expect(styles).toContain('resize: vertical');
   });
 
-  it('uses content-area overflow that does not force a visible scrollbar when content fits', () => {
+  it('uses content-area overflow that does not reserve a visible scrollbar when content fits', () => {
     const commandUi = readSource('src', 'styles', 'command-ui.css');
     const layout = readSource('src', 'styles', 'layout.css');
 
     expect(commandUi).toContain('overflow-y: auto;');
-    expect(commandUi).toContain('scrollbar-gutter: stable;');
+    expect(commandUi).not.toContain('scrollbar-gutter: stable;');
+    expect(commandUi).toContain('scrollbar-gutter: auto;');
     expect(layout).toContain('overflow: hidden;');
+  });
+
+  it('keeps the scene first screen compact before real overflow appears', () => {
+    const commandUi = readSource('src', 'styles', 'command-ui.css');
+
+    expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .content-area");
+    expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .cinematic-hero");
+    expect(commandUi).toContain('height: clamp(9rem, 22vh, 15rem);');
+  });
+
+  it('keeps content scrollbars hidden at rest but available during interaction', () => {
+    const commandUi = readSource('src', 'styles', 'command-ui.css');
+
+    expect(commandUi).toContain('scrollbar-width: none;');
+    expect(commandUi).toContain('.content-area::-webkit-scrollbar');
+    expect(commandUi).toContain('.content-area:hover,');
+    expect(commandUi).toContain('.content-area:focus-within');
+    expect(commandUi).toContain('scrollbar-width: thin;');
   });
 });
