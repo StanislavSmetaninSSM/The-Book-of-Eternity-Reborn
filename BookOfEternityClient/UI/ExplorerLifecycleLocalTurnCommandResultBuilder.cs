@@ -1295,13 +1295,13 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         {
             Value = $"buy:{offer.SlotId}",
             Label = $"Купить: {offer.Name}",
-            Description = $"{offer.Price} монет; редкость: {FirstNonEmpty(offer.Rarity, "не указана")}",
+            Description = $"{offer.Price} монет; редкость: {FormatRarityForPlayer(offer.Rarity)}",
             Disabled = offer.SoldOut || view.CurrentMoney < offer.Price
         }));
         options.AddRange(sellOffers.Select(offer => Option(
             $"sell:{offer.ItemId}",
             $"Продать: {offer.Name}",
-            $"+{offer.Price} монет; редкость: {FirstNonEmpty(offer.Rarity, "не указана")}")));
+            $"+{offer.Price} монет; редкость: {FormatRarityForPlayer(offer.Rarity)}")));
         options.AddRange(view.BuybackOffers.Select(offer => new UiSelectionOption
         {
             Value = $"buyback:{offer.BuybackEntryId}",
@@ -1340,7 +1340,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                         Rows = view.Offers
                             .Select(offer => Row(
                                 offer.Name,
-                                FirstNonEmpty(offer.Rarity, "-"),
+                                FormatRarityForPlayer(offer.Rarity, "-"),
                                 offer.Price.ToString(),
                                 offer.SoldOut ? "куплено" : view.CurrentMoney < offer.Price ? "не хватает денег" : "доступно"))
                             .ToList()
@@ -1350,7 +1350,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                         Title = "Продажа из рюкзака",
                         Columns = ["Предмет", "Редкость", "Цена"],
                         Rows = sellOffers
-                            .Select(offer => Row(offer.Name, FirstNonEmpty(offer.Rarity, "-"), offer.Price.ToString()))
+                            .Select(offer => Row(offer.Name, FormatRarityForPlayer(offer.Rarity, "-"), offer.Price.ToString()))
                             .ToList()
                     },
                     new UiTableBlock
@@ -1358,7 +1358,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                         Title = "Обратный выкуп",
                         Columns = ["Предмет", "Редкость", "Цена"],
                         Rows = view.BuybackOffers
-                            .Select(offer => Row(offer.Name, FirstNonEmpty(offer.Rarity, "-"), offer.Price.ToString()))
+                            .Select(offer => Row(offer.Name, FormatRarityForPlayer(offer.Rarity, "-"), offer.Price.ToString()))
                             .ToList()
                     }
                 ]
@@ -1444,7 +1444,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         {
             Value = $"buy:{offer.SlotId}",
             Label = $"Купить: {offer.Name}",
-            Description = $"{offer.PriceInFeathers} Чернильных Перьев; редкость: {FirstNonEmpty(offer.Rarity, "не указана")}",
+            Description = $"{offer.PriceInFeathers} Чернильных Перьев; редкость: {FormatRarityForPlayer(offer.Rarity)}",
             Disabled = offer.SoldOut || feathers < offer.PriceInFeathers
         }));
 
@@ -1483,7 +1483,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                         Rows = view.Offers
                             .Select(offer => Row(
                                 offer.Name,
-                                FirstNonEmpty(offer.Rarity, "-"),
+                                FormatRarityForPlayer(offer.Rarity, "-"),
                                 offer.PriceInFeathers.ToString(),
                                 offer.SoldOut ? "куплено" : feathers < offer.PriceInFeathers ? "не хватает перьев" : "доступно"))
                             .ToList()
@@ -1576,13 +1576,13 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         {
             Value = $"buy:{offer.SlotId}",
             Label = $"Купить: {offer.Name}",
-            Description = $"{offer.PriceInFeathers} Чернильных Перьев; редкость: {FirstNonEmpty(offer.Rarity, "не указана")}",
+            Description = $"{offer.PriceInFeathers} Чернильных Перьев; редкость: {FormatRarityForPlayer(offer.Rarity)}",
             Disabled = offer.SoldOut || feathers < offer.PriceInFeathers
         }));
         options.AddRange(sellOffers.Select(offer => Option(
             $"sell:{offer.RelicId}",
             $"Продать: {offer.Name}",
-            $"+{offer.PriceInFeathers} Чернильных Перьев; редкость: {FirstNonEmpty(offer.Rarity, "не указана")}")));
+            $"+{offer.PriceInFeathers} Чернильных Перьев; редкость: {FormatRarityForPlayer(offer.Rarity)}")));
         options.AddRange(view.BuybackOffers.Select(offer => new UiSelectionOption
         {
             Value = $"buyback:{offer.BuybackEntryId}",
@@ -1621,7 +1621,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                         Rows = view.Offers
                             .Select(offer => Row(
                                 offer.Name,
-                                FirstNonEmpty(offer.Rarity, "-"),
+                                FormatRarityForPlayer(offer.Rarity, "-"),
                                 offer.PriceInFeathers.ToString(),
                                 offer.SoldOut ? "куплено" : feathers < offer.PriceInFeathers ? "не хватает перьев" : "доступно"))
                             .ToList()
@@ -1631,7 +1631,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                         Title = "Продажа реликвий",
                         Columns = ["Реликвия", "Редкость", "Цена"],
                         Rows = sellOffers
-                            .Select(offer => Row(offer.Name, FirstNonEmpty(offer.Rarity, "-"), offer.PriceInFeathers.ToString()))
+                            .Select(offer => Row(offer.Name, FormatRarityForPlayer(offer.Rarity, "-"), offer.PriceInFeathers.ToString()))
                             .ToList()
                     },
                     new UiTableBlock
@@ -1639,7 +1639,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                         Title = "Обратный выкуп",
                         Columns = ["Реликвия", "Редкость", "Цена"],
                         Rows = view.BuybackOffers
-                            .Select(offer => Row(offer.Name, FirstNonEmpty(offer.Rarity, "-"), offer.PriceInFeathers.ToString()))
+                            .Select(offer => Row(offer.Name, FormatRarityForPlayer(offer.Rarity, "-"), offer.PriceInFeathers.ToString()))
                             .ToList()
                     }
                 ]
@@ -2118,7 +2118,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var rows = stored
             .Select(static relic => Row(
                 string.IsNullOrWhiteSpace(relic.Name) ? relic.RelicId : relic.Name,
-                string.IsNullOrWhiteSpace(relic.Rarity) ? "-" : relic.Rarity,
+                FormatRarityForPlayer(relic.Rarity, "-"),
                 string.IsNullOrWhiteSpace(relic.RelicId) ? "-" : relic.RelicId))
             .ToList();
         var slotOptions = BuildSoulRelicEquipSlotOptions(stored);
@@ -2169,7 +2169,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                         .Select(static relic => Option(
                             string.IsNullOrWhiteSpace(relic.RelicId) ? relic.Name : relic.RelicId,
                             string.IsNullOrWhiteSpace(relic.Name) ? relic.RelicId : relic.Name,
-                            "Редкость: " + (string.IsNullOrWhiteSpace(relic.Rarity) ? "не указана" : relic.Rarity)))
+                            "Редкость: " + FormatRarityForPlayer(relic.Rarity)))
                         .ToList()
                 },
                 new UiSelectionPrompt
@@ -2621,7 +2621,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var pendingTurnState = new PendingTurnStateService(fs, NullLogger<PendingTurnStateService>.Instance);
         var pendingState = await pendingTurnState.GetOrCreateAsync();
         var gachaBase = pendingState.GachaBaseResult;
-        var baseRarity = FirstNonEmpty(gachaBase?.BaseRarity, "Common");
+        var baseRarity = FormatRarityForPlayer(FirstNonEmpty(gachaBase?.BaseRarity, "Common"));
         var baseScore = (gachaBase?.BaseScore ?? 0).ToString();
         var formula = FirstNonEmpty(gachaBase?.Formula, "client-computed gacha base (range 4-80)");
         var diceUsed = FormatDiceUsed(gachaBase?.DiceUsed);
@@ -2659,7 +2659,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                             Row(
                                 "Прямой призыв Моря Хаоса",
                                 availableFeathers > 0 ? $"1-{availableFeathers} Чернильных Перьев" : "нет доступных Перьев",
-                                "Пороги: 4-48 Common, 49-67 Uncommon, 68-75 Rare, 76-79 Epic, 80 Legendary",
+                                "Пороги: 4-48 обычная, 49-67 необычная, 68-75 редкая, 76-79 эпическая, 80 легендарная",
                                 "Итоговая редкость точно равна базовой; без модификаторов Хранителей")
                         ]
                     },
@@ -2885,7 +2885,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                         Title = "Свободные записи Архива",
                         Columns = ["Запись", "Тип", "Редкость"],
                         Rows = context.Entries
-                            .Select(static entry => Row(entry.Title, AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType), entry.Rarity))
+                            .Select(static entry => Row(entry.Title, AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType), FormatRarityForPlayer(entry.Rarity, "-")))
                             .ToList()
                     },
                     new UiTableBlock
@@ -2908,7 +2908,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         Option(
             entry.ArchiveId,
             entry.Title,
-            $"{AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType)}; редкость: {entry.Rarity}. {entry.Summary}");
+            $"{AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType)}; редкость: {FormatRarityForPlayer(entry.Rarity)}. {entry.Summary}");
 
     private static List<UiAction> BuildArchiveConsultationDetailActions(BrowserAfterlifeArchiveActionContext context)
     {
@@ -2987,7 +2987,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                             Title = "Свободные записи Архива",
                             Columns = ["Запись", "Тип", "Редкость"],
                             Rows = context.Entries
-                                .Select(static entry => Row(entry.Title, AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType), entry.Rarity))
+                                .Select(static entry => Row(entry.Title, AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType), FormatRarityForPlayer(entry.Rarity, "-")))
                                 .ToList()
                         }
                     ]
@@ -3027,9 +3027,9 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                                 [
                                     KeyValue("Хранитель", guardianSelector),
                                     KeyValue("Проект", blockedProjectName),
-                                    KeyValue("Тип", FirstNonEmpty(GetString(blockedProject, "projectType"), "не указан")),
-                                    KeyValue("Ранг", FirstNonEmpty(GetString(blockedProject, "projectTier"), "не указан")),
-                                    KeyValue("Режим", FirstNonEmpty(GetString(blockedProject, "projectMode"), "не указан"))
+                                    KeyValue("Тип", FormatProjectTypeForPlayer(GetString(blockedProject, "projectType"))),
+                                    KeyValue("Ранг", FormatProjectTierForPlayer(GetString(blockedProject, "projectTier"))),
+                                    KeyValue("Режим", FormatProjectModeForPlayer(GetString(blockedProject, "projectMode")))
                                 ]
                             },
                             new UiTextBlock
@@ -3073,9 +3073,9 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                                 KeyValue("Хранитель", guardian.GuardianName),
                                 KeyValue("Репутация", guardian.Reputation.ToString()),
                                 KeyValue("Проект", projectName),
-                                KeyValue("Тип", FirstNonEmpty(GetString(project, "projectType"), "не указан")),
-                                KeyValue("Ранг", FirstNonEmpty(GetString(project, "projectTier"), "не указан")),
-                                KeyValue("Режим", FirstNonEmpty(GetString(project, "projectMode"), "не указан"))
+                                KeyValue("Тип", FormatProjectTypeForPlayer(GetString(project, "projectType"))),
+                                KeyValue("Ранг", FormatProjectTierForPlayer(GetString(project, "projectTier"))),
+                                KeyValue("Режим", FormatProjectModeForPlayer(GetString(project, "projectMode")))
                             ]
                         },
                         new UiTextBlock
@@ -3088,7 +3088,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                             Title = "Свободные записи Архива",
                             Columns = ["Запись", "Тип", "Редкость"],
                             Rows = context.Entries
-                                .Select(static entry => Row(entry.Title, AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType), entry.Rarity))
+                                .Select(static entry => Row(entry.Title, AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType), FormatRarityForPlayer(entry.Rarity, "-")))
                                 .ToList()
                         }
                     ]
@@ -4019,7 +4019,70 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         if (gacha == null)
             return "не определена";
 
-        return $"{FirstNonEmpty(gacha.BaseRarity, "Common")} ({gacha.BaseScore}); кубики {FormatDiceUsed(gacha.DiceUsed)}";
+        return $"{FormatRarityForPlayer(FirstNonEmpty(gacha.BaseRarity, "Common"))} ({gacha.BaseScore}); кубики {FormatDiceUsed(gacha.DiceUsed)}";
+    }
+
+    private static string FormatRarityForPlayer(string? rarity, string missing = "не указана")
+    {
+        if (string.IsNullOrWhiteSpace(rarity))
+            return missing;
+
+        return rarity.Trim().ToLowerInvariant() switch
+        {
+            "common" => "обычная",
+            "uncommon" => "необычная",
+            "good" => "хорошая",
+            "rare" => "редкая",
+            "epic" => "эпическая",
+            "legendary" => "легендарная",
+            "radiant" => "сияющая",
+            "unique" => "уникальная",
+            _ => rarity.Trim()
+        };
+    }
+
+    private static string FormatProjectTypeForPlayer(string? projectType) =>
+        FormatKnownProjectValue(projectType, projectType?.Trim().ToLowerInvariant() switch
+        {
+            "display_snapshot" => "снимок для отображения",
+            "journal" => "запись журнала",
+            "lore_research" => "исследование знаний",
+            "relic_forging" => "ковка реликвии",
+            "abode_expansion" => "расширение Обители",
+            "abode_fortification" => "укрепление Обители",
+            "offensive_intrigue" => "наступательная интрига",
+            "counter_rival_operation" => "противодействие сопернику",
+            "soul_preparation" => "подготовка души",
+            _ => null
+        });
+
+    private static string FormatProjectTierForPlayer(string? projectTier) =>
+        FormatKnownProjectValue(projectTier, projectTier?.Trim().ToLowerInvariant() switch
+        {
+            "visible" => "видимый",
+            "minor" => "малый",
+            "major" => "значимый",
+            "grand" => "великий",
+            _ => null
+        });
+
+    private static string FormatProjectModeForPlayer(string? projectMode) =>
+        FormatKnownProjectValue(projectMode, projectMode?.Trim().ToLowerInvariant() switch
+        {
+            "display" => "просмотр",
+            "internal" => "внутренний",
+            "supportive" => "поддержка",
+            "offensive" => "наступление",
+            _ => null
+        });
+
+    private static string FormatKnownProjectValue(string? value, string? label)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "не указан";
+
+        var trimmed = value.Trim();
+        return label ?? trimmed.Replace('_', ' ');
     }
 
     private static bool TryGetBool(JsonObject obj, string propertyName)

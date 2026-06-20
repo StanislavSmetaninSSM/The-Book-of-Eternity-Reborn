@@ -33,19 +33,19 @@
 
 ## Phase 4: Mortal World Output and Navigation Polish (#1177)
 
-- [ ] T017 Run targeted command-display tests and dry sweep for Mortal World commands.
-- [ ] T018 Add RED tests for the highest-impact narrow Mortal World output/navigation defects.
-- [ ] T019 Implement narrow fixes in console renderers/builders without touching browser files.
-- [ ] T020 Rerun focused Mortal World command-display tests and affected dry sweep entries.
+- [x] T017 Run targeted command-display tests and dry sweep for Mortal World commands.
+- [x] T018 Add RED tests for the highest-impact narrow Mortal World output/navigation defects.
+- [x] T019 Implement narrow fixes in console renderers/builders without touching browser files.
+- [x] T020 Rerun focused Mortal World command-display tests and affected dry sweep entries.
 - [ ] T021 Create follow-up issues for broad Mortal World UX gaps not safely fixed in this branch.
 - [ ] T022 Update #1177 with fixes, tests, and residual issues.
 
 ## Phase 5: Afterlife Output and Navigation Polish (#1178)
 
-- [ ] T023 Run targeted command-display tests and dry sweep for Chaos Sea and Shining Abode commands.
-- [ ] T024 Add RED tests for the highest-impact narrow afterlife output/navigation defects.
-- [ ] T025 Implement narrow afterlife display fixes. If runtime/GM contracts change, update afterlife docs/examples/tests in the same commit.
-- [ ] T026 Rerun focused afterlife command-display tests and documentation coverage tests when required.
+- [x] T023 Run targeted command-display tests and dry sweep for Chaos Sea and Shining Abode commands.
+- [x] T024 Add RED tests for the highest-impact narrow afterlife output/navigation defects.
+- [x] T025 Implement narrow afterlife display fixes. If runtime/GM contracts change, update afterlife docs/examples/tests in the same commit.
+- [x] T026 Rerun focused afterlife command-display tests and documentation coverage tests when required.
 - [ ] T027 Create follow-up issues for broad afterlife UX gaps not safely fixed in this branch.
 - [ ] T028 Update #1178 with fixes, tests, and residual issues.
 
@@ -86,3 +86,12 @@
 - GitHub #1176 updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1176#issuecomment-4757691343
 - GitHub #1176 dry-sweep correction updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1176#issuecomment-4757710615
 - GitHub #1176 null-leakage correction updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1176#issuecomment-4757737678
+- Mortal/afterlife RED 1: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExecuteAsync_Gacha_ReturnsDirectChaosSeaPrompt|ExecuteAsync_Gacha_WhenPendingDiceMissing_CreatesAuthoritativeBaseForPromptAndSubmit" --logger "console;verbosity=minimal"` failed 2, passed 0 while gacha preview still displayed `Common/Uncommon/Rare/Epic/Legendary`.
+- Mortal/afterlife GREEN 1: same gacha filter passed 2, failed 0 after localizing gacha rarity thresholds and base-rarity text.
+- Afterlife RED 2: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ChaosSeaCommandDisplaySaveTests.LoadedChaosSeaCommandDisplaySave_RendersRepresentativeDetailTargets|ShiningAbodeCommandDisplaySaveTests.LoadedShiningAbodeCommandDisplaySave_RendersRepresentativeDetailTargets" --logger "console;verbosity=minimal"` failed 2, passed 39 while `/archive_project_fuel` leaked `display_snapshot`, `visible`, and `display`.
+- Afterlife GREEN 2: same afterlife detail filter passed 41, failed 0 after localizing project type/tier/mode labels.
+- Mortal RED 2: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "StructuredBonusDisplayTests" --logger "console;verbosity=minimal"` failed 2, passed 0 while `StructuredBonusDisplay` returned literal `null`/`undefined`.
+- Mortal GREEN 2: same structured formatter filter passed 3, failed 0 after omitting technical empty JSON values and null child fields from player-facing structured output.
+- Combined polish sweep: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ConsoleCommandOutputQualityClassifierTests|StructuredBonusDisplayTests|MortalCommandDisplaySaveTests|ChaosSeaCommandDisplaySaveTests|ShiningAbodeCommandDisplaySaveTests" --logger "console;verbosity=minimal"` passed 301, failed 0.
+- GitHub #1177 polish batch updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1177#issuecomment-4757820584
+- GitHub #1178 polish batch updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1178#issuecomment-4757822308

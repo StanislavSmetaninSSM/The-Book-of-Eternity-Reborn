@@ -3229,9 +3229,14 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(result.Prompts, prompt => prompt.Id == "feather_cost");
         Assert.IsType<UiConfirmationPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "confirm_gacha_pull"));
         var text = CollectBlockText(result.Blocks);
-        Assert.Contains("Пороги: 4-48 Common, 49-67 Uncommon, 68-75 Rare, 76-79 Epic, 80 Legendary", text, StringComparison.Ordinal);
+        Assert.Contains("Пороги: 4-48 обычная, 49-67 необычная, 68-75 редкая, 76-79 эпическая, 80 легендарная", text, StringComparison.Ordinal);
         Assert.Contains("Базовая редкость", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Rare", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("редкая", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Common", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Uncommon", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Rare", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Epic", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Legendary", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Guardian-mediated", text, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -3257,7 +3262,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             .Select(node => node!.GetValue<int>())
             .ToArray();
         var text = CollectBlockText(result.Blocks);
-        Assert.Contains(expectedRarity, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(FormatRarityForPlayerTest(expectedRarity), text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(expectedScore.ToString(), text, StringComparison.Ordinal);
         Assert.Contains("[" + string.Join(", ", expectedDice) + "]", text, StringComparison.Ordinal);
         Assert.DoesNotContain("не подготовлен", text, StringComparison.OrdinalIgnoreCase);
@@ -5230,6 +5235,17 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 ["lastUpdatedUtc"] = "2026-06-02T00:00:00Z"
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
+
+    private static string FormatRarityForPlayerTest(string rarity) =>
+        rarity.Trim().ToLowerInvariant() switch
+        {
+            "common" => "обычная",
+            "uncommon" => "необычная",
+            "rare" => "редкая",
+            "epic" => "эпическая",
+            "legendary" => "легендарная",
+            _ => rarity
+        };
 
     private Task WriteGuardianPoliticsRawLeakFixtureAsync() =>
         _fs.WriteFileAtomicAsync(ChaosSeaGuardianPoliticsState.StatePath, """

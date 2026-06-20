@@ -122,7 +122,7 @@ public static class StructuredBonusDisplay
         if (node is JsonObject obj)
         {
             return string.Join("; ", obj
-                .Select(property => $"{FieldLabel(property.Key)}: {FormatValue(property.Value, property.Key)}")
+                .Select(property => FormatFieldValue(property.Key, FormatValue(property.Value, property.Key)))
                 .Where(static value => !string.IsNullOrWhiteSpace(value)));
         }
 
@@ -136,13 +136,13 @@ public static class StructuredBonusDisplay
             JsonValueKind.Number => value.GetRawText(),
             JsonValueKind.True => "да",
             JsonValueKind.False => "нет",
-            JsonValueKind.Null => "null",
-            JsonValueKind.Undefined => "undefined",
+            JsonValueKind.Null => string.Empty,
+            JsonValueKind.Undefined => string.Empty,
             JsonValueKind.Array => string.Join("; ", value.EnumerateArray()
                 .Select(item => FormatValue(item, fieldName))
                 .Where(static item => !string.IsNullOrWhiteSpace(item))),
             JsonValueKind.Object => string.Join("; ", value.EnumerateObject()
-                .Select(property => $"{FieldLabel(property.Name)}: {FormatValue(property.Value, property.Name)}")
+                .Select(property => FormatFieldValue(property.Name, FormatValue(property.Value, property.Name)))
                 .Where(static item => !string.IsNullOrWhiteSpace(item))),
             _ => value.ToString() ?? string.Empty
         };
@@ -172,6 +172,11 @@ public static class StructuredBonusDisplay
 
     public static string FormatCharacteristicName(string value) =>
         TryLocalizeCharacteristic(value, out var characteristic) ? characteristic : value;
+
+    private static string FormatFieldValue(string fieldName, string value) =>
+        string.IsNullOrWhiteSpace(value)
+            ? string.Empty
+            : $"{FieldLabel(fieldName)}: {value}";
 
     private static bool ShouldLocalizeCharacteristic(string? fieldName) =>
         string.Equals(fieldName, "characteristic", StringComparison.OrdinalIgnoreCase) ||

@@ -130,6 +130,19 @@ public sealed class ShiningAbodeCommandDisplaySaveTests : IDisposable
         var visibleText = report.VisibleText;
         if (!visibleText.Contains(expectedText, StringComparison.OrdinalIgnoreCase))
             violations.Add($"visible text does not include expected detail text: {expectedText}");
+        if (string.Equals(commandId, "archive_project_fuel", StringComparison.OrdinalIgnoreCase))
+        {
+            if (!visibleText.Contains("снимок для отображения", StringComparison.OrdinalIgnoreCase))
+                violations.Add("archive project fuel detail should localize display_snapshot project type.");
+            if (!visibleText.Contains("видимый", StringComparison.OrdinalIgnoreCase))
+                violations.Add("archive project fuel detail should localize visible project tier.");
+            if (!visibleText.Contains("просмотр", StringComparison.OrdinalIgnoreCase))
+                violations.Add("archive project fuel detail should localize display project mode.");
+            if (visibleText.Contains("display_snapshot", StringComparison.OrdinalIgnoreCase) ||
+                visibleText.Contains("visible", StringComparison.OrdinalIgnoreCase) ||
+                visibleText.Contains("display", StringComparison.OrdinalIgnoreCase))
+                violations.Add("archive project fuel detail should not leak raw project protocol values.");
+        }
 
         Assert.True(
             violations.Count == 0,
