@@ -60,6 +60,14 @@ function AppShell() {
     '--browser-font-scale': `${(clientSettings?.accessibility.fontScalePercent ?? 100) / 100}`,
     '--browser-ui-scale': `${(clientSettings?.accessibility.uiScalePercent ?? 100) / 100}`
   } as CSSProperties;
+  const showGameShellBg = !isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute;
+  // When the painted game backdrop is up, flag the document root so CSS can dim
+  // the body's own ambient gradients (they would otherwise cover the painting).
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle('has-game-shell-bg', showGameShellBg);
+    return () => root.classList.remove('has-game-shell-bg');
+  }, [showGameShellBg]);
 
   return (
     <MotionConfig reducedMotion={reducedMotion ? 'always' : 'never'}>
@@ -68,7 +76,7 @@ function AppShell() {
         {/* In-game atmospheric backdrop — a very dark painted scene behind the
            scene/status/help tabs (NOT on the launcher, which has its own
            murals). Stays dim so text readability is unaffected. */}
-        {!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && (
+        {showGameShellBg && (
           <div className="game-shell-bg" aria-hidden="true">
             <img src="/generated-art/game-shell-bg.png" alt="" onError={(event) => { event.currentTarget.hidden = true; }} />
           </div>

@@ -47,7 +47,9 @@
 .game-shell-bg {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  /* z-index 0 sits the painted backdrop above the body's flat color/gradient
+     (normal flow) but below the browser-shell content (z-index 1+). */
+  z-index: 0;
   pointer-events: none;
   background: var(--color-ink);
 }
@@ -57,8 +59,10 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  opacity: 0.4;
-  filter: brightness(0.6) saturate(0.8);
+  /* The painting is now authored visibly-dark (warm umber, rgb ~50-95), so we
+     only lightly dim it so it stays a receding backdrop behind the UI. */
+  opacity: 0.6;
+  filter: brightness(1.15) saturate(1.05);
   -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 40%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.5) 100%);
   mask-image: radial-gradient(ellipse 100% 100% at 50% 40%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.5) 100%);
 }
@@ -81,7 +85,7 @@
   --browser-font-scale: 1;
   --browser-ui-scale: 1;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
