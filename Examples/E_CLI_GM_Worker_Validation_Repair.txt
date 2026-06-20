@@ -12,7 +12,7 @@ Worker profile:
 {
   "workerId": "validation_repair_codex",
   "displayName": "Codex validation repair",
-  "launchCommand": "codex --dangerously-bypass-approvals-and-sandbox",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex --dangerously-bypass-approvals-and-sandbox\" -TimeoutSeconds 180",
   "role": "validation-repair",
   "enabled": true,
   "launchVisibility": "hidden",
@@ -27,6 +27,12 @@ Worker profile:
   }
 }
 ```
+
+The `gm_worker_cli_runner.ps1` entrypoint reads `BOE_WORKER_TASK_PATH`,
+`BOE_WORKER_PROPOSAL_PATH`, and `BOE_WORKER_SESSION_PATH`, then feeds the
+task/proposal protocol to Codex through `-AgentCommand`. Prefer this runner
+over a bare raw Codex command so every profile receives the same
+`worker-proposal-v1` instructions.
 
 Task packet sent by the main GM or daemon:
 

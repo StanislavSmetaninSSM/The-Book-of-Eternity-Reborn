@@ -82,6 +82,7 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 ```
 
 <!-- SPECKIT START -->
-Current Spec Kit plan for this branch:
-`specs/1113-gm-worker-bridges/plan.md`
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+at specs\1149-gm-worker-cli-runner\plan.md
 <!-- SPECKIT END -->

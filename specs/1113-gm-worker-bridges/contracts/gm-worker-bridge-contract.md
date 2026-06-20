@@ -33,7 +33,7 @@ Validation repair worker:
 {
   "workerId": "validation_repair_codex",
   "displayName": "Codex validation repair",
-  "launchCommand": "codex --dangerously-bypass-approvals-and-sandbox",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex --dangerously-bypass-approvals-and-sandbox\" -TimeoutSeconds 180",
   "role": "validation-repair",
   "enabled": true,
   "launchVisibility": "hidden",
@@ -64,7 +64,7 @@ Narrative drafting worker:
 {
   "workerId": "narrative_draft_gemini",
   "displayName": "Gemini narrative drafter",
-  "launchCommand": "gemini",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"gemini\" -TimeoutSeconds 120",
   "role": "narrative-draft",
   "enabled": true,
   "launchVisibility": "hidden",
