@@ -473,6 +473,33 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
             Assert.DoesNotContain("Cannot show selection prompt", questsText, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("NotSupportedException", questsText, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("Инвентарь пуст", questsText, StringComparison.OrdinalIgnoreCase);
+
+            using var continueAfterQuests = await client.PostAsJsonAsync("/api/agent-console/key", new { key = "Enter" });
+            Assert.True(continueAfterQuests.IsSuccessStatusCode);
+
+            await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "text", StringComparison.Ordinal));
+
+            using var locationsResponse = await client.PostAsJsonAsync("/api/agent-console/text", new { text = "/локации" });
+            Assert.True(
+                locationsResponse.IsSuccessStatusCode,
+                $"Expected /локации endpoint success, got {(int)locationsResponse.StatusCode}: {await locationsResponse.Content.ReadAsStringAsync()}");
+
+            var locationsSnapshot = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    !string.Equals(snapshot["screenId"]?.GetValue<string>(), questsSnapshot["screenId"]?.GetValue<string>(), StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "key", StringComparison.Ordinal));
+
+            var locationsText = locationsSnapshot["plainText"]!.GetValue<string>();
+            Assert.Contains("Локации", locationsText, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Cannot show selection prompt", locationsText, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("NotSupportedException", locationsText, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {
