@@ -242,17 +242,27 @@ describe('browser scene composer polish #1185', () => {
     const commandUi = readSource('src', 'styles', 'command-ui.css');
 
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .content-area");
+    expect(commandUi).toContain('padding-block: clamp(0.1rem, 0.35vh, 0.3rem);');
     expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .cinematic-hero");
-    expect(commandUi).toContain('height: clamp(9rem, 22vh, 15rem);');
+    expect(commandUi).toContain('height: clamp(6rem, 12vh, 9rem);');
+    expect(commandUi).toContain('gap: clamp(0.6rem, 1.1vh, 0.8rem);');
+    expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-post .rune-frame");
+    expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-dialogues");
+    expect(commandUi).toContain(".browser-shell[data-active-tab='scene'] .scene-quick-actions");
+    expect(commandUi).toContain('gap: 0.5rem;');
   });
 
-  it('keeps content scrollbars hidden at rest but available during interaction', () => {
+  it('preserves the styled content scrollbar instead of hiding it', () => {
     const commandUi = readSource('src', 'styles', 'command-ui.css');
 
-    expect(commandUi).toContain('scrollbar-width: none;');
-    expect(commandUi).toContain('.content-area::-webkit-scrollbar');
-    expect(commandUi).toContain('.content-area:hover,');
-    expect(commandUi).toContain('.content-area:focus-within');
-    expect(commandUi).toContain('scrollbar-width: thin;');
+    expect(commandUi).not.toContain('scrollbar-width: none;');
+    expect(commandUi).not.toContain('.content-area::-webkit-scrollbar');
+    expect(commandUi).not.toContain('scrollbar-width: thin;');
+  });
+
+  it('does not render the ornamental divider as extra scene-flow content', () => {
+    const sceneView = readSource('src', 'components', 'SceneView.tsx');
+
+    expect(sceneView).not.toContain('OrnamentBorder');
   });
 });

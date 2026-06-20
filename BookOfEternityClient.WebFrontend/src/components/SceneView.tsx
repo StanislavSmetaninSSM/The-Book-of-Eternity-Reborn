@@ -7,7 +7,7 @@ import { useSceneImage } from '../hooks/useSceneImage';
 import { toPlayerFacingText } from '../utils/playerCopy';
 import { formatWorldTimeForPlayer } from '../utils/formatters';
 import { browserUiAssets } from '../browserUiAssets';
-import { RuneFrame, OrnamentBorder } from './decorative';
+import { RuneFrame } from './decorative';
 import { staggerContainer, fadeUp } from '../lib/motion';
 
 type ScenePostId = 'scene-narrative';
@@ -128,8 +128,6 @@ function SceneContent({ game, onCommand }: {
           </div>
         </motion.section>
       )}
-
-      <OrnamentBorder />
     </motion.div>
   );
 }
