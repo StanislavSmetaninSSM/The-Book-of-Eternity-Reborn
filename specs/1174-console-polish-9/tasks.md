@@ -17,11 +17,11 @@
 
 ## Phase 2: Command Matrix and Fixture Coverage (#1175)
 
-- [ ] T007 Inspect console command registration, aliases, help text, and command result builders.
-- [ ] T008 Inspect reusable Mortal World, Chaos Sea, and Shining Abode command-display fixtures/tests.
-- [ ] T009 Create `docs/audits/console-command-matrix-1174.md` with every ordinary non-QTE console command, realm, lifecycle, fixture coverage, expected output shape, and current status.
-- [ ] T010 Create follow-up issues for missing fixture data that blocks honest command inspection.
-- [ ] T011 Update #1175 with the matrix path and coverage summary.
+- [x] T007 Inspect console command registration, aliases, help text, and command result builders.
+- [x] T008 Inspect reusable Mortal World, Chaos Sea, and Shining Abode command-display fixtures/tests.
+- [x] T009 Create `docs/audits/console-command-matrix-1174.md` with every ordinary non-QTE console command, realm, lifecycle, fixture coverage, expected output shape, and current status.
+- [x] T010 Create follow-up issues for missing fixture data that blocks honest command inspection.
+- [x] T011 Update #1175 with the matrix path and coverage summary.
 
 ## Phase 3: Dry Command Sweep (#1176)
 
@@ -73,3 +73,5 @@
 - Baseline test-project build: `dotnet build BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj` succeeded with 0 warnings and 0 errors.
 - Baseline full test note: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj` did not complete before the 120s tool timeout; targeted verification will be used during implementation and broad non-browser suite will be retried before merge.
 - Spec Kit prerequisite check: `$env:SPECIFY_FEATURE_DIRECTORY='specs/1174-console-polish-9'; .\.specify\scripts\powershell\check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks` returned `FEATURE_DIR=E:\Games\worktrees\boe-1174-console-polish-9\specs\1174-console-polish-9` and `AVAILABLE_DOCS=["tasks.md"]`.
+- Command matrix: `docs/audits/console-command-matrix-1174.md` covers all 91 `ExplorerCommandCatalog` descriptors, excludes QTE/browser, and maps reusable Mortal/Chaos/Shining display-save coverage. No blocking missing-fixture issue was required before dry sweep; universal/Saref/diagnostic gaps are marked as sweep targets in the matrix.
+- GitHub #1175 updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1175#issuecomment-4757658750
