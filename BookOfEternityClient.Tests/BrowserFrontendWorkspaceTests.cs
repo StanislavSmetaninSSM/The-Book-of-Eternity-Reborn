@@ -79,7 +79,7 @@ public sealed class BrowserFrontendWorkspaceTests
         using var document = JsonDocument.Parse(File.ReadAllText(packageJsonPath));
         var scripts = document.RootElement.GetProperty("scripts");
         Assert.Equal("npm run typecheck && npm run test:player-facing && npm run build", scripts.GetProperty("verify").GetString());
-        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js && node ../TestResults/browser-frontend-player-facing-tests/test/gameLauncherMenuLayout.test.js && vitest run test/playerCopyRobustness.test.ts test/realmTheming.test.ts test/browserCardSpacing.test.ts test/browserCardHierarchy.test.tsx test/browserSoulEmptyStates.test.tsx test/qteLayoutInput.test.ts test/qteMiniGameHelpers.test.ts test/qteScenePanelMiniGames.test.tsx test/darenShowcase.test.tsx test/sidebarNavigation.test.ts test/browserPolishDesignSystem.test.ts", scripts.GetProperty("test:player-facing").GetString());
+        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js && node ../TestResults/browser-frontend-player-facing-tests/test/gameLauncherMenuLayout.test.js && vitest run test/playerCopyRobustness.test.ts test/realmTheming.test.ts test/browserCardSpacing.test.ts test/browserCardHierarchy.test.tsx test/browserSoulEmptyStates.test.tsx test/browserSceneComposerPolish.test.tsx test/browserSettingsSavesAudio.test.ts test/qteLayoutInput.test.ts test/qteMiniGameHelpers.test.ts test/qteScenePanelMiniGames.test.tsx test/darenShowcase.test.tsx test/sidebarNavigation.test.ts test/browserPolishDesignSystem.test.ts", scripts.GetProperty("test:player-facing").GetString());
 
         var workflow = File.ReadAllText(Path.Combine(RepoRoot, ".github", "workflows", "dotnet-ci.yml"));
         Assert.Contains("Setup Node", workflow, StringComparison.Ordinal);
@@ -243,17 +243,17 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("glyph: TabGlyphId;", config, StringComparison.Ordinal);
         Assert.Contains("export const tabNav: readonly TabNavItem[]", config, StringComparison.Ordinal);
         Assert.Contains("id: 'scene'", config, StringComparison.Ordinal);
-        Assert.Contains("id: 'practice'", config, StringComparison.Ordinal);
         Assert.Contains("id: 'status'", config, StringComparison.Ordinal);
         Assert.Contains("id: 'help'", config, StringComparison.Ordinal);
         Assert.Contains("id: 'settings'", config, StringComparison.Ordinal);
         Assert.Contains("glyph: 'scene'", config, StringComparison.Ordinal);
-        Assert.Contains("glyph: 'practice'", config, StringComparison.Ordinal);
         Assert.Contains("glyph: 'status'", config, StringComparison.Ordinal);
         Assert.Contains("glyph: 'help'", config, StringComparison.Ordinal);
         Assert.Contains("glyph: 'settings'", config, StringComparison.Ordinal);
         Assert.Contains("shortcut: '1'", config, StringComparison.Ordinal);
-        Assert.Contains("shortcut: '5'", config, StringComparison.Ordinal);
+        Assert.Contains("shortcut: '4'", config, StringComparison.Ordinal);
+        Assert.DoesNotContain("id: 'practice'", config, StringComparison.Ordinal);
+        Assert.DoesNotContain("glyph: 'practice'", config, StringComparison.Ordinal);
         Assert.Contains("export function resolveTabShortcut", config, StringComparison.Ordinal);
         foreach (var emojiIcon in new[] { "📖", "⚡", "📊", "❓", "⚙️" })
         {
@@ -316,10 +316,10 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("void executeCommand(command);", helpView, StringComparison.Ordinal);
         Assert.Contains("setActiveTab('scene');", helpView, StringComparison.Ordinal);
 
-        Assert.Contains("className=\"unified-input\"", unifiedInput, StringComparison.Ordinal);
+        Assert.Contains("className={`unified-input${isPostMode ? ' is-post-mode' : ''}`}", unifiedInput, StringComparison.Ordinal);
         Assert.Contains("submitComposerText(e.currentTarget.value);", unifiedInput, StringComparison.Ordinal);
         Assert.Contains("<CommandAutocomplete", unifiedInput, StringComparison.Ordinal);
-        Assert.Contains("placeholder=\"Опишите действие или введите /команду...\"", unifiedInput, StringComparison.Ordinal);
+        Assert.Contains("placeholder={isPostMode ? 'Опишите действие развернутым художественным постом...' : 'Опишите действие или введите /команду...'}", unifiedInput, StringComparison.Ordinal);
         Assert.Contains("disabled={!canSubmit}", unifiedInput, StringComparison.Ordinal);
 
         Assert.Contains(".scene-view", styles, StringComparison.Ordinal);
@@ -334,6 +334,7 @@ public sealed class BrowserFrontendWorkspaceTests
     {
         var app = ReadFrontendSource("App.tsx");
         var settingsView = ReadFrontendSource("components", "SettingsView.tsx");
+        var audioPanel = ReadFrontendSource("components", "AudioPanel.tsx");
         var diagnostics = ReadFrontendSource("components", "AdvancedDiagnostics.tsx");
         var styles = ReadFrontendStyles();
 
@@ -345,7 +346,8 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("Язык книги", settingsView, StringComparison.Ordinal);
         Assert.Contains("Сложность", settingsView, StringComparison.Ordinal);
         Assert.Contains("Показывать мысли ГМа", settingsView, StringComparison.Ordinal);
-        Assert.Contains("Звук", settingsView, StringComparison.Ordinal);
+        Assert.Contains("<AudioPanel />", settingsView, StringComparison.Ordinal);
+        Assert.Contains("Звуковые подсказки", audioPanel, StringComparison.Ordinal);
         Assert.Contains("Доступность", settingsView, StringComparison.Ordinal);
         Assert.Contains("Расширенный режим", settingsView, StringComparison.Ordinal);
         Assert.Contains("Показывать технические данные", settingsView, StringComparison.Ordinal);
@@ -570,6 +572,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.True(File.Exists(assetModulePath), $"Missing browser UI asset module at {assetModulePath}");
         var assetModule = File.ReadAllText(assetModulePath);
         var sceneHero = ReadFrontendSource("components", "SceneHero.tsx");
+        var cinematicSceneHero = ReadFrontendSource("components", "decorative", "CinematicSceneHero.tsx");
         var sceneView = ReadFrontendSource("components", "SceneView.tsx");
         var blockRenderer = ReadFrontendSource("components", "BlockRenderer.tsx");
         var statusView = ReadFrontendSource("components", "StatusView.tsx");
@@ -611,7 +614,8 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.DoesNotContain("imagegen", assetModule, StringComparison.OrdinalIgnoreCase);
 
         Assert.Contains("fallbackImageUrl", sceneHero, StringComparison.Ordinal);
-        Assert.Contains("event.currentTarget.hidden = true;", sceneHero, StringComparison.Ordinal);
+        Assert.Contains("CinematicSceneHero", sceneHero, StringComparison.Ordinal);
+        Assert.Contains("event.currentTarget.hidden = true;", cinematicSceneHero, StringComparison.Ordinal);
         Assert.Contains("fallbackImageUrl={browserUiAssets.sceneHeroFallback.url}", sceneView, StringComparison.Ordinal);
         Assert.Contains("browserUiAssets.galleryEmptyArchive.url", blockRenderer, StringComparison.Ordinal);
         Assert.Contains("block-image--fallback", blockRenderer, StringComparison.Ordinal);
