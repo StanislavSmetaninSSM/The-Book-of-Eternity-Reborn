@@ -82,7 +82,6 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 ```
 
 <!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
-at specs\1167-afterlife-gm-followups\plan.md
+Current Spec Kit plan for this branch:
+`specs/1174-console-polish-9/plan.md`
 <!-- SPECKIT END -->
