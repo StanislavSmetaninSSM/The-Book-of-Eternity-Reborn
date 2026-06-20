@@ -55,9 +55,9 @@ function New-DefaultGmWorkerBridgeProfiles {
             }
         },
         [ordered]@{
-            workerId = "narrative_draft_gemini"
-            displayName = "Gemini narrative drafter"
-            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"gemini`" -TimeoutSeconds 120"
+            workerId = "narrative_draft_codex"
+            displayName = "Codex narrative drafter"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codex`" -TimeoutSeconds 120"
             role = "narrative-draft"
             enabled = $false
             launchVisibility = "hidden"
@@ -98,7 +98,7 @@ function Read-GameConfig {
     $defaults = [ordered]@{
         GmBridgeEnabled = $true
         GmBridgeBackend = "ConPTYBridge"
-        GmCliLaunchCommand = "gemini"
+        GmCliLaunchCommand = "codex --dangerously-bypass-approvals-and-sandbox"
         GmBridgeAutoStart = $false
         GmBridgePipeNameOverride = ""
         GmWorkerBridgeProfiles = New-DefaultGmWorkerBridgeProfiles

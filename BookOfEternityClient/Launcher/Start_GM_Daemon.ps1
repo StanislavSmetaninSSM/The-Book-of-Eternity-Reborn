@@ -19,14 +19,21 @@ if ([string]::IsNullOrWhiteSpace($GameSessionPath)) {
     $GameSessionPath = Join-Path $projectRoot "game_session"
 }
 
-if (Test-Path $launchScriptGenerator) {
-    & $launchScriptGenerator | Out-Null
+$controlDir = Join-Path $GameSessionPath "game_state\control"
+if (!(Test-Path $controlDir)) {
+    New-Item -ItemType Directory -Path $controlDir -Force | Out-Null
 }
+$generatedLaunchScriptPath = Join-Path $controlDir "CLI_Launch_Script.generated.md"
 
 $invokeArgs = @{
     GameSessionPath = $GameSessionPath
     TurnTimeout = $TurnTimeout
     PollingInterval = $PollingInterval
+    LaunchScriptPath = $generatedLaunchScriptPath
+}
+
+if (Test-Path $launchScriptGenerator) {
+    & $launchScriptGenerator -OutputPath $generatedLaunchScriptPath -GameSessionPath $GameSessionPath | Out-Null
 }
 
 if ($CliWindowTitle) {

@@ -658,7 +658,9 @@ public partial class ExplorerMode
         var entries = await ReadAfterlifePendingContractAuditEntriesAsync(includeShining);
         var lines = new List<string>
         {
-            "[bold]Активные ожидающие/контрольные контракты:[/]"
+            includeFullPayload
+                ? "[bold]Активные ожидающие/контрольные контракты:[/]"
+                : "[bold]Ожидающие решения посмертия:[/]"
         };
 
         if (entries.Count == 0)
@@ -673,15 +675,20 @@ public partial class ExplorerMode
                 entry.Definition.ShiningOnly &&
                 _stateManager.CurrentState.IsInChaosSea;
             var requestLabel = entry.RequestIndex.HasValue ? $"requests[{entry.RequestIndex.Value}]" : "root";
-            lines.Add($"  • [white]{Markup.Escape(entry.Definition.Label)}[/] — [dim]{Markup.Escape(entry.Definition.Path)}[/] / {Markup.Escape(requestLabel)}");
+            lines.Add(includeFullPayload
+                ? $"  • [white]{Markup.Escape(entry.Definition.Label)}[/] — [dim]{Markup.Escape(entry.Definition.Path)}[/] / {Markup.Escape(requestLabel)}"
+                : $"  • [white]{Markup.Escape(entry.Definition.Label)}[/]");
             if (isWrongRealmShiningContract)
             {
                 lines.Add("    область: [yellow]только ремонт в неверной области: Море Хаоса[/]; сохранить данные и не закрывать сияющими квитанциями/состоянием, пока область не станет Сияющей Обителью.");
             }
             if (entry.IsMalformed)
             {
-                lines.Add($"    повреждение: [red]{Markup.Escape(entry.Error ?? "unknown parse error")}[/]");
-                lines.Add($"    закрытие/ремонт: {Markup.Escape(isWrongRealmShiningContract ? "только ремонт повреждённого файла; не проводить сияющее закрытие из Моря Хаоса" : entry.Definition.ClosureHint)}");
+                lines.Add(includeFullPayload
+                    ? $"    повреждение: [red]{Markup.Escape(entry.Error ?? "unknown parse error")}[/]"
+                    : "    состояние: [red]данные повреждены; требуется ремонт, прежде чем продолжать это ожидание[/]");
+                if (includeFullPayload)
+                    lines.Add($"    закрытие/ремонт: {Markup.Escape(isWrongRealmShiningContract ? "только ремонт повреждённого файла; не проводить сияющее закрытие из Моря Хаоса" : entry.Definition.ClosureHint)}");
                 if (includeFullPayload && !string.IsNullOrWhiteSpace(entry.RawPayload))
                 {
                     lines.Add("    сырые повреждённые данные:");
@@ -692,12 +699,30 @@ public partial class ExplorerMode
 
             if (entry.Payload != null)
             {
-                var identity = BuildPendingContractIdentitySummary(entry.Payload);
-                lines.Add($"    идентификаторы: {Markup.Escape(string.IsNullOrWhiteSpace(identity) ? "поля не найдены; проверьте полные данные ниже" : identity)}");
+                var identity = includeFullPayload
+                    ? BuildPendingContractIdentitySummary(entry.Payload)
+                    : BuildPendingContractPlayerSummary(entry.Payload);
+                if (!string.IsNullOrWhiteSpace(identity))
+                    lines.Add(includeFullPayload
+                        ? $"    идентификаторы: {Markup.Escape(identity)}"
+                        : $"    кратко: {Markup.Escape(identity)}");
+                else if (includeFullPayload)
+                {
+                    lines.Add("    идентификаторы: поля не найдены; проверьте полные данные ниже");
+                }
             }
-            lines.Add(isWrongRealmShiningContract
-                ? "    закрытие: [yellow]недоступно в Море Хаоса[/]; сияющий ожидающий контракт показан только для полного аудита/ремонта."
-                : $"    закрытие: {Markup.Escape(entry.Definition.ClosureHint)}");
+            if (includeFullPayload)
+            {
+                lines.Add(isWrongRealmShiningContract
+                    ? "    закрытие: [yellow]недоступно в Море Хаоса[/]; сияющий ожидающий контракт показан только для полного аудита/ремонта."
+                    : $"    закрытие: {Markup.Escape(entry.Definition.ClosureHint)}");
+            }
+            else
+            {
+                lines.Add(isWrongRealmShiningContract
+                    ? "    состояние: [yellow]ожидает Сияющей Обители или ремонта[/]"
+                    : "    состояние: ожидает ответа ГМ; подробности появятся в уведомлениях посмертия.");
+            }
 
             if (includeFullPayload && entry.Payload != null)
             {
@@ -708,6 +733,28 @@ public partial class ExplorerMode
         }
 
         return lines;
+    }
+
+    private static string BuildPendingContractPlayerSummary(JsonObject payload)
+    {
+        var parts = new List<string>();
+        AddPendingPlayerField(parts, "Хранитель", payload["guardianName"]);
+        AddPendingPlayerField(parts, "Обитель", payload["abodeName"]);
+        AddPendingPlayerField(parts, "Резидент", payload["residentName"]);
+        AddPendingPlayerField(parts, "Фракция", payload["factionName"]);
+        AddPendingPlayerField(parts, "Проект", payload["projectDisplayName"]);
+        AddPendingPlayerField(parts, "Реликвия", payload["relicName"]);
+        AddPendingPlayerField(parts, "Запись Архива", payload["archiveEntryType"]);
+        AddPendingPlayerField(parts, "Тип", payload["interactionType"] ?? payload["requestMode"] ?? payload["offeringType"] ?? payload["actionType"]);
+        AddPendingPlayerField(parts, "Ход", payload["createdAtTurn"]);
+        return string.Join("; ", parts);
+    }
+
+    private static void AddPendingPlayerField(List<string> parts, string label, JsonNode? node)
+    {
+        var value = FormatPendingIdentityValue(node);
+        if (!string.IsNullOrWhiteSpace(value))
+            parts.Add($"{label}: {value}");
     }
 
     private async Task<List<AfterlifePendingContractAuditEntry>> ReadAfterlifePendingContractAuditEntriesAsync(bool includeShining)

@@ -22,7 +22,7 @@ public sealed class StateManagerTests
             {
                 Language = "ru",
                 GmBridgeBackend = "ConPTYBridge",
-                GmCliLaunchCommand = "gemini --yolo"
+                GmCliLaunchCommand = "custom-gm-cli --resume"
             };
             var manager = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
 
@@ -37,8 +37,9 @@ public sealed class StateManagerTests
             using var doc = JsonDocument.Parse(json!);
             Assert.Equal("ru", doc.RootElement.GetProperty("language").GetString());
             Assert.Equal("ConPTYBridge", doc.RootElement.GetProperty("gmBridgeBackend").GetString());
-            Assert.Equal("gemini --yolo", doc.RootElement.GetProperty("gmCliLaunchCommand").GetString());
+            Assert.Equal("custom-gm-cli --resume", doc.RootElement.GetProperty("gmCliLaunchCommand").GetString());
             Assert.Equal("ExactTextOrConfiguredMarker", doc.RootElement.GetProperty("gmBridgePasteVisibilityPolicy").GetString());
+            Assert.Equal(15, doc.RootElement.GetProperty("gmBridgePromptVisibilityTimeoutSeconds").GetDouble());
             Assert.Contains(
                 doc.RootElement.GetProperty("gmBridgePasteVisibilityMarkers").EnumerateArray(),
                 marker => string.Equals(marker.GetProperty("name").GetString(), "Codex", StringComparison.OrdinalIgnoreCase) &&
@@ -81,6 +82,39 @@ public sealed class StateManagerTests
         }
     }
 
+    [Theory]
+    [InlineData(-1, 15)]
+    [InlineData(0, 15)]
+    [InlineData(0.5, 1)]
+    [InlineData(45, 45)]
+    [InlineData(120, 60)]
+    public async Task LoadSettingsAsync_GmBridgePromptVisibilityTimeoutSeconds_ClampsToSafeRange(
+        double configuredValue,
+        double expectedValue)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await fs.WriteFileAtomicAsync("config.json", $$"""
+            {
+              "gmBridgePromptVisibilityTimeoutSeconds": {{configuredValue.ToString(System.Globalization.CultureInfo.InvariantCulture)}}
+            }
+            """);
+            var settings = new GameSettings();
+            var manager = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
+
+            await manager.LoadSettingsAsync();
+
+            Assert.Equal(expectedValue, settings.GmBridgePromptVisibilityTimeoutSeconds);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     [Fact]
     public async Task LoadAndSaveSettingsAsync_WorkerBridgeProfiles_RoundTripHiddenProfiles()
     {
@@ -94,7 +128,7 @@ public sealed class StateManagerTests
                 GmWorkerBridgeProfiles =
                 [
                     GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile(),
-                    GmWorkerBridgeTestFixtures.NarrativeDraftGeminiProfile()
+                    GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile()
                 ]
             };
             var manager = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
@@ -112,7 +146,7 @@ public sealed class StateManagerTests
                 profile.WorkerId == "validation_repair_codex" &&
                 profile.Permissions.TaskTypes.Contains(WorkerTaskType.ValidationRepair));
             Assert.Contains(reloadedSettings.GmWorkerBridgeProfiles, profile =>
-                profile.WorkerId == "narrative_draft_gemini" &&
+                profile.WorkerId == "narrative_draft_codex" &&
                 profile.Permissions.ProposalOnly);
         }
         finally

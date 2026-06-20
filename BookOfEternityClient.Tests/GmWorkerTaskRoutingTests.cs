@@ -11,13 +11,13 @@ public sealed class GmWorkerTaskRoutingTests
         var profiles = new[]
         {
             GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with { Enabled = false },
-            GmWorkerBridgeTestFixtures.NarrativeDraftGeminiProfile()
+            GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile()
         };
 
         var result = GmWorkerBridgePool.SelectWorkerForTask(profiles, WorkerTaskType.NarrativeDraft);
 
         Assert.True(result.Found, result.Reason);
-        Assert.Equal("narrative_draft_gemini", result.Profile!.WorkerId);
+        Assert.Equal("narrative_draft_codex", result.Profile!.WorkerId);
     }
 
     [Fact]

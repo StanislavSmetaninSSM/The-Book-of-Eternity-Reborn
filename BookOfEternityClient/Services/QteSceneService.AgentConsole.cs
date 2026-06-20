@@ -14,10 +14,11 @@ public sealed partial class QteSceneService
         IReadOnlyList<string> choices,
         string promptMarkup,
         string promptPlainText,
-        Color highlightColor)
+        Color highlightColor,
+        AgentConsoleQteFrame? qteFrame = null)
     {
         if (_inputSource is AgentConsoleLiveInputSource liveInput)
-            return PromptAgentConsoleSelection(liveInput, screenId, screenTitle, playerFacingText, choices, promptPlainText);
+            return PromptAgentConsoleSelection(liveInput, screenId, screenTitle, playerFacingText, choices, promptPlainText, qteFrame);
 
         return AnsiConsole.Prompt(new SelectionPrompt<string>()
             .Title(promptMarkup)
@@ -56,7 +57,8 @@ public sealed partial class QteSceneService
         string screenTitle,
         string playerFacingText,
         IReadOnlyList<string> choices,
-        string promptPlainText)
+        string promptPlainText,
+        AgentConsoleQteFrame? qteFrame)
     {
         if (choices.Count == 0)
             throw new InvalidOperationException($"QTE screen '{screenId}' has no choices.");
@@ -70,7 +72,8 @@ public sealed partial class QteSceneService
                 screenTitle,
                 BuildAgentConsoleMenuText(screenTitle, playerFacingText, promptPlainText, choices, selectedIndex),
                 choices,
-                selectedIndex);
+                selectedIndex,
+                qteFrame);
 
             var key = _inputSource.ReadKey(intercept: true);
             var inputResult = ConsoleMainMenuInputHandler.Apply(key, selectedIndex, choices.Count);
@@ -87,7 +90,8 @@ public sealed partial class QteSceneService
         string screenTitle,
         string playerFacingText,
         IReadOnlyList<string> choices,
-        int selectedIndex)
+        int selectedIndex,
+        AgentConsoleQteFrame? qteFrame = null)
     {
         var observation = new ConsoleE2EObservationSnapshot(
             RunId: "agent-console",
@@ -101,6 +105,22 @@ public sealed partial class QteSceneService
             ArtifactRoot: string.Empty,
             LogPath: null);
         var snapshot = AgentConsoleE2EObservationMapper.ToAgentConsoleSnapshot(observation, screenId);
+        if (qteFrame != null)
+        {
+            snapshot = snapshot with
+            {
+                Mode = AgentConsoleMode.QteLive,
+                QteFrame = qteFrame with
+                {
+                    Title = screenTitle,
+                    Instructions = "Выберите вариант.",
+                    BodyText = StripSpectreMarkup(playerFacingText),
+                    AwaitingInputKind = AgentConsoleInputKind.MenuSelection,
+                    Choices = choices
+                }
+            };
+        }
+
         liveInput.PublishSnapshot(snapshot, $"Rendered {screenId}.");
     }
 

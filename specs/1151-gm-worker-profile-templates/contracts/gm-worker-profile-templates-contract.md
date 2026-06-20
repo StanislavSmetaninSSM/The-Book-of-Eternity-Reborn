@@ -5,7 +5,7 @@
 `GmWorkerBridgeProfileTemplates.CreateDefaultTemplates()` returns:
 
 - `validation_repair_codex`
-- `narrative_draft_gemini`
+- `narrative_draft_codex`
 - `analysis_codex`
 
 ## Required Template Properties

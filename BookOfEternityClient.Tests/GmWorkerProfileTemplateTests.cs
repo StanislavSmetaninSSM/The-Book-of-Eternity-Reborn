@@ -21,10 +21,10 @@ public sealed class GmWorkerProfileTemplateTests
                 "codex --dangerously-bypass-approvals-and-sandbox"),
             narrative => AssertTemplate(
                 narrative,
-                "narrative_draft_gemini",
+                "narrative_draft_codex",
                 WorkerRole.NarrativeDraft,
                 WorkerTaskType.NarrativeDraft,
-                "gemini"),
+                "codex --dangerously-bypass-approvals-and-sandbox"),
             repair => AssertTemplate(
                 repair,
                 "validation_repair_codex",
@@ -45,6 +45,31 @@ public sealed class GmWorkerProfileTemplateTests
     }
 
     [Fact]
+    public void DefaultTemplates_DoNotAdvertiseDeprecatedGeminiCliProfiles()
+    {
+        var templates = GmWorkerBridgeProfileTemplates.CreateDefaultTemplates();
+
+        Assert.DoesNotContain(templates, template =>
+            template.WorkerId.Contains("gemini", StringComparison.OrdinalIgnoreCase) ||
+            template.DisplayName.Contains("gemini", StringComparison.OrdinalIgnoreCase) ||
+            template.LaunchCommand.Contains("gemini", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void DefaultTemplates_IncludeCodexNarrativeDraftTemplate()
+    {
+        var templates = GmWorkerBridgeProfileTemplates.CreateDefaultTemplates();
+
+        var template = Assert.Single(templates, template => template.WorkerId == "narrative_draft_codex");
+        AssertTemplate(
+            template,
+            "narrative_draft_codex",
+            WorkerRole.NarrativeDraft,
+            WorkerTaskType.NarrativeDraft,
+            "codex --dangerously-bypass-approvals-and-sandbox");
+    }
+
+    [Fact]
     public void SettingsWithNoWorkerProfiles_ReceivesDisabledTemplates()
     {
         var settings = new GameSettings();
@@ -56,7 +81,7 @@ public sealed class GmWorkerProfileTemplateTests
         settings.ApplyLoadedValues(loaded);
 
         Assert.Equal(
-            ["analysis_codex", "narrative_draft_gemini", "validation_repair_codex"],
+            ["analysis_codex", "narrative_draft_codex", "validation_repair_codex"],
             settings.GmWorkerBridgeProfiles.Select(profile => profile.WorkerId).OrderBy(id => id).ToArray());
         Assert.All(settings.GmWorkerBridgeProfiles, profile => Assert.False(profile.Enabled));
     }

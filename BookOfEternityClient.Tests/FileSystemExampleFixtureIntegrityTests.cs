@@ -176,6 +176,45 @@ public sealed class FileSystemExampleFixtureIntegrityTests
     }
 
     [Fact]
+    public async Task GameSessionFixture_ValidatorRejectsLegacySoulRelicAliases()
+    {
+        var rootPath = Path.Combine(Path.GetTempPath(), "boe-filesystem-fixture-soul-relic-validation-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            CopyDirectory(TestRepoPaths.BaseSessionRoot, Path.Combine(rootPath, "game_session"));
+            var soulStatePath = Path.Combine(rootPath, "game_session", "game_state", "meta", "soul_state.json");
+            await File.WriteAllTextAsync(soulStatePath, """
+            {
+              "soulName": "Пепельная Искра",
+              "currentRealm": "Mortal World",
+              "currentIncarnation": 2,
+              "inkFeathers": { "current": 80, "total": 120 },
+              "soulRelics": {
+                "equipped": [
+                  { "id": "relic-ember-lantern", "name": "Фонарь Угасшего Пламени", "tier": "Uncommon" }
+                ],
+                "stored": []
+              }
+            }
+            """);
+
+            var fs = new FileSystemManager(rootPath, NullLogger<FileSystemManager>.Instance);
+            var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
+
+            var issues = await validator.ValidateGameStateAsync();
+
+            Assert.Contains(issues, issue =>
+                string.Equals(issue.Code, "soul_relic_invalid_canonical_shape", StringComparison.OrdinalIgnoreCase) &&
+                issue.FilePath.Contains("game_state/meta/soul_state.json.soulRelics.equipped[0]", StringComparison.OrdinalIgnoreCase));
+        }
+        finally
+        {
+            if (Directory.Exists(rootPath))
+                Directory.Delete(rootPath, recursive: true);
+        }
+    }
+
+    [Fact]
     public void GameSessionFixture_InventoryItemsExposePersistedItemContractMinimum()
     {
         var inventoryPath = Path.Combine(TestRepoPaths.BaseSessionRoot, "game_state", "inventory", "items.json");

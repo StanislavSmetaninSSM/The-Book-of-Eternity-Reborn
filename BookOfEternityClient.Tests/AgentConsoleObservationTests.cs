@@ -106,6 +106,68 @@ public sealed class AgentConsoleObservationTests
     }
 
     [Fact]
+    public void SnapshotSerializesStructuredQteFrameForAutomation()
+    {
+        var renderedAt = new DateTimeOffset(2026, 6, 20, 10, 0, 0, TimeSpan.Zero);
+        var snapshot = new AgentConsoleSnapshot
+        {
+            ScreenId = "qte:timing-bar",
+            Mode = AgentConsoleMode.QteLive,
+            Title = "Полоса реакции",
+            PlainText = "Нажмите Space в зелёной зоне.",
+            AwaitingInput = true,
+            InputKind = AgentConsoleInputKind.Key,
+            RenderedAtUtc = renderedAt,
+            UpdatedAtUtc = renderedAt,
+            QteFrame = new AgentConsoleQteFrame
+            {
+                QteId = "qte_test_reaction",
+                Type = "TimingBar",
+                Title = "Полоса реакции",
+                Phase = "running",
+                Instructions = "Нажмите Space в зелёной зоне.",
+                BodyText = "Окно успеха: 165 мс | Осталось: 1.4 с",
+                RequiredInputs = ["space"],
+                RemainingMs = 1400,
+                TimeoutMs = 1800,
+                MarkerValue = 14,
+                MarkerMin = 0,
+                MarkerMax = 31,
+                TargetStart = 13,
+                TargetEnd = 16,
+                PartialStart = 10,
+                PartialEnd = 19,
+                Feedback = ["маркер перед зоной успеха"]
+            }
+        };
+
+        var json = JsonSerializer.Serialize(snapshot, AgentConsoleJson.Options);
+        using var doc = JsonDocument.Parse(json);
+        var frame = doc.RootElement.GetProperty("qteFrame");
+
+        Assert.Equal("qteLive", doc.RootElement.GetProperty("mode").GetString());
+        Assert.Equal("qte_test_reaction", frame.GetProperty("qteId").GetString());
+        Assert.Equal("TimingBar", frame.GetProperty("type").GetString());
+        Assert.Equal("running", frame.GetProperty("phase").GetString());
+        Assert.Equal("space", frame.GetProperty("requiredInputs")[0].GetString());
+        Assert.Equal(1400, frame.GetProperty("remainingMs").GetInt32());
+        Assert.Equal(14, frame.GetProperty("markerValue").GetInt32());
+        Assert.Equal(13, frame.GetProperty("targetStart").GetInt32());
+        Assert.Equal(16, frame.GetProperty("targetEnd").GetInt32());
+        Assert.DoesNotContain("QteFrame", json, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void NonQteSnapshotOmitsQteFrame()
+    {
+        var snapshot = BuildMenuSnapshot("main-menu", selectedIndex: 0);
+
+        var json = JsonSerializer.Serialize(snapshot, AgentConsoleJson.Options);
+
+        Assert.DoesNotContain("qteFrame", json, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void StateStoreStartsWithNoScreenAndEmptyHistory()
     {
         var store = new AgentConsoleStateStore(eventCapacity: 3);
@@ -312,6 +374,17 @@ public sealed class AgentConsoleObservationTests
             "new AgentConsoleLiveInputSource(agentConsoleStateStore, readTimeout: Timeout.InfiniteTimeSpan)",
             program,
             StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void GameLoopErrorCatchPublishesAgentConsoleErrorSnapshot()
+    {
+        var turnLifecycle = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
+        var agentConsole = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.AgentConsole.cs");
+
+        Assert.Contains("RecordGameLoopErrorObservation(ex);", turnLifecycle, StringComparison.Ordinal);
+        Assert.Contains("private void RecordGameLoopErrorObservation(Exception ex)", agentConsole, StringComparison.Ordinal);
+        Assert.Contains("ConsoleE2EInputMode.Error", agentConsole, StringComparison.Ordinal);
     }
 
     private static AgentConsoleSnapshot BuildMenuSnapshot(string screenId, int selectedIndex)

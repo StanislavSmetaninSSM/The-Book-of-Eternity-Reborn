@@ -38,9 +38,9 @@ public class GameSettings
     /// </summary>
     public string GmBridgeBackend { get; set; } = "ConPTYBridge";
     /// <summary>
-    /// Arbitrary shell command line started inside the GM bridge shell session, for example "gemini --yolo".
+    /// Arbitrary shell command line started inside the GM bridge shell session, for example "codex --dangerously-bypass-approvals-and-sandbox".
     /// </summary>
-    public string GmCliLaunchCommand { get; set; } = "gemini";
+    public string GmCliLaunchCommand { get; set; } = "codex --dangerously-bypass-approvals-and-sandbox";
     /// <summary>
     /// Auto-start the local GM bridge helper when the daemon cannot find a live bridge.
     /// </summary>
@@ -53,6 +53,10 @@ public class GameSettings
     /// Controls when the GM bridge may press Enter after a bracketed paste.
     /// </summary>
     public string GmBridgePasteVisibilityPolicy { get; set; } = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.ExactTextOrConfiguredMarker;
+    /// <summary>
+    /// Max seconds the GM bridge waits for a CLI prompt to render the pasted text or collapsed paste marker before pressing Enter.
+    /// </summary>
+    public double GmBridgePromptVisibilityTimeoutSeconds { get; set; } = 15;
     /// <summary>
     /// CLI-specific markers that prove a large pasted prompt was accepted even when the terminal collapses the text.
     /// </summary>
@@ -150,6 +154,9 @@ public class GameSettings
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList() ?? new List<string>();
         GmBridgePasteVisibilityPolicy = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.NormalizePolicy(GmBridgePasteVisibilityPolicy);
+        GmBridgePromptVisibilityTimeoutSeconds = loaded.GmBridgePromptVisibilityTimeoutSeconds > 0
+            ? Math.Clamp(loaded.GmBridgePromptVisibilityTimeoutSeconds, 1, 60)
+            : 15;
         GmBridgePasteVisibilityMarkers = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.NormalizeMarkers(GmBridgePasteVisibilityMarkers);
         GmWorkerBridgeProfiles = NormalizeWorkerProfiles(loaded.GmWorkerBridgeProfiles);
     }

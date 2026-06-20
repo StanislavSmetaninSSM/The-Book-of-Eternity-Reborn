@@ -81,11 +81,13 @@ public sealed class QteSceneRenderingSourceGuardTests
         var source = ReadQteSceneServiceSource();
         var methodSource = ExtractMethodSource(source, "private async Task<QteGrade> RunPatternMemoryAsync(");
         var loopSource = ExtractMethodSource(source, "internal static async Task<string> RunPatternMemoryLiveLoopAsync(");
+        var frameSource = ExtractMethodSource(source, "private static AgentConsoleQteFrame BuildPatternMemoryInputAgentConsoleFrame(");
 
         Assert.Equal(1, CountOccurrences(methodSource, "RunMiniGameLiveAsync"));
         Assert.Contains("RunPatternMemoryLiveLoopAsync", methodSource, StringComparison.Ordinal);
         Assert.Contains("renderer.Update(", loopSource, StringComparison.Ordinal);
-        Assert.Contains("Память рун: фаза ввода", loopSource, StringComparison.Ordinal);
+        Assert.Contains("BuildPatternMemoryInputAgentConsoleFrame", loopSource, StringComparison.Ordinal);
+        Assert.Contains("Память рун: фаза ввода", frameSource, StringComparison.Ordinal);
     }
 
     [Fact]

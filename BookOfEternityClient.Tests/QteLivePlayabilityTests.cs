@@ -1,5 +1,9 @@
+using BookOfEternityClient.AgentConsole;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.IO;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -33,6 +37,39 @@ public sealed class QteLivePlayabilityTests
             frame.Body.Contains("Окно успеха:", StringComparison.Ordinal) &&
             frame.Body.Contains("Осталось:", StringComparison.Ordinal));
         Assert.True(renderer.Frames.Count > 2);
+    }
+
+    [Fact]
+    public async Task QteLive_TimingBarLoopPublishesStructuredAgentConsoleFrame()
+    {
+        var requirement = QteSceneService.ComputeTimingBarLiveRequirement(4, statTier: 0);
+        var clock = new FakeLiveClock();
+        var input = new ScheduledConsoleInputSource(clock, [
+            new ScheduledKey(requirement.SuccessStart * requirement.TickMs, Key(ConsoleKey.Spacebar))
+        ]);
+        var renderer = new RecordingLiveRenderer(
+            "Полоса реакции",
+            "Нажмите Space, когда маркер будет в центральной зоне.",
+            "");
+
+        var grade = await QteSceneService.RunTimingBarLiveLoopAsync(requirement, input, renderer, clock);
+
+        Assert.Equal("success", grade);
+        var frame = Assert.Single(renderer.StructuredFrames, item =>
+            item.Type == "TimingBar" &&
+            item.MarkerValue == requirement.SuccessStart);
+        Assert.Equal("running", frame.Phase);
+        Assert.Equal("Полоса реакции", frame.Title);
+        Assert.Equal(["space"], frame.RequiredInputs);
+        Assert.Equal(requirement.TimeoutMs, frame.TimeoutMs);
+        Assert.InRange(frame.RemainingMs!.Value, 1, requirement.TimeoutMs);
+        Assert.Equal(0, frame.MarkerMin);
+        Assert.Equal(requirement.Width - 1, frame.MarkerMax);
+        Assert.Equal(requirement.SuccessStart, frame.TargetStart);
+        Assert.Equal(requirement.SuccessStart + requirement.SuccessWidth - 1, frame.TargetEnd);
+        Assert.Equal(requirement.PartialStart, frame.PartialStart);
+        Assert.Equal(requirement.PartialStart + requirement.PartialWidth - 1, frame.PartialEnd);
+        Assert.Contains("Осталось:", frame.BodyText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -182,6 +219,67 @@ public sealed class QteLivePlayabilityTests
         });
     }
 
+    [Fact]
+    public async Task QteOfferDecision_AgentConsoleSnapshotExposesChoiceStyleQteFrame()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-qte-agent-console-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            var store = new AgentConsoleStateStore();
+            using var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromSeconds(5));
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            var service = new QteSceneService(
+                fs,
+                new GameSettings(),
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                NullLogger<QteSceneService>.Instance,
+                input);
+
+            var offer = new QteSceneService.QteOffer
+            {
+                QteId = "qte_offer_agent_console",
+                Title = "Выбор у ворот",
+                OfferText = "Сцена предлагает рискованное действие.",
+                IntroNarrative = "Стражник отворачивается на один удар сердца.",
+                DeclineHint = "Можно отказаться без штрафа."
+            };
+            var decisionTask = Task.Run(() => service.PromptOfferDecisionAsync(offer));
+
+            var snapshot = await WaitForSnapshotAsync(store, item =>
+                item is { AwaitingInput: true, InputKind: AgentConsoleInputKind.MenuSelection } &&
+                item.QteFrame?.Type == "OfferDecision");
+
+            var accepted = input.EnqueueKey(Key(ConsoleKey.Enter));
+            Assert.True(accepted.Accepted, accepted.Message);
+            var decision = await decisionTask.WaitAsync(TimeSpan.FromSeconds(2));
+
+            Assert.Equal(QteSceneService.QteOfferDecision.Accept, decision);
+            Assert.Equal(AgentConsoleMode.QteLive, snapshot.Mode);
+            Assert.Equal(AgentConsoleInputKind.MenuSelection, snapshot.InputKind);
+            var frame = snapshot.QteFrame;
+            Assert.NotNull(frame);
+            Assert.Equal("qte_offer_agent_console", frame!.QteId);
+            Assert.Equal("OfferDecision", frame.Type);
+            Assert.Equal("choice", frame.Phase);
+            Assert.Equal("Выбор у ворот", frame.Title);
+            Assert.Contains("Сцена предлагает рискованное действие.", frame.BodyText, StringComparison.Ordinal);
+            Assert.Contains(frame.Choices, choice => choice.Contains("Принять", StringComparison.Ordinal));
+            Assert.Contains(frame.Choices, choice => choice.Contains("Отклонить", StringComparison.Ordinal));
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+                Directory.Delete(root, recursive: true);
+        }
+    }
+
     private sealed class RecordingLiveRenderer : QteSceneService.IQteMiniGameLiveRenderer
     {
         private string _title;
@@ -195,6 +293,7 @@ public sealed class QteLivePlayabilityTests
         }
 
         public List<LiveFrame> Frames { get; } = [];
+        public List<AgentConsoleQteFrame> StructuredFrames { get; } = [];
 
         public void Update(string body)
         {
@@ -206,6 +305,12 @@ public sealed class QteLivePlayabilityTests
             _title = title;
             _instructions = instructions;
             Frames.Add(new LiveFrame(title, instructions, body));
+        }
+
+        public void Update(AgentConsoleQteFrame qteFrame, string terminalBody)
+        {
+            StructuredFrames.Add(qteFrame);
+            Update(qteFrame.Title, qteFrame.Instructions, terminalBody);
         }
     }
 
@@ -257,6 +362,23 @@ public sealed class QteLivePlayabilityTests
     private sealed record LiveFrame(string Title, string Instructions, string Body);
 
     private readonly record struct ScheduledKey(int AtMs, ConsoleKeyInfo KeyInfo);
+
+    private static async Task<AgentConsoleSnapshot> WaitForSnapshotAsync(
+        AgentConsoleStateStore store,
+        Func<AgentConsoleSnapshot?, bool> predicate)
+    {
+        var timeoutAt = DateTime.UtcNow.AddSeconds(2);
+        while (DateTime.UtcNow < timeoutAt)
+        {
+            var snapshot = store.GetSnapshot();
+            if (predicate(snapshot))
+                return snapshot!;
+
+            await Task.Delay(10);
+        }
+
+        throw new TimeoutException("Timed out waiting for expected Agent Console snapshot.");
+    }
 
     private static ConsoleKeyInfo Key(ConsoleKey key)
     {

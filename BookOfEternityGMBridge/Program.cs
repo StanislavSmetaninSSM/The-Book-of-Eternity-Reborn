@@ -287,7 +287,7 @@ internal sealed class BridgeHost : IDisposable
                             outputVersionBefore,
                             outputLengthBefore,
                             visibilitySettings,
-                            TimeSpan.FromSeconds(3),
+                            TimeSpan.FromSeconds(visibilitySettings.GmBridgePromptVisibilityTimeoutSeconds),
                             _cts.Token);
                         if (!visible)
                         {

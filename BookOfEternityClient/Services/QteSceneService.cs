@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Globalization;
+using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
@@ -93,6 +94,8 @@ public sealed partial class QteSceneService
     {
         void Update(string body);
         void Update(string title, string instructions, string body);
+        void Update(AgentConsoleQteFrame qteFrame, string terminalBody) =>
+            Update(qteFrame.Title, qteFrame.Instructions, terminalBody);
     }
 
     internal interface IQteLiveClock
@@ -203,14 +206,26 @@ public sealed partial class QteSceneService
             Expand = true
         });
 
+        var offerPlainText = BuildQteOfferPlainText(offer);
         var choice = PromptQteSelection(
             "qte-offer-decision",
             offer.Title ?? "QTE событие",
-            BuildQteOfferPlainText(offer),
+            offerPlainText,
             ["✅ Принять", "❌ Отклонить"],
             "[bold]Действие:[/]",
             "Действие:",
-            Color.Gold1);
+            Color.Gold1,
+            new AgentConsoleQteFrame
+            {
+                QteId = offer.QteId,
+                Type = "OfferDecision",
+                Title = offer.Title ?? "QTE событие",
+                Phase = "choice",
+                Instructions = "Выберите, принимать ли QTE событие.",
+                BodyText = offerPlainText,
+                AwaitingInputKind = AgentConsoleInputKind.MenuSelection,
+                Choices = ["✅ Принять", "❌ Отклонить"]
+            });
 
         return choice.Contains("Принять", StringComparison.OrdinalIgnoreCase)
             ? QteOfferDecision.Accept
@@ -1606,15 +1621,21 @@ public sealed partial class QteSceneService
             }
 
             var remainingMs = Math.Max(0, effective.RevealMs - (int)(clock.UtcNow - revealStarted).TotalMilliseconds);
-            renderer.Update(BuildPatternMemoryRevealFrame(sequence, remainingMs));
+            renderer.Update(
+                BuildPatternMemoryRevealAgentConsoleFrame(sequence, remainingMs, effective.RevealMs),
+                BuildPatternMemoryRevealFrame(sequence, remainingMs));
 
             await clock.DelayAsync(20);
         }
 
         var inputStarted = clock.UtcNow;
         renderer.Update(
-            "Память рун: фаза ввода",
-            "Повторите показанную последовательность по памяти теми же физическими клавишами. Esc - безопасный отказ считается провалом.",
+            BuildPatternMemoryInputAgentConsoleFrame(
+                sequence.Count,
+                inputs,
+                effective.AllowedMistakes,
+                effective.InputTimeoutMs,
+                effective.InputTimeoutMs),
             BuildPatternMemoryInputLiveFrame(sequence.Count, inputs, effective.AllowedMistakes, effective.InputTimeoutMs));
 
         while ((clock.UtcNow - inputStarted).TotalMilliseconds < effective.InputTimeoutMs)
@@ -1635,7 +1656,14 @@ public sealed partial class QteSceneService
             }
 
             var remainingMs = Math.Max(0, effective.InputTimeoutMs - (int)(clock.UtcNow - inputStarted).TotalMilliseconds);
-            renderer.Update(BuildPatternMemoryInputLiveFrame(sequence.Count, inputs, effective.AllowedMistakes, remainingMs));
+            renderer.Update(
+                BuildPatternMemoryInputAgentConsoleFrame(
+                    sequence.Count,
+                    inputs,
+                    effective.AllowedMistakes,
+                    remainingMs,
+                    effective.InputTimeoutMs),
+                BuildPatternMemoryInputLiveFrame(sequence.Count, inputs, effective.AllowedMistakes, remainingMs));
 
             await clock.DelayAsync(20);
         }
@@ -3415,7 +3443,9 @@ public sealed partial class QteSceneService
             if (remainingMs <= 0)
                 return "fail";
 
-            renderer.Update(BuildTimingBarLiveFrame(requirement, position, remainingMs));
+            renderer.Update(
+                BuildTimingBarAgentConsoleFrame(requirement, position, remainingMs),
+                BuildTimingBarLiveFrame(requirement, position, remainingMs));
 
             if (TryReadImmediateKey(inputSource, out var key))
             {
@@ -3527,13 +3557,22 @@ public sealed partial class QteSceneService
             while ((clock.UtcNow - started).TotalMilliseconds < promptTimeoutMs)
             {
                 var remainingMs = Math.Max(0, promptTimeoutMs - (int)(clock.UtcNow - started).TotalMilliseconds);
-                renderer.Update(BuildPromptChainProgress(
-                    prompt,
-                    i + 1,
-                    sequence.Count,
-                    mistakes,
-                    requirement.AllowedMistakes,
-                    remainingMs));
+                renderer.Update(
+                    BuildPromptChainAgentConsoleFrame(
+                        prompt,
+                        i + 1,
+                        sequence.Count,
+                        mistakes,
+                        requirement.AllowedMistakes,
+                        remainingMs,
+                        promptTimeoutMs),
+                    BuildPromptChainProgress(
+                        prompt,
+                        i + 1,
+                        sequence.Count,
+                        mistakes,
+                        requirement.AllowedMistakes,
+                        remainingMs));
 
                 if (TryReadImmediateKey(inputSource, out var key))
                 {
@@ -3664,14 +3703,24 @@ public sealed partial class QteSceneService
             if (Math.Abs(value - 50) <= requirement.SafeHalfWidth)
                 safeTicks++;
 
-            renderer.Update(BuildBalanceMeter(
+            var body = BuildBalanceMeter(
                 value,
                 requirement.SafeHalfWidth,
                 i + 1,
                 requirement.Ticks,
                 requirement.MovementStep,
                 playerDelta,
-                driftDelta));
+                driftDelta);
+            renderer.Update(
+                BuildBalanceMeterAgentConsoleFrame(
+                    value,
+                    requirement.SafeHalfWidth,
+                    i + 1,
+                    requirement.Ticks,
+                    requirement.MovementStep,
+                    playerDelta,
+                    driftDelta),
+                body);
 
             await clock.DelayAsync(requirement.TickMs);
         }
@@ -3924,13 +3973,14 @@ public sealed partial class QteSceneService
         AnsiConsole.Write(BuildMiniGamePanel(title, instructions, body));
     }
 
-    private static async Task<T> RunMiniGameLiveAsync<T>(
+    private async Task<T> RunMiniGameLiveAsync<T>(
         string title,
         string instructions,
         string initialBody,
         Func<IQteMiniGameLiveRenderer, Task<T>> runAsync)
     {
-        var renderer = new QteMiniGameLiveRenderer(title, instructions, initialBody);
+        var liveInput = _inputSource as AgentConsoleLiveInputSource;
+        var renderer = new QteMiniGameLiveRenderer(title, instructions, initialBody, liveInput);
         if (!AnsiConsole.Profile.Capabilities.Interactive)
         {
             RenderMiniGamePanel(title, instructions, initialBody);
@@ -3949,7 +3999,11 @@ public sealed partial class QteSceneService
             });
     }
 
-    private sealed class QteMiniGameLiveRenderer(string title, string instructions, string body) : IQteMiniGameLiveRenderer
+    private sealed class QteMiniGameLiveRenderer(
+        string title,
+        string instructions,
+        string body,
+        AgentConsoleLiveInputSource? liveInput) : IQteMiniGameLiveRenderer
     {
         private LiveDisplayContext? _context;
         private string _title = title;
@@ -3973,6 +4027,7 @@ public sealed partial class QteSceneService
             _title = title;
             _instructions = instructions;
             _body = body;
+            PublishAgentConsoleQteFrame(BuildGenericAgentConsoleQteFrame(title, instructions, body), body);
 
             if (_context == null)
                 return;
@@ -3980,6 +4035,143 @@ public sealed partial class QteSceneService
             _context.UpdateTarget(Renderable);
             _context.Refresh();
         }
+
+        public void Update(AgentConsoleQteFrame qteFrame, string terminalBody)
+        {
+            _title = qteFrame.Title;
+            _instructions = qteFrame.Instructions;
+            _body = terminalBody;
+            PublishAgentConsoleQteFrame(qteFrame, terminalBody);
+
+            if (_context == null)
+                return;
+
+            _context.UpdateTarget(Renderable);
+            _context.Refresh();
+        }
+
+        private void PublishAgentConsoleQteFrame(AgentConsoleQteFrame qteFrame, string terminalBody)
+        {
+            if (liveInput == null)
+                return;
+
+            var now = DateTimeOffset.UtcNow;
+            var normalizedFrame = qteFrame with
+            {
+                BodyText = string.IsNullOrWhiteSpace(qteFrame.BodyText)
+                    ? StripSpectreMarkup(terminalBody)
+                    : qteFrame.BodyText
+            };
+            var snapshot = new AgentConsoleSnapshot
+            {
+                ScreenId = "qte-live-" + ToAgentConsoleScreenPart(normalizedFrame.QteId ?? normalizedFrame.Type),
+                Mode = AgentConsoleMode.QteLive,
+                Title = normalizedFrame.Title,
+                PlainText = BuildAgentConsoleQtePlainText(normalizedFrame),
+                AwaitingInput = normalizedFrame.AwaitingInputKind != AgentConsoleInputKind.None,
+                InputKind = normalizedFrame.AwaitingInputKind,
+                Actions = BuildAgentConsoleQteActions(normalizedFrame),
+                Prompt = BuildAgentConsoleQtePrompt(normalizedFrame),
+                QteFrame = normalizedFrame,
+                RenderedAtUtc = now,
+                UpdatedAtUtc = now,
+                Diagnostics = []
+            };
+
+            liveInput.PublishSnapshot(snapshot, $"Rendered QTE frame {normalizedFrame.Type}.");
+        }
+    }
+
+    private static AgentConsoleQteFrame BuildGenericAgentConsoleQteFrame(
+        string title,
+        string instructions,
+        string terminalBody) =>
+        new()
+        {
+            Type = InferQteFrameType(title),
+            Title = title,
+            Phase = "running",
+            Instructions = instructions,
+            BodyText = StripSpectreMarkup(terminalBody),
+            AwaitingInputKind = AgentConsoleInputKind.Key
+        };
+
+    private static string InferQteFrameType(string title)
+    {
+        if (title.Contains("Полоса реакции", StringComparison.OrdinalIgnoreCase))
+            return "TimingBar";
+        if (title.Contains("Цепь знаков", StringComparison.OrdinalIgnoreCase))
+            return "PromptChain";
+        if (title.Contains("Равновесие", StringComparison.OrdinalIgnoreCase))
+            return "BalanceMeter";
+        if (title.Contains("Память рун", StringComparison.OrdinalIgnoreCase))
+            return "PatternMemory";
+        if (title.Contains("Накопление силы", StringComparison.OrdinalIgnoreCase))
+            return "ChargeRelease";
+        if (title.Contains("Тихий проход", StringComparison.OrdinalIgnoreCase))
+            return "StealthNoise";
+        if (title.Contains("Штифты", StringComparison.OrdinalIgnoreCase))
+            return "LockPinSet";
+
+        return "QteLive";
+    }
+
+    private static string BuildAgentConsoleQtePlainText(AgentConsoleQteFrame frame)
+    {
+        var lines = new List<string> { frame.Title };
+        if (!string.IsNullOrWhiteSpace(frame.Instructions))
+            lines.Add(frame.Instructions);
+        if (!string.IsNullOrWhiteSpace(frame.BodyText))
+            lines.Add(frame.BodyText);
+        if (frame.RequiredInputs.Count > 0)
+            lines.Add("Ожидаемый ввод: " + string.Join(", ", frame.RequiredInputs));
+        if (frame.Choices.Count > 0)
+            lines.Add("Варианты: " + string.Join(" | ", frame.Choices));
+        if (frame.Feedback.Count > 0)
+            lines.Add("Подсказка: " + string.Join(" | ", frame.Feedback));
+
+        return string.Join(Environment.NewLine, lines);
+    }
+
+    private static IReadOnlyList<AgentConsoleAction> BuildAgentConsoleQteActions(AgentConsoleQteFrame frame)
+    {
+        if (frame.Choices.Count > 0)
+        {
+            return frame.Choices.Select((choice, index) => new AgentConsoleAction
+            {
+                Id = $"choice-{index}",
+                Label = choice,
+                Shortcut = (index + 1).ToString(CultureInfo.InvariantCulture),
+                IsDefault = index == 0
+            }).ToArray();
+        }
+
+        if (frame.RequiredInputs.Count > 0)
+        {
+            return frame.RequiredInputs.Select(input => new AgentConsoleAction
+            {
+                Id = $"key-{input}",
+                Label = input,
+                Shortcut = input,
+                IsDefault = frame.RequiredInputs.Count == 1
+            }).ToArray();
+        }
+
+        return [];
+    }
+
+    private static AgentConsolePrompt? BuildAgentConsoleQtePrompt(AgentConsoleQteFrame frame)
+    {
+        if (frame.AwaitingInputKind == AgentConsoleInputKind.None)
+            return null;
+
+        return new AgentConsolePrompt
+        {
+            PromptId = $"qte-{ToAgentConsoleScreenPart(frame.Type)}",
+            Text = frame.Instructions,
+            InputKind = frame.AwaitingInputKind,
+            Choices = frame.Choices
+        };
     }
 
     private static Panel BuildMiniGamePanel(string title, string instructions, string body)
@@ -4035,6 +4227,46 @@ public sealed partial class QteSceneService
         });
     }
 
+    private static AgentConsoleQteFrame BuildTimingBarAgentConsoleFrame(
+        TimingBarLiveRequirement requirement,
+        int position,
+        int remainingMs)
+    {
+        var body = BuildTimingBarLiveFrame(requirement, position, remainingMs);
+        return new AgentConsoleQteFrame
+        {
+            Type = "TimingBar",
+            Title = "Полоса реакции",
+            Phase = "running",
+            Instructions = $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, когда маркер будет в центральной зоне.",
+            BodyText = StripSpectreMarkup(body),
+            AwaitingInputKind = AgentConsoleInputKind.Key,
+            RequiredInputs = ["space"],
+            RemainingMs = remainingMs,
+            TimeoutMs = requirement.TimeoutMs,
+            MarkerValue = position,
+            MarkerMin = 0,
+            MarkerMax = requirement.Width - 1,
+            TargetStart = requirement.SuccessStart,
+            TargetEnd = requirement.SuccessStart + requirement.SuccessWidth - 1,
+            PartialStart = requirement.PartialStart,
+            PartialEnd = requirement.PartialStart + requirement.PartialWidth - 1,
+            Feedback = [DescribeTimingBarMarker(position, requirement)]
+        };
+    }
+
+    private static string DescribeTimingBarMarker(int position, TimingBarLiveRequirement requirement)
+    {
+        if (position >= requirement.SuccessStart && position < requirement.SuccessStart + requirement.SuccessWidth)
+            return "маркер в зоне успеха";
+        if (position >= requirement.PartialStart && position < requirement.PartialStart + requirement.PartialWidth)
+            return "маркер в зоне частичного успеха";
+        if (position < requirement.PartialStart)
+            return "маркер перед зоной";
+
+        return "маркер после зоны";
+    }
+
     private static string BuildPromptChainProgress(
         ConsoleKey prompt,
         int currentStep,
@@ -4049,6 +4281,34 @@ public sealed partial class QteSceneService
             $"[white]Текущий знак: [bold yellow]{DisplayKey(prompt)}[/][/]",
             $"[dim]Шаг {currentStep}/{totalSteps} | Ошибки: {mistakes}/{allowedMistakes} | Осталось: {remainingSeconds:0.0} с[/]"
         });
+    }
+
+    private static AgentConsoleQteFrame BuildPromptChainAgentConsoleFrame(
+        ConsoleKey prompt,
+        int currentStep,
+        int totalSteps,
+        int mistakes,
+        int allowedMistakes,
+        int remainingMs,
+        int timeoutMs)
+    {
+        var body = BuildPromptChainProgress(prompt, currentStep, totalSteps, mistakes, allowedMistakes, remainingMs);
+        var token = QteKeyInput.NormalizeConsoleKey(prompt) ?? prompt.ToString().ToLowerInvariant();
+        return new AgentConsoleQteFrame
+        {
+            Type = "PromptChain",
+            Title = "Цепь знаков",
+            Phase = "running",
+            Instructions = "Нажимайте показанную физическую клавишу до истечения таймера.",
+            BodyText = StripSpectreMarkup(body),
+            AwaitingInputKind = AgentConsoleInputKind.Key,
+            RequiredInputs = [token],
+            RemainingMs = remainingMs,
+            TimeoutMs = timeoutMs,
+            ProgressValue = currentStep,
+            ProgressMax = totalSteps,
+            Feedback = [$"ошибки: {mistakes}/{allowedMistakes}"]
+        };
     }
 
     internal static string BuildBalanceMeterLiveFrame(
@@ -4092,6 +4352,45 @@ public sealed partial class QteSceneService
             $"[dim]Игрок: {FormatBalancePlayerDelta(playerDelta)} | Помеха: {FormatSignedDelta(driftDelta)} | Итог: {FormatSignedDelta((playerDelta ?? 0) + (driftDelta ?? 0))}[/]",
             $"[dim]Шаг управления: {movementStep} | Такт {currentTick}/{totalTicks}[/]"
         });
+    }
+
+    private static AgentConsoleQteFrame BuildBalanceMeterAgentConsoleFrame(
+        int value,
+        int safeHalfWidth,
+        int currentTick,
+        int totalTicks,
+        int movementStep,
+        int? playerDelta,
+        int? driftDelta)
+    {
+        var body = BuildBalanceMeter(value, safeHalfWidth, currentTick, totalTicks, movementStep, playerDelta, driftDelta);
+        var safeStart = Math.Max(0, 50 - safeHalfWidth);
+        var safeEnd = Math.Min(100, 50 + safeHalfWidth);
+        return new AgentConsoleQteFrame
+        {
+            Type = "BalanceMeter",
+            Title = "Равновесие",
+            Phase = "running",
+            Instructions = $"Удерживайте индикатор в центральной зоне: {FormatCompactPhysicalKeyLabel(ConsoleKey.A)} или ← влево, {FormatCompactPhysicalKeyLabel(ConsoleKey.D)} или → вправо.",
+            BodyText = StripSpectreMarkup(body),
+            AwaitingInputKind = AgentConsoleInputKind.Key,
+            RequiredInputs = ["a", "d", "leftArrow", "rightArrow"],
+            ProgressValue = currentTick,
+            ProgressMax = totalTicks,
+            MarkerValue = value,
+            MarkerMin = 0,
+            MarkerMax = 100,
+            TargetStart = 50,
+            TargetEnd = 50,
+            SafeStart = safeStart,
+            SafeEnd = safeEnd,
+            Feedback =
+            [
+                $"игрок: {FormatBalancePlayerDelta(playerDelta)}",
+                $"помеха: {FormatSignedDelta(driftDelta)}",
+                $"шаг управления: {movementStep}"
+            ]
+        };
     }
 
     private static string FormatBalancePlayerDelta(int? delta) =>
@@ -4172,6 +4471,28 @@ public sealed partial class QteSceneService
         });
     }
 
+    private static AgentConsoleQteFrame BuildPatternMemoryRevealAgentConsoleFrame(
+        IReadOnlyList<string> sequence,
+        int remainingMs,
+        int timeoutMs)
+    {
+        var body = BuildPatternMemoryReveal(sequence, remainingMs);
+        return new AgentConsoleQteFrame
+        {
+            Type = "PatternMemory",
+            Title = "Память рун: фаза показа",
+            Phase = "reveal",
+            Instructions = "Запомните порядок знаков. Ввод начнётся после показа.",
+            BodyText = StripSpectreMarkup(body),
+            AwaitingInputKind = AgentConsoleInputKind.None,
+            RequiredInputs = sequence,
+            RemainingMs = remainingMs,
+            TimeoutMs = timeoutMs,
+            ProgressValue = 0,
+            ProgressMax = sequence.Count
+        };
+    }
+
     internal static string BuildPatternMemoryInputLiveFrame(
         int sequenceLength,
         IReadOnlyList<ConsoleKeyInfo> inputs,
@@ -4196,6 +4517,36 @@ public sealed partial class QteSceneService
             $"[white]Введено: {enteredText}[/]",
             $"[dim]Шаг {Math.Min(inputs.Count, sequenceLength)}/{sequenceLength} | Ошибок можно: {allowedMistakes} | Осталось: {remainingSeconds:0.0} с[/]"
         });
+    }
+
+    private static AgentConsoleQteFrame BuildPatternMemoryInputAgentConsoleFrame(
+        int sequenceLength,
+        IReadOnlyList<ConsoleKeyInfo> inputs,
+        int allowedMistakes,
+        int remainingMs,
+        int timeoutMs)
+    {
+        var inputBuffer = inputs
+            .Select(QteKeyInput.NormalizeConsoleInput)
+            .Select(token => token ?? "?")
+            .ToArray();
+        var body = BuildPatternMemoryInputProgress(sequenceLength, inputs, allowedMistakes, remainingMs);
+        return new AgentConsoleQteFrame
+        {
+            Type = "PatternMemory",
+            Title = "Память рун: фаза ввода",
+            Phase = "input",
+            Instructions = "Повторите показанную последовательность по памяти теми же физическими клавишами.",
+            BodyText = StripSpectreMarkup(body),
+            AwaitingInputKind = AgentConsoleInputKind.Key,
+            RequiredInputs = QteKeyInput.SupportedTokens,
+            InputBuffer = inputBuffer,
+            RemainingMs = remainingMs,
+            TimeoutMs = timeoutMs,
+            ProgressValue = Math.Min(inputs.Count, sequenceLength),
+            ProgressMax = sequenceLength,
+            Feedback = [$"ошибок можно: {allowedMistakes}"]
+        };
     }
 
     private static string BuildRhythmPulseProgress(

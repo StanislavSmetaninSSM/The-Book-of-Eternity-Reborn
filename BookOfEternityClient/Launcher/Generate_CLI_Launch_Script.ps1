@@ -1,24 +1,70 @@
 param(
-    [string]$OutputPath = ""
+    [string]$OutputPath = "",
+    [string]$GameSessionPath = "",
+    [switch]$UsePlaceholders
 )
 
 $ErrorActionPreference = "Stop"
 
 $projectRoot = Split-Path $PSScriptRoot -Parent
 $repoRoot = Split-Path $projectRoot -Parent
-$gameSessionPath = Join-Path $projectRoot "game_session"
+if ([string]::IsNullOrWhiteSpace($GameSessionPath)) {
+    $GameSessionPath = Join-Path $projectRoot "game_session"
+}
 
 if ([string]::IsNullOrWhiteSpace($OutputPath)) {
     $OutputPath = Join-Path $PSScriptRoot "CLI_Launch_Script.md"
 }
 
-$repoRootResolved = (Resolve-Path $repoRoot).Path
-$projectRootResolved = (Resolve-Path $projectRoot).Path
-
-if (!(Test-Path $gameSessionPath)) {
-    New-Item -ItemType Directory -Path $gameSessionPath -Force | Out-Null
+if ($UsePlaceholders) {
+    $repoRootResolved = "{{REPO_ROOT}}"
+    $projectRootResolved = "{{PROJECT_ROOT}}"
+    $gameSessionResolved = "{{GAME_SESSION}}"
 }
-$gameSessionResolved = (Resolve-Path $gameSessionPath).Path
+else {
+    $repoRootResolved = (Resolve-Path $repoRoot).Path
+    $projectRootResolved = (Resolve-Path $projectRoot).Path
+
+    if (!(Test-Path $GameSessionPath)) {
+        New-Item -ItemType Directory -Path $GameSessionPath -Force | Out-Null
+    }
+    $gameSessionResolved = (Resolve-Path $GameSessionPath).Path
+}
+
+function Repair-LaunchTemplateEncodingIfNeeded {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Value
+    )
+
+    $mojibakeMarkers = @(
+        (([string][char]0x0420) + ([string][char]0x00B0)), # UTF-8 Cyrillic decoded as Windows-1251.
+        (([string][char]0x0432) + ([string][char]0x2020) + ([string][char]0x2019)), # right arrow.
+        (([string][char]0x0432) + ([string][char]0x0402) + ([string][char]0x201D)) # em dash.
+    )
+
+    $needsRepair = $false
+    foreach ($marker in $mojibakeMarkers) {
+        if ($Value.Contains($marker)) {
+            $needsRepair = $true
+            break
+        }
+    }
+
+    if (!$needsRepair) {
+        return $Value
+    }
+
+    try {
+        [System.Text.Encoding]::RegisterProvider([System.Text.CodePagesEncodingProvider]::Instance)
+    }
+    catch {
+        # Windows PowerShell on .NET Framework already has legacy code pages available.
+    }
+
+    $windows1251 = [System.Text.Encoding]::GetEncoding(1251)
+    return [System.Text.Encoding]::UTF8.GetString($windows1251.GetBytes($Value))
+}
 
 $content = @'
 You are the Game Master for 'The Book of Eternity: Reborn' — a text RPG played through file-based JSON protocol.
@@ -36,11 +82,31 @@ Read these documents BEFORE processing the first turn:
 7. **OtherGuides/Afterlife_Contract_Matrix.md** -- mandatory contract map for Chaos Sea / Shining Abode turns
 8. **Examples/E_CLI_Afterlife_Turns.txt** -- mandatory worked examples for Chaos Sea / Shining Abode turns, including Shining core action fragments, ordinary living-world turns without pending files, system Guardian attraction, protected return guard turns, freeform Abode search, afterlife spiritual conflict with diceAudit, example 26 for afterlife entity profiles, and example 26B for afterlife external memory chronicles
 9. **OtherGuides/Afterlife_Combat_Terminology_Glossary.md** -- Russian labels for afterlife spiritual conflict, Spiritual Arts, exchange/resolve, diceAudit, forced incarnation, ranks, afterlife entity profiles, special arts, and soul dissipation; keep JSON keys/enums English
+10. **OtherGuides/GM_Worker_Bridges.md** -- hidden/background subordinate worker bridge contract for validation-repair, proposal-only narrative-draft, apply gate, and audit log usage
 
 Reference materials (read as needed):
 - **Rules/Block_*.txt** — game rules
 - **Examples/** — extended rule examples
 - **OtherGuides/** — narrative style guide, world logic guide, afterlife contract matrix
+
+## GM WORKER DELEGATION (OPTIONAL, GM-ONLY)
+
+If `GmWorkerBridgeProfiles` contains an enabled profile, you may delegate narrow
+subtasks to hidden/background workers. The main GM remains the only owner of the
+player turn, final narration, and canonical game state.
+
+Allowed delegation uses:
+- `validation-repair`: the client/daemon may dispatch validation errors for a
+  worker repair proposal. File changes are accepted only through the apply gate.
+- `dispatchworkertask` with `workerTaskType = "narrative-draft"`: request
+  proposal-only prose or scene options while you continue checking state.
+- `dispatchworkertask` with `workerTaskType = "analysis"`: request
+  proposal-only consistency, lore, NPC, QTE, or output-review analysis.
+
+Worker output is GM-only. Do not show worker `draftText`, findings, or proposed
+file content to the player until you review it, edit it if needed, and make it
+part of your own final response. Workers never resolve the player action, never
+own a turn, and never write canonical `game_session` state directly.
 
 All paths relative to:
 {{REPO_ROOT}}
@@ -167,10 +233,12 @@ IMPORTANT:
 - Wait for a real per-turn message that explicitly references `input/turn_request.json` and contains the current `sessionId`, `requestId`, and `turnNumber`.
 '@
 
+$content = Repair-LaunchTemplateEncodingIfNeeded -Value $content
 $content = $content.Replace("{{REPO_ROOT}}", $repoRootResolved)
 $content = $content.Replace("{{GAME_SESSION}}", $gameSessionResolved)
 
-Set-Content -Path $OutputPath -Value $content -Encoding UTF8
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+[System.IO.File]::WriteAllText($OutputPath, $content + [Environment]::NewLine, $utf8NoBom)
 
 Write-Host ""
 Write-Host "[OK] CLI_Launch_Script.md generated." -ForegroundColor Green

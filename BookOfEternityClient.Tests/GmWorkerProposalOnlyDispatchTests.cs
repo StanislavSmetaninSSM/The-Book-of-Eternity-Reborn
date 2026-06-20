@@ -18,7 +18,7 @@ public sealed class GmWorkerProposalOnlyDispatchTests
         {
             var fs = CreateFileSystem(root);
             await fs.WriteFileAtomicAsync(LocationPath, "{\"name\":\"Коридор\"}");
-            var profile = BuildProfile(root, GmWorkerBridgeTestFixtures.NarrativeDraftGeminiProfile(), "fake-narrative-dispatch.ps1", """
+            var profile = BuildProfile(root, GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile(), "fake-narrative-dispatch.ps1", """
                 $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
                 $proposal = [ordered]@{
                     schemaVersion = 1
@@ -154,7 +154,7 @@ public sealed class GmWorkerProposalOnlyDispatchTests
         {
             var fs = CreateFileSystem(root);
             await fs.WriteFileAtomicAsync(LocationPath, "{\"name\":\"Коридор\"}");
-            var profile = BuildProfile(root, GmWorkerBridgeTestFixtures.NarrativeDraftGeminiProfile(), "fake-narrative-invalid-changes.ps1", """
+            var profile = BuildProfile(root, GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile(), "fake-narrative-invalid-changes.ps1", """
                 $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
                 $proposalId = 'worker_proposal_dispatch_invalid_changes'
                 $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/current_location.json'

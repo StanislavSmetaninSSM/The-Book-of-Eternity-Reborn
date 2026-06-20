@@ -30,6 +30,7 @@ public enum AgentConsoleMode
     Menu,
     TextPrompt,
     Confirmation,
+    QteLive,
     Loading,
     Error,
     Exit
@@ -118,6 +119,87 @@ public sealed record AgentConsoleDiagnostic
     public string? ExceptionType { get; init; }
 }
 
+public sealed record AgentConsoleQteFrame
+{
+    [JsonPropertyName("qteId")]
+    public string? QteId { get; init; }
+
+    [JsonPropertyName("type")]
+    public required string Type { get; init; }
+
+    [JsonPropertyName("title")]
+    public required string Title { get; init; }
+
+    [JsonPropertyName("phase")]
+    public required string Phase { get; init; }
+
+    [JsonPropertyName("instructions")]
+    public required string Instructions { get; init; }
+
+    [JsonPropertyName("bodyText")]
+    public required string BodyText { get; init; }
+
+    [JsonPropertyName("awaitingInputKind")]
+    public AgentConsoleInputKind AwaitingInputKind { get; init; } = AgentConsoleInputKind.Key;
+
+    [JsonPropertyName("requiredInputs")]
+    public IReadOnlyList<string> RequiredInputs { get; init; } = [];
+
+    [JsonPropertyName("choices")]
+    public IReadOnlyList<string> Choices { get; init; } = [];
+
+    [JsonPropertyName("inputBuffer")]
+    public IReadOnlyList<string> InputBuffer { get; init; } = [];
+
+    [JsonPropertyName("remainingMs")]
+    public int? RemainingMs { get; init; }
+
+    [JsonPropertyName("timeoutMs")]
+    public int? TimeoutMs { get; init; }
+
+    [JsonPropertyName("progressValue")]
+    public int? ProgressValue { get; init; }
+
+    [JsonPropertyName("progressMax")]
+    public int? ProgressMax { get; init; }
+
+    [JsonPropertyName("markerValue")]
+    public int? MarkerValue { get; init; }
+
+    [JsonPropertyName("markerMin")]
+    public int? MarkerMin { get; init; }
+
+    [JsonPropertyName("markerMax")]
+    public int? MarkerMax { get; init; }
+
+    [JsonPropertyName("targetStart")]
+    public int? TargetStart { get; init; }
+
+    [JsonPropertyName("targetEnd")]
+    public int? TargetEnd { get; init; }
+
+    [JsonPropertyName("partialStart")]
+    public int? PartialStart { get; init; }
+
+    [JsonPropertyName("partialEnd")]
+    public int? PartialEnd { get; init; }
+
+    [JsonPropertyName("safeStart")]
+    public int? SafeStart { get; init; }
+
+    [JsonPropertyName("safeEnd")]
+    public int? SafeEnd { get; init; }
+
+    [JsonPropertyName("lastInput")]
+    public string? LastInput { get; init; }
+
+    [JsonPropertyName("lastInputAccepted")]
+    public bool? LastInputAccepted { get; init; }
+
+    [JsonPropertyName("feedback")]
+    public IReadOnlyList<string> Feedback { get; init; } = [];
+}
+
 public sealed record AgentConsoleSnapshot
 {
     private IReadOnlyList<AgentConsoleDiagnostic> _diagnostics = [];
@@ -154,6 +236,9 @@ public sealed record AgentConsoleSnapshot
 
     [JsonPropertyName("prompt")]
     public AgentConsolePrompt? Prompt { get; init; }
+
+    [JsonPropertyName("qteFrame")]
+    public AgentConsoleQteFrame? QteFrame { get; init; }
 
     [JsonPropertyName("renderedAtUtc")]
     public DateTimeOffset RenderedAtUtc { get; init; }

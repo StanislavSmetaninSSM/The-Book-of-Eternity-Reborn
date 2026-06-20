@@ -25,7 +25,7 @@ public sealed class GmWorkerBridgeContractTests
     [Fact]
     public void NarrativeDraftProfile_IsHiddenProposalOnlyAndReadOnly()
     {
-        var profile = GmWorkerBridgeTestFixtures.NarrativeDraftGeminiProfile();
+        var profile = GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile();
 
         Assert.Equal(WorkerLaunchVisibility.Hidden, profile.LaunchVisibility);
         Assert.Contains("gm_worker_cli_runner.ps1", profile.LaunchCommand, StringComparison.Ordinal);
@@ -75,7 +75,7 @@ public sealed class GmWorkerBridgeContractTests
     [Fact]
     public void NarrativeDraftProposalOnlyTask_RejectsChangedFiles()
     {
-        var profile = GmWorkerBridgeTestFixtures.NarrativeDraftGeminiProfile();
+        var profile = GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile();
         var task = GmWorkerBridgeTestFixtures.NarrativeDraftTask();
         var proposal = GmWorkerBridgeTestFixtures.NarrativeDraftProposal() with
         {

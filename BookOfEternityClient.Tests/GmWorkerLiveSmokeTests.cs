@@ -115,7 +115,7 @@ public sealed class GmWorkerLiveSmokeTests
                 }
                 $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
                 """);
-            var profile = GmWorkerBridgeTestFixtures.NarrativeDraftGeminiProfile() with
+            var profile = GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile() with
             {
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10

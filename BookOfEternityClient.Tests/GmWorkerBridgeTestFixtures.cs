@@ -7,8 +7,8 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerBridgeProfile ValidationRepairCodexProfile() =>
         GmWorkerBridgeProfileTemplates.CreateValidationRepairCodexTemplate() with { Enabled = true };
 
-    public static WorkerBridgeProfile NarrativeDraftGeminiProfile() =>
-        GmWorkerBridgeProfileTemplates.CreateNarrativeDraftGeminiTemplate() with { Enabled = true };
+    public static WorkerBridgeProfile NarrativeDraftCodexProfile() =>
+        GmWorkerBridgeProfileTemplates.CreateNarrativeDraftCodexTemplate() with { Enabled = true };
 
     public static WorkerBridgeProfile AnalysisCodexProfile() =>
         GmWorkerBridgeProfileTemplates.CreateAnalysisCodexTemplate() with { Enabled = true };
@@ -50,7 +50,7 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerTaskPacket NarrativeDraftTask() => new()
     {
         TaskId = "worker_task_20260620_0002",
-        WorkerId = "narrative_draft_gemini",
+        WorkerId = "narrative_draft_codex",
         TaskType = WorkerTaskType.NarrativeDraft,
         CreatedAtUtc = "2026-06-20T00:05:00Z",
         SourceTurn = new WorkerTurnReference
@@ -114,7 +114,7 @@ internal static class GmWorkerBridgeTestFixtures
     {
         ProposalId = "worker_proposal_20260620_0002",
         TaskId = "worker_task_20260620_0002",
-        WorkerId = "narrative_draft_gemini",
+        WorkerId = "narrative_draft_codex",
         Status = WorkerProposalStatus.Completed,
         Summary = "Drafted corridor narration for main-GM review.",
         ChangedFiles = [],

@@ -46,7 +46,7 @@ Instead of:
 
 the client ecosystem would:
 1. start a dedicated helper process
-2. let that helper launch `gemini` inside a ConPTY
+2. let that helper launch `codex --dangerously-bypass-approvals-and-sandbox` inside a ConPTY
 3. send prompts directly into the pseudo-console input stream
 4. read CLI output directly from the pseudo-console output stream
 
@@ -121,7 +121,7 @@ Why:
   "sessionId": "string",
   "requestId": "string",
   "turnNumber": 12,
-  "prompt": "full text to feed into gemini"
+  "prompt": "full text to feed into codex"
 }
 ```
 
@@ -156,7 +156,7 @@ Why:
 The helper should:
 1. start
 2. create ConPTY
-3. launch `gemini`
+3. launch `codex --dangerously-bypass-approvals-and-sandbox`
 4. wait for operator to confirm the CLI is ready
 5. accept prompt dispatches from the daemon
 
@@ -234,7 +234,6 @@ Before the bridge sends `Enter` after a bracketed paste, it verifies that the pr
 {
   "gmBridgePasteVisibilityPolicy": "ExactTextOrConfiguredMarker",
   "gmBridgePasteVisibilityMarkers": [
-    { "name": "Gemini", "kind": "contains", "pattern": "Pasted Text:" },
     { "name": "Codex", "kind": "regex", "pattern": "\\[Pasted Content \\d+ chars\\]" }
   ]
 }
@@ -244,5 +243,5 @@ Before the bridge sends `Enter` after a bracketed paste, it verifies that the pr
 - `contains` - case-insensitive substring match.
 - `regex` - case-insensitive regular expression match; invalid regex markers are ignored instead of crashing the bridge.
 
-Use `ExactTextOnly` if a CLI must never rely on collapsed paste markers. Use `ExactTextOrConfiguredMarker` for Gemini, Codex, or any future local CLI that reports accepted large pastes with a stable marker.
-Configured custom markers are added on top of the built-in Gemini/Codex defaults, so adding one local CLI marker does not disable existing compatibility.
+Use `ExactTextOnly` if a CLI must never rely on collapsed paste markers. Use `ExactTextOrConfiguredMarker` for Codex or any future supported local CLI that reports accepted large pastes with a stable marker.
+Configured custom markers are added on top of the built-in Codex defaults, so adding one local CLI marker does not disable existing compatibility.

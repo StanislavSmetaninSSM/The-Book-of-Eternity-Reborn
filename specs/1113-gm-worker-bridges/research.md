@@ -2,7 +2,7 @@
 
 ## Decision: Use explicit worker bridge processes, not implicit subagents hidden inside one GM CLI
 
-**Rationale**: Explicit bridge processes are observable, configurable, restartable, and auditable. They allow the user to mix Codex, Gemini, or other local CLIs by profile. They also let the daemon enforce a uniform task/proposal/apply-gate contract.
+**Rationale**: Explicit bridge processes are observable, configurable, restartable, and auditable. They allow the user to mix Codex or other supported local CLIs by profile. They also let the daemon enforce a uniform task/proposal/apply-gate contract.
 
 **Alternatives considered**:
 
