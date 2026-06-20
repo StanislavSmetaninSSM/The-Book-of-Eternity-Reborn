@@ -5,10 +5,13 @@
     "aliasCount": 231,
     "subcommandCount": 9,
     "browserExecutableCount": 105,
+    "browserExecutableSubcommandCount": 9,
     "playerDefaultActionCount": 98,
+    "playerDefaultExecutableSubcommandCount": 9,
     "advancedOnlyActionCount": 7,
     "mutatingCommandCount": 49,
-    "commandsNeedingFollowUpCount": 0
+    "commandsNeedingFollowUpCount": 0,
+    "subcommandsNeedingFollowUpCount": 0
   },
   "commands": [
     {

@@ -462,6 +462,15 @@ public sealed class BrowserApiContractTests
         Assert.Equal(
             ExplorerCommandCatalog.Descriptors.Count(static descriptor => ExplorerCommandMigrationRegistry.IsBrowserExecutable(descriptor.BrowserStatus)),
             coverage.Summary.BrowserExecutableCount);
+        Assert.Equal(
+            ExplorerCommandCatalog.Descriptors.SelectMany(static descriptor => descriptor.SubcommandDescriptors).Count(static subcommand => ExplorerCommandMigrationRegistry.IsBrowserExecutable(subcommand.BrowserStatus)),
+            coverage.Summary.BrowserExecutableSubcommandCount);
+        Assert.Equal(
+            coverage.Commands.Where(static command => command.Surface == "player-default").SelectMany(static command => command.Subcommands).Count(static subcommand => ExplorerCommandMigrationRegistry.IsBrowserExecutable(Enum.Parse<ExplorerCommandMigrationStatus>(subcommand.BrowserStatus))),
+            coverage.Summary.PlayerDefaultExecutableSubcommandCount);
+        Assert.Equal(
+            coverage.Commands.SelectMany(static command => command.Subcommands).Count(static subcommand => subcommand.AuditStatus == "tracked-follow-up" || !ExplorerCommandMigrationRegistry.IsBrowserExecutable(Enum.Parse<ExplorerCommandMigrationStatus>(subcommand.BrowserStatus))),
+            coverage.Summary.SubcommandsNeedingFollowUpCount);
 
         Assert.All(coverage.Commands, command =>
         {
