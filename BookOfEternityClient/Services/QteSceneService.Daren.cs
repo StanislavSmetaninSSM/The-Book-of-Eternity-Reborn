@@ -171,10 +171,14 @@ public sealed partial class QteSceneService
                 Expand = true
             });
 
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title("[bold]Действие:[/]")
-                .HighlightStyle(new Style(Color.Cyan1))
-                .AddChoices("Начать вылазку", "Выйти"));
+            var selected = PromptQteSelection(
+                "qte-daren-menu",
+                "Ограбление поместья Дареном",
+                "Отдельная QTE-вылазка: обычная глава не меняется. Лучший итог сохраняет бонус Чернильных Перьев для будущей новой игры.",
+                ["Начать вылазку", "Выйти"],
+                "[bold]Действие:[/]",
+                "Действие:",
+                Color.Cyan1);
             if (!selected.Contains("Начать", StringComparison.OrdinalIgnoreCase))
                 return;
 
@@ -198,10 +202,14 @@ public sealed partial class QteSceneService
                 RenderDarenCompletion(attempt, resolution.Completion);
             }
 
-            var next = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title("[bold]Что дальше?[/]")
-                .HighlightStyle(new Style(Color.Cyan1))
-                .AddChoices("Повторить вылазку", "Выйти"));
+            var next = PromptQteSelection(
+                "qte-daren-next",
+                "Вылазка Дарена завершена",
+                attempt.Ending?.Epilogue ?? "Вылазка завершена.",
+                ["Повторить вылазку", "Выйти"],
+                "[bold]Что дальше?[/]",
+                "Что дальше?",
+                Color.Cyan1);
             if (!next.Contains("Повторить", StringComparison.OrdinalIgnoreCase))
                 return;
         }

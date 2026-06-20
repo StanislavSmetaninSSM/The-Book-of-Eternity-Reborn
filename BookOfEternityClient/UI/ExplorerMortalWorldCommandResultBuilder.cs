@@ -2499,7 +2499,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (players.Count == 0 && records.Count == 0)
             blocks.Add(Message(UiNotificationSeverity.Info, "Взаимодействия игроков", "Данные взаимодействий ещё не созданы."));
 
-        AddInteractionRawState(blocks, state.PlayerInteractions, "Полная запись взаимодействий игроков");
         return Completed(command, blocks, BuildInteractionOverviewActions(commandToken, players, records));
     }
 
@@ -3155,12 +3154,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         {
             blocks.Add(Message(UiNotificationSeverity.Warning, "Взаимодействия игроков", "Запись взаимодействий найдена, но её не удалось прочитать как JSON."));
         }
-    }
-
-    private static void AddInteractionRawState(List<UiBlock> blocks, JsonReadResult read, string title)
-    {
-        if (read.Node != null)
-            blocks.Add(Raw(title, read.Node));
     }
 
     private static async Task<ExplorerCommandResult> BuildCombat(string command, FileSystemManager fs)

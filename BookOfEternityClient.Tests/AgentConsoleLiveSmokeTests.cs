@@ -522,6 +522,95 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
         }
     }
 
+    [Fact]
+    public async Task AgentConsoleLiveControl_QtePracticeMenuPublishesSnapshotAndDoesNotUseSpectrePrompt()
+    {
+        var repoRoot = FindRepositoryRoot();
+        var fixtureGameSessionPath = Path.Combine(repoRoot, "FileSystemExample", "game_session");
+        using var sandbox = ConsoleE2ESandbox.CreateFromFixture(
+            fixtureGameSessionPath,
+            _tempRoot,
+            preserveArtifacts: true);
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        var token = "agent-console-smoke-" + Guid.NewGuid().ToString("N");
+        using var process = StartAgentConsoleClient(repoRoot, sandbox.BasePath, url, token);
+        var stdoutTask = process.StandardOutput.ReadToEndAsync();
+        var stderrTask = process.StandardError.ReadToEndAsync();
+
+        try
+        {
+            using var client = new HttpClient
+            {
+                BaseAddress = new Uri(url),
+                Timeout = TimeSpan.FromSeconds(2)
+            };
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var mainMenu = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(30),
+                snapshot => string.Equals(snapshot["screenId"]?.GetValue<string>(), "main-menu", StringComparison.Ordinal));
+
+            var qtePracticeAction = FindActionByLabel(mainMenu, "Тренировка QTE");
+            using var selectQteResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
+            {
+                actionId = qtePracticeAction.Action["id"]!.GetValue<string>(),
+                screenId = mainMenu["screenId"]!.GetValue<string>(),
+                inputKind = "menuSelection"
+            });
+            Assert.True(
+                selectQteResponse.IsSuccessStatusCode,
+                $"Expected QTE practice select action endpoint success, got {(int)selectQteResponse.StatusCode}: {await selectQteResponse.Content.ReadAsStringAsync()}");
+
+            var qteSelectedSnapshot = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(10),
+                snapshot => (snapshot["selectedIndex"]?.GetValue<int>() ?? -1) == qtePracticeAction.Index);
+
+            using var enterQteResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
+            {
+                actionId = qtePracticeAction.Action["id"]!.GetValue<string>(),
+                screenId = qteSelectedSnapshot["screenId"]!.GetValue<string>(),
+                inputKind = "menuSelection"
+            });
+            Assert.True(
+                enterQteResponse.IsSuccessStatusCode,
+                $"Expected QTE practice enter action endpoint success, got {(int)enterQteResponse.StatusCode}: {await enterQteResponse.Content.ReadAsStringAsync()}");
+
+            var qteSnapshot = await WaitForSnapshotAsync(
+                client,
+                TimeSpan.FromSeconds(20),
+                snapshot =>
+                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "qte-practice-type", StringComparison.Ordinal) &&
+                    string.Equals(snapshot["inputKind"]?.GetValue<string>(), "menuSelection", StringComparison.Ordinal));
+
+            var qteText = qteSnapshot["plainText"]!.GetValue<string>();
+            Assert.Contains("Свободная тренировка QTE", qteText, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Полоса реакции", qteText, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Cannot show selection prompt", qteText, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            if (!process.HasExited)
+            {
+                try
+                {
+                    process.Kill(entireProcessTree: true);
+                }
+                catch
+                {
+                    // Best-effort cleanup; assertions above record the failed workflow.
+                }
+            }
+
+            var stdout = await stdoutTask;
+            var stderr = await stderrTask;
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stdout.txt"), stdout);
+            File.WriteAllText(Path.Combine(sandbox.BasePath, "stderr.txt"), stderr);
+        }
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_tempRoot))
@@ -627,20 +716,22 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
     }
 
     private static (JsonObject Action, int Index) FindExitAction(JsonObject snapshot)
+        => FindActionByLabel(snapshot, "Exit", "Выход");
+
+    private static (JsonObject Action, int Index) FindActionByLabel(JsonObject snapshot, params string[] labels)
     {
         var actions = snapshot["actions"]!.AsArray();
         for (var index = 0; index < actions.Count; index++)
         {
             var action = actions[index]!.AsObject();
             var label = action["label"]!.GetValue<string>();
-            if (label.Contains("Exit", StringComparison.OrdinalIgnoreCase) ||
-                label.Contains("Выход", StringComparison.OrdinalIgnoreCase))
+            if (labels.Any(expected => label.Contains(expected, StringComparison.OrdinalIgnoreCase)))
             {
                 return (action, index);
             }
         }
 
-        Assert.Fail("Expected main menu snapshot to expose an Exit action.");
+        Assert.Fail($"Expected snapshot to expose an action containing one of: {string.Join(", ", labels)}.");
         throw new UnreachableException();
     }
 

@@ -986,10 +986,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal("/math 2 + 3 * 5", result.Command);
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains(result.Blocks, static block => block is UiPanelBlock panel && panel.Title.Contains("Математик", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(result.Blocks, static block => block is UiRawJsonBlock raw && raw.Title.Contains("JSON", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock raw && raw.Title.Contains("JSON", StringComparison.OrdinalIgnoreCase));
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Результат", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("17", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("JSON результата", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

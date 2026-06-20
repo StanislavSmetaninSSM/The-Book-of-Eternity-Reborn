@@ -701,13 +701,13 @@ public partial class ExplorerMode
                 "[bold green]📜 Досье текущего мира[/]",
                 "",
                 "[white]Это постоянное досье текущего мира, заданное игроком для этой смертной жизни.[/]",
-                "[white]GM должен читать [bold]lore/current_world/world_directives.json[/] на каждом ходе.[/]"
+                "[white]Оно помогает удерживать тон, ограничения и важные договорённости мира на каждом ходе.[/]"
             };
 
             if (directives == null)
             {
                 lines.Add("");
-                lines.Add("[yellow]Файл world_directives.json ещё не создан.[/]");
+                lines.Add("[yellow]Досье мира ещё не создано.[/]");
                 lines.Add("[dim]Вы можете создать его сейчас и зафиксировать описание мира, ограничения и поправки.[/]");
             }
             else

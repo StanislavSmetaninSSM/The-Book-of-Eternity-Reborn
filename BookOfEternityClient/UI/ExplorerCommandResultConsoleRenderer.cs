@@ -200,15 +200,13 @@ public static class ExplorerCommandResultConsoleRenderer
             .BorderColor(Color.Cyan1)
             .Expand()
             .AddColumn("Действие")
-            .AddColumn("Команда")
-            .AddColumn("Стиль");
+            .AddColumn("Команда");
 
         foreach (var action in actions)
         {
             table.AddRow(
                 GameInterface.SafeMarkupText(action.Label),
-                GameInterface.SafeMarkupText(action.Command),
-                GameInterface.SafeMarkupText(action.Style.ToString()));
+                GameInterface.SafeMarkupText(action.Command));
         }
 
         return new Panel(table)

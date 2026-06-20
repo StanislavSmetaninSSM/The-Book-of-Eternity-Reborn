@@ -23,6 +23,8 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
     private readonly AgentConsoleStateStore _stateStore;
     private readonly TimeSpan _readTimeout;
     private readonly int _maxQueueLength;
+    private QueuedInputKind? _activeReadKind;
+    private AgentConsoleInputKind? _activeReadInputKind;
     private long _cancelSignalVersion;
     private bool _isShutdown;
     private string? _shutdownReason;
@@ -226,6 +228,18 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
                 rejectionCode = AgentConsoleInputRejectionCode.QueueFull;
                 rejectionMessage = $"Agent Console live input queue is full at {_maxQueueLength} item(s).";
             }
+            else if (_activeReadKind.HasValue && _activeReadKind.Value != queuedInput.Kind)
+            {
+                rejectionCode = AgentConsoleInputRejectionCode.InputKindMismatch;
+                var expected = _activeReadInputKind ?? AgentConsoleInputKind.None;
+                rejectionMessage =
+                    $"Agent Console is waiting for {expected.ToString().ToLowerInvariant()} input; " +
+                    $"{inputKind.ToString().ToLowerInvariant()} input cannot be queued until that read completes.";
+            }
+            else if (!CanQueueForCurrentSnapshot(queuedInput.Kind, inputKind, out rejectionCode, out rejectionMessage))
+            {
+                // Rejection details are provided by the helper.
+            }
             else
             {
                 _queue.Enqueue(queuedInput);
@@ -246,40 +260,113 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
         lock (_sync)
         {
             var observedCancelVersion = _cancelSignalVersion;
-            while (true)
+            var previousReadKind = _activeReadKind;
+            var previousReadInputKind = _activeReadInputKind;
+            _activeReadKind = expectedKind;
+            _activeReadInputKind = expectedInputKind;
+            try
             {
-                if (_isShutdown)
-                    ThrowReadFailure(AgentConsoleInputReadFailureReason.Shutdown, expectedInputKind, $"{operation} was unblocked because the live input source shut down.");
-
-                if (_cancelSignalVersion != observedCancelVersion)
-                    ThrowReadFailure(AgentConsoleInputReadFailureReason.Cancelled, expectedInputKind, $"{operation} was cancelled before input was queued.");
-
-                if (_queue.TryPeek(out var input))
+                while (true)
                 {
-                    if (input.Kind != expectedKind)
+                    if (_isShutdown)
+                        ThrowReadFailure(AgentConsoleInputReadFailureReason.Shutdown, expectedInputKind, $"{operation} was unblocked because the live input source shut down.");
+
+                    if (_cancelSignalVersion != observedCancelVersion)
+                        ThrowReadFailure(AgentConsoleInputReadFailureReason.Cancelled, expectedInputKind, $"{operation} was cancelled before input was queued.");
+
+                    if (_queue.TryPeek(out var input))
                     {
-                        ThrowReadFailure(
-                            AgentConsoleInputReadFailureReason.InputKindMismatch,
-                            expectedInputKind,
-                            $"{operation} expected {expectedKind.ToString().ToLowerInvariant()} input, but the next queued input is {input.Kind.ToString().ToLowerInvariant()}.");
+                        if (input.Kind != expectedKind)
+                        {
+                            ThrowReadFailure(
+                                AgentConsoleInputReadFailureReason.InputKindMismatch,
+                                expectedInputKind,
+                                $"{operation} expected {expectedKind.ToString().ToLowerInvariant()} input, but the next queued input is {input.Kind.ToString().ToLowerInvariant()}.");
+                        }
+
+                        var dequeued = _queue.Dequeue();
+                        MarkCurrentSnapshotInputConsumed();
+                        return dequeued;
                     }
 
-                    return _queue.Dequeue();
+                    if (waitsIndefinitely)
+                    {
+                        Monitor.Wait(_sync);
+                        continue;
+                    }
+
+                    var remaining = deadlineUtc - DateTime.UtcNow;
+                    if (remaining <= TimeSpan.Zero)
+                        ThrowReadFailure(AgentConsoleInputReadFailureReason.Timeout, expectedInputKind, $"{operation} timed out waiting for Agent Console input.");
+
+                    Monitor.Wait(_sync, remaining);
                 }
-
-                if (waitsIndefinitely)
-                {
-                    Monitor.Wait(_sync);
-                    continue;
-                }
-
-                var remaining = deadlineUtc - DateTime.UtcNow;
-                if (remaining <= TimeSpan.Zero)
-                    ThrowReadFailure(AgentConsoleInputReadFailureReason.Timeout, expectedInputKind, $"{operation} timed out waiting for Agent Console input.");
-
-                Monitor.Wait(_sync, remaining);
+            }
+            finally
+            {
+                _activeReadKind = previousReadKind;
+                _activeReadInputKind = previousReadInputKind;
             }
         }
+    }
+
+    private bool CanQueueForCurrentSnapshot(
+        QueuedInputKind queuedInputKind,
+        AgentConsoleInputKind inputKind,
+        out AgentConsoleInputRejectionCode rejectionCode,
+        out string? rejectionMessage)
+    {
+        rejectionCode = AgentConsoleInputRejectionCode.None;
+        rejectionMessage = null;
+
+        if (_activeReadKind.HasValue)
+            return true;
+
+        var snapshot = _stateStore.GetSnapshot();
+        if (snapshot is null)
+            return true;
+
+        if (!snapshot.AwaitingInput)
+        {
+            rejectionCode = AgentConsoleInputRejectionCode.NotAwaitingInput;
+            rejectionMessage = $"Agent Console screen '{snapshot.ScreenId}' is not awaiting input.";
+            return false;
+        }
+
+        if (IsInputCompatibleWithSnapshot(queuedInputKind, snapshot.InputKind))
+            return true;
+
+        rejectionCode = AgentConsoleInputRejectionCode.InputKindMismatch;
+        rejectionMessage =
+            $"Agent Console screen '{snapshot.ScreenId}' is waiting for {snapshot.InputKind.ToString().ToLowerInvariant()} input; " +
+            $"{inputKind.ToString().ToLowerInvariant()} input cannot be queued.";
+        return false;
+    }
+
+    private static bool IsInputCompatibleWithSnapshot(QueuedInputKind queuedInputKind, AgentConsoleInputKind snapshotInputKind)
+        => queuedInputKind switch
+        {
+            QueuedInputKind.Line => snapshotInputKind == AgentConsoleInputKind.Text,
+            QueuedInputKind.Key => snapshotInputKind is AgentConsoleInputKind.Key
+                or AgentConsoleInputKind.MenuSelection
+                or AgentConsoleInputKind.Confirmation,
+            _ => false
+        };
+
+    private void MarkCurrentSnapshotInputConsumed()
+    {
+        var snapshot = _stateStore.GetSnapshot();
+        if (snapshot is not { AwaitingInput: true })
+            return;
+
+        _stateStore.UpdateSnapshot(snapshot with
+        {
+            AwaitingInput = false,
+            InputKind = AgentConsoleInputKind.None,
+            Actions = [],
+            Prompt = null,
+            UpdatedAtUtc = DateTimeOffset.UtcNow
+        }, $"Input consumed for {snapshot.ScreenId}.");
     }
 
     private void ThrowReadFailure(

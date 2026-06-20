@@ -99,16 +99,18 @@ public sealed class AfterlifeRussianTerminologyScannerTests
             "выигрыш (payoff)",
             "требует выигрыш (payoff)",
             "актор (actor)=",
+            "канонический файл состояния",
             "side strain"
         })
         {
             Assert.DoesNotContain(forbidden, source, StringComparison.OrdinalIgnoreCase);
         }
 
-        Assert.Contains("канонический файл состояния", source, StringComparison.Ordinal);
+        Assert.Contains("Когда в сцене появится проверяемое духовное противостояние", source, StringComparison.Ordinal);
+        Assert.Contains("здесь показаны обмены действиями", source, StringComparison.Ordinal);
         Assert.Contains("проверяемом спорном конфликте", source, StringComparison.Ordinal);
         Assert.Contains("итоги бросков", source, StringComparison.Ordinal);
-        Assert.Contains("актор (actorId)=", source, StringComparison.Ordinal);
+        Assert.Contains("актор=", source, StringComparison.Ordinal);
     }
 
     private static bool IsAllowedTechnicalLiteral(string literal)

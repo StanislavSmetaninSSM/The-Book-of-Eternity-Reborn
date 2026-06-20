@@ -203,10 +203,14 @@ public sealed partial class QteSceneService
             Expand = true
         });
 
-        var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
-            .Title("[bold]Действие:[/]")
-            .HighlightStyle(new Style(Color.Gold1))
-            .AddChoices("✅ Принять", "❌ Отклонить"));
+        var choice = PromptQteSelection(
+            "qte-offer-decision",
+            offer.Title ?? "QTE событие",
+            BuildQteOfferPlainText(offer),
+            ["✅ Принять", "❌ Отклонить"],
+            "[bold]Действие:[/]",
+            "Действие:",
+            Color.Gold1);
 
         return choice.Contains("Принять", StringComparison.OrdinalIgnoreCase)
             ? QteOfferDecision.Accept
@@ -480,10 +484,15 @@ public sealed partial class QteSceneService
 
             var actionOptions = BuildUniqueOptions(chapter.Actions, action =>
                 ConsoleLayout.PlainChoiceLabel($"⚡ {action.Label}", action.Check.Type, $"Сложность {Math.Clamp(action.Check.BaseDifficulty, 1, 5)}"));
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title("[bold]Выберите действие:[/]")
-                .HighlightStyle(new Style(Color.Cyan1))
-                .AddChoices(actionOptions.Select(item => item.Label).ToList()));
+            var actionLabels = actionOptions.Select(item => item.Label).ToArray();
+            var selected = PromptQteSelection(
+                $"qte-action-{ToAgentConsoleScreenPart(offer.QteId)}-{ToAgentConsoleScreenPart(chapter.ChapterId)}",
+                chapter.Title ?? offer.Title ?? "QTE действие",
+                BuildQteChapterPlainText(offer, chapter, active.ScoreState),
+                actionLabels,
+                "[bold]Выберите действие:[/]",
+                "Выберите действие:",
+                Color.Cyan1);
             var action = actionOptions.First(item => string.Equals(item.Label, selected, StringComparison.Ordinal)).Value;
 
             var grade = await RunCheckAsync(action);
@@ -780,7 +789,13 @@ public sealed partial class QteSceneService
             Padding = new Padding(2, 1),
             Expand = true
         });
-        _inputSource.ReadKey(intercept: true);
+        WaitForQteContinueKey(
+            $"qte-chapter-{ToAgentConsoleScreenPart(offer.QteId)}-{ToAgentConsoleScreenPart(chapter.ChapterId)}",
+            chapter.Title ?? offer.Title ?? "QTE сцена",
+            BuildQteChapterPlainText(offer, chapter, scoreState) +
+            Environment.NewLine +
+            Environment.NewLine +
+            "Нажмите любую клавишу, когда будете готовы продолжить...");
     }
 
     private async Task ShowIntermediateResultAsync(QteOffer offer, QteChapter chapter, QteAction action, QteGrade grade)
@@ -819,10 +834,14 @@ public sealed partial class QteSceneService
                 Expand = true
             });
 
-            var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title("[bold]Действие:[/]")
-                .HighlightStyle(new Style(Color.Gold1))
-                .AddChoices(choices));
+            var choice = PromptQteSelection(
+                $"qte-result-{ToAgentConsoleScreenPart(offer.QteId)}-{ToAgentConsoleScreenPart(chapter.ChapterId)}",
+                "Промежуточный результат",
+                $"Результат: {DisplayGrade(grade)}{Environment.NewLine}{Environment.NewLine}{resultText}",
+                choices,
+                "[bold]Действие:[/]",
+                "Действие:",
+                Color.Gold1);
 
             if (choice.StartsWith("🖼", StringComparison.Ordinal))
             {
@@ -1121,10 +1140,14 @@ public sealed partial class QteSceneService
                 Expand = true
             });
 
-            var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title("[bold]Действие:[/]")
-                .HighlightStyle(new Style(Color.Green))
-                .AddChoices(choices));
+            var choice = PromptQteSelection(
+                $"qte-final-{ToAgentConsoleScreenPart(outcome.OutcomeId)}",
+                "Финал QTE",
+                string.Join(Environment.NewLine, lines.Select(StripSpectreMarkup)),
+                choices,
+                "[bold]Действие:[/]",
+                "Действие:",
+                Color.Green);
 
             if (choice.StartsWith("🖼", StringComparison.Ordinal))
             {

@@ -134,7 +134,6 @@ public partial class ExplorerMode
         {
             Clear();
             Write(panel);
-            WriteJsonAuditPanel("Полный JSON game_state/meta/soul_state.json", root, Color.Cyan1);
 
             var isPendingBootstrap = _stateManager.CurrentState.IsInShiningAbodePendingBootstrap;
             var choices = new List<string>();

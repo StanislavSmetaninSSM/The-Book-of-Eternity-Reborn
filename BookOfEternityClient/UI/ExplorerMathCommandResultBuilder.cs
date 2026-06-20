@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Services;
 
@@ -71,12 +70,6 @@ public static class ExplorerMathCommandResultBuilder
             });
         }
 
-        blocks.Add(new UiRawJsonBlock
-        {
-            Title = "JSON результата Математика",
-            Json = BuildResultJson(result, parsed.ParseWarnings)
-        });
-
         return new ExplorerCommandResult
         {
             Command = string.IsNullOrWhiteSpace(normalizedCommandLine) ? commandToken : normalizedCommandLine,
@@ -102,31 +95,6 @@ public static class ExplorerMathCommandResultBuilder
         }
 
         return table;
-    }
-
-    private static JsonObject BuildResultJson(MathAssistantEvaluationResult result, IReadOnlyList<string> parseWarnings)
-    {
-        var variables = new JsonObject();
-        foreach (var pair in result.Variables.OrderBy(static pair => pair.Key, StringComparer.OrdinalIgnoreCase))
-            variables[pair.Key] = JsonValue.Create(pair.Value);
-
-        var warnings = new JsonArray();
-        foreach (var warning in parseWarnings.Concat(result.Warnings))
-            warnings.Add(warning);
-
-        return new JsonObject
-        {
-            ["success"] = result.Success,
-            ["normalizedExpression"] = result.NormalizedExpression,
-            ["variables"] = variables,
-            ["rawResult"] = result.RawResult.HasValue ? JsonValue.Create(result.RawResult.Value) : null,
-            ["result"] = result.Result.HasValue ? JsonValue.Create(result.Result.Value) : null,
-            ["roundingMode"] = result.RoundingMode.ToString(),
-            ["decimalPlaces"] = result.DecimalPlaces.HasValue ? JsonValue.Create(result.DecimalPlaces.Value) : null,
-            ["warnings"] = warnings,
-            ["errorCode"] = result.ErrorCode,
-            ["errorMessage"] = result.ErrorMessage
-        };
     }
 
     private static ParsedMathCommand ParseRemainder(string remainder)

@@ -144,7 +144,6 @@ public sealed class AgentConsoleApiHostTests
     {
         var store = new AgentConsoleStateStore();
         using var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
-        store.UpdateSnapshot(BuildMenuSnapshot("main-menu", selectedIndex: 0));
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
         await using var app = AgentConsoleApiHost.Build(
             Array.Empty<string>(),
@@ -154,8 +153,17 @@ public sealed class AgentConsoleApiHostTests
         using var client = new HttpClient { BaseAddress = new Uri(url) };
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "secret-token");
 
+        store.UpdateSnapshot(BuildTextSnapshot("game-loop"));
         using var textResponse = await client.PostAsJsonAsync("/api/agent-console/text", new { text = "look north" });
+        Assert.Equal(HttpStatusCode.OK, textResponse.StatusCode);
+        Assert.Equal("look north", input.ReadLine());
+
+        store.UpdateSnapshot(BuildKeySnapshot("command-output"));
         using var keyResponse = await client.PostAsJsonAsync("/api/agent-console/key", new { key = "enter" });
+        Assert.Equal(HttpStatusCode.OK, keyResponse.StatusCode);
+        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
+
+        store.UpdateSnapshot(BuildMenuSnapshot("main-menu", selectedIndex: 0));
         using var actionResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
         {
             actionId = "continue",
@@ -163,11 +171,7 @@ public sealed class AgentConsoleApiHostTests
             inputKind = "menuSelection"
         });
 
-        Assert.Equal(HttpStatusCode.OK, textResponse.StatusCode);
-        Assert.Equal(HttpStatusCode.OK, keyResponse.StatusCode);
         Assert.Equal(HttpStatusCode.OK, actionResponse.StatusCode);
-        Assert.Equal("look north", input.ReadLine());
-        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
         Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
         Assert.Contains(store.GetEvents(), agentEvent => agentEvent.Kind == AgentConsoleEventKind.InputAccepted);
     }
@@ -189,6 +193,38 @@ public sealed class AgentConsoleApiHostTests
                 new AgentConsoleAction { Id = "continue", Label = "Continue", Shortcut = "Enter", IsDefault = selectedIndex == 0 },
                 new AgentConsoleAction { Id = "exit", Label = "Exit", IsDefault = selectedIndex == 1 }
             ],
+            RenderedAtUtc = renderedAt,
+            UpdatedAtUtc = renderedAt
+        };
+    }
+
+    private static AgentConsoleSnapshot BuildTextSnapshot(string screenId)
+    {
+        var renderedAt = new DateTimeOffset(2026, 5, 31, 10, 0, 0, TimeSpan.Zero);
+        return new AgentConsoleSnapshot
+        {
+            ScreenId = screenId,
+            Mode = AgentConsoleMode.TextPrompt,
+            Title = "Your Turn",
+            PlainText = "What next?",
+            AwaitingInput = true,
+            InputKind = AgentConsoleInputKind.Text,
+            RenderedAtUtc = renderedAt,
+            UpdatedAtUtc = renderedAt
+        };
+    }
+
+    private static AgentConsoleSnapshot BuildKeySnapshot(string screenId)
+    {
+        var renderedAt = new DateTimeOffset(2026, 5, 31, 10, 0, 0, TimeSpan.Zero);
+        return new AgentConsoleSnapshot
+        {
+            ScreenId = screenId,
+            Mode = AgentConsoleMode.TextPrompt,
+            Title = "Command Output",
+            PlainText = "Press any key.",
+            AwaitingInput = true,
+            InputKind = AgentConsoleInputKind.Key,
             RenderedAtUtc = renderedAt,
             UpdatedAtUtc = renderedAt
         };
