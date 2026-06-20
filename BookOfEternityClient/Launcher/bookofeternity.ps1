@@ -194,6 +194,35 @@ function Invoke-BridgeRequest {
     }
 }
 
+function Assert-BridgeResponseOk {
+    param(
+        [object]$Response
+    )
+
+    if ($null -ne $Response.ok -and -not [bool]$Response.ok) {
+        $message = if (-not [string]::IsNullOrWhiteSpace($Response.error)) {
+            [string]$Response.error
+        } elseif ($null -ne $Response.status -and -not [string]::IsNullOrWhiteSpace($Response.status.lastError)) {
+            [string]$Response.status.lastError
+        } else {
+            "Bridge returned ok=false without an error message."
+        }
+
+        throw "GM bridge request failed: $message"
+    }
+}
+
+function Invoke-BridgeRequestChecked {
+    param(
+        [string]$ResolvedSessionPath,
+        [hashtable]$Payload
+    )
+
+    $response = Invoke-BridgeRequest -ResolvedSessionPath $ResolvedSessionPath -Payload $Payload
+    Assert-BridgeResponseOk -Response $response
+    return $response
+}
+
 function Start-Bridge {
     param([string]$ResolvedSessionPath)
 
@@ -260,28 +289,28 @@ switch ($Action.ToLowerInvariant()) {
         break
     }
     "diagnostics" {
-        Invoke-BridgeRequest -ResolvedSessionPath $resolvedSessionPath -Payload @{
+        Invoke-BridgeRequestChecked -ResolvedSessionPath $resolvedSessionPath -Payload @{
             command = "diagnostics"
         } | ConvertTo-Json -Depth 8
         break
     }
     "addtext" {
         $text = ($Arguments -join " ")
-        Invoke-BridgeRequest -ResolvedSessionPath $resolvedSessionPath -Payload @{
+        Invoke-BridgeRequestChecked -ResolvedSessionPath $resolvedSessionPath -Payload @{
             command = "addText"
             text = $text
         } | ConvertTo-Json -Depth 8
         break
     }
     "sendenter" {
-        Invoke-BridgeRequest -ResolvedSessionPath $resolvedSessionPath -Payload @{
+        Invoke-BridgeRequestChecked -ResolvedSessionPath $resolvedSessionPath -Payload @{
             command = "sendEnter"
         } | ConvertTo-Json -Depth 8
         break
     }
     "dispatchprompt" {
         $text = ($Arguments -join " ")
-        Invoke-BridgeRequest -ResolvedSessionPath $resolvedSessionPath -Payload @{
+        Invoke-BridgeRequestChecked -ResolvedSessionPath $resolvedSessionPath -Payload @{
             command = "dispatchPrompt"
             text = $text
             appendEnter = $true
@@ -289,27 +318,27 @@ switch ($Action.ToLowerInvariant()) {
         break
     }
     "ready" {
-        Invoke-BridgeRequest -ResolvedSessionPath $resolvedSessionPath -Payload @{
+        Invoke-BridgeRequestChecked -ResolvedSessionPath $resolvedSessionPath -Payload @{
             command = "setReady"
             ready = $true
         } | ConvertTo-Json -Depth 8
         break
     }
     "not-ready" {
-        Invoke-BridgeRequest -ResolvedSessionPath $resolvedSessionPath -Payload @{
+        Invoke-BridgeRequestChecked -ResolvedSessionPath $resolvedSessionPath -Payload @{
             command = "setReady"
             ready = $false
         } | ConvertTo-Json -Depth 8
         break
     }
     "restart-shell" {
-        Invoke-BridgeRequest -ResolvedSessionPath $resolvedSessionPath -Payload @{
+        Invoke-BridgeRequestChecked -ResolvedSessionPath $resolvedSessionPath -Payload @{
             command = "restartShell"
         } | ConvertTo-Json -Depth 8
         break
     }
     "shutdown-bridge" {
-        Invoke-BridgeRequest -ResolvedSessionPath $resolvedSessionPath -Payload @{
+        Invoke-BridgeRequestChecked -ResolvedSessionPath $resolvedSessionPath -Payload @{
             command = "shutdown"
         } | ConvertTo-Json -Depth 8
         break
