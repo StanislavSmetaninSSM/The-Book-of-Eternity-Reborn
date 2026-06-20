@@ -8,6 +8,7 @@ The GM normally does not need to read client code. Use this matrix to decide whi
 
 - Always run realm gate first: ordinary `Chaos Sea`, ordinary active `Shining Abode`, or `Shining Abode pending-bootstrap handoff`.
 - Always read `input/turn_request.json.progressionControl` before selecting the scene, tone, relevant actors, or player-action resolution.
+- `game_state/meta/soul_state.json.soulName`, `previousSoulNames`, and optional `soulFormDescription` are player-owned identity. The GM may use `soulFormDescription` as the soul's visible afterlife form in prose, but must not overwrite it from ordinary accepted-turn output.
 - Always inspect `game_state/control/` pending afterlife files before deciding that the turn is only narrative.
 - Always inspect non-pending afterlife control guards such as `system_guardian_attraction.json` and `afterlife_return_guard.json`; these are client-owned contracts/guards, not optional lore.
 - If a pending file exists, it is a client-authored contract. It must close through the exact canonical state/receipt surface named below.

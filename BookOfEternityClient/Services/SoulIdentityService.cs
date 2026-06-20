@@ -111,9 +111,76 @@ public sealed class SoulIdentityService
             PreviousSoulNames: previousSoulNames);
     }
 
+    public async Task<SoulFormDescriptionUpdateResult> UpdateSoulFormDescriptionAsync(string requestedDescription)
+    {
+        var normalizedDescription = NormalizeSoulFormDescription(requestedDescription);
+        if (string.IsNullOrWhiteSpace(normalizedDescription))
+        {
+            return new SoulFormDescriptionUpdateResult(
+                Success: false,
+                Changed: false,
+                CurrentSoulFormDescription: string.Empty,
+                ErrorMessage: "Описание формы души не может быть пустым.");
+        }
+
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulJson))
+        {
+            return new SoulFormDescriptionUpdateResult(
+                Success: false,
+                Changed: false,
+                CurrentSoulFormDescription: string.Empty,
+                ErrorMessage: "Не удалось прочитать game_state/meta/soul_state.json.");
+        }
+
+        JsonObject soulState;
+        try
+        {
+            soulState = JsonNode.Parse(soulJson) as JsonObject ?? new JsonObject();
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogWarning(ex, "Failed to parse soul_state.json during soul form description update.");
+            return new SoulFormDescriptionUpdateResult(
+                Success: false,
+                Changed: false,
+                CurrentSoulFormDescription: string.Empty,
+                ErrorMessage: $"soul_state.json повреждён: {ex.Message}");
+        }
+
+        var currentDescription = NormalizeSoulFormDescription(ReadOptionalString(soulState["soulFormDescription"]));
+        var changed = !string.Equals(currentDescription, normalizedDescription, StringComparison.Ordinal);
+        if (changed || soulState["soulFormDescription"] is null)
+        {
+            soulState["soulFormDescription"] = normalizedDescription;
+            await _fs.WriteFileAtomicAsync(
+                "game_state/meta/soul_state.json",
+                GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                    soulState,
+                    GuardianPolicyContracts.SoulStatePatchConflictContext.None).ToJsonString(JsonWriteOptions));
+        }
+
+        return new SoulFormDescriptionUpdateResult(
+            Success: true,
+            Changed: changed,
+            CurrentSoulFormDescription: normalizedDescription);
+    }
+
     internal static string NormalizeSoulName(string? rawName)
     {
         return TextComposer.CollapseToSingleLine(rawName ?? string.Empty).Trim();
+    }
+
+    internal static string NormalizeSoulFormDescription(string? rawDescription)
+    {
+        return TextComposer.CollapseToSingleLine(rawDescription ?? string.Empty).Trim();
+    }
+
+    private static string ReadOptionalString(JsonNode? node)
+    {
+        return node is JsonValue value && value.TryGetValue<string>(out var text)
+            ? text ?? string.Empty
+            : string.Empty;
     }
 
     internal static List<string> NormalizePreviousSoulNames(JsonNode? previousSoulNamesNode, string currentSoulName)
@@ -173,4 +240,10 @@ public sealed record SoulRenameResult(
     bool Changed,
     string CurrentSoulName,
     IReadOnlyList<string> PreviousSoulNames,
+    string? ErrorMessage = null);
+
+public sealed record SoulFormDescriptionUpdateResult(
+    bool Success,
+    bool Changed,
+    string CurrentSoulFormDescription,
     string? ErrorMessage = null);

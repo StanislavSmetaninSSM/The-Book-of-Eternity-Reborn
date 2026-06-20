@@ -23,6 +23,7 @@ public class AggregatedGameState
     // Soul meta
     public string CurrentRealm { get; set; } = string.Empty; // "Chaos Sea", "Shining Abode", or mortal world name
     public string SoulName { get; set; } = string.Empty;
+    public string SoulFormDescription { get; set; } = string.Empty;
     public int Incarnation { get; set; } = 1;
     public int InkFeathers { get; set; }
     public string EnlightenmentTier { get; set; } = "Новичок";

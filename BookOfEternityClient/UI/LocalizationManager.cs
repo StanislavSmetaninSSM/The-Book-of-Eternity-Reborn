@@ -33,6 +33,7 @@ public class LocalizationManager
             
             // New Game Flow
             ["enter_soul_name"] = "Введите имя вашей души:",
+            ["enter_soul_form_description"] = "Опишите форму вашей души: мужчина, женщина, иное или любой образ, который должен видеть ГМ:",
             ["create_guardian"] = "Создать хранителя (описать текстом)",
             ["choose_guardian"] = "Выбрать извечного хранителя",
             ["guardian_prompt"] = "Опишите вашего хранителя:",
@@ -237,6 +238,7 @@ public class LocalizationManager
             ["main_menu_exit_desc"] = "Close the game",
             ["continue_game_unavailable"] = "No current game session was found.",
             ["enter_soul_name"] = "Enter your soul's name:",
+            ["enter_soul_form_description"] = "Describe your soul's form: man, woman, something else, or any image the GM should see:",
             ["create_guardian"] = "Create Guardian (describe in text)",
             ["choose_guardian"] = "Choose System Guardian",
             ["guardian_prompt"] = "Describe your guardian:",

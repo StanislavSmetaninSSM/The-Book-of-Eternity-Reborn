@@ -30,6 +30,7 @@ public partial class ExplorerMode
 
         var root = soulDoc.RootElement;
         var soulName = GetStr(root, "soulName", "Безымянная душа");
+        var soulFormDescription = GetStr(root, "soulFormDescription", "");
         var currentRealm = GetStr(root, "currentRealm", _stateManager.CurrentState.CurrentRealm);
         var currentIncarnation = GetInt(root, "currentIncarnation", 0);
         var currentFeathers = ReadInkFeathersCurrent(root);
@@ -44,6 +45,9 @@ public partial class ExplorerMode
         var lines = new List<string>
         {
             $"[bold white]{Markup.Escape(soulName)}[/]",
+            string.IsNullOrWhiteSpace(soulFormDescription)
+                ? "  🪞 Форма души: [dim]пока не описана[/]"
+                : $"  🪞 Форма души: [white]{Markup.Escape(soulFormDescription)}[/]",
             $"  🌌 Текущая фаза: [cyan]{Markup.Escape(currentRealm)}[/]",
             $"  🔄 Инкарнация: [yellow]{currentIncarnation}[/]",
             $"  🪶 Чернильные Перья сейчас: [gold1]{currentFeathers}[/]",
@@ -140,6 +144,7 @@ public partial class ExplorerMode
             if (!isPendingBootstrap)
             {
                 choices.Add("✏️ Сменить имя души");
+                choices.Add("🪞 Изменить форму души");
                 choices.Add("🪶 Чернильные Перья");
                 choices.Add("💎 Реликвии души");
                 choices.Add("🌟 Квесты души");
@@ -182,6 +187,32 @@ public partial class ExplorerMode
                     continue;
                 }
 
+                await _stateManager.RefreshGameStateAsync();
+                continue;
+            }
+
+            if (choice.Contains("форму души", StringComparison.OrdinalIgnoreCase))
+            {
+                if (_soulIdentityService == null)
+                {
+                    MarkupLine("[red]Сервис описания формы души недоступен.[/]");
+                    WaitForKey();
+                    continue;
+                }
+
+                var requestedDescription = Ask("[cyan]Описание формы души[/]");
+                var result = await _soulIdentityService.UpdateSoulFormDescriptionAsync(requestedDescription);
+                if (!result.Success)
+                {
+                    MarkupLine($"[red]{Markup.Escape(result.ErrorMessage ?? "Не удалось изменить описание формы души.")}[/]");
+                    WaitForKey();
+                    continue;
+                }
+
+                MarkupLine(result.Changed
+                    ? "[green]Описание формы души обновлено.[/]"
+                    : "[yellow]Описание формы души уже было таким.[/]");
+                WaitForKey();
                 await _stateManager.RefreshGameStateAsync();
                 continue;
             }

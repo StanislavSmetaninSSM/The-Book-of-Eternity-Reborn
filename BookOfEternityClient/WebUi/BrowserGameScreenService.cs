@@ -48,6 +48,7 @@ public sealed class BrowserGameScreenService
             Theme: BrowserGameScreenThemeDto.FromState(state),
             Soul: new BrowserGameScreenSoulDto(
                 Name: state.SoulName,
+                FormDescription: state.SoulFormDescription,
                 Realm: state.CurrentRealm,
                 Incarnation: state.Incarnation,
                 InkFeathers: state.InkFeathers,
@@ -266,6 +267,7 @@ public sealed record BrowserGameScreenThemeDto(string Key, string Label, string 
 
 public sealed record BrowserGameScreenSoulDto(
     string Name,
+    string FormDescription,
     string Realm,
     int Incarnation,
     int InkFeathers,

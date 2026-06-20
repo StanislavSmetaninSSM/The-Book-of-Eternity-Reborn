@@ -1681,6 +1681,52 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
     [Fact]
 
+    public async Task TryProcessCommand_SoulInfo_UpdateSoulForm_PersistsPlayerAuthoredDescription()
+    {
+        await SeedAfterlifeStateAsync();
+
+        _console.QueueAnySelection("🪞 Изменить форму души", "← Назад");
+        _console.QueueAskResponse("Описание формы души", "Женщина из янтарного света с голосом живого человека");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/душа"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("soul_form_update");
+
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.NotNull(soulRaw);
+        Assert.Contains("\"soulFormDescription\": \"Женщина из янтарного света с голосом живого человека\"", soulRaw, StringComparison.Ordinal);
+        Assert.Contains("\"soulName\": \"Тестовая Душа\"", soulRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+
+    public async Task TryProcessCommand_SoulInfo_ShowsSoulFormDescriptionInOverview()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            soulFormDescription = "Мужчина из тихого серебряного света",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 3 }
+        });
+
+        _console.QueueAnySelection("← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/душа"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("soul_form_overview");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Форма души", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Мужчина из тихого серебряного света", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+
     public async Task TryProcessCommand_Guardians_SystemAttraction_WritesRequestAndReturnsGmAction()
     {
         await SeedAfterlifeStateAsync();

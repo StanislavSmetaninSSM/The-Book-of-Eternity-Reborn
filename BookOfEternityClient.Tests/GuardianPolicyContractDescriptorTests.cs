@@ -63,6 +63,7 @@ public class GuardianPolicyContractDescriptorTests
             "playerFoundedGuardianId",
             "playerGuardianFoundationStatus",
             "previousSoulNames",
+            "soulFormDescription",
             "soulImprint",
             "soulName",
             "soulProgression",

@@ -745,6 +745,12 @@ public partial class GameEngine
 
         // Step 1: Soul name
         var soulName = PromptTextInput($"[cyan]{_loc.T("enter_soul_name")}[/]", allowEmpty: false, emptyError: "Имя не может быть пустым");
+        var soulFormDescription = SoulIdentityService.NormalizeSoulFormDescription(
+            PromptTextInput(
+                $"[cyan]{_loc.T("enter_soul_form_description")}[/]",
+                allowEmpty: false,
+                emptyError: "Описание формы души не может быть пустым",
+                preserveNewlines: true));
 
         AnsiConsole.WriteLine();
 
@@ -778,7 +784,7 @@ public partial class GameEngine
 
         // Step 3: Enter the Chaos Sea — NO character/world description at this point
         // The mortal world is NOT described at the start. Player enters it later through incarnation.
-        await InitializeChaosSea(soulName, pendingGuardianCreation);
+        await InitializeChaosSea(soulName, soulFormDescription, pendingGuardianCreation);
 
         // CRITICAL: Wait for the GM to describe the Guardian's abode before entering the loop
         // Without this, the player sees a blank screen after starting a new game
@@ -793,7 +799,7 @@ public partial class GameEngine
     /// Initialize a new game in the Chaos Sea (afterlife hub).
     /// No mortal character or world is created yet — that happens when the player incarnates.
     /// </summary>
-    private async Task InitializeChaosSea(string soulName, JsonObject pendingGuardianCreation)
+    private async Task InitializeChaosSea(string soulName, string soulFormDescription, JsonObject pendingGuardianCreation)
     {
         // Generate session ID once — used for both chat_log.json and GameLoop
         var sessionId = Guid.NewGuid().ToString();
@@ -812,6 +818,7 @@ public partial class GameEngine
                 var soulState = new JsonObject
                 {
                     ["soulName"] = soulName,
+                    ["soulFormDescription"] = soulFormDescription,
                     ["previousSoulNames"] = new JsonArray(),
                     ["currentRealm"] = "Chaos Sea",
                     ["currentIncarnation"] = 0, // Not yet incarnated

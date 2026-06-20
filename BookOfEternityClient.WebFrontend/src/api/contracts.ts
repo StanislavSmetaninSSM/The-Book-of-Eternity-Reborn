@@ -313,6 +313,7 @@ export interface BrowserGameScreenThemeDto {
 
 export interface BrowserGameScreenSoulDto {
   name: string;
+  formDescription: string;
   realm: string;
   incarnation: number;
   inkFeathers: number;
@@ -547,6 +548,7 @@ export interface BrowserLifecycleDashboardDto {
 
 export interface BrowserSoulSummaryDto {
   name: string;
+  formDescription: string;
   currentRealm: string;
   realmLabel: string;
   currentIncarnation: number;
