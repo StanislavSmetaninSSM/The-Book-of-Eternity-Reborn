@@ -10,6 +10,8 @@ public class FileSystemManager
 {
     private readonly string _basePath;
     private readonly ILogger<FileSystemManager> _logger;
+    private const int TransientFileAccessRetryCount = 20;
+    private static readonly TimeSpan TransientFileAccessRetryDelay = TimeSpan.FromMilliseconds(50);
 
     private static readonly string[] RequiredDirectories =
     {
@@ -81,7 +83,18 @@ public class FileSystemManager
         try
         {
             await File.WriteAllTextAsync(tempPath, content, System.Text.Encoding.UTF8);
-            File.Move(tempPath, fullPath, overwrite: true);
+            for (var attempt = 0; ; attempt++)
+            {
+                try
+                {
+                    File.Move(tempPath, fullPath, overwrite: true);
+                    return;
+                }
+                catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
+                {
+                    await Task.Delay(TransientFileAccessRetryDelay);
+                }
+            }
         }
         catch
         {
@@ -94,10 +107,23 @@ public class FileSystemManager
     public async Task<string?> ReadFileAsync(string relativePath)
     {
         var fullPath = ResolvePath(relativePath);
-        if (!File.Exists(fullPath))
-            return null;
-        return await File.ReadAllTextAsync(fullPath, System.Text.Encoding.UTF8);
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                if (!File.Exists(fullPath))
+                    return null;
+                return await File.ReadAllTextAsync(fullPath, System.Text.Encoding.UTF8);
+            }
+            catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
+            {
+                await Task.Delay(TransientFileAccessRetryDelay);
+            }
+        }
     }
+
+    private static bool IsTransientFileAccessException(Exception ex) =>
+        ex is IOException or UnauthorizedAccessException;
 
     public bool FileExists(string relativePath)
     {
