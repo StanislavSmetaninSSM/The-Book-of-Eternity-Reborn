@@ -81,3 +81,72 @@ For the 9/10 console target, the next pass should focus on:
 - enforcing persistence of narrative facts into player-visible state;
 - making Agent Console snapshots rich enough for unattended drilldown testing;
 - running another live test after #1181 and #1182 are addressed.
+
+## Second Live Follow-Up Run
+
+Date: 2026-06-21
+
+Run root: `C:\Temp\boe-live-e2e-1174-final-20260621-060857`
+
+Seed session: `E:\Games\worktrees\boe-1174-console-final-sweep\FileSystemExample\game_session`
+
+Disposable session: `C:\Temp\boe-live-e2e-1174-final-20260621-060857\game_session`
+
+Commit under test at launch: `bbb2c2d6373c3c7a01df87209c27a98da8553c9c`
+
+Agent Console: `http://127.0.0.1:52884`
+
+Configuration notes:
+
+- `codex --dangerously-bypass-approvals-and-sandbox` was used for the hidden GM bridge.
+- QTE events, image generation, music, and sound were disabled for the run.
+- The bridge was launched through the project launcher so Codex CLI had a real terminal.
+- The run was stopped after artifact capture; client and daemon PIDs from `run-metadata.json` were terminated.
+
+### Second Command Sweep
+
+The following read-only Mortal World commands were exercised:
+
+`/статус`, `/инв`, `/квесты`, `/карта`, `/эффекты`, `/навыки`, `/статы`, `/нпс`, `/фракции`, `/новости_мира`, `/книги`, `/кодекс`, `/хроника`, `/рассказ`, `/достижения`, `/жизни`, `/локации`, `/где_я`, `/погода`, `/транспорт`, `/правила_мира`, `/доступ_к_хранилищам`, `/взаимодействия`, `/реликвии`, `/квесты_души`, `/душа`, `/перья`, `/моды`, `/извечные_хранители`, `/опции`.
+
+Result: all 30 commands returned without hangs or quality issue markers in the sweep summary `mortal-command-final-sweep-summary-real.json`.
+
+Notable second-run findings:
+
+- `/извечные_хранители` exposed an empty technical-looking preset/manifest table when the sandbox had no system-guardian presets.
+- Turn 2 introduced Мартен Рош as journal-only NPC state. `/нпс` showed the fallback table, but there was no journal drilldown action/details path, so the table was a player-facing dead end.
+
+Both findings were fixed after the run with RED/GREEN tests:
+
+```powershell
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore -p:IsTestProject=true --filter "ExecuteAsync_NpcWithRepositoryJournalFixtureAndNoCore_ShowsKnownJournalNotes|ExecuteAsync_NpcJournalFallbackDetail_ShowsFullJournalEntriesAndBackAction|ExecuteAsync_SystemGuardiansWithEmptyLibrary_HidesLocalDirectoryPath"
+```
+
+Result: 3 passed, 0 failed.
+
+### Second Live Adventure
+
+Turn 1 player action:
+
+`Осторожно осматриваю руническую перчатку и комнату: ищу следы недавнего вмешательства, проверяю узор на перчатке, вспоминаю, где именно нашёл её в фамильной библиотеке, и не зову слуг, пока не пойму, опасна ли находка.`
+
+Observed result:
+
+- The GM produced readable narrative around the glove, the room, and damaged traces.
+- No player repair action was required.
+- `/инв` and `/кодекс` detail actions exposed the glove and the newly relevant clue context.
+
+Turn 2 player action:
+
+`Сначала прячу руническую перчатку в футляр, чтобы больше не портить следы, затем зову самого доверенного слугу и спокойно расспрашиваю: кто входил в мои покои ночью, кто нёс письмо, и не видел ли кто-нибудь людей у фамильной библиотеки.`
+
+Observed result:
+
+- The GM produced readable narrative and introduced Мартен Рош as a cautious witness source.
+- The validator requested repair because the initial response over-declared NPC scope; the GM repaired by keeping Мартен as player-facing journal state instead of claiming a canonical `npc_core` actor.
+- `/нпс` and `/где_я` reflected Мартен and the library clue after repair.
+- `/квесты` and `/хроника` did not change because the repaired GM output did not create a quest or chronicle update for this turn.
+
+### Second-Run Assessment
+
+The second run satisfies the qualitative 9/10 check for the non-QTE console scope: ordinary commands are understandable, the bridge can carry a short live scene, and the remaining issues found during play were minor player-facing dead ends rather than blocker bugs. The main residual cost is bridge latency: bootstrap and GM turns are slow enough that future live tests should continue to record timing and repair counts.

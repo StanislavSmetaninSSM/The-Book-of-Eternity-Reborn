@@ -865,8 +865,29 @@ public static class ExplorerMortalWorldCommandResultBuilder
             var fallbackEntries = await NpcJournalFallbackProjection.ReadAsync(fs);
             if (fallbackEntries.Count > 0)
             {
+                var journalRequest = ParseNpcJournalDetailRequest(ExtractCommandRemainder(command));
+                if (journalRequest.Kind == NpcJournalDetailKind.Unknown)
+                {
+                    return Completed(command, [
+                        Message(UiNotificationSeverity.Warning, "Персонажи", "Для подробностей используйте команду вида /нпс журнал <нпс>.")
+                    ], BuildNpcBackActions(commandToken));
+                }
+
+                if (journalRequest.Kind == NpcJournalDetailKind.Journal)
+                {
+                    var selected = FindNpcJournalFallbackEntry(fallbackEntries, journalRequest.NpcSelector);
+                    if (selected == null)
+                    {
+                        return Completed(command, [
+                            Message(UiNotificationSeverity.Warning, "Персонажи", "Такой журнал НПС не найден.")
+                        ], BuildNpcBackActions(commandToken));
+                    }
+
+                    return Completed(command, NpcJournalFallbackProjection.BuildDetailBlocks(selected), BuildNpcBackActions(commandToken));
+                }
+
                 var rows = NpcJournalFallbackProjection.BuildConsoleRows(fallbackEntries);
-                return Completed(command, NpcJournalFallbackProjection.BuildBlocks(rows));
+                return Completed(command, NpcJournalFallbackProjection.BuildBlocks(rows), BuildNpcJournalFallbackActions(commandToken, fallbackEntries));
             }
         }
 
@@ -969,6 +990,35 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks, BuildNpcSectionActions(commandToken, projections));
     }
 
+    private static NpcJournalDetailRequest ParseNpcJournalDetailRequest(string remainder)
+    {
+        if (string.IsNullOrWhiteSpace(remainder))
+            return new NpcJournalDetailRequest(NpcJournalDetailKind.Overview, string.Empty);
+
+        var (kindToken, selector) = SplitFirstCombatArgument(remainder);
+        if (!IsNpcJournalDetailToken(kindToken) || string.IsNullOrWhiteSpace(selector))
+            return new NpcJournalDetailRequest(NpcJournalDetailKind.Unknown, string.Empty);
+
+        return new NpcJournalDetailRequest(NpcJournalDetailKind.Journal, NormalizeCombatSelector(selector));
+    }
+
+    private static bool IsNpcJournalDetailToken(string token)
+    {
+        var normalized = token.Trim().ToLowerInvariant();
+        return normalized is "journal" or "журнал" or "дневник" or "заметки" or "detail" or "подробнее";
+    }
+
+    private static NpcJournalFallbackEntry? FindNpcJournalFallbackEntry(
+        IReadOnlyList<NpcJournalFallbackEntry> entries,
+        string selector)
+    {
+        var normalizedSelector = NormalizeInventoryLookup(selector);
+        return entries.FirstOrDefault(entry =>
+            string.Equals(NormalizeInventoryLookup(entry.NpcId), normalizedSelector, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(NormalizeInventoryLookup(entry.NpcName), normalizedSelector, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(NormalizeInventoryLookup(entry.DisplayName), normalizedSelector, StringComparison.OrdinalIgnoreCase));
+    }
+
     private static NpcSectionDetailRequest ParseNpcSectionDetailRequest(string remainder)
     {
         if (string.IsNullOrWhiteSpace(remainder))
@@ -1069,6 +1119,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return actions;
     }
 
+    private static IReadOnlyList<UiAction> BuildNpcJournalFallbackActions(
+        string commandToken,
+        IReadOnlyList<NpcJournalFallbackEntry> entries)
+    {
+        return entries
+            .Select(entry =>
+            {
+                var npcSelector = FirstNonEmpty(entry.NpcId, entry.NpcName, entry.DisplayName);
+                return new UiAction
+                {
+                    Id = "npc-journal-" + ToActionIdPart(npcSelector),
+                    Label = $"{entry.DisplayName}: журнал",
+                    Command = BuildNpcJournalFallbackCommand(commandToken, npcSelector),
+                    Style = UiActionStyle.Secondary,
+                    RequiresConfirmation = false,
+                    Payload = new JsonObject
+                    {
+                        ["npcSelector"] = npcSelector,
+                        ["npcName"] = entry.DisplayName,
+                        ["section"] = "journal",
+                        ["sectionLabel"] = "Журнал"
+                    }
+                };
+            })
+            .ToList();
+    }
+
     private static IReadOnlyList<UiAction> BuildNpcBackActions(string commandToken) =>
     [
         new UiAction
@@ -1080,6 +1157,15 @@ public static class ExplorerMortalWorldCommandResultBuilder
             RequiresConfirmation = false
         }
     ];
+
+    private static string BuildNpcJournalFallbackCommand(string commandToken, string npcSelector)
+    {
+        var detailToken = string.Equals(commandToken, "/нпс", StringComparison.OrdinalIgnoreCase) ||
+                          string.Equals(commandToken, "/персонажи", StringComparison.OrdinalIgnoreCase)
+            ? "журнал"
+            : "journal";
+        return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(npcSelector);
+    }
 
     private static string BuildNpcSectionCommand(string commandToken, string npcSelector, string sectionSelector)
     {
@@ -5249,6 +5335,17 @@ public static class ExplorerMortalWorldCommandResultBuilder
         NpcSectionDetailKind Kind,
         string NpcSelector,
         string SectionSelector);
+
+    private enum NpcJournalDetailKind
+    {
+        Overview,
+        Journal,
+        Unknown
+    }
+
+    private sealed record NpcJournalDetailRequest(
+        NpcJournalDetailKind Kind,
+        string NpcSelector);
 
     private enum CombatantKind
     {

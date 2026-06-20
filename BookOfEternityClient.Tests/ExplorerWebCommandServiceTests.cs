@@ -69,7 +69,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        Assert.Empty(result.Actions);
+        Assert.Contains(result.Actions, action =>
+            action.Label.Contains("Торек Молотобой", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/npc journal npc_blacksmith_thorek", StringComparison.OrdinalIgnoreCase) &&
+            action.Style == UiActionStyle.Secondary &&
+            action.RequiresConfirmation == false);
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Торек Молотобой", text, StringComparison.Ordinal);
         Assert.Contains("Впечатляющая решительность", text, StringComparison.Ordinal);
@@ -80,6 +84,54 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("/npc_trade", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("npc_journals.json", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("pending_turn_snapshot", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcJournalFallbackDetail_ShowsFullJournalEntriesAndBackAction()
+    {
+        await SeedJournalOnlyNpcFilesAsync();
+
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/нпс"));
+
+        Assert.Equal(CommandExecutionState.Completed, overview.State);
+        Assert.Contains(overview.Actions, action =>
+            action.Label.Contains("Мартен Рош", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/нпс журнал npc_marten_roche_valmont_valet", StringComparison.OrdinalIgnoreCase) &&
+            action.Style == UiActionStyle.Secondary &&
+            action.RequiresConfirmation == false);
+
+        var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/нпс журнал npc_marten_roche_valmont_valet"));
+        var text = CollectBlockText(detail.Blocks);
+        var payload = SerializeResult(detail);
+
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        Assert.Contains("Мартен Рош", text, StringComparison.Ordinal);
+        Assert.Contains("Утренний допрос", text, StringComparison.Ordinal);
+        Assert.Contains("Он признался, что ночью слышал шаги у фамильной библиотеки.", text, StringComparison.Ordinal);
+        Assert.Contains("Имя свидетеля", text, StringComparison.Ordinal);
+        Assert.Contains("Он отказался назвать кухонного мальчишку без защиты.", text, StringComparison.Ordinal);
+        Assert.Contains("Последняя запись", text, StringComparison.Ordinal);
+        Assert.Contains(detail.Actions, action =>
+            action.Label.Contains("Назад", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/нпс", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain("game_state/npcs", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("npc_journals.json", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_SystemGuardiansWithEmptyLibrary_HidesLocalDirectoryPath()
+    {
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/извечные_хранители"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Извечные хранители", text, StringComparison.Ordinal);
+        Assert.Contains("В библиотеке пока нет пресетов", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Папка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(_rootPath, payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("system_guardians", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Theory]
@@ -3966,6 +4018,33 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var fullPath = _fs.ResolvePath(relativePath);
         Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
         File.WriteAllBytes(fullPath, [137, 80, 78, 71, 13, 10, 26, 10]);
+    }
+
+    private async Task SeedJournalOnlyNpcFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_journals.json", """
+        {
+          "npcJournals": [
+            {
+              "npcId": "npc_marten_roche_valmont_valet",
+              "npcName": "Мартен Рош",
+              "lastJournalNote": "Мартен знает имя свидетеля, но боится говорить без защиты.",
+              "journalEntries": [
+                {
+                  "event": "Утренний допрос",
+                  "description": "Он признался, что ночью слышал шаги у фамильной библиотеки.",
+                  "relationshipChange": "+1"
+                },
+                {
+                  "event": "Имя свидетеля",
+                  "description": "Он отказался назвать кухонного мальчишку без защиты.",
+                  "relationshipChange": "0"
+                }
+              ]
+            }
+          ]
+        }
+        """);
     }
 
     private async Task SeedRichNpcDrilldownFilesAsync()
