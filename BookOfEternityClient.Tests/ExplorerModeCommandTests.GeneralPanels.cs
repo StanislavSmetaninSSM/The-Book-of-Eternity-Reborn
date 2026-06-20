@@ -2088,6 +2088,35 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Chronicle_RendersStructuredEntriesWithoutRawFieldLabels()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/meta/character_chronicle.json", new[]
+        {
+            new
+            {
+                entryId = "chronicle_valmont_rebirth_001",
+                title = "Возвращение в Вальмонт",
+                summary = "Душа Асурана вновь открыла глаза в семейной библиотеке.",
+                eventType = "rebirth",
+                turnNumber = 1
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хроника"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("chronicle_structured_fields");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Возвращение в Вальмонт", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Душа Асурана вновь открыла глаза", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("entryId:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("summary:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("eventType:", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_BehaviorAssessment_RendersWithoutHiddenErrors()
     {

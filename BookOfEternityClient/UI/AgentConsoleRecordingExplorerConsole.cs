@@ -156,7 +156,6 @@ public sealed class AgentConsoleRecordingExplorerConsole : IExplorerConsole
         builder.AppendLine("Варианты:");
         for (var index = 0; index < labels.Count; index++)
             builder.AppendLine($"  {(index == fallbackIndex ? "→" : "•")} {labels[index]}");
-        builder.AppendLine($"Agent Console: выбран безопасный пункт «{labels[fallbackIndex]}».");
         captureText = builder.ToString();
         return true;
     }

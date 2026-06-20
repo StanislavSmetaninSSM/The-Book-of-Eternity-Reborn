@@ -111,7 +111,7 @@ $ConfigPath = Join-Path $SandboxSession "config.json"
 $Config = Get-Content $ConfigPath -Raw | ConvertFrom-Json
 $Config.gmBridgeEnabled = $true
 $Config.gmBridgeBackend = "ConPTYBridge"
-$Config.gmCliLaunchCommand = "codex"
+$Config.gmCliLaunchCommand = "codex --dangerously-bypass-approvals-and-sandbox"
 $Config.gmBridgeAutoStart = $true
 $Config | ConvertTo-Json -Depth 30 | Set-Content -Encoding UTF8 $ConfigPath
 ```
@@ -122,12 +122,40 @@ $Config | ConvertTo-Json -Depth 30 | Set-Content -Encoding UTF8 $ConfigPath
 powershell -ExecutionPolicy Bypass -File BookOfEternityClient\Launcher\bookofeternity.ps1 start-bridge -SessionPath $SandboxSession
 ```
 
-- [ ] Confirm bridge status without sending test instructions to the GM:
+- [ ] Do not redirect stdout or stderr from a ConPTY bridge process that launches `codex`. Codex requires a terminal; redirecting its output can make it exit with `Error: stdout is not a terminal` while the bridge shell remains alive.
+
+- [ ] Confirm bridge diagnostics without sending test instructions to the GM. Mark the bridge ready only after diagnostics show the live Codex UI, for example `OpenAI Codex` and the expected model/status line:
 
 ```powershell
 $BridgeStatus = Join-Path $SandboxSession "game_state\control\gm_bridge_status.json"
 Get-Content $BridgeStatus -Raw
+powershell -ExecutionPolicy Bypass -File BookOfEternityClient\Launcher\bookofeternity.ps1 diagnostics -SessionPath $SandboxSession
 ```
+
+- [ ] Start the game master daemon in the same sandbox. The bridge only hosts the GM process; the daemon is what detects `input/turn_request.json` and dispatches natural player turns to the bridge:
+
+```powershell
+$DaemonOut = Join-Path $RunRoot "daemon.stdout.log"
+$DaemonErr = Join-Path $RunRoot "daemon.stderr.log"
+$DaemonArgs = @(
+  "-NoLogo",
+  "-NoProfile",
+  "-ExecutionPolicy", "Bypass",
+  "-File", (Resolve-Path "BookOfEternityClient\game_master_daemon.ps1"),
+  "-GameSessionPath", $SandboxSession,
+  "-TurnTimeout", "900",
+  "-PollingInterval", "500"
+)
+$DaemonProcess = Start-Process -FilePath "powershell" `
+  -ArgumentList $DaemonArgs `
+  -WorkingDirectory (Get-Location) `
+  -RedirectStandardOutput $DaemonOut `
+  -RedirectStandardError $DaemonErr `
+  -WindowStyle Hidden `
+  -PassThru
+```
+
+- [ ] Use an argument array for the daemon launch; a string-built command is easy to break when the repository or session path contains spaces. When launching `dotnet <dll>` directly from PowerShell, prefer `System.Diagnostics.ProcessStartInfo.ArgumentList` or explicitly quoted DLL paths; `Start-Process -ArgumentList @($dllPath, ...)` does not reliably quote paths with spaces.
 
 ## Task 3: Launch The Real Console Client With Agent Console
 
@@ -290,6 +318,14 @@ if ($ClientProcess -and -not $ClientProcess.HasExited) {
 }
 ```
 
+- [ ] Stop the daemon process if it is still running:
+
+```powershell
+if ($DaemonProcess -and -not $DaemonProcess.HasExited) {
+  Stop-Process -Id $DaemonProcess.Id -Force
+}
+```
+
 - [ ] Stop the bridge helper process only if it belongs to the disposable sandbox:
 
 ```powershell
@@ -342,4 +378,3 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 - [ ] All P0/P1 issues found during the run have GitHub issues.
 - [ ] Repeated P2 patterns have GitHub issues or are linked to an existing broader issue.
 - [ ] GitHub issue #909 has a final comment with result, artifacts, blocking issues, and recommendation for the next run.
-

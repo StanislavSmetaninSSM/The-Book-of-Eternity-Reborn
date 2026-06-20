@@ -1330,9 +1330,10 @@ public partial class ExplorerMode
                 // Structured entry with title/content/timestamp
                 var title = GetStr(item, "title", "");
                 var content = GetStr(item, "content",
-                    GetStr(item, "entryToAppend",
-                        GetStr(item, "entry",
-                            GetStr(item, "description", ""))));
+                    GetStr(item, "summary",
+                        GetStr(item, "entryToAppend",
+                            GetStr(item, "entry",
+                                GetStr(item, "description", "")))));
                 var timestamp = GetStr(item, "timestamp", "");
                 var chapterId = GetStr(item, "chapterId", "");
 
@@ -1374,8 +1375,8 @@ public partial class ExplorerMode
                     foreach (var prop in item.EnumerateObject())
                     {
                         if (prop.Name is "title" or "content" or "timestamp" or "chapterId"
-                            or "entryToAppend" or "entry" or "description"
-                            or "turnNumber" or "turn"
+                            or "summary" or "entryToAppend" or "entry" or "description"
+                            or "entryId" or "eventType" or "turnNumber" or "turn"
                             || prop.Name.StartsWith("_")) continue;
                         var label = NpcFieldToRussian(prop.Name);
                         var val = prop.Value.ValueKind == JsonValueKind.String
