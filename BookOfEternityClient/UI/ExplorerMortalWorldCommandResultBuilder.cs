@@ -410,7 +410,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Columns = ["Показатель", "Значение"],
                 Rows =
                 [
-                    new UiTableRow { Cells = ["Царство", map.Realm] },
+                    new UiTableRow { Cells = ["Царство", ExplorerPlayerFacingLabels.Realm(map.Realm)] },
                     new UiTableRow { Cells = ["Локаций", map.Nodes.Count.ToString()] },
                     new UiTableRow { Cells = ["Связей", map.Links.Count.ToString()] },
                     new UiTableRow { Cells = ["Уровней z", map.ZLevels.Count.ToString()] }
@@ -2140,7 +2140,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return string.Empty;
         }
 
-        return $"состояние пути: {linkState}";
+        var label = ExplorerPlayerFacingLabels.LocationLinkState(linkState);
+        return string.IsNullOrWhiteSpace(label) ? string.Empty : $"состояние пути: {label}";
     }
 
     private static string JoinLocationDetails(params string[] parts) =>

@@ -37,8 +37,8 @@
 - [x] T018 Add RED tests for the highest-impact narrow Mortal World output/navigation defects.
 - [x] T019 Implement narrow fixes in console renderers/builders without touching browser files.
 - [x] T020 Rerun focused Mortal World command-display tests and affected dry sweep entries.
-- [ ] T021 Create follow-up issues for broad Mortal World UX gaps not safely fixed in this branch.
-- [ ] T022 Update #1177 with fixes, tests, and residual issues.
+- [x] T021 Create follow-up issues for broad Mortal World UX gaps not safely fixed in this branch.
+- [x] T022 Update #1177 with fixes, tests, and residual issues.
 
 ## Phase 5: Afterlife Output and Navigation Polish (#1178)
 
@@ -46,24 +46,24 @@
 - [x] T024 Add RED tests for the highest-impact narrow afterlife output/navigation defects.
 - [x] T025 Implement narrow afterlife display fixes. If runtime/GM contracts change, update afterlife docs/examples/tests in the same commit.
 - [x] T026 Rerun focused afterlife command-display tests and documentation coverage tests when required.
-- [ ] T027 Create follow-up issues for broad afterlife UX gaps not safely fixed in this branch.
-- [ ] T028 Update #1178 with fixes, tests, and residual issues.
+- [x] T027 Create follow-up issues for broad afterlife UX gaps not safely fixed in this branch.
+- [x] T028 Update #1178 with fixes, tests, and residual issues.
 
 ## Phase 6: Live Codex-GM E2E Playtest Without QTE (#1179)
 
-- [ ] T029 Prepare a disposable game session and launch metadata for the console client, Agent Console, GM daemon, and Codex bridge.
-- [ ] T030 Run a short adventure without QTE that covers conversation, exploration, inventory/item, book/document, NPC/faction/quest/world-news, simple non-QTE action, lifecycle/reward/afterlife where feasible.
-- [ ] T031 Record route notes, command outputs, friction findings, bridge status, and player-visible failures in `docs/audits/console-live-playtest-1179.md`.
-- [ ] T032 File or link follow-up issues for blocker/major friction not fixed before the final audit.
-- [ ] T033 Update #1179 with the live report and residual risk.
+- [x] T029 Prepare a disposable game session and launch metadata for the console client, Agent Console, GM daemon, and Codex bridge.
+- [x] T030 Run a short adventure without QTE that covers conversation, exploration, inventory/item, book/document, NPC/faction/quest/world-news, simple non-QTE action, lifecycle/reward/afterlife where feasible.
+- [x] T031 Record route notes, command outputs, friction findings, bridge status, and player-visible failures in `docs/audits/console-live-playtest-1179.md`.
+- [x] T032 File or link follow-up issues for blocker/major friction not fixed before the final audit.
+- [x] T033 Update #1179 with the live report and residual risk.
 
 ## Phase 7: Final Acceptance Audit (#1180)
 
-- [ ] T034 Create `docs/audits/console-acceptance-score-1180.md` with the final 1-10 rubric.
-- [ ] T035 Run focused tests for all changed command surfaces.
-- [ ] T036 Run final build and broad non-browser C# verification.
-- [ ] T037 Run `git diff --check` and inspect `git diff --stat`.
-- [ ] T038 Update #1180 with score, verification commands, changed files, and residual risks.
+- [x] T034 Create `docs/audits/console-acceptance-score-1180.md` with the final 1-10 rubric.
+- [x] T035 Run focused tests for all changed command surfaces.
+- [x] T036 Run final build and broad non-browser C# verification.
+- [x] T037 Run `git diff --check` and inspect `git diff --stat`.
+- [x] T038 Update #1180 with score, verification commands, changed files, and residual risks.
 - [ ] T039 Commit with source issue references, open PR, review, merge when verified, and close completed issues only after evidence is inspected.
 
 ## Evidence Log
@@ -95,3 +95,23 @@
 - Combined polish sweep: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ConsoleCommandOutputQualityClassifierTests|StructuredBonusDisplayTests|MortalCommandDisplaySaveTests|ChaosSeaCommandDisplaySaveTests|ShiningAbodeCommandDisplaySaveTests" --logger "console;verbosity=minimal"` passed 301, failed 0.
 - GitHub #1177 polish batch updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1177#issuecomment-4757820584
 - GitHub #1178 polish batch updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1178#issuecomment-4757822308
+- Live playtest #1179 run root: `C:\Temp\boe-live-e2e-1179-20260620-223955`; commit under test `598bb369db8c1b12c29c5f1efc598b57293f55b0`; Agent Console `http://127.0.0.1:60547`; QTE disabled.
+- Live command sweep #1179: 29 Mortal World read-only commands returned without hangs; report artifact `mortal-command-pass-summary.json` in the run root.
+- Live adventure #1179: two Codex-GM Mortal World turns completed with readable narrative; location movement was reflected by `/карта` and `/где_я`.
+- Live playtest report: `docs/audits/console-live-playtest-1179.md`.
+- Follow-up #1181 created for accepted GM narrative facts not persisting into `/нпс`, `/хроника`, and `/квесты`: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1181
+- Follow-up #1182 created for Agent Console drilldown/options observability gaps: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1182
+- Console polish RED map/location/mods: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Render_MapUsesPlayerFacingRealmAndCurrentLocationName|TryProcessCommand_MapRussian_InMortalRealm_OpensVisualMapViewerInsteadOfLocationList|TryProcessCommand_Locations_HidesUnknownAdjacentLinkState|TryProcessCommand_SystemMods_HidesTechnicalFileNamesInPlayerChoices" --logger "console;verbosity=minimal"` failed 4, passed 0 before the player-facing label fixes.
+- Console polish GREEN map/location/mods: same filter passed 4, failed 0 after adding shared player-facing labels and hiding raw map/mod/location state.
+- Console polish expanded verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExplorerCommandResultConsoleRendererTests|TryProcessCommand_MapRussian_InMortalRealm_OpensVisualMapViewerInsteadOfLocationList|TryProcessCommand_Locations_RendersWithoutHiddenErrors|TryProcessCommand_Locations_HidesUnknownAdjacentLinkState|TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors|TryProcessCommand_SystemMods_HidesTechnicalFileNamesInPlayerChoices|MortalCommandDisplaySaveTests|ConsoleCommandOutputQualityClassifierTests" --logger "console;verbosity=minimal"` passed 108, failed 0.
+- GitHub #1177 map/location/mods polish updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1177#issuecomment-4758154987
+- GitHub #1179 live report updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1179#issuecomment-4758156399
+- Follow-up #1183 created for Saref/memory-scene reusable afterlife output coverage: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1183
+- GitHub #1178 residual afterlife coverage updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1178#issuecomment-4758163203
+- Full all-tests note: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --logger "console;verbosity=minimal"` passed 4679 and failed 3 before final test expectation cleanup; 2 failures were `LocalWebUiBuiltFrontendSmokeTests` missing browser `dist`, outside the console-only scope, and 1 was an outdated `ExplorerWebCommandServiceTests` expectation for raw `lore_research`.
+- Afterlife web-command expectation fix verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExecuteAsync_AfterlifeRelicArchiveDetails_RenderFocusedPlayerFacingDetailWithoutRawJson" --logger "console;verbosity=minimal"` passed 5, failed 0.
+- Final client build: `dotnet build BookOfEternityClient\BookOfEternityClient.csproj --no-restore` passed with 0 warnings and 0 errors.
+- Final broad non-browser C# verification: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName!~LocalWebUiBuiltFrontendSmokeTests" --logger "console;verbosity=minimal"` passed 4680, failed 0.
+- Final whitespace check: `git diff --check` exited 0 with CRLF normalization warnings only.
+- Acceptance audit: `docs/audits/console-acceptance-score-1180.md`, score 8/10 with 9/10 conditions tied to #1181, #1182, and #1183.
+- GitHub #1180 acceptance audit updated: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1180#issuecomment-4758246978

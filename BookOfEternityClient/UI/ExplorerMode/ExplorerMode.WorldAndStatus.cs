@@ -33,8 +33,8 @@ public partial class ExplorerMode
 
         var launch = await LocalMapViewerLauncher.WriteAndOpenAsync(_fs, map);
         MarkupLine(launch.Opened
-            ? $"[green]Открыта локальная карта:[/] [cyan]{Markup.Escape(launch.RelativePath)}[/]"
-            : $"[yellow]HTML карты сохранён:[/] [cyan]{Markup.Escape(launch.RelativePath)}[/] [dim]({Markup.Escape(launch.Error)})[/]");
+            ? "[green]Локальная карта открыта.[/]"
+            : "[yellow]Локальная карта подготовлена, но не открылась автоматически.[/]");
         WaitForKey();
     }
 
@@ -162,26 +162,20 @@ public partial class ExplorerMode
             lines.Add("  [bold]🧭 Соседние локации:[/]");
             foreach (var entry in adj.EnumerateArray())
             {
-                var aName = GetStr(entry, "name", GetStr(entry, "targetLocationId", "?"));
+                var aName = GetStr(entry, "name", GetStr(entry, "targetLocationName", GetStr(entry, "targetLocationId", "?")));
                 var dir = GetStr(entry, "direction", "");
                 var dist = GetStr(entry, "distance", "");
                 var linkState = GetStr(entry, "linkState", "");
                 var linkType = GetStr(entry, "linkType", "");
                 var shortDesc = GetStr(entry, "shortDescription", "");
-                var linkColor = linkState.ToLowerInvariant() switch
-                {
-                    "dangerous" => "red",
-                    "hidden" => "grey",
-                    "blocked" or "requires key" => "maroon",
-                    "safe" => "green",
-                    _ => "cyan"
-                };
+                var linkStateLabel = ExplorerPlayerFacingLabels.LocationLinkState(linkState);
+                var linkColor = ExplorerPlayerFacingLabels.LocationLinkStateColor(linkState);
                 var line = $"    → [{linkColor}]{Markup.Escape(aName)}[/]";
                 if (!string.IsNullOrEmpty(linkType)) line += $" [dim]⟨{Markup.Escape(linkType)}⟩[/]";
                 if (!string.IsNullOrEmpty(dir)) line += $" ({Markup.Escape(dir)})";
                 if (!string.IsNullOrEmpty(dist)) line += $" [dim]{Markup.Escape(dist)}[/]";
-                if (!string.IsNullOrEmpty(linkState) && linkState.ToLowerInvariant() != "safe")
-                    line += $" [{linkColor}]({Markup.Escape(linkState)})[/]";
+                if (!string.IsNullOrEmpty(linkStateLabel))
+                    line += $" [{linkColor}]({Markup.Escape(linkStateLabel)})[/]";
                 lines.Add(line);
                 if (!string.IsNullOrEmpty(shortDesc))
                     lines.Add($"      [dim]{Markup.Escape(shortDesc)}[/]");

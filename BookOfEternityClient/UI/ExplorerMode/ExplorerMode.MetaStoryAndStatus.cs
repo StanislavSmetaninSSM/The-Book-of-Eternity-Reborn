@@ -45,9 +45,10 @@ public partial class ExplorerMode
                 foreach (var mod in mods)
                 {
                     var state = mod.Enabled ? "[green]● Активен[/]" : "[dim]○ Выключен[/]";
-                    lines.Add($"{state} [white]{Markup.Escape(mod.Name)}[/] [dim]({Markup.Escape(mod.FileName)})[/]");
-                    if (!string.IsNullOrWhiteSpace(mod.Description))
-                        lines.Add($"  [dim]{Markup.Escape(mod.Description)}[/]");
+                    lines.Add($"{state} [white]{Markup.Escape(mod.Name)}[/]");
+                    var description = ExplorerPlayerFacingLabels.SystemModDescription(mod.Description);
+                    if (!string.IsNullOrWhiteSpace(description))
+                        lines.Add($"  [dim]{Markup.Escape(description)}[/]");
                 }
             }
 
@@ -63,8 +64,9 @@ public partial class ExplorerMode
             WriteLine();
 
             var actions = new List<string>();
+            var modChoices = ExplorerPlayerFacingLabels.SystemModChoiceLabels(mods);
             if (mods.Count > 0)
-                actions.AddRange(mods.Select(mod => $"📄 {mod.Name} ({mod.FileName})"));
+                actions.AddRange(modChoices.Select(static choice => choice.Label));
             actions.Add("📂 Открыть папку модов");
             actions.Add("← Назад");
 
@@ -96,7 +98,7 @@ public partial class ExplorerMode
                 continue;
             }
 
-            var selected = mods.FirstOrDefault(mod => choice == $"📄 {mod.Name} ({mod.FileName})");
+            var selected = modChoices.FirstOrDefault(candidate => choice == candidate.Label).Mod;
             if (selected != null)
                 await ShowSystemModDetailAsync(selected.FileName);
         }
@@ -118,14 +120,14 @@ public partial class ExplorerMode
         var lines = new List<string>
         {
             $"[bold yellow]{Markup.Escape(mod.Name)}[/]",
-            $"[dim]{Markup.Escape(mod.FileName)}[/]",
             mod.Enabled ? "[green]● Активен[/]" : "[dim]○ Выключен[/]"
         };
 
-        if (!string.IsNullOrWhiteSpace(mod.Description))
+        var description = ExplorerPlayerFacingLabels.SystemModDescription(mod.Description);
+        if (!string.IsNullOrWhiteSpace(description))
         {
             lines.Add("");
-            lines.Add(Markup.Escape(mod.Description));
+            lines.Add(Markup.Escape(description));
         }
 
         if (!string.IsNullOrWhiteSpace(mod.Content))

@@ -2530,7 +2530,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/afterlife_archive запись archive_lore_001", "Архив души: Песнь Первого Маяка", "Полный текст маяка", "Запечатанный договор")]
     [InlineData("/archive_candidates кандидат candidate_mayak", "Кандидат в Архив: Песня маяка", "Кандидат хранит свет", "Тайный договор")]
     [InlineData("/archive_consultation хранитель guardian_azalia", "Архивная консультация: Азалия", "memory", "Недоверчивый Страж")]
-    [InlineData("/archive_project_fuel проект guardian_azalia::project_forge_song", "Подпитка проекта: Песнь кузни", "lore_research", "Скрытый проект")]
+    [InlineData("/archive_project_fuel проект guardian_azalia::project_forge_song", "Подпитка проекта: Песнь кузни", "исследование знаний", "Скрытый проект")]
     public async Task ExecuteAsync_AfterlifeRelicArchiveDetails_RenderFocusedPlayerFacingDetailWithoutRawJson(
         string command,
         string expectedTitle,

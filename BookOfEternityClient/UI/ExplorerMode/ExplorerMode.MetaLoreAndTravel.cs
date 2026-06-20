@@ -536,17 +536,12 @@ public partial class ExplorerMode
                         var direction = GetStr(entry, "direction", "");
                         var distance = GetStr(entry, "distance", "");
                         var linkState = GetStr(entry, "linkState", "");
-                        var stateColor = linkState.ToLowerInvariant() switch
-                        {
-                            "dangerous" => "red",
-                            "hidden" => "grey",
-                            "blocked" => "maroon",
-                            _ => "aqua"
-                        };
+                        var linkStateLabel = ExplorerPlayerFacingLabels.LocationLinkState(linkState);
+                        var stateColor = ExplorerPlayerFacingLabels.LocationLinkStateColor(linkState);
                         var dirStr = !string.IsNullOrEmpty(direction) ? $" ({Markup.Escape(direction)})" : "";
                         var distStr = !string.IsNullOrEmpty(distance) ? $" [dim]{Markup.Escape(distance)}[/]" : "";
-                        var stateStr = !string.IsNullOrEmpty(linkState) && !string.Equals(linkState, "safe", StringComparison.OrdinalIgnoreCase)
-                            ? $" [yellow][[{Markup.Escape(linkState)}]][/]"
+                        var stateStr = !string.IsNullOrEmpty(linkStateLabel)
+                            ? $" [{stateColor}][[{Markup.Escape(linkStateLabel)}]][/]"
                             : "";
                         menuItems.Add(($"  🧭 [{stateColor}]{Markup.Escape(aName)}[/]{dirStr}{distStr}{stateStr}", "adjacent", entry));
                     }

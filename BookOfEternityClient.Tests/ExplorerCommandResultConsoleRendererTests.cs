@@ -130,6 +130,47 @@ public sealed class ExplorerCommandResultConsoleRendererTests
         Assert.Contains("Renderer не исполняет prompt", renderedText, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void Render_MapUsesPlayerFacingRealmAndCurrentLocationName()
+    {
+        var console = new TestExplorerConsole();
+        var result = new ExplorerCommandResult
+        {
+            Command = "/map",
+            State = CommandExecutionState.Completed,
+            Blocks =
+            [
+                new UiMapBlock
+                {
+                    Title = "Карта",
+                    Map = new MapViewDto
+                    {
+                        Realm = "Mortal World",
+                        CurrentNodeId = "valmont_estate_corridor_1",
+                        ZLevels = [new MapZLevelDto { Z = 0, Label = "этаж поместья" }],
+                        Nodes =
+                        [
+                            new MapNodeDto
+                            {
+                                Id = "valmont_estate_corridor_1",
+                                Label = "Коридор поместья Вальмонт",
+                                IsCurrent = true
+                            }
+                        ]
+                    }
+                }
+            ]
+        };
+
+        ExplorerCommandResultConsoleRenderer.Render(console, result);
+
+        var renderedText = string.Join("\n", console.Rendered.Select(ExtractRenderableText));
+        Assert.Contains("Смертный мир", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Коридор поместья Вальмонт", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Mortal World", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("valmont_estate_corridor_1", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
     private static string ExtractRenderableText(IRenderable renderable)
     {
         return renderable switch

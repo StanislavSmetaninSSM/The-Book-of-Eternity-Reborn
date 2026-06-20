@@ -108,6 +108,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             line => line.Contains("хранителями", StringComparison.OrdinalIgnoreCase));
         Assert.True(File.Exists(_fs.ResolvePath("output/map_viewer.html")));
         Assert.Contains(_console.MarkupLines,
+            line => line.Contains("локальная карта", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(_console.MarkupLines,
             line => line.Contains("output/map_viewer.html", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(_console.SelectionTitles,
             title => title.Contains("Карта", StringComparison.OrdinalIgnoreCase));
@@ -635,6 +637,39 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Locations_HidesUnknownAdjacentLinkState()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/world/current_location.json", new
+        {
+            locationId = "loc_valmont_corridor",
+            name = "Коридор поместья Вальмонт",
+            description = "Длинный коридор с потухшими бра.",
+            adjacencyMap = new[]
+            {
+                new
+                {
+                    targetLocationId = "loc_east_service_stairs",
+                    targetLocationName = "Восточная служебная лестница",
+                    direction = "восток",
+                    distance = "пара минут",
+                    linkState = "Unknown"
+                }
+            }
+        });
+        _console.QueueAnySelection("← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/локации"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("locations_unknown_link_state");
+        var choices = string.Join("\n", _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices));
+        Assert.Contains("Восточная служебная лестница", choices, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Unknown", choices, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_ItemTexts_RendersWithoutHiddenErrors()
     {
@@ -876,6 +911,34 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("game_state/", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_session", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Папка модов", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SystemMods_HidesTechnicalFileNamesInPlayerChoices()
+    {
+        await SeedMortalStateAsync();
+        _settings.EnabledSystemMods = new List<string> { "test_mod.md" };
+        await _fs.WriteFileAtomicAsync("mods/test_mod.md", """
+        # Тонкая настройка мира
+
+        Description
+
+        Правило влияет на тон повествования.
+        """);
+        _console.QueueAnySelection("← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/моды"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("system_mods_player_facing_choices");
+        var renderedText = ExtractRenderedText();
+        var choices = string.Join("\n", _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices));
+        Assert.Contains("Тонкая настройка мира", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тонкая настройка мира", choices, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(".md", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(".md", choices, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Description", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

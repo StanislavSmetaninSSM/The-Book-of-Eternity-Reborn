@@ -174,14 +174,15 @@ public static class ExplorerCommandResultConsoleRenderer
             .AddColumn("Поле")
             .AddColumn("Значение");
 
-        table.AddRow(GameInterface.SafeMarkupText("Царство"), GameInterface.SafeMarkupText(block.Map.Realm));
+        table.AddRow(GameInterface.SafeMarkupText("Царство"), GameInterface.SafeMarkupText(ExplorerPlayerFacingLabels.Realm(block.Map.Realm)));
         table.AddRow(GameInterface.SafeMarkupText("Локаций"), GameInterface.SafeMarkupText(block.Map.Nodes.Count.ToString()));
         table.AddRow(GameInterface.SafeMarkupText("Связей"), GameInterface.SafeMarkupText(block.Map.Links.Count.ToString()));
         table.AddRow(
             GameInterface.SafeMarkupText("Уровни"),
             GameInterface.SafeMarkupText(string.Join(", ", block.Map.ZLevels.Select(static level => level.Label))));
-        if (!string.IsNullOrWhiteSpace(block.Map.CurrentNodeId))
-            table.AddRow(GameInterface.SafeMarkupText("Текущая точка"), GameInterface.SafeMarkupText(block.Map.CurrentNodeId));
+        var currentNode = ExplorerPlayerFacingLabels.CurrentMapNode(block.Map);
+        if (!string.IsNullOrWhiteSpace(currentNode))
+            table.AddRow(GameInterface.SafeMarkupText("Текущая точка"), GameInterface.SafeMarkupText(currentNode));
 
         return new Panel(table)
         {
