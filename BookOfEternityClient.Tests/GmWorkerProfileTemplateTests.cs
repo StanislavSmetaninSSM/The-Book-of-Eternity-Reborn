@@ -18,19 +18,19 @@ public sealed class GmWorkerProfileTemplateTests
                 "analysis_codex",
                 WorkerRole.Analysis,
                 WorkerTaskType.Analysis,
-                "codex --dangerously-bypass-approvals-and-sandbox"),
+                "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"),
             narrative => AssertTemplate(
                 narrative,
                 "narrative_draft_codex",
                 WorkerRole.NarrativeDraft,
                 WorkerTaskType.NarrativeDraft,
-                "codex --dangerously-bypass-approvals-and-sandbox"),
+                "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"),
             repair => AssertTemplate(
                 repair,
                 "validation_repair_codex",
                 WorkerRole.ValidationRepair,
                 WorkerTaskType.ValidationRepair,
-                "codex --dangerously-bypass-approvals-and-sandbox"));
+                "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"));
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public sealed class GmWorkerProfileTemplateTests
             "narrative_draft_codex",
             WorkerRole.NarrativeDraft,
             WorkerTaskType.NarrativeDraft,
-            "codex --dangerously-bypass-approvals-and-sandbox");
+            "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -");
     }
 
     [Fact]

@@ -254,9 +254,49 @@ public sealed class GmWorkerBridgePool
         };
 
         for (var i = 1; i < command.Count; i++)
-            startInfo.ArgumentList.Add(command[i]);
+            startInfo.ArgumentList.Add(ResolveLaunchArgument(command, i, workingDirectory));
 
         return startInfo;
+    }
+
+    private static string ResolveLaunchArgument(IReadOnlyList<string> command, int index, string workingDirectory)
+    {
+        if (index <= 0 || !string.Equals(command[index - 1], "-File", StringComparison.OrdinalIgnoreCase))
+            return command[index];
+
+        var path = command[index];
+        if (Path.IsPathRooted(path))
+            return path;
+
+        foreach (var candidateRoot in EnumerateLaunchPathRoots(workingDirectory))
+        {
+            var candidate = Path.GetFullPath(Path.Combine(candidateRoot, path));
+            if (File.Exists(candidate))
+                return candidate;
+        }
+
+        return path;
+    }
+
+    private static IEnumerable<string> EnumerateLaunchPathRoots(string workingDirectory)
+    {
+        if (!string.IsNullOrWhiteSpace(workingDirectory))
+            yield return workingDirectory;
+
+        yield return Environment.CurrentDirectory;
+
+        foreach (var root in EnumerateAncestors(AppContext.BaseDirectory))
+            yield return root;
+    }
+
+    private static IEnumerable<string> EnumerateAncestors(string path)
+    {
+        var directory = new DirectoryInfo(Path.GetFullPath(path));
+        while (directory != null)
+        {
+            yield return directory.FullName;
+            directory = directory.Parent;
+        }
     }
 
     internal static IReadOnlyList<string> SplitCommandLine(string commandLine)

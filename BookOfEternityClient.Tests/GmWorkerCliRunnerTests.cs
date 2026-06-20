@@ -166,6 +166,130 @@ public sealed class GmWorkerCliRunnerTests
         }
     }
 
+    [Fact]
+    public async Task RunnerRealMode_BareAgentCommand_ResolvesCmdFromPath()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var sessionPath = Path.Combine(root, "game_session");
+            var taskPath = Path.Combine(root, "task.json");
+            var proposalPath = Path.Combine(root, "worker_proposals", "inbox", "task-4", "proposal.json");
+            var fakeAgentCmdPath = Path.Combine(root, "fake-agent.cmd");
+            var fakeAgentScriptPath = Path.Combine(root, "fake-agent-cmd.ps1");
+            Directory.CreateDirectory(sessionPath);
+            await File.WriteAllTextAsync(taskPath, """
+                {
+                  "schemaVersion": 1,
+                  "taskId": "worker_task_runner_path_cmd",
+                  "workerId": "analysis_codex",
+                  "taskType": "analysis",
+                  "responseContract": "worker-proposal-v1"
+                }
+                """, Encoding.UTF8);
+            await File.WriteAllTextAsync(fakeAgentCmdPath, $$"""
+                @echo off
+                powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "{{fakeAgentScriptPath}}"
+                """, Encoding.ASCII);
+            await File.WriteAllTextAsync(fakeAgentScriptPath, """
+                [Console]::In.ReadToEnd() | Out-Null
+                $proposal = '{"schemaVersion":1,"proposalId":"worker_proposal_runner_path_cmd","taskId":"worker_task_runner_path_cmd","workerId":"analysis_codex","status":"completed","summary":"Fake PATH agent wrote proposal.","changedFiles":[],"findings":[],"selfCheck":{"scopeReviewed":true,"validationExpectedToPass":true,"notes":[]},"createdAtUtc":"2026-06-20T00:00:00Z"}'
+                [System.IO.File]::WriteAllText($env:BOE_WORKER_PROPOSAL_PATH, $proposal, [System.Text.UTF8Encoding]::new($false))
+                """, Encoding.UTF8);
+
+            var result = await RunRunnerAsync(
+                [
+                    "-AgentCommand",
+                    "fake-agent",
+                    "-TimeoutSeconds",
+                    "10"
+                ],
+                new Dictionary<string, string>
+                {
+                    ["BOE_WORKER_TASK_PATH"] = taskPath,
+                    ["BOE_WORKER_PROPOSAL_PATH"] = proposalPath,
+                    ["BOE_WORKER_SESSION_PATH"] = sessionPath,
+                    ["PATH"] = root + Path.PathSeparator + Environment.GetEnvironmentVariable("PATH")
+                });
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.True(File.Exists(proposalPath), result.StandardError);
+            Assert.Contains("worker_proposal_runner_path_cmd", await File.ReadAllTextAsync(proposalPath, Encoding.UTF8), StringComparison.Ordinal);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunnerRealMode_FeedsPromptToAgentAsUtf8()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var sessionPath = Path.Combine(root, "game_session");
+            var taskPath = Path.Combine(root, "task.json");
+            var proposalPath = Path.Combine(root, "worker_proposals", "inbox", "task-5", "proposal.json");
+            var fakeAgentPath = Path.Combine(root, "fake-agent-utf8.ps1");
+            Directory.CreateDirectory(sessionPath);
+            await File.WriteAllTextAsync(taskPath, """
+                {
+                  "schemaVersion": 1,
+                  "taskId": "worker_task_runner_utf8",
+                  "workerId": "validation_repair_codex",
+                  "taskType": "validation-repair",
+                  "responseContract": "worker-proposal-v1",
+                  "instructions": "Проверить и починить погоду."
+                }
+                """, Encoding.UTF8);
+            await File.WriteAllTextAsync(fakeAgentPath, """
+                $stdin = [Console]::OpenStandardInput()
+                $memory = [System.IO.MemoryStream]::new()
+                $stdin.CopyTo($memory)
+                $bytes = $memory.ToArray()
+                $decoder = [System.Text.UTF8Encoding]::new($false, $true)
+                try {
+                    $prompt = $decoder.GetString($bytes)
+                }
+                catch {
+                    [Console]::Error.WriteLine($_.Exception.Message)
+                    exit 31
+                }
+
+                if ($prompt -notlike '*Проверить и починить погоду.*') {
+                    [Console]::Error.WriteLine('UTF-8 prompt text was decoded, but the Cyrillic task instruction was not preserved.')
+                    exit 32
+                }
+
+                $proposal = '{"schemaVersion":1,"proposalId":"worker_proposal_runner_utf8","taskId":"worker_task_runner_utf8","workerId":"validation_repair_codex","status":"completed","summary":"Fake UTF-8 agent wrote proposal.","changedFiles":[],"findings":[],"selfCheck":{"scopeReviewed":true,"validationExpectedToPass":true,"notes":[]},"createdAtUtc":"2026-06-20T00:00:00Z"}'
+                [System.IO.File]::WriteAllText($env:BOE_WORKER_PROPOSAL_PATH, $proposal, [System.Text.UTF8Encoding]::new($false))
+                """, Encoding.UTF8);
+
+            var result = await RunRunnerAsync(
+                [
+                    "-AgentCommand",
+                    $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{fakeAgentPath}\"",
+                    "-TimeoutSeconds",
+                    "10"
+                ],
+                new Dictionary<string, string>
+                {
+                    ["BOE_WORKER_TASK_PATH"] = taskPath,
+                    ["BOE_WORKER_PROPOSAL_PATH"] = proposalPath,
+                    ["BOE_WORKER_SESSION_PATH"] = sessionPath
+                });
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.True(File.Exists(proposalPath), result.StandardError);
+            Assert.Contains("worker_proposal_runner_utf8", await File.ReadAllTextAsync(proposalPath, Encoding.UTF8), StringComparison.Ordinal);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     private static async Task<RunnerResult> RunRunnerAsync(
         IReadOnlyList<string> arguments,
         IReadOnlyDictionary<string, string> environment)

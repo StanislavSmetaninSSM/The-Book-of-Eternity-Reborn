@@ -49,8 +49,11 @@ canonical files such as `game_state/...` directly.
 Worker profiles should prefer the repo-owned runner entrypoint instead of a
 bare raw agent command. The runner reads the same `BOE_WORKER_*`
 environment variables, builds a strict prompt with the task packet and proposal
-contract, feeds that prompt to the configured agent command through stdin, and
-requires the agent to write a non-empty proposal handoff file.
+contract, feeds that prompt to the configured agent command through UTF-8
+stdin, and requires the agent to write a non-empty proposal handoff file.
+Hidden/background worker commands must be non-interactive; Codex workers should
+use `codex exec ... -`, while the interactive `codex ...` command remains for
+the visible main GM console.
 
 Default settings expose disabled worker profile templates for common local
 agents. They are safe to keep because `enabled` is `false`; the main GM cannot
@@ -69,7 +72,7 @@ Codex validation-repair example:
 {
   "workerId": "validation_repair_codex",
   "displayName": "Codex validation repair",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex --dangerously-bypass-approvals-and-sandbox\" -TimeoutSeconds 180",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 180",
   "role": "validation-repair",
   "enabled": false,
   "launchVisibility": "hidden",
@@ -84,7 +87,7 @@ Codex narrative-draft example:
 {
   "workerId": "narrative_draft_codex",
   "displayName": "Codex narrative drafter",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex --dangerously-bypass-approvals-and-sandbox\" -TimeoutSeconds 120",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
   "role": "narrative-draft",
   "enabled": false,
   "launchVisibility": "hidden",
@@ -99,7 +102,7 @@ Codex analysis example:
 {
   "workerId": "analysis_codex",
   "displayName": "Codex analysis worker",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex --dangerously-bypass-approvals-and-sandbox\" -TimeoutSeconds 120",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
   "role": "analysis",
   "enabled": false,
   "launchVisibility": "hidden",

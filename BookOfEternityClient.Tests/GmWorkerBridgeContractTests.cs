@@ -41,6 +41,43 @@ public sealed class GmWorkerBridgeContractTests
     }
 
     [Fact]
+    public void CreateWorkerStartInfo_DefaultRelativeRunner_ResolvesRunnerOutsideGameSession()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-worker-runner-resolution-" + Guid.NewGuid().ToString("N"));
+        var runnerPath = Path.Combine(root, "BookOfEternityClient", "Launcher", "gm_worker_cli_runner.ps1");
+        var gameSessionPath = Path.Combine(root, "BookOfEternityClient", "game_session");
+        var originalCurrentDirectory = Environment.CurrentDirectory;
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(runnerPath)!);
+            Directory.CreateDirectory(gameSessionPath);
+            File.WriteAllText(runnerPath, "");
+            Environment.CurrentDirectory = root;
+            var profile = GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile();
+
+            var startInfo = GmWorkerBridgePool.CreateWorkerStartInfo(profile, gameSessionPath);
+            var fileArgumentIndex = startInfo.ArgumentList.IndexOf("-File");
+
+            Assert.True(fileArgumentIndex >= 0);
+            Assert.True(fileArgumentIndex + 1 < startInfo.ArgumentList.Count);
+            Assert.Equal(Path.GetFullPath(runnerPath), startInfo.ArgumentList[fileArgumentIndex + 1]);
+        }
+        finally
+        {
+            Environment.CurrentDirectory = originalCurrentDirectory;
+            try
+            {
+                if (Directory.Exists(root))
+                    Directory.Delete(root, recursive: true);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+    }
+
+    [Fact]
     public void WorkerContracts_SerializeEnumsAsKebabCaseCamelCaseJson()
     {
         var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
