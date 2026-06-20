@@ -8,7 +8,7 @@
 
 ```powershell
 .\gm_worker_cli_runner.ps1 `
-  -AgentCommand "codex --dangerously-bypass-approvals-and-sandbox" `
+  -AgentCommand "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -" `
   -TimeoutSeconds 180
 ```
 
@@ -35,6 +35,11 @@ Dry-run prompt inspection:
 - `5`: nested agent command exited successfully but did not write a non-empty proposal file.
 
 ## Prompt Contract
+
+The runner feeds the generated prompt to the nested agent command through
+UTF-8 stdin. Agent commands used in hidden/background profiles must therefore
+support non-interactive stdin prompts; Codex workers should use `codex exec ... -`
+rather than the interactive `codex ...` command.
 
 The prompt must instruct the worker to:
 

@@ -29,7 +29,7 @@ Use the runner as the profile `launchCommand` and pass Codex as the nested comma
 {
   "workerId": "validation_repair_codex",
   "displayName": "Codex validation repair",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex --dangerously-bypass-approvals-and-sandbox\" -TimeoutSeconds 180",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 180",
   "role": "validation-repair",
   "enabled": true,
   "launchVisibility": "hidden",
@@ -38,7 +38,10 @@ Use the runner as the profile `launchCommand` and pass Codex as the nested comma
 }
 ```
 
-The bridge launches this hidden/background. The runner then feeds the generated prompt to Codex through stdin and requires Codex to write the proposal handoff file.
+The bridge launches this hidden/background. The runner then feeds the generated
+prompt to Codex through UTF-8 stdin and requires Codex to write the proposal
+handoff file. Use `codex exec ... -` for workers; the interactive `codex ...`
+command is for the main GM console, not hidden worker profiles.
 
 ## 3. Verify
 

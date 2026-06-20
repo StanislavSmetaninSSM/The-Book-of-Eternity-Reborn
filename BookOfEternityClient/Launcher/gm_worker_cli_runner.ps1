@@ -88,6 +88,40 @@ function ConvertTo-ProcessArguments {
     return [string]::Join(" ", $quoted)
 }
 
+function Resolve-ExecutableCommand {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$CommandName
+    )
+
+    if ([System.IO.Path]::IsPathRooted($CommandName) -or
+        $CommandName.Contains("\") -or
+        $CommandName.Contains("/")) {
+        return $CommandName
+    }
+
+    $matches = @()
+    try {
+        $matches = @(where.exe $CommandName 2>$null)
+    }
+    catch {
+        $matches = @()
+    }
+
+    $preferred = $matches |
+        Where-Object { $_ -match '\.(exe|cmd|bat|com)$' } |
+        Select-Object -First 1
+    if (-not [string]::IsNullOrWhiteSpace($preferred)) {
+        return [string]$preferred
+    }
+
+    if ($matches.Count -gt 0 -and -not [string]::IsNullOrWhiteSpace($matches[0])) {
+        return [string]$matches[0]
+    }
+
+    return $CommandName
+}
+
 function Build-WorkerPrompt {
     param(
         [Parameter(Mandatory = $true)]
@@ -184,7 +218,7 @@ try {
     }
 
     $startInfo = New-Object System.Diagnostics.ProcessStartInfo
-    $startInfo.FileName = $commandParts[0]
+    $startInfo.FileName = Resolve-ExecutableCommand $commandParts[0]
     $startInfo.WorkingDirectory = $sessionPath
     $startInfo.UseShellExecute = $false
     $startInfo.CreateNoWindow = $true
@@ -211,7 +245,9 @@ try {
 
         $stdoutTask = $process.StandardOutput.ReadToEndAsync()
         $stderrTask = $process.StandardError.ReadToEndAsync()
-        $process.StandardInput.Write($prompt)
+        $promptBytes = $Utf8NoBom.GetBytes($prompt)
+        $process.StandardInput.BaseStream.Write($promptBytes, 0, $promptBytes.Length)
+        $process.StandardInput.BaseStream.Flush()
         $process.StandardInput.Close()
 
         $timeoutMs = [Math]::Max(1, $TimeoutSeconds) * 1000

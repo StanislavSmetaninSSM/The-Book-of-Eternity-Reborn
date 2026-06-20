@@ -120,7 +120,7 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("-AgentCommand", source, StringComparison.Ordinal);
         }
 
-        Assert.Contains("codex --dangerously-bypass-approvals-and-sandbox", guide, StringComparison.Ordinal);
+        Assert.Contains("codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -", guide, StringComparison.Ordinal);
         Assert.Contains("worker-proposal-v1", runner, StringComparison.Ordinal);
         Assert.Contains("Do not edit canonical game_session files directly.", runner, StringComparison.Ordinal);
     }

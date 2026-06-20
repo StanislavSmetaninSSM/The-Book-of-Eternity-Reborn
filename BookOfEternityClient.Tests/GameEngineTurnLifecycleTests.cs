@@ -121,9 +121,15 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     public async Task WriteValidationRepairRequestAsync_WithEnabledWorkerProfile_WritesWorkerTaskAndAudit()
     {
         await _fs.WriteFileAtomicAsync("game_state/world/weather.json", "{\"before\":true}");
+        var scriptPath = Path.Combine(_rootPath, "fake-validation-repair-worker.ps1");
+        await File.WriteAllTextAsync(scriptPath, "exit 7", Encoding.UTF8);
         var engine = CreateGameEngine(configureSettings: settings =>
         {
-            settings.GmWorkerBridgeProfiles.Add(GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile());
+            settings.GmWorkerBridgeProfiles.Add(GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            });
         });
         var issue = new ValidationIssue(
             "game_state/world/weather.json",

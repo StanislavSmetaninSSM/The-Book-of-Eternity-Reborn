@@ -3,7 +3,7 @@ namespace BookOfEternityClient.Services.GmWorkers;
 public static class GmWorkerBridgeProfileTemplates
 {
     public const string RunnerRelativePath = "BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1";
-    public const string CodexBypassCommand = "codex --dangerously-bypass-approvals-and-sandbox";
+    public const string CodexWorkerExecCommand = "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -";
 
     public static IReadOnlyList<WorkerBridgeProfile> CreateDefaultTemplates() =>
     [
@@ -16,7 +16,7 @@ public static class GmWorkerBridgeProfileTemplates
     {
         WorkerId = "validation_repair_codex",
         DisplayName = "Codex validation repair",
-        LaunchCommand = BuildRunnerLaunchCommand(CodexBypassCommand, timeoutSeconds: 180),
+        LaunchCommand = BuildRunnerLaunchCommand(CodexWorkerExecCommand, timeoutSeconds: 180),
         Role = WorkerRole.ValidationRepair,
         Enabled = false,
         LaunchVisibility = WorkerLaunchVisibility.Hidden,
@@ -36,7 +36,7 @@ public static class GmWorkerBridgeProfileTemplates
     {
         WorkerId = "narrative_draft_codex",
         DisplayName = "Codex narrative drafter",
-        LaunchCommand = BuildRunnerLaunchCommand(CodexBypassCommand, timeoutSeconds: 120),
+        LaunchCommand = BuildRunnerLaunchCommand(CodexWorkerExecCommand, timeoutSeconds: 120),
         Role = WorkerRole.NarrativeDraft,
         Enabled = false,
         LaunchVisibility = WorkerLaunchVisibility.Hidden,
@@ -56,7 +56,7 @@ public static class GmWorkerBridgeProfileTemplates
     {
         WorkerId = "analysis_codex",
         DisplayName = "Codex analysis worker",
-        LaunchCommand = BuildRunnerLaunchCommand(CodexBypassCommand, timeoutSeconds: 120),
+        LaunchCommand = BuildRunnerLaunchCommand(CodexWorkerExecCommand, timeoutSeconds: 120),
         Role = WorkerRole.Analysis,
         Enabled = false,
         LaunchVisibility = WorkerLaunchVisibility.Hidden,

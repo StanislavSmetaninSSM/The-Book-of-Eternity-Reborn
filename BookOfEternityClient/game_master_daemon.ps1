@@ -104,13 +104,13 @@ $script:BridgeAutoStartAttempted = $false
 
 function New-DefaultGmWorkerBridgeProfiles {
     $runner = 'BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1'
-    $codex = 'codex --dangerously-bypass-approvals-and-sandbox'
+    $codexWorker = 'codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -'
 
     return @(
         [ordered]@{
             workerId = "validation_repair_codex"
             displayName = "Codex validation repair"
-            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codex`" -TimeoutSeconds 180"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codexWorker`" -TimeoutSeconds 180"
             role = "validation-repair"
             enabled = $false
             launchVisibility = "hidden"
@@ -127,7 +127,7 @@ function New-DefaultGmWorkerBridgeProfiles {
         [ordered]@{
             workerId = "narrative_draft_codex"
             displayName = "Codex narrative drafter"
-            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codex`" -TimeoutSeconds 120"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codexWorker`" -TimeoutSeconds 120"
             role = "narrative-draft"
             enabled = $false
             launchVisibility = "hidden"
@@ -144,7 +144,7 @@ function New-DefaultGmWorkerBridgeProfiles {
         [ordered]@{
             workerId = "analysis_codex"
             displayName = "Codex analysis worker"
-            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codex`" -TimeoutSeconds 120"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codexWorker`" -TimeoutSeconds 120"
             role = "analysis"
             enabled = $false
             launchVisibility = "hidden"
