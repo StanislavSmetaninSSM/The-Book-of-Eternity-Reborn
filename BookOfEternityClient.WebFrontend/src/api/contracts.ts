@@ -36,6 +36,7 @@ export type BrowserApiResult<TData> = BrowserApiSuccess<TData> | BrowserApiFailu
 export interface BrowserApiErrorPayload {
   error: string;
   loadedSaveId?: string;
+  createdSaveId?: string;
   menu?: BrowserMainMenuDto;
 }
 
@@ -133,6 +134,17 @@ export interface BrowserLoadSaveResultDto {
   success: boolean;
   error: string;
   loadedSaveId: string;
+  menu: BrowserMainMenuDto;
+}
+
+export interface BrowserCreateSaveRequest {
+  saveName: string | null;
+}
+
+export interface BrowserCreateSaveResultDto {
+  success: boolean;
+  error: string;
+  createdSaveId: string;
   menu: BrowserMainMenuDto;
 }
 

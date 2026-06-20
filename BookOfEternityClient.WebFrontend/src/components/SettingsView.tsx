@@ -10,6 +10,7 @@ export function SettingsView() {
   const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState } = useShell();
   const [settings, setSettings] = useState<BrowserClientSettingsDto | null>(null);
   const [saveNotice, setSaveNotice] = useState('');
+  const [creatingSave, setCreatingSave] = useState(false);
   const [loadingSaveId, setLoadingSaveId] = useState<string | null>(null);
   const updateQueue = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
@@ -33,6 +34,36 @@ export function SettingsView() {
       void browserApi.updateClientSettings(patch).then(() => void loadBrowserState());
     }, 500);
   }, [loadBrowserState]);
+
+  async function createManualSave() {
+    setCreatingSave(true);
+    setSaveNotice('Создаём ручное сохранение…');
+    try {
+      const result = await browserApi.createSave({ saveName: null });
+      if (!isMountedRef.current) {
+        return;
+      }
+      if (isSuccess(result) && result.data.success) {
+        setSaveNotice('Игра сохранена. Новая запись появилась в списке сохранений.');
+        await loadBrowserState();
+        return;
+      }
+      if (isSuccess(result)) {
+        setSaveNotice(toLauncherSaveFailureNotice(result.data.error));
+        return;
+      }
+      setSaveNotice(toLauncherSaveFailureNotice(result.message || result.playerMessage));
+    } catch {
+      if (!isMountedRef.current) {
+        return;
+      }
+      setSaveNotice('Сохранение не удалось создать. Проверьте, что книга запущена, и попробуйте ещё раз.');
+    } finally {
+      if (isMountedRef.current) {
+        setCreatingSave(false);
+      }
+    }
+  }
 
   async function loadSaveSlot(slot: BrowserMainMenuDto['saves'][number]) {
     setLoadingSaveId(slot.saveId);
@@ -68,6 +99,15 @@ export function SettingsView() {
   if (!settings) {
     return <div className="settings-view"><p className="block-text--muted">Загрузка настроек…</p></div>;
   }
+
+  const canCreateSave = Boolean(menu?.session.gameSessionExists && menu.session.hasReadableSoul && menu.session.canStartBrowserWrite);
+  const createSaveDisabledReason = !menu?.session.gameSessionExists
+    ? 'Активная глава не найдена. Начните игру или загрузите существующее сохранение.'
+    : !menu.session.hasReadableSoul
+      ? 'Текущую душу не удалось прочитать. Сохранение сейчас небезопасно.'
+      : !menu.session.canStartBrowserWrite
+        ? 'Книга занята текущим ходом или локальной операцией. Дождитесь завершения действия.'
+        : '';
 
   return (
     <div className="settings-view">
@@ -118,6 +158,17 @@ export function SettingsView() {
         <p className="block-text--muted">
           Здесь можно выбрать локальную запись и вернуться к ней без выхода в главное меню.
         </p>
+        <div className="settings-save-actions">
+          <button
+            type="button"
+            className="launcher-secondary-action"
+            disabled={!canCreateSave || creatingSave || loadingSaveId !== null}
+            onClick={() => void createManualSave()}
+          >
+            {creatingSave ? 'Сохраняем…' : 'Сохранить игру'}
+          </button>
+          {createSaveDisabledReason && <p className="block-text--muted">{createSaveDisabledReason}</p>}
+        </div>
         <div className="launcher-save-list settings-save-list">
           {menu?.saves && menu.saves.length > 0 ? menu.saves.map((slot) => (
             <article key={slot.saveId} className="launcher-save-card">

@@ -518,6 +518,42 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveCreateEndpoint_CreatesManualSaveVisibleInMenu()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Браузерная душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 2
+        }
+        """);
+        WriteSessionFile("game_state/player/state.json", """
+        {
+          "characterName": "Асура",
+          "currentLocation": "Покои виконта де Вальмонта",
+          "turnNumber": 7
+        }
+        """);
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var saveResponse = await client.PostAsJsonAsync("/api/saves/create", new { saveName = "" });
+        var saved = JsonNode.Parse(await saveResponse.Content.ReadAsStringAsync())!.AsObject();
+
+        saveResponse.EnsureSuccessStatusCode();
+        Assert.True(saved["success"]!.GetValue<bool>());
+        Assert.StartsWith("manual:", saved["createdSaveId"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.Contains("Ход", saved["menu"]!["saves"]!.AsArray()[0]!["turnLabel"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.Contains(
+            "Браузерное сохранение",
+            saved["menu"]!["saves"]!.AsArray()[0]!["displayName"]!.GetValue<string>(),
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Single(Directory.GetFiles(Path.Combine(_rootPath, "game_session", "saves", "manual_saves"), "*.zip"));
+    }
+
+    [Fact]
     public async Task SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked()
     {
         WriteSessionFile("game_state/meta/soul_state.json", """

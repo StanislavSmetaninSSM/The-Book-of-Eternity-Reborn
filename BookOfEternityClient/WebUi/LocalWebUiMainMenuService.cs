@@ -96,6 +96,63 @@ public sealed class LocalWebUiMainMenuService
             Menu: await BuildAsync());
     }
 
+    public async Task<BrowserCreateSaveResultDto> CreateManualSaveAsync(BrowserCreateSaveRequest request)
+    {
+        var currentMenu = await BuildAsync();
+        if (!currentMenu.Session.GameSessionExists || !currentMenu.Session.HasReadableSoul)
+        {
+            return new BrowserCreateSaveResultDto(
+                Success: false,
+                Error: "Активная глава не найдена. Сначала начните игру или загрузите существующее сохранение.",
+                CreatedSaveId: string.Empty,
+                Menu: currentMenu);
+        }
+
+        var writeStatus = await _writeCoordinator.BuildStatusAsync();
+        if (!writeStatus.CanStartBrowserWrite)
+        {
+            return new BrowserCreateSaveResultDto(
+                Success: false,
+                Error: BuildBrowserWriteBlockedMessage(writeStatus, "Сохранение сейчас недоступно из-за состояния главы."),
+                CreatedSaveId: string.Empty,
+                Menu: currentMenu);
+        }
+
+        var saveName = BuildManualSaveName(request.SaveName, currentMenu.Session);
+        var description = BuildManualSaveDescription(currentMenu.Session);
+        var saved = false;
+        var writeResult = await _writeCoordinator.ExecuteAsync(
+            new BrowserLocalWriteRequest(
+                OwnerId: "browser-main-menu-save",
+                OwnerLabel: "Browser main menu",
+                OperationLabel: "browser manual save"),
+            Array.Empty<string>(),
+            async () =>
+            {
+                saved = await _saveLoad.SaveGameAsync(
+                    saveName,
+                    description,
+                    "saves/manual_saves",
+                    currentMenu.Session.TurnNumber);
+                if (!saved)
+                    throw new InvalidOperationException("Не удалось создать ручное сохранение.");
+            });
+
+        var updatedMenu = await BuildAsync();
+        var createdSaveId = updatedMenu.Saves
+            .Where(save => string.Equals(save.Scope, "manual", StringComparison.Ordinal) &&
+                           string.Equals(save.DisplayName, saveName, StringComparison.Ordinal))
+            .OrderByDescending(save => save.TimestampUtc ?? DateTime.MinValue)
+            .FirstOrDefault()?.SaveId ?? string.Empty;
+
+        var success = writeResult.Success && saved;
+        return new BrowserCreateSaveResultDto(
+            Success: success,
+            Error: success ? string.Empty : writeResult.Message,
+            CreatedSaveId: createdSaveId,
+            Menu: updatedMenu);
+    }
+
     private async Task<BrowserMainMenuSessionDto> BuildSessionSummaryAsync(
         BrowserLifecycleDashboardDto dashboard,
         string? terminalSoulDissipationMessage)
@@ -159,7 +216,9 @@ public sealed class LocalWebUiMainMenuService
         return "Продолжение сейчас недоступно. Проверьте состояние главы.";
     }
 
-    private static string BuildBrowserWriteBlockedMessage(BrowserLocalWriteStatus status)
+    private static string BuildBrowserWriteBlockedMessage(
+        BrowserLocalWriteStatus status,
+        string fallbackMessage = "Загрузка сохранения сейчас недоступна из-за состояния главы.")
     {
         if (status.PendingTurn.HasActiveGmTurn)
             return $"Книга занята текущим ходом: {status.PendingTurn.Message}";
@@ -169,8 +228,23 @@ public sealed class LocalWebUiMainMenuService
             return "Книга занята другим действием. Дождитесь завершения операции или откройте расширенный режим.";
         }
 
-        return "Загрузка сохранения сейчас недоступна из-за состояния главы.";
+        return fallbackMessage;
     }
+
+    private static string BuildManualSaveName(string? requestedName, BrowserMainMenuSessionDto session)
+    {
+        var trimmed = requestedName?.Trim();
+        if (!string.IsNullOrWhiteSpace(trimmed))
+            return trimmed;
+
+        var soul = string.IsNullOrWhiteSpace(session.SoulName) || session.SoulName == "Нет активной души"
+            ? "герой"
+            : session.SoulName;
+        return $"Браузерное сохранение - {soul}, {session.TurnLabel}";
+    }
+
+    private static string BuildManualSaveDescription(BrowserMainMenuSessionDto session) =>
+        $"Ручное сохранение из браузера: {session.SoulName}, {session.RealmLabel}, {session.TurnLabel}.";
 
     private static IReadOnlyList<BrowserMainMenuActionDto> BuildActions(
         BrowserMainMenuSessionDto session,
@@ -457,4 +531,12 @@ public sealed record BrowserLoadSaveResultDto(
     bool Success,
     string Error,
     string LoadedSaveId,
+    BrowserMainMenuDto Menu);
+
+public sealed record BrowserCreateSaveRequest(string? SaveName);
+
+public sealed record BrowserCreateSaveResultDto(
+    bool Success,
+    string Error,
+    string CreatedSaveId,
     BrowserMainMenuDto Menu);

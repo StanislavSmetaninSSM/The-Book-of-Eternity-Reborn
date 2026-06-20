@@ -14,7 +14,9 @@ describe('browser settings saves and audio surfaces #1186 #1187', () => {
 
     expect(settingsView).toContain('Сохранения');
     expect(settingsView).toContain('menu?.saves');
+    expect(settingsView).toContain('browserApi.createSave');
     expect(settingsView).toContain('browserApi.loadSave');
+    expect(settingsView).toContain('Сохранить игру');
     expect(settingsView).toContain('Загрузить сохранение');
     expect(settingsView).toContain('Сохранений пока нет');
   });
