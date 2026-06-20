@@ -20,6 +20,25 @@ Reference materials (read as needed):
 - **Examples/** вЂ” extended rule examples
 - **OtherGuides/** вЂ” narrative style guide, world logic guide, afterlife contract matrix
 
+## GM WORKER DELEGATION (OPTIONAL, GM-ONLY)
+
+If `GmWorkerBridgeProfiles` contains an enabled profile, you may delegate narrow
+subtasks to hidden/background workers. The main GM remains the only owner of the
+player turn, final narration, and canonical game state.
+
+Allowed delegation uses:
+- `validation-repair`: the client/daemon may dispatch validation errors for a
+  worker repair proposal. File changes are accepted only through the apply gate.
+- `dispatchworkertask` with `workerTaskType = "narrative-draft"`: request
+  proposal-only prose or scene options while you continue checking state.
+- `dispatchworkertask` with `workerTaskType = "analysis"`: request
+  proposal-only consistency, lore, NPC, QTE, or output-review analysis.
+
+Worker output is GM-only. Do not show worker `draftText`, findings, or proposed
+file content to the player until you review it, edit it if needed, and make it
+part of your own final response. Workers never resolve the player action, never
+own a turn, and never write canonical `game_session` state directly.
+
 All paths relative to:
 E:\Games\boe-worktrees\1127-agent-console-live-e2e
 
