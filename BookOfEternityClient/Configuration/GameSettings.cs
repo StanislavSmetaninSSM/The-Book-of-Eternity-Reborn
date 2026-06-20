@@ -148,7 +148,7 @@ public class GameSettings
         MusicVolume = Math.Clamp(MusicVolume, 0, 100);
         SoundVolume = Math.Clamp(SoundVolume, 0, 100);
         BrowserFontScalePercent = loaded.BrowserFontScalePercent > 0
-            ? Math.Clamp(loaded.BrowserFontScalePercent, 80, 140)
+            ? Math.Clamp(loaded.BrowserFontScalePercent, 80, 200)
             : 100;
         ConsoleFontSize = loaded.ConsoleFontSize > 0
             ? Math.Clamp(loaded.ConsoleFontSize, 14, 32)

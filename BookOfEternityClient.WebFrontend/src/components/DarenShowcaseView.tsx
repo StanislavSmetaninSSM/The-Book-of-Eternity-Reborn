@@ -22,6 +22,14 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
   const [notice, setNotice] = useState('');
   const [busyKey, setBusyKey] = useState<string | null>(null);
   const [readyActionId, setReadyActionId] = useState<string | null>(null);
+  // When the backend returns a resolution (the just-played mini-game's result)
+  // it also returns the next activeScene. Show ONLY the result in the main
+  // narrative field with a "Продолжить" gate until the player advances, so the
+  // result and the next scene are never shown at once. Tracked by the
+  // resolution's actionId so a new resolution re-arms the gate.
+  const [dismissedResolutionActionId, setDismissedResolutionActionId] = useState<string | null>(null);
+  const resolutionActionId = showcaseState?.resolution?.actionId ?? null;
+  const showResolution = Boolean(showcaseState?.resolution && !showcaseState?.completion && resolutionActionId !== dismissedResolutionActionId);
 
   useEffect(() => {
     if (initialState) {
@@ -144,7 +152,20 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
       )}
       {state.error && <p className="warning-text">{toPlayerFacingText(state.error, 'Вылазка требует внимания.')}</p>}
 
-      {!isCompleted && (state.state === 'Intro' || !state.activeScene) ? (
+      {!isCompleted && showResolution && state.resolution ? (
+        <article className="summary-card qte-practice-attempt daren-showcase-attempt daren-showcase-resolution">
+          <header>
+            <h3>{toPlayerFacingText(activeChapter?.title ?? activeScene?.title, 'Результат действия')}</h3>
+            <span className="availability-pill">вылазка</span>
+          </header>
+          {renderDarenProse(state.resolution.resultText, 'Дарен проходит к следующей точке вылазки.')}
+          <div className="phase-chip-grid">
+            <button type="button" onClick={() => setDismissedResolutionActionId(resolutionActionId)} disabled={busyKey !== null}>
+              Продолжить
+            </button>
+          </div>
+        </article>
+      ) : !isCompleted && (state.state === 'Intro' || !state.activeScene) ? (
         <article className="summary-card daren-showcase-intro">
           <h3>Ограбление поместья</h3>
           <p>Дарен берёт складной крюк, отмычки и серый плащ. Цель проста: тихо войти, забрать посох, отрезать погоню и вернуться в убежище.</p>
@@ -157,12 +178,10 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
       ) : !isCompleted ? (
         <article className="summary-card qte-practice-attempt daren-showcase-attempt">
           <header>
-            <div>
-              <h3>{toPlayerFacingText(activeChapter?.title, activeScene?.title ?? 'Вылазка Дарена')}</h3>
-              {renderDarenProse(activeChapter?.narrative, 'Дарен двигается к следующей точке вылазки.')}
-            </div>
+            <h3>{toPlayerFacingText(activeChapter?.title, activeScene?.title ?? 'Вылазка Дарена')}</h3>
             <span className="availability-pill">вылазка</span>
           </header>
+          {renderDarenProse(activeChapter?.narrative, 'Дарен двигается к следующей точке вылазки.')}
           <p className="muted">{qteLayoutSupportNote}</p>
           {renderScoreMetrics(activeScene?.scoreState?.metrics ?? [], 'Счёт вылазки', false)}
           {activeAction ? (
@@ -195,13 +214,6 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
           )}
         </article>
       ) : null}
-
-      {state.resolution && !state.completion && (
-        <article className="summary-card">
-          <h3>Следующий участок</h3>
-          <p>{toPlayerFacingText(state.resolution.resultText, 'Дарен проходит к следующей точке.')}</p>
-        </article>
-      )}
 
       {state.completion && (
         <article className="summary-card">

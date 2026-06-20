@@ -3,10 +3,9 @@ import { resolveTabShortcut, tabNav } from '../src/components/tabBarConfig.js';
 
 const expectedShortcuts: Array<[string, TabId]> = [
   ['1', 'scene'],
-  ['2', 'practice'],
-  ['3', 'status'],
-  ['4', 'help'],
-  ['5', 'settings']
+  ['2', 'status'],
+  ['3', 'help'],
+  ['4', 'settings']
 ];
 
 if (tabNav.length !== expectedShortcuts.length) {
@@ -20,7 +19,7 @@ for (const [key, tabId] of expectedShortcuts) {
   }
 }
 
-for (const key of ['0', '6', '9', 'x', '']) {
+for (const key of ['0', '5', '6', '9', 'x', '']) {
   if (resolveTabShortcut(key) !== null) {
     throw new Error(`Expected shortcut ${key || '<empty>'} to be ignored.`);
   }

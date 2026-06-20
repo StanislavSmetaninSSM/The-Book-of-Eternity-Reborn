@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { motion } from 'framer-motion';
 import { browserApi } from '../api/client';
 import type { BrowserApiResult, BrowserMainMenuDto, ExplorerCommandResult } from '../api/contracts';
 import { isSuccess, useShell } from '../context/ShellContext';
@@ -7,11 +8,16 @@ import { toCommandNotice, toLauncherSaveFailureNotice } from '../utils/formatter
 import { playerLauncherAboutText, toPlayerFacingText } from '../utils/playerCopy';
 import { ActionCommandResult } from './CommandResult';
 import { buildDefaultPromptAnswers, type PromptAnswers } from './PromptForm';
+import { OrnamentBorder } from './decorative';
+import { staggerContainer, fadeUp } from '../lib/motion';
 
 type LauncherMode = 'continue' | 'daren-showcase' | 'practice' | 'load' | 'new-game' | 'settings' | 'about';
 interface LauncherPrimaryAction { mode: LauncherMode; label: string; description: string; enabled: boolean; disabledReason: string; }
 
-const launcherModes: LauncherMode[] = ['continue', 'daren-showcase', 'practice', 'load', 'new-game', 'settings', 'about'];
+// Real-game options first (continue/load/new-game), then book-keeping
+// (settings/about), then the out-of-canon extras (QTE practice, Daren heist)
+// kept lowest so they never sit above actual gameplay choices.
+const launcherModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about', 'practice', 'daren-showcase'];
 const launcherModeDetails: Record<LauncherMode, { label: string; description: string }> = {
   continue: { label: 'Продолжить главу', description: 'Вернуться к текущей сохранённой главе.' },
   'daren-showcase': { label: 'Вылазка Дарена', description: 'Ограбление поместья с постоянным лучшим итогом.' },
@@ -180,7 +186,57 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
       <div className="launcher-art-bg" aria-hidden="true">
         <img src="/main-menu-bg.webp" alt="" onError={(event) => { event.currentTarget.hidden = true; }} />
       </div>
+      {/* Drifting arcane motes for ambient life (CSS-animated; reduced-motion
+          stops them). */}
+      <div className="launcher-ambient" aria-hidden="true">
+        <span /><span /><span /><span /><span /><span />
+      </div>
       <div className="launcher-window">
+        <div className="launcher-crest-row" aria-hidden="true">
+          <div className="launcher-crest-rule launcher-crest-rule--left">
+            <span className="launcher-crest-rule__line" />
+            <span className="launcher-crest-rule__rune">ᚱ</span>
+            <span className="launcher-crest-rule__line launcher-crest-rule__line--short" />
+          </div>
+          <div className="launcher-crest">
+          <svg viewBox="0 0 96 96" focusable="false">
+            <defs>
+              <radialGradient id="launcherCrestGlow" cx="50%" cy="44%" r="55%">
+                <stop offset="0" stopColor="#f5d488" stopOpacity="0.9" />
+                <stop offset="1" stopColor="#c89b3c" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+            <circle className="launcher-crest__halo" cx="48" cy="46" r="40" fill="url(#launcherCrestGlow)" opacity="0.55" />
+            {/* Rotating rune ring */}
+            <g className="launcher-crest__runes">
+              <circle cx="48" cy="46" r="34" fill="none" stroke="#c89b3c" strokeWidth="0.8" opacity="0.35" />
+              <g fill="#d4a84b">
+                <text x="48" y="16" textAnchor="middle" fontSize="6" fontFamily="serif" opacity="0.8">ᚱ</text>
+                <text x="82" y="48" textAnchor="middle" fontSize="6" fontFamily="serif" opacity="0.7">ᛟ</text>
+                <text x="48" y="84" textAnchor="middle" fontSize="6" fontFamily="serif" opacity="0.8">ᛜ</text>
+                <text x="14" y="48" textAnchor="middle" fontSize="6" fontFamily="serif" opacity="0.7">ᛏ</text>
+                <text x="72" y="22" textAnchor="middle" fontSize="5" fontFamily="serif" opacity="0.55">ᛉ</text>
+                <text x="72" y="76" textAnchor="middle" fontSize="5" fontFamily="serif" opacity="0.55">ᛒ</text>
+                <text x="24" y="76" textAnchor="middle" fontSize="5" fontFamily="serif" opacity="0.55">ᛗ</text>
+                <text x="24" y="22" textAnchor="middle" fontSize="5" fontFamily="serif" opacity="0.55">ᚦ</text>
+              </g>
+            </g>
+            {/* Open book */}
+            <path d="M30 56 Q48 49 66 56 L66 66 Q48 59 30 66 Z" fill="#1a140c" stroke="#d4a84b" strokeWidth="1.4" />
+            <path d="M48 50 L48 64" stroke="#d4a84b" strokeWidth="1.2" opacity="0.7" />
+            {/* Eternal flame — flickers */}
+            <g className="launcher-crest__flame">
+              <path d="M48 32 Q42 40 46 46 Q48 43 50 46 Q54 40 48 32 Z" fill="#e07a3a" opacity="0.92" />
+              <path className="launcher-crest__flame-inner" d="M48 36 Q45 41 47 45 Q48 43 49 45 Q51 41 48 36 Z" fill="#f5d488" opacity="0.9" />
+            </g>
+          </svg>
+          </div>
+          <div className="launcher-crest-rule launcher-crest-rule--right">
+            <span className="launcher-crest-rule__line launcher-crest-rule__line--short" />
+            <span className="launcher-crest-rule__rune">ᛟ</span>
+            <span className="launcher-crest-rule__line" />
+          </div>
+        </div>
         <div className="launcher-copy">
           <p className="panel-eyebrow">главная книга</p>
           <h2 id="browser-launcher-title">Открыть книгу</h2>
@@ -188,7 +244,13 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
           {sessionWarningText && <p className="launcher-session-warning" role="status">{sessionWarningText}</p>}
         </div>
 
-        <nav className="launcher-menu" aria-label="Действия главного меню">
+        <motion.nav
+          className="launcher-menu"
+          aria-label="Действия главного меню"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
           {launcherModes.map((mode) => {
             const details = launcherModeDetails[mode];
             const action = findLauncherMenuAction(menu, mode);
@@ -197,8 +259,9 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
             const actionDescription = launcherActionDescription(menu, mode);
             const disabledReason = disabled ? launcherActionDisabledReason(menu, mode) : '';
             return (
-              <button
+              <motion.button
                 key={mode}
+                variants={fadeUp}
                 type="button"
                 className={`launcher-menu__item${isActive ? ' is-active' : ''}${mode === primaryAction.mode && !disabled ? ' is-primary' : ''}`}
                 data-launcher-mode={mode}
@@ -213,10 +276,12 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
                   {disabled ? 'Закрыто' : 'Открыть'}
                   <span>→</span>
                 </span>
-              </button>
+              </motion.button>
             );
           })}
-        </nav>
+        </motion.nav>
+
+        <OrnamentBorder />
 
         {renderModeContent()}
         {launcherNotice && <p className="composer-notice">{launcherNotice}</p>}
@@ -352,7 +417,10 @@ function sanitizeNewChapterCommandResult(result: BrowserApiResult<ExplorerComman
 }
 
 function selectPrimaryLauncherAction(menu: BrowserMainMenuDto): LauncherPrimaryAction {
-  const preferredModes: LauncherMode[] = ['continue', 'daren-showcase', 'practice', 'load', 'new-game'];
+  // Primary action preference: real-game options first, then the out-of-canon
+  // extras (QTE practice, Daren heist) last so they never become the default
+  // highlighted entry over an actual gameplay choice.
+  const preferredModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about', 'practice', 'daren-showcase'];
   for (const mode of preferredModes) {
     const action = findLauncherMenuAction(menu, mode);
     if (action?.enabled) {

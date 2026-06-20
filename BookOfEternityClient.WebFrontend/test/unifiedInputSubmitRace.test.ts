@@ -41,8 +41,13 @@ assertIncludes(
 );
 assertIncludes(
   unifiedInput,
-  'if (e.key === \'Enter\' && !e.shiftKey)',
-  'Enter without Shift should remain the submit shortcut while Shift+Enter stays available for newlines.'
+  'if (!isPostMode && e.key === \'Enter\' && !e.shiftKey)',
+  'Enter without Shift should remain the command-mode submit shortcut while post mode keeps newlines available.'
+);
+assertIncludes(
+  unifiedInput,
+  'if (isPostMode && e.key === \'Enter\' && (e.ctrlKey || e.metaKey))',
+  'Post mode should still provide an explicit keyboard submit path without stealing ordinary newlines.'
 );
 assertIncludes(
   unifiedInput,

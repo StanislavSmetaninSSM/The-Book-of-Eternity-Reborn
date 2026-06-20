@@ -1,13 +1,11 @@
+/* ═══════════════════════════════════════════════════════════════════
+   BG3 CINEMATIC PALETTE — warm bronze / amber / ivory / ember
+   These values OVERRIDE the defaults in tokens.css. Both files declare
+   the same variables; this file is imported LAST so its values win.
+   Variable names are identical — existing CSS files keep working.
+   ═══════════════════════════════════════════════════════════════════ */
+
 :root {
-  color-scheme: dark;
-
-  /* ── Typography ── */
-  --font-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-display: 'Cinzel Decorative', 'Cinzel', 'Playfair Display', Georgia, 'Times New Roman', serif;
-  --font-narrative: 'Cormorant Garamond', 'Playfair Display', Georgia, 'Times New Roman', serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-  --font-rune: 'Cinzel', 'Cinzel Decorative', serif;
-
   /* ── BG3 warm obsidian foundations ── */
   --color-ink: #0a0705;
   --color-ink-2: #120d09;
@@ -16,7 +14,7 @@
   --color-ash: #2a2018;
   --color-ash-light: #34281f;
 
-  /* ── Parchment & text (warmer ivory) ── */
+  /* ── Parchment & ivory text (warmer) ── */
   --color-parchment: #f4e9cf;
   --color-parchment-muted: #c9b896;
   --color-mist: #8d8170;
@@ -32,7 +30,7 @@
   --color-candle: #ffb968;
   --color-rune: #e6b84d;
 
-  /* ── Glass surfaces ── */
+  /* ── Glass surfaces (warmer tint) ── */
   --color-glass: rgba(20, 14, 8, 0.86);
   --color-glass-soft: rgba(245, 212, 136, 0.04);
   --color-glass-strong: rgba(10, 7, 5, 0.94);
@@ -57,14 +55,6 @@
   --radius-lg: 1.1rem;
   --radius-xl: 1.75rem;
 
-  /* ── Spacing ── */
-  --space-1: 0.3rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.4rem;
-  --space-6: 2rem;
-
   /* ── Shadows (deeper, warmer) ── */
   --shadow-panel: 0 1.4rem 4rem rgba(0, 0, 0, 0.55), 0 0.3rem 0.8rem rgba(0, 0, 0, 0.4);
   --shadow-panel-strong: 0 2.2rem 6rem rgba(0, 0, 0, 0.65), 0 0.4rem 1rem rgba(0, 0, 0, 0.5);
@@ -78,55 +68,29 @@
   --motion-breathe: 28s ease-in-out;
   --motion-page: 480ms cubic-bezier(0.65, 0, 0.35, 1);
 
-  /* ── Sidebar ── */
-  --sidebar-width: 76px;
-  --sidebar-width-collapsed: 56px;
-
-  /* ── Enhanced motion ── */
-
-  /* ── Particle opacity (reduced-motion sets to 0) ── */
+  /* ── Particle + texture opacities ── */
   --particle-opacity: 0.55;
   --grain-opacity: 0.06;
   --vignette-opacity: 0.55;
 
-  /* ── Cinematic surfaces ── */
+  /* ── Cinematic surfaces (override the old rgba tokens with gradients) ── */
   --surface-card: linear-gradient(155deg, rgba(34, 26, 20, 0.92), rgba(20, 14, 8, 0.92));
   --surface-card-hover: linear-gradient(155deg, rgba(42, 32, 24, 0.94), rgba(26, 18, 12, 0.94));
   --border-card: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 18%, rgba(245, 212, 136, 0.08));
   --border-card-hover: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 42%, rgba(245, 212, 136, 0.16));
 
-  /* ── Glow effects ── */
+  /* ── Glow effects (stronger, warmer) ── */
   --glow-gold: 0 0 28px color-mix(in srgb, var(--color-gold) 28%, transparent);
   --glow-realm: 0 0 32px color-mix(in srgb, var(--realm-accent, var(--color-gold)) 22%, transparent);
   --glow-hover: 0 0 42px color-mix(in srgb, var(--realm-accent, var(--color-gold)) 30%, transparent);
   --glow-inner: inset 0 0 24px color-mix(in srgb, var(--realm-accent, var(--color-gold)) 8%, transparent);
 
-  /* ── Active realm accent (overridden at runtime) ── */
-  --realm-accent: var(--realm-mortal);
-
-  /* ── Semantic surface aliases (referenced by components — DO NOT change
-       the exact text of these lines; realmTheming.test.ts asserts on them) ── */
-  --border-subtle: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 16%, rgba(255, 255, 255, 0.06));
-  --border: var(--border-subtle);
-  --surface-base: var(--color-ink-2);
-  --surface-subtle: var(--color-obsidian);
-  --surface-elevated: var(--color-obsidian-2);
-  --surface-raised: var(--surface-elevated);
-  --surface-command-bar: color-mix(in srgb, var(--color-ink) 78%, var(--realm-accent, var(--color-gold)) 10%);
-  --surface-command-field: color-mix(in srgb, var(--color-obsidian) 88%, var(--realm-accent, var(--color-gold)) 7%);
-  --surface-hover: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 8%, var(--color-obsidian-2));
-  --surface-active: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 12%, var(--color-obsidian-2));
-  --text-primary: var(--color-parchment);
-  --text-muted: var(--color-mist);
-  --text-secondary: var(--color-parchment-muted);
-  --color-accent: var(--realm-accent);
-  --color-success: var(--state-success);
-  --color-warning: var(--state-warning);
-  --color-error: var(--state-danger);
-  --accent-gold: var(--color-gold);
-  --space-xs: var(--space-1);
-  --space-sm: var(--space-2);
-  --space-md: var(--space-4);
+  /* ── Typography (self-hosted via @fontsource) ── */
+  --font-ui: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Cinzel Decorative', 'Cinzel', Georgia, 'Times New Roman', serif;
+  --font-narrative: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-rune: 'Cinzel', 'Cinzel Decorative', serif;
 
   /* ── Type scale (cinematic) ── */
   --text-xs: 0.72rem;
@@ -152,10 +116,7 @@
   --leading-normal: 1.5;
   --leading-relaxed: 1.72;
 
-  /* ── Texture tokens (data-URIs set in textures.css) ── */
-  --texture-parchment: none;
-  --texture-stone: none;
-  --texture-metal: none;
-  --texture-leather: none;
-  --texture-grain: none;
+  /* ── Layout ── */
+  --sidebar-width: 76px;
+  --sidebar-width-collapsed: 56px;
 }

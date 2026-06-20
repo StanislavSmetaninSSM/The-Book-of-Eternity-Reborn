@@ -5,6 +5,7 @@ import { isSuccess } from '../context/ShellContext';
 import { formatQteActionCheck, formatQteGradeLabel, normalizeQteGrade, type QteAction, type QteGrade } from '../utils/formatters';
 import { toPlayerFacingText } from '../utils/playerCopy';
 import { qteLayoutSupportNote } from '../utils/qteKeyInput';
+import { getQteTypeGlyph } from '../lib/icons';
 import { QteMiniGame } from './qte/QteMiniGame';
 
 interface QtePracticeViewProps {
@@ -59,6 +60,10 @@ export function QtePracticeView({ initialState }: QtePracticeViewProps) {
   const selectedEntry = state.selectedTypeId ? catalogByType.get(state.selectedTypeId) ?? null : null;
   const selectedDifficulty = selectedEntry?.difficulties.find((difficulty) => difficulty.difficultyId === state.selectedDifficultyId) ?? null;
   const activeActionIsReady = activeAction ? readyActionId === activeAction.actionId : false;
+  // When a finished attempt's result is pending (resolution / completion) and
+  // the live scene has ended, show a dedicated result window instead of the
+  // catalog + result cards stacked together.
+  const hasResult = !state.activeScene && Boolean(state.resolution || state.completion);
 
   async function applyResponse(response: BrowserApiResult<QtePracticeWebStateDto>, fallback: string) {
     setResult(response);
@@ -143,46 +148,52 @@ export function QtePracticeView({ initialState }: QtePracticeViewProps) {
 
       {state.error && <p className="warning-text">{toPlayerFacingText(state.error, 'Тренировка требует внимания.')}</p>}
 
-      {state.state === 'Catalog' || !state.activeScene ? (
+      {!hasResult && (state.state === 'Catalog' || !state.activeScene) ? (
         <div className="qte-practice-catalog" aria-label="Типы QTE для тренировки">
           {state.catalog.map((entry) => {
             const selectedDifficulty = selectedDifficulties[entry.typeId] ?? entry.difficulties.find((difficulty) => difficulty.difficultyId === 'normal')?.difficultyId ?? entry.difficulties[0]?.difficultyId ?? 'normal';
+            const Glyph = getQteTypeGlyph(entry.typeId);
             return (
-              <article key={entry.typeId} className="qte-practice-card">
-                <header>
-                  <div>
-                    <h3>{toPlayerFacingText(entry.title, entry.typeId)}</h3>
-                    <p className="qte-practice-card__type">Мини-игра без наград</p>
-                  </div>
-                  <span className="availability-pill">{entry.available ? 'доступно' : 'позже'}</span>
-                </header>
-                <p>{toPlayerFacingText(entry.description, 'Тренировка без наград и без изменения прохождения.')}</p>
-                <p className="muted">{toPlayerFacingText(entry.instructions, 'Сыграйте мини-игру и посмотрите тренировочный результат.')}</p>
-                <div className="qte-practice-difficulty" aria-label={`Сложность ${entry.title}`}>
-                  {entry.difficulties.map((difficulty) => (
-                    <button
-                      key={difficulty.difficultyId}
-                      type="button"
-                      className={selectedDifficulty === difficulty.difficultyId ? 'is-active' : ''}
-                      onClick={() => setSelectedDifficulties((current) => ({ ...current, [entry.typeId]: difficulty.difficultyId }))}
-                    >
-                      {difficulty.label}
-                    </button>
-                  ))}
+              <article key={entry.typeId} className="qte-practice-card" data-available={entry.available ? 'true' : 'false'}>
+                <div className="qte-practice-card__crest" aria-hidden="true">
+                  <Glyph className="qte-practice-card__crest-glyph" strokeWidth={1.6} />
                 </div>
-                <button
-                  type="button"
-                  className="launcher-secondary-action"
-                  disabled={!entry.available || busyKey !== null}
-                  onClick={() => void startAttempt(entry, selectedDifficulty)}
-                >
-                  {busyKey === `${entry.typeId}:${selectedDifficulty}` ? 'Готовим…' : 'Начать тренировку'}
-                </button>
+                <div className="qte-practice-card__body">
+                  <header>
+                    <div>
+                      <h3>{toPlayerFacingText(entry.title, entry.typeId)}</h3>
+                      <p className="qte-practice-card__type">Мини-игра без наград</p>
+                    </div>
+                    <span className="availability-pill">{entry.available ? 'доступно' : 'позже'}</span>
+                  </header>
+                  <p>{toPlayerFacingText(entry.description, 'Тренировка без наград и без изменения прохождения.')}</p>
+                  <p className="muted">{toPlayerFacingText(entry.instructions, 'Сыграйте мини-игру и посмотрите тренировочный результат.')}</p>
+                  <div className="qte-practice-difficulty" role="group" aria-label={`Сложность ${entry.title}`}>
+                    {entry.difficulties.map((difficulty) => (
+                      <button
+                        key={difficulty.difficultyId}
+                        type="button"
+                        className={selectedDifficulty === difficulty.difficultyId ? 'is-active' : ''}
+                        onClick={() => setSelectedDifficulties((current) => ({ ...current, [entry.typeId]: difficulty.difficultyId }))}
+                      >
+                        {difficulty.label}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="launcher-secondary-action qte-practice-card__start"
+                    disabled={!entry.available || busyKey !== null}
+                    onClick={() => void startAttempt(entry, selectedDifficulty)}
+                  >
+                    {busyKey === `${entry.typeId}:${selectedDifficulty}` ? 'Готовим…' : 'Начать тренировку'}
+                  </button>
+                </div>
               </article>
             );
           })}
         </div>
-      ) : (
+      ) : !hasResult && state.activeScene ? (
         <article className="summary-card qte-practice-attempt">
           <header>
             <div>
@@ -222,46 +233,50 @@ export function QtePracticeView({ initialState }: QtePracticeViewProps) {
             <p className="muted">Тренировка ждёт следующий шаг.</p>
           )}
         </article>
-      )}
+      ) : null}
 
-      {state.resolution && (
-        <article className="summary-card">
-          <h3>Итог попытки</h3>
-          <p>{toPlayerFacingText(state.resolution.resultText, 'Тренировочный результат записан.')}</p>
-          <p className="muted">Исход: {formatQteGradeLabel(normalizeQteGrade(state.resolution.grade))}</p>
-        </article>
-      )}
+      {hasResult && (
+        <div className="qte-practice-result" aria-label="Результат тренировочной попытки">
+          {state.resolution && (
+            <article className="summary-card">
+              <h3>Итог попытки</h3>
+              <p>{toPlayerFacingText(state.resolution.resultText, 'Тренировочный результат записан.')}</p>
+              <p className="muted">Исход: {formatQteGradeLabel(normalizeQteGrade(state.resolution.grade))}</p>
+            </article>
+          )}
 
-      {state.completion && (
-        <article className="summary-card">
-          <h3>{toPlayerFacingText(state.feedbackTitle, 'Попытка завершена')}</h3>
-          <p>{toPlayerFacingText(state.feedback, 'Итог показан только для тренировки.')}</p>
-          {renderScoreSummary(state.completion.scoreSummary)}
-          <div className="phase-chip-grid">
-            <button type="button" onClick={() => void retryAttempt()} disabled={busyKey !== null}>Повторить</button>
-            {selectedEntry?.difficulties.map((difficulty) => (
-              <button
-                key={difficulty.difficultyId}
-                type="button"
-                onClick={() => void startAttempt(selectedEntry, difficulty.difficultyId)}
-                disabled={busyKey !== null}
-              >
-                {difficulty.difficultyId === state.selectedDifficultyId ? 'Сменить сложность' : difficulty.label}
-              </button>
-            ))}
-            <button
-              type="button"
-              onClick={() => {
-                setReadyActionId(null);
-                setPracticeState({ ...state, state: 'Catalog', activeScene: null, completion: null, resolution: null });
-              }}
-              disabled={busyKey !== null}
-            >
-              Выбрать другое QTE
-            </button>
-            <button type="button" onClick={() => void exitPractice()} disabled={busyKey !== null}>Выйти</button>
-          </div>
-        </article>
+          {state.completion && (
+            <article className="summary-card">
+              <h3>{toPlayerFacingText(state.feedbackTitle, 'Попытка завершена')}</h3>
+              <p>{toPlayerFacingText(state.feedback, 'Итог показан только для тренировки.')}</p>
+              {renderScoreSummary(state.completion.scoreSummary)}
+              <div className="phase-chip-grid">
+                <button type="button" onClick={() => void retryAttempt()} disabled={busyKey !== null}>Повторить</button>
+                {selectedEntry?.difficulties.map((difficulty) => (
+                  <button
+                    key={difficulty.difficultyId}
+                    type="button"
+                    onClick={() => void startAttempt(selectedEntry, difficulty.difficultyId)}
+                    disabled={busyKey !== null}
+                  >
+                    {difficulty.difficultyId === state.selectedDifficultyId ? 'Сменить сложность' : difficulty.label}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setReadyActionId(null);
+                    setPracticeState({ ...state, state: 'Catalog', activeScene: null, completion: null, resolution: null });
+                  }}
+                  disabled={busyKey !== null}
+                >
+                  Выбрать другое QTE
+                </button>
+                <button type="button" onClick={() => void exitPractice()} disabled={busyKey !== null}>Выйти</button>
+              </div>
+            </article>
+          )}
+        </div>
       )}
 
       {notice && <p className="composer-notice">{notice}</p>}

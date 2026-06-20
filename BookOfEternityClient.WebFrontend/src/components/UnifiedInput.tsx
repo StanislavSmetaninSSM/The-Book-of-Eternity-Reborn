@@ -7,8 +7,11 @@ import {
   resolveAutocompleteEnterAction
 } from './commandAutocompleteLogic';
 
+type ComposerMode = 'command' | 'post';
+
 export function UnifiedInput() {
   const { composerText, setComposerText, composerNotice, submitComposer, submitComposerText, readyState, gameScreen } = useShell();
+  const [composerMode, setComposerMode] = useState<ComposerMode>('command');
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const [activeAutocompleteIndex, setActiveAutocompleteIndex] = useState<number | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -16,11 +19,12 @@ export function UnifiedInput() {
   const coverage = readyState?.commandCoverage;
   const commands = coverage && isSuccess(coverage) ? coverage.data.commands : [];
   const canSubmit = gameScreen?.actionComposer.canSubmit ?? false;
+  const isPostMode = composerMode === 'post';
   const autocompleteMatches = useMemo(
-    () => getAutocompleteMatches(commands, composerText),
-    [commands, composerText]
+    () => composerMode === 'command' ? getAutocompleteMatches(commands, composerText) : [],
+    [commands, composerMode, composerText]
   );
-  const isAutocompleteOpen = showAutocomplete && autocompleteMatches.length > 0;
+  const isAutocompleteOpen = composerMode === 'command' && showAutocomplete && autocompleteMatches.length > 0;
   const autocompleteListId = 'command-autocomplete-list';
   const activeAutocompleteOptionId = activeAutocompleteIndex !== null &&
     activeAutocompleteIndex < autocompleteMatches.length &&
@@ -41,7 +45,7 @@ export function UnifiedInput() {
 
   function handleChange(value: string) {
     setComposerText(value);
-    setShowAutocomplete(value.startsWith('/') && value.length > 1);
+    setShowAutocomplete(composerMode === 'command' && value.startsWith('/') && value.length > 1);
     setActiveAutocompleteIndex(null);
   }
 
@@ -49,6 +53,12 @@ export function UnifiedInput() {
     setComposerText(command + ' ');
     closeAutocomplete();
     inputRef.current?.focus();
+  }
+
+  function switchComposerMode(nextMode: ComposerMode) {
+    setComposerMode(nextMode);
+    closeAutocomplete();
+    requestAnimationFrame(() => inputRef.current?.focus());
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -68,8 +78,17 @@ export function UnifiedInput() {
       );
       return;
     }
+
+    if (isPostMode && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      if (e.nativeEvent.isComposing) return;
+      e.preventDefault();
+      closeAutocomplete();
+      submitComposerText(e.currentTarget.value);
+      return;
+    }
+
     // Enter without Shift submits form; Shift+Enter inserts newline
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (!isPostMode && e.key === 'Enter' && !e.shiftKey) {
       if (e.nativeEvent.isComposing) return;
       e.preventDefault();
 
@@ -94,21 +113,40 @@ export function UnifiedInput() {
   }
 
   return (
-    <div className="unified-input">
+    <div className={`unified-input${isPostMode ? ' is-post-mode' : ''}`}>
       {composerNotice && <p className="unified-input__notice">{composerNotice}</p>}
+      <div className="unified-input__mode-toggle" role="group" aria-label="Режим ввода">
+        <button
+          type="button"
+          className={`unified-input__mode-button${composerMode === 'command' ? ' is-active' : ''}`}
+          aria-pressed={composerMode === 'command'}
+          onClick={() => switchComposerMode('command')}
+        >
+          Команда
+        </button>
+        <button
+          type="button"
+          className={`unified-input__mode-button${composerMode === 'post' ? ' is-active' : ''}`}
+          aria-pressed={composerMode === 'post'}
+          onClick={() => switchComposerMode('post')}
+        >
+          Художественный пост
+        </button>
+      </div>
       <form className="unified-input__form" onSubmit={submitComposer}>
         <div className="unified-input__wrapper">
           <textarea
             ref={inputRef}
-            rows={1}
+            rows={composerMode === 'post' ? 8 : 1}
             value={composerText}
             onChange={(e) => handleChange(e.target.value)}
             onKeyDown={handleKeyDown}
-            onFocus={() => { if (composerText.startsWith('/') && composerText.length > 1) setShowAutocomplete(true); }}
+            onFocus={() => { if (composerMode === 'command' && composerText.startsWith('/') && composerText.length > 1) setShowAutocomplete(true); }}
             onBlur={() => setTimeout(closeAutocomplete, 200)}
-            placeholder="Опишите действие или введите /команду..."
+            placeholder={isPostMode ? 'Опишите действие развернутым художественным постом...' : 'Опишите действие или введите /команду...'}
             disabled={!canSubmit}
             className="unified-input__textarea"
+            aria-label={isPostMode ? 'Художественный пост' : 'Команда или действие'}
             aria-controls={isAutocompleteOpen ? autocompleteListId : undefined}
             aria-expanded={isAutocompleteOpen}
             aria-activedescendant={activeAutocompleteOptionId}
@@ -121,9 +159,11 @@ export function UnifiedInput() {
             />
           )}
         </div>
-        <button type="submit" disabled={!composerText.trim() || !canSubmit} className="unified-input__submit">
-          Отправить
-        </button>
+        <div className="unified-input__actions">
+          <button type="submit" disabled={!composerText.trim() || !canSubmit} className="unified-input__submit">
+            Отправить
+          </button>
+        </div>
       </form>
     </div>
   );

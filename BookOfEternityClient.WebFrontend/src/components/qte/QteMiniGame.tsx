@@ -157,6 +157,7 @@ function PromptChainGame({ config, disabled, onSubmit }: SharedGameProps<QteProm
     () => onSubmit(resolvePromptChainGrade(config.sequence, enteredRef.current, config.allowedMistakes)),
     `${config.timeoutMs}:${config.sequence.length}`
   );
+
   const submitToken = (token: string) => {
     const next = [...enteredRef.current, token];
     enteredRef.current = next;
@@ -170,12 +171,14 @@ function PromptChainGame({ config, disabled, onSubmit }: SharedGameProps<QteProm
     <MiniGameFrame
       kind="PromptChain"
       title="Цепь знаков"
-      instructions={`Повторите цепь: ${formatTokenList(config.sequence)}. Осталось ${formatRemainingMs(remainingMs)}.`}
+      instructions={`Введите цепь из ${config.sequence.length} знаков. Допустимые промахи: ${config.allowedMistakes}. Осталось ${formatRemainingMs(remainingMs)}.`}
       disabled={disabled}
       onToken={submitToken}
     >
       <TokenProgress expected={config.sequence} entered={entered} />
-      <TokenButtons tokens={uniqueTokens(config.sequence)} disabled={disabled} onToken={submitToken} />
+      {/* Buttons are SHUFFLED so their order doesn't match the expected chain —
+          the player must find the next sign among the set, not click in order. */}
+      <TokenButtons tokens={shuffledTokenLayout(config.sequence)} disabled={disabled} onToken={submitToken} />
     </MiniGameFrame>
   );
 }
@@ -524,18 +527,49 @@ function StealthNoiseGame({ config, disabled, onSubmit }: SharedGameProps<QteSte
   const [startedAt] = useState(() => Date.now());
   const [recoveries, setRecoveries] = useState<number[]>([]);
   const recoveriesRef = useRef<number[]>([]);
+  // Live noise mirrors the grade model (sampleStealthNoise): it starts at
+  // startingNoise, drifts UP by noiseDriftPerSecond, and each recovery drops it
+  // by recoveryPerInput. Without this the noise bar never moved while idle,
+  // which made the game look broken. The live value is only for the display;
+  // the final grade is still resolved by resolveStealthNoiseGrade from the
+  // recorded recovery offsets.
+  const [noise, setNoise] = useState(() => clampPercent(config.startingNoise));
   const remainingMs = useQteDeadline(
     config.durationMs,
     !disabled,
     () => onSubmit(resolveStealthNoiseGrade(config, recoveriesRef.current)),
     `${config.durationMs}:${config.recoveryPerInput}`
   );
+
+  useEffect(() => {
+    if (disabled) {
+      return undefined;
+    }
+
+    const driftPerTick = (config.noiseDriftPerSecond / 1000) * 100;
+    const interval = window.setInterval(() => {
+      const elapsedMs = Date.now() - startedAt;
+      // Reproduce sampleStealthNoise's climb + per-recovery drop for the live
+      // readout so the bar matches what the grade will see.
+      let live = config.startingNoise + (driftPerTick / 100) * elapsedMs;
+      for (const offset of recoveriesRef.current) {
+        if (offset >= 0 && offset <= elapsedMs) {
+          live -= config.recoveryPerInput;
+        }
+      }
+      setNoise(clampPercent(live));
+    }, 100);
+    return () => window.clearInterval(interval);
+  }, [config.noiseDriftPerSecond, config.recoveryPerInput, config.startingNoise, disabled, startedAt]);
+
   const recover = () => {
     const next = [...recoveriesRef.current, Date.now() - startedAt];
     recoveriesRef.current = next;
     setRecoveries(next);
+    setNoise((current) => clampPercent(current - config.recoveryPerInput));
   };
   const label = toPlayerFacingText(config.recoveryLabel ?? '', 'приглушить шум');
+  const overDanger = noise >= config.dangerThreshold;
 
   return (
     <MiniGameFrame
@@ -549,8 +583,11 @@ function StealthNoiseGame({ config, disabled, onSubmit }: SharedGameProps<QteSte
         }
       }}
     >
-      <NoiseTrack config={config} recoveries={recoveries.length} />
-      <p className="muted">Сбросы шума: {recoveries.length}. Опасный порог: {config.dangerThreshold}. Осталось {formatRemainingMs(remainingMs)}.</p>
+      <div className="qte-meter" aria-label={`Шум ${Math.round(noise)}`}>
+        <span className="qte-meter__danger" style={{ left: `${config.dangerThreshold}%` }} />
+        <span className={`qte-meter__fill${overDanger ? ' is-danger' : ''}`} style={{ width: `${noise}%` }} />
+      </div>
+      <p className="muted">Шум: {Math.round(noise)}/{config.dangerThreshold} опасная метка. Сбросы шума: {recoveries.length}. Осталось {formatRemainingMs(remainingMs)}.</p>
       <div className="phase-chip-grid">
         <button type="button" onClick={recover} disabled={disabled}>{label}</button>
       </div>
@@ -669,10 +706,23 @@ function MiniGameFrame({
   onToken?: (token: string) => void;
   onKeyDown?: (event: KeyboardEvent<HTMLDivElement>) => void;
 }) {
+  const frameRef = useRef<HTMLDivElement>(null);
+
+  // The frame mounts only once the player opens the mini-game, so claiming
+  // focus here means keyboard input works immediately — without it the player
+  // has to click the frame first to make keys land. Guarded so server render
+  // and a missing ref never throw.
+  useEffect(() => {
+    frameRef.current?.focus({ preventScroll: true });
+  }, []);
+
   return (
     <div
+      ref={frameRef}
       className="qte-mini-game"
       data-qte-mini-game={kind}
+      role="application"
+      aria-label={`Мини-игра: ${title}`}
       tabIndex={0}
       onKeyDown={(event) => {
         if (disabled) {
@@ -846,14 +896,8 @@ function RhythmTrack({
   );
 }
 
-function NoiseTrack({ config, recoveries }: { config: Pick<QteStealthNoiseCheckConfigDto, 'startingNoise' | 'dangerThreshold'>; recoveries: number }) {
-  const noise = Math.max(0, Math.min(100, config.startingNoise + 25 - recoveries * 8));
-  return (
-    <div className="qte-meter" aria-label={`Шум ${noise}`}>
-      <span className="qte-meter__danger" style={{ left: `${config.dangerThreshold}%` }} />
-      <span className="qte-meter__fill" style={{ width: `${noise}%` }} />
-    </div>
-  );
+function clampPercent(value: number): number {
+  return Math.max(0, Math.min(100, value));
 }
 
 function LockTrack({ config, currentPin, position, opened }: { config: QteLockPinSetCheckConfigDto; currentPin: number; position: number; opened: readonly boolean[] }) {
@@ -874,6 +918,52 @@ function LockTrack({ config, currentPin, position, opened }: { config: QteLockPi
 
 function uniqueTokens(tokens: readonly string[]): string[] {
   return Array.from(new Set(tokens));
+}
+
+/**
+ * Deterministically shuffle the unique tokens so the button order does NOT
+ * match the expected sequence. Without this the buttons were laid out left to
+ * right in the exact correct order, so a player could 100% the PromptChain by
+ * clicking them sequentially with zero memory/effort. The shuffle is seeded by
+ * the sequence contents so it stays stable across re-renders of the same
+ * attempt (no visual jitter) while still differing from the expected order.
+ */
+function shuffledTokenLayout(tokens: readonly string[]): string[] {
+  const unique = uniqueTokens(tokens);
+  if (unique.length <= 1) {
+    return unique;
+  }
+
+  // Seeded PRNG (mulberry32) derived from the sequence contents.
+  let seed = 0;
+  for (const token of tokens) {
+    for (let index = 0; index < token.length; index += 1) {
+      seed = (seed * 31 + token.charCodeAt(index)) >>> 0;
+    }
+  }
+
+  const random = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 0xffffffff;
+  };
+
+  const layout = [...unique];
+  for (let passes = 0; passes < 4; passes += 1) {
+    for (let index = layout.length - 1; index > 0; index -= 1) {
+      const swapWith = Math.floor(random() * (index + 1));
+      [layout[index], layout[swapWith]] = [layout[swapWith], layout[index]];
+    }
+  }
+
+  // Guarantee the layout is not exactly the expected order when there's room
+  // to differ (>= 2 unique tokens). The seeded shuffle above already differs in
+  // the vast majority of cases; this is a deterministic fallback.
+  const matchesExpected = layout.every((token, index) => token === unique[index]);
+  if (matchesExpected) {
+    [layout[0], layout[1]] = [layout[1], layout[0]];
+  }
+
+  return layout;
 }
 
 function formatTokenList(tokens: readonly string[]): string {

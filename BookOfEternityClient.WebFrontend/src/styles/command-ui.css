@@ -15,6 +15,33 @@
   gap: calc(0.25rem * var(--browser-ui-scale));
   min-width: 0;
 }
+/* "Главное меню" — a distinct gold-tinted return-to-launcher button, set apart
+   from the game tabs so it reads as a way out of the in-game shell. */
+.tab-bar__home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 34%, rgba(245, 212, 136, 0.1));
+  border-radius: var(--radius-sm);
+  padding: 0.42rem 0.8rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-gold) 14%, rgba(30, 22, 16, 0.6)), color-mix(in srgb, var(--color-gold) 4%, rgba(10, 7, 5, 0.6)));
+  color: var(--color-gold-bright);
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(245, 212, 136, 0.08);
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast), color var(--motion-fast), background var(--motion-fast);
+  touch-action: manipulation;
+}
+.tab-bar__home:hover {
+  border-color: color-mix(in srgb, var(--color-gold-bright) 62%, rgba(255, 255, 255, 0.16));
+  box-shadow: inset 0 1px 0 rgba(245, 212, 136, 0.16), 0 0 12px color-mix(in srgb, var(--color-gold) 24%, transparent);
+}
+.tab-bar__home:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-gold-bright) 60%, transparent);
+  outline-offset: 1px;
+}
 .tab-bar__tab {
   display: inline-flex;
   align-items: center;
@@ -82,6 +109,8 @@
 .content-area {
   flex: 1;
   overflow-y: auto;
+  scrollbar-gutter: auto;
+  min-height: 0;
   padding: calc(1.25rem * var(--browser-ui-scale)) calc(1.5rem * var(--browser-ui-scale));
   width: 100%;
   min-width: 0;
@@ -89,9 +118,122 @@
   margin: 0 auto;
 }
 
+/* On the launcher route, narrow the menu so wide viewports leave real gutters
+   (~360px each side) where the ambient side murals can show in full instead of
+   being clipped under the menu. */
+.content-area--launcher {
+  max-width: min(72rem, 100%);
+}
+
 /* ===== Scene View ===== */
 .scene-view { display: flex; flex-direction: column; gap: var(--space-4); }
-.scene-narrative { color: var(--text-primary); font-size: 1rem; line-height: 1.75; }
+.scene-narrative { color: var(--text-primary); line-height: 1.75; }
+
+.browser-shell[data-active-tab='scene'] .content-area {
+  padding-block: clamp(0rem, 0.2vh, 0.2rem);
+}
+
+.browser-shell[data-active-tab='scene'] .scene-view {
+  min-height: 100%;
+  gap: clamp(0.6rem, 1.1vh, 0.8rem);
+}
+
+.browser-shell[data-active-tab='scene'] .cinematic-hero {
+  min-height: 0;
+  height: clamp(9rem, 22vh, 15rem);
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: clamp(0.7rem, 1.8vh, 1.2rem) clamp(1rem, 3vw, 2rem);
+}
+
+.browser-shell[data-active-tab='scene'] .cinematic-hero__eyebrow {
+  margin-bottom: clamp(0.35rem, 0.9vh, 0.65rem);
+}
+
+.browser-shell[data-active-tab='scene'] .cinematic-hero__title {
+  font-size: clamp(1.65rem, calc(3vw * var(--browser-font-scale, 1)), 2.6rem);
+}
+
+.browser-shell[data-active-tab='scene'] .cinematic-hero__subtitle {
+  font-size: var(--text-sm);
+}
+
+.browser-shell[data-active-tab='scene'] .scene-narrative {
+  line-height: 1.48;
+}
+
+.browser-shell[data-active-tab='scene'] .scene-post .rune-frame {
+  padding: clamp(0.45rem, 1vh, 0.75rem);
+}
+
+.browser-shell[data-active-tab='scene'] .scene-post .rune-frame__inner {
+  font-size: calc(var(--text-md) * var(--scene-post-scale, 1));
+  line-height: 1.48;
+}
+
+.browser-shell[data-active-tab='scene'] .scene-post-controls {
+  margin-top: 0.35rem;
+}
+
+.browser-shell[data-active-tab='scene'] .scene-dialogues,
+.browser-shell[data-active-tab='scene'] .scene-quick-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.browser-shell[data-active-tab='scene'] .scene-dialogues {
+  margin-top: clamp(0.8rem, 1.8vh, 1.25rem);
+}
+
+.browser-shell[data-active-tab='scene'] .scene-quick-actions {
+  margin-top: auto;
+  padding-top: clamp(0.95rem, 2vh, 1.4rem);
+}
+
+.browser-shell[data-active-tab='scene'] .scene-dialogues h3,
+.browser-shell[data-active-tab='scene'] .scene-quick-actions h4 {
+  margin: 0;
+}
+
+.browser-shell[data-active-tab='scene'] .scene-dialogues__list,
+.browser-shell[data-active-tab='scene'] .scene-quick-actions__list {
+  gap: 0.45rem;
+}
+
+.browser-shell[data-active-tab='scene'] .scene-dialogue-chip,
+.browser-shell[data-active-tab='scene'] .scene-action-chip {
+  padding: 0.32rem 0.6rem;
+  font-size: var(--text-md);
+  line-height: 1.25;
+}
+
+.scene-post {
+  --scene-post-scale: 1;
+}
+.scene-post .rune-frame__inner {
+  font-size: calc(var(--text-lg) * var(--scene-post-scale, 1));
+}
+.scene-post-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+.scene-post-controls button {
+  min-width: 2.4rem;
+  border: 1px solid color-mix(in srgb, var(--realm-accent, var(--color-gold)) 26%, rgba(245, 212, 136, 0.08));
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.5rem;
+  background: color-mix(in srgb, var(--color-ink) 76%, var(--realm-accent, var(--color-gold)) 8%);
+  color: var(--color-parchment-muted);
+  font-family: var(--font-rune);
+  font-size: var(--text-xs);
+  font-weight: 800;
+}
+.scene-post-controls button:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 52%, rgba(245, 212, 136, 0.16));
+  color: var(--color-gold-bright);
+}
 .scene-combat-log {
   display: grid;
   gap: var(--space-3);
@@ -101,20 +243,20 @@
   border-left: 3px solid var(--color-warning);
 }
 .scene-combat-log h3 { font-size: 0.85rem; color: var(--color-warning); margin: 0; }
-.combat-log__heading { font-size: 0.82rem; color: var(--text-primary); margin: 0.6rem 0 0.3rem; font-weight: 600; }
-.combat-log__line { font-size: 0.8rem; margin: 0.2rem 0; color: var(--text-secondary); }
-.combat-log__item { font-size: 0.8rem; margin: 0.15rem 0 0.15rem 0.75rem; color: var(--text-muted); }
+.combat-log__heading { font-size: var(--text-md); color: var(--text-primary); margin: 0.6rem 0 0.3rem; font-weight: 600; }
+.combat-log__line { font-size: var(--text-base); margin: 0.2rem 0; color: var(--text-secondary); }
+.combat-log__item { font-size: var(--text-base); margin: 0.15rem 0 0.15rem 0.75rem; color: var(--text-muted); }
 .combat-log__line strong, .combat-log__item strong { color: var(--text-primary); font-weight: 600; }
-.scene-dialogues h3 { font-size: 0.85rem; color: var(--color-success); margin-bottom: 0.5rem; }
+.scene-dialogues h3 { font-size: var(--text-md); color: var(--color-success); margin-bottom: 0.5rem; }
 .scene-dialogues__list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .scene-dialogue-chip, .scene-action-chip {
   background: var(--surface-raised); border: 1px solid var(--border);
   border-radius: 6px; padding: 0.4rem 0.75rem;
-  color: var(--text-primary); font-size: 0.8rem;
+  color: var(--text-primary); font-size: var(--text-lg);
   cursor: pointer; transition: border-color 0.15s;
 }
 .scene-dialogue-chip:hover, .scene-action-chip:hover { border-color: var(--color-accent); }
-.scene-quick-actions h4 { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+.scene-quick-actions h4 { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
 .scene-quick-actions__list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .scene-empty { display: flex; align-items: center; justify-content: center; min-height: 40vh; color: var(--text-muted); }
 
@@ -587,13 +729,56 @@
 
 /* ===== Unified Input ===== */
 .unified-input {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.75rem;
+  row-gap: 0.5rem;
   border-top: 1px solid var(--border-subtle);
   padding: 0.75rem 1.5rem;
   background: color-mix(in srgb, var(--surface-base) 84%, var(--realm-accent) 5%);
 }
-.unified-input__notice { color: var(--color-warning); font-size: 0.8rem; margin-bottom: 0.5rem; }
-.unified-input__form { display: flex; align-items: center; gap: 0.75rem; }
+.unified-input__notice {
+  grid-column: 1 / -1;
+  color: var(--color-warning);
+  font-size: 0.8rem;
+  margin: 0;
+}
+.unified-input__mode-toggle {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0.2rem;
+  border: 1px solid color-mix(in srgb, var(--realm-accent, var(--color-gold)) 18%, rgba(245, 212, 136, 0.06));
+  border-radius: var(--radius-sm);
+  background: rgba(10, 7, 5, 0.55);
+}
+.unified-input__mode-button {
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius-sm) - 0.1rem);
+  padding: 0.28rem 0.65rem;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-rune);
+  font-size: var(--text-xs);
+  font-weight: 800;
+}
+.unified-input__mode-button:hover {
+  color: var(--text-primary);
+}
+.unified-input__mode-button.is-active {
+  border-color: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 42%, rgba(245, 212, 136, 0.12));
+  background: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 12%, rgba(20, 14, 8, 0.74));
+  color: var(--color-gold-bright);
+}
+.unified-input__form { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
 .unified-input__wrapper { position: relative; flex: 1; min-width: 0; }
+.unified-input__actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+}
 .unified-input__textarea {
   width: 100%;
   resize: none;
@@ -617,6 +802,32 @@
   cursor: pointer; transition: opacity 0.15s;
 }
 .unified-input__submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.unified-input.is-post-mode {
+  grid-template-columns: minmax(0, 1fr);
+  padding-block: 0.85rem;
+}
+.unified-input.is-post-mode .unified-input__mode-toggle,
+.unified-input.is-post-mode .unified-input__form {
+  grid-column: 1;
+}
+.unified-input.is-post-mode .unified-input__form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.65rem;
+  align-items: stretch;
+}
+.unified-input.is-post-mode .unified-input__textarea {
+  min-height: clamp(10rem, 28vh, 18rem);
+  resize: vertical;
+  line-height: var(--leading-relaxed);
+}
+.unified-input.is-post-mode .unified-input__submit {
+  min-width: 10rem;
+}
+.unified-input.is-post-mode .unified-input__actions {
+  justify-content: flex-end;
+}
 
 /* ===== Autocomplete ===== */
 .autocomplete-dropdown {
@@ -650,6 +861,24 @@
   .settings-card {
     padding: calc(var(--space-3) * var(--browser-ui-scale));
   }
+
+  .unified-input {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .unified-input__mode-toggle,
+  .unified-input__form {
+    grid-column: 1;
+  }
+
+  .unified-input__form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .unified-input__submit {
+    align-self: stretch;
+  }
 }
 
 /* === JSON Tree Viewer === */
@@ -670,3 +899,152 @@
 .json-val--null { color: var(--text-muted); font-style: italic; }
 .json-val--empty { color: var(--text-muted); }
 .json-val--bracket { color: var(--text-muted); font-size: 0.78rem; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   BG3 TAB-BAR + COMPOSER REFRESH (additive layer — original rules
+   above remain intact so source-level guards keep passing)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.tab-bar {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--color-ink) 86%, var(--realm-accent, var(--color-gold)) 14%),
+      color-mix(in srgb, var(--color-ink) 92%, var(--realm-accent, var(--color-gold)) 8%)),
+    var(--texture-metal);
+  background-blend-mode: normal, overlay;
+  background-size: cover, 200px 200px;
+  border-bottom: 1px solid color-mix(in srgb, var(--realm-accent, var(--color-gold)) 22%, rgba(245, 212, 136, 0.06));
+  box-shadow:
+    inset 0 -1px 0 color-mix(in srgb, var(--realm-accent, var(--color-gold)) 12%, transparent),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+}
+
+.tab-bar__tab {
+  font-family: var(--font-rune);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  transition: background var(--motion-fast), border-color var(--motion-fast), color var(--motion-fast), box-shadow var(--motion-fast), transform var(--motion-fast);
+}
+
+.tab-bar__tab:hover {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--realm-accent) 8%, transparent),
+      transparent);
+  border-color: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 24%, rgba(245, 212, 136, 0.08));
+  color: var(--color-parchment);
+  transform: translateY(-1px);
+}
+
+.tab-bar__tab.is-active {
+  border-color: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 52%, rgba(245, 212, 136, 0.16));
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--realm-accent) 16%, transparent),
+      color-mix(in srgb, var(--realm-accent) 6%, transparent));
+  color: var(--color-gold-bright);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.12),
+    inset 0 -2px 0 var(--realm-accent),
+    0 0 16px color-mix(in srgb, var(--realm-accent) 30%, transparent);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--realm-accent) 60%, transparent);
+}
+
+.tab-bar__glyph {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+  opacity: 0.85;
+}
+
+/* Composer + UnifiedInput cinematic refresh */
+.composer,
+.unified-input {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--color-ink) 84%, var(--realm-accent, var(--color-gold)) 12%),
+      color-mix(in srgb, var(--color-ink) 92%, var(--realm-accent, var(--color-gold)) 6%)),
+    var(--texture-leather);
+  background-blend-mode: normal, overlay;
+  background-size: cover, 300px 300px;
+  border-top: 1px solid color-mix(in srgb, var(--realm-accent, var(--color-gold)) 22%, rgba(245, 212, 136, 0.06));
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.05),
+    0 -8px 24px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+.composer textarea,
+.unified-input textarea,
+.unified-input input,
+.composer .unified-input__textarea,
+.unified-input .unified-input__textarea {
+  background: rgba(20, 14, 8, 0.6);
+  border: 1px solid color-mix(in srgb, var(--realm-accent, var(--color-gold)) 22%, rgba(245, 212, 136, 0.08));
+  border-radius: var(--radius-sm);
+  color: var(--color-parchment);
+  font-family: var(--font-narrative);
+  font-size: var(--text-md);
+  line-height: var(--leading-snug);
+  padding: 0.7rem 0.9rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.composer textarea:focus,
+.unified-input textarea:focus,
+.unified-input input:focus,
+.composer .unified-input__textarea:focus-visible,
+.unified-input .unified-input__textarea:focus-visible {
+  border-color: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 52%, rgba(245, 212, 136, 0.18));
+  background: rgba(34, 26, 20, 0.7);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.3),
+    0 0 0 3px color-mix(in srgb, var(--realm-accent) 14%, transparent),
+    0 0 18px color-mix(in srgb, var(--realm-accent) 22%, transparent);
+  outline: none;
+}
+
+.composer button[type="submit"],
+.unified-input button[type="submit"],
+.launcher-secondary-action {
+  font-family: var(--font-rune);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--realm-accent, var(--color-gold)) 38%, rgba(245, 212, 136, 0.12));
+  border-radius: var(--radius-sm);
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--realm-accent) 18%, rgba(34, 26, 20, 0.92)),
+      color-mix(in srgb, var(--realm-accent) 8%, rgba(20, 14, 8, 0.94))),
+    var(--texture-metal);
+  background-blend-mode: normal, overlay;
+  background-size: cover, 100px 100px;
+  color: var(--color-gold-bright);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.12),
+    var(--glow-realm);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--realm-accent) 50%, transparent);
+}
+
+.composer button[type="submit"]:hover,
+.unified-input button[type="submit"]:hover,
+.launcher-secondary-action:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 58%, rgba(245, 212, 136, 0.24));
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.18),
+    var(--glow-hover);
+}
+
+.composer button[type="submit"]:active,
+.unified-input button[type="submit"]:active,
+.launcher-secondary-action:active {
+  transform: translateY(0);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+}

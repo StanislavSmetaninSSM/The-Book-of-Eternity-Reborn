@@ -42,6 +42,9 @@ assertIncludes(app, "case 'practice': return <QtePracticeView />;", 'TabContent 
 assertIncludes(app, "case 'status': return <StatusView />;", 'TabContent should route status tab to StatusView.');
 assertIncludes(app, "case 'help': return <HelpView />;", 'TabContent should route help tab to HelpView.');
 assertIncludes(app, "case 'settings': return <SettingsView />;", 'TabContent should route settings tab to SettingsView.');
+if (app.includes("case 'combat'") || app.includes("import { CombatView }")) {
+  throw new Error('The top shell should not expose a duplicate combat tab; combat remains available through commands/player actions.');
+}
 
 const tabBar = readSource('components', 'TabBar.tsx');
 assertIncludes(tabBar, '<nav className="tab-bar" role="tablist" aria-label="Навигация">', 'TabBar should expose tablist navigation.');
@@ -60,9 +63,11 @@ if (sceneView.includes('ActionPalette') || sceneView.includes('<Composer') || sc
 }
 
 const unifiedInput = readSource('components', 'UnifiedInput.tsx');
-assertIncludes(unifiedInput, 'className="unified-input"', 'UnifiedInput should render the current input shell.');
+assertIncludes(unifiedInput, "className={`unified-input${isPostMode ? ' is-post-mode' : ''}`}", 'UnifiedInput should render the current input shell with its mode state.');
 assertIncludes(unifiedInput, 'submitComposerText(e.currentTarget.value);', 'UnifiedInput should submit Enter without moving gameplay logic into React.');
 assertIncludes(unifiedInput, '<CommandAutocomplete', 'UnifiedInput should keep slash command autocomplete available.');
+assertIncludes(unifiedInput, "composerMode === 'post'", 'UnifiedInput should include a large artistic post mode.');
+assertIncludes(unifiedInput, 'Художественный пост', 'UnifiedInput should expose the post mode in player-facing Russian copy.');
 
 const settingsView = readSource('components', 'SettingsView.tsx');
 assertIncludes(settingsView, 'Расширенный режим', 'SettingsView should keep advanced mode explicit and secondary.');
