@@ -66,11 +66,12 @@ public static class LocalMapViewerAssets
     }
     .map-node text {
       fill: var(--atlas-ink);
-      font: 1.05px Georgia, "Times New Roman", serif;
+      font: .32px Georgia, "Times New Roman", serif;
       paint-order: stroke;
       stroke: rgba(245, 229, 180, .72);
-      stroke-width: .18px;
+      stroke-width: .055px;
       pointer-events: none;
+      text-anchor: middle;
     }
     .map-empty {
       position: absolute;
@@ -86,6 +87,39 @@ public static class LocalMapViewerAssets
       box-shadow: 0 .7rem 1.4rem rgba(58, 35, 13, .18);
     }
     .map-empty[hidden] { display: none; }
+    .map-border-runes {
+      position: absolute;
+      z-index: 1;
+      inset: .75rem auto auto 50%;
+      transform: translateX(-50%);
+      color: rgba(69, 44, 17, .54);
+      font: .82rem Georgia, "Times New Roman", serif;
+      letter-spacing: .34em;
+      pointer-events: none;
+      text-shadow: 0 1px 0 rgba(246, 224, 160, .32);
+    }
+    .map-compass-rose {
+      position: absolute;
+      z-index: 1;
+      right: 1rem;
+      bottom: 1rem;
+      width: 4.2rem;
+      aspect-ratio: 1;
+      border: 1px solid rgba(70, 45, 19, .55);
+      border-radius: 50%;
+      background:
+        linear-gradient(45deg, transparent 48%, rgba(70, 45, 19, .56) 49% 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, rgba(70, 45, 19, .56) 49% 51%, transparent 52%),
+        radial-gradient(circle, rgba(246, 224, 160, .36), rgba(112, 72, 28, .18));
+      color: rgba(43, 33, 22, .82);
+      font: .62rem Georgia, "Times New Roman", serif;
+      pointer-events: none;
+    }
+    .map-compass-rose span { position: absolute; }
+    .map-compass-rose span:nth-child(1) { top: .25rem; left: 50%; transform: translateX(-50%); }
+    .map-compass-rose span:nth-child(2) { right: .35rem; top: 50%; transform: translateY(-50%); }
+    .map-compass-rose span:nth-child(3) { bottom: .25rem; left: 50%; transform: translateX(-50%); }
+    .map-compass-rose span:nth-child(4) { left: .35rem; top: 50%; transform: translateY(-50%); }
     .map-legend {
       display: flex;
       flex-wrap: wrap;
@@ -104,6 +138,11 @@ public static class LocalMapViewerAssets
     }
     .legend-swatch.current { background: var(--atlas-moss); }
     .legend-swatch.faction { background: #80501f; }
+    .legend-swatch.placeholder {
+      background: rgba(245, 229, 180, .16);
+      border-color: rgba(205, 168, 90, .86);
+      border-style: dashed;
+    }
     .legend-swatch.contested { background: linear-gradient(135deg, #80501f 0 48%, var(--atlas-blood) 52%); }
     .map-region {
       fill: rgba(128, 80, 31, .16);
@@ -114,10 +153,10 @@ public static class LocalMapViewerAssets
     }
     .map-region-label {
       fill: rgba(43, 33, 22, .68);
-      font: .8px Georgia, "Times New Roman", serif;
+      font: .28px Georgia, "Times New Roman", serif;
       paint-order: stroke;
       stroke: rgba(247, 229, 177, .6);
-      stroke-width: .16px;
+      stroke-width: .055px;
       pointer-events: none;
     }
     .map-political-halo {
@@ -134,6 +173,15 @@ public static class LocalMapViewerAssets
     .map-node--contested circle {
       stroke: var(--atlas-blood);
       stroke-dasharray: .16 .1;
+    }
+    .map-node--placeholder circle {
+      fill: rgba(245, 229, 180, .2);
+      stroke: rgba(43, 33, 22, .86);
+      stroke-dasharray: .1 .16;
+    }
+    .map-node--placeholder text {
+      opacity: .78;
+      font-style: italic;
     }
     .map-block[data-layer-state="hidden"] .map-card {
       opacity: .78;
@@ -153,6 +201,49 @@ public static class LocalMapViewerAssets
     }
     .map-card dt { color: var(--muted, #a9b2a4); }
     .map-card dd { margin: 0; }
+    .map-detail-media { grid-column: 1 / -1; }
+    .map-image-thumb {
+      display: block;
+      width: min(16rem, 100%);
+      padding: .3rem;
+      border: 1px solid rgba(205, 168, 90, .34);
+      border-radius: .5rem;
+      background: rgba(13, 17, 15, .78);
+      cursor: zoom-in;
+    }
+    .map-image-thumb img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: .35rem;
+      object-fit: cover;
+    }
+    .map-image-dialog[open] {
+      position: fixed;
+      z-index: 50;
+      inset: 50% auto auto 50%;
+      width: min(92vw, 72rem);
+      max-height: 88vh;
+      transform: translate(-50%, -50%);
+      padding: .8rem;
+      border: 1px solid rgba(205, 168, 90, .52);
+      border-radius: .55rem;
+      background: rgba(12, 9, 6, .96);
+      color: #f4ead3;
+      box-shadow: 0 2rem 5rem rgba(0, 0, 0, .65);
+    }
+    .map-image-dialog form {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: .6rem;
+    }
+    .map-image-dialog img {
+      display: block;
+      width: 100%;
+      max-height: 76vh;
+      border-radius: .4rem;
+      object-fit: contain;
+    }
     """;
 
     public const string Script = """
@@ -218,11 +309,17 @@ public static class LocalMapViewerAssets
           el('strong', '', 'Легенда карты'),
           legendItem('current', 'Текущая точка'),
           legendItem('', 'Обычная точка'),
+          legendItem('placeholder', 'Известный выход'),
           legendItem('faction', 'Влияние фракций'),
           legendItem('contested', 'Спорная зона'));
         node.append(legend);
 
         const frame = el('div', 'map-atlas-frame');
+        const runes = el('div', 'map-border-runes', '✦ ᚱ ᚨ ᚾ ᛃ ᛟ ✦');
+        runes.setAttribute('aria-hidden', 'true');
+        const compass = el('div', 'map-compass-rose', '');
+        compass.setAttribute('aria-label', 'Роза ветров');
+        compass.append(el('span', '', 'С'), el('span', '', 'В'), el('span', '', 'Ю'), el('span', '', 'З'));
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.classList.add('map-canvas');
         svg.setAttribute('role', 'img');
@@ -230,7 +327,7 @@ public static class LocalMapViewerAssets
         svg.setAttribute('viewBox', '-20 -20 40 40');
         const empty = el('p', 'map-empty', 'Нет точек на выбранном уровне или слое.');
         empty.hidden = true;
-        frame.append(svg, empty);
+        frame.append(runes, compass, svg, empty);
         node.append(frame);
 
         const card = el('aside', 'map-card', 'Выберите точку на карте.');
@@ -280,17 +377,19 @@ public static class LocalMapViewerAssets
             group.classList.add('map-node');
             if (mapNode.id === selectedNodeId) group.classList.add('map-node--selected');
             if (isContested(mapNode)) group.classList.add('map-node--contested');
+            if (mapNode.isPlaceholder) group.classList.add('map-node--placeholder');
             group.setAttribute('tabindex', '0');
+            group.setAttribute('aria-label', `${mapNode.isPlaceholder ? 'Известный выход' : 'Локация'}: ${mapNode.label ?? mapNode.id ?? 'точка карты'}`);
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             circle.setAttribute('cx', mapNode.x ?? 0);
             circle.setAttribute('cy', -(mapNode.y ?? 0));
             circle.setAttribute('r', mapNode.isCurrent ? '.72' : '.5');
-            circle.setAttribute('fill', mapNode.isCurrent ? '#285238' : mapNode.ownerFactionId ? '#80501f' : '#6a2d22');
+            circle.setAttribute('fill', mapNode.isPlaceholder ? 'rgba(245, 229, 180, .2)' : mapNode.isCurrent ? '#285238' : mapNode.ownerFactionId ? '#80501f' : '#6a2d22');
             circle.setAttribute('stroke', '#f1d58b');
             circle.setAttribute('stroke-width', '.12');
             const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            label.setAttribute('x', Number(mapNode.x ?? 0) + .72);
-            label.setAttribute('y', -Number(mapNode.y ?? 0) - .42);
+            label.setAttribute('x', Number(mapNode.x ?? 0));
+            label.setAttribute('y', -Number(mapNode.y ?? 0) - 1.05);
             label.textContent = mapNode.label ?? mapNode.id ?? '?';
             group.append(circle, label);
             group.addEventListener('click', () => showMapNode(mapNode));
@@ -375,6 +474,16 @@ public static class LocalMapViewerAssets
           card.append(el('h3', '', mapNode.label ?? mapNode.id ?? 'Локация'));
           const dl = document.createElement('dl');
           const details = [...(mapNode.details ?? [])];
+          if (!details.some(item => String(item.key ?? '').toLocaleLowerCase('ru-RU') === 'состояние')) {
+            details.unshift({
+              key: 'Состояние',
+              value: mapNode.isPlaceholder
+                ? 'Известный выход: подробная локация ещё не открыта.'
+                : mapNode.isCurrent
+                  ? 'Текущая локация'
+                  : 'Открытая локация'
+            });
+          }
           if (mapNode.ownerFactionName || mapNode.ownerFactionId) {
             details.push({ key: 'Фракция', value: mapNode.ownerFactionName || mapNode.ownerFactionId });
           }
@@ -383,7 +492,64 @@ public static class LocalMapViewerAssets
             dl.append(el('dt', '', item.key ?? ''));
             dl.append(el('dd', '', item.value ?? ''));
           }
+          const imageUrl = resolveImageUrl(mapNode);
+          if (imageUrl) {
+            const dt = el('dt', 'map-detail-media', 'Облик');
+            const dd = el('dd', 'map-detail-media', '');
+            const button = el('button', 'map-image-thumb', '');
+            button.type = 'button';
+            const image = document.createElement('img');
+            image.src = imageUrl;
+            image.alt = mapNode.imageAltText || `Изображение: ${mapNode.label || mapNode.id || 'локация'}`;
+            button.append(image);
+            button.addEventListener('click', () => openImageDialog(mapNode));
+            dd.append(button);
+            dl.append(dt, dd);
+          }
           card.append(dl);
+        }
+
+        function resolveImageUrl(mapNode) {
+          const url = mapNode.imageUrl || '';
+          if (global.location?.protocol === 'file:') {
+            const relative = mediaUrlToRelativePath(url);
+            if (relative) return `../${relative}`;
+          }
+          return url;
+        }
+
+        function mediaUrlToRelativePath(url) {
+          const marker = '/api/media/';
+          const index = String(url || '').indexOf(marker);
+          if (index < 0) return '';
+          const mediaId = decodeURIComponent(String(url).slice(index + marker.length));
+          try {
+            const base64 = mediaId.replaceAll('-', '+').replaceAll('_', '/');
+            const padded = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
+            return global.atob(padded).replaceAll('\\', '/').replace(/^\/+/, '');
+          } catch {
+            return '';
+          }
+        }
+
+        function openImageDialog(mapNode) {
+          const imageUrl = resolveImageUrl(mapNode);
+          if (!imageUrl) return;
+          const dialog = document.createElement('dialog');
+          dialog.className = 'map-image-dialog';
+          dialog.open = true;
+          dialog.setAttribute('aria-label', `Изображение локации ${mapNode.label || 'карты'}`);
+          const form = document.createElement('form');
+          form.method = 'dialog';
+          const close = el('button', 'secondary', 'Закрыть');
+          close.type = 'button';
+          close.addEventListener('click', () => dialog.remove());
+          form.append(close);
+          const image = document.createElement('img');
+          image.src = imageUrl;
+          image.alt = mapNode.imageAltText || `Изображение: ${mapNode.label || mapNode.id || 'локация'}`;
+          dialog.append(form, image);
+          document.body.append(dialog);
         }
 
         zSelect.addEventListener('change', draw);

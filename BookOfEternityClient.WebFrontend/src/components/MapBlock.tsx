@@ -24,6 +24,7 @@ export function MapBlock({ block, variant = 'full' }: MapBlockProps) {
   const [selectedZ, setSelectedZ] = useState(defaultZ);
   const [selectedLayer, setSelectedLayer] = useState(defaultLayer);
   const [selectedNodeId, setSelectedNodeId] = useState(defaultNodeId);
+  const [expandedImageNode, setExpandedImageNode] = useState<MapNodeDto | null>(null);
   const [zoom, setZoom] = useState(1);
   const mapResetKey = block.map;
 
@@ -31,6 +32,7 @@ export function MapBlock({ block, variant = 'full' }: MapBlockProps) {
     setSelectedZ(defaultZ);
     setSelectedLayer(defaultLayer);
     setSelectedNodeId(defaultNodeId);
+    setExpandedImageNode(null);
     setZoom(1);
   }, [defaultLayer, defaultNodeId, defaultZ, mapResetKey]);
   const nodes = useMemo(
@@ -81,6 +83,13 @@ export function MapBlock({ block, variant = 'full' }: MapBlockProps) {
       </div>
 
       <div className="map-atlas-frame">
+        <div className="map-border-runes" aria-hidden="true">✦ ᚱ ᚨ ᚾ ᛃ ᛟ ✦</div>
+        <div className="map-compass-rose" aria-label="Роза ветров">
+          <span>С</span>
+          <span>В</span>
+          <span>Ю</span>
+          <span>З</span>
+        </div>
         <svg
           className="map-canvas"
           role="img"
@@ -135,15 +144,17 @@ export function MapBlock({ block, variant = 'full' }: MapBlockProps) {
                 'map-node',
                 node.isCurrent ? 'map-node--current' : '',
                 node.id === currentNode?.id ? 'map-node--selected' : '',
-                isContested(node) ? 'map-node--contested' : ''
+                isContested(node) ? 'map-node--contested' : '',
+                node.isPlaceholder ? 'map-node--placeholder' : ''
               ].filter(Boolean).join(' ')}
+              aria-label={`${node.isPlaceholder ? 'Известный выход' : 'Локация'}: ${toSafeMapText(node.label || node.id, 'точка карты')}`}
               onClick={() => setSelectedNodeId(node.id)}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') setSelectedNodeId(node.id);
               }}
             >
               <circle cx={node.x} cy={-node.y} r={node.isCurrent ? 0.72 : 0.52} />
-              <text x={node.x + 0.78} y={-node.y - 0.42}>{toSafeMapText(node.label || node.id, 'точка карты')}</text>
+              <text x={node.x} y={-node.y - 1.05}>{toSafeMapText(node.label || node.id, 'точка карты')}</text>
             </g>
           ))}
         </svg>
@@ -155,6 +166,7 @@ export function MapBlock({ block, variant = 'full' }: MapBlockProps) {
           <strong>Легенда</strong>
           <span><i className="legend-swatch current" aria-hidden="true" />Текущая точка</span>
           <span><i className="legend-swatch" aria-hidden="true" />Обычная точка</span>
+          <span><i className="legend-swatch placeholder" aria-hidden="true" />Известный выход</span>
           <span><i className="legend-swatch faction" aria-hidden="true" />Влияние фракций</span>
         </div>
         {currentNode && (
@@ -169,9 +181,34 @@ export function MapBlock({ block, variant = 'full' }: MapBlockProps) {
                 <dd>{item.value}</dd>
               </div>
             ))}
+            {resolveNodeImageUrl(currentNode) && (
+              <div className="map-detail-media">
+                <dt>Облик</dt>
+                <dd>
+                  <button type="button" className="map-image-thumb" onClick={() => setExpandedImageNode(currentNode)}>
+                    <img
+                      src={resolveNodeImageUrl(currentNode)}
+                      alt={toSafeMapText(currentNode.imageAltText, `Изображение: ${currentNode.label || currentNode.id}`)}
+                    />
+                  </button>
+                </dd>
+              </div>
+            )}
           </dl>
         )}
       </footer>
+
+      {expandedImageNode && (
+        <dialog className="map-image-dialog" open aria-label={`Изображение локации ${toSafeMapText(expandedImageNode.label, 'карты')}`}>
+          <form method="dialog">
+            <button type="button" className="secondary" onClick={() => setExpandedImageNode(null)}>Закрыть</button>
+          </form>
+          <img
+            src={resolveNodeImageUrl(expandedImageNode)}
+            alt={toSafeMapText(expandedImageNode.imageAltText, `Изображение: ${expandedImageNode.label || expandedImageNode.id}`)}
+          />
+        </dialog>
+      )}
     </section>
   );
 }
@@ -224,8 +261,19 @@ function describeMapNode(node: MapNodeDto): Array<{ key: string; value: string }
     });
   }
 
+  if (!details.some((item) => item.key.toLocaleLowerCase('ru-RU') === 'состояние')) {
+    details.unshift({
+      key: 'Состояние',
+      value: node.isPlaceholder
+        ? 'Известный выход: подробная локация ещё не открыта.'
+        : node.isCurrent
+          ? 'Текущая локация'
+          : 'Открытая локация'
+    });
+  }
+
   details.push({ key: 'Уровень', value: String(node.z) });
-  return details.slice(0, 5);
+  return details;
 }
 
 function isMapNode(node: MapNodeDto | undefined): node is MapNodeDto {
@@ -242,4 +290,8 @@ function isContested(node: MapNodeDto): boolean {
 
 function toSafeMapText(value: string | null | undefined, fallback: string): string {
   return sanitizePlayerMessage(value, fallback).safe;
+}
+
+function resolveNodeImageUrl(node: MapNodeDto): string {
+  return toSafeMapText(node.imageUrl, '');
 }

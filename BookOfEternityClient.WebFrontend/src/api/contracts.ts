@@ -766,6 +766,9 @@ export interface MapNodeDto {
   ownerFactionName: string;
   influence: Record<string, number>;
   details: MapDetailItemDto[];
+  isPlaceholder: boolean;
+  imageUrl: string;
+  imageAltText: string;
 }
 
 export interface MapLinkDto {

@@ -305,6 +305,15 @@ describe('playerCopy robustness', () => {
     expect(mapBlock).toContain('className="map-canvas"');
     expect(mapBlock).toContain('block.map.links.map');
     expect(mapBlock).toContain('aria-label={mapTitle}');
+    expect(mapBlock).toContain("node.isPlaceholder ? 'map-node--placeholder' : ''");
+    expect(mapBlock).toContain('setSelectedNodeId(node.id)');
+    expect(mapBlock).toContain('className="map-detail-media"');
+    expect(mapBlock).toContain('className="map-image-thumb"');
+    expect(mapBlock).toContain('className="map-image-dialog"');
+    expect(mapBlock).toContain('dialog');
+    expect(mapBlock).toContain('Известный выход');
+    expect(mapBlock).toContain('Роза ветров');
+    expect(mapBlock).toContain('map-border-runes');
   });
 
   it('resets browser map selection controls when a different map block is rendered', () => {

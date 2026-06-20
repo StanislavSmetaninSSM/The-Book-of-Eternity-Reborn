@@ -15,6 +15,7 @@ public static class LocalMapViewService
     private const string ShiningAbodeLayerId = "shining_abode";
     private const int MeaningfulFactionInfluence = 25;
     private const int ContestedControlGap = 10;
+    private const string ImageVersionSeparator = "__img_";
     internal static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
@@ -74,6 +75,8 @@ public static class LocalMapViewService
             ApplyFactionTerritoryClaims(nodes, factionDoc.RootElement);
 
         ApplyFallbackLayout(nodes.Values);
+        FinalizePlaceholderDetails(nodes.Values);
+        AttachLocationImages(fs, nodes.Values);
         var nodeDtos = nodes.Values
             .Select(static node => node.ToDto())
             .OrderBy(static node => node.Z)
@@ -930,7 +933,7 @@ public static class LocalMapViewService
             if (item.ValueKind != JsonValueKind.Object)
                 continue;
 
-            AddLocationNode(nodes, item, ResolveLocationId(item, $"location_{nodes.Count + 1}"), isCurrent: false);
+            AddLocationNode(nodes, item, ResolveLocationId(item, $"location_{nodes.Count + 1}"), isCurrent: false, isPlaceholder: false);
         }
     }
 
@@ -975,12 +978,12 @@ public static class LocalMapViewService
             if (string.IsNullOrWhiteSpace(targetId))
                 targetId = StableId(GetString(entry, "name", "locationName", "label"), $"adjacent_{nodes.Count + 1}");
 
-            AddLocationNode(nodes, entry, targetId, isCurrent: false);
+            AddLocationNode(nodes, entry, targetId, isCurrent: false, isPlaceholder: true);
             AddLink(links, sourceNodeId, targetId, GetString(entry, "direction", "label"), GetString(entry, "linkState", "state"));
         }
     }
 
-    private static void AddLocationNode(Dictionary<string, NodeDraft> nodes, JsonElement location, string id, bool isCurrent)
+    private static void AddLocationNode(Dictionary<string, NodeDraft> nodes, JsonElement location, string id, bool isCurrent, bool isPlaceholder = false)
     {
         if (string.IsNullOrWhiteSpace(id))
             return;
@@ -995,6 +998,9 @@ public static class LocalMapViewService
         draft.Type = Prefer(draft.Type, GetString(location, "locationType", "type"));
         draft.Layer = WorldLayerId;
         draft.IsCurrent |= isCurrent;
+        draft.IsPlaceholder = draft.IsPlaceholder || isPlaceholder;
+        if (!isPlaceholder)
+            draft.IsPlaceholder = false;
 
         if (TryReadCoordinates(location, out var x, out var y, out var z))
         {
@@ -1235,6 +1241,82 @@ public static class LocalMapViewService
         }
     }
 
+    private static void FinalizePlaceholderDetails(IEnumerable<NodeDraft> nodes)
+    {
+        foreach (var node in nodes.Where(static node => node.IsPlaceholder))
+            AddDetail(node, "Состояние", "известный выход; подробная локация ещё не открыта");
+    }
+
+    private static void AttachLocationImages(FileSystemManager fs, IEnumerable<NodeDraft> nodes)
+    {
+        var locationImagesDir = fs.ResolvePath("images/locations");
+        if (!Directory.Exists(locationImagesDir))
+            return;
+
+        var candidates = Directory
+            .EnumerateFiles(locationImagesDir, "*.*", SearchOption.TopDirectoryOnly)
+            .Where(IsSupportedImageFile)
+            .ToList();
+        if (candidates.Count == 0)
+            return;
+
+        foreach (var node in nodes.Where(static node => !node.IsPlaceholder))
+        {
+            var imagePath = FindLatestImageCandidate(candidates, node.Id, node.Label);
+            if (string.IsNullOrWhiteSpace(imagePath))
+                continue;
+
+            var relativePath = NormalizeRelativePath(Path.GetRelativePath(fs.GameSessionPath, imagePath));
+            var mediaId = LocalMediaService.CreateMediaIdForRelativePath(relativePath);
+            node.ImageUrl = "/api/media/" + Uri.EscapeDataString(mediaId);
+            node.ImageAltText = $"Изображение локации «{(string.IsNullOrWhiteSpace(node.Label) ? node.Id : node.Label)}»";
+        }
+    }
+
+    private static string? FindLatestImageCandidate(IEnumerable<string> candidates, params string[] keys)
+    {
+        var safeKeys = keys
+            .Select(SanitizeImageFileKey)
+            .Where(static key => !string.IsNullOrWhiteSpace(key))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        if (safeKeys.Length == 0)
+            return null;
+
+        return candidates
+            .Where(path =>
+            {
+                var stem = Path.GetFileNameWithoutExtension(path);
+                return safeKeys.Any(key =>
+                    stem.Equals(key, StringComparison.OrdinalIgnoreCase) ||
+                    stem.StartsWith(key + ImageVersionSeparator, StringComparison.OrdinalIgnoreCase));
+            })
+            .OrderByDescending(File.GetLastWriteTimeUtc)
+            .FirstOrDefault();
+    }
+
+    private static string SanitizeImageFileKey(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return string.Empty;
+
+        var invalid = Path.GetInvalidFileNameChars();
+        var sanitized = new string(name.Select(ch => invalid.Contains(ch) ? '_' : ch).ToArray());
+        if (sanitized.Length > 80)
+            sanitized = sanitized[..80];
+        sanitized = sanitized.Trim().TrimEnd('.');
+        return string.IsNullOrWhiteSpace(sanitized) ? "entity" : sanitized;
+    }
+
+    private static bool IsSupportedImageFile(string path)
+    {
+        var ext = Path.GetExtension(path).ToLowerInvariant();
+        return ext is ".png" or ".jpg" or ".jpeg" or ".gif" or ".bmp" or ".webp";
+    }
+
+    private static string NormalizeRelativePath(string relativePath) =>
+        relativePath.Trim().Replace('\\', '/').TrimStart('/');
+
     private static string ResolveLocationId(JsonElement location, string fallback) =>
         StableId(GetString(location, "locationId", "id", "targetLocationId"), StableId(GetString(location, "name", "locationName"), fallback));
 
@@ -1402,6 +1484,9 @@ public static class LocalMapViewService
         public string ParentHallId { get; set; } = string.Empty;
         public string OwnerFactionId { get; set; } = string.Empty;
         public string OwnerFactionName { get; set; } = string.Empty;
+        public bool IsPlaceholder { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
+        public string ImageAltText { get; set; } = string.Empty;
         public Dictionary<string, int> Influence { get; } = new(StringComparer.OrdinalIgnoreCase);
         public List<FactionControlDraft> FactionControls { get; } = [];
         public List<MapDetailItemDto> Details { get; } = [];
@@ -1419,7 +1504,10 @@ public static class LocalMapViewService
             OwnerFactionId = OwnerFactionId,
             OwnerFactionName = OwnerFactionName,
             Influence = new Dictionary<string, int>(Influence, StringComparer.OrdinalIgnoreCase),
-            Details = Details.ToList()
+            Details = Details.ToList(),
+            IsPlaceholder = IsPlaceholder,
+            ImageUrl = ImageUrl,
+            ImageAltText = ImageAltText
         };
     }
 

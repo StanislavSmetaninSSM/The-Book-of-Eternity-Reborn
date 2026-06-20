@@ -129,6 +129,9 @@ public sealed class MapNodeDto
     public string OwnerFactionName { get; init; } = string.Empty;
     public Dictionary<string, int> Influence { get; init; } = new(StringComparer.OrdinalIgnoreCase);
     public List<MapDetailItemDto> Details { get; init; } = [];
+    public bool IsPlaceholder { get; init; }
+    public string ImageUrl { get; init; } = string.Empty;
+    public string ImageAltText { get; init; } = string.Empty;
 }
 
 public sealed class MapLinkDto
