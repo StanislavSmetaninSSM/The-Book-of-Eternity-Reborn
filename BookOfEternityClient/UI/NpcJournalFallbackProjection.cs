@@ -117,22 +117,30 @@ internal static class NpcJournalFallbackProjection
             if (string.IsNullOrWhiteSpace(npcId) && string.IsNullOrWhiteSpace(npcName))
                 continue;
 
-            var latest = ReadLatestJournalEntry(item);
+            var journalEntries = ReadJournalEntries(item);
+            var latest = journalEntries.LastOrDefault();
             var latestNote = FirstNonEmpty(
-                latest.Description,
-                latest.Event,
+                latest?.Description,
+                latest?.Event,
                 GetString(item, "lastJournalNote"));
 
             if (string.IsNullOrWhiteSpace(latestNote))
                 latestNote = "Последняя запись пока без описания.";
 
+            var latestEvent = latest?.Event ?? string.Empty;
+            var relationshipChange = FirstNonEmpty(latest?.RelationshipChange, GetString(item, "relationshipChange"));
+            var entryCount = journalEntries.Count;
+            if (entryCount == 0 && !string.IsNullOrWhiteSpace(GetString(item, "lastJournalNote")))
+                entryCount = 1;
+
             entries.Add(new NpcJournalFallbackEntry(
                 npcId.Trim(),
                 npcName.Trim(),
-                latest.Event.Trim(),
+                latestEvent.Trim(),
                 latestNote.Trim(),
-                latest.RelationshipChange.Trim(),
-                latest.EntryCount));
+                relationshipChange.Trim(),
+                entryCount,
+                journalEntries));
         }
 
         return entries;
@@ -161,40 +169,91 @@ internal static class NpcJournalFallbackProjection
         return default;
     }
 
-    private static JournalEntrySummary ReadLatestJournalEntry(JsonElement item)
+    public static IReadOnlyList<UiBlock> BuildDetailBlocks(NpcJournalFallbackEntry entry)
+    {
+        var blocks = new List<UiBlock>
+        {
+            new UiMessageBlock
+            {
+                Severity = UiNotificationSeverity.Info,
+                Title = $"Журнал НПС: {entry.DisplayName}",
+                Message = Notice
+            },
+            new UiKeyValueGridBlock
+            {
+                Items =
+                [
+                    new UiKeyValueItem { Key = "НПС", Value = entry.DisplayName },
+                    new UiKeyValueItem { Key = "Последняя запись", Value = entry.LatestNote },
+                    new UiKeyValueItem { Key = "Журнал", Value = entry.JournalSummary }
+                ]
+            }
+        };
+
+        var rows = entry.JournalEntries.Count > 0
+            ? entry.JournalEntries
+                .Select(static journalEntry => new UiTableRow
+                {
+                    Cells =
+                    [
+                        EmptyFallback(journalEntry.Event, "Событие не подписано"),
+                        EmptyFallback(journalEntry.Description, "Описание пока не записано."),
+                        EmptyFallback(journalEntry.RelationshipChange, "без изменения")
+                    ]
+                })
+                .ToList()
+            :
+            [
+                new UiTableRow
+                {
+                    Cells =
+                    [
+                        EmptyFallback(entry.LatestEvent, "Последняя запись"),
+                        entry.LatestNote,
+                        EmptyFallback(entry.RelationshipChange, "без изменения")
+                    ]
+                }
+            ];
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = "Записи журнала",
+            Columns = ["Событие", "Запись", "Отношение"],
+            Rows = rows
+        });
+        blocks.Add(new UiTextBlock { Text = "Назад к списку можно командой /нпс.", Tone = UiTone.Muted });
+        return blocks;
+    }
+
+    private static IReadOnlyList<NpcJournalEntry> ReadJournalEntries(JsonElement item)
     {
         if (!item.TryGetProperty("journalEntries", out var journalEntries) ||
             journalEntries.ValueKind != JsonValueKind.Array)
         {
-            return new JournalEntrySummary(
-                Event: string.Empty,
-                Description: string.Empty,
-                RelationshipChange: string.Empty,
-                EntryCount: string.IsNullOrWhiteSpace(GetString(item, "lastJournalNote")) ? 0 : 1);
+            return [];
         }
 
-        var count = 0;
-        var latest = new JournalEntrySummary(string.Empty, string.Empty, string.Empty, 0);
+        var entries = new List<NpcJournalEntry>();
         foreach (var entry in journalEntries.EnumerateArray())
         {
-            count++;
-            latest = entry.ValueKind switch
+            switch (entry.ValueKind)
             {
-                JsonValueKind.Object => new JournalEntrySummary(
-                    GetString(entry, "event"),
-                    FirstNonEmpty(GetString(entry, "description"), GetString(entry, "text")),
-                    GetString(entry, "relationshipChange"),
-                    count),
-                JsonValueKind.String => new JournalEntrySummary(
-                    string.Empty,
-                    entry.GetString() ?? string.Empty,
-                    string.Empty,
-                    count),
-                _ => latest with { EntryCount = count }
-            };
+                case JsonValueKind.Object:
+                    entries.Add(new NpcJournalEntry(
+                        GetString(entry, "event").Trim(),
+                        FirstNonEmpty(GetString(entry, "description"), GetString(entry, "text")).Trim(),
+                        GetString(entry, "relationshipChange").Trim()));
+                    break;
+                case JsonValueKind.String:
+                    entries.Add(new NpcJournalEntry(
+                        string.Empty,
+                        (entry.GetString() ?? string.Empty).Trim(),
+                        string.Empty));
+                    break;
+            }
         }
 
-        return latest with { EntryCount = count };
+        return entries;
     }
 
     private static bool HasVisibleNpcIdentity(JsonObject? item)
@@ -247,11 +306,8 @@ internal static class NpcJournalFallbackProjection
     private static string FirstNonEmpty(params string?[] values) =>
         values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
 
-    private sealed record JournalEntrySummary(
-        string Event,
-        string Description,
-        string RelationshipChange,
-        int EntryCount);
+    private static string EmptyFallback(string? value, string fallback) =>
+        string.IsNullOrWhiteSpace(value) ? fallback : value.Trim();
 }
 
 internal sealed record NpcJournalFallbackEntry(
@@ -260,7 +316,8 @@ internal sealed record NpcJournalFallbackEntry(
     string LatestEvent,
     string LatestNote,
     string RelationshipChange,
-    int EntryCount)
+    int EntryCount,
+    IReadOnlyList<NpcJournalEntry> JournalEntries)
 {
     public string DisplayName =>
         string.IsNullOrWhiteSpace(NpcName)
@@ -291,6 +348,11 @@ internal sealed record NpcJournalFallbackEntry(
         return $"{count} {suffix}";
     }
 }
+
+internal sealed record NpcJournalEntry(
+    string Event,
+    string Description,
+    string RelationshipChange);
 
 internal sealed record NpcJournalFallbackConsoleRow(
     string Name,

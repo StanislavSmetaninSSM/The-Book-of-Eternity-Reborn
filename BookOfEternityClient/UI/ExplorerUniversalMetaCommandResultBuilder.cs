@@ -1106,6 +1106,15 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             }
         }
 
+        if (rows.Count == 0)
+        {
+            return Completed(command,
+                Message(
+                    UiNotificationSeverity.Info,
+                    "Извечные хранители",
+                    "В библиотеке пока нет пресетов."));
+        }
+
         return Completed(command,
             new UiTableBlock
             {
