@@ -11,6 +11,8 @@ public sealed class GmWorkerBridgeContractTests
         var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
 
         Assert.Equal(WorkerLaunchVisibility.Hidden, profile.LaunchVisibility);
+        Assert.Contains("gm_worker_cli_runner.ps1", profile.LaunchCommand, StringComparison.Ordinal);
+        Assert.Contains("-AgentCommand", profile.LaunchCommand, StringComparison.Ordinal);
         Assert.Contains(WorkerTaskType.ValidationRepair, profile.Permissions.TaskTypes);
         Assert.False(profile.Permissions.ProposalOnly);
         Assert.True(profile.Permissions.RequiresValidation);
@@ -26,6 +28,8 @@ public sealed class GmWorkerBridgeContractTests
         var profile = GmWorkerBridgeTestFixtures.NarrativeDraftGeminiProfile();
 
         Assert.Equal(WorkerLaunchVisibility.Hidden, profile.LaunchVisibility);
+        Assert.Contains("gm_worker_cli_runner.ps1", profile.LaunchCommand, StringComparison.Ordinal);
+        Assert.Contains("-AgentCommand", profile.LaunchCommand, StringComparison.Ordinal);
         Assert.Contains(WorkerTaskType.NarrativeDraft, profile.Permissions.TaskTypes);
         Assert.True(profile.Permissions.ProposalOnly);
         Assert.False(profile.Permissions.RequiresValidation);

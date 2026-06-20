@@ -84,5 +84,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs\1149-gm-worker-cli-runner\plan.md
+at specs\1151-gm-worker-profile-templates\plan.md
 <!-- SPECKIT END -->

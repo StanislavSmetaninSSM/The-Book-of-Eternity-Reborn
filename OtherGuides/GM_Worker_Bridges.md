@@ -52,6 +52,11 @@ environment variables, builds a strict prompt with the task packet and proposal
 contract, feeds that prompt to the configured agent command through stdin, and
 requires the agent to write a non-empty proposal handoff file.
 
+Default settings expose disabled worker profile templates for common local
+agents. They are safe to keep because `enabled` is `false`; the main GM cannot
+route work to them until the user decides to enable one template explicitly and
+confirms the local agent command works.
+
 Runner path:
 
 ```text
@@ -66,7 +71,7 @@ Codex validation-repair example:
   "displayName": "Codex validation repair",
   "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex --dangerously-bypass-approvals-and-sandbox\" -TimeoutSeconds 180",
   "role": "validation-repair",
-  "enabled": true,
+  "enabled": false,
   "launchVisibility": "hidden",
   "timeoutSeconds": 210,
   "maxConcurrentTasks": 1
@@ -81,7 +86,22 @@ Gemini narrative-draft example:
   "displayName": "Gemini narrative drafter",
   "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"gemini\" -TimeoutSeconds 120",
   "role": "narrative-draft",
-  "enabled": true,
+  "enabled": false,
+  "launchVisibility": "hidden",
+  "timeoutSeconds": 150,
+  "maxConcurrentTasks": 1
+}
+```
+
+Codex analysis example:
+
+```json
+{
+  "workerId": "analysis_codex",
+  "displayName": "Codex analysis worker",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex --dangerously-bypass-approvals-and-sandbox\" -TimeoutSeconds 120",
+  "role": "analysis",
+  "enabled": false,
   "launchVisibility": "hidden",
   "timeoutSeconds": 150,
   "maxConcurrentTasks": 1

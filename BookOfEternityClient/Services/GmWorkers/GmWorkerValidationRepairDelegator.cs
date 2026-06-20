@@ -72,7 +72,7 @@ public sealed class GmWorkerValidationRepairDelegator
         var routing = GmWorkerBridgePool.SelectWorkerForTask(profiles, WorkerTaskType.ValidationRepair);
         if (!routing.Found || routing.Profile == null)
         {
-            if (profiles.Count > 0)
+            if (profiles.Any(profile => profile.Enabled))
                 await RecordRouterEventAsync("validation-repair-skipped", null, null, routing.Reason);
             return new GmWorkerValidationRepairDispatchResult
             {
