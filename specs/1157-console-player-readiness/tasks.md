@@ -98,8 +98,8 @@
 - [x] T033 Clean generated `TestResults/` and temporary pass artifacts that are not intentionally preserved
 - [x] T034 Run `git diff --check` and inspect `git diff --stat`
 - [x] T035 Commit Spec Kit artifacts, code/tests, and any docs updates tied to #1157
-- [ ] T036 Open, verify, merge PR for #1157 when acceptance criteria are met
-- [ ] T037 Post final #1157 issue comment with live run result, verification commands, fixed defects, follow-up issues, and residual risk
+- [x] T036 Open, verify, merge PR for #1157 when acceptance criteria are met
+- [x] T037 Post final #1157 issue comment with live run result, verification commands, fixed defects, follow-up issues, and residual risk
 
 ## Dependencies & Execution Order
 
