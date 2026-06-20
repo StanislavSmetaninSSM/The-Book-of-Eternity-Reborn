@@ -701,6 +701,58 @@ Client result:
 - asks GM to either add `Марта` to `Relevant actors` + reasoning blocks or remove that structural NPC update
 - this example isolates the scope mismatch only; in a real turn `UpdateNPCs` must still satisfy the full NPC object contract and cannot be treated as a legal skeletal patch
 
+Concrete Mortal relevant NPC without persistence example:
+
+## Охват NPC-анализа
+- Режим: Scene-local
+- Релевантные акторы: Иветта
+- Почему они релевантны: Иветта присутствует в коридоре, сообщает Асурана улику про серебряную нить и направляет его к дворецкому Ролану
+- Акторы вне охвата: Ролан
+- Почему они вне охвата: Ролан пока только упомянут как следующий контакт и не появляется в сцене
+
+## Размышления акторов
+### Иветта
+- Текущая локация: Коридор поместья Вальмонт.
+- Ситуация: Горничная встречает Асурана в коридоре после ночного письма.
+- Мысли: Она боится, но понимает, что без её подсказки хозяин пойдёт вслепую.
+- Действия: Она сообщает про серебряную нить на манжете и про дворецкого Ролана.
+
+Broken state:
+- `output/debug_logs.json` contains the scope and actor reasoning above
+- `response` narrates Иветта and the clue
+- but `game_state/npcs/npc_core.json` is missing, empty, or lacks any `UpdateNPCs` / `NPCsInScene` / `NPCJournals` / actor-specific NPC surface for Иветта
+
+Client result:
+- rejects the turn
+- writes `mortal_relevant_actor_missing_persistence`
+- asks GM to materialize Иветта through `UpdateNPCs` or `NPCsInScene` and add an appropriate `NPCJournals`/quest/relationship/activity update, or remove Иветта from `Relevant actors` if she was only background
+
+Corrected shape:
+
+game_state/npcs/npc_core.json
+{
+  "NPCsInScene": [
+    {
+      "npcId": "npc_ivetta_01",
+      "name": "Иветта",
+      "role": "Горничная дома Вальмонт",
+      "currentLocationId": "valmont_corridor"
+    }
+  ]
+}
+
+game_state/npcs/npc_journals.json
+{
+  "NPCJournals": [
+    {
+      "npcId": "npc_ivetta_01",
+      "entry": "Иветта рассказала Асурана о серебряной нити на манжете и указала на дворецкого Ролана."
+    }
+  ]
+}
+
+The player can now discover the actor and clue later through `/нпс` and related command drilldowns.
+
 Concrete structured Guardian mismatch example:
 
 ## Охват NPC-анализа

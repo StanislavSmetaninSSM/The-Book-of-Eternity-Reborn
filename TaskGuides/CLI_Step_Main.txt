@@ -233,7 +233,7 @@
             
             **Failure to provide the required scope/reasoning contract is a CRITICAL ERROR.**
             **If progressionControl says cycles are due and you do not process them, the client will reject the turn as a protocol violation.**
-            **If the scope declaration is missing, the mode is invalid, declared relevant actors do not have full actor-thought blocks, or structured actor updates are not covered by declared relevant actors, the client must reject the turn as a protocol violation.**
+            **If the scope declaration is missing, the mode is invalid, declared relevant actors do not have full actor-thought blocks, structured actor updates are not covered by declared relevant actors, or a declared Mortal World NPC exists only in reasoning/narrative without any NPC persistence surface, the client must reject the turn as a protocol violation.**
                - Economic Changes: Should markets, resources, or territories shift? (based on recent events)
                
             **One acceptable rich template for gm_thoughts_markdown is:**
@@ -251,6 +251,9 @@
              Rule:
              - `Scene-local + Релевантные акторы: нет` допустимо только если ты не делаешь никаких structured actor updates в этом ходу
              - если ты меняешь NPC/Guardian через structured update arrays, соответствующий актор ОБЯЗАН быть в `Релевантные акторы`
+             - если Mortal World актор указан в `Релевантные акторы` и это не игрок/Душа/Хранитель, он ОБЯЗАН быть сохранён в player-facing NPC state (`UpdateNPCs`, `NPCsInScene`, `NPCJournals`, `NPCQuestUpdates`, relationship/activity/effect update или другой NPC structured surface)
+             - scene-local reasoning НЕ является заменой persistence: если горничная, стражник, свидетель или любой named NPC говорит, даёт улику, предлагает сделку или меняет сцену, игрок должен потом увидеть его через `/нпс` и связанные команды
+             - если ход раскрывает улику, новый зацепочный thread или actionable lead, не ограничивайся `currentLocationData.lastEventsDescription`: добавь player-facing память через `NPCJournals`, `UpdateQuests`/quest log, `characterChronicleUpdates` или `worldEventsLog` по смыслу
              - если structured update содержит только ID и имя нельзя надёжно восстановить из state, это не должно само по себе ломать ход как hard scope mismatch
              
              ## Actor Brain 2.0 / Reasoning / Размышления NPC / Guardian Thoughts
@@ -282,6 +285,7 @@
             Минимальный validator contract при этом остаётся уже:
             - `## Охват NPC-анализа` с полями режима/релевантных акторов/обоснований
             - valid reasoning section с блоками `### [Actor Name]` для всех declared relevant actors
+            - declared Mortal World relevant NPCs must have a matching player-facing NPC persistence surface; reasoning-only actors are invalid when they are not merely background/out-of-scope mentions
             - `Actor Brain 2.0` is the preferred shared reasoning protocol. Keep full mortal `NPC Brain 2.0` depth for Mortal NPCs; for afterlife actors use the packs from `OtherGuides/Actor_Brain_2_0.md`: `Guardian pack`, `Resident pack`, and `Shining political` pack.
             - для каждого relevant NPC в его блоке обязателен явный подпункт `Текущая локация / Current location`
             

@@ -93,6 +93,13 @@
                  - VERIFY that for every positive or negative interaction between two NPCs described in a 'worldEventsLog' entry, there are two corresponding entries in 'interNPCRelationshipChanges' (NPC A -> NPC B and NPC B -> NPC A), reflecting their reciprocal views. 
                  - If you find any discrepancy, missing reciprocal links, or incorrect IDs (especially using 'UpdateNPCs' to change relationships between NPCs), you MUST fix it now. This is a critical step for the integrity of the social simulation.
 
+            6.B. MORTAL RELEVANT NPC PERSISTENCE AUDIT (MANDATORY):
+                 - Review your `## Охват NPC-анализа` / `NPC Scope` declaration.
+                 - For EVERY declared relevant actor in a Mortal World turn who is not the player, the Soul, a Guardian, or a pure background/out-of-scope mention, VERIFY that the actor is represented in a player-facing NPC surface: `UpdateNPCs`, `NPCsInScene`, `NPCJournals`, `NPCQuestUpdates`, relationship/activity/effect updates, or another actor-specific NPC command.
+                 - Reasoning text alone is not enough. If an NPC speaks, gives a clue, changes the scene, offers help, threatens the player, or becomes a next lead, the player must be able to inspect that NPC later through `/нпс` and related command drilldowns.
+                 - If the NPC should not persist, remove them from `Relevant actors`, move them to `Actors outside scope`, and explain why they are only background.
+                 - If the NPC reveals a clue or actionable lead, also verify that the lead is recorded in `NPCJournals`, `UpdateQuests`/quest log, `characterChronicleUpdates`, or `worldEventsLog` as appropriate; `currentLocationData.lastEventsDescription` alone is only a location recap, not a discoverable player-facing thread.
+
             7.  TRANSLATION AUDIT: 
                 -   Reread all strings in 'response', 'gm_thoughts_markdown', 'combat_log_markdown', and all generated 'name' and 'description' fields. 
                 If you find ANY text that should be translated but is still in English, you MUST correct it now. 

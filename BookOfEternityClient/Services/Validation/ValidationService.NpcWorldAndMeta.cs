@@ -59,6 +59,7 @@ public partial class ValidationService
     private static readonly HashSet<string> NpcStructuredSingleActorSections = new(StringComparer.OrdinalIgnoreCase)
     {
         GuardianPolicyContracts.NpcCoreUpdateSectionName,
+        GuardianPolicyContracts.NpcCoreSceneSectionName,
         NpcTradeRequestState.UpdateReceiptsProperty,
         "NPCGoalUpdates",
         "NPCQuestUpdates",
@@ -1935,6 +1936,81 @@ public partial class ValidationService
                 actual: $"{update.Section} changed actor outside declared scope",
                 repairHint: $"Либо добавь '{update.DisplayName}' в Relevant actors и reasoning blocks, либо не изменяй его через {update.Section} в этом ходу."));
         }
+    }
+
+    private static void ValidateMortalRelevantActorsHavePersistence(
+        string? currentRealm,
+        ReasoningScopeMode scopeMode,
+        ReasoningScopeManifest scope,
+        GuardianReasoningIdentityContext guardianIdentityContext,
+        IReadOnlyCollection<StructuredActorUpdate> structuredActorUpdates,
+        List<ValidationIssue> issues)
+    {
+        if (scopeMode == ReasoningScopeMode.Unknown ||
+            scopeMode == ReasoningScopeMode.GuardianCentric ||
+            string.IsNullOrWhiteSpace(currentRealm) ||
+            IsChaosSeaRealm(currentRealm))
+        {
+            return;
+        }
+
+        var persistedNpcActors = structuredActorUpdates
+            .Where(update => string.Equals(update.ActorType, "NPC", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var actor in scope.RelevantActors)
+        {
+            if (string.IsNullOrWhiteSpace(actor) ||
+                IsPlayerScopeActor(actor) ||
+                IsGuardianScopeActor(actor, guardianIdentityContext) ||
+                ActorHasStructuredNpcPersistence(actor, persistedNpcActors))
+            {
+                continue;
+            }
+
+            if (!seen.Add(actor))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                $"Mortal World relevant actor '{actor}' declared in NPC scope but has no persistent NPC surface",
+                code: "mortal_relevant_actor_missing_persistence",
+                actor: actor,
+                section: "npc_scope",
+                expected: "matching NPC persistence in UpdateNPCs, NPCsInScene, NPCJournals, NPCQuestUpdates, relationship/activity/effect updates, or another NPC structured surface",
+                actual: "actor appears only in gm_thoughts_markdown / narrative reasoning",
+                repairHint: $"Если '{actor}' реально присутствует, говорит, даёт улику или меняет сцену Mortal World, materialize его через UpdateNPCs/NPCsInScene и добавь нужный NPC journal/quest/relationship/activity update. Если это фоновое упоминание, убери его из Relevant actors и перенеси в Actors outside scope."));
+        }
+    }
+
+    private static bool ActorHasStructuredNpcPersistence(
+        string actor,
+        IEnumerable<StructuredActorUpdate> persistedNpcActors)
+    {
+        return persistedNpcActors.Any(update =>
+            string.Equals(update.DisplayName, actor, StringComparison.OrdinalIgnoreCase) ||
+            update.Aliases.Contains(actor));
+    }
+
+    private static bool IsPlayerScopeActor(string actor)
+    {
+        return string.Equals(actor, "игрок", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(actor, "player", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(actor, "pc", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(actor, "персонаж", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(actor, "главный герой", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(actor, "душа", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(actor, "soul", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsGuardianScopeActor(string actor, GuardianReasoningIdentityContext guardianIdentityContext)
+    {
+        return guardianIdentityContext.ActiveGuardianNames.Contains(actor) ||
+               guardianIdentityContext.CanonicalGuardianAliases.Contains(actor) ||
+               guardianIdentityContext.MirrorGuardianAliases.Contains(actor) ||
+               guardianIdentityContext.AuthoritativeGuardianIds.Contains(actor);
     }
 
     private static bool ScopeContainsRelevantActor(ReasoningScopeManifest scope, string alias)

@@ -6878,6 +6878,13 @@ public partial class ValidationService
         var structuredActorExtraction = await CollectStructuredActorUpdatesAsync(guardianPolicyContext);
         var structuredActorUpdates = structuredActorExtraction.Updates;
         ValidateStructuredActorUpdatesAgainstScope(scope, structuredActorUpdates, issues);
+        ValidateMortalRelevantActorsHavePersistence(
+            await TryResolveCurrentRealmAsync(),
+            scopeMode,
+            scope,
+            guardianIdentityContext,
+            structuredActorUpdates,
+            issues);
 
         var requiresGuardianScopeValidation = RequiresGuardianReasoningScopeValidation(
             scopeMode,

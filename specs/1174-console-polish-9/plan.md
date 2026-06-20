@@ -8,7 +8,7 @@
 
 ## Summary
 
-Implement the non-browser, non-QTE console 9/10 readiness pass in sequence: document command coverage, add a dry command sweep, repair narrow player-facing output/navigation defects, run a live Codex-GM console playtest without QTE, and publish a final acceptance score.
+Implement the non-browser, non-QTE console 9/10 readiness pass in sequence: document command coverage, add a dry command sweep, repair narrow player-facing output/navigation defects, run a live Codex-GM console playtest without QTE, publish a final acceptance score, and harden the accepted-turn contract where live play revealed that narrative facts could bypass player-facing command surfaces.
 
 ## Technical Context
 
@@ -41,7 +41,8 @@ Implement the non-browser, non-QTE console 9/10 readiness pass in sequence: docu
 4. Run the sweep and classify findings into narrow fixes, follow-up issues, or explicit diagnostic surfaces.
 5. For each narrow fix, write a failing regression test first, implement the smallest display/navigation repair, and rerun focused tests.
 6. Run a live Codex-GM console playtest without QTE after dry fixes and record friction findings.
-7. Produce a final acceptance audit and score. Merge only with verification evidence.
+7. For #1181 live-playtest fact persistence gaps, prefer validation/prompt contract hardening over guessing facts from prose; ensure the GM writes structured state that console commands can display.
+8. Produce a final acceptance audit and score. Merge only with verification evidence.
 
 ## Risk Controls
 

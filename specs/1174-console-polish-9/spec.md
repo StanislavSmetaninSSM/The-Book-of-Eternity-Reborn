@@ -100,6 +100,7 @@ After matrix, sweep, and narrow polish fixes, a live Codex-GM run checks whether
 - **FR-007**: Afterlife runtime or GM-authored contract changes MUST update the relevant afterlife documentation/examples/tests in the same change. Pure display-only changes that do not alter contracts MUST state that no GM docs are required.
 - **FR-008**: The final live playtest MUST record launch commands, session source, route, command coverage, issues found, verification commands, and residual risk.
 - **FR-009**: The final score rubric MUST classify remaining problems as blocker, major, minor, or polish. 9/10 is allowed only if no blocker or major non-QTE console-flow issue remains known.
+- **FR-010**: In Mortal World accepted turns, declared relevant NPC actors MUST be persisted into player-facing NPC state instead of existing only in narrative or `gm_thoughts_markdown`; if they reveal clues or leads, the GM-facing contract MUST direct the GM to record those facts in NPC journals, quests, chronicle, or world-event surfaces as appropriate.
 
 ### Key Entities
 
@@ -117,6 +118,7 @@ After matrix, sweep, and narrow polish fixes, a live Codex-GM run checks whether
 - **SC-005**: Afterlife command-output defects found by the matrix/sweep are fixed or converted to precise follow-up issues.
 - **SC-006**: A live Codex-GM console playtest without QTE is attempted after dry fixes and has a report with a 1-10 score.
 - **SC-007**: Fresh verification evidence is recorded before merge: focused tests, build, diff hygiene, and live/manual evidence where applicable.
+- **SC-008**: The live-playtest #1181 failure mode where a Mortal NPC is present in reasoning/narrative but absent from `/нпс` is covered by accepted-turn validation and GM-facing examples.
 
 ## Verification Plan
 
