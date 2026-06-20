@@ -185,7 +185,7 @@ h5 {
 h1 {
   max-width: 14ch;
   margin-bottom: var(--space-4);
-  font-size: clamp(2.4rem, 6.5vw, 5.4rem);
+  font-size: clamp(2.4rem, calc(6.5vw * var(--browser-font-scale, 1)), 5.4rem);
   line-height: var(--leading-tight);
   color: var(--color-parchment);
 }

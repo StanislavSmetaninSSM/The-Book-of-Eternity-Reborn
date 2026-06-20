@@ -60,7 +60,7 @@ function AppShell() {
     '--browser-font-scale': `${(clientSettings?.accessibility.fontScalePercent ?? 100) / 100}`,
     '--browser-ui-scale': `${(clientSettings?.accessibility.uiScalePercent ?? 100) / 100}`
   } as CSSProperties;
-  const showGameShellBg = !isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute;
+  const showGameShellBg = !isLauncherRoute;
   // When the painted game backdrop is up, flag the document root so CSS can dim
   // the body's own ambient gradients (they would otherwise cover the painting).
   useEffect(() => {

@@ -79,7 +79,7 @@
 .scene-hero__title {
   margin: 0 0 var(--space-1);
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1.5rem, calc(3vw * var(--browser-font-scale, 1)), 2rem);
   color: var(--color-parchment);
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.7);
   max-width: none;
@@ -231,7 +231,9 @@
 .cinematic-hero__title {
   margin: 0 0 var(--space-2);
   font-family: var(--font-display);
-  font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+  /* Scale the responsive vw term by the browser font-scale setting so the title
+     grows with the accessibility slider, not only with viewport width. */
+  font-size: clamp(1.8rem, calc(4.5vw * var(--browser-font-scale, 1)), 3.2rem);
   font-weight: 700;
   color: var(--color-parchment);
   line-height: var(--leading-tight);
