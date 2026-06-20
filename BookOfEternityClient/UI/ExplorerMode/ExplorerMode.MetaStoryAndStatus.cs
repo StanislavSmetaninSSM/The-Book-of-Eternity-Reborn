@@ -26,16 +26,15 @@ public partial class ExplorerMode
                 "[bold yellow]🧩 Глобальные системные моды[/]",
                 "",
                 "[white]Это глобальные надстройки над всей игрой.[/]",
-                "[white]Каноничны только activeMods[] из game_state/core/system_mods.json.[/]",
-                "[white]Включение и выключение выполняется через /options.[/]",
-                "[yellow]Игрок несёт полную ответственность за совместимость, баланс и работоспособность модов.[/]",
-                $"[dim]Папка модов: {Markup.Escape(_systemModService.GetModsDirectoryPath())}[/]"
+                "[white]Активные моды учитываются при подготовке ходов и правил мира.[/]",
+                "[white]Включение и выключение выполняется через /опции.[/]",
+                "[yellow]Перед включением проверьте описание: мод может менять баланс, тон и доступные правила.[/]"
             };
 
             if (mods.Count == 0)
             {
                 lines.Add("");
-                lines.Add("[dim]В game_session/mods пока нет файлов модов.[/]");
+                lines.Add("[dim]Пока нет установленных модов.[/]");
             }
             else
             {
@@ -55,7 +54,7 @@ public partial class ExplorerMode
             Clear();
             Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
             {
-                Header = new PanelHeader(" 🧩 System Mods ", Justify.Center),
+                Header = new PanelHeader(" 🧩 Системные моды ", Justify.Center),
                 Border = BoxBorder.Double,
                 BorderStyle = new Style(Color.Gold1),
                 Padding = new Padding(2, 1),
@@ -112,7 +111,7 @@ public partial class ExplorerMode
         var mod = mods.FirstOrDefault(m => string.Equals(m.FileName, fileName, StringComparison.OrdinalIgnoreCase));
         if (mod == null)
         {
-            ShowEmptyPanel("System Mod", "Файл мода больше не найден.");
+            ShowEmptyPanel("Системный мод", "Файл мода больше не найден.");
             return;
         }
 
@@ -139,7 +138,7 @@ public partial class ExplorerMode
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
-            Header = new PanelHeader(" 📄 System Mod Detail ", Justify.Center),
+            Header = new PanelHeader(" 📄 Системный мод ", Justify.Center),
             Border = BoxBorder.Double,
             BorderStyle = new Style(Color.Gold1),
             Padding = new Padding(2, 1),
@@ -1607,7 +1606,7 @@ public partial class ExplorerMode
 
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
-            Header = new PanelHeader(" 📦 Storage Access ", Justify.Center),
+            Header = new PanelHeader(" 📦 Доступ к хранилищам ", Justify.Center),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(Color.Cyan1),
             Padding = new Padding(2, 1),

@@ -14,6 +14,8 @@ public sealed partial class ExplorerModeCommandTests
         Assert.Contains("Математик", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Результат", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("17", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("JSON результата", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"success\"", text, StringComparison.OrdinalIgnoreCase);
         AssertNoHiddenExplorerErrors("math_simple_expression");
     }
 

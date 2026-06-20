@@ -481,6 +481,32 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_WorldRules_RendersPlayerFacingTextWithoutFileContractLeak()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync(WorldDirectiveService.ActiveDirectivesPath, new
+        {
+            worldTitle = "Текущий Мир",
+            settingSummary = "Активное досье для smoke test."
+        });
+
+        _console.QueueAnySelection("← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/правила_мира"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("world_rules_player_facing");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Досье текущего мира", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Текущий Мир", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("GM должен читать", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("lore/current_world/world_directives.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("world_directives.json", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_Story_RendersReaderWithoutException()
     {
@@ -835,6 +861,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         A small system mod used by explorer smoke tests.
         """);
+        _console.QueueAnySelection("← Назад");
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/моды"));
@@ -843,6 +870,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("system_mods");
         Assert.True(_console.ClearCalls > 0);
         Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Глобальные системные моды", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("System Mods", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_session", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Папка модов", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -1596,6 +1629,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("storage_access");
         Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Доступ к хранилищам", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Storage Access", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -1753,6 +1789,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("/взаимодействия запись meeting_cipher", overviewText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Передача шифра", overviewText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/misc", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полная запись взаимодействий", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"otherPlayersInteractions\"", overviewText, StringComparison.OrdinalIgnoreCase);
 
         _console.Rendered.Clear();
         _console.MarkupLines.Clear();
@@ -2127,6 +2165,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             playerBehaviorAssessment = new
             {
                 historyManipulationCoefficient = 0.25,
+                summary = "Игрок исследует подсказки без переписывания фактов.",
+                recentSignals = new[] { "прочитал письмо", "проверяет перчатку" },
                 notes = "Незначительные признаки мета-влияния."
             }
         });
@@ -2137,6 +2177,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("behavior_assessment");
         Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Кратко", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Недавние признаки", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("summary:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("recentSignals:", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

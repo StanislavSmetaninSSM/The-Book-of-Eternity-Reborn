@@ -2718,6 +2718,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Состояние применения: applied-awaiting-turn-accept", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Снимок дара:", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Размер бонуса: 3", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полный JSON", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/meta/soul_state.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"soulName\"", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

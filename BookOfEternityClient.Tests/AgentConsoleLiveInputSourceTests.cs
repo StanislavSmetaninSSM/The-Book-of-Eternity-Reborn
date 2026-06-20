@@ -141,8 +141,8 @@ public sealed class AgentConsoleLiveInputSourceTests
     {
         var store = new AgentConsoleStateStore();
         var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
-        store.UpdateSnapshot(BuildMenuSnapshot("main-menu", selectedIndex: 0));
         input.EnqueueLine("already queued");
+        store.UpdateSnapshot(BuildMenuSnapshot("main-menu", selectedIndex: 0));
 
         var result = input.TryQueueAction(new AgentConsoleActionRequest
         {
@@ -161,8 +161,8 @@ public sealed class AgentConsoleLiveInputSourceTests
     {
         var store = new AgentConsoleStateStore();
         var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
-        store.UpdateSnapshot(BuildMenuSnapshot("main-menu", selectedIndex: 0));
         input.EnqueueLine("already queued");
+        store.UpdateSnapshot(BuildMenuSnapshot("main-menu", selectedIndex: 0));
 
         var result = input.TryQueueAction(new AgentConsoleActionRequest
         {
@@ -223,6 +223,52 @@ public sealed class AgentConsoleLiveInputSourceTests
         Assert.Equal(AgentConsoleInputReadFailureReason.Shutdown, liveException.Reason);
     }
 
+    [Fact]
+    public async Task EnqueueLine_WhenReadKeyIsPending_RejectsWithoutPoisoningQueue()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromSeconds(5));
+        var readTask = Task.Run(() => input.ReadKey(intercept: true));
+
+        await Task.Delay(50);
+        var rejected = input.EnqueueLine("/directive");
+
+        Assert.False(rejected.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.InputKindMismatch, rejected.RejectionCode);
+        Assert.False(readTask.IsCompleted);
+
+        var expectedKey = new ConsoleKeyInfo('\0', ConsoleKey.Enter, shift: false, alt: false, control: false);
+        var accepted = input.EnqueueKey(expectedKey);
+
+        Assert.True(accepted.Accepted);
+        Assert.Equal(expectedKey, await readTask.WaitAsync(TimeSpan.FromSeconds(1)));
+        Assert.DoesNotContain(store.GetEvents(), e =>
+            e.Kind == AgentConsoleEventKind.InputAccepted &&
+            e.InputKind == AgentConsoleInputKind.Text);
+    }
+
+    [Fact]
+    public void ReadLine_WhenSnapshotPromptIsConsumed_RejectsSecondLineUntilNextPrompt()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildTextSnapshot("game-loop"));
+
+        var accepted = input.EnqueueLine("/валидация");
+        Assert.True(accepted.Accepted);
+        Assert.Equal("/валидация", input.ReadLine());
+
+        var consumedSnapshot = store.GetSnapshot();
+        Assert.NotNull(consumedSnapshot);
+        Assert.False(consumedSnapshot.AwaitingInput);
+        Assert.Equal(AgentConsoleInputKind.None, consumedSnapshot.InputKind);
+
+        var rejected = input.EnqueueLine("/моды");
+
+        Assert.False(rejected.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.NotAwaitingInput, rejected.RejectionCode);
+    }
+
     private static AgentConsoleSnapshot BuildMenuSnapshot(string screenId, int selectedIndex)
     {
         var renderedAt = new DateTimeOffset(2026, 5, 31, 10, 0, 0, TimeSpan.Zero);
@@ -242,6 +288,28 @@ public sealed class AgentConsoleLiveInputSourceTests
             ],
             RenderedAtUtc = renderedAt,
             UpdatedAtUtc = renderedAt
+        };
+    }
+
+    private static AgentConsoleSnapshot BuildTextSnapshot(string screenId)
+    {
+        var renderedAt = new DateTimeOffset(2026, 5, 31, 10, 0, 0, TimeSpan.Zero);
+        return new AgentConsoleSnapshot
+        {
+            ScreenId = screenId,
+            Mode = AgentConsoleMode.TextPrompt,
+            Title = "Your turn",
+            PlainText = "What next?",
+            AwaitingInput = true,
+            InputKind = AgentConsoleInputKind.Text,
+            RenderedAtUtc = renderedAt,
+            UpdatedAtUtc = renderedAt,
+            Prompt = new AgentConsolePrompt
+            {
+                PromptId = "prompt",
+                Text = "What next?",
+                InputKind = AgentConsoleInputKind.Text
+            }
         };
     }
 }

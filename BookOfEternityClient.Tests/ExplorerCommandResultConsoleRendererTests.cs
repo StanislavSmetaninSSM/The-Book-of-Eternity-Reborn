@@ -120,6 +120,9 @@ public sealed class ExplorerCommandResultConsoleRendererTests
         Assert.Contains("activeConflict", renderedText, StringComparison.Ordinal);
         Assert.Contains("Доступные действия", renderedText, StringComparison.Ordinal);
         Assert.Contains("Открыть журнал", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Стиль", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Primary", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Secondary", renderedText, StringComparison.Ordinal);
         Assert.Contains("Подсказки ввода", renderedText, StringComparison.Ordinal);
         Assert.Contains("Выберите духовное искусство", renderedText, StringComparison.Ordinal);
         Assert.Contains("Защита", renderedText, StringComparison.Ordinal);
