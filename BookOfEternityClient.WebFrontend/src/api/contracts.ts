@@ -471,10 +471,13 @@ export interface BrowserCommandCoverageSummaryDto {
   aliasCount: number;
   subcommandCount: number;
   browserExecutableCount: number;
+  browserExecutableSubcommandCount: number;
   playerDefaultActionCount: number;
+  playerDefaultExecutableSubcommandCount: number;
   advancedOnlyActionCount: number;
   mutatingCommandCount: number;
   commandsNeedingFollowUpCount: number;
+  subcommandsNeedingFollowUpCount: number;
 }
 
 export interface BrowserCommandCoverageEntryDto {

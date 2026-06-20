@@ -15,16 +15,22 @@ public static class BrowserCommandCoverageService
         var commands = ExplorerCommandCatalog.Descriptors
             .Select(BuildEntry)
             .ToArray();
+        var subcommands = commands
+            .SelectMany(static command => command.Subcommands.Select(subcommand => (Command: command, Subcommand: subcommand)))
+            .ToArray();
 
         var summary = new BrowserCommandCoverageSummaryDto(
             DescriptorCount: commands.Length,
             AliasCount: commands.Sum(static command => command.Aliases.Count),
             SubcommandCount: commands.Sum(static command => command.Subcommands.Count),
             BrowserExecutableCount: commands.Count(static command => IsBrowserExecutable(command.BrowserStatus)),
+            BrowserExecutableSubcommandCount: subcommands.Count(static item => IsBrowserExecutable(item.Subcommand.BrowserStatus)),
             PlayerDefaultActionCount: commands.Count(static command => command.Surface == "player-default" && IsBrowserExecutable(command.BrowserStatus)),
+            PlayerDefaultExecutableSubcommandCount: subcommands.Count(static item => item.Command.Surface == "player-default" && IsBrowserExecutable(item.Subcommand.BrowserStatus)),
             AdvancedOnlyActionCount: commands.Count(static command => command.Surface == "advanced-only"),
             MutatingCommandCount: commands.Count(static command => command.MutationMode == nameof(ExplorerCommandMutationMode.LocalTurn)),
-            CommandsNeedingFollowUpCount: commands.Count(static command => command.AuditStatus == TrackedFollowUp || RequiresFollowUp(command.BrowserStatus)));
+            CommandsNeedingFollowUpCount: commands.Count(static command => command.AuditStatus == TrackedFollowUp || RequiresFollowUp(command.BrowserStatus)),
+            SubcommandsNeedingFollowUpCount: subcommands.Count(static item => item.Subcommand.AuditStatus == TrackedFollowUp || RequiresFollowUp(item.Subcommand.BrowserStatus)));
 
         return new BrowserCommandCoverageDto(SchemaVersion, summary, commands);
     }
@@ -271,10 +277,13 @@ public sealed record BrowserCommandCoverageSummaryDto(
     int AliasCount,
     int SubcommandCount,
     int BrowserExecutableCount,
+    int BrowserExecutableSubcommandCount,
     int PlayerDefaultActionCount,
+    int PlayerDefaultExecutableSubcommandCount,
     int AdvancedOnlyActionCount,
     int MutatingCommandCount,
-    int CommandsNeedingFollowUpCount);
+    int CommandsNeedingFollowUpCount,
+    int SubcommandsNeedingFollowUpCount);
 
 public sealed record BrowserCommandCoverageEntryDto(
     string Id,
