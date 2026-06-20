@@ -92,6 +92,65 @@ public sealed class LocalMapViewerServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildMortalWorldMapAsync_DistinguishesCreatedLocationsFromExitPlaceholdersAndAttachesImages()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "locationId": "loc_parlor",
+          "name": "Гостиная виконта",
+          "description": "Комната с тяжёлыми шторами и холодным камином.",
+          "coordinates": { "x": 0, "y": 0, "z": 0 },
+          "adjacencyMap": [
+            {
+              "targetLocationId": "loc_gallery",
+              "targetLocationName": "Галерея портретов",
+              "direction": "на север",
+              "targetCoordinates": { "x": 3, "y": 0, "z": 0 }
+            },
+            {
+              "targetLocationId": "loc_servant_stairs",
+              "targetLocationName": "Служебная лестница",
+              "direction": "за ширмой",
+              "targetCoordinates": { "x": -2, "y": -1, "z": 0 }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
+        {
+          "locations": [
+            {
+              "locationId": "loc_gallery",
+              "locationName": "Галерея портретов",
+              "description": "Пыльные портреты следят за каждым шагом.",
+              "knownState": "visited",
+              "coordinates": { "x": 3, "y": 0, "z": 0 }
+            }
+          ]
+        }
+        """);
+        var imageDir = _fs.ResolvePath("images/locations");
+        Directory.CreateDirectory(imageDir);
+        await File.WriteAllBytesAsync(Path.Combine(imageDir, "loc_gallery.png"), TinyPng);
+
+        var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
+
+        var gallery = Assert.Single(map.Nodes, node => node.Id == "loc_gallery");
+        Assert.False(gallery.IsPlaceholder);
+        Assert.Equal("Пыльные портреты следят за каждым шагом.", Assert.Single(gallery.Details, item => item.Key == "Описание").Value);
+        Assert.StartsWith("/api/media/", gallery.ImageUrl, StringComparison.Ordinal);
+        Assert.DoesNotContain("images/locations", gallery.ImageUrl, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Галерея портретов", gallery.ImageAltText, StringComparison.Ordinal);
+
+        var stairs = Assert.Single(map.Nodes, node => node.Id == "loc_servant_stairs");
+        Assert.True(stairs.IsPlaceholder);
+        Assert.Contains(stairs.Details, static item =>
+            item.Key == "Состояние" &&
+            item.Value.Contains("известный выход", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(stairs.ImageUrl);
+    }
+
+    [Fact]
     public async Task BuildMortalWorldMapAsync_UsesSchematicFallbackForMissingCoordinates()
     {
         await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
@@ -415,6 +474,11 @@ public sealed class LocalMapViewerServiceTests : IDisposable
         Assert.Contains("map-region", html, StringComparison.Ordinal);
         Assert.Contains("Политическое влияние", html, StringComparison.Ordinal);
         Assert.Contains("Спорная зона", html, StringComparison.Ordinal);
+        Assert.Contains("map-compass-rose", html, StringComparison.Ordinal);
+        Assert.Contains("map-border-runes", html, StringComparison.Ordinal);
+        Assert.Contains("map-node--placeholder", html, StringComparison.Ordinal);
+        Assert.Contains("map-image-thumb", html, StringComparison.Ordinal);
+        Assert.Contains("map-image-dialog", html, StringComparison.Ordinal);
         Assert.Contains("Выберите точку на карте", html, StringComparison.Ordinal);
     }
 
@@ -467,6 +531,9 @@ public sealed class LocalMapViewerServiceTests : IDisposable
         }
         """);
     }
+
+    private static readonly byte[] TinyPng = Convert.FromBase64String(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=");
 
     private async Task SeedChaosSeaMapAsync(bool reverseGuardians = false)
     {
