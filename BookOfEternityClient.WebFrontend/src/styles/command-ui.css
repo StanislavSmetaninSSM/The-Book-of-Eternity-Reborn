@@ -135,11 +135,11 @@
   border-left: 3px solid var(--color-warning);
 }
 .scene-combat-log h3 { font-size: 0.85rem; color: var(--color-warning); margin: 0; }
-.combat-log__heading { font-size: 0.82rem; color: var(--text-primary); margin: 0.6rem 0 0.3rem; font-weight: 600; }
-.combat-log__line { font-size: 0.8rem; margin: 0.2rem 0; color: var(--text-secondary); }
-.combat-log__item { font-size: 0.8rem; margin: 0.15rem 0 0.15rem 0.75rem; color: var(--text-muted); }
+.combat-log__heading { font-size: var(--text-md); color: var(--text-primary); margin: 0.6rem 0 0.3rem; font-weight: 600; }
+.combat-log__line { font-size: var(--text-base); margin: 0.2rem 0; color: var(--text-secondary); }
+.combat-log__item { font-size: var(--text-base); margin: 0.15rem 0 0.15rem 0.75rem; color: var(--text-muted); }
 .combat-log__line strong, .combat-log__item strong { color: var(--text-primary); font-weight: 600; }
-.scene-dialogues h3 { font-size: 0.85rem; color: var(--color-success); margin-bottom: 0.5rem; }
+.scene-dialogues h3 { font-size: var(--text-md); color: var(--color-success); margin-bottom: 0.5rem; }
 .scene-dialogues__list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .scene-dialogue-chip, .scene-action-chip {
   background: var(--surface-raised); border: 1px solid var(--border);

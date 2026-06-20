@@ -65,7 +65,7 @@
 .panel-eyebrow {
   margin: 0;
   color: var(--color-gold);
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -4009,7 +4009,7 @@
     linear-gradient(135deg, rgba(34, 26, 20, 0.85), rgba(20, 14, 8, 0.9));
   color: var(--color-parchment);
   font-family: var(--font-narrative);
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   font-style: italic;
   cursor: pointer;
   transition: border-color var(--motion-fast), background var(--motion-fast), color var(--motion-fast);

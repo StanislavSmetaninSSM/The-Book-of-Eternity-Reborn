@@ -101,7 +101,8 @@ export function SettingsView() {
           <input
             type="range"
             min="80"
-            max="150"
+            max="200"
+            step="1"
             value={settings.accessibility.fontScalePercent}
             onChange={(e) => {
               const v = Number(e.target.value);
