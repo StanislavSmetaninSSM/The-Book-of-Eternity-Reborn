@@ -726,6 +726,16 @@
 .settings-row select, .settings-row input[type="range"] { accent-color: var(--color-accent); }
 .settings-row select { background: var(--surface-base); color: var(--text-primary); border: 1px solid var(--border); border-radius: 4px; padding: 0.25rem 0.5rem; font-size: 0.82rem; }
 .settings-value { color: var(--text-muted); }
+.settings-save-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.settings-save-actions .block-text--muted {
+  margin: 0;
+  max-width: 42rem;
+}
 
 /* ===== Unified Input ===== */
 .unified-input {

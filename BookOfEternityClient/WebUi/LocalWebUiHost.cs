@@ -95,6 +95,13 @@ public static class LocalWebUiHost
 
         app.MapGet("/", () => ServeFrontendIndex(frontendAssets));
         app.MapGet("/api/main-menu", async (LocalWebUiMainMenuService menu) => await menu.BuildAsync());
+        app.MapPost("/api/saves/create", async (BrowserCreateSaveRequest request, LocalWebUiMainMenuService menu) =>
+        {
+            var result = await menu.CreateManualSaveAsync(request);
+            return result.Success
+                ? Results.Json(result, WebJsonOptions)
+                : Results.BadRequest(new { result.Error, result.CreatedSaveId, result.Menu });
+        });
         app.MapPost("/api/saves/load", async (BrowserLoadSaveRequest request, LocalWebUiMainMenuService menu) =>
         {
             var result = await menu.LoadSaveAsync(request);

@@ -73,6 +73,8 @@ public sealed class BrowserApiContractTests
         Assert.Contains("export interface BrowserClientSettingsUpdateRequest", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserCommandCoverageDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserCommandCoverageEntryDto", contracts, StringComparison.Ordinal);
+        Assert.Contains("export interface BrowserCreateSaveRequest", contracts, StringComparison.Ordinal);
+        Assert.Contains("export interface BrowserCreateSaveResultDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export type BrowserApiResult", contracts, StringComparison.Ordinal);
         Assert.Contains("pending-turn", contracts, StringComparison.Ordinal);
         Assert.Contains("advanced", contracts, StringComparison.OrdinalIgnoreCase);
@@ -85,6 +87,7 @@ public sealed class BrowserApiContractTests
         Assert.Contains("getLifecycleDashboard", client, StringComparison.Ordinal);
         Assert.Contains("getCommandCoverage", client, StringComparison.Ordinal);
         Assert.Contains("validateLifecycle", client, StringComparison.Ordinal);
+        Assert.Contains("createSave", client, StringComparison.Ordinal);
         Assert.Contains("loadSave", client, StringComparison.Ordinal);
         Assert.Contains("executeExplorerCommand", client, StringComparison.Ordinal);
         Assert.Contains("submitPromptSession", client, StringComparison.Ordinal);
@@ -105,6 +108,8 @@ public sealed class BrowserApiContractTests
         Assert.Contains("audio-settings-update", client, StringComparison.Ordinal);
         Assert.Contains("client-settings", client, StringComparison.Ordinal);
         Assert.Contains("client-settings-update", client, StringComparison.Ordinal);
+        Assert.Contains("save-create", client, StringComparison.Ordinal);
+        Assert.Contains("/api/saves/create", client, StringComparison.Ordinal);
         Assert.Contains("command-coverage", client, StringComparison.Ordinal);
         Assert.Contains("qte-practice-state", client, StringComparison.Ordinal);
         Assert.Contains("qte-practice-start", client, StringComparison.Ordinal);
