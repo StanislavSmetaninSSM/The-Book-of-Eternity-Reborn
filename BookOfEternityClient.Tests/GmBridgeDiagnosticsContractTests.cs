@@ -25,12 +25,33 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
+    public void BridgeHost_PromptVisibilityFailureMarksBridgeNotReady()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("_status.Ready = false;", source, StringComparison.Ordinal);
+        Assert.Contains("_status.State = \"DispatchFailed\";", source, StringComparison.Ordinal);
+        Assert.Contains("!string.Equals(_status.State, \"DispatchFailed\", StringComparison.Ordinal)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void LauncherScript_ExposesDiagnosticsCommand()
     {
         var source = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");
 
         Assert.Contains("\"diagnostics\"", source, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("command = \"diagnostics\"", source, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void LauncherScript_ThrowsWhenBridgeReturnsFailureResponse()
+    {
+        var source = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");
+
+        Assert.Contains("function Assert-BridgeResponseOk", source, StringComparison.Ordinal);
+        Assert.Contains("if ($null -ne $Response.ok -and -not [bool]$Response.ok)", source, StringComparison.Ordinal);
+        Assert.Contains("throw \"GM bridge request failed:", source, StringComparison.Ordinal);
+        Assert.Contains("Assert-BridgeResponseOk -Response $response", source, StringComparison.Ordinal);
     }
 
     [Fact]

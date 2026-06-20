@@ -303,7 +303,8 @@ internal sealed class BridgeHost : IDisposable
                 {
                     lock (_sync)
                     {
-                        _status.State = _status.Ready ? "Ready" : "OperatorNotReady";
+                        if (!string.Equals(_status.State, "DispatchFailed", StringComparison.Ordinal))
+                            _status.State = _status.Ready ? "Ready" : "OperatorNotReady";
                         WriteStatusFile();
                     }
                 }
@@ -922,6 +923,8 @@ internal sealed class BridgeHost : IDisposable
     {
         lock (_sync)
         {
+            _status.Ready = false;
+            _status.State = "DispatchFailed";
             _status.LastError = error;
             WriteStatusFile();
         }
