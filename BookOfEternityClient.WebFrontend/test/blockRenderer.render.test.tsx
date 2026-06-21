@@ -238,6 +238,80 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     expect(html).toContain('Царство');
     expect(html).toContain('Смертный мир');
   });
+
+  it('keeps local map media URLs renderable while still showing player-facing location details', () => {
+    const blocks: UiBlock[] = [
+      {
+        kind: 'map',
+        title: 'Карта',
+        map: {
+          schemaVersion: 1,
+          realm: 'Mortal World',
+          title: 'Карта смертного мира',
+          currentNodeId: 'loc_parlor',
+          layers: [{ id: 'world', label: 'Мир', isDefault: true }],
+          zLevels: [{ z: 0, label: 'земля' }],
+          nodes: [
+            {
+              id: 'loc_parlor',
+              label: 'Гостиная виконта',
+              type: 'indoor',
+              x: 0,
+              y: 0,
+              z: 0,
+              layer: 'world',
+              isCurrent: true,
+              ownerFactionId: '',
+              ownerFactionName: '',
+              influence: {},
+              details: [{ key: 'Описание', value: 'Комната с тяжёлыми шторами.' }],
+              isPlaceholder: false,
+              imageUrl: '/api/media/aW1hZ2VzL2xvY2F0aW9ucy9sb2NfcGFybG9yLnBuZw',
+              imageAltText: 'Изображение локации «Гостиная виконта»'
+            },
+            {
+              id: 'loc_locked_gallery',
+              label: 'Запертая галерея',
+              type: '',
+              x: 3,
+              y: 0,
+              z: 0,
+              layer: 'world',
+              isCurrent: false,
+              ownerFactionId: '',
+              ownerFactionName: '',
+              influence: {},
+              details: [{ key: 'Состояние', value: 'известный выход; подробная локация ещё не открыта' }],
+              isPlaceholder: true,
+              imageUrl: '',
+              imageAltText: ''
+            }
+          ],
+          links: [
+            {
+              id: 'loc_parlor->loc_locked_gallery',
+              sourceNodeId: 'loc_parlor',
+              targetNodeId: 'loc_locked_gallery',
+              label: 'за ширмой',
+              state: 'Hidden',
+              layer: 'world',
+              z: null
+            }
+          ],
+          regions: []
+        }
+      }
+    ];
+
+    const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
+
+    expect(html).toContain('map-image-thumb');
+    expect(html).toContain('src="/api/media/aW1hZ2VzL2xvY2F0aW9ucy9sb2NfcGFybG9yLnBuZw"');
+    expect(html).toContain('Изображение локации «Гостиная виконта»');
+    expect(html).toContain('map-node--placeholder');
+    expect(html).toContain('Известный выход');
+    expect(html).toContain('Комната с тяжёлыми шторами.');
+  });
 });
 
 function cssRule(source: string, selector: string): string {

@@ -293,5 +293,17 @@ function toSafeMapText(value: string | null | undefined, fallback: string): stri
 }
 
 function resolveNodeImageUrl(node: MapNodeDto): string {
-  return toSafeMapText(node.imageUrl, '');
+  const value = node.imageUrl?.trim();
+  if (!value) return '';
+
+  if (
+    value.startsWith('/api/media/') ||
+    value.startsWith('/assets/') ||
+    /^https?:\/\//i.test(value) ||
+    /^data:image\/(?:png|jpeg|jpg|webp|gif);base64,/i.test(value)
+  ) {
+    return value;
+  }
+
+  return '';
 }
