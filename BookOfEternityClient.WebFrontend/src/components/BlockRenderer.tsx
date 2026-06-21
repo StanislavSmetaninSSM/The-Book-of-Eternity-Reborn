@@ -17,7 +17,15 @@ function toneClassName(tone: UiTone): string {
   }
 }
 
-export function BlockRenderer({ block, advancedEnabled = false }: { block: UiBlock; advancedEnabled?: boolean }): ReactNode {
+export function BlockRenderer({
+  block,
+  advancedEnabled = false,
+  depth = 0
+}: {
+  block: UiBlock;
+  advancedEnabled?: boolean;
+  depth?: number;
+}): ReactNode {
   switch (block.kind) {
     case 'text': {
       const { safe, hasTechnical } = sanitizePlayerMessage(block.text, 'Текст действия недоступен.');
@@ -26,10 +34,17 @@ export function BlockRenderer({ block, advancedEnabled = false }: { block: UiBlo
 
     case 'panel':
       return (
-        <section className="block-panel">
+        <section className={`block-panel${depth > 0 ? ' block-panel--nested' : ''}`} data-block-depth={depth}>
           <h4 className="block-panel__title">{toPlayerFacingText(block.title, 'Панель')}</h4>
           <div className="block-panel__body">
-            {block.blocks.map((child, i) => <BlockRenderer key={`${child.kind}-${i}`} block={child} advancedEnabled={advancedEnabled} />)}
+            {block.blocks.map((child, i) => (
+              <BlockRenderer
+                key={`${child.kind}-${i}`}
+                block={child}
+                advancedEnabled={advancedEnabled}
+                depth={depth + 1}
+              />
+            ))}
           </div>
         </section>
       );
@@ -115,11 +130,7 @@ export function BlockRenderer({ block, advancedEnabled = false }: { block: UiBlo
         return <JsonTreeViewer data={block.json} title={toPlayerFacingText(block.title, 'Подробные сведения')} defaultExpanded={false} />;
       }
 
-      return (
-        <p className="block-text block-text--muted">
-          <strong>{toPlayerFacingText(block.title, 'Подробные сведения')}</strong> — Подробные сведения доступны в расширенном режиме.
-        </p>
-      );
+      return null;
   }
 }
 

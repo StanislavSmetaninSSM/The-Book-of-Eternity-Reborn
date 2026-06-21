@@ -192,7 +192,10 @@ export function sanitizeExplorerCommandResultForPlayer(result: ExplorerCommandRe
   return {
     ...result,
     command: '',
-    blocks: result.blocks.map(sanitizeUiBlockForPlayer),
+    blocks: result.blocks.flatMap((block) => {
+      const sanitized = sanitizeUiBlockForPlayer(block);
+      return sanitized ? [sanitized] : [];
+    }),
     actions: result.actions.map(sanitizeUiActionForPlayer),
     prompts: result.prompts.map(sanitizeUiPromptForPlayer),
     notifications: result.notifications.map((notification) => ({
@@ -210,16 +213,26 @@ export function sanitizeExplorerCommandResultForPlayer(result: ExplorerCommandRe
   };
 }
 
-function sanitizeUiBlockForPlayer(block: UiBlock): UiBlock {
+function sanitizeUiBlockForPlayer(block: UiBlock): UiBlock | null {
   switch (block.kind) {
     case 'text':
       return { ...block, text: safePlayerText(block.text, 'Текст действия недоступен.') };
     case 'panel':
-      return {
-        ...block,
-        title: safePlayerText(block.title, 'Панель'),
-        blocks: block.blocks.map(sanitizeUiBlockForPlayer)
-      };
+      {
+        const blocks = block.blocks.flatMap((child) => {
+          const sanitized = sanitizeUiBlockForPlayer(child);
+          return sanitized ? [sanitized] : [];
+        });
+        if (blocks.length === 0) {
+          return null;
+        }
+
+        return {
+          ...block,
+          title: safePlayerText(block.title, 'Панель'),
+          blocks
+        };
+      }
     case 'table':
       return {
         ...block,
@@ -250,11 +263,7 @@ function sanitizeUiBlockForPlayer(block: UiBlock): UiBlock {
         message: safePlayerText(block.message, 'Игровое действие изменило состояние.')
       };
     case 'rawJson':
-      return {
-        kind: 'text',
-        text: 'Подробные сведения доступны в расширенном режиме.',
-        tone: 'Muted'
-      };
+      return null;
     case 'image':
       return {
         ...block,

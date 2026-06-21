@@ -265,6 +265,7 @@ describe('playerCopy robustness', () => {
 
   it('keeps raw command strings and raw JSON out of default command result rendering', () => {
     const shellContext = readSource('src', 'context', 'ShellContext.tsx');
+    const commandResult = readSource('src', 'components', 'CommandResult.tsx');
     const commandResultView = readSource('src', 'components', 'CommandResultView.tsx');
     const blockRenderer = readSource('src', 'components', 'BlockRenderer.tsx');
 
@@ -283,7 +284,11 @@ describe('playerCopy robustness', () => {
     expect(blockRenderer).toContain("import { JsonTreeViewer } from './JsonTreeViewer';");
     expect(blockRenderer).toContain('if (advancedEnabled) {');
     expect(blockRenderer).toContain('<JsonTreeViewer data={block.json}');
-    expect(blockRenderer).toContain('Подробные сведения доступны в расширенном режиме.');
+    expect(blockRenderer).toContain('return null;');
+    expect(blockRenderer).not.toContain('Подробные сведения доступны в расширенном режиме.');
+    expect(commandResult).toContain("case 'rawJson':");
+    expect(commandResult).toContain('return null;');
+    expect(commandResult).not.toContain('подробные данные доступны в расширенном режиме');
   });
 
   it('renders command map blocks through a visual atlas surface instead of text or node lists', () => {

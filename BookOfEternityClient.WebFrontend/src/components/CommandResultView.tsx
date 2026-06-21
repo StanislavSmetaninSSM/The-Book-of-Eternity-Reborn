@@ -100,7 +100,8 @@ export function CommandResultView() {
       </div>
 
       {result.actions.length > 0 && (
-        <div className="command-result-view__actions">
+        <div className="command-result-view__actions" aria-label="Доступные действия">
+          <span className="command-result-view__actions-label">Доступные действия</span>
           {result.actions.map((action) => (
             <button
               key={action.id}
