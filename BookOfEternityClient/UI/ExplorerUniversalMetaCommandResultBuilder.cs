@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -131,7 +132,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         return kind switch
         {
-            CommandKind.Status => BuildStatus(normalizedCommand, stateManager),
+            CommandKind.Status => await BuildStatus(normalizedCommand, stateManager, fs),
             CommandKind.Soul => await BuildSoul(normalizedCommand, fs),
             CommandKind.SoulRelics => await BuildSoulRelics(normalizedCommand, fs),
             CommandKind.AfterlifeArchive => await BuildAfterlifeArchive(normalizedCommand, fs),
@@ -161,10 +162,14 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         };
     }
 
-    private static ExplorerCommandResult BuildStatus(string command, StateManager stateManager)
+    private static async Task<ExplorerCommandResult> BuildStatus(
+        string command,
+        StateManager stateManager,
+        FileSystemManager fs)
     {
         var state = stateManager.CurrentState;
-        return Completed(command,
+        var blocks = new List<UiBlock>
+        {
             Panel("Статус",
                 Grid(
                     ("Царство", EmptyFallback(state.CurrentRealm)),
@@ -183,7 +188,485 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     ("Просветление", EmptyFallback(state.EnlightenmentTier)),
                     ("Активный Хранитель", EmptyFallback(state.ActiveGuardianName)),
                     ("Сияние", $"{state.ShiningRadianceExperience} XP / тир {state.ShiningRadianceTier}"),
-                    ("Искры Света", state.ShiningLightSparks.ToString()))));
+                    ("Искры Света", state.ShiningLightSparks.ToString())))
+        };
+
+        if (!state.IsInAfterlifeRealm)
+            await AddMortalStatusDetailBlocks(blocks, fs, state.PlayerStatus.ActiveConditions);
+
+        return Completed(command, blocks);
+    }
+
+    private static async Task AddMortalStatusDetailBlocks(
+        List<UiBlock> blocks,
+        FileSystemManager fs,
+        IReadOnlyList<string> activeConditions)
+    {
+        var statusRead = await ReadJson(fs, "game_state/core/player_status.json");
+        var experienceRead = await ReadJson(fs, "game_state/player/experience.json");
+        var weightRead = await ReadJson(fs, "game_state/player/weight_calc.json");
+        var inventoryRead = await ReadJson(fs, "game_state/inventory/items.json");
+        var stealthRead = await ReadJson(fs, "game_state/player/stealth.json");
+        var statusChangesRead = await ReadJson(fs, "game_state/player/status_changes.json");
+        var effectsRead = await ReadJson(fs, "game_state/player/effects.json");
+        var woundsRead = await ReadJson(fs, "game_state/player/wounds.json");
+        var customStatesRead = await ReadJson(fs, "game_state/player/custom_states.json");
+
+        var status = UnwrapObject(statusRead.Node, "playerStatus");
+        var experience = UnwrapObject(experienceRead.Node, "experience", "playerExperience");
+        var weight = UnwrapObject(weightRead.Node, "weight", "weightState", "weightCalc");
+        var inventory = UnwrapObject(inventoryRead.Node, "inventory");
+        var stealth = UnwrapObject(stealthRead.Node, "stealth", "stealthState");
+        var statusChanges = UnwrapObject(statusChangesRead.Node, "statusChanges", "changes");
+
+        var progressRows = BuildMortalStatusProgressRows(experience);
+        if (progressRows.Count > 0)
+            blocks.Add(Panel("Прогресс", new UiKeyValueGridBlock { Items = progressRows }));
+
+        var resourceRows = BuildMortalStatusResourceRows(status, inventory, weight);
+        if (resourceRows.Count > 0)
+            blocks.Add(Panel("Ресурсы и нагрузка", new UiKeyValueGridBlock { Items = resourceRows }));
+
+        if (stealth != null)
+        {
+            var stealthRows = BuildMortalStatusStealthRows(stealth);
+            if (stealthRows.Count > 0)
+                blocks.Add(Panel("Скрытность", new UiKeyValueGridBlock { Items = stealthRows }));
+        }
+
+        if (activeConditions.Count > 0)
+        {
+            blocks.Add(Panel("Активные состояния",
+                new UiListBlock
+                {
+                    Items = activeConditions
+                        .Where(static condition => !string.IsNullOrWhiteSpace(condition))
+                        .Select(static condition => condition.Trim())
+                        .ToList()
+                }));
+        }
+
+        var changeRows = BuildMortalStatusChangeRows(statusChanges, experience);
+        if (changeRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Последние изменения",
+                Columns = ["Параметр", "Изменение", "Комментарий"],
+                Rows = changeRows
+            });
+        }
+
+        AddMortalStatusEffectBlocks(blocks, effectsRead.Node);
+        AddMortalStatusWoundBlocks(blocks, woundsRead.Node);
+        AddMortalStatusCustomStateBlocks(blocks, customStatesRead.Node);
+    }
+
+    private static List<UiKeyValueItem> BuildMortalStatusProgressRows(JsonObject? experience)
+    {
+        var rows = new List<UiKeyValueItem>();
+        if (experience == null)
+            return rows;
+
+        AddStatusRow(rows, "Уровень", GetOptionalString(experience, "level"));
+
+        var totalExperience = GetOptionalString(experience, "totalExperience");
+        var nextLevel = FirstNonEmpty(
+            GetOptionalString(experience, "experienceForNextLevel"),
+            GetOptionalString(experience, "nextLevelExperience"));
+        if (!string.IsNullOrWhiteSpace(totalExperience) || !string.IsNullOrWhiteSpace(nextLevel))
+        {
+            AddStatusRow(
+                rows,
+                "Опыт",
+                string.IsNullOrWhiteSpace(nextLevel)
+                    ? totalExperience
+                    : $"{EmptyFallback(totalExperience)}/{nextLevel}");
+        }
+
+        var gained = GetIntValue(experience["experienceGained"], 0);
+        if (gained != 0)
+            AddStatusRow(rows, "Опыт за последний ход", FormatSigned(gained));
+
+        if (experience["playerEffortTrackerChange"] is JsonObject tracker)
+        {
+            var lastCharacteristic = TranslateCharacteristic(GetOptionalString(tracker, "lastUsedCharacteristic"));
+            var partialSuccesses = GetOptionalString(tracker, "consecutivePartialSuccesses");
+            var trackerText = JoinKnownParts(
+                " / ",
+                IsUnknownValue(lastCharacteristic) ? string.Empty : $"последняя: {lastCharacteristic}",
+                string.IsNullOrWhiteSpace(partialSuccesses) ? string.Empty : $"частичных успехов: {partialSuccesses}/3");
+            if (!IsUnknownValue(trackerText))
+                AddStatusRow(rows, "Трекер усилий", trackerText);
+        }
+
+        return rows;
+    }
+
+    private static List<UiKeyValueItem> BuildMortalStatusResourceRows(
+        JsonObject? status,
+        JsonObject? inventory,
+        JsonObject? weight)
+    {
+        var rows = new List<UiKeyValueItem>();
+
+        var money = GetIntValue(status?["money"], 0);
+        if (money == 0 && inventory != null)
+        {
+            money = GetIntValue(inventory["money"], 0);
+            if (money == 0 && inventory["resources"] is JsonObject resources)
+                money = FirstNonZero(
+                    GetIntValue(resources["gold"], 0),
+                    GetIntValue(resources["money"], 0),
+                    GetIntValue(resources["coins"], 0));
+        }
+
+        if (money > 0)
+            AddStatusRow(rows, "Деньги", money.ToString(CultureInfo.InvariantCulture));
+
+        var totalWeight = GetIntValue(weight?["totalWeight"], 0);
+        if (totalWeight == 0)
+            totalWeight = GetIntValue(weight?["currentWeight"], 0);
+        var maxWeight = FirstNonZero(
+            GetIntValue(weight?["maxWeight"], 0),
+            GetIntValue(weight?["maximumWeight"], 0));
+        if (totalWeight == 0 && inventory != null)
+            totalWeight = GetIntValue(inventory["totalWeight"], 0);
+        if (maxWeight == 0 && inventory != null)
+            maxWeight = GetIntValue(inventory["maxWeight"], 0);
+
+        if (maxWeight > 0)
+        {
+            var overload = IsTrue(weight?["isOverloaded"]) || IsTrue(weight?["overloaded"]) ||
+                           (inventory != null && IsTrue(inventory["isOverloaded"]));
+            AddStatusRow(rows, "Вес", $"{totalWeight}/{maxWeight} кг{(overload ? " (перегрузка)" : string.Empty)}");
+        }
+
+        var extraEnergy = GetIntValue(weight?["additionalEnergyExpenditure"], 0);
+        if (extraEnergy > 0)
+            AddStatusRow(rows, "Доп. расход энергии", $"+{extraEnergy}/ход");
+
+        return rows;
+    }
+
+    private static List<UiKeyValueItem> BuildMortalStatusStealthRows(JsonObject stealth)
+    {
+        var rows = new List<UiKeyValueItem>();
+        var isActive = IsTrue(stealth["isActive"]) || IsTrue(stealth["isHidden"]);
+        var detectionLevel = GetIntValue(stealth["detectionLevel"], -1);
+        var description = FirstNonEmpty(GetOptionalString(stealth, "description"), GetOptionalString(stealth, "state"));
+
+        if (detectionLevel >= 0)
+            AddStatusRow(rows, "Состояние", $"{DescribeDetectionLevel(detectionLevel)} ({detectionLevel}%)");
+        else if (isActive)
+            AddStatusRow(rows, "Состояние", "Скрыт");
+
+        AddStatusRow(rows, "Описание", description);
+        return rows;
+    }
+
+    private static List<UiTableRow> BuildMortalStatusChangeRows(JsonObject? statusChanges, JsonObject? experience)
+    {
+        var rows = new List<UiTableRow>();
+        if (statusChanges != null)
+        {
+            AddSignedChangeRow(rows, "Деньги", GetIntValue(statusChanges["moneyChange"], 0));
+            AddSignedChangeRow(rows, "Здоровье", GetIntValue(statusChanges["currentHealthChange"], 0));
+            AddSignedChangeRow(rows, "Энергия", GetIntValue(statusChanges["currentEnergyChange"], 0));
+            AddSignedChangeRow(rows, "Равновесие", GetIntValue(statusChanges["currentPoiseChange"], 0));
+
+            var statsIncreased = FormatCharacteristicList(statusChanges["statsIncreased"]);
+            if (!IsUnknownValue(statsIncreased))
+                rows.Add(Row("Повышены", statsIncreased, "характеристики"));
+
+            var statsDecreased = FormatCharacteristicList(statusChanges["statsDecreased"]);
+            if (!IsUnknownValue(statsDecreased))
+                rows.Add(Row("Понижены", statsDecreased, "характеристики"));
+        }
+
+        var gained = GetIntValue(experience?["experienceGained"], 0);
+        if (gained != 0)
+            rows.Add(Row("Опыт", FormatSigned(gained), "за последний ход"));
+
+        return rows;
+    }
+
+    private static void AddMortalStatusEffectBlocks(List<UiBlock> blocks, JsonNode? effectsRoot)
+    {
+        var rows = EnumerateStatusObjects(effectsRoot)
+            .Select(effect =>
+            {
+                var name = FirstKnown(
+                    GetString(effect, "effectName", string.Empty),
+                    GetString(effect, "name", string.Empty),
+                    TranslateEffectType(GetString(effect, "effectType", string.Empty)));
+                var type = TranslateEffectType(GetString(effect, "effectType", string.Empty));
+                var value = GetOptionalString(effect, "value");
+                var target = FirstNonEmpty(
+                    GetOptionalString(effect, "targetTypeDisplayName"),
+                    TranslateCharacteristic(GetOptionalString(effect, "targetType")));
+                var duration = GetOptionalString(effect, "duration");
+                var source = FirstNonEmpty(GetOptionalString(effect, "sourceSkill"), GetOptionalString(effect, "source"));
+                var description = FirstNonEmpty(
+                    GetOptionalString(effect, "effectDescription"),
+                    GetOptionalString(effect, "description"));
+                return Row(
+                    name,
+                    JoinKnownParts(" ", type, value),
+                    JoinKnownParts(" / ",
+                        target,
+                        string.IsNullOrWhiteSpace(duration) || duration == "0" ? string.Empty : $"{duration} ход."),
+                    JoinKnownParts(" — ", source, description));
+            })
+            .Where(static row => row.Cells.Any(static cell => !IsUnknownValue(cell)))
+            .ToList();
+
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = "Активные эффекты",
+            Columns = ["Эффект", "Что делает", "Цель / срок", "Источник и описание"],
+            Rows = rows
+        });
+    }
+
+    private static void AddMortalStatusWoundBlocks(List<UiBlock> blocks, JsonNode? woundsRoot)
+    {
+        var rows = EnumerateStatusObjects(woundsRoot)
+            .Select(wound =>
+            {
+                var healing = wound["healingState"] is JsonObject healingState
+                    ? JoinKnownParts(
+                        " ",
+                        GetOptionalString(healingState, "currentState"),
+                        BuildProgressText(
+                            GetOptionalString(healingState, "treatmentProgress"),
+                            GetOptionalString(healingState, "progressNeeded")))
+                    : string.Empty;
+                return Row(
+                    FirstKnown(GetString(wound, "woundName", string.Empty), GetString(wound, "name", string.Empty), "Рана"),
+                    TranslateWoundSeverity(GetOptionalString(wound, "severity")),
+                    FirstNonEmpty(GetOptionalString(wound, "descriptionOfEffects"), GetOptionalString(wound, "description")),
+                    healing);
+            })
+            .Where(static row => row.Cells.Any(static cell => !IsUnknownValue(cell)))
+            .ToList();
+
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = "Раны",
+            Columns = ["Рана", "Тяжесть", "Влияние", "Лечение"],
+            Rows = rows
+        });
+    }
+
+    private static void AddMortalStatusCustomStateBlocks(List<UiBlock> blocks, JsonNode? statesRoot)
+    {
+        var rows = EnumerateStatusObjects(statesRoot)
+            .Select(state =>
+            {
+                var current = GetOptionalString(state, "currentValue");
+                var max = GetOptionalString(state, "maxValue");
+                var min = GetOptionalString(state, "minValue");
+                var value = JoinKnownParts(
+                    " ",
+                    BuildProgressText(current, max),
+                    string.IsNullOrWhiteSpace(min) ? string.Empty : $"мин. {min}");
+                var progression = state["progressionRule"] is JsonObject rule
+                    ? JoinKnownParts(" — ", GetOptionalString(rule, "changePerTurn"), GetOptionalString(rule, "description"))
+                    : string.Empty;
+                return Row(
+                    FirstKnown(
+                        GetString(state, "stateName", string.Empty),
+                        GetString(state, "name", string.Empty),
+                        GetString(state, "stateKey", string.Empty)),
+                    FirstNonEmpty(value, GetOptionalString(state, "stateValue"), GetOptionalString(state, "value")),
+                    JoinKnownParts(" — ", GetOptionalString(state, "description"), progression));
+            })
+            .Where(static row => row.Cells.Any(static cell => !IsUnknownValue(cell)))
+            .ToList();
+
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = "Особые состояния",
+            Columns = ["Состояние", "Значение", "Подробно"],
+            Rows = rows
+        });
+    }
+
+    private static JsonObject? UnwrapObject(JsonNode? node, params string[] wrapperProperties)
+    {
+        if (node is not JsonObject root)
+            return null;
+
+        foreach (var property in wrapperProperties)
+        {
+            if (root[property] is JsonObject wrapped)
+                return wrapped;
+        }
+
+        return root;
+    }
+
+    private static IEnumerable<JsonObject> EnumerateStatusObjects(JsonNode? root)
+    {
+        if (root is JsonArray array)
+        {
+            foreach (var item in array.OfType<JsonObject>())
+                yield return item;
+            yield break;
+        }
+
+        if (root is not JsonObject obj)
+            yield break;
+
+        var yieldedFromArrays = false;
+        foreach (var property in obj)
+        {
+            if (property.Value is not JsonArray childArray)
+                continue;
+
+            yieldedFromArrays = true;
+            foreach (var item in childArray.OfType<JsonObject>())
+                yield return item;
+        }
+
+        if (!yieldedFromArrays)
+            yield return obj;
+    }
+
+    private static void AddStatusRow(List<UiKeyValueItem> rows, string key, string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || IsUnknownValue(value))
+            return;
+
+        rows.Add(new UiKeyValueItem { Key = key, Value = value.Trim() });
+    }
+
+    private static void AddSignedChangeRow(List<UiTableRow> rows, string label, int value)
+    {
+        if (value == 0)
+            return;
+
+        rows.Add(Row(label, FormatSigned(value), "за последний ход"));
+    }
+
+    private static string JoinKnownParts(string separator, params string?[] values)
+    {
+        var parts = values
+            .Where(static value => !IsUnknownValue(value))
+            .Select(static value => value!.Trim())
+            .ToArray();
+        return parts.Length == 0 ? string.Empty : string.Join(separator, parts);
+    }
+
+    private static string FormatSigned(int value) =>
+        value > 0
+            ? "+" + value.ToString(CultureInfo.InvariantCulture)
+            : value.ToString(CultureInfo.InvariantCulture);
+
+    private static int FirstNonZero(params int[] values)
+    {
+        foreach (var value in values)
+        {
+            if (value != 0)
+                return value;
+        }
+
+        return 0;
+    }
+
+    private static bool IsTrue(JsonNode? node)
+    {
+        if (node is not JsonValue value)
+            return false;
+
+        if (value.TryGetValue<bool>(out var boolValue))
+            return boolValue;
+
+        return value.TryGetValue<string>(out var text) &&
+               bool.TryParse(text, out var parsed) &&
+               parsed;
+    }
+
+    private static string DescribeDetectionLevel(int detectionLevel) =>
+        detectionLevel switch
+        {
+            <= 25 => "Невидим",
+            <= 50 => "Незамечен",
+            <= 75 => "Подозрение",
+            <= 99 => "Тревога",
+            _ => "Обнаружен"
+        };
+
+    private static string FormatCharacteristicList(JsonNode? node)
+    {
+        if (node is not JsonArray array)
+            return "не указано";
+
+        var values = array
+            .Select(item => TryGetScalarString(item, out var scalar) ? TranslateCharacteristic(scalar) : string.Empty)
+            .Where(static value => !string.IsNullOrWhiteSpace(value) && !IsUnknownValue(value))
+            .ToArray();
+
+        return values.Length == 0 ? "не указано" : string.Join(", ", values);
+    }
+
+    private static string TranslateCharacteristic(string? characteristic)
+    {
+        if (string.IsNullOrWhiteSpace(characteristic))
+            return string.Empty;
+
+        var normalized = characteristic.Trim();
+        return Characteristics.RussianNames.TryGetValue(normalized.ToLowerInvariant(), out var translated)
+            ? translated
+            : normalized;
+    }
+
+    private static string TranslateEffectType(string? effectType) =>
+        (effectType ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "buff" => "усиление",
+            "debuff" => "ослабление",
+            "heal" => "лечение",
+            "healovertime" => "лечение со временем",
+            "damage" => "урон",
+            "damageovertime" => "урон со временем",
+            "control" => "контроль",
+            "damagereduction" => "снижение урона",
+            _ => EmptyFallback(effectType)
+        };
+
+    private static string TranslateWoundSeverity(string? severity) =>
+        (severity ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "light" => "лёгкая",
+            "moderate" => "средняя",
+            "serious" => "серьёзная",
+            "critical" => "критическая",
+            _ => EmptyFallback(severity)
+        };
+
+    private static string BuildProgressText(string current, string max)
+    {
+        if (string.IsNullOrWhiteSpace(current) && string.IsNullOrWhiteSpace(max))
+            return string.Empty;
+
+        if (string.IsNullOrWhiteSpace(max))
+            return current;
+
+        if (string.IsNullOrWhiteSpace(current))
+            return $"0/{max}";
+
+        return $"{current}/{max}";
     }
 
     private static async Task<ExplorerCommandResult> BuildSoul(string command, FileSystemManager fs)

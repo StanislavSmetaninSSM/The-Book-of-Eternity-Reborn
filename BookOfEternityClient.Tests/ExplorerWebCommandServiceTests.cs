@@ -873,6 +873,153 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_Status_RendersMortalDetailsWithoutRawJson()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "soulFormDescription": "Серебристый силуэт с руническими прожилками",
+          "currentRealm": "Смертный мир",
+          "currentIncarnation": 2,
+          "inkFeathers": { "current": 80, "total": 120 },
+          "enlightenment": { "currentTier": "Ученик", "experience": 42 }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/core/player_status.json", """
+        {
+          "healthPercentage": "85%",
+          "energyPercentage": "60%",
+          "poisePercentage": "95%",
+          "currentCondition": "Лёгкое недомогание",
+          "activeConditions": [
+            "Головная боль после тяжёлых снов",
+            "Магический резонанс"
+          ],
+          "money": 500
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/transformation.json", """
+        {
+          "playerCharacterNameChange": "Асуран де Вальмонт",
+          "playerClassChange": "Аристократ-маг",
+          "playerRaceChange": "Человек"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/experience.json", """
+        {
+          "level": 2,
+          "totalExperience": 45,
+          "experienceForNextLevel": 100,
+          "experienceGained": 7,
+          "playerEffortTrackerChange": {
+            "lastUsedCharacteristic": "perception",
+            "consecutivePartialSuccesses": 2
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/weight_calc.json", """
+        {
+          "totalWeight": 17,
+          "maxWeight": 30,
+          "isOverloaded": false,
+          "additionalEnergyExpenditure": 1
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/stealth.json", """
+        {
+          "isHidden": true,
+          "detectionLevel": 35,
+          "description": "Слуги пока не заметили движение у двери."
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/status_changes.json", """
+        {
+          "moneyChange": 25,
+          "currentHealthChange": -10,
+          "currentEnergyChange": 5,
+          "currentPoiseChange": -3,
+          "statsIncreased": [ "perception" ],
+          "statsDecreased": [ "strength" ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/effects.json", """
+        {
+          "effects": [
+            {
+              "effectId": "runic_resonance",
+              "effectName": "Магический резонанс",
+              "effectType": "buff",
+              "value": "+2",
+              "duration": 3,
+              "sourceSkill": "Руническая перчатка",
+              "targetTypeDisplayName": "Восприятие",
+              "effectDescription": "Перчатка отзывается на владельца и усиливает ощущение магических следов."
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/wounds.json", """
+        {
+          "wounds": [
+            {
+              "woundName": "Рассечённая ладонь",
+              "severity": "light",
+              "descriptionOfEffects": "Мешает уверенно держать тяжёлое оружие.",
+              "healingState": {
+                "currentState": "перевязана",
+                "treatmentProgress": 1,
+                "progressNeeded": 3
+              }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/custom_states.json", """
+        {
+          "states": [
+            {
+              "stateName": "Нервное напряжение",
+              "currentValue": 40,
+              "maxValue": 100,
+              "description": "Сон оставил неприятный след.",
+              "progressionRule": {
+                "changePerTurn": "+5",
+                "description": "растёт при опасности"
+              }
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/status"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Асуран де Вальмонт", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Деньги", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("500", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Вес", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("17/30", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Скрытность", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Незамечен", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Последние изменения", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Здоровье", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("-10", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Повышены", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Восприятие", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Понижены", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сила", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Активные эффекты", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Магический резонанс", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Рассечённая ладонь", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Нервное напряжение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Stats_RendersCharacteristicsWithoutRawJson()
     {
         await SeedUniversalMetaFilesAsync();
