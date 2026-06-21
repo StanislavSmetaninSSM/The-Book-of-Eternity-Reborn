@@ -263,13 +263,10 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         AddDetailItem(detailItems, "Статус", DescribeEventStatus(item.Node));
         AddDetailItem(detailItems, "Кратко", FirstWorldNewsNodeString(item.Node, "summary", "narrativeSummary"));
         AddDetailItem(detailItems, "Описание", FirstWorldNewsNodeString(item.Node, "description", "details"));
-        AddDetailItem(detailItems, "Участники", JoinNodeValues(item.Node["involvedNPCs"] ?? item.Node["actors"] ?? item.Node["participants"]));
-        AddDetailItem(detailItems, "Фракции", JoinNodeValues(item.Node["affectedFactions"] ?? item.Node["factions"]));
-        AddDetailItem(detailItems, "Локации", JoinNodeValues(item.Node["affectedLocations"] ?? item.Node["locations"]));
-        AddDetailItem(detailItems, "Последствия", JoinNodeValues(item.Node["consequences"] ?? item.Node["effects"]));
+        AddDetailItem(detailItems, "Печать", FirstWorldNewsNodeString(item.Node, "sealDetails"));
         AddDetailItem(detailItems, "Итог", FirstWorldNewsNodeString(item.Node, "outcome", "result"));
         AddDetailItem(detailItems, "Продолжение", FirstWorldNewsNodeString(item.Node, "followUp", "followUpEvent", "nextStep"));
-        AddDetailItem(detailItems, "Влияние", DescribeNodeForDetail(item.Node["impact"] ?? item.Node["impactProfile"]));
+        AddDetailItem(detailItems, "Что знает игрок", FirstWorldNewsNodeString(item.Node, "playerKnowledge", "knownFacts"));
         AddAdditionalDetailItems(detailItems, item.Node,
             "eventId", "worldEventId", "id", "key",
             "eventTitle", "title", "name",
@@ -277,17 +274,34 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             "location", "eventLocation", "locationName", "region",
             "status", "phase", "state", "visibility", "category", "eventCategory", "type",
             "summary", "narrativeSummary", "description", "details",
+            "sealDetails",
             "involvedNPCs", "actors", "participants",
             "affectedFactions", "factions",
             "affectedLocations", "locations",
             "consequences", "effects", "outcome", "result",
             "followUp", "followUpEvent", "nextStep",
-            "impact", "impactProfile");
+            "impact", "impactProfile",
+            "possibleLeads", "leads", "clues",
+            "stakes",
+            "openQuestions", "questions",
+            "playerKnowledge", "knownFacts",
+            "relatedPeople");
+
+        var blocks = new List<UiBlock> { new UiKeyValueGridBlock { Items = detailItems } };
+        AddWorldNewsDetailSection(blocks, "Участники", item.Node["involvedNPCs"] ?? item.Node["actors"] ?? item.Node["participants"]);
+        AddWorldNewsDetailSection(blocks, "Фракции", item.Node["affectedFactions"] ?? item.Node["factions"]);
+        AddWorldNewsDetailSection(blocks, "Локации", item.Node["affectedLocations"] ?? item.Node["locations"]);
+        AddWorldNewsDetailSection(blocks, "Последствия", item.Node["consequences"] ?? item.Node["effects"]);
+        AddWorldNewsDetailSection(blocks, "Влияние", item.Node["impact"] ?? item.Node["impactProfile"]);
+        AddWorldNewsDetailSection(blocks, "Зацепки", item.Node["possibleLeads"] ?? item.Node["leads"] ?? item.Node["clues"]);
+        AddWorldNewsDetailSection(blocks, "Ставки", item.Node["stakes"]);
+        AddWorldNewsDetailSection(blocks, "Открытые вопросы", item.Node["openQuestions"] ?? item.Node["questions"]);
+        AddWorldNewsDetailSection(blocks, "Связанные лица", item.Node["relatedPeople"]);
 
         return new UiPanelBlock
         {
             Title = $"Событие: {item.Title}",
-            Blocks = [new UiKeyValueGridBlock { Items = detailItems }]
+            Blocks = blocks
         };
     }
 
@@ -800,6 +814,117 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             "faction-internal" => "внутри фракции",
             _ => visibility.Trim()
         };
+
+    private static void AddWorldNewsDetailSection(List<UiBlock> blocks, string title, JsonNode? node)
+    {
+        if (node == null)
+            return;
+
+        var sectionBlocks = new List<UiBlock>();
+        if (TryGetScalarString(node, out var scalar))
+        {
+            if (!string.IsNullOrWhiteSpace(scalar))
+            {
+                sectionBlocks.Add(new UiTextBlock
+                {
+                    Text = scalar,
+                    Tone = UiTone.Default
+                });
+            }
+        }
+        else if (node is JsonArray array)
+        {
+            var listItems = new List<string>();
+            var objectBlocks = new List<UiBlock>();
+            var index = 0;
+            foreach (var item in array)
+            {
+                index++;
+                if (item is JsonObject obj)
+                {
+                    var objectBlock = BuildWorldNewsObjectPanel(obj, $"Запись {index}");
+                    if (objectBlock != null)
+                        objectBlocks.Add(objectBlock);
+                    continue;
+                }
+
+                var value = DescribeNodeForDetail(item);
+                if (!string.IsNullOrWhiteSpace(value))
+                    listItems.Add(value);
+            }
+
+            if (listItems.Count > 0)
+                sectionBlocks.Add(new UiListBlock { Items = listItems });
+            sectionBlocks.AddRange(objectBlocks);
+        }
+        else if (node is JsonObject obj)
+        {
+            var grid = BuildWorldNewsObjectGrid(obj);
+            if (grid != null)
+                sectionBlocks.Add(grid);
+        }
+        else
+        {
+            var value = DescribeNodeForDetail(node);
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                sectionBlocks.Add(new UiTextBlock
+                {
+                    Text = value,
+                    Tone = UiTone.Default
+                });
+            }
+        }
+
+        if (sectionBlocks.Count == 0)
+            return;
+
+        blocks.Add(new UiPanelBlock
+        {
+            Title = title,
+            Blocks = sectionBlocks
+        });
+    }
+
+    private static UiPanelBlock? BuildWorldNewsObjectPanel(JsonObject obj, string fallbackTitle)
+    {
+        var grid = BuildWorldNewsObjectGrid(obj);
+        if (grid == null)
+            return null;
+
+        var title = FirstNonEmpty(
+            FirstWorldNewsNodeString(obj, "displayName", "name", "title"),
+            fallbackTitle);
+        return new UiPanelBlock
+        {
+            Title = title,
+            Blocks = [grid]
+        };
+    }
+
+    private static UiKeyValueGridBlock? BuildWorldNewsObjectGrid(JsonObject obj)
+    {
+        var items = new List<UiKeyValueItem>();
+        foreach (var property in obj)
+        {
+            if (ShouldSkipAdditionalDetailField(property.Key, EmptyConsumedDetailFields))
+                continue;
+
+            var value = DescribeNodeForDetail(property.Value);
+            if (string.IsNullOrWhiteSpace(value))
+                continue;
+
+            items.Add(new UiKeyValueItem
+            {
+                Key = WorldNewsFieldLabel(property.Key),
+                Value = value
+            });
+        }
+
+        return items.Count == 0
+            ? null
+            : new UiKeyValueGridBlock { Items = items };
+    }
 
     private static void AddAdditionalDetailItems(
         List<UiKeyValueItem> items,

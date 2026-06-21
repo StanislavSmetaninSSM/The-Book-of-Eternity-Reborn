@@ -248,11 +248,21 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return;
         }
 
+        if (string.Equals(title, "Расчётные показатели", StringComparison.OrdinalIgnoreCase))
+        {
+            var structuredBlock = BuildStructuredStatsPanel(obj, title, translateKey);
+            if (structuredBlock != null)
+            {
+                blocks.Add(structuredBlock);
+                return;
+            }
+        }
+
         var rows = EnumerateStatsProperties(obj)
             .Where(static property => !IsTechnicalStatsProperty(property.Key))
             .Select(property => new UiTableRow
             {
-                Cells = [translateKey(property.Key), FormatStatsValue(property.Value)]
+                Cells = [translateKey(property.Key), FormatStatsValue(property.Value, property.Key)]
             })
             .Where(static row => row.Cells.Count >= 2 && !string.IsNullOrWhiteSpace(row.Cells[1]))
             .ToList();
@@ -266,6 +276,137 @@ public static class ExplorerMortalWorldCommandResultBuilder
             Columns = ["Показатель", "Значение"],
             Rows = rows
         });
+    }
+
+    private static UiPanelBlock? BuildStructuredStatsPanel(
+        JsonObject obj,
+        string title,
+        Func<string, string> translateKey)
+    {
+        var scalarRows = new List<UiTableRow>();
+        var sectionBlocks = new List<UiBlock>();
+
+        foreach (var property in EnumerateStatsProperties(obj).Where(static property => !IsTechnicalStatsProperty(property.Key)))
+        {
+            var label = translateKey(property.Key);
+            switch (property.Value)
+            {
+                case JsonObject nested:
+                {
+                    var grid = BuildStatsObjectGrid(nested);
+                    if (grid != null)
+                    {
+                        sectionBlocks.Add(new UiPanelBlock
+                        {
+                            Title = label,
+                            Blocks = [grid]
+                        });
+                    }
+
+                    break;
+                }
+                case JsonArray array:
+                {
+                    var arrayBlock = BuildStatsArrayPanel(label, array, property.Key);
+                    if (arrayBlock != null)
+                        sectionBlocks.Add(arrayBlock);
+                    break;
+                }
+                default:
+                {
+                    var value = FormatStatsValue(property.Value, property.Key);
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        scalarRows.Add(new UiTableRow
+                        {
+                            Cells = [label, value]
+                        });
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        var blocks = new List<UiBlock>();
+        if (scalarRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Основные показатели",
+                Columns = ["Показатель", "Значение"],
+                Rows = scalarRows
+            });
+        }
+
+        blocks.AddRange(sectionBlocks);
+        return blocks.Count == 0
+            ? null
+            : new UiPanelBlock
+            {
+                Title = title,
+                Blocks = blocks
+            };
+    }
+
+    private static UiPanelBlock? BuildStatsArrayPanel(string title, JsonArray array, string fieldName)
+    {
+        var listItems = new List<string>();
+        var panelItems = new List<UiBlock>();
+        var index = 0;
+
+        foreach (var item in array)
+        {
+            index++;
+            if (item is JsonObject obj)
+            {
+                var grid = BuildStatsObjectGrid(obj);
+                if (grid != null)
+                {
+                    panelItems.Add(new UiPanelBlock
+                    {
+                        Title = $"Запись {index}",
+                        Blocks = [grid]
+                    });
+                }
+
+                continue;
+            }
+
+            var value = FormatStatsValue(item, fieldName);
+            if (!string.IsNullOrWhiteSpace(value))
+                listItems.Add(value);
+        }
+
+        var blocks = new List<UiBlock>();
+        if (listItems.Count > 0)
+            blocks.Add(new UiListBlock { Items = listItems });
+        blocks.AddRange(panelItems);
+
+        return blocks.Count == 0
+            ? null
+            : new UiPanelBlock
+            {
+                Title = title,
+                Blocks = blocks
+            };
+    }
+
+    private static UiKeyValueGridBlock? BuildStatsObjectGrid(JsonObject obj)
+    {
+        var items = obj
+            .Where(static property => !IsTechnicalStatsProperty(property.Key))
+            .Select(static property => new UiKeyValueItem
+            {
+                Key = TranslateComputedCharacteristicKey(property.Key),
+                Value = FormatStatsValue(property.Value, property.Key)
+            })
+            .Where(static item => !string.IsNullOrWhiteSpace(item.Value))
+            .ToList();
+
+        return items.Count == 0
+            ? null
+            : new UiKeyValueGridBlock { Items = items };
     }
 
     private static IEnumerable<KeyValuePair<string, JsonNode?>> EnumerateStatsProperties(JsonObject obj)
@@ -304,15 +445,15 @@ public static class ExplorerMortalWorldCommandResultBuilder
         propertyName.Equals("lastUpdatedAt", StringComparison.OrdinalIgnoreCase) ||
         propertyName.StartsWith("_", StringComparison.OrdinalIgnoreCase);
 
-    private static string FormatStatsValue(JsonNode? node)
+    private static string FormatStatsValue(JsonNode? node, string? fieldName = null)
     {
         if (TryGetScalarString(node, out var scalar))
-            return FormatInventoryProtocolValue(scalar);
+            return StructuredBonusDisplay.FormatScalar(scalar, fieldName);
 
         if (node is JsonArray array)
         {
             var values = array
-                .Select(FormatStatsValue)
+                .Select(item => FormatStatsValue(item, fieldName))
                 .Where(static value => !string.IsNullOrWhiteSpace(value))
                 .ToList();
             return values.Count == 0 ? $"{array.Count} записей" : string.Join("; ", values);
@@ -322,7 +463,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         {
             var values = obj
                 .Where(static property => !IsTechnicalStatsProperty(property.Key))
-                .Select(static property => $"{TranslateComputedCharacteristicKey(property.Key)}: {FormatStatsValue(property.Value)}")
+                .Select(static property => $"{TranslateComputedCharacteristicKey(property.Key)}: {FormatStatsValue(property.Value, property.Key)}")
                 .Where(static value => !string.IsNullOrWhiteSpace(value))
                 .ToList();
             return values.Count == 0 ? string.Empty : string.Join("; ", values);
@@ -372,6 +513,24 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "resistance" => "Сопротивление",
             "initiative" => "Инициатива",
             "speed" => "Скорость",
+            "base" => "Базовое значение",
+            "standard" or "standardCharacteristics" => "Стандартное значение",
+            "permanent" or "permanentCharacteristics" or "permanentlyModified" => "Постоянные модификаторы",
+            "equipmentBonus" or "equipmentBonuses" => "Бонусы снаряжения",
+            "temporaryModifier" or "temporaryModifiers" => "Временные модификаторы",
+            "final" or "computed" or "fullyModified" => "Итоговое значение",
+            "source" => "Источник",
+            "target" => "Цель",
+            "value" => "Значение",
+            "expiresAt" or "expires" or "duration" => "Действует до",
+            "magicFlowSense" => "Чувство магических потоков",
+            "arcaneLore" => "Аркановедение",
+            "stealth" => "Скрытность",
+            "aristocraticReputation" => "Аристократическая репутация",
+            "strength" or "dexterity" or "agility" or "endurance" or "constitution" or
+                "perception" or "intelligence" or "wisdom" or "willpower" or "will" or
+                "charisma" or "luck" or "arcana" or "faith" or "spirit" or
+                "attractiveness" or "trade" or "persuasion" => TranslateBaseCharacteristicKey(key),
             _ => HumanizeStatsKey(key)
         };
 
@@ -1762,6 +1921,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
     {
         if (string.Equals(definition.DetailTitlePrefix, "Фракция", StringComparison.OrdinalIgnoreCase))
             return BuildFactionReferenceDetailPanel(definition, entry);
+        if (string.Equals(definition.DetailTitlePrefix, "Навык", StringComparison.OrdinalIgnoreCase))
+            return BuildSkillReferenceDetailPanel(definition, entry);
 
         var detailItems = new List<UiKeyValueItem>
         {
@@ -1788,6 +1949,136 @@ public static class ExplorerMortalWorldCommandResultBuilder
         {
             Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
             Blocks = detailBlocks
+        };
+    }
+
+    private static UiPanelBlock BuildSkillReferenceDetailPanel(
+        ReferenceCommandDefinition definition,
+        ReferenceEntrySnapshot entry)
+    {
+        var detailItems = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = entry.Section }
+        };
+
+        AddReferenceDetailItem(detailItems, "Тип", TranslateSkillProtocolValue(FirstReferenceNodeString(entry.Node, "category", "type")));
+        AddReferenceDetailItem(detailItems, "Группа", FirstReferenceNodeString(entry.Node, "group", "skillGroup", "school"));
+        AddReferenceDetailItem(detailItems, "Уровень", FirstReferenceNodeString(entry.Node, "level", "skillLevel"));
+        AddReferenceDetailItem(detailItems, "Мастерство", FirstReferenceNodeString(entry.Node, "masteryLevel", "mastery"));
+        AddReferenceDetailItem(detailItems, "Контекст мастерства", FirstReferenceNodeString(entry.Node, "masteryContext", "context"));
+        AddReferenceDetailItem(detailItems, "Масштабирование", FormatReferenceCharacteristic(FirstReferenceNodeString(entry.Node, "scalingCharacteristic")));
+        AddReferenceDetailItem(detailItems, "Кратко", FirstNonEmpty(entry.Summary, FirstReferenceNodeString(entry.Node, "playerStatBonus", "summary")));
+
+        var detailBlocks = new List<UiBlock>();
+        var description = FirstReferenceNodeString(entry.Node, "skillDescription", "description", "details");
+        if (!string.IsNullOrWhiteSpace(description))
+        {
+            detailBlocks.Add(new UiTextBlock
+            {
+                Text = description,
+                Tone = UiTone.Default
+            });
+        }
+
+        if (detailItems.Count > 0)
+            detailBlocks.Add(new UiKeyValueGridBlock { Items = detailItems });
+
+        var actionRows = BuildSkillActionRows(entry.Node);
+        if (actionRows.Count > 0)
+        {
+            detailBlocks.Add(new UiTableBlock
+            {
+                Title = "Боевые свойства",
+                Columns = ["Параметр", "Значение"],
+                Rows = actionRows
+            });
+        }
+
+        AddStructuredBonusBlock(detailBlocks, entry.Node["structuredBonuses"] as JsonArray);
+
+        return new UiPanelBlock
+        {
+            Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
+            Blocks = detailBlocks
+        };
+    }
+
+    private static List<UiTableRow> BuildSkillActionRows(JsonObject node)
+    {
+        var rows = new List<UiTableRow>();
+        AddSkillActionRow(rows, "Название действия", node["actionName"]);
+        AddSkillActionRow(rows, "Описание действия", node["actionDescription"]);
+        AddSkillActionRow(rows, "Активируемый эффект", node["isActivatedEffect"], FormatSkillBool);
+        AddSkillActionRow(rows, "Тип урона", node["damageType"], TranslateSkillProtocolValue);
+        AddSkillActionRow(rows, "Базовый урон", node["baseDamage"]);
+        AddSkillActionRow(rows, "Дистанция", node["range"], TranslateSkillProtocolValue);
+        AddSkillActionRow(rows, "Стоимость действия", node["actionCost"], TranslateSkillProtocolValue);
+        AddSkillActionRow(rows, "Стоимость ОД", node["actionPointCost"]);
+        AddSkillActionRow(rows, "Перезарядка", node["cooldown"], FormatSkillCooldown);
+        AddSkillActionRow(rows, "Длительность", node["duration"]);
+        AddSkillActionRow(rows, "Масштабирует значение", node["scalesValue"], FormatSkillBool);
+        AddSkillActionRow(rows, "Масштабирует длительность", node["scalesDuration"], FormatSkillBool);
+        AddSkillActionRow(rows, "Масштабирует шанс", node["scalesChance"], FormatSkillBool);
+        return rows;
+    }
+
+    private static void AddSkillActionRow(
+        List<UiTableRow> rows,
+        string label,
+        JsonNode? node,
+        Func<string, string>? formatter = null)
+    {
+        if (!TryGetScalarString(node, out var value))
+            return;
+
+        var display = formatter == null
+            ? StructuredBonusDisplay.FormatScalar(value)
+            : formatter(value);
+        if (string.IsNullOrWhiteSpace(display))
+            return;
+
+        rows.Add(new UiTableRow { Cells = [label, display] });
+    }
+
+    private static string FormatSkillBool(string value) =>
+        value.Trim().Equals("true", StringComparison.OrdinalIgnoreCase)
+            ? "да"
+            : value.Trim().Equals("false", StringComparison.OrdinalIgnoreCase)
+                ? "нет"
+                : StructuredBonusDisplay.FormatScalar(value);
+
+    private static string FormatSkillCooldown(string value)
+    {
+        var clean = value.Trim();
+        if ((clean is "0" or "0.0") || clean.Equals("none", StringComparison.OrdinalIgnoreCase))
+            return "нет";
+
+        return StructuredBonusDisplay.FormatScalar(clean);
+    }
+
+    private static string TranslateSkillProtocolValue(string value)
+    {
+        var clean = value.Trim();
+        if (string.IsNullOrWhiteSpace(clean))
+            return string.Empty;
+
+        return clean.ToLowerInvariant() switch
+        {
+            "utility" => "утилитарный",
+            "combat" => "боевой",
+            "social" => "социальный",
+            "exploration" => "исследование",
+            "psychic" => "психическое воздействие",
+            "piercing" => "колющий",
+            "slashing" => "рубящий",
+            "blunt" or "bludgeoning" => "дробящий",
+            "melee" => "ближняя дистанция",
+            "ranged" => "дальняя дистанция",
+            "conversation" => "разговор",
+            "main" => "основное действие",
+            "fast" or "quick" => "быстрое действие",
+            "free" => "свободное действие",
+            _ => StructuredBonusDisplay.FormatScalar(clean)
         };
     }
 
