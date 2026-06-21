@@ -4146,6 +4146,88 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                             message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Theory]
+    [InlineData("/afterlife_profiles", "afterlife-profile-detail-player_soul", "/afterlife_profiles профиль player_soul", "Test Soul")]
+    [InlineData("/afterlife_threats", "afterlife-threat-detail-threat_mirror_hunter", "/afterlife_threats угроза threat_mirror_hunter", "Охотник зеркального долга")]
+    [InlineData("/afterlife_chronicles", "afterlife-chronicle-detail-guardian_scene_mirror", "/afterlife_chronicles хроника guardian_scene_mirror", "Зал зеркальной клятвы")]
+    [InlineData("/spiritual_conflict", "spiritual-conflict-exchange-detail-exchange_1", "/spiritual_conflict обмен exchange_1", "exchange_1")]
+    [InlineData("/spiritual_combat_log", "spiritual-combat-log-exchange-detail-exchange_1", "/spiritual_combat_log обмен exchange_1", "exchange_1")]
+    [InlineData("/spiritual_arts", "spiritual-art-detail-pressure", "/spiritual_arts искусство pressure", "Давление")]
+    [InlineData("/spiritual_arts", "spiritual-special-art-detail-rose_mirror_counter", "/spiritual_arts особое rose_mirror_counter", "Зеркало Ночной Розы")]
+    public async Task ExecuteAsync_ChaosSeaAfterlifeOverviews_ExposeIssue1124ReadOnlyDetailActions(
+        string command,
+        string expectedActionId,
+        string expectedDetailCommand,
+        string expectedLabelText)
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeThreatsDrilldownFixtureAsync();
+        await WriteAfterlifeChroniclesRawLeakFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.NotEqual(CommandExecutionState.Failed, result.State);
+        Assert.NotEqual(CommandExecutionState.Blocked, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+
+        var action = Assert.Single(result.Actions, candidate => candidate.Id == expectedActionId);
+        Assert.Equal(expectedDetailCommand, action.Command);
+        Assert.Contains(expectedLabelText, action.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(UiActionStyle.Secondary, action.Style);
+        Assert.False(action.RequiresConfirmation);
+        Assert.DoesNotContain("DTO", action.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("API", action.Label, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/afterlife_profiles профиль player_soul", "Профиль посмертия: Test Soul", "Зеркало Ночной Розы", "hidden_saref_combat_effect_marker")]
+    [InlineData("/afterlife_threats угроза threat_mirror_hunter", "Угроза посмертия: Охотник зеркального долга", "Долг следует за душой", "hidden_threat_marker")]
+    [InlineData("/afterlife_chronicles хроника guardian_scene_mirror", "Хроника посмертия: Зал зеркальной клятвы", "Игрок впервые вошёл в зал отражений", "hidden_chronicle_marker")]
+    [InlineData("/spiritual_conflict обмен exchange_1", "Обмен духовного конфликта: exchange_1", "Тень Хранителя", "exchange_hidden_roll_source_marker_001")]
+    [InlineData("/spiritual_combat_log обмен exchange_1", "Запись духовного боя: exchange_1", "Тень Хранителя", "exchange_hidden_roll_source_marker_001")]
+    [InlineData("/spiritual_combat_log итог conflict_done", "Итог духовного боя: conflict_done", "Чернильные Перья", "hidden_conflict_marker")]
+    [InlineData("/spiritual_arts искусство pressure", "Духовное искусство: Давление", "база 3 ОД", "hidden_saref_combat_effect_marker")]
+    [InlineData("/spiritual_arts особое rose_mirror_counter", "Особое духовное искусство: Зеркало Ночной Розы", "Контрприём оставляет болезненный образ", "hidden_saref_combat_effect_marker")]
+    public async Task ExecuteAsync_ChaosSeaAfterlifeDetails_RenderFocusedIssue1124DetailWithoutRawJson(
+        string command,
+        string expectedTitle,
+        string expectedText,
+        string excludedText)
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeThreatsDrilldownFixtureAsync();
+        await WriteAfterlifeChroniclesRawLeakFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        AssertNoAfterlifeReadOnlyDetailTechnicalLeak(result);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains(expectedTitle, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(expectedText, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(excludedText, text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/afterlife_profiles профиль missing_profile")]
+    [InlineData("/afterlife_threats угроза missing_threat")]
+    [InlineData("/afterlife_chronicles хроника missing_chronicle")]
+    [InlineData("/spiritual_conflict обмен missing_exchange")]
+    [InlineData("/spiritual_combat_log итог missing_result")]
+    [InlineData("/spiritual_arts искусство missing_art")]
+    public async Task ExecuteAsync_ChaosSeaAfterlifeDetails_UnknownIssue1124TargetsReturnPlayerFacingUnavailableText(string command)
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeThreatsDrilldownFixtureAsync();
+        await WriteAfterlifeChroniclesRawLeakFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        AssertNoAfterlifeReadOnlyDetailTechnicalLeak(result);
+        Assert.Contains("не удалось открыть", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public async Task ExecuteAsync_AfterlifeSpecialArtSurfaces_ShowCombatEffectWithoutRawContractLeak()
     {
@@ -6580,6 +6662,75 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         """);
     }
 
+    private async Task WriteAfterlifeThreatsDrilldownFixtureAsync()
+    {
+        await _fs.WriteFileAtomicAsync(AfterlifeActiveThreatState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "threats": [
+            {
+              "threatId": "threat_mirror_hunter",
+              "displayName": "Охотник зеркального долга",
+              "realm": "Chaos Sea",
+              "scopeId": "player_soul",
+              "intensity": 3,
+              "visibleToPlayer": true,
+              "threatArchetype": {
+                "motivation": "vengeance",
+                "method": "hunter"
+              },
+              "currentActivity": {
+                "activityId": "activity_mirror_debt",
+                "activityName": "Следит по отражениям",
+                "activeState": "active",
+                "description": "Долг следует за душой через трещины зеркал.",
+                "narrativeSummary": "В отражениях появляется чужая рука."
+              },
+              "impactProfile": {
+                "primaryTargetType": "player_soul",
+                "primaryTargetName": "Test Soul",
+                "primaryImpact": "strain",
+                "baseImpact": 2
+              },
+              "ledger": [
+                {
+                  "summary": "Игрок увидел охотника в воде.",
+                  "turn": 6
+                }
+              ],
+              "gmThoughts": "hidden_threat_marker",
+              "secretPlan": "hidden_threat_marker"
+            },
+            {
+              "threatId": "hidden_threat_marker",
+              "displayName": "hidden_threat_marker",
+              "realm": "Chaos Sea",
+              "scopeId": "player_soul",
+              "intensity": 9,
+              "visibleToPlayer": false,
+              "threatArchetype": {
+                "motivation": "secret",
+                "method": "secret"
+              },
+              "currentActivity": {
+                "activityId": "hidden_activity_marker",
+                "activityName": "hidden_activity_marker",
+                "activeState": "active",
+                "description": "hidden_threat_marker"
+              },
+              "impactProfile": {
+                "primaryTargetType": "player_soul",
+                "primaryTargetName": "hidden_threat_marker",
+                "primaryImpact": "hidden_threat_marker",
+                "baseImpact": 9
+              },
+              "ledger": []
+            }
+          ]
+        }
+        """);
+    }
+
     private async Task SeedInventoryEquipmentItemsAsync()
     {
         await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
@@ -6908,6 +7059,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         {
             Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
         }
+    }
+
+    private static void AssertNoAfterlifeReadOnlyDetailTechnicalLeak(ExplorerCommandResult result)
+    {
+        AssertNoAfterlifeIssue1064TechnicalLeak(result);
     }
 
     public static IEnumerable<object[]> PlayerDefaultReadOnlyCommands()
