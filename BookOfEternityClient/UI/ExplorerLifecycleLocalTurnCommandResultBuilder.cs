@@ -1391,7 +1391,15 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         StateManager stateManager)
     {
         var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
-        var factionId = ReadCommandArguments(command);
+        var commandArguments = ReadCommandArguments(command);
+        var factionId = commandArguments;
+        var detailArguments = string.Empty;
+        if (TrySplitLeadingArgument(commandArguments, out var parsedFactionId, out var parsedDetailArguments))
+        {
+            factionId = parsedFactionId;
+            detailArguments = parsedDetailArguments;
+        }
+
         if (string.IsNullOrWhiteSpace(factionId))
         {
             return Result(
@@ -1435,6 +1443,9 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     Message(UiNotificationSeverity.Warning, "Фракция не найдена", "Такой сияющей фракции сейчас нет в Обители.")
                 ]);
         }
+
+        if (TryReadDetailSelector(detailArguments, out var offerSelector, "товар", "item", "slot", "offer", "реликвия", "relic"))
+            return BuildShiningTradeOfferDetail(command, localTurn.Panel, view, offerSelector);
 
         var feathers = GetSoulInkFeathers((await ReadJson(fs, SoulStatePath)).Node as JsonObject, stateManager.CurrentState.InkFeathers);
         var options = new List<UiSelectionOption>();
@@ -1491,14 +1502,16 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 ]
             }
         };
+        var actions = BuildShiningTradeOfferDetailActions(view).ToList();
 
         if (options.Count == 0)
-            return Result(command, CommandExecutionState.Completed, blocks);
+            return Result(command, CommandExecutionState.Completed, blocks, actions: actions);
 
         return Result(
             command,
             localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
             blocks,
+            actions: actions,
             prompts:
             [
                 new UiSelectionPrompt
@@ -1510,6 +1523,144 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 },
                 TradeConfirmationPrompt()
             ]);
+    }
+
+    private static ExplorerCommandResult BuildShiningTradeOfferDetail(
+        string command,
+        UiPanelBlock localTurnPanel,
+        ShiningTradeService.ShiningTradeView view,
+        string selector)
+    {
+        var offer = FindShiningTradeOffer(view, selector);
+        if (offer == null)
+            return DetailUnavailable(command, "Товар сияющей торговли недоступен");
+
+        var relicId = GetString(offer.RelicData, "relicId");
+        var propertySummaries = BuildShiningTradeRelicPropertySummaries(offer.RelicData).ToList();
+        var detailBlocks = new List<UiBlock>
+        {
+            new UiKeyValueGridBlock
+            {
+                Items =
+                [
+                    KeyValue("Фракция", view.FactionName),
+                    KeyValue("Слот", offer.SlotId),
+                    KeyValue("Реликвия", FirstNonEmpty(relicId, offer.Name)),
+                    KeyValue("Редкость", FormatRarityForPlayer(offer.Rarity, "-")),
+                    KeyValue("Цена", $"{offer.PriceInFeathers} Чернильных Перьев"),
+                    KeyValue("Статус", offer.SoldOut ? "уже куплено" : "доступно")
+                ]
+            },
+            new UiTextBlock
+            {
+                Text = FirstNonEmpty(offer.Description, "Описание реликвии пока не записано.")
+            }
+        };
+
+        if (propertySummaries.Count > 0)
+        {
+            detailBlocks.Add(new UiTextBlock
+            {
+                Text = "Свойства:\n- " + string.Join("\n- ", propertySummaries)
+            });
+        }
+
+        return Result(
+            command,
+            CommandExecutionState.Completed,
+            [
+                localTurnPanel,
+                new UiPanelBlock
+                {
+                    Title = $"Товар сияющей торговли: {offer.Name}",
+                    Blocks = detailBlocks
+                }
+            ],
+            actions:
+            [
+                new UiAction
+                {
+                    Id = SoulRelicEquipmentService.BuildActionId("shining-trade-back", view.FactionId),
+                    Label = "← К сияющей торговле",
+                    Command = "/shining_trade " + SoulRelicEquipmentService.FormatCommandArgument(view.FactionId),
+                    Style = UiActionStyle.Secondary,
+                    RequiresConfirmation = false
+                }
+            ]);
+    }
+
+    private static IEnumerable<UiAction> BuildShiningTradeOfferDetailActions(ShiningTradeService.ShiningTradeView view)
+    {
+        foreach (var offer in view.Offers)
+        {
+            if (string.IsNullOrWhiteSpace(offer.SlotId))
+                continue;
+
+            yield return DetailAction(
+                "shining-trade-offer-detail",
+                $"{view.FactionId}-{offer.SlotId}",
+                offer.Name,
+                "/shining_trade " +
+                SoulRelicEquipmentService.FormatCommandArgument(view.FactionId) +
+                " товар " +
+                SoulRelicEquipmentService.FormatCommandArgument(offer.SlotId));
+        }
+    }
+
+    private static ShiningTradeService.ShiningTradeOffer? FindShiningTradeOffer(
+        ShiningTradeService.ShiningTradeView view,
+        string selector)
+    {
+        return view.Offers.FirstOrDefault(offer =>
+            string.Equals(offer.SlotId, selector, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(GetString(offer.RelicData, "relicId"), selector, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(offer.Name, selector, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static IEnumerable<string> BuildShiningTradeRelicPropertySummaries(JsonObject relicData)
+    {
+        if (relicData["properties"] is not JsonArray properties)
+            yield break;
+
+        foreach (var property in properties.OfType<JsonObject>())
+        {
+            if (IsHiddenShiningTradeRelicProperty(property))
+                continue;
+
+            var name = FirstNonEmpty(
+                GetString(property, "displayName"),
+                GetString(property, "name"),
+                GetString(property, "propertyName"),
+                GetString(property, "propertyId"));
+            if (string.IsNullOrWhiteSpace(name))
+                continue;
+
+            var value = FirstNonEmpty(
+                GetString(property, "summary"),
+                GetString(property, "description"),
+                GetString(property, "effectSummary"),
+                GetString(property, "value"));
+            yield return string.IsNullOrWhiteSpace(value) ? name : $"{name}: {value}";
+        }
+    }
+
+    private static bool IsHiddenShiningTradeRelicProperty(JsonObject property)
+    {
+        if (property.TryGetPropertyValue("visibleToPlayer", out var visibleNode) &&
+            visibleNode is JsonValue visibleValue &&
+            visibleValue.TryGetValue<bool>(out var visibleToPlayer) &&
+            !visibleToPlayer)
+        {
+            return true;
+        }
+
+        var visibility = GetString(property, "visibility");
+        return visibility.Equals("hidden", StringComparison.OrdinalIgnoreCase) ||
+               visibility.Equals("gm_only", StringComparison.OrdinalIgnoreCase) ||
+               visibility.Equals("secret", StringComparison.OrdinalIgnoreCase) ||
+               TryGetBool(property, "hidden") ||
+               TryGetBool(property, "gmOnly") ||
+               TryGetBool(property, "debugOnly");
     }
 
     private static async Task<ExplorerCommandResult> BuildGuardianTradeAsync(
@@ -3912,6 +4063,21 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
     {
         var parts = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
         return parts.Length < 2 ? string.Empty : parts[1].Trim();
+    }
+
+    private static bool TrySplitLeadingArgument(string arguments, out string leadingArgument, out string remainingArguments)
+    {
+        var parts = arguments.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (parts.Length == 0)
+        {
+            leadingArgument = string.Empty;
+            remainingArguments = string.Empty;
+            return false;
+        }
+
+        leadingArgument = parts[0].Trim('"');
+        remainingArguments = parts.Length == 2 ? parts[1] : string.Empty;
+        return true;
     }
 
     private static string FirstNonEmpty(params string?[] values) =>

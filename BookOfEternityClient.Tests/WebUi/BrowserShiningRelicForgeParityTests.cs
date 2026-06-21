@@ -81,6 +81,11 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
         Assert.Contains(result.Prompts, prompt => prompt.Id == "relic_rerolls_to_commit");
         Assert.Contains(result.Prompts, prompt => prompt.Id == "confirm_shining_relic_forge_write");
 
+        var detailAction = Assert.Single(result.Actions, action => action.Id == "shining-forge-relic-detail-relic_blade");
+        Assert.Equal("/soul_relics реликвия relic_blade", detailAction.Command);
+        Assert.Contains("Клинок Рассвета", detailAction.Label, StringComparison.Ordinal);
+        Assert.False(detailAction.RequiresConfirmation);
+
         var text = CollectResultAndPromptText(result);
         Assert.Contains("Ковка реликвий", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Черниль", text, StringComparison.OrdinalIgnoreCase);

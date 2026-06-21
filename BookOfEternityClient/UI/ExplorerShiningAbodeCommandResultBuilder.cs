@@ -1142,6 +1142,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             command,
             CommandExecutionState.RequiresInput,
             blocks,
+            actions: BuildForgeRelicDetailActions(relics).ToList(),
             prompts:
             [
                 new UiSelectionPrompt
@@ -1214,6 +1215,22 @@ public static class ExplorerShiningAbodeCommandResultBuilder
                     Required = true
                 }
             ]);
+    }
+
+    private static IEnumerable<UiAction> BuildForgeRelicDetailActions(
+        IEnumerable<(string RelicId, string RelicName, string Collection, JsonObject Relic)> relics)
+    {
+        foreach (var relic in relics)
+        {
+            if (string.IsNullOrWhiteSpace(relic.RelicId))
+                continue;
+
+            yield return DetailAction(
+                "shining-forge-relic-detail",
+                relic.RelicId,
+                relic.RelicName,
+                "/soul_relics реликвия " + SoulRelicEquipmentService.FormatCommandArgument(relic.RelicId));
+        }
     }
 
     private static async Task<ExplorerCommandResult> BuildTreasury(

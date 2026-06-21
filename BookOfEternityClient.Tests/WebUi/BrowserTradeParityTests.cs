@@ -154,6 +154,42 @@ public sealed class BrowserTradeParityTests : IDisposable
 
     [Fact]
     [Trait("Category", "BrowserTradeParity")]
+    public async Task ExecuteAsync_ShiningTrade_ExposesOfferDetailsBeforeBuyConfirmation()
+    {
+        await SeedStoryTurnAsync(12);
+        await SeedShiningTradeStateAsync(withReadyInventory: true);
+
+        var overview = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/shining_trade faction_old",
+            OwnerId: "browser-trade-test",
+            OwnerLabel: "Browser trade test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, overview.State);
+        var action = Assert.Single(overview.Actions, item => item.Id == "shining-trade-offer-detail-faction_old-slot_1");
+        Assert.Equal("/shining_trade faction_old товар slot_1", action.Command);
+        Assert.Contains("Торговая Реликвия", action.Label, StringComparison.Ordinal);
+        Assert.False(action.RequiresConfirmation);
+
+        var detail = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest(
+            action.Command,
+            OwnerId: "browser-trade-test",
+            OwnerLabel: "Browser trade test"));
+
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        Assert.Empty(detail.Prompts);
+        var text = CollectBlockText(detail.Blocks);
+        Assert.Contains("Товар сияющей торговли: Торговая Реликвия", text, StringComparison.Ordinal);
+        Assert.Contains("Старый Дом", text, StringComparison.Ordinal);
+        Assert.Contains("70 Чернильных Перьев", text, StringComparison.Ordinal);
+        Assert.Contains("Тестовая реликвия сияющей фракции", text, StringComparison.Ordinal);
+        Assert.Contains("Видимое сияние", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("hidden_trade_property_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(detail.Actions, item => item.Command == "/shining_trade faction_old");
+        AssertNoRawTradeDiagnosticText(text);
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserTradeParity")]
     public async Task TryApplyAsync_ShiningTradeRequest_DelegatesToShiningTradeService()
     {
         await SeedStoryTurnAsync(12);
@@ -848,7 +884,21 @@ public sealed class BrowserTradeParityTests : IDisposable
             ["name"] = name,
             ["quality"] = quality,
             ["rarity"] = quality,
-            ["description"] = "Тестовая реликвия сияющей фракции."
+            ["description"] = "Тестовая реликвия сияющей фракции.",
+            ["properties"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["displayName"] = "Видимое сияние",
+                    ["summary"] = "Игрок видит это свойство перед покупкой."
+                },
+                new JsonObject
+                {
+                    ["displayName"] = "hidden_trade_property_marker",
+                    ["visibility"] = "gm_only",
+                    ["summary"] = "hidden_trade_property_marker"
+                }
+            }
         }
     };
 
