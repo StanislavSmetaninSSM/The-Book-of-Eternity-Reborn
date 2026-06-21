@@ -25,20 +25,21 @@ internal static class NpcDetailSectionProjection
     public static NpcDetailProjection Build(JsonNode? npcNode, NpcDetailSectionDocuments documents)
     {
         if (npcNode is not JsonObject npc)
-            return new NpcDetailProjection(string.Empty, "Неизвестный НПС", []);
+            return new NpcDetailProjection(string.Empty, "Неизвестный НПС", [], []);
 
         var npcId = GetNpcId(npc);
         var npcName = GetNpcName(npc);
         var sections = new List<NpcDetailSection>();
+        var personalQuests = new List<NpcQuestDetail>();
 
         AddJournalSection(sections, npcName, npcId, documents);
-        AddQuestSection(sections, npcName, npcId, npc, documents);
+        AddQuestSection(sections, personalQuests, npcName, npcId, npc, documents);
         AddActivitySection(sections, npcName, npcId, npc, documents);
         AddRelationshipSection(sections, npcName, npcId, npc, documents);
         AddMechanicsSection(sections, npcName, npcId, npc, documents);
         AddMemorySection(sections, npcName, npcId, npc, documents);
 
-        return new NpcDetailProjection(npcId, npcName, sections);
+        return new NpcDetailProjection(npcId, npcName, sections, personalQuests);
     }
 
     public static IReadOnlyList<UiTableRow> BuildNpcOverviewRows(JsonNode? npcCoreRoot)
@@ -145,6 +146,7 @@ internal static class NpcDetailSectionProjection
 
     private static void AddQuestSection(
         List<NpcDetailSection> sections,
+        List<NpcQuestDetail> personalQuests,
         string npcName,
         string npcId,
         JsonObject npc,
@@ -171,7 +173,7 @@ internal static class NpcDetailSectionProjection
                 GetNodeString(quest, "title"),
                 GetNodeString(quest, "name"),
                 "Безымянный квест");
-            var status = EmptyFallback(GetNodeString(quest, "status"));
+            var status = DescribeQuestStatus(GetNodeString(quest, "status"));
             var objectives = ReadObjectiveDescriptions(quest["objectives"]);
             var details = JoinDetails(
                 GetNodeString(quest, "description"),
@@ -179,11 +181,22 @@ internal static class NpcDetailSectionProjection
                 objectives.Count > 0 ? "Цели: " + string.Join("; ", objectives) : string.Empty,
                 Prefix("Награда", DescribeNodeValue(quest["rewards"])),
                 Prefix("Провал", GetNodeString(quest, "failureConsequences")));
+            var explicitQuestSelector = FirstNonEmpty(
+                GetNodeString(quest, "questId"),
+                GetNodeString(quest, "id"));
+            var questSelector = string.IsNullOrWhiteSpace(explicitQuestSelector)
+                ? NormalizeQuestSelector(questName)
+                : explicitQuestSelector;
 
             rows.Add(new UiTableRow
             {
                 Cells = [questName, status, EmptyFallback(details)]
             });
+
+            personalQuests.Add(new NpcQuestDetail(
+                questSelector,
+                questName,
+                BuildQuestDetailBlocks(npcName, questName, status, quest, objectives)));
         }
 
         sections.Add(new NpcDetailSection(
@@ -279,12 +292,15 @@ internal static class NpcDetailSectionProjection
         NpcDetailSectionDocuments documents)
     {
         var rows = new List<UiTableRow>();
-        AddNamedArrayRows(rows, "Активный навык", npc["activeSkills"]);
-        AddNamedArrayRows(rows, "Пассивный навык", npc["passiveSkills"]);
-        AddNamedArrayRows(rows, "Предмет", npc["inventory"]);
+        var categories = new List<string>();
+
+        AddNamedArrayRows(rows, categories, "Активный навык", npc["activeSkills"], "Навыки");
+        AddNamedArrayRows(rows, categories, "Пассивный навык", npc["passiveSkills"], "Навыки");
+        AddNamedArrayRows(rows, categories, "Предмет", npc["inventory"], "инвентарь");
 
         if (npc["equippedItems"] is JsonObject equipment)
         {
+            var beforeEquipment = rows.Count;
             foreach (var item in equipment)
             {
                 if (item.Value == null || item.Value.GetValueKind() is JsonValueKind.Null or JsonValueKind.Undefined)
@@ -292,26 +308,42 @@ internal static class NpcDetailSectionProjection
 
                 rows.Add(new UiTableRow { Cells = ["Экипировка", $"{item.Key}: {DescribeNodeValue(item.Value)}"] });
             }
+
+            if (rows.Count > beforeEquipment)
+                AddCategory(categories, "снаряжение");
         }
 
         foreach (var entry in CollectMatchingObjects(documents.Skills, npcId, npcName))
+        {
             rows.Add(new UiTableRow { Cells = ["Навык", DescribeNodeValue(entry)] });
+            AddCategory(categories, "Навыки");
+        }
         foreach (var entry in CollectMatchingObjects(documents.Effects, npcId, npcName))
+        {
             rows.Add(new UiTableRow { Cells = ["Эффект", DescribeNodeValue(entry)] });
+            AddCategory(categories, "эффекты");
+        }
         foreach (var entry in CollectMatchingObjects(documents.Inventory, npcId, npcName))
+        {
             rows.Add(new UiTableRow { Cells = ["Инвентарь", DescribeNodeValue(entry)] });
+            AddCategory(categories, "инвентарь");
+        }
 
         if (rows.Count == 0)
             return;
 
+        var label = categories.Count == 0
+            ? "Навыки / эффекты / инвентарь / снаряжение"
+            : string.Join(" / ", categories);
+
         sections.Add(new NpcDetailSection(
             "mechanics",
-            "Навыки / эффекты / инвентарь / снаряжение",
+            label,
             FormatCount(rows.Count, "запись", "записи", "записей"),
             [
                 new UiTableBlock
                 {
-                    Title = $"{npcName} — Навыки / эффекты / инвентарь / снаряжение",
+                    Title = $"{npcName} — {label}",
                     Columns = ["Раздел", "Подробности"],
                     Rows = rows
                 }
@@ -550,6 +582,92 @@ internal static class NpcDetailSectionProjection
             return $"Шаг: {currentStep}/{totalSteps}";
 
         return string.Empty;
+    }
+
+    private static IReadOnlyList<UiBlock> BuildQuestDetailBlocks(
+        string npcName,
+        string questName,
+        string status,
+        JsonObject quest,
+        IReadOnlyList<string> objectives)
+    {
+        var items = new List<UiKeyValueItem>
+        {
+            new() { Key = "НПС", Value = npcName },
+            new() { Key = "Квест", Value = questName },
+            new() { Key = "Статус", Value = status }
+        };
+
+        AddQuestDetailItem(items, "Описание", GetNodeString(quest, "description"));
+        AddQuestDetailItem(items, "Предпосылка", GetNodeString(quest, "questBackground"));
+        if (objectives.Count > 0)
+            AddQuestDetailItem(items, "Цели", string.Join("; ", objectives));
+        AddQuestDetailItem(items, "Награда", DescribeNodeValue(quest["rewards"]));
+        AddQuestDetailItem(items, "Провал", GetNodeString(quest, "failureConsequences"));
+
+        return
+        [
+            new UiKeyValueGridBlock
+            {
+                Items = items
+            }
+        ];
+    }
+
+    private static void AddQuestDetailItem(List<UiKeyValueItem> items, string key, string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        items.Add(new UiKeyValueItem { Key = key, Value = value.Trim() });
+    }
+
+    private static void AddNamedArrayRows(
+        List<UiTableRow> rows,
+        List<string> categories,
+        string label,
+        JsonNode? node,
+        string category)
+    {
+        var before = rows.Count;
+        AddNamedArrayRows(rows, label, node);
+        if (rows.Count <= before)
+            return;
+
+        AddCategory(categories, category);
+    }
+
+    private static void AddCategory(List<string> categories, string category)
+    {
+        if (categories.Contains(category, StringComparer.OrdinalIgnoreCase))
+            return;
+
+        categories.Add(category);
+    }
+
+    private static string DescribeQuestStatus(string? status)
+    {
+        var value = status?.Trim() ?? string.Empty;
+        return value.ToLowerInvariant() switch
+        {
+            "" => "не указано",
+            "active" or "open" or "current" => "Активен",
+            "pending" or "waiting" => "Ожидает",
+            "completed" or "complete" or "closed" => "Завершён",
+            "failed" => "Провален",
+            "paused" => "Приостановлен",
+            "blocked" => "Заблокирован",
+            _ => value
+        };
+    }
+
+    private static string NormalizeQuestSelector(string questName)
+    {
+        var chars = questName.Trim().ToLowerInvariant()
+            .Select(static ch => char.IsLetterOrDigit(ch) ? ch : '_')
+            .ToArray();
+        var result = new string(chars).Trim('_');
+        return string.IsNullOrWhiteSpace(result) ? "quest" : result;
     }
 
     private static string DescribeNodeValue(JsonNode? node)
@@ -807,7 +925,13 @@ internal static class NpcDetailSectionProjection
 internal sealed record NpcDetailProjection(
     string NpcId,
     string NpcName,
-    IReadOnlyList<NpcDetailSection> Sections);
+    IReadOnlyList<NpcDetailSection> Sections,
+    IReadOnlyList<NpcQuestDetail> PersonalQuests);
+
+internal sealed record NpcQuestDetail(
+    string Selector,
+    string QuestName,
+    IReadOnlyList<UiBlock> Blocks);
 
 internal sealed record NpcDetailSection(
     string Id,
