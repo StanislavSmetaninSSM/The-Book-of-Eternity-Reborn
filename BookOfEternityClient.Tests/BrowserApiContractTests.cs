@@ -622,6 +622,46 @@ public sealed class BrowserApiContractTests
         Assert.Empty(staleReferences);
     }
 
+    [Fact]
+    [Trait("Category", "BrowserWebUiParity")]
+    public void BrowserCommandCoverageAuditDocument_CoversEveryCommandAndSubcommand()
+    {
+        var audit = ReadBrowserCommandParityAudit();
+        var missing = new List<string>();
+
+        foreach (var command in BrowserCommandCoverageService.Build().Commands)
+        {
+            if (!audit.Contains($"`{command.Id}`", StringComparison.OrdinalIgnoreCase))
+                missing.Add($"command `{command.Id}`");
+
+            foreach (var subcommand in command.Subcommands)
+            {
+                if (!audit.Contains($"`{subcommand.Id}`", StringComparison.OrdinalIgnoreCase))
+                    missing.Add($"subcommand `{command.Id}.{subcommand.Id}`");
+            }
+        }
+
+        Assert.Empty(missing);
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiParity")]
+    public void BrowserCommandCoverageAuditDocument_DocumentsFollowUpExecutionOrder()
+    {
+        var audit = ReadBrowserCommandParityAudit();
+        var missing = new List<string>();
+
+        foreach (var issueNumber in new[] { 1120, 1121, 1122, 1123, 1124, 1125, 1126 })
+        {
+            if (!audit.Contains($"#{issueNumber}", StringComparison.OrdinalIgnoreCase))
+                missing.Add($"#{issueNumber}");
+        }
+
+        Assert.Empty(missing);
+        Assert.Contains("semantic parity", audit, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pixel-perfect", audit, StringComparison.OrdinalIgnoreCase);
+    }
+
     public static IEnumerable<object[]> ContractFixtures()
     {
         yield return ["main-menu.json", BuildMainMenu()];
@@ -640,6 +680,19 @@ public sealed class BrowserApiContractTests
 
     private static BrowserCommandCoverageDto BuildCommandCoverage() =>
         BrowserCommandCoverageService.Build();
+
+    private static string ReadBrowserCommandParityAudit()
+    {
+        var auditPath = Path.Combine(
+            RepoRoot,
+            "docs",
+            "audits",
+            "browser-console-command-parity-audit.md");
+
+        Assert.True(File.Exists(auditPath), $"Missing #1119 audit artifact at {auditPath}.");
+
+        return File.ReadAllText(auditPath);
+    }
 
     private static BrowserClientSettingsDto BuildClientSettings() =>
         new(
