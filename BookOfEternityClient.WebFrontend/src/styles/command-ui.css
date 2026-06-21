@@ -349,6 +349,50 @@
 .block-kv__row { display: grid; grid-template-columns: minmax(8rem, 0.35fr) minmax(0, 1fr); grid-column: 1 / -1; gap: 0.7rem; font-size: 0.85rem; padding: 0.3rem 0; border-bottom: 1px solid var(--border-subtle); }
 .block-kv__row dt { color: var(--text-muted); overflow-wrap: anywhere; }
 .block-kv__row dd { color: var(--text-primary); margin: 0; overflow-wrap: anywhere; }
+.block-kv--with-meters { gap: 0.35rem 0.8rem; }
+.block-kv__row--meter { align-items: center; }
+.command-resource-meter {
+  --meter-value: 0%;
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.command-resource-meter__track {
+  height: 0.55rem;
+  min-width: 7rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--border-subtle));
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.42), rgba(255, 255, 255, 0.025)),
+    color-mix(in srgb, var(--surface-base) 92%, black 8%);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+.command-resource-meter__fill {
+  display: block;
+  width: var(--meter-value);
+  max-width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  transition: width var(--motion-normal);
+}
+.command-resource-meter__value {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.command-resource-meter--health .command-resource-meter__fill {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--state-success) 72%, #203a25), var(--state-success));
+}
+.command-resource-meter--energy .command-resource-meter__fill {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--state-warning) 72%, #3b2d14), var(--state-warning));
+}
+.command-resource-meter--poise .command-resource-meter__fill {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 68%, #203044), var(--color-accent));
+}
 .block-message { padding: 0.75rem 1rem; border-radius: 6px; margin: 0.5rem 0; border-left: 3px solid; }
 .block-message--info { border-color: var(--color-accent); background: rgba(31, 111, 235, 0.08); }
 .block-message--success { border-color: var(--color-success); background: rgba(35, 134, 54, 0.08); }
@@ -1001,6 +1045,15 @@
 
   .block-kv,
   .block-kv__row { grid-template-columns: 1fr; }
+
+  .command-resource-meter {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .command-resource-meter__track {
+    min-width: 0;
+  }
 }
 
 /* === JSON Tree Viewer === */

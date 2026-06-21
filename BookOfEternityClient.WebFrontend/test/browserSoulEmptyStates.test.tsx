@@ -261,6 +261,17 @@ describe('browser Soul/status empty states #789', () => {
     expect(dormantAfterlifeHtml).toContain('<dd>0</dd>');
   });
 
+  it('localizes canonical realm names in the status tab', () => {
+    const html = renderStatusView(createGameScreen({
+      soul: {
+        realm: 'Mortal World'
+      }
+    }));
+
+    expect(html).toContain('Мир смертных');
+    expect(html).not.toContain('Mortal World');
+  });
+
   it('keeps default copy player-facing and preserves semantic accessible status meters', () => {
     const html = renderStatusView(createGameScreen());
 

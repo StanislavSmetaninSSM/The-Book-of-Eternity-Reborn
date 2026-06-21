@@ -14,6 +14,23 @@ internal static class ExplorerPlayerFacingLabels
         _ => realm.Trim()
     };
 
+    public static string WorldTime(string worldTime)
+    {
+        var result = worldTime.Trim();
+        if (string.IsNullOrWhiteSpace(result))
+            return string.Empty;
+
+        foreach (var (source, label) in WorldTimeTerms)
+            result = result.Replace(source, label, StringComparison.OrdinalIgnoreCase);
+
+        return result;
+    }
+
+    private static readonly IReadOnlyList<(string Source, string Label)> WorldTimeTerms =
+    [
+        ("Month of Beginnings", "Месяц Начал")
+    ];
+
     public static string CurrentMapNode(MapViewDto map)
     {
         if (string.IsNullOrWhiteSpace(map.CurrentNodeId))
