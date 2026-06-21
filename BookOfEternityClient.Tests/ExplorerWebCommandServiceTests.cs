@@ -447,6 +447,22 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Связанные лица", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Мариус де Вальмонт", text, StringComparison.OrdinalIgnoreCase);
 
+        var detailPanel = Assert.Single(
+            result.Blocks.OfType<UiPanelBlock>(),
+            static panel => panel.Title.Contains("Письмо появилось ночью", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(detailPanel.Blocks, static block => block is UiPanelBlock panel &&
+            panel.Title.Equals("Зацепки", StringComparison.OrdinalIgnoreCase) &&
+            panel.Blocks.OfType<UiListBlock>().Any(list => list.Items.Any(item => item.Contains("Сравнить печать", StringComparison.OrdinalIgnoreCase))));
+        Assert.Contains(detailPanel.Blocks, static block => block is UiPanelBlock panel &&
+            panel.Title.Equals("Ставки", StringComparison.OrdinalIgnoreCase) &&
+            panel.Blocks.OfType<UiKeyValueGridBlock>().Any(grid => grid.Items.Any(item => item.Key.Equals("Опасность", StringComparison.OrdinalIgnoreCase))));
+        Assert.Contains(detailPanel.Blocks, static block => block is UiPanelBlock panel &&
+            panel.Title.Equals("Открытые вопросы", StringComparison.OrdinalIgnoreCase) &&
+            panel.Blocks.OfType<UiListBlock>().Any(list => list.Items.Any(item => item.Contains("кто знает семейный шифр", StringComparison.OrdinalIgnoreCase))));
+        Assert.Contains(detailPanel.Blocks, static block => block is UiPanelBlock panel &&
+            panel.Title.Equals("Связанные лица", StringComparison.OrdinalIgnoreCase) &&
+            panel.Blocks.OfType<UiPanelBlock>().Any(person => person.Title.Contains("Мариус де Вальмонт", StringComparison.OrdinalIgnoreCase)));
+
         Assert.DoesNotContain("Метка", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Opportunity", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Open questions", text, StringComparison.OrdinalIgnoreCase);
@@ -784,7 +800,20 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "skillDescription": "Принуждает собеседника уступить, не переходя к открытому конфликту.",
               "category": "Utility",
               "level": 2,
-              "scalingCharacteristic": "persuasion"
+              "scalingCharacteristic": "persuasion",
+              "actionName": "Салонное давление",
+              "actionDescription": "Выдавить уступку угрозой, спрятанной в любезной фразе.",
+              "isActivatedEffect": true,
+              "damageType": "psychic",
+              "baseDamage": 0,
+              "range": "conversation",
+              "actionCost": "main",
+              "actionPointCost": 1,
+              "cooldown": 0,
+              "scalesValue": true,
+              "scalesDuration": false,
+              "scalesChance": true,
+              "duration": "1 сцена"
             }
           ]
         }
@@ -796,7 +825,17 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Масштабирование", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Убеждение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Боевые свойства", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Салонное давление", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Выдавить уступку угрозой", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стоимость действия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("основное действие", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Масштабирует шанс", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("persuasion", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("деталь:", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("action Name", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("action Description", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("is Activated Effect", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -1176,7 +1215,49 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         {
           "healthMax": 120,
           "carryWeight": 18,
-          "arcaneFocus": 7
+          "arcaneFocus": 7,
+          "base": {
+            "strength": 5,
+            "dexterity": 7,
+            "constitution": 6,
+            "intelligence": 13,
+            "wisdom": 10,
+            "faith": 3,
+            "attractiveness": 11,
+            "trade": 6,
+            "persuasion": 9,
+            "perception": 12,
+            "luck": 7,
+            "speed": 6
+          },
+          "equipmentBonuses": {
+            "magicFlowSense": 2,
+            "arcaneLore": 1,
+            "stealth": 1,
+            "aristocraticReputation": 3
+          },
+          "temporaryModifiers": [
+            {
+              "source": "Головная боль после тяжёлых снов",
+              "target": "perception",
+              "value": -1,
+              "expiresAt": "полдень"
+            }
+          ],
+          "final": {
+            "strength": 5,
+            "dexterity": 7,
+            "constitution": 6,
+            "intelligence": 13,
+            "wisdom": 10,
+            "faith": 3,
+            "attractiveness": 11,
+            "trade": 6,
+            "persuasion": 9,
+            "perception": 11,
+            "luck": 7,
+            "speed": 6
+          }
         }
         """);
 
@@ -1193,9 +1274,61 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Максимум здоровья", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Грузоподъёмность", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Магический фокус", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Базовое значение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Бонусы снаряжения", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Временные модификаторы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Итоговое значение", text, StringComparison.OrdinalIgnoreCase);
+
+        var computedPanel = Assert.Single(
+            result.Blocks.OfType<UiPanelBlock>(),
+            static panel => panel.Title.Equals("Расчётные показатели", StringComparison.OrdinalIgnoreCase));
+        var basePanel = Assert.Single(
+            computedPanel.Blocks.OfType<UiPanelBlock>(),
+            static panel => panel.Title.Equals("Базовое значение", StringComparison.OrdinalIgnoreCase));
+        var baseGrid = Assert.Single(basePanel.Blocks.OfType<UiKeyValueGridBlock>());
+        Assert.Contains(baseGrid.Items, static item =>
+            item.Key.Equals("Ловкость", StringComparison.OrdinalIgnoreCase) &&
+            item.Value.Equals("7", StringComparison.OrdinalIgnoreCase));
+
+        var equipmentPanel = Assert.Single(
+            computedPanel.Blocks.OfType<UiPanelBlock>(),
+            static panel => panel.Title.Equals("Бонусы снаряжения", StringComparison.OrdinalIgnoreCase));
+        var equipmentGrid = Assert.Single(equipmentPanel.Blocks.OfType<UiKeyValueGridBlock>());
+        Assert.Contains(equipmentGrid.Items, static item =>
+            item.Key.Equals("Чувство магических потоков", StringComparison.OrdinalIgnoreCase) &&
+            item.Value.Equals("2", StringComparison.OrdinalIgnoreCase));
+
+        var modifiersPanel = Assert.Single(
+            computedPanel.Blocks.OfType<UiPanelBlock>(),
+            static panel => panel.Title.Equals("Временные модификаторы", StringComparison.OrdinalIgnoreCase));
+        var modifierEntry = Assert.Single(modifiersPanel.Blocks.OfType<UiPanelBlock>());
+        var modifierGrid = Assert.Single(modifierEntry.Blocks.OfType<UiKeyValueGridBlock>());
+        Assert.Contains(modifierGrid.Items, static item =>
+            item.Key.Equals("Источник", StringComparison.OrdinalIgnoreCase) &&
+            item.Value.Contains("Головная боль после тяжёлых снов", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(modifierGrid.Items, static item =>
+            item.Key.Equals("Цель", StringComparison.OrdinalIgnoreCase) &&
+            item.Value.Equals("Восприятие", StringComparison.OrdinalIgnoreCase));
+
+        var finalPanel = Assert.Single(
+            computedPanel.Blocks.OfType<UiPanelBlock>(),
+            static panel => panel.Title.Equals("Итоговое значение", StringComparison.OrdinalIgnoreCase));
+        var finalGrid = Assert.Single(finalPanel.Blocks.OfType<UiKeyValueGridBlock>());
+        Assert.Contains(finalGrid.Items, static item =>
+            item.Key.Equals("Восприятие", StringComparison.OrdinalIgnoreCase) &&
+            item.Value.Equals("11", StringComparison.OrdinalIgnoreCase));
+
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("equipment Bonuses", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("temporary Modifiers", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Ловкость: 7", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Сила: 5; Ловкость", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("strength:", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("dexterity:", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("source:", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("target:", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

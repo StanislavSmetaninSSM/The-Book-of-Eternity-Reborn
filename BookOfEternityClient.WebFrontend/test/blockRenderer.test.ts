@@ -40,7 +40,7 @@ describe('BlockRenderer source', () => {
     const source = readBlockRendererSource();
 
     expect(source).toContain("import { JsonTreeViewer } from './JsonTreeViewer';");
-    expect(source).toContain("import type { UiBlock, UiTone } from '../api/contracts';");
+    expect(source).toContain("import type { UiBlock, UiTableBlock, UiTone } from '../api/contracts';");
     expect(source).toContain('if (advancedEnabled) {');
     expect(source).toContain("<JsonTreeViewer data={block.json}");
     expect(source).toContain('return null;');

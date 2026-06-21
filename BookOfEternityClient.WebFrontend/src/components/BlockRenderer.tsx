@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import type { UiBlock, UiTone } from '../api/contracts';
+import type { UiBlock, UiTableBlock, UiTone } from '../api/contracts';
 import { browserUiAssets } from '../browserUiAssets';
 import { sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';
 import { JsonTreeViewer } from './JsonTreeViewer';
@@ -50,6 +50,10 @@ export function BlockRenderer({
       );
 
     case 'table':
+      {
+        const structuredBonus = renderStructuredBonusTable(block);
+        if (structuredBonus) return structuredBonus;
+      }
       return (
         <div className="block-table">
           {block.title && <h4 className="block-table__title">{toPlayerFacingText(block.title, 'Таблица')}</h4>}
@@ -140,6 +144,64 @@ export function BlockRenderer({
 
       return null;
   }
+}
+
+type StructuredBonusField = {
+  field: string;
+  value: string;
+};
+
+function renderStructuredBonusTable(block: UiTableBlock): ReactNode | null {
+  if (!isStructuredBonusTable(block)) return null;
+
+  const groups = new Map<string, StructuredBonusField[]>();
+  for (const row of block.rows) {
+    const title = toSafeBlockText(row.cells[0], 'Бонус');
+    const field = toSafeBlockText(row.cells[1], 'Поле');
+    const value = toSafeBlockText(row.cells[2], '—');
+    if (!title || !field || !value || value === '—') continue;
+
+    const existing = groups.get(title) ?? [];
+    if (!(field === 'Кратко' && value === title)) {
+      existing.push({ field, value });
+    }
+    groups.set(title, existing);
+  }
+
+  if (groups.size === 0) return null;
+
+  return (
+    <section className="structured-bonus-list" aria-label="Структурные бонусы">
+      <h4 className="structured-bonus-list__title">{toPlayerFacingText(block.title, 'Структурные бонусы')}</h4>
+      <div className="structured-bonus-list__grid">
+        {[...groups.entries()].map(([title, fields], index) => (
+          <article className="structured-bonus-card" key={`${title}-${index}`}>
+            <h5>{title}</h5>
+            {fields.length > 0 && (
+              <dl>
+                {fields.map((field, fieldIndex) => (
+                  <div key={`${field.field}-${fieldIndex}`}>
+                    <dt>{field.field}</dt>
+                    <dd>{field.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function isStructuredBonusTable(block: UiTableBlock): boolean {
+  const title = block.title.trim().toLowerCase();
+  if (title !== 'структурные бонусы') return false;
+  if (block.columns.length < 3) return false;
+
+  return block.columns[0].trim().toLowerCase() === 'бонус' &&
+    block.columns[1].trim().toLowerCase() === 'поле' &&
+    block.columns[2].trim().toLowerCase() === 'значение';
 }
 
 function toSafeBlockText(value: string | null | undefined, fallback: string): string {

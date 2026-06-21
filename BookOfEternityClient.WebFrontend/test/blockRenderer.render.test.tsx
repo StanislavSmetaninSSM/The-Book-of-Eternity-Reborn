@@ -239,6 +239,34 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     expect(html).toContain('Смертный мир');
   });
 
+  it('renders structured bonus tables as grouped player-facing cards instead of repeated rows', () => {
+    const blocks: UiBlock[] = [
+      {
+        kind: 'table',
+        title: 'Структурные бонусы',
+        columns: ['Бонус', 'Поле', 'Значение'],
+        rows: [
+          { cells: ['Скрытность +1 в городских сценах', 'Тип цели', 'навык'] },
+          { cells: ['Скрытность +1 в городских сценах', 'Навык', 'Скрытность'] },
+          { cells: ['Скрытность +1 в городских сценах', 'Тип значения', 'плоский бонус'] },
+          { cells: ['Скрытность +1 в городских сценах', 'Значение', '1'] },
+          { cells: ['Скрытность +1 в городских сценах', 'Условие', 'городские сцены и побег из поместья'] },
+          { cells: ['Скрытность +1 в городских сценах', 'Источник', 'Тёмный дорожный плащ'] }
+        ]
+      }
+    ];
+
+    const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
+
+    expect(html).toContain('structured-bonus-list');
+    expect(html).toContain('structured-bonus-card');
+    expect(html).toContain('Скрытность +1 в городских сценах');
+    expect(html).toContain('<dt>Условие</dt>');
+    expect(html).toContain('<dd>городские сцены и побег из поместья</dd>');
+    expect(html).not.toContain('<table>');
+    expect(html).not.toContain('<th>Бонус</th>');
+  });
+
   it('keeps local map media URLs renderable while still showing player-facing location details', () => {
     const blocks: UiBlock[] = [
       {
