@@ -3278,11 +3278,19 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(sectionTable.Rows, static row =>
             row.Cells[0] == "Серафина" &&
             row.Cells[1].Contains("Личные квесты", StringComparison.Ordinal) &&
-            row.Cells[2].Contains("1 квест", StringComparison.Ordinal));
+            row.Cells[2].Contains("3 квеста", StringComparison.Ordinal));
         Assert.Contains(sectionTable.Rows, static row =>
             row.Cells[0] == "Серафина" &&
             row.Cells[1].Contains("Активности", StringComparison.Ordinal) &&
             row.Cells[2].Contains("1 активность", StringComparison.Ordinal));
+        Assert.Contains(sectionTable.Rows, static row =>
+            row.Cells[0] == "Серафина" &&
+            row.Cells[1].Contains("Отношения / замки", StringComparison.Ordinal) &&
+            row.Cells[2].Contains("1 запись", StringComparison.Ordinal));
+        Assert.Contains(sectionTable.Rows, static row =>
+            row.Cells[0] == "Серафина" &&
+            row.Cells[1].Contains("Навыки", StringComparison.Ordinal) &&
+            row.Cells[2].Contains("1 запись", StringComparison.Ordinal));
         Assert.DoesNotContain(sectionTable.Rows, static row =>
             row.Cells[1].Contains("Инвентарь", StringComparison.OrdinalIgnoreCase));
 
@@ -3295,8 +3303,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Награда", text, StringComparison.Ordinal);
         Assert.Contains("Провал", text, StringComparison.Ordinal);
         Assert.Contains("Проверяет печати у северных ворот", text, StringComparison.Ordinal);
+        Assert.Contains("Готова помочь, если письмо не попадёт к дозору.", text, StringComparison.Ordinal);
+        Assert.Contains("Проверка печатей", text, StringComparison.Ordinal);
         Assert.DoesNotContain("game_state/npcs", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(".json", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("npc_serafina", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("/npc_talk", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("/npc_trade", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
     }
@@ -3322,6 +3333,44 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("game_state/npcs", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcPersonalQuestSection_OffersSpecificQuestDetails()
+    {
+        await SeedRichNpcDrilldownFilesAsync();
+
+        var section = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc section npc_serafina personal-quests"));
+
+        Assert.Equal(CommandExecutionState.Completed, section.State);
+        Assert.Contains(section.Actions, action =>
+            action.Label.Contains("Сделка на рассвете", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/npc quest npc_serafina quest_serafina_letter", StringComparison.OrdinalIgnoreCase) &&
+            action.Style == UiActionStyle.Secondary &&
+            action.RequiresConfirmation == false);
+        Assert.Contains(section.Actions, action =>
+            action.Label.Contains("Просьба без метки", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/npc quest npc_serafina просьба_без_метки", StringComparison.OrdinalIgnoreCase));
+
+        var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc quest npc_serafina quest_serafina_letter"));
+        var text = CollectBlockText(detail.Blocks);
+        var payload = SerializeResult(detail);
+
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        Assert.Contains("Серафина", text, StringComparison.Ordinal);
+        Assert.Contains("Сделка на рассвете", text, StringComparison.Ordinal);
+        Assert.Contains("Активен", text, StringComparison.Ordinal);
+        Assert.Contains("Серафина просит передать письмо без лишних свидетелей.", text, StringComparison.Ordinal);
+        Assert.Contains("Доставить письмо в архив", text, StringComparison.Ordinal);
+        Assert.Contains("Получить ключ от боковой двери", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Отложенный долг", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Active", text, StringComparison.Ordinal);
+        Assert.DoesNotContain(detail.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("game_state/npcs", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(detail.Actions, action =>
+            action.Label.Contains("Назад к личным квестам", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/npc section npc_serafina personal-quests", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -3363,8 +3412,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var sectionTable = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
         Assert.Contains(sectionTable.Rows, static row =>
             row.Cells[0] == "Серафина" &&
-            row.Cells[1].Contains("Навыки", StringComparison.Ordinal) &&
             row.Cells[1].Contains("инвентарь", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(sectionTable.Rows, static row =>
+            row.Cells[0] == "Серафина" &&
+            row.Cells[1].Contains("Навыки", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -4564,6 +4615,17 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                   ],
                   "rewards": "Получить ключ от боковой двери",
                   "failureConsequences": "Провал закроет путь через северные ворота"
+                },
+                {
+                  "questId": "quest_serafina_debt",
+                  "questName": "Отложенный долг",
+                  "status": "Pending",
+                  "description": "Серафина обещает позже попросить об услуге."
+                },
+                {
+                  "questName": "Просьба без метки",
+                  "status": "Open",
+                  "description": "Серафина просит об услуге без отдельного идентификатора."
                 }
               ],
               "currentActivity": {
@@ -4572,6 +4634,32 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 "timeSpentMinutes": 30,
                 "totalTimeCostMinutes": 60
               }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_relationships.json", """
+        {
+          "entries": [
+            {
+              "NPCId": "npc_serafina",
+              "relationshipStatus": "осторожное доверие",
+              "relationshipLevel": 42,
+              "summary": "Готова помочь, если письмо не попадёт к дозору."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", """
+        {
+          "entries": [
+            {
+              "NPCId": "npc_serafina",
+              "skillName": "Проверка печатей",
+              "description": "Замечает подделки на архивных печатях.",
+              "rank": 3
             }
           ]
         }

@@ -861,7 +861,32 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 FateCards: reads["game_state/npcs/npc_fate_cards.json"].Node,
                 CustomStates: reads["game_state/npcs/npc_custom_states.json"].Node));
 
-        var sectionRequest = ParseNpcSectionDetailRequest(ExtractCommandRemainder(command));
+        var commandRemainder = ExtractCommandRemainder(command);
+        var questRequest = ParseNpcQuestDetailRequest(commandRemainder);
+        if (questRequest.Kind == NpcQuestDetailKind.Invalid)
+        {
+            return Completed(command, [
+                Message(UiNotificationSeverity.Warning, "Персонажи", "Для подробностей квеста используйте команду вида /npc quest <нпс> <квест>.")
+            ], BuildNpcBackActions(commandToken));
+        }
+
+        if (questRequest.Kind == NpcQuestDetailKind.Quest)
+        {
+            var selected = FindNpcQuest(projections, questRequest.NpcSelector, questRequest.QuestSelector);
+            if (selected == null)
+            {
+                return Completed(command, [
+                    Message(UiNotificationSeverity.Warning, "Персонажи", "Такой квест НПС не найден.")
+                ], BuildNpcBackActions(commandToken));
+            }
+
+            return Completed(
+                command,
+                selected.Value.Quest.Blocks,
+                BuildNpcQuestBackActions(commandToken, selected.Value.Projection));
+        }
+
+        var sectionRequest = ParseNpcSectionDetailRequest(commandRemainder);
         if (sectionRequest.Kind == NpcSectionDetailKind.Unknown)
         {
             return Completed(command, [
@@ -879,7 +904,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 ], BuildNpcBackActions(commandToken));
             }
 
-            return Completed(command, BuildNpcSectionDetailBlocks(selected.Value.Projection, selected.Value.Section), BuildNpcBackActions(commandToken));
+            var actions = selected.Value.Section.Id.Equals("personal-quests", StringComparison.OrdinalIgnoreCase)
+                ? BuildNpcQuestActions(commandToken, selected.Value.Projection)
+                    .Concat(BuildNpcBackActions(commandToken))
+                    .ToList()
+                : BuildNpcBackActions(commandToken);
+
+            return Completed(command, BuildNpcSectionDetailBlocks(selected.Value.Projection, selected.Value.Section), actions);
         }
 
         if (projections.Count > 0)
@@ -948,6 +979,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
             NormalizeCombatSelector(sectionSelector));
     }
 
+    private static NpcQuestDetailRequest ParseNpcQuestDetailRequest(string remainder)
+    {
+        if (string.IsNullOrWhiteSpace(remainder))
+            return new NpcQuestDetailRequest(NpcQuestDetailKind.None, string.Empty, string.Empty);
+
+        var (kindToken, detailRemainder) = SplitFirstCombatArgument(remainder);
+        if (!IsNpcQuestDetailToken(kindToken))
+            return new NpcQuestDetailRequest(NpcQuestDetailKind.None, string.Empty, string.Empty);
+
+        var (npcSelector, questSelector) = SplitFirstCombatArgument(detailRemainder);
+        if (string.IsNullOrWhiteSpace(npcSelector) || string.IsNullOrWhiteSpace(questSelector))
+            return new NpcQuestDetailRequest(NpcQuestDetailKind.Invalid, string.Empty, string.Empty);
+
+        return new NpcQuestDetailRequest(
+            NpcQuestDetailKind.Quest,
+            NormalizeCombatSelector(npcSelector),
+            NormalizeCombatSelector(questSelector));
+    }
+
+    private static bool IsNpcQuestDetailToken(string token)
+    {
+        var normalized = token.Trim().ToLowerInvariant();
+        return normalized is "quest" or "квест" or "личный_квест" or "personal-quest" or "personal_quest";
+    }
+
     private static bool IsNpcSectionDetailToken(string token)
     {
         var normalized = token.Trim().ToLowerInvariant();
@@ -974,6 +1030,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 string.Equals(NormalizeInventoryLookup(section.Label), normalizedSection, StringComparison.OrdinalIgnoreCase));
             if (section != null)
                 return (projection, section);
+        }
+
+        return null;
+    }
+
+    private static (NpcDetailProjection Projection, NpcQuestDetail Quest)? FindNpcQuest(
+        IReadOnlyList<NpcDetailProjection> projections,
+        string npcSelector,
+        string questSelector)
+    {
+        var normalizedNpc = NormalizeInventoryLookup(npcSelector);
+        var normalizedQuest = NormalizeInventoryLookup(questSelector);
+        foreach (var projection in projections)
+        {
+            var npcMatches =
+                string.Equals(NormalizeInventoryLookup(projection.NpcId), normalizedNpc, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(NormalizeInventoryLookup(projection.NpcName), normalizedNpc, StringComparison.OrdinalIgnoreCase);
+            if (!npcMatches)
+                continue;
+
+            var quest = projection.PersonalQuests.FirstOrDefault(quest =>
+                string.Equals(NormalizeInventoryLookup(quest.Selector), normalizedQuest, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(NormalizeInventoryLookup(quest.QuestName), normalizedQuest, StringComparison.OrdinalIgnoreCase));
+            if (quest != null)
+                return (projection, quest);
         }
 
         return null;
@@ -1029,6 +1110,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return actions;
     }
 
+    private static IReadOnlyList<UiAction> BuildNpcQuestActions(
+        string commandToken,
+        NpcDetailProjection projection)
+    {
+        if (projection.PersonalQuests.Count == 0)
+            return [];
+
+        var npcSelector = FirstNonEmpty(projection.NpcId, projection.NpcName);
+        return projection.PersonalQuests
+            .Select(quest => new UiAction
+            {
+                Id = "npc-quest-" + ToActionIdPart(npcSelector) + "-" + ToActionIdPart(quest.Selector),
+                Label = "Открыть квест: " + quest.QuestName,
+                Command = BuildNpcQuestCommand(commandToken, npcSelector, quest.Selector),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["npcSelector"] = npcSelector,
+                    ["npcName"] = projection.NpcName,
+                    ["questSelector"] = quest.Selector,
+                    ["questName"] = quest.QuestName
+                }
+            })
+            .ToList();
+    }
+
     private static IReadOnlyList<UiAction> BuildNpcJournalFallbackActions(
         string commandToken,
         IReadOnlyList<NpcJournalFallbackEntry> entries)
@@ -1068,6 +1176,30 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
     ];
 
+    private static IReadOnlyList<UiAction> BuildNpcQuestBackActions(string commandToken, NpcDetailProjection projection)
+    {
+        var npcSelector = FirstNonEmpty(projection.NpcId, projection.NpcName);
+        return
+        [
+            new UiAction
+            {
+                Id = "npc-quest-back-to-personal-quests",
+                Label = "Назад к личным квестам",
+                Command = BuildNpcSectionCommand(commandToken, npcSelector, "personal-quests"),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false
+            },
+            new UiAction
+            {
+                Id = "npc-back",
+                Label = "Назад к персонажам",
+                Command = commandToken,
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false
+            }
+        ];
+    }
+
     private static string BuildNpcJournalFallbackCommand(string commandToken, string npcSelector)
     {
         var detailToken = string.Equals(commandToken, "/нпс", StringComparison.OrdinalIgnoreCase) ||
@@ -1084,6 +1216,15 @@ public static class ExplorerMortalWorldCommandResultBuilder
             ? "раздел"
             : "section";
         return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(npcSelector) + " " + FormatCombatCommandArgument(sectionSelector);
+    }
+
+    private static string BuildNpcQuestCommand(string commandToken, string npcSelector, string questSelector)
+    {
+        var detailToken = string.Equals(commandToken, "/нпс", StringComparison.OrdinalIgnoreCase) ||
+                          string.Equals(commandToken, "/персонажи", StringComparison.OrdinalIgnoreCase)
+            ? "квест"
+            : "quest";
+        return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(npcSelector) + " " + FormatCombatCommandArgument(questSelector);
     }
 
     private static async Task<ExplorerCommandResult> BuildCurrentLocation(string command, FileSystemManager fs)
@@ -2335,8 +2476,30 @@ public static class ExplorerMortalWorldCommandResultBuilder
             if (!string.IsNullOrWhiteSpace(direct))
                 return direct;
 
+            foreach (var preferredChild in new[]
+                     {
+                         "activityUpdate",
+                         "currentActivity",
+                         "itemUpdate",
+                         "skill",
+                         "effect",
+                         "relationshipData",
+                         "relationshipLock"
+                     })
+            {
+                if (!obj.TryGetPropertyValue(preferredChild, out var child) || child == null)
+                    continue;
+
+                var nested = PreviewSummaryNode(child);
+                if (!string.IsNullOrWhiteSpace(nested))
+                    return nested;
+            }
+
             foreach (var child in obj)
             {
+                if (IsTechnicalReferenceProperty(child.Key))
+                    continue;
+
                 var nested = PreviewSummaryNode(child.Value);
                 if (!string.IsNullOrWhiteSpace(nested))
                     return nested;
@@ -5629,6 +5792,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
         NpcSectionDetailKind Kind,
         string NpcSelector,
         string SectionSelector);
+
+    private enum NpcQuestDetailKind
+    {
+        None,
+        Quest,
+        Invalid
+    }
+
+    private sealed record NpcQuestDetailRequest(
+        NpcQuestDetailKind Kind,
+        string NpcSelector,
+        string QuestSelector);
 
     private enum NpcJournalDetailKind
     {
