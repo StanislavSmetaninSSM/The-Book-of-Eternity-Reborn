@@ -912,6 +912,132 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_WhereAmI_RendersLocationContextWithoutRawJson()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "currentLocationData": {
+            "locationId": "loc_north_gate",
+            "name": "Северные ворота",
+            "region": "Купеческий квартал",
+            "locationType": "городские ворота",
+            "biome": "каменный город",
+            "description": "Под аркой пахнет мокрым камнем и конской сбруей.",
+            "features": [ "Тайные ходы под караульней", "Смотровая площадка над рынком" ],
+            "factionControl": [
+              {
+                "factionName": "Купеческая гильдия",
+                "controlLevel": 62,
+                "controlType": "торговые патрули"
+              }
+            ],
+            "activeThreats": [
+              {
+                "threatId": "gate_pickpockets",
+                "threatName": "Карманники у ворот",
+                "intensity": 3,
+                "longTermGoal": "выследить владельца рунической перчатки",
+                "currentActivity": { "activityName": "проверяют путников у лавок" }
+              }
+            ],
+            "lastEventsDescription": "После ночного письма стража проверяет печати на повозках."
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_time.json", """
+        {
+          "year": 124,
+          "monthName": "Month of Beginnings",
+          "dayOfMonth": 1,
+          "timeOfDay": "08:15"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/weather.json", """
+        {
+          "weatherChange": {
+            "currentState": "утренний туман",
+            "description": "Сырой туман ещё держится у ворот."
+          }
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/where_am_i", AdvancedEnabled: false));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Северные ворота", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Купеческий квартал", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тайные ходы под караульней", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Купеческая гильдия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Карманники у ворот", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("выследить владельца рунической перчатки", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Month of Beginnings", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("08:15", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сырой туман ещё держится у ворот", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Weather_RendersDetailedTimeAndWeatherWithoutRawJson()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "name": "Северные ворота",
+          "biome": "каменный город"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_time.json", """
+        {
+          "setWorldTime": {
+            "year": 124,
+            "monthName": "Month of Beginnings",
+            "dayOfMonth": 1,
+            "timeOfDay": "08:15"
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/weather.json", """
+        {
+          "weatherChange": {
+            "currentState": "туман",
+            "description": "Мокрая дымка стелется вдоль мостовой.",
+            "season": "ранняя весна",
+            "temperature": "+6",
+            "wind": "слабый северный",
+            "visibility": "низкая",
+            "tendency": "WORSEN",
+            "mechanicalEffects": "стрельба на дальность затруднена"
+          }
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/weather", AdvancedEnabled: false));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Month of Beginnings", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("08:15", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("каменный город", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("туман", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Мокрая дымка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ранняя весна", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("+6", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("слабый северный", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("низкая", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ухудшение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("стрельба на дальность затруднена", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Lives_RendersLifeHistoryRowsWithoutRawJson()
     {
         await SeedUniversalMetaFilesAsync();

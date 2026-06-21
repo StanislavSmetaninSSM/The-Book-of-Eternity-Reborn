@@ -41,7 +41,7 @@ Severity uses the project-wide audit scale: `P2` for serious UX/parity drift,
 | `npcs` | `/npc` | `/нпс` | Interactive NPC selector with rich NPC detail panels and action entry points. | Shared DTO uses NPC overview/section projection and journal fallback, but NPC drill-down sections are already a dedicated task. | Tracked separately. | P2 | Use #946. |
 | `quests` | `/quests` | `/квесты` | Interactive quest selector with active, soul, and history detail panels. | Shared DTO keeps the overview and exposes read-only quest detail commands/actions for selected quest records. | Covered by #1057. | P3 | Implemented in #1057. |
 | `map` | `/map` | `/карта` | Visual map viewer plus summary. Location details moved to `/locations`. | Shared DTO emits `UiMapBlock` plus summary/raw state. | Covered. The command is map overview, not the location detail surface. | P3 | No new follow-up from #948. |
-| `where_am_i` | `/where_am_i` | `/где_я` | Current-location detail panel with description, threats, time, and weather. | Generic current-location bundle with summary/raw state. | Low-risk parity gap, but not a repeated-entity drill-down surface. | P3 | Fold into #1057 only if browser reference-detail work needs current-location parity. |
+| `where_am_i` | `/where_am_i` | `/где_я` | Current-location detail panel with description, threats, time, and weather. | Shared DTO renders the current location, description, features, faction control, active threats, recent events, world time, and weather summary, with raw sidecars kept as advanced diagnostics only. | Covered by #1121. | P3 | Implemented in #1121. |
 | `factions` | `/factions` | `/фракции` | Interactive faction selector with detailed faction, projects, resources, bonuses, ranks, and chronicles. | Shared DTO keeps the overview and exposes read-only faction detail commands/actions for selected faction records. | Covered by #1057. | P3 | Implemented in #1057. |
 | `skills` | `/skills` | `/навыки` | Interactive skill selector with active/passive detail panels and mastery context. | Shared DTO keeps the overview and exposes read-only skill detail commands/actions for selected skill records. | Covered by #1057. | P3 | Implemented in #1057. |
 | `stats` | `/stats` | `/статы` | Player stat/derived-combat-stat panel. | Shared DTO shows status-derived stats and raw characteristics sidecars. | Covered. No repeated rich entity list requiring drill-down. | P3 | No new follow-up from #948. |
@@ -52,7 +52,7 @@ Severity uses the project-wide audit scale: `P2` for serious UX/parity drift,
 | `transport` | `/transport` | `/транспорт` | Interactive vehicle selector with per-vehicle health, location, capacity, actions, abilities, inventory, and vehicle-inventory management. | Shared DTO reads canonical vehicles, keeps route/current-location overview data, and exposes read-only per-vehicle detail commands/actions. | Covered by #1057, with the #948 vehicle overview authority fix preserved. | P2 | Implemented in #1057. |
 | `effects` | `/effects` | `/эффекты` | Rich table-style view for active effects, wounds, custom states, stealth, and experience; falls back to visible status when structured effect files are absent. | Shared DTO builds effect summary rows, effect detail rows, visible-status fallback, and raw effect state. | Covered for #948. Per-effect navigation could be improved later, but the command is not raw-only or summary-only now. | P3 | No new follow-up from #948. |
 | `combat` | `/combat` | `/бой` | Shared command-result renderer now shows a combat overview, enemy/ally/log lists, typed detail commands, and individual enemy/ally/log detail panels. | Shared DTO now shows the same overview/list/detail content and exposes non-mutating detail actions for enemy, ally, and combat-log inspection, with raw sidecars kept as secondary diagnostics. | Covered by #1054. | P2 | Implemented in #1054. |
-| `weather` | `/weather` | `/погода` | Time and weather detail panel. | Generic bundle summary plus raw JSON, but the rich surface is not a repeated entity list. | Covered for #948. | P3 | No new follow-up from #948. |
+| `weather` | `/weather` | `/погода` | Time and weather detail panel. | Shared DTO renders absolute/set world time plus weather state, biome, season, temperature, wind, visibility, tendency, and mechanical effects, with raw sidecars kept as advanced diagnostics only. | Covered by #1121. | P3 | Implemented in #1121. |
 | `books` | `/books` | `/книги` | Books/document flow is handled by the dedicated document reading surface. | Shared DTO supports document shelf, read actions, and selected document detail. | Tracked separately. | P2 | Use #947. |
 | `storage_access` | `/storage_access` | `/доступ_к_хранилищам` | Console renders access grants/shares/revokes with readable nested fields. | Shared DTO keeps the overview and exposes read-only storage-access detail commands/actions for selected access records. | Covered by #1057. | P3 | Implemented in #1057. |
 | `interactions` | `/interactions` | `/взаимодействия` | Shared command-result renderer preserves the interactions overview and exposes typed player and record detail commands for other-player interaction entries. | Shared command-result renderer exposes the same overview plus non-mutating player and record detail actions, with raw state kept as secondary overview diagnostics. | Covered by #1056. | P2 | Implemented in #1056. |
@@ -171,6 +171,26 @@ Regression coverage:
   dependency.
 - `MortalReadOnlyDrilldownAuditTests` guards that the eight command descriptors
   remain Mortal World read-only browser commands that accept detail arguments.
+
+## Fix Applied In #1121
+
+The shared Mortal World command-result builder now replaces the generic bundle
+outputs for `/where_am_i` / `/где_я` and `/weather` / `/погода` with dedicated
+player-facing panels. `/where_am_i` unwraps `currentLocationData` and combines
+the current location with features, faction control, active threats, recent
+events, world time, and weather. `/weather` unwraps `setWorldTime` and
+`weatherChange`, then renders biome, state, description, season, temperature,
+wind, visibility, tendency, and mechanical effects. Raw JSON remains available
+only as advanced diagnostics and is not required for the default browser view.
+
+Regression coverage:
+
+- `ExplorerWebCommandServiceTests.ExecuteAsync_WhereAmI_RendersLocationContextWithoutRawJson`
+  covers current-location context without exposing raw JSON in player-default
+  browser output.
+- `ExplorerWebCommandServiceTests.ExecuteAsync_Weather_RendersDetailedTimeAndWeatherWithoutRawJson`
+  covers rich time/weather context without exposing raw JSON in player-default
+  browser output.
 
 ## Follow-Up Issues Created
 
