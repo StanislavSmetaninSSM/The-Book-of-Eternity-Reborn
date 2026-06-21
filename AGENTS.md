@@ -83,5 +83,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 <!-- SPECKIT START -->
 Current Spec Kit plan for this branch:
-`specs/1212-browser-map-atlas/plan.md`
+`specs/1119-browser-console-command-parity-audit/plan.md`
 <!-- SPECKIT END -->
