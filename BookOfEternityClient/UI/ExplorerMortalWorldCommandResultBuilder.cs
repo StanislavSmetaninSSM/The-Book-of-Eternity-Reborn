@@ -119,11 +119,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 new("game_state/quests/plot_outline.json", "plotOutline|entries", "Сюжетных записей")
                 ])),
             CommandKind.Map => await BuildMap(commandToken, fs),
-            CommandKind.CurrentLocation => await BuildBundle(commandToken, fs, "Где я", [
-                new("game_state/world/current_location.json", "locationName", "Локация"),
-                new("game_state/world/current_location.json", "region", "Регион"),
-                new("game_state/world/current_location.json", "description", "Описание")
-            ]),
+            CommandKind.CurrentLocation => await BuildCurrentLocation(commandToken, fs),
             CommandKind.Factions => await BuildReferenceBundle(normalizedCommand, fs, new ReferenceCommandDefinition(
                 Title: "Фракции",
                 DetailTitlePrefix: "Фракция",
@@ -187,11 +183,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             CommandKind.Transport => await BuildTransport(normalizedCommand, fs),
             CommandKind.Effects => await BuildEffects(normalizedCommand, fs, stateManager),
             CommandKind.Combat => await BuildCombat(normalizedCommand, fs),
-            CommandKind.Weather => await BuildBundle(commandToken, fs, "Время и погода", [
-                new("game_state/world/world_time.json", "timeOfDay|currentTime", "Время"),
-                new("game_state/world/weather.json", "tendency|currentState", "Погода"),
-                new("game_state/world/weather.json", "description", "Описание")
-            ]),
+            CommandKind.Weather => await BuildWeather(commandToken, fs),
             CommandKind.Books => await BuildBooks(normalizedCommand, fs),
             CommandKind.StorageAccess => await BuildReferenceBundle(normalizedCommand, fs, new ReferenceCommandDefinition(
                 Title: "Доступ к хранилищам",
@@ -1174,6 +1166,373 @@ public static class ExplorerMortalWorldCommandResultBuilder
             ? "раздел"
             : "section";
         return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(npcSelector) + " " + FormatCombatCommandArgument(sectionSelector);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildCurrentLocation(string command, FileSystemManager fs)
+    {
+        var locationRead = await ReadJson(fs, "game_state/world/current_location.json");
+        var timeRead = await ReadJson(fs, "game_state/world/world_time.json");
+        var weatherRead = await ReadJson(fs, "game_state/world/weather.json");
+        var location = UnwrapCurrentLocationNode(locationRead.Node);
+        var weather = UnwrapWeatherNode(weatherRead.Node);
+        var blocks = new List<UiBlock>();
+
+        if (location == null)
+        {
+            blocks.Add(Message(UiNotificationSeverity.Info, "Где я", "Местоположение неизвестно."));
+        }
+        else
+        {
+            var title = FirstNonEmpty(
+                GetLocationNodeString(location, "name", "locationName", "displayName"),
+                "Текущая локация");
+            var facts = new List<UiKeyValueItem>();
+            AddLocationFact(facts, "Локация", title);
+            AddLocationFact(facts, "Регион", GetLocationNodeString(location, "region"));
+            AddLocationFact(facts, "Тип", GetLocationNodeString(location, "locationType", "type"));
+            AddLocationFact(facts, "Биом", GetLocationNodeString(location, "biome"));
+            AddLocationFact(facts, "Опасность", DescribeLocationDifficulty(location));
+
+            var panelBlocks = new List<UiBlock>();
+            var description = GetLocationNodeString(location, "description", "shortDescription");
+            if (!string.IsNullOrWhiteSpace(description))
+                panelBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
+            if (facts.Count > 0)
+                panelBlocks.Add(new UiKeyValueGridBlock { Items = facts });
+
+            blocks.Add(new UiPanelBlock
+            {
+                Title = title,
+                Blocks = panelBlocks.Count > 0 ? panelBlocks : [new UiTextBlock { Text = "Описание локации пока не заполнено.", Tone = UiTone.Muted }]
+            });
+
+            AddLocationFeatureBlock(blocks, location);
+            AddLocationFactionControlBlock(blocks, location);
+            AddLocationThreatBlock(blocks, location);
+            AddLocationEventBlock(blocks, location);
+        }
+
+        AddWorldTimeBlock(blocks, timeRead.Node);
+        AddWeatherSummaryBlock(blocks, weather, includeBiome: false, currentLocation: location);
+        AddReadWarning(blocks, "Где я", locationRead);
+        AddReadWarning(blocks, "Где я", timeRead);
+        AddReadWarning(blocks, "Где я", weatherRead);
+        if (locationRead.Node != null)
+            blocks.Add(Raw("Полная запись: местоположение", locationRead.Node));
+        if (timeRead.Node != null)
+            blocks.Add(Raw("Полная запись: время мира", timeRead.Node));
+        if (weatherRead.Node != null)
+            blocks.Add(Raw("Полная запись: погода", weatherRead.Node));
+
+        return Completed(command, blocks);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildWeather(string command, FileSystemManager fs)
+    {
+        var timeRead = await ReadJson(fs, "game_state/world/world_time.json");
+        var weatherRead = await ReadJson(fs, "game_state/world/weather.json");
+        var locationRead = await ReadJson(fs, "game_state/world/current_location.json");
+        var location = UnwrapCurrentLocationNode(locationRead.Node);
+        var weather = UnwrapWeatherNode(weatherRead.Node);
+        var blocks = new List<UiBlock>();
+
+        AddWorldTimeBlock(blocks, timeRead.Node);
+        AddWeatherSummaryBlock(blocks, weather, includeBiome: true, currentLocation: location);
+
+        if (blocks.Count == 0)
+            blocks.Add(Message(UiNotificationSeverity.Info, "Время и погода", "Данные ещё не созданы."));
+
+        AddReadWarning(blocks, "Время и погода", timeRead);
+        AddReadWarning(blocks, "Время и погода", weatherRead);
+        AddReadWarning(blocks, "Время и погода", locationRead);
+        if (timeRead.Node != null)
+            blocks.Add(Raw("Полная запись: время мира", timeRead.Node));
+        if (weatherRead.Node != null)
+            blocks.Add(Raw("Полная запись: погода", weatherRead.Node));
+
+        return Completed(command, blocks);
+    }
+
+    private static JsonObject? UnwrapWeatherNode(JsonNode? node)
+    {
+        if (node is not JsonObject root)
+            return null;
+
+        return root["weatherChange"] as JsonObject ??
+               root["normalizedWeatherState"] as JsonObject ??
+               root;
+    }
+
+    private static void AddWorldTimeBlock(List<UiBlock> blocks, JsonNode? node)
+    {
+        var source = UnwrapWorldTimeNode(node);
+        var items = BuildWorldTimeItems(source);
+        if (items.Count == 0)
+            return;
+
+        blocks.Add(Panel("Время", new UiKeyValueGridBlock { Items = items }));
+    }
+
+    private static JsonObject? UnwrapWorldTimeNode(JsonNode? node)
+    {
+        if (node is not JsonObject root)
+            return null;
+
+        return root["setWorldTime"] as JsonObject ?? root;
+    }
+
+    private static List<UiKeyValueItem> BuildWorldTimeItems(JsonObject? source)
+    {
+        var items = new List<UiKeyValueItem>();
+        if (source == null)
+            return items;
+
+        var year = GetLocationNodeString(source, "year");
+        var month = GetLocationNodeString(source, "monthName", "month");
+        var day = GetLocationNodeString(source, "dayOfMonth", "day");
+        var timeOfDay = GetLocationNodeString(source, "timeOfDay", "currentTime");
+        var absolute = JoinLocationDetails(
+            string.IsNullOrWhiteSpace(day) ? string.Empty : day,
+            month,
+            string.IsNullOrWhiteSpace(year) ? string.Empty : $"{year} г.",
+            timeOfDay);
+
+        AddLocationFact(items, "Сейчас", absolute);
+        AddLocationFact(items, "Прошло за ход", FormatMinutes(GetLocationNodeString(source, "timeChange")));
+        AddLocationFact(items, "Минут от начала суток", GetLocationNodeString(source, "currentTimeInMinutes"));
+        return items;
+    }
+
+    private static void AddWeatherSummaryBlock(
+        List<UiBlock> blocks,
+        JsonObject? weather,
+        bool includeBiome,
+        JsonObject? currentLocation)
+    {
+        if (weather == null)
+            return;
+
+        var items = new List<UiKeyValueItem>();
+        if (includeBiome && currentLocation != null)
+            AddLocationFact(items, "Биом", GetLocationNodeString(currentLocation, "biome"));
+        AddLocationFact(items, "Состояние", GetLocationNodeString(weather, "currentState", "state"));
+        AddLocationFact(items, "Сезон", GetLocationNodeString(weather, "season"));
+        AddLocationFact(items, "Температура", GetLocationNodeString(weather, "temperature"));
+        AddLocationFact(items, "Ветер", GetLocationNodeString(weather, "windSpeed", "wind"));
+        AddLocationFact(items, "Видимость", GetLocationNodeString(weather, "visibility"));
+        AddLocationFact(items, "Тенденция", DescribeWeatherTendency(GetLocationNodeString(weather, "tendency")));
+        AddLocationFact(items, "Эффекты", GetLocationNodeString(weather, "mechanicalEffects"));
+
+        var panelBlocks = new List<UiBlock>();
+        var description = GetLocationNodeString(weather, "description");
+        if (!string.IsNullOrWhiteSpace(description))
+            panelBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
+        if (items.Count > 0)
+            panelBlocks.Add(new UiKeyValueGridBlock { Items = items });
+        if (panelBlocks.Count == 0)
+            return;
+
+        blocks.Add(new UiPanelBlock
+        {
+            Title = "Погода",
+            Blocks = panelBlocks
+        });
+    }
+
+    private static void AddLocationFeatureBlock(List<UiBlock> blocks, JsonObject location)
+    {
+        var features = EnumerateLocationTextEntries(location["features"]).ToList();
+        if (features.Count == 0)
+            return;
+
+        blocks.Add(Panel("Особенности", new UiListBlock
+        {
+            Ordered = false,
+            Items = features
+        }));
+    }
+
+    private static void AddLocationFactionControlBlock(List<UiBlock> blocks, JsonObject location)
+    {
+        if (location["factionControl"] is not JsonArray factions)
+            return;
+
+        var rows = new List<UiTableRow>();
+        foreach (var faction in factions.OfType<JsonObject>())
+        {
+            var name = FirstNonEmpty(
+                GetLocationNodeString(faction, "factionName", "name"),
+                GetLocationNodeString(faction, "factionId"));
+            var control = GetLocationNodeString(faction, "controlLevel");
+            var type = GetLocationNodeString(faction, "controlType", "type");
+            if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(control) && string.IsNullOrWhiteSpace(type))
+                continue;
+
+            rows.Add(new UiTableRow
+            {
+                Cells = [EmptyFallback(name), EmptyFallback(type), FormatPercent(control)]
+            });
+        }
+
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = "Контроль фракций",
+            Columns = ["Фракция", "Вид контроля", "Уровень"],
+            Rows = rows
+        });
+    }
+
+    private static void AddLocationThreatBlock(List<UiBlock> blocks, JsonObject location)
+    {
+        if (location["activeThreats"] is not JsonArray threats)
+            return;
+
+        var rows = new List<UiTableRow>();
+        foreach (var threat in threats.OfType<JsonObject>())
+        {
+            var name = FirstNonEmpty(
+                GetLocationNodeString(threat, "name", "threatName"),
+                "Неизвестная угроза");
+            var danger = FirstNonEmpty(
+                DescribeThreatDanger(GetLocationNodeString(threat, "dangerLevel")),
+                FormatThreatIntensity(GetLocationNodeString(threat, "intensity")));
+            var activity = FirstNonEmpty(
+                GetLocationNodeString(threat["currentActivity"], "activityName", "name"),
+                GetLocationNodeString(threat, "currentActivity"));
+            var details = JoinLocationDetails(
+                activity,
+                GetLocationNodeString(threat, "longTermGoal"),
+                GetLocationNodeString(threat, "description", "summary"));
+
+            rows.Add(new UiTableRow
+            {
+                Cells = [name, EmptyFallback(danger), EmptyFallback(details)]
+            });
+        }
+
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiTableBlock
+        {
+            Title = "Активные угрозы",
+            Columns = ["Угроза", "Опасность", "Что известно"],
+            Rows = rows
+        });
+    }
+
+    private static void AddLocationEventBlock(List<UiBlock> blocks, JsonObject location)
+    {
+        var events = GetLocationNodeString(location, "lastEventsDescription", "lastEvent", "recentEvents");
+        if (string.IsNullOrWhiteSpace(events))
+            return;
+
+        blocks.Add(Panel("Последние события", new UiTextBlock { Text = events, Tone = UiTone.Default }));
+    }
+
+    private static IEnumerable<string> EnumerateLocationTextEntries(JsonNode? node)
+    {
+        if (node is JsonArray array)
+        {
+            foreach (var item in array)
+            {
+                var text = FormatLocationTextEntry(item);
+                if (!string.IsNullOrWhiteSpace(text))
+                    yield return text;
+            }
+        }
+        else
+        {
+            var text = FormatLocationTextEntry(node);
+            if (!string.IsNullOrWhiteSpace(text))
+                yield return text;
+        }
+    }
+
+    private static string FormatLocationTextEntry(JsonNode? node)
+    {
+        if (TryGetScalarString(node, out var scalar))
+            return scalar;
+
+        if (node is JsonObject obj)
+            return FirstNonEmpty(
+                GetLocationNodeString(obj, "name", "title"),
+                GetLocationNodeString(obj, "description", "summary"));
+
+        return string.Empty;
+    }
+
+    private static void AddLocationFact(List<UiKeyValueItem> items, string key, string? value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+            items.Add(new UiKeyValueItem { Key = key, Value = value.Trim() });
+    }
+
+    private static string DescribeLocationDifficulty(JsonObject location)
+    {
+        var simple = GetLocationNodeString(location, "difficulty", "danger", "dangerLevel");
+        if (!string.IsNullOrWhiteSpace(simple))
+            return DescribeThreatDanger(simple);
+
+        var profile = location["externalDifficultyProfile"] as JsonObject ??
+                      location["internalDifficultyProfile"] as JsonObject;
+        if (profile == null)
+            return string.Empty;
+
+        var parts = profile
+            .Select(property =>
+            {
+                var value = FormatLocationTextEntry(property.Value);
+                return string.IsNullOrWhiteSpace(value)
+                    ? string.Empty
+                    : $"{StructuredBonusDisplay.FieldLabel(property.Key)}: {value}";
+            })
+            .Where(static part => !string.IsNullOrWhiteSpace(part));
+        return string.Join("; ", parts);
+    }
+
+    private static string DescribeWeatherTendency(string tendency) =>
+        tendency.Trim().ToUpperInvariant() switch
+        {
+            "" or "NO_CHANGE" => string.Empty,
+            "IMPROVE" => "Улучшение ↑",
+            "WORSEN" => "Ухудшение ↓",
+            var value when value.StartsWith("JUMP_TO_", StringComparison.Ordinal) => "Переход к: " + value["JUMP_TO_".Length..].Trim(),
+            _ => tendency.Trim()
+        };
+
+    private static string DescribeThreatDanger(string danger) =>
+        danger.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "low" => "низкая",
+            "medium" or "moderate" => "средняя",
+            "high" => "высокая",
+            "critical" or "extreme" => "критическая",
+            _ => danger.Trim()
+        };
+
+    private static string FormatThreatIntensity(string intensity) =>
+        string.IsNullOrWhiteSpace(intensity) ? string.Empty : $"сила {intensity.Trim()}";
+
+    private static string FormatMinutes(string minutes) =>
+        string.IsNullOrWhiteSpace(minutes) ? string.Empty : $"{minutes.Trim()} мин.";
+
+    private static string FormatPercent(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "не указано";
+
+        return value.Trim().EndsWith('%') ? value.Trim() : value.Trim() + "%";
+    }
+
+    private static void AddReadWarning(List<UiBlock> blocks, string title, JsonReadResult read)
+    {
+        if (read.FileExists && read.Node == null && !string.IsNullOrWhiteSpace(read.Error))
+            blocks.Add(Message(UiNotificationSeverity.Warning, title, "Одна из записей найдена, но её не удалось прочитать как JSON."));
     }
 
     private static async Task<ExplorerCommandResult> BuildBundle(string command, FileSystemManager fs, string title, IReadOnlyList<SummarySpec> specs)
