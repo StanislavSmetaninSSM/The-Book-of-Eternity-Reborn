@@ -213,6 +213,31 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     expect(commandUi).toContain('@media (max-width: 640px)');
     expect(commandUi).toContain('.block-kv__row { grid-template-columns: 1fr; }');
   });
+
+  it('renders status resource key-value rows as stable visual meters', () => {
+    const blocks: UiBlock[] = [
+      {
+        kind: 'keyValueGrid',
+        items: [
+          { key: 'Здоровье', value: '85%' },
+          { key: 'Энергия', value: '60%' },
+          { key: 'Равновесие', value: '95%' },
+          { key: 'Царство', value: 'Смертный мир' }
+        ]
+      }
+    ];
+
+    const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
+
+    expect(html).toContain('block-kv block-kv--with-meters');
+    expect(html).toContain('command-resource-meter command-resource-meter--health');
+    expect(html).toContain('command-resource-meter command-resource-meter--energy');
+    expect(html).toContain('command-resource-meter command-resource-meter--poise');
+    expect(html).toContain('aria-label="Здоровье: 85%"');
+    expect(html).toContain('style="--meter-value:85%"');
+    expect(html).toContain('Царство');
+    expect(html).toContain('Смертный мир');
+  });
 });
 
 function cssRule(source: string, selector: string): string {

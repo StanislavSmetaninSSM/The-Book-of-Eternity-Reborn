@@ -172,14 +172,14 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         {
             Panel("Статус",
                 Grid(
-                    ("Царство", EmptyFallback(state.CurrentRealm)),
+                    ("Царство", ExplorerPlayerFacingLabels.Realm(state.CurrentRealm)),
                     ("Душа", EmptyFallback(state.SoulName)),
                     ("Форма души", EmptyFallback(state.SoulFormDescription)),
                     ("Инкарнация", state.Incarnation.ToString()),
                     ("Персонаж", EmptyFallback(state.CharacterName)),
                     ("Класс / раса", JoinNonEmpty(" / ", state.CharacterClass, state.CharacterRace)),
                     ("Локация", EmptyFallback(state.CurrentLocation)),
-                    ("Время мира", EmptyFallback(state.WorldTime)),
+                    ("Время мира", EmptyFallback(ExplorerPlayerFacingLabels.WorldTime(state.WorldTime))),
                     ("Состояние", EmptyFallback(state.PlayerStatus.CurrentCondition)),
                     ("Здоровье", EmptyFallback(state.PlayerStatus.HealthPercentage)),
                     ("Энергия", EmptyFallback(state.PlayerStatus.EnergyPercentage)),
@@ -191,13 +191,14 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     ("Искры Света", state.ShiningLightSparks.ToString())))
         };
 
+        var actions = Enumerable.Empty<UiAction>();
         if (!state.IsInAfterlifeRealm)
-            await AddMortalStatusDetailBlocks(blocks, fs, state.PlayerStatus.ActiveConditions);
+            actions = await AddMortalStatusDetailBlocks(blocks, fs, state.PlayerStatus.ActiveConditions);
 
-        return Completed(command, blocks);
+        return Completed(command, blocks, actions);
     }
 
-    private static async Task AddMortalStatusDetailBlocks(
+    private static async Task<IReadOnlyList<UiAction>> AddMortalStatusDetailBlocks(
         List<UiBlock> blocks,
         FileSystemManager fs,
         IReadOnlyList<string> activeConditions)
@@ -260,6 +261,8 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         AddMortalStatusEffectBlocks(blocks, effectsRead.Node);
         AddMortalStatusWoundBlocks(blocks, woundsRead.Node);
         AddMortalStatusCustomStateBlocks(blocks, customStatesRead.Node);
+
+        return ExplorerMortalEffectDetailActions.Build("/эффекты", effectsRead.Node);
     }
 
     private static List<UiKeyValueItem> BuildMortalStatusProgressRows(JsonObject? experience)

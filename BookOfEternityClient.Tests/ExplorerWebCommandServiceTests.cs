@@ -189,6 +189,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("До полудня", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Источник", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Руническая перчатка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("незначительная", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("minor", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Структурные бонусы", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Тип бонуса", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Восприятие", text, StringComparison.OrdinalIgnoreCase);
@@ -201,6 +203,20 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_EffectDetail_MissingTargetShowsPlayerFacingFallback()
+    {
+        await SeedMortalEffectsDetailStateAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/эффекты эффект missing_effect"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Такой эффект не найден.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
     }
 
     [Fact]
@@ -932,7 +948,39 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(CommandExecutionState.Completed, result.State);
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Царство", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Море Хаоса", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Chaos Sea", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Realm", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Status_LocalizesWorldTimeForPlayer()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Смертный мир",
+          "currentIncarnation": 2
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_time.json", """
+        {
+          "year": 124,
+          "monthName": "Month of Beginnings",
+          "dayOfMonth": 1,
+          "timeOfDay": "08:15"
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/статус"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Время мира", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Месяц Начал", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("08:15", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Month of Beginnings", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -1080,6 +1128,35 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Рассечённая ладонь", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Нервное напряжение", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Status_ExposesStructuredEffectDetailActions()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Смертный мир",
+          "currentIncarnation": 2
+        }
+        """);
+        await SeedMortalEffectsDetailStateAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/статус"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Активные эффекты", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Магический резонанс", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Actions, action =>
+            action.Label.Contains("Магический резонанс", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/эффекты эффект resonance_1", StringComparison.OrdinalIgnoreCase) &&
+            action.Style == UiActionStyle.Secondary &&
+            action.RequiresConfirmation == false);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

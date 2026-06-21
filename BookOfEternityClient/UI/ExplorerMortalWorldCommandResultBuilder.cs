@@ -446,7 +446,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         var read = await ReadJson(fs, effectsPath);
         var blocks = new List<UiBlock>();
-        var effectEntries = BuildEffectSnapshots(read.Node);
+        var effectEntries = ExplorerMortalEffectDetailActions.BuildEffectSnapshots(read.Node);
         var detailRequest = ParseEffectDetailRequest(ExtractCommandRemainder(command));
         if (detailRequest.Kind == EffectDetailKind.Unknown)
         {
@@ -501,7 +501,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         else if (read.FileExists && !string.IsNullOrWhiteSpace(read.Error))
             blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Запись эффектов найдена, но не разобрана как JSON. {read.Error}"));
 
-        return Completed(command, blocks, BuildEffectDetailActions(commandToken, effectEntries));
+        return Completed(command, blocks, ExplorerMortalEffectDetailActions.Build(commandToken, read.Node));
     }
 
     private static List<UiTableRow> BuildEffectsSummaryRows(JsonReadResult read, IReadOnlyList<SummarySpec> specs)
@@ -643,52 +643,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         ];
     }
 
-    private static List<EffectSnapshot> BuildEffectSnapshots(JsonNode? node)
-    {
-        var entries = new List<EffectSnapshot>();
-        var usedSelectors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        if (node is JsonArray array)
-        {
-            AddEffectSnapshots(entries, usedSelectors, "Активный эффект", array);
-            return entries;
-        }
-
-        if (node is not JsonObject root)
-            return entries;
-
-        AddEffectSnapshots(entries, usedSelectors, "Активный эффект", root["activeEffects"] as JsonArray);
-        AddEffectSnapshots(entries, usedSelectors, "Рана", root["wounds"] as JsonArray);
-        AddEffectSnapshots(entries, usedSelectors, "Временное состояние", root["temporaryConditions"] as JsonArray);
-        return entries;
-    }
-
-    private static void AddEffectSnapshots(
-        List<EffectSnapshot> entries,
-        HashSet<string> usedSelectors,
-        string section,
-        JsonArray? effects)
-    {
-        if (effects == null)
-            return;
-
-        foreach (var effect in effects.OfType<JsonObject>())
-        {
-            var name = FirstNonEmpty(
-                GetNodeString(effect, "name"),
-                GetNodeString(effect, "effectName"),
-                GetNodeString(effect, "title"),
-                "Безымянный эффект");
-            var identity = FirstNonEmpty(
-                GetNodeString(effect, "effectId"),
-                GetNodeString(effect, "conditionId"),
-                GetNodeString(effect, "woundId"),
-                GetNodeString(effect, "id"),
-                name);
-            var selector = BuildUniqueEffectSelector(identity, entries.Count, usedSelectors);
-            entries.Add(new EffectSnapshot(entries.Count + 1, selector, section, name, effect));
-        }
-    }
-
     private static EffectDetailRequest ParseEffectDetailRequest(string remainder)
     {
         if (string.IsNullOrWhiteSpace(remainder))
@@ -707,7 +661,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return normalized is "effect" or "эффект" or "condition" or "состояние" or "рана" or "wound" or "detail" or "подробнее";
     }
 
-    private static EffectSnapshot? FindEffectSnapshot(IReadOnlyList<EffectSnapshot> entries, string selector)
+    private static ExplorerMortalEffectDetailActions.EffectSnapshot? FindEffectSnapshot(
+        IReadOnlyList<ExplorerMortalEffectDetailActions.EffectSnapshot> entries,
+        string selector)
     {
         var normalized = NormalizeInventoryLookup(selector);
         return entries.FirstOrDefault(entry =>
@@ -716,7 +672,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             string.Equals(NormalizeInventoryLookup(entry.Name), normalized, StringComparison.OrdinalIgnoreCase));
     }
 
-    private static IReadOnlyList<UiBlock> BuildEffectDetailBlocks(EffectSnapshot effect)
+    private static IReadOnlyList<UiBlock> BuildEffectDetailBlocks(ExplorerMortalEffectDetailActions.EffectSnapshot effect)
     {
         var blocks = new List<UiBlock>();
         var detailBlocks = new List<UiBlock>();
@@ -734,7 +690,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInventoryFact(facts, "Длительность", FirstNonEmpty(GetNodeString(effect.Node, "duration"), GetNodeString(effect.Node, "expiresAt")));
         AddInventoryFact(facts, "Осталось ходов", GetNodeString(effect.Node, "remainingTurns"));
         AddInventoryFact(facts, "Источник", GetNodeString(effect.Node, "source"));
-        AddInventoryFact(facts, "Серьёзность", GetNodeString(effect.Node, "severity"));
+        AddInventoryFact(facts, "Серьёзность", TranslateEffectSeverity(GetNodeString(effect.Node, "severity")));
         AddInventoryFact(facts, "Состояние", FirstNonEmpty(GetNodeString(effect.Node, "status"), GetNodeString(effect.Node, "state")));
         if (facts.Count > 0)
             detailBlocks.Add(new UiKeyValueGridBlock { Items = facts });
@@ -767,30 +723,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return blocks;
     }
 
-    private static IReadOnlyList<UiAction> BuildEffectDetailActions(string commandToken, IReadOnlyList<EffectSnapshot> entries)
-    {
-        var actions = new List<UiAction>();
-        foreach (var entry in entries)
-        {
-            actions.Add(new UiAction
-            {
-                Id = "effects-detail-" + ToActionIdPart(entry.Selector),
-                Label = $"Подробнее: «{entry.Name}»",
-                Command = BuildEffectDetailCommand(commandToken, entry.Selector),
-                Style = UiActionStyle.Secondary,
-                RequiresConfirmation = false,
-                Payload = new JsonObject
-                {
-                    ["selector"] = entry.Selector,
-                    ["name"] = entry.Name,
-                    ["section"] = entry.Section
-                }
-            });
-        }
-
-        return actions;
-    }
-
     private static IReadOnlyList<UiAction> BuildEffectsBackActions(string commandToken) =>
     [
         new UiAction
@@ -802,14 +734,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
             RequiresConfirmation = false
         }
     ];
-
-    private static string BuildEffectDetailCommand(string commandToken, string selector)
-    {
-        var detailToken = string.Equals(commandToken, "/effects", StringComparison.OrdinalIgnoreCase)
-            ? "effect"
-            : "эффект";
-        return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(selector);
-    }
 
     private static IEnumerable<string> CollectEffectNarrativeEntries(JsonNode? node)
     {
@@ -824,22 +748,16 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
     }
 
-    private static string BuildUniqueEffectSelector(string value, int index, HashSet<string> usedSelectors)
-    {
-        var baseSelector = NormalizeReferenceSelector(value);
-        if (string.IsNullOrWhiteSpace(baseSelector))
-            baseSelector = $"effect-{index + 1}";
-
-        var selector = baseSelector;
-        var suffix = 2;
-        while (!usedSelectors.Add(selector))
+    private static string TranslateEffectSeverity(string? severity) =>
+        (severity ?? string.Empty).Trim().ToLowerInvariant() switch
         {
-            selector = $"{baseSelector}-{suffix}";
-            suffix++;
-        }
-
-        return selector;
-    }
+            "minor" => "незначительная",
+            "light" => "лёгкая",
+            "moderate" or "medium" => "умеренная",
+            "major" or "severe" => "серьёзная",
+            "critical" => "критическая",
+            _ => EmptyFallback(severity)
+        };
 
     private static async Task<ExplorerCommandResult> BuildNpcs(string command, FileSystemManager fs)
     {
@@ -5695,13 +5613,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         Effect,
         Unknown
     }
-
-    private sealed record EffectSnapshot(
-        int Index,
-        string Selector,
-        string Section,
-        string Name,
-        JsonObject Node);
 
     private sealed record EffectDetailRequest(
         EffectDetailKind Kind,

@@ -1,6 +1,6 @@
 import { isSuccess, useShell } from '../context/ShellContext';
 import { browserUiAssets } from '../browserUiAssets';
-import { formatWorldTimeForPlayer } from '../utils/formatters';
+import { formatRealmName, formatWorldTimeForPlayer } from '../utils/formatters';
 
 export function StatusView() {
   const { readyState } = useShell();
@@ -79,7 +79,7 @@ export function StatusView() {
         )}
         <dl className="block-kv">
           <StatusRow label="Имя души" value={soul.name} />
-          <StatusRow label="Царство" value={soul.realm} />
+          <StatusRow label="Царство" value={formatRealmName(soul.realm)} />
           <StatusRow label="Инкарнация" value={soul.incarnation} />
           <StatusRow label="Чернильные перья" value={soul.inkFeathers} />
           <StatusRow label="Просветление" value={soul.enlightenmentTier} />

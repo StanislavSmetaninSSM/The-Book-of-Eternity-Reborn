@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { UiBlock, UiTone } from '../api/contracts';
 import { browserUiAssets } from '../browserUiAssets';
 import { sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';
@@ -77,17 +77,25 @@ export function BlockRenderer({
       );
     }
 
-    case 'keyValueGrid':
+    case 'keyValueGrid': {
+      const rows = block.items.map((item) => {
+        const key = toSafeBlockText(item.key, 'параметр');
+        const value = toSafeBlockText(item.value, 'значение');
+        return { key, value, meter: parseResourceMeter(key, value) };
+      });
+      const hasMeters = rows.some((row) => row.meter);
+
       return (
-        <dl className="block-kv">
-          {block.items.map((item) => (
-            <div key={item.key} className="block-kv__row">
-              <dt>{toSafeBlockText(item.key, 'параметр')}</dt>
-              <dd>{toSafeBlockText(item.value, 'значение')}</dd>
+        <dl className={`block-kv${hasMeters ? ' block-kv--with-meters' : ''}`}>
+          {rows.map((row) => (
+            <div key={row.key} className={`block-kv__row${row.meter ? ' block-kv__row--meter' : ''}`}>
+              <dt>{row.key}</dt>
+              <dd>{row.meter ? renderResourceMeter(row.key, row.value, row.meter) : row.value}</dd>
             </div>
           ))}
         </dl>
       );
+    }
 
     case 'message': {
       const severityClass = `block-message--${block.severity.toLowerCase()}`;
@@ -136,6 +144,48 @@ export function BlockRenderer({
 
 function toSafeBlockText(value: string | null | undefined, fallback: string): string {
   return sanitizePlayerMessage(value, fallback).safe;
+}
+
+type ResourceMeter = {
+  kind: 'health' | 'energy' | 'poise';
+  percent: number;
+};
+
+function parseResourceMeter(key: string, value: string): ResourceMeter | null {
+  const normalizedKey = key.trim().toLowerCase();
+  const kind =
+    normalizedKey === 'здоровье' || normalizedKey === 'health'
+      ? 'health'
+      : normalizedKey === 'энергия' || normalizedKey === 'energy'
+        ? 'energy'
+        : normalizedKey === 'равновесие' || normalizedKey === 'poise' || normalizedKey === 'balance'
+          ? 'poise'
+          : null;
+  if (!kind) return null;
+
+  const match = /(-?\d+(?:[.,]\d+)?)\s*%/.exec(value);
+  if (!match) return null;
+
+  const parsed = Number.parseFloat(match[1].replace(',', '.'));
+  if (!Number.isFinite(parsed)) return null;
+
+  return { kind, percent: Math.min(100, Math.max(0, parsed)) };
+}
+
+function renderResourceMeter(key: string, value: string, meter: ResourceMeter) {
+  const style = { '--meter-value': `${meter.percent}%` } as CSSProperties;
+
+  return (
+    <span
+      className={`command-resource-meter command-resource-meter--${meter.kind}`}
+      aria-label={`${key}: ${value}`}
+    >
+      <span className="command-resource-meter__track" aria-hidden="true">
+        <span className="command-resource-meter__fill" style={style} />
+      </span>
+      <span className="command-resource-meter__value">{value}</span>
+    </span>
+  );
 }
 
 export function BlockList({ blocks, advancedEnabled = false }: { blocks: UiBlock[]; advancedEnabled?: boolean }) {

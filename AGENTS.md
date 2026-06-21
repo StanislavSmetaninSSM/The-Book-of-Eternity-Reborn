@@ -83,5 +83,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 <!-- SPECKIT START -->
 Current Spec Kit plan for this branch:
-`specs/1126-browser-block-renderer/plan.md`
+`specs/1091-browser-status-effects/plan.md`
 <!-- SPECKIT END -->

@@ -153,9 +153,9 @@ describe('playerCopy robustness', () => {
     const sceneView = readSource('src', 'components', 'SceneView.tsx');
     const statusView = readSource('src', 'components', 'StatusView.tsx');
 
-    expect(sceneView).toContain("import { formatWorldTimeForPlayer } from '../utils/formatters';");
+    expect(sceneView).toMatch(/import\s+\{[^}]*formatWorldTimeForPlayer[^}]*\}\s+from '\.\.\/utils\/formatters';/s);
     expect(sceneView).toContain("formatWorldTimeForPlayer(game.world.worldTime, '')");
-    expect(statusView).toContain("import { formatWorldTimeForPlayer } from '../utils/formatters';");
+    expect(statusView).toMatch(/import\s+\{[^}]*formatWorldTimeForPlayer[^}]*\}\s+from '\.\.\/utils\/formatters';/s);
     expect(statusView).toContain("formatWorldTimeForPlayer(world.worldTime, '—')");
   });
 
