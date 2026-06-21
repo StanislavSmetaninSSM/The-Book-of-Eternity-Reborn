@@ -17,10 +17,12 @@ describe('BlockRenderer source', () => {
   it('defines recursive UiBlock rendering', () => {
     const source = readBlockRendererSource();
 
-    expect(source).toContain("export function BlockRenderer({ block, advancedEnabled = false }: { block: UiBlock; advancedEnabled?: boolean }): ReactNode {");
+    expect(source).toContain('export function BlockRenderer({');
+    expect(source).toContain('depth = 0');
     expect(source).toContain("switch (block.kind) {");
     expect(source).toContain("case 'panel':");
-    expect(source).toContain("block.blocks.map((child, i) => <BlockRenderer key={`${child.kind}-${i}`} block={child} advancedEnabled={advancedEnabled} />)");
+    expect(source).toContain('data-block-depth={depth}');
+    expect(source).toContain('depth={depth + 1}');
     expect(source).toContain("case 'rawJson':");
   });
 
@@ -41,7 +43,7 @@ describe('BlockRenderer source', () => {
     expect(source).toContain("import type { UiBlock, UiTone } from '../api/contracts';");
     expect(source).toContain('if (advancedEnabled) {');
     expect(source).toContain("<JsonTreeViewer data={block.json}");
-    expect(source).toContain("Подробные сведения доступны в расширенном режиме.");
+    expect(source).toContain('return null;');
     expect(source).not.toContain('<pre>{JSON.stringify(block.json, null, 2)}</pre>');
   });
 });

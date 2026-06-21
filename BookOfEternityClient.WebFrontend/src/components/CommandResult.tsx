@@ -115,6 +115,6 @@ export function renderCommandBlock(block: UiBlock): ReactNode {
     case 'map':
       return <MapBlock block={block} variant="compact" />;
     case 'rawJson':
-      return <p className="muted">{toPlayerFacingText(block.title, 'Подробные данные')}: подробные данные доступны в расширенном режиме.</p>;
+      return null;
   }
 }
