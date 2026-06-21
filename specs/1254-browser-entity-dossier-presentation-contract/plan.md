@@ -5,10 +5,18 @@ Source issue: <https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Rebo
 Canonical format document:
 [`docs/web-ui/browser-entity-dossier-format.md`](../../docs/web-ui/browser-entity-dossier-format.md)
 
+Accepted prototype to inspect before implementation:
+`C:\Users\Ёж\Downloads\PROTOTYPE`
+
+Codex working copy of the prototype:
+`E:\Games\boe-other-agent-prototype-view`
+
 ## Technical Direction
 
 Use the canonical format document as the UX and acceptance contract for issues
-#1254-#1262.
+#1254-#1262. Inspect the accepted prototype before changing renderer behavior;
+use it for card hierarchy, collapsible sections, collection browser behavior,
+spacing, and visual rhythm.
 
 Implementation should proceed in this order:
 

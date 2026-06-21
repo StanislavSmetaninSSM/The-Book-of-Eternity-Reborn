@@ -5,11 +5,17 @@ Source issue: <https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Rebo
 Canonical format document:
 [`docs/web-ui/browser-entity-dossier-format.md`](../../docs/web-ui/browser-entity-dossier-format.md)
 
+Accepted prototype reference:
+
+- `C:\Users\Ёж\Downloads\PROTOTYPE`
+- `E:\Games\boe-other-agent-prototype-view`
+
 ## Contract Tasks
 
 - [x] Document the canonical entity dossier/card format.
 - [x] Document mandatory large collection behavior and thresholds.
 - [x] Link the canonical format to #1254-#1262 task issues.
+- [x] Record the accepted prototype paths for implementation agents.
 
 ## Implementation Tasks Tracked By GitHub Issues
 
@@ -25,6 +31,7 @@ Canonical format document:
 ## Mandatory Review Checklist For Child Tasks
 
 - [ ] The implementation follows `docs/web-ui/browser-entity-dossier-format.md`.
+- [ ] The implementation was compared against the accepted prototype paths above.
 - [ ] Complex entity details are not rendered as normal tables.
 - [ ] Nested data is shown as nested cards.
 - [ ] Large collections follow the threshold rules and use collection browser at 21+ items.

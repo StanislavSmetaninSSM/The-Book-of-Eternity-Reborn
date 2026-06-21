@@ -9,6 +9,27 @@ format exactly unless a newer tracked issue explicitly changes the contract.
 The accepted prototype is the reference for the visual direction and interaction
 model. The contract below is authoritative for implementation.
 
+## Reference Prototype
+
+Before implementing tasks under #1254-#1262, open and inspect the accepted
+prototype. It shows the intended card hierarchy, nested cards, collapsible
+sections, large collection browser, spacing, and visual treatment.
+
+Local prototype locations used during review:
+
+- Original reviewed prototype: `C:\Users\Ёж\Downloads\PROTOTYPE`
+- Codex working copy: `E:\Games\boe-other-agent-prototype-view`
+
+Reference screenshots generated during review:
+
+- `C:\Users\Ёж\Downloads\PROTOTYPE\collection-browser-30-items.png`
+- `E:\Games\boe-other-agent-prototype-view\collection-browser-30-items.png`
+- `E:\Games\boe-other-agent-prototype-view\collection-browser-filtered-artifacts.png`
+- `E:\Games\boe-other-agent-prototype-view\collection-browser-all-30.png`
+
+The prototype is a visual and interaction reference. This document remains the
+source of truth when the prototype and written contract differ.
+
 ## Goals
 
 - Present complex game data as a readable in-world dossier, not as developer

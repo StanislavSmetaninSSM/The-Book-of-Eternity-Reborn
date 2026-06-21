@@ -5,6 +5,11 @@ Source issue: <https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Rebo
 Canonical format document:
 [`docs/web-ui/browser-entity-dossier-format.md`](../../docs/web-ui/browser-entity-dossier-format.md)
 
+Accepted local prototype reference:
+
+- Original: `C:\Users\Ёж\Downloads\PROTOTYPE`
+- Working copy: `E:\Games\boe-other-agent-prototype-view`
+
 ## User Need
 
 Players need browser command outputs for complex game entities to be readable,
@@ -14,7 +19,8 @@ unbounded lists.
 
 ## Required Format
 
-All tasks in the #1254-#1262 issue set MUST follow the canonical dossier format.
+All tasks in the #1254-#1262 issue set MUST follow the canonical dossier format
+and inspect the accepted prototype before implementing UI migrations.
 The format includes:
 
 - Entity dossier header with title, role/subtitle, summary, badges, and media.
