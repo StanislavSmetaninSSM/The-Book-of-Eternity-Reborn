@@ -83,5 +83,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 <!-- SPECKIT START -->
 Current Spec Kit plan for this branch:
-`specs/1189-gm-workers-live-regression/plan.md`
+`specs/1124-chaos-sea-browser-parity/plan.md`
 <!-- SPECKIT END -->
