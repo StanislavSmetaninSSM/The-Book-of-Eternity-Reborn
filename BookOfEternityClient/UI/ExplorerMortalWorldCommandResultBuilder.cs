@@ -2204,12 +2204,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
         propertyName.Equals("id", StringComparison.OrdinalIgnoreCase) ||
         propertyName.EndsWith("Id", StringComparison.OrdinalIgnoreCase) ||
         propertyName.Equals("visibleToPlayer", StringComparison.OrdinalIgnoreCase) ||
-        propertyName.StartsWith("_", StringComparison.OrdinalIgnoreCase);
+        propertyName.StartsWith("_", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Contains("hidden", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Contains("internal", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Contains("debug", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Contains("secret", StringComparison.OrdinalIgnoreCase);
 
     private static string DescribeReferenceFieldLabel(string propertyName) =>
         propertyName switch
         {
             "objectives" => "задачи",
+            "steps" or "questSteps" => "этапы",
+            "stepTitle" or "stepName" => "этап",
             "objective" => "цель",
             "description" or "skillDescription" => "описание",
             "summary" => "кратко",
@@ -2217,6 +2223,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "questGiver" => "выдал",
             "rewardInfo" or "rewards" or "reward" => "награда",
             "visibleReward" => "награда",
+            "failureConditions" or "failConditions" => "условия провала",
+            "completionConditions" or "successConditions" => "условия завершения",
+            "visibleClues" or "clues" or "evidence" => "улики",
+            "relatedNpcRefs" or "relatedNpcs" or "relatedPeople" => "связанные лица",
+            "recommendedActions" or "availableActions" or "playerOptions" => "возможные действия",
+            "requirements" or "requiredItems" => "требования",
+            "deadline" or "timeLimit" => "срок",
+            "priority" => "приоритет",
+            "difficulty" => "сложность",
+            "risks" or "stakes" => "ставки",
+            "notes" or "playerNotes" => "заметки",
+            "progress" or "currentProgress" => "прогресс",
             "masteryContext" => "мастерство",
             "category" or "type" => "тип",
             "level" or "masteryLevel" => "уровень",
@@ -2229,6 +2247,12 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "accessLevel" => "доступ",
             "visibleReason" => "причина",
             "location" or "locationName" or "currentLocation" or "region" => "где",
+            "npcName" or "characterName" => "персонаж",
+            "role" => "роль",
+            "result" or "outcome" => "итог",
+            "condition" => "условие",
+            "isCompleted" => "выполнено",
+            "isOptional" => "необязательно",
             "capacity" => "вместимость",
             "displayName" or "displayNameOrMoniker" or "name" => "имя",
             _ => "деталь"

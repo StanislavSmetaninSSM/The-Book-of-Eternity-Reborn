@@ -650,6 +650,69 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_QuestDetail_LocalizesRichQuestFieldsAndHidesHiddenNotes()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/quests/regular_quests.json", """
+        {
+          "quests": [
+            {
+              "questId": "quest_archive_escape",
+              "questName": "Тайный выход из архива",
+              "status": "Active",
+              "questGiver": "Серафина",
+              "description": "Найти безопасный проход из архива до смены караула.",
+              "questSteps": [
+                {
+                  "stepTitle": "Проверить боковую дверь",
+                  "description": "Замок скрипит, но ключ должен подойти."
+                }
+              ],
+              "visibleClues": [
+                "На полу остался след воска.",
+                "Ветер тянет из-под книжного шкафа."
+              ],
+              "failureConditions": [
+                "Караул услышит шум в архиве."
+              ],
+              "completionConditions": [
+                "Герой выходит к старому мосту с письмом."
+              ],
+              "relatedNpcRefs": [
+                { "npcName": "Мира Ключница", "role": "знает запасной ключ" }
+              ],
+              "recommendedActions": [
+                "Попросить Миру отвлечь караул."
+              ],
+              "hiddenGmNote": "Скрытая развязка: ключ у капитана."
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/квесты квест quest_archive_escape"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Квест: Тайный выход из архива", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Этапы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Проверить боковую дверь", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Улики", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("след воска", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Условия провала", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Условия завершения", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Связанные лица", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Мира Ключница", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Возможные действия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("деталь", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Скрытая развязка", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/quests", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_PassiveSkillDetail_RendersStructuredBonusesWithLocalizedFields()
     {
         await _fs.WriteFileAtomicAsync("game_state/player/skills_passive.json", """
