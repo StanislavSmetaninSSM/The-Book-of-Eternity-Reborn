@@ -5650,91 +5650,189 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            new UiTableBlock
-            {
-                Title = "Боевая обстановка",
-                Columns = ["Раздел", "Состояние"],
-                Rows =
-                [
-                    new UiTableRow { Cells = ["Враги", DescribeCombatCount(enemies.Count, "враг", "врага", "врагов")] },
-                    new UiTableRow { Cells = ["Союзники", DescribeCombatCount(allies.Count, "союзник", "союзника", "союзников")] },
-                    new UiTableRow { Cells = ["Боевой журнал", DescribeCombatCount(logEntries.Count, "запись", "записи", "записей")] }
-                ]
-            }
+            BuildCombatOverviewDossier(enemies, allies, logEntries)
         };
-
-        if (enemies.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Враги",
-                Columns = ["Враг", "Состояние", "Намерение", "Подробно"],
-                Rows = enemies
-                    .Select(static combatant => new UiTableRow
-                    {
-                        Cells =
-                        [
-                            combatant.Name,
-                            DescribeCombatantOverview(combatant),
-                            EmptyFallback(DescribeCombatantIntent(combatant.Node)),
-                            BuildCombatDetailCommand(CombatantKind.Enemy, combatant.Selector)
-                        ]
-                    })
-                    .ToList()
-            });
-        }
-
-        if (allies.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Союзники",
-                Columns = ["Союзник", "Состояние", "Действие", "Подробно"],
-                Rows = allies
-                    .Select(static combatant => new UiTableRow
-                    {
-                        Cells =
-                        [
-                            combatant.Name,
-                            DescribeCombatantOverview(combatant),
-                            EmptyFallback(DescribeCombatantIntent(combatant.Node)),
-                            BuildCombatDetailCommand(CombatantKind.Ally, combatant.Selector)
-                        ]
-                    })
-                    .ToList()
-            });
-        }
-
-        if (logEntries.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Боевой журнал",
-                Columns = ["Запись", "Событие", "Подробно"],
-                Rows = logEntries
-                    .Take(10)
-                    .Select(static entry => new UiTableRow
-                    {
-                        Cells =
-                        [
-                            entry.Title,
-                            EmptyFallback(entry.Summary),
-                            BuildCombatLogDetailCommand(entry.Selector)
-                        ]
-                    })
-                    .ToList()
-            });
-        }
 
         AddCombatReadWarnings(blocks, state);
 
         if (blocks.Count == 1 && enemies.Count == 0 && allies.Count == 0 && logEntries.Count == 0)
             blocks.Add(Message(UiNotificationSeverity.Info, "Бой", "Нет данных о бое. Вы не в сражении."));
 
-        AddCombatRawState(blocks, state.Enemies, "Полная запись врагов");
-        AddCombatRawState(blocks, state.Allies, "Полная запись союзников");
-        AddCombatRawState(blocks, state.Log, "Полный боевой журнал");
         return Completed(command, blocks, BuildCombatOverviewActions(enemies, allies, logEntries));
+    }
+
+    private static UiEntityDossierBlock BuildCombatOverviewDossier(
+        IReadOnlyList<CombatantSnapshot> enemies,
+        IReadOnlyList<CombatantSnapshot> allies,
+        IReadOnlyList<CombatLogSnapshot> logEntries)
+    {
+        var sections = new List<UiEntityDossierSection>
+        {
+            new()
+            {
+                Id = "summary",
+                Title = "Сводка",
+                Summary = "Кто сейчас участвует в бою и сколько записей уже есть в журнале.",
+                Icon = "combat",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
+                [
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            new UiKeyValueItem { Key = "Враги", Value = DescribeCombatCount(enemies.Count, "враг", "врага", "врагов") },
+                            new UiKeyValueItem { Key = "Союзники", Value = DescribeCombatCount(allies.Count, "союзник", "союзника", "союзников") },
+                            new UiKeyValueItem { Key = "Боевой журнал", Value = DescribeCombatCount(logEntries.Count, "запись", "записи", "записей") }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        if (enemies.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "enemies",
+                Title = "Враги",
+                Summary = "Краткие карточки противников. Подробности открываются отдельным действием.",
+                Icon = "combat",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = enemies.Select(static combatant => (UiBlock)BuildCombatantOverviewCard(combatant, "Враг")).ToList()
+            });
+        }
+
+        if (allies.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "allies",
+                Title = "Союзники",
+                Summary = "Союзники и их текущие намерения.",
+                Icon = "character",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = allies.Select(static combatant => (UiBlock)BuildCombatantOverviewCard(combatant, "Союзник")).ToList()
+            });
+        }
+
+        if (logEntries.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "combat-log",
+                Title = "Боевой журнал",
+                Summary = "Последние записи боя. Полная запись открывается отдельным действием.",
+                Icon = "book",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = logEntries.Take(10).Select(static entry => (UiBlock)BuildCombatLogOverviewCard(entry)).ToList()
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "combat-overview",
+            Title = "Боевая обстановка",
+            Subtitle = enemies.Count > 0 ? "Сражение активно" : "Обзор боя",
+            Summary = enemies.Count > 0
+                ? "Здесь собраны участники текущего столкновения, их намерения и последние события боя."
+                : "Данных о текущем сражении пока нет.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeCombatCount(enemies.Count, "враг", "врага", "врагов"),
+                    Tone = enemies.Count > 0 ? UiTone.Warning : UiTone.Muted,
+                    Icon = "combat"
+                },
+                new UiEntityBadge
+                {
+                    Label = DescribeCombatCount(allies.Count, "союзник", "союзника", "союзников"),
+                    Tone = allies.Count > 0 ? UiTone.Success : UiTone.Muted,
+                    Icon = "character"
+                }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static UiEntityDossierBlock BuildCombatantOverviewCard(CombatantSnapshot combatant, string role)
+    {
+        var facts = BuildCombatantFacts(combatant);
+        return new UiEntityDossierBlock
+        {
+            EntityType = "combatant-summary",
+            Title = combatant.Name,
+            Subtitle = role,
+            Summary = FirstNonEmpty(DescribeCombatantIntent(combatant.Node), DescribeCombatantOverview(combatant), "Подробности доступны в карточке участника боя."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = role,
+                    Tone = combatant.Kind == CombatantKind.Enemy ? UiTone.Warning : UiTone.Success,
+                    Icon = combatant.Kind == CombatantKind.Enemy ? "combat" : "character"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "state",
+                    Title = "Состояние",
+                    Icon = "combat",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
+    }
+
+    private static UiEntityDossierBlock BuildCombatLogOverviewCard(CombatLogSnapshot entry)
+    {
+        return new UiEntityDossierBlock
+        {
+            EntityType = "combat-log-summary",
+            Title = entry.Title,
+            Subtitle = "Запись боя",
+            Summary = FirstNonEmpty(entry.Summary, entry.Result, "Подробности доступны в записи боя."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = "журнал",
+                    Tone = UiTone.Accent,
+                    Icon = "book"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "summary",
+                    Title = "Кратко",
+                    Icon = "book",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks =
+                    [
+                        new UiKeyValueGridBlock
+                        {
+                            Items =
+                            [
+                                new UiKeyValueItem { Key = "Событие", Value = EmptyFallback(entry.Summary) },
+                                new UiKeyValueItem { Key = "Итог", Value = EmptyFallback(entry.Result) }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
     }
 
     private static ExplorerCommandResult BuildCombatDetail(
@@ -5754,7 +5852,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 if (enemy == null)
                     blocks.Add(Message(UiNotificationSeverity.Warning, "Враг не найден", "Такой враг не отмечен в текущей боевой обстановке."));
                 else
-                    blocks.Add(BuildCombatantDetailPanel(enemy, "Враг"));
+                    blocks.Add(BuildCombatantDetailDossier(enemy, "Враг"));
                 break;
             }
             case CombatDetailKind.Ally:
@@ -5763,7 +5861,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 if (ally == null)
                     blocks.Add(Message(UiNotificationSeverity.Warning, "Союзник не найден", "Такой союзник не отмечен в текущей боевой обстановке."));
                 else
-                    blocks.Add(BuildCombatantDetailPanel(ally, "Союзник"));
+                    blocks.Add(BuildCombatantDetailDossier(ally, "Союзник"));
                 break;
             }
             case CombatDetailKind.Log:
@@ -5772,7 +5870,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 if (entry == null)
                     blocks.Add(Message(UiNotificationSeverity.Warning, "Запись боя не найдена", "Такая запись не найдена в боевом журнале."));
                 else
-                    blocks.Add(BuildCombatLogDetailPanel(entry));
+                    blocks.Add(BuildCombatLogDetailDossier(entry));
                 break;
             }
             case CombatDetailKind.Unknown:
@@ -5797,7 +5895,72 @@ public static class ExplorerMortalWorldCommandResultBuilder
         ]);
     }
 
-    private static UiPanelBlock BuildCombatantDetailPanel(CombatantSnapshot combatant, string titlePrefix)
+    private static UiEntityDossierBlock BuildCombatantDetailDossier(CombatantSnapshot combatant, string titlePrefix)
+    {
+        var sections = new List<UiEntityDossierSection>
+        {
+            new()
+            {
+                Id = "state",
+                Title = "Состояние",
+                Summary = "Ключевые боевые параметры участника.",
+                Icon = "combat",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = BuildCombatantFacts(combatant) }]
+            }
+        };
+
+        var effectCards = BuildCombatEffectCards(combatant.Node);
+        if (effectCards.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "effects",
+                Title = "Эффекты",
+                Summary = "Усиления, помехи и статусы, влияющие на участника боя.",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = effectCards
+            });
+        }
+
+        var actionCards = BuildCombatActionCards(combatant.Node);
+        if (actionCards.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "actions",
+                Title = "Действия",
+                Summary = "Доступные или отмеченные боевые действия участника.",
+                Icon = "combat",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = actionCards
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "combatant",
+            Title = $"{titlePrefix}: {combatant.Name}",
+            Subtitle = titlePrefix,
+            Summary = FirstNonEmpty(DescribeCombatantIntent(combatant.Node), FirstCombatNodeString(combatant.Node, "description", "notes", "summary")),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = titlePrefix,
+                    Tone = combatant.Kind == CombatantKind.Enemy ? UiTone.Warning : UiTone.Success,
+                    Icon = combatant.Kind == CombatantKind.Enemy ? "combat" : "character"
+                }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static List<UiKeyValueItem> BuildCombatantFacts(CombatantSnapshot combatant)
     {
         var detailItems = new List<UiKeyValueItem>
         {
@@ -5812,41 +5975,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (!string.IsNullOrWhiteSpace(description))
             detailItems.Add(new UiKeyValueItem { Key = "Заметки", Value = description });
 
-        var blocks = new List<UiBlock>
-        {
-            new UiKeyValueGridBlock { Items = detailItems }
-        };
-
-        var effectRows = BuildCombatEffectRows(combatant.Node);
-        if (effectRows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Эффекты",
-                Columns = ["Раздел", "Эффект", "Сила", "Длительность", "Источник"],
-                Rows = effectRows
-            });
-        }
-
-        var actionRows = BuildCombatActionRows(combatant.Node);
-        if (actionRows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Действия",
-                Columns = ["Действие", "Цена", "Эффект"],
-                Rows = actionRows
-            });
-        }
-
-        return new UiPanelBlock
-        {
-            Title = $"{titlePrefix}: {combatant.Name}",
-            Blocks = blocks
-        };
+        return detailItems;
     }
 
-    private static UiPanelBlock BuildCombatLogDetailPanel(CombatLogSnapshot entry)
+    private static UiEntityDossierBlock BuildCombatLogDetailDossier(CombatLogSnapshot entry)
     {
         var items = new List<UiKeyValueItem>
         {
@@ -5855,19 +5987,135 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (!string.IsNullOrWhiteSpace(entry.Turn))
             items.Add(new UiKeyValueItem { Key = "Ход", Value = entry.Turn });
-        if (entry.Participants.Count > 0)
-            items.Add(new UiKeyValueItem { Key = "Участники", Value = string.Join(", ", entry.Participants) });
         if (!string.IsNullOrWhiteSpace(entry.Result))
             items.Add(new UiKeyValueItem { Key = "Итог", Value = entry.Result });
-        if (entry.Consequences.Count > 0)
-            items.Add(new UiKeyValueItem { Key = "Последствия", Value = string.Join("; ", entry.Consequences) });
 
-        return new UiPanelBlock
+        var sections = new List<UiEntityDossierSection>
         {
+            new()
+            {
+                Id = "summary",
+                Title = "Событие",
+                Summary = "Что произошло в этой записи боя.",
+                Icon = "book",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = items }]
+            }
+        };
+
+        if (entry.Participants.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "participants",
+                Title = "Участники",
+                Icon = "character",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiListBlock { Items = entry.Participants.ToList(), Ordered = false }]
+            });
+        }
+
+        if (entry.Consequences.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "consequences",
+                Title = "Последствия",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiListBlock { Items = entry.Consequences.ToList(), Ordered = false }]
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "combat-log-entry",
             Title = $"Запись боя: {entry.Title}",
-            Blocks = [new UiKeyValueGridBlock { Items = items }]
+            Subtitle = "Боевой журнал",
+            Summary = FirstNonEmpty(entry.Summary, entry.Result),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = "журнал",
+                    Tone = UiTone.Accent,
+                    Icon = "book"
+                }
+            ],
+            Sections = sections
         };
     }
+
+    private static List<UiBlock> BuildCombatEffectCards(JsonObject combatant) =>
+        BuildCombatEffectRows(combatant)
+            .Select(static row => (UiBlock)new UiEntityDossierBlock
+            {
+                EntityType = "combat-effect",
+                Title = row.Cells.ElementAtOrDefault(1) ?? "Эффект",
+                Subtitle = row.Cells.ElementAtOrDefault(0) ?? "Эффект",
+                Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(4), row.Cells.ElementAtOrDefault(2), row.Cells.ElementAtOrDefault(3)),
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Подробности",
+                        Icon = "effect",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks =
+                        [
+                            new UiKeyValueGridBlock
+                            {
+                                Items =
+                                [
+                                    new UiKeyValueItem { Key = "Раздел", Value = EmptyFallback(row.Cells.ElementAtOrDefault(0) ?? string.Empty) },
+                                    new UiKeyValueItem { Key = "Сила", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) },
+                                    new UiKeyValueItem { Key = "Длительность", Value = EmptyFallback(row.Cells.ElementAtOrDefault(3) ?? string.Empty) },
+                                    new UiKeyValueItem { Key = "Источник", Value = EmptyFallback(row.Cells.ElementAtOrDefault(4) ?? string.Empty) }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            })
+            .ToList();
+
+    private static List<UiBlock> BuildCombatActionCards(JsonObject combatant) =>
+        BuildCombatActionRows(combatant)
+            .Select(static row => (UiBlock)new UiEntityDossierBlock
+            {
+                EntityType = "combat-action",
+                Title = row.Cells.ElementAtOrDefault(0) ?? "Действие",
+                Subtitle = "Боевой приём",
+                Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(2), row.Cells.ElementAtOrDefault(1)),
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Подробности",
+                        Icon = "combat",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks =
+                        [
+                            new UiKeyValueGridBlock
+                            {
+                                Items =
+                                [
+                                    new UiKeyValueItem { Key = "Цена", Value = EmptyFallback(row.Cells.ElementAtOrDefault(1) ?? string.Empty) },
+                                    new UiKeyValueItem { Key = "Эффект", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            })
+            .ToList();
 
     private static List<UiTableRow> BuildCombatEffectRows(JsonObject combatant)
     {
@@ -5940,7 +6188,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             parts.Add(JoinCombatDetails(type, value, target, description));
         }
 
-        return EmptyFallback(string.Join("; ", parts.Where(static part => !string.IsNullOrWhiteSpace(part))));
+        return EmptyFallback(string.Join("\n", parts.Where(static part => !string.IsNullOrWhiteSpace(part))));
     }
 
     private static IReadOnlyList<UiAction> BuildCombatOverviewActions(
@@ -6426,7 +6674,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
     }
 
     private static string JoinCombatDetails(params string[] parts) =>
-        string.Join("; ", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
+        string.Join("\n", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
 
     private static void AddCombatReadWarnings(List<UiBlock> blocks, CombatState state)
     {
@@ -6439,12 +6687,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
     {
         if (read.FileExists && read.Node == null && !string.IsNullOrWhiteSpace(read.Error))
             blocks.Add(Message(UiNotificationSeverity.Warning, "Бой", $"Запись {section} найдена, но не разобрана как JSON."));
-    }
-
-    private static void AddCombatRawState(List<UiBlock> blocks, JsonReadResult read, string title)
-    {
-        if (read.Node != null)
-            blocks.Add(Raw(title, read.Node));
     }
 
     private static async Task<ExplorerCommandResult> BuildBooks(string command, FileSystemManager fs)

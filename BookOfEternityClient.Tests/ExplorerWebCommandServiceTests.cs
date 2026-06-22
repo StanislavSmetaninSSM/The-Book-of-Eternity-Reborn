@@ -283,6 +283,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Рина из Серебряной стражи", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Раунд 2", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/combat", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "combat-overview" &&
+            block.Title.Equals("Боевая обстановка", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
 
         var enemyAction = Assert.Single(result.Actions, static action => action.Id == "combat-enemy-shadow_messenger");
         Assert.Equal("/бой враг shadow_messenger", enemyAction.Command);
@@ -324,6 +328,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("сорвать концентрацию мага", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Горит после серебряной стрелы", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("урон", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "combatant" &&
+            block.Title.Contains("Теневой посыльный", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.DoesNotContain("enemyId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("targetPriority", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/combat", payload, StringComparison.OrdinalIgnoreCase);
@@ -345,6 +353,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("22/28", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("защищает мага", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Боевой клич держит строй", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "combatant" &&
+            block.Title.Contains("Рина из Серебряной стражи", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.DoesNotContain("allyId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/combat", payload, StringComparison.OrdinalIgnoreCase);
     }
@@ -364,6 +376,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Рина сбила посыльного с фланга", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Теневой посыльный", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("оглушён", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "combat-log-entry" &&
+            block.Title.Contains("Раунд 2", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.DoesNotContain("entryId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/combat", payload, StringComparison.OrdinalIgnoreCase);
     }
