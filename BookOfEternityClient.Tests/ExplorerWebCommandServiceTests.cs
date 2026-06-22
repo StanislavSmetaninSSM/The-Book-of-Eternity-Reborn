@@ -197,6 +197,14 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Боевые эффекты", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Резонансный толчок", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Сбивает концентрацию цели.", text, StringComparison.OrdinalIgnoreCase);
+        var effectDossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "effect" &&
+            block.Title.Contains("Магический резонанс", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(effectDossier.Sections, static section =>
+            section.Title.Equals("Структурные бонусы", StringComparison.OrdinalIgnoreCase) &&
+            section.Blocks.OfType<UiEntityDossierBlock>().Any(card => card.Title.Contains("Восприятие", StringComparison.OrdinalIgnoreCase)));
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
+            table.Title.Equals("Структурные бонусы", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(result.Actions, action =>
             action.Label.Contains("Назад", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(action.Command, "/эффекты", StringComparison.OrdinalIgnoreCase));

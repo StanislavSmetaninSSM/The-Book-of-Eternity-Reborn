@@ -882,13 +882,14 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static IReadOnlyList<UiBlock> BuildEffectDetailBlocks(ExplorerMortalEffectDetailActions.EffectSnapshot effect)
     {
         var blocks = new List<UiBlock>();
-        var detailBlocks = new List<UiBlock>();
+        var sections = new List<UiEntityDossierSection>();
+        var overviewBlocks = new List<UiBlock>();
         var description = FirstNonEmpty(
             GetNodeString(effect.Node, "effectDescription"),
             GetNodeString(effect.Node, "description"),
             GetNodeString(effect.Node, "summary"));
         if (!string.IsNullOrWhiteSpace(description))
-            detailBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
+            overviewBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
 
         var facts = new List<UiKeyValueItem>
         {
@@ -900,31 +901,86 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInventoryFact(facts, "Серьёзность", TranslateEffectSeverity(GetNodeString(effect.Node, "severity")));
         AddInventoryFact(facts, "Состояние", FirstNonEmpty(GetNodeString(effect.Node, "status"), GetNodeString(effect.Node, "state")));
         if (facts.Count > 0)
-            detailBlocks.Add(new UiKeyValueGridBlock { Items = facts });
+            overviewBlocks.Add(new UiKeyValueGridBlock { Items = facts });
 
-        AddStructuredBonusBlock(detailBlocks, effect.Node["structuredBonuses"] as JsonArray);
+        if (overviewBlocks.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "overview",
+                Title = "Сведения",
+                Summary = "Основные игровые свойства эффекта.",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = overviewBlocks
+            });
+        }
+
+        AddStructuredBonusSection(sections, effect.Node["structuredBonuses"] as JsonArray);
+
+        var detailBlocks = new List<UiBlock>();
         AddInventoryCombatEffectBlock(detailBlocks, effect.Node["combatEffect"]);
         AddInventoryCustomPropertiesBlock(detailBlocks, effect.Node["customProperties"]);
+        if (detailBlocks.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "details",
+                Title = "Дополнительно",
+                Summary = "Боевые и особые свойства эффекта.",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = detailBlocks
+            });
+        }
 
         var hiddenNotes = CollectEffectNarrativeEntries(effect.Node["notes"])
             .Concat(CollectEffectNarrativeEntries(effect.Node["journalEntries"]))
             .ToList();
         if (hiddenNotes.Count > 0)
         {
-            detailBlocks.Add(new UiPanelBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "notes",
                 Title = "Заметки",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
                 Blocks = hiddenNotes.Select(static note => (UiBlock)new UiTextBlock { Text = note, Tone = UiTone.Muted }).ToList()
             });
         }
 
-        if (detailBlocks.Count == 0)
-            detailBlocks.Add(new UiTextBlock { Text = "Подробности эффекта пока не заполнены.", Tone = UiTone.Muted });
-
-        blocks.Add(new UiPanelBlock
+        if (sections.Count == 0)
         {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "empty",
+                Title = "Сведения",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiTextBlock { Text = "Подробности эффекта пока не заполнены.", Tone = UiTone.Muted }]
+            });
+        }
+
+        blocks.Add(new UiEntityDossierBlock
+        {
+            EntityType = "effect",
             Title = $"{effect.Section}: {effect.Name}",
-            Blocks = detailBlocks
+            Subtitle = effect.Section,
+            Summary = description,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = effect.Section,
+                    Tone = UiTone.Accent,
+                    Icon = "effect"
+                }
+            ],
+            Sections = sections
         });
         blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /эффекты.", Tone = UiTone.Muted });
         return blocks;
