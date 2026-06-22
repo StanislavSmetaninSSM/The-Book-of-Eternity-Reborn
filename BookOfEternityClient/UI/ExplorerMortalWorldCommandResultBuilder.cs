@@ -675,25 +675,63 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return Completed(command, BuildEffectDetailBlocks(selected), BuildEffectsBackActions(commandToken));
         }
 
+        var sections = new List<UiEntityDossierSection>();
         var rows = BuildEffectsSummaryRows(read, specs);
         if (rows.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
-                Title = title,
-                Columns = ["Раздел", "Состояние"],
-                Rows = rows
+                Id = "summary",
+                Title = "Сводка",
+                Summary = "Сколько эффектов, ран и временных состояний сейчас видно игроку.",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
+                [
+                    new UiKeyValueGridBlock
+                    {
+                        Items = rows
+                            .Where(static row => row.Cells.Count >= 2)
+                            .Select(static row => new UiKeyValueItem { Key = row.Cells[0], Value = row.Cells[1] })
+                            .ToList()
+                    }
+                ]
             });
         }
 
-        var detailRows = BuildEffectDetailRows(read.Node);
-        if (detailRows.Count > 0)
+        if (effectEntries.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
-                Title = "Подробности эффектов",
-                Columns = ["Раздел", "Название", "Описание", "Длительность"],
-                Rows = detailRows
+                Id = "active-effects",
+                Title = "Активные записи",
+                Summary = "Краткие карточки эффектов. Полные данные открываются отдельным действием.",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = effectEntries.Select(static effect => (UiBlock)BuildEffectOverviewCard(effect)).ToList()
+            });
+        }
+
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "effects",
+                Title = title,
+                Subtitle = "Состояния персонажа",
+                Summary = "Список видимых эффектов, ран и временных состояний.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = DescribeInventoryCount(effectEntries.Count, "запись", "записи", "записей"),
+                        Tone = effectEntries.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                        Icon = "effect"
+                    }
+                ],
+                Sections = sections
             });
         }
 
@@ -709,6 +747,53 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Запись эффектов найдена, но не разобрана как JSON. {read.Error}"));
 
         return Completed(command, blocks, ExplorerMortalEffectDetailActions.Build(commandToken, read.Node));
+    }
+
+    private static UiEntityDossierBlock BuildEffectOverviewCard(ExplorerMortalEffectDetailActions.EffectSnapshot effect)
+    {
+        var description = FirstNonEmpty(
+            GetNodeString(effect.Node, "effectDescription"),
+            GetNodeString(effect.Node, "description"),
+            GetNodeString(effect.Node, "summary"),
+            GetNodeString(effect.Node, "source"));
+        var duration = FirstNonEmpty(
+            GetNodeString(effect.Node, "duration"),
+            GetNodeString(effect.Node, "expiresAt"));
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = effect.Section }
+        };
+        AddInventoryFact(facts, "Длительность", duration);
+        AddInventoryFact(facts, "Источник", GetNodeString(effect.Node, "source"));
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "effect-summary",
+            Title = effect.Name,
+            Subtitle = effect.Section,
+            Summary = FirstNonEmpty(description, duration, "Подробности доступны в карточке эффекта."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = effect.Section,
+                    Tone = UiTone.Accent,
+                    Icon = "effect"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "effect",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
     }
 
     private static List<UiTableRow> BuildEffectsSummaryRows(JsonReadResult read, IReadOnlyList<SummarySpec> specs)
