@@ -174,11 +174,41 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
             table.Title.Equals("Эффекты", StringComparison.OrdinalIgnoreCase) ||
             table.Title.Equals("Подробности эффектов", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.Contains(result.Actions, action =>
             action.Label.Contains("Магический резонанс", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(action.Command, "/эффекты эффект resonance_1", StringComparison.OrdinalIgnoreCase) &&
             action.Style == UiActionStyle.Secondary &&
             action.RequiresConfirmation == false);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_EffectsFallback_RendersVisibleStatusAsDossier()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/core/player_status.json", """
+        {
+          "currentCondition": "Лёгкое недомогание",
+          "currentConditionDescription": "Ночные сны оставили тяжесть в висках.",
+          "activeConditions": [
+            "Головная боль после тяжёлых снов",
+            "Магический резонанс"
+          ]
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/эффекты"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "visible-status-effects" &&
+            block.Title.Equals("Видимые состояния", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Лёгкое недомогание", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Магический резонанс", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

@@ -770,9 +770,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (blocks.Count == 0)
             blocks.Add(Message(UiNotificationSeverity.Info, title, "Данные ещё не созданы."));
 
-        if (read.Node != null)
-            blocks.Add(Raw("Полная запись эффектов", read.Node));
-        else if (read.FileExists && !string.IsNullOrWhiteSpace(read.Error))
+        if (read.FileExists && read.Node == null && !string.IsNullOrWhiteSpace(read.Error))
             blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Запись эффектов найдена, но не разобрана как JSON. {read.Error}"));
 
         return Completed(command, blocks, ExplorerMortalEffectDetailActions.Build(commandToken, read.Node));
@@ -953,13 +951,42 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 UiNotificationSeverity.Info,
                 "Эффекты",
                 MortalStatusEffectFallback.Message),
-            new UiTableBlock
+            new UiEntityDossierBlock
             {
+                EntityType = "visible-status-effects",
                 Title = "Видимые состояния",
-                Columns = ["Раздел", "Подробности"],
-                Rows = rows
-                    .Select(static row => new UiTableRow { Cells = [row.Label, row.Details] })
-                    .ToList()
+                Subtitle = "Самочувствие персонажа",
+                Summary = "Эти состояния уже видны в статусе персонажа, но для них ещё нет отдельной полной записи эффекта.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = DescribeInventoryCount(rows.Count, "запись", "записи", "записей"),
+                        Tone = UiTone.Warning,
+                        Icon = "effect"
+                    }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "visible-status",
+                        Title = "Что чувствует персонаж",
+                        Summary = "Краткая расшифровка состояний без технического файла эффектов.",
+                        Icon = "effect",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks =
+                        [
+                            new UiKeyValueGridBlock
+                            {
+                                Items = rows
+                                    .Select(static row => new UiKeyValueItem { Key = row.Label, Value = row.Details })
+                                    .ToList()
+                            }
+                        ]
+                    }
+                ]
             }
         ];
     }
