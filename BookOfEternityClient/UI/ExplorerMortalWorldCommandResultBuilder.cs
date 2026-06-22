@@ -979,7 +979,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         reads["game_state/npcs/npc_fate_cards.json"] = await ReadJson(fs, "game_state/npcs/npc_fate_cards.json");
 
         var blocks = new List<UiBlock>();
-        var summaryItems = BuildNpcOverviewItems(coreRead.Node).ToList();
+        var npcNames = EnumerateNpcCoreDisplayNames(coreRead.Node).ToList();
+        var summaryItems = BuildNpcOverviewItems(npcNames).ToList();
         foreach (var spec in specs)
         {
             var read = reads[spec.Path];
@@ -1063,7 +1064,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return Completed(command, BuildNpcSectionDetailBlocks(selected.Value.Projection, selected.Value.Section), actions);
         }
 
-        blocks.AddRange(BuildNpcOverviewBlocks(summaryItems, projections));
+        blocks.AddRange(BuildNpcOverviewBlocks(summaryItems, projections, npcNames));
 
         foreach (var read in reads.Values)
         {
@@ -1079,7 +1080,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static IReadOnlyList<UiBlock> BuildNpcOverviewBlocks(
         IReadOnlyList<UiKeyValueItem> summaryItems,
-        IReadOnlyList<NpcDetailProjection> projections)
+        IReadOnlyList<NpcDetailProjection> projections,
+        IReadOnlyList<string> npcNames)
     {
         var blocks = new List<UiBlock>();
         if (summaryItems.Count > 0)
@@ -1100,15 +1102,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
         foreach (var projection in projections)
             blocks.Add(BuildNpcOverviewCard(projection));
 
+        var projectedNames = projections
+            .Select(static projection => projection.NpcName)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var npcName in npcNames.Where(npcName => !projectedNames.Contains(npcName)))
+            blocks.Add(BuildNpcOverviewCard(npcName));
+
         return blocks;
     }
 
-    private static UiPanelBlock BuildNpcOverviewCard(NpcDetailProjection projection)
+    private static UiEntityDossierBlock BuildNpcOverviewCard(NpcDetailProjection projection)
     {
         var sectionItems = projection.Sections
             .Select(section => $"{section.Label}: {section.Hint}")
             .Where(static value => !string.IsNullOrWhiteSpace(value))
             .ToList();
+        return BuildNpcOverviewCard(projection.NpcName, sectionItems);
+    }
+
+    private static UiEntityDossierBlock BuildNpcOverviewCard(string npcName)
+    {
+        return BuildNpcOverviewCard(npcName, []);
+    }
+
+    private static UiEntityDossierBlock BuildNpcOverviewCard(string npcName, IReadOnlyList<string> sectionItems)
+    {
         var blocks = new List<UiBlock>
         {
             new UiKeyValueGridBlock
@@ -1125,20 +1143,46 @@ public static class ExplorerMortalWorldCommandResultBuilder
         };
 
         if (sectionItems.Count > 0)
-            blocks.Add(new UiListBlock { Items = sectionItems });
+            blocks.Add(new UiListBlock { Items = sectionItems.ToList() });
         else
             blocks.Add(new UiTextBlock { Text = "Подробные разделы пока не заполнены.", Tone = UiTone.Muted });
 
-        return new UiPanelBlock
+        var sectionCount = FormatRussianCount(sectionItems.Count, "раздел", "раздела", "разделов");
+        return new UiEntityDossierBlock
         {
-            Title = $"НПС: {projection.NpcName}",
-            Blocks = blocks
+            EntityType = "npc",
+            Title = npcName,
+            Subtitle = "Персонаж мира",
+            Summary = sectionItems.Count > 0
+                ? "Краткая карточка персонажа. Подробности открываются отдельными действиями из списка."
+                : "Для персонажа пока нет подробных разделов.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = sectionCount,
+                    Tone = sectionItems.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                    Icon = "section"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "overview",
+                    Title = "Доступные разделы",
+                    Summary = "Выберите действие ниже, чтобы открыть конкретный раздел без вывода всего досье одним полотном.",
+                    Icon = "archive",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = blocks
+                }
+            ]
         };
     }
 
-    private static IEnumerable<UiKeyValueItem> BuildNpcOverviewItems(JsonNode? npcCoreRoot)
+    private static IEnumerable<UiKeyValueItem> BuildNpcOverviewItems(IReadOnlyList<string> names)
     {
-        var names = EnumerateNpcCoreDisplayNames(npcCoreRoot).ToList();
         if (names.Count == 0)
             yield break;
 

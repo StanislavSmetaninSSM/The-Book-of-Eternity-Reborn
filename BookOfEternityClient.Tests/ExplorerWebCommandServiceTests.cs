@@ -3386,6 +3386,9 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var panelText = CollectBlockText([panel]);
         Assert.Contains("1 персонаж", panelText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Мирра", panelText, StringComparison.Ordinal);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "npc" &&
+            block.Title == "Мирра");
         Assert.DoesNotContain("отсутствует", panelText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/", panelText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
@@ -3408,7 +3411,9 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             action.RequiresConfirmation == false);
 
         Assert.DoesNotContain(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
-        var npcCard = Assert.Single(result.Blocks.SelectMany(EnumeratePanels), static block => block.Title == "НПС: Серафина");
+        var npcCard = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block => block.Title == "Серафина");
+        Assert.Equal("npc", npcCard.EntityType);
+        Assert.Contains(npcCard.Sections, static section => section.Id == "overview" && section.Title == "Доступные разделы");
         var npcCardText = CollectBlockText([npcCard]);
         Assert.Contains("Дневник / мысли: 2 записи", npcCardText, StringComparison.Ordinal);
         Assert.Contains("Личные квесты: 3 квеста", npcCardText, StringComparison.Ordinal);
@@ -3586,7 +3591,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
 
         Assert.DoesNotContain(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
-        var npcCard = Assert.Single(result.Blocks.SelectMany(EnumeratePanels), static block => block.Title == "НПС: Серафина");
+        var npcCard = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block => block.Title == "Серафина");
         var npcCardText = CollectBlockText([npcCard]);
         Assert.Contains("инвентарь", npcCardText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Навыки", npcCardText, StringComparison.Ordinal);
@@ -7603,6 +7608,26 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             yield return childPanel;
     }
 
+    private static IEnumerable<UiEntityDossierBlock> EnumerateEntityDossiers(UiBlock block)
+    {
+        if (block is UiEntityDossierBlock dossier)
+        {
+            yield return dossier;
+            foreach (var section in dossier.Sections)
+            foreach (var child in section.Blocks)
+            foreach (var childDossier in EnumerateEntityDossiers(child))
+                yield return childDossier;
+            yield break;
+        }
+
+        if (block is not UiPanelBlock panel)
+            yield break;
+
+        foreach (var child in panel.Blocks)
+        foreach (var childDossier in EnumerateEntityDossiers(child))
+            yield return childDossier;
+    }
+
     private static List<string> CollectFlattenedStructuredDetailViolations(IEnumerable<UiBlock> blocks)
     {
         var violations = new List<string>();
@@ -7808,6 +7833,24 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 parts.Add(panel.Title);
                 foreach (var child in panel.Blocks)
                     CollectBlockText(child, parts);
+                break;
+            case UiEntityDossierBlock dossier:
+                parts.Add(dossier.Title);
+                parts.Add(dossier.Subtitle);
+                parts.Add(dossier.Summary);
+                parts.AddRange(dossier.Badges.Select(static badge => badge.Label));
+                if (dossier.Media != null)
+                {
+                    parts.Add(dossier.Media.Title);
+                    parts.Add(dossier.Media.AltText);
+                }
+                foreach (var section in dossier.Sections)
+                {
+                    parts.Add(section.Title);
+                    parts.Add(section.Summary);
+                    foreach (var child in section.Blocks)
+                        CollectBlockText(child, parts);
+                }
                 break;
             case UiTableBlock table:
                 parts.Add(table.Title);
