@@ -3802,6 +3802,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal("loc_square", mapBlock.Map.CurrentNodeId);
         Assert.Contains(mapBlock.Map.Nodes, static node => node.IsCurrent && node.Label == "Старая площадь");
         Assert.Contains(mapBlock.Map.Links, static link => link.TargetNodeId == "loc_gate");
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "map-summary" &&
+            block.Title.Equals("Сводка карты", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Empty(result.Blocks.OfType<UiRawJsonBlock>());
     }
 
     [Fact]
@@ -3817,6 +3822,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal("abode_azalia", mapBlock.Map.CurrentNodeId);
         Assert.Contains(mapBlock.Map.Nodes, static node => node.IsCurrent && node.Label == "Сад Ночных Роз");
         Assert.Contains(mapBlock.Map.Nodes, static node => node.Details.Any(item => item.Key == "Активный Хранитель" && item.Value == "да"));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "map-summary" &&
+            block.Subtitle.Equals("Море Хаоса", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Empty(result.Blocks.OfType<UiRawJsonBlock>());
     }
 
     [Fact]
@@ -3831,6 +3841,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal("Shining Abode", mapBlock.Map.Realm);
         Assert.Contains(mapBlock.Map.Nodes, static node => node.Id == "hall_dawn" && node.Label == "Зал Рассвета");
         Assert.Contains(mapBlock.Map.Nodes, static node => node.Id == "faction_lanterns" && node.Details.Any(item => item.Key == "Лидерство"));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "map-summary" &&
+            block.Subtitle.Equals("Сияющая Обитель", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Empty(result.Blocks.OfType<UiRawJsonBlock>());
     }
 
     [Theory]

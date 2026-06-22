@@ -603,37 +603,66 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Title = "Карта",
                 Map = map
             },
-            new UiTableBlock
-            {
-                Title = "Сводка карты",
-                Columns = ["Показатель", "Значение"],
-                Rows =
-                [
-                    new UiTableRow { Cells = ["Царство", ExplorerPlayerFacingLabels.Realm(map.Realm)] },
-                    new UiTableRow { Cells = ["Локаций", map.Nodes.Count.ToString()] },
-                    new UiTableRow { Cells = ["Связей", map.Links.Count.ToString()] },
-                    new UiTableRow { Cells = ["Уровней z", map.ZLevels.Count.ToString()] }
-                ]
-            }
+            BuildMapSummaryDossier(map)
         };
 
-        if (string.Equals(map.Realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase))
-        {
-            await AddRawJsonIfPresent(blocks, fs, "game_state/meta/soul_state.json", "JSON: soul_state");
-            await AddRawJsonIfPresent(blocks, fs, "game_state/meta/guardians.json", "JSON: guardians");
-        }
-        else if (string.Equals(map.Realm, "Shining Abode", StringComparison.OrdinalIgnoreCase))
-        {
-            await AddRawJsonIfPresent(blocks, fs, "game_state/meta/soul_state.json", "JSON: soul_state");
-            await AddRawJsonIfPresent(blocks, fs, "game_state/meta/shining_abode_state.json", "JSON: shining_abode_state");
-        }
-        else
-        {
-            await AddRawJsonIfPresent(blocks, fs, "game_state/world/current_location.json", "JSON: current_location");
-            await AddRawJsonIfPresent(blocks, fs, "game_state/world/world_map.json", "JSON: world_map");
-        }
-
         return Completed(command, blocks);
+    }
+
+    private static UiEntityDossierBlock BuildMapSummaryDossier(MapViewDto map)
+    {
+        var currentNode = map.Nodes.FirstOrDefault(node => node.IsCurrent)
+            ?? map.Nodes.FirstOrDefault(node => string.Equals(node.Id, map.CurrentNodeId, StringComparison.OrdinalIgnoreCase));
+        var knownLocations = map.Nodes.Count(static node => !node.IsPlaceholder);
+        var plannedExits = map.Nodes.Count(static node => node.IsPlaceholder);
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Царство", Value = ExplorerPlayerFacingLabels.Realm(map.Realm) },
+            new() { Key = "Текущая точка", Value = FirstNonEmpty(currentNode?.Label, ExplorerPlayerFacingLabels.CurrentMapNode(map)) },
+            new() { Key = "Созданные локации", Value = knownLocations.ToString() },
+            new() { Key = "Намеченные выходы", Value = plannedExits.ToString() },
+            new() { Key = "Переходы", Value = map.Links.Count.ToString() },
+            new() { Key = "Уровни высоты", Value = map.ZLevels.Count.ToString() }
+        };
+
+        if (map.Regions.Count > 0)
+            facts.Add(new UiKeyValueItem { Key = "Области влияния", Value = map.Regions.Count.ToString() });
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "map-summary",
+            Title = "Сводка карты",
+            Subtitle = ExplorerPlayerFacingLabels.Realm(map.Realm),
+            Summary = "Карта показывает уже созданные места отдельно от выходов, которые только намечены текущей сценой.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeInventoryCount(knownLocations, "локация", "локации", "локаций"),
+                    Tone = UiTone.Accent,
+                    Icon = "map"
+                },
+                new UiEntityBadge
+                {
+                    Label = DescribeInventoryCount(plannedExits, "выход", "выхода", "выходов"),
+                    Tone = plannedExits > 0 ? UiTone.Warning : UiTone.Muted,
+                    Icon = "route"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "summary",
+                    Title = "Ориентиры",
+                    Summary = "Ключевые числа карты без технических исходников.",
+                    Icon = "map",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildEffects(
