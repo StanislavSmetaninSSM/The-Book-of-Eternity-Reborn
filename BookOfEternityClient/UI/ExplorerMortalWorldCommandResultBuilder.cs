@@ -5604,17 +5604,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (shelf.Items.Count > 0)
         {
-            blocks.Add(new UiTableBlock
-            {
-                Title = title,
-                Columns = ["Документ", "Источник", "Доступ", "Кратко"],
-                Rows = shelf.Items
-                    .Select(static item => new UiTableRow
-                    {
-                        Cells = [item.Title, item.Source, item.AccessStatus, item.Summary]
-                    })
-                    .ToList()
-            });
+            blocks.Add(BuildBookShelfDossier(title, shelf));
         }
         else
         {
@@ -5628,20 +5618,89 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks, BuildBookReadActions(shelf));
     }
 
-    private static UiPanelBlock BuildBookDetailBlock(ReadableDocumentShelfItem item)
+    private static UiEntityDossierBlock BuildBookShelfDossier(string title, ReadableDocumentShelf shelf)
     {
-        var blocks = new List<UiBlock>
+        var documentCards = shelf.Items
+            .Select(static item => (UiBlock)BuildBookShelfItemCard(item))
+            .ToList();
+
+        return new UiEntityDossierBlock
         {
-            new UiKeyValueGridBlock
+            EntityType = "document-shelf",
+            Title = title,
+            Subtitle = "Документы и книги",
+            Summary = "Выберите документ из действий, чтобы открыть полный текст.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeInventoryCount(shelf.Items.Count, "документ", "документа", "документов"),
+                    Tone = UiTone.Accent,
+                    Icon = "book"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "documents",
+                    Title = "Документы",
+                    Summary = "Краткие карточки показывают источник, доступ и объем текста без раскрытия полного содержимого.",
+                    Icon = "book",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = documentCards
+                }
+            ]
+        };
+    }
+
+    private static UiEntityDossierBlock BuildBookShelfItemCard(ReadableDocumentShelfItem item) =>
+        new()
+        {
+            EntityType = "document-summary",
+            Title = item.Title,
+            Subtitle = item.Source,
+            Summary = string.Join(". ", new[] { item.AccessStatus, item.CountLabel, item.Summary }
+                .Where(static value => !string.IsNullOrWhiteSpace(value))),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = item.AccessStatus,
+                    Tone = item.HasReadableContent ? UiTone.Success : UiTone.Warning,
+                    Icon = "book"
+                }
+            ]
+        };
+
+    private static UiEntityDossierBlock BuildBookDetailBlock(ReadableDocumentShelfItem item)
+    {
+        var sections = new List<UiEntityDossierSection>
+        {
+            new()
             {
-                Items =
+                Id = "facts",
+                Title = "Сведения",
+                Summary = "Откуда взят документ и доступен ли полный текст.",
+                Icon = "book",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
                 [
-                    new UiKeyValueItem { Key = "Источник", Value = item.Source },
-                    new UiKeyValueItem { Key = "Доступ", Value = item.AccessStatus }
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            new UiKeyValueItem { Key = "Источник", Value = item.Source },
+                            new UiKeyValueItem { Key = "Доступ", Value = item.AccessStatus }
+                        ]
+                    }
                 ]
             }
         };
 
+        var contentBlocks = new List<UiBlock>();
         if (item.HasReadableContent)
         {
             for (var index = 0; index < item.Entries.Count; index++)
@@ -5649,12 +5708,12 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 var prefix = item.Entries.Count == 1
                     ? string.Empty
                     : $"Запись {index + 1}. ";
-                blocks.Add(new UiTextBlock { Text = prefix + item.Entries[index], Tone = UiTone.Default });
+                contentBlocks.Add(new UiTextBlock { Text = prefix + item.Entries[index], Tone = UiTone.Default });
             }
         }
         else
         {
-            blocks.Add(new UiMessageBlock
+            contentBlocks.Add(new UiMessageBlock
             {
                 Severity = UiNotificationSeverity.Warning,
                 Title = "Текст недоступен",
@@ -5662,10 +5721,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
             });
         }
 
-        return new UiPanelBlock
+        sections.Add(new UiEntityDossierSection
         {
+            Id = "content",
+            Title = "Текст",
+            Summary = item.HasReadableContent ? "Содержимое выбранного документа." : "Причина, по которой документ пока нельзя прочитать.",
+            Icon = "book",
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Blocks = contentBlocks
+        });
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "document",
             Title = $"Чтение: {item.Title}",
-            Blocks = blocks
+            Subtitle = item.Source,
+            Summary = item.Summary,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = item.AccessStatus,
+                    Tone = item.HasReadableContent ? UiTone.Success : UiTone.Warning,
+                    Icon = "book"
+                }
+            ],
+            Sections = sections
         };
     }
 

@@ -2839,13 +2839,17 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var payload = SerializeResult(result);
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>());
-        Assert.Equal("Книжная полка", table.Title);
-        Assert.Equal(["Документ", "Источник", "Доступ", "Кратко"], table.Columns);
-        Assert.Contains(table.Rows, row => RowContains(row, "Письмо с площади") && RowContains(row, "Можно читать"));
-        Assert.Contains(table.Rows, row => RowContains(row, "Записка с рынка") && RowContains(row, "1 запись"));
-        Assert.Contains(table.Rows, row => RowContains(row, "Памятная книга") && RowContains(row, "1 запись"));
-        Assert.Contains(table.Rows, row => RowContains(row, "Запечатанное письмо") && RowContains(row, "Не прочесть"));
+        var shelfDossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "document-shelf" &&
+            block.Title.Equals("Книжная полка", StringComparison.OrdinalIgnoreCase));
+        var documentSection = Assert.Single(shelfDossier.Sections, static section =>
+            section.Title.Equals("Документы", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(documentSection.Blocks.OfType<UiEntityDossierBlock>(), card => card.Title.Contains("Письмо с площади", StringComparison.OrdinalIgnoreCase) && card.Summary.Contains("Можно читать", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(documentSection.Blocks.OfType<UiEntityDossierBlock>(), card => card.Title.Contains("Записка с рынка", StringComparison.OrdinalIgnoreCase) && card.Summary.Contains("1 запись", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(documentSection.Blocks.OfType<UiEntityDossierBlock>(), card => card.Title.Contains("Памятная книга", StringComparison.OrdinalIgnoreCase) && card.Summary.Contains("1 запись", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(documentSection.Blocks.OfType<UiEntityDossierBlock>(), card => card.Title.Contains("Запечатанное письмо", StringComparison.OrdinalIgnoreCase) && card.Summary.Contains("Не прочесть", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
+            table.Title.Equals("Книжная полка", StringComparison.OrdinalIgnoreCase));
         Assert.Contains("Письмо с площади", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Записка с рынка", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Памятная книга", text, StringComparison.OrdinalIgnoreCase);
@@ -2883,6 +2887,9 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains("Записка с рынка", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("SIDECAR_FULL_BODY_MARKER", text, StringComparison.Ordinal);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "document" &&
+            block.Title.Contains("Записка с рынка", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain("INLINE_FULL_BODY_MARKER", text, StringComparison.Ordinal);
         Assert.DoesNotContain("JOURNAL_FULL_BODY_MARKER", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Книжная полка", text, StringComparison.OrdinalIgnoreCase);
