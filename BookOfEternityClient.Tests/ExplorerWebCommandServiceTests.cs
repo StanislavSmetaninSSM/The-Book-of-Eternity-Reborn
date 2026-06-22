@@ -178,7 +178,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             block.Title.Equals("Эффекты", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(dossier.Sections, static section =>
             section.Title.Equals("Активные записи", StringComparison.OrdinalIgnoreCase) &&
-            section.Blocks.OfType<UiEntityDossierBlock>().Any(card => card.Title.Contains("Магический резонанс", StringComparison.OrdinalIgnoreCase)));
+            section.Cards.Any(card => card.Title.Contains("Магический резонанс", StringComparison.OrdinalIgnoreCase)));
         Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
             table.Title.Equals("Эффекты", StringComparison.OrdinalIgnoreCase) ||
             table.Title.Equals("Подробности эффектов", StringComparison.OrdinalIgnoreCase));
@@ -249,7 +249,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             block.Title.Contains("Магический резонанс", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(effectDossier.Sections, static section =>
             section.Title.Equals("Структурные бонусы", StringComparison.OrdinalIgnoreCase) &&
-            section.Blocks.OfType<UiEntityDossierBlock>().Any(card => card.Title.Contains("Восприятие", StringComparison.OrdinalIgnoreCase)));
+            section.Cards.Any(card => card.Title.Contains("Восприятие", StringComparison.OrdinalIgnoreCase)));
         Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
             table.Title.Equals("Структурные бонусы", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(result.Actions, action =>
@@ -413,7 +413,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(dossier.Sections, static section => section.Title.Equals("Сводка", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(dossier.Sections, static section =>
             section.Title.Equals("Мировые события", StringComparison.OrdinalIgnoreCase) &&
-            section.Blocks.OfType<UiEntityDossierBlock>().Any(card => card.Title.Contains("Беспорядки у Северных ворот", StringComparison.OrdinalIgnoreCase)));
+            section.Cards.Any(card => card.Title.Contains("Беспорядки у Северных ворот", StringComparison.OrdinalIgnoreCase)));
         Assert.Contains("Новости мира", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Мировые события", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Угрозы локаций", text, StringComparison.OrdinalIgnoreCase);
@@ -491,7 +491,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             block.Title.Contains("Беспорядки у Северных ворот", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(dossier.Sections, static section => section.Title.Equals("Зацепки", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(dossier.Sections, static section => section.Title.Equals("Ставки", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(dossier.Sections.SelectMany(static section => section.Blocks).OfType<UiEntityDossierBlock>(), static block =>
+        Assert.Contains(dossier.Sections.SelectMany(static section => section.Cards), static block =>
             block.Title.Contains("Старый писарь", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain("eventId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("npcId", payload, StringComparison.OrdinalIgnoreCase);
@@ -542,16 +542,16 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 block.Title.Contains("Письмо появилось ночью", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(detailDossier.Sections, static section =>
             section.Title.Equals("Зацепки", StringComparison.OrdinalIgnoreCase) &&
-            section.Blocks.OfType<UiListBlock>().Any(list => list.Items.Any(item => item.Contains("Сравнить печать", StringComparison.OrdinalIgnoreCase))));
+            section.List.Any(item => item.Contains("Сравнить печать", StringComparison.OrdinalIgnoreCase)));
         Assert.Contains(detailDossier.Sections, static section =>
             section.Title.Equals("Ставки", StringComparison.OrdinalIgnoreCase) &&
-            section.Blocks.OfType<UiKeyValueGridBlock>().Any(grid => grid.Items.Any(item => item.Key.Equals("Опасность", StringComparison.OrdinalIgnoreCase))));
+            section.Facts.Any(item => item.Label.Equals("Опасность", StringComparison.OrdinalIgnoreCase)));
         Assert.Contains(detailDossier.Sections, static section =>
             section.Title.Equals("Открытые вопросы", StringComparison.OrdinalIgnoreCase) &&
-            section.Blocks.OfType<UiListBlock>().Any(list => list.Items.Any(item => item.Contains("кто знает семейный шифр", StringComparison.OrdinalIgnoreCase))));
+            section.List.Any(item => item.Contains("кто знает семейный шифр", StringComparison.OrdinalIgnoreCase)));
         Assert.Contains(detailDossier.Sections, static section =>
             section.Title.Equals("Связанные лица", StringComparison.OrdinalIgnoreCase) &&
-            section.Blocks.OfType<UiEntityDossierBlock>().Any(person => person.Title.Contains("Мариус де Вальмонт", StringComparison.OrdinalIgnoreCase)));
+            section.Cards.Any(person => person.Title.Contains("Мариус де Вальмонт", StringComparison.OrdinalIgnoreCase)));
 
         Assert.DoesNotContain("Метка", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Opportunity", text, StringComparison.OrdinalIgnoreCase);
@@ -1454,37 +1454,34 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var basePanel = Assert.Single(
             statsDossier.Sections,
             static section => section.Title.Equals("Базовое значение", StringComparison.OrdinalIgnoreCase));
-        var baseGrid = Assert.Single(basePanel.Blocks.OfType<UiKeyValueGridBlock>());
-        Assert.Contains(baseGrid.Items, static item =>
-            item.Key.Equals("Ловкость", StringComparison.OrdinalIgnoreCase) &&
+        Assert.Contains(basePanel.Facts, static item =>
+            item.Label.Equals("Ловкость", StringComparison.OrdinalIgnoreCase) &&
             item.Value.Equals("7", StringComparison.OrdinalIgnoreCase));
 
         var equipmentPanel = Assert.Single(
             statsDossier.Sections,
             static section => section.Title.Equals("Бонусы снаряжения", StringComparison.OrdinalIgnoreCase));
-        var equipmentGrid = Assert.Single(equipmentPanel.Blocks.OfType<UiKeyValueGridBlock>());
-        Assert.Contains(equipmentGrid.Items, static item =>
-            item.Key.Equals("Чувство магических потоков", StringComparison.OrdinalIgnoreCase) &&
+        Assert.Contains(equipmentPanel.Facts, static item =>
+            item.Label.Equals("Чувство магических потоков", StringComparison.OrdinalIgnoreCase) &&
             item.Value.Equals("2", StringComparison.OrdinalIgnoreCase));
 
         var modifiersPanel = Assert.Single(
             statsDossier.Sections,
             static section => section.Title.Equals("Временные модификаторы", StringComparison.OrdinalIgnoreCase));
-        var modifierEntry = Assert.Single(modifiersPanel.Blocks.OfType<UiEntityDossierBlock>());
-        var modifierGrid = Assert.Single(modifierEntry.Sections.SelectMany(static section => section.Blocks).OfType<UiKeyValueGridBlock>());
-        Assert.Contains(modifierGrid.Items, static item =>
-            item.Key.Equals("Источник", StringComparison.OrdinalIgnoreCase) &&
+        var modifierEntry = Assert.Single(modifiersPanel.Cards);
+        var modifierFacts = EnumerateCardFacts(modifierEntry).ToList();
+        Assert.Contains(modifierFacts, static item =>
+            item.Label.Equals("Источник", StringComparison.OrdinalIgnoreCase) &&
             item.Value.Contains("Головная боль после тяжёлых снов", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(modifierGrid.Items, static item =>
-            item.Key.Equals("Цель", StringComparison.OrdinalIgnoreCase) &&
+        Assert.Contains(modifierFacts, static item =>
+            item.Label.Equals("Цель", StringComparison.OrdinalIgnoreCase) &&
             item.Value.Equals("Восприятие", StringComparison.OrdinalIgnoreCase));
 
         var finalPanel = Assert.Single(
             statsDossier.Sections,
             static section => section.Title.Equals("Итоговое значение", StringComparison.OrdinalIgnoreCase));
-        var finalGrid = Assert.Single(finalPanel.Blocks.OfType<UiKeyValueGridBlock>());
-        Assert.Contains(finalGrid.Items, static item =>
-            item.Key.Equals("Восприятие", StringComparison.OrdinalIgnoreCase) &&
+        Assert.Contains(finalPanel.Facts, static item =>
+            item.Label.Equals("Восприятие", StringComparison.OrdinalIgnoreCase) &&
             item.Value.Equals("11", StringComparison.OrdinalIgnoreCase));
 
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
@@ -2733,23 +2730,21 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             block.Title.Equals("Инвентарь", StringComparison.OrdinalIgnoreCase));
         var resourceSection = Assert.Single(inventoryDossier.Sections, static section =>
             section.Title.Equals("Ресурсы", StringComparison.OrdinalIgnoreCase));
-        var resources = Assert.Single(resourceSection.Blocks.OfType<UiKeyValueGridBlock>());
-        Assert.Contains(resources.Items, static item => item.Key == "💎 wood" && item.Value == "4");
-        Assert.Contains(resources.Items, static item => item.Key == "💎 cloth" && item.Value == "2");
+        Assert.Contains(resourceSection.Facts, static item => item.Label == "💎 wood" && item.Value == "4");
+        Assert.Contains(resourceSection.Facts, static item => item.Label == "💎 cloth" && item.Value == "2");
 
         var equipmentSection = Assert.Single(inventoryDossier.Sections, static section =>
             section.Title.Equals("Экипировка", StringComparison.OrdinalIgnoreCase));
-        var equipmentGrid = Assert.IsType<UiKeyValueGridBlock>(Assert.Single(equipmentSection.Blocks));
-        Assert.Contains(equipmentGrid.Items, static item => item.Key == "🪖 Голова" && item.Value == "Железный шлем");
-        Assert.Contains(equipmentGrid.Items, static item => item.Key == "⚔️ Основная рука" && item.Value == "Кривой меч");
-        Assert.Contains(equipmentGrid.Items, static item => item.Key == "🛡️ Вторая рука" && item.Value == "— пусто —");
+        Assert.Contains(equipmentSection.Facts, static item => item.Label == "🪖 Голова" && item.Value == "Железный шлем");
+        Assert.Contains(equipmentSection.Facts, static item => item.Label == "⚔️ Основная рука" && item.Value == "Кривой меч");
+        Assert.Contains(equipmentSection.Facts, static item => item.Label == "🛡️ Вторая рука" && item.Value == "— пусто");
 
         var itemSection = Assert.Single(inventoryDossier.Sections, static section =>
             section.Title.Equals("Предметы", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(itemSection.Blocks.OfType<UiEntityDossierBlock>(), static card =>
+        Assert.Contains(itemSection.Cards, static card =>
             card.Title.Equals("Факел", StringComparison.OrdinalIgnoreCase) &&
             card.Summary.Contains("100%", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(itemSection.Blocks.OfType<UiEntityDossierBlock>(), static card =>
+        Assert.Contains(itemSection.Cards, static card =>
             card.Title.Equals("Сломанный лук", StringComparison.OrdinalIgnoreCase) &&
             card.Badges.Any(badge => badge.Label.Contains("сломано", StringComparison.OrdinalIgnoreCase)));
         Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
@@ -2793,7 +2788,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             block.Title.Equals("Инвентарь", StringComparison.OrdinalIgnoreCase));
         var itemSection = Assert.Single(inventoryDossier.Sections, static section =>
             section.Title.Equals("Предметы", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(itemSection.Blocks.OfType<UiEntityDossierBlock>(), static card =>
+        Assert.Contains(itemSection.Cards, static card =>
             card.Title.Equals("Факел", StringComparison.OrdinalIgnoreCase) &&
             card.Subtitle.Contains("Полезный предмет", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
@@ -2819,6 +2814,34 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             string.Equals(action.Command, "/инв предмет runic_glove_1", StringComparison.OrdinalIgnoreCase) &&
             action.Style == UiActionStyle.Secondary &&
             action.RequiresConfirmation == false);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Inventory_ProjectsBrowserDossierIntoPrototypeSections()
+    {
+        await SeedInventoryItemDetailStateAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/инв"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var inventoryDossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "inventory" &&
+            block.Title.Equals("Инвентарь", StringComparison.OrdinalIgnoreCase));
+        var itemSection = Assert.Single(inventoryDossier.Sections, static section =>
+            section.Title.Equals("Предметы", StringComparison.OrdinalIgnoreCase));
+        var overviewSection = Assert.Single(inventoryDossier.Sections, static section =>
+            section.Title.Equals("Сводка", StringComparison.OrdinalIgnoreCase) ||
+            section.Title.Equals("Экипировка", StringComparison.OrdinalIgnoreCase));
+
+        Assert.NotEmpty(itemSection.Cards);
+        Assert.Equal("collection", itemSection.Presentation);
+        Assert.All(itemSection.Cards, static card => Assert.False(string.IsNullOrWhiteSpace(card.Title)));
+        Assert.Contains(itemSection.Cards, static card =>
+            card.Badges.Count > 0 ||
+            !string.IsNullOrWhiteSpace(card.Subtitle) ||
+            !string.IsNullOrWhiteSpace(card.Summary));
+        Assert.NotEmpty(overviewSection.Facts);
+        Assert.Empty(itemSection.Blocks.OfType<UiEntityDossierBlock>());
     }
 
     [Fact]
@@ -2863,7 +2886,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             block.Title.Contains("Руническая перчатка", StringComparison.OrdinalIgnoreCase));
         var structuredBonusSection = Assert.Single(itemDossier.Sections, static section =>
             section.Title.Equals("Структурные бонусы", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(structuredBonusSection.Blocks.OfType<UiEntityDossierBlock>(), static block =>
+        Assert.Contains(structuredBonusSection.Cards, static block =>
             block.Title.Contains("Чувство магических потоков", StringComparison.OrdinalIgnoreCase));
         Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
@@ -2982,10 +3005,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             block.Title.Equals("Книжная полка", StringComparison.OrdinalIgnoreCase));
         var documentSection = Assert.Single(shelfDossier.Sections, static section =>
             section.Title.Equals("Документы", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(documentSection.Blocks.OfType<UiEntityDossierBlock>(), card => card.Title.Contains("Письмо с площади", StringComparison.OrdinalIgnoreCase) && card.Summary.Contains("Можно читать", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(documentSection.Blocks.OfType<UiEntityDossierBlock>(), card => card.Title.Contains("Записка с рынка", StringComparison.OrdinalIgnoreCase) && card.Summary.Contains("1 запись", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(documentSection.Blocks.OfType<UiEntityDossierBlock>(), card => card.Title.Contains("Памятная книга", StringComparison.OrdinalIgnoreCase) && card.Summary.Contains("1 запись", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(documentSection.Blocks.OfType<UiEntityDossierBlock>(), card => card.Title.Contains("Запечатанное письмо", StringComparison.OrdinalIgnoreCase) && card.Summary.Contains("Не прочесть", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(documentSection.Cards, card => card.Title.Contains("Письмо с площади", StringComparison.OrdinalIgnoreCase) && card.Summary.Contains("Можно читать", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(documentSection.Cards, card => card.Title.Contains("Записка с рынка", StringComparison.OrdinalIgnoreCase) && card.Summary.Contains("1 запись", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(documentSection.Cards, card => card.Title.Contains("Памятная книга", StringComparison.OrdinalIgnoreCase) && card.Summary.Contains("1 запись", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(documentSection.Cards, card => card.Title.Contains("Запечатанное письмо", StringComparison.OrdinalIgnoreCase) && card.Summary.Contains("Не прочесть", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
             table.Title.Equals("Книжная полка", StringComparison.OrdinalIgnoreCase));
         Assert.Contains("Письмо с площади", text, StringComparison.OrdinalIgnoreCase);
@@ -3265,16 +3288,15 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/soul_relics"));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>(), block => block.Title == "Реликвии души");
-        Assert.Equal(["Статус", "Слот", "Реликвия", "Редкость", "ID"], table.Columns);
-        Assert.Contains(table.Rows, row =>
-            row.Cells.Contains("Хранилище") &&
-            row.Cells.Contains("Клинок Памяти") &&
-            row.Cells.Contains("rare"));
-        Assert.Contains(table.Rows, row =>
-            row.Cells.Contains("Экипировано") &&
-            row.Cells.Contains("Шлем Тишины") &&
-            row.Cells.Contains("legendary"));
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Реликвии души", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Хранилище", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Клинок Памяти", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("rare", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Экипировано", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Шлем Тишины", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("legendary", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
 
         var equipAction = Assert.Single(result.Actions, action => action.Id == "soul-relic-equip-relic_stored");
         Assert.Equal("/soul_relic_equip relic_stored", equipAction.Command);
@@ -3580,21 +3602,24 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.DoesNotContain(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Персонажи");
-        var panel = Assert.Single(result.Blocks.OfType<UiPanelBlock>(), static block => block.Title == "Персонажи");
-        var panelText = CollectBlockText([panel]);
-        Assert.Contains("1 персонаж", panelText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Мирра", panelText, StringComparison.Ordinal);
+        var overview = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "npc-collection" &&
+            block.Title == "Персонажи");
+        var npcSection = Assert.Single(overview.Sections, static section => section.Id == "npcs");
+        Assert.Equal("collection", npcSection.Presentation);
+        Assert.Contains("1 персонаж", CollectBlockText([overview]), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(npcSection.Cards, static card => card.Title == "Мирра");
         Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
-            block.EntityType == "npc" &&
-            block.Title == "Мирра");
-        Assert.DoesNotContain("отсутствует", panelText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("game_state/", panelText, StringComparison.OrdinalIgnoreCase);
+            block.EntityType == "npc-collection" &&
+            block.Title == "Персонажи");
+        Assert.DoesNotContain("отсутствует", CollectBlockText([overview]), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", CollectBlockText([overview]), StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("game_state/npcs", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
-    public async Task ExecuteAsync_NpcRichDetails_ExposesPlayerFacingDrilldownSections()
+    public async Task ExecuteAsync_NpcRichDetails_ExposesPlayerFacingDossierCollection()
     {
         await SeedRichNpcDrilldownFilesAsync();
 
@@ -3609,22 +3634,45 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             action.RequiresConfirmation == false);
 
         Assert.DoesNotContain(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
-        var npcCard = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block => block.Title == "Серафина");
-        Assert.Equal("npc", npcCard.EntityType);
-        Assert.Contains(npcCard.Sections, static section => section.Id == "overview" && section.Title == "Доступные разделы");
-        var npcCardText = CollectBlockText([npcCard]);
-        Assert.Contains("Дневник / мысли: 2 записи", npcCardText, StringComparison.Ordinal);
-        Assert.Contains("Личные квесты: 3 квеста", npcCardText, StringComparison.Ordinal);
-        Assert.Contains("Активности: 1 активность", npcCardText, StringComparison.Ordinal);
-        Assert.Contains("Отношения / замки: 1 запись", npcCardText, StringComparison.Ordinal);
-        Assert.Contains("Навыки: 1 запись", npcCardText, StringComparison.Ordinal);
+        var npcOverview = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "npc-collection" &&
+            block.Title == "Персонажи");
+        var npcSection = Assert.Single(npcOverview.Sections, static section => section.Id == "npcs");
+        Assert.Equal("collection", npcSection.Presentation);
+        Assert.NotEmpty(npcSection.Cards);
+        var serafinaCard = Assert.Single(npcSection.Cards, static card => card.Title == "Серафина");
+        var npcCardText = CollectBlockText([npcOverview]);
+        Assert.DoesNotContain(serafinaCard.Facts, static fact =>
+            fact.Label is "Дневник / мысли" or "Личные квесты" or "Активности" or "Отношения / замки" or "Навыки");
+        Assert.DoesNotContain(serafinaCard.Badges, static badge =>
+            badge.Label.Contains("раздел", StringComparison.OrdinalIgnoreCase));
+        var payload = SerializeResult(result);
+        Assert.DoesNotContain("\"summary\":\"2 записи\"", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"summary\":\"3 квеста\"", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"summary\":\"1 активность\"", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"summary\":\"1 запись\"", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("2 записи", npcCardText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("3 квеста", npcCardText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("1 активность", npcCardText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("1 запись", npcCardText, StringComparison.OrdinalIgnoreCase);
+        var journalCard = Assert.Single(serafinaCard.Nested, static card => card.Title == "Дневник / мысли");
+        Assert.Contains(serafinaCard.Nested, static card => card.Title == "Личные квесты");
+        Assert.Contains(serafinaCard.Nested, static card => card.Title == "Активности");
+        var journalEntryCard = Assert.Single(journalCard.Cards, static card => card.Title == "Письмо найдено");
+        Assert.DoesNotContain(';', journalEntryCard.Summary);
+        Assert.Contains(journalEntryCard.List, static item => item == "Сомневается, стоит ли доверять письму.");
+        Assert.Contains(journalEntryCard.Facts, static fact =>
+            fact.Label == "Изменение отношения" &&
+            fact.Value == "+1");
+        Assert.DoesNotContain("Доступные разделы", npcCardText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Краткая карточка", npcCardText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Инвентарь", npcCardText, StringComparison.OrdinalIgnoreCase);
 
         var text = CollectBlockText(result.Blocks);
         Assert.DoesNotContain("Серафина — Дневник / мысли", text, StringComparison.Ordinal);
-        Assert.DoesNotContain("Сомневается, стоит ли доверять письму.", text, StringComparison.Ordinal);
-        Assert.DoesNotContain("Сделка на рассвете", text, StringComparison.Ordinal);
-        Assert.DoesNotContain("Доставить письмо в архив", text, StringComparison.Ordinal);
+        Assert.Contains("Сомневается, стоит ли доверять письму.", text, StringComparison.Ordinal);
+        Assert.Contains("Сделка на рассвете", text, StringComparison.Ordinal);
+        Assert.Contains("Доставить письмо в архив", text, StringComparison.Ordinal);
         AssertNoGenericDetailsTables(result);
         AssertNoFlattenedStructuredDetails(result);
         Assert.DoesNotContain("game_state/npcs", text, StringComparison.OrdinalIgnoreCase);
@@ -3646,9 +3694,6 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal("/npc section npc_serafina journal", result.Command);
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains("Серафина — Дневник / мысли", text, StringComparison.Ordinal);
-        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
-            block.EntityType == "npc-section" &&
-            block.Title == "Серафина — Дневник / мысли");
         Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.Contains("Сомневается, стоит ли доверять письму.", text, StringComparison.Ordinal);
         AssertNoGenericDetailsTables(result);
@@ -3703,9 +3748,6 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, detail.State);
         Assert.Contains("Магистра Селена — Дневник / мысли", text, StringComparison.Ordinal);
-        Assert.Contains(detail.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
-            block.EntityType == "npc-section" &&
-            block.Title == "Магистра Селена — Дневник / мысли");
         Assert.Empty(detail.Blocks.SelectMany(EnumerateTables));
         Assert.Contains("Селена сверяет знак письма с архивной книгой.", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Такой раздел НПС не найден", text, StringComparison.Ordinal);
@@ -3796,10 +3838,14 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
 
         Assert.DoesNotContain(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
-        var npcCard = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block => block.Title == "Серафина");
-        var npcCardText = CollectBlockText([npcCard]);
-        Assert.Contains("инвентарь", npcCardText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Навыки", npcCardText, StringComparison.Ordinal);
+        var overview = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "npc-collection");
+        var npcSection = Assert.Single(overview.Sections, static section => section.Id == "npcs");
+        var npcCard = Assert.Single(npcSection.Cards, static card => card.Title == "Серафина");
+        Assert.Contains(npcCard.Nested, static card => card.Title.Contains("инвентарь", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(npcCard.Facts, static fact =>
+            fact.Label.Contains("инвентарь", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(fact.Label, "Навыки", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -4057,7 +4103,6 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         var text = CollectBlockText(result.Blocks);
         Assert.Contains(expectedLabelText, text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Подробно", text, StringComparison.OrdinalIgnoreCase);
 
         var action = Assert.Single(result.Actions, action => action.Id == expectedActionId);
         Assert.Equal(expectedDetailCommand, action.Command);
@@ -4144,7 +4189,9 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(result.Prompts, prompt => prompt.Id == "feather_cost");
         Assert.IsType<UiConfirmationPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "confirm_gacha_pull"));
         var text = CollectBlockText(result.Blocks);
-        Assert.Contains("Пороги: 4-48 обычная, 49-67 необычная, 68-75 редкая, 76-79 эпическая, 80 легендарная", text, StringComparison.Ordinal);
+        Assert.Contains("Пороги", text, StringComparison.Ordinal);
+        Assert.Contains("4-48 обычная", text, StringComparison.Ordinal);
+        Assert.Contains("80 легендарная", text, StringComparison.Ordinal);
         Assert.Contains("Базовая редкость", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("редкая", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Common", text, StringComparison.OrdinalIgnoreCase);
@@ -4452,7 +4499,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.Contains("Хроники посмертия", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Зал зеркальной клятвы", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("guardian_scene:guardian_mirror", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guardian_scene:guardian_mirror", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Игрок впервые вошёл в зал отражений", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Игрок услышал зов зеркал", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Зал отражений запомнил голос игрока", text, StringComparison.OrdinalIgnoreCase);
@@ -4520,7 +4567,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("дипломат", text, StringComparison.Ordinal);
         Assert.Contains("улыбается и просит доверия", text, StringComparison.Ordinal);
         Assert.Contains("Раскрытая вывеска", text, StringComparison.Ordinal);
-        Assert.Contains("known_revealed_truth_marker", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("known_revealed_truth_marker", text, StringComparison.Ordinal);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("Скрытый запасной образ", text, StringComparison.Ordinal);
         Assert.DoesNotContain("hidden_active_truth_marker", payload, StringComparison.OrdinalIgnoreCase);
@@ -4540,8 +4587,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         await WriteAfterlifeProfilesRelationshipGatesFixtureAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
-        var relationshipTable = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static table => table.Title == "Отношения");
-        var text = CollectBlockText([relationshipTable]);
+        var text = CollectBlockText(result.Blocks);
         var payload = SerializeResult(result);
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
@@ -4767,8 +4813,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Contains("Зеркало Ночной Розы", combinedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("контрприём превращает входящее давление в брешь", combinedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Когда counter отвечает на прямое pressure", combinedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Преимущество для ответного pressure", combinedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Когда counter отвечает на прямое давление", combinedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Преимущество для ответного давление", combinedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Один раз за конфликт", combinedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("combatEffect", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("auditRequirement", payload, StringComparison.OrdinalIgnoreCase);
@@ -4790,10 +4836,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Разогретая клятва", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("mark", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("opposition", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("guardian_azalia", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("pressure", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("remainingUses=1", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("break_binding", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guardian_azalia", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("давление", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("1", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("break_binding", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Клятва подсвечена", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("ordinary_visible_roll_reason", payload, StringComparison.OrdinalIgnoreCase);
@@ -8077,6 +8123,12 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 parts.Add(dossier.Subtitle);
                 parts.Add(dossier.Summary);
                 parts.AddRange(dossier.Badges.Select(static badge => badge.Label));
+                CollectEntityFacts(dossier.Facts, parts);
+                CollectEntityMetrics(dossier.Metrics, parts);
+                CollectEntityHints(dossier.Hints, parts);
+                parts.AddRange(dossier.List);
+                foreach (var card in dossier.Cards)
+                    CollectEntityCardText(card, parts);
                 if (dossier.Media != null)
                 {
                     parts.Add(dossier.Media.Title);
@@ -8086,6 +8138,13 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 {
                     parts.Add(section.Title);
                     parts.Add(section.Summary);
+                    parts.Add(section.CollectionLabel);
+                    CollectEntityFacts(section.Facts, parts);
+                    CollectEntityMetrics(section.Metrics, parts);
+                    CollectEntityHints(section.Hints, parts);
+                    parts.AddRange(section.List);
+                    foreach (var card in section.Cards)
+                        CollectEntityCardText(card, parts);
                     foreach (var child in section.Blocks)
                         CollectBlockText(child, parts);
                 }
@@ -8108,6 +8167,69 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             case UiRawJsonBlock raw:
                 parts.Add(raw.Title);
                 break;
+        }
+    }
+
+    private static void CollectEntityCardText(UiEntityCard card, List<string> parts)
+    {
+        parts.Add(card.Title);
+        parts.Add(card.Subtitle);
+        parts.Add(card.Summary);
+        parts.AddRange(card.Badges.Select(static badge => badge.Label));
+        CollectEntityFacts(card.Facts, parts);
+        CollectEntityMetrics(card.Metrics, parts);
+        CollectEntityHints(card.Hints, parts);
+        parts.AddRange(card.List);
+        if (card.Media != null)
+        {
+            parts.Add(card.Media.Title);
+            parts.Add(card.Media.AltText);
+        }
+
+        foreach (var child in card.Nested)
+            CollectEntityCardText(child, parts);
+        foreach (var child in card.Cards)
+            CollectEntityCardText(child, parts);
+    }
+
+    private static IEnumerable<UiEntityFact> EnumerateCardFacts(UiEntityCard card)
+    {
+        foreach (var fact in card.Facts)
+            yield return fact;
+        foreach (var child in card.Nested)
+        foreach (var fact in EnumerateCardFacts(child))
+            yield return fact;
+        foreach (var child in card.Cards)
+        foreach (var fact in EnumerateCardFacts(child))
+            yield return fact;
+    }
+
+    private static void CollectEntityFacts(IEnumerable<UiEntityFact> facts, List<string> parts)
+    {
+        foreach (var fact in facts)
+        {
+            parts.Add(fact.Label);
+            parts.Add(fact.Value);
+        }
+    }
+
+    private static void CollectEntityMetrics(IEnumerable<UiEntityMetric> metrics, List<string> parts)
+    {
+        foreach (var metric in metrics)
+        {
+            parts.Add(metric.Label);
+            parts.Add(metric.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            parts.Add(metric.Max.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            parts.Add(metric.Note);
+        }
+    }
+
+    private static void CollectEntityHints(IEnumerable<UiEntityHint> hints, List<string> parts)
+    {
+        foreach (var hint in hints)
+        {
+            parts.Add(hint.Title);
+            parts.Add(hint.Text);
         }
     }
 

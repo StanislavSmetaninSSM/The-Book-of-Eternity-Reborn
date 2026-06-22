@@ -684,6 +684,11 @@ export interface UiEntityDossierBlock {
   summary: string;
   badges: UiEntityBadge[];
   media: UiEntityMedia | null;
+  facts: UiEntityFact[];
+  metrics: UiEntityMetric[];
+  hints: UiEntityHint[];
+  list: string[];
+  cards: UiEntityCard[];
   sections: UiEntityDossierSection[];
 }
 
@@ -704,13 +709,54 @@ export interface UiEntityMedia {
   modifiedAtUtc: IsoDateTimeString;
 }
 
+export interface UiEntityFact {
+  label: string;
+  value: string;
+}
+
+export interface UiEntityMetric {
+  label: string;
+  value: number;
+  max: number;
+  tone: UiTone;
+  note: string;
+}
+
+export interface UiEntityHint {
+  title: string;
+  text: string;
+  tone: UiTone;
+}
+
+export interface UiEntityCard {
+  title: string;
+  subtitle: string;
+  summary: string;
+  icon: string;
+  badges: UiEntityBadge[];
+  media: UiEntityMedia | null;
+  facts: UiEntityFact[];
+  metrics: UiEntityMetric[];
+  hints: UiEntityHint[];
+  list: string[];
+  nested: UiEntityCard[];
+  cards: UiEntityCard[];
+}
+
 export interface UiEntityDossierSection {
   id: string;
   title: string;
   summary: string;
   icon: string;
+  collectionLabel: string;
+  presentation?: string;
   collapsible: boolean;
   initiallyExpanded: boolean;
+  facts: UiEntityFact[];
+  metrics: UiEntityMetric[];
+  hints: UiEntityHint[];
+  list: string[];
+  cards: UiEntityCard[];
   blocks: UiBlock[];
 }
 

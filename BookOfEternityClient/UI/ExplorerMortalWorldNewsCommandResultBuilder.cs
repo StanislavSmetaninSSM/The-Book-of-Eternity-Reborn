@@ -104,12 +104,6 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         }
 
         var actions = BuildWorldNewsOverviewActions(commandToken, events, flags, progression);
-        if (actions.Count > 0)
-            blocks.Add(new UiTextBlock
-            {
-                Text = "Выберите запись из списка действий, чтобы открыть подробности.",
-                Tone = UiTone.Muted
-            });
 
         AddWorldNewsReadWarnings(blocks, state);
 
@@ -217,6 +211,7 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
                 Title = "Мировые события",
                 Summary = "События, которые уже видимы герою или известны по слухам.",
                 Icon = "world-news",
+                Presentation = "collection",
                 Collapsible = true,
                 InitiallyExpanded = true,
                 Blocks = eventCards
@@ -238,6 +233,7 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
                 Title = "Флаги мира",
                 Summary = "Состояния мира, которые могут влиять на сцены и реакции.",
                 Icon = "flag",
+                Presentation = "collection",
                 Collapsible = true,
                 InitiallyExpanded = true,
                 Blocks = flagCards
@@ -259,6 +255,7 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
                 Title = "Прогресс мира",
                 Summary = "Долгие изменения, которые накапливаются между ходами.",
                 Icon = "progress",
+                Presentation = "collection",
                 Collapsible = true,
                 InitiallyExpanded = true,
                 Blocks = progressionCards

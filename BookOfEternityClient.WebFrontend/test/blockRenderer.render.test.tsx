@@ -137,6 +137,97 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     expect(html).not.toContain('debug_only_1126');
   });
 
+  it('keeps prototype entity dossier fields when sanitizing default player command results', () => {
+    const sanitized = sanitizeExplorerCommandResultForPlayer(baseCommandResult({
+      blocks: [
+        {
+          kind: 'entityDossier',
+          entityType: 'inventory',
+          title: 'Инвентарь',
+          subtitle: 'Снаряжение',
+          summary: 'Предметы персонажа.',
+          badges: [{ label: '2 предмета', tone: 'Accent', icon: 'inventory' }],
+          media: null,
+          facts: [{ label: '💰 Деньги', value: '500' }],
+          metrics: [{ label: '⚖ Нагрузка', value: 2.74, max: 28, tone: 'Accent', note: 'в пределах нормы' }],
+          hints: [{ title: 'Подсказка', text: 'Документы можно читать через книги.', tone: 'Warning' }],
+          list: ['Переносимые вещи'],
+          cards: [
+            {
+              title: 'Запечатанное письмо',
+              subtitle: 'Документ',
+              summary: 'Письмо с незнакомой печатью.',
+              icon: 'inventory',
+              badges: [{ label: 'документ', tone: 'Accent', icon: 'book' }],
+              media: null,
+              facts: [{ label: 'Состояние', value: 'в порядке' }],
+              metrics: [],
+              hints: [],
+              list: [],
+              nested: [],
+              cards: []
+            }
+          ],
+          sections: [
+            {
+              id: 'items',
+              title: 'Предметы',
+              summary: '2 предмета в инвентаре.',
+              icon: 'inventory',
+              collectionLabel: '2 объекта в разделе',
+              collapsible: true,
+              initiallyExpanded: true,
+              facts: [{ label: 'Количество', value: '2' }],
+              metrics: [],
+              hints: [],
+              list: [],
+              cards: [
+                {
+                  title: 'Руническая перчатка',
+                  subtitle: 'Артефакт',
+                  summary: 'Откликается на владельца.',
+                  icon: 'inventory',
+                  badges: [],
+                  media: null,
+                  facts: [{ label: 'Прочность', value: '95%' }],
+                  metrics: [],
+                  hints: [],
+                  list: [],
+                  nested: [],
+                  cards: []
+                }
+              ],
+              blocks: []
+            }
+          ]
+        }
+      ]
+    }));
+
+    const dossier = sanitized.blocks[0];
+    expect(dossier?.kind).toBe('entityDossier');
+    if (dossier?.kind !== 'entityDossier') throw new Error('Expected entity dossier');
+
+    expect(dossier.facts).toHaveLength(1);
+    expect(dossier.metrics).toHaveLength(1);
+    expect(dossier.hints).toHaveLength(1);
+    expect(dossier.list).toHaveLength(1);
+    expect(dossier.cards).toHaveLength(1);
+    expect(dossier.sections).toHaveLength(1);
+    expect(dossier.sections[0].facts).toHaveLength(1);
+    expect(dossier.sections[0].cards).toHaveLength(1);
+
+    const html = renderCommandResult(sanitized);
+    expect(html).toContain('dossier-section');
+    expect(html).toContain('entity-card');
+    expect(html).toContain('Руническая перчатка');
+    expect(html).toContain('Запечатанное письмо');
+    expect(html).toContain('Деньги');
+    expect(html).toContain('Нагрузка');
+    expect(html).not.toContain('💰');
+    expect(html).not.toContain('⚖');
+  });
+
   it('marks nested panels with depth so hierarchy survives visual rendering', () => {
     const blocks: UiBlock[] = [
       {
@@ -309,7 +400,9 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
 
     expect(html).toContain('entity-dossier');
-    expect(html).toContain('entity-dossier__badge entity-dossier__badge--success');
+    expect(html).toContain('dossier-layout');
+    expect(html).toContain('dossier-header');
+    expect(html).toContain('badge" data-tone="success"');
     expect(html).toContain('Мирра Ключница');
     expect(html).toContain('Смотрительница архива');
     expect(html).toContain('Знает, кто входил в покои после полуночи.');
@@ -317,6 +410,204 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     expect(html).toContain('Навыки');
     expect(html).toContain('Архивная память');
     expect(html).not.toContain('<table>');
+  });
+
+  it('renders entity dossiers through the accepted prototype layout instead of the legacy generic wrapper', () => {
+    const itemCards = Array.from({ length: 10 }, (_, index) => ({
+      kind: 'entityDossier' as const,
+      entityType: 'inventory-item-summary',
+      title: `Предмет ${index + 1}`,
+      subtitle: index % 2 === 0 ? 'Документ' : 'Артефакт',
+      summary: `Краткое описание предмета ${index + 1}.`,
+      badges: [{ label: index % 2 === 0 ? 'документ' : 'артефакт', tone: 'Accent' as const, icon: 'inventory' }],
+      media: null,
+      sections: [
+        {
+          id: 'facts',
+          title: 'Кратко',
+          summary: '',
+          icon: 'inventory',
+          collapsible: true,
+          initiallyExpanded: false,
+          blocks: [
+            {
+              kind: 'keyValueGrid' as const,
+              items: [
+                { key: 'Прочность', value: '100%' },
+                { key: 'Состояние', value: 'в порядке' }
+              ]
+            }
+          ]
+        }
+      ]
+    }));
+
+    const blocks: UiBlock[] = [
+      {
+        kind: 'entityDossier',
+        entityType: 'inventory',
+        title: 'Инвентарь',
+        subtitle: 'Снаряжение и переносимые вещи',
+        summary: 'Здесь собраны ресурсы, экипировка и предметы, доступные персонажу.',
+        badges: [{ label: '10 предметов', tone: 'Accent', icon: 'inventory' }],
+        media: {
+          kind: 'image',
+          title: 'Архивное изображение',
+          url: '/api/media/inventory',
+          mediaId: 'inventory',
+          relativePath: '',
+          altText: 'Содержимое дорожной сумки',
+          contentType: 'image/png',
+          length: 42,
+          modifiedAtUtc: '2026-06-22T00:00:00Z'
+        },
+        sections: [
+          {
+            id: 'overview',
+            title: 'Сводка',
+            summary: 'Общая нагрузка и переносимые ценности.',
+            icon: 'inventory',
+            collapsible: true,
+            initiallyExpanded: true,
+            blocks: [
+              {
+                kind: 'keyValueGrid',
+                items: [
+                  { key: 'Нагрузка', value: '2.74 / 28' },
+                  { key: 'Деньги', value: '500' }
+                ]
+              }
+            ]
+          },
+          {
+            id: 'items',
+            title: 'Предметы',
+            summary: '10 предметов в инвентаре.',
+            icon: 'inventory',
+            collapsible: true,
+            initiallyExpanded: true,
+            blocks: itemCards
+          }
+        ]
+      }
+    ];
+
+    const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
+
+    expect(html).toContain('dossier-layout');
+    expect(html).toContain('dossier-main');
+    expect(html).toContain('dossier-toc');
+    expect(html).toContain('dossier-header');
+    expect(html).toContain('dossier-title-row');
+    expect(html).toContain('dossier-icon');
+    expect(html).toContain('badge-row');
+    expect(html).toContain('badge" data-tone="accent"');
+    expect(html).toContain('dossier-media');
+    expect(html).toContain('media-preview');
+    expect(html).toContain('dossier-body');
+    expect(html).toContain('dossier-section');
+    expect(html).toContain('dossier-section__summary');
+    expect(html).toContain('collapse-pill');
+    expect(html).toContain('fact-grid');
+    expect(html).toContain('fact-card');
+    expect(html).toContain('collection-browser');
+    expect(html).toContain('collection-featured-card');
+    expect(html).toContain('collection-search');
+    expect(html).toContain('collection-filter');
+    expect(html).toContain('collection-workbench');
+    expect(html).toContain('collection-list-item');
+    expect(html).toContain('collection-detail-panel');
+    expect(html).not.toContain('entity-dossier__header');
+    expect(html).not.toContain('entity-dossier__sections');
+  });
+
+  it('renders requested entity collections as a selector even when the list is short', () => {
+    const cards = ['Мариус де Гран', 'Ворон Рилль', 'Ирен Соль'].map((title) => ({
+      title,
+      subtitle: 'Персонаж мира',
+      summary: 'Связан с ночным письмом в покоях виконта.',
+      icon: 'npc',
+      badges: [{ label: 'в кадре', tone: 'Accent' as const, icon: 'npc' }],
+      media: null,
+      facts: [
+        { label: 'Роль', value: 'участник сцены' },
+        { label: 'Отношение', value: 'настороженное' }
+      ],
+      metrics: [],
+      hints: [],
+      list: [],
+      nested: [],
+      cards: []
+    }));
+
+    const html = renderToStaticMarkup(<BlockList blocks={[{
+      kind: 'entityDossier',
+      entityType: 'npc-collection',
+      title: 'Персонажи',
+      subtitle: 'Люди в сцене',
+      summary: 'Выберите персонажа, чтобы рассмотреть его досье.',
+      badges: [{ label: '3 персонажа', tone: 'Accent', icon: 'npc' }],
+      media: null,
+      facts: [],
+      metrics: [],
+      hints: [],
+      list: [],
+      cards: [],
+      sections: [
+        {
+          id: 'npcs',
+          title: 'Персонажи',
+          summary: 'Кто сейчас связан со сценой.',
+          icon: 'npc',
+          collectionLabel: '3 персонажа',
+          presentation: 'collection',
+          collapsible: true,
+          initiallyExpanded: true,
+          facts: [],
+          metrics: [],
+          hints: [],
+          list: [],
+          cards,
+          blocks: []
+        }
+      ]
+    }]} />);
+
+    expect(html).toContain('collection-browser');
+    expect(html).toContain('collection-list-item');
+    expect(html).toContain('collection-detail-panel');
+    expect(html).toContain('Мариус де Гран');
+    expect(html).not.toContain('card-grid');
+  });
+
+  it('breaks structured fact values into readable localized rows instead of one semicolon line', () => {
+    const html = renderToStaticMarkup(<BlockList blocks={[{
+      kind: 'entityDossier',
+      entityType: 'characteristics',
+      title: 'Характеристики',
+      subtitle: 'Расчётные показатели',
+      summary: '',
+      badges: [],
+      media: null,
+      facts: [
+        {
+          label: 'final',
+          value: 'strength: 5; dexterity: 7; constitution: 6; intelligence: 13; wisdom: 10; perception: 11; luck: 7'
+        }
+      ],
+      metrics: [],
+      hints: [],
+      list: [],
+      cards: [],
+      sections: []
+    }]} />);
+
+    expect(html).toContain('structured-fact-list');
+    expect(html).toContain('<dt>Сила</dt>');
+    expect(html).toContain('<dd>5</dd>');
+    expect(html).toContain('<dt>Ловкость</dt>');
+    expect(html).toContain('<dt>Восприятие</dt>');
+    expect(html).not.toContain('strength: 5; dexterity: 7');
   });
 
   it('keeps local map media URLs renderable while still showing player-facing location details', () => {

@@ -599,44 +599,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     ("Режим браузера", "локальная прокачка доступна через форму")))
         };
 
-        blocks.Add(new UiTableBlock
-        {
-            Title = "Стандартные духовные искусства",
-            Columns = ["Искусство", "Тир", "Назначение", "Стоимость/темп"],
-            Rows = AfterlifeSpiritualConflictState.SpiritualArts
-                .Select(art => new UiTableRow
-                {
-                    Cells =
-                    [
-                        art.DisplayName,
-                        GetNumberOrString(standardArts, art.ArtId, "0"),
-                        art.MechanicalUse,
-                        DescribeArtCost(art.ArtId)
-                    ]
-                })
-                .ToList()
-        });
+        blocks.Add(BuildStandardSpiritualArtsDossier(standardArts));
 
         if (learnedSpecialArts is { Count: > 0 })
         {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Особые духовные искусства игрока",
-                Columns = ["Название", "Основа", "Тир", "Эффект", "Стоимость"],
-                Rows = learnedSpecialArts.OfType<JsonObject>()
-                    .Select(art => new UiTableRow
-                    {
-                        Cells =
-                        [
-                            GetString(art, "displayName", GetString(art, "artId", "Без названия")),
-                            DescribeArt(GetString(art, "baseOperation", "?")),
-                            GetNumberOrString(art, "tier", "0"),
-                            DescribeSpecialArtEffect(art),
-                            DescribeSpecialArtCost(art)
-                        ]
-                    })
-                    .ToList()
-            });
+            blocks.Add(BuildSpecialSpiritualArtsDossier(learnedSpecialArts));
         }
         else
         {
@@ -671,6 +638,139 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 }
             ]);
     }
+
+    private static UiEntityDossierBlock BuildStandardSpiritualArtsDossier(JsonObject? standardArts) =>
+        new()
+        {
+            EntityType = "spiritual-arts-standard",
+            Title = "Стандартные духовные искусства",
+            Summary = "Базовые приёмы духовного боя. Уровни уменьшают стоимость и расширяют тактические возможности.",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "standard-spiritual-arts",
+                    Title = "Приёмы",
+                    Icon = "sparkles",
+                    Presentation = "cards",
+                    CollectionLabel = $"{AfterlifeSpiritualConflictState.SpiritualArts.Count} искусств",
+                    Cards = AfterlifeSpiritualConflictState.SpiritualArts
+                        .Select(art => new UiEntityCard
+                        {
+                            Title = art.DisplayName,
+                            Subtitle = DescribeArt(art.ArtId),
+                            Icon = "sparkles",
+                            Summary = DescribeStandardArtUse(art.ArtId),
+                            Facts =
+                            [
+                                new UiEntityFact { Label = "Текущий тир", Value = GetNumberOrString(standardArts, art.ArtId, "0") },
+                                new UiEntityFact { Label = "Стоимость и темп", Value = DescribeArtCost(art.ArtId) },
+                                new UiEntityFact { Label = "Сильно против", Value = DescribeStrongAgainst(art.ArtId) },
+                                new UiEntityFact { Label = "Чем перекрывается", Value = DescribeCounteredBy(art.ArtId) }
+                            ],
+                            Hints =
+                            [
+                                new UiEntityHint
+                                {
+                                    Title = "Игровое применение",
+                                    Text = DescribeStandardArtUse(art.ArtId),
+                                    Tone = UiTone.Default
+                                }
+                            ]
+                        })
+                        .ToList()
+                }
+            ]
+        };
+
+    private static UiEntityDossierBlock BuildSpecialSpiritualArtsDossier(JsonArray learnedSpecialArts) =>
+        new()
+        {
+            EntityType = "spiritual-arts-special",
+            Title = "Особые духовные искусства игрока",
+            Summary = "Уникальные приёмы души. Их эффект читается отдельно от стоимости и боевых ограничений.",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "special-spiritual-arts",
+                    Title = "Изученные особые искусства",
+                    Icon = "sparkles",
+                    Presentation = "cards",
+                    CollectionLabel = $"{learnedSpecialArts.Count} искусств",
+                    Cards = learnedSpecialArts.OfType<JsonObject>().Select(BuildSpecialSpiritualArtCard).ToList()
+                }
+            ]
+        };
+
+    private static UiEntityCard BuildSpecialSpiritualArtCard(JsonObject art)
+    {
+        var combatEffect = art["combatEffect"] as JsonObject;
+        var effectSummary = SafePlayerText(GetString(art, "effectSummary", ""), "эффект не описан");
+        var combatSummary = SafePlayerText(GetString(combatEffect, "summary", ""), string.Empty);
+
+        var facts = new List<UiEntityFact>
+        {
+            new() { Label = "Основа", Value = DescribeArt(GetString(art, "baseOperation", "?")) },
+            new() { Label = "Тир", Value = GetNumberOrString(art, "tier", "0") },
+            new() { Label = "Стоимость", Value = DescribeSpecialArtCost(art) }
+        };
+
+        if (combatEffect != null)
+        {
+            AddSpecialArtCombatFact(facts, "Триггер", DescribeArt(GetString(combatEffect, "trigger", "")));
+            AddSpecialArtCombatFact(facts, "Выигрыш", DescribeSpecialArtPayoff(GetString(combatEffect, "allowedPayoff", "")));
+            AddSpecialArtCombatFact(facts, "Предел", DescribeSpecialArtLimit(GetString(combatEffect, "limit", "")));
+        }
+
+        var hints = new List<UiEntityHint>
+        {
+            new() { Title = "Эффект", Text = effectSummary, Tone = UiTone.Default }
+        };
+        if (!string.IsNullOrWhiteSpace(combatSummary))
+            hints.Add(new UiEntityHint { Title = "В духовном бою", Text = combatSummary, Tone = UiTone.Accent });
+
+        return new UiEntityCard
+        {
+            Title = GetString(art, "displayName", GetString(art, "artId", "Без названия")),
+            Subtitle = DescribeArt(GetString(art, "baseOperation", "?")),
+            Icon = "sparkles",
+            Summary = effectSummary,
+            Facts = facts,
+            Hints = hints
+        };
+    }
+
+    private static void AddSpecialArtCombatFact(List<UiEntityFact> facts, string label, string value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value == "?")
+            return;
+
+        facts.Add(new UiEntityFact { Label = label, Value = value });
+    }
+
+    private static string DescribeSpecialArtPayoff(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "position" => "позиционное преимущество",
+            "strain" => "изменение напряжения",
+            "guard" => "защитная позиция",
+            "pressure" => "усиление давления",
+            "counter" => "контрприём",
+            "maneuver" => "манёвр",
+            "binding" => "оковы",
+            "break_binding" => "разрыв оков",
+            _ => SafePlayerText(value, string.Empty)
+        };
+
+    private static string DescribeSpecialArtLimit(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "once_per_exchange" => "один раз за обмен",
+            "once_per_conflict" => "один раз за конфликт",
+            "once_per_turn" => "один раз за ход",
+            _ => SafePlayerText(value, string.Empty)
+        };
 
     private static ExplorerCommandResult BuildProfileDetail(
         string command,

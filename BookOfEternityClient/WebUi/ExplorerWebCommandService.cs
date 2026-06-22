@@ -156,7 +156,7 @@ public sealed class ExplorerWebCommandService
         if (!string.Equals(metadata.Surface, "player-default", StringComparison.OrdinalIgnoreCase))
             return result;
 
-        return new ExplorerCommandResult
+        var projected = new ExplorerCommandResult
         {
             Command = result.Command,
             State = result.State,
@@ -166,6 +166,8 @@ public sealed class ExplorerWebCommandService
             Notifications = result.Notifications,
             InteractiveSession = result.InteractiveSession
         };
+
+        return BrowserEntityDossierPrototypeNormalizer.Normalize(projected);
     }
 
     private static List<UiBlock> ProjectPlayerDefaultBlocks(IEnumerable<UiBlock> blocks)

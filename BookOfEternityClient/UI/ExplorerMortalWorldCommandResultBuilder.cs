@@ -1329,98 +1329,357 @@ public static class ExplorerMortalWorldCommandResultBuilder
         IReadOnlyList<string> npcNames)
     {
         var blocks = new List<UiBlock>();
-        if (summaryItems.Count > 0)
+        var projectedNames = projections
+            .Select(static projection => projection.NpcName)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var npcCards = new List<UiBlock>();
+        npcCards.AddRange(projections.Select(BuildNpcOverviewCard));
+        npcCards.AddRange(npcNames
+            .Where(npcName => !projectedNames.Contains(npcName))
+            .Select(BuildNpcOverviewCard));
+
+        if (npcCards.Count > 0)
         {
-            blocks.Add(new UiPanelBlock
+            blocks.Add(new UiEntityDossierBlock
             {
+                EntityType = "npc-collection",
                 Title = "Персонажи",
-                Blocks =
+                Subtitle = "Досье людей в сцене",
+                Summary = "Выберите персонажа, чтобы рассмотреть его мысли, отношения, задачи и игровые свойства.",
+                Badges =
                 [
-                    new UiKeyValueGridBlock
+                    new UiEntityBadge
                     {
-                        Items = summaryItems.ToList()
+                        Label = FormatRussianCount(npcCards.Count, "персонаж", "персонажа", "персонажей"),
+                        Tone = UiTone.Accent,
+                        Icon = "npc"
+                    }
+                ],
+                Facts = summaryItems
+                    .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                    .ToList(),
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "npcs",
+                        Title = "Персонажи",
+                        Summary = "Короткий список остаётся списком выбора, а полное досье выбранного персонажа раскрывается в отдельной панели.",
+                        Icon = "npc",
+                        CollectionLabel = FormatRussianCount(npcCards.Count, "персонаж", "персонажа", "персонажей"),
+                        Presentation = "collection",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = npcCards
                     }
                 ]
             });
         }
-
-        foreach (var projection in projections)
-            blocks.Add(BuildNpcOverviewCard(projection));
-
-        var projectedNames = projections
-            .Select(static projection => projection.NpcName)
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
-        foreach (var npcName in npcNames.Where(npcName => !projectedNames.Contains(npcName)))
-            blocks.Add(BuildNpcOverviewCard(npcName));
 
         return blocks;
     }
 
     private static UiEntityDossierBlock BuildNpcOverviewCard(NpcDetailProjection projection)
     {
-        var sectionItems = projection.Sections
-            .Select(section => $"{section.Label}: {section.Hint}")
-            .Where(static value => !string.IsNullOrWhiteSpace(value))
+        return new UiEntityDossierBlock
+        {
+            EntityType = "npc",
+            Title = projection.NpcName,
+            Subtitle = "Персонаж мира",
+            Summary = "Мысли, задачи, отношения и игровые свойства раскрыты ниже в досье персонажа.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = "персонаж мира",
+                    Tone = projection.Sections.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                    Icon = "npc"
+                }
+            ],
+            Sections = projection.Sections
+                .Select(static section => new UiEntityDossierSection
+                {
+                    Id = section.Id,
+                    Title = section.Label,
+                    Summary = string.Empty,
+                    Icon = "npc",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = BuildNpcOverviewSectionBlocks(section)
+                })
+                .ToList()
+        };
+    }
+
+    private static List<UiBlock> BuildNpcOverviewSectionBlocks(NpcDetailSection section) =>
+        section.Blocks
+            .SelectMany(FlattenNpcOverviewBlock)
             .ToList();
-        return BuildNpcOverviewCard(projection.NpcName, sectionItems);
+
+    private static IEnumerable<UiBlock> FlattenNpcOverviewBlock(UiBlock block)
+    {
+        if (block is UiEntityDossierBlock dossier &&
+            string.Equals(dossier.EntityType, "npc-section", StringComparison.OrdinalIgnoreCase))
+        {
+            foreach (var section in dossier.Sections)
+            {
+                foreach (var child in section.Blocks)
+                {
+                    var sanitized = SanitizeNpcOverviewBlock(child);
+                    if (sanitized != null)
+                        yield return sanitized;
+                }
+            }
+
+            yield break;
+        }
+
+        var normalized = SanitizeNpcOverviewBlock(block);
+        if (normalized != null)
+            yield return normalized;
+    }
+
+    private static UiBlock? SanitizeNpcOverviewBlock(UiBlock block) =>
+        block switch
+        {
+            UiEntityDossierBlock dossier => SanitizeNpcOverviewDossier(dossier),
+            UiPanelBlock panel => new UiPanelBlock
+            {
+                Title = panel.Title,
+                Blocks = panel.Blocks
+                    .Select(SanitizeNpcOverviewBlock)
+                    .Where(static child => child != null)
+                    .Cast<UiBlock>()
+                    .ToList()
+            },
+            UiKeyValueGridBlock grid => SanitizeNpcOverviewGrid(grid),
+            UiListBlock list => new UiListBlock
+            {
+                Ordered = list.Ordered,
+                Items = list.Items
+                    .Select(RemoveNpcOverviewHiddenSegments)
+                    .Where(static item => !string.IsNullOrWhiteSpace(item))
+                    .ToList()
+            },
+            UiTextBlock text => string.IsNullOrWhiteSpace(RemoveNpcOverviewHiddenSegments(text.Text))
+                ? null
+                : new UiTextBlock { Text = RemoveNpcOverviewHiddenSegments(text.Text), Tone = text.Tone },
+            _ => block
+        };
+
+    private static UiEntityDossierBlock SanitizeNpcOverviewDossier(UiEntityDossierBlock dossier) =>
+        new()
+        {
+            EntityType = dossier.EntityType,
+            Title = dossier.Title,
+            Subtitle = dossier.Subtitle,
+            Summary = IsNpcOverviewSectionContainer(dossier)
+                ? string.Empty
+                : RemoveNpcOverviewHiddenSegments(dossier.Summary),
+            Badges = dossier.Badges,
+            Media = dossier.Media,
+            Facts = dossier.Facts
+                .Select(static fact => new UiEntityFact
+                {
+                    Label = fact.Label,
+                    Value = RemoveNpcOverviewHiddenSegments(fact.Value)
+                })
+                .Where(static fact => !string.IsNullOrWhiteSpace(fact.Value))
+                .ToList(),
+            Metrics = dossier.Metrics,
+            Hints = dossier.Hints
+                .Select(static hint => new UiEntityHint
+                {
+                    Title = hint.Title,
+                    Text = RemoveNpcOverviewHiddenSegments(hint.Text),
+                    Tone = hint.Tone
+                })
+                .Where(static hint => !string.IsNullOrWhiteSpace(hint.Text))
+                .ToList(),
+            List = dossier.List
+                .Select(RemoveNpcOverviewHiddenSegments)
+                .Where(static item => !string.IsNullOrWhiteSpace(item))
+                .ToList(),
+            Cards = dossier.Cards
+                .Select(SanitizeNpcOverviewCard)
+                .Where(static card => card != null)
+                .Cast<UiEntityCard>()
+                .ToList(),
+            Sections = dossier.Sections
+                .Select(SanitizeNpcOverviewSection)
+                .Where(static section => section != null)
+                .Cast<UiEntityDossierSection>()
+                .ToList()
+        };
+
+    private static bool IsNpcOverviewSectionContainer(UiEntityDossierBlock dossier) =>
+        string.Equals(dossier.EntityType, "npc-section", StringComparison.OrdinalIgnoreCase);
+
+    private static UiEntityDossierSection? SanitizeNpcOverviewSection(UiEntityDossierSection section)
+    {
+        var blocks = section.Blocks
+            .Select(SanitizeNpcOverviewBlock)
+            .Where(static block => block != null)
+            .Cast<UiBlock>()
+            .ToList();
+        if (blocks.Count == 0 &&
+            section.Facts.Count == 0 &&
+            section.Cards.Count == 0 &&
+            section.List.Count == 0)
+        {
+            return null;
+        }
+
+        return new UiEntityDossierSection
+        {
+            Id = section.Id,
+            Title = section.Title,
+            Summary = RemoveNpcOverviewHiddenSegments(section.Summary),
+            Icon = section.Icon,
+            CollectionLabel = section.CollectionLabel,
+            Presentation = section.Presentation,
+            Collapsible = section.Collapsible,
+            InitiallyExpanded = section.InitiallyExpanded,
+            Facts = section.Facts
+                .Select(static fact => new UiEntityFact
+                {
+                    Label = fact.Label,
+                    Value = RemoveNpcOverviewHiddenSegments(fact.Value)
+                })
+                .Where(static fact => !string.IsNullOrWhiteSpace(fact.Value))
+                .ToList(),
+            Metrics = section.Metrics,
+            Hints = section.Hints
+                .Select(static hint => new UiEntityHint
+                {
+                    Title = hint.Title,
+                    Text = RemoveNpcOverviewHiddenSegments(hint.Text),
+                    Tone = hint.Tone
+                })
+                .Where(static hint => !string.IsNullOrWhiteSpace(hint.Text))
+                .ToList(),
+            List = section.List
+                .Select(RemoveNpcOverviewHiddenSegments)
+                .Where(static item => !string.IsNullOrWhiteSpace(item))
+                .ToList(),
+            Cards = section.Cards
+                .Select(SanitizeNpcOverviewCard)
+                .Where(static card => card != null)
+                .Cast<UiEntityCard>()
+                .ToList(),
+            Blocks = blocks
+        };
+    }
+
+    private static UiEntityCard? SanitizeNpcOverviewCard(UiEntityCard card)
+    {
+        var summary = RemoveNpcOverviewHiddenSegments(card.Summary);
+        return new UiEntityCard
+        {
+            Title = card.Title,
+            Subtitle = card.Subtitle,
+            Summary = summary,
+            Icon = card.Icon,
+            Badges = card.Badges,
+            Media = card.Media,
+            Facts = card.Facts
+                .Select(static fact => new UiEntityFact
+                {
+                    Label = fact.Label,
+                    Value = RemoveNpcOverviewHiddenSegments(fact.Value)
+                })
+                .Where(static fact => !string.IsNullOrWhiteSpace(fact.Value))
+                .ToList(),
+            Metrics = card.Metrics,
+            Hints = card.Hints
+                .Select(static hint => new UiEntityHint
+                {
+                    Title = hint.Title,
+                    Text = RemoveNpcOverviewHiddenSegments(hint.Text),
+                    Tone = hint.Tone
+                })
+                .Where(static hint => !string.IsNullOrWhiteSpace(hint.Text))
+                .ToList(),
+            List = card.List
+                .Select(RemoveNpcOverviewHiddenSegments)
+                .Where(static item => !string.IsNullOrWhiteSpace(item))
+                .ToList(),
+            Nested = card.Nested
+                .Select(SanitizeNpcOverviewCard)
+                .Where(static nested => nested != null)
+                .Cast<UiEntityCard>()
+                .ToList(),
+            Cards = card.Cards
+                .Select(SanitizeNpcOverviewCard)
+                .Where(static nested => nested != null)
+                .Cast<UiEntityCard>()
+                .ToList()
+        };
+    }
+
+    private static UiKeyValueGridBlock SanitizeNpcOverviewGrid(UiKeyValueGridBlock grid) =>
+        new()
+        {
+            Items = grid.Items
+                .Select(static item => new UiKeyValueItem
+                {
+                    Key = item.Key,
+                    Value = RemoveNpcOverviewHiddenSegments(item.Value)
+                })
+                .Where(static item => !string.IsNullOrWhiteSpace(item.Value))
+                .ToList()
+        };
+
+    private static string RemoveNpcOverviewHiddenSegments(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var parts = value
+            .Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .Where(static part => !IsNpcOverviewHiddenSegment(part))
+            .ToList();
+
+        if (parts.Count == 0)
+            return string.Empty;
+
+        return string.Join("; ", parts);
+    }
+
+    private static bool IsNpcOverviewHiddenSegment(string part)
+    {
+        var normalized = part.Trim().ToLowerInvariant();
+        return normalized.StartsWith("награда:", StringComparison.Ordinal) ||
+               normalized.StartsWith("провал:", StringComparison.Ordinal) ||
+               normalized.StartsWith("reward:", StringComparison.Ordinal) ||
+               normalized.StartsWith("failure", StringComparison.Ordinal);
     }
 
     private static UiEntityDossierBlock BuildNpcOverviewCard(string npcName)
     {
-        return BuildNpcOverviewCard(npcName, []);
-    }
-
-    private static UiEntityDossierBlock BuildNpcOverviewCard(string npcName, IReadOnlyList<string> sectionItems)
-    {
-        var blocks = new List<UiBlock>
-        {
-            new UiKeyValueGridBlock
-            {
-                Items =
-                [
-                    new UiKeyValueItem
-                    {
-                        Key = "Доступные разделы",
-                        Value = FormatRussianCount(sectionItems.Count, "раздел", "раздела", "разделов")
-                    }
-                ]
-            }
-        };
-
-        if (sectionItems.Count > 0)
-            blocks.Add(new UiListBlock { Items = sectionItems.ToList() });
-        else
-            blocks.Add(new UiTextBlock { Text = "Подробные разделы пока не заполнены.", Tone = UiTone.Muted });
-
-        var sectionCount = FormatRussianCount(sectionItems.Count, "раздел", "раздела", "разделов");
         return new UiEntityDossierBlock
         {
             EntityType = "npc",
             Title = npcName,
             Subtitle = "Персонаж мира",
-            Summary = sectionItems.Count > 0
-                ? "Краткая карточка персонажа. Подробности открываются отдельными действиями из списка."
-                : "Для персонажа пока нет подробных разделов.",
+            Summary = "Персонаж найден в основных данных, но подробное досье пока не заполнено.",
             Badges =
             [
                 new UiEntityBadge
                 {
-                    Label = sectionCount,
-                    Tone = sectionItems.Count > 0 ? UiTone.Accent : UiTone.Muted,
-                    Icon = "section"
+                    Label = "нет подробностей",
+                    Tone = UiTone.Muted,
+                    Icon = "npc"
                 }
             ],
-            Sections =
+            Hints =
             [
-                new UiEntityDossierSection
+                new UiEntityHint
                 {
-                    Id = "overview",
-                    Title = "Доступные разделы",
-                    Summary = "Выберите действие ниже, чтобы открыть конкретный раздел без вывода всего досье одним полотном.",
-                    Icon = "archive",
-                    Collapsible = true,
-                    InitiallyExpanded = true,
-                    Blocks = blocks
+                    Title = "Пока без досье",
+                    Text = "ГМ ещё не добавил мысли, отношения, задачи или игровые свойства этого персонажа.",
+                    Tone = UiTone.Muted
                 }
             ]
         };
@@ -2097,6 +2356,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
                         Icon = "map"
                     }
                 ],
+                Facts = BuildWorldTimeItems(UnwrapWorldTimeNode(timeRead.Node))
+                    .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                    .ToList(),
                 Sections = sections
             });
         }
@@ -2145,6 +2407,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
                         Icon = "weather"
                     }
                 ],
+                Facts = BuildWorldTimeItems(UnwrapWorldTimeNode(timeRead.Node))
+                    .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                    .ToList(),
                 Sections = sections
             });
         }
@@ -2557,10 +2822,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
             sections.Add(new UiEntityDossierSection
             {
                 Id = "entries",
-                Title = "Записи",
-                Summary = "Выберите запись, чтобы открыть полную карточку с подробностями.",
-                Icon = "reference",
-                Collapsible = true,
+                    Title = "Записи",
+                    Summary = "Выберите запись, чтобы открыть полную карточку с подробностями.",
+                    Icon = "reference",
+                    Presentation = "collection",
+                    Collapsible = true,
                 InitiallyExpanded = true,
                 Blocks = entries
                     .Select(entry => (UiBlock)BuildReferenceOverviewCard(entry))
@@ -6979,6 +7245,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     Title = "Предметы",
                     Summary = $"{itemCards.Count} предметов в инвентаре.",
                     Icon = "inventory",
+                    Presentation = "collection",
                     Collapsible = true,
                     InitiallyExpanded = true,
                     Blocks = itemCards
