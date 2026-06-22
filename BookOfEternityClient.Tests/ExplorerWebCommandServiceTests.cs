@@ -689,6 +689,31 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Theory]
+    [InlineData("/квесты", "reference-bundle", "Квесты")]
+    [InlineData("/навыки", "reference-bundle", "Навыки")]
+    [InlineData("/фракции", "reference-bundle", "Фракции")]
+    [InlineData("/чужие_нити", "reference-bundle", "Чужие нити")]
+    [InlineData("/коррективы_хранителя", "reference-bundle", "Коррективы Хранителя")]
+    [InlineData("/доступ_к_хранилищам", "reference-bundle", "Доступ к хранилищам")]
+    public async Task ExecuteAsync_MortalReferenceOverview_RendersDossierCardsWithoutTables(
+        string command,
+        string expectedEntityType,
+        string expectedTitle)
+    {
+        await SeedRichMortalReferenceDetailFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), block =>
+            block.EntityType == expectedEntityType &&
+            block.Title.Equals(expectedTitle, StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        AssertNoFlattenedStructuredDetails(result);
+    }
+
+    [Theory]
     [InlineData("/квесты квест quest_winged_seal", "Квест: Печать с крыльями", "вернуть письмо")]
     [InlineData("/навыки навык skill_arcane_sense", "Навык: Чувство магических потоков", "Видит слабые печати")]
     [InlineData("/фракции фракция faction_city_watch", "Фракция: Городская стража", "удерживает северные ворота")]
@@ -712,6 +737,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var payload = SerializeResult(result);
         Assert.Contains(expectedTitle, text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(expectedDetail, text, StringComparison.OrdinalIgnoreCase);
+        if (!command.StartsWith("/транспорт", StringComparison.OrdinalIgnoreCase))
+            Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         AssertNoFlattenedStructuredDetails(result);
         Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("DTO", payload, StringComparison.OrdinalIgnoreCase);

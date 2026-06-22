@@ -2391,7 +2391,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (request.Kind != ReferenceDetailKind.Overview)
             return BuildReferenceDetail(command, commandToken, definition, reads.Values, entries, request);
 
-        var rows = new List<UiTableRow>();
+        var summaryItems = new List<UiKeyValueItem>();
         foreach (var spec in definition.Specs)
         {
             var read = reads[spec.Path];
@@ -2399,24 +2399,67 @@ public static class ExplorerMortalWorldCommandResultBuilder
             if (status == "отсутствует")
                 continue;
 
-            rows.Add(new UiTableRow
+            summaryItems.Add(new UiKeyValueItem
             {
-                Cells =
-                [
-                    spec.Label,
-                    status
-                ]
+                Key = spec.Label,
+                Value = status
             });
         }
 
         var blocks = new List<UiBlock>();
-        if (rows.Count > 0)
+        var sections = new List<UiEntityDossierSection>();
+        if (summaryItems.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "summary",
+                Title = "Сводка",
+                Summary = "Короткая сводка по доступным записям этого раздела.",
+                Icon = "reference",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = summaryItems }]
+            });
+        }
+
+        if (entries.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "records",
+                Title = "Записи",
+                Summary = "Выберите запись, чтобы открыть полную карточку с подробностями.",
+                Icon = "reference",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = entries
+                    .Select(entry => (UiBlock)BuildReferenceOverviewCard(entry))
+                    .ToList()
+            });
+        }
+
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "reference-bundle",
                 Title = definition.Title,
-                Columns = ["Раздел", "Состояние"],
-                Rows = rows
+                Subtitle = "Обзор записей",
+                Summary = entries.Count > 0
+                    ? DescribeInventoryCount(entries.Count, "запись", "записи", "записей")
+                    : "Записи этого раздела пока не найдены.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = entries.Count > 0
+                            ? DescribeInventoryCount(entries.Count, "запись", "записи", "записей")
+                            : "пусто",
+                        Tone = entries.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                        Icon = "reference"
+                    }
+                ],
+                Sections = sections
             });
         }
         else
@@ -2424,28 +2467,45 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Info, definition.Title, "Данные ещё не созданы."));
         }
 
-        if (entries.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = $"{definition.Title}: записи",
-                Columns = ["Запись", "Раздел", "Кратко", "Подробно"],
-                Rows = entries.Select(entry => new UiTableRow
-                {
-                    Cells =
-                    [
-                        entry.Title,
-                        entry.Section,
-                        EmptyFallback(entry.Summary),
-                        BuildReferenceDetailCommand(commandToken, definition, entry.Selector)
-                    ]
-                }).ToList()
-            });
-        }
-
         AddReferenceReadWarnings(blocks, definition.Title, reads.Values);
-        AddReferenceRawState(blocks, definition.Title, reads.Values);
         return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
+    }
+
+    private static UiEntityDossierBlock BuildReferenceOverviewCard(ReferenceEntrySnapshot entry)
+    {
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = entry.Section }
+        };
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "reference-entry",
+            Title = entry.Title,
+            Subtitle = entry.Section,
+            Summary = FirstNonEmpty(entry.Summary, "Подробности доступны в карточке записи."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = entry.Section,
+                    Tone = UiTone.Accent,
+                    Icon = "reference"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "reference",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
     }
 
     private static ExplorerCommandResult BuildReferenceDetail(
@@ -2497,8 +2557,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         var detailItems = new List<UiKeyValueItem>
         {
-            new() { Key = "Раздел", Value = entry.Section },
-            new() { Key = "Метка", Value = entry.Selector }
+            new() { Key = "Раздел", Value = entry.Section }
         };
 
         AddReferenceDetailItem(detailItems, "Состояние", DescribeReferenceStatus(FirstReferenceNodeString(entry.Node, "status", "state", "stage", "phase", "accessLevel", "availability")));
@@ -2516,10 +2575,34 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddReferenceAdditionalDetailBlocks(detailBlocks, entry.Node);
         AddStructuredBonusBlock(detailBlocks, entry.Node["structuredBonuses"] as JsonArray);
 
-        return new UiPanelBlock
+        return new UiEntityDossierBlock
         {
+            EntityType = "reference-detail",
             Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
-            Blocks = detailBlocks
+            Subtitle = entry.Section,
+            Summary = FirstNonEmpty(entry.Summary, FirstReferenceNodeString(entry.Node, "description", "summary", "objective", "visibleReason", "scenarioCore")),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = entry.Section,
+                    Tone = UiTone.Accent,
+                    Icon = "reference"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "details",
+                    Title = "Сведения",
+                    Summary = "Игровые сведения записи без технических полей.",
+                    Icon = "reference",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = detailBlocks
+                }
+            ]
         };
     }
 
@@ -2708,14 +2791,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
         };
     }
 
-    private static UiPanelBlock BuildFactionReferenceDetailPanel(
+    private static UiEntityDossierBlock BuildFactionReferenceDetailPanel(
         ReferenceCommandDefinition definition,
         ReferenceEntrySnapshot entry)
     {
         var detailItems = new List<UiKeyValueItem>
         {
-            new() { Key = "Раздел", Value = entry.Section },
-            new() { Key = "Метка", Value = entry.Selector }
+            new() { Key = "Раздел", Value = entry.Section }
         };
 
         AddReferenceDetailItem(detailItems, "Описание", FirstNonEmpty(FirstReferenceNodeString(entry.Node, "description", "summary"), entry.Summary));
@@ -2729,45 +2811,150 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddReferenceDetailItem(detailItems, "Сила фракции", FirstReferenceNodeString(entry.Node, "factionStrength", "strength", "power"));
         AddReferenceDetailItem(detailItems, "Цель", FirstReferenceNodeString(entry.Node, "currentObjective", "objective", "strategy"));
 
-        var blocks = new List<UiBlock> { new UiKeyValueGridBlock { Items = detailItems } };
+        var sections = new List<UiEntityDossierSection>
+        {
+            new()
+            {
+                Id = "overview",
+                Title = "Сведения",
+                Summary = "Основное положение фракции и отношение к герою.",
+                Icon = "factions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = detailItems }]
+            }
+        };
 
         var powerRows = BuildFactionPowerRows(entry.Node["powerProfile"]);
         if (powerRows.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "power",
                 Title = "Профиль силы",
-                Columns = ["Параметр", "Значение"],
-                Rows = powerRows
+                Summary = "Как фракция распределяет влияние между военной, экономической и скрытой силой.",
+                Icon = "factions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
+                [
+                    new UiKeyValueGridBlock
+                    {
+                        Items = powerRows
+                            .Where(static row => row.Cells.Count >= 2)
+                            .Select(static row => new UiKeyValueItem { Key = row.Cells[0], Value = row.Cells[1] })
+                            .ToList()
+                    }
+                ]
             });
         }
 
         var resourceRows = BuildFactionResourceRows(entry.Node["metaResources"] ?? entry.Node["resources"] ?? entry.Node["strategicGoods"]);
         if (resourceRows.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "resources",
                 Title = "Ресурсы",
-                Columns = ["Ресурс", "Запас", "Доход/ход", "Содержание/ход"],
-                Rows = resourceRows
+                Summary = "Запасы и поток ресурсов, которыми фракция может распоряжаться.",
+                Icon = "factions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = resourceRows
+                    .Select(row => (UiBlock)BuildReferenceRowDossier(
+                        "faction-resource",
+                        "Ресурс",
+                        ["Ресурс", "Запас", "Доход за ход", "Содержание за ход"],
+                        row))
+                    .ToList()
             });
         }
 
         var rankRows = BuildFactionRankRows(entry.Node["ranks"] ?? entry.Node["rankLadder"]);
         if (rankRows.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "ranks",
                 Title = "Ранги и доступ",
-                Columns = ["Ранг", "Ветвь", "Преимущества"],
-                Rows = rankRows
+                Summary = "Что дают ранги и ветви отношений внутри фракции.",
+                Icon = "factions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = rankRows
+                    .Select(row => (UiBlock)BuildReferenceRowDossier(
+                        "faction-rank",
+                        "Ранг",
+                        ["Ранг", "Ветвь", "Преимущества"],
+                        row))
+                    .ToList()
             });
         }
 
-        return new UiPanelBlock
+        return new UiEntityDossierBlock
         {
+            EntityType = "faction",
             Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
-            Blocks = blocks
+            Subtitle = entry.Section,
+            Summary = FirstNonEmpty(
+                FirstReferenceNodeString(entry.Node, "description", "summary"),
+                entry.Summary),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = "Фракция",
+                    Tone = UiTone.Accent,
+                    Icon = "factions"
+                }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static UiEntityDossierBlock BuildReferenceRowDossier(
+        string entityType,
+        string subtitle,
+        IReadOnlyList<string> columns,
+        UiTableRow row)
+    {
+        var title = row.Cells.Count > 0 && !string.IsNullOrWhiteSpace(row.Cells[0])
+            ? row.Cells[0]
+            : subtitle;
+        var facts = new List<UiKeyValueItem>();
+        for (var index = 1; index < row.Cells.Count; index++)
+        {
+            var value = row.Cells[index];
+            if (string.IsNullOrWhiteSpace(value))
+                continue;
+
+            facts.Add(new UiKeyValueItem
+            {
+                Key = index < columns.Count ? columns[index] : $"Поле {index + 1}",
+                Value = value
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = entityType,
+            Title = title,
+            Subtitle = subtitle,
+            Summary = facts.Count == 1 ? facts[0].Value : string.Empty,
+            Sections = facts.Count == 0
+                ? []
+                :
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Сведения",
+                        Icon = "factions",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                    }
+                ]
         };
     }
 
@@ -3124,10 +3311,23 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (scalarItems.Count > 0)
         {
-            blocks.Add(new UiPanelBlock
+            blocks.Add(new UiEntityDossierBlock
             {
+                EntityType = "reference-extra",
                 Title = "Дополнительные сведения",
-                Blocks = [new UiKeyValueGridBlock { Items = scalarItems }]
+                Subtitle = "Раздел",
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Поля",
+                        Icon = "reference",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = [new UiKeyValueGridBlock { Items = scalarItems }]
+                    }
+                ]
             });
         }
     }
@@ -3138,10 +3338,23 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (sectionBlocks.Count == 0)
             return;
 
-        blocks.Add(new UiPanelBlock
+        blocks.Add(new UiEntityDossierBlock
         {
+            EntityType = "reference-section",
             Title = title,
-            Blocks = sectionBlocks
+            Subtitle = "Вложенный раздел",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = StableId(title),
+                    Title = "Сведения",
+                    Icon = "reference",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = sectionBlocks
+                }
+            ]
         });
     }
 
@@ -3168,9 +3381,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 index++;
                 if (item is JsonObject itemObj)
                 {
-                    var panel = BuildReferenceObjectPanel(itemObj, $"Запись {index}");
-                    if (panel != null)
-                        blocks.Add(panel);
+                    var card = BuildReferenceObjectCard(itemObj, $"Запись {index}");
+                    if (card != null)
+                        blocks.Add(card);
                     continue;
                 }
 
@@ -3187,7 +3400,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return node is JsonObject objectNode ? BuildReferenceObjectBlocks(objectNode) : [];
     }
 
-    private static UiPanelBlock? BuildReferenceObjectPanel(JsonObject obj, string fallbackTitle)
+    private static UiEntityDossierBlock? BuildReferenceObjectCard(JsonObject obj, string fallbackTitle)
     {
         var blocks = BuildReferenceObjectBlocks(obj);
         if (blocks.Count == 0)
@@ -3196,10 +3409,23 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var title = FirstNonEmpty(
             FirstReferenceNodeString(obj, "displayName", "displayNameOrMoniker", "name", "title", "questName", "stepTitle", "stepName", "npcName", "characterName", "itemName", "vehicleName"),
             fallbackTitle);
-        return new UiPanelBlock
+        return new UiEntityDossierBlock
         {
+            EntityType = "reference-entry-detail",
             Title = title,
-            Blocks = blocks
+            Subtitle = "Запись",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "fields",
+                    Title = "Сведения",
+                    Icon = "reference",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = blocks
+                }
+            ]
         };
     }
 
@@ -3251,7 +3477,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return StructuredBonusDisplay.FormatScalar(scalar, fieldName);
 
         if (node is JsonArray array)
-            return string.Join("; ", array
+            return string.Join("\n", array
                 .Select(item => DescribeNodeForReferenceDetail(item, fieldName))
                 .Where(static part => !string.IsNullOrWhiteSpace(part)));
 
@@ -3268,7 +3494,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     parts.Add($"{DescribeReferenceNestedFieldLabel(property.Key)}: {value}");
             }
 
-            return string.Join("; ", parts);
+            return string.Join("\n", parts);
         }
 
         return string.Empty;
@@ -3422,7 +3648,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
     }
 
     private static string JoinReferenceDetails(params string?[] values) =>
-        string.Join("; ", values.Where(static value => !string.IsNullOrWhiteSpace(value)).Select(static value => value!.Trim()));
+        string.Join("\n", values.Where(static value => !string.IsNullOrWhiteSpace(value)).Select(static value => value!.Trim()));
 
     private static string NormalizeReferenceSelector(string value)
     {
