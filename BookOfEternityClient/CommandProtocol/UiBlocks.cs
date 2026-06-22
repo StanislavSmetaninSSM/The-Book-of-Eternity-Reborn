@@ -6,6 +6,7 @@ namespace BookOfEternityClient.CommandProtocol;
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "kind")]
 [JsonDerivedType(typeof(UiTextBlock), "text")]
 [JsonDerivedType(typeof(UiPanelBlock), "panel")]
+[JsonDerivedType(typeof(UiEntityDossierBlock), "entityDossier")]
 [JsonDerivedType(typeof(UiTableBlock), "table")]
 [JsonDerivedType(typeof(UiListBlock), "list")]
 [JsonDerivedType(typeof(UiKeyValueGridBlock), "keyValueGrid")]
@@ -26,6 +27,47 @@ public sealed class UiTextBlock : UiBlock
 public sealed class UiPanelBlock : UiBlock
 {
     public string Title { get; init; } = string.Empty;
+    public List<UiBlock> Blocks { get; init; } = [];
+}
+
+public sealed class UiEntityDossierBlock : UiBlock
+{
+    public string EntityType { get; init; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
+    public string Subtitle { get; init; } = string.Empty;
+    public string Summary { get; init; } = string.Empty;
+    public List<UiEntityBadge> Badges { get; init; } = [];
+    public UiEntityMedia? Media { get; init; }
+    public List<UiEntityDossierSection> Sections { get; init; } = [];
+}
+
+public sealed class UiEntityBadge
+{
+    public string Label { get; init; } = string.Empty;
+    public UiTone Tone { get; init; } = UiTone.Default;
+    public string Icon { get; init; } = string.Empty;
+}
+
+public sealed class UiEntityMedia
+{
+    public string Title { get; init; } = string.Empty;
+    public string Url { get; init; } = string.Empty;
+    public string MediaId { get; init; } = string.Empty;
+    public string RelativePath { get; init; } = string.Empty;
+    public string AltText { get; init; } = string.Empty;
+    public string ContentType { get; init; } = string.Empty;
+    public long Length { get; init; }
+    public DateTimeOffset ModifiedAtUtc { get; init; }
+}
+
+public sealed class UiEntityDossierSection
+{
+    public string Id { get; init; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
+    public string Summary { get; init; } = string.Empty;
+    public string Icon { get; init; } = string.Empty;
+    public bool Collapsible { get; init; }
+    public bool InitiallyExpanded { get; init; } = true;
     public List<UiBlock> Blocks { get; init; } = [];
 }
 

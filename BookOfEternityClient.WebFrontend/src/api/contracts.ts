@@ -655,6 +655,7 @@ export interface ExplorerCommandResult {
 export type UiBlock =
   | UiTextBlock
   | UiPanelBlock
+  | UiEntityDossierBlock
   | UiTableBlock
   | UiListBlock
   | UiKeyValueGridBlock
@@ -672,6 +673,44 @@ export interface UiTextBlock {
 export interface UiPanelBlock {
   kind: 'panel';
   title: string;
+  blocks: UiBlock[];
+}
+
+export interface UiEntityDossierBlock {
+  kind: 'entityDossier';
+  entityType: string;
+  title: string;
+  subtitle: string;
+  summary: string;
+  badges: UiEntityBadge[];
+  media: UiEntityMedia | null;
+  sections: UiEntityDossierSection[];
+}
+
+export interface UiEntityBadge {
+  label: string;
+  tone: UiTone;
+  icon: string;
+}
+
+export interface UiEntityMedia {
+  title: string;
+  url: string;
+  mediaId: string;
+  relativePath: string;
+  altText: string;
+  contentType: string;
+  length: number;
+  modifiedAtUtc: IsoDateTimeString;
+}
+
+export interface UiEntityDossierSection {
+  id: string;
+  title: string;
+  summary: string;
+  icon: string;
+  collapsible: boolean;
+  initiallyExpanded: boolean;
   blocks: UiBlock[];
 }
 

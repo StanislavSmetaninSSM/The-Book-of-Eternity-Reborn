@@ -33,6 +33,40 @@ public sealed class ExplorerCommandProtocolTests
                         new UiTextBlock { Text = "Активных конфликтов нет.", Tone = UiTone.Subtle }
                     ]
                 },
+                new UiEntityDossierBlock
+                {
+                    EntityType = "npc",
+                    Title = "Мирра Ключница",
+                    Subtitle = "Смотрительница архива",
+                    Summary = "Знает, кто входил в покои после полуночи.",
+                    Badges =
+                    [
+                        new UiEntityBadge { Label = "Союзник", Tone = UiTone.Success, Icon = "relation" },
+                        new UiEntityBadge { Label = "Архив", Tone = UiTone.Accent, Icon = "archive" }
+                    ],
+                    Media = new UiEntityMedia
+                    {
+                        Title = "Портрет Мирры",
+                        Url = "/api/media/npc-mirra",
+                        AltText = "Портрет Мирры Ключницы"
+                    },
+                    Sections =
+                    [
+                        new UiEntityDossierSection
+                        {
+                            Id = "skills",
+                            Title = "Навыки",
+                            Summary = "Полезны при расследовании письма.",
+                            Icon = "skills",
+                            Collapsible = true,
+                            InitiallyExpanded = true,
+                            Blocks =
+                            [
+                                new UiListBlock { Items = ["Архивная память", "Тихий шаг"] }
+                            ]
+                        }
+                    ]
+                },
                 new UiTableBlock
                 {
                     Title = "Параметры",
@@ -150,6 +184,7 @@ public sealed class ExplorerCommandProtocolTests
         var json = JsonSerializer.Serialize(result, JsonOpts);
 
         Assert.Contains("\"kind\": \"text\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"kind\": \"entityDossier\"", json, StringComparison.Ordinal);
         Assert.Contains("\"kind\": \"map\"", json, StringComparison.Ordinal);
         Assert.Contains("\"kind\": \"selection\"", json, StringComparison.Ordinal);
         Assert.Contains("\"state\": \"RequiresInput\"", json, StringComparison.Ordinal);
@@ -160,25 +195,35 @@ public sealed class ExplorerCommandProtocolTests
         Assert.Equal(CommandExecutionState.RequiresInput, restored.State);
         Assert.IsType<UiTextBlock>(restored.Blocks[0]);
         Assert.IsType<UiPanelBlock>(restored.Blocks[1]);
-        Assert.IsType<UiTableBlock>(restored.Blocks[2]);
-        Assert.IsType<UiListBlock>(restored.Blocks[3]);
-        Assert.IsType<UiKeyValueGridBlock>(restored.Blocks[4]);
-        Assert.IsType<UiMessageBlock>(restored.Blocks[5]);
-        Assert.IsType<UiRawJsonBlock>(restored.Blocks[6]);
-        Assert.IsType<UiMapBlock>(restored.Blocks[7]);
+        Assert.IsType<UiEntityDossierBlock>(restored.Blocks[2]);
+        Assert.IsType<UiTableBlock>(restored.Blocks[3]);
+        Assert.IsType<UiListBlock>(restored.Blocks[4]);
+        Assert.IsType<UiKeyValueGridBlock>(restored.Blocks[5]);
+        Assert.IsType<UiMessageBlock>(restored.Blocks[6]);
+        Assert.IsType<UiRawJsonBlock>(restored.Blocks[7]);
+        Assert.IsType<UiMapBlock>(restored.Blocks[8]);
         Assert.IsType<UiConfirmationPrompt>(restored.Prompts[0]);
         Assert.IsType<UiSelectionPrompt>(restored.Prompts[1]);
         Assert.IsType<UiTextInputPrompt>(restored.Prompts[2]);
         Assert.IsType<UiLongTextInputPrompt>(restored.Prompts[3]);
 
-        var table = Assert.IsType<UiTableBlock>(restored.Blocks[2]);
+        var dossier = Assert.IsType<UiEntityDossierBlock>(restored.Blocks[2]);
+        Assert.Equal("npc", dossier.EntityType);
+        Assert.Equal("Мирра Ключница", dossier.Title);
+        Assert.Equal("Союзник", dossier.Badges[0].Label);
+        Assert.Equal(UiTone.Success, dossier.Badges[0].Tone);
+        Assert.Equal("skills", dossier.Sections[0].Id);
+        Assert.IsType<UiListBlock>(dossier.Sections[0].Blocks[0]);
+        Assert.Equal("/api/media/npc-mirra", dossier.Media?.Url);
+
+        var table = Assert.IsType<UiTableBlock>(restored.Blocks[3]);
         Assert.Equal(["Параметр", "Значение"], table.Columns);
         Assert.Equal(["ОД", "7"], table.Rows[0].Cells);
 
-        var rawJson = Assert.IsType<UiRawJsonBlock>(restored.Blocks[6]);
+        var rawJson = Assert.IsType<UiRawJsonBlock>(restored.Blocks[7]);
         Assert.Equal(42, rawJson.Json?["turn"]?.GetValue<int>());
 
-        var map = Assert.IsType<UiMapBlock>(restored.Blocks[7]);
+        var map = Assert.IsType<UiMapBlock>(restored.Blocks[8]);
         Assert.Equal("Mortal World", map.Map.Realm);
         Assert.Equal("loc_square", map.Map.CurrentNodeId);
         Assert.Contains(map.Map.Nodes, static node => node.IsCurrent && node.Label == "Площадь");

@@ -233,6 +233,46 @@ function sanitizeUiBlockForPlayer(block: UiBlock): UiBlock | null {
           blocks
         };
       }
+    case 'entityDossier':
+      {
+        const sections = block.sections.flatMap((section) => {
+          const blocks = section.blocks.flatMap((child) => {
+            const sanitized = sanitizeUiBlockForPlayer(child);
+            return sanitized ? [sanitized] : [];
+          });
+          return blocks.length > 0
+            ? [{
+                ...section,
+                title: safePlayerText(section.title, 'Раздел'),
+                summary: safePlayerText(section.summary, ''),
+                blocks
+              }]
+            : [];
+        });
+
+        if (sections.length === 0 && !block.summary && !block.media) {
+          return null;
+        }
+
+        return {
+          ...block,
+          title: safePlayerText(block.title, 'Досье'),
+          subtitle: safePlayerText(block.subtitle, ''),
+          summary: safePlayerText(block.summary, ''),
+          badges: block.badges.map((badge) => ({
+            ...badge,
+            label: safePlayerText(badge.label, 'метка')
+          })),
+          media: block.media
+            ? {
+                ...block.media,
+                title: safePlayerText(block.media.title, 'Образ'),
+                altText: safePlayerText(block.media.altText, block.media.title || 'Образ')
+              }
+            : null,
+          sections
+        };
+      }
     case 'table':
       return {
         ...block,

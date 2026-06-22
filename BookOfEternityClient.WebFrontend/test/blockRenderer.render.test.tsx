@@ -267,6 +267,58 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     expect(html).not.toContain('<th>Бонус</th>');
   });
 
+  it('renders semantic entity dossiers with header, badges, media, and sections', () => {
+    const blocks: UiBlock[] = [
+      {
+        kind: 'entityDossier',
+        entityType: 'npc',
+        title: 'Мирра Ключница',
+        subtitle: 'Смотрительница архива',
+        summary: 'Знает, кто входил в покои после полуночи.',
+        badges: [
+          { label: 'Союзник', tone: 'Success', icon: 'relation' },
+          { label: 'Архив', tone: 'Accent', icon: 'archive' }
+        ],
+        media: {
+          kind: 'image',
+          title: 'Портрет Мирры',
+          url: '/api/media/npc-mirra',
+          mediaId: 'npc-mirra',
+          relativePath: '',
+          altText: 'Портрет Мирры Ключницы',
+          contentType: 'image/png',
+          length: 42,
+          modifiedAtUtc: '2026-06-22T00:00:00Z'
+        },
+        sections: [
+          {
+            id: 'skills',
+            title: 'Навыки',
+            summary: 'Полезны при расследовании письма.',
+            icon: 'skills',
+            collapsible: true,
+            initiallyExpanded: true,
+            blocks: [
+              { kind: 'list', ordered: false, items: ['Архивная память', 'Тихий шаг'] }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
+
+    expect(html).toContain('entity-dossier');
+    expect(html).toContain('entity-dossier__badge entity-dossier__badge--success');
+    expect(html).toContain('Мирра Ключница');
+    expect(html).toContain('Смотрительница архива');
+    expect(html).toContain('Знает, кто входил в покои после полуночи.');
+    expect(html).toContain('src="/api/media/npc-mirra"');
+    expect(html).toContain('Навыки');
+    expect(html).toContain('Архивная память');
+    expect(html).not.toContain('<table>');
+  });
+
   it('keeps local map media URLs renderable while still showing player-facing location details', () => {
     const blocks: UiBlock[] = [
       {

@@ -277,6 +277,19 @@ function collectVisibleBlockText(block: UiBlock): string[] {
       return [block.text];
     case 'panel':
       return [block.title, ...block.blocks.flatMap(collectVisibleBlockText)];
+    case 'entityDossier':
+      return [
+        block.title,
+        block.subtitle,
+        block.summary,
+        ...block.badges.map((badge) => badge.label),
+        ...(block.media ? [block.media.title, block.media.altText, block.media.url, block.media.relativePath, block.media.mediaId] : []),
+        ...block.sections.flatMap((section) => [
+          section.title,
+          section.summary,
+          ...section.blocks.flatMap(collectVisibleBlockText)
+        ])
+      ];
     case 'table':
       return [block.title, ...block.columns, ...block.rows.flatMap((row) => row.cells)];
     case 'list':

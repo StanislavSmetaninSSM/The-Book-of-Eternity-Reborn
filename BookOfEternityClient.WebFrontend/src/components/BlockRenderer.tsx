@@ -49,6 +49,9 @@ export function BlockRenderer({
         </section>
       );
 
+    case 'entityDossier':
+      return renderEntityDossier(block, advancedEnabled, depth);
+
     case 'table':
       {
         const structuredBonus = renderStructuredBonusTable(block);
@@ -144,6 +147,126 @@ export function BlockRenderer({
 
       return null;
   }
+}
+
+type EntityDossierBlock = Extract<UiBlock, { kind: 'entityDossier' }>;
+type EntityDossierSection = EntityDossierBlock['sections'][number];
+
+function renderEntityDossier(block: EntityDossierBlock, advancedEnabled: boolean, depth: number): ReactNode {
+  const title = toSafeBlockText(block.title, 'Досье');
+  const subtitle = toSafeBlockText(block.subtitle, '');
+  const summary = toSafeBlockText(block.summary, '');
+  const media = block.media;
+
+  return (
+    <article className="entity-dossier" data-entity-type={toSafeBlockText(block.entityType, 'entity')}>
+      <div className={`entity-dossier__header${media?.url ? ' entity-dossier__header--with-media' : ''}`}>
+        <div className="entity-dossier__identity">
+          <span className="entity-dossier__sigil" aria-hidden="true">
+            <EntityGlyph icon={block.entityType || 'entity'} />
+          </span>
+          <div>
+            <h3>{title}</h3>
+            {subtitle && <p className="entity-dossier__subtitle">{subtitle}</p>}
+          </div>
+        </div>
+
+        {block.badges.length > 0 && (
+          <div className="entity-dossier__badges" aria-label="Метки досье">
+            {block.badges.map((badge, index) => (
+              <span
+                className={`entity-dossier__badge entity-dossier__badge--${badge.tone.toLowerCase()}`}
+                key={`${badge.label}-${index}`}
+              >
+                <EntityGlyph icon={badge.icon || 'badge'} />
+                {toSafeBlockText(badge.label, 'метка')}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {media?.url && (
+          <figure className="entity-dossier__media">
+            <img src={media.url} alt={media.altText || media.title || title} loading="lazy" />
+            {(media.title || media.altText) && (
+              <figcaption>{toSafeBlockText(media.title || media.altText, 'Образ')}</figcaption>
+            )}
+          </figure>
+        )}
+      </div>
+
+      {summary && <p className="entity-dossier__summary">{summary}</p>}
+
+      {block.sections.length > 0 && (
+        <div className="entity-dossier__sections">
+          {block.sections.map((section, index) => renderEntityDossierSection(section, index, advancedEnabled, depth + 1))}
+        </div>
+      )}
+    </article>
+  );
+}
+
+function renderEntityDossierSection(
+  section: EntityDossierSection,
+  index: number,
+  advancedEnabled: boolean,
+  depth: number
+): ReactNode {
+  const title = toSafeBlockText(section.title, 'Раздел');
+  const summary = toSafeBlockText(section.summary, '');
+  const key = section.id || `${title}-${index}`;
+  const content = (
+    <div className="entity-dossier-section__body">
+      {summary && <p className="entity-dossier-section__summary">{summary}</p>}
+      {section.blocks.map((child, childIndex) => (
+        <BlockRenderer
+          key={`${child.kind}-${childIndex}`}
+          block={child}
+          advancedEnabled={advancedEnabled}
+          depth={depth + 1}
+        />
+      ))}
+    </div>
+  );
+
+  if (section.collapsible) {
+    return (
+      <details className="entity-dossier-section" key={key} open={section.initiallyExpanded}>
+        <summary>
+          <EntityGlyph icon={section.icon || 'section'} />
+          <span>{title}</span>
+        </summary>
+        {content}
+      </details>
+    );
+  }
+
+  return (
+    <section className="entity-dossier-section" key={key}>
+      <h4>
+        <EntityGlyph icon={section.icon || 'section'} />
+        <span>{title}</span>
+      </h4>
+      {content}
+    </section>
+  );
+}
+
+function EntityGlyph({ icon }: { icon: string }) {
+  const normalized = icon.trim().toLowerCase();
+  const path = normalized.includes('skill')
+    ? 'M4 15l7-7 3 3 6-6M5 19h14'
+    : normalized.includes('archive')
+      ? 'M5 5h14v14H5zM8 8h8M8 12h8M8 16h5'
+      : normalized.includes('relation') || normalized.includes('npc')
+        ? 'M8 19c0-3 8-3 8 0M8.5 8.5a3.5 3.5 0 117 0 3.5 3.5 0 01-7 0'
+        : 'M12 3l2.4 5 5.6.8-4 3.9.9 5.5L12 15.6 7.1 18.2l.9-5.5-4-3.9 5.6-.8L12 3z';
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d={path} />
+    </svg>
+  );
 }
 
 type StructuredBonusField = {

@@ -337,6 +337,146 @@
 }
 .block-panel__title { font-size: 0.9rem; color: var(--color-warning); font-weight: 600; margin: 0; }
 .block-panel__body { display: flex; flex-direction: column; gap: var(--space-2); }
+.entity-dossier {
+  display: grid;
+  gap: var(--space-4);
+  margin: var(--space-3) 0;
+  padding: var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 34%, var(--border));
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(145deg, rgba(205, 168, 90, 0.08), rgba(0, 0, 0, 0.18)),
+    color-mix(in srgb, var(--surface-raised) 90%, var(--surface-base) 10%);
+  box-shadow: inset 0 1px 0 rgba(245, 212, 136, 0.06);
+}
+.entity-dossier__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+.entity-dossier__header--with-media {
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 18rem);
+  align-items: start;
+}
+.entity-dossier__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.entity-dossier__identity h3 {
+  margin: 0;
+  color: var(--color-gold-bright);
+  font-family: var(--font-rune);
+  font-size: clamp(1rem, 1.8vw, 1.35rem);
+  overflow-wrap: anywhere;
+}
+.entity-dossier__subtitle,
+.entity-dossier__summary,
+.entity-dossier-section__summary {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.entity-dossier__sigil,
+.entity-dossier__badge svg,
+.entity-dossier-section summary svg,
+.entity-dossier-section h4 svg {
+  flex: 0 0 auto;
+  width: 1.1rem;
+  height: 1.1rem;
+  color: currentColor;
+}
+.entity-dossier__sigil {
+  display: inline-grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 42%, var(--border));
+  border-radius: 50%;
+  color: var(--color-gold-bright);
+  background: rgba(10, 7, 5, 0.42);
+}
+.entity-dossier svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+.entity-dossier__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.entity-dossier__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 28%, var(--border));
+  border-radius: 999px;
+  padding: 0.22rem 0.55rem;
+  background: rgba(10, 7, 5, 0.36);
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.entity-dossier__badge--success { color: var(--color-success); }
+.entity-dossier__badge--accent { color: var(--color-accent); }
+.entity-dossier__badge--warning { color: var(--color-warning); }
+.entity-dossier__badge--error { color: var(--color-error); }
+.entity-dossier__badge--muted,
+.entity-dossier__badge--subtle { color: var(--text-muted); }
+.entity-dossier__media {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+}
+.entity-dossier__media img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 34%, var(--border));
+  border-radius: var(--radius-sm);
+  background: var(--surface-base);
+}
+.entity-dossier__media figcaption {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+.entity-dossier__sections {
+  display: grid;
+  gap: var(--space-3);
+}
+.entity-dossier-section {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--surface-raised) 82%, var(--surface-base) 18%);
+}
+.entity-dossier-section summary,
+.entity-dossier-section h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  color: var(--color-warning);
+  font-size: 0.92rem;
+  font-weight: 750;
+}
+.entity-dossier-section summary {
+  cursor: pointer;
+}
+.entity-dossier-section__body {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  margin-top: var(--space-2);
+}
 .block-table { margin: 0.5rem 0; }
 .block-table__title { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
 .block-table__scroll { overflow-x: auto; max-width: 100%; }
@@ -1095,6 +1235,10 @@
 
   .block-kv,
   .block-kv__row { grid-template-columns: 1fr; }
+
+  .entity-dossier__header--with-media {
+    grid-template-columns: 1fr;
+  }
 
   .command-resource-meter {
     grid-template-columns: 1fr;
