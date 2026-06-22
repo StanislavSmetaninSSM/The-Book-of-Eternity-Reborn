@@ -404,6 +404,13 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Свидетель", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Старый писарь", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("видел курьера у северных ворот", text, StringComparison.OrdinalIgnoreCase);
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "world-event" &&
+            block.Title.Contains("Беспорядки у Северных ворот", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(dossier.Sections, static section => section.Title.Equals("Зацепки", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(dossier.Sections, static section => section.Title.Equals("Ставки", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(dossier.Sections.SelectMany(static section => section.Blocks).OfType<UiEntityDossierBlock>(), static block =>
+            block.Title.Contains("Старый писарь", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain("eventId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("npcId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("worldEventsLog", payload, StringComparison.OrdinalIgnoreCase);
@@ -447,21 +454,22 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Связанные лица", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Мариус де Вальмонт", text, StringComparison.OrdinalIgnoreCase);
 
-        var detailPanel = Assert.Single(
-            result.Blocks.OfType<UiPanelBlock>(),
-            static panel => panel.Title.Contains("Письмо появилось ночью", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(detailPanel.Blocks, static block => block is UiPanelBlock panel &&
-            panel.Title.Equals("Зацепки", StringComparison.OrdinalIgnoreCase) &&
-            panel.Blocks.OfType<UiListBlock>().Any(list => list.Items.Any(item => item.Contains("Сравнить печать", StringComparison.OrdinalIgnoreCase))));
-        Assert.Contains(detailPanel.Blocks, static block => block is UiPanelBlock panel &&
-            panel.Title.Equals("Ставки", StringComparison.OrdinalIgnoreCase) &&
-            panel.Blocks.OfType<UiKeyValueGridBlock>().Any(grid => grid.Items.Any(item => item.Key.Equals("Опасность", StringComparison.OrdinalIgnoreCase))));
-        Assert.Contains(detailPanel.Blocks, static block => block is UiPanelBlock panel &&
-            panel.Title.Equals("Открытые вопросы", StringComparison.OrdinalIgnoreCase) &&
-            panel.Blocks.OfType<UiListBlock>().Any(list => list.Items.Any(item => item.Contains("кто знает семейный шифр", StringComparison.OrdinalIgnoreCase))));
-        Assert.Contains(detailPanel.Blocks, static block => block is UiPanelBlock panel &&
-            panel.Title.Equals("Связанные лица", StringComparison.OrdinalIgnoreCase) &&
-            panel.Blocks.OfType<UiPanelBlock>().Any(person => person.Title.Contains("Мариус де Вальмонт", StringComparison.OrdinalIgnoreCase)));
+        var detailDossier = Assert.Single(
+            result.Blocks.SelectMany(EnumerateEntityDossiers),
+            static block => block.EntityType == "world-event" &&
+                block.Title.Contains("Письмо появилось ночью", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(detailDossier.Sections, static section =>
+            section.Title.Equals("Зацепки", StringComparison.OrdinalIgnoreCase) &&
+            section.Blocks.OfType<UiListBlock>().Any(list => list.Items.Any(item => item.Contains("Сравнить печать", StringComparison.OrdinalIgnoreCase))));
+        Assert.Contains(detailDossier.Sections, static section =>
+            section.Title.Equals("Ставки", StringComparison.OrdinalIgnoreCase) &&
+            section.Blocks.OfType<UiKeyValueGridBlock>().Any(grid => grid.Items.Any(item => item.Key.Equals("Опасность", StringComparison.OrdinalIgnoreCase))));
+        Assert.Contains(detailDossier.Sections, static section =>
+            section.Title.Equals("Открытые вопросы", StringComparison.OrdinalIgnoreCase) &&
+            section.Blocks.OfType<UiListBlock>().Any(list => list.Items.Any(item => item.Contains("кто знает семейный шифр", StringComparison.OrdinalIgnoreCase))));
+        Assert.Contains(detailDossier.Sections, static section =>
+            section.Title.Equals("Связанные лица", StringComparison.OrdinalIgnoreCase) &&
+            section.Blocks.OfType<UiEntityDossierBlock>().Any(person => person.Title.Contains("Мариус де Вальмонт", StringComparison.OrdinalIgnoreCase)));
 
         Assert.DoesNotContain("Метка", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Opportunity", text, StringComparison.OrdinalIgnoreCase);
