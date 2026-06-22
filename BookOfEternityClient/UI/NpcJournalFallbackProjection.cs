@@ -79,16 +79,62 @@ internal static class NpcJournalFallbackProjection
                 Title = "Персонажи",
                 Message = Notice
             },
-            new UiTableBlock
+            new UiEntityDossierBlock
             {
+                EntityType = "npc-journal-fallback",
                 Title = "Известные НПС по заметкам",
-                Columns = ["НПС", "Последняя запись", "Журнал"],
-                Rows = rows
-                    .Select(static row => new UiTableRow
+                Subtitle = "Журнальные записи",
+                Summary = "Это персонажи, которые уже есть в заметках, но ещё не перенесены в основной список НПС.",
+                Badges =
+                [
+                    new UiEntityBadge
                     {
-                        Cells = [row.Name, row.LatestNote, row.JournalSummary]
-                    })
-                    .ToList()
+                        Label = $"{rows.Count} НПС",
+                        Tone = UiTone.Accent,
+                        Icon = "character"
+                    }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "known-npcs",
+                        Title = "Персонажи",
+                        Summary = "Краткие карточки по последним заметкам.",
+                        Icon = "character",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = rows.Select(static row => (UiBlock)new UiEntityDossierBlock
+                        {
+                            EntityType = "npc-journal-summary",
+                            Title = row.Name,
+                            Subtitle = "Заметка о НПС",
+                            Summary = row.LatestNote,
+                            Sections =
+                            [
+                                new UiEntityDossierSection
+                                {
+                                    Id = "journal",
+                                    Title = "Журнал",
+                                    Icon = "book",
+                                    Collapsible = true,
+                                    InitiallyExpanded = false,
+                                    Blocks =
+                                    [
+                                        new UiKeyValueGridBlock
+                                        {
+                                            Items =
+                                            [
+                                                new UiKeyValueItem { Key = "Последняя запись", Value = row.LatestNote },
+                                                new UiKeyValueItem { Key = "Журнал", Value = row.JournalSummary }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }).ToList()
+                    }
+                ]
             }
         ];
     }
@@ -179,47 +225,121 @@ internal static class NpcJournalFallbackProjection
                 Title = $"Журнал НПС: {entry.DisplayName}",
                 Message = Notice
             },
-            new UiKeyValueGridBlock
-            {
-                Items =
-                [
-                    new UiKeyValueItem { Key = "НПС", Value = entry.DisplayName },
-                    new UiKeyValueItem { Key = "Последняя запись", Value = entry.LatestNote },
-                    new UiKeyValueItem { Key = "Журнал", Value = entry.JournalSummary }
-                ]
-            }
         };
 
-        var rows = entry.JournalEntries.Count > 0
+        var journalCards = entry.JournalEntries.Count > 0
             ? entry.JournalEntries
-                .Select(static journalEntry => new UiTableRow
+                .Select(static journalEntry => (UiBlock)new UiEntityDossierBlock
                 {
-                    Cells =
+                    EntityType = "npc-journal-entry",
+                    Title = EmptyFallback(journalEntry.Event, "Событие не подписано"),
+                    Subtitle = "Запись журнала",
+                    Summary = EmptyFallback(journalEntry.Description, "Описание пока не записано."),
+                    Sections =
                     [
-                        EmptyFallback(journalEntry.Event, "Событие не подписано"),
-                        EmptyFallback(journalEntry.Description, "Описание пока не записано."),
-                        EmptyFallback(journalEntry.RelationshipChange, "без изменения")
+                        new UiEntityDossierSection
+                        {
+                            Id = "details",
+                            Title = "Подробности",
+                            Icon = "book",
+                            Collapsible = true,
+                            InitiallyExpanded = true,
+                            Blocks =
+                            [
+                                new UiKeyValueGridBlock
+                                {
+                                    Items =
+                                    [
+                                        new UiKeyValueItem { Key = "Запись", Value = EmptyFallback(journalEntry.Description, "Описание пока не записано.") },
+                                        new UiKeyValueItem { Key = "Отношение", Value = EmptyFallback(journalEntry.RelationshipChange, "без изменения") }
+                                    ]
+                                }
+                            ]
+                        }
                     ]
                 })
                 .ToList()
             :
             [
-                new UiTableRow
+                new UiEntityDossierBlock
                 {
-                    Cells =
+                    EntityType = "npc-journal-entry",
+                    Title = EmptyFallback(entry.LatestEvent, "Последняя запись"),
+                    Subtitle = "Запись журнала",
+                    Summary = entry.LatestNote,
+                    Sections =
                     [
-                        EmptyFallback(entry.LatestEvent, "Последняя запись"),
-                        entry.LatestNote,
-                        EmptyFallback(entry.RelationshipChange, "без изменения")
+                        new UiEntityDossierSection
+                        {
+                            Id = "details",
+                            Title = "Подробности",
+                            Icon = "book",
+                            Collapsible = true,
+                            InitiallyExpanded = true,
+                            Blocks =
+                            [
+                                new UiKeyValueGridBlock
+                                {
+                                    Items =
+                                    [
+                                        new UiKeyValueItem { Key = "Запись", Value = entry.LatestNote },
+                                        new UiKeyValueItem { Key = "Отношение", Value = EmptyFallback(entry.RelationshipChange, "без изменения") }
+                                    ]
+                                }
+                            ]
+                        }
                     ]
                 }
             ];
 
-        blocks.Add(new UiTableBlock
+        blocks.Add(new UiEntityDossierBlock
         {
-            Title = "Записи журнала",
-            Columns = ["Событие", "Запись", "Отношение"],
-            Rows = rows
+            EntityType = "npc-journal",
+            Title = $"Журнал НПС: {entry.DisplayName}",
+            Subtitle = "Известные заметки",
+            Summary = entry.LatestNote,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = entry.JournalSummary,
+                    Tone = UiTone.Accent,
+                    Icon = "book"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "overview",
+                    Title = "Сводка",
+                    Icon = "character",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks =
+                    [
+                        new UiKeyValueGridBlock
+                        {
+                            Items =
+                            [
+                                new UiKeyValueItem { Key = "НПС", Value = entry.DisplayName },
+                                new UiKeyValueItem { Key = "Последняя запись", Value = entry.LatestNote },
+                                new UiKeyValueItem { Key = "Журнал", Value = entry.JournalSummary }
+                            ]
+                        }
+                    ]
+                },
+                new UiEntityDossierSection
+                {
+                    Id = "entries",
+                    Title = "Записи журнала",
+                    Summary = "События и изменения отношения, записанные по этому персонажу.",
+                    Icon = "book",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = journalCards
+                }
+            ]
         });
         blocks.Add(new UiTextBlock { Text = "Назад к списку можно командой /нпс.", Tone = UiTone.Muted });
         return blocks;
@@ -327,7 +447,7 @@ internal sealed record NpcJournalFallbackEntry(
     public string JournalSummary =>
         string.IsNullOrWhiteSpace(RelationshipChange)
             ? FormatEntryCount(EntryCount)
-            : $"{FormatEntryCount(EntryCount)}; отношение {RelationshipChange}";
+            : $"{FormatEntryCount(EntryCount)}\nотношение {RelationshipChange}";
 
     private static string FormatEntryCount(int count)
     {

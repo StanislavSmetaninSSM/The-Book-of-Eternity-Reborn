@@ -1428,7 +1428,7 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
 
     private static string JoinWorldNewsDetails(params string[] parts) =>
-        string.Join("; ", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
+        string.Join("\n", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
 
     private static string DescribeCount(int count, string singular, string paucal, string plural)
     {

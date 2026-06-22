@@ -79,6 +79,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Впечатляющая решительность", text, StringComparison.Ordinal);
         Assert.Contains("2 записи", text, StringComparison.Ordinal);
         Assert.Contains("известные заметки", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "npc-journal-fallback" &&
+            block.Title.Equals("Известные НПС по заметкам", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.DoesNotContain("Данные ещё не созданы", text, StringComparison.Ordinal);
         Assert.DoesNotContain("/npc_talk", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("/npc_trade", text, StringComparison.OrdinalIgnoreCase);
@@ -111,6 +115,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Имя свидетеля", text, StringComparison.Ordinal);
         Assert.Contains("Он отказался назвать кухонного мальчишку без защиты.", text, StringComparison.Ordinal);
         Assert.Contains("Последняя запись", text, StringComparison.Ordinal);
+        Assert.Contains(detail.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "npc-journal" &&
+            block.Title.Contains("Мартен Рош", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(detail.Blocks.SelectMany(EnumerateTables));
         Assert.Contains(detail.Actions, action =>
             action.Label.Contains("Назад", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(action.Command, "/нпс", StringComparison.OrdinalIgnoreCase));

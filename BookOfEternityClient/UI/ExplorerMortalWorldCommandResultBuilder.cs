@@ -491,7 +491,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 .Select(item => FormatStatsValue(item, fieldName))
                 .Where(static value => !string.IsNullOrWhiteSpace(value))
                 .ToList();
-            return values.Count == 0 ? $"{array.Count} записей" : string.Join("; ", values);
+            return values.Count == 0 ? $"{array.Count} записей" : string.Join("\n", values);
         }
 
         if (node is JsonObject obj)
@@ -501,7 +501,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 .Select(static property => $"{TranslateComputedCharacteristicKey(property.Key)}: {FormatStatsValue(property.Value, property.Key)}")
                 .Where(static value => !string.IsNullOrWhiteSpace(value))
                 .ToList();
-            return values.Count == 0 ? string.Empty : string.Join("; ", values);
+            return values.Count == 0 ? string.Empty : string.Join("\n", values);
         }
 
         return string.Empty;
@@ -2461,7 +2461,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     : $"{StructuredBonusDisplay.FieldLabel(property.Key)}: {value}";
             })
             .Where(static part => !string.IsNullOrWhiteSpace(part));
-        return string.Join("; ", parts);
+        return string.Join("\n", parts);
     }
 
     private static string DescribeWeatherTendency(string tendency) =>
@@ -8157,7 +8157,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (node is JsonArray array)
         {
-            return string.Join("; ", array
+            return string.Join("\n", array
                 .Select(item => FormatInventoryNodeValue(item, fieldName))
                 .Where(static value => !string.IsNullOrWhiteSpace(value)));
         }
@@ -8169,7 +8169,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 GetNodeString(obj, "description"),
                 GetNodeString(obj, "effectDescription"),
                 GetNodeString(obj, "name"),
-                string.Join("; ", obj
+                string.Join("\n", obj
                     .Select(property => $"{GetStructuredBonusFieldLabel(property.Key)}: {FormatInventoryNodeValue(property.Value, property.Key)}")
                     .Where(static value => !string.IsNullOrWhiteSpace(value))));
         }
