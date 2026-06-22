@@ -3861,11 +3861,34 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var blocks = new List<UiBlock>();
         if (rows.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            blocks.Add(new UiEntityDossierBlock
             {
+                EntityType = "locations",
                 Title = title,
-                Columns = ["Раздел", "Локация", "Сведения", "Подробно"],
-                Rows = rows
+                Subtitle = "Обзор мест",
+                Summary = DescribeInventoryCount(rows.Count, "локация", "локации", "локаций"),
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = DescribeInventoryCount(rows.Count, "локация", "локации", "локаций"),
+                        Tone = UiTone.Accent,
+                        Icon = "map"
+                    }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "locations",
+                        Title = "Доступные места",
+                        Summary = "Текущая локация, соседние переходы и уже открытые места.",
+                        Icon = "map",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = rows.Select(static row => (UiBlock)BuildLocationOverviewCard(row)).ToList()
+                    }
+                ]
             });
         }
         else
@@ -3873,9 +3896,56 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Info, title, "Локации пока не обнаружены."));
         }
 
-        AddLocationRawState(blocks, title, currentRead);
-        AddLocationRawState(blocks, title, mapRead);
+        AddReferenceReadWarnings(blocks, title, [currentRead, mapRead]);
         return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
+    }
+
+    private static UiEntityDossierBlock BuildLocationOverviewCard(UiTableRow row)
+    {
+        var section = row.Cells.Count > 0 ? row.Cells[0] : "Локация";
+        var title = row.Cells.Count > 1 && !string.IsNullOrWhiteSpace(row.Cells[1])
+            ? row.Cells[1]
+            : "Безымянная локация";
+        var summary = row.Cells.Count > 2 ? row.Cells[2] : string.Empty;
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "location-summary",
+            Title = title,
+            Subtitle = section,
+            Summary = FirstNonEmpty(summary, "Подробности доступны в карточке локации."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = section,
+                    Tone = UiTone.Accent,
+                    Icon = "map"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "map",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks =
+                    [
+                        new UiKeyValueGridBlock
+                        {
+                            Items =
+                            [
+                                new UiKeyValueItem { Key = "Раздел", Value = section },
+                                new UiKeyValueItem { Key = "Сведения", Value = EmptyFallback(summary) }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
     }
 
     private static JsonObject? UnwrapCurrentLocationNode(JsonNode? node)
@@ -3970,7 +4040,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
     }
 
     private static string JoinLocationDetails(params string[] parts) =>
-        string.Join("; ", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
+        string.Join("\n", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
 
     private static string GetLocationNodeString(JsonNode? node, params string[] properties)
     {
@@ -4030,37 +4100,111 @@ public static class ExplorerMortalWorldCommandResultBuilder
             })
             .ToList();
 
+        var sections = new List<UiEntityDossierSection>();
         if (vehicleRows.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "vehicles",
                 Title = title,
-                Columns = ["Транспорт", "Тип", "Сведения", "Подробно"],
-                Rows = vehicleRows
+                Summary = "Доступные средства перемещения и их текущее состояние.",
+                Icon = "transport",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = vehicleRows.Select(static row => (UiBlock)BuildTransportOverviewCard(row)).ToList()
             });
         }
 
-        var summaryRows = new List<UiTableRow>();
-        AddTransportSummaryRow(summaryRows, vehiclesRead, "vehicles|UpdateVehicles", "Транспорта");
-        AddTransportSummaryRow(summaryRows, mapRead, "transportRoutes", "Маршрутов");
-        AddTransportSummaryRow(summaryRows, currentRead, "availableTransport", "Доступного транспорта");
-        if (summaryRows.Count > 0)
+        var summaryItems = new List<UiKeyValueItem>();
+        AddTransportSummaryItem(summaryItems, vehiclesRead, "vehicles|UpdateVehicles", "Транспорта");
+        AddTransportSummaryItem(summaryItems, mapRead, "transportRoutes", "Маршрутов");
+        AddTransportSummaryItem(summaryItems, currentRead, "availableTransport", "Доступного транспорта");
+        if (summaryItems.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Insert(0, new UiEntityDossierSection
             {
+                Id = "summary",
                 Title = "Сводка транспорта",
-                Columns = ["Раздел", "Состояние"],
-                Rows = summaryRows
+                Summary = "Короткая сводка по транспорту и маршрутам.",
+                Icon = "transport",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = summaryItems }]
             });
         }
 
-        if (blocks.Count == 0)
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "transport",
+                Title = title,
+                Subtitle = "Средства перемещения",
+                Summary = entries.Count > 0
+                    ? DescribeInventoryCount(entries.Count, "средство", "средства", "средств")
+                    : "Транспорт пока не обнаружен.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = entries.Count > 0
+                            ? DescribeInventoryCount(entries.Count, "средство", "средства", "средств")
+                            : "пусто",
+                        Tone = entries.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                        Icon = "transport"
+                    }
+                ],
+                Sections = sections
+            });
+        }
+        else
+        {
             blocks.Add(Message(UiNotificationSeverity.Info, title, "Транспорт пока не обнаружен."));
+        }
 
-        AddTransportRawState(blocks, title, vehiclesRead);
-        AddTransportRawState(blocks, title, mapRead);
-        AddTransportRawState(blocks, title, currentRead);
+        AddReferenceReadWarnings(blocks, title, [vehiclesRead, mapRead, currentRead]);
         return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
+    }
+
+    private static UiEntityDossierBlock BuildTransportOverviewCard(UiTableRow row)
+    {
+        var title = row.Cells.Count > 0 && !string.IsNullOrWhiteSpace(row.Cells[0])
+            ? row.Cells[0]
+            : "Транспорт";
+        var type = row.Cells.Count > 1 ? row.Cells[1] : string.Empty;
+        var details = row.Cells.Count > 2 ? row.Cells[2] : string.Empty;
+        var facts = new List<UiKeyValueItem>();
+        AddReferenceDetailItem(facts, "Тип", type);
+        AddReferenceDetailItem(facts, "Состояние", details);
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "transport-summary",
+            Title = title,
+            Subtitle = FirstNonEmpty(type, "Транспорт"),
+            Summary = FirstNonEmpty(details, "Подробности доступны в карточке транспорта."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = FirstNonEmpty(type, "Транспорт"),
+                    Tone = UiTone.Accent,
+                    Icon = "transport"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "transport",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
     }
 
     private static ExplorerCommandResult BuildTransportDetail(
@@ -4118,7 +4262,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             Node: vehicle);
     }
 
-    private static UiPanelBlock BuildVehicleDetailPanel(ReferenceEntrySnapshot entry)
+    private static UiEntityDossierBlock BuildVehicleDetailPanel(ReferenceEntrySnapshot entry)
     {
         var vehicle = entry.Node;
         var items = new List<UiKeyValueItem>
@@ -4153,10 +4297,34 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "summary",
             "notes");
 
-        return new UiPanelBlock
+        return new UiEntityDossierBlock
         {
+            EntityType = "transport-detail",
             Title = $"Транспорт: {entry.Title}",
-            Blocks = blocks
+            Subtitle = DescribeVehicleType(vehicle),
+            Summary = FirstNonEmpty(DescribeVehicleNode(vehicle), FirstReferenceNodeString(vehicle, "description", "summary", "notes")),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeVehicleType(vehicle),
+                    Tone = UiTone.Accent,
+                    Icon = "transport"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "details",
+                    Title = "Сведения",
+                    Summary = "Состояние транспорта и полезные игровые параметры.",
+                    Icon = "transport",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = blocks
+                }
+            ]
         };
     }
 
@@ -4228,8 +4396,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return string.Empty;
     }
 
-    private static void AddTransportSummaryRow(
-        List<UiTableRow> rows,
+    private static void AddTransportSummaryItem(
+        List<UiKeyValueItem> items,
         JsonReadResult read,
         string propertyName,
         string label)
@@ -4238,7 +4406,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (status == "отсутствует")
             return;
 
-        rows.Add(new UiTableRow { Cells = [label, status] });
+        items.Add(new UiKeyValueItem { Key = label, Value = status });
     }
 
     private static void AddTransportRawState(List<UiBlock> blocks, string title, JsonReadResult read)

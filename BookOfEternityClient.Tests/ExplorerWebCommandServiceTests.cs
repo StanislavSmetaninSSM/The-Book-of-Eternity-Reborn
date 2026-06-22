@@ -679,7 +679,6 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(CommandExecutionState.Completed, result.State);
         var text = CollectBlockText(result.Blocks);
         Assert.Contains(expectedLabelText, text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Подробно", text, StringComparison.OrdinalIgnoreCase);
 
         var action = Assert.Single(result.Actions, action => action.Id == expectedActionId);
         Assert.Equal(expectedDetailCommand, action.Command);
@@ -713,6 +712,25 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         AssertNoFlattenedStructuredDetails(result);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_LocationsOverview_RendersDossierCardsWithoutTables()
+    {
+        await SeedRichMortalReferenceDetailFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/локации"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "locations" &&
+            block.Title.Equals("Локации", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("Старая площадь", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Архив Вальмонтов", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        AssertNoFlattenedStructuredDetails(result);
+    }
+
     [Theory]
     [InlineData("/квесты квест quest_winged_seal", "Квест: Печать с крыльями", "вернуть письмо")]
     [InlineData("/навыки навык skill_arcane_sense", "Навык: Чувство магических потоков", "Видит слабые печати")]
@@ -737,8 +755,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var payload = SerializeResult(result);
         Assert.Contains(expectedTitle, text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(expectedDetail, text, StringComparison.OrdinalIgnoreCase);
-        if (!command.StartsWith("/транспорт", StringComparison.OrdinalIgnoreCase))
-            Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         AssertNoFlattenedStructuredDetails(result);
         Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("DTO", payload, StringComparison.OrdinalIgnoreCase);
@@ -1004,15 +1021,17 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/транспорт"));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Транспорт");
-        var row = Assert.Single(table.Rows);
-        Assert.Equal("Серый конь", row.Cells[0]);
-        Assert.Contains("Ездовое животное", row.Cells[1], StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Активен", row.Cells[2], StringComparison.OrdinalIgnoreCase);
-
-        var tableText = string.Join("\n", table.Columns.Concat(table.Rows.SelectMany(static item => item.Cells)));
-        Assert.DoesNotContain("mount", tableText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("active", tableText, StringComparison.OrdinalIgnoreCase);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "transport" &&
+            block.Title.Equals("Транспорт", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("Серый конь", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ездовое животное", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Активен", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("mount", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("active", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
