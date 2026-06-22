@@ -330,8 +330,19 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
-        Assert.Contains(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Новости мира");
         var text = CollectBlockText(result.Blocks);
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "world-news" &&
+            block.Title.Equals("Новости мира", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
+            table.Title.Equals("Новости мира", StringComparison.OrdinalIgnoreCase) ||
+            table.Title.Equals("Мировые события", StringComparison.OrdinalIgnoreCase) ||
+            table.Title.Equals("Флаги мира", StringComparison.OrdinalIgnoreCase) ||
+            table.Title.Equals("Прогресс мира", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(dossier.Sections, static section => section.Title.Equals("Сводка", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(dossier.Sections, static section =>
+            section.Title.Equals("Мировые события", StringComparison.OrdinalIgnoreCase) &&
+            section.Blocks.OfType<UiEntityDossierBlock>().Any(card => card.Title.Contains("Беспорядки у Северных ворот", StringComparison.OrdinalIgnoreCase)));
         Assert.Contains("Новости мира", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Мировые события", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Угрозы локаций", text, StringComparison.OrdinalIgnoreCase);

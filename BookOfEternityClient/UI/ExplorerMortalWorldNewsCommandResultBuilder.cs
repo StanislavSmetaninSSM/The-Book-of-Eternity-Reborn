@@ -55,18 +55,53 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         IReadOnlyList<ProgressionSnapshot> progression)
     {
         var blocks = new List<UiBlock>();
+        var sections = new List<UiEntityDossierSection>();
         var summaryRows = BuildWorldNewsSummaryRows(state, events.Count, threats.Count, npcActivities.Count, factionProjects.Count, flags.Count, progression.Count);
         if (summaryRows.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
-                Title = "Новости мира",
-                Columns = ["Раздел", "Состояние"],
-                Rows = summaryRows
+                Id = "summary",
+                Title = "Сводка",
+                Summary = "Что сейчас известно герою о движении мира.",
+                Icon = "world-news",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
+                [
+                    new UiKeyValueGridBlock
+                    {
+                        Items = summaryRows
+                            .Where(static row => row.Cells.Count >= 2)
+                            .Select(static row => new UiKeyValueItem { Key = row.Cells[0], Value = row.Cells[1] })
+                            .ToList()
+                    }
+                ]
             });
         }
 
-        AddWorldNewsOverviewTables(blocks, events, flags, progression);
+        AddWorldNewsOverviewSections(sections, events, flags, progression);
+
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "world-news",
+                Title = "Новости мира",
+                Subtitle = "Краткая сводка",
+                Summary = "Сводка показывает, что изменилось в мире. Подробности каждой записи открываются отдельным действием.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = DescribeCount(events.Count + flags.Count + progression.Count, "запись", "записи", "записей"),
+                        Tone = UiTone.Accent,
+                        Icon = "world-news"
+                    }
+                ],
+                Sections = sections
+            });
+        }
 
         var actions = BuildWorldNewsOverviewActions(commandToken, events, flags, progression);
         if (actions.Count > 0)
@@ -160,66 +195,98 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         return rows;
     }
 
-    private static void AddWorldNewsOverviewTables(
-        List<UiBlock> blocks,
+    private static void AddWorldNewsOverviewSections(
+        List<UiEntityDossierSection> sections,
         IReadOnlyList<WorldEventSnapshot> events,
         IReadOnlyList<WorldFlagSnapshot> flags,
         IReadOnlyList<ProgressionSnapshot> progression)
     {
-        var eventRows = events
-            .Select(item => new UiTableRow
-            {
-                Cells =
-                [
-                    item.Title,
-                    BuildWorldEventOverviewSummary(item.Node)
-                ]
-            })
+        var eventCards = events
+            .Select(item => BuildWorldNewsOverviewCard(
+                "world-event-summary",
+                item.Title,
+                "Мировое событие",
+                BuildWorldEventOverviewSummary(item.Node),
+                "world-news"))
+            .Cast<UiBlock>()
             .ToList();
-        if (eventRows.Count > 0)
-            blocks.Add(new UiTableBlock
+        if (eventCards.Count > 0)
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "events",
                 Title = "Мировые события",
-                Columns = ["Событие", "Кратко"],
-                Rows = eventRows
+                Summary = "События, которые уже видимы герою или известны по слухам.",
+                Icon = "world-news",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = eventCards
             });
 
-        var flagRows = flags
-            .Select(item => new UiTableRow
-            {
-                Cells =
-                [
-                    item.Title,
-                    BuildWorldFlagOverviewSummary(item.Node)
-                ]
-            })
+        var flagCards = flags
+            .Select(item => BuildWorldNewsOverviewCard(
+                "world-flag-summary",
+                item.Title,
+                "Флаг мира",
+                BuildWorldFlagOverviewSummary(item.Node),
+                "flag"))
+            .Cast<UiBlock>()
             .ToList();
-        if (flagRows.Count > 0)
-            blocks.Add(new UiTableBlock
+        if (flagCards.Count > 0)
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "flags",
                 Title = "Флаги мира",
-                Columns = ["Флаг", "Кратко"],
-                Rows = flagRows
+                Summary = "Состояния мира, которые могут влиять на сцены и реакции.",
+                Icon = "flag",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = flagCards
             });
 
-        var progressionRows = progression
-            .Select(item => new UiTableRow
-            {
-                Cells =
-                [
-                    item.Title,
-                    BuildProgressionOverviewSummary(item)
-                ]
-            })
+        var progressionCards = progression
+            .Select(item => BuildWorldNewsOverviewCard(
+                "world-progression-summary",
+                item.Title,
+                "Прогресс мира",
+                BuildProgressionOverviewSummary(item),
+                "progress"))
+            .Cast<UiBlock>()
             .ToList();
-        if (progressionRows.Count > 0)
-            blocks.Add(new UiTableBlock
+        if (progressionCards.Count > 0)
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "progression",
                 Title = "Прогресс мира",
-                Columns = ["Запись", "Кратко"],
-                Rows = progressionRows
+                Summary = "Долгие изменения, которые накапливаются между ходами.",
+                Icon = "progress",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = progressionCards
             });
     }
+
+    private static UiEntityDossierBlock BuildWorldNewsOverviewCard(
+        string entityType,
+        string title,
+        string subtitle,
+        string summary,
+        string icon) =>
+        new()
+        {
+            EntityType = entityType,
+            Title = title,
+            Subtitle = subtitle,
+            Summary = summary,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = subtitle,
+                    Tone = UiTone.Subtle,
+                    Icon = icon
+                }
+            ]
+        };
 
     private static void AddSummaryRow(
         List<UiTableRow> rows,
