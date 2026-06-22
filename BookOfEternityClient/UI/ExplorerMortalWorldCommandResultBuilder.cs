@@ -5738,19 +5738,35 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return Completed(command, BuildInventoryItemDetailBlocks(selected, sidecars), BuildInventoryBackActions(commandToken));
         }
 
+        var sections = new List<UiEntityDossierSection>();
+        var inventoryFacts = new List<UiKeyValueItem>();
         var totalWeight = GetNodeString(root, "totalWeight");
         var maxWeight = GetNodeString(root, "maxWeight");
         if (!string.IsNullOrEmpty(totalWeight))
         {
             var weightText = !string.IsNullOrEmpty(maxWeight)
-                ? $"⚖ {totalWeight} / {maxWeight}"
-                : $"⚖ {totalWeight}";
-            blocks.Add(new UiTextBlock { Text = weightText, Tone = UiTone.Muted });
+                ? $"{totalWeight} / {maxWeight}"
+                : totalWeight;
+            inventoryFacts.Add(new UiKeyValueItem { Key = "⚖ Нагрузка", Value = weightText });
         }
 
         var money = GetNodeString(root, "money");
         if (!string.IsNullOrEmpty(money) && money != "0")
-            blocks.Add(new UiTextBlock { Text = $"💰 Деньги: {money}", Tone = UiTone.Default });
+            inventoryFacts.Add(new UiKeyValueItem { Key = "💰 Деньги", Value = money });
+
+        if (inventoryFacts.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "inventory-summary",
+                Title = "Сводка",
+                Summary = "Общая нагрузка и переносимые ценности.",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = inventoryFacts }]
+            });
+        }
 
         if (root["resources"] is JsonObject resources && resources.Count > 0)
         {
@@ -5766,7 +5782,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
             }
 
             if (resourceItems.Count > 0)
-                blocks.Add(new UiKeyValueGridBlock { Items = resourceItems });
+            {
+                sections.Add(new UiEntityDossierSection
+                {
+                    Id = "resources",
+                    Title = "Ресурсы",
+                    Summary = "Материалы и валюты, доступные персонажу.",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = [new UiKeyValueGridBlock { Items = resourceItems }]
+                });
+            }
         }
 
         var equipment = (root["equipment"] ?? root["equippedItems"]) as JsonObject;
@@ -5786,57 +5813,80 @@ public static class ExplorerMortalWorldCommandResultBuilder
             }
 
             if (equipmentRows.Count > 0)
-                blocks.Add(Panel("⚔️ Экипировка", new UiKeyValueGridBlock { Items = equipmentRows }));
+            {
+                sections.Add(new UiEntityDossierSection
+                {
+                    Id = "equipment",
+                    Title = "Экипировка",
+                    Summary = "Что сейчас надето или закреплено в слотах.",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = [new UiKeyValueGridBlock { Items = equipmentRows }]
+                });
+            }
         }
 
         if (root["items"] is JsonArray itemsArray && itemsArray.Count > 0)
         {
-            var rows = new List<UiTableRow>();
+            var itemCards = new List<UiBlock>();
             foreach (var item in itemsArray)
             {
                 if (item == null)
                     continue;
 
-                var name = GetNodeString(item, "name") ?? GetNodeString(item, "itemName") ?? "???";
-                var type = GetNodeString(item, "type") ?? string.Empty;
-                var quantity = GetNodeString(item, "count") ?? GetNodeString(item, "quantity") ?? "1";
-                var durability = GetNodeString(item, "durability") ?? string.Empty;
-
-                var flags = new List<string>();
-                if (item["isBroken"]?.GetValueKind() == JsonValueKind.True)
-                    flags.Add("⚠ СЛОМАН");
-                if (item["isEmpty"]?.GetValueKind() == JsonValueKind.True)
-                    flags.Add("⚠ ПУСТО");
-                if (!string.IsNullOrEmpty(durability))
-                {
-                    var durabilityText = durability.Replace("%", string.Empty).Trim();
-                    if (int.TryParse(durabilityText, out var durabilityValue) && durabilityValue == 0)
-                        flags.Add("⚠ СЛОМАН");
-                }
-
-                rows.Add(new UiTableRow
-                {
-                    Cells =
-                    [
-                        name,
-                        type,
-                        quantity != "1" ? quantity : "1",
-                        durability,
-                        flags.Count > 0 ? string.Join(" ", flags) : "✓"
-                    ]
-                });
+                if (item is JsonObject obj)
+                    itemCards.Add(BuildInventoryOverviewItemCard(obj));
             }
 
-            blocks.Add(new UiTableBlock
+            if (itemCards.Count > 0)
             {
-                Title = $"📦 Предметы ({itemsArray.Count})",
-                Columns = ["Название", "Тип", "Кол-во", "Прочность", "Статус"],
-                Rows = rows
-            });
+                sections.Add(new UiEntityDossierSection
+                {
+                    Id = "items",
+                    Title = "Предметы",
+                    Summary = $"{itemCards.Count} предметов в инвентаре.",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = itemCards
+                });
+            }
         }
         else
         {
-            blocks.Add(new UiTextBlock { Text = "Инвентарь пуст.", Tone = UiTone.Muted });
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "items",
+                Title = "Предметы",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiTextBlock { Text = "Инвентарь пуст.", Tone = UiTone.Muted }]
+            });
+        }
+
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "inventory",
+                Title = "Инвентарь",
+                Subtitle = "Снаряжение и переносимые вещи",
+                Summary = "Здесь собраны ресурсы, экипировка и предметы, доступные персонажу.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = root["items"] is JsonArray itemArray
+                            ? DescribeInventoryCount(itemArray.Count, "предмет", "предмета", "предметов")
+                            : "без предметов",
+                        Tone = UiTone.Accent,
+                        Icon = "inventory"
+                    }
+                ],
+                Sections = sections
+            });
         }
 
         blocks.Add(Raw("Полный JSON items.json", read.Node));
@@ -5845,6 +5895,84 @@ public static class ExplorerMortalWorldCommandResultBuilder
         await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_text_updates.json", "Тексты предметов");
 
         return Completed(command, blocks, BuildInventoryActions(commandToken, inventoryContext));
+    }
+
+    private static UiEntityDossierBlock BuildInventoryOverviewItemCard(JsonObject item)
+    {
+        var name = GetNodeString(item, "name") ?? GetNodeString(item, "itemName") ?? "???";
+        var type = FormatInventoryProtocolValue(GetNodeString(item, "type") ?? string.Empty);
+        var quantity = GetNodeString(item, "count") ?? GetNodeString(item, "quantity") ?? "1";
+        var durability = GetNodeString(item, "durability") ?? string.Empty;
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Количество", Value = string.IsNullOrWhiteSpace(quantity) ? "1" : quantity }
+        };
+
+        if (!string.IsNullOrWhiteSpace(durability))
+            facts.Add(new UiKeyValueItem { Key = "Прочность", Value = durability });
+
+        var broken = item["isBroken"]?.GetValueKind() == JsonValueKind.True;
+        var empty = item["isEmpty"]?.GetValueKind() == JsonValueKind.True;
+        if (!string.IsNullOrEmpty(durability))
+        {
+            var durabilityText = durability.Replace("%", string.Empty).Trim();
+            if (int.TryParse(durabilityText, out var durabilityValue) && durabilityValue == 0)
+                broken = true;
+        }
+
+        var status = broken
+            ? "сломано"
+            : empty
+                ? "пусто"
+                : "в порядке";
+        facts.Add(new UiKeyValueItem { Key = "Состояние", Value = status });
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "inventory-item-summary",
+            Title = name,
+            Subtitle = string.IsNullOrWhiteSpace(type) ? "Предмет" : type,
+            Summary = string.IsNullOrWhiteSpace(durability)
+                ? $"Состояние: {status}"
+                : $"Прочность {durability}, состояние: {status}",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = status,
+                    Tone = broken ? UiTone.Warning : UiTone.Success,
+                    Icon = "inventory"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
+    }
+
+    private static string DescribeInventoryCount(int count, string singular, string paucal, string plural)
+    {
+        var abs = Math.Abs(count);
+        var lastTwo = abs % 100;
+        var last = abs % 10;
+        var word = lastTwo is >= 11 and <= 14
+            ? plural
+            : last switch
+            {
+                1 => singular,
+                2 or 3 or 4 => paucal,
+                _ => plural
+            };
+        return $"{count} {word}";
     }
 
     private static IReadOnlyList<UiAction> BuildInventoryActions(string commandToken, InventoryEquipmentContext? inventory)

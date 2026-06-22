@@ -2589,29 +2589,32 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/inv"));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        Assert.Contains(result.Blocks, static block =>
-            block is UiTextBlock text &&
-            text.Text == "⚖ 17 / 30" &&
-            text.Tone == UiTone.Muted);
-        Assert.Contains(result.Blocks, static block =>
-            block is UiTextBlock text &&
-            text.Text == "💰 Деньги: 125" &&
-            text.Tone == UiTone.Default);
-
-        var resources = Assert.Single(result.Blocks.OfType<UiKeyValueGridBlock>());
+        var inventoryDossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "inventory" &&
+            block.Title.Equals("Инвентарь", StringComparison.OrdinalIgnoreCase));
+        var resourceSection = Assert.Single(inventoryDossier.Sections, static section =>
+            section.Title.Equals("Ресурсы", StringComparison.OrdinalIgnoreCase));
+        var resources = Assert.Single(resourceSection.Blocks.OfType<UiKeyValueGridBlock>());
         Assert.Contains(resources.Items, static item => item.Key == "💎 wood" && item.Value == "4");
         Assert.Contains(resources.Items, static item => item.Key == "💎 cloth" && item.Value == "2");
 
-        var equipmentPanel = Assert.Single(result.Blocks.OfType<UiPanelBlock>(), static panel => panel.Title == "⚔️ Экипировка");
-        var equipmentGrid = Assert.IsType<UiKeyValueGridBlock>(Assert.Single(equipmentPanel.Blocks));
+        var equipmentSection = Assert.Single(inventoryDossier.Sections, static section =>
+            section.Title.Equals("Экипировка", StringComparison.OrdinalIgnoreCase));
+        var equipmentGrid = Assert.IsType<UiKeyValueGridBlock>(Assert.Single(equipmentSection.Blocks));
         Assert.Contains(equipmentGrid.Items, static item => item.Key == "🪖 Голова" && item.Value == "Железный шлем");
         Assert.Contains(equipmentGrid.Items, static item => item.Key == "⚔️ Основная рука" && item.Value == "Кривой меч");
         Assert.Contains(equipmentGrid.Items, static item => item.Key == "🛡️ Вторая рука" && item.Value == "— пусто —");
 
-        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>());
-        Assert.Equal(new[] { "Название", "Тип", "Кол-во", "Прочность", "Статус" }, table.Columns);
-        Assert.Contains(table.Rows, static row => row.Cells.SequenceEqual(["Факел", "utility", "2", "100%", "✓"]));
-        Assert.Contains(table.Rows, static row => row.Cells.SequenceEqual(["Сломанный лук", "weapon", "1", "0%", "⚠ СЛОМАН"]));
+        var itemSection = Assert.Single(inventoryDossier.Sections, static section =>
+            section.Title.Equals("Предметы", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(itemSection.Blocks.OfType<UiEntityDossierBlock>(), static card =>
+            card.Title.Equals("Факел", StringComparison.OrdinalIgnoreCase) &&
+            card.Summary.Contains("100%", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(itemSection.Blocks.OfType<UiEntityDossierBlock>(), static card =>
+            card.Title.Equals("Сломанный лук", StringComparison.OrdinalIgnoreCase) &&
+            card.Badges.Any(badge => badge.Label.Contains("сломано", StringComparison.OrdinalIgnoreCase)));
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
+            table.Title.Contains("Предметы", StringComparison.OrdinalIgnoreCase));
 
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
 
@@ -2646,9 +2649,16 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var payload = SerializeResult(result);
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>());
-        Assert.Equal("📦 Предметы (1)", table.Title);
-        Assert.Contains(table.Rows, static row => row.Cells.SequenceEqual(["Факел", "utility", "2", string.Empty, "✓"]));
+        var inventoryDossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "inventory" &&
+            block.Title.Equals("Инвентарь", StringComparison.OrdinalIgnoreCase));
+        var itemSection = Assert.Single(inventoryDossier.Sections, static section =>
+            section.Title.Equals("Предметы", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(itemSection.Blocks.OfType<UiEntityDossierBlock>(), static card =>
+            card.Title.Equals("Факел", StringComparison.OrdinalIgnoreCase) &&
+            card.Subtitle.Contains("Полезный предмет", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
+            table.Title.Contains("Предметы", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("отсутствует", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/inventory/", text, StringComparison.OrdinalIgnoreCase);
