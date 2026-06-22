@@ -2551,7 +2551,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         {
             sections.Add(new UiEntityDossierSection
             {
-                Id = "records",
+                Id = "entries",
                 Title = "Записи",
                 Summary = "Выберите запись, чтобы открыть полную карточку с подробностями.",
                 Icon = "reference",
@@ -4565,55 +4565,77 @@ public static class ExplorerMortalWorldCommandResultBuilder
         IReadOnlyList<InteractionPlayerSnapshot> players,
         IReadOnlyList<InteractionRecordSnapshot> records)
     {
-        var blocks = new List<UiBlock>
+        var sections = new List<UiEntityDossierSection>
         {
-            new UiTableBlock
+            new()
             {
+                Id = "summary",
                 Title = "Взаимодействия игроков",
-                Columns = ["Раздел", "Состояние"],
-                Rows =
+                Summary = "Короткая сводка по игрокам и записям взаимодействий.",
+                Icon = "interactions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
                 [
-                    new UiTableRow { Cells = ["Игроки", DescribeCombatCount(players.Count, "игрок", "игрока", "игроков")] },
-                    new UiTableRow { Cells = ["Записи", DescribeCombatCount(records.Count, "запись", "записи", "записей")] }
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            new UiKeyValueItem { Key = "Игроки", Value = DescribeCombatCount(players.Count, "игрок", "игрока", "игроков") },
+                            new UiKeyValueItem { Key = "Записи", Value = DescribeCombatCount(records.Count, "запись", "записи", "записей") }
+                        ]
+                    }
                 ]
             }
         };
 
         if (players.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "players",
                 Title = "Игроки",
-                Columns = ["Игрок", "Связь / контекст", "Состояние", "Подробно"],
-                Rows = players.Select(player => new UiTableRow
-                {
-                    Cells =
-                    [
-                        player.Name,
-                        EmptyFallback(DescribeInteractionPlayerContext(player.Node)),
-                        EmptyFallback(DescribeInteractionPlayerStatus(player.Node)),
-                        BuildInteractionPlayerDetailCommand(commandToken, player.Selector)
-                    ]
-                }).ToList()
+                Summary = "Игроки, с которыми есть видимые взаимодействия.",
+                Icon = "interactions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = players.Select(static player => (UiBlock)BuildInteractionPlayerOverviewCard(player)).ToList()
             });
         }
 
         if (records.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "records",
                 Title = "Записи взаимодействий",
-                Columns = ["Запись", "Игрок", "Состояние", "Подробно"],
-                Rows = records.Take(12).Select(record => new UiTableRow
-                {
-                    Cells =
-                    [
-                        record.Title,
-                        record.PlayerName,
-                        EmptyFallback(DescribeInteractionRecordStatus(record.Node)),
-                        BuildInteractionRecordDetailCommand(commandToken, record.Selector)
-                    ]
-                }).ToList()
+                Summary = "Последние видимые записи. Полные сведения открываются отдельной карточкой.",
+                Icon = "interactions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = records.Take(12).Select(static record => (UiBlock)BuildInteractionRecordOverviewCard(record)).ToList()
+            });
+        }
+
+        var blocks = new List<UiBlock>();
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "interactions",
+                Title = "Взаимодействия игроков",
+                Subtitle = "Совместные сцены",
+                Summary = DescribeCombatCount(records.Count, "запись", "записи", "записей"),
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = DescribeCombatCount(players.Count, "игрок", "игрока", "игроков"),
+                        Tone = players.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                        Icon = "interactions"
+                    }
+                ],
+                Sections = sections
             });
         }
 
@@ -4622,6 +4644,63 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Info, "Взаимодействия игроков", "Данные взаимодействий ещё не созданы."));
 
         return Completed(command, blocks, BuildInteractionOverviewActions(commandToken, players, records));
+    }
+
+    private static UiEntityDossierBlock BuildInteractionPlayerOverviewCard(InteractionPlayerSnapshot player)
+    {
+        var facts = new List<UiKeyValueItem>();
+        AddInteractionDetailItem(facts, "Связь / контекст", DescribeInteractionPlayerContext(player.Node));
+        AddInteractionDetailItem(facts, "Состояние", DescribeInteractionPlayerStatus(player.Node));
+        AddInteractionDetailItem(facts, "Записи", DescribeCombatCount(player.Records.Count, "запись", "записи", "записей"));
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "interaction-player-summary",
+            Title = player.Name,
+            Subtitle = "Игрок",
+            Summary = FirstNonEmpty(DescribeInteractionPlayerContext(player.Node), DescribeInteractionPlayerStatus(player.Node), "Есть видимые взаимодействия."),
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "interactions",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
+    }
+
+    private static UiEntityDossierBlock BuildInteractionRecordOverviewCard(InteractionRecordSnapshot record)
+    {
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Игрок", Value = record.PlayerName }
+        };
+        AddInteractionDetailItem(facts, "Состояние", DescribeInteractionRecordStatus(record.Node));
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "interaction-record-summary",
+            Title = record.Title,
+            Subtitle = record.PlayerName,
+            Summary = FirstNonEmpty(DescribeInteractionRecordSummary(record.Node), "Подробности доступны в карточке записи."),
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "interactions",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
     }
 
     private static ExplorerCommandResult BuildInteractionDetail(
@@ -4656,7 +4735,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 }
                 else
                 {
-                    blocks.Add(BuildInteractionPlayerDetailPanel(commandToken, player));
+                    blocks.Add(BuildInteractionPlayerDetailPanel(player));
                     actions.AddRange(BuildInteractionRecordActions(commandToken, player.Records));
                 }
                 break;
@@ -4682,12 +4761,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks, actions);
     }
 
-    private static UiPanelBlock BuildInteractionPlayerDetailPanel(string commandToken, InteractionPlayerSnapshot player)
+    private static UiEntityDossierBlock BuildInteractionPlayerDetailPanel(InteractionPlayerSnapshot player)
     {
-        var detailItems = new List<UiKeyValueItem>
-        {
-            new() { Key = "Метка", Value = player.Selector }
-        };
+        var detailItems = new List<UiKeyValueItem>();
 
         AddInteractionDetailItem(detailItems, "Связь", FirstInteractionNodeString(player.Node, "relationship", "relation", "relationshipSummary", "attitude"));
         AddInteractionDetailItem(detailItems, "Контекст", FirstInteractionNodeString(player.Node, "context", "sceneContext", "interactionContext", "role", "faction", "location"));
@@ -4702,35 +4778,64 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (player.Records.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            blocks.Add(new UiEntityDossierBlock
             {
+                EntityType = "interaction-player-entries",
                 Title = "Записи этого игрока",
-                Columns = ["Запись", "Состояние", "Кратко", "Подробно"],
-                Rows = player.Records.Select(record => new UiTableRow
-                {
-                    Cells =
-                    [
-                        record.Title,
-                        EmptyFallback(DescribeInteractionRecordStatus(record.Node)),
-                        EmptyFallback(DescribeInteractionRecordSummary(record.Node)),
-                        BuildInteractionRecordDetailCommand(commandToken, record.Selector)
-                    ]
-                }).ToList()
+                Subtitle = player.Name,
+                Summary = DescribeCombatCount(player.Records.Count, "запись", "записи", "записей"),
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "entries",
+                        Title = "Записи",
+                        Icon = "interactions",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = player.Records
+                            .Select(static record => (UiBlock)BuildInteractionRecordOverviewCard(record))
+                            .ToList()
+                    }
+                ]
             });
         }
 
-        return new UiPanelBlock
+        return new UiEntityDossierBlock
         {
+            EntityType = "interaction-player",
             Title = $"Игрок: {player.Name}",
-            Blocks = blocks
+            Subtitle = "Взаимодействия",
+            Summary = FirstNonEmpty(DescribeInteractionPlayerContext(player.Node), DescribeInteractionPlayerStatus(player.Node), "Видимая запись игрока."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeCombatCount(player.Records.Count, "запись", "записи", "записей"),
+                    Tone = player.Records.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                    Icon = "interactions"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "details",
+                    Title = "Сведения",
+                    Summary = "Контекст игрока и связанные записи.",
+                    Icon = "interactions",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = blocks
+                }
+            ]
         };
     }
 
-    private static UiPanelBlock BuildInteractionRecordDetailPanel(InteractionRecordSnapshot record)
+    private static UiEntityDossierBlock BuildInteractionRecordDetailPanel(InteractionRecordSnapshot record)
     {
         var detailItems = new List<UiKeyValueItem>
         {
-            new() { Key = "Метка", Value = record.Selector },
             new() { Key = "Игрок", Value = record.PlayerName }
         };
 
@@ -4754,10 +4859,34 @@ public static class ExplorerMortalWorldCommandResultBuilder
         };
         AddInteractionAdditionalDetailBlocks(blocks, record.Node);
 
-        return new UiPanelBlock
+        return new UiEntityDossierBlock
         {
+            EntityType = "interaction-record",
             Title = $"Запись взаимодействия: {record.Title}",
-            Blocks = blocks
+            Subtitle = record.PlayerName,
+            Summary = FirstNonEmpty(DescribeInteractionRecordSummary(record.Node), DescribeInteractionRecordStatus(record.Node), "Видимая запись взаимодействия."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = record.PlayerName,
+                    Tone = UiTone.Accent,
+                    Icon = "interactions"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "details",
+                    Title = "Сведения",
+                    Summary = "Контекст, участники, последствия и следующий шаг.",
+                    Icon = "interactions",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = blocks
+                }
+            ]
         };
     }
 
@@ -5129,10 +5258,23 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (scalarItems.Count > 0)
         {
-            blocks.Add(new UiPanelBlock
+            blocks.Add(new UiEntityDossierBlock
             {
+                EntityType = "interaction-extra",
                 Title = "Дополнительные сведения",
-                Blocks = [new UiKeyValueGridBlock { Items = scalarItems }]
+                Subtitle = "Раздел",
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Поля",
+                        Icon = "interactions",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = [new UiKeyValueGridBlock { Items = scalarItems }]
+                    }
+                ]
             });
         }
     }
@@ -5143,10 +5285,23 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (sectionBlocks.Count == 0)
             return;
 
-        blocks.Add(new UiPanelBlock
+        blocks.Add(new UiEntityDossierBlock
         {
+            EntityType = "interaction-section",
             Title = title,
-            Blocks = sectionBlocks
+            Subtitle = "Вложенный раздел",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = StableId(title),
+                    Title = "Сведения",
+                    Icon = "interactions",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = sectionBlocks
+                }
+            ]
         });
     }
 
@@ -5170,9 +5325,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 index++;
                 if (item is JsonObject itemObj)
                 {
-                    var panel = BuildInteractionObjectPanel(itemObj, $"Запись {index}");
-                    if (panel != null)
-                        blocks.Add(panel);
+                    var card = BuildInteractionObjectCard(itemObj, $"Запись {index}");
+                    if (card != null)
+                        blocks.Add(card);
                     continue;
                 }
 
@@ -5189,7 +5344,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return node is JsonObject objectNode ? BuildInteractionObjectBlocks(objectNode) : [];
     }
 
-    private static UiPanelBlock? BuildInteractionObjectPanel(JsonObject obj, string fallbackTitle)
+    private static UiEntityDossierBlock? BuildInteractionObjectCard(JsonObject obj, string fallbackTitle)
     {
         var blocks = BuildInteractionObjectBlocks(obj);
         if (blocks.Count == 0)
@@ -5198,10 +5353,23 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var title = FirstNonEmpty(
             FirstInteractionNodeString(obj, "displayName", "name", "title", "questName", "actionName", "itemName", "characterName", "npcName"),
             fallbackTitle);
-        return new UiPanelBlock
+        return new UiEntityDossierBlock
         {
+            EntityType = "interaction-entry-detail",
             Title = title,
-            Blocks = blocks
+            Subtitle = "Запись",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "fields",
+                    Title = "Сведения",
+                    Icon = "interactions",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = blocks
+                }
+            ]
         };
     }
 
@@ -5315,7 +5483,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return scalar;
 
         if (node is JsonArray array)
-            return string.Join("; ", array.Select(DescribeNodeForInteractionDetail).Where(static part => !string.IsNullOrWhiteSpace(part)));
+            return string.Join("\n", array.Select(DescribeNodeForInteractionDetail).Where(static part => !string.IsNullOrWhiteSpace(part)));
 
         if (node is JsonObject obj)
         {
@@ -5330,7 +5498,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     parts.Add($"{DescribeInteractionFieldLabel(property.Key)}: {value}");
             }
 
-            return string.Join("; ", parts);
+            return string.Join("\n", parts);
         }
 
         return string.Empty;
@@ -5376,7 +5544,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         DescribeNodeForInteractionDetail(node);
 
     private static string JoinInteractionDetails(params string?[] values) =>
-        string.Join("; ", values.Where(static value => !string.IsNullOrWhiteSpace(value)).Select(static value => value!.Trim()));
+        string.Join("\n", values.Where(static value => !string.IsNullOrWhiteSpace(value)).Select(static value => value!.Trim()));
 
     private static string FirstInteractionNodeString(JsonNode? node, params string[] properties)
     {

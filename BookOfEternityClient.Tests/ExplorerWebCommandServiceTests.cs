@@ -567,6 +567,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Передача шифра", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Спор у переправы", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/misc", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "interactions" &&
+            block.Title.Equals("Взаимодействия игроков", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
 
         var playerAction = Assert.Single(result.Actions, static action => action.Id == "interactions-player-player_lienna");
         Assert.Equal("/взаимодействия игрок player_lienna", playerAction.Command);
@@ -597,6 +601,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("ждёт ответа у старого фонтана", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Передача шифра", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Спор у переправы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "interaction-player" &&
+            block.Title.Contains("Лианна из янтарной башни", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.DoesNotContain("Страж Кай", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("playerId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("records", payload, StringComparison.OrdinalIgnoreCase);
@@ -621,6 +629,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("шифр спрятан в перчатке", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Можно спросить о знаке Вальмонтов", text, StringComparison.OrdinalIgnoreCase);
         AssertNoFlattenedStructuredDetails(result);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "interaction-record" &&
+            block.Title.Contains("Передача шифра", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.DoesNotContain("argument_at_ferry", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("interactionId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("records", payload, StringComparison.OrdinalIgnoreCase);
