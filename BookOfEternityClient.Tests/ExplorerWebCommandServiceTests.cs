@@ -1497,6 +1497,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Month of Beginnings", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("08:15", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Сырой туман ещё держится у ворот", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "current-location" &&
+            block.Title.Contains("Северные ворота", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
@@ -1553,6 +1557,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("низкая", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Ухудшение", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("стрельба на дальность затруднена", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "weather" &&
+            block.Title.Equals("Время и погода", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);

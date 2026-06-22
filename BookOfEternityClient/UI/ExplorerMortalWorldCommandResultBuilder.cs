@@ -1965,6 +1965,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var location = UnwrapCurrentLocationNode(locationRead.Node);
         var weather = UnwrapWeatherNode(weatherRead.Node);
         var blocks = new List<UiBlock>();
+        var sections = new List<UiEntityDossierSection>();
+        var locationTitle = "Текущая локация";
 
         if (location == null)
         {
@@ -1975,6 +1977,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             var title = FirstNonEmpty(
                 GetLocationNodeString(location, "name", "locationName", "displayName"),
                 "Текущая локация");
+            locationTitle = title;
             var facts = new List<UiKeyValueItem>();
             AddLocationFact(facts, "Локация", title);
             AddLocationFact(facts, "Регион", GetLocationNodeString(location, "region"));
@@ -1989,29 +1992,62 @@ public static class ExplorerMortalWorldCommandResultBuilder
             if (facts.Count > 0)
                 panelBlocks.Add(new UiKeyValueGridBlock { Items = facts });
 
-            blocks.Add(new UiPanelBlock
-            {
-                Title = title,
-                Blocks = panelBlocks.Count > 0 ? panelBlocks : [new UiTextBlock { Text = "Описание локации пока не заполнено.", Tone = UiTone.Muted }]
-            });
+            AddDossierSectionIfAny(
+                sections,
+                "location",
+                title,
+                "Описание, регион и важные свойства текущего места.",
+                "map",
+                panelBlocks.Count > 0 ? panelBlocks : [new UiTextBlock { Text = "Описание локации пока не заполнено.", Tone = UiTone.Muted }]);
 
-            AddLocationFeatureBlock(blocks, location);
-            AddLocationFactionControlBlock(blocks, location);
-            AddLocationThreatBlock(blocks, location);
-            AddLocationEventBlock(blocks, location);
+            var locationBlocks = new List<UiBlock>();
+            AddLocationFeatureBlock(locationBlocks, location);
+            AddLocationFactionControlBlock(locationBlocks, location);
+            AddLocationThreatBlock(locationBlocks, location);
+            AddLocationEventBlock(locationBlocks, location);
+            AddDossierSectionIfAny(
+                sections,
+                "local-context",
+                "Местный контекст",
+                "Особенности, контроль, угрозы и недавние события в локации.",
+                "map",
+                locationBlocks);
         }
 
-        AddWorldTimeBlock(blocks, timeRead.Node);
-        AddWeatherSummaryBlock(blocks, weather, includeBiome: false, currentLocation: location);
+        var timeBlocks = new List<UiBlock>();
+        AddWorldTimeBlock(timeBlocks, timeRead.Node);
+        AddDossierSectionIfAny(sections, "time", "Время", "Текущее игровое время.", "time", timeBlocks);
+
+        var weatherBlocks = new List<UiBlock>();
+        AddWeatherSummaryBlock(weatherBlocks, weather, includeBiome: false, currentLocation: location);
+        AddDossierSectionIfAny(sections, "weather", "Погода", "Условия вокруг текущей локации.", "weather", weatherBlocks);
+
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "current-location",
+                Title = locationTitle,
+                Subtitle = "Где я",
+                Summary = location == null
+                    ? "Местоположение неизвестно."
+                    : FirstNonEmpty(GetLocationNodeString(location, "description", "shortDescription"), "Текущий контекст персонажа."),
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = "Местоположение",
+                        Tone = UiTone.Accent,
+                        Icon = "map"
+                    }
+                ],
+                Sections = sections
+            });
+        }
+
         AddReadWarning(blocks, "Где я", locationRead);
         AddReadWarning(blocks, "Где я", timeRead);
         AddReadWarning(blocks, "Где я", weatherRead);
-        if (locationRead.Node != null)
-            blocks.Add(Raw("Полная запись: местоположение", locationRead.Node));
-        if (timeRead.Node != null)
-            blocks.Add(Raw("Полная запись: время мира", timeRead.Node));
-        if (weatherRead.Node != null)
-            blocks.Add(Raw("Полная запись: погода", weatherRead.Node));
 
         return Completed(command, blocks);
     }
@@ -2024,22 +2060,71 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var location = UnwrapCurrentLocationNode(locationRead.Node);
         var weather = UnwrapWeatherNode(weatherRead.Node);
         var blocks = new List<UiBlock>();
+        var sections = new List<UiEntityDossierSection>();
 
-        AddWorldTimeBlock(blocks, timeRead.Node);
-        AddWeatherSummaryBlock(blocks, weather, includeBiome: true, currentLocation: location);
+        var timeBlocks = new List<UiBlock>();
+        AddWorldTimeBlock(timeBlocks, timeRead.Node);
+        AddDossierSectionIfAny(sections, "time", "Время", "Текущее игровое время.", "time", timeBlocks);
 
-        if (blocks.Count == 0)
+        var weatherBlocks = new List<UiBlock>();
+        AddWeatherSummaryBlock(weatherBlocks, weather, includeBiome: true, currentLocation: location);
+        AddDossierSectionIfAny(sections, "weather", "Погода", "Погодные условия и их игровые эффекты.", "weather", weatherBlocks);
+
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "weather",
+                Title = "Время и погода",
+                Subtitle = location == null
+                    ? "Окружение"
+                    : FirstNonEmpty(GetLocationNodeString(location, "name", "locationName", "displayName"), "Окружение"),
+                Summary = FirstNonEmpty(GetLocationNodeString(weather, "description"), "Текущее время и погодные условия."),
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = "Окружение",
+                        Tone = UiTone.Accent,
+                        Icon = "weather"
+                    }
+                ],
+                Sections = sections
+            });
+        }
+        else
+        {
             blocks.Add(Message(UiNotificationSeverity.Info, "Время и погода", "Данные ещё не созданы."));
+        }
 
         AddReadWarning(blocks, "Время и погода", timeRead);
         AddReadWarning(blocks, "Время и погода", weatherRead);
         AddReadWarning(blocks, "Время и погода", locationRead);
-        if (timeRead.Node != null)
-            blocks.Add(Raw("Полная запись: время мира", timeRead.Node));
-        if (weatherRead.Node != null)
-            blocks.Add(Raw("Полная запись: погода", weatherRead.Node));
 
         return Completed(command, blocks);
+    }
+
+    private static void AddDossierSectionIfAny(
+        List<UiEntityDossierSection> sections,
+        string id,
+        string title,
+        string summary,
+        string icon,
+        IReadOnlyList<UiBlock> blocks)
+    {
+        if (blocks.Count == 0)
+            return;
+
+        sections.Add(new UiEntityDossierSection
+        {
+            Id = id,
+            Title = title,
+            Summary = summary,
+            Icon = icon,
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Blocks = blocks.ToList()
+        });
     }
 
     private static JsonObject? UnwrapWeatherNode(JsonNode? node)
@@ -2166,11 +2251,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (rows.Count == 0)
             return;
 
-        blocks.Add(new UiTableBlock
+        blocks.Add(new UiEntityDossierBlock
         {
+            EntityType = "location-faction-control",
             Title = "Контроль фракций",
-            Columns = ["Фракция", "Вид контроля", "Уровень"],
-            Rows = rows
+            Subtitle = "Локальная власть",
+            Summary = DescribeInventoryCount(rows.Count, "фракция", "фракции", "фракций"),
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "entries",
+                    Title = "Фракции",
+                    Icon = "factions",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = rows
+                        .Select(row => (UiBlock)BuildReferenceRowDossier(
+                            "location-faction-control-entry",
+                            "Фракция",
+                            ["Фракция", "Вид контроля", "Уровень"],
+                            row,
+                            "factions"))
+                        .ToList()
+                }
+            ]
         });
     }
 
@@ -2205,11 +2310,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (rows.Count == 0)
             return;
 
-        blocks.Add(new UiTableBlock
+        blocks.Add(new UiEntityDossierBlock
         {
+            EntityType = "location-threats",
             Title = "Активные угрозы",
-            Columns = ["Угроза", "Опасность", "Что известно"],
-            Rows = rows
+            Subtitle = "Риски места",
+            Summary = DescribeInventoryCount(rows.Count, "угроза", "угрозы", "угроз"),
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "entries",
+                    Title = "Угрозы",
+                    Icon = "warning",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = rows
+                        .Select(row => (UiBlock)BuildReferenceRowDossier(
+                            "location-threat",
+                            "Угроза",
+                            ["Угроза", "Опасность", "Что известно"],
+                            row,
+                            "warning"))
+                        .ToList()
+                }
+            ]
         });
     }
 
@@ -2865,7 +2990,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
                         "faction-resource",
                         "Ресурс",
                         ["Ресурс", "Запас", "Доход за ход", "Содержание за ход"],
-                        row))
+                        row,
+                        "factions"))
                     .ToList()
             });
         }
@@ -2886,7 +3012,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
                         "faction-rank",
                         "Ранг",
                         ["Ранг", "Ветвь", "Преимущества"],
-                        row))
+                        row,
+                        "factions"))
                     .ToList()
             });
         }
@@ -2916,7 +3043,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         string entityType,
         string subtitle,
         IReadOnlyList<string> columns,
-        UiTableRow row)
+        UiTableRow row,
+        string icon = "reference")
     {
         var title = row.Cells.Count > 0 && !string.IsNullOrWhiteSpace(row.Cells[0])
             ? row.Cells[0]
@@ -2949,7 +3077,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     {
                         Id = "fields",
                         Title = "Сведения",
-                        Icon = "factions",
+                        Icon = icon,
                         Collapsible = true,
                         InitiallyExpanded = true,
                         Blocks = [new UiKeyValueGridBlock { Items = facts }]
