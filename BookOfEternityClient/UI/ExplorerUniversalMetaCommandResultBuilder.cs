@@ -249,14 +249,15 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         var changeRows = BuildMortalStatusChangeRows(statusChanges, experience);
         if (changeRows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Последние изменения",
-                Columns = ["Параметр", "Изменение", "Комментарий"],
-                Rows = changeRows
-            });
-        }
+            AddStatusRowsDossier(
+                blocks,
+                "Последние изменения",
+                "status-changes",
+                "status-change",
+                "Что изменилось за последний ход.",
+                "status",
+                ["Параметр", "Изменение", "Комментарий"],
+                changeRows);
 
         AddMortalStatusEffectBlocks(blocks, effectsRead.Node);
         AddMortalStatusWoundBlocks(blocks, woundsRead.Node);
@@ -427,12 +428,15 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         if (rows.Count == 0)
             return;
 
-        blocks.Add(new UiTableBlock
-        {
-            Title = "Активные эффекты",
-            Columns = ["Эффект", "Что делает", "Цель / срок", "Источник и описание"],
-            Rows = rows
-        });
+        AddStatusRowsDossier(
+            blocks,
+            "Активные эффекты",
+            "status-effects",
+            "status-effect",
+            "Эффекты, которые сейчас влияют на персонажа.",
+            "effect",
+            ["Эффект", "Что делает", "Цель / срок", "Источник и описание"],
+            rows);
     }
 
     private static void AddMortalStatusWoundBlocks(List<UiBlock> blocks, JsonNode? woundsRoot)
@@ -460,12 +464,15 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         if (rows.Count == 0)
             return;
 
-        blocks.Add(new UiTableBlock
-        {
-            Title = "Раны",
-            Columns = ["Рана", "Тяжесть", "Влияние", "Лечение"],
-            Rows = rows
-        });
+        AddStatusRowsDossier(
+            blocks,
+            "Раны",
+            "status-wounds",
+            "status-wound",
+            "Повреждения и их текущее лечение.",
+            "effect",
+            ["Рана", "Тяжесть", "Влияние", "Лечение"],
+            rows);
     }
 
     private static void AddMortalStatusCustomStateBlocks(List<UiBlock> blocks, JsonNode? statesRoot)
@@ -497,12 +504,121 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         if (rows.Count == 0)
             return;
 
-        blocks.Add(new UiTableBlock
+        AddStatusRowsDossier(
+            blocks,
+            "Особые состояния",
+            "status-custom-states",
+            "status-custom-state",
+            "Дополнительные шкалы и состояния персонажа.",
+            "status",
+            ["Состояние", "Значение", "Подробно"],
+            rows);
+    }
+
+    private static void AddStatusRowsDossier(
+        List<UiBlock> blocks,
+        string title,
+        string entityType,
+        string itemEntityType,
+        string summary,
+        string icon,
+        IReadOnlyList<string> columns,
+        IReadOnlyList<UiTableRow> rows)
+    {
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiEntityDossierBlock
         {
-            Title = "Особые состояния",
-            Columns = ["Состояние", "Значение", "Подробно"],
-            Rows = rows
+            EntityType = entityType,
+            Title = title,
+            Subtitle = "Статус персонажа",
+            Summary = summary,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = FormatStatusEntryCount(rows.Count),
+                    Tone = UiTone.Accent,
+                    Icon = icon
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = StableStatusId(title),
+                    Title = title,
+                    Icon = icon,
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = rows.Select(row => (UiBlock)BuildStatusRowCard(itemEntityType, icon, columns, row)).ToList()
+                }
+            ]
         });
+    }
+
+    private static UiEntityDossierBlock BuildStatusRowCard(
+        string entityType,
+        string icon,
+        IReadOnlyList<string> columns,
+        UiTableRow row)
+    {
+        var title = row.Cells.Count > 0 ? EmptyFallback(row.Cells[0]) : "Запись";
+        var items = new List<UiKeyValueItem>();
+        for (var index = 1; index < row.Cells.Count && index < columns.Count; index++)
+        {
+            var value = row.Cells[index];
+            if (!IsUnknownValue(value))
+                items.Add(new UiKeyValueItem { Key = columns[index], Value = value.Trim() });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = entityType,
+            Title = title,
+            Subtitle = columns.Count > 0 ? columns[0] : "Запись",
+            Summary = FirstNonEmpty(row.Cells.Skip(1).Where(static cell => !IsUnknownValue(cell)).ToArray()),
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "details",
+                    Title = "Подробности",
+                    Icon = icon,
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = items.Count > 0
+                        ? [new UiKeyValueGridBlock { Items = items }]
+                        : [new UiTextBlock { Text = "Подробности пока не указаны.", Tone = UiTone.Muted }]
+                }
+            ]
+        };
+    }
+
+    private static string FormatStatusEntryCount(int count)
+    {
+        var mod100 = count % 100;
+        var mod10 = count % 10;
+        var word = mod100 is >= 11 and <= 14
+            ? "записей"
+            : mod10 switch
+            {
+                1 => "запись",
+                >= 2 and <= 4 => "записи",
+                _ => "записей"
+            };
+        return $"{count} {word}";
+    }
+
+    private static string StableStatusId(string value)
+    {
+        var chars = value
+            .Trim()
+            .Select(static ch => char.IsLetterOrDigit(ch) ? char.ToLowerInvariant(ch) : '-')
+            .ToArray();
+        var id = new string(chars).Trim('-');
+        return string.IsNullOrWhiteSpace(id) ? "status" : id;
     }
 
     private static JsonObject? UnwrapObject(JsonNode? node, params string[] wrapperProperties)

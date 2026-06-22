@@ -874,6 +874,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
 
         var text = CollectBlockText(result.Blocks);
         var payload = SerializeResult(result);
@@ -1308,6 +1309,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
 
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Асуран де Вальмонт", text, StringComparison.OrdinalIgnoreCase);
