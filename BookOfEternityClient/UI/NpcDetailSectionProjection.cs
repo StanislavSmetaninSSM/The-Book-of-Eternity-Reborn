@@ -103,12 +103,7 @@ internal static class NpcDetailSectionProjection
             "Дневник / мысли",
             FormatCount(count, "запись", "записи", "записей"),
             [
-                new UiTableBlock
-                {
-                    Title = $"{npcName} — Дневник / мысли",
-                    Columns = ["Запись", "Подробности"],
-                    Rows = rows
-                }
+                BuildNpcSectionDossier(npcName, "Дневник / мысли", ["Запись", "Подробности"], rows)
             ]));
     }
 
@@ -172,12 +167,7 @@ internal static class NpcDetailSectionProjection
             "Личные квесты",
             FormatCount(rows.Count, "квест", "квеста", "квестов"),
             [
-                new UiTableBlock
-                {
-                    Title = $"{npcName} — Личные квесты",
-                    Columns = ["Квест", "Статус", "Подробности"],
-                    Rows = rows
-                }
+                BuildNpcSectionDossier(npcName, "Личные квесты", ["Квест", "Статус", "Подробности"], rows)
             ]));
     }
 
@@ -208,12 +198,7 @@ internal static class NpcDetailSectionProjection
             "Активности",
             FormatCount(rows.Count, "активность", "активности", "активностей"),
             [
-                new UiTableBlock
-                {
-                    Title = $"{npcName} — Активности",
-                    Columns = ["Активность", "Состояние", "Подробности"],
-                    Rows = rows
-                }
+                BuildNpcSectionDossier(npcName, "Активности", ["Активность", "Состояние", "Подробности"], rows)
             ]));
     }
 
@@ -243,12 +228,7 @@ internal static class NpcDetailSectionProjection
             "Отношения / замки",
             FormatCount(rows.Count, "запись", "записи", "записей"),
             [
-                new UiTableBlock
-                {
-                    Title = $"{npcName} — Отношения / замки",
-                    Columns = ["Раздел", "Подробности"],
-                    Rows = rows
-                }
+                BuildNpcSectionDossier(npcName, "Отношения / замки", ["Раздел", "Подробности"], rows)
             ]));
     }
 
@@ -309,12 +289,7 @@ internal static class NpcDetailSectionProjection
             label,
             FormatCount(rows.Count, "запись", "записи", "записей"),
             [
-                new UiTableBlock
-                {
-                    Title = $"{npcName} — {label}",
-                    Columns = ["Раздел", "Подробности"],
-                    Rows = rows
-                }
+                BuildNpcSectionDossier(npcName, label, ["Раздел", "Подробности"], rows)
             ]));
     }
 
@@ -344,13 +319,89 @@ internal static class NpcDetailSectionProjection
             "Память / состояния",
             FormatCount(rows.Count, "запись", "записи", "записей"),
             [
-                new UiTableBlock
-                {
-                    Title = $"{npcName} — Память / состояния",
-                    Columns = ["Раздел", "Подробности"],
-                    Rows = rows
-                }
+                BuildNpcSectionDossier(npcName, "Память / состояния", ["Раздел", "Подробности"], rows)
             ]));
+    }
+
+    private static UiEntityDossierBlock BuildNpcSectionDossier(
+        string npcName,
+        string sectionTitle,
+        IReadOnlyList<string> columns,
+        IReadOnlyList<UiTableRow> rows)
+    {
+        var cards = new List<UiBlock>();
+        for (var index = 0; index < rows.Count; index++)
+        {
+            var row = rows[index];
+            var title = row.Cells.Count > 0 && !string.IsNullOrWhiteSpace(row.Cells[0])
+                ? row.Cells[0]
+                : $"Запись {index + 1}";
+            var facts = new List<UiKeyValueItem>();
+            for (var column = 1; column < row.Cells.Count; column++)
+            {
+                var value = row.Cells[column];
+                if (string.IsNullOrWhiteSpace(value))
+                    continue;
+
+                facts.Add(new UiKeyValueItem
+                {
+                    Key = column < columns.Count ? columns[column] : $"Поле {column + 1}",
+                    Value = value
+                });
+            }
+
+            cards.Add(new UiEntityDossierBlock
+            {
+                EntityType = "npc-section-entry",
+                Title = title,
+                Subtitle = sectionTitle,
+                Summary = facts.Count == 1 ? facts[0].Value : string.Empty,
+                Sections = facts.Count == 0
+                    ? []
+                    :
+                    [
+                        new UiEntityDossierSection
+                        {
+                            Id = "fields",
+                            Title = "Сведения",
+                            Icon = "npc",
+                            Collapsible = true,
+                            InitiallyExpanded = true,
+                            Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                        }
+                    ]
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "npc-section",
+            Title = $"{npcName} — {sectionTitle}",
+            Subtitle = sectionTitle,
+            Summary = FormatCount(rows.Count, "запись", "записи", "записей"),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = sectionTitle,
+                    Tone = UiTone.Accent,
+                    Icon = "npc"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "entries",
+                    Title = "Записи",
+                    Summary = "Каждая запись показана отдельной карточкой, без общей таблицы.",
+                    Icon = "npc",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = cards
+                }
+            ]
+        };
     }
 
     private static IEnumerable<JsonObject> EnumerateNpcCoreObjects(JsonNode? root)

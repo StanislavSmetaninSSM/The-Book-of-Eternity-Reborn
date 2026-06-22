@@ -3525,7 +3525,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal("/npc section npc_serafina journal", result.Command);
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains("Серафина — Дневник / мысли", text, StringComparison.Ordinal);
-        Assert.Contains(result.Blocks.SelectMany(EnumeratePanels), static block => block.Title == "Серафина — Дневник / мысли");
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "npc-section" &&
+            block.Title == "Серафина — Дневник / мысли");
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.Contains("Сомневается, стоит ли доверять письму.", text, StringComparison.Ordinal);
         AssertNoGenericDetailsTables(result);
         AssertNoFlattenedStructuredDetails(result);
@@ -3579,6 +3582,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, detail.State);
         Assert.Contains("Магистра Селена — Дневник / мысли", text, StringComparison.Ordinal);
+        Assert.Contains(detail.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "npc-section" &&
+            block.Title == "Магистра Селена — Дневник / мысли");
+        Assert.Empty(detail.Blocks.SelectMany(EnumerateTables));
         Assert.Contains("Селена сверяет знак письма с архивной книгой.", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Такой раздел НПС не найден", text, StringComparison.Ordinal);
         AssertNoGenericDetailsTables(detail);
