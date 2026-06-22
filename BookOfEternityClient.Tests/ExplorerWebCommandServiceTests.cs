@@ -2855,8 +2855,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             section.Title.Equals("Структурные бонусы", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(structuredBonusSection.Blocks.OfType<UiEntityDossierBlock>(), static block =>
             block.Title.Contains("Чувство магических потоков", StringComparison.OrdinalIgnoreCase));
-        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
-            table.Title.Equals("Структурные бонусы", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);

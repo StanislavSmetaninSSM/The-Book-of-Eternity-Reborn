@@ -7544,48 +7544,63 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static void AddStructuredBonusBlock(List<UiBlock> blocks, JsonArray? bonuses)
     {
-        if (bonuses == null || bonuses.Count == 0)
+        var cards = BuildStructuredBonusCards(bonuses);
+        if (cards.Count == 0)
             return;
 
-        var rows = new List<UiTableRow>();
-        var index = 0;
-        foreach (var bonus in bonuses)
+        blocks.Add(new UiEntityDossierBlock
         {
-            index++;
-            if (bonus is not JsonObject obj)
-            {
-                rows.Add(new UiTableRow
+            EntityType = "structured-bonuses",
+            Title = "Структурные бонусы",
+            Subtitle = "Механические свойства",
+            Summary = "Каждый бонус показан отдельной карточкой, а его поля разложены по строкам.",
+            Badges =
+            [
+                new UiEntityBadge
                 {
-                    Cells = [$"Бонус {index}", "Значение", FormatInventoryNodeValue(bonus)]
-                });
-                continue;
-            }
-
-            var title = FirstNonEmpty(GetNodeString(obj, "summary"), $"Бонус {index}");
-            foreach (var property in obj)
-            {
-                rows.Add(new UiTableRow
+                    Label = DescribeInventoryCount(cards.Count, "бонус", "бонуса", "бонусов"),
+                    Tone = UiTone.Success,
+                    Icon = "inventory"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
                 {
-                    Cells = [title, GetStructuredBonusFieldLabel(property.Key), FormatInventoryNodeValue(property.Value, property.Key)]
-                });
-            }
-        }
-
-        if (rows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Структурные бонусы",
-                Columns = ["Бонус", "Поле", "Значение"],
-                Rows = rows
-            });
-        }
+                    Id = "bonuses",
+                    Title = "Бонусы",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = cards
+                }
+            ]
+        });
     }
 
     private static void AddStructuredBonusSection(List<UiEntityDossierSection> sections, JsonArray? bonuses)
     {
-        if (bonuses == null || bonuses.Count == 0)
+        var cards = BuildStructuredBonusCards(bonuses);
+
+        if (cards.Count == 0)
             return;
+
+        sections.Add(new UiEntityDossierSection
+        {
+            Id = "structured-bonuses",
+            Title = "Структурные бонусы",
+            Summary = "Механические бонусы предмета, разложенные по полям.",
+            Icon = "inventory",
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Blocks = cards
+        });
+    }
+
+    private static List<UiBlock> BuildStructuredBonusCards(JsonArray? bonuses)
+    {
+        if (bonuses == null || bonuses.Count == 0)
+            return [];
 
         var cards = new List<UiBlock>();
         var index = 0;
@@ -7651,19 +7666,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             });
         }
 
-        if (cards.Count == 0)
-            return;
-
-        sections.Add(new UiEntityDossierSection
-        {
-            Id = "structured-bonuses",
-            Title = "Структурные бонусы",
-            Summary = "Механические бонусы предмета, разложенные по полям.",
-            Icon = "inventory",
-            Collapsible = true,
-            InitiallyExpanded = true,
-            Blocks = cards
-        });
+        return cards;
     }
 
     private static void AddInventoryCombatEffectBlock(List<UiBlock> blocks, JsonNode? node)
@@ -7673,11 +7676,63 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (rows.Count == 0)
             return;
 
-        blocks.Add(new UiTableBlock
+        blocks.Add(new UiEntityDossierBlock
         {
+            EntityType = "inventory-combat-effects",
             Title = "Боевые эффекты",
-            Columns = ["Источник", "Тип", "Значение", "Описание"],
-            Rows = rows
+            Subtitle = "Боевые свойства",
+            Summary = "Эффекты, которые предмет или состояние добавляет в бою.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeInventoryCount(rows.Count, "эффект", "эффекта", "эффектов"),
+                    Tone = UiTone.Warning,
+                    Icon = "combat"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "effects",
+                    Title = "Эффекты",
+                    Icon = "combat",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = rows.Select(static row => (UiBlock)new UiEntityDossierBlock
+                    {
+                        EntityType = "inventory-combat-effect",
+                        Title = row.Cells.ElementAtOrDefault(1) ?? "Эффект",
+                        Subtitle = row.Cells.ElementAtOrDefault(0) ?? "Источник",
+                        Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(3), row.Cells.ElementAtOrDefault(2)),
+                        Sections =
+                        [
+                            new UiEntityDossierSection
+                            {
+                                Id = "fields",
+                                Title = "Подробности",
+                                Icon = "combat",
+                                Collapsible = true,
+                                InitiallyExpanded = true,
+                                Blocks =
+                                [
+                                    new UiKeyValueGridBlock
+                                    {
+                                        Items =
+                                        [
+                                            new UiKeyValueItem { Key = "Источник", Value = EmptyFallback(row.Cells.ElementAtOrDefault(0) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Тип", Value = EmptyFallback(row.Cells.ElementAtOrDefault(1) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Значение", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Описание", Value = EmptyFallback(row.Cells.ElementAtOrDefault(3) ?? string.Empty) }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }).ToList()
+                }
+            ]
         });
     }
 
@@ -7730,7 +7785,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var cost = GetNodeString(action, "actionCost");
         if (!string.IsNullOrWhiteSpace(cost))
             parts.Add("стоимость: " + FormatInventoryProtocolValue(cost));
-        return string.Join("; ", parts);
+        return string.Join("\n", parts);
     }
 
     private static string FormatInventoryCombatEffectValue(JsonObject effect)
@@ -7748,7 +7803,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var duration = GetNodeString(effect, "duration");
         if (!string.IsNullOrWhiteSpace(duration) && duration != "0")
             parts.Add("длительность: " + duration);
-        return string.Join("; ", parts);
+        return string.Join("\n", parts);
     }
 
     private static void AddInventoryCustomPropertiesBlock(List<UiBlock> blocks, JsonNode? node)
@@ -7771,15 +7826,57 @@ public static class ExplorerMortalWorldCommandResultBuilder
             .Where(static row => row.Cells.Any(static cell => !string.IsNullOrWhiteSpace(cell)))
             .ToList();
 
-        if (rows.Count > 0)
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiEntityDossierBlock
         {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Особые свойства",
-                Columns = ["Когда", "Цель", "Изменение", "Описание"],
-                Rows = rows
-            });
-        }
+            EntityType = "inventory-custom-properties",
+            Title = "Особые свойства",
+            Subtitle = "Контекстные эффекты",
+            Summary = "Дополнительные правила взаимодействия предмета или состояния.",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "properties",
+                    Title = "Свойства",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = rows.Select(static row => (UiBlock)new UiEntityDossierBlock
+                    {
+                        EntityType = "inventory-custom-property",
+                        Title = row.Cells.ElementAtOrDefault(0) ?? "Свойство",
+                        Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(3), row.Cells.ElementAtOrDefault(2), row.Cells.ElementAtOrDefault(1)),
+                        Sections =
+                        [
+                            new UiEntityDossierSection
+                            {
+                                Id = "fields",
+                                Title = "Подробности",
+                                Icon = "inventory",
+                                Collapsible = true,
+                                InitiallyExpanded = true,
+                                Blocks =
+                                [
+                                    new UiKeyValueGridBlock
+                                    {
+                                        Items =
+                                        [
+                                            new UiKeyValueItem { Key = "Когда", Value = EmptyFallback(row.Cells.ElementAtOrDefault(0) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Цель", Value = EmptyFallback(row.Cells.ElementAtOrDefault(1) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Изменение", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Описание", Value = EmptyFallback(row.Cells.ElementAtOrDefault(3) ?? string.Empty) }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }).ToList()
+                }
+            ]
+        });
     }
 
     private static void AddInventoryContainerBlock(List<UiBlock> blocks, JsonObject item)
@@ -7825,15 +7922,56 @@ public static class ExplorerMortalWorldCommandResultBuilder
             });
         }
 
-        if (rows.Count > 0)
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiEntityDossierBlock
         {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Разбирается на",
-                Columns = ["Материал", "Кол-во", "Вес", "Описание"],
-                Rows = rows
-            });
-        }
+            EntityType = "inventory-disassembly",
+            Title = "Разбирается на",
+            Subtitle = "Материалы",
+            Summary = "Что можно получить при разборе предмета.",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "materials",
+                    Title = "Материалы",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = rows.Select(static row => (UiBlock)new UiEntityDossierBlock
+                    {
+                        EntityType = "inventory-material",
+                        Title = row.Cells.ElementAtOrDefault(0) ?? "Материал",
+                        Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(3), row.Cells.ElementAtOrDefault(2), row.Cells.ElementAtOrDefault(1)),
+                        Sections =
+                        [
+                            new UiEntityDossierSection
+                            {
+                                Id = "fields",
+                                Title = "Подробности",
+                                Icon = "inventory",
+                                Collapsible = true,
+                                InitiallyExpanded = true,
+                                Blocks =
+                                [
+                                    new UiKeyValueGridBlock
+                                    {
+                                        Items =
+                                        [
+                                            new UiKeyValueItem { Key = "Количество", Value = EmptyFallback(row.Cells.ElementAtOrDefault(1) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Вес", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Описание", Value = EmptyFallback(row.Cells.ElementAtOrDefault(3) ?? string.Empty) }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }).ToList()
+                }
+            ]
+        });
     }
 
     private static void AddInventoryResourceBlock(List<UiBlock> blocks, JsonObject item, JsonObject? resourceEntry)
@@ -7878,22 +8016,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (bondEntry["fateCards"] is JsonArray fateCards && fateCards.Count > 0)
         {
-            panelBlocks.Add(new UiTableBlock
+            panelBlocks.Add(new UiEntityDossierBlock
             {
+                EntityType = "inventory-fate-cards",
                 Title = "Карты судьбы предмета",
-                Columns = ["Карта", "Статус", "Описание"],
-                Rows = fateCards
-                    .OfType<JsonObject>()
-                    .Select(static card => new UiTableRow
+                Subtitle = "Связь с владельцем",
+                Summary = "Сюжетные вехи, которые предмет открывает через связь с владельцем.",
+                Sections =
+                [
+                    new UiEntityDossierSection
                     {
-                        Cells =
-                        [
-                            FirstNonEmpty(GetNodeString(card, "name"), GetNodeString(card, "cardName"), "Карта"),
-                            TryGetNodeBool(card, "isUnlocked", out var unlocked) && unlocked ? "разблокирована" : "закрыта",
-                            FirstNonEmpty(GetNodeString(card, "description"), GetNodeString(card, "summary"))
-                        ]
-                    })
-                    .ToList()
+                        Id = "cards",
+                        Title = "Карты",
+                        Icon = "inventory",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = fateCards
+                            .OfType<JsonObject>()
+                            .Select(static card => (UiBlock)new UiEntityDossierBlock
+                            {
+                                EntityType = "inventory-fate-card",
+                                Title = FirstNonEmpty(GetNodeString(card, "name"), GetNodeString(card, "cardName"), "Карта"),
+                                Subtitle = TryGetNodeBool(card, "isUnlocked", out var unlocked) && unlocked ? "разблокирована" : "закрыта",
+                                Summary = FirstNonEmpty(GetNodeString(card, "description"), GetNodeString(card, "summary"))
+                            })
+                            .ToList()
+                    }
+                ]
             });
         }
 
