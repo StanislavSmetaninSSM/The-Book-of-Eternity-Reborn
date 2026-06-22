@@ -2709,6 +2709,15 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(result.Actions, action =>
             action.Label.Contains("Назад", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(action.Command, "/инв", StringComparison.OrdinalIgnoreCase));
+        var itemDossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "inventory-item" &&
+            block.Title.Contains("Руническая перчатка", StringComparison.OrdinalIgnoreCase));
+        var structuredBonusSection = Assert.Single(itemDossier.Sections, static section =>
+            section.Title.Equals("Структурные бонусы", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(structuredBonusSection.Blocks.OfType<UiEntityDossierBlock>(), static block =>
+            block.Title.Contains("Чувство магических потоков", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
+            table.Title.Equals("Структурные бонусы", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);

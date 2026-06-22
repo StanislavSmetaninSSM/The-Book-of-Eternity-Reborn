@@ -6011,10 +6011,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
     {
         var itemName = GetInventoryItemName(item);
         var blocks = new List<UiBlock>();
-        var detailBlocks = new List<UiBlock>();
+        var sections = new List<UiEntityDossierSection>();
+        var overviewBlocks = new List<UiBlock>();
         var description = FirstNonEmpty(GetNodeString(item, "description"), GetNodeString(item, "lore"));
         if (!string.IsNullOrWhiteSpace(description))
-            detailBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
+            overviewBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
 
         var facts = new List<UiKeyValueItem>();
         AddInventoryFact(facts, "Тип", FormatInventoryProtocolValue(GetNodeString(item, "type") ?? string.Empty));
@@ -6036,12 +6037,28 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (TryGetNodeBool(item, "isSentient", out var isSentient) && isSentient)
             facts.Add(new UiKeyValueItem { Key = "Разумность", Value = "разумный предмет" });
         if (facts.Count > 0)
-            detailBlocks.Add(new UiKeyValueGridBlock { Items = facts });
+            overviewBlocks.Add(new UiKeyValueGridBlock { Items = facts });
 
-        AddInventorySummaryList(detailBlocks, "Бонусы", item["bonuses"]);
-        AddInventorySummaryList(detailBlocks, "Эффекты", item["effects"]);
-        AddInventorySummaryList(detailBlocks, "Особые свойства", item["specialProperties"]);
-        AddStructuredBonusBlock(detailBlocks, item["structuredBonuses"] as JsonArray);
+        if (overviewBlocks.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "overview",
+                Title = "Сведения",
+                Summary = "Основные свойства предмета, которые влияют на использование и экипировку.",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = overviewBlocks
+            });
+        }
+
+        AddInventorySummarySection(sections, "Бонусы", item["bonuses"]);
+        AddInventorySummarySection(sections, "Эффекты", item["effects"]);
+        AddInventorySummarySection(sections, "Особые свойства", item["specialProperties"]);
+        AddStructuredBonusSection(sections, item["structuredBonuses"] as JsonArray);
+
+        var detailBlocks = new List<UiBlock>();
         AddInventoryCombatEffectBlock(detailBlocks, item["combatEffect"]);
         AddInventoryCustomPropertiesBlock(detailBlocks, item["customProperties"]);
         AddInventoryContainerBlock(detailBlocks, item);
@@ -6051,13 +6068,49 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInventoryContentBlock(detailBlocks, item["textContent"], sidecars.Text?["textContent"]);
         AddInventoryJournalBlock(detailBlocks, item["journalEntries"], sidecars.Journal?["journalEntries"]);
 
-        if (detailBlocks.Count == 0)
-            detailBlocks.Add(new UiTextBlock { Text = "Подробная информация по предмету пока не заполнена.", Tone = UiTone.Muted });
-
-        blocks.Add(new UiPanelBlock
+        if (detailBlocks.Count > 0)
         {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "details",
+                Title = "Дополнительно",
+                Summary = "Боевые, текстовые и служебные сведения предмета.",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = detailBlocks
+            });
+        }
+
+        if (sections.Count == 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "empty",
+                Title = "Сведения",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiTextBlock { Text = "Подробная информация по предмету пока не заполнена.", Tone = UiTone.Muted }]
+            });
+        }
+
+        blocks.Add(new UiEntityDossierBlock
+        {
+            EntityType = "inventory-item",
             Title = $"Предмет: {itemName}",
-            Blocks = detailBlocks
+            Subtitle = FormatInventoryProtocolValue(GetNodeString(item, "type") ?? "Предмет"),
+            Summary = description,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = FirstNonEmpty(FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(item, "quality"), GetNodeString(item, "rarity"))), "предмет"),
+                    Tone = UiTone.Accent,
+                    Icon = "inventory"
+                }
+            ],
+            Sections = sections
         });
         blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /инв.", Tone = UiTone.Muted });
         return blocks;
@@ -6078,6 +6131,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
         blocks.Add(new UiPanelBlock
         {
             Title = title,
+            Blocks =
+            [
+                new UiListBlock
+                {
+                    Items = items,
+                    Ordered = false
+                }
+            ]
+        });
+    }
+
+    private static void AddInventorySummarySection(List<UiEntityDossierSection> sections, string title, JsonNode? node)
+    {
+        var items = EnumerateInventorySummaryTexts(node).ToList();
+        if (items.Count == 0)
+            return;
+
+        sections.Add(new UiEntityDossierSection
+        {
+            Id = StableId(title),
+            Title = title,
+            Summary = "Краткое игровое описание эффектов предмета.",
+            Icon = "inventory",
+            Collapsible = true,
+            InitiallyExpanded = true,
             Blocks =
             [
                 new UiListBlock
@@ -6163,6 +6241,90 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Rows = rows
             });
         }
+    }
+
+    private static void AddStructuredBonusSection(List<UiEntityDossierSection> sections, JsonArray? bonuses)
+    {
+        if (bonuses == null || bonuses.Count == 0)
+            return;
+
+        var cards = new List<UiBlock>();
+        var index = 0;
+        foreach (var bonus in bonuses)
+        {
+            index++;
+            if (bonus is not JsonObject obj)
+            {
+                var value = FormatInventoryNodeValue(bonus);
+                if (string.IsNullOrWhiteSpace(value))
+                    continue;
+
+                cards.Add(new UiEntityDossierBlock
+                {
+                    EntityType = "structured-bonus",
+                    Title = $"Бонус {index}",
+                    Subtitle = "Структурный бонус",
+                    Summary = value
+                });
+                continue;
+            }
+
+            var title = FirstNonEmpty(GetNodeString(obj, "summary"), $"Бонус {index}");
+            var facts = obj
+                .Select(property => new UiKeyValueItem
+                {
+                    Key = GetStructuredBonusFieldLabel(property.Key),
+                    Value = FormatInventoryNodeValue(property.Value, property.Key)
+                })
+                .Where(static item => !string.IsNullOrWhiteSpace(item.Value))
+                .ToList();
+            if (facts.Count == 0)
+                continue;
+
+            cards.Add(new UiEntityDossierBlock
+            {
+                EntityType = "structured-bonus",
+                Title = title,
+                Subtitle = "Структурный бонус",
+                Summary = FirstNonEmpty(GetNodeString(obj, "description"), GetNodeString(obj, "condition")),
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = FirstNonEmpty(FormatInventoryProtocolValue(GetNodeString(obj, "bonusType") ?? string.Empty), "бонус"),
+                        Tone = UiTone.Success,
+                        Icon = "inventory"
+                    }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Поля бонуса",
+                        Summary = "Каждое поле бонуса показано отдельно, без технической таблицы.",
+                        Icon = "inventory",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                    }
+                ]
+            });
+        }
+
+        if (cards.Count == 0)
+            return;
+
+        sections.Add(new UiEntityDossierSection
+        {
+            Id = "structured-bonuses",
+            Title = "Структурные бонусы",
+            Summary = "Механические бонусы предмета, разложенные по полям.",
+            Icon = "inventory",
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Blocks = cards
+        });
     }
 
     private static void AddInventoryCombatEffectBlock(List<UiBlock> blocks, JsonNode? node)
