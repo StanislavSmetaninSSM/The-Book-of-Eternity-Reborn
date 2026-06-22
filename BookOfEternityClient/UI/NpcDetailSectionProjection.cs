@@ -7,8 +7,6 @@ namespace BookOfEternityClient.UI;
 
 internal static class NpcDetailSectionProjection
 {
-    public const string SectionSummaryTitle = "Разделы НПС";
-
     public static IReadOnlyList<NpcDetailProjection> BuildAll(JsonNode? npcCoreRoot, NpcDetailSectionDocuments documents)
     {
         var result = new List<NpcDetailProjection>();
@@ -41,36 +39,6 @@ internal static class NpcDetailSectionProjection
 
         return new NpcDetailProjection(npcId, npcName, sections, personalQuests);
     }
-
-    public static IReadOnlyList<UiTableRow> BuildNpcOverviewRows(JsonNode? npcCoreRoot)
-    {
-        var npcs = EnumerateNpcCoreObjects(npcCoreRoot).ToList();
-        if (npcs.Count == 0)
-            return [];
-
-        var preview = string.Join(", ", npcs
-            .Take(3)
-            .Select(GetNpcName)
-            .Where(static value => !string.IsNullOrWhiteSpace(value)));
-        var state = string.IsNullOrWhiteSpace(preview)
-            ? npcs.Count.ToString()
-            : $"{npcs.Count}: {preview}";
-
-        return [new UiTableRow { Cells = ["NPC", state] }];
-    }
-
-    public static UiTableBlock BuildSectionSummaryTable(IReadOnlyList<NpcDetailProjection> projections) =>
-        new()
-        {
-            Title = SectionSummaryTitle,
-            Columns = ["НПС", "Раздел", "Состояние"],
-            Rows = projections
-                .SelectMany(static projection => projection.Sections.Select(section => new UiTableRow
-                {
-                    Cells = [projection.NpcName, section.Label, section.Hint]
-                }))
-                .ToList()
-        };
 
     private static void AddJournalSection(
         List<NpcDetailSection> sections,

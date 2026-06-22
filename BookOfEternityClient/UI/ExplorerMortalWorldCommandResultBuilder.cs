@@ -979,7 +979,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         reads["game_state/npcs/npc_fate_cards.json"] = await ReadJson(fs, "game_state/npcs/npc_fate_cards.json");
 
         var blocks = new List<UiBlock>();
-        var summaryRows = NpcDetailSectionProjection.BuildNpcOverviewRows(coreRead.Node).ToList();
+        var summaryItems = BuildNpcOverviewItems(coreRead.Node).ToList();
         foreach (var spec in specs)
         {
             var read = reads[spec.Path];
@@ -987,19 +987,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
             if (status == "отсутствует")
                 continue;
 
-            summaryRows.Add(new UiTableRow
+            summaryItems.Add(new UiKeyValueItem
             {
-                Cells = [spec.Label, status]
-            });
-        }
-
-        if (summaryRows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Персонажи",
-                Columns = ["Раздел", "Состояние"],
-                Rows = summaryRows
+                Key = spec.Label,
+                Value = status
             });
         }
 
@@ -1072,11 +1063,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return Completed(command, BuildNpcSectionDetailBlocks(selected.Value.Projection, selected.Value.Section), actions);
         }
 
-        if (projections.Count > 0)
-        {
-            blocks.Add(NpcDetailSectionProjection.BuildSectionSummaryTable(projections));
-            blocks.AddRange(projections.SelectMany(static projection => projection.Sections.SelectMany(static section => section.Blocks)));
-        }
+        blocks.AddRange(BuildNpcOverviewBlocks(summaryItems, projections));
 
         foreach (var read in reads.Values)
         {
@@ -1088,6 +1075,156 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Info, "Персонажи", "Данные ещё не созданы."));
 
         return Completed(command, blocks, BuildNpcSectionActions(commandToken, projections));
+    }
+
+    private static IReadOnlyList<UiBlock> BuildNpcOverviewBlocks(
+        IReadOnlyList<UiKeyValueItem> summaryItems,
+        IReadOnlyList<NpcDetailProjection> projections)
+    {
+        var blocks = new List<UiBlock>();
+        if (summaryItems.Count > 0)
+        {
+            blocks.Add(new UiPanelBlock
+            {
+                Title = "Персонажи",
+                Blocks =
+                [
+                    new UiKeyValueGridBlock
+                    {
+                        Items = summaryItems.ToList()
+                    }
+                ]
+            });
+        }
+
+        foreach (var projection in projections)
+            blocks.Add(BuildNpcOverviewCard(projection));
+
+        return blocks;
+    }
+
+    private static UiPanelBlock BuildNpcOverviewCard(NpcDetailProjection projection)
+    {
+        var sectionItems = projection.Sections
+            .Select(section => $"{section.Label}: {section.Hint}")
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+        var blocks = new List<UiBlock>
+        {
+            new UiKeyValueGridBlock
+            {
+                Items =
+                [
+                    new UiKeyValueItem
+                    {
+                        Key = "Доступные разделы",
+                        Value = FormatRussianCount(sectionItems.Count, "раздел", "раздела", "разделов")
+                    }
+                ]
+            }
+        };
+
+        if (sectionItems.Count > 0)
+            blocks.Add(new UiListBlock { Items = sectionItems });
+        else
+            blocks.Add(new UiTextBlock { Text = "Подробные разделы пока не заполнены.", Tone = UiTone.Muted });
+
+        return new UiPanelBlock
+        {
+            Title = $"НПС: {projection.NpcName}",
+            Blocks = blocks
+        };
+    }
+
+    private static IEnumerable<UiKeyValueItem> BuildNpcOverviewItems(JsonNode? npcCoreRoot)
+    {
+        var names = EnumerateNpcCoreDisplayNames(npcCoreRoot).ToList();
+        if (names.Count == 0)
+            yield break;
+
+        yield return new UiKeyValueItem
+        {
+            Key = "Найдено",
+            Value = FormatRussianCount(names.Count, "персонаж", "персонажа", "персонажей")
+        };
+        yield return new UiKeyValueItem
+        {
+            Key = "В кадре",
+            Value = BuildNpcNamePreview(names)
+        };
+    }
+
+    private static IEnumerable<string> EnumerateNpcCoreDisplayNames(JsonNode? root)
+    {
+        foreach (var npc in EnumerateNpcCoreObjects(root))
+        {
+            var name = FirstNonEmpty(
+                GetNodeString(npc, "NPCName"),
+                GetNodeString(npc, "npcName"),
+                GetNodeString(npc, "displayName"),
+                GetNodeString(npc, "name"));
+            if (!string.IsNullOrWhiteSpace(name))
+                yield return name;
+        }
+    }
+
+    private static IEnumerable<JsonObject> EnumerateNpcCoreObjects(JsonNode? root)
+    {
+        if (root is JsonArray array)
+        {
+            foreach (var npc in array.OfType<JsonObject>())
+                yield return npc;
+            yield break;
+        }
+
+        if (root is not JsonObject obj)
+            yield break;
+
+        foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections
+                     .Concat(GuardianPolicyContracts.NpcCoreLegacyAliasSections))
+        {
+            if (obj[sectionName] is not JsonArray section)
+                continue;
+
+            foreach (var npc in section.OfType<JsonObject>())
+            {
+                if (HasVisibleNpcIdentity(npc))
+                    yield return npc;
+            }
+        }
+    }
+
+    private static bool HasVisibleNpcIdentity(JsonObject npc) =>
+        !string.IsNullOrWhiteSpace(FirstNonEmpty(
+            GetNodeString(npc, "NPCId"),
+            GetNodeString(npc, "npcId"),
+            GetNodeString(npc, "id"),
+            GetNodeString(npc, "NPCName"),
+            GetNodeString(npc, "npcName"),
+            GetNodeString(npc, "name")));
+
+    private static string BuildNpcNamePreview(IReadOnlyList<string> names)
+    {
+        var preview = names.Take(5).ToList();
+        var suffix = names.Count > preview.Count
+            ? $" и ещё {names.Count - preview.Count}"
+            : string.Empty;
+        return string.Join(", ", preview) + suffix;
+    }
+
+    private static string FormatRussianCount(int count, string one, string few, string many)
+    {
+        var mod100 = Math.Abs(count) % 100;
+        var mod10 = Math.Abs(count) % 10;
+        var noun = mod100 is >= 11 and <= 14
+            ? many
+            : mod10 switch
+            {
+                1 => one,
+                >= 2 and <= 4 => few,
+                _ => many
+            };
+        return $"{count} {noun}";
     }
 
     private static NpcJournalDetailRequest ParseNpcJournalDetailRequest(string remainder)
@@ -1221,7 +1358,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static IReadOnlyList<UiBlock> BuildNpcSectionDetailBlocks(NpcDetailProjection projection, NpcDetailSection section)
     {
-        var blocks = new List<UiBlock>
+        var panelBlocks = new List<UiBlock>
         {
             new UiKeyValueGridBlock
             {
@@ -1233,9 +1370,210 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 ]
             }
         };
-        blocks.AddRange(section.Blocks);
-        blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /npc.", Tone = UiTone.Muted });
+        panelBlocks.AddRange(section.Blocks.SelectMany(ProjectNpcSectionBlockForBrowser));
+        return
+        [
+            new UiPanelBlock
+            {
+                Title = $"{projection.NpcName} — {section.Label}",
+                Blocks = panelBlocks
+            },
+            new UiTextBlock { Text = "Вернуться к списку можно командой /npc.", Tone = UiTone.Muted }
+        ];
+    }
+
+    private static IEnumerable<UiBlock> ProjectNpcSectionBlockForBrowser(UiBlock block)
+    {
+        if (block is UiTableBlock table && table.Columns.Any(IsNpcGenericDetailsColumn))
+            return BuildNpcDetailPanels(table);
+
+        if (block is UiPanelBlock panel)
+        {
+            return
+            [
+                new UiPanelBlock
+                {
+                    Title = panel.Title,
+                    Blocks = panel.Blocks.SelectMany(ProjectNpcSectionBlockForBrowser).ToList()
+                }
+            ];
+        }
+
+        return [block];
+    }
+
+    private static IReadOnlyList<UiBlock> BuildNpcDetailPanels(UiTableBlock table)
+    {
+        var detailIndexes = table.Columns
+            .Select((column, index) => new { Column = column, Index = index })
+            .Where(item => IsNpcGenericDetailsColumn(item.Column))
+            .Select(static item => item.Index)
+            .ToHashSet();
+        if (detailIndexes.Count == 0)
+            return [table];
+
+        var rowPanels = new List<UiBlock>();
+        foreach (var row in table.Rows)
+        {
+            var title = BuildNpcDetailRowTitle(table, row, detailIndexes);
+            var rowBlocks = new List<UiBlock>();
+            var facts = new List<UiKeyValueItem>();
+            for (var i = 0; i < table.Columns.Count && i < row.Cells.Count; i++)
+            {
+                if (detailIndexes.Contains(i) || i == 0)
+                    continue;
+
+                var value = FormatNpcDetailScalar(row.Cells[i]);
+                if (!string.IsNullOrWhiteSpace(value))
+                    facts.Add(new UiKeyValueItem { Key = table.Columns[i], Value = value });
+            }
+
+            if (facts.Count > 0)
+                rowBlocks.Add(new UiKeyValueGridBlock { Items = facts });
+
+            foreach (var detailIndex in detailIndexes.Order())
+            {
+                if (detailIndex >= row.Cells.Count)
+                    continue;
+
+                rowBlocks.AddRange(BuildNpcDetailValueBlocks(row.Cells[detailIndex]));
+            }
+
+            if (rowBlocks.Count == 0)
+            {
+                rowBlocks.Add(new UiTextBlock
+                {
+                    Text = "Подробности не указаны.",
+                    Tone = UiTone.Muted
+                });
+            }
+
+            rowPanels.Add(new UiPanelBlock
+            {
+                Title = title,
+                Blocks = rowBlocks
+            });
+        }
+
+        return rowPanels.Count == 0
+            ? []
+            :
+            [
+                new UiPanelBlock
+                {
+                    Title = table.Title,
+                    Blocks = rowPanels
+                }
+            ];
+    }
+
+    private static string BuildNpcDetailRowTitle(
+        UiTableBlock table,
+        UiTableRow row,
+        HashSet<int> detailIndexes)
+    {
+        for (var i = 0; i < table.Columns.Count && i < row.Cells.Count; i++)
+        {
+            if (detailIndexes.Contains(i))
+                continue;
+
+            var value = row.Cells[i].Trim();
+            if (!string.IsNullOrWhiteSpace(value))
+                return FormatNpcDetailScalar(value);
+        }
+
+        return "Запись";
+    }
+
+    private static IReadOnlyList<UiBlock> BuildNpcDetailValueBlocks(string value)
+    {
+        var listItems = new List<string>();
+        var facts = new List<UiKeyValueItem>();
+        foreach (var part in SplitNpcDetailParts(value))
+        {
+            if (TrySplitNpcDetailPair(part, out var key, out var pairValue))
+            {
+                var formatted = FormatNpcDetailScalar(pairValue);
+                if (!string.IsNullOrWhiteSpace(formatted))
+                    facts.Add(new UiKeyValueItem { Key = key, Value = formatted });
+            }
+            else
+            {
+                var formatted = FormatNpcDetailScalar(part);
+                if (!IsEmptyNpcDetailValue(formatted))
+                    listItems.Add(formatted);
+            }
+        }
+
+        var blocks = new List<UiBlock>();
+        if (listItems.Count > 0)
+            blocks.Add(new UiListBlock { Items = listItems });
+        if (facts.Count > 0)
+            blocks.Add(new UiKeyValueGridBlock { Items = facts });
         return blocks;
+    }
+
+    private static IEnumerable<string> SplitNpcDetailParts(string value) =>
+        value.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(static part => !string.IsNullOrWhiteSpace(part));
+
+    private static bool TrySplitNpcDetailPair(string value, out string key, out string pairValue)
+    {
+        key = string.Empty;
+        pairValue = string.Empty;
+        var separator = value.IndexOf(':', StringComparison.Ordinal);
+        if (separator <= 0 || separator > 48)
+            return false;
+
+        key = value[..separator].Trim();
+        pairValue = value[(separator + 1)..].Trim();
+        return !string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(pairValue);
+    }
+
+    private static bool IsNpcGenericDetailsColumn(string column)
+    {
+        var normalized = column.Trim().ToLowerInvariant();
+        return normalized is "подробности" or "детали" or "detail" or "details";
+    }
+
+    private static bool IsEmptyNpcDetailValue(string value)
+    {
+        var clean = value.Trim();
+        return string.IsNullOrWhiteSpace(clean) ||
+               clean is "—" or "-" ||
+               clean.Equals("не указано", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string FormatNpcDetailScalar(string value)
+    {
+        var clean = value.Trim();
+        return clean.ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "active" => "Активен",
+            "pending" => "Ожидает",
+            "completed" or "complete" => "Завершён",
+            "failed" => "Провален",
+            "rival" => "соперник",
+            "ally" => "союзник",
+            "neutral" => "нейтрально",
+            "knowledgebased" => "основан на знаниях",
+            "utility" => "утилитарный",
+            "combat" => "боевой",
+            "social" => "социальный",
+            "common" => "обычный",
+            "uncommon" => "необычный",
+            "rare" => "редкий",
+            "epic" => "эпический",
+            "legendary" => "легендарный",
+            "document" => "документ",
+            "container" => "контейнер",
+            "tool" => "инструмент",
+            "buff" => "усиление",
+            "debuff" => "ослабление",
+            "wound" => "рана",
+            _ => clean
+        };
     }
 
     private static IReadOnlyList<UiAction> BuildNpcSectionActions(
@@ -1939,10 +2277,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
             DescribeReferenceNamedObject(entry.Node["rivalSoul"])));
         AddReferenceDetailItem(detailItems, "Кратко", FirstNonEmpty(entry.Summary, FirstReferenceNodeString(entry.Node, "skillDescription", "description", "summary", "objective", "visibleReason", "scenarioCore")));
         AddReferenceDetailItem(detailItems, "Масштабирование", FormatReferenceCharacteristic(FirstReferenceNodeString(entry.Node, "scalingCharacteristic")));
-        AddReferenceDetailItem(detailItems, "Награда", DescribeNodeForReferenceDetail(entry.Node["rewardInfo"] ?? entry.Node["rewards"] ?? entry.Node["reward"]));
-        AddReferenceDetailItem(detailItems, "Подробности", DescribeReferencePayload(entry.Node));
 
         var detailBlocks = new List<UiBlock> { new UiKeyValueGridBlock { Items = detailItems } };
+        AddReferenceDetailSection(detailBlocks, "Награда", entry.Node["rewardInfo"] ?? entry.Node["rewards"] ?? entry.Node["reward"]);
+        AddReferenceAdditionalDetailBlocks(detailBlocks, entry.Node);
         AddStructuredBonusBlock(detailBlocks, entry.Node["structuredBonuses"] as JsonArray);
 
         return new UiPanelBlock
@@ -2468,20 +2806,152 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 FirstReferenceNodeString(node, "summary", "description", "skillDescription", "objective", "visibleReason", "scenarioCore")),
             DescribeNodeForReferenceDetail(node["objectives"]));
 
-    private static string DescribeReferencePayload(JsonObject node)
+    private static void AddReferenceAdditionalDetailBlocks(
+        List<UiBlock> blocks,
+        JsonObject node,
+        params string[] consumedFields)
     {
-        var parts = new List<string>();
+        var consumed = new HashSet<string>(consumedFields, StringComparer.OrdinalIgnoreCase);
+        var scalarItems = new List<UiKeyValueItem>();
         foreach (var property in node)
         {
-            if (IsKnownReferenceDetailProperty(property.Key) || IsTechnicalReferenceProperty(property.Key))
+            if (consumed.Contains(property.Key) ||
+                IsKnownReferenceDetailProperty(property.Key) ||
+                IsTechnicalReferenceProperty(property.Key))
+            {
                 continue;
+            }
 
-            var value = DescribeNodeForReferenceDetail(property.Value, property.Key);
-            if (!string.IsNullOrWhiteSpace(value))
-                parts.Add($"{DescribeReferenceFieldLabel(property.Key)}: {value}");
+            var label = DescribeReferenceNestedFieldLabel(property.Key);
+            if (TryGetScalarString(property.Value, out var scalar))
+            {
+                var value = StructuredBonusDisplay.FormatScalar(scalar, property.Key);
+                if (!string.IsNullOrWhiteSpace(value))
+                    scalarItems.Add(new UiKeyValueItem { Key = label, Value = value });
+                continue;
+            }
+
+            AddReferenceDetailSection(blocks, ToReferenceDetailSectionTitle(label, property.Key), property.Value);
         }
 
-        return string.Join("; ", parts);
+        if (scalarItems.Count > 0)
+        {
+            blocks.Add(new UiPanelBlock
+            {
+                Title = "Дополнительные сведения",
+                Blocks = [new UiKeyValueGridBlock { Items = scalarItems }]
+            });
+        }
+    }
+
+    private static void AddReferenceDetailSection(List<UiBlock> blocks, string title, JsonNode? node)
+    {
+        var sectionBlocks = BuildReferenceDetailBlocks(node);
+        if (sectionBlocks.Count == 0)
+            return;
+
+        blocks.Add(new UiPanelBlock
+        {
+            Title = title,
+            Blocks = sectionBlocks
+        });
+    }
+
+    private static List<UiBlock> BuildReferenceDetailBlocks(JsonNode? node)
+    {
+        if (node == null)
+            return [];
+
+        if (TryGetScalarString(node, out var scalar))
+        {
+            var value = StructuredBonusDisplay.FormatScalar(scalar);
+            return string.IsNullOrWhiteSpace(value)
+                ? []
+                : [new UiTextBlock { Text = value, Tone = UiTone.Default }];
+        }
+
+        if (node is JsonArray array)
+        {
+            var blocks = new List<UiBlock>();
+            var listItems = new List<string>();
+            var index = 0;
+            foreach (var item in array)
+            {
+                index++;
+                if (item is JsonObject itemObj)
+                {
+                    var panel = BuildReferenceObjectPanel(itemObj, $"Запись {index}");
+                    if (panel != null)
+                        blocks.Add(panel);
+                    continue;
+                }
+
+                var value = DescribeNodeForReferenceDetail(item);
+                if (!string.IsNullOrWhiteSpace(value))
+                    listItems.Add(value);
+            }
+
+            if (listItems.Count > 0)
+                blocks.Insert(0, new UiListBlock { Items = listItems });
+            return blocks;
+        }
+
+        return node is JsonObject objectNode ? BuildReferenceObjectBlocks(objectNode) : [];
+    }
+
+    private static UiPanelBlock? BuildReferenceObjectPanel(JsonObject obj, string fallbackTitle)
+    {
+        var blocks = BuildReferenceObjectBlocks(obj);
+        if (blocks.Count == 0)
+            return null;
+
+        var title = FirstNonEmpty(
+            FirstReferenceNodeString(obj, "displayName", "displayNameOrMoniker", "name", "title", "questName", "stepTitle", "stepName", "npcName", "characterName", "itemName", "vehicleName"),
+            fallbackTitle);
+        return new UiPanelBlock
+        {
+            Title = title,
+            Blocks = blocks
+        };
+    }
+
+    private static List<UiBlock> BuildReferenceObjectBlocks(JsonObject obj)
+    {
+        var scalarItems = new List<UiKeyValueItem>();
+        var nestedBlocks = new List<UiBlock>();
+        foreach (var property in obj)
+        {
+            if (IsTechnicalReferenceProperty(property.Key))
+                continue;
+
+            var label = DescribeReferenceNestedFieldLabel(property.Key);
+            if (TryGetScalarString(property.Value, out var scalar))
+            {
+                var value = StructuredBonusDisplay.FormatScalar(scalar, property.Key);
+                if (!string.IsNullOrWhiteSpace(value))
+                    scalarItems.Add(new UiKeyValueItem { Key = label, Value = value });
+                continue;
+            }
+
+            AddReferenceDetailSection(nestedBlocks, ToReferenceDetailSectionTitle(label, property.Key), property.Value);
+        }
+
+        var blocks = new List<UiBlock>();
+        if (scalarItems.Count > 0)
+            blocks.Add(new UiKeyValueGridBlock { Items = scalarItems });
+        blocks.AddRange(nestedBlocks);
+        return blocks;
+    }
+
+    private static string ToReferenceDetailSectionTitle(string label, string propertyName)
+    {
+        var title = string.Equals(label, "деталь", StringComparison.OrdinalIgnoreCase)
+            ? HumanizeReferenceKey(propertyName)
+            : label.Trim();
+        if (string.IsNullOrWhiteSpace(title))
+            title = "Сведения";
+
+        return char.ToUpperInvariant(title[0]) + title[1..];
     }
 
     private static string DescribeNodeForReferenceDetail(JsonNode? node, string? fieldName = null)
@@ -3146,34 +3616,34 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddReferenceDetailItem(items, "Где", FirstReferenceNodeString(vehicle, "currentLocation", "currentLocationId", "locationName"));
         AddReferenceDetailItem(items, "Вместимость", FirstReferenceNodeString(vehicle, "capacity"));
         AddReferenceDetailItem(items, "Описание", FirstReferenceNodeString(vehicle, "description", "summary", "notes"));
-        AddReferenceDetailItem(items, "Подробности", DescribeVehicleExtraPayload(vehicle));
+
+        var blocks = new List<UiBlock>
+        {
+            new UiKeyValueGridBlock { Items = items }
+        };
+        AddReferenceAdditionalDetailBlocks(
+            blocks,
+            vehicle,
+            "name",
+            "vehicleName",
+            "type",
+            "vehicleType",
+            "availability",
+            "status",
+            "isActive",
+            "currentLocation",
+            "currentLocationId",
+            "locationName",
+            "capacity",
+            "description",
+            "summary",
+            "notes");
 
         return new UiPanelBlock
         {
             Title = $"Транспорт: {entry.Title}",
-            Blocks = [new UiKeyValueGridBlock { Items = items }]
+            Blocks = blocks
         };
-    }
-
-    private static string DescribeVehicleExtraPayload(JsonObject vehicle)
-    {
-        var parts = new List<string>();
-        foreach (var property in vehicle)
-        {
-            if (property.Key is "name" or "vehicleName" or "type" or "vehicleType" or "availability" or "status" or
-                "isActive" or "currentLocation" or "currentLocationId" or "locationName" or "capacity" or
-                "description" or "summary" or "notes" ||
-                IsTechnicalReferenceProperty(property.Key))
-            {
-                continue;
-            }
-
-            var value = DescribeNodeForReferenceDetail(property.Value);
-            if (!string.IsNullOrWhiteSpace(value))
-                parts.Add($"{DescribeReferenceFieldLabel(property.Key)}: {value}");
-        }
-
-        return string.Join("; ", parts);
     }
 
     private static IEnumerable<JsonObject> EnumerateVehicleObjects(JsonNode? node)
@@ -3466,13 +3936,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInteractionDetailItem(detailItems, "Итог", FirstInteractionNodeString(record.Node, "outcome", "result", "resolution"));
         AddInteractionDetailItem(detailItems, "Последствия", DescribeNodeForInteractionDetail(record.Node["consequences"] ?? record.Node["effects"] ?? record.Node["impact"]));
         AddInteractionDetailItem(detailItems, "Следующий шаг", FirstInteractionNodeString(record.Node, "nextStep", "followUp", "hook", "visibleNextStep"));
-        AddInteractionDetailItem(detailItems, "Подробности", DescribeInteractionRecordPayload(record.Node));
         AddInteractionDetailItem(detailItems, "Метки", JoinNodeValues(record.Node["tags"]));
+
+        var blocks = new List<UiBlock>
+        {
+            new UiKeyValueGridBlock { Items = detailItems }
+        };
+        AddInteractionAdditionalDetailBlocks(blocks, record.Node);
 
         return new UiPanelBlock
         {
             Title = $"Запись взаимодействия: {record.Title}",
-            Blocks = [new UiKeyValueGridBlock { Items = detailItems }]
+            Blocks = blocks
         };
     }
 
@@ -3823,20 +4298,147 @@ public static class ExplorerMortalWorldCommandResultBuilder
             items.Add(new UiKeyValueItem { Key = key, Value = value.Trim() });
     }
 
-    private static string DescribeInteractionRecordPayload(JsonObject record)
+    private static void AddInteractionAdditionalDetailBlocks(List<UiBlock> blocks, JsonObject record)
     {
-        var parts = new List<string>();
+        var scalarItems = new List<UiKeyValueItem>();
         foreach (var property in record)
         {
             if (IsKnownInteractionRecordDetailProperty(property.Key) || IsTechnicalInteractionProperty(property.Key))
                 continue;
 
-            var value = DescribeNodeForInteractionDetail(property.Value);
-            if (!string.IsNullOrWhiteSpace(value))
-                parts.Add($"{DescribeInteractionFieldLabel(property.Key)}: {value}");
+            var label = DescribeInteractionNestedFieldLabel(property.Key);
+            if (TryGetScalarString(property.Value, out var scalar))
+            {
+                if (!string.IsNullOrWhiteSpace(scalar))
+                    scalarItems.Add(new UiKeyValueItem { Key = label, Value = scalar.Trim() });
+                continue;
+            }
+
+            AddInteractionDetailSection(blocks, ToInteractionDetailSectionTitle(label, property.Key), property.Value);
         }
 
-        return string.Join("; ", parts);
+        if (scalarItems.Count > 0)
+        {
+            blocks.Add(new UiPanelBlock
+            {
+                Title = "Дополнительные сведения",
+                Blocks = [new UiKeyValueGridBlock { Items = scalarItems }]
+            });
+        }
+    }
+
+    private static void AddInteractionDetailSection(List<UiBlock> blocks, string title, JsonNode? node)
+    {
+        var sectionBlocks = BuildInteractionDetailBlocks(node);
+        if (sectionBlocks.Count == 0)
+            return;
+
+        blocks.Add(new UiPanelBlock
+        {
+            Title = title,
+            Blocks = sectionBlocks
+        });
+    }
+
+    private static List<UiBlock> BuildInteractionDetailBlocks(JsonNode? node)
+    {
+        if (node == null)
+            return [];
+
+        if (TryGetScalarString(node, out var scalar))
+            return string.IsNullOrWhiteSpace(scalar)
+                ? []
+                : [new UiTextBlock { Text = scalar.Trim(), Tone = UiTone.Default }];
+
+        if (node is JsonArray array)
+        {
+            var blocks = new List<UiBlock>();
+            var listItems = new List<string>();
+            var index = 0;
+            foreach (var item in array)
+            {
+                index++;
+                if (item is JsonObject itemObj)
+                {
+                    var panel = BuildInteractionObjectPanel(itemObj, $"Запись {index}");
+                    if (panel != null)
+                        blocks.Add(panel);
+                    continue;
+                }
+
+                var value = DescribeNodeForInteractionDetail(item);
+                if (!string.IsNullOrWhiteSpace(value))
+                    listItems.Add(value);
+            }
+
+            if (listItems.Count > 0)
+                blocks.Insert(0, new UiListBlock { Items = listItems });
+            return blocks;
+        }
+
+        return node is JsonObject objectNode ? BuildInteractionObjectBlocks(objectNode) : [];
+    }
+
+    private static UiPanelBlock? BuildInteractionObjectPanel(JsonObject obj, string fallbackTitle)
+    {
+        var blocks = BuildInteractionObjectBlocks(obj);
+        if (blocks.Count == 0)
+            return null;
+
+        var title = FirstNonEmpty(
+            FirstInteractionNodeString(obj, "displayName", "name", "title", "questName", "actionName", "itemName", "characterName", "npcName"),
+            fallbackTitle);
+        return new UiPanelBlock
+        {
+            Title = title,
+            Blocks = blocks
+        };
+    }
+
+    private static List<UiBlock> BuildInteractionObjectBlocks(JsonObject obj)
+    {
+        var scalarItems = new List<UiKeyValueItem>();
+        var nestedBlocks = new List<UiBlock>();
+        foreach (var property in obj)
+        {
+            if (IsTechnicalInteractionProperty(property.Key))
+                continue;
+
+            var label = DescribeInteractionNestedFieldLabel(property.Key);
+            if (TryGetScalarString(property.Value, out var scalar))
+            {
+                if (!string.IsNullOrWhiteSpace(scalar))
+                    scalarItems.Add(new UiKeyValueItem { Key = label, Value = scalar.Trim() });
+                continue;
+            }
+
+            AddInteractionDetailSection(nestedBlocks, ToInteractionDetailSectionTitle(label, property.Key), property.Value);
+        }
+
+        var blocks = new List<UiBlock>();
+        if (scalarItems.Count > 0)
+            blocks.Add(new UiKeyValueGridBlock { Items = scalarItems });
+        blocks.AddRange(nestedBlocks);
+        return blocks;
+    }
+
+    private static string DescribeInteractionNestedFieldLabel(string propertyName)
+    {
+        var label = DescribeInteractionFieldLabel(propertyName);
+        return string.Equals(label, "деталь", StringComparison.OrdinalIgnoreCase)
+            ? StructuredBonusDisplay.FieldLabel(propertyName)
+            : label;
+    }
+
+    private static string ToInteractionDetailSectionTitle(string label, string propertyName)
+    {
+        var title = string.Equals(label, "деталь", StringComparison.OrdinalIgnoreCase)
+            ? HumanizeReferenceKey(propertyName)
+            : label.Trim();
+        if (string.IsNullOrWhiteSpace(title))
+            title = "Сведения";
+
+        return char.ToUpperInvariant(title[0]) + title[1..];
     }
 
     private static string DescribeInteractionPlayerContext(JsonObject player) =>
@@ -4538,13 +5140,53 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static (string First, string Remainder) SplitFirstCombatArgument(string value)
     {
-        var parts = value.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        var trimmed = value.Trim();
+        if (string.IsNullOrWhiteSpace(trimmed))
+            return (string.Empty, string.Empty);
+
+        if (trimmed[0] == '"')
+            return SplitQuotedCombatArgument(trimmed);
+
+        var parts = trimmed.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
         return parts.Length switch
         {
             0 => (string.Empty, string.Empty),
             1 => (parts[0], string.Empty),
             _ => (parts[0], parts[1])
         };
+    }
+
+    private static (string First, string Remainder) SplitQuotedCombatArgument(string value)
+    {
+        var chars = new List<char>();
+        var escaped = false;
+        for (var i = 1; i < value.Length; i++)
+        {
+            var ch = value[i];
+            if (escaped)
+            {
+                chars.Add(ch);
+                escaped = false;
+                continue;
+            }
+
+            if (ch == '\\')
+            {
+                escaped = true;
+                continue;
+            }
+
+            if (ch == '"')
+            {
+                var first = new string(chars.ToArray());
+                var remainder = i + 1 < value.Length ? value[(i + 1)..].TrimStart() : string.Empty;
+                return (first, remainder);
+            }
+
+            chars.Add(ch);
+        }
+
+        return (value, string.Empty);
     }
 
     private static string DescribeCombatantOverview(CombatantSnapshot combatant) =>

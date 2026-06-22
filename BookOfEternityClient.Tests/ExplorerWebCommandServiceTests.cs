@@ -584,6 +584,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("день 42, вечер", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("шифр спрятан в перчатке", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Можно спросить о знаке Вальмонтов", text, StringComparison.OrdinalIgnoreCase);
+        AssertNoFlattenedStructuredDetails(result);
         Assert.DoesNotContain("argument_at_ferry", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("interactionId", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("records", payload, StringComparison.OrdinalIgnoreCase);
@@ -613,6 +614,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Серебряный ключ", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("покрыт знаками янтарной башни", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("2", text, StringComparison.OrdinalIgnoreCase);
+        AssertNoFlattenedStructuredDetails(result);
         Assert.DoesNotContain("UpdateInventory", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("UpdateInventory", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/misc", payload, StringComparison.OrdinalIgnoreCase);
@@ -674,6 +676,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var payload = SerializeResult(result);
         Assert.Contains(expectedTitle, text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(expectedDetail, text, StringComparison.OrdinalIgnoreCase);
+        AssertNoFlattenedStructuredDetails(result);
         Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("DTO", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("API", payload, StringComparison.OrdinalIgnoreCase);
@@ -739,6 +742,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Мира Ключница", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Возможные действия", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("деталь", text, StringComparison.OrdinalIgnoreCase);
+        AssertNoFlattenedStructuredDetails(result);
         Assert.DoesNotContain("hidden", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Скрытая развязка", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/quests", payload, StringComparison.OrdinalIgnoreCase);
@@ -3377,12 +3381,13 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Персонажи");
-        Assert.Equal(new[] { "Раздел", "Состояние" }, table.Columns);
-        var row = Assert.Single(table.Rows);
-        Assert.Equal(["NPC", "1: Мирра"], row.Cells);
-        Assert.DoesNotContain(table.Rows, static candidate => candidate.Cells.Any(static cell => cell.Contains("отсутствует", StringComparison.OrdinalIgnoreCase)));
-        Assert.DoesNotContain(table.Rows.SelectMany(static candidate => candidate.Cells), static cell => cell.Contains("game_state/", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Персонажи");
+        var panel = Assert.Single(result.Blocks.OfType<UiPanelBlock>(), static block => block.Title == "Персонажи");
+        var panelText = CollectBlockText([panel]);
+        Assert.Contains("1 персонаж", panelText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Мирра", panelText, StringComparison.Ordinal);
+        Assert.DoesNotContain("отсутствует", panelText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", panelText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("game_state/npcs", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
     }
@@ -3402,42 +3407,23 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             action.Style == UiActionStyle.Secondary &&
             action.RequiresConfirmation == false);
 
-        var sectionTable = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
-        Assert.Equal(["НПС", "Раздел", "Состояние"], sectionTable.Columns);
-        Assert.Contains(sectionTable.Rows, static row =>
-            row.Cells[0] == "Серафина" &&
-            row.Cells[1].Contains("Дневник / мысли", StringComparison.Ordinal) &&
-            row.Cells[2].Contains("2 записи", StringComparison.Ordinal));
-        Assert.Contains(sectionTable.Rows, static row =>
-            row.Cells[0] == "Серафина" &&
-            row.Cells[1].Contains("Личные квесты", StringComparison.Ordinal) &&
-            row.Cells[2].Contains("3 квеста", StringComparison.Ordinal));
-        Assert.Contains(sectionTable.Rows, static row =>
-            row.Cells[0] == "Серафина" &&
-            row.Cells[1].Contains("Активности", StringComparison.Ordinal) &&
-            row.Cells[2].Contains("1 активность", StringComparison.Ordinal));
-        Assert.Contains(sectionTable.Rows, static row =>
-            row.Cells[0] == "Серафина" &&
-            row.Cells[1].Contains("Отношения / замки", StringComparison.Ordinal) &&
-            row.Cells[2].Contains("1 запись", StringComparison.Ordinal));
-        Assert.Contains(sectionTable.Rows, static row =>
-            row.Cells[0] == "Серафина" &&
-            row.Cells[1].Contains("Навыки", StringComparison.Ordinal) &&
-            row.Cells[2].Contains("1 запись", StringComparison.Ordinal));
-        Assert.DoesNotContain(sectionTable.Rows, static row =>
-            row.Cells[1].Contains("Инвентарь", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
+        var npcCard = Assert.Single(result.Blocks.SelectMany(EnumeratePanels), static block => block.Title == "НПС: Серафина");
+        var npcCardText = CollectBlockText([npcCard]);
+        Assert.Contains("Дневник / мысли: 2 записи", npcCardText, StringComparison.Ordinal);
+        Assert.Contains("Личные квесты: 3 квеста", npcCardText, StringComparison.Ordinal);
+        Assert.Contains("Активности: 1 активность", npcCardText, StringComparison.Ordinal);
+        Assert.Contains("Отношения / замки: 1 запись", npcCardText, StringComparison.Ordinal);
+        Assert.Contains("Навыки: 1 запись", npcCardText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Инвентарь", npcCardText, StringComparison.OrdinalIgnoreCase);
 
         var text = CollectBlockText(result.Blocks);
-        Assert.Contains("Серафина — Дневник / мысли", text, StringComparison.Ordinal);
-        Assert.Contains("Сомневается, стоит ли доверять письму.", text, StringComparison.Ordinal);
-        Assert.Contains("Сделка на рассвете", text, StringComparison.Ordinal);
-        Assert.Contains("Доставить письмо в архив", text, StringComparison.Ordinal);
-        Assert.Contains("Получить ключ от боковой двери", text, StringComparison.Ordinal);
-        Assert.Contains("Награда", text, StringComparison.Ordinal);
-        Assert.Contains("Провал", text, StringComparison.Ordinal);
-        Assert.Contains("Проверяет печати у северных ворот", text, StringComparison.Ordinal);
-        Assert.Contains("Готова помочь, если письмо не попадёт к дозору.", text, StringComparison.Ordinal);
-        Assert.Contains("Проверка печатей", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Серафина — Дневник / мысли", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Сомневается, стоит ли доверять письму.", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Сделка на рассвете", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Доставить письмо в архив", text, StringComparison.Ordinal);
+        AssertNoGenericDetailsTables(result);
+        AssertNoFlattenedStructuredDetails(result);
         Assert.DoesNotContain("game_state/npcs", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(".json", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("npc_serafina", text, StringComparison.OrdinalIgnoreCase);
@@ -3457,7 +3443,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal("/npc section npc_serafina journal", result.Command);
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains("Серафина — Дневник / мысли", text, StringComparison.Ordinal);
+        Assert.Contains(result.Blocks.SelectMany(EnumeratePanels), static block => block.Title == "Серафина — Дневник / мысли");
         Assert.Contains("Сомневается, стоит ли доверять письму.", text, StringComparison.Ordinal);
+        AssertNoGenericDetailsTables(result);
+        AssertNoFlattenedStructuredDetails(result);
         Assert.DoesNotContain("Сделка на рассвете", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Проверяет печати у северных ворот", text, StringComparison.Ordinal);
         Assert.Contains(result.Actions, action =>
@@ -3466,6 +3455,52 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("game_state/npcs", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcSectionAction_WithQuotedNpcNameSelectorOpensSection()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "npcs": [
+            {
+              "NPCId": null,
+              "name": "Магистра Селена"
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_journals.json", """
+        {
+          "journals": [
+            {
+              "NPCName": "Магистра Селена",
+              "journalEntries": [
+                {
+                  "event": "Проверка печати",
+                  "description": "Селена сверяет знак письма с архивной книгой."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/нпс"));
+        var action = Assert.Single(overview.Actions, static action =>
+            action.Label.Contains("Магистра Селена", StringComparison.OrdinalIgnoreCase) &&
+            action.Label.Contains("Дневник", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("\"Магистра Селена\"", action.Command, StringComparison.Ordinal);
+
+        var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest(action.Command));
+        var text = CollectBlockText(detail.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        Assert.Contains("Магистра Селена — Дневник / мысли", text, StringComparison.Ordinal);
+        Assert.Contains("Селена сверяет знак письма с архивной книгой.", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Такой раздел НПС не найден", text, StringComparison.Ordinal);
+        AssertNoGenericDetailsTables(detail);
+        AssertNoFlattenedStructuredDetails(detail);
     }
 
     [Fact]
@@ -3514,11 +3549,19 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        var text = CollectBlockText(result.Blocks);
+        Assert.DoesNotContain("Получить ключ от боковой двери", CollectBlockText(result.Blocks), StringComparison.Ordinal);
+
+        var questSection = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc section npc_serafina personal-quests"));
+        var memorySection = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc section npc_serafina memory"));
+        var text = CollectBlockText(questSection.Blocks.Concat(memorySection.Blocks));
 
         Assert.Contains("Видимый след в памяти", text, StringComparison.Ordinal);
         Assert.Contains("Клятва у печати", text, StringComparison.Ordinal);
         Assert.Contains("Получить ключ от боковой двери", text, StringComparison.Ordinal);
+        AssertNoGenericDetailsTables(questSection);
+        AssertNoGenericDetailsTables(memorySection);
+        AssertNoFlattenedStructuredDetails(questSection);
+        AssertNoFlattenedStructuredDetails(memorySection);
 
         Assert.DoesNotContain("image_prompt", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("prompt-for-gm", text, StringComparison.OrdinalIgnoreCase);
@@ -3542,13 +3585,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
 
-        var sectionTable = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
-        Assert.Contains(sectionTable.Rows, static row =>
-            row.Cells[0] == "Серафина" &&
-            row.Cells[1].Contains("инвентарь", StringComparison.OrdinalIgnoreCase));
-        Assert.DoesNotContain(sectionTable.Rows, static row =>
-            row.Cells[0] == "Серафина" &&
-            row.Cells[1].Contains("Навыки", StringComparison.Ordinal));
+        Assert.DoesNotContain(result.Blocks.OfType<UiTableBlock>(), static block => block.Title == "Разделы НПС");
+        var npcCard = Assert.Single(result.Blocks.SelectMany(EnumeratePanels), static block => block.Title == "НПС: Серафина");
+        var npcCardText = CollectBlockText([npcCard]);
+        Assert.Contains("инвентарь", npcCardText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Навыки", npcCardText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -7505,7 +7546,135 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             }
         }
 
+        foreach (var violation in CollectFlattenedStructuredDetailViolations(result.Blocks))
+            violations.Add("default visible text flattens structured details: " + violation);
+
         return violations;
+    }
+
+    private static void AssertNoFlattenedStructuredDetails(ExplorerCommandResult result)
+    {
+        var violations = CollectFlattenedStructuredDetailViolations(result.Blocks);
+        Assert.True(
+            violations.Count == 0,
+            "Browser output flattens structured data into generic detail rows:"
+            + Environment.NewLine
+            + string.Join(Environment.NewLine, violations));
+    }
+
+    private static void AssertNoGenericDetailsTables(ExplorerCommandResult result)
+    {
+        var offenders = result.Blocks
+            .SelectMany(EnumerateTables)
+            .Where(table => table.Columns.Any(IsGenericDetailKey))
+            .Select(table => $"{table.Title}: {string.Join(", ", table.Columns)}")
+            .ToList();
+        Assert.True(
+            offenders.Count == 0,
+            "Browser output uses generic details table columns:"
+            + Environment.NewLine
+            + string.Join(Environment.NewLine, offenders));
+    }
+
+    private static IEnumerable<UiTableBlock> EnumerateTables(UiBlock block)
+    {
+        if (block is UiTableBlock table)
+        {
+            yield return table;
+            yield break;
+        }
+
+        if (block is UiPanelBlock panel)
+        {
+            foreach (var child in panel.Blocks)
+            foreach (var childTable in EnumerateTables(child))
+                yield return childTable;
+        }
+    }
+
+    private static IEnumerable<UiPanelBlock> EnumeratePanels(UiBlock block)
+    {
+        if (block is not UiPanelBlock panel)
+            yield break;
+
+        yield return panel;
+        foreach (var child in panel.Blocks)
+        foreach (var childPanel in EnumeratePanels(child))
+            yield return childPanel;
+    }
+
+    private static List<string> CollectFlattenedStructuredDetailViolations(IEnumerable<UiBlock> blocks)
+    {
+        var violations = new List<string>();
+        foreach (var block in blocks)
+            CollectFlattenedStructuredDetailViolations(block, violations, "root");
+        return violations;
+    }
+
+    private static void CollectFlattenedStructuredDetailViolations(
+        UiBlock block,
+        List<string> violations,
+        string path)
+    {
+        switch (block)
+        {
+            case UiPanelBlock panel:
+                for (var i = 0; i < panel.Blocks.Count; i++)
+                    CollectFlattenedStructuredDetailViolations(panel.Blocks[i], violations, $"{path}/{panel.Title}[{i}]");
+                break;
+            case UiKeyValueGridBlock grid:
+                foreach (var item in grid.Items)
+                {
+                    if (!IsGenericDetailKey(item.Key) || !LooksLikeFlattenedStructuredValue(item.Value))
+                        continue;
+
+                    violations.Add($"{path}: key '{item.Key}' contains flattened structured value '{TrimForAssertion(item.Value)}'");
+                }
+
+                break;
+            case UiTableBlock table:
+                for (var column = 0; column < table.Columns.Count; column++)
+                {
+                    if (!IsGenericDetailKey(table.Columns[column]))
+                        continue;
+
+                    for (var row = 0; row < table.Rows.Count; row++)
+                    {
+                        if (column >= table.Rows[row].Cells.Count ||
+                            !LooksLikeFlattenedStructuredValue(table.Rows[row].Cells[column]))
+                        {
+                            continue;
+                        }
+
+                        violations.Add($"{path}/{table.Title}: column '{table.Columns[column]}' row {row + 1} contains flattened structured value '{TrimForAssertion(table.Rows[row].Cells[column])}'");
+                    }
+                }
+
+                break;
+        }
+    }
+
+    private static bool IsGenericDetailKey(string key)
+    {
+        var normalized = key.Trim().ToLowerInvariant();
+        return normalized is "подробности" or "детали" or "detail" or "details";
+    }
+
+    private static bool LooksLikeFlattenedStructuredValue(string value)
+    {
+        var clean = value.Replace("\r\n", "\n", StringComparison.Ordinal).Trim();
+        if (string.IsNullOrWhiteSpace(clean) || clean.Contains('\n', StringComparison.Ordinal))
+            return false;
+
+        return CountOccurrences(clean, ";") >= 2 && CountOccurrences(clean, ":") >= 2;
+    }
+
+    private static string TrimForAssertion(string value)
+    {
+        var clean = value.Replace("\r\n", " ", StringComparison.Ordinal)
+            .Replace("\n", " ", StringComparison.Ordinal)
+            .Trim();
+        return clean.Length <= 180 ? clean : clean[..180] + "...";
     }
 
     private static string CollectPromptAndNotificationText(ExplorerCommandResult result)
