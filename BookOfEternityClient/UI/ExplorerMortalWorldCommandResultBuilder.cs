@@ -2505,57 +2505,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Warning, title, "Одна из записей найдена, но её не удалось прочитать как JSON."));
     }
 
-    private static async Task<ExplorerCommandResult> BuildBundle(string command, FileSystemManager fs, string title, IReadOnlyList<SummarySpec> specs)
-    {
-        var grouped = specs.GroupBy(static spec => spec.Path, StringComparer.OrdinalIgnoreCase).ToArray();
-        var reads = new Dictionary<string, JsonReadResult>(StringComparer.OrdinalIgnoreCase);
-        foreach (var group in grouped)
-            reads[group.Key] = await ReadJson(fs, group.Key);
-
-        var rows = new List<UiTableRow>();
-        foreach (var spec in specs)
-        {
-            var read = reads[spec.Path];
-            var status = DescribeSpec(read, spec.PropertyName);
-            if (status == "отсутствует")
-                continue;
-
-            rows.Add(new UiTableRow
-            {
-                Cells =
-                [
-                    spec.Label,
-                    status
-                ]
-            });
-        }
-
-        var blocks = new List<UiBlock>();
-        if (rows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = title,
-                Columns = ["Раздел", "Состояние"],
-                Rows = rows
-            });
-        }
-        else
-        {
-            blocks.Add(Message(UiNotificationSeverity.Info, title, "Данные ещё не созданы."));
-        }
-
-        foreach (var (path, read) in reads)
-        {
-            if (read.Node != null)
-                blocks.Add(Raw($"Полный JSON {path}", read.Node));
-            else if (read.FileExists)
-                blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {path}. {read.Error}"));
-        }
-
-        return Completed(command, blocks);
-    }
-
     private static async Task<ExplorerCommandResult> BuildReferenceBundle(
         string command,
         FileSystemManager fs,
@@ -3807,18 +3756,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
     }
 
-    private static void AddReferenceRawState(
-        List<UiBlock> blocks,
-        string title,
-        IEnumerable<JsonReadResult> reads)
-    {
-        foreach (var read in reads)
-        {
-            if (read.Node != null)
-                blocks.Add(Raw($"Полная запись: {title}", read.Node));
-        }
-    }
-
     private static string FirstReferenceNodeString(JsonNode? node, params string[] properties)
     {
         foreach (var property in properties)
@@ -4238,14 +4175,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return string.Empty;
     }
 
-    private static void AddLocationRawState(List<UiBlock> blocks, string title, JsonReadResult read)
-    {
-        if (read.Node != null)
-            blocks.Add(Raw($"Полная запись: {title}", read.Node));
-        else if (read.FileExists)
-            blocks.Add(Message(UiNotificationSeverity.Warning, title, "Одна из записей локаций найдена, но не разобрана как JSON."));
-    }
-
     private static async Task<ExplorerCommandResult> BuildTransport(string command, FileSystemManager fs)
     {
         const string title = "Транспорт";
@@ -4591,14 +4520,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return;
 
         items.Add(new UiKeyValueItem { Key = label, Value = status });
-    }
-
-    private static void AddTransportRawState(List<UiBlock> blocks, string title, JsonReadResult read)
-    {
-        if (read.Node != null)
-            blocks.Add(Raw($"Полная запись: {title}", read.Node));
-        else if (read.FileExists)
-            blocks.Add(Message(UiNotificationSeverity.Warning, title, "Одна из записей транспорта найдена, но не разобрана как JSON."));
     }
 
     private static async Task<ExplorerCommandResult> BuildInteractions(string command, FileSystemManager fs)
@@ -7100,11 +7021,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
             });
         }
 
-        blocks.Add(Raw("Полный JSON items.json", read.Node));
-        await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_resources.json", "Ресурсы предметов");
-        await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_bonds.json", "Связи предметов");
-        await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_text_updates.json", "Тексты предметов");
-
         return Completed(command, blocks, BuildInventoryActions(commandToken, inventoryContext));
     }
 
@@ -8280,13 +8196,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static string NormalizeInventoryLookup(string value) =>
         NormalizeReferenceSelector(NormalizeCombatSelector(value));
 
-    private static async Task AddRawJsonIfPresent(List<UiBlock> blocks, FileSystemManager fs, string path, string title)
-    {
-        var read = await ReadJson(fs, path);
-        if (read.Node != null)
-            blocks.Add(Raw(title, read.Node));
-    }
-
     private static void AddBookReadWarning(List<UiBlock> blocks, string title, JsonReadResult read)
     {
         if (read.FileExists && read.Node == null)
@@ -8404,13 +8313,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
             Severity = severity,
             Title = title,
             Message = message
-        };
-
-    private static UiRawJsonBlock Raw(string title, JsonNode node) =>
-        new()
-        {
-            Title = title,
-            Json = node.DeepClone()
         };
 
     private static bool TryGetScalarString(JsonNode? node, out string value)
