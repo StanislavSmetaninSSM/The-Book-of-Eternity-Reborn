@@ -1293,30 +1293,35 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Временные модификаторы", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Итоговое значение", text, StringComparison.OrdinalIgnoreCase);
 
-        var computedPanel = Assert.Single(
-            result.Blocks.OfType<UiPanelBlock>(),
-            static panel => panel.Title.Equals("Расчётные показатели", StringComparison.OrdinalIgnoreCase));
+        var statsDossier = Assert.Single(
+            result.Blocks.SelectMany(EnumerateEntityDossiers),
+            static block => block.EntityType == "stats" &&
+                block.Title.Equals("Расчётные показатели", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
+            table.Title.Equals("Базовые характеристики", StringComparison.OrdinalIgnoreCase) ||
+            table.Title.Equals("Расчётные показатели", StringComparison.OrdinalIgnoreCase) ||
+            table.Title.Equals("Основные показатели", StringComparison.OrdinalIgnoreCase));
         var basePanel = Assert.Single(
-            computedPanel.Blocks.OfType<UiPanelBlock>(),
-            static panel => panel.Title.Equals("Базовое значение", StringComparison.OrdinalIgnoreCase));
+            statsDossier.Sections,
+            static section => section.Title.Equals("Базовое значение", StringComparison.OrdinalIgnoreCase));
         var baseGrid = Assert.Single(basePanel.Blocks.OfType<UiKeyValueGridBlock>());
         Assert.Contains(baseGrid.Items, static item =>
             item.Key.Equals("Ловкость", StringComparison.OrdinalIgnoreCase) &&
             item.Value.Equals("7", StringComparison.OrdinalIgnoreCase));
 
         var equipmentPanel = Assert.Single(
-            computedPanel.Blocks.OfType<UiPanelBlock>(),
-            static panel => panel.Title.Equals("Бонусы снаряжения", StringComparison.OrdinalIgnoreCase));
+            statsDossier.Sections,
+            static section => section.Title.Equals("Бонусы снаряжения", StringComparison.OrdinalIgnoreCase));
         var equipmentGrid = Assert.Single(equipmentPanel.Blocks.OfType<UiKeyValueGridBlock>());
         Assert.Contains(equipmentGrid.Items, static item =>
             item.Key.Equals("Чувство магических потоков", StringComparison.OrdinalIgnoreCase) &&
             item.Value.Equals("2", StringComparison.OrdinalIgnoreCase));
 
         var modifiersPanel = Assert.Single(
-            computedPanel.Blocks.OfType<UiPanelBlock>(),
-            static panel => panel.Title.Equals("Временные модификаторы", StringComparison.OrdinalIgnoreCase));
-        var modifierEntry = Assert.Single(modifiersPanel.Blocks.OfType<UiPanelBlock>());
-        var modifierGrid = Assert.Single(modifierEntry.Blocks.OfType<UiKeyValueGridBlock>());
+            statsDossier.Sections,
+            static section => section.Title.Equals("Временные модификаторы", StringComparison.OrdinalIgnoreCase));
+        var modifierEntry = Assert.Single(modifiersPanel.Blocks.OfType<UiEntityDossierBlock>());
+        var modifierGrid = Assert.Single(modifierEntry.Sections.SelectMany(static section => section.Blocks).OfType<UiKeyValueGridBlock>());
         Assert.Contains(modifierGrid.Items, static item =>
             item.Key.Equals("Источник", StringComparison.OrdinalIgnoreCase) &&
             item.Value.Contains("Головная боль после тяжёлых снов", StringComparison.OrdinalIgnoreCase));
@@ -1325,8 +1330,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             item.Value.Equals("Восприятие", StringComparison.OrdinalIgnoreCase));
 
         var finalPanel = Assert.Single(
-            computedPanel.Blocks.OfType<UiPanelBlock>(),
-            static panel => panel.Title.Equals("Итоговое значение", StringComparison.OrdinalIgnoreCase));
+            statsDossier.Sections,
+            static section => section.Title.Equals("Итоговое значение", StringComparison.OrdinalIgnoreCase));
         var finalGrid = Assert.Single(finalPanel.Blocks.OfType<UiKeyValueGridBlock>());
         Assert.Contains(finalGrid.Items, static item =>
             item.Key.Equals("Восприятие", StringComparison.OrdinalIgnoreCase) &&

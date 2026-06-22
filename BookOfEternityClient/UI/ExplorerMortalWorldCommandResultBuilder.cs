@@ -216,13 +216,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     ("Равновесие", EmptyFallback(state.PlayerStatus.PoisePercentage))))
         };
 
-        await AddStatsTableIfPresent(
+        await AddStatsBlockIfPresent(
             blocks,
             fs,
             "game_state/misc/characteristics.json",
             "Базовые характеристики",
             TranslateBaseCharacteristicKey);
-        await AddStatsTableIfPresent(
+        await AddStatsBlockIfPresent(
             blocks,
             fs,
             "game_state/player/computed_characteristics.json",
@@ -231,7 +231,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks);
     }
 
-    private static async Task AddStatsTableIfPresent(
+    private static async Task AddStatsBlockIfPresent(
         List<UiBlock> blocks,
         FileSystemManager fs,
         string path,
@@ -248,43 +248,21 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return;
         }
 
-        if (string.Equals(title, "Расчётные показатели", StringComparison.OrdinalIgnoreCase))
+        var structuredBlock = BuildStructuredStatsDossier(obj, title, translateKey);
+        if (structuredBlock != null)
         {
-            var structuredBlock = BuildStructuredStatsPanel(obj, title, translateKey);
-            if (structuredBlock != null)
-            {
-                blocks.Add(structuredBlock);
-                return;
-            }
-        }
-
-        var rows = EnumerateStatsProperties(obj)
-            .Where(static property => !IsTechnicalStatsProperty(property.Key))
-            .Select(property => new UiTableRow
-            {
-                Cells = [translateKey(property.Key), FormatStatsValue(property.Value, property.Key)]
-            })
-            .Where(static row => row.Cells.Count >= 2 && !string.IsNullOrWhiteSpace(row.Cells[1]))
-            .ToList();
-
-        if (rows.Count == 0)
+            blocks.Add(structuredBlock);
             return;
-
-        blocks.Add(new UiTableBlock
-        {
-            Title = title,
-            Columns = ["Показатель", "Значение"],
-            Rows = rows
-        });
+        }
     }
 
-    private static UiPanelBlock? BuildStructuredStatsPanel(
+    private static UiEntityDossierBlock? BuildStructuredStatsDossier(
         JsonObject obj,
         string title,
         Func<string, string> translateKey)
     {
-        var scalarRows = new List<UiTableRow>();
-        var sectionBlocks = new List<UiBlock>();
+        var scalarItems = new List<UiKeyValueItem>();
+        var sections = new List<UiEntityDossierSection>();
 
         foreach (var property in EnumerateStatsProperties(obj).Where(static property => !IsTechnicalStatsProperty(property.Key)))
         {
@@ -293,23 +271,17 @@ public static class ExplorerMortalWorldCommandResultBuilder
             {
                 case JsonObject nested:
                 {
-                    var grid = BuildStatsObjectGrid(nested);
-                    if (grid != null)
-                    {
-                        sectionBlocks.Add(new UiPanelBlock
-                        {
-                            Title = label,
-                            Blocks = [grid]
-                        });
-                    }
+                    var section = BuildStatsObjectSection(label, nested);
+                    if (section != null)
+                        sections.Add(section);
 
                     break;
                 }
                 case JsonArray array:
                 {
-                    var arrayBlock = BuildStatsArrayPanel(label, array, property.Key);
-                    if (arrayBlock != null)
-                        sectionBlocks.Add(arrayBlock);
+                    var section = BuildStatsArraySection(label, array, property.Key);
+                    if (section != null)
+                        sections.Add(section);
                     break;
                 }
                 default:
@@ -317,9 +289,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     var value = FormatStatsValue(property.Value, property.Key);
                     if (!string.IsNullOrWhiteSpace(value))
                     {
-                        scalarRows.Add(new UiTableRow
+                        scalarItems.Add(new UiKeyValueItem
                         {
-                            Cells = [label, value]
+                            Key = label,
+                            Value = value
                         });
                     }
 
@@ -328,31 +301,69 @@ public static class ExplorerMortalWorldCommandResultBuilder
             }
         }
 
-        var blocks = new List<UiBlock>();
-        if (scalarRows.Count > 0)
+        if (scalarItems.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Insert(0, new UiEntityDossierSection
             {
+                Id = "primary",
                 Title = "Основные показатели",
-                Columns = ["Показатель", "Значение"],
-                Rows = scalarRows
+                Summary = "Короткие числовые параметры без дополнительных условий.",
+                Icon = "stats",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = scalarItems }]
             });
         }
 
-        blocks.AddRange(sectionBlocks);
-        return blocks.Count == 0
+        return sections.Count == 0
             ? null
-            : new UiPanelBlock
+            : new UiEntityDossierBlock
             {
+                EntityType = "stats",
                 Title = title,
-                Blocks = blocks
+                Subtitle = string.Equals(title, "Базовые характеристики", StringComparison.OrdinalIgnoreCase)
+                    ? "Основа персонажа"
+                    : "Расчётные значения персонажа",
+                Summary = string.Equals(title, "Базовые характеристики", StringComparison.OrdinalIgnoreCase)
+                    ? "Постоянная основа, от которой считаются проверки и производные параметры."
+                    : "Итоговые параметры с учетом снаряжения, эффектов и временных модификаторов.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = string.Equals(title, "Базовые характеристики", StringComparison.OrdinalIgnoreCase)
+                            ? "База"
+                            : "Расчёт",
+                        Tone = UiTone.Accent,
+                        Icon = "stats"
+                    }
+                ],
+                Sections = sections
             };
     }
 
-    private static UiPanelBlock? BuildStatsArrayPanel(string title, JsonArray array, string fieldName)
+    private static UiEntityDossierSection? BuildStatsObjectSection(string title, JsonObject obj)
+    {
+        var grid = BuildStatsObjectGrid(obj);
+        if (grid == null)
+            return null;
+
+        return new UiEntityDossierSection
+        {
+            Id = StableId(title),
+            Title = title,
+            Summary = "Показатели этой группы разложены по отдельным полям.",
+            Icon = "stats",
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Blocks = [grid]
+        };
+    }
+
+    private static UiEntityDossierSection? BuildStatsArraySection(string title, JsonArray array, string fieldName)
     {
         var listItems = new List<string>();
-        var panelItems = new List<UiBlock>();
+        var sectionBlocks = new List<UiBlock>();
         var index = 0;
 
         foreach (var item in array)
@@ -360,15 +371,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
             index++;
             if (item is JsonObject obj)
             {
-                var grid = BuildStatsObjectGrid(obj);
-                if (grid != null)
-                {
-                    panelItems.Add(new UiPanelBlock
-                    {
-                        Title = $"Запись {index}",
-                        Blocks = [grid]
-                    });
-                }
+                var card = BuildStatsNestedDossier($"{title}: запись {index}", fieldName, obj);
+                if (card != null)
+                    sectionBlocks.Add(card);
 
                 continue;
             }
@@ -378,18 +383,48 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 listItems.Add(value);
         }
 
-        var blocks = new List<UiBlock>();
         if (listItems.Count > 0)
-            blocks.Add(new UiListBlock { Items = listItems });
-        blocks.AddRange(panelItems);
+            sectionBlocks.Insert(0, new UiListBlock { Items = listItems });
 
-        return blocks.Count == 0
+        return sectionBlocks.Count == 0
             ? null
-            : new UiPanelBlock
+            : new UiEntityDossierSection
             {
+                Id = StableId(title),
                 Title = title,
-                Blocks = blocks
+                Summary = "Каждая запись показана отдельно, чтобы не склеивать несколько полей в одну строку.",
+                Icon = "stats",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = sectionBlocks
             };
+    }
+
+    private static UiEntityDossierBlock? BuildStatsNestedDossier(string title, string entityType, JsonObject obj)
+    {
+        var grid = BuildStatsObjectGrid(obj);
+        if (grid == null)
+            return null;
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = string.IsNullOrWhiteSpace(entityType) ? "stats-entry" : entityType,
+            Title = title,
+            Subtitle = "Запись",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "fields",
+                    Title = "Поля",
+                    Summary = "Игровые данные записи без технических ключей.",
+                    Icon = "stats",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = [grid]
+                }
+            ]
+        };
     }
 
     private static UiKeyValueGridBlock? BuildStatsObjectGrid(JsonObject obj)
@@ -543,6 +578,19 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 index > 0 && char.IsUpper(ch) ? " " + ch : ch.ToString()))
             .Replace('_', ' ')
             .Trim();
+    }
+
+    private static string StableId(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "section";
+
+        var chars = value
+            .Trim()
+            .Select(static ch => char.IsLetterOrDigit(ch) ? char.ToLowerInvariant(ch) : '-')
+            .ToArray();
+        var id = new string(chars).Trim('-');
+        return string.IsNullOrWhiteSpace(id) ? "section" : id;
     }
 
     private static async Task<ExplorerCommandResult> BuildMap(string command, FileSystemManager fs)
