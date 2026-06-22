@@ -2297,7 +2297,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         ]);
     }
 
-    private static UiPanelBlock BuildReferenceDetailPanel(
+    private static UiBlock BuildReferenceDetailPanel(
         ReferenceCommandDefinition definition,
         ReferenceEntrySnapshot entry)
     {
@@ -2334,16 +2334,17 @@ public static class ExplorerMortalWorldCommandResultBuilder
         };
     }
 
-    private static UiPanelBlock BuildSkillReferenceDetailPanel(
+    private static UiEntityDossierBlock BuildSkillReferenceDetailPanel(
         ReferenceCommandDefinition definition,
         ReferenceEntrySnapshot entry)
     {
+        var skillType = TranslateSkillProtocolValue(FirstReferenceNodeString(entry.Node, "category", "type"));
         var detailItems = new List<UiKeyValueItem>
         {
             new() { Key = "Раздел", Value = entry.Section }
         };
 
-        AddReferenceDetailItem(detailItems, "Тип", TranslateSkillProtocolValue(FirstReferenceNodeString(entry.Node, "category", "type")));
+        AddReferenceDetailItem(detailItems, "Тип", skillType);
         AddReferenceDetailItem(detailItems, "Группа", FirstReferenceNodeString(entry.Node, "group", "skillGroup", "school"));
         AddReferenceDetailItem(detailItems, "Уровень", FirstReferenceNodeString(entry.Node, "level", "skillLevel"));
         AddReferenceDetailItem(detailItems, "Мастерство", FirstReferenceNodeString(entry.Node, "masteryLevel", "mastery"));
@@ -2365,23 +2366,77 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (detailItems.Count > 0)
             detailBlocks.Add(new UiKeyValueGridBlock { Items = detailItems });
 
-        var actionRows = BuildSkillActionRows(entry.Node);
-        if (actionRows.Count > 0)
+        var sections = new List<UiEntityDossierSection>();
+        if (detailBlocks.Count > 0)
         {
-            detailBlocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
-                Title = "Боевые свойства",
-                Columns = ["Параметр", "Значение"],
-                Rows = actionRows
+                Id = "overview",
+                Title = "Сведения",
+                Summary = "Основное описание навыка и его игровые параметры.",
+                Icon = "skills",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = detailBlocks
             });
         }
 
-        AddStructuredBonusBlock(detailBlocks, entry.Node["structuredBonuses"] as JsonArray);
-
-        return new UiPanelBlock
+        var actionRows = BuildSkillActionRows(entry.Node);
+        if (actionRows.Count > 0)
         {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "combat",
+                Title = "Боевые свойства",
+                Summary = "Параметры действия, которые важны при применении навыка.",
+                Icon = "combat",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
+                [
+                    new UiKeyValueGridBlock
+                    {
+                        Items = actionRows
+                            .Where(static row => row.Cells.Count >= 2)
+                            .Select(static row => new UiKeyValueItem { Key = row.Cells[0], Value = row.Cells[1] })
+                            .ToList()
+                    }
+                ]
+            });
+        }
+
+        var bonusBlocks = new List<UiBlock>();
+        AddStructuredBonusBlock(bonusBlocks, entry.Node["structuredBonuses"] as JsonArray);
+        if (bonusBlocks.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "bonuses",
+                Title = "Структурные бонусы",
+                Summary = "Постоянные числовые эффекты навыка, разложенные по полям.",
+                Icon = "skills",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = bonusBlocks
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "skill",
             Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
-            Blocks = detailBlocks
+            Subtitle = FirstNonEmpty(skillType, "Навык"),
+            Summary = FirstNonEmpty(entry.Summary, FirstReferenceNodeString(entry.Node, "skillDescription", "description", "playerStatBonus", "summary")),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = string.IsNullOrWhiteSpace(entry.Section) ? "Навык" : entry.Section,
+                    Tone = UiTone.Accent,
+                    Icon = "skills"
+                }
+            ],
+            Sections = sections
         };
     }
 

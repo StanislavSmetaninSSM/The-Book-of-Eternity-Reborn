@@ -781,6 +781,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(CommandExecutionState.Completed, result.State);
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Структурные бонусы", text, StringComparison.OrdinalIgnoreCase);
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "skill" &&
+            block.Title.Contains("Аристократический этикет", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(dossier.Sections, static section => section.Id == "bonuses" && section.Title == "Структурные бонусы");
         Assert.Contains("Тип цели", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("характеристика", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Характеристика", text, StringComparison.OrdinalIgnoreCase);
@@ -827,6 +831,12 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         var text = CollectBlockText(result.Blocks);
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "skill" &&
+            block.Title.Contains("Салонное давление", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(dossier.Sections, static section => section.Id == "combat" && section.Title == "Боевые свойства");
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
+            table.Title.Equals("Боевые свойства", StringComparison.OrdinalIgnoreCase));
         Assert.Contains("Масштабирование", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Убеждение", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Боевые свойства", text, StringComparison.OrdinalIgnoreCase);
@@ -7589,6 +7599,15 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             yield break;
         }
 
+        if (block is UiEntityDossierBlock dossier)
+        {
+            foreach (var section in dossier.Sections)
+            foreach (var child in section.Blocks)
+            foreach (var childTable in EnumerateTables(child))
+                yield return childTable;
+            yield break;
+        }
+
         if (block is UiPanelBlock panel)
         {
             foreach (var child in panel.Blocks)
@@ -7646,6 +7665,15 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             case UiPanelBlock panel:
                 for (var i = 0; i < panel.Blocks.Count; i++)
                     CollectFlattenedStructuredDetailViolations(panel.Blocks[i], violations, $"{path}/{panel.Title}[{i}]");
+                break;
+            case UiEntityDossierBlock dossier:
+                for (var i = 0; i < dossier.Sections.Count; i++)
+                {
+                    var section = dossier.Sections[i];
+                    for (var j = 0; j < section.Blocks.Count; j++)
+                        CollectFlattenedStructuredDetailViolations(section.Blocks[j], violations, $"{path}/{dossier.Title}/{section.Title}[{i}:{j}]");
+                }
+
                 break;
             case UiKeyValueGridBlock grid:
                 foreach (var item in grid.Items)
