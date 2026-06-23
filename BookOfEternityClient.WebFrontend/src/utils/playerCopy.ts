@@ -281,7 +281,8 @@ function sanitizeUiBlockForPlayer(block: UiBlock): UiBlock | null {
           hints,
           list,
           cards,
-          sections
+          sections,
+          primaryAction: block.primaryAction ? sanitizeUiActionForPlayer(block.primaryAction) : null
         };
       }
     case 'table':
@@ -389,7 +390,8 @@ function sanitizeEntityCardForPlayer(card: UiEntityCard): UiEntityCard {
     hints: card.hints.map(sanitizeEntityHintForPlayer),
     list: card.list.map((item) => safePlayerText(item, 'пункт списка')),
     nested: card.nested.map(sanitizeEntityCardForPlayer),
-    cards: card.cards.map(sanitizeEntityCardForPlayer)
+    cards: card.cards.map(sanitizeEntityCardForPlayer),
+    primaryAction: card.primaryAction ? sanitizeUiActionForPlayer(card.primaryAction) : null
   };
 }
 

@@ -577,7 +577,194 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     expect(html).toContain('collection-list-item');
     expect(html).toContain('collection-detail-panel');
     expect(html).toContain('Мариус де Гран');
+    expect(html).toContain('Персонажи');
+    expect(html).not.toContain('Большая коллекция');
     expect(html).not.toContain('card-grid');
+  });
+
+  it('shows a direct open action inside entity cards when a matching command action exists', () => {
+    const html = renderCommandResult(baseCommandResult({
+      blocks: [
+        {
+          kind: 'entityDossier',
+          entityType: 'npc-collection',
+          title: 'Персонажи',
+          subtitle: 'Люди в сцене',
+          summary: 'Выберите персонажа, чтобы рассмотреть его досье.',
+          badges: [],
+          media: null,
+          facts: [],
+          metrics: [],
+          hints: [],
+          list: [],
+          cards: [],
+          sections: [
+            {
+              id: 'npcs',
+              title: 'Персонажи',
+              summary: 'Кто сейчас связан со сценой.',
+              icon: 'npc',
+              collectionLabel: '1 персонаж',
+              presentation: 'collection',
+              collapsible: true,
+              initiallyExpanded: true,
+              facts: [],
+              metrics: [],
+              hints: [],
+              list: [],
+              cards: [
+                {
+                  title: 'Мариус де Гран',
+                  subtitle: 'Персонаж мира',
+                  summary: 'Старший дворецкий и первый свидетель ночных странностей.',
+                  icon: 'npc',
+                  badges: [],
+                  media: null,
+                  facts: [],
+                  metrics: [],
+                  hints: [],
+                  list: [],
+                  nested: [],
+                  cards: []
+                }
+              ],
+              blocks: []
+            }
+          ]
+        }
+      ],
+      actions: [
+        {
+          id: 'npc-open-marius',
+          label: 'Открыть отдельно: Мариус де Гран',
+          command: '/нпс персонаж "Мариус де Гран"',
+          style: 'Secondary',
+          requiresConfirmation: false,
+          payload: null
+        }
+      ]
+    }));
+
+    expect(html).toContain('entity-card__action-row');
+    expect(html).toContain('Открыть отдельно: Мариус де Гран');
+    expect(html).toContain('collection-detail-panel');
+  });
+
+  it('keeps shallow nested dossier sections open so selected entities show their real data immediately', () => {
+    const html = renderToStaticMarkup(<BlockList blocks={[{
+      kind: 'entityDossier',
+      entityType: 'npc',
+      title: 'Мариус де Гран',
+      subtitle: 'Персонаж мира',
+      summary: 'Досье персонажа.',
+      badges: [],
+      media: null,
+      facts: [],
+      metrics: [],
+      hints: [],
+      list: [],
+      cards: [],
+      sections: [
+        {
+          id: 'journal',
+          title: 'Дневник / мысли',
+          summary: 'Что персонаж думает о ночных событиях.',
+          icon: 'npc',
+          collectionLabel: '',
+          presentation: '',
+          collapsible: true,
+          initiallyExpanded: true,
+          facts: [
+            { label: 'Мысль', value: 'Печать на письме кажется знакомой.' },
+            { label: 'Опасение', value: 'Кто-то вошёл в покои после полуночи.' }
+          ],
+          metrics: [],
+          hints: [{ title: 'Зацепка', text: 'Стоит спросить о семейном архиве.', tone: 'Accent' }],
+          list: ['Первым проверить записи караула.'],
+          cards: [
+            {
+              title: 'Запись наблюдения',
+              subtitle: 'Журнал',
+              summary: 'Мариус помнит шаги у двери.',
+              icon: 'archive',
+              badges: [],
+              media: null,
+              facts: [{ label: 'Источник', value: 'ночной обход' }],
+              metrics: [],
+              hints: [],
+              list: [],
+              nested: [],
+              cards: []
+            }
+          ],
+          blocks: []
+        }
+      ]
+    }]} />);
+
+    expect(html).toContain('Печать на письме кажется знакомой.');
+    expect(html).not.toContain('class="nested-card collapsible-card"');
+  });
+
+  it('does not repeat card facts again as anonymous list items inside dossier cards', () => {
+    const html = renderToStaticMarkup(<BlockList blocks={[{
+      kind: 'entityDossier',
+      entityType: 'npc',
+      title: 'Магистра Селена',
+      subtitle: 'Наставница',
+      summary: 'Досье персонажа.',
+      badges: [],
+      media: null,
+      facts: [],
+      metrics: [],
+      hints: [],
+      list: [],
+      cards: [],
+      sections: [
+        {
+          id: 'memory',
+          title: 'Память / состояния',
+          summary: 'Что персонаж помнит и какие состояния на него влияют.',
+          icon: 'memory',
+          collectionLabel: '',
+          presentation: '',
+          collapsible: true,
+          initiallyExpanded: true,
+          facts: [],
+          metrics: [],
+          hints: [],
+          list: [],
+          cards: [
+            {
+              title: 'Карта судьбы',
+              subtitle: 'Память / состояния',
+              summary: '',
+              icon: 'memory',
+              badges: [],
+              media: null,
+              facts: [
+                { label: 'Название карты', value: 'Холодная милость наставника' },
+                { label: 'Описание', value: 'Селена способна закрыть опасную ошибку ученика, но попросит за это трудную правду.' }
+              ],
+              metrics: [],
+              hints: [],
+              list: [
+                'Холодная милость наставника',
+                'Селена способна закрыть опасную ошибку ученика, но попросит за это трудную правду.',
+                'Уникальная заметка остаётся видимой.'
+              ],
+              nested: [],
+              cards: []
+            }
+          ],
+          blocks: []
+        }
+      ]
+    }]} />);
+
+    expect(countOccurrences(html, 'Холодная милость наставника')).toBe(1);
+    expect(countOccurrences(html, 'Селена способна закрыть опасную ошибку ученика')).toBe(1);
+    expect(html).toContain('Уникальная заметка остаётся видимой.');
   });
 
   it('breaks structured fact values into readable localized rows instead of one semicolon line', () => {
@@ -680,8 +867,209 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     expect(html).toContain('src="/api/media/aW1hZ2VzL2xvY2F0aW9ucy9sb2NfcGFybG9yLnBuZw"');
     expect(html).toContain('Изображение локации «Гостиная виконта»');
     expect(html).toContain('map-node--placeholder');
+    expect(html).toContain('map-node-hit-area');
+    expect(html).toContain('map-node-focus-ring');
     expect(html).toContain('Известный выход');
     expect(html).toContain('Комната с тяжёлыми шторами.');
+    expect(html).not.toContain('atlas-texture');
+    expect(html).not.toContain('browser-atlas-texture');
+  });
+
+  it('renders a player-facing full-screen control for browser maps', () => {
+    const blocks: UiBlock[] = [
+      {
+        kind: 'map',
+        title: 'Карта',
+        map: {
+          schemaVersion: 1,
+          realm: 'Mortal World',
+          title: 'Карта смертного мира',
+          currentNodeId: 'loc_parlor',
+          layers: [{ id: 'world', label: 'Мир', isDefault: true }],
+          zLevels: [{ z: 0, label: 'земля' }],
+          nodes: [
+            {
+              id: 'loc_parlor',
+              label: 'Гостиная виконта',
+              type: 'indoor',
+              x: 0,
+              y: 0,
+              z: 0,
+              layer: 'world',
+              isCurrent: true,
+              ownerFactionId: '',
+              ownerFactionName: '',
+              influence: {},
+              details: [{ key: 'Описание', value: 'Комната с тяжёлыми шторами.' }],
+              isPlaceholder: false,
+              imageUrl: '',
+              imageAltText: ''
+            }
+          ],
+          links: [],
+          regions: []
+        }
+      }
+    ];
+
+    const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
+
+    expect(html).toContain('map-fullscreen-button');
+    expect(html).toContain('На весь экран');
+    expect(html).toContain('Открыть карту на весь экран');
+  });
+
+  it('wires browser maps for wheel zoom and left-button drag panning', () => {
+    const mapBlock = readSource('src', 'components', 'MapBlock.tsx');
+    const commandUi = readSource('src', 'styles', 'command-ui.css');
+
+    expect(mapBlock).toContain('onWheel={handleWheel}');
+    expect(mapBlock).toContain("addEventListener('wheel', handleNativeWheel");
+    expect(mapBlock).toContain('passive: false');
+    expect(mapBlock).toContain('onPointerDown={handlePointerDown}');
+    expect(mapBlock).toContain('onPointerMove={handlePointerMove}');
+    expect(mapBlock).toContain('onPointerUp={endPan}');
+    expect(mapBlock).toContain('event.currentTarget.setPointerCapture');
+    expect(mapBlock).toContain('buttons !== 1');
+    expect(mapBlock).toContain('map-fullscreen-dialog');
+    expect(commandUi).toContain('.map-atlas-frame--fullscreen');
+    expect(commandUi).toContain('.map-atlas-frame--panning');
+    expect(commandUi).toContain('.map-fullscreen-dialog');
+  });
+
+  it('renders the selected map node after other nodes so it stays on top visually', () => {
+    const blocks: UiBlock[] = [
+      {
+        kind: 'map',
+        title: 'Карта',
+        map: {
+          schemaVersion: 1,
+          realm: 'Mortal World',
+          title: 'Карта смертного мира',
+          currentNodeId: 'loc_selected',
+          layers: [{ id: 'world', label: 'Мир', isDefault: true }],
+          zLevels: [{ z: 0, label: 'земля' }],
+          nodes: [
+            {
+              id: 'loc_selected',
+              label: 'Выбранная башня',
+              type: 'indoor',
+              x: 0,
+              y: 0,
+              z: 0,
+              layer: 'world',
+              isCurrent: true,
+              ownerFactionId: '',
+              ownerFactionName: '',
+              influence: {},
+              details: [],
+              isPlaceholder: false,
+              imageUrl: '',
+              imageAltText: ''
+            },
+            {
+              id: 'loc_other',
+              label: 'Соседний двор',
+              type: 'outdoor',
+              x: 0.2,
+              y: 0.1,
+              z: 0,
+              layer: 'world',
+              isCurrent: false,
+              ownerFactionId: '',
+              ownerFactionName: '',
+              influence: {},
+              details: [],
+              isPlaceholder: false,
+              imageUrl: '',
+              imageAltText: ''
+            }
+          ],
+          links: [],
+          regions: []
+        }
+      }
+    ];
+
+    const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
+
+    expect(html.indexOf('Локация: Соседний двор')).toBeLessThan(html.indexOf('Локация: Выбранная башня'));
+  });
+
+  it('renders a player-facing location selector for browser maps', () => {
+    const blocks: UiBlock[] = [
+      {
+        kind: 'map',
+        title: 'Карта',
+        map: {
+          schemaVersion: 1,
+          realm: 'Mortal World',
+          title: 'Карта смертного мира',
+          currentNodeId: 'loc_parlor',
+          layers: [{ id: 'world', label: 'Мир', isDefault: true }],
+          zLevels: [{ z: 0, label: 'земля' }],
+          nodes: [
+            {
+              id: 'loc_parlor',
+              label: 'Покои виконта',
+              type: 'indoor',
+              x: 0,
+              y: 0,
+              z: 0,
+              layer: 'world',
+              isCurrent: true,
+              ownerFactionId: '',
+              ownerFactionName: '',
+              influence: {},
+              details: [],
+              isPlaceholder: false,
+              imageUrl: '',
+              imageAltText: ''
+            },
+            {
+              id: 'loc_library',
+              label: 'Семейная библиотека',
+              type: 'indoor',
+              x: 3,
+              y: 0,
+              z: 0,
+              layer: 'world',
+              isCurrent: false,
+              ownerFactionId: '',
+              ownerFactionName: '',
+              influence: {},
+              details: [],
+              isPlaceholder: false,
+              imageUrl: '',
+              imageAltText: ''
+            }
+          ],
+          links: [],
+          regions: []
+        }
+      }
+    ];
+
+    const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
+    const mapBlock = readSource('src', 'components', 'MapBlock.tsx');
+
+    expect(html).toContain('map-location-selector');
+    expect(html).toContain('Список локаций');
+    expect(html).toContain('aria-label="Выбрать локацию на карте"');
+    expect(html).toContain('Покои виконта');
+    expect(html).toContain('Семейная библиотека');
+    expect(html).toContain('aria-current="true"');
+    expect(mapBlock).toContain('onClick={() => setSelectedNodeId(node.id)}');
+  });
+
+  it('uses an SVG-local focus halo for map nodes instead of a browser outline rectangle', () => {
+    const mapBlock = readSource('src', 'components', 'MapBlock.tsx');
+    const commandUi = readSource('src', 'styles', 'command-ui.css');
+
+    expect(mapBlock).toContain('className="map-node-hit-area"');
+    expect(mapBlock).toContain('className="map-node-focus-ring"');
+    expect(commandUi).toContain('.map-node:focus-visible .map-node-focus-ring');
+    expect(cssRule(commandUi, '.map-node:focus-visible')).not.toContain('outline: 2px');
   });
 });
 
@@ -705,4 +1093,8 @@ function cssRule(source: string, selector: string): string {
 
 function stripCssComments(source: string): string {
   return source.replace(/\/\*[\s\S]*?\*\//g, '');
+}
+
+function countOccurrences(source: string, fragment: string): number {
+  return source.split(fragment).length - 1;
 }

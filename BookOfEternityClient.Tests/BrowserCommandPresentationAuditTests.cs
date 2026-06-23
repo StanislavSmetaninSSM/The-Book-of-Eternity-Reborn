@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
@@ -101,6 +102,227 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
         yield return ["/духовный_конфликт"];
         yield return ["/журнал_духовного_боя"];
         yield return ["/духовные_искусства"];
+    }
+
+    [Theory]
+    [MemberData(nameof(CommonProtocolLocalizationCases))]
+    public async Task CommandSurfaces_LocalizeCommonProtocolValues(
+        string saveFileName,
+        string command,
+        string rawValue,
+        string expectedPlayerText)
+    {
+        var result = await ExecuteFromLoadedSaveAsync(saveFileName, command);
+        var text = CollectResultText(result);
+
+        Assert.DoesNotContain(rawValue, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(expectedPlayerText, text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static IEnumerable<object[]> CommonProtocolLocalizationCases()
+    {
+        yield return ["mortal_world_command_display_fixture.zip", "/душа", "Mortal World", "Смертный мир"];
+        yield return ["chaos_sea_command_display_fixture.zip", "/душа", "Chaos Sea", "Море Хаоса"];
+        yield return ["shining_abode_command_display_fixture.zip", "/душа", "Shining Abode", "Сияющая Обитель"];
+        yield return ["mortal_world_command_display_fixture.zip", "/инв предмет item_dark_travel_cloak", "Chest", "Тело"];
+        yield return ["shining_abode_command_display_fixture.zip", "/реликвии реликвия relic_lantern_memory", "rare", "редкое"];
+        yield return ["mortal_world_command_display_fixture.zip", "/достижения", "exploration", "исследование"];
+        yield return ["mortal_world_command_display_fixture.zip", "/бой", "Humanoid", "гуманоид"];
+        yield return ["mortal_world_command_display_fixture.zip", "/карта", "outdoor", "открытая местность"];
+        yield return ["mortal_world_command_display_fixture.zip", "/карта", "Mortal World", "Смертный мир"];
+        yield return ["mortal_world_command_display_fixture.zip", "/правила_мира", "requiredElements", "Обязательные элементы"];
+        yield return ["chaos_sea_command_display_fixture.zip", "/квесты_души", "currentDisplayName", "Квесты души"];
+        yield return ["chaos_sea_command_display_fixture.zip", "/духовные_искусства", "Counter", "Контрприём"];
+        yield return ["chaos_sea_command_display_fixture.zip", "/духовные_искусства", "defense", "защита"];
+        yield return ["shining_abode_command_display_fixture.zip", "/карта", "shining abode district", "район Сияющей Обители"];
+        yield return ["shining_abode_command_display_fixture.zip", "/карта", "Shining Abode", "Сияющая Обитель"];
+        yield return ["shining_abode_command_display_fixture.zip", "/карта", "resident_senna", "резидент"];
+        yield return ["mortal_world_command_display_fixture.zip", "/квесты_души", "защитаian", "Квесты души"];
+        yield return ["mortal_world_command_display_fixture.zip", "/квесты_души", "activeGuardian", "Квесты души"];
+        yield return ["mortal_world_command_display_fixture.zip", "/квесты_души", "abodePower", "Квесты души"];
+        yield return ["mortal_world_command_display_fixture.zip", "/взаимодействия", "player_test_companion", "Игрок 1"];
+        yield return ["chaos_sea_command_display_fixture.zip", "/карта", "abode_azalia", "Шелковый Архив"];
+        yield return ["chaos_sea_command_display_fixture.zip", "/карта", "Chaos Sea", "Море Хаоса"];
+        yield return ["chaos_sea_command_display_fixture.zip", "/политика_хранителей", "abode_azalia", "Шелковый Архив"];
+        yield return ["chaos_sea_command_display_fixture.zip", "/журнал_духовного_боя", "exchange_chaos_hunter_001", "Защита"];
+        yield return ["chaos_sea_command_display_fixture.zip", "/журнал_духовного_боя", "recent_conflict_hunter_pack_044", "После зеркальной защиты"];
+        yield return ["shining_abode_command_display_fixture.zip", "/журнал_духовного_боя", "recent_shining_oath_cell_001", "победа"];
+        yield return ["shining_abode_command_display_fixture.zip", "/карта", "; Скрытый Дом", "Скрытый Дом"];
+        yield return ["shining_abode_command_display_fixture.zip", "/сияющая_политика", "rumor_credit", "Кредит слухов"];
+        yield return ["shining_abode_command_display_fixture.zip", "/сияющая_политика хроника chronicle_hidden", "hidden_house_suspected", "Скрытом Доме"];
+        yield return ["shining_abode_command_display_fixture.zip", "/сияющая_политика хроника chronicle_hidden", "rumor", "слух"];
+        yield return ["mortal_world_command_display_fixture.zip", "/world_setup", "world_profiles", "Подготовка следующего мира"];
+        yield return ["mortal_world_command_display_fixture.zip", "/companion_directive", "playerCompanionDirective", "директив"];
+        yield return ["mortal_world_command_display_fixture.zip", "/spiritual_arts", "afterlifeSpecialArtLearningReceipts", "обучения духовным искусствам"];
+        yield return ["chaos_sea_command_display_fixture.zip", "/spiritual_action", "afterlifeSpiritualConflictUpdate", "духовного конфликта"];
+        yield return ["chaos_sea_command_display_fixture.zip", "/abode_offering", "guardian_azalia", "Азалия"];
+        yield return ["shining_abode_command_display_fixture.zip", "/soul_relic_equip", "relic_silver_votive_thread", "Серебряная обетная нить"];
+        yield return ["mortal_world_command_display_fixture.zip", "/объединить_стопки", "; после объединения:", "Объединение стопок"];
+        yield return ["chaos_sea_command_display_fixture.zip", "/archive_consultation", "; редкость:", "Редкость"];
+    }
+
+    [Theory]
+    [InlineData("/погода")]
+    [InlineData("/статус")]
+    [InlineData("/где_я")]
+    public async Task MortalTimeSurfaces_PreserveClockFormatting(string command)
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            command);
+        var text = CollectResultText(result);
+
+        Assert.Contains("08:15", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("08: 15", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MortalNpcOverviewCardsExposeDirectProfileActions()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/нпс");
+
+        var npcCards = EnumerateEntityCards(result.Blocks)
+            .Where(static card =>
+                string.Equals(card.Icon, "npc", StringComparison.OrdinalIgnoreCase) ||
+                card.Subtitle.Contains("Персонаж", StringComparison.OrdinalIgnoreCase))
+            .Where(static card => !string.Equals(card.Title, "Персонажи", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        Assert.NotEmpty(npcCards);
+        Assert.Contains(npcCards, static card =>
+        {
+            var action = GetCardPrimaryAction(card);
+            return action != null &&
+                   action.Label.Contains("Открыть", StringComparison.OrdinalIgnoreCase) &&
+                   action.Command.Contains("/нпс", StringComparison.OrdinalIgnoreCase) &&
+                   action.Command.Contains("персонаж", StringComparison.OrdinalIgnoreCase);
+        });
+
+        Assert.DoesNotContain(npcCards, static card =>
+            ContainsUiInstructionCopy(card.Summary) ||
+            card.Summary.Contains("игровые свойства", StringComparison.OrdinalIgnoreCase) ||
+            card.Summary.Contains("раскрыты ниже", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task MortalInventoryOverviewCardsExposeUsefulItemDataAndDirectOpenActions()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/инв");
+
+        var itemCards = EnumerateEntityCards(result.Blocks)
+            .Where(static card =>
+                string.Equals(card.Icon, "inventory", StringComparison.OrdinalIgnoreCase) ||
+                card.Subtitle.Contains("предмет", StringComparison.OrdinalIgnoreCase) ||
+                card.Subtitle.Contains("одеж", StringComparison.OrdinalIgnoreCase) ||
+                card.Subtitle.Contains("артефакт", StringComparison.OrdinalIgnoreCase) ||
+                card.Subtitle.Contains("документ", StringComparison.OrdinalIgnoreCase))
+            .Where(static card => !string.Equals(card.Title, "Инвентарь", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        Assert.NotEmpty(itemCards);
+        Assert.Contains(itemCards, static card => GetCardPrimaryAction(card) != null);
+        Assert.Contains(itemCards, static card =>
+            HasFact(card, "Тип") &&
+            HasFact(card, "Количество") &&
+            (HasFact(card, "Группа") || HasFact(card, "Слот") || HasFact(card, "Цена")) &&
+            !IsDurabilityOnlySummary(card.Summary));
+    }
+
+    [Fact]
+    public async Task MortalFactionCardsExposeRanksChroniclesAndResourcesBeyondPowerProfile()
+    {
+        var overview = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/фракции");
+
+        var factionCards = EnumerateEntityCards(overview.Blocks)
+            .Where(static card =>
+                card.Title.Contains("гильд", StringComparison.OrdinalIgnoreCase) ||
+                card.Subtitle.Contains("Фракц", StringComparison.OrdinalIgnoreCase) ||
+                card.Badges.Any(static badge => badge.Label.Contains("Фракц", StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        Assert.NotEmpty(factionCards);
+        Assert.Contains(factionCards, static card =>
+            CardContainsText(card, "Почётный должник") ||
+            CardContainsText(card, "Караванная служба"));
+        Assert.Contains(factionCards, static card =>
+            CardContainsText(card, "Кредит доверия") ||
+            CardContainsText(card, "Караванные припасы"));
+        Assert.Contains(factionCards, static card =>
+            CardContainsText(card, "Долг за спасение каравана") ||
+            CardContainsText(card, "право просить о помощи"));
+
+        var guildAction = overview.Actions.FirstOrDefault(action =>
+            action.Command.Contains("/фракции", StringComparison.OrdinalIgnoreCase) &&
+            action.Label.Contains("Купеческая гильдия", StringComparison.OrdinalIgnoreCase));
+        Assert.NotNull(guildAction);
+
+        var detail = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            guildAction.Command);
+        var detailText = CollectResultText(detail);
+        Assert.Contains("Ранги", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Караванная служба", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Кредит доверия", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Долг за спасение каравана", detailText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MortalLocationCardsUsePlaceDataWithoutUiInstructionNoise()
+    {
+        var overview = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/локации");
+
+        var locationCards = EnumerateEntityCards(overview.Blocks)
+            .Where(static card =>
+                card.Subtitle.Contains("Текущ", StringComparison.OrdinalIgnoreCase) ||
+                card.Subtitle.Contains("Откры", StringComparison.OrdinalIgnoreCase) ||
+                card.Subtitle.Contains("Рядом", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        Assert.NotEmpty(locationCards);
+        Assert.DoesNotContain(locationCards, static card => ContainsUiInstructionCopy(card.Summary));
+        Assert.Contains(locationCards, static card =>
+            CardContainsText(card, "Роскошные покои") ||
+            CardContainsText(card, "Главный коридор") ||
+            CardContainsText(card, "Поместье Вальмонт"));
+
+        var detailAction = overview.Actions.FirstOrDefault(action =>
+            action.Command.Contains("/локации", StringComparison.OrdinalIgnoreCase) &&
+            action.Label.Contains("Покои виконта", StringComparison.OrdinalIgnoreCase));
+        Assert.NotNull(detailAction);
+
+        var detail = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            detailAction.Command);
+        var detailText = CollectResultText(detail);
+        Assert.Contains("Роскошные покои", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Вернуться к обзору можно командой", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Подробности доступны", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("adjacencyMap", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("locationStorages", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("coordinates", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(" indoor", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("помещение", detailText, StringComparison.OrdinalIgnoreCase);
+
+        var storagesAction = detail.Actions.FirstOrDefault(action =>
+            action.Command.Contains("/локации", StringComparison.OrdinalIgnoreCase) &&
+            action.Command.Contains("хранилищ", StringComparison.OrdinalIgnoreCase));
+        Assert.NotNull(storagesAction);
+
+        var storages = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            storagesAction.Command);
+        var storagesText = CollectResultText(storages);
+        Assert.Contains("Приватный письменный стол", storagesText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Старый библиотечный ключ", storagesText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("locationStorages", storagesText, StringComparison.OrdinalIgnoreCase);
     }
 
     public void Dispose()
@@ -232,6 +454,252 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
                 CollectTextViolations(text.Text, violations, $"{path}/text");
                 break;
         }
+    }
+
+    private static IEnumerable<UiEntityCard> EnumerateEntityCards(IEnumerable<UiBlock> blocks)
+    {
+        foreach (var block in blocks)
+        {
+            switch (block)
+            {
+                case UiEntityDossierBlock dossier:
+                    foreach (var card in EnumerateEntityCards(dossier))
+                        yield return card;
+                    break;
+
+                case UiPanelBlock panel:
+                    foreach (var card in EnumerateEntityCards(panel.Blocks))
+                        yield return card;
+                    break;
+            }
+        }
+    }
+
+    private static IEnumerable<UiEntityCard> EnumerateEntityCards(UiEntityDossierBlock dossier)
+    {
+        foreach (var card in dossier.Cards)
+        foreach (var child in EnumerateEntityCards(card))
+            yield return child;
+
+        foreach (var section in dossier.Sections)
+        {
+            foreach (var card in section.Cards)
+            foreach (var child in EnumerateEntityCards(card))
+                yield return child;
+
+            foreach (var card in EnumerateEntityCards(section.Blocks))
+                yield return card;
+        }
+    }
+
+    private static IEnumerable<UiEntityCard> EnumerateEntityCards(UiEntityCard card)
+    {
+        yield return card;
+        foreach (var child in card.Nested)
+        foreach (var nested in EnumerateEntityCards(child))
+            yield return nested;
+        foreach (var child in card.Cards)
+        foreach (var nested in EnumerateEntityCards(child))
+            yield return nested;
+    }
+
+    private static UiAction? GetCardPrimaryAction(UiEntityCard card)
+    {
+        var property = typeof(UiEntityCard).GetProperty("PrimaryAction");
+        return property?.GetValue(card) as UiAction;
+    }
+
+    private static bool ContainsUiInstructionCopy(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        return value.Contains("выберите", StringComparison.OrdinalIgnoreCase) ||
+               value.Contains("доступны в карточке", StringComparison.OrdinalIgnoreCase) ||
+               value.Contains("раскрывается", StringComparison.OrdinalIgnoreCase) ||
+               value.Contains("раскрыты", StringComparison.OrdinalIgnoreCase) ||
+               value.Contains("ниже", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool CardContainsText(UiEntityCard card, string expected) =>
+        CardPlainText(card).Contains(expected, StringComparison.OrdinalIgnoreCase);
+
+    private static string CardPlainText(UiEntityCard card) =>
+        string.Join(
+            Environment.NewLine,
+            EnumerateCardText(card));
+
+    private static IEnumerable<string> EnumerateCardText(UiEntityCard card)
+    {
+        yield return card.Title;
+        yield return card.Subtitle;
+        yield return card.Summary;
+        foreach (var badge in card.Badges)
+            yield return badge.Label;
+        foreach (var fact in card.Facts)
+        {
+            yield return fact.Label;
+            yield return fact.Value;
+        }
+        foreach (var metric in card.Metrics)
+        {
+            yield return metric.Label;
+            yield return metric.Value.ToString(CultureInfo.InvariantCulture);
+            yield return metric.Note;
+        }
+        foreach (var hint in card.Hints)
+        {
+            yield return hint.Title;
+            yield return hint.Text;
+        }
+        foreach (var item in card.List)
+            yield return item;
+        foreach (var child in card.Nested)
+        foreach (var value in EnumerateCardText(child))
+            yield return value;
+        foreach (var child in card.Cards)
+        foreach (var value in EnumerateCardText(child))
+            yield return value;
+    }
+
+    private static string CollectResultText(ExplorerCommandResult result)
+    {
+        var values = new List<string>();
+        foreach (var block in result.Blocks)
+            CollectBlockText(block, values);
+        foreach (var action in result.Actions)
+            values.Add(action.Label);
+        return string.Join(Environment.NewLine, values);
+    }
+
+    private static void CollectBlockText(UiBlock block, List<string> values)
+    {
+        switch (block)
+        {
+            case UiTextBlock text:
+                values.Add(text.Text);
+                break;
+            case UiMessageBlock message:
+                values.Add(message.Title);
+                values.Add(message.Message);
+                break;
+            case UiPanelBlock panel:
+                values.Add(panel.Title);
+                foreach (var child in panel.Blocks)
+                    CollectBlockText(child, values);
+                break;
+            case UiKeyValueGridBlock grid:
+                foreach (var item in grid.Items)
+                {
+                    values.Add(item.Key);
+                    values.Add(item.Value);
+                }
+                break;
+            case UiListBlock list:
+                values.AddRange(list.Items);
+                break;
+            case UiTableBlock table:
+                values.AddRange(table.Columns);
+                foreach (var row in table.Rows)
+                foreach (var cell in row.Cells)
+                    values.Add(cell);
+                break;
+            case UiEntityDossierBlock dossier:
+                values.Add(dossier.Title);
+                values.Add(dossier.Subtitle);
+                values.Add(dossier.Summary);
+                foreach (var badge in dossier.Badges)
+                    values.Add(badge.Label);
+                foreach (var fact in dossier.Facts)
+                {
+                    values.Add(fact.Label);
+                    values.Add(fact.Value);
+                }
+                foreach (var metric in dossier.Metrics)
+                {
+                    values.Add(metric.Label);
+                    values.Add(metric.Note);
+                }
+                foreach (var hint in dossier.Hints)
+                {
+                    values.Add(hint.Title);
+                    values.Add(hint.Text);
+                }
+                values.AddRange(dossier.List);
+                foreach (var card in dossier.Cards)
+                    CollectCardText(card, values);
+                foreach (var section in dossier.Sections)
+                {
+                    values.Add(section.Title);
+                    values.Add(section.Summary);
+                    foreach (var fact in section.Facts)
+                    {
+                        values.Add(fact.Label);
+                        values.Add(fact.Value);
+                    }
+                    foreach (var card in section.Cards)
+                        CollectCardText(card, values);
+                    foreach (var child in section.Blocks)
+                        CollectBlockText(child, values);
+                }
+                break;
+            case UiMapBlock map:
+                values.Add(map.Title);
+                values.Add(map.Map.Title);
+                values.Add(map.Map.Realm);
+                foreach (var node in map.Map.Nodes)
+                {
+                    values.Add(node.Label);
+                    values.Add(node.Type);
+                    foreach (var detail in node.Details)
+                    {
+                        values.Add(detail.Key);
+                        values.Add(detail.Value);
+                    }
+                }
+                break;
+        }
+    }
+
+    private static void CollectCardText(UiEntityCard card, List<string> values)
+    {
+        values.Add(card.Title);
+        values.Add(card.Subtitle);
+        values.Add(card.Summary);
+        foreach (var badge in card.Badges)
+            values.Add(badge.Label);
+        foreach (var fact in card.Facts)
+        {
+            values.Add(fact.Label);
+            values.Add(fact.Value);
+        }
+        foreach (var metric in card.Metrics)
+        {
+            values.Add(metric.Label);
+            values.Add(metric.Note);
+        }
+        foreach (var hint in card.Hints)
+        {
+            values.Add(hint.Title);
+            values.Add(hint.Text);
+        }
+        values.AddRange(card.List);
+        foreach (var nested in card.Nested)
+            CollectCardText(nested, values);
+        foreach (var child in card.Cards)
+            CollectCardText(child, values);
+    }
+
+    private static bool HasFact(UiEntityCard card, string label) =>
+        card.Facts.Any(fact => string.Equals(fact.Label, label, StringComparison.OrdinalIgnoreCase));
+
+    private static bool IsDurabilityOnlySummary(string summary)
+    {
+        if (string.IsNullOrWhiteSpace(summary))
+            return false;
+
+        return summary.Contains("Прочность", StringComparison.OrdinalIgnoreCase) &&
+               summary.Contains("состояние", StringComparison.OrdinalIgnoreCase);
     }
 
     private static void CollectPresentationViolations(UiEntityDossierSection section, List<string> violations, string path)

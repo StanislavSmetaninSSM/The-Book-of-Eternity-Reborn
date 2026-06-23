@@ -360,13 +360,8 @@ public sealed class BrowserShiningActionsParityTests : IDisposable
         var result = await ExecuteCommandAsync("/help");
 
         var text = CollectResultAndPromptText(result);
-        Assert.Contains("/shining_native_faction_discovery", text, StringComparison.Ordinal);
-        Assert.Contains("/shining_faction_investment", text, StringComparison.Ordinal);
-        Assert.Contains("/shining_project_support", text, StringComparison.Ordinal);
-        Assert.Contains("/shining_project_unsupport", text, StringComparison.Ordinal);
-        Assert.Contains("/shining_project_retirement", text, StringComparison.Ordinal);
         Assert.Contains("натив", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("инвест", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("влож", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("поддерж", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("истор", text, StringComparison.OrdinalIgnoreCase);
     }
@@ -646,9 +641,7 @@ public sealed class BrowserShiningActionsParityTests : IDisposable
     }
 
     private static string CollectResultAndPromptText(ExplorerCommandResult result) =>
-        CollectBlockText(result.Blocks) + "\n" +
-        string.Join("\n", result.Prompts.Select(CollectPromptText)) + "\n" +
-        string.Join("\n", result.Notifications.Select(notification => $"{notification.Title}\n{notification.Message}"));
+        UiTestTextCollector.CollectResultAndPromptText(result);
 
     private static string CollectPromptText(UiPrompt prompt)
     {

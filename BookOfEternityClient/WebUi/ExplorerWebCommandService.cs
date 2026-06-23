@@ -152,9 +152,12 @@ public sealed class ExplorerWebCommandService
         if (request.AdvancedEnabled == true || _stateManager.Settings.ShowGmThoughts)
             return result;
 
+        if (descriptor.BrowserHandlerKind == ExplorerCommandBrowserHandlerKind.Help)
+            return result;
+
         var metadata = BrowserPlayerCommandMenuBuilder.GetCoverageMetadata(descriptor);
         if (!string.Equals(metadata.Surface, "player-default", StringComparison.OrdinalIgnoreCase))
-            return result;
+            return BrowserEntityDossierPrototypeNormalizer.Normalize(result);
 
         var projected = new ExplorerCommandResult
         {

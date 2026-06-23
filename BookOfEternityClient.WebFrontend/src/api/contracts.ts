@@ -690,6 +690,7 @@ export interface UiEntityDossierBlock {
   list: string[];
   cards: UiEntityCard[];
   sections: UiEntityDossierSection[];
+  primaryAction?: UiAction | null;
 }
 
 export interface UiEntityBadge {
@@ -741,6 +742,7 @@ export interface UiEntityCard {
   list: string[];
   nested: UiEntityCard[];
   cards: UiEntityCard[];
+  primaryAction?: UiAction | null;
 }
 
 export interface UiEntityDossierSection {

@@ -903,6 +903,57 @@ details:not([open]) > summary .collapse-pill::before {
   font-size: var(--text-md);
 }
 
+.entity-card__action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.entity-card__open-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.2rem;
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 40%, rgba(245, 212, 136, 0.1));
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.72rem;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--realm-accent) 13%, rgba(14, 10, 7, 0.95)), rgba(10, 7, 5, 0.9)),
+    var(--texture-leather);
+  color: var(--color-gold-bright);
+  cursor: pointer;
+  font-family: var(--font-rune);
+  font-size: var(--text-xs);
+  font-weight: 820;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  transition:
+    border-color var(--motion-fast),
+    color var(--motion-fast),
+    transform var(--motion-fast),
+    box-shadow var(--motion-fast);
+}
+
+.entity-card__open-action svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.entity-card__open-action:hover,
+.entity-card__open-action:focus-visible {
+  border-color: color-mix(in srgb, var(--realm-accent) 70%, var(--color-gold));
+  color: var(--color-parchment);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--realm-accent) 18%, transparent);
+  transform: translateY(-1px);
+}
+
 .card-subtitle {
   margin: 0.25rem 0 0;
   color: var(--color-gold);

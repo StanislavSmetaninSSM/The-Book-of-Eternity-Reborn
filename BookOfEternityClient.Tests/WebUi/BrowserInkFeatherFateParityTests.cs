@@ -61,7 +61,7 @@ public sealed class BrowserInkFeatherFateParityTests : IDisposable
         Assert.NotNull(result.InteractiveSession);
         Assert.True(result.InteractiveSession.RequiresLocalUiLock);
         Assert.IsType<UiConfirmationPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "confirm_ink_feather_fate_reveal"));
-        var text = CollectBlockText(result.Blocks, includeRawJson: false);
+        var text = CollectResultAndPromptText(result);
         Assert.Contains("10 Чернильных Перьев", text, StringComparison.Ordinal);
         Assert.Contains("останется 90", text, StringComparison.Ordinal);
         Assert.False(_fs.FileExists(PendingTurnStateService.PendingDiceStatePath));
@@ -119,7 +119,7 @@ public sealed class BrowserInkFeatherFateParityTests : IDisposable
         Assert.Equal(CommandExecutionState.RequiresInput, result.State);
         Assert.NotNull(result.InteractiveSession);
         Assert.IsType<UiConfirmationPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "confirm_ink_feather_fate_rewrite"));
-        var text = CollectBlockText(result.Blocks, includeRawJson: false);
+        var text = CollectResultAndPromptText(result);
         Assert.Contains("25 Чернильных Перьев", text, StringComparison.Ordinal);
         Assert.Contains("останется 75", text, StringComparison.Ordinal);
         Assert.Contains("заменит текущие кости", text, StringComparison.OrdinalIgnoreCase);
@@ -312,7 +312,7 @@ public sealed class BrowserInkFeatherFateParityTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Pending, result.State);
         Assert.Null(result.InteractiveSession);
-        Assert.Contains("Активный ход", CollectBlockText(result.Blocks, includeRawJson: false), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Активный ход", CollectResultAndPromptText(result), StringComparison.OrdinalIgnoreCase);
         Assert.Equal(beforeSoul, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
         Assert.False(_fs.FileExists(PendingTurnStateService.PendingDiceStatePath));
     }
@@ -440,20 +440,18 @@ public sealed class BrowserInkFeatherFateParityTests : IDisposable
     private static string CollectNotifications(ExplorerCommandResult result) =>
         string.Join(" ", result.Notifications.Select(notification => notification.Title + " " + notification.Message));
 
+    private static string CollectResultAndPromptText(ExplorerCommandResult result) =>
+        UiTestTextCollector.CollectResultAndPromptText(result);
+
     private static void AssertNoDefaultTechnicalLeak(ExplorerCommandResult result)
     {
-        var text = CollectBlockText(result.Blocks, includeRawJson: false) + " " + CollectNotifications(result);
+        var text = CollectResultAndPromptText(result);
         foreach (var forbidden in new[] { ".json", "game_state", "DTO", "API", "endpoint", "validation", "debug", "exception" })
             Assert.DoesNotContain(forbidden, text, StringComparison.OrdinalIgnoreCase);
     }
 
     private static string CollectBlockText(IEnumerable<UiBlock> blocks, bool includeRawJson)
-    {
-        var parts = new List<string>();
-        foreach (var block in blocks)
-            CollectBlockText(block, parts, includeRawJson);
-        return string.Join(" ", parts);
-    }
+        => UiTestTextCollector.CollectBlockText(blocks, includeRawJson);
 
     private static void CollectBlockText(UiBlock block, List<string> parts, bool includeRawJson)
     {

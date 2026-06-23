@@ -14,7 +14,8 @@ export function useShellState(advancedEnabled: boolean) {
       browserApi.getSessionStatus(),
       browserApi.getGameScreen(),
       browserApi.getAudioSettings(),
-      browserApi.getClientSettings()
+      browserApi.getClientSettings(),
+      browserApi.getCommandCoverage()
     ]);
 
     const menu = settledToResult(results[0]);
@@ -22,8 +23,9 @@ export function useShellState(advancedEnabled: boolean) {
     const game = settledToResult(results[2]);
     const audio = settledToResult(results[3]);
     const settings = settledToResult(results[4]);
+    const commandCoverage = settledToResult(results[5]);
 
-    const allFailed = [menu, session, game, audio, settings].every((result) => !result.ok && result.kind === 'network-error');
+    const allFailed = [menu, session, game, audio, settings, commandCoverage].every((result) => !result.ok && result.kind === 'network-error');
 
     if (allFailed) {
       setShellState({
@@ -34,18 +36,15 @@ export function useShellState(advancedEnabled: boolean) {
       return;
     }
 
-    const anyNetworkFailed = [menu, session, game, audio, settings].some((result) => !result.ok && result.kind === 'network-error');
+    const anyNetworkFailed = [menu, session, game, audio, settings, commandCoverage].some((result) => !result.ok && result.kind === 'network-error');
 
     let lifecycle = null;
-    let commandCoverage = null;
 
     if (advancedEnabled) {
       const advResults = await Promise.allSettled([
-        browserApi.getLifecycleDashboard(),
-        browserApi.getCommandCoverage()
+        browserApi.getLifecycleDashboard()
       ]);
       lifecycle = settledToResult(advResults[0]);
-      commandCoverage = settledToResult(advResults[1]);
     }
 
     setShellState({

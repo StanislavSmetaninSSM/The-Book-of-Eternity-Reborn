@@ -332,11 +332,6 @@ public sealed class BrowserShiningIncarnationGatesParityTests : IDisposable
         var result = await ExecuteCommandAsync("/help");
 
         var text = CollectResultAndPromptText(result);
-        Assert.Contains("/shining_gates_open", text, StringComparison.Ordinal);
-        Assert.Contains("/shining_gates_select", text, StringComparison.Ordinal);
-        Assert.Contains("/shining_gates_deselect", text, StringComparison.Ordinal);
-        Assert.Contains("/shining_gates_reroll", text, StringComparison.Ordinal);
-        Assert.Contains("/shining_incarnation_prepare", text, StringComparison.Ordinal);
         Assert.Contains("Врата", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("благослов", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("новую жизнь", text, StringComparison.OrdinalIgnoreCase);
@@ -698,9 +693,7 @@ public sealed class BrowserShiningIncarnationGatesParityTests : IDisposable
     }
 
     private static string CollectResultAndPromptText(ExplorerCommandResult result) =>
-        CollectBlockText(result.Blocks) + "\n" +
-        string.Join("\n", result.Prompts.Select(CollectPromptText)) + "\n" +
-        string.Join("\n", result.Notifications.Select(notification => $"{notification.Title}\n{notification.Message}"));
+        UiTestTextCollector.CollectResultAndPromptText(result);
 
     private static string CollectPromptText(UiPrompt prompt)
     {

@@ -138,8 +138,9 @@ public sealed class BrowserInventoryManagementTests : IDisposable
         Assert.NotNull(result.InteractiveSession);
         Assert.Contains(result.Prompts, prompt => prompt.Id == "item_identity");
         var quantity = Assert.IsType<UiTextInputPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "split_quantity"));
-        Assert.Contains("1", quantity.Prompt, StringComparison.Ordinal);
-        Assert.Contains("4", quantity.Prompt, StringComparison.Ordinal);
+        var quantityPromptText = UiTestTextCollector.CollectPromptText(quantity) + "\n" + CollectResultAndPromptText(result);
+        Assert.Contains("1", quantityPromptText, StringComparison.Ordinal);
+        Assert.Contains("4", quantityPromptText, StringComparison.Ordinal);
         Assert.IsType<UiConfirmationPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "confirm_inventory_split"));
 
         var text = CollectResultAndPromptText(result);
@@ -374,9 +375,7 @@ public sealed class BrowserInventoryManagementTests : IDisposable
         new(id, "browser", "Browser inventory test", TimeSpan.FromSeconds(120));
 
     private static string CollectResultAndPromptText(ExplorerCommandResult result) =>
-        CollectBlockText(result.Blocks) + "\n" +
-        string.Join("\n", result.Prompts.Select(CollectPromptText)) + "\n" +
-        string.Join("\n", result.Notifications.Select(notification => $"{notification.Title}\n{notification.Message}"));
+        UiTestTextCollector.CollectResultAndPromptText(result);
 
     private static string CollectPromptText(UiPrompt prompt)
     {

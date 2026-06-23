@@ -247,17 +247,19 @@ describe('playerCopy robustness', () => {
     expect(leaks).toEqual([]);
   });
 
-  it('keeps command coverage and advanced Help commands behind opt-in', () => {
+  it('loads command coverage for Help while keeping advanced commands behind opt-in', () => {
     const helpView = readSource('src', 'components', 'HelpView.tsx');
     const shellState = readSource('src', 'hooks', 'useShellState.ts');
 
     expect(shellState).not.toContain('const coverageResult = await Promise.allSettled([browserApi.getCommandCoverage()]);');
+    expect(shellState).toContain('browserApi.getCommandCoverage()');
     expect(helpView).toContain('advancedEnabled');
     expect(helpView).toContain('isDefaultHelpCommandVisible');
     expect(helpView).toContain("cmd.surface !== 'advanced-only'");
     expect(helpView).not.toContain('<span className="help-command__alias">/help</span>');
-    expect(helpView).toContain('<span className="help-command__alias">Справка</span>');
-    expect(helpView).toContain("<span className=\"help-command__alias\">{advancedEnabled ? cmd.aliases[0] : 'Действие'}</span>");
+    expect(helpView).toContain('<span className="help-command__alias">/help · /помощь</span>');
+    expect(helpView).toContain('<span className="help-command__alias">{formatCommandAliases(cmd.aliases)}</span>');
+    expect(helpView).not.toContain("'Действие'");
     for (const commandId of ['help', 'math', 'gm', 'debug', 'mods', 'system_guardians', 'validate']) {
       expect(helpView).toContain(`'${commandId}'`);
     }
@@ -280,7 +282,11 @@ describe('playerCopy robustness', () => {
     expect(commandResultView).not.toContain('<p>{n.message}</p>');
     expect(blockRenderer).not.toContain("<p>{toPlayerFacingText(block.message, '')}</p>");
     expect(blockRenderer).toContain('sanitizePlayerMessage(block.message');
-    expect(commandResultView).toContain('<BlockList blocks={result.blocks} advancedEnabled={advancedEnabled} />');
+    expect(commandResultView).toContain('<BlockList');
+    expect(commandResultView).toContain('blocks={result.blocks}');
+    expect(commandResultView).toContain('advancedEnabled={advancedEnabled}');
+    expect(commandResultView).toContain('onAction={handleActionClick}');
+    expect(commandResultView).toContain('availableActions={result.actions}');
     expect(blockRenderer).toContain("import { JsonTreeViewer } from './JsonTreeViewer';");
     expect(blockRenderer).toContain('if (advancedEnabled) {');
     expect(blockRenderer).toContain('<JsonTreeViewer data={block.json}');
@@ -324,11 +330,14 @@ describe('playerCopy robustness', () => {
   it('resets browser map selection controls when a different map block is rendered', () => {
     const mapBlock = readSource('src', 'components', 'MapBlock.tsx');
 
-    expect(mapBlock).toContain("import { useEffect, useMemo, useState } from 'react';");
+    expect(mapBlock).toContain("import { useEffect, useMemo, useRef, useState } from 'react';");
     expect(mapBlock).toContain('useEffect(() => {');
     expect(mapBlock).toContain('setSelectedZ(defaultZ);');
     expect(mapBlock).toContain('setSelectedLayer(defaultLayer);');
     expect(mapBlock).toContain('setSelectedNodeId(defaultNodeId);');
+    expect(mapBlock).toContain('setIsFullscreen(false);');
+    expect(mapBlock).toContain('setPan(DEFAULT_PAN);');
+    expect(mapBlock).toContain('panStartRef.current = null;');
     expect(mapBlock).toContain('const mapResetKey = block.map;');
     expect(mapBlock).toContain('[defaultLayer, defaultNodeId, defaultZ, mapResetKey]');
   });

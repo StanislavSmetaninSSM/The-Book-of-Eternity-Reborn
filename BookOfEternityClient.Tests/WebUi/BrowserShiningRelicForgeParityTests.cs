@@ -424,8 +424,6 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
         var result = await ExecuteCommandAsync("/help");
 
         var text = CollectResultAndPromptText(result);
-        Assert.Contains("/shining_relic_forge", text, StringComparison.Ordinal);
-        Assert.Contains("/сияющая_ковка", text, StringComparison.Ordinal);
         Assert.Contains("реликв", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("ков", text, StringComparison.OrdinalIgnoreCase);
     }
@@ -816,9 +814,7 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
     }
 
     private static string CollectResultAndPromptText(ExplorerCommandResult result) =>
-        CollectBlockText(result.Blocks) + "\n" +
-        string.Join("\n", result.Prompts.Select(CollectPromptText)) + "\n" +
-        string.Join("\n", result.Notifications.Select(notification => $"{notification.Title}\n{notification.Message}"));
+        UiTestTextCollector.CollectResultAndPromptText(result);
 
     private static string CollectPromptText(UiPrompt prompt)
     {

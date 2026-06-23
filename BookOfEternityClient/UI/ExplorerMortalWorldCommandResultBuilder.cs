@@ -1290,6 +1290,24 @@ public static class ExplorerMortalWorldCommandResultBuilder
             ], BuildNpcBackActions(commandToken));
         }
 
+        if (sectionRequest.Kind == NpcSectionDetailKind.Profile)
+        {
+            var selected = FindNpcProjection(projections, sectionRequest.NpcSelector);
+            if (selected == null)
+            {
+                return Completed(command, [
+                    Message(UiNotificationSeverity.Warning, "Персонажи", "Такой персонаж не найден.")
+                ], BuildNpcBackActions(commandToken));
+            }
+
+            return Completed(
+                command,
+                [BuildNpcOverviewCard(commandToken, selected, includePrimaryAction: false)],
+                BuildNpcSectionActions(commandToken, [selected])
+                    .Concat(BuildNpcBackActions(commandToken))
+                    .ToList());
+        }
+
         if (sectionRequest.Kind == NpcSectionDetailKind.Section)
         {
             var selected = FindNpcSection(projections, sectionRequest.NpcSelector, sectionRequest.SectionSelector);
@@ -1309,7 +1327,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return Completed(command, BuildNpcSectionDetailBlocks(selected.Value.Projection, selected.Value.Section), actions);
         }
 
-        blocks.AddRange(BuildNpcOverviewBlocks(summaryItems, projections, npcNames));
+        blocks.AddRange(BuildNpcOverviewBlocks(commandToken, summaryItems, projections, npcNames));
 
         foreach (var read in reads.Values)
         {
@@ -1324,6 +1342,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
     }
 
     private static IReadOnlyList<UiBlock> BuildNpcOverviewBlocks(
+        string commandToken,
         IReadOnlyList<UiKeyValueItem> summaryItems,
         IReadOnlyList<NpcDetailProjection> projections,
         IReadOnlyList<string> npcNames)
@@ -1334,10 +1353,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         var npcCards = new List<UiBlock>();
-        npcCards.AddRange(projections.Select(BuildNpcOverviewCard));
+        npcCards.AddRange(projections.Select(projection => BuildNpcOverviewCard(commandToken, projection, includePrimaryAction: true)));
         npcCards.AddRange(npcNames
             .Where(npcName => !projectedNames.Contains(npcName))
-            .Select(BuildNpcOverviewCard));
+            .Select(npcName => BuildNpcOverviewCard(commandToken, npcName)));
 
         if (npcCards.Count > 0)
         {
@@ -1346,7 +1365,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 EntityType = "npc-collection",
                 Title = "Персонажи",
                 Subtitle = "Досье людей в сцене",
-                Summary = "Выберите персонажа, чтобы рассмотреть его мысли, отношения, задачи и игровые свойства.",
+                Summary = "Лица, чьи решения, связи и заметки уже оставили след в текущей главе.",
                 Badges =
                 [
                     new UiEntityBadge
@@ -1365,7 +1384,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     {
                         Id = "npcs",
                         Title = "Персонажи",
-                        Summary = "Короткий список остаётся списком выбора, а полное досье выбранного персонажа раскрывается в отдельной панели.",
+                        Summary = "Известные участники текущей сцены и связанных событий.",
                         Icon = "npc",
                         CollectionLabel = FormatRussianCount(npcCards.Count, "персонаж", "персонажа", "персонажей"),
                         Presentation = "collection",
@@ -1380,23 +1399,34 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return blocks;
     }
 
-    private static UiEntityDossierBlock BuildNpcOverviewCard(NpcDetailProjection projection)
+    private static UiEntityDossierBlock BuildNpcOverviewCard(
+        string commandToken,
+        NpcDetailProjection projection,
+        bool includePrimaryAction)
     {
+        var npcSelector = FirstNonEmpty(projection.NpcId, projection.NpcName);
+        var badges = new List<UiEntityBadge>
+        {
+            new()
+            {
+                Label = "персонаж мира",
+                Tone = projection.Sections.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                Icon = "npc"
+            }
+        };
+        var facts = new List<UiEntityFact>();
+        var hints = new List<UiEntityHint>();
+        AddNpcTradePresentation(projection, facts, badges, hints);
+
         return new UiEntityDossierBlock
         {
             EntityType = "npc",
             Title = projection.NpcName,
             Subtitle = "Персонаж мира",
-            Summary = "Мысли, задачи, отношения и игровые свойства раскрыты ниже в досье персонажа.",
-            Badges =
-            [
-                new UiEntityBadge
-                {
-                    Label = "персонаж мира",
-                    Tone = projection.Sections.Count > 0 ? UiTone.Accent : UiTone.Muted,
-                    Icon = "npc"
-                }
-            ],
+            Summary = BuildNpcOverviewSummary(projection),
+            Badges = badges,
+            Facts = facts,
+            Hints = hints,
             Sections = projection.Sections
                 .Select(static section => new UiEntityDossierSection
                 {
@@ -1408,8 +1438,232 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     InitiallyExpanded = true,
                     Blocks = BuildNpcOverviewSectionBlocks(section)
                 })
-                .ToList()
+                .ToList(),
+            PrimaryAction = includePrimaryAction
+                ? BuildNpcProfileAction(commandToken, projection.NpcName, npcSelector)
+                : null
         };
+    }
+
+    private static void AddNpcTradePresentation(
+        NpcDetailProjection projection,
+        List<UiEntityFact> facts,
+        List<UiEntityBadge> badges,
+        List<UiEntityHint> hints)
+    {
+        var trade = projection.Trade;
+        if (trade == null)
+            return;
+
+        badges.Add(new UiEntityBadge
+        {
+            Label = "Торговец",
+            Tone = trade.CanTrade ? UiTone.Accent : UiTone.Warning,
+            Icon = "coin"
+        });
+        facts.Add(new UiEntityFact
+        {
+            Label = "Торговля",
+            Value = trade.CanTrade ? "Можно торговать" : "Недоступна"
+        });
+        if (!string.IsNullOrWhiteSpace(trade.MerchantProfile))
+        {
+            facts.Add(new UiEntityFact
+            {
+                Label = "Профиль торговли",
+                Value = NpcTradeService.GetMerchantProfileDisplayName(trade.MerchantProfile)
+            });
+        }
+        if (trade.OfferCount > 0)
+        {
+            facts.Add(new UiEntityFact
+            {
+                Label = "Товаров в витрине",
+                Value = trade.OfferCount.ToString(CultureInfo.InvariantCulture)
+            });
+        }
+        if (!trade.CanTrade && !string.IsNullOrWhiteSpace(trade.BlockReason))
+        {
+            facts.Add(new UiEntityFact
+            {
+                Label = "Причина",
+                Value = trade.BlockReason
+            });
+        }
+
+        if (trade.CanTrade)
+        {
+            hints.Add(new UiEntityHint
+            {
+                Title = "Доступна торговля",
+                Text = "В списке действий есть отдельная команда торговли с этим персонажем.",
+                Tone = UiTone.Accent
+            });
+        }
+    }
+
+    private static string BuildNpcOverviewSummary(NpcDetailProjection projection)
+    {
+        foreach (var section in projection.Sections)
+        foreach (var block in section.Blocks)
+        {
+            var summary = FirstNpcPlayableText(block);
+            if (!string.IsNullOrWhiteSpace(summary))
+                return BuildNpcTradeSummaryPrefix(projection, summary);
+        }
+
+        return BuildNpcTradeSummaryPrefix(projection, string.Empty);
+    }
+
+    private static string BuildNpcTradeSummaryPrefix(NpcDetailProjection projection, string playableSummary)
+    {
+        var trade = projection.Trade;
+        if (trade == null)
+            return playableSummary;
+
+        var prefix = trade.CanTrade
+            ? "Торговец: можно торговать напрямую."
+            : "Торговец: торговля сейчас недоступна.";
+        if (!trade.CanTrade && !string.IsNullOrWhiteSpace(trade.BlockReason))
+            prefix = "Торговец: " + trade.BlockReason.Trim();
+
+        return string.IsNullOrWhiteSpace(playableSummary)
+            ? prefix
+            : prefix + " " + playableSummary;
+    }
+
+    private static string FirstNpcPlayableText(UiBlock block)
+    {
+        switch (block)
+        {
+            case UiTextBlock text:
+                return CleanNpcPlayableText(text.Text);
+
+            case UiKeyValueGridBlock grid:
+                return grid.Items
+                    .Select(static item => item.Value)
+                    .Select(CleanNpcPlayableText)
+                    .FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+
+            case UiListBlock list:
+                return list.Items
+                    .Select(CleanNpcPlayableText)
+                    .FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+
+            case UiPanelBlock panel:
+                foreach (var child in panel.Blocks)
+                {
+                    var value = FirstNpcPlayableText(child);
+                    if (!string.IsNullOrWhiteSpace(value))
+                        return value;
+                }
+                break;
+
+            case UiEntityDossierBlock dossier:
+                var dossierSummary = CleanNpcPlayableText(dossier.Summary);
+                if (!string.IsNullOrWhiteSpace(dossierSummary))
+                    return dossierSummary;
+
+                foreach (var fact in dossier.Facts)
+                {
+                    var value = CleanNpcPlayableText(fact.Value);
+                    if (!string.IsNullOrWhiteSpace(value))
+                        return value;
+                }
+
+                foreach (var card in dossier.Cards)
+                {
+                    var value = FirstNpcPlayableText(card);
+                    if (!string.IsNullOrWhiteSpace(value))
+                        return value;
+                }
+
+                foreach (var section in dossier.Sections)
+                foreach (var child in section.Blocks)
+                {
+                    var value = FirstNpcPlayableText(child);
+                    if (!string.IsNullOrWhiteSpace(value))
+                        return value;
+                }
+                break;
+        }
+
+        return string.Empty;
+    }
+
+    private static string FirstNpcPlayableText(UiEntityCard card)
+    {
+        var summary = CleanNpcPlayableText(card.Summary);
+        if (!string.IsNullOrWhiteSpace(summary))
+            return summary;
+
+        foreach (var fact in card.Facts)
+        {
+            var value = CleanNpcPlayableText(fact.Value);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        foreach (var item in card.List)
+        {
+            var value = CleanNpcPlayableText(item);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        foreach (var child in card.Nested)
+        {
+            var value = FirstNpcPlayableText(child);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        foreach (var child in card.Cards)
+        {
+            var value = FirstNpcPlayableText(child);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return string.Empty;
+    }
+
+    private static string CleanNpcPlayableText(string? value)
+    {
+        if (!IsNpcPlayableText(value))
+            return string.Empty;
+
+        var clean = value!.Trim();
+        if (clean.Contains(';', StringComparison.Ordinal))
+        {
+            clean = clean.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .FirstOrDefault(IsNpcPlayableText) ?? string.Empty;
+        }
+
+        return clean;
+    }
+
+    private static bool IsNpcPlayableText(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var clean = value.Trim();
+        if (clean is "—" or "-")
+            return false;
+
+        if (clean.Contains("запис", StringComparison.OrdinalIgnoreCase) &&
+            clean.Length < 24)
+            return false;
+
+        if (clean.Contains("раскрыт", StringComparison.OrdinalIgnoreCase) ||
+            clean.Contains("выберите", StringComparison.OrdinalIgnoreCase) ||
+            clean.Contains("доступ", StringComparison.OrdinalIgnoreCase) && clean.Contains("карточ", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private static List<UiBlock> BuildNpcOverviewSectionBlocks(NpcDetailSection section) =>
@@ -1656,7 +1910,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                normalized.StartsWith("failure", StringComparison.Ordinal);
     }
 
-    private static UiEntityDossierBlock BuildNpcOverviewCard(string npcName)
+    private static UiEntityDossierBlock BuildNpcOverviewCard(string commandToken, string npcName)
     {
         return new UiEntityDossierBlock
         {
@@ -1681,7 +1935,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     Text = "ГМ ещё не добавил мысли, отношения, задачи или игровые свойства этого персонажа.",
                     Tone = UiTone.Muted
                 }
-            ]
+            ],
+            PrimaryAction = BuildNpcProfileAction(commandToken, npcName, npcName)
         };
     }
 
@@ -1810,6 +2065,17 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return new NpcSectionDetailRequest(NpcSectionDetailKind.Overview, string.Empty, string.Empty);
 
         var (kindToken, detailRemainder) = SplitFirstCombatArgument(remainder);
+        if (IsNpcProfileDetailToken(kindToken))
+        {
+            if (string.IsNullOrWhiteSpace(detailRemainder))
+                return new NpcSectionDetailRequest(NpcSectionDetailKind.Unknown, string.Empty, string.Empty);
+
+            return new NpcSectionDetailRequest(
+                NpcSectionDetailKind.Profile,
+                NormalizeCombatSelector(detailRemainder),
+                string.Empty);
+        }
+
         if (!IsNpcSectionDetailToken(kindToken))
             return new NpcSectionDetailRequest(NpcSectionDetailKind.Unknown, string.Empty, string.Empty);
 
@@ -1848,10 +2114,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return normalized is "quest" or "квест" or "личный_квест" or "personal-quest" or "personal_quest";
     }
 
+    private static bool IsNpcProfileDetailToken(string token)
+    {
+        var normalized = token.Trim().ToLowerInvariant();
+        return normalized is "npc" or "profile" or "персонаж" or "досье" or "карточка";
+    }
+
     private static bool IsNpcSectionDetailToken(string token)
     {
         var normalized = token.Trim().ToLowerInvariant();
         return normalized is "section" or "раздел" or "detail" or "подробнее";
+    }
+
+    private static NpcDetailProjection? FindNpcProjection(
+        IReadOnlyList<NpcDetailProjection> projections,
+        string npcSelector)
+    {
+        var normalizedNpc = NormalizeInventoryLookup(npcSelector);
+        foreach (var projection in projections)
+        {
+            if (string.Equals(NormalizeInventoryLookup(projection.NpcId), normalizedNpc, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(NormalizeInventoryLookup(projection.NpcName), normalizedNpc, StringComparison.OrdinalIgnoreCase))
+            {
+                return projection;
+            }
+        }
+
+        return null;
     }
 
     private static (NpcDetailProjection Projection, NpcDetailSection Section)? FindNpcSection(
@@ -1984,7 +2273,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 if (detailIndex >= row.Cells.Count)
                     continue;
 
-                rowBlocks.AddRange(BuildNpcDetailValueBlocks(row.Cells[detailIndex]));
+                rowBlocks.AddRange(BuildNpcDetailValueBlocks(row.Cells[detailIndex], table.Title, title));
             }
 
             if (rowBlocks.Count == 0)
@@ -2033,31 +2322,44 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return "Запись";
     }
 
-    private static IReadOnlyList<UiBlock> BuildNpcDetailValueBlocks(string value)
+    private static IReadOnlyList<UiBlock> BuildNpcDetailValueBlocks(string value, string tableTitle, string rowTitle)
     {
         var listItems = new List<string>();
         var facts = new List<UiKeyValueItem>();
+        var scalarIndex = 0;
         foreach (var part in SplitNpcDetailParts(value))
         {
             if (TrySplitNpcDetailPair(part, out var key, out var pairValue))
             {
                 var formatted = FormatNpcDetailScalar(pairValue);
                 if (!string.IsNullOrWhiteSpace(formatted))
-                    facts.Add(new UiKeyValueItem { Key = key, Value = formatted });
+                    facts.Add(new UiKeyValueItem { Key = FormatNpcDetailKey(key, tableTitle, rowTitle), Value = formatted });
             }
             else
             {
                 var formatted = FormatNpcDetailScalar(part);
-                if (!IsEmptyNpcDetailValue(formatted))
+                if (IsEmptyNpcDetailValue(formatted))
+                    continue;
+
+                var label = InferNpcDetailScalarLabel(tableTitle, rowTitle, scalarIndex, formatted);
+                if (string.IsNullOrWhiteSpace(label))
+                {
                     listItems.Add(formatted);
+                }
+                else
+                {
+                    facts.Add(new UiKeyValueItem { Key = label, Value = formatted });
+                }
+
+                scalarIndex++;
             }
         }
 
         var blocks = new List<UiBlock>();
-        if (listItems.Count > 0)
-            blocks.Add(new UiListBlock { Items = listItems });
         if (facts.Count > 0)
             blocks.Add(new UiKeyValueGridBlock { Items = facts });
+        if (listItems.Count > 0)
+            blocks.Add(new UiListBlock { Items = listItems });
         return blocks;
     }
 
@@ -2124,6 +2426,135 @@ public static class ExplorerMortalWorldCommandResultBuilder
         };
     }
 
+    private static string FormatNpcDetailKey(string key, string tableTitle, string rowTitle)
+    {
+        var clean = key.Trim();
+        var normalized = clean.ToLowerInvariant();
+        if (normalized is "type" or "skilltype")
+            return IsNpcSkillContext(tableTitle, rowTitle) ? "Тип навыка" : "Тип";
+        if (normalized is "category" or "group")
+            return "Категория";
+        if (normalized is "rarity" or "quality")
+            return "Редкость";
+        if (normalized is "rank" or "level" or "tier")
+            return IsNpcSkillContext(tableTitle, rowTitle) ? "Ранг" : "Уровень";
+        if (normalized is "summary" or "description" or "narrativesummary")
+            return "Описание";
+        if (normalized is "status" or "activestate")
+            return "Состояние";
+        if (normalized is "value")
+            return "Значение";
+
+        return clean;
+    }
+
+    private static string InferNpcDetailScalarLabel(string tableTitle, string rowTitle, int scalarIndex, string value)
+    {
+        if (IsNpcSkillContext(tableTitle, rowTitle))
+        {
+            if (IsNpcSkillTypeValue(value))
+                return "Тип навыка";
+            if (IsNpcRarityValue(value))
+                return "Редкость";
+            if (IsIntegerText(value))
+                return "Ранг";
+
+            return scalarIndex switch
+            {
+                0 => "Название навыка",
+                1 => "Описание",
+                _ => "Свойство навыка"
+            };
+        }
+
+        if (IsNpcFateCardContext(tableTitle, rowTitle))
+        {
+            if (IsNpcRarityValue(value))
+                return "Редкость";
+
+            return scalarIndex switch
+            {
+                0 => "Название карты",
+                1 => "Описание",
+                _ => "Свойство карты"
+            };
+        }
+
+        if (IsNpcMemoryContext(tableTitle, rowTitle))
+        {
+            if (IsNpcRarityValue(value))
+                return "Редкость";
+
+            return scalarIndex switch
+            {
+                0 => "Название воспоминания",
+                1 => "Описание",
+                _ => "Свойство воспоминания"
+            };
+        }
+
+        if (IsNpcStateContext(tableTitle, rowTitle))
+        {
+            if (IsNpcRarityValue(value))
+                return "Редкость";
+
+            return scalarIndex switch
+            {
+                0 => "Название состояния",
+                1 => "Описание",
+                _ => "Свойство состояния"
+            };
+        }
+
+        return string.Empty;
+    }
+
+    private static bool IsNpcSkillContext(string tableTitle, string rowTitle)
+    {
+        var context = (tableTitle + " " + rowTitle).ToLowerInvariant();
+        return context.Contains("навык", StringComparison.Ordinal) ||
+               context.Contains("skills", StringComparison.Ordinal) ||
+               context.Contains("skill", StringComparison.Ordinal);
+    }
+
+    private static bool IsNpcFateCardContext(string tableTitle, string rowTitle)
+    {
+        var context = (tableTitle + " " + rowTitle).ToLowerInvariant();
+        return context.Contains("карта судьбы", StringComparison.Ordinal) ||
+               context.Contains("fate", StringComparison.Ordinal);
+    }
+
+    private static bool IsNpcMemoryContext(string tableTitle, string rowTitle)
+    {
+        var context = (tableTitle + " " + rowTitle).ToLowerInvariant();
+        return context.Contains("воспомин", StringComparison.Ordinal) ||
+               context.Contains("memory", StringComparison.Ordinal);
+    }
+
+    private static bool IsNpcStateContext(string tableTitle, string rowTitle)
+    {
+        var context = (tableTitle + " " + rowTitle).ToLowerInvariant();
+        return context.Contains("особое состояние", StringComparison.Ordinal) ||
+               context.Contains("состояние", StringComparison.Ordinal) ||
+               context.Contains("state", StringComparison.Ordinal);
+    }
+
+    private static bool IsNpcSkillTypeValue(string value)
+    {
+        var normalized = value.Trim().ToLowerInvariant();
+        return normalized is "основан на знаниях" or "утилитарный" or "боевой" or "социальный";
+    }
+
+    private static bool IsNpcRarityValue(string value)
+    {
+        var normalized = value.Trim().ToLowerInvariant();
+        return normalized is "обычный" or "обычное" or "необычный" or "необычное" or "редкий" or "редкое" or
+            "эпический" or "эпическое" or "легендарный" or "легендарное" or "уникальный" or "уникальное";
+    }
+
+    private static bool IsIntegerText(string value) =>
+        int.TryParse(value.Trim(), out _);
+
     private static IReadOnlyList<UiAction> BuildNpcSectionActions(
         string commandToken,
         IReadOnlyList<NpcDetailProjection> projections)
@@ -2132,6 +2563,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
         foreach (var projection in projections)
         {
             var npcSelector = FirstNonEmpty(projection.NpcId, projection.NpcName);
+            if (projection.Trade?.CanTrade == true)
+            {
+                actions.Add(BuildNpcTradeAction(projection, npcSelector));
+            }
+
             foreach (var section in projection.Sections)
             {
                 actions.Add(new UiAction
@@ -2154,6 +2590,22 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         return actions;
     }
+
+    private static UiAction BuildNpcTradeAction(NpcDetailProjection projection, string npcSelector) =>
+        new()
+        {
+            Id = "npc-trade-" + ToActionIdPart(npcSelector),
+            Label = "Торговать: " + projection.NpcName,
+            Command = "/npc_trade " + FormatCombatCommandArgument(npcSelector),
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false,
+            Payload = new JsonObject
+            {
+                ["npcSelector"] = npcSelector,
+                ["npcName"] = projection.NpcName,
+                ["action"] = "trade"
+            }
+        };
 
     private static IReadOnlyList<UiAction> BuildNpcQuestActions(
         string commandToken,
@@ -2221,6 +2673,21 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
     ];
 
+    private static UiAction BuildNpcProfileAction(string commandToken, string npcName, string npcSelector) =>
+        new()
+        {
+            Id = "npc-profile-" + ToActionIdPart(npcSelector),
+            Label = "Открыть отдельно: " + npcName,
+            Command = BuildNpcProfileCommand(commandToken, npcSelector),
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false,
+            Payload = new JsonObject
+            {
+                ["npcSelector"] = npcSelector,
+                ["npcName"] = npcName
+            }
+        };
+
     private static IReadOnlyList<UiAction> BuildNpcQuestBackActions(string commandToken, NpcDetailProjection projection)
     {
         var npcSelector = FirstNonEmpty(projection.NpcId, projection.NpcName);
@@ -2263,6 +2730,15 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(npcSelector) + " " + FormatCombatCommandArgument(sectionSelector);
     }
 
+    private static string BuildNpcProfileCommand(string commandToken, string npcSelector)
+    {
+        var detailToken = string.Equals(commandToken, "/нпс", StringComparison.OrdinalIgnoreCase) ||
+                          string.Equals(commandToken, "/персонажи", StringComparison.OrdinalIgnoreCase)
+            ? "персонаж"
+            : "profile";
+        return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(npcSelector);
+    }
+
     private static string BuildNpcQuestCommand(string commandToken, string npcSelector, string questSelector)
     {
         var detailToken = string.Equals(commandToken, "/нпс", StringComparison.OrdinalIgnoreCase) ||
@@ -2296,8 +2772,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
             var facts = new List<UiKeyValueItem>();
             AddLocationFact(facts, "Локация", title);
             AddLocationFact(facts, "Регион", GetLocationNodeString(location, "region"));
-            AddLocationFact(facts, "Тип", GetLocationNodeString(location, "locationType", "type"));
-            AddLocationFact(facts, "Биом", GetLocationNodeString(location, "biome"));
+            AddLocationFact(facts, "Тип", TranslateLocationType(GetLocationNodeString(location, "locationType", "type")));
+            AddLocationFact(facts, "Внутренний тип", TranslateIndoorLocationType(GetLocationNodeString(location, "indoorType")));
+            AddLocationFact(facts, "Биом", TranslateLocationBiome(GetLocationNodeString(location, "biome")));
             AddLocationFact(facts, "Опасность", DescribeLocationDifficulty(location));
 
             var panelBlocks = new List<UiBlock>();
@@ -2809,7 +3286,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             {
                 Id = "summary",
                 Title = "Сводка",
-                Summary = "Короткая сводка по доступным записям этого раздела.",
+                Summary = "Что уже отмечено в книге.",
                 Icon = "reference",
                 Collapsible = true,
                 InitiallyExpanded = true,
@@ -2823,13 +3300,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
             {
                 Id = "entries",
                     Title = "Записи",
-                    Summary = "Выберите запись, чтобы открыть полную карточку с подробностями.",
+                    Summary = "Известные записи этого раздела.",
                     Icon = "reference",
                     Presentation = "collection",
                     Collapsible = true,
                 InitiallyExpanded = true,
                 Blocks = entries
-                    .Select(entry => (UiBlock)BuildReferenceOverviewCard(entry))
+                    .Select(entry => (UiBlock)BuildReferenceOverviewCard(definition, entry, entries))
                     .ToList()
             });
         }
@@ -2867,8 +3344,14 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
     }
 
-    private static UiEntityDossierBlock BuildReferenceOverviewCard(ReferenceEntrySnapshot entry)
+    private static UiEntityDossierBlock BuildReferenceOverviewCard(
+        ReferenceCommandDefinition definition,
+        ReferenceEntrySnapshot entry,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
     {
+        if (string.Equals(definition.DetailTitlePrefix, "Фракция", StringComparison.OrdinalIgnoreCase))
+            return BuildFactionReferenceOverviewCard(entry, entries);
+
         var facts = new List<UiKeyValueItem>
         {
             new() { Key = "Раздел", Value = entry.Section }
@@ -2879,7 +3362,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             EntityType = "reference-entry",
             Title = entry.Title,
             Subtitle = entry.Section,
-            Summary = FirstNonEmpty(entry.Summary, "Подробности доступны в карточке записи."),
+            Summary = FirstNonEmpty(entry.Summary, FirstReferenceNodeString(entry.Node, "description", "summary", "objective", "visibleReason", "scenarioCore")),
             Badges =
             [
                 new UiEntityBadge
@@ -2925,12 +3408,12 @@ public static class ExplorerMortalWorldCommandResultBuilder
             var entry = FindReferenceEntry(entries, request.Selector);
             blocks.Add(entry == null
                 ? Message(UiNotificationSeverity.Warning, definition.NotFoundTitle, definition.NotFoundMessage)
-                : BuildReferenceDetailPanel(definition, entry));
+                : BuildReferenceDetailPanel(commandToken, definition, entry, entries));
         }
 
         AddReferenceReadWarnings(blocks, definition.Title, reads);
-        blocks.Add(new UiTextBlock { Text = $"Вернуться к обзору можно командой {commandToken}.", Tone = UiTone.Muted });
-        return Completed(command, blocks, [
+        var actions = new List<UiAction>
+        {
             new UiAction
             {
                 Id = definition.ActionIdPrefix + "-back",
@@ -2939,15 +3422,29 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Style = UiActionStyle.Secondary,
                 RequiresConfirmation = false
             }
-        ]);
+        };
+
+        if (request.Kind == ReferenceDetailKind.Detail &&
+            string.Equals(definition.DetailTitlePrefix, "Локация", StringComparison.OrdinalIgnoreCase) &&
+            FindReferenceEntry(entries, request.Selector) is { } locationEntry &&
+            HasLocationStorages(locationEntry.Node))
+        {
+            actions.Insert(0, BuildLocationStoragesAction(commandToken, locationEntry));
+        }
+
+        return Completed(command, blocks, actions);
     }
 
     private static UiBlock BuildReferenceDetailPanel(
+        string commandToken,
         ReferenceCommandDefinition definition,
-        ReferenceEntrySnapshot entry)
+        ReferenceEntrySnapshot entry,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
     {
         if (string.Equals(definition.DetailTitlePrefix, "Фракция", StringComparison.OrdinalIgnoreCase))
-            return BuildFactionReferenceDetailPanel(definition, entry);
+            return BuildFactionReferenceDetailPanel(definition, entry, entries);
+        if (string.Equals(definition.DetailTitlePrefix, "Локация", StringComparison.OrdinalIgnoreCase))
+            return BuildLocationReferenceDetailPanel(commandToken, definition, entry);
         if (string.Equals(definition.DetailTitlePrefix, "Навык", StringComparison.OrdinalIgnoreCase))
             return BuildSkillReferenceDetailPanel(definition, entry);
 
@@ -2992,13 +3489,135 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 {
                     Id = "details",
                     Title = "Сведения",
-                    Summary = "Игровые сведения записи без технических полей.",
+                    Summary = "Ключевые сведения этой записи.",
                     Icon = "reference",
                     Collapsible = true,
                     InitiallyExpanded = true,
                     Blocks = detailBlocks
                 }
             ]
+        };
+    }
+
+    private static UiEntityDossierBlock BuildLocationReferenceDetailPanel(
+        string commandToken,
+        ReferenceCommandDefinition definition,
+        ReferenceEntrySnapshot entry)
+    {
+        var location = entry.Node;
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = entry.Section }
+        };
+
+        AddLocationFact(facts, "Регион", GetLocationNodeString(location, "region"));
+        AddLocationFact(facts, "Тип", TranslateLocationType(GetLocationNodeString(location, "locationType", "type")));
+        AddLocationFact(facts, "Внутренний тип", TranslateIndoorLocationType(GetLocationNodeString(location, "indoorType")));
+        AddLocationFact(facts, "Биом", TranslateLocationBiome(GetLocationNodeString(location, "biome")));
+        AddLocationFact(facts, "Направление", TranslateLocationDirection(GetLocationNodeString(location, "direction")));
+        AddLocationFact(facts, "Дистанция", GetLocationNodeString(location, "distance"));
+        AddLocationFact(facts, "Путь", DescribeLinkState(GetLocationNodeString(location, "linkState")));
+        AddLocationFact(facts, "Опасность", DescribeLocationDifficulty(location));
+
+        var sections = new List<UiEntityDossierSection>();
+        var descriptionBlocks = new List<UiBlock>();
+        var description = FirstNonEmpty(
+            GetLocationNodeString(location, "description", "shortDescription"),
+            entry.Summary);
+        if (!string.IsNullOrWhiteSpace(description))
+            descriptionBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
+        if (facts.Count > 0)
+            descriptionBlocks.Add(new UiKeyValueGridBlock { Items = facts });
+        AddDossierSectionIfAny(
+            sections,
+            "details",
+            "Сведения",
+            "Что известно об этом месте сейчас.",
+            "map",
+            descriptionBlocks);
+
+        var exits = BuildLocationExitCards(location["adjacencyMap"] as JsonArray);
+        if (exits.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "exits",
+                Title = "Выходы",
+                Summary = "Переходы из этого места и их состояние.",
+                Icon = "map",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = exits
+            });
+        }
+
+        var contextBlocks = new List<UiBlock>();
+        AddLocationFeatureBlock(contextBlocks, location);
+        AddLocationFactionControlBlock(contextBlocks, location);
+        AddLocationThreatBlock(contextBlocks, location);
+        AddLocationEventBlock(contextBlocks, location);
+        AddDossierSectionIfAny(
+            sections,
+            "local-context",
+            "Местный контекст",
+            "Особенности, контроль, угрозы и недавние события.",
+            "map",
+            contextBlocks);
+
+        if (HasLocationStorages(location))
+        {
+            var storageCount = EnumerateLocationStorages(location).Count();
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "storages",
+                Title = "Хранилища",
+                Summary = "Сундуки, столы и тайники вынесены в отдельный просмотр, чтобы карточка места оставалась читаемой.",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
+                [
+                    new UiEntityDossierBlock
+                    {
+                        EntityType = "location-storage-link",
+                        Title = "Хранилища локации",
+                        Subtitle = entry.Title,
+                        Summary = DescribeInventoryCount(storageCount, "хранилище", "хранилища", "хранилищ"),
+                        Badges =
+                        [
+                            new UiEntityBadge
+                            {
+                                Label = DescribeInventoryCount(storageCount, "хранилище", "хранилища", "хранилищ"),
+                                Tone = UiTone.Accent,
+                                Icon = "inventory"
+                            }
+                        ],
+                        PrimaryAction = BuildLocationStoragesAction(commandToken, entry)
+                    }
+                ]
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "location-detail",
+            Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
+            Subtitle = entry.Section,
+            Summary = description,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = entry.Section,
+                    Tone = UiTone.Accent,
+                    Icon = "map"
+                }
+            ],
+            Facts = facts
+                .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                .ToList(),
+            PrimaryAction = HasLocationStorages(location) ? BuildLocationStoragesAction(commandToken, entry) : null,
+            Sections = sections
         };
     }
 
@@ -3187,29 +3806,95 @@ public static class ExplorerMortalWorldCommandResultBuilder
         };
     }
 
+    private static UiEntityDossierBlock BuildFactionReferenceOverviewCard(
+        ReferenceEntrySnapshot entry,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
+    {
+        var related = FindFactionRelatedEntries(entry, entries).ToList();
+        var sections = BuildFactionSections(entry, related, includePowerProfile: false);
+        var overviewItems = BuildFactionOverviewItems(entry, related);
+        var summary = FirstNonEmpty(
+            FirstReferenceNodeString(entry.Node, "description", "summary", "reputationDescription"),
+            related.Select(static relatedEntry => FirstReferenceNodeString(relatedEntry.Node, "summary", "description")).FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)),
+            entry.Summary);
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "faction",
+            Title = entry.Title,
+            Subtitle = "Фракция",
+            Summary = summary,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = "Фракция",
+                    Tone = UiTone.Accent,
+                    Icon = "factions"
+                }
+            ],
+            Facts = overviewItems
+                .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                .ToList(),
+            Cards =
+            [
+                new UiEntityCard
+                {
+                    Title = entry.Title,
+                    Subtitle = "Фракция",
+                    Summary = summary,
+                    Icon = "factions",
+                    Facts = overviewItems
+                        .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                        .ToList()
+                }
+            ],
+            Sections = sections
+        };
+    }
+
     private static UiEntityDossierBlock BuildFactionReferenceDetailPanel(
         ReferenceCommandDefinition definition,
-        ReferenceEntrySnapshot entry)
+        ReferenceEntrySnapshot entry,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
     {
-        var detailItems = new List<UiKeyValueItem>
+        var related = FindFactionRelatedEntries(entry, entries).ToList();
+        var sections = BuildFactionSections(entry, related, includePowerProfile: true);
+
+        return new UiEntityDossierBlock
         {
-            new() { Key = "Раздел", Value = entry.Section }
+            EntityType = "faction",
+            Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
+            Subtitle = entry.Section,
+            Summary = FirstNonEmpty(
+                FirstReferenceNodeString(entry.Node, "description", "summary"),
+                entry.Summary),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = "Фракция",
+                    Tone = UiTone.Accent,
+                    Icon = "factions"
+                }
+            ],
+            Facts = BuildFactionOverviewItems(entry, related)
+                .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                .ToList(),
+            Sections = sections
         };
+    }
 
-        AddReferenceDetailItem(detailItems, "Описание", FirstNonEmpty(FirstReferenceNodeString(entry.Node, "description", "summary"), entry.Summary));
-        AddReferenceDetailItem(detailItems, "Состояние", DescribeReferenceStatus(FirstReferenceNodeString(entry.Node, "status", "state", "phase")));
-        AddReferenceDetailItem(detailItems, "Уровень", FirstReferenceNodeString(entry.Node, "level", "tier"));
-        AddReferenceDetailItem(detailItems, "Репутация", DescribeFactionReputation(entry.Node));
-        AddReferenceDetailItem(detailItems, "Отношение", FirstReferenceNodeString(entry.Node, "reputationDescription", "attitude", "publicStatus"));
-        AddReferenceDetailItem(detailItems, "Ранг героя", FirstReferenceNodeString(entry.Node, "playerRank", "rankName"));
-        AddReferenceDetailItem(detailItems, "Ветвь героя", FirstReferenceNodeString(entry.Node, "playerBranch", "branch"));
-        AddReferenceDetailItem(detailItems, "Архетип развития", TranslateFactionDevelopmentArchetype(FirstReferenceNodeString(entry.Node, "developmentArchetype")));
-        AddReferenceDetailItem(detailItems, "Сила фракции", FirstReferenceNodeString(entry.Node, "factionStrength", "strength", "power"));
-        AddReferenceDetailItem(detailItems, "Цель", FirstReferenceNodeString(entry.Node, "currentObjective", "objective", "strategy"));
-
-        var sections = new List<UiEntityDossierSection>
+    private static List<UiEntityDossierSection> BuildFactionSections(
+        ReferenceEntrySnapshot entry,
+        IReadOnlyList<ReferenceEntrySnapshot> related,
+        bool includePowerProfile)
+    {
+        var detailItems = BuildFactionOverviewItems(entry, related);
+        var sections = new List<UiEntityDossierSection>();
+        if (detailItems.Count > 0)
         {
-            new()
+            sections.Add(new UiEntityDossierSection
             {
                 Id = "overview",
                 Title = "Сведения",
@@ -3218,31 +3903,34 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Collapsible = true,
                 InitiallyExpanded = true,
                 Blocks = [new UiKeyValueGridBlock { Items = detailItems }]
-            }
-        };
-
-        var powerRows = BuildFactionPowerRows(entry.Node["powerProfile"]);
-        if (powerRows.Count > 0)
-        {
-            sections.Add(new UiEntityDossierSection
-            {
-                Id = "power",
-                Title = "Профиль силы",
-                Summary = "Как фракция распределяет влияние между военной, экономической и скрытой силой.",
-                Icon = "factions",
-                Collapsible = true,
-                InitiallyExpanded = true,
-                Blocks =
-                [
-                    new UiKeyValueGridBlock
-                    {
-                        Items = powerRows
-                            .Where(static row => row.Cells.Count >= 2)
-                            .Select(static row => new UiKeyValueItem { Key = row.Cells[0], Value = row.Cells[1] })
-                            .ToList()
-                    }
-                ]
             });
+        }
+
+        if (includePowerProfile)
+        {
+            var powerRows = BuildFactionPowerRows(entry.Node["powerProfile"]);
+            if (powerRows.Count > 0)
+            {
+                sections.Add(new UiEntityDossierSection
+                {
+                    Id = "power",
+                    Title = "Профиль силы",
+                    Summary = "Как фракция распределяет влияние между военной, экономической и скрытой силой.",
+                    Icon = "factions",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks =
+                    [
+                        new UiKeyValueGridBlock
+                        {
+                            Items = powerRows
+                                .Where(static row => row.Cells.Count >= 2)
+                                .Select(static row => new UiKeyValueItem { Key = row.Cells[0], Value = row.Cells[1] })
+                                .ToList()
+                        }
+                    ]
+                });
+            }
         }
 
         var resourceRows = BuildFactionResourceRows(entry.Node["metaResources"] ?? entry.Node["resources"] ?? entry.Node["strategicGoods"]);
@@ -3273,7 +3961,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             sections.Add(new UiEntityDossierSection
             {
                 Id = "ranks",
-                Title = "Ранги и доступ",
+                Title = "Ранги и ветви",
                 Summary = "Что дают ранги и ветви отношений внутри фракции.",
                 Icon = "factions",
                 Collapsible = true,
@@ -3289,25 +3977,98 @@ public static class ExplorerMortalWorldCommandResultBuilder
             });
         }
 
-        return new UiEntityDossierBlock
+        var chronicleRows = BuildFactionChronicleRows(related);
+        if (chronicleRows.Count > 0)
         {
-            EntityType = "faction",
-            Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
-            Subtitle = entry.Section,
-            Summary = FirstNonEmpty(
-                FirstReferenceNodeString(entry.Node, "description", "summary"),
-                entry.Summary),
-            Badges =
-            [
-                new UiEntityBadge
-                {
-                    Label = "Фракция",
-                    Tone = UiTone.Accent,
-                    Icon = "factions"
-                }
-            ],
-            Sections = sections
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "chronicle",
+                Title = "Хроника",
+                Summary = "Записи о том, как фракция изменила отношение к герою и миру.",
+                Icon = "factions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = chronicleRows
+                    .Select(row => (UiBlock)BuildReferenceRowDossier(
+                        "faction-chronicle",
+                        "Запись хроники",
+                        ["Событие", "Когда", "Кратко"],
+                        row,
+                        "factions"))
+                    .ToList()
+            });
+        }
+
+        var projectRows = BuildFactionProjectRows(entry.Node["activeProjects"]);
+        if (projectRows.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "projects",
+                Title = "Проекты",
+                Summary = "Текущие дела фракции, которые могут затронуть героя.",
+                Icon = "factions",
+                Collapsible = true,
+                InitiallyExpanded = false,
+                Blocks = projectRows
+                    .Select(row => (UiBlock)BuildReferenceRowDossier(
+                        "faction-project",
+                        "Проект",
+                        ["Проект", "Состояние", "Прогресс", "Что даст"],
+                        row,
+                        "factions"))
+                    .ToList()
+            });
+        }
+
+        return sections;
+    }
+
+    private static List<UiKeyValueItem> BuildFactionOverviewItems(
+        ReferenceEntrySnapshot entry,
+        IReadOnlyList<ReferenceEntrySnapshot> related)
+    {
+        var detailItems = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = entry.Section }
         };
+
+        var custom = related.FirstOrDefault(static relatedEntry =>
+            relatedEntry.Node.ContainsKey("state") ||
+            relatedEntry.Node.ContainsKey("publicStatus") ||
+            relatedEntry.Node.ContainsKey("currentObjective"));
+
+        AddReferenceDetailItem(detailItems, "Описание", FirstNonEmpty(FirstReferenceNodeString(entry.Node, "description", "summary"), entry.Summary));
+        AddReferenceDetailItem(detailItems, "Состояние", FirstNonEmpty(
+            DescribeReferenceStatus(FirstReferenceNodeString(entry.Node, "status", "state", "phase")),
+            DescribeReferenceStatus(FirstReferenceNodeString(custom?.Node, "status", "state", "phase"))));
+        AddReferenceDetailItem(detailItems, "Уровень", FirstReferenceNodeString(entry.Node, "level", "tier"));
+        AddReferenceDetailItem(detailItems, "Репутация", DescribeFactionReputation(entry.Node));
+        AddReferenceDetailItem(detailItems, "Отношение", FirstNonEmpty(
+            FirstReferenceNodeString(entry.Node, "reputationDescription", "attitude", "publicStatus"),
+            FirstReferenceNodeString(custom?.Node, "reputationDescription", "attitude", "publicStatus"),
+            FirstReferenceNodeString(custom?.Node, "summary")));
+        AddReferenceDetailItem(detailItems, "Ранг героя", FirstReferenceNodeString(entry.Node, "playerRank", "rankName"));
+        AddReferenceDetailItem(detailItems, "Ветвь героя", FirstReferenceNodeString(entry.Node, "playerBranch", "branch"));
+        AddReferenceDetailItem(detailItems, "Архетип развития", TranslateFactionDevelopmentArchetype(FirstReferenceNodeString(entry.Node, "developmentArchetype")));
+        AddReferenceDetailItem(detailItems, "Сила фракции", FirstReferenceNodeString(entry.Node, "factionStrength", "strength", "power"));
+        AddReferenceDetailItem(detailItems, "Цель", FirstNonEmpty(
+            FirstReferenceNodeString(entry.Node, "currentObjective", "objective", "strategy", "playerStrategyDirective"),
+            FirstReferenceNodeString(custom?.Node, "currentObjective", "objective", "strategy")));
+        AddReferenceDetailItem(detailItems, "Ресурсы", PreviewRows(BuildFactionResourceRows(entry.Node["metaResources"] ?? entry.Node["resources"] ?? entry.Node["strategicGoods"])));
+        AddReferenceDetailItem(detailItems, "Ранги", PreviewRows(BuildFactionRankRows(entry.Node["ranks"] ?? entry.Node["rankLadder"])));
+        AddReferenceDetailItem(detailItems, "Хроника", PreviewRows(BuildFactionChronicleRows(related)));
+        return detailItems;
+    }
+
+    private static string PreviewRows(IReadOnlyList<UiTableRow> rows)
+    {
+        if (rows.Count == 0)
+            return string.Empty;
+
+        return string.Join("\n", rows
+            .Take(3)
+            .Select(static row => string.Join(" — ", row.Cells.Where(static cell => !string.IsNullOrWhiteSpace(cell) && cell != "—"))));
     }
 
     private static UiEntityDossierBlock BuildReferenceRowDossier(
@@ -3394,10 +4155,19 @@ public static class ExplorerMortalWorldCommandResultBuilder
         {
             foreach (var property in obj)
             {
-                if (property.Value is JsonObject resource)
+                if (property.Value is JsonArray resourceArray)
+                {
+                    foreach (var resource in resourceArray.OfType<JsonObject>())
+                        AddFactionResourceRow(rows, property.Key, resource);
+                }
+                else if (property.Value is JsonObject resource)
+                {
                     AddFactionResourceRow(rows, property.Key, resource);
+                }
                 else if (TryGetScalarString(property.Value, out var value) && !string.IsNullOrWhiteSpace(value))
+                {
                     rows.Add(new UiTableRow { Cells = [TranslateFactionResourceKey(property.Key), value, string.Empty, string.Empty] });
+                }
             }
         }
         else if (node is JsonArray array)
@@ -3414,9 +4184,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var name = FirstNonEmpty(
             FirstReferenceNodeString(resource, "displayName", "name", "resourceName"),
             TranslateFactionResourceKey(key));
-        var stock = FirstReferenceNodeString(resource, "currentStock", "stock", "amount", "balanceAfter", "quantity");
-        var income = FirstReferenceNodeString(resource, "incomePerTurn", "income", "delta");
-        var upkeep = FirstReferenceNodeString(resource, "upkeepPerTurn", "upkeep", "costPerTurn");
+        var stock = FirstReferenceNodeString(resource, "currentStockpile", "currentStock", "stock", "amount", "balanceAfter", "quantity");
+        var income = FirstReferenceNodeString(resource, "incomePerCycle", "incomePerTurn", "income", "delta");
+        var upkeep = FirstReferenceNodeString(resource, "upkeepPerCycle", "upkeepPerTurn", "upkeep", "costPerTurn");
 
         if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(stock) && string.IsNullOrWhiteSpace(income) && string.IsNullOrWhiteSpace(upkeep))
             return;
@@ -3435,15 +4205,52 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static List<UiTableRow> BuildFactionRankRows(JsonNode? node)
     {
-        if (node is not JsonArray array)
-            return [];
-
         var rows = new List<UiTableRow>();
+        if (node is JsonObject obj)
+        {
+            if (obj["branches"] is JsonArray branches)
+            {
+                foreach (var branch in branches.OfType<JsonObject>())
+                    AddFactionBranchRankRows(rows, branch);
+            }
+            else if (obj["ranks"] is JsonArray branchlessRanks)
+            {
+                AddFactionRankRows(rows, branchlessRanks, FirstReferenceNodeString(obj, "branchName", "displayName", "name"));
+            }
+
+            return rows;
+        }
+
+        if (node is not JsonArray array)
+            return rows;
+
+        AddFactionRankRows(rows, array, string.Empty);
+        return rows;
+    }
+
+    private static void AddFactionBranchRankRows(List<UiTableRow> rows, JsonObject branch)
+    {
+        var branchName = FirstNonEmpty(
+            FirstReferenceNodeString(branch, "branchName", "displayName", "name"),
+            FirstReferenceNodeString(branch, "branchId"));
+        if (branch["ranks"] is JsonArray ranks)
+            AddFactionRankRows(rows, ranks, branchName);
+    }
+
+    private static void AddFactionRankRows(List<UiTableRow> rows, JsonArray array, string branchName)
+    {
         foreach (var rank in array.OfType<JsonObject>())
         {
-            var name = FirstReferenceNodeString(rank, "rankName", "name", "title");
-            var branch = FirstReferenceNodeString(rank, "branch", "branchName");
-            var benefits = DescribeNodeForReferenceDetail(rank["benefits"] ?? rank["perks"] ?? rank["permissions"]);
+            var name = FirstNonEmpty(
+                FirstReferenceNodeString(rank, "rankName", "rankNameMale", "rankNameFemale", "name", "title"),
+                JoinReferenceDetails(
+                    FirstReferenceNodeString(rank, "rankNameMale"),
+                    FirstReferenceNodeString(rank, "rankNameFemale")));
+            var branch = FirstNonEmpty(FirstReferenceNodeString(rank, "branch", "branchName"), branchName);
+            var benefits = JoinReferenceDetails(
+                DescribeNodeForReferenceDetail(rank["benefits"] ?? rank["perks"] ?? rank["permissions"]),
+                FormatFactionRequiredReputation(FirstReferenceNodeString(rank, "requiredReputation")),
+                FirstReferenceNodeString(rank, "unlockCondition"));
             if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(branch) && string.IsNullOrWhiteSpace(benefits))
                 continue;
 
@@ -3457,8 +4264,139 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 ]
             });
         }
+    }
+
+    private static string FormatFactionRequiredReputation(string value) =>
+        string.IsNullOrWhiteSpace(value) ? string.Empty : $"нужно репутации: {value.Trim()}";
+
+    private static List<UiTableRow> BuildFactionChronicleRows(IReadOnlyList<ReferenceEntrySnapshot> related)
+    {
+        var rows = new List<UiTableRow>();
+        foreach (var entry in related)
+        {
+            if (!entry.Section.Contains("Хроник", StringComparison.OrdinalIgnoreCase) &&
+                string.IsNullOrWhiteSpace(FirstReferenceNodeString(entry.Node, "timestamp", "time", "date")))
+            {
+                continue;
+            }
+
+            var title = FirstNonEmpty(FirstReferenceNodeString(entry.Node, "title", "name"), entry.Title);
+            var when = FirstReferenceNodeString(entry.Node, "timestamp", "time", "date");
+            var summary = FirstNonEmpty(FirstReferenceNodeString(entry.Node, "summary", "description"), entry.Summary);
+            if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(summary))
+                continue;
+
+            rows.Add(new UiTableRow { Cells = [EmptyFallback(title), EmptyFallback(when), EmptyFallback(summary)] });
+        }
 
         return rows;
+    }
+
+    private static List<UiTableRow> BuildFactionProjectRows(JsonNode? node)
+    {
+        if (node is not JsonArray projects)
+            return [];
+
+        var rows = new List<UiTableRow>();
+        foreach (var project in projects.OfType<JsonObject>())
+        {
+            var name = FirstReferenceNodeString(project, "projectName", "name", "title");
+            var state = DescribeReferenceStatus(FirstReferenceNodeString(project, "activeState", "state", "status"));
+            var progress = JoinReferenceDetails(
+                FormatProgressPair(
+                    FirstReferenceNodeString(project, "currentStep", "step"),
+                    FirstReferenceNodeString(project, "totalSteps")),
+                FormatProgressPair(
+                    FirstReferenceNodeString(project, "timeSpentMinutes"),
+                    FirstReferenceNodeString(project, "totalTimeCostMinutes"),
+                    "мин."));
+            var reward = FirstReferenceNodeString(project, "visibleReward", "reward", "outcome");
+            if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(state) && string.IsNullOrWhiteSpace(progress) && string.IsNullOrWhiteSpace(reward))
+                continue;
+
+            rows.Add(new UiTableRow { Cells = [EmptyFallback(name), EmptyFallback(state), EmptyFallback(progress), EmptyFallback(reward)] });
+        }
+
+        return rows;
+    }
+
+    private static string FormatProgressPair(string current, string total, string unit = "")
+    {
+        if (string.IsNullOrWhiteSpace(current) && string.IsNullOrWhiteSpace(total))
+            return string.Empty;
+
+        var suffix = string.IsNullOrWhiteSpace(unit) ? string.Empty : " " + unit.Trim();
+        if (!string.IsNullOrWhiteSpace(current) && !string.IsNullOrWhiteSpace(total))
+            return $"{current.Trim()}/{total.Trim()}{suffix}";
+
+        return FirstNonEmpty(current, total) + suffix;
+    }
+
+    private static IEnumerable<ReferenceEntrySnapshot> FindFactionRelatedEntries(
+        ReferenceEntrySnapshot source,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
+    {
+        var aliases = BuildFactionAliasSet(source);
+        var changed = true;
+        while (changed)
+        {
+            changed = false;
+            foreach (var entry in entries)
+            {
+                if (ReferenceEquals(entry.Node, source.Node))
+                    continue;
+
+                var candidateAliases = BuildFactionAliasSet(entry);
+                if (!candidateAliases.Overlaps(aliases))
+                    continue;
+
+                foreach (var alias in candidateAliases)
+                    changed |= aliases.Add(alias);
+            }
+        }
+
+        foreach (var entry in entries)
+        {
+            if (ReferenceEquals(entry.Node, source.Node))
+                continue;
+
+            var candidateAliases = BuildFactionAliasSet(entry);
+            if (candidateAliases.Overlaps(aliases))
+                yield return entry;
+        }
+    }
+
+    private static HashSet<string> BuildFactionAliasSet(ReferenceEntrySnapshot entry)
+    {
+        var aliases = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        AddFactionAlias(aliases, entry.Title);
+        AddFactionAlias(aliases, entry.Selector);
+        foreach (var property in new[]
+                 {
+                     "factionId",
+                     "initialId",
+                     "id",
+                     "key",
+                     "name",
+                     "factionName",
+                     "displayName",
+                     "title"
+                 })
+        {
+            AddFactionAlias(aliases, FirstReferenceNodeString(entry.Node, property));
+        }
+
+        return aliases;
+    }
+
+    private static void AddFactionAlias(HashSet<string> aliases, string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        var normalized = NormalizeReferenceSelector(value);
+        if (!string.IsNullOrWhiteSpace(normalized) && normalized != "item")
+            aliases.Add(normalized);
     }
 
     private static string TranslateFactionDevelopmentArchetype(string value) =>
@@ -3567,7 +4505,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     FirstReferenceNodeString(obj["rivalSoul"], "rivalSoulId", "id"),
                     NormalizeReferenceSelector(title),
                     index.ToString()));
-                if (!seen.Add(selector))
+                var seenKey = string.Equals(definition.DetailTitlePrefix, "Фракция", StringComparison.OrdinalIgnoreCase)
+                    ? spec.Label + ":" + selector + ":" + NormalizeReferenceSelector(title)
+                    : selector;
+                if (!seen.Add(seenKey))
                     continue;
 
                 yield return new ReferenceEntrySnapshot(
@@ -4241,7 +5182,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
         foreach (var location in EnumerateWorldMapLocationObjects(mapRead.Node, "locationUpdates"))
             AddLocationRow(rows, entries, seen, commandToken, definition, "Обновлена", location, DescribeWorldMapLocation(location));
 
-        var request = ParseReferenceDetailRequest(ExtractCommandRemainder(command), definition);
+        var remainder = ExtractCommandRemainder(command);
+        if (TryParseLocationStoragesRequest(remainder, out var storageSelector))
+            return BuildLocationStoragesDetail(command, commandToken, definition, [currentRead, mapRead], entries, storageSelector);
+
+        var request = ParseReferenceDetailRequest(remainder, definition);
         if (request.Kind != ReferenceDetailKind.Overview)
             return BuildReferenceDetail(command, commandToken, definition, [currentRead, mapRead], entries, request);
 
@@ -4300,7 +5245,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             EntityType = "location-summary",
             Title = title,
             Subtitle = section,
-            Summary = FirstNonEmpty(summary, "Подробности доступны в карточке локации."),
+            Summary = FirstNonEmpty(summary, "Сведения о месте пока не уточнены."),
             Badges =
             [
                 new UiEntityBadge
@@ -4332,6 +5277,343 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     ]
                 }
             ]
+        };
+    }
+
+    private static ExplorerCommandResult BuildLocationStoragesDetail(
+        string command,
+        string commandToken,
+        ReferenceCommandDefinition definition,
+        IEnumerable<JsonReadResult> reads,
+        IReadOnlyList<ReferenceEntrySnapshot> entries,
+        string selector)
+    {
+        var blocks = new List<UiBlock>();
+        var entry = FindReferenceEntry(entries, selector);
+        if (entry == null)
+        {
+            blocks.Add(Message(UiNotificationSeverity.Warning, definition.NotFoundTitle, definition.NotFoundMessage));
+        }
+        else
+        {
+            var storages = EnumerateLocationStorages(entry.Node).ToList();
+            if (storages.Count == 0)
+            {
+                blocks.Add(Message(UiNotificationSeverity.Info, "Хранилища", "У этой локации не отмечены доступные хранилища."));
+            }
+            else
+            {
+                blocks.Add(new UiEntityDossierBlock
+                {
+                    EntityType = "location-storages",
+                    Title = $"Хранилища: {entry.Title}",
+                    Subtitle = entry.Section,
+                    Summary = DescribeInventoryCount(storages.Count, "хранилище", "хранилища", "хранилищ"),
+                    Facts =
+                    [
+                        new UiEntityFact
+                        {
+                            Label = "Хранилища",
+                            Value = string.Join("\n", storages.Select(GetLocationStorageDisplayName))
+                        },
+                        new UiEntityFact
+                        {
+                            Label = "Содержимое",
+                            Value = PreviewLocationStorageContents(storages)
+                        }
+                    ],
+                    Badges =
+                    [
+                        new UiEntityBadge
+                        {
+                            Label = DescribeInventoryCount(storages.Count, "хранилище", "хранилища", "хранилищ"),
+                            Tone = UiTone.Accent,
+                            Icon = "inventory"
+                        }
+                    ],
+                    Sections =
+                    [
+                        new UiEntityDossierSection
+                        {
+                            Id = "storages",
+                            Title = "Хранилища",
+                            Summary = "Отдельный список столов, сундуков и тайников этой локации.",
+                            Icon = "inventory",
+                            Presentation = "collection",
+                            Collapsible = true,
+                            InitiallyExpanded = true,
+                            Blocks = storages
+                                .Select(storage => (UiBlock)BuildLocationStorageCard(storage))
+                                .ToList()
+                        }
+                    ]
+                });
+            }
+        }
+
+        AddReferenceReadWarnings(blocks, definition.Title, reads);
+        return Completed(command, blocks, [
+            new UiAction
+            {
+                Id = definition.ActionIdPrefix + "-back-detail-" + ToActionIdPart(selector),
+                Label = entry == null ? $"Назад: {definition.Title}" : $"Назад: {entry.Title}",
+                Command = entry == null
+                    ? commandToken
+                    : BuildReferenceDetailCommand(commandToken, definition, entry.Selector),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false
+            },
+            new UiAction
+            {
+                Id = definition.ActionIdPrefix + "-back",
+                Label = $"Назад: {definition.Title}",
+                Command = commandToken,
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false
+            }
+        ]);
+    }
+
+    private static bool TryParseLocationStoragesRequest(string remainder, out string selector)
+    {
+        selector = string.Empty;
+        if (string.IsNullOrWhiteSpace(remainder))
+            return false;
+
+        var (kindToken, detailRemainder) = SplitFirstCombatArgument(remainder);
+        var normalized = kindToken.Trim().ToLowerInvariant();
+        if (normalized is not ("storage" or "storages" or "хранилище" or "хранилища" or "тайник" or "тайники"))
+            return false;
+
+        if (string.IsNullOrWhiteSpace(detailRemainder))
+            return false;
+
+        selector = NormalizeCombatSelector(detailRemainder);
+        return true;
+    }
+
+    private static List<UiBlock> BuildLocationExitCards(JsonArray? exits)
+    {
+        if (exits == null)
+            return [];
+
+        var blocks = new List<UiBlock>();
+        foreach (var exit in exits.OfType<JsonObject>())
+        {
+            var name = FirstNonEmpty(
+                GetLocationNodeString(exit, "name", "targetLocationName"),
+                GetLocationNodeString(exit, "targetLocationId"),
+                "Выход");
+            var facts = new List<UiKeyValueItem>();
+            AddLocationFact(facts, "Описание", GetLocationNodeString(exit, "shortDescription", "description"));
+            AddLocationFact(facts, "Направление", TranslateLocationDirection(GetLocationNodeString(exit, "direction")));
+            AddLocationFact(facts, "Тип перехода", TranslateLocationLinkType(GetLocationNodeString(exit, "linkType", "type")));
+            AddLocationFact(facts, "Состояние", FirstNonEmpty(
+                DescribeLinkState(GetLocationNodeString(exit, "linkState")),
+                "открыт"));
+            AddLocationFact(facts, "Куда ведёт", GetLocationNodeString(exit, "targetLocationName", "targetLocationId"));
+
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "location-exit",
+                Title = name,
+                Subtitle = "Выход",
+                Summary = FirstNonEmpty(GetLocationNodeString(exit, "shortDescription", "description"), DescribeLinkState(GetLocationNodeString(exit, "linkState"))),
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = "Выход",
+                        Tone = UiTone.Accent,
+                        Icon = "map"
+                    }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "details",
+                        Title = "Сведения",
+                        Icon = "map",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = facts.Count > 0 ? [new UiKeyValueGridBlock { Items = facts }] : []
+                    }
+                ]
+            });
+        }
+
+        return blocks;
+    }
+
+    private static bool HasLocationStorages(JsonObject location) =>
+        EnumerateLocationStorages(location).Any();
+
+    private static IEnumerable<JsonObject> EnumerateLocationStorages(JsonObject location)
+    {
+        foreach (var storage in EnumerateLocationStorageArray(location["locationStorages"]))
+            yield return storage;
+        foreach (var storage in EnumerateLocationStorageArray(location["storages"]))
+            yield return storage;
+    }
+
+    private static IEnumerable<JsonObject> EnumerateLocationStorageArray(JsonNode? node)
+    {
+        if (node is not JsonArray storages)
+            yield break;
+
+        foreach (var storage in storages.OfType<JsonObject>())
+            yield return storage;
+    }
+
+    private static UiAction BuildLocationStoragesAction(string commandToken, ReferenceEntrySnapshot entry) =>
+        new()
+        {
+            Id = "location-storages-" + ToActionIdPart(entry.Selector),
+            Label = "Открыть хранилища: " + entry.Title,
+            Command = BuildLocationStoragesCommand(commandToken, entry.Selector),
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false,
+            Payload = new JsonObject
+            {
+                ["selector"] = entry.Selector,
+                ["title"] = entry.Title
+            }
+        };
+
+    private static string BuildLocationStoragesCommand(string commandToken, string selector)
+    {
+        var detailToken = string.Equals(commandToken, "/локации", StringComparison.OrdinalIgnoreCase)
+            ? "хранилища"
+            : "storages";
+        return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(selector);
+    }
+
+    private static string GetLocationStorageDisplayName(JsonObject storage) =>
+        FirstNonEmpty(
+            GetLocationNodeString(storage, "name", "storageName", "displayName"),
+            "Хранилище");
+
+    private static string PreviewLocationStorageContents(IReadOnlyList<JsonObject> storages)
+    {
+        var itemNames = storages
+            .SelectMany(static storage => storage["contents"] is JsonArray contents
+                ? contents.OfType<JsonObject>()
+                : [])
+            .Select(static item => FirstNonEmpty(
+                GetLocationNodeString(item, "name", "itemName", "displayName"),
+                "Предмет"))
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Take(6)
+            .ToList();
+
+        return itemNames.Count == 0 ? "не отмечено" : string.Join("\n", itemNames);
+    }
+
+    private static UiEntityDossierBlock BuildLocationStorageCard(JsonObject storage)
+    {
+        var name = GetLocationStorageDisplayName(storage);
+        var facts = new List<UiKeyValueItem>();
+        AddLocationFact(facts, "Доступ", DescribeReferenceStatus(GetLocationNodeString(storage, "accessLevel", "access")));
+        AddLocationFact(facts, "Полный доступ", FormatBooleanYesNo(storage["hasFullAccess"]));
+        AddLocationFact(facts, "Описание", GetLocationNodeString(storage, "description", "summary"));
+
+        var contents = BuildLocationStorageContentBlocks(storage["contents"] as JsonArray);
+        var sections = new List<UiEntityDossierSection>
+        {
+            new()
+            {
+                Id = "details",
+                Title = "Сведения",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = facts.Count > 0 ? [new UiKeyValueGridBlock { Items = facts }] : []
+            }
+        };
+        if (contents.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "contents",
+                Title = "Содержимое",
+                Summary = "Предметы, которые сейчас отмечены внутри хранилища.",
+                Icon = "inventory",
+                Presentation = "collection",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = contents
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "location-storage",
+            Title = name,
+            Subtitle = "Хранилище",
+            Summary = FirstNonEmpty(GetLocationNodeString(storage, "description", "summary"), DescribeInventoryCount(contents.Count, "предмет", "предмета", "предметов")),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeReferenceStatus(GetLocationNodeString(storage, "accessLevel", "access")),
+                    Tone = UiTone.Accent,
+                    Icon = "inventory"
+                }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static List<UiBlock> BuildLocationStorageContentBlocks(JsonArray? contents)
+    {
+        if (contents == null)
+            return [];
+
+        var blocks = new List<UiBlock>();
+        foreach (var item in contents.OfType<JsonObject>())
+        {
+            var name = FirstNonEmpty(GetLocationNodeString(item, "name", "itemName", "displayName"), "Предмет");
+            var facts = new List<UiKeyValueItem>();
+            AddLocationFact(facts, "Тип", GetLocationNodeString(item, "type"));
+            AddLocationFact(facts, "Группа", GetLocationNodeString(item, "group"));
+            AddLocationFact(facts, "Количество", FirstNonEmpty(GetLocationNodeString(item, "count", "quantity"), "1"));
+            AddLocationFact(facts, "Описание", GetLocationNodeString(item, "description", "summary"));
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "location-storage-item",
+                Title = name,
+                Subtitle = FirstNonEmpty(GetLocationNodeString(item, "type"), "Предмет"),
+                Summary = GetLocationNodeString(item, "description", "summary"),
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "details",
+                        Title = "Сведения",
+                        Icon = "inventory",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = facts.Count > 0 ? [new UiKeyValueGridBlock { Items = facts }] : []
+                    }
+                ]
+            });
+        }
+
+        return blocks;
+    }
+
+    private static string FormatBooleanYesNo(JsonNode? node)
+    {
+        if (node == null)
+            return string.Empty;
+
+        return node.GetValueKind() switch
+        {
+            JsonValueKind.True => "да",
+            JsonValueKind.False => "нет",
+            _ when TryGetScalarString(node, out var value) => StructuredBonusDisplay.FormatScalar(value),
+            _ => string.Empty
         };
     }
 
@@ -4404,13 +5686,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static string DescribeCurrentLocation(JsonObject location) =>
         JoinLocationDetails(
             GetLocationNodeString(location, "region"),
-            GetLocationNodeString(location, "locationType"),
+            TranslateLocationType(GetLocationNodeString(location, "locationType")),
             GetLocationNodeString(location, "description", "shortDescription"));
 
     private static string DescribeWorldMapLocation(JsonObject location) =>
         JoinLocationDetails(
-            GetLocationNodeString(location, "locationType"),
-            GetLocationNodeString(location, "indoorType"),
+            TranslateLocationType(GetLocationNodeString(location, "locationType")),
+            TranslateIndoorLocationType(GetLocationNodeString(location, "indoorType")),
             GetLocationNodeString(location, "shortDescription", "description"),
             GetLocationNodeString(location, "lastEventsDescription"));
 
@@ -4425,6 +5707,78 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var label = ExplorerPlayerFacingLabels.LocationLinkState(linkState);
         return string.IsNullOrWhiteSpace(label) ? string.Empty : $"состояние пути: {label}";
     }
+
+    private static string TranslateLocationType(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "indoor" => "помещение",
+            "outdoor" => "открытая местность",
+            "city" => "городская локация",
+            "gate" => "ворота",
+            "market" => "рынок",
+            "district" => "квартал",
+            "building" => "здание",
+            "dungeon" => "подземелье",
+            "cave" or "cavesystem" or "cave_system" => "пещерная система",
+            "vehicle" => "транспорт",
+            "uniqueindoor" or "unique_indoor" => "особое помещение",
+            _ => StructuredBonusDisplay.FormatScalar(value)
+        };
+
+    private static string TranslateIndoorLocationType(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "building" => "здание",
+            "dungeon" => "подземелье",
+            "cavesystem" or "cave_system" => "пещерная система",
+            "vehicle" => "транспорт",
+            "uniqueindoor" or "unique_indoor" => "особое помещение",
+            _ => StructuredBonusDisplay.FormatScalar(value)
+        };
+
+    private static string TranslateLocationBiome(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "urban" => "город",
+            "forest" => "лес",
+            "mountain" => "горы",
+            "swamp" => "болото",
+            "desert" => "пустошь",
+            "coast" => "побережье",
+            _ => StructuredBonusDisplay.FormatScalar(value)
+        };
+
+    private static string TranslateLocationLinkType(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "door" => "дверь",
+            "hiddendoor" or "hidden_door" => "скрытая дверь",
+            "stairs" => "лестница",
+            "route" => "маршрут",
+            "road" => "дорога",
+            "bridge" => "мост",
+            "portal" => "портал",
+            _ => StructuredBonusDisplay.FormatScalar(value)
+        };
+
+    private static string TranslateLocationDirection(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "north" or "n" => "север",
+            "south" or "s" => "юг",
+            "east" or "e" => "восток",
+            "west" or "w" => "запад",
+            "up" => "вверх",
+            "down" => "вниз",
+            "inside" or "in" => "внутрь",
+            "outside" or "out" => "наружу",
+            _ => StructuredBonusDisplay.FormatScalar(value)
+        };
 
     private static string JoinLocationDetails(params string[] parts) =>
         string.Join("\n", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
@@ -5194,10 +6548,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 continue;
 
             index++;
-            var name = FirstNonEmpty(
+            var name = BuildInteractionPlayerDisplayName(
                 FirstInteractionNodeString(playerNode, "displayName", "playerName", "name", "characterName", "targetPlayerName"),
                 key,
-                $"Игрок {index}");
+                index);
             var identity = FirstNonEmpty(
                 FirstInteractionNodeString(playerNode, "playerId", "characterId", "targetPlayerId", "sourcePlayerId", "id"),
                 key,
@@ -5275,7 +6629,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             if (string.IsNullOrWhiteSpace(FirstInteractionNodeString(clone, "playerId", "displayName", "playerName", "name", "id")))
             {
                 clone["playerId"] = key;
-                clone["displayName"] = key;
+                clone["displayName"] = BuildInteractionPlayerDisplayName(string.Empty, key, 1);
             }
 
             return clone;
@@ -5289,7 +6643,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return new JsonObject
             {
                 ["playerId"] = key,
-                ["displayName"] = key,
+                ["displayName"] = BuildInteractionPlayerDisplayName(string.Empty, key, 1),
                 ["summary"] = scalar
             };
         }
@@ -5301,9 +6655,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
         new()
         {
             ["playerId"] = key,
-            ["displayName"] = key,
+            ["displayName"] = BuildInteractionPlayerDisplayName(string.Empty, key, 1),
             ["records"] = records.DeepClone()
         };
+
+    private static string BuildInteractionPlayerDisplayName(string candidate, string key, int index)
+    {
+        var value = FirstNonEmpty(candidate, key);
+        if (string.IsNullOrWhiteSpace(value) || IsLikelyTechnicalIdentifier(value))
+            return $"Игрок {Math.Max(1, index)}";
+
+        return value;
+    }
+
+    private static bool IsLikelyTechnicalIdentifier(string value)
+    {
+        var trimmed = value.Trim();
+        if (!trimmed.Contains('_', StringComparison.Ordinal) &&
+            !trimmed.Contains("::", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return trimmed.All(static ch =>
+            ch is '_' or '-' or ':' ||
+            char.IsAsciiLetterLower(ch) ||
+            char.IsAsciiDigit(ch));
+    }
 
     private static bool LooksLikeInteractionPlayer(JsonObject node) =>
         !string.IsNullOrWhiteSpace(FirstInteractionNodeString(node, "playerId", "displayName", "playerName", "characterId", "targetPlayerId", "name")) ||
@@ -7234,7 +8612,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     continue;
 
                 if (item is JsonObject obj)
-                    itemCards.Add(BuildInventoryOverviewItemCard(obj));
+                    itemCards.Add(BuildInventoryOverviewItemCard(commandToken, obj));
             }
 
             if (itemCards.Count > 0)
@@ -7291,19 +8669,32 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks, BuildInventoryActions(commandToken, inventoryContext));
     }
 
-    private static UiEntityDossierBlock BuildInventoryOverviewItemCard(JsonObject item)
+    private static UiEntityDossierBlock BuildInventoryOverviewItemCard(string commandToken, JsonObject item)
     {
+        var identity = FirstNonEmpty(GetInventoryItemIdentity(item), GetInventoryItemName(item));
         var name = GetNodeString(item, "name") ?? GetNodeString(item, "itemName") ?? "???";
         var type = FormatInventoryProtocolValue(GetNodeString(item, "type") ?? string.Empty);
-        var quantity = GetNodeString(item, "count") ?? GetNodeString(item, "quantity") ?? "1";
+        var quality = FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(item, "quality"), GetNodeString(item, "rarity")));
+        var quantity = FirstNonEmpty(GetNodeString(item, "count"), GetNodeString(item, "quantity"), "1");
         var durability = GetNodeString(item, "durability") ?? string.Empty;
+        var description = FirstNonEmpty(GetNodeString(item, "description"), GetNodeString(item, "lore"));
         var facts = new List<UiKeyValueItem>
         {
+            new() { Key = "Тип", Value = string.IsNullOrWhiteSpace(type) ? "предмет" : type },
             new() { Key = "Количество", Value = string.IsNullOrWhiteSpace(quantity) ? "1" : quantity }
         };
 
+        AddInventoryFact(facts, "Качество", quality);
+        AddInventoryFact(facts, "Вес", FormatInventoryMeasure(GetNodeString(item, "weight"), "кг"));
+        AddInventoryFact(facts, "Цена", GetNodeString(item, "price"));
         if (!string.IsNullOrWhiteSpace(durability))
             facts.Add(new UiKeyValueItem { Key = "Прочность", Value = durability });
+        AddInventoryFact(facts, "Слот", FormatInventorySlot(FirstNonEmpty(
+            GetNodeString(item, "equipmentSlot"),
+            GetNodeString(item, "slot"),
+            GetNodeString(item, "equipSlot"))));
+        AddInventoryFact(facts, "Аксессуар для", GetNodeString(item, "accessoryForSlot"));
+        AddInventoryFact(facts, "Группа", GetNodeString(item, "group"));
 
         var broken = item["isBroken"]?.GetValueKind() == JsonValueKind.True;
         var empty = item["isEmpty"]?.GetValueKind() == JsonValueKind.True;
@@ -7321,16 +8712,27 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 : "в порядке";
         facts.Add(new UiKeyValueItem { Key = "Состояние", Value = status });
 
+        var summary = FirstNonEmpty(
+            description,
+            JoinCombatDetails(
+                string.IsNullOrWhiteSpace(type) ? string.Empty : "Тип: " + type,
+                string.IsNullOrWhiteSpace(quality) ? string.Empty : "Качество: " + quality,
+                string.IsNullOrWhiteSpace(GetNodeString(item, "group")) ? string.Empty : "Группа: " + GetNodeString(item, "group")));
+
         return new UiEntityDossierBlock
         {
             EntityType = "inventory-item-summary",
             Title = name,
             Subtitle = string.IsNullOrWhiteSpace(type) ? "Предмет" : type,
-            Summary = string.IsNullOrWhiteSpace(durability)
-                ? $"Состояние: {status}"
-                : $"Прочность {durability}, состояние: {status}",
+            Summary = summary,
             Badges =
             [
+                new UiEntityBadge
+                {
+                    Label = FirstNonEmpty(quality, status),
+                    Tone = broken ? UiTone.Warning : UiTone.Accent,
+                    Icon = "inventory"
+                },
                 new UiEntityBadge
                 {
                     Label = status,
@@ -7343,13 +8745,28 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 new UiEntityDossierSection
                 {
                     Id = "facts",
-                    Title = "Кратко",
+                    Title = "Сведения",
+                    Summary = "Ключевые свойства предмета для выбора и использования.",
                     Icon = "inventory",
                     Collapsible = true,
-                    InitiallyExpanded = false,
+                    InitiallyExpanded = true,
                     Blocks = [new UiKeyValueGridBlock { Items = facts }]
                 }
-            ]
+            ],
+            PrimaryAction = new UiAction
+            {
+                Id = InventoryEquipmentService.BuildActionId("inventory-detail", identity),
+                Label = $"Открыть отдельно: «{name}»",
+                Command = BuildInventoryItemDetailCommand(commandToken, identity),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["itemIdentity"] = identity,
+                    ["itemName"] = name,
+                    ["itemType"] = type
+                }
+            }
         };
     }
 
@@ -8683,6 +10100,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private enum NpcSectionDetailKind
     {
         Overview,
+        Profile,
         Section,
         Unknown
     }

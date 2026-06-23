@@ -3213,10 +3213,19 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             .OfType<JsonValue>()
             .Select(static node => node.TryGetValue<string>(out var value) ? value?.Trim() ?? string.Empty : string.Empty)
             .Where(static value => !string.IsNullOrWhiteSpace(value) && !IsHiddenText(value))
+            .Select(DescribePoliticalConsequence)
             .ToArray();
 
-        return visible.Length == 0 ? "нет" : string.Join("; ", visible);
+        return visible.Length == 0 ? "нет" : string.Join("\n", visible);
     }
+
+    private static string DescribePoliticalConsequence(string value) =>
+        value.Trim() switch
+        {
+            "hidden_house_suspected" => "Появилось подозрение о Скрытом Доме.",
+            "dawn_public_accord" => "Закреплено публичное рассветное соглашение.",
+            var text => HumanizeProtocolValue(text)
+        };
 
     private static string DescribeSignedDelta(JsonNode? node)
     {
@@ -3237,6 +3246,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
     {
         "lightSparks" or "light_sparks" => "Искры Света",
         "inkFeathers" or "ink_feathers" => "Чернильные Перья",
+        "rumor_credit" or "rumorCredit" => "Кредит слухов",
         _ => value
     };
 
@@ -3247,6 +3257,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         "realignment" => "переход",
         "leadership" or "leadership_transition" => "смена власти",
         "resource_shift" => "ресурсный сдвиг",
+        "rumor" => "слух",
         _ => value
     };
 

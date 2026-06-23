@@ -37,7 +37,9 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal("/help", result.Command);
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        Assert.Contains(result.Blocks, static block => block is UiTableBlock table && table.Columns.Contains("Описание"));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.Title.Contains("Помощь", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
     }
 
     [Fact]
@@ -48,8 +50,6 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/help"));
 
         var text = CollectBlockText(result.Blocks);
-        Assert.Contains("/воспоминание", text, StringComparison.Ordinal);
-        Assert.Contains("/воспоминание_начать", text, StringComparison.Ordinal);
         Assert.Contains("Воспоминание", text, StringComparison.Ordinal);
         Assert.Contains("Врата Памяти", text, StringComparison.Ordinal);
     }
@@ -712,7 +712,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var text = CollectBlockText(result.Blocks);
         var payload = SerializeResult(result);
         Assert.Contains("Запись взаимодействия", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("player_mara", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Игрок 1", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("player_mara", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Серебряный ключ", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("покрыт знаками янтарной башни", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("2", text, StringComparison.OrdinalIgnoreCase);
@@ -1757,7 +1758,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal("/math 2 + 3 * 5", result.Command);
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        Assert.Contains(result.Blocks, static block => block is UiPanelBlock panel && panel.Title.Contains("Математик", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.Title.Contains("Математик", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock raw && raw.Title.Contains("JSON", StringComparison.OrdinalIgnoreCase));
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Результат", text, StringComparison.OrdinalIgnoreCase);
@@ -2743,7 +2745,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             section.Title.Equals("Предметы", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(itemSection.Cards, static card =>
             card.Title.Equals("Факел", StringComparison.OrdinalIgnoreCase) &&
-            card.Summary.Contains("100%", StringComparison.OrdinalIgnoreCase));
+            card.PrimaryAction != null &&
+            !card.Summary.Contains("Прочность", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(itemSection.Cards, static card =>
             card.Title.Equals("Сломанный лук", StringComparison.OrdinalIgnoreCase) &&
             card.Badges.Any(badge => badge.Label.Contains("сломано", StringComparison.OrdinalIgnoreCase)));
@@ -3292,10 +3295,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Реликвии души", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Хранилище", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Клинок Памяти", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("rare", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("редкое", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Экипировано", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Шлем Тишины", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("legendary", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("легендарное", text, StringComparison.OrdinalIgnoreCase);
         Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
 
         var equipAction = Assert.Single(result.Actions, action => action.Id == "soul-relic-equip-relic_stored");
@@ -3351,7 +3354,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/soul_relics реликвия relic_memory_blade", "Реликвия души: Клинок Памяти", "Память режет тьму", "Шлем Тишины")]
     [InlineData("/afterlife_archive запись archive_lore_001", "Архив души: Песнь Первого Маяка", "Полный текст маяка", "Запечатанный договор")]
     [InlineData("/archive_candidates кандидат candidate_mayak", "Кандидат в Архив: Песня маяка", "Кандидат хранит свет", "Тайный договор")]
-    [InlineData("/archive_consultation хранитель guardian_azalia", "Архивная консультация: Азалия", "memory", "Недоверчивый Страж")]
+    [InlineData("/archive_consultation хранитель guardian_azalia", "Архивная консультация: Азалия", "память", "Недоверчивый Страж")]
     [InlineData("/archive_project_fuel проект guardian_azalia::project_forge_song", "Подпитка проекта: Песнь кузни", "исследование знаний", "Скрытый проект")]
     public async Task ExecuteAsync_AfterlifeRelicArchiveDetails_RenderFocusedPlayerFacingDetailWithoutRawJson(
         string command,
@@ -3756,6 +3759,104 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_NpcMechanicsAndMemoryDetails_LabelNonPairScalarDetails()
+    {
+        await SeedRichNpcDrilldownFilesAsync();
+
+        var mechanics = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc section npc_serafina mechanics"));
+        var memory = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc section npc_serafina memory"));
+        var text = CollectBlockText(mechanics.Blocks.Concat(memory.Blocks));
+
+        Assert.Equal(CommandExecutionState.Completed, mechanics.State);
+        Assert.Equal(CommandExecutionState.Completed, memory.State);
+        Assert.Contains("Название навыка", text, StringComparison.Ordinal);
+        Assert.Contains("Арканическая диагностика", text, StringComparison.Ordinal);
+        Assert.Contains("Тип навыка", text, StringComparison.Ordinal);
+        Assert.Contains("основан на знаниях", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Редкость", text, StringComparison.Ordinal);
+        Assert.Contains("редкое", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Название карты", text, StringComparison.Ordinal);
+        Assert.Contains("Холодная милость наставника", text, StringComparison.Ordinal);
+        Assert.Contains("Название воспоминания", text, StringComparison.Ordinal);
+        Assert.Contains("Неудачный урок резонанса", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("KnowledgeBased", text, StringComparison.OrdinalIgnoreCase);
+        AssertNoGenericDetailsTables(mechanics);
+        AssertNoGenericDetailsTables(memory);
+        AssertNoFlattenedStructuredDetails(mechanics);
+        AssertNoFlattenedStructuredDetails(memory);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcPersonalitySection_ShowsTraitsAndOfficialMasks()
+    {
+        await SeedRichNpcDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc section npc_serafina personality"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Серафина — Личность / маски", text, StringComparison.Ordinal);
+        Assert.Contains("Образ", text, StringComparison.Ordinal);
+        Assert.Contains("Строгая наставница", text, StringComparison.Ordinal);
+        Assert.Contains("Черта характера", text, StringComparison.Ordinal);
+        Assert.Contains("Дисциплина", text, StringComparison.Ordinal);
+        Assert.Contains("Сила черты", text, StringComparison.Ordinal);
+        Assert.Contains("9/10", text, StringComparison.Ordinal);
+        Assert.Contains("Темперамент", text, StringComparison.Ordinal);
+        Assert.Contains("Сдержанный", text, StringComparison.Ordinal);
+        Assert.Contains("Мораль", text, StringComparison.Ordinal);
+        Assert.Contains("Законопослушный нейтральный", text, StringComparison.Ordinal);
+        Assert.Contains("Маска", text, StringComparison.Ordinal);
+        Assert.Contains("Наставница академии", text, StringComparison.Ordinal);
+        Assert.Contains("Активность", text, StringComparison.Ordinal);
+        Assert.Contains("активна", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Триггер", text, StringComparison.Ordinal);
+        Assert.Contains("Проявляется при разговоре об академии.", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("mask_serafina_mentor", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("concealedTruth", text, StringComparison.OrdinalIgnoreCase);
+        AssertNoGenericDetailsTables(result);
+        AssertNoFlattenedStructuredDetails(result);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcRichDetails_ShowsFateUnlockConditionsAndDirectTradeAction()
+    {
+        await SeedNpcFateAndMerchantFilesAsync();
+
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
+        var memory = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc section npc_serafina memory"));
+        var overviewText = CollectBlockText(overview.Blocks);
+        var memoryText = CollectBlockText(memory.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, overview.State);
+        Assert.Equal(CommandExecutionState.Completed, memory.State);
+        Assert.Contains("Условия открытия", memoryText, StringComparison.Ordinal);
+        Assert.Contains("Доверить Селене полный текст загадочного письма.", memoryText, StringComparison.Ordinal);
+        Assert.Contains("Требуемое отношение", memoryText, StringComparison.Ordinal);
+        Assert.Contains("200", memoryText, StringComparison.Ordinal);
+        Assert.Contains("Награда", memoryText, StringComparison.Ordinal);
+        Assert.Contains("Открывает консультацию по опасным магическим следам.", memoryText, StringComparison.Ordinal);
+        Assert.Contains("Торговец", overviewText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Можно торговать", overviewText, StringComparison.OrdinalIgnoreCase);
+        var overviewDossier = Assert.Single(overview.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "npc-collection");
+        var npcSection = Assert.Single(overviewDossier.Sections, static section => section.Id == "npcs");
+        var merchantCard = Assert.Single(npcSection.Cards, static card => card.Title == "Ворон Рилль");
+        Assert.Contains("Торговец", merchantCard.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("можно торговать", merchantCard.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(overview.Actions, action =>
+            action.Label.Contains("Торговать", StringComparison.OrdinalIgnoreCase) &&
+            action.Label.Contains("Ворон Рилль", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(action.Command, "/npc_trade npc_artifact_trader_voron", StringComparison.OrdinalIgnoreCase) &&
+            action.Style == UiActionStyle.Secondary &&
+            action.RequiresConfirmation == false);
+        AssertNoGenericDetailsTables(overview);
+        AssertNoGenericDetailsTables(memory);
+        AssertNoFlattenedStructuredDetails(overview);
+        AssertNoFlattenedStructuredDetails(memory);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_NpcPersonalQuestSection_OffersSpecificQuestDetails()
     {
         await SeedRichNpcDrilldownFilesAsync();
@@ -3899,7 +4000,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         var mapBlock = Assert.Single(result.Blocks.OfType<UiMapBlock>());
-        Assert.Equal("Mortal World", mapBlock.Map.Realm);
+        Assert.Equal("Смертный мир", mapBlock.Map.Realm);
         Assert.Equal("loc_square", mapBlock.Map.CurrentNodeId);
         Assert.Contains(mapBlock.Map.Nodes, static node => node.IsCurrent && node.Label == "Старая площадь");
         Assert.Contains(mapBlock.Map.Links, static link => link.TargetNodeId == "loc_gate");
@@ -3919,7 +4020,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         var mapBlock = Assert.Single(result.Blocks.OfType<UiMapBlock>());
-        Assert.Equal("Chaos Sea", mapBlock.Map.Realm);
+        Assert.Equal("Море Хаоса", mapBlock.Map.Realm);
         Assert.Equal("abode_azalia", mapBlock.Map.CurrentNodeId);
         Assert.Contains(mapBlock.Map.Nodes, static node => node.IsCurrent && node.Label == "Сад Ночных Роз");
         Assert.Contains(mapBlock.Map.Nodes, static node => node.Details.Any(item => item.Key == "Активный Хранитель" && item.Value == "да"));
@@ -3939,7 +4040,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         var mapBlock = Assert.Single(result.Blocks.OfType<UiMapBlock>());
-        Assert.Equal("Shining Abode", mapBlock.Map.Realm);
+        Assert.Equal("Сияющая Обитель", mapBlock.Map.Realm);
         Assert.Contains(mapBlock.Map.Nodes, static node => node.Id == "hall_dawn" && node.Label == "Зал Рассвета");
         Assert.Contains(mapBlock.Map.Nodes, static node => node.Id == "faction_lanterns" && node.Details.Any(item => item.Key == "Лидерство"));
         Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
@@ -4723,8 +4824,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/afterlife_profiles", "afterlife-profile-detail-player_soul", "/afterlife_profiles профиль player_soul", "Test Soul")]
     [InlineData("/afterlife_threats", "afterlife-threat-detail-threat_mirror_hunter", "/afterlife_threats угроза threat_mirror_hunter", "Охотник зеркального долга")]
     [InlineData("/afterlife_chronicles", "afterlife-chronicle-detail-guardian_scene_mirror", "/afterlife_chronicles хроника guardian_scene_mirror", "Зал зеркальной клятвы")]
-    [InlineData("/spiritual_conflict", "spiritual-conflict-exchange-detail-exchange_1", "/spiritual_conflict обмен exchange_1", "exchange_1")]
-    [InlineData("/spiritual_combat_log", "spiritual-combat-log-exchange-detail-exchange_1", "/spiritual_combat_log обмен exchange_1", "exchange_1")]
+    [InlineData("/spiritual_conflict", "spiritual-conflict-exchange-detail-exchange_1", "/spiritual_conflict обмен exchange_1", "Давление")]
+    [InlineData("/spiritual_combat_log", "spiritual-combat-log-exchange-detail-exchange_1", "/spiritual_combat_log обмен exchange_1", "Давление")]
     [InlineData("/spiritual_arts", "spiritual-art-detail-pressure", "/spiritual_arts искусство pressure", "Давление")]
     [InlineData("/spiritual_arts", "spiritual-special-art-detail-rose_mirror_counter", "/spiritual_arts особое rose_mirror_counter", "Зеркало Ночной Розы")]
     public async Task ExecuteAsync_ChaosSeaAfterlifeOverviews_ExposeIssue1124ReadOnlyDetailActions(
@@ -4756,9 +4857,9 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/afterlife_profiles профиль player_soul", "Профиль посмертия: Test Soul", "Зеркало Ночной Розы", "hidden_saref_combat_effect_marker")]
     [InlineData("/afterlife_threats угроза threat_mirror_hunter", "Угроза посмертия: Охотник зеркального долга", "Долг следует за душой", "hidden_threat_marker")]
     [InlineData("/afterlife_chronicles хроника guardian_scene_mirror", "Хроника посмертия: Зал зеркальной клятвы", "Игрок впервые вошёл в зал отражений", "hidden_chronicle_marker")]
-    [InlineData("/spiritual_conflict обмен exchange_1", "Обмен духовного конфликта: exchange_1", "Тень Хранителя", "exchange_hidden_roll_source_marker_001")]
-    [InlineData("/spiritual_combat_log обмен exchange_1", "Запись духовного боя: exchange_1", "Тень Хранителя", "exchange_hidden_roll_source_marker_001")]
-    [InlineData("/spiritual_combat_log итог conflict_done", "Итог духовного боя: conflict_done", "Чернильные Перья", "hidden_conflict_marker")]
+    [InlineData("/spiritual_conflict обмен exchange_1", "Обмен духовного конфликта: Давление", "Тень Хранителя", "exchange_hidden_roll_source_marker_001")]
+    [InlineData("/spiritual_combat_log обмен exchange_1", "Запись духовного боя: Давление", "Тень Хранителя", "exchange_hidden_roll_source_marker_001")]
+    [InlineData("/spiritual_combat_log итог conflict_done", "Итог духовного боя: победа", "Чернильные Перья", "hidden_conflict_marker")]
     [InlineData("/spiritual_arts искусство pressure", "Духовное искусство: Давление", "база 3 ОД", "hidden_saref_combat_effect_marker")]
     [InlineData("/spiritual_arts особое rose_mirror_counter", "Особое духовное искусство: Зеркало Ночной Розы", "Контрприём оставляет болезненный образ", "hidden_saref_combat_effect_marker")]
     public async Task ExecuteAsync_ChaosSeaAfterlifeDetails_RenderFocusedIssue1124DetailWithoutRawJson(
@@ -4813,7 +4914,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Contains("Зеркало Ночной Розы", combinedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("контрприём превращает входящее давление в брешь", combinedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Когда counter отвечает на прямое давление", combinedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Когда контрприём отвечает на прямое давление", combinedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Преимущество для ответного давление", combinedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Один раз за конфликт", combinedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("combatEffect", payload, StringComparison.OrdinalIgnoreCase);
@@ -4834,8 +4935,9 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains("Боевые условия", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Разогретая клятва", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("mark", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("opposition", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("метка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("mark", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("противник", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("guardian_azalia", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("давление", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("1", text, StringComparison.OrdinalIgnoreCase);
@@ -5078,7 +5180,32 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 "description": "Проверяет печати у северных ворот",
                 "timeSpentMinutes": 30,
                 "totalTimeCostMinutes": 60
-              }
+              },
+              "worldview": "Lawful Neutral",
+              "personalityArchetype": "Строгая наставница",
+              "personalityTraits": [
+                {
+                  "traitName": "Дисциплина",
+                  "description": "Требует точности в словах и ритуалах.",
+                  "value": 9,
+                  "valueDescription": "Ошибки в магии не любят свидетелей."
+                }
+              ],
+              "passiveSkills": [
+                {
+                  "skillName": "Арканическая диагностика",
+                  "description": "Читает слабый резонанс архивных печатей.",
+                  "type": "KnowledgeBased",
+                  "rarity": "Rare"
+                }
+              ],
+              "fateCards": [
+                {
+                  "name": "Холодная милость наставника",
+                  "summary": "Селена способна закрыть опасную ошибку ученика, но попросит за это трудную правду.",
+                  "rarity": "Rare"
+                }
+              ]
             }
           ]
         }
@@ -5097,6 +5224,45 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         }
         """);
 
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_personality.json", """
+        {
+          "NPCPersonalityTraitChanges": [
+            {
+              "NPCId": "npc_serafina",
+              "traitName": "Дисциплина наставницы",
+              "description": "Не допускает приблизительных формулировок в опасной магии.",
+              "value": 9,
+              "valueDescription": "Сначала точность, потом сила.",
+              "temperament": "Сдержанный",
+              "morality": "Lawful Neutral"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_masks.json", """
+        {
+          "NPCMaskAdds": [
+            {
+              "NPCId": "npc_serafina",
+              "maskId": "mask_serafina_mentor",
+              "maskName": "Наставница академии",
+              "description": "Говорит строго и держит ученика на расстоянии.",
+              "behavior": "Задаёт проверочные вопросы и смотрит на реакцию перчатки.",
+              "isActive": true,
+              "trigger": "Проявляется при разговоре об академии.",
+              "mask": {
+                "maskId": "mask_serafina_mentor",
+                "maskName": "Наставница академии",
+                "personalityArchetype": "Строгая преподавательница",
+                "attitude": "требовательная забота",
+                "behavioralDirectives": "Сдерживать эмоции и проверять каждое утверждение игрока."
+              }
+            }
+          ]
+        }
+        """);
+
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", """
         {
           "entries": [
@@ -5104,6 +5270,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "NPCId": "npc_serafina",
               "skillName": "Проверка печатей",
               "description": "Замечает подделки на архивных печатях.",
+              "type": "KnowledgeBased",
+              "rarity": "Rare",
               "rank": 3
             }
           ]
@@ -5145,6 +5313,78 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 "activeState": "active",
                 "timeSpentMinutes": 30,
                 "totalTimeCostMinutes": 60
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_memory.json", """
+        {
+          "entries": [
+            {
+              "NPCId": "npc_serafina",
+              "name": "Неудачный урок резонанса",
+              "summary": "Однажды Селена перепутала спокойный след с опасным откликом.",
+              "rarity": "Rare"
+            }
+          ]
+        }
+        """);
+    }
+
+    private async Task SeedNpcFateAndMerchantFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_serafina",
+              "name": "Серафина",
+              "shortDescription": "Архивариус северных ворот.",
+              "fateCards": [
+                {
+                  "cardId": "selene_card_cold_mercy",
+                  "name": "Холодная милость наставника",
+                  "description": "Селена способна закрыть опасную ошибку ученика, но попросит за это трудную правду.",
+                  "isUnlocked": false,
+                  "unlockConditions": {
+                    "requiredRelationshipLevel": 200,
+                    "plotConditionDescription": "Доверить Селене полный текст загадочного письма.",
+                    "conjunction": "AND"
+                  },
+                  "rewards": {
+                    "description": "Открывает консультацию по опасным магическим следам."
+                  }
+                }
+              ]
+            },
+            {
+              "npcId": "npc_artifact_trader_voron",
+              "name": "Ворон Рилль",
+              "shortDescription": "Торговец артефактами, явившийся слишком быстро после странного письма.",
+              "role": "Торговец артефактами",
+              "class": "Торговец",
+              "status": "В сцене, торгует",
+              "tradeState": {
+                "canTrade": true,
+                "merchantProfile": "ArtifactsAndCurios",
+                "tradeBlockedReason": ""
+              },
+              "tradeInventory": {
+                "tradeCycleId": "world_trade_0",
+                "items": [
+                  {
+                    "slotId": "voron_slot_001",
+                    "price": 22,
+                    "soldOut": false,
+                    "itemData": {
+                      "name": "Схема старых служебных дверей",
+                      "quality": "Common",
+                      "type": "Document"
+                    }
+                  }
+                ]
               }
             }
           ]

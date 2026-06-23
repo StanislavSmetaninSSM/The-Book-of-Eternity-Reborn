@@ -219,7 +219,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             blocks.Add(new UiTableBlock
             {
                 Title = "Видимые угрозы",
-                Columns = ["Угроза", "Область", "Масштаб", "Архетип", "Активность", "Давление", "Связи", "Подробно"],
+                Columns = ["Угроза", "Область", "Напряжённость угрозы", "Архетип", "Активность", "Давление", "Связи", "Подробно"],
                 Rows = visibleThreats
                     .Select(threat =>
                     {
@@ -408,7 +408,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             Panel("Духовный конфликт",
                 Grid(
-                    ("Активный конфликт", active == null ? "нет" : GetString(active, "conflictId", "unknown")),
+                    ("Активный конфликт", DescribeActiveConflict(active)),
                     ("Область", DescribeRealm(GetString(active, "realm", "?"))),
                     ("Модель сторон", DescribeSideModel(GetString(active, "sideModel", "?"))),
                     ("Позиция", DescribeConflictPosition(GetString(active, "conflictPosition", "contested"))),
@@ -500,7 +500,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             Panel("Журнал духовного боя",
                 Grid(
-                    ("Активный конфликт", active == null ? "нет" : GetString(active, "conflictId", "unknown")),
+                    ("Активный конфликт", DescribeActiveConflict(active)),
                     ("Обменов активного конфликта", exchangeLog.Count.ToString()),
                     ("Недавних завершённых конфликтов", recent.Count.ToString()),
                     ("Источник", "журнал духовного боя")))
@@ -550,7 +550,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 Rows = AfterlifeSpiritualConflictState.SpiritualArts
                     .Select(art => new UiTableRow
                     {
-                        Cells = [art.DisplayName, art.MechanicalUse, DescribeStrongAgainst(art.ArtId), DescribeCounteredBy(art.ArtId)]
+                        Cells = [DescribeArt(art.ArtId), art.MechanicalUse, DescribeStrongAgainst(art.ArtId), DescribeCounteredBy(art.ArtId)]
                     })
                     .ToList()
             });
@@ -657,8 +657,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     Cards = AfterlifeSpiritualConflictState.SpiritualArts
                         .Select(art => new UiEntityCard
                         {
-                            Title = art.DisplayName,
-                            Subtitle = DescribeArt(art.ArtId),
+                            Title = DescribeArt(art.ArtId),
+                            Subtitle = "Стандартный приём духовного боя",
                             Icon = "sparkles",
                             Summary = DescribeStandardArtUse(art.ArtId),
                             Facts =
@@ -732,7 +732,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         return new UiEntityCard
         {
-            Title = GetString(art, "displayName", GetString(art, "artId", "Без названия")),
+            Title = DescribeSpecialArtTitle(art),
             Subtitle = DescribeArt(GetString(art, "baseOperation", "?")),
             Icon = "sparkles",
             Summary = effectSummary,
@@ -755,6 +755,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "position" => "позиционное преимущество",
             "strain" => "изменение напряжения",
             "guard" => "защитная позиция",
+            "defense" => "защитная позиция",
             "pressure" => "усиление давления",
             "counter" => "контрприём",
             "maneuver" => "манёвр",
@@ -762,6 +763,21 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "break_binding" => "разрыв оков",
             _ => SafePlayerText(value, string.Empty)
         };
+
+    private static string DescribeSpecialArtTitle(JsonObject art)
+    {
+        var title = GetString(art, "displayName", "");
+        if (!string.IsNullOrWhiteSpace(title))
+        {
+            var described = DescribeArt(title);
+            if (!string.Equals(described, title, StringComparison.OrdinalIgnoreCase))
+                return described;
+
+            return SafePlayerText(title, title);
+        }
+
+        return SafePlayerText(GetString(art, "artId", "Без названия"), "Без названия");
+    }
 
     private static string DescribeSpecialArtLimit(string value) =>
         value.Trim().ToLowerInvariant() switch
@@ -837,7 +853,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             Panel($"Угроза посмертия: {name}",
                 Grid(
                     ("Область", DescribeRealm(GetString(threat, "realm", "?"))),
-                    ("Масштаб", GetNumberOrString(threat, "intensity", "0")),
+                    ("Напряжённость угрозы", GetNumberOrString(threat, "intensity", "0")),
                     ("Архетип", DescribeThreatArchetype(threat["threatArchetype"] as JsonObject)),
                     ("Активность", DescribeThreatActivity(threat["currentActivity"] as JsonObject)),
                     ("Давление", DescribeThreatImpact(threat["impactProfile"] as JsonObject)),
@@ -2059,6 +2075,18 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         return links.Count == 0 ? "нет" : string.Join("; ", links);
     }
 
+    private static string DescribeActiveConflict(JsonObject? active)
+    {
+        if (active == null)
+            return "нет";
+
+        var displayName = FirstSafePlayerText(
+            GetString(active, "displayName", ""),
+            GetString(active, "title", ""),
+            GetString(active, "summary", ""));
+        return string.IsNullOrWhiteSpace(displayName) ? "идёт" : displayName;
+    }
+
     private static bool IsSarefThreatLinkVisible(JsonObject sarefLink)
     {
         var visibility = GetString(sarefLink, "visibility", "");
@@ -3154,9 +3182,14 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             GetString(exchange, "displayName", ""));
 
     private static string SpiritualExchangeDisplayName(JsonObject exchange, string fallback) =>
-        SafePlayerText(
-            FirstNonEmpty(GetString(exchange, "displayName", ""), SpiritualExchangeSelector(exchange), fallback),
-            SafePlayerText(fallback, "обмен"));
+        BuildSpiritualDisplayLabel(
+            FirstNonEmpty(
+                GetString(exchange, "displayName", ""),
+                JoinNonEmpty(": ", DescribeArt(GetString(exchange, "operationType", "")), GetString(exchange, "resultSummary", "")),
+                JoinNonEmpty(": ", DescribeArt(GetString(exchange, "operationType", "")), GetString(exchange, "summary", "")),
+                DescribeArt(GetString(exchange, "operationType", ""))),
+            fallback,
+            "обмен");
 
     private static JsonObject? FindSpiritualExchange(IEnumerable<JsonObject> exchanges, string selector)
     {
@@ -3182,9 +3215,56 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             GetString(conflict, "displayName", ""));
 
     private static string RecentConflictDisplayName(JsonObject conflict, string fallback) =>
-        SafePlayerText(
-            FirstNonEmpty(GetString(conflict, "displayName", ""), RecentConflictSelector(conflict), fallback),
-            SafePlayerText(fallback, "итог"));
+        BuildSpiritualDisplayLabel(
+            FirstNonEmpty(
+                GetString(conflict, "displayName", ""),
+                JoinNonEmpty(": ", DescribePlayerOutcome(GetString(conflict, "playerOutcome", GetString(conflict, "outcome", ""))), GetString(conflict, "resolutionSummary", "")),
+                JoinNonEmpty(": ", DescribeArt(GetString(conflict, "operationType", "")), GetString(conflict, "rewardSummary", "")),
+                DescribePlayerOutcome(GetString(conflict, "playerOutcome", GetString(conflict, "outcome", "")))),
+            fallback,
+            "итог");
+
+    private static string BuildSpiritualDisplayLabel(string candidate, string fallback, string genericLabel)
+    {
+        var safeCandidate = SafePlayerText(candidate, string.Empty);
+        if (!string.IsNullOrWhiteSpace(safeCandidate) && !IsLikelySpiritualIdentifier(safeCandidate))
+            return CompactSpiritualLabel(safeCandidate);
+
+        var safeFallback = SafePlayerText(fallback, string.Empty);
+        return !string.IsNullOrWhiteSpace(safeFallback) && !IsLikelySpiritualIdentifier(safeFallback)
+            ? CompactSpiritualLabel(safeFallback)
+            : genericLabel;
+    }
+
+    private static string CompactSpiritualLabel(string value)
+    {
+        var singleLine = string.Join(' ', value.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+        return singleLine.Length <= 96 ? singleLine : singleLine[..93] + "...";
+    }
+
+    private static string JoinNonEmpty(string separator, params string?[] values)
+    {
+        var parts = values
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Select(static value => value!.Trim())
+            .ToArray();
+        return parts.Length == 0 ? string.Empty : string.Join(separator, parts);
+    }
+
+    private static bool IsLikelySpiritualIdentifier(string value)
+    {
+        var trimmed = value.Trim();
+        if (!trimmed.Contains('_', StringComparison.Ordinal) &&
+            !trimmed.Contains("::", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return trimmed.All(static ch =>
+            ch is '_' or '-' or ':' ||
+            char.IsAsciiLetterLower(ch) ||
+            char.IsAsciiDigit(ch));
+    }
 
     private static JsonObject? FindRecentConflict(IEnumerable<JsonObject> conflicts, string selector)
     {
@@ -3224,10 +3304,13 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             GetString(art, "id", ""),
             GetString(art, "displayName", ""));
 
-    private static string SpecialArtDisplayName(JsonObject art, string fallback) =>
-        SafePlayerText(
-            FirstNonEmpty(GetString(art, "displayName", ""), SpecialArtSelector(art), fallback),
-            SafePlayerText(fallback, "особое искусство"));
+    private static string SpecialArtDisplayName(JsonObject art, string fallback)
+    {
+        var title = DescribeSpecialArtTitle(art);
+        return string.IsNullOrWhiteSpace(title)
+            ? SafePlayerText(fallback, "особое искусство")
+            : title;
+    }
 
     private static JsonObject? FindSpecialArt(JsonArray? learnedSpecialArts, string selector)
     {

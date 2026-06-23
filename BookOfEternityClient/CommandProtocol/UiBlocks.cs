@@ -44,6 +44,7 @@ public sealed class UiEntityDossierBlock : UiBlock
     public List<string> List { get; init; } = [];
     public List<UiEntityCard> Cards { get; init; } = [];
     public List<UiEntityDossierSection> Sections { get; init; } = [];
+    public UiAction? PrimaryAction { get; init; }
 }
 
 public sealed class UiEntityBadge
@@ -101,6 +102,7 @@ public sealed class UiEntityCard
     public List<string> List { get; init; } = [];
     public List<UiEntityCard> Nested { get; init; } = [];
     public List<UiEntityCard> Cards { get; init; } = [];
+    public UiAction? PrimaryAction { get; init; }
 }
 
 public sealed class UiEntityDossierSection

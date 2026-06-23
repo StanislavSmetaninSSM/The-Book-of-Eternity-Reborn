@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
-import type { UiBlock, UiTableBlock, UiTone } from '../api/contracts';
+import type { UiAction, UiBlock, UiTableBlock, UiTone } from '../api/contracts';
 import { browserUiAssets } from '../browserUiAssets';
 import { sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';
 import { JsonTreeViewer } from './JsonTreeViewer';
@@ -20,11 +20,15 @@ function toneClassName(tone: UiTone): string {
 export function BlockRenderer({
   block,
   advancedEnabled = false,
-  depth = 0
+  depth = 0,
+  onAction,
+  availableActions = []
 }: {
   block: UiBlock;
   advancedEnabled?: boolean;
   depth?: number;
+  onAction?: (action: UiAction) => void;
+  availableActions?: UiAction[];
 }): ReactNode {
   switch (block.kind) {
     case 'text': {
@@ -43,6 +47,8 @@ export function BlockRenderer({
                 block={child}
                 advancedEnabled={advancedEnabled}
                 depth={depth + 1}
+                onAction={onAction}
+                availableActions={availableActions}
               />
             ))}
           </div>
@@ -50,7 +56,7 @@ export function BlockRenderer({
       );
 
     case 'entityDossier':
-      return renderEntityDossier(block, advancedEnabled, depth);
+      return renderEntityDossier(block, advancedEnabled, depth, onAction, availableActions);
 
     case 'table':
       {
@@ -153,22 +159,32 @@ type EntityDossierBlock = Extract<UiBlock, { kind: 'entityDossier' }>;
 type EntityDossierSection = EntityDossierBlock['sections'][number];
 type BackendEntityCard = EntityDossierBlock['cards'][number];
 
-function renderEntityDossier(block: EntityDossierBlock, advancedEnabled: boolean, depth: number): ReactNode {
+function renderEntityDossier(
+  block: EntityDossierBlock,
+  advancedEnabled: boolean,
+  depth: number,
+  onAction: ((action: UiAction) => void) | undefined,
+  availableActions: UiAction[]
+): ReactNode {
   if (depth > 0) {
-    return renderEntityCard(entityDossierToCard(block, advancedEnabled, depth), false, depth);
+    return renderEntityCard(entityDossierToCard(block, advancedEnabled, depth), false, depth, onAction, availableActions);
   }
 
-  return <EntityDossierView block={block} advancedEnabled={advancedEnabled} depth={depth} />;
+  return <EntityDossierView block={block} advancedEnabled={advancedEnabled} depth={depth} onAction={onAction} availableActions={availableActions} />;
 }
 
 function EntityDossierView({
   block,
   advancedEnabled,
-  depth
+  depth,
+  onAction,
+  availableActions
 }: {
   block: EntityDossierBlock;
   advancedEnabled: boolean;
   depth: number;
+  onAction?: (action: UiAction) => void;
+  availableActions: UiAction[];
 }) {
   const dossier = entityDossierToView(block, advancedEnabled);
   const toc = dossier.sections.length > 0;
@@ -233,9 +249,9 @@ function EntityDossierView({
             {renderFacts(dossier.facts)}
             {renderMetrics(dossier.metrics)}
             {renderHints(dossier.hints)}
-            {renderCleanList(dossier.list)}
-            {renderDossierCards(dossier)}
-            {dossier.sections.map((section, index) => renderPrototypeSection(section, index, advancedEnabled, depth + 1))}
+            {renderCleanList(filterRepeatedListItems(dossier.list, duplicateSourcesForCard(dossier)))}
+            {renderDossierCards(dossier, onAction, availableActions)}
+            {dossier.sections.map((section, index) => renderPrototypeSection(section, index, advancedEnabled, depth + 1, onAction, availableActions))}
           </div>
         </article>
       </div>
@@ -262,13 +278,19 @@ function EntityDossierView({
   );
 }
 
-function renderDossierCards(dossier: PrototypeDossier): ReactNode {
+function renderDossierCards(
+  dossier: PrototypeDossier,
+  onAction: ((action: UiAction) => void) | undefined,
+  availableActions: UiAction[]
+): ReactNode {
   if (dossier.cards.length === 0) return null;
 
   if (dossier.cards.length > 8) {
     return (
       <CollectionBrowser
         cards={dossier.cards}
+        onAction={onAction}
+        availableActions={availableActions}
         section={{
           id: `${toSafeId(dossier.title)}-cards`,
           title: dossier.title,
@@ -291,7 +313,7 @@ function renderDossierCards(dossier: PrototypeDossier): ReactNode {
 
   return (
     <div className="card-grid">
-      {dossier.cards.map((card, index) => renderEntityCard(card, false, index + 1))}
+      {dossier.cards.map((card, index) => renderEntityCard(card, false, index + 1, onAction, availableActions))}
     </div>
   );
 }
@@ -346,6 +368,7 @@ type PrototypeCard = {
   list: string[];
   nested: PrototypeCard[];
   cards: PrototypeCard[];
+  primaryAction: UiAction | null;
 };
 
 type PrototypeSection = {
@@ -404,7 +427,8 @@ function entityDossierToCard(block: EntityDossierBlock, advancedEnabled: boolean
     hints: [...toPrototypeHints(block.hints), ...parts.hints],
     list: [...toPrototypeList(block.list), ...parts.list],
     nested: [...parts.nested],
-    cards: [...toPrototypeCards(block.cards, advancedEnabled, depth + 1), ...parts.cards]
+    cards: [...toPrototypeCards(block.cards, advancedEnabled, depth + 1), ...parts.cards],
+    primaryAction: block.primaryAction ?? null
   };
 }
 
@@ -463,7 +487,8 @@ function sectionToNestedCard(
     hints: [...toPrototypeHints(section.hints), ...parts.hints],
     list: [...toPrototypeList(section.list), ...parts.list],
     nested: parts.nested,
-    cards: [...toPrototypeCards(section.cards, advancedEnabled, depth + 1), ...parts.cards]
+    cards: [...toPrototypeCards(section.cards, advancedEnabled, depth + 1), ...parts.cards],
+    primaryAction: null
   };
 }
 
@@ -484,7 +509,8 @@ function toPrototypeCards(cards: BackendEntityCard[], advancedEnabled: boolean, 
     hints: toPrototypeHints(card.hints),
     list: toPrototypeList(card.list),
     nested: toPrototypeCards(card.nested, advancedEnabled, depth + 1),
-    cards: toPrototypeCards(card.cards, advancedEnabled, depth + 1)
+    cards: toPrototypeCards(card.cards, advancedEnabled, depth + 1),
+    primaryAction: card.primaryAction ?? null
   }));
 }
 
@@ -582,7 +608,8 @@ function collectPrototypeParts(blocks: UiBlock[], advancedEnabled: boolean, dept
           hints: panelParts.hints,
           list: panelParts.list,
           nested: panelParts.nested,
-          cards: panelParts.cards
+          cards: panelParts.cards,
+          primaryAction: null
         });
         break;
       }
@@ -599,7 +626,8 @@ function collectPrototypeParts(blocks: UiBlock[], advancedEnabled: boolean, dept
           hints: [],
           list: [],
           nested: [],
-          cards: []
+          cards: [],
+          primaryAction: null
         });
         break;
       case 'rawJson':
@@ -629,11 +657,13 @@ function renderPrototypeSection(
   section: PrototypeSection,
   index: number,
   advancedEnabled: boolean,
-  depth: number
+  depth: number,
+  onAction: ((action: UiAction) => void) | undefined,
+  availableActions: UiAction[]
 ): ReactNode {
   const key = section.id || `${section.title}-${index}`;
   const relationClass = isRelationSection(section) ? ' relation-group' : '';
-  const content = renderPrototypeSectionContent(section, advancedEnabled, depth);
+  const content = renderPrototypeSectionContent(section, advancedEnabled, depth, onAction, availableActions);
 
   return (
     <details
@@ -665,7 +695,13 @@ function renderPrototypeSection(
   );
 }
 
-function renderPrototypeSectionContent(section: PrototypeSection, advancedEnabled: boolean, depth: number): ReactNode {
+function renderPrototypeSectionContent(
+  section: PrototypeSection,
+  advancedEnabled: boolean,
+  depth: number,
+  onAction: ((action: UiAction) => void) | undefined,
+  availableActions: UiAction[]
+): ReactNode {
   const hasPrimitiveContent = section.facts.length > 0 ||
     section.metrics.length > 0 ||
     section.hints.length > 0 ||
@@ -677,12 +713,12 @@ function renderPrototypeSectionContent(section: PrototypeSection, advancedEnable
       {renderFacts(section.facts)}
       {renderMetrics(section.metrics)}
       {renderHints(section.hints)}
-      {renderCleanList(section.list)}
+      {renderCleanList(filterRepeatedListItems(section.list, duplicateSourcesForSection(section)))}
       {shouldRenderAsCollection(section) ? (
-        <CollectionBrowser cards={section.cards} section={section} />
+        <CollectionBrowser cards={section.cards} section={section} onAction={onAction} availableActions={availableActions} />
       ) : section.cards.length > 0 ? (
         <div className="card-grid">
-          {section.cards.map((card, index) => renderEntityCard(card, false, depth + index))}
+          {section.cards.map((card, index) => renderEntityCard(card, false, depth + index, onAction, availableActions))}
         </div>
       ) : !hasPrimitiveContent && section.summary ? (
         <p className="card-summary">{section.summary}</p>
@@ -693,6 +729,8 @@ function renderPrototypeSectionContent(section: PrototypeSection, advancedEnable
           block={child}
           advancedEnabled={advancedEnabled}
           depth={depth + 1}
+          onAction={onAction}
+          availableActions={availableActions}
         />
       ))}
     </>
@@ -704,29 +742,38 @@ function shouldRenderAsCollection(section: PrototypeSection): boolean {
     section.presentation.trim().toLowerCase() === 'collection';
 }
 
-function renderEntityCard(card: PrototypeCard, nested: boolean, depth: number): ReactNode {
+function renderEntityCard(
+  card: PrototypeCard,
+  nested: boolean,
+  depth: number,
+  onAction: ((action: UiAction) => void) | undefined,
+  availableActions: UiAction[]
+): ReactNode {
   const collapsible = shouldCollapseCard(card, nested, depth);
   const hasMedia = Boolean(card.media?.url);
   const cls = nested ? 'nested-card' : 'entity-card';
   const depthAttr = nested ? { 'data-depth': depth } : {};
   const header = renderCardHeader(card, nested);
+  const primaryAction = resolveCardPrimaryAction(card, availableActions);
+  const visibleList = filterRepeatedListItems(card.list, duplicateSourcesForCard(card));
   const body = (
     <>
       {!collapsible && header}
       {card.summary && <p className="card-summary">{card.summary}</p>}
+      {renderCardPrimaryAction(primaryAction, onAction)}
       {renderBadges(card.badges)}
       {renderMetrics(card.metrics)}
       {renderFacts(card.facts)}
       {renderHints(card.hints)}
-      {renderCleanList(card.list)}
+      {renderCleanList(visibleList)}
       {card.nested.length > 0 && (
         <div className="nested-stack">
-          {card.nested.map((child, index) => renderEntityCard(child, true, depth + index + 1))}
+          {card.nested.map((child, index) => renderEntityCard(child, true, depth + index + 1, onAction, availableActions))}
         </div>
       )}
       {card.cards.length > 0 && (
         <div className="card-list">
-          {card.cards.map((child, index) => renderEntityCard(child, true, depth + index + 1))}
+          {card.cards.map((child, index) => renderEntityCard(child, true, depth + index + 1, onAction, availableActions))}
         </div>
       )}
     </>
@@ -743,19 +790,20 @@ function renderEntityCard(card: PrototypeCard, nested: boolean, depth: number): 
           </span>
         </summary>
         <div className="card-collapsible-body">
+          {renderCardPrimaryAction(primaryAction, onAction)}
           {renderBadges(card.badges)}
           {renderMetrics(card.metrics)}
           {renderFacts(card.facts)}
           {renderHints(card.hints)}
-          {renderCleanList(card.list)}
+          {renderCleanList(visibleList)}
           {card.nested.length > 0 && (
             <div className="nested-stack">
-              {card.nested.map((child, index) => renderEntityCard(child, true, depth + index + 1))}
+              {card.nested.map((child, index) => renderEntityCard(child, true, depth + index + 1, onAction, availableActions))}
             </div>
           )}
           {card.cards.length > 0 && (
             <div className="card-list">
-              {card.cards.map((child, index) => renderEntityCard(child, true, depth + index + 1))}
+              {card.cards.map((child, index) => renderEntityCard(child, true, depth + index + 1, onAction, availableActions))}
             </div>
           )}
         </div>
@@ -794,7 +842,72 @@ function renderCardHeader(card: PrototypeCard, nested: boolean): ReactNode {
   );
 }
 
-function CollectionBrowser({ cards, section }: { cards: PrototypeCard[]; section: PrototypeSection }) {
+function renderCardPrimaryAction(action: UiAction | null, onAction: ((action: UiAction) => void) | undefined): ReactNode {
+  if (!action || !onAction) return null;
+
+  return (
+    <div className="entity-card__action-row">
+      <button
+        className="entity-card__open-action"
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          onAction(action);
+        }}
+      >
+        <EntityGlyph icon="open" />
+        <span>{toSafeBlockText(action.label, 'Открыть отдельно')}</span>
+      </button>
+    </div>
+  );
+}
+
+function resolveCardPrimaryAction(card: PrototypeCard, availableActions: UiAction[]): UiAction | null {
+  if (card.primaryAction) return card.primaryAction;
+
+  const title = normalizeEntityActionText(card.title);
+  if (!title) return null;
+
+  return availableActions.find((action) => {
+    if (!isEntityOpenAction(action)) return false;
+
+    const label = normalizeEntityActionText(action.label);
+    const command = normalizeEntityActionText(action.command);
+    return label.includes(title) || command.includes(title);
+  }) ?? null;
+}
+
+function isEntityOpenAction(action: UiAction): boolean {
+  const label = normalizeText(action.label);
+  if (!label || label.includes('назад') || label.includes('снять') || label.includes('экипировать')) {
+    return false;
+  }
+
+  return label.includes('открыть отдельно') ||
+    label.includes('подробнее') ||
+    label.includes('открыть') ||
+    label.includes('читать');
+}
+
+function normalizeEntityActionText(value: string): string {
+  return normalizeText(value)
+    .replace(/[«»"]/g, ' ')
+    .replace(/^предмет:\s*/i, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function CollectionBrowser({
+  cards,
+  section,
+  onAction,
+  availableActions
+}: {
+  cards: PrototypeCard[];
+  section: PrototypeSection;
+  onAction?: (action: UiAction) => void;
+  availableActions: UiAction[];
+}) {
   const [query, setQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -808,14 +921,16 @@ function CollectionBrowser({ cards, section }: { cards: PrototypeCard[]; section
       return matchesQuery && matchesFilter;
     });
   const selected = visibleIndexes.find((entry) => entry.index === selectedIndex) ?? visibleIndexes[0] ?? null;
+  const collectionTitle = section.collectionLabel || formatCollectionCount(cards.length);
+  const collectionSummary = section.summary || 'Выберите запись слева, чтобы увидеть подробную карточку.';
 
   return (
     <div className="collection-browser" data-collection-id={section.id}>
       <div className="collection-browser__overview">
         <div>
-          <span className="collection-browser__eyebrow">Большая коллекция</span>
-          <h4>{cards.length} объектов в разделе</h4>
-          <p>Ключевые объекты вынесены отдельно, полный список фильтруется ниже, подробности открываются справа.</p>
+          <span className="collection-browser__eyebrow">{section.title}</span>
+          <h4>{collectionTitle}</h4>
+          <p>{collectionSummary}</p>
         </div>
         <div className="collection-featured">
           {cards.slice(0, 4).map((card, index) => (
@@ -887,7 +1002,7 @@ function CollectionBrowser({ cards, section }: { cards: PrototypeCard[]; section
           </div>
         </aside>
         <section className="collection-detail-panel" aria-live="polite">
-          {selected ? renderEntityCard(selected.card, false, 0) : (
+          {selected ? renderEntityCard(selected.card, false, 0, onAction, availableActions) : (
             <div className="collection-detail-empty">
               <strong>Ничего не найдено</strong>
               <p>Попробуйте убрать фильтр или изменить поисковый запрос.</p>
@@ -1034,6 +1149,43 @@ function renderCleanList(items: string[]): ReactNode {
   );
 }
 
+function filterRepeatedListItems(items: string[], alreadyShown: string[]): string[] {
+  if (items.length === 0 || alreadyShown.length === 0) return items;
+
+  const shown = new Set(alreadyShown.map(normalizeListDedupText).filter(Boolean));
+  return items.filter((item) => !shown.has(normalizeListDedupText(item)));
+}
+
+function duplicateSourcesForCard(card: Pick<PrototypeCard, 'title' | 'subtitle' | 'summary' | 'badges' | 'facts' | 'metrics' | 'hints'>): string[] {
+  return [
+    card.title,
+    card.subtitle,
+    card.summary,
+    ...card.badges.map((badgeItem) => badgeItem.label),
+    ...card.facts.flatMap((fact) => [fact.label, fact.value]),
+    ...card.metrics.flatMap((metric) => [metric.label, metric.note, String(metric.value), `${metric.value} / ${metric.max || 100}`]),
+    ...card.hints.flatMap((hint) => [hint.title, hint.text])
+  ];
+}
+
+function duplicateSourcesForSection(section: Pick<PrototypeSection, 'title' | 'summary' | 'collectionLabel' | 'facts' | 'metrics' | 'hints'>): string[] {
+  return [
+    section.title,
+    section.summary,
+    section.collectionLabel,
+    ...section.facts.flatMap((fact) => [fact.label, fact.value]),
+    ...section.metrics.flatMap((metric) => [metric.label, metric.note, String(metric.value), `${metric.value} / ${metric.max || 100}`]),
+    ...section.hints.flatMap((hint) => [hint.title, hint.text])
+  ];
+}
+
+function normalizeListDedupText(value: string): string {
+  return normalizeText(value)
+    .replace(/[.,;:!?()[\]«»"“”„]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function renderBadges(items: PrototypeBadge[]): ReactNode {
   if (items.length === 0) return null;
   return (
@@ -1098,7 +1250,8 @@ function shouldCollapseCard(card: PrototypeCard, nested: boolean, depth: number)
     card.list.length +
     (card.nested.length * 2) +
     (card.cards.length * 2);
-  return score >= 4 || (depth >= 2 && score >= 2);
+  if (depth <= 2) return score >= 10 || card.cards.length > 6 || card.nested.length > 6;
+  return score >= 8 || card.cards.length > 4 || card.nested.length > 4;
 }
 
 function mediaToPrototype(media: EntityDossierBlock['media'] | Extract<UiBlock, { kind: 'image' }>): PrototypeMedia | null {
@@ -1133,9 +1286,25 @@ function cardPlainText(card: PrototypeCard): string {
 }
 
 function cardTags(card: PrototypeCard): string[] {
+  const typeSource = normalizeText([
+    card.icon,
+    card.subtitle,
+    ...card.badges.map((badgeItem) => badgeItem.label)
+  ].join(' '));
   const source = normalizeText(cardPlainText(card));
   const tags = new Set<string>();
 
+  const isCharacter = typeSource.includes('npc') || typeSource.includes('персонаж') || typeSource.includes('person');
+  if (isCharacter) {
+    tags.add('characters');
+    if (source.includes('повреж') || source.includes('риск') || source.includes('опасн')) tags.add('attention');
+    if (card.media?.url) tags.add('media');
+    return [...tags];
+  }
+
+  if (typeSource.includes('артефакт') || typeSource.includes('artifact')) tags.add('artifacts');
+  if (typeSource.includes('документ') || typeSource.includes('document')) tags.add('documents');
+  if (typeSource.includes('inventory') || typeSource.includes('item') || typeSource.includes('предмет')) tags.add('items');
   if (source.includes('документ') || source.includes('книга') || source.includes('письмо')) tags.add('documents');
   if (source.includes('инструмент') || source.includes('нож') || source.includes('ключ')) tags.add('tools');
   if (source.includes('запись') || source.includes('список')) tags.add('records');
@@ -1149,7 +1318,7 @@ function cardTags(card: PrototypeCard): string[] {
 
 function collectionFilters(cards: PrototypeCard[]): Array<{ id: string; label: string }> {
   const available = new Set(cards.flatMap(cardTags));
-  return ['all', 'documents', 'tools', 'records', 'quest', 'artifacts', 'attention', 'media']
+  return ['all', 'characters', 'items', 'documents', 'tools', 'records', 'quest', 'artifacts', 'attention', 'media']
     .filter((key) => key === 'all' || available.has(key))
     .map((key) => ({ id: key, label: tagLabel(key) }));
 }
@@ -1157,6 +1326,8 @@ function collectionFilters(cards: PrototypeCard[]): Array<{ id: string; label: s
 function tagLabel(tag: string): string {
   const labels: Record<string, string> = {
     all: 'Все',
+    characters: 'Персонажи',
+    items: 'Предметы',
     documents: 'Документ',
     tools: 'Инструмент',
     records: 'Запись',
@@ -1167,6 +1338,12 @@ function tagLabel(tag: string): string {
   };
 
   return labels[tag] || tag;
+}
+
+function formatCollectionCount(count: number): string {
+  if (count === 1) return '1 запись';
+  if (count > 1 && count < 5) return `${count} записи`;
+  return `${count} записей`;
 }
 
 function normalizeText(value: string): string {
@@ -1222,6 +1399,7 @@ function EntityGlyph({ icon }: { icon: string }) {
 function iconPaths(normalized: string): string[] {
   if (normalized.includes('chevron')) return ['M6 9l6 6 6-6'];
   if (normalized.includes('close')) return ['M18 6 6 18', 'M6 6l12 12'];
+  if (normalized.includes('open')) return ['M7 7h10v10', 'M9 15 17 7', 'M11 7h6v6'];
   if (normalized.includes('npc') || normalized.includes('person')) return ['M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z', 'M4 21a8 8 0 0 1 16 0'];
   if (normalized.includes('relation') || normalized.includes('faction')) return ['M8 12h8', 'M12 8v8', 'M5 5c3-2 5-2 7 1 2-3 4-3 7-1 2 2 2 6 0 8l-7 7-7-7c-2-2-2-6 0-8Z'];
   if (normalized.includes('quest')) return ['M6 4h9l3 3v13H6Z', 'M9 9h6', 'M9 13h6', 'M9 17h3'];
@@ -1338,10 +1516,28 @@ function renderResourceMeter(key: string, value: string, meter: ResourceMeter) {
   );
 }
 
-export function BlockList({ blocks, advancedEnabled = false }: { blocks: UiBlock[]; advancedEnabled?: boolean }) {
+export function BlockList({
+  blocks,
+  advancedEnabled = false,
+  onAction,
+  availableActions = []
+}: {
+  blocks: UiBlock[];
+  advancedEnabled?: boolean;
+  onAction?: (action: UiAction) => void;
+  availableActions?: UiAction[];
+}) {
   return (
     <div className="block-list-container">
-      {blocks.map((block, i) => <BlockRenderer key={`${block.kind}-${i}`} block={block} advancedEnabled={advancedEnabled} />)}
+      {blocks.map((block, i) => (
+        <BlockRenderer
+          key={`${block.kind}-${i}`}
+          block={block}
+          advancedEnabled={advancedEnabled}
+          onAction={onAction}
+          availableActions={availableActions}
+        />
+      ))}
     </div>
   );
 }

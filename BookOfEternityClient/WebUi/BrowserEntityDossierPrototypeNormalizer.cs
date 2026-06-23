@@ -1,22 +1,125 @@
+using System.Text.RegularExpressions;
 using BookOfEternityClient.CommandProtocol;
+using BookOfEternityClient.UI;
 
 namespace BookOfEternityClient.WebUi;
 
 internal static class BrowserEntityDossierPrototypeNormalizer
 {
+    private static readonly IReadOnlyDictionary<string, string> ProtocolValueLabels =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Mortal World"] = "Смертный мир",
+            ["Mortal Realm"] = "Смертный мир",
+            ["Chaos Sea"] = "Море Хаоса",
+            ["Shining Abode"] = "Сияющая Обитель",
+            ["Common"] = "обычное",
+            ["Uncommon"] = "необычное",
+            ["Rare"] = "редкое",
+            ["Epic"] = "эпическое",
+            ["Legendary"] = "легендарное",
+            ["Unique"] = "уникальное",
+            ["Trash"] = "хлам",
+            ["Finger1"] = "Кольцо 1",
+            ["Finger2"] = "Кольцо 2",
+            ["MainHand"] = "Основная рука",
+            ["OffHand"] = "Вторая рука",
+            ["Hands"] = "Руки",
+            ["Head"] = "Голова",
+            ["Chest"] = "Тело",
+            ["Back"] = "Спина",
+            ["Feet"] = "Ноги",
+            ["Accessory"] = "Аксессуар",
+            ["outdoor"] = "открытая местность",
+            ["indoor"] = "помещение",
+            ["exploration"] = "исследование",
+            ["combat"] = "бой",
+            ["social"] = "социальное",
+            ["environment"] = "окружение",
+            ["artifacts"] = "артефакты",
+            ["factions"] = "фракции",
+            ["scene"] = "сцена",
+            ["journaled"] = "занесено в журнал",
+            ["journal"] = "журнал",
+            ["alliance"] = "союз",
+            ["defense"] = "защита",
+            ["guard"] = "защита",
+            ["pressure"] = "давление",
+            ["enlightenment"] = "просветление",
+            ["visible"] = "видимый",
+            ["hidden"] = "скрытый",
+            ["rumor"] = "слух",
+            ["local"] = "местные новости",
+            ["melee"] = "ближняя",
+            ["piercing"] = "колющий",
+            ["position"] = "позиция",
+            ["mark"] = "метка",
+            ["won"] = "победа",
+            ["Counter"] = "контрприём",
+            ["KnowledgeBased"] = "основан на знаниях",
+            ["Memory"] = "память",
+            ["Humanoid"] = "гуманоид",
+            ["Rival"] = "соперник",
+            ["hardRules"] = "Жёсткие правила",
+            ["character_chronicle"] = "Хроника персонажа",
+            ["canonicalName"] = "Каноническое имя",
+            ["requiredElements"] = "Обязательные элементы",
+            ["forbiddenElements"] = "Запрещённые элементы",
+            ["specialMechanics"] = "Особые механики",
+            ["continuityNotes"] = "Заметки непрерывности",
+            ["playerAmendments"] = "Правки игрока",
+            ["settingSummary"] = "Кратко о мире",
+            ["sourceProfileName"] = "Исходный профиль",
+            ["lastUpdated"] = "Последнее обновление",
+            ["totalUnlocked"] = "Открыто всего",
+            ["byCategory"] = "По категориям",
+            ["byRarity"] = "По редкости",
+            ["totalEntries"] = "Всего записей",
+            ["player_chronicle"] = "Хроника игрока",
+            ["plot_outline"] = "Сюжетный план",
+            ["nameVariants"] = "Варианты имени",
+            ["default"] = "по умолчанию",
+            ["feminine"] = "женский вариант",
+            ["masculine"] = "мужской вариант",
+            ["neutral"] = "нейтральный вариант",
+            ["manifestation"] = "Проявление",
+            ["currentDisplayName"] = "Текущее имя",
+            ["formFlexibility"] = "Гибкость формы",
+            ["currentPresentationStyle"] = "Текущий образ",
+            ["currentPronouns"] = "Местоимения",
+            ["appearanceDescription"] = "Описание облика",
+            ["personalityProfile"] = "Профиль личности",
+            ["speechPattern"] = "Манера речи",
+            ["coreValues"] = "Главные ценности",
+            ["domain"] = "Домен",
+            ["abode"] = "Обитель",
+            ["chaosSeaNavigation"] = "Навигация Моря Хаоса",
+            ["currentAbodeName"] = "Текущая Обитель",
+            ["currentRoute"] = "Текущий путь",
+            ["knownAbodes"] = "Известные Обители",
+            ["secret"] = "секретное",
+            ["focus"] = "фокус",
+            ["world_profiles"] = "профилей миров",
+            ["world_rules"] = "правила мира",
+            ["playerCompanionDirective"] = "директива компаньона",
+            ["afterlifeSpecialArtLearningReceipts"] = "записи обучения духовным искусствам",
+            ["afterlifeSpiritualConflictUpdate"] = "обновление духовного конфликта",
+            ["notificationId"] = "метка уведомления",
+            ["return_to_chaos_sea"] = "возвращение в Море Хаоса",
+            ["client-owned"] = "локальный",
+            ["client-authored"] = "локально созданный"
+        };
+
     public static ExplorerCommandResult Normalize(ExplorerCommandResult result)
     {
-        if (result.Prompts.Count > 0 || result.InteractiveSession != null)
-            return result;
-
         return new ExplorerCommandResult
         {
             Command = result.Command,
             State = result.State,
             Blocks = NormalizeBlocks(result.Blocks, convertPanels: true),
-            Actions = result.Actions,
-            Prompts = result.Prompts,
-            Notifications = result.Notifications,
+            Actions = CloneActions(result.Actions),
+            Prompts = ClonePrompts(result.Prompts),
+            Notifications = CloneNotifications(result.Notifications),
             InteractiveSession = result.InteractiveSession
         };
     }
@@ -37,6 +140,33 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             UiPanelBlock panel when convertPanels => PanelToDossier(panel),
             UiPanelBlock panel => NormalizePanel(panel, convertPanels),
             UiTableBlock table => TableToDossier(table),
+            UiTextBlock text => new UiTextBlock
+            {
+                Text = SanitizePlayerFacingValue(text.Text),
+                Tone = text.Tone
+            },
+            UiMessageBlock message => new UiMessageBlock
+            {
+                Severity = message.Severity,
+                Title = SanitizePlayerFacingValue(message.Title),
+                Message = SanitizePlayerFacingValue(message.Message)
+            },
+            UiKeyValueGridBlock grid => new UiKeyValueGridBlock
+            {
+                Items = grid.Items
+                    .Select(static item => new UiKeyValueItem
+                    {
+                        Key = SanitizePlayerFacingValue(item.Key),
+                        Value = SanitizePlayerFacingValue(item.Value)
+                    })
+                    .Where(static item => !IsRawProtocolOnly(item.Value))
+                    .ToList()
+            },
+            UiListBlock list => new UiListBlock
+            {
+                Ordered = list.Ordered,
+                Items = CloneList(list.Items)
+            },
             _ => block
         };
     }
@@ -65,7 +195,8 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             Hints = CloneHints(dossier.Hints),
             List = CloneList(dossier.List),
             Cards = dossier.Cards.Select(NormalizeCard).ToList(),
-            Sections = dossier.Sections.Select(NormalizeSection).ToList()
+            Sections = dossier.Sections.Select(NormalizeSection).ToList(),
+            PrimaryAction = CloneAction(dossier.PrimaryAction)
         };
     }
 
@@ -195,7 +326,7 @@ internal static class BrowserEntityDossierPrototypeNormalizer
         if (mergeGenericInfoSections && LooksLikeStructuredDetailValue(summary))
         {
             var summaryParts = new PrototypeParts();
-            if (AddStructuredDetailValue(summaryParts, summary))
+            if (AddStructuredDetailValue(summaryParts, summary, contextTitle: dossier.Subtitle, rowTitle: dossier.Title))
             {
                 summary = string.Empty;
                 MergePartsIntoCardCollections(summaryParts, facts, list);
@@ -229,11 +360,17 @@ internal static class BrowserEntityDossierPrototypeNormalizer
                 .Where(static card => card != null)
                 .Cast<UiEntityCard>()
                 .ToList(),
-            Cards = dossier.Cards.Select(NormalizeCard).ToList()
+            Cards = dossier.Cards.Select(NormalizeCard).ToList(),
+            PrimaryAction = CloneAction(dossier.PrimaryAction)
         };
     }
 
-    private static bool AddStructuredDetailValue(PrototypeParts parts, string value, string? cardTitle = null)
+    private static bool AddStructuredDetailValue(
+        PrototypeParts parts,
+        string value,
+        string? cardTitle = null,
+        string? contextTitle = null,
+        string? rowTitle = null)
     {
         if (!LooksLikeStructuredDetailValue(value))
             return false;
@@ -260,6 +397,7 @@ internal static class BrowserEntityDossierPrototypeNormalizer
         }
 
         var added = false;
+        var scalarIndex = 0;
         foreach (var part in detailParts)
         {
             var playerPart = SanitizePlayerFacingValue(part);
@@ -278,7 +416,17 @@ internal static class BrowserEntityDossierPrototypeNormalizer
                 continue;
             }
 
-            AddListItemUnique(target.List, playerPart);
+            var scalarLabel = InferStructuredDetailScalarLabel(contextTitle, rowTitle ?? cardTitle, scalarIndex, playerPart);
+            if (string.IsNullOrWhiteSpace(scalarLabel))
+            {
+                AddListItemUnique(target.List, playerPart);
+            }
+            else
+            {
+                AddFactUnique(target.Facts, new UiEntityFact { Label = scalarLabel, Value = playerPart });
+            }
+
+            scalarIndex++;
             added = true;
         }
 
@@ -295,6 +443,111 @@ internal static class BrowserEntityDossierPrototypeNormalizer
 
         return true;
     }
+
+    private static string InferStructuredDetailScalarLabel(string? contextTitle, string? rowTitle, int scalarIndex, string value)
+    {
+        if (IsSkillContext(contextTitle, rowTitle))
+        {
+            if (IsSkillTypeValue(value))
+                return "Тип навыка";
+            if (IsRarityValue(value))
+                return "Редкость";
+            if (IsIntegerText(value))
+                return "Ранг";
+
+            return scalarIndex switch
+            {
+                0 => "Название навыка",
+                1 => "Описание",
+                _ => "Свойство навыка"
+            };
+        }
+
+        if (IsFateCardContext(contextTitle, rowTitle))
+        {
+            if (IsRarityValue(value))
+                return "Редкость";
+
+            return scalarIndex switch
+            {
+                0 => "Название карты",
+                1 => "Описание",
+                _ => "Свойство карты"
+            };
+        }
+
+        if (IsMemoryContext(contextTitle, rowTitle))
+        {
+            if (IsRarityValue(value))
+                return "Редкость";
+
+            return scalarIndex switch
+            {
+                0 => "Название воспоминания",
+                1 => "Описание",
+                _ => "Свойство воспоминания"
+            };
+        }
+
+        if (IsStateContext(contextTitle, rowTitle))
+        {
+            if (IsRarityValue(value))
+                return "Редкость";
+
+            return scalarIndex switch
+            {
+                0 => "Название состояния",
+                1 => "Описание",
+                _ => "Свойство состояния"
+            };
+        }
+
+        return string.Empty;
+    }
+
+    private static bool IsSkillContext(string? contextTitle, string? rowTitle)
+    {
+        var context = ((contextTitle ?? string.Empty) + " " + (rowTitle ?? string.Empty)).ToLowerInvariant();
+        return context.Contains("навык", StringComparison.Ordinal) ||
+               context.Contains("skill", StringComparison.Ordinal);
+    }
+
+    private static bool IsFateCardContext(string? contextTitle, string? rowTitle)
+    {
+        var context = ((contextTitle ?? string.Empty) + " " + (rowTitle ?? string.Empty)).ToLowerInvariant();
+        return context.Contains("карта судьбы", StringComparison.Ordinal) ||
+               context.Contains("fate", StringComparison.Ordinal);
+    }
+
+    private static bool IsMemoryContext(string? contextTitle, string? rowTitle)
+    {
+        var context = ((contextTitle ?? string.Empty) + " " + (rowTitle ?? string.Empty)).ToLowerInvariant();
+        return context.Contains("воспомин", StringComparison.Ordinal) ||
+               context.Contains("memory", StringComparison.Ordinal);
+    }
+
+    private static bool IsStateContext(string? contextTitle, string? rowTitle)
+    {
+        var context = ((contextTitle ?? string.Empty) + " " + (rowTitle ?? string.Empty)).ToLowerInvariant();
+        return context.Contains("особое состояние", StringComparison.Ordinal) ||
+               context.Contains("state", StringComparison.Ordinal);
+    }
+
+    private static bool IsSkillTypeValue(string value)
+    {
+        var normalized = value.Trim().ToLowerInvariant();
+        return normalized is "основан на знаниях" or "утилитарный" or "боевой" or "социальный";
+    }
+
+    private static bool IsRarityValue(string value)
+    {
+        var normalized = value.Trim().ToLowerInvariant();
+        return normalized is "обычный" or "обычное" or "необычный" or "необычное" or "редкий" or "редкое" or
+            "эпический" or "эпическое" or "легендарный" or "легендарное" or "уникальный" or "уникальное";
+    }
+
+    private static bool IsIntegerText(string value) =>
+        int.TryParse(value.Trim(), out _);
 
     private static IEnumerable<string> SplitStructuredDetailValue(string value) =>
         value
@@ -639,9 +892,96 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             Hints = CloneHints(card.Hints),
             List = CloneList(card.List),
             Nested = card.Nested.Select(NormalizeCard).ToList(),
-            Cards = card.Cards.Select(NormalizeCard).ToList()
+            Cards = card.Cards.Select(NormalizeCard).ToList(),
+            PrimaryAction = CloneAction(card.PrimaryAction)
         };
     }
+
+    private static UiAction? CloneAction(UiAction? action)
+    {
+        if (action == null)
+            return null;
+
+        return new UiAction
+        {
+            Id = action.Id,
+            Label = SanitizePlayerFacingValue(action.Label),
+            Command = action.Command,
+            Style = action.Style,
+            RequiresConfirmation = action.RequiresConfirmation,
+            Payload = action.Payload?.DeepClone()
+        };
+    }
+
+    private static List<UiAction> CloneActions(IEnumerable<UiAction> actions) =>
+        actions
+            .Select(CloneAction)
+            .Where(static action => action != null)
+            .Cast<UiAction>()
+            .ToList();
+
+    private static List<UiPrompt> ClonePrompts(IEnumerable<UiPrompt> prompts) =>
+        prompts
+            .Select(ClonePrompt)
+            .ToList();
+
+    private static UiPrompt ClonePrompt(UiPrompt prompt) =>
+        prompt switch
+        {
+            UiSelectionPrompt selection => new UiSelectionPrompt
+            {
+                Id = selection.Id,
+                Prompt = SanitizePlayerFacingValue(selection.Prompt),
+                Required = selection.Required,
+                Options = selection.Options.Select(CloneSelectionOption).ToList(),
+                AllowCustom = selection.AllowCustom
+            },
+            UiConfirmationPrompt confirmation => new UiConfirmationPrompt
+            {
+                Id = confirmation.Id,
+                Prompt = SanitizePlayerFacingValue(confirmation.Prompt),
+                Required = confirmation.Required,
+                DefaultValue = confirmation.DefaultValue
+            },
+            UiTextInputPrompt text => new UiTextInputPrompt
+            {
+                Id = text.Id,
+                Prompt = SanitizePlayerFacingValue(text.Prompt),
+                Required = text.Required,
+                DefaultValue = text.DefaultValue,
+                Placeholder = SanitizePlayerFacingValue(text.Placeholder)
+            },
+            UiLongTextInputPrompt text => new UiLongTextInputPrompt
+            {
+                Id = text.Id,
+                Prompt = SanitizePlayerFacingValue(text.Prompt),
+                Required = text.Required,
+                DefaultValue = text.DefaultValue,
+                Placeholder = SanitizePlayerFacingValue(text.Placeholder),
+                MinLines = text.MinLines,
+                MaxLines = text.MaxLines
+            },
+            _ => prompt
+        };
+
+    private static UiSelectionOption CloneSelectionOption(UiSelectionOption option) =>
+        new()
+        {
+            Value = option.Value,
+            Label = SanitizePlayerFacingValue(option.Label),
+            Description = SanitizePlayerFacingValue(option.Description),
+            Disabled = option.Disabled
+        };
+
+    private static List<UiNotification> CloneNotifications(IEnumerable<UiNotification> notifications) =>
+        notifications
+            .Select(static notification => new UiNotification
+            {
+                Severity = notification.Severity,
+                Title = SanitizePlayerFacingValue(notification.Title),
+                Message = SanitizePlayerFacingValue(notification.Message)
+            })
+            .ToList();
 
     private static bool HasAnyContent(UiEntityCard card) =>
         !string.IsNullOrWhiteSpace(card.Title) ||
@@ -662,6 +1002,8 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             return string.Empty;
 
         var result = value.Trim();
+        result = TranslateKnownProtocolTokens(result);
+        result = StructuredBonusDisplay.FormatScalar(result);
         result = result
             .Replace("display_snapshot", "снимок для отображения", StringComparison.OrdinalIgnoreCase)
             .Replace("last_known_snapshot", "последний известный снимок", StringComparison.OrdinalIgnoreCase)
@@ -674,20 +1016,46 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             .Replace("cooldown", "перезарядка", StringComparison.OrdinalIgnoreCase)
             .Replace("remainingUses", "осталось применений", StringComparison.OrdinalIgnoreCase)
             .Replace("break_binding", "разрыв связи", StringComparison.OrdinalIgnoreCase)
-            .Replace("range", "дистанция", StringComparison.OrdinalIgnoreCase)
-            .Replace("guard", "защита", StringComparison.OrdinalIgnoreCase)
-            .Replace("pressure", "давление", StringComparison.OrdinalIgnoreCase)
-            .Replace("enlightenment", "просветление", StringComparison.OrdinalIgnoreCase)
-            .Replace("visible", "видимый", StringComparison.OrdinalIgnoreCase)
-            .Replace("hidden", "скрытый", StringComparison.OrdinalIgnoreCase)
-            .Replace("rumor", "слух", StringComparison.OrdinalIgnoreCase)
-            .Replace("local", "местные новости", StringComparison.OrdinalIgnoreCase)
-            .Replace("melee", "ближняя", StringComparison.OrdinalIgnoreCase)
-            .Replace("piercing", "колющий", StringComparison.OrdinalIgnoreCase);
+            .Replace("range", "дистанция", StringComparison.OrdinalIgnoreCase);
 
+        result = TranslateKnownProtocolTokens(result);
+        result = RemoveEnglishSlashCommandHints(result);
         result = RemoveRawParentheticalSuffix(result);
         result = RemoveRawCommaSeparatedFragments(result);
+        result = RemoveRawInlineIdentifiers(result);
         result = RemoveRawTrailingTokens(result);
+        return result;
+    }
+
+    private static string RemoveEnglishSlashCommandHints(string value)
+    {
+        if (!HasCyrillic(value))
+            return value;
+
+        var result = Regex.Replace(
+            value,
+            @"\s*/[a-z_]+(?:\s*<[^>]+>)?",
+            string.Empty,
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+        return CollapseWhitespaceAroundPunctuation(result);
+    }
+
+    private static string TranslateKnownProtocolTokens(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var result = value;
+        foreach (var (source, label) in ProtocolValueLabels.OrderByDescending(static pair => pair.Key.Length))
+        {
+            result = Regex.Replace(
+                result,
+                $@"(?<![\p{{L}}\p{{N}}_]){Regex.Escape(source)}(?![\p{{L}}\p{{N}}_])",
+                label,
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        }
+
         return result;
     }
 
@@ -723,6 +1091,20 @@ internal static class BrowserEntityDossierPrototypeNormalizer
         return parts.Count == 0 ? value : string.Join(", ", parts);
     }
 
+    private static string RemoveRawInlineIdentifiers(string value)
+    {
+        if (!HasCyrillic(value))
+            return value;
+
+        var result = Regex.Replace(
+            value,
+            @"(?<![\p{L}\p{N}_])(?:[a-z]+_[a-z0-9_]{2,}|[a-z]+[A-Z][a-zA-Z]{2,})(?![\p{L}\p{N}_])",
+            string.Empty,
+            RegexOptions.CultureInvariant);
+
+        return CollapseWhitespaceAroundPunctuation(result);
+    }
+
     private static string RemoveRawTrailingTokens(string value)
     {
         if (!HasCyrillic(value))
@@ -741,6 +1123,37 @@ internal static class BrowserEntityDossierPrototypeNormalizer
 
             result = result[..separator].TrimEnd();
         }
+    }
+
+    private static string CollapseWhitespaceAroundPunctuation(string value)
+    {
+        var result = value;
+        result = Regex.Replace(result, @"\s{2,}", " ", RegexOptions.CultureInvariant);
+        result = Regex.Replace(result, @"\(\s*[;,:]\s*", "(", RegexOptions.CultureInvariant);
+        result = Regex.Replace(result, @"\(\s+", "(", RegexOptions.CultureInvariant);
+        result = Regex.Replace(result, @"\s+\)", ")", RegexOptions.CultureInvariant);
+        result = Regex.Replace(result, @"\(\s*\)", string.Empty, RegexOptions.CultureInvariant);
+        result = Regex.Replace(result, @"\s+([,.;:])", "$1", RegexOptions.CultureInvariant);
+        var punctuated = result;
+        result = Regex.Replace(
+            punctuated,
+            @"([,.;:])(?=\S)",
+            match =>
+            {
+                var index = match.Index;
+                if (index > 0 &&
+                    index + 1 < punctuated.Length &&
+                    char.IsDigit(punctuated[index - 1]) &&
+                    char.IsDigit(punctuated[index + 1]))
+                {
+                    return match.Value;
+                }
+
+                return match.Value + " ";
+            },
+            RegexOptions.CultureInvariant);
+        result = Regex.Replace(result, @"\s{2,}", " ", RegexOptions.CultureInvariant);
+        return result.Trim();
     }
 
     private static bool IsRawProtocolOnly(string? value)
@@ -772,6 +1185,9 @@ internal static class BrowserEntityDossierPrototypeNormalizer
         }
 
         if (HasCyrillic(trimmed))
+            return false;
+
+        if (Regex.IsMatch(trimmed, @"^\d+\s*[-–—]\s*\d+$", RegexOptions.CultureInvariant))
             return false;
 
         if (trimmed.All(static ch => char.IsLetterOrDigit(ch) || ch is '_' or '-' or '.'))
