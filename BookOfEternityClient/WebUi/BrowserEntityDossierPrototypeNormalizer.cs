@@ -558,7 +558,7 @@ internal static class BrowserEntityDossierPrototypeNormalizer
     {
         key = string.Empty;
         pairValue = string.Empty;
-        var separator = value.IndexOf(':', StringComparison.Ordinal);
+        var separator = FindStructuredDetailSeparator(value);
         if (separator <= 0 || separator >= value.Length - 1)
             return false;
 
@@ -576,6 +576,24 @@ internal static class BrowserEntityDossierPrototypeNormalizer
         key = candidateKey;
         pairValue = candidateValue;
         return true;
+    }
+
+    private static int FindStructuredDetailSeparator(string value)
+    {
+        for (var index = 0; index < value.Length; index++)
+        {
+            if (value[index] != ':')
+                continue;
+
+            var previousIsDigit = index > 0 && char.IsDigit(value[index - 1]);
+            var nextIsDigit = index + 1 < value.Length && char.IsDigit(value[index + 1]);
+            if (previousIsDigit && nextIsDigit)
+                continue;
+
+            return index;
+        }
+
+        return -1;
     }
 
     private static bool LooksLikeStructuredDetailValue(string value)

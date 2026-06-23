@@ -52,15 +52,66 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     {
         yield return ["/статус"];
         yield return ["/инв"];
+        yield return ["/нпс"];
+        yield return ["/квесты"];
+        yield return ["/карта"];
+        yield return ["/где_я"];
+        yield return ["/фракции"];
         yield return ["/навыки"];
         yield return ["/статы"];
         yield return ["/новости_мира"];
-        yield return ["/нпс"];
-        yield return ["/квесты"];
-        yield return ["/фракции"];
-        yield return ["/эффекты"];
-        yield return ["/книги"];
+        yield return ["/чужие_нити"];
+        yield return ["/коррективы_хранителя"];
         yield return ["/локации"];
+        yield return ["/транспорт"];
+        yield return ["/эффекты"];
+        yield return ["/бой"];
+        yield return ["/погода"];
+        yield return ["/книги"];
+        yield return ["/доступ_к_хранилищам"];
+        yield return ["/взаимодействия"];
+    }
+
+    [Fact]
+    public void MortalReadOnlyIssue1268Commands_AreCoveredByBrowserPresentationAudit()
+    {
+        var auditedIds = MortalEntityCommandInvocations()
+            .Select(static invocation => (string)invocation[0])
+            .Select(static command => ExplorerCommandParser.Parse(command).Descriptor?.Id)
+            .Where(static id => !string.IsNullOrWhiteSpace(id))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        string[] requiredIds =
+        [
+            "inventory",
+            "npcs",
+            "quests",
+            "map",
+            "where_am_i",
+            "factions",
+            "skills",
+            "stats",
+            "world_news",
+            "rival_threads",
+            "guardian_corrections",
+            "locations",
+            "transport",
+            "effects",
+            "combat",
+            "weather",
+            "books",
+            "storage_access",
+            "interactions"
+        ];
+
+        var missing = requiredIds
+            .Where(id => !auditedIds.Contains(id))
+            .ToList();
+
+        Assert.True(
+            missing.Count == 0,
+            "Issue #1268 mortal read-only commands missing from browser presentation audit: " +
+            string.Join(", ", missing));
     }
 
     public static IEnumerable<object[]> ChaosSeaEntityCommandInvocations()
@@ -174,6 +225,53 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
 
         Assert.Contains("08:15", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("08: 15", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotMatch(TimeWithWhitespaceAfterColonPattern(), text);
+    }
+
+    [Fact]
+    public async Task MortalLocationOverviewCardsSplitPlaceFactsFromNarrative()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/локации");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Покои виконта де Вальмонта", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Регион", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тип", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Роскошные покои", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("помещение Роскошные покои", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("помещение здание Длинный коридор", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Month of Beginnings", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MortalTransportOverviewCardsSplitStateLocationAndCapacity()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/транспорт");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Карета дома Вальмонт", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Состояние", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Местоположение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Вместимость", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Активен (оседлан/управляется) Покои виконта", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MortalCombatOverviewSummariesExplainHealthAndPoiseValues()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/бой");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Теневой посыльный", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Здоровье", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стойкость", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotMatch(AdjacentCombatPercentagesPattern(), text);
     }
 
     [Fact]
@@ -614,6 +712,7 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
                 {
                     values.Add(fact.Label);
                     values.Add(fact.Value);
+                    values.Add($"{fact.Label}: {fact.Value}");
                 }
                 foreach (var metric in dossier.Metrics)
                 {
@@ -636,6 +735,7 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
                     {
                         values.Add(fact.Label);
                         values.Add(fact.Value);
+                        values.Add($"{fact.Label}: {fact.Value}");
                     }
                     foreach (var card in section.Cards)
                         CollectCardText(card, values);
@@ -672,6 +772,7 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
         {
             values.Add(fact.Label);
             values.Add(fact.Value);
+            values.Add($"{fact.Label}: {fact.Value}");
         }
         foreach (var metric in card.Metrics)
         {
@@ -763,4 +864,10 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
 
     [GeneratedRegex(@"\b(?:DTO|Ui[A-Z]\w+|game_state/|pending_|debug|internal|[a-z]+[A-Z][a-zA-Z]+|[a-z]+_[a-z0-9_]+)\b", RegexOptions.CultureInvariant)]
     private static partial Regex RawProtocolTokenPattern();
+
+    [GeneratedRegex(@"(?<![\p{L}\p{N}])\d+%/100%\s+\d+%/100%(?![\p{L}\p{N}])", RegexOptions.CultureInvariant)]
+    private static partial Regex AdjacentCombatPercentagesPattern();
+
+    [GeneratedRegex(@"\b\d{1,2}:\s+\d{2}\b", RegexOptions.CultureInvariant)]
+    private static partial Regex TimeWithWhitespaceAfterColonPattern();
 }

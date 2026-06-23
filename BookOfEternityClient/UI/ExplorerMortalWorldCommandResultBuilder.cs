@@ -5218,7 +5218,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                         Icon = "map",
                         Collapsible = true,
                         InitiallyExpanded = true,
-                        Blocks = rows.Select(static row => (UiBlock)BuildLocationOverviewCard(row)).ToList()
+                        Blocks = entries.Select(static entry => (UiBlock)BuildLocationOverviewCard(entry)).ToList()
                     }
                 ]
             });
@@ -5232,20 +5232,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
     }
 
-    private static UiEntityDossierBlock BuildLocationOverviewCard(UiTableRow row)
+    private static UiEntityDossierBlock BuildLocationOverviewCard(ReferenceEntrySnapshot entry)
     {
-        var section = row.Cells.Count > 0 ? row.Cells[0] : "Локация";
-        var title = row.Cells.Count > 1 && !string.IsNullOrWhiteSpace(row.Cells[1])
-            ? row.Cells[1]
-            : "Безымянная локация";
-        var summary = row.Cells.Count > 2 ? row.Cells[2] : string.Empty;
+        var section = entry.Section;
+        var title = string.IsNullOrWhiteSpace(entry.Title) ? "Безымянная локация" : entry.Title;
+        var location = entry.Node;
+        var description = FirstNonEmpty(
+            GetLocationNodeString(location, "description", "shortDescription"),
+            IsAdjacentLocationSection(section) ? GetLocationNodeString(location, "shortDescription") : string.Empty,
+            "Сведения о месте пока не уточнены.");
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = section }
+        };
+        AddLocationFact(facts, "Регион", GetLocationNodeString(location, "region"));
+        AddLocationFact(facts, "Тип", TranslateLocationType(GetLocationNodeString(location, "locationType", "type")));
+        AddLocationFact(facts, "Внутренний тип", TranslateIndoorLocationType(GetLocationNodeString(location, "indoorType")));
+        AddLocationFact(facts, "Биом", TranslateLocationBiome(GetLocationNodeString(location, "biome")));
+        AddLocationFact(facts, "Направление", TranslateLocationDirection(GetLocationNodeString(location, "direction")));
+        AddLocationFact(facts, "Дистанция", GetLocationNodeString(location, "distance"));
+        AddLocationFact(facts, "Путь", DescribeLinkState(GetLocationNodeString(location, "linkState")));
 
         return new UiEntityDossierBlock
         {
             EntityType = "location-summary",
             Title = title,
             Subtitle = section,
-            Summary = FirstNonEmpty(summary, "Сведения о месте пока не уточнены."),
+            Summary = description,
             Badges =
             [
                 new UiEntityBadge
@@ -5264,21 +5277,14 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     Icon = "map",
                     Collapsible = true,
                     InitiallyExpanded = false,
-                    Blocks =
-                    [
-                        new UiKeyValueGridBlock
-                        {
-                            Items =
-                            [
-                                new UiKeyValueItem { Key = "Раздел", Value = section },
-                                new UiKeyValueItem { Key = "Сведения", Value = EmptyFallback(summary) }
-                            ]
-                        }
-                    ]
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
                 }
             ]
         };
     }
+
+    private static bool IsAdjacentLocationSection(string section) =>
+        section.Contains("рядом", StringComparison.OrdinalIgnoreCase);
 
     private static ExplorerCommandResult BuildLocationStoragesDetail(
         string command,
@@ -5820,21 +5826,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (request.Kind != ReferenceDetailKind.Overview)
             return BuildTransportDetail(command, commandToken, definition, [vehiclesRead, mapRead, currentRead], entries, request);
 
-        var vehicleRows = entries
-            .Select(entry => new UiTableRow
-            {
-                Cells =
-                [
-                    entry.Title,
-                    DescribeVehicleType(entry.Node),
-                    DescribeVehicleNode(entry.Node),
-                    BuildReferenceDetailCommand(commandToken, definition, entry.Selector)
-                ]
-            })
-            .ToList();
-
         var sections = new List<UiEntityDossierSection>();
-        if (vehicleRows.Count > 0)
+        if (entries.Count > 0)
         {
             sections.Add(new UiEntityDossierSection
             {
@@ -5844,7 +5837,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Icon = "transport",
                 Collapsible = true,
                 InitiallyExpanded = true,
-                Blocks = vehicleRows.Select(static row => (UiBlock)BuildTransportOverviewCard(row)).ToList()
+                Blocks = entries.Select(static entry => (UiBlock)BuildTransportOverviewCard(entry)).ToList()
             });
         }
 
@@ -5899,23 +5892,29 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
     }
 
-    private static UiEntityDossierBlock BuildTransportOverviewCard(UiTableRow row)
+    private static UiEntityDossierBlock BuildTransportOverviewCard(ReferenceEntrySnapshot entry)
     {
-        var title = row.Cells.Count > 0 && !string.IsNullOrWhiteSpace(row.Cells[0])
-            ? row.Cells[0]
-            : "Транспорт";
-        var type = row.Cells.Count > 1 ? row.Cells[1] : string.Empty;
-        var details = row.Cells.Count > 2 ? row.Cells[2] : string.Empty;
+        var vehicle = entry.Node;
+        var title = string.IsNullOrWhiteSpace(entry.Title) ? "Транспорт" : entry.Title;
+        var type = DescribeVehicleType(vehicle);
         var facts = new List<UiKeyValueItem>();
         AddReferenceDetailItem(facts, "Тип", type);
-        AddReferenceDetailItem(facts, "Состояние", details);
+        AddReferenceDetailItem(facts, "Состояние", DescribeVehicleAvailability(vehicle));
+        AddReferenceDetailItem(facts, "Местоположение", FirstReferenceNodeString(vehicle, "currentLocation", "currentLocationId", "locationName"));
+        AddReferenceDetailItem(facts, "Маршрут", FirstReferenceNodeString(vehicle, "route", "currentRoute"));
+        AddReferenceDetailItem(facts, "Вместимость", FirstReferenceNodeString(vehicle, "capacity"));
+        AddReferenceDetailItem(facts, "Прочность", FormatVehicleHealth(vehicle));
+        AddReferenceDetailItem(facts, "Описание", FirstReferenceNodeString(vehicle, "description", "summary", "notes"));
 
         return new UiEntityDossierBlock
         {
             EntityType = "transport-summary",
             Title = title,
             Subtitle = FirstNonEmpty(type, "Транспорт"),
-            Summary = FirstNonEmpty(details, "Подробности доступны в карточке транспорта."),
+            Summary = FirstNonEmpty(
+                FirstReferenceNodeString(vehicle, "description", "summary", "notes"),
+                DescribeVehicleAvailability(vehicle),
+                "Подробности доступны в карточке транспорта."),
             Badges =
             [
                 new UiEntityBadge
@@ -5938,6 +5937,16 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 }
             ]
         };
+    }
+
+    private static string FormatVehicleHealth(JsonObject vehicle)
+    {
+        var current = FirstReferenceNodeString(vehicle, "currentHealth", "health");
+        var max = FirstReferenceNodeString(vehicle, "maxHealth", "maxHp");
+        if (!string.IsNullOrWhiteSpace(current) && !string.IsNullOrWhiteSpace(max))
+            return $"{current}/{max}";
+
+        return current;
     }
 
     private static ExplorerCommandResult BuildTransportDetail(
@@ -8036,11 +8045,23 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return (value, string.Empty);
     }
 
-    private static string DescribeCombatantOverview(CombatantSnapshot combatant) =>
-        EmptyFallback(JoinCombatDetails(
-            DescribeCombatantStatus(combatant.Node),
-            DescribeCombatantHealth(combatant.Node),
-            DescribeCombatantPoise(combatant.Node)));
+    private static string DescribeCombatantOverview(CombatantSnapshot combatant)
+    {
+        var parts = new List<string>();
+        var status = DescribeCombatantStatus(combatant.Node);
+        if (!string.IsNullOrWhiteSpace(status))
+            parts.Add("Состояние: " + status);
+
+        var health = DescribeCombatantHealth(combatant.Node);
+        if (!string.IsNullOrWhiteSpace(health))
+            parts.Add("Здоровье: " + health);
+
+        var poise = DescribeCombatantPoise(combatant.Node);
+        if (!string.IsNullOrWhiteSpace(poise))
+            parts.Add("Стойкость: " + poise);
+
+        return EmptyFallback(string.Join(". ", parts));
+    }
 
     private static string DescribeCombatantStatus(JsonObject combatant) =>
         DescribeCombatStatus(FirstCombatNodeString(combatant, "status", "currentCondition", "state"));
