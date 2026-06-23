@@ -84,40 +84,35 @@ export function HelpView() {
       .filter((g) => g.commands.length > 0);
   }, [groups, search]);
 
+  const defaultExpandedGroup = filteredGroups[0]?.label ?? null;
+  const activeExpandedGroup = expandedGroup ?? defaultExpandedGroup;
+
   function handleCommandClick(command: string) {
     void executeCommand(command);
     setActiveTab('scene');
   }
 
   if (!coverage || !isSuccess(coverage)) {
-    if (!advancedEnabled) {
-      return (
-        <div className="help-view">
-          <section className="help-category">
-            <div className="help-category__header">
-              <span className="help-category__icon">❓</span>
-              <span className="help-category__label">Справка книги</span>
-            </div>
-            <div className="help-category__commands">
-              <button
-                type="button"
-                className="help-command"
-                onClick={() => handleCommandClick('/help')}
-              >
-                <span className="help-command__alias">Справка</span>
-                <span className="help-command__label">Открыть справку книги</span>
-                <span className="help-command__run">▶</span>
-              </button>
-            </div>
-          </section>
-          <p className="block-text--muted">Полный каталог команд открывается после включения расширенного режима в настройках.</p>
-        </div>
-      );
-    }
-
     return (
       <div className="help-view">
-        <p className="block-text--muted">Каталог команд загружается…</p>
+        <section className="help-category">
+          <div className="help-category__header">
+            <span className="help-category__icon">❓</span>
+            <span className="help-category__label">Справка книги</span>
+          </div>
+          <div className="help-category__commands">
+            <button
+              type="button"
+              className="help-command"
+              onClick={() => handleCommandClick('/help')}
+            >
+              <span className="help-command__alias">/help · /помощь</span>
+              <span className="help-command__label">Открыть список команд книги</span>
+              <span className="help-command__run">▶</span>
+            </button>
+          </div>
+        </section>
+        <p className="block-text--muted">Каталог команд загружается. Если список не появился, откройте справку командой выше.</p>
       </div>
     );
   }
@@ -136,7 +131,7 @@ export function HelpView() {
 
       <div className="help-view__categories">
         {filteredGroups.map((group) => {
-          const isExpanded = expandedGroup === group.label || search.trim().length > 0;
+          const isExpanded = activeExpandedGroup === group.label || search.trim().length > 0;
           return (
             <div key={group.label} className="help-category">
               <button
@@ -158,7 +153,7 @@ export function HelpView() {
                       className="help-command"
                       onClick={() => handleCommandClick(cmd.primaryCommand)}
                     >
-                      <span className="help-command__alias">{advancedEnabled ? cmd.aliases[0] : 'Действие'}</span>
+                      <span className="help-command__alias">{formatCommandAliases(cmd.aliases)}</span>
                       <span className="help-command__label">{cmd.primaryActionLabel}</span>
                       <span className="help-command__run">▶</span>
                     </button>
@@ -175,4 +170,18 @@ export function HelpView() {
 
 function isDefaultHelpCommandVisible(cmd: BrowserCommandCoverageEntryDto): boolean {
   return cmd.surface !== 'advanced-only' && !ADVANCED_ONLY_HELP_COMMAND_IDS.has(cmd.id);
+}
+
+function formatCommandAliases(aliases: string[]): string {
+  const visibleAliases = [...aliases]
+    .sort((left, right) =>
+      Number(hasCyrillicAlias(right)) - Number(hasCyrillicAlias(left)) ||
+      Number(right.startsWith('/')) - Number(left.startsWith('/')))
+    .slice(0, 2);
+
+  return visibleAliases.length > 0 ? visibleAliases.join(' · ') : 'Команда';
+}
+
+function hasCyrillicAlias(alias: string): boolean {
+  return /[А-Яа-яЁё]/u.test(alias);
 }

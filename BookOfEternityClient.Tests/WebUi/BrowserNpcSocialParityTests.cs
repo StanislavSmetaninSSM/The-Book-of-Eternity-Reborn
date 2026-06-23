@@ -402,9 +402,7 @@ public sealed class BrowserNpcSocialParityTests : IDisposable
         new(id, "browser", "Browser NPC social test", TimeSpan.FromSeconds(120));
 
     private static string CollectResultAndPromptText(ExplorerCommandResult result) =>
-        CollectBlockText(result.Blocks) + "\n" +
-        string.Join("\n", result.Prompts.Select(CollectPromptText)) + "\n" +
-        string.Join("\n", result.Notifications.Select(notification => $"{notification.Title}\n{notification.Message}"));
+        UiTestTextCollector.CollectResultAndPromptText(result);
 
     private static string CollectPromptText(UiPrompt prompt)
     {

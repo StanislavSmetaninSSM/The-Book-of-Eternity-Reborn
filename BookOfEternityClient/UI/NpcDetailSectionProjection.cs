@@ -7,15 +7,13 @@ namespace BookOfEternityClient.UI;
 
 internal static class NpcDetailSectionProjection
 {
-    public const string SectionSummaryTitle = "Разделы НПС";
-
     public static IReadOnlyList<NpcDetailProjection> BuildAll(JsonNode? npcCoreRoot, NpcDetailSectionDocuments documents)
     {
         var result = new List<NpcDetailProjection>();
         foreach (var npc in EnumerateNpcCoreObjects(npcCoreRoot))
         {
             var projection = Build(npc, documents);
-            if (projection.Sections.Count > 0)
+            if (projection.Sections.Count > 0 || projection.Trade != null)
                 result.Add(projection);
         }
 
@@ -25,7 +23,7 @@ internal static class NpcDetailSectionProjection
     public static NpcDetailProjection Build(JsonNode? npcNode, NpcDetailSectionDocuments documents)
     {
         if (npcNode is not JsonObject npc)
-            return new NpcDetailProjection(string.Empty, "Неизвестный НПС", [], []);
+            return new NpcDetailProjection(string.Empty, "Неизвестный НПС", [], [], null);
 
         var npcId = GetNpcId(npc);
         var npcName = GetNpcName(npc);
@@ -36,41 +34,12 @@ internal static class NpcDetailSectionProjection
         AddQuestSection(sections, personalQuests, npcName, npcId, npc, documents);
         AddActivitySection(sections, npcName, npcId, npc, documents);
         AddRelationshipSection(sections, npcName, npcId, npc, documents);
+        AddPersonalitySection(sections, npcName, npcId, npc, documents);
         AddMechanicsSection(sections, npcName, npcId, npc, documents);
         AddMemorySection(sections, npcName, npcId, npc, documents);
 
-        return new NpcDetailProjection(npcId, npcName, sections, personalQuests);
+        return new NpcDetailProjection(npcId, npcName, sections, personalQuests, BuildTradePresentation(npc));
     }
-
-    public static IReadOnlyList<UiTableRow> BuildNpcOverviewRows(JsonNode? npcCoreRoot)
-    {
-        var npcs = EnumerateNpcCoreObjects(npcCoreRoot).ToList();
-        if (npcs.Count == 0)
-            return [];
-
-        var preview = string.Join(", ", npcs
-            .Take(3)
-            .Select(GetNpcName)
-            .Where(static value => !string.IsNullOrWhiteSpace(value)));
-        var state = string.IsNullOrWhiteSpace(preview)
-            ? npcs.Count.ToString()
-            : $"{npcs.Count}: {preview}";
-
-        return [new UiTableRow { Cells = ["NPC", state] }];
-    }
-
-    public static UiTableBlock BuildSectionSummaryTable(IReadOnlyList<NpcDetailProjection> projections) =>
-        new()
-        {
-            Title = SectionSummaryTitle,
-            Columns = ["НПС", "Раздел", "Состояние"],
-            Rows = projections
-                .SelectMany(static projection => projection.Sections.Select(section => new UiTableRow
-                {
-                    Cells = [projection.NpcName, section.Label, section.Hint]
-                }))
-                .ToList()
-        };
 
     private static void AddJournalSection(
         List<NpcDetailSection> sections,
@@ -135,12 +104,7 @@ internal static class NpcDetailSectionProjection
             "Дневник / мысли",
             FormatCount(count, "запись", "записи", "записей"),
             [
-                new UiTableBlock
-                {
-                    Title = $"{npcName} — Дневник / мысли",
-                    Columns = ["Запись", "Подробности"],
-                    Rows = rows
-                }
+                BuildNpcSectionDossier(npcName, "Дневник / мысли", ["Запись", "Подробности"], rows)
             ]));
     }
 
@@ -204,12 +168,7 @@ internal static class NpcDetailSectionProjection
             "Личные квесты",
             FormatCount(rows.Count, "квест", "квеста", "квестов"),
             [
-                new UiTableBlock
-                {
-                    Title = $"{npcName} — Личные квесты",
-                    Columns = ["Квест", "Статус", "Подробности"],
-                    Rows = rows
-                }
+                BuildNpcSectionDossier(npcName, "Личные квесты", ["Квест", "Статус", "Подробности"], rows)
             ]));
     }
 
@@ -240,12 +199,7 @@ internal static class NpcDetailSectionProjection
             "Активности",
             FormatCount(rows.Count, "активность", "активности", "активностей"),
             [
-                new UiTableBlock
-                {
-                    Title = $"{npcName} — Активности",
-                    Columns = ["Активность", "Состояние", "Подробности"],
-                    Rows = rows
-                }
+                BuildNpcSectionDossier(npcName, "Активности", ["Активность", "Состояние", "Подробности"], rows)
             ]));
     }
 
@@ -275,12 +229,36 @@ internal static class NpcDetailSectionProjection
             "Отношения / замки",
             FormatCount(rows.Count, "запись", "записи", "записей"),
             [
-                new UiTableBlock
-                {
-                    Title = $"{npcName} — Отношения / замки",
-                    Columns = ["Раздел", "Подробности"],
-                    Rows = rows
-                }
+                BuildNpcSectionDossier(npcName, "Отношения / замки", ["Раздел", "Подробности"], rows)
+            ]));
+    }
+
+    private static void AddPersonalitySection(
+        List<NpcDetailSection> sections,
+        string npcName,
+        string npcId,
+        JsonObject npc,
+        NpcDetailSectionDocuments documents)
+    {
+        var rows = new List<UiTableRow>();
+        AddPersonalityProfileRow(rows, npc);
+        AddPersonalityTraitRows(rows, npc["personalityTraits"]);
+        AddMaskRows(rows, npc["masks"], GetNodeString(npc, "activeMaskId"));
+
+        foreach (var entry in CollectMatchingObjects(documents.Personality, npcId, npcName))
+            AddPersonalityTraitRows(rows, entry);
+        foreach (var entry in CollectMatchingObjects(documents.Masks, npcId, npcName))
+            AddMaskRows(rows, entry, GetNodeString(npc, "activeMaskId"));
+
+        if (rows.Count == 0)
+            return;
+
+        sections.Add(new NpcDetailSection(
+            "personality",
+            "Личность / маски",
+            FormatCount(rows.Count, "запись", "записи", "записей"),
+            [
+                BuildNpcSectionDossier(npcName, "Личность / маски", ["Раздел", "Подробности"], rows)
             ]));
     }
 
@@ -341,12 +319,7 @@ internal static class NpcDetailSectionProjection
             label,
             FormatCount(rows.Count, "запись", "записи", "записей"),
             [
-                new UiTableBlock
-                {
-                    Title = $"{npcName} — {label}",
-                    Columns = ["Раздел", "Подробности"],
-                    Rows = rows
-                }
+                BuildNpcSectionDossier(npcName, label, ["Раздел", "Подробности"], rows)
             ]));
     }
 
@@ -358,13 +331,13 @@ internal static class NpcDetailSectionProjection
         NpcDetailSectionDocuments documents)
     {
         var rows = new List<UiTableRow>();
-        AddNamedArrayRows(rows, "Карта судьбы", npc["fateCards"]);
+        AddFateCardRows(rows, npc["fateCards"]);
         AddNamedArrayRows(rows, "Особое состояние", npc["customStates"]);
 
         foreach (var entry in CollectMatchingObjects(documents.Memory, npcId, npcName))
             rows.Add(new UiTableRow { Cells = ["Воспоминание", DescribeNodeValue(entry)] });
         foreach (var entry in CollectMatchingObjects(documents.FateCards, npcId, npcName))
-            rows.Add(new UiTableRow { Cells = ["Карта судьбы", DescribeNodeValue(entry)] });
+            AddFateCardRows(rows, entry["fateCards"] ?? entry);
         foreach (var entry in CollectMatchingObjects(documents.CustomStates, npcId, npcName))
             rows.Add(new UiTableRow { Cells = ["Особое состояние", DescribeNodeValue(entry)] });
 
@@ -376,13 +349,89 @@ internal static class NpcDetailSectionProjection
             "Память / состояния",
             FormatCount(rows.Count, "запись", "записи", "записей"),
             [
-                new UiTableBlock
-                {
-                    Title = $"{npcName} — Память / состояния",
-                    Columns = ["Раздел", "Подробности"],
-                    Rows = rows
-                }
+                BuildNpcSectionDossier(npcName, "Память / состояния", ["Раздел", "Подробности"], rows)
             ]));
+    }
+
+    private static UiEntityDossierBlock BuildNpcSectionDossier(
+        string npcName,
+        string sectionTitle,
+        IReadOnlyList<string> columns,
+        IReadOnlyList<UiTableRow> rows)
+    {
+        var cards = new List<UiBlock>();
+        for (var index = 0; index < rows.Count; index++)
+        {
+            var row = rows[index];
+            var title = row.Cells.Count > 0 && !string.IsNullOrWhiteSpace(row.Cells[0])
+                ? row.Cells[0]
+                : $"Запись {index + 1}";
+            var facts = new List<UiKeyValueItem>();
+            for (var column = 1; column < row.Cells.Count; column++)
+            {
+                var value = row.Cells[column];
+                if (string.IsNullOrWhiteSpace(value))
+                    continue;
+
+                facts.Add(new UiKeyValueItem
+                {
+                    Key = column < columns.Count ? columns[column] : $"Поле {column + 1}",
+                    Value = value
+                });
+            }
+
+            cards.Add(new UiEntityDossierBlock
+            {
+                EntityType = "npc-section-entry",
+                Title = title,
+                Subtitle = sectionTitle,
+                Summary = facts.Count == 1 ? facts[0].Value : string.Empty,
+                Sections = facts.Count == 0
+                    ? []
+                    :
+                    [
+                        new UiEntityDossierSection
+                        {
+                            Id = "fields",
+                            Title = "Сведения",
+                            Icon = "npc",
+                            Collapsible = true,
+                            InitiallyExpanded = true,
+                            Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                        }
+                    ]
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "npc-section",
+            Title = $"{npcName} — {sectionTitle}",
+            Subtitle = sectionTitle,
+            Summary = FormatCount(rows.Count, "запись", "записи", "записей"),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = sectionTitle,
+                    Tone = UiTone.Accent,
+                    Icon = "npc"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "entries",
+                    Title = "Записи",
+                    Summary = "Каждая запись показана отдельной карточкой, без общей таблицы.",
+                    Icon = "npc",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = cards
+                }
+            ]
+        };
     }
 
     private static IEnumerable<JsonObject> EnumerateNpcCoreObjects(JsonNode? root)
@@ -554,6 +603,181 @@ internal static class NpcDetailSectionProjection
         }
     }
 
+    private static void AddFateCardRows(List<UiTableRow> rows, JsonNode? node)
+    {
+        switch (node)
+        {
+            case JsonArray array:
+                foreach (var item in array)
+                    AddFateCardRows(rows, item);
+                break;
+            case JsonObject card:
+                var details = DescribeFateCard(card);
+                if (!string.IsNullOrWhiteSpace(details))
+                    rows.Add(new UiTableRow { Cells = ["Карта судьбы", details] });
+                break;
+        }
+    }
+
+    private static void AddPersonalityProfileRow(List<UiTableRow> rows, JsonObject npc)
+    {
+        var details = JoinDetails(
+            Prefix("Архетип", GetNodeString(npc, "personalityArchetype")),
+            Prefix("Мировоззрение", DescribeAlignment(GetNodeString(npc, "worldview"))),
+            Prefix("Отношение", GetNodeString(npc, "attitude")),
+            Prefix("Культурный слой", GetNodeString(npc, "culturalLayer")),
+            Prefix("Позиция", DescribeCulturalStance(GetNodeString(npc, "culturalStance"))),
+            Prefix("Планы", GetNodeString(npc, "plans")));
+
+        if (!string.IsNullOrWhiteSpace(details))
+            rows.Add(new UiTableRow { Cells = ["Образ", details] });
+    }
+
+    private static void AddPersonalityTraitRows(List<UiTableRow> rows, JsonNode? node)
+    {
+        switch (node)
+        {
+            case JsonArray array:
+                foreach (var item in array)
+                    AddPersonalityTraitRows(rows, item);
+                break;
+            case JsonObject trait:
+                var name = FirstNonEmpty(
+                    GetNodeString(trait, "traitName"),
+                    GetNodeString(trait, "name"),
+                    GetNodeString(trait, "title"));
+                var details = JoinDetails(
+                    Prefix("Название черты", name),
+                    Prefix("Описание", GetNodeString(trait, "description")),
+                    Prefix("Сила черты", DescribeTraitValue(GetNodeString(trait, "value"))),
+                    Prefix("Смысл оценки", GetNodeString(trait, "valueDescription")),
+                    Prefix("Темперамент", GetNodeString(trait, "temperament")),
+                    Prefix("Мораль", DescribeAlignment(FirstNonEmpty(GetNodeString(trait, "morality"), GetNodeString(trait, "alignment")))),
+                    Prefix("Черты", GetNodeString(trait, "traits")));
+
+                if (!string.IsNullOrWhiteSpace(name) || !string.IsNullOrWhiteSpace(details))
+                    rows.Add(new UiTableRow { Cells = ["Черта характера", EmptyFallback(details)] });
+                break;
+        }
+    }
+
+    private static void AddMaskRows(List<UiTableRow> rows, JsonNode? node, string? activeMaskId)
+    {
+        switch (node)
+        {
+            case JsonArray array:
+                foreach (var item in array)
+                    AddMaskRows(rows, item, activeMaskId);
+                break;
+            case JsonObject mask:
+                if (!HasPlayerFacingMaskFields(mask))
+                    break;
+
+                var nestedMask = mask["mask"] as JsonObject;
+                var name = FirstNonEmpty(
+                    GetNodeString(mask, "maskName"),
+                    nestedMask == null ? null : GetNodeString(nestedMask, "maskName"),
+                    GetNodeString(mask, "activeMask"));
+                var isActive = IsMaskActive(mask, nestedMask, activeMaskId);
+                var details = JoinDetails(
+                    Prefix("Название маски", name),
+                    Prefix("Активность", DescribeMaskActivity(isActive)),
+                    Prefix("Описание", FirstNonEmpty(GetNodeString(mask, "description"), nestedMask == null ? null : GetNodeString(nestedMask, "description"))),
+                    Prefix("Поведение", FirstNonEmpty(GetNodeString(mask, "behavior"), nestedMask == null ? null : GetNodeString(nestedMask, "behavioralDirectives"))),
+                    Prefix("Триггер", FirstNonEmpty(GetNodeString(mask, "trigger"), GetNodeString(mask, "condition"))),
+                    Prefix("Архетип", FirstNonEmpty(GetNodeString(mask, "personalityArchetype"), nestedMask == null ? null : GetNodeString(nestedMask, "personalityArchetype"))),
+                    Prefix("Отношение", FirstNonEmpty(GetNodeString(mask, "attitude"), nestedMask == null ? null : GetNodeString(nestedMask, "attitude"))));
+
+                if (!string.IsNullOrWhiteSpace(name) || !string.IsNullOrWhiteSpace(details))
+                    rows.Add(new UiTableRow { Cells = ["Маска", EmptyFallback(details)] });
+                break;
+        }
+    }
+
+    private static bool HasPlayerFacingMaskFields(JsonObject mask) =>
+        HasAnyString(
+            mask,
+            "maskName",
+            "activeMask",
+            "description",
+            "behavior",
+            "trigger",
+            "condition",
+            "personalityArchetype",
+            "attitude",
+            "behavioralDirectives") ||
+        mask["mask"] is JsonObject nestedMask && HasAnyString(
+            nestedMask,
+            "maskName",
+            "description",
+            "behavior",
+            "trigger",
+            "condition",
+            "personalityArchetype",
+            "attitude",
+            "behavioralDirectives");
+
+    private static bool IsMaskActive(JsonObject mask, JsonObject? nestedMask, string? activeMaskId)
+    {
+        if (TryGetNodeBool(mask, "isActive", out var isActive))
+            return isActive;
+
+        if (string.IsNullOrWhiteSpace(activeMaskId))
+            return false;
+
+        return string.Equals(GetNodeString(mask, "maskId"), activeMaskId, StringComparison.OrdinalIgnoreCase) ||
+               nestedMask != null &&
+               string.Equals(GetNodeString(nestedMask, "maskId"), activeMaskId, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string DescribeMaskActivity(bool isActive) =>
+        isActive ? "активна" : "не активна";
+
+    private static string DescribeTraitValue(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        return int.TryParse(value, out var number)
+            ? $"{number}/10"
+            : value.Trim();
+    }
+
+    private static string DescribeCulturalStance(string? stance)
+    {
+        var value = stance?.Trim() ?? string.Empty;
+        return value.ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "pragmatist" => "Прагматик",
+            "conformist" => "Конформист",
+            "dissident" => "Инакомыслящий",
+            "traditionalist" => "Традиционалист",
+            "reformer" => "Реформатор",
+            _ => value
+        };
+    }
+
+    private static string DescribeAlignment(string? alignment)
+    {
+        var value = alignment?.Trim() ?? string.Empty;
+        return value.ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "lawful good" => "Законопослушный добрый",
+            "neutral good" => "Нейтральный добрый",
+            "chaotic good" => "Хаотичный добрый",
+            "lawful neutral" => "Законопослушный нейтральный",
+            "true neutral" => "Истинно нейтральный",
+            "neutral" => "Нейтральный",
+            "chaotic neutral" => "Хаотичный нейтральный",
+            "lawful evil" => "Законопослушный злой",
+            "neutral evil" => "Нейтральный злой",
+            "chaotic evil" => "Хаотичный злой",
+            _ => value
+        };
+    }
+
     private static List<string> ReadObjectiveDescriptions(JsonNode? node)
     {
         if (node is not JsonArray array)
@@ -582,6 +806,44 @@ internal static class NpcDetailSectionProjection
             return $"Шаг: {currentStep}/{totalSteps}";
 
         return string.Empty;
+    }
+
+    private static string DescribeFateCard(JsonObject card)
+    {
+        var state = TryGetNodeBool(card, "isUnlocked", out var unlocked)
+            ? unlocked ? "открыта" : "закрыта"
+            : string.Empty;
+
+        return JoinDetails(
+            Prefix("Название карты", FirstNonEmpty(GetNodeString(card, "name"), GetNodeString(card, "title"))),
+            Prefix("Описание", FirstNonEmpty(GetNodeString(card, "description"), GetNodeString(card, "summary"))),
+            Prefix("Редкость", GetNodeString(card, "rarity")),
+            Prefix("Состояние", state),
+            Prefix("Условия открытия", DescribeUnlockConditions(card["unlockConditions"])),
+            Prefix("Награда", DescribeNodeValue(card["rewards"])));
+    }
+
+    private static string DescribeUnlockConditions(JsonNode? node)
+    {
+        if (node is not JsonObject obj)
+            return DescribeNodeValue(node);
+
+        return JoinDetails(
+            Prefix("Требуемое отношение", GetNodeString(obj, "requiredRelationshipLevel")),
+            Prefix("Сюжетное условие", FirstNonEmpty(GetNodeString(obj, "plotConditionDescription"), GetNodeString(obj, "condition"), GetNodeString(obj, "description"))),
+            Prefix("Логика условий", DescribeConditionConjunction(GetNodeString(obj, "conjunction"))));
+    }
+
+    private static string DescribeConditionConjunction(string? conjunction)
+    {
+        var value = conjunction?.Trim() ?? string.Empty;
+        return value.ToUpperInvariant() switch
+        {
+            "" => string.Empty,
+            "AND" => "все условия",
+            "OR" => "любое условие",
+            _ => value
+        };
     }
 
     private static IReadOnlyList<UiBlock> BuildQuestDetailBlocks(
@@ -790,6 +1052,40 @@ internal static class NpcDetailSectionProjection
         return -1;
     }
 
+    private static bool TryGetNodeBool(JsonObject obj, string property, out bool value)
+    {
+        value = false;
+        var node = obj[property];
+        if (node is not JsonValue jsonValue)
+            return false;
+
+        if (jsonValue.TryGetValue<bool>(out value))
+            return true;
+        if (jsonValue.TryGetValue<string>(out var text) && bool.TryParse(text, out value))
+            return true;
+
+        return false;
+    }
+
+    private static NpcTradePresentation? BuildTradePresentation(JsonObject npc)
+    {
+        var tradeState = npc["tradeState"] as JsonObject;
+        var inventory = npc["tradeInventory"] as JsonObject;
+        var hasInventory = inventory?["items"] is JsonArray items && items.Count > 0;
+        var canTrade = tradeState != null &&
+                       TryGetNodeBool(tradeState, "canTrade", out var canTradeValue) &&
+                       canTradeValue;
+        var blockReason = tradeState == null ? string.Empty : GetNodeString(tradeState, "tradeBlockedReason");
+        if (!canTrade && !hasInventory && string.IsNullOrWhiteSpace(blockReason))
+            return null;
+
+        var merchantProfile = FirstNonEmpty(
+            tradeState == null ? null : GetNodeString(tradeState, "merchantProfile"),
+            inventory == null ? null : GetNodeString(inventory, "merchantProfile"));
+        var offerCount = inventory?["items"] is JsonArray offerItems ? offerItems.Count : 0;
+        return new NpcTradePresentation(canTrade, merchantProfile, blockReason ?? string.Empty, offerCount);
+    }
+
     private static bool TryGetScalarString(JsonNode node, out string value)
     {
         value = string.Empty;
@@ -926,7 +1222,14 @@ internal sealed record NpcDetailProjection(
     string NpcId,
     string NpcName,
     IReadOnlyList<NpcDetailSection> Sections,
-    IReadOnlyList<NpcQuestDetail> PersonalQuests);
+    IReadOnlyList<NpcQuestDetail> PersonalQuests,
+    NpcTradePresentation? Trade);
+
+internal sealed record NpcTradePresentation(
+    bool CanTrade,
+    string MerchantProfile,
+    string BlockReason,
+    int OfferCount);
 
 internal sealed record NpcQuestDetail(
     string Selector,

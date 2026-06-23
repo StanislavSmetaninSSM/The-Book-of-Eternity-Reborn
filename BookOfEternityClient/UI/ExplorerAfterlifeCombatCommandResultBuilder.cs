@@ -219,7 +219,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             blocks.Add(new UiTableBlock
             {
                 Title = "Видимые угрозы",
-                Columns = ["Угроза", "Область", "Масштаб", "Архетип", "Активность", "Давление", "Связи", "Подробно"],
+                Columns = ["Угроза", "Область", "Напряжённость угрозы", "Архетип", "Активность", "Давление", "Связи", "Подробно"],
                 Rows = visibleThreats
                     .Select(threat =>
                     {
@@ -408,7 +408,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             Panel("Духовный конфликт",
                 Grid(
-                    ("Активный конфликт", active == null ? "нет" : GetString(active, "conflictId", "unknown")),
+                    ("Активный конфликт", DescribeActiveConflict(active)),
                     ("Область", DescribeRealm(GetString(active, "realm", "?"))),
                     ("Модель сторон", DescribeSideModel(GetString(active, "sideModel", "?"))),
                     ("Позиция", DescribeConflictPosition(GetString(active, "conflictPosition", "contested"))),
@@ -500,7 +500,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             Panel("Журнал духовного боя",
                 Grid(
-                    ("Активный конфликт", active == null ? "нет" : GetString(active, "conflictId", "unknown")),
+                    ("Активный конфликт", DescribeActiveConflict(active)),
                     ("Обменов активного конфликта", exchangeLog.Count.ToString()),
                     ("Недавних завершённых конфликтов", recent.Count.ToString()),
                     ("Источник", "журнал духовного боя")))
@@ -550,7 +550,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 Rows = AfterlifeSpiritualConflictState.SpiritualArts
                     .Select(art => new UiTableRow
                     {
-                        Cells = [art.DisplayName, art.MechanicalUse, DescribeStrongAgainst(art.ArtId), DescribeCounteredBy(art.ArtId)]
+                        Cells = [DescribeArt(art.ArtId), art.MechanicalUse, DescribeStrongAgainst(art.ArtId), DescribeCounteredBy(art.ArtId)]
                     })
                     .ToList()
             });
@@ -599,44 +599,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     ("Режим браузера", "локальная прокачка доступна через форму")))
         };
 
-        blocks.Add(new UiTableBlock
-        {
-            Title = "Стандартные духовные искусства",
-            Columns = ["Искусство", "Тир", "Назначение", "Стоимость/темп"],
-            Rows = AfterlifeSpiritualConflictState.SpiritualArts
-                .Select(art => new UiTableRow
-                {
-                    Cells =
-                    [
-                        art.DisplayName,
-                        GetNumberOrString(standardArts, art.ArtId, "0"),
-                        art.MechanicalUse,
-                        DescribeArtCost(art.ArtId)
-                    ]
-                })
-                .ToList()
-        });
+        blocks.Add(BuildStandardSpiritualArtsDossier(standardArts));
 
         if (learnedSpecialArts is { Count: > 0 })
         {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Особые духовные искусства игрока",
-                Columns = ["Название", "Основа", "Тир", "Эффект", "Стоимость"],
-                Rows = learnedSpecialArts.OfType<JsonObject>()
-                    .Select(art => new UiTableRow
-                    {
-                        Cells =
-                        [
-                            GetString(art, "displayName", GetString(art, "artId", "Без названия")),
-                            DescribeArt(GetString(art, "baseOperation", "?")),
-                            GetNumberOrString(art, "tier", "0"),
-                            DescribeSpecialArtEffect(art),
-                            DescribeSpecialArtCost(art)
-                        ]
-                    })
-                    .ToList()
-            });
+            blocks.Add(BuildSpecialSpiritualArtsDossier(learnedSpecialArts));
         }
         else
         {
@@ -671,6 +638,155 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 }
             ]);
     }
+
+    private static UiEntityDossierBlock BuildStandardSpiritualArtsDossier(JsonObject? standardArts) =>
+        new()
+        {
+            EntityType = "spiritual-arts-standard",
+            Title = "Стандартные духовные искусства",
+            Summary = "Базовые приёмы духовного боя. Уровни уменьшают стоимость и расширяют тактические возможности.",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "standard-spiritual-arts",
+                    Title = "Приёмы",
+                    Icon = "sparkles",
+                    Presentation = "cards",
+                    CollectionLabel = $"{AfterlifeSpiritualConflictState.SpiritualArts.Count} искусств",
+                    Cards = AfterlifeSpiritualConflictState.SpiritualArts
+                        .Select(art => new UiEntityCard
+                        {
+                            Title = DescribeArt(art.ArtId),
+                            Subtitle = "Стандартный приём духовного боя",
+                            Icon = "sparkles",
+                            Summary = DescribeStandardArtUse(art.ArtId),
+                            Facts =
+                            [
+                                new UiEntityFact { Label = "Текущий тир", Value = GetNumberOrString(standardArts, art.ArtId, "0") },
+                                new UiEntityFact { Label = "Стоимость и темп", Value = DescribeArtCost(art.ArtId) },
+                                new UiEntityFact { Label = "Сильно против", Value = DescribeStrongAgainst(art.ArtId) },
+                                new UiEntityFact { Label = "Чем перекрывается", Value = DescribeCounteredBy(art.ArtId) }
+                            ],
+                            Hints =
+                            [
+                                new UiEntityHint
+                                {
+                                    Title = "Игровое применение",
+                                    Text = DescribeStandardArtUse(art.ArtId),
+                                    Tone = UiTone.Default
+                                }
+                            ]
+                        })
+                        .ToList()
+                }
+            ]
+        };
+
+    private static UiEntityDossierBlock BuildSpecialSpiritualArtsDossier(JsonArray learnedSpecialArts) =>
+        new()
+        {
+            EntityType = "spiritual-arts-special",
+            Title = "Особые духовные искусства игрока",
+            Summary = "Уникальные приёмы души. Их эффект читается отдельно от стоимости и боевых ограничений.",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "special-spiritual-arts",
+                    Title = "Изученные особые искусства",
+                    Icon = "sparkles",
+                    Presentation = "cards",
+                    CollectionLabel = $"{learnedSpecialArts.Count} искусств",
+                    Cards = learnedSpecialArts.OfType<JsonObject>().Select(BuildSpecialSpiritualArtCard).ToList()
+                }
+            ]
+        };
+
+    private static UiEntityCard BuildSpecialSpiritualArtCard(JsonObject art)
+    {
+        var combatEffect = art["combatEffect"] as JsonObject;
+        var effectSummary = SafePlayerText(GetString(art, "effectSummary", ""), "эффект не описан");
+        var combatSummary = SafePlayerText(GetString(combatEffect, "summary", ""), string.Empty);
+
+        var facts = new List<UiEntityFact>
+        {
+            new() { Label = "Основа", Value = DescribeArt(GetString(art, "baseOperation", "?")) },
+            new() { Label = "Тир", Value = GetNumberOrString(art, "tier", "0") },
+            new() { Label = "Стоимость", Value = DescribeSpecialArtCost(art) }
+        };
+
+        if (combatEffect != null)
+        {
+            AddSpecialArtCombatFact(facts, "Триггер", DescribeArt(GetString(combatEffect, "trigger", "")));
+            AddSpecialArtCombatFact(facts, "Выигрыш", DescribeSpecialArtPayoff(GetString(combatEffect, "allowedPayoff", "")));
+            AddSpecialArtCombatFact(facts, "Предел", DescribeSpecialArtLimit(GetString(combatEffect, "limit", "")));
+        }
+
+        var hints = new List<UiEntityHint>
+        {
+            new() { Title = "Эффект", Text = effectSummary, Tone = UiTone.Default }
+        };
+        if (!string.IsNullOrWhiteSpace(combatSummary))
+            hints.Add(new UiEntityHint { Title = "В духовном бою", Text = combatSummary, Tone = UiTone.Accent });
+
+        return new UiEntityCard
+        {
+            Title = DescribeSpecialArtTitle(art),
+            Subtitle = DescribeArt(GetString(art, "baseOperation", "?")),
+            Icon = "sparkles",
+            Summary = effectSummary,
+            Facts = facts,
+            Hints = hints
+        };
+    }
+
+    private static void AddSpecialArtCombatFact(List<UiEntityFact> facts, string label, string value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value == "?")
+            return;
+
+        facts.Add(new UiEntityFact { Label = label, Value = value });
+    }
+
+    private static string DescribeSpecialArtPayoff(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "position" => "позиционное преимущество",
+            "strain" => "изменение напряжения",
+            "guard" => "защитная позиция",
+            "defense" => "защитная позиция",
+            "pressure" => "усиление давления",
+            "counter" => "контрприём",
+            "maneuver" => "манёвр",
+            "binding" => "оковы",
+            "break_binding" => "разрыв оков",
+            _ => SafePlayerText(value, string.Empty)
+        };
+
+    private static string DescribeSpecialArtTitle(JsonObject art)
+    {
+        var title = GetString(art, "displayName", "");
+        if (!string.IsNullOrWhiteSpace(title))
+        {
+            var described = DescribeArt(title);
+            if (!string.Equals(described, title, StringComparison.OrdinalIgnoreCase))
+                return described;
+
+            return SafePlayerText(title, title);
+        }
+
+        return SafePlayerText(GetString(art, "artId", "Без названия"), "Без названия");
+    }
+
+    private static string DescribeSpecialArtLimit(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "once_per_exchange" => "один раз за обмен",
+            "once_per_conflict" => "один раз за конфликт",
+            "once_per_turn" => "один раз за ход",
+            _ => SafePlayerText(value, string.Empty)
+        };
 
     private static ExplorerCommandResult BuildProfileDetail(
         string command,
@@ -737,7 +853,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             Panel($"Угроза посмертия: {name}",
                 Grid(
                     ("Область", DescribeRealm(GetString(threat, "realm", "?"))),
-                    ("Масштаб", GetNumberOrString(threat, "intensity", "0")),
+                    ("Напряжённость угрозы", GetNumberOrString(threat, "intensity", "0")),
                     ("Архетип", DescribeThreatArchetype(threat["threatArchetype"] as JsonObject)),
                     ("Активность", DescribeThreatActivity(threat["currentActivity"] as JsonObject)),
                     ("Давление", DescribeThreatImpact(threat["impactProfile"] as JsonObject)),
@@ -1959,6 +2075,18 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         return links.Count == 0 ? "нет" : string.Join("; ", links);
     }
 
+    private static string DescribeActiveConflict(JsonObject? active)
+    {
+        if (active == null)
+            return "нет";
+
+        var displayName = FirstSafePlayerText(
+            GetString(active, "displayName", ""),
+            GetString(active, "title", ""),
+            GetString(active, "summary", ""));
+        return string.IsNullOrWhiteSpace(displayName) ? "идёт" : displayName;
+    }
+
     private static bool IsSarefThreatLinkVisible(JsonObject sarefLink)
     {
         var visibility = GetString(sarefLink, "visibility", "");
@@ -3054,9 +3182,14 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             GetString(exchange, "displayName", ""));
 
     private static string SpiritualExchangeDisplayName(JsonObject exchange, string fallback) =>
-        SafePlayerText(
-            FirstNonEmpty(GetString(exchange, "displayName", ""), SpiritualExchangeSelector(exchange), fallback),
-            SafePlayerText(fallback, "обмен"));
+        BuildSpiritualDisplayLabel(
+            FirstNonEmpty(
+                GetString(exchange, "displayName", ""),
+                JoinNonEmpty(": ", DescribeArt(GetString(exchange, "operationType", "")), GetString(exchange, "resultSummary", "")),
+                JoinNonEmpty(": ", DescribeArt(GetString(exchange, "operationType", "")), GetString(exchange, "summary", "")),
+                DescribeArt(GetString(exchange, "operationType", ""))),
+            fallback,
+            "обмен");
 
     private static JsonObject? FindSpiritualExchange(IEnumerable<JsonObject> exchanges, string selector)
     {
@@ -3082,9 +3215,56 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             GetString(conflict, "displayName", ""));
 
     private static string RecentConflictDisplayName(JsonObject conflict, string fallback) =>
-        SafePlayerText(
-            FirstNonEmpty(GetString(conflict, "displayName", ""), RecentConflictSelector(conflict), fallback),
-            SafePlayerText(fallback, "итог"));
+        BuildSpiritualDisplayLabel(
+            FirstNonEmpty(
+                GetString(conflict, "displayName", ""),
+                JoinNonEmpty(": ", DescribePlayerOutcome(GetString(conflict, "playerOutcome", GetString(conflict, "outcome", ""))), GetString(conflict, "resolutionSummary", "")),
+                JoinNonEmpty(": ", DescribeArt(GetString(conflict, "operationType", "")), GetString(conflict, "rewardSummary", "")),
+                DescribePlayerOutcome(GetString(conflict, "playerOutcome", GetString(conflict, "outcome", "")))),
+            fallback,
+            "итог");
+
+    private static string BuildSpiritualDisplayLabel(string candidate, string fallback, string genericLabel)
+    {
+        var safeCandidate = SafePlayerText(candidate, string.Empty);
+        if (!string.IsNullOrWhiteSpace(safeCandidate) && !IsLikelySpiritualIdentifier(safeCandidate))
+            return CompactSpiritualLabel(safeCandidate);
+
+        var safeFallback = SafePlayerText(fallback, string.Empty);
+        return !string.IsNullOrWhiteSpace(safeFallback) && !IsLikelySpiritualIdentifier(safeFallback)
+            ? CompactSpiritualLabel(safeFallback)
+            : genericLabel;
+    }
+
+    private static string CompactSpiritualLabel(string value)
+    {
+        var singleLine = string.Join(' ', value.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+        return singleLine.Length <= 96 ? singleLine : singleLine[..93] + "...";
+    }
+
+    private static string JoinNonEmpty(string separator, params string?[] values)
+    {
+        var parts = values
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Select(static value => value!.Trim())
+            .ToArray();
+        return parts.Length == 0 ? string.Empty : string.Join(separator, parts);
+    }
+
+    private static bool IsLikelySpiritualIdentifier(string value)
+    {
+        var trimmed = value.Trim();
+        if (!trimmed.Contains('_', StringComparison.Ordinal) &&
+            !trimmed.Contains("::", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return trimmed.All(static ch =>
+            ch is '_' or '-' or ':' ||
+            char.IsAsciiLetterLower(ch) ||
+            char.IsAsciiDigit(ch));
+    }
 
     private static JsonObject? FindRecentConflict(IEnumerable<JsonObject> conflicts, string selector)
     {
@@ -3124,10 +3304,13 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             GetString(art, "id", ""),
             GetString(art, "displayName", ""));
 
-    private static string SpecialArtDisplayName(JsonObject art, string fallback) =>
-        SafePlayerText(
-            FirstNonEmpty(GetString(art, "displayName", ""), SpecialArtSelector(art), fallback),
-            SafePlayerText(fallback, "особое искусство"));
+    private static string SpecialArtDisplayName(JsonObject art, string fallback)
+    {
+        var title = DescribeSpecialArtTitle(art);
+        return string.IsNullOrWhiteSpace(title)
+            ? SafePlayerText(fallback, "особое искусство")
+            : title;
+    }
 
     private static JsonObject? FindSpecialArt(JsonArray? learnedSpecialArts, string selector)
     {

@@ -436,11 +436,8 @@ public sealed class BrowserShiningPoliticsParityTests : IDisposable
         var result = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest("/help"));
 
         var text = CollectResultAndPromptText(result);
-        Assert.Contains("/shining_faction_founding", text, StringComparison.Ordinal);
-        Assert.Contains("/shining_faction_realignment", text, StringComparison.Ordinal);
-        Assert.Contains("/shining_faction_leadership", text, StringComparison.Ordinal);
         Assert.Contains("основание", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("перестрой", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("переход", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("глав", text, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -723,9 +720,7 @@ public sealed class BrowserShiningPoliticsParityTests : IDisposable
     }
 
     private static string CollectResultAndPromptText(ExplorerCommandResult result) =>
-        CollectBlockText(result.Blocks) + "\n" +
-        string.Join("\n", result.Prompts.Select(CollectPromptText)) + "\n" +
-        string.Join("\n", result.Notifications.Select(notification => $"{notification.Title}\n{notification.Message}"));
+        UiTestTextCollector.CollectResultAndPromptText(result);
 
     private static string CollectPromptText(UiPrompt prompt)
     {

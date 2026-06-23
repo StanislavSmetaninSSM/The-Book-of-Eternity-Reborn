@@ -216,13 +216,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     ("Равновесие", EmptyFallback(state.PlayerStatus.PoisePercentage))))
         };
 
-        await AddStatsTableIfPresent(
+        await AddStatsBlockIfPresent(
             blocks,
             fs,
             "game_state/misc/characteristics.json",
             "Базовые характеристики",
             TranslateBaseCharacteristicKey);
-        await AddStatsTableIfPresent(
+        await AddStatsBlockIfPresent(
             blocks,
             fs,
             "game_state/player/computed_characteristics.json",
@@ -231,7 +231,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks);
     }
 
-    private static async Task AddStatsTableIfPresent(
+    private static async Task AddStatsBlockIfPresent(
         List<UiBlock> blocks,
         FileSystemManager fs,
         string path,
@@ -248,43 +248,21 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return;
         }
 
-        if (string.Equals(title, "Расчётные показатели", StringComparison.OrdinalIgnoreCase))
+        var structuredBlock = BuildStructuredStatsDossier(obj, title, translateKey);
+        if (structuredBlock != null)
         {
-            var structuredBlock = BuildStructuredStatsPanel(obj, title, translateKey);
-            if (structuredBlock != null)
-            {
-                blocks.Add(structuredBlock);
-                return;
-            }
-        }
-
-        var rows = EnumerateStatsProperties(obj)
-            .Where(static property => !IsTechnicalStatsProperty(property.Key))
-            .Select(property => new UiTableRow
-            {
-                Cells = [translateKey(property.Key), FormatStatsValue(property.Value, property.Key)]
-            })
-            .Where(static row => row.Cells.Count >= 2 && !string.IsNullOrWhiteSpace(row.Cells[1]))
-            .ToList();
-
-        if (rows.Count == 0)
+            blocks.Add(structuredBlock);
             return;
-
-        blocks.Add(new UiTableBlock
-        {
-            Title = title,
-            Columns = ["Показатель", "Значение"],
-            Rows = rows
-        });
+        }
     }
 
-    private static UiPanelBlock? BuildStructuredStatsPanel(
+    private static UiEntityDossierBlock? BuildStructuredStatsDossier(
         JsonObject obj,
         string title,
         Func<string, string> translateKey)
     {
-        var scalarRows = new List<UiTableRow>();
-        var sectionBlocks = new List<UiBlock>();
+        var scalarItems = new List<UiKeyValueItem>();
+        var sections = new List<UiEntityDossierSection>();
 
         foreach (var property in EnumerateStatsProperties(obj).Where(static property => !IsTechnicalStatsProperty(property.Key)))
         {
@@ -293,23 +271,17 @@ public static class ExplorerMortalWorldCommandResultBuilder
             {
                 case JsonObject nested:
                 {
-                    var grid = BuildStatsObjectGrid(nested);
-                    if (grid != null)
-                    {
-                        sectionBlocks.Add(new UiPanelBlock
-                        {
-                            Title = label,
-                            Blocks = [grid]
-                        });
-                    }
+                    var section = BuildStatsObjectSection(label, nested);
+                    if (section != null)
+                        sections.Add(section);
 
                     break;
                 }
                 case JsonArray array:
                 {
-                    var arrayBlock = BuildStatsArrayPanel(label, array, property.Key);
-                    if (arrayBlock != null)
-                        sectionBlocks.Add(arrayBlock);
+                    var section = BuildStatsArraySection(label, array, property.Key);
+                    if (section != null)
+                        sections.Add(section);
                     break;
                 }
                 default:
@@ -317,9 +289,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     var value = FormatStatsValue(property.Value, property.Key);
                     if (!string.IsNullOrWhiteSpace(value))
                     {
-                        scalarRows.Add(new UiTableRow
+                        scalarItems.Add(new UiKeyValueItem
                         {
-                            Cells = [label, value]
+                            Key = label,
+                            Value = value
                         });
                     }
 
@@ -328,31 +301,69 @@ public static class ExplorerMortalWorldCommandResultBuilder
             }
         }
 
-        var blocks = new List<UiBlock>();
-        if (scalarRows.Count > 0)
+        if (scalarItems.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Insert(0, new UiEntityDossierSection
             {
+                Id = "primary",
                 Title = "Основные показатели",
-                Columns = ["Показатель", "Значение"],
-                Rows = scalarRows
+                Summary = "Короткие числовые параметры без дополнительных условий.",
+                Icon = "stats",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = scalarItems }]
             });
         }
 
-        blocks.AddRange(sectionBlocks);
-        return blocks.Count == 0
+        return sections.Count == 0
             ? null
-            : new UiPanelBlock
+            : new UiEntityDossierBlock
             {
+                EntityType = "stats",
                 Title = title,
-                Blocks = blocks
+                Subtitle = string.Equals(title, "Базовые характеристики", StringComparison.OrdinalIgnoreCase)
+                    ? "Основа персонажа"
+                    : "Расчётные значения персонажа",
+                Summary = string.Equals(title, "Базовые характеристики", StringComparison.OrdinalIgnoreCase)
+                    ? "Постоянная основа, от которой считаются проверки и производные параметры."
+                    : "Итоговые параметры с учетом снаряжения, эффектов и временных модификаторов.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = string.Equals(title, "Базовые характеристики", StringComparison.OrdinalIgnoreCase)
+                            ? "База"
+                            : "Расчёт",
+                        Tone = UiTone.Accent,
+                        Icon = "stats"
+                    }
+                ],
+                Sections = sections
             };
     }
 
-    private static UiPanelBlock? BuildStatsArrayPanel(string title, JsonArray array, string fieldName)
+    private static UiEntityDossierSection? BuildStatsObjectSection(string title, JsonObject obj)
+    {
+        var grid = BuildStatsObjectGrid(obj);
+        if (grid == null)
+            return null;
+
+        return new UiEntityDossierSection
+        {
+            Id = StableId(title),
+            Title = title,
+            Summary = "Показатели этой группы разложены по отдельным полям.",
+            Icon = "stats",
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Blocks = [grid]
+        };
+    }
+
+    private static UiEntityDossierSection? BuildStatsArraySection(string title, JsonArray array, string fieldName)
     {
         var listItems = new List<string>();
-        var panelItems = new List<UiBlock>();
+        var sectionBlocks = new List<UiBlock>();
         var index = 0;
 
         foreach (var item in array)
@@ -360,15 +371,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
             index++;
             if (item is JsonObject obj)
             {
-                var grid = BuildStatsObjectGrid(obj);
-                if (grid != null)
-                {
-                    panelItems.Add(new UiPanelBlock
-                    {
-                        Title = $"Запись {index}",
-                        Blocks = [grid]
-                    });
-                }
+                var card = BuildStatsNestedDossier($"{title}: запись {index}", fieldName, obj);
+                if (card != null)
+                    sectionBlocks.Add(card);
 
                 continue;
             }
@@ -378,18 +383,48 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 listItems.Add(value);
         }
 
-        var blocks = new List<UiBlock>();
         if (listItems.Count > 0)
-            blocks.Add(new UiListBlock { Items = listItems });
-        blocks.AddRange(panelItems);
+            sectionBlocks.Insert(0, new UiListBlock { Items = listItems });
 
-        return blocks.Count == 0
+        return sectionBlocks.Count == 0
             ? null
-            : new UiPanelBlock
+            : new UiEntityDossierSection
             {
+                Id = StableId(title),
                 Title = title,
-                Blocks = blocks
+                Summary = "Каждая запись показана отдельно, чтобы не склеивать несколько полей в одну строку.",
+                Icon = "stats",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = sectionBlocks
             };
+    }
+
+    private static UiEntityDossierBlock? BuildStatsNestedDossier(string title, string entityType, JsonObject obj)
+    {
+        var grid = BuildStatsObjectGrid(obj);
+        if (grid == null)
+            return null;
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = string.IsNullOrWhiteSpace(entityType) ? "stats-entry" : entityType,
+            Title = title,
+            Subtitle = "Запись",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "fields",
+                    Title = "Поля",
+                    Summary = "Игровые данные записи без технических ключей.",
+                    Icon = "stats",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = [grid]
+                }
+            ]
+        };
     }
 
     private static UiKeyValueGridBlock? BuildStatsObjectGrid(JsonObject obj)
@@ -456,7 +491,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 .Select(item => FormatStatsValue(item, fieldName))
                 .Where(static value => !string.IsNullOrWhiteSpace(value))
                 .ToList();
-            return values.Count == 0 ? $"{array.Count} записей" : string.Join("; ", values);
+            return values.Count == 0 ? $"{array.Count} записей" : string.Join("\n", values);
         }
 
         if (node is JsonObject obj)
@@ -466,7 +501,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 .Select(static property => $"{TranslateComputedCharacteristicKey(property.Key)}: {FormatStatsValue(property.Value, property.Key)}")
                 .Where(static value => !string.IsNullOrWhiteSpace(value))
                 .ToList();
-            return values.Count == 0 ? string.Empty : string.Join("; ", values);
+            return values.Count == 0 ? string.Empty : string.Join("\n", values);
         }
 
         return string.Empty;
@@ -545,6 +580,19 @@ public static class ExplorerMortalWorldCommandResultBuilder
             .Trim();
     }
 
+    private static string StableId(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "section";
+
+        var chars = value
+            .Trim()
+            .Select(static ch => char.IsLetterOrDigit(ch) ? char.ToLowerInvariant(ch) : '-')
+            .ToArray();
+        var id = new string(chars).Trim('-');
+        return string.IsNullOrWhiteSpace(id) ? "section" : id;
+    }
+
     private static async Task<ExplorerCommandResult> BuildMap(string command, FileSystemManager fs)
     {
         var map = await LocalMapViewService.BuildCurrentRealmMapAsync(fs);
@@ -555,37 +603,66 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Title = "Карта",
                 Map = map
             },
-            new UiTableBlock
-            {
-                Title = "Сводка карты",
-                Columns = ["Показатель", "Значение"],
-                Rows =
-                [
-                    new UiTableRow { Cells = ["Царство", ExplorerPlayerFacingLabels.Realm(map.Realm)] },
-                    new UiTableRow { Cells = ["Локаций", map.Nodes.Count.ToString()] },
-                    new UiTableRow { Cells = ["Связей", map.Links.Count.ToString()] },
-                    new UiTableRow { Cells = ["Уровней z", map.ZLevels.Count.ToString()] }
-                ]
-            }
+            BuildMapSummaryDossier(map)
         };
 
-        if (string.Equals(map.Realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase))
-        {
-            await AddRawJsonIfPresent(blocks, fs, "game_state/meta/soul_state.json", "JSON: soul_state");
-            await AddRawJsonIfPresent(blocks, fs, "game_state/meta/guardians.json", "JSON: guardians");
-        }
-        else if (string.Equals(map.Realm, "Shining Abode", StringComparison.OrdinalIgnoreCase))
-        {
-            await AddRawJsonIfPresent(blocks, fs, "game_state/meta/soul_state.json", "JSON: soul_state");
-            await AddRawJsonIfPresent(blocks, fs, "game_state/meta/shining_abode_state.json", "JSON: shining_abode_state");
-        }
-        else
-        {
-            await AddRawJsonIfPresent(blocks, fs, "game_state/world/current_location.json", "JSON: current_location");
-            await AddRawJsonIfPresent(blocks, fs, "game_state/world/world_map.json", "JSON: world_map");
-        }
-
         return Completed(command, blocks);
+    }
+
+    private static UiEntityDossierBlock BuildMapSummaryDossier(MapViewDto map)
+    {
+        var currentNode = map.Nodes.FirstOrDefault(node => node.IsCurrent)
+            ?? map.Nodes.FirstOrDefault(node => string.Equals(node.Id, map.CurrentNodeId, StringComparison.OrdinalIgnoreCase));
+        var knownLocations = map.Nodes.Count(static node => !node.IsPlaceholder);
+        var plannedExits = map.Nodes.Count(static node => node.IsPlaceholder);
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Царство", Value = ExplorerPlayerFacingLabels.Realm(map.Realm) },
+            new() { Key = "Текущая точка", Value = FirstNonEmpty(currentNode?.Label, ExplorerPlayerFacingLabels.CurrentMapNode(map)) },
+            new() { Key = "Созданные локации", Value = knownLocations.ToString() },
+            new() { Key = "Намеченные выходы", Value = plannedExits.ToString() },
+            new() { Key = "Переходы", Value = map.Links.Count.ToString() },
+            new() { Key = "Уровни высоты", Value = map.ZLevels.Count.ToString() }
+        };
+
+        if (map.Regions.Count > 0)
+            facts.Add(new UiKeyValueItem { Key = "Области влияния", Value = map.Regions.Count.ToString() });
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "map-summary",
+            Title = "Сводка карты",
+            Subtitle = ExplorerPlayerFacingLabels.Realm(map.Realm),
+            Summary = "Карта показывает уже созданные места отдельно от выходов, которые только намечены текущей сценой.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeInventoryCount(knownLocations, "локация", "локации", "локаций"),
+                    Tone = UiTone.Accent,
+                    Icon = "map"
+                },
+                new UiEntityBadge
+                {
+                    Label = DescribeInventoryCount(plannedExits, "выход", "выхода", "выходов"),
+                    Tone = plannedExits > 0 ? UiTone.Warning : UiTone.Muted,
+                    Icon = "route"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "summary",
+                    Title = "Ориентиры",
+                    Summary = "Ключевые числа карты без технических исходников.",
+                    Icon = "map",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildEffects(
@@ -627,25 +704,63 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return Completed(command, BuildEffectDetailBlocks(selected), BuildEffectsBackActions(commandToken));
         }
 
+        var sections = new List<UiEntityDossierSection>();
         var rows = BuildEffectsSummaryRows(read, specs);
         if (rows.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
-                Title = title,
-                Columns = ["Раздел", "Состояние"],
-                Rows = rows
+                Id = "summary",
+                Title = "Сводка",
+                Summary = "Сколько эффектов, ран и временных состояний сейчас видно игроку.",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
+                [
+                    new UiKeyValueGridBlock
+                    {
+                        Items = rows
+                            .Where(static row => row.Cells.Count >= 2)
+                            .Select(static row => new UiKeyValueItem { Key = row.Cells[0], Value = row.Cells[1] })
+                            .ToList()
+                    }
+                ]
             });
         }
 
-        var detailRows = BuildEffectDetailRows(read.Node);
-        if (detailRows.Count > 0)
+        if (effectEntries.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
-                Title = "Подробности эффектов",
-                Columns = ["Раздел", "Название", "Описание", "Длительность"],
-                Rows = detailRows
+                Id = "active-effects",
+                Title = "Активные записи",
+                Summary = "Краткие карточки эффектов. Полные данные открываются отдельным действием.",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = effectEntries.Select(static effect => (UiBlock)BuildEffectOverviewCard(effect)).ToList()
+            });
+        }
+
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "effects",
+                Title = title,
+                Subtitle = "Состояния персонажа",
+                Summary = "Список видимых эффектов, ран и временных состояний.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = DescribeInventoryCount(effectEntries.Count, "запись", "записи", "записей"),
+                        Tone = effectEntries.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                        Icon = "effect"
+                    }
+                ],
+                Sections = sections
             });
         }
 
@@ -655,12 +770,57 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (blocks.Count == 0)
             blocks.Add(Message(UiNotificationSeverity.Info, title, "Данные ещё не созданы."));
 
-        if (read.Node != null)
-            blocks.Add(Raw("Полная запись эффектов", read.Node));
-        else if (read.FileExists && !string.IsNullOrWhiteSpace(read.Error))
+        if (read.FileExists && read.Node == null && !string.IsNullOrWhiteSpace(read.Error))
             blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Запись эффектов найдена, но не разобрана как JSON. {read.Error}"));
 
         return Completed(command, blocks, ExplorerMortalEffectDetailActions.Build(commandToken, read.Node));
+    }
+
+    private static UiEntityDossierBlock BuildEffectOverviewCard(ExplorerMortalEffectDetailActions.EffectSnapshot effect)
+    {
+        var description = FirstNonEmpty(
+            GetNodeString(effect.Node, "effectDescription"),
+            GetNodeString(effect.Node, "description"),
+            GetNodeString(effect.Node, "summary"),
+            GetNodeString(effect.Node, "source"));
+        var duration = FirstNonEmpty(
+            GetNodeString(effect.Node, "duration"),
+            GetNodeString(effect.Node, "expiresAt"));
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = effect.Section }
+        };
+        AddInventoryFact(facts, "Длительность", duration);
+        AddInventoryFact(facts, "Источник", GetNodeString(effect.Node, "source"));
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "effect-summary",
+            Title = effect.Name,
+            Subtitle = effect.Section,
+            Summary = FirstNonEmpty(description, duration, "Подробности доступны в карточке эффекта."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = effect.Section,
+                    Tone = UiTone.Accent,
+                    Icon = "effect"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "effect",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
     }
 
     private static List<UiTableRow> BuildEffectsSummaryRows(JsonReadResult read, IReadOnlyList<SummarySpec> specs)
@@ -791,13 +951,42 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 UiNotificationSeverity.Info,
                 "Эффекты",
                 MortalStatusEffectFallback.Message),
-            new UiTableBlock
+            new UiEntityDossierBlock
             {
+                EntityType = "visible-status-effects",
                 Title = "Видимые состояния",
-                Columns = ["Раздел", "Подробности"],
-                Rows = rows
-                    .Select(static row => new UiTableRow { Cells = [row.Label, row.Details] })
-                    .ToList()
+                Subtitle = "Самочувствие персонажа",
+                Summary = "Эти состояния уже видны в статусе персонажа, но для них ещё нет отдельной полной записи эффекта.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = DescribeInventoryCount(rows.Count, "запись", "записи", "записей"),
+                        Tone = UiTone.Warning,
+                        Icon = "effect"
+                    }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "visible-status",
+                        Title = "Что чувствует персонаж",
+                        Summary = "Краткая расшифровка состояний без технического файла эффектов.",
+                        Icon = "effect",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks =
+                        [
+                            new UiKeyValueGridBlock
+                            {
+                                Items = rows
+                                    .Select(static row => new UiKeyValueItem { Key = row.Label, Value = row.Details })
+                                    .ToList()
+                            }
+                        ]
+                    }
+                ]
             }
         ];
     }
@@ -834,13 +1023,14 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static IReadOnlyList<UiBlock> BuildEffectDetailBlocks(ExplorerMortalEffectDetailActions.EffectSnapshot effect)
     {
         var blocks = new List<UiBlock>();
-        var detailBlocks = new List<UiBlock>();
+        var sections = new List<UiEntityDossierSection>();
+        var overviewBlocks = new List<UiBlock>();
         var description = FirstNonEmpty(
             GetNodeString(effect.Node, "effectDescription"),
             GetNodeString(effect.Node, "description"),
             GetNodeString(effect.Node, "summary"));
         if (!string.IsNullOrWhiteSpace(description))
-            detailBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
+            overviewBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
 
         var facts = new List<UiKeyValueItem>
         {
@@ -852,31 +1042,86 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInventoryFact(facts, "Серьёзность", TranslateEffectSeverity(GetNodeString(effect.Node, "severity")));
         AddInventoryFact(facts, "Состояние", FirstNonEmpty(GetNodeString(effect.Node, "status"), GetNodeString(effect.Node, "state")));
         if (facts.Count > 0)
-            detailBlocks.Add(new UiKeyValueGridBlock { Items = facts });
+            overviewBlocks.Add(new UiKeyValueGridBlock { Items = facts });
 
-        AddStructuredBonusBlock(detailBlocks, effect.Node["structuredBonuses"] as JsonArray);
+        if (overviewBlocks.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "overview",
+                Title = "Сведения",
+                Summary = "Основные игровые свойства эффекта.",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = overviewBlocks
+            });
+        }
+
+        AddStructuredBonusSection(sections, effect.Node["structuredBonuses"] as JsonArray);
+
+        var detailBlocks = new List<UiBlock>();
         AddInventoryCombatEffectBlock(detailBlocks, effect.Node["combatEffect"]);
         AddInventoryCustomPropertiesBlock(detailBlocks, effect.Node["customProperties"]);
+        if (detailBlocks.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "details",
+                Title = "Дополнительно",
+                Summary = "Боевые и особые свойства эффекта.",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = detailBlocks
+            });
+        }
 
         var hiddenNotes = CollectEffectNarrativeEntries(effect.Node["notes"])
             .Concat(CollectEffectNarrativeEntries(effect.Node["journalEntries"]))
             .ToList();
         if (hiddenNotes.Count > 0)
         {
-            detailBlocks.Add(new UiPanelBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "notes",
                 Title = "Заметки",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
                 Blocks = hiddenNotes.Select(static note => (UiBlock)new UiTextBlock { Text = note, Tone = UiTone.Muted }).ToList()
             });
         }
 
-        if (detailBlocks.Count == 0)
-            detailBlocks.Add(new UiTextBlock { Text = "Подробности эффекта пока не заполнены.", Tone = UiTone.Muted });
-
-        blocks.Add(new UiPanelBlock
+        if (sections.Count == 0)
         {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "empty",
+                Title = "Сведения",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiTextBlock { Text = "Подробности эффекта пока не заполнены.", Tone = UiTone.Muted }]
+            });
+        }
+
+        blocks.Add(new UiEntityDossierBlock
+        {
+            EntityType = "effect",
             Title = $"{effect.Section}: {effect.Name}",
-            Blocks = detailBlocks
+            Subtitle = effect.Section,
+            Summary = description,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = effect.Section,
+                    Tone = UiTone.Accent,
+                    Icon = "effect"
+                }
+            ],
+            Sections = sections
         });
         blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /эффекты.", Tone = UiTone.Muted });
         return blocks;
@@ -979,7 +1224,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         reads["game_state/npcs/npc_fate_cards.json"] = await ReadJson(fs, "game_state/npcs/npc_fate_cards.json");
 
         var blocks = new List<UiBlock>();
-        var summaryRows = NpcDetailSectionProjection.BuildNpcOverviewRows(coreRead.Node).ToList();
+        var npcNames = EnumerateNpcCoreDisplayNames(coreRead.Node).ToList();
+        var summaryItems = BuildNpcOverviewItems(npcNames).ToList();
         foreach (var spec in specs)
         {
             var read = reads[spec.Path];
@@ -987,19 +1233,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
             if (status == "отсутствует")
                 continue;
 
-            summaryRows.Add(new UiTableRow
+            summaryItems.Add(new UiKeyValueItem
             {
-                Cells = [spec.Label, status]
-            });
-        }
-
-        if (summaryRows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Персонажи",
-                Columns = ["Раздел", "Состояние"],
-                Rows = summaryRows
+                Key = spec.Label,
+                Value = status
             });
         }
 
@@ -1053,6 +1290,24 @@ public static class ExplorerMortalWorldCommandResultBuilder
             ], BuildNpcBackActions(commandToken));
         }
 
+        if (sectionRequest.Kind == NpcSectionDetailKind.Profile)
+        {
+            var selected = FindNpcProjection(projections, sectionRequest.NpcSelector);
+            if (selected == null)
+            {
+                return Completed(command, [
+                    Message(UiNotificationSeverity.Warning, "Персонажи", "Такой персонаж не найден.")
+                ], BuildNpcBackActions(commandToken));
+            }
+
+            return Completed(
+                command,
+                [BuildNpcOverviewCard(commandToken, selected, includePrimaryAction: false)],
+                BuildNpcSectionActions(commandToken, [selected])
+                    .Concat(BuildNpcBackActions(commandToken))
+                    .ToList());
+        }
+
         if (sectionRequest.Kind == NpcSectionDetailKind.Section)
         {
             var selected = FindNpcSection(projections, sectionRequest.NpcSelector, sectionRequest.SectionSelector);
@@ -1072,11 +1327,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return Completed(command, BuildNpcSectionDetailBlocks(selected.Value.Projection, selected.Value.Section), actions);
         }
 
-        if (projections.Count > 0)
-        {
-            blocks.Add(NpcDetailSectionProjection.BuildSectionSummaryTable(projections));
-            blocks.AddRange(projections.SelectMany(static projection => projection.Sections.SelectMany(static section => section.Blocks)));
-        }
+        blocks.AddRange(BuildNpcOverviewBlocks(commandToken, summaryItems, projections, npcNames));
 
         foreach (var read in reads.Values)
         {
@@ -1088,6 +1339,695 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Info, "Персонажи", "Данные ещё не созданы."));
 
         return Completed(command, blocks, BuildNpcSectionActions(commandToken, projections));
+    }
+
+    private static IReadOnlyList<UiBlock> BuildNpcOverviewBlocks(
+        string commandToken,
+        IReadOnlyList<UiKeyValueItem> summaryItems,
+        IReadOnlyList<NpcDetailProjection> projections,
+        IReadOnlyList<string> npcNames)
+    {
+        var blocks = new List<UiBlock>();
+        var projectedNames = projections
+            .Select(static projection => projection.NpcName)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var npcCards = new List<UiBlock>();
+        npcCards.AddRange(projections.Select(projection => BuildNpcOverviewCard(commandToken, projection, includePrimaryAction: true)));
+        npcCards.AddRange(npcNames
+            .Where(npcName => !projectedNames.Contains(npcName))
+            .Select(npcName => BuildNpcOverviewCard(commandToken, npcName)));
+
+        if (npcCards.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "npc-collection",
+                Title = "Персонажи",
+                Subtitle = "Досье людей в сцене",
+                Summary = "Лица, чьи решения, связи и заметки уже оставили след в текущей главе.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = FormatRussianCount(npcCards.Count, "персонаж", "персонажа", "персонажей"),
+                        Tone = UiTone.Accent,
+                        Icon = "npc"
+                    }
+                ],
+                Facts = summaryItems
+                    .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                    .ToList(),
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "npcs",
+                        Title = "Персонажи",
+                        Summary = "Известные участники текущей сцены и связанных событий.",
+                        Icon = "npc",
+                        CollectionLabel = FormatRussianCount(npcCards.Count, "персонаж", "персонажа", "персонажей"),
+                        Presentation = "collection",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = npcCards
+                    }
+                ]
+            });
+        }
+
+        return blocks;
+    }
+
+    private static UiEntityDossierBlock BuildNpcOverviewCard(
+        string commandToken,
+        NpcDetailProjection projection,
+        bool includePrimaryAction)
+    {
+        var npcSelector = FirstNonEmpty(projection.NpcId, projection.NpcName);
+        var badges = new List<UiEntityBadge>
+        {
+            new()
+            {
+                Label = "персонаж мира",
+                Tone = projection.Sections.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                Icon = "npc"
+            }
+        };
+        var facts = new List<UiEntityFact>();
+        var hints = new List<UiEntityHint>();
+        AddNpcTradePresentation(projection, facts, badges, hints);
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "npc",
+            Title = projection.NpcName,
+            Subtitle = "Персонаж мира",
+            Summary = BuildNpcOverviewSummary(projection),
+            Badges = badges,
+            Facts = facts,
+            Hints = hints,
+            Sections = projection.Sections
+                .Select(static section => new UiEntityDossierSection
+                {
+                    Id = section.Id,
+                    Title = section.Label,
+                    Summary = string.Empty,
+                    Icon = "npc",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = BuildNpcOverviewSectionBlocks(section)
+                })
+                .ToList(),
+            PrimaryAction = includePrimaryAction
+                ? BuildNpcProfileAction(commandToken, projection.NpcName, npcSelector)
+                : null
+        };
+    }
+
+    private static void AddNpcTradePresentation(
+        NpcDetailProjection projection,
+        List<UiEntityFact> facts,
+        List<UiEntityBadge> badges,
+        List<UiEntityHint> hints)
+    {
+        var trade = projection.Trade;
+        if (trade == null)
+            return;
+
+        badges.Add(new UiEntityBadge
+        {
+            Label = "Торговец",
+            Tone = trade.CanTrade ? UiTone.Accent : UiTone.Warning,
+            Icon = "coin"
+        });
+        facts.Add(new UiEntityFact
+        {
+            Label = "Торговля",
+            Value = trade.CanTrade ? "Можно торговать" : "Недоступна"
+        });
+        if (!string.IsNullOrWhiteSpace(trade.MerchantProfile))
+        {
+            facts.Add(new UiEntityFact
+            {
+                Label = "Профиль торговли",
+                Value = NpcTradeService.GetMerchantProfileDisplayName(trade.MerchantProfile)
+            });
+        }
+        if (trade.OfferCount > 0)
+        {
+            facts.Add(new UiEntityFact
+            {
+                Label = "Товаров в витрине",
+                Value = trade.OfferCount.ToString(CultureInfo.InvariantCulture)
+            });
+        }
+        if (!trade.CanTrade && !string.IsNullOrWhiteSpace(trade.BlockReason))
+        {
+            facts.Add(new UiEntityFact
+            {
+                Label = "Причина",
+                Value = trade.BlockReason
+            });
+        }
+
+        if (trade.CanTrade)
+        {
+            hints.Add(new UiEntityHint
+            {
+                Title = "Доступна торговля",
+                Text = "В списке действий есть отдельная команда торговли с этим персонажем.",
+                Tone = UiTone.Accent
+            });
+        }
+    }
+
+    private static string BuildNpcOverviewSummary(NpcDetailProjection projection)
+    {
+        foreach (var section in projection.Sections)
+        foreach (var block in section.Blocks)
+        {
+            var summary = FirstNpcPlayableText(block);
+            if (!string.IsNullOrWhiteSpace(summary))
+                return BuildNpcTradeSummaryPrefix(projection, summary);
+        }
+
+        return BuildNpcTradeSummaryPrefix(projection, string.Empty);
+    }
+
+    private static string BuildNpcTradeSummaryPrefix(NpcDetailProjection projection, string playableSummary)
+    {
+        var trade = projection.Trade;
+        if (trade == null)
+            return playableSummary;
+
+        var prefix = trade.CanTrade
+            ? "Торговец: можно торговать напрямую."
+            : "Торговец: торговля сейчас недоступна.";
+        if (!trade.CanTrade && !string.IsNullOrWhiteSpace(trade.BlockReason))
+            prefix = "Торговец: " + trade.BlockReason.Trim();
+
+        return string.IsNullOrWhiteSpace(playableSummary)
+            ? prefix
+            : prefix + " " + playableSummary;
+    }
+
+    private static string FirstNpcPlayableText(UiBlock block)
+    {
+        switch (block)
+        {
+            case UiTextBlock text:
+                return CleanNpcPlayableText(text.Text);
+
+            case UiKeyValueGridBlock grid:
+                return grid.Items
+                    .Select(static item => item.Value)
+                    .Select(CleanNpcPlayableText)
+                    .FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+
+            case UiListBlock list:
+                return list.Items
+                    .Select(CleanNpcPlayableText)
+                    .FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+
+            case UiPanelBlock panel:
+                foreach (var child in panel.Blocks)
+                {
+                    var value = FirstNpcPlayableText(child);
+                    if (!string.IsNullOrWhiteSpace(value))
+                        return value;
+                }
+                break;
+
+            case UiEntityDossierBlock dossier:
+                var dossierSummary = CleanNpcPlayableText(dossier.Summary);
+                if (!string.IsNullOrWhiteSpace(dossierSummary))
+                    return dossierSummary;
+
+                foreach (var fact in dossier.Facts)
+                {
+                    var value = CleanNpcPlayableText(fact.Value);
+                    if (!string.IsNullOrWhiteSpace(value))
+                        return value;
+                }
+
+                foreach (var card in dossier.Cards)
+                {
+                    var value = FirstNpcPlayableText(card);
+                    if (!string.IsNullOrWhiteSpace(value))
+                        return value;
+                }
+
+                foreach (var section in dossier.Sections)
+                foreach (var child in section.Blocks)
+                {
+                    var value = FirstNpcPlayableText(child);
+                    if (!string.IsNullOrWhiteSpace(value))
+                        return value;
+                }
+                break;
+        }
+
+        return string.Empty;
+    }
+
+    private static string FirstNpcPlayableText(UiEntityCard card)
+    {
+        var summary = CleanNpcPlayableText(card.Summary);
+        if (!string.IsNullOrWhiteSpace(summary))
+            return summary;
+
+        foreach (var fact in card.Facts)
+        {
+            var value = CleanNpcPlayableText(fact.Value);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        foreach (var item in card.List)
+        {
+            var value = CleanNpcPlayableText(item);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        foreach (var child in card.Nested)
+        {
+            var value = FirstNpcPlayableText(child);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        foreach (var child in card.Cards)
+        {
+            var value = FirstNpcPlayableText(child);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return string.Empty;
+    }
+
+    private static string CleanNpcPlayableText(string? value)
+    {
+        if (!IsNpcPlayableText(value))
+            return string.Empty;
+
+        var clean = value!.Trim();
+        if (clean.Contains(';', StringComparison.Ordinal))
+        {
+            clean = clean.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .FirstOrDefault(IsNpcPlayableText) ?? string.Empty;
+        }
+
+        return clean;
+    }
+
+    private static bool IsNpcPlayableText(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var clean = value.Trim();
+        if (clean is "—" or "-")
+            return false;
+
+        if (clean.Contains("запис", StringComparison.OrdinalIgnoreCase) &&
+            clean.Length < 24)
+            return false;
+
+        if (clean.Contains("раскрыт", StringComparison.OrdinalIgnoreCase) ||
+            clean.Contains("выберите", StringComparison.OrdinalIgnoreCase) ||
+            clean.Contains("доступ", StringComparison.OrdinalIgnoreCase) && clean.Contains("карточ", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static List<UiBlock> BuildNpcOverviewSectionBlocks(NpcDetailSection section) =>
+        section.Blocks
+            .SelectMany(FlattenNpcOverviewBlock)
+            .ToList();
+
+    private static IEnumerable<UiBlock> FlattenNpcOverviewBlock(UiBlock block)
+    {
+        if (block is UiEntityDossierBlock dossier &&
+            string.Equals(dossier.EntityType, "npc-section", StringComparison.OrdinalIgnoreCase))
+        {
+            foreach (var section in dossier.Sections)
+            {
+                foreach (var child in section.Blocks)
+                {
+                    var sanitized = SanitizeNpcOverviewBlock(child);
+                    if (sanitized != null)
+                        yield return sanitized;
+                }
+            }
+
+            yield break;
+        }
+
+        var normalized = SanitizeNpcOverviewBlock(block);
+        if (normalized != null)
+            yield return normalized;
+    }
+
+    private static UiBlock? SanitizeNpcOverviewBlock(UiBlock block) =>
+        block switch
+        {
+            UiEntityDossierBlock dossier => SanitizeNpcOverviewDossier(dossier),
+            UiPanelBlock panel => new UiPanelBlock
+            {
+                Title = panel.Title,
+                Blocks = panel.Blocks
+                    .Select(SanitizeNpcOverviewBlock)
+                    .Where(static child => child != null)
+                    .Cast<UiBlock>()
+                    .ToList()
+            },
+            UiKeyValueGridBlock grid => SanitizeNpcOverviewGrid(grid),
+            UiListBlock list => new UiListBlock
+            {
+                Ordered = list.Ordered,
+                Items = list.Items
+                    .Select(RemoveNpcOverviewHiddenSegments)
+                    .Where(static item => !string.IsNullOrWhiteSpace(item))
+                    .ToList()
+            },
+            UiTextBlock text => string.IsNullOrWhiteSpace(RemoveNpcOverviewHiddenSegments(text.Text))
+                ? null
+                : new UiTextBlock { Text = RemoveNpcOverviewHiddenSegments(text.Text), Tone = text.Tone },
+            _ => block
+        };
+
+    private static UiEntityDossierBlock SanitizeNpcOverviewDossier(UiEntityDossierBlock dossier) =>
+        new()
+        {
+            EntityType = dossier.EntityType,
+            Title = dossier.Title,
+            Subtitle = dossier.Subtitle,
+            Summary = IsNpcOverviewSectionContainer(dossier)
+                ? string.Empty
+                : RemoveNpcOverviewHiddenSegments(dossier.Summary),
+            Badges = dossier.Badges,
+            Media = dossier.Media,
+            Facts = dossier.Facts
+                .Select(static fact => new UiEntityFact
+                {
+                    Label = fact.Label,
+                    Value = RemoveNpcOverviewHiddenSegments(fact.Value)
+                })
+                .Where(static fact => !string.IsNullOrWhiteSpace(fact.Value))
+                .ToList(),
+            Metrics = dossier.Metrics,
+            Hints = dossier.Hints
+                .Select(static hint => new UiEntityHint
+                {
+                    Title = hint.Title,
+                    Text = RemoveNpcOverviewHiddenSegments(hint.Text),
+                    Tone = hint.Tone
+                })
+                .Where(static hint => !string.IsNullOrWhiteSpace(hint.Text))
+                .ToList(),
+            List = dossier.List
+                .Select(RemoveNpcOverviewHiddenSegments)
+                .Where(static item => !string.IsNullOrWhiteSpace(item))
+                .ToList(),
+            Cards = dossier.Cards
+                .Select(SanitizeNpcOverviewCard)
+                .Where(static card => card != null)
+                .Cast<UiEntityCard>()
+                .ToList(),
+            Sections = dossier.Sections
+                .Select(SanitizeNpcOverviewSection)
+                .Where(static section => section != null)
+                .Cast<UiEntityDossierSection>()
+                .ToList()
+        };
+
+    private static bool IsNpcOverviewSectionContainer(UiEntityDossierBlock dossier) =>
+        string.Equals(dossier.EntityType, "npc-section", StringComparison.OrdinalIgnoreCase);
+
+    private static UiEntityDossierSection? SanitizeNpcOverviewSection(UiEntityDossierSection section)
+    {
+        var blocks = section.Blocks
+            .Select(SanitizeNpcOverviewBlock)
+            .Where(static block => block != null)
+            .Cast<UiBlock>()
+            .ToList();
+        if (blocks.Count == 0 &&
+            section.Facts.Count == 0 &&
+            section.Cards.Count == 0 &&
+            section.List.Count == 0)
+        {
+            return null;
+        }
+
+        return new UiEntityDossierSection
+        {
+            Id = section.Id,
+            Title = section.Title,
+            Summary = RemoveNpcOverviewHiddenSegments(section.Summary),
+            Icon = section.Icon,
+            CollectionLabel = section.CollectionLabel,
+            Presentation = section.Presentation,
+            Collapsible = section.Collapsible,
+            InitiallyExpanded = section.InitiallyExpanded,
+            Facts = section.Facts
+                .Select(static fact => new UiEntityFact
+                {
+                    Label = fact.Label,
+                    Value = RemoveNpcOverviewHiddenSegments(fact.Value)
+                })
+                .Where(static fact => !string.IsNullOrWhiteSpace(fact.Value))
+                .ToList(),
+            Metrics = section.Metrics,
+            Hints = section.Hints
+                .Select(static hint => new UiEntityHint
+                {
+                    Title = hint.Title,
+                    Text = RemoveNpcOverviewHiddenSegments(hint.Text),
+                    Tone = hint.Tone
+                })
+                .Where(static hint => !string.IsNullOrWhiteSpace(hint.Text))
+                .ToList(),
+            List = section.List
+                .Select(RemoveNpcOverviewHiddenSegments)
+                .Where(static item => !string.IsNullOrWhiteSpace(item))
+                .ToList(),
+            Cards = section.Cards
+                .Select(SanitizeNpcOverviewCard)
+                .Where(static card => card != null)
+                .Cast<UiEntityCard>()
+                .ToList(),
+            Blocks = blocks
+        };
+    }
+
+    private static UiEntityCard? SanitizeNpcOverviewCard(UiEntityCard card)
+    {
+        var summary = RemoveNpcOverviewHiddenSegments(card.Summary);
+        return new UiEntityCard
+        {
+            Title = card.Title,
+            Subtitle = card.Subtitle,
+            Summary = summary,
+            Icon = card.Icon,
+            Badges = card.Badges,
+            Media = card.Media,
+            Facts = card.Facts
+                .Select(static fact => new UiEntityFact
+                {
+                    Label = fact.Label,
+                    Value = RemoveNpcOverviewHiddenSegments(fact.Value)
+                })
+                .Where(static fact => !string.IsNullOrWhiteSpace(fact.Value))
+                .ToList(),
+            Metrics = card.Metrics,
+            Hints = card.Hints
+                .Select(static hint => new UiEntityHint
+                {
+                    Title = hint.Title,
+                    Text = RemoveNpcOverviewHiddenSegments(hint.Text),
+                    Tone = hint.Tone
+                })
+                .Where(static hint => !string.IsNullOrWhiteSpace(hint.Text))
+                .ToList(),
+            List = card.List
+                .Select(RemoveNpcOverviewHiddenSegments)
+                .Where(static item => !string.IsNullOrWhiteSpace(item))
+                .ToList(),
+            Nested = card.Nested
+                .Select(SanitizeNpcOverviewCard)
+                .Where(static nested => nested != null)
+                .Cast<UiEntityCard>()
+                .ToList(),
+            Cards = card.Cards
+                .Select(SanitizeNpcOverviewCard)
+                .Where(static nested => nested != null)
+                .Cast<UiEntityCard>()
+                .ToList()
+        };
+    }
+
+    private static UiKeyValueGridBlock SanitizeNpcOverviewGrid(UiKeyValueGridBlock grid) =>
+        new()
+        {
+            Items = grid.Items
+                .Select(static item => new UiKeyValueItem
+                {
+                    Key = item.Key,
+                    Value = RemoveNpcOverviewHiddenSegments(item.Value)
+                })
+                .Where(static item => !string.IsNullOrWhiteSpace(item.Value))
+                .ToList()
+        };
+
+    private static string RemoveNpcOverviewHiddenSegments(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var parts = value
+            .Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .Where(static part => !IsNpcOverviewHiddenSegment(part))
+            .ToList();
+
+        if (parts.Count == 0)
+            return string.Empty;
+
+        return string.Join("; ", parts);
+    }
+
+    private static bool IsNpcOverviewHiddenSegment(string part)
+    {
+        var normalized = part.Trim().ToLowerInvariant();
+        return normalized.StartsWith("награда:", StringComparison.Ordinal) ||
+               normalized.StartsWith("провал:", StringComparison.Ordinal) ||
+               normalized.StartsWith("reward:", StringComparison.Ordinal) ||
+               normalized.StartsWith("failure", StringComparison.Ordinal);
+    }
+
+    private static UiEntityDossierBlock BuildNpcOverviewCard(string commandToken, string npcName)
+    {
+        return new UiEntityDossierBlock
+        {
+            EntityType = "npc",
+            Title = npcName,
+            Subtitle = "Персонаж мира",
+            Summary = "Персонаж найден в основных данных, но подробное досье пока не заполнено.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = "нет подробностей",
+                    Tone = UiTone.Muted,
+                    Icon = "npc"
+                }
+            ],
+            Hints =
+            [
+                new UiEntityHint
+                {
+                    Title = "Пока без досье",
+                    Text = "ГМ ещё не добавил мысли, отношения, задачи или игровые свойства этого персонажа.",
+                    Tone = UiTone.Muted
+                }
+            ],
+            PrimaryAction = BuildNpcProfileAction(commandToken, npcName, npcName)
+        };
+    }
+
+    private static IEnumerable<UiKeyValueItem> BuildNpcOverviewItems(IReadOnlyList<string> names)
+    {
+        if (names.Count == 0)
+            yield break;
+
+        yield return new UiKeyValueItem
+        {
+            Key = "Найдено",
+            Value = FormatRussianCount(names.Count, "персонаж", "персонажа", "персонажей")
+        };
+        yield return new UiKeyValueItem
+        {
+            Key = "В кадре",
+            Value = BuildNpcNamePreview(names)
+        };
+    }
+
+    private static IEnumerable<string> EnumerateNpcCoreDisplayNames(JsonNode? root)
+    {
+        foreach (var npc in EnumerateNpcCoreObjects(root))
+        {
+            var name = FirstNonEmpty(
+                GetNodeString(npc, "NPCName"),
+                GetNodeString(npc, "npcName"),
+                GetNodeString(npc, "displayName"),
+                GetNodeString(npc, "name"));
+            if (!string.IsNullOrWhiteSpace(name))
+                yield return name;
+        }
+    }
+
+    private static IEnumerable<JsonObject> EnumerateNpcCoreObjects(JsonNode? root)
+    {
+        if (root is JsonArray array)
+        {
+            foreach (var npc in array.OfType<JsonObject>())
+                yield return npc;
+            yield break;
+        }
+
+        if (root is not JsonObject obj)
+            yield break;
+
+        foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections
+                     .Concat(GuardianPolicyContracts.NpcCoreLegacyAliasSections))
+        {
+            if (obj[sectionName] is not JsonArray section)
+                continue;
+
+            foreach (var npc in section.OfType<JsonObject>())
+            {
+                if (HasVisibleNpcIdentity(npc))
+                    yield return npc;
+            }
+        }
+    }
+
+    private static bool HasVisibleNpcIdentity(JsonObject npc) =>
+        !string.IsNullOrWhiteSpace(FirstNonEmpty(
+            GetNodeString(npc, "NPCId"),
+            GetNodeString(npc, "npcId"),
+            GetNodeString(npc, "id"),
+            GetNodeString(npc, "NPCName"),
+            GetNodeString(npc, "npcName"),
+            GetNodeString(npc, "name")));
+
+    private static string BuildNpcNamePreview(IReadOnlyList<string> names)
+    {
+        var preview = names.Take(5).ToList();
+        var suffix = names.Count > preview.Count
+            ? $" и ещё {names.Count - preview.Count}"
+            : string.Empty;
+        return string.Join(", ", preview) + suffix;
+    }
+
+    private static string FormatRussianCount(int count, string one, string few, string many)
+    {
+        var mod100 = Math.Abs(count) % 100;
+        var mod10 = Math.Abs(count) % 10;
+        var noun = mod100 is >= 11 and <= 14
+            ? many
+            : mod10 switch
+            {
+                1 => one,
+                >= 2 and <= 4 => few,
+                _ => many
+            };
+        return $"{count} {noun}";
     }
 
     private static NpcJournalDetailRequest ParseNpcJournalDetailRequest(string remainder)
@@ -1125,6 +2065,17 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return new NpcSectionDetailRequest(NpcSectionDetailKind.Overview, string.Empty, string.Empty);
 
         var (kindToken, detailRemainder) = SplitFirstCombatArgument(remainder);
+        if (IsNpcProfileDetailToken(kindToken))
+        {
+            if (string.IsNullOrWhiteSpace(detailRemainder))
+                return new NpcSectionDetailRequest(NpcSectionDetailKind.Unknown, string.Empty, string.Empty);
+
+            return new NpcSectionDetailRequest(
+                NpcSectionDetailKind.Profile,
+                NormalizeCombatSelector(detailRemainder),
+                string.Empty);
+        }
+
         if (!IsNpcSectionDetailToken(kindToken))
             return new NpcSectionDetailRequest(NpcSectionDetailKind.Unknown, string.Empty, string.Empty);
 
@@ -1163,10 +2114,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return normalized is "quest" or "квест" or "личный_квест" or "personal-quest" or "personal_quest";
     }
 
+    private static bool IsNpcProfileDetailToken(string token)
+    {
+        var normalized = token.Trim().ToLowerInvariant();
+        return normalized is "npc" or "profile" or "персонаж" or "досье" or "карточка";
+    }
+
     private static bool IsNpcSectionDetailToken(string token)
     {
         var normalized = token.Trim().ToLowerInvariant();
         return normalized is "section" or "раздел" or "detail" or "подробнее";
+    }
+
+    private static NpcDetailProjection? FindNpcProjection(
+        IReadOnlyList<NpcDetailProjection> projections,
+        string npcSelector)
+    {
+        var normalizedNpc = NormalizeInventoryLookup(npcSelector);
+        foreach (var projection in projections)
+        {
+            if (string.Equals(NormalizeInventoryLookup(projection.NpcId), normalizedNpc, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(NormalizeInventoryLookup(projection.NpcName), normalizedNpc, StringComparison.OrdinalIgnoreCase))
+            {
+                return projection;
+            }
+        }
+
+        return null;
     }
 
     private static (NpcDetailProjection Projection, NpcDetailSection Section)? FindNpcSection(
@@ -1221,7 +2195,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static IReadOnlyList<UiBlock> BuildNpcSectionDetailBlocks(NpcDetailProjection projection, NpcDetailSection section)
     {
-        var blocks = new List<UiBlock>
+        var panelBlocks = new List<UiBlock>
         {
             new UiKeyValueGridBlock
             {
@@ -1233,10 +2207,353 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 ]
             }
         };
-        blocks.AddRange(section.Blocks);
-        blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /npc.", Tone = UiTone.Muted });
+        panelBlocks.AddRange(section.Blocks.SelectMany(ProjectNpcSectionBlockForBrowser));
+        return
+        [
+            new UiPanelBlock
+            {
+                Title = $"{projection.NpcName} — {section.Label}",
+                Blocks = panelBlocks
+            },
+            new UiTextBlock { Text = "Вернуться к списку можно командой /npc.", Tone = UiTone.Muted }
+        ];
+    }
+
+    private static IEnumerable<UiBlock> ProjectNpcSectionBlockForBrowser(UiBlock block)
+    {
+        if (block is UiTableBlock table && table.Columns.Any(IsNpcGenericDetailsColumn))
+            return BuildNpcDetailPanels(table);
+
+        if (block is UiPanelBlock panel)
+        {
+            return
+            [
+                new UiPanelBlock
+                {
+                    Title = panel.Title,
+                    Blocks = panel.Blocks.SelectMany(ProjectNpcSectionBlockForBrowser).ToList()
+                }
+            ];
+        }
+
+        return [block];
+    }
+
+    private static IReadOnlyList<UiBlock> BuildNpcDetailPanels(UiTableBlock table)
+    {
+        var detailIndexes = table.Columns
+            .Select((column, index) => new { Column = column, Index = index })
+            .Where(item => IsNpcGenericDetailsColumn(item.Column))
+            .Select(static item => item.Index)
+            .ToHashSet();
+        if (detailIndexes.Count == 0)
+            return [table];
+
+        var rowPanels = new List<UiBlock>();
+        foreach (var row in table.Rows)
+        {
+            var title = BuildNpcDetailRowTitle(table, row, detailIndexes);
+            var rowBlocks = new List<UiBlock>();
+            var facts = new List<UiKeyValueItem>();
+            for (var i = 0; i < table.Columns.Count && i < row.Cells.Count; i++)
+            {
+                if (detailIndexes.Contains(i) || i == 0)
+                    continue;
+
+                var value = FormatNpcDetailScalar(row.Cells[i]);
+                if (!string.IsNullOrWhiteSpace(value))
+                    facts.Add(new UiKeyValueItem { Key = table.Columns[i], Value = value });
+            }
+
+            if (facts.Count > 0)
+                rowBlocks.Add(new UiKeyValueGridBlock { Items = facts });
+
+            foreach (var detailIndex in detailIndexes.Order())
+            {
+                if (detailIndex >= row.Cells.Count)
+                    continue;
+
+                rowBlocks.AddRange(BuildNpcDetailValueBlocks(row.Cells[detailIndex], table.Title, title));
+            }
+
+            if (rowBlocks.Count == 0)
+            {
+                rowBlocks.Add(new UiTextBlock
+                {
+                    Text = "Подробности не указаны.",
+                    Tone = UiTone.Muted
+                });
+            }
+
+            rowPanels.Add(new UiPanelBlock
+            {
+                Title = title,
+                Blocks = rowBlocks
+            });
+        }
+
+        return rowPanels.Count == 0
+            ? []
+            :
+            [
+                new UiPanelBlock
+                {
+                    Title = table.Title,
+                    Blocks = rowPanels
+                }
+            ];
+    }
+
+    private static string BuildNpcDetailRowTitle(
+        UiTableBlock table,
+        UiTableRow row,
+        HashSet<int> detailIndexes)
+    {
+        for (var i = 0; i < table.Columns.Count && i < row.Cells.Count; i++)
+        {
+            if (detailIndexes.Contains(i))
+                continue;
+
+            var value = row.Cells[i].Trim();
+            if (!string.IsNullOrWhiteSpace(value))
+                return FormatNpcDetailScalar(value);
+        }
+
+        return "Запись";
+    }
+
+    private static IReadOnlyList<UiBlock> BuildNpcDetailValueBlocks(string value, string tableTitle, string rowTitle)
+    {
+        var listItems = new List<string>();
+        var facts = new List<UiKeyValueItem>();
+        var scalarIndex = 0;
+        foreach (var part in SplitNpcDetailParts(value))
+        {
+            if (TrySplitNpcDetailPair(part, out var key, out var pairValue))
+            {
+                var formatted = FormatNpcDetailScalar(pairValue);
+                if (!string.IsNullOrWhiteSpace(formatted))
+                    facts.Add(new UiKeyValueItem { Key = FormatNpcDetailKey(key, tableTitle, rowTitle), Value = formatted });
+            }
+            else
+            {
+                var formatted = FormatNpcDetailScalar(part);
+                if (IsEmptyNpcDetailValue(formatted))
+                    continue;
+
+                var label = InferNpcDetailScalarLabel(tableTitle, rowTitle, scalarIndex, formatted);
+                if (string.IsNullOrWhiteSpace(label))
+                {
+                    listItems.Add(formatted);
+                }
+                else
+                {
+                    facts.Add(new UiKeyValueItem { Key = label, Value = formatted });
+                }
+
+                scalarIndex++;
+            }
+        }
+
+        var blocks = new List<UiBlock>();
+        if (facts.Count > 0)
+            blocks.Add(new UiKeyValueGridBlock { Items = facts });
+        if (listItems.Count > 0)
+            blocks.Add(new UiListBlock { Items = listItems });
         return blocks;
     }
+
+    private static IEnumerable<string> SplitNpcDetailParts(string value) =>
+        value.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(static part => !string.IsNullOrWhiteSpace(part));
+
+    private static bool TrySplitNpcDetailPair(string value, out string key, out string pairValue)
+    {
+        key = string.Empty;
+        pairValue = string.Empty;
+        var separator = value.IndexOf(':', StringComparison.Ordinal);
+        if (separator <= 0 || separator > 48)
+            return false;
+
+        key = value[..separator].Trim();
+        pairValue = value[(separator + 1)..].Trim();
+        return !string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(pairValue);
+    }
+
+    private static bool IsNpcGenericDetailsColumn(string column)
+    {
+        var normalized = column.Trim().ToLowerInvariant();
+        return normalized is "подробности" or "детали" or "detail" or "details";
+    }
+
+    private static bool IsEmptyNpcDetailValue(string value)
+    {
+        var clean = value.Trim();
+        return string.IsNullOrWhiteSpace(clean) ||
+               clean is "—" or "-" ||
+               clean.Equals("не указано", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string FormatNpcDetailScalar(string value)
+    {
+        var clean = value.Trim();
+        return clean.ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "active" => "Активен",
+            "pending" => "Ожидает",
+            "completed" or "complete" => "Завершён",
+            "failed" => "Провален",
+            "rival" => "соперник",
+            "ally" => "союзник",
+            "neutral" => "нейтрально",
+            "knowledgebased" => "основан на знаниях",
+            "utility" => "утилитарный",
+            "combat" => "боевой",
+            "social" => "социальный",
+            "common" => "обычный",
+            "uncommon" => "необычный",
+            "rare" => "редкий",
+            "epic" => "эпический",
+            "legendary" => "легендарный",
+            "document" => "документ",
+            "container" => "контейнер",
+            "tool" => "инструмент",
+            "buff" => "усиление",
+            "debuff" => "ослабление",
+            "wound" => "рана",
+            _ => clean
+        };
+    }
+
+    private static string FormatNpcDetailKey(string key, string tableTitle, string rowTitle)
+    {
+        var clean = key.Trim();
+        var normalized = clean.ToLowerInvariant();
+        if (normalized is "type" or "skilltype")
+            return IsNpcSkillContext(tableTitle, rowTitle) ? "Тип навыка" : "Тип";
+        if (normalized is "category" or "group")
+            return "Категория";
+        if (normalized is "rarity" or "quality")
+            return "Редкость";
+        if (normalized is "rank" or "level" or "tier")
+            return IsNpcSkillContext(tableTitle, rowTitle) ? "Ранг" : "Уровень";
+        if (normalized is "summary" or "description" or "narrativesummary")
+            return "Описание";
+        if (normalized is "status" or "activestate")
+            return "Состояние";
+        if (normalized is "value")
+            return "Значение";
+
+        return clean;
+    }
+
+    private static string InferNpcDetailScalarLabel(string tableTitle, string rowTitle, int scalarIndex, string value)
+    {
+        if (IsNpcSkillContext(tableTitle, rowTitle))
+        {
+            if (IsNpcSkillTypeValue(value))
+                return "Тип навыка";
+            if (IsNpcRarityValue(value))
+                return "Редкость";
+            if (IsIntegerText(value))
+                return "Ранг";
+
+            return scalarIndex switch
+            {
+                0 => "Название навыка",
+                1 => "Описание",
+                _ => "Свойство навыка"
+            };
+        }
+
+        if (IsNpcFateCardContext(tableTitle, rowTitle))
+        {
+            if (IsNpcRarityValue(value))
+                return "Редкость";
+
+            return scalarIndex switch
+            {
+                0 => "Название карты",
+                1 => "Описание",
+                _ => "Свойство карты"
+            };
+        }
+
+        if (IsNpcMemoryContext(tableTitle, rowTitle))
+        {
+            if (IsNpcRarityValue(value))
+                return "Редкость";
+
+            return scalarIndex switch
+            {
+                0 => "Название воспоминания",
+                1 => "Описание",
+                _ => "Свойство воспоминания"
+            };
+        }
+
+        if (IsNpcStateContext(tableTitle, rowTitle))
+        {
+            if (IsNpcRarityValue(value))
+                return "Редкость";
+
+            return scalarIndex switch
+            {
+                0 => "Название состояния",
+                1 => "Описание",
+                _ => "Свойство состояния"
+            };
+        }
+
+        return string.Empty;
+    }
+
+    private static bool IsNpcSkillContext(string tableTitle, string rowTitle)
+    {
+        var context = (tableTitle + " " + rowTitle).ToLowerInvariant();
+        return context.Contains("навык", StringComparison.Ordinal) ||
+               context.Contains("skills", StringComparison.Ordinal) ||
+               context.Contains("skill", StringComparison.Ordinal);
+    }
+
+    private static bool IsNpcFateCardContext(string tableTitle, string rowTitle)
+    {
+        var context = (tableTitle + " " + rowTitle).ToLowerInvariant();
+        return context.Contains("карта судьбы", StringComparison.Ordinal) ||
+               context.Contains("fate", StringComparison.Ordinal);
+    }
+
+    private static bool IsNpcMemoryContext(string tableTitle, string rowTitle)
+    {
+        var context = (tableTitle + " " + rowTitle).ToLowerInvariant();
+        return context.Contains("воспомин", StringComparison.Ordinal) ||
+               context.Contains("memory", StringComparison.Ordinal);
+    }
+
+    private static bool IsNpcStateContext(string tableTitle, string rowTitle)
+    {
+        var context = (tableTitle + " " + rowTitle).ToLowerInvariant();
+        return context.Contains("особое состояние", StringComparison.Ordinal) ||
+               context.Contains("состояние", StringComparison.Ordinal) ||
+               context.Contains("state", StringComparison.Ordinal);
+    }
+
+    private static bool IsNpcSkillTypeValue(string value)
+    {
+        var normalized = value.Trim().ToLowerInvariant();
+        return normalized is "основан на знаниях" or "утилитарный" or "боевой" or "социальный";
+    }
+
+    private static bool IsNpcRarityValue(string value)
+    {
+        var normalized = value.Trim().ToLowerInvariant();
+        return normalized is "обычный" or "обычное" or "необычный" or "необычное" or "редкий" or "редкое" or
+            "эпический" or "эпическое" or "легендарный" or "легендарное" or "уникальный" or "уникальное";
+    }
+
+    private static bool IsIntegerText(string value) =>
+        int.TryParse(value.Trim(), out _);
 
     private static IReadOnlyList<UiAction> BuildNpcSectionActions(
         string commandToken,
@@ -1246,6 +2563,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
         foreach (var projection in projections)
         {
             var npcSelector = FirstNonEmpty(projection.NpcId, projection.NpcName);
+            if (projection.Trade?.CanTrade == true)
+            {
+                actions.Add(BuildNpcTradeAction(projection, npcSelector));
+            }
+
             foreach (var section in projection.Sections)
             {
                 actions.Add(new UiAction
@@ -1268,6 +2590,22 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         return actions;
     }
+
+    private static UiAction BuildNpcTradeAction(NpcDetailProjection projection, string npcSelector) =>
+        new()
+        {
+            Id = "npc-trade-" + ToActionIdPart(npcSelector),
+            Label = "Торговать: " + projection.NpcName,
+            Command = "/npc_trade " + FormatCombatCommandArgument(npcSelector),
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false,
+            Payload = new JsonObject
+            {
+                ["npcSelector"] = npcSelector,
+                ["npcName"] = projection.NpcName,
+                ["action"] = "trade"
+            }
+        };
 
     private static IReadOnlyList<UiAction> BuildNpcQuestActions(
         string commandToken,
@@ -1335,6 +2673,21 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
     ];
 
+    private static UiAction BuildNpcProfileAction(string commandToken, string npcName, string npcSelector) =>
+        new()
+        {
+            Id = "npc-profile-" + ToActionIdPart(npcSelector),
+            Label = "Открыть отдельно: " + npcName,
+            Command = BuildNpcProfileCommand(commandToken, npcSelector),
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false,
+            Payload = new JsonObject
+            {
+                ["npcSelector"] = npcSelector,
+                ["npcName"] = npcName
+            }
+        };
+
     private static IReadOnlyList<UiAction> BuildNpcQuestBackActions(string commandToken, NpcDetailProjection projection)
     {
         var npcSelector = FirstNonEmpty(projection.NpcId, projection.NpcName);
@@ -1377,6 +2730,15 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(npcSelector) + " " + FormatCombatCommandArgument(sectionSelector);
     }
 
+    private static string BuildNpcProfileCommand(string commandToken, string npcSelector)
+    {
+        var detailToken = string.Equals(commandToken, "/нпс", StringComparison.OrdinalIgnoreCase) ||
+                          string.Equals(commandToken, "/персонажи", StringComparison.OrdinalIgnoreCase)
+            ? "персонаж"
+            : "profile";
+        return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(npcSelector);
+    }
+
     private static string BuildNpcQuestCommand(string commandToken, string npcSelector, string questSelector)
     {
         var detailToken = string.Equals(commandToken, "/нпс", StringComparison.OrdinalIgnoreCase) ||
@@ -1394,6 +2756,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var location = UnwrapCurrentLocationNode(locationRead.Node);
         var weather = UnwrapWeatherNode(weatherRead.Node);
         var blocks = new List<UiBlock>();
+        var sections = new List<UiEntityDossierSection>();
+        var locationTitle = "Текущая локация";
 
         if (location == null)
         {
@@ -1404,11 +2768,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
             var title = FirstNonEmpty(
                 GetLocationNodeString(location, "name", "locationName", "displayName"),
                 "Текущая локация");
+            locationTitle = title;
             var facts = new List<UiKeyValueItem>();
             AddLocationFact(facts, "Локация", title);
             AddLocationFact(facts, "Регион", GetLocationNodeString(location, "region"));
-            AddLocationFact(facts, "Тип", GetLocationNodeString(location, "locationType", "type"));
-            AddLocationFact(facts, "Биом", GetLocationNodeString(location, "biome"));
+            AddLocationFact(facts, "Тип", TranslateLocationType(GetLocationNodeString(location, "locationType", "type")));
+            AddLocationFact(facts, "Внутренний тип", TranslateIndoorLocationType(GetLocationNodeString(location, "indoorType")));
+            AddLocationFact(facts, "Биом", TranslateLocationBiome(GetLocationNodeString(location, "biome")));
             AddLocationFact(facts, "Опасность", DescribeLocationDifficulty(location));
 
             var panelBlocks = new List<UiBlock>();
@@ -1418,29 +2784,65 @@ public static class ExplorerMortalWorldCommandResultBuilder
             if (facts.Count > 0)
                 panelBlocks.Add(new UiKeyValueGridBlock { Items = facts });
 
-            blocks.Add(new UiPanelBlock
-            {
-                Title = title,
-                Blocks = panelBlocks.Count > 0 ? panelBlocks : [new UiTextBlock { Text = "Описание локации пока не заполнено.", Tone = UiTone.Muted }]
-            });
+            AddDossierSectionIfAny(
+                sections,
+                "location",
+                title,
+                "Описание, регион и важные свойства текущего места.",
+                "map",
+                panelBlocks.Count > 0 ? panelBlocks : [new UiTextBlock { Text = "Описание локации пока не заполнено.", Tone = UiTone.Muted }]);
 
-            AddLocationFeatureBlock(blocks, location);
-            AddLocationFactionControlBlock(blocks, location);
-            AddLocationThreatBlock(blocks, location);
-            AddLocationEventBlock(blocks, location);
+            var locationBlocks = new List<UiBlock>();
+            AddLocationFeatureBlock(locationBlocks, location);
+            AddLocationFactionControlBlock(locationBlocks, location);
+            AddLocationThreatBlock(locationBlocks, location);
+            AddLocationEventBlock(locationBlocks, location);
+            AddDossierSectionIfAny(
+                sections,
+                "local-context",
+                "Местный контекст",
+                "Особенности, контроль, угрозы и недавние события в локации.",
+                "map",
+                locationBlocks);
         }
 
-        AddWorldTimeBlock(blocks, timeRead.Node);
-        AddWeatherSummaryBlock(blocks, weather, includeBiome: false, currentLocation: location);
+        var timeBlocks = new List<UiBlock>();
+        AddWorldTimeBlock(timeBlocks, timeRead.Node);
+        AddDossierSectionIfAny(sections, "time", "Время", "Текущее игровое время.", "time", timeBlocks);
+
+        var weatherBlocks = new List<UiBlock>();
+        AddWeatherSummaryBlock(weatherBlocks, weather, includeBiome: false, currentLocation: location);
+        AddDossierSectionIfAny(sections, "weather", "Погода", "Условия вокруг текущей локации.", "weather", weatherBlocks);
+
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "current-location",
+                Title = locationTitle,
+                Subtitle = "Где я",
+                Summary = location == null
+                    ? "Местоположение неизвестно."
+                    : FirstNonEmpty(GetLocationNodeString(location, "description", "shortDescription"), "Текущий контекст персонажа."),
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = "Местоположение",
+                        Tone = UiTone.Accent,
+                        Icon = "map"
+                    }
+                ],
+                Facts = BuildWorldTimeItems(UnwrapWorldTimeNode(timeRead.Node))
+                    .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                    .ToList(),
+                Sections = sections
+            });
+        }
+
         AddReadWarning(blocks, "Где я", locationRead);
         AddReadWarning(blocks, "Где я", timeRead);
         AddReadWarning(blocks, "Где я", weatherRead);
-        if (locationRead.Node != null)
-            blocks.Add(Raw("Полная запись: местоположение", locationRead.Node));
-        if (timeRead.Node != null)
-            blocks.Add(Raw("Полная запись: время мира", timeRead.Node));
-        if (weatherRead.Node != null)
-            blocks.Add(Raw("Полная запись: погода", weatherRead.Node));
 
         return Completed(command, blocks);
     }
@@ -1453,22 +2855,74 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var location = UnwrapCurrentLocationNode(locationRead.Node);
         var weather = UnwrapWeatherNode(weatherRead.Node);
         var blocks = new List<UiBlock>();
+        var sections = new List<UiEntityDossierSection>();
 
-        AddWorldTimeBlock(blocks, timeRead.Node);
-        AddWeatherSummaryBlock(blocks, weather, includeBiome: true, currentLocation: location);
+        var timeBlocks = new List<UiBlock>();
+        AddWorldTimeBlock(timeBlocks, timeRead.Node);
+        AddDossierSectionIfAny(sections, "time", "Время", "Текущее игровое время.", "time", timeBlocks);
 
-        if (blocks.Count == 0)
+        var weatherBlocks = new List<UiBlock>();
+        AddWeatherSummaryBlock(weatherBlocks, weather, includeBiome: true, currentLocation: location);
+        AddDossierSectionIfAny(sections, "weather", "Погода", "Погодные условия и их игровые эффекты.", "weather", weatherBlocks);
+
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "weather",
+                Title = "Время и погода",
+                Subtitle = location == null
+                    ? "Окружение"
+                    : FirstNonEmpty(GetLocationNodeString(location, "name", "locationName", "displayName"), "Окружение"),
+                Summary = FirstNonEmpty(GetLocationNodeString(weather, "description"), "Текущее время и погодные условия."),
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = "Окружение",
+                        Tone = UiTone.Accent,
+                        Icon = "weather"
+                    }
+                ],
+                Facts = BuildWorldTimeItems(UnwrapWorldTimeNode(timeRead.Node))
+                    .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                    .ToList(),
+                Sections = sections
+            });
+        }
+        else
+        {
             blocks.Add(Message(UiNotificationSeverity.Info, "Время и погода", "Данные ещё не созданы."));
+        }
 
         AddReadWarning(blocks, "Время и погода", timeRead);
         AddReadWarning(blocks, "Время и погода", weatherRead);
         AddReadWarning(blocks, "Время и погода", locationRead);
-        if (timeRead.Node != null)
-            blocks.Add(Raw("Полная запись: время мира", timeRead.Node));
-        if (weatherRead.Node != null)
-            blocks.Add(Raw("Полная запись: погода", weatherRead.Node));
 
         return Completed(command, blocks);
+    }
+
+    private static void AddDossierSectionIfAny(
+        List<UiEntityDossierSection> sections,
+        string id,
+        string title,
+        string summary,
+        string icon,
+        IReadOnlyList<UiBlock> blocks)
+    {
+        if (blocks.Count == 0)
+            return;
+
+        sections.Add(new UiEntityDossierSection
+        {
+            Id = id,
+            Title = title,
+            Summary = summary,
+            Icon = icon,
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Blocks = blocks.ToList()
+        });
     }
 
     private static JsonObject? UnwrapWeatherNode(JsonNode? node)
@@ -1595,11 +3049,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (rows.Count == 0)
             return;
 
-        blocks.Add(new UiTableBlock
+        blocks.Add(new UiEntityDossierBlock
         {
+            EntityType = "location-faction-control",
             Title = "Контроль фракций",
-            Columns = ["Фракция", "Вид контроля", "Уровень"],
-            Rows = rows
+            Subtitle = "Локальная власть",
+            Summary = DescribeInventoryCount(rows.Count, "фракция", "фракции", "фракций"),
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "entries",
+                    Title = "Фракции",
+                    Icon = "factions",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = rows
+                        .Select(row => (UiBlock)BuildReferenceRowDossier(
+                            "location-faction-control-entry",
+                            "Фракция",
+                            ["Фракция", "Вид контроля", "Уровень"],
+                            row,
+                            "factions"))
+                        .ToList()
+                }
+            ]
         });
     }
 
@@ -1634,11 +3108,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (rows.Count == 0)
             return;
 
-        blocks.Add(new UiTableBlock
+        blocks.Add(new UiEntityDossierBlock
         {
+            EntityType = "location-threats",
             Title = "Активные угрозы",
-            Columns = ["Угроза", "Опасность", "Что известно"],
-            Rows = rows
+            Subtitle = "Риски места",
+            Summary = DescribeInventoryCount(rows.Count, "угроза", "угрозы", "угроз"),
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "entries",
+                    Title = "Угрозы",
+                    Icon = "warning",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = rows
+                        .Select(row => (UiBlock)BuildReferenceRowDossier(
+                            "location-threat",
+                            "Угроза",
+                            ["Угроза", "Опасность", "Что известно"],
+                            row,
+                            "warning"))
+                        .ToList()
+                }
+            ]
         });
     }
 
@@ -1709,7 +3203,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     : $"{StructuredBonusDisplay.FieldLabel(property.Key)}: {value}";
             })
             .Where(static part => !string.IsNullOrWhiteSpace(part));
-        return string.Join("; ", parts);
+        return string.Join("\n", parts);
     }
 
     private static string DescribeWeatherTendency(string tendency) =>
@@ -1753,57 +3247,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Warning, title, "Одна из записей найдена, но её не удалось прочитать как JSON."));
     }
 
-    private static async Task<ExplorerCommandResult> BuildBundle(string command, FileSystemManager fs, string title, IReadOnlyList<SummarySpec> specs)
-    {
-        var grouped = specs.GroupBy(static spec => spec.Path, StringComparer.OrdinalIgnoreCase).ToArray();
-        var reads = new Dictionary<string, JsonReadResult>(StringComparer.OrdinalIgnoreCase);
-        foreach (var group in grouped)
-            reads[group.Key] = await ReadJson(fs, group.Key);
-
-        var rows = new List<UiTableRow>();
-        foreach (var spec in specs)
-        {
-            var read = reads[spec.Path];
-            var status = DescribeSpec(read, spec.PropertyName);
-            if (status == "отсутствует")
-                continue;
-
-            rows.Add(new UiTableRow
-            {
-                Cells =
-                [
-                    spec.Label,
-                    status
-                ]
-            });
-        }
-
-        var blocks = new List<UiBlock>();
-        if (rows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = title,
-                Columns = ["Раздел", "Состояние"],
-                Rows = rows
-            });
-        }
-        else
-        {
-            blocks.Add(Message(UiNotificationSeverity.Info, title, "Данные ещё не созданы."));
-        }
-
-        foreach (var (path, read) in reads)
-        {
-            if (read.Node != null)
-                blocks.Add(Raw($"Полный JSON {path}", read.Node));
-            else if (read.FileExists)
-                blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {path}. {read.Error}"));
-        }
-
-        return Completed(command, blocks);
-    }
-
     private static async Task<ExplorerCommandResult> BuildReferenceBundle(
         string command,
         FileSystemManager fs,
@@ -1820,7 +3263,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (request.Kind != ReferenceDetailKind.Overview)
             return BuildReferenceDetail(command, commandToken, definition, reads.Values, entries, request);
 
-        var rows = new List<UiTableRow>();
+        var summaryItems = new List<UiKeyValueItem>();
         foreach (var spec in definition.Specs)
         {
             var read = reads[spec.Path];
@@ -1828,24 +3271,68 @@ public static class ExplorerMortalWorldCommandResultBuilder
             if (status == "отсутствует")
                 continue;
 
-            rows.Add(new UiTableRow
+            summaryItems.Add(new UiKeyValueItem
             {
-                Cells =
-                [
-                    spec.Label,
-                    status
-                ]
+                Key = spec.Label,
+                Value = status
             });
         }
 
         var blocks = new List<UiBlock>();
-        if (rows.Count > 0)
+        var sections = new List<UiEntityDossierSection>();
+        if (summaryItems.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "summary",
+                Title = "Сводка",
+                Summary = "Что уже отмечено в книге.",
+                Icon = "reference",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = summaryItems }]
+            });
+        }
+
+        if (entries.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "entries",
+                    Title = "Записи",
+                    Summary = "Известные записи этого раздела.",
+                    Icon = "reference",
+                    Presentation = "collection",
+                    Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = entries
+                    .Select(entry => (UiBlock)BuildReferenceOverviewCard(definition, entry, entries))
+                    .ToList()
+            });
+        }
+
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "reference-bundle",
                 Title = definition.Title,
-                Columns = ["Раздел", "Состояние"],
-                Rows = rows
+                Subtitle = "Обзор записей",
+                Summary = entries.Count > 0
+                    ? DescribeInventoryCount(entries.Count, "запись", "записи", "записей")
+                    : "Записи этого раздела пока не найдены.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = entries.Count > 0
+                            ? DescribeInventoryCount(entries.Count, "запись", "записи", "записей")
+                            : "пусто",
+                        Tone = entries.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                        Icon = "reference"
+                    }
+                ],
+                Sections = sections
             });
         }
         else
@@ -1853,28 +3340,51 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Info, definition.Title, "Данные ещё не созданы."));
         }
 
-        if (entries.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = $"{definition.Title}: записи",
-                Columns = ["Запись", "Раздел", "Кратко", "Подробно"],
-                Rows = entries.Select(entry => new UiTableRow
-                {
-                    Cells =
-                    [
-                        entry.Title,
-                        entry.Section,
-                        EmptyFallback(entry.Summary),
-                        BuildReferenceDetailCommand(commandToken, definition, entry.Selector)
-                    ]
-                }).ToList()
-            });
-        }
-
         AddReferenceReadWarnings(blocks, definition.Title, reads.Values);
-        AddReferenceRawState(blocks, definition.Title, reads.Values);
         return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
+    }
+
+    private static UiEntityDossierBlock BuildReferenceOverviewCard(
+        ReferenceCommandDefinition definition,
+        ReferenceEntrySnapshot entry,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
+    {
+        if (string.Equals(definition.DetailTitlePrefix, "Фракция", StringComparison.OrdinalIgnoreCase))
+            return BuildFactionReferenceOverviewCard(entry, entries);
+
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = entry.Section }
+        };
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "reference-entry",
+            Title = entry.Title,
+            Subtitle = entry.Section,
+            Summary = FirstNonEmpty(entry.Summary, FirstReferenceNodeString(entry.Node, "description", "summary", "objective", "visibleReason", "scenarioCore")),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = entry.Section,
+                    Tone = UiTone.Accent,
+                    Icon = "reference"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "reference",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
     }
 
     private static ExplorerCommandResult BuildReferenceDetail(
@@ -1898,12 +3408,12 @@ public static class ExplorerMortalWorldCommandResultBuilder
             var entry = FindReferenceEntry(entries, request.Selector);
             blocks.Add(entry == null
                 ? Message(UiNotificationSeverity.Warning, definition.NotFoundTitle, definition.NotFoundMessage)
-                : BuildReferenceDetailPanel(definition, entry));
+                : BuildReferenceDetailPanel(commandToken, definition, entry, entries));
         }
 
         AddReferenceReadWarnings(blocks, definition.Title, reads);
-        blocks.Add(new UiTextBlock { Text = $"Вернуться к обзору можно командой {commandToken}.", Tone = UiTone.Muted });
-        return Completed(command, blocks, [
+        var actions = new List<UiAction>
+        {
             new UiAction
             {
                 Id = definition.ActionIdPrefix + "-back",
@@ -1912,22 +3422,35 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Style = UiActionStyle.Secondary,
                 RequiresConfirmation = false
             }
-        ]);
+        };
+
+        if (request.Kind == ReferenceDetailKind.Detail &&
+            string.Equals(definition.DetailTitlePrefix, "Локация", StringComparison.OrdinalIgnoreCase) &&
+            FindReferenceEntry(entries, request.Selector) is { } locationEntry &&
+            HasLocationStorages(locationEntry.Node))
+        {
+            actions.Insert(0, BuildLocationStoragesAction(commandToken, locationEntry));
+        }
+
+        return Completed(command, blocks, actions);
     }
 
-    private static UiPanelBlock BuildReferenceDetailPanel(
+    private static UiBlock BuildReferenceDetailPanel(
+        string commandToken,
         ReferenceCommandDefinition definition,
-        ReferenceEntrySnapshot entry)
+        ReferenceEntrySnapshot entry,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
     {
         if (string.Equals(definition.DetailTitlePrefix, "Фракция", StringComparison.OrdinalIgnoreCase))
-            return BuildFactionReferenceDetailPanel(definition, entry);
+            return BuildFactionReferenceDetailPanel(definition, entry, entries);
+        if (string.Equals(definition.DetailTitlePrefix, "Локация", StringComparison.OrdinalIgnoreCase))
+            return BuildLocationReferenceDetailPanel(commandToken, definition, entry);
         if (string.Equals(definition.DetailTitlePrefix, "Навык", StringComparison.OrdinalIgnoreCase))
             return BuildSkillReferenceDetailPanel(definition, entry);
 
         var detailItems = new List<UiKeyValueItem>
         {
-            new() { Key = "Раздел", Value = entry.Section },
-            new() { Key = "Метка", Value = entry.Selector }
+            new() { Key = "Раздел", Value = entry.Section }
         };
 
         AddReferenceDetailItem(detailItems, "Состояние", DescribeReferenceStatus(FirstReferenceNodeString(entry.Node, "status", "state", "stage", "phase", "accessLevel", "availability")));
@@ -1939,29 +3462,176 @@ public static class ExplorerMortalWorldCommandResultBuilder
             DescribeReferenceNamedObject(entry.Node["rivalSoul"])));
         AddReferenceDetailItem(detailItems, "Кратко", FirstNonEmpty(entry.Summary, FirstReferenceNodeString(entry.Node, "skillDescription", "description", "summary", "objective", "visibleReason", "scenarioCore")));
         AddReferenceDetailItem(detailItems, "Масштабирование", FormatReferenceCharacteristic(FirstReferenceNodeString(entry.Node, "scalingCharacteristic")));
-        AddReferenceDetailItem(detailItems, "Награда", DescribeNodeForReferenceDetail(entry.Node["rewardInfo"] ?? entry.Node["rewards"] ?? entry.Node["reward"]));
-        AddReferenceDetailItem(detailItems, "Подробности", DescribeReferencePayload(entry.Node));
 
         var detailBlocks = new List<UiBlock> { new UiKeyValueGridBlock { Items = detailItems } };
+        AddReferenceDetailSection(detailBlocks, "Награда", entry.Node["rewardInfo"] ?? entry.Node["rewards"] ?? entry.Node["reward"]);
+        AddReferenceAdditionalDetailBlocks(detailBlocks, entry.Node);
         AddStructuredBonusBlock(detailBlocks, entry.Node["structuredBonuses"] as JsonArray);
 
-        return new UiPanelBlock
+        return new UiEntityDossierBlock
         {
+            EntityType = "reference-detail",
             Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
-            Blocks = detailBlocks
+            Subtitle = entry.Section,
+            Summary = FirstNonEmpty(entry.Summary, FirstReferenceNodeString(entry.Node, "description", "summary", "objective", "visibleReason", "scenarioCore")),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = entry.Section,
+                    Tone = UiTone.Accent,
+                    Icon = "reference"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "details",
+                    Title = "Сведения",
+                    Summary = "Ключевые сведения этой записи.",
+                    Icon = "reference",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = detailBlocks
+                }
+            ]
         };
     }
 
-    private static UiPanelBlock BuildSkillReferenceDetailPanel(
+    private static UiEntityDossierBlock BuildLocationReferenceDetailPanel(
+        string commandToken,
         ReferenceCommandDefinition definition,
         ReferenceEntrySnapshot entry)
     {
+        var location = entry.Node;
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = entry.Section }
+        };
+
+        AddLocationFact(facts, "Регион", GetLocationNodeString(location, "region"));
+        AddLocationFact(facts, "Тип", TranslateLocationType(GetLocationNodeString(location, "locationType", "type")));
+        AddLocationFact(facts, "Внутренний тип", TranslateIndoorLocationType(GetLocationNodeString(location, "indoorType")));
+        AddLocationFact(facts, "Биом", TranslateLocationBiome(GetLocationNodeString(location, "biome")));
+        AddLocationFact(facts, "Направление", TranslateLocationDirection(GetLocationNodeString(location, "direction")));
+        AddLocationFact(facts, "Дистанция", GetLocationNodeString(location, "distance"));
+        AddLocationFact(facts, "Путь", DescribeLinkState(GetLocationNodeString(location, "linkState")));
+        AddLocationFact(facts, "Опасность", DescribeLocationDifficulty(location));
+
+        var sections = new List<UiEntityDossierSection>();
+        var descriptionBlocks = new List<UiBlock>();
+        var description = FirstNonEmpty(
+            GetLocationNodeString(location, "description", "shortDescription"),
+            entry.Summary);
+        if (!string.IsNullOrWhiteSpace(description))
+            descriptionBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
+        if (facts.Count > 0)
+            descriptionBlocks.Add(new UiKeyValueGridBlock { Items = facts });
+        AddDossierSectionIfAny(
+            sections,
+            "details",
+            "Сведения",
+            "Что известно об этом месте сейчас.",
+            "map",
+            descriptionBlocks);
+
+        var exits = BuildLocationExitCards(location["adjacencyMap"] as JsonArray);
+        if (exits.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "exits",
+                Title = "Выходы",
+                Summary = "Переходы из этого места и их состояние.",
+                Icon = "map",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = exits
+            });
+        }
+
+        var contextBlocks = new List<UiBlock>();
+        AddLocationFeatureBlock(contextBlocks, location);
+        AddLocationFactionControlBlock(contextBlocks, location);
+        AddLocationThreatBlock(contextBlocks, location);
+        AddLocationEventBlock(contextBlocks, location);
+        AddDossierSectionIfAny(
+            sections,
+            "local-context",
+            "Местный контекст",
+            "Особенности, контроль, угрозы и недавние события.",
+            "map",
+            contextBlocks);
+
+        if (HasLocationStorages(location))
+        {
+            var storageCount = EnumerateLocationStorages(location).Count();
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "storages",
+                Title = "Хранилища",
+                Summary = "Сундуки, столы и тайники вынесены в отдельный просмотр, чтобы карточка места оставалась читаемой.",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
+                [
+                    new UiEntityDossierBlock
+                    {
+                        EntityType = "location-storage-link",
+                        Title = "Хранилища локации",
+                        Subtitle = entry.Title,
+                        Summary = DescribeInventoryCount(storageCount, "хранилище", "хранилища", "хранилищ"),
+                        Badges =
+                        [
+                            new UiEntityBadge
+                            {
+                                Label = DescribeInventoryCount(storageCount, "хранилище", "хранилища", "хранилищ"),
+                                Tone = UiTone.Accent,
+                                Icon = "inventory"
+                            }
+                        ],
+                        PrimaryAction = BuildLocationStoragesAction(commandToken, entry)
+                    }
+                ]
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "location-detail",
+            Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
+            Subtitle = entry.Section,
+            Summary = description,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = entry.Section,
+                    Tone = UiTone.Accent,
+                    Icon = "map"
+                }
+            ],
+            Facts = facts
+                .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                .ToList(),
+            PrimaryAction = HasLocationStorages(location) ? BuildLocationStoragesAction(commandToken, entry) : null,
+            Sections = sections
+        };
+    }
+
+    private static UiEntityDossierBlock BuildSkillReferenceDetailPanel(
+        ReferenceCommandDefinition definition,
+        ReferenceEntrySnapshot entry)
+    {
+        var skillType = TranslateSkillProtocolValue(FirstReferenceNodeString(entry.Node, "category", "type"));
         var detailItems = new List<UiKeyValueItem>
         {
             new() { Key = "Раздел", Value = entry.Section }
         };
 
-        AddReferenceDetailItem(detailItems, "Тип", TranslateSkillProtocolValue(FirstReferenceNodeString(entry.Node, "category", "type")));
+        AddReferenceDetailItem(detailItems, "Тип", skillType);
         AddReferenceDetailItem(detailItems, "Группа", FirstReferenceNodeString(entry.Node, "group", "skillGroup", "school"));
         AddReferenceDetailItem(detailItems, "Уровень", FirstReferenceNodeString(entry.Node, "level", "skillLevel"));
         AddReferenceDetailItem(detailItems, "Мастерство", FirstReferenceNodeString(entry.Node, "masteryLevel", "mastery"));
@@ -1983,23 +3653,77 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (detailItems.Count > 0)
             detailBlocks.Add(new UiKeyValueGridBlock { Items = detailItems });
 
-        var actionRows = BuildSkillActionRows(entry.Node);
-        if (actionRows.Count > 0)
+        var sections = new List<UiEntityDossierSection>();
+        if (detailBlocks.Count > 0)
         {
-            detailBlocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
-                Title = "Боевые свойства",
-                Columns = ["Параметр", "Значение"],
-                Rows = actionRows
+                Id = "overview",
+                Title = "Сведения",
+                Summary = "Основное описание навыка и его игровые параметры.",
+                Icon = "skills",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = detailBlocks
             });
         }
 
-        AddStructuredBonusBlock(detailBlocks, entry.Node["structuredBonuses"] as JsonArray);
-
-        return new UiPanelBlock
+        var actionRows = BuildSkillActionRows(entry.Node);
+        if (actionRows.Count > 0)
         {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "combat",
+                Title = "Боевые свойства",
+                Summary = "Параметры действия, которые важны при применении навыка.",
+                Icon = "combat",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
+                [
+                    new UiKeyValueGridBlock
+                    {
+                        Items = actionRows
+                            .Where(static row => row.Cells.Count >= 2)
+                            .Select(static row => new UiKeyValueItem { Key = row.Cells[0], Value = row.Cells[1] })
+                            .ToList()
+                    }
+                ]
+            });
+        }
+
+        var bonusBlocks = new List<UiBlock>();
+        AddStructuredBonusBlock(bonusBlocks, entry.Node["structuredBonuses"] as JsonArray);
+        if (bonusBlocks.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "bonuses",
+                Title = "Структурные бонусы",
+                Summary = "Постоянные числовые эффекты навыка, разложенные по полям.",
+                Icon = "skills",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = bonusBlocks
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "skill",
             Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
-            Blocks = detailBlocks
+            Subtitle = FirstNonEmpty(skillType, "Навык"),
+            Summary = FirstNonEmpty(entry.Summary, FirstReferenceNodeString(entry.Node, "skillDescription", "description", "playerStatBonus", "summary")),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = string.IsNullOrWhiteSpace(entry.Section) ? "Навык" : entry.Section,
+                    Tone = UiTone.Accent,
+                    Icon = "skills"
+                }
+            ],
+            Sections = sections
         };
     }
 
@@ -2082,66 +3806,315 @@ public static class ExplorerMortalWorldCommandResultBuilder
         };
     }
 
-    private static UiPanelBlock BuildFactionReferenceDetailPanel(
-        ReferenceCommandDefinition definition,
-        ReferenceEntrySnapshot entry)
+    private static UiEntityDossierBlock BuildFactionReferenceOverviewCard(
+        ReferenceEntrySnapshot entry,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
     {
-        var detailItems = new List<UiKeyValueItem>
+        var related = FindFactionRelatedEntries(entry, entries).ToList();
+        var sections = BuildFactionSections(entry, related, includePowerProfile: false);
+        var overviewItems = BuildFactionOverviewItems(entry, related);
+        var summary = FirstNonEmpty(
+            FirstReferenceNodeString(entry.Node, "description", "summary", "reputationDescription"),
+            related.Select(static relatedEntry => FirstReferenceNodeString(relatedEntry.Node, "summary", "description")).FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)),
+            entry.Summary);
+
+        return new UiEntityDossierBlock
         {
-            new() { Key = "Раздел", Value = entry.Section },
-            new() { Key = "Метка", Value = entry.Selector }
+            EntityType = "faction",
+            Title = entry.Title,
+            Subtitle = "Фракция",
+            Summary = summary,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = "Фракция",
+                    Tone = UiTone.Accent,
+                    Icon = "factions"
+                }
+            ],
+            Facts = overviewItems
+                .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                .ToList(),
+            Cards =
+            [
+                new UiEntityCard
+                {
+                    Title = entry.Title,
+                    Subtitle = "Фракция",
+                    Summary = summary,
+                    Icon = "factions",
+                    Facts = overviewItems
+                        .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                        .ToList()
+                }
+            ],
+            Sections = sections
         };
+    }
 
-        AddReferenceDetailItem(detailItems, "Описание", FirstNonEmpty(FirstReferenceNodeString(entry.Node, "description", "summary"), entry.Summary));
-        AddReferenceDetailItem(detailItems, "Состояние", DescribeReferenceStatus(FirstReferenceNodeString(entry.Node, "status", "state", "phase")));
-        AddReferenceDetailItem(detailItems, "Уровень", FirstReferenceNodeString(entry.Node, "level", "tier"));
-        AddReferenceDetailItem(detailItems, "Репутация", DescribeFactionReputation(entry.Node));
-        AddReferenceDetailItem(detailItems, "Отношение", FirstReferenceNodeString(entry.Node, "reputationDescription", "attitude", "publicStatus"));
-        AddReferenceDetailItem(detailItems, "Ранг героя", FirstReferenceNodeString(entry.Node, "playerRank", "rankName"));
-        AddReferenceDetailItem(detailItems, "Ветвь героя", FirstReferenceNodeString(entry.Node, "playerBranch", "branch"));
-        AddReferenceDetailItem(detailItems, "Архетип развития", TranslateFactionDevelopmentArchetype(FirstReferenceNodeString(entry.Node, "developmentArchetype")));
-        AddReferenceDetailItem(detailItems, "Сила фракции", FirstReferenceNodeString(entry.Node, "factionStrength", "strength", "power"));
-        AddReferenceDetailItem(detailItems, "Цель", FirstReferenceNodeString(entry.Node, "currentObjective", "objective", "strategy"));
+    private static UiEntityDossierBlock BuildFactionReferenceDetailPanel(
+        ReferenceCommandDefinition definition,
+        ReferenceEntrySnapshot entry,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
+    {
+        var related = FindFactionRelatedEntries(entry, entries).ToList();
+        var sections = BuildFactionSections(entry, related, includePowerProfile: true);
 
-        var blocks = new List<UiBlock> { new UiKeyValueGridBlock { Items = detailItems } };
-
-        var powerRows = BuildFactionPowerRows(entry.Node["powerProfile"]);
-        if (powerRows.Count > 0)
+        return new UiEntityDossierBlock
         {
-            blocks.Add(new UiTableBlock
+            EntityType = "faction",
+            Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
+            Subtitle = entry.Section,
+            Summary = FirstNonEmpty(
+                FirstReferenceNodeString(entry.Node, "description", "summary"),
+                entry.Summary),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = "Фракция",
+                    Tone = UiTone.Accent,
+                    Icon = "factions"
+                }
+            ],
+            Facts = BuildFactionOverviewItems(entry, related)
+                .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+                .ToList(),
+            Sections = sections
+        };
+    }
+
+    private static List<UiEntityDossierSection> BuildFactionSections(
+        ReferenceEntrySnapshot entry,
+        IReadOnlyList<ReferenceEntrySnapshot> related,
+        bool includePowerProfile)
+    {
+        var detailItems = BuildFactionOverviewItems(entry, related);
+        var sections = new List<UiEntityDossierSection>();
+        if (detailItems.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
             {
-                Title = "Профиль силы",
-                Columns = ["Параметр", "Значение"],
-                Rows = powerRows
+                Id = "overview",
+                Title = "Сведения",
+                Summary = "Основное положение фракции и отношение к герою.",
+                Icon = "factions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = detailItems }]
             });
+        }
+
+        if (includePowerProfile)
+        {
+            var powerRows = BuildFactionPowerRows(entry.Node["powerProfile"]);
+            if (powerRows.Count > 0)
+            {
+                sections.Add(new UiEntityDossierSection
+                {
+                    Id = "power",
+                    Title = "Профиль силы",
+                    Summary = "Как фракция распределяет влияние между военной, экономической и скрытой силой.",
+                    Icon = "factions",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks =
+                    [
+                        new UiKeyValueGridBlock
+                        {
+                            Items = powerRows
+                                .Where(static row => row.Cells.Count >= 2)
+                                .Select(static row => new UiKeyValueItem { Key = row.Cells[0], Value = row.Cells[1] })
+                                .ToList()
+                        }
+                    ]
+                });
+            }
         }
 
         var resourceRows = BuildFactionResourceRows(entry.Node["metaResources"] ?? entry.Node["resources"] ?? entry.Node["strategicGoods"]);
         if (resourceRows.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "resources",
                 Title = "Ресурсы",
-                Columns = ["Ресурс", "Запас", "Доход/ход", "Содержание/ход"],
-                Rows = resourceRows
+                Summary = "Запасы и поток ресурсов, которыми фракция может распоряжаться.",
+                Icon = "factions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = resourceRows
+                    .Select(row => (UiBlock)BuildReferenceRowDossier(
+                        "faction-resource",
+                        "Ресурс",
+                        ["Ресурс", "Запас", "Доход за ход", "Содержание за ход"],
+                        row,
+                        "factions"))
+                    .ToList()
             });
         }
 
         var rankRows = BuildFactionRankRows(entry.Node["ranks"] ?? entry.Node["rankLadder"]);
         if (rankRows.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
-                Title = "Ранги и доступ",
-                Columns = ["Ранг", "Ветвь", "Преимущества"],
-                Rows = rankRows
+                Id = "ranks",
+                Title = "Ранги и ветви",
+                Summary = "Что дают ранги и ветви отношений внутри фракции.",
+                Icon = "factions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = rankRows
+                    .Select(row => (UiBlock)BuildReferenceRowDossier(
+                        "faction-rank",
+                        "Ранг",
+                        ["Ранг", "Ветвь", "Преимущества"],
+                        row,
+                        "factions"))
+                    .ToList()
             });
         }
 
-        return new UiPanelBlock
+        var chronicleRows = BuildFactionChronicleRows(related);
+        if (chronicleRows.Count > 0)
         {
-            Title = $"{definition.DetailTitlePrefix}: {entry.Title}",
-            Blocks = blocks
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "chronicle",
+                Title = "Хроника",
+                Summary = "Записи о том, как фракция изменила отношение к герою и миру.",
+                Icon = "factions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = chronicleRows
+                    .Select(row => (UiBlock)BuildReferenceRowDossier(
+                        "faction-chronicle",
+                        "Запись хроники",
+                        ["Событие", "Когда", "Кратко"],
+                        row,
+                        "factions"))
+                    .ToList()
+            });
+        }
+
+        var projectRows = BuildFactionProjectRows(entry.Node["activeProjects"]);
+        if (projectRows.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "projects",
+                Title = "Проекты",
+                Summary = "Текущие дела фракции, которые могут затронуть героя.",
+                Icon = "factions",
+                Collapsible = true,
+                InitiallyExpanded = false,
+                Blocks = projectRows
+                    .Select(row => (UiBlock)BuildReferenceRowDossier(
+                        "faction-project",
+                        "Проект",
+                        ["Проект", "Состояние", "Прогресс", "Что даст"],
+                        row,
+                        "factions"))
+                    .ToList()
+            });
+        }
+
+        return sections;
+    }
+
+    private static List<UiKeyValueItem> BuildFactionOverviewItems(
+        ReferenceEntrySnapshot entry,
+        IReadOnlyList<ReferenceEntrySnapshot> related)
+    {
+        var detailItems = new List<UiKeyValueItem>
+        {
+            new() { Key = "Раздел", Value = entry.Section }
+        };
+
+        var custom = related.FirstOrDefault(static relatedEntry =>
+            relatedEntry.Node.ContainsKey("state") ||
+            relatedEntry.Node.ContainsKey("publicStatus") ||
+            relatedEntry.Node.ContainsKey("currentObjective"));
+
+        AddReferenceDetailItem(detailItems, "Описание", FirstNonEmpty(FirstReferenceNodeString(entry.Node, "description", "summary"), entry.Summary));
+        AddReferenceDetailItem(detailItems, "Состояние", FirstNonEmpty(
+            DescribeReferenceStatus(FirstReferenceNodeString(entry.Node, "status", "state", "phase")),
+            DescribeReferenceStatus(FirstReferenceNodeString(custom?.Node, "status", "state", "phase"))));
+        AddReferenceDetailItem(detailItems, "Уровень", FirstReferenceNodeString(entry.Node, "level", "tier"));
+        AddReferenceDetailItem(detailItems, "Репутация", DescribeFactionReputation(entry.Node));
+        AddReferenceDetailItem(detailItems, "Отношение", FirstNonEmpty(
+            FirstReferenceNodeString(entry.Node, "reputationDescription", "attitude", "publicStatus"),
+            FirstReferenceNodeString(custom?.Node, "reputationDescription", "attitude", "publicStatus"),
+            FirstReferenceNodeString(custom?.Node, "summary")));
+        AddReferenceDetailItem(detailItems, "Ранг героя", FirstReferenceNodeString(entry.Node, "playerRank", "rankName"));
+        AddReferenceDetailItem(detailItems, "Ветвь героя", FirstReferenceNodeString(entry.Node, "playerBranch", "branch"));
+        AddReferenceDetailItem(detailItems, "Архетип развития", TranslateFactionDevelopmentArchetype(FirstReferenceNodeString(entry.Node, "developmentArchetype")));
+        AddReferenceDetailItem(detailItems, "Сила фракции", FirstReferenceNodeString(entry.Node, "factionStrength", "strength", "power"));
+        AddReferenceDetailItem(detailItems, "Цель", FirstNonEmpty(
+            FirstReferenceNodeString(entry.Node, "currentObjective", "objective", "strategy", "playerStrategyDirective"),
+            FirstReferenceNodeString(custom?.Node, "currentObjective", "objective", "strategy")));
+        AddReferenceDetailItem(detailItems, "Ресурсы", PreviewRows(BuildFactionResourceRows(entry.Node["metaResources"] ?? entry.Node["resources"] ?? entry.Node["strategicGoods"])));
+        AddReferenceDetailItem(detailItems, "Ранги", PreviewRows(BuildFactionRankRows(entry.Node["ranks"] ?? entry.Node["rankLadder"])));
+        AddReferenceDetailItem(detailItems, "Хроника", PreviewRows(BuildFactionChronicleRows(related)));
+        return detailItems;
+    }
+
+    private static string PreviewRows(IReadOnlyList<UiTableRow> rows)
+    {
+        if (rows.Count == 0)
+            return string.Empty;
+
+        return string.Join("\n", rows
+            .Take(3)
+            .Select(static row => string.Join(" — ", row.Cells.Where(static cell => !string.IsNullOrWhiteSpace(cell) && cell != "—"))));
+    }
+
+    private static UiEntityDossierBlock BuildReferenceRowDossier(
+        string entityType,
+        string subtitle,
+        IReadOnlyList<string> columns,
+        UiTableRow row,
+        string icon = "reference")
+    {
+        var title = row.Cells.Count > 0 && !string.IsNullOrWhiteSpace(row.Cells[0])
+            ? row.Cells[0]
+            : subtitle;
+        var facts = new List<UiKeyValueItem>();
+        for (var index = 1; index < row.Cells.Count; index++)
+        {
+            var value = row.Cells[index];
+            if (string.IsNullOrWhiteSpace(value))
+                continue;
+
+            facts.Add(new UiKeyValueItem
+            {
+                Key = index < columns.Count ? columns[index] : $"Поле {index + 1}",
+                Value = value
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = entityType,
+            Title = title,
+            Subtitle = subtitle,
+            Summary = facts.Count == 1 ? facts[0].Value : string.Empty,
+            Sections = facts.Count == 0
+                ? []
+                :
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Сведения",
+                        Icon = icon,
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                    }
+                ]
         };
     }
 
@@ -2182,10 +4155,19 @@ public static class ExplorerMortalWorldCommandResultBuilder
         {
             foreach (var property in obj)
             {
-                if (property.Value is JsonObject resource)
+                if (property.Value is JsonArray resourceArray)
+                {
+                    foreach (var resource in resourceArray.OfType<JsonObject>())
+                        AddFactionResourceRow(rows, property.Key, resource);
+                }
+                else if (property.Value is JsonObject resource)
+                {
                     AddFactionResourceRow(rows, property.Key, resource);
+                }
                 else if (TryGetScalarString(property.Value, out var value) && !string.IsNullOrWhiteSpace(value))
+                {
                     rows.Add(new UiTableRow { Cells = [TranslateFactionResourceKey(property.Key), value, string.Empty, string.Empty] });
+                }
             }
         }
         else if (node is JsonArray array)
@@ -2202,9 +4184,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var name = FirstNonEmpty(
             FirstReferenceNodeString(resource, "displayName", "name", "resourceName"),
             TranslateFactionResourceKey(key));
-        var stock = FirstReferenceNodeString(resource, "currentStock", "stock", "amount", "balanceAfter", "quantity");
-        var income = FirstReferenceNodeString(resource, "incomePerTurn", "income", "delta");
-        var upkeep = FirstReferenceNodeString(resource, "upkeepPerTurn", "upkeep", "costPerTurn");
+        var stock = FirstReferenceNodeString(resource, "currentStockpile", "currentStock", "stock", "amount", "balanceAfter", "quantity");
+        var income = FirstReferenceNodeString(resource, "incomePerCycle", "incomePerTurn", "income", "delta");
+        var upkeep = FirstReferenceNodeString(resource, "upkeepPerCycle", "upkeepPerTurn", "upkeep", "costPerTurn");
 
         if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(stock) && string.IsNullOrWhiteSpace(income) && string.IsNullOrWhiteSpace(upkeep))
             return;
@@ -2223,15 +4205,52 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static List<UiTableRow> BuildFactionRankRows(JsonNode? node)
     {
-        if (node is not JsonArray array)
-            return [];
-
         var rows = new List<UiTableRow>();
+        if (node is JsonObject obj)
+        {
+            if (obj["branches"] is JsonArray branches)
+            {
+                foreach (var branch in branches.OfType<JsonObject>())
+                    AddFactionBranchRankRows(rows, branch);
+            }
+            else if (obj["ranks"] is JsonArray branchlessRanks)
+            {
+                AddFactionRankRows(rows, branchlessRanks, FirstReferenceNodeString(obj, "branchName", "displayName", "name"));
+            }
+
+            return rows;
+        }
+
+        if (node is not JsonArray array)
+            return rows;
+
+        AddFactionRankRows(rows, array, string.Empty);
+        return rows;
+    }
+
+    private static void AddFactionBranchRankRows(List<UiTableRow> rows, JsonObject branch)
+    {
+        var branchName = FirstNonEmpty(
+            FirstReferenceNodeString(branch, "branchName", "displayName", "name"),
+            FirstReferenceNodeString(branch, "branchId"));
+        if (branch["ranks"] is JsonArray ranks)
+            AddFactionRankRows(rows, ranks, branchName);
+    }
+
+    private static void AddFactionRankRows(List<UiTableRow> rows, JsonArray array, string branchName)
+    {
         foreach (var rank in array.OfType<JsonObject>())
         {
-            var name = FirstReferenceNodeString(rank, "rankName", "name", "title");
-            var branch = FirstReferenceNodeString(rank, "branch", "branchName");
-            var benefits = DescribeNodeForReferenceDetail(rank["benefits"] ?? rank["perks"] ?? rank["permissions"]);
+            var name = FirstNonEmpty(
+                FirstReferenceNodeString(rank, "rankName", "rankNameMale", "rankNameFemale", "name", "title"),
+                JoinReferenceDetails(
+                    FirstReferenceNodeString(rank, "rankNameMale"),
+                    FirstReferenceNodeString(rank, "rankNameFemale")));
+            var branch = FirstNonEmpty(FirstReferenceNodeString(rank, "branch", "branchName"), branchName);
+            var benefits = JoinReferenceDetails(
+                DescribeNodeForReferenceDetail(rank["benefits"] ?? rank["perks"] ?? rank["permissions"]),
+                FormatFactionRequiredReputation(FirstReferenceNodeString(rank, "requiredReputation")),
+                FirstReferenceNodeString(rank, "unlockCondition"));
             if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(branch) && string.IsNullOrWhiteSpace(benefits))
                 continue;
 
@@ -2245,8 +4264,139 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 ]
             });
         }
+    }
+
+    private static string FormatFactionRequiredReputation(string value) =>
+        string.IsNullOrWhiteSpace(value) ? string.Empty : $"нужно репутации: {value.Trim()}";
+
+    private static List<UiTableRow> BuildFactionChronicleRows(IReadOnlyList<ReferenceEntrySnapshot> related)
+    {
+        var rows = new List<UiTableRow>();
+        foreach (var entry in related)
+        {
+            if (!entry.Section.Contains("Хроник", StringComparison.OrdinalIgnoreCase) &&
+                string.IsNullOrWhiteSpace(FirstReferenceNodeString(entry.Node, "timestamp", "time", "date")))
+            {
+                continue;
+            }
+
+            var title = FirstNonEmpty(FirstReferenceNodeString(entry.Node, "title", "name"), entry.Title);
+            var when = FirstReferenceNodeString(entry.Node, "timestamp", "time", "date");
+            var summary = FirstNonEmpty(FirstReferenceNodeString(entry.Node, "summary", "description"), entry.Summary);
+            if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(summary))
+                continue;
+
+            rows.Add(new UiTableRow { Cells = [EmptyFallback(title), EmptyFallback(when), EmptyFallback(summary)] });
+        }
 
         return rows;
+    }
+
+    private static List<UiTableRow> BuildFactionProjectRows(JsonNode? node)
+    {
+        if (node is not JsonArray projects)
+            return [];
+
+        var rows = new List<UiTableRow>();
+        foreach (var project in projects.OfType<JsonObject>())
+        {
+            var name = FirstReferenceNodeString(project, "projectName", "name", "title");
+            var state = DescribeReferenceStatus(FirstReferenceNodeString(project, "activeState", "state", "status"));
+            var progress = JoinReferenceDetails(
+                FormatProgressPair(
+                    FirstReferenceNodeString(project, "currentStep", "step"),
+                    FirstReferenceNodeString(project, "totalSteps")),
+                FormatProgressPair(
+                    FirstReferenceNodeString(project, "timeSpentMinutes"),
+                    FirstReferenceNodeString(project, "totalTimeCostMinutes"),
+                    "мин."));
+            var reward = FirstReferenceNodeString(project, "visibleReward", "reward", "outcome");
+            if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(state) && string.IsNullOrWhiteSpace(progress) && string.IsNullOrWhiteSpace(reward))
+                continue;
+
+            rows.Add(new UiTableRow { Cells = [EmptyFallback(name), EmptyFallback(state), EmptyFallback(progress), EmptyFallback(reward)] });
+        }
+
+        return rows;
+    }
+
+    private static string FormatProgressPair(string current, string total, string unit = "")
+    {
+        if (string.IsNullOrWhiteSpace(current) && string.IsNullOrWhiteSpace(total))
+            return string.Empty;
+
+        var suffix = string.IsNullOrWhiteSpace(unit) ? string.Empty : " " + unit.Trim();
+        if (!string.IsNullOrWhiteSpace(current) && !string.IsNullOrWhiteSpace(total))
+            return $"{current.Trim()}/{total.Trim()}{suffix}";
+
+        return FirstNonEmpty(current, total) + suffix;
+    }
+
+    private static IEnumerable<ReferenceEntrySnapshot> FindFactionRelatedEntries(
+        ReferenceEntrySnapshot source,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
+    {
+        var aliases = BuildFactionAliasSet(source);
+        var changed = true;
+        while (changed)
+        {
+            changed = false;
+            foreach (var entry in entries)
+            {
+                if (ReferenceEquals(entry.Node, source.Node))
+                    continue;
+
+                var candidateAliases = BuildFactionAliasSet(entry);
+                if (!candidateAliases.Overlaps(aliases))
+                    continue;
+
+                foreach (var alias in candidateAliases)
+                    changed |= aliases.Add(alias);
+            }
+        }
+
+        foreach (var entry in entries)
+        {
+            if (ReferenceEquals(entry.Node, source.Node))
+                continue;
+
+            var candidateAliases = BuildFactionAliasSet(entry);
+            if (candidateAliases.Overlaps(aliases))
+                yield return entry;
+        }
+    }
+
+    private static HashSet<string> BuildFactionAliasSet(ReferenceEntrySnapshot entry)
+    {
+        var aliases = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        AddFactionAlias(aliases, entry.Title);
+        AddFactionAlias(aliases, entry.Selector);
+        foreach (var property in new[]
+                 {
+                     "factionId",
+                     "initialId",
+                     "id",
+                     "key",
+                     "name",
+                     "factionName",
+                     "displayName",
+                     "title"
+                 })
+        {
+            AddFactionAlias(aliases, FirstReferenceNodeString(entry.Node, property));
+        }
+
+        return aliases;
+    }
+
+    private static void AddFactionAlias(HashSet<string> aliases, string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        var normalized = NormalizeReferenceSelector(value);
+        if (!string.IsNullOrWhiteSpace(normalized) && normalized != "item")
+            aliases.Add(normalized);
     }
 
     private static string TranslateFactionDevelopmentArchetype(string value) =>
@@ -2355,7 +4505,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     FirstReferenceNodeString(obj["rivalSoul"], "rivalSoulId", "id"),
                     NormalizeReferenceSelector(title),
                     index.ToString()));
-                if (!seen.Add(selector))
+                var seenKey = string.Equals(definition.DetailTitlePrefix, "Фракция", StringComparison.OrdinalIgnoreCase)
+                    ? spec.Label + ":" + selector + ":" + NormalizeReferenceSelector(title)
+                    : selector;
+                if (!seen.Add(seenKey))
                     continue;
 
                 yield return new ReferenceEntrySnapshot(
@@ -2468,20 +4621,191 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 FirstReferenceNodeString(node, "summary", "description", "skillDescription", "objective", "visibleReason", "scenarioCore")),
             DescribeNodeForReferenceDetail(node["objectives"]));
 
-    private static string DescribeReferencePayload(JsonObject node)
+    private static void AddReferenceAdditionalDetailBlocks(
+        List<UiBlock> blocks,
+        JsonObject node,
+        params string[] consumedFields)
     {
-        var parts = new List<string>();
+        var consumed = new HashSet<string>(consumedFields, StringComparer.OrdinalIgnoreCase);
+        var scalarItems = new List<UiKeyValueItem>();
         foreach (var property in node)
         {
-            if (IsKnownReferenceDetailProperty(property.Key) || IsTechnicalReferenceProperty(property.Key))
+            if (consumed.Contains(property.Key) ||
+                IsKnownReferenceDetailProperty(property.Key) ||
+                IsTechnicalReferenceProperty(property.Key))
+            {
                 continue;
+            }
 
-            var value = DescribeNodeForReferenceDetail(property.Value, property.Key);
-            if (!string.IsNullOrWhiteSpace(value))
-                parts.Add($"{DescribeReferenceFieldLabel(property.Key)}: {value}");
+            var label = DescribeReferenceNestedFieldLabel(property.Key);
+            if (TryGetScalarString(property.Value, out var scalar))
+            {
+                var value = StructuredBonusDisplay.FormatScalar(scalar, property.Key);
+                if (!string.IsNullOrWhiteSpace(value))
+                    scalarItems.Add(new UiKeyValueItem { Key = label, Value = value });
+                continue;
+            }
+
+            AddReferenceDetailSection(blocks, ToReferenceDetailSectionTitle(label, property.Key), property.Value);
         }
 
-        return string.Join("; ", parts);
+        if (scalarItems.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "reference-extra",
+                Title = "Дополнительные сведения",
+                Subtitle = "Раздел",
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Поля",
+                        Icon = "reference",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = [new UiKeyValueGridBlock { Items = scalarItems }]
+                    }
+                ]
+            });
+        }
+    }
+
+    private static void AddReferenceDetailSection(List<UiBlock> blocks, string title, JsonNode? node)
+    {
+        var sectionBlocks = BuildReferenceDetailBlocks(node);
+        if (sectionBlocks.Count == 0)
+            return;
+
+        blocks.Add(new UiEntityDossierBlock
+        {
+            EntityType = "reference-section",
+            Title = title,
+            Subtitle = "Вложенный раздел",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = StableId(title),
+                    Title = "Сведения",
+                    Icon = "reference",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = sectionBlocks
+                }
+            ]
+        });
+    }
+
+    private static List<UiBlock> BuildReferenceDetailBlocks(JsonNode? node)
+    {
+        if (node == null)
+            return [];
+
+        if (TryGetScalarString(node, out var scalar))
+        {
+            var value = StructuredBonusDisplay.FormatScalar(scalar);
+            return string.IsNullOrWhiteSpace(value)
+                ? []
+                : [new UiTextBlock { Text = value, Tone = UiTone.Default }];
+        }
+
+        if (node is JsonArray array)
+        {
+            var blocks = new List<UiBlock>();
+            var listItems = new List<string>();
+            var index = 0;
+            foreach (var item in array)
+            {
+                index++;
+                if (item is JsonObject itemObj)
+                {
+                    var card = BuildReferenceObjectCard(itemObj, $"Запись {index}");
+                    if (card != null)
+                        blocks.Add(card);
+                    continue;
+                }
+
+                var value = DescribeNodeForReferenceDetail(item);
+                if (!string.IsNullOrWhiteSpace(value))
+                    listItems.Add(value);
+            }
+
+            if (listItems.Count > 0)
+                blocks.Insert(0, new UiListBlock { Items = listItems });
+            return blocks;
+        }
+
+        return node is JsonObject objectNode ? BuildReferenceObjectBlocks(objectNode) : [];
+    }
+
+    private static UiEntityDossierBlock? BuildReferenceObjectCard(JsonObject obj, string fallbackTitle)
+    {
+        var blocks = BuildReferenceObjectBlocks(obj);
+        if (blocks.Count == 0)
+            return null;
+
+        var title = FirstNonEmpty(
+            FirstReferenceNodeString(obj, "displayName", "displayNameOrMoniker", "name", "title", "questName", "stepTitle", "stepName", "npcName", "characterName", "itemName", "vehicleName"),
+            fallbackTitle);
+        return new UiEntityDossierBlock
+        {
+            EntityType = "reference-entry-detail",
+            Title = title,
+            Subtitle = "Запись",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "fields",
+                    Title = "Сведения",
+                    Icon = "reference",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = blocks
+                }
+            ]
+        };
+    }
+
+    private static List<UiBlock> BuildReferenceObjectBlocks(JsonObject obj)
+    {
+        var scalarItems = new List<UiKeyValueItem>();
+        var nestedBlocks = new List<UiBlock>();
+        foreach (var property in obj)
+        {
+            if (IsTechnicalReferenceProperty(property.Key))
+                continue;
+
+            var label = DescribeReferenceNestedFieldLabel(property.Key);
+            if (TryGetScalarString(property.Value, out var scalar))
+            {
+                var value = StructuredBonusDisplay.FormatScalar(scalar, property.Key);
+                if (!string.IsNullOrWhiteSpace(value))
+                    scalarItems.Add(new UiKeyValueItem { Key = label, Value = value });
+                continue;
+            }
+
+            AddReferenceDetailSection(nestedBlocks, ToReferenceDetailSectionTitle(label, property.Key), property.Value);
+        }
+
+        var blocks = new List<UiBlock>();
+        if (scalarItems.Count > 0)
+            blocks.Add(new UiKeyValueGridBlock { Items = scalarItems });
+        blocks.AddRange(nestedBlocks);
+        return blocks;
+    }
+
+    private static string ToReferenceDetailSectionTitle(string label, string propertyName)
+    {
+        var title = string.Equals(label, "деталь", StringComparison.OrdinalIgnoreCase)
+            ? HumanizeReferenceKey(propertyName)
+            : label.Trim();
+        if (string.IsNullOrWhiteSpace(title))
+            title = "Сведения";
+
+        return char.ToUpperInvariant(title[0]) + title[1..];
     }
 
     private static string DescribeNodeForReferenceDetail(JsonNode? node, string? fieldName = null)
@@ -2493,7 +4817,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return StructuredBonusDisplay.FormatScalar(scalar, fieldName);
 
         if (node is JsonArray array)
-            return string.Join("; ", array
+            return string.Join("\n", array
                 .Select(item => DescribeNodeForReferenceDetail(item, fieldName))
                 .Where(static part => !string.IsNullOrWhiteSpace(part)));
 
@@ -2510,7 +4834,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     parts.Add($"{DescribeReferenceNestedFieldLabel(property.Key)}: {value}");
             }
 
-            return string.Join("; ", parts);
+            return string.Join("\n", parts);
         }
 
         return string.Empty;
@@ -2639,18 +4963,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
     }
 
-    private static void AddReferenceRawState(
-        List<UiBlock> blocks,
-        string title,
-        IEnumerable<JsonReadResult> reads)
-    {
-        foreach (var read in reads)
-        {
-            if (read.Node != null)
-                blocks.Add(Raw($"Полная запись: {title}", read.Node));
-        }
-    }
-
     private static string FirstReferenceNodeString(JsonNode? node, params string[] properties)
     {
         foreach (var property in properties)
@@ -2664,7 +4976,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
     }
 
     private static string JoinReferenceDetails(params string?[] values) =>
-        string.Join("; ", values.Where(static value => !string.IsNullOrWhiteSpace(value)).Select(static value => value!.Trim()));
+        string.Join("\n", values.Where(static value => !string.IsNullOrWhiteSpace(value)).Select(static value => value!.Trim()));
 
     private static string NormalizeReferenceSelector(string value)
     {
@@ -2870,18 +5182,45 @@ public static class ExplorerMortalWorldCommandResultBuilder
         foreach (var location in EnumerateWorldMapLocationObjects(mapRead.Node, "locationUpdates"))
             AddLocationRow(rows, entries, seen, commandToken, definition, "Обновлена", location, DescribeWorldMapLocation(location));
 
-        var request = ParseReferenceDetailRequest(ExtractCommandRemainder(command), definition);
+        var remainder = ExtractCommandRemainder(command);
+        if (TryParseLocationStoragesRequest(remainder, out var storageSelector))
+            return BuildLocationStoragesDetail(command, commandToken, definition, [currentRead, mapRead], entries, storageSelector);
+
+        var request = ParseReferenceDetailRequest(remainder, definition);
         if (request.Kind != ReferenceDetailKind.Overview)
             return BuildReferenceDetail(command, commandToken, definition, [currentRead, mapRead], entries, request);
 
         var blocks = new List<UiBlock>();
         if (rows.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            blocks.Add(new UiEntityDossierBlock
             {
+                EntityType = "locations",
                 Title = title,
-                Columns = ["Раздел", "Локация", "Сведения", "Подробно"],
-                Rows = rows
+                Subtitle = "Обзор мест",
+                Summary = DescribeInventoryCount(rows.Count, "локация", "локации", "локаций"),
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = DescribeInventoryCount(rows.Count, "локация", "локации", "локаций"),
+                        Tone = UiTone.Accent,
+                        Icon = "map"
+                    }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "locations",
+                        Title = "Доступные места",
+                        Summary = "Текущая локация, соседние переходы и уже открытые места.",
+                        Icon = "map",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = rows.Select(static row => (UiBlock)BuildLocationOverviewCard(row)).ToList()
+                    }
+                ]
             });
         }
         else
@@ -2889,9 +5228,393 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Info, title, "Локации пока не обнаружены."));
         }
 
-        AddLocationRawState(blocks, title, currentRead);
-        AddLocationRawState(blocks, title, mapRead);
+        AddReferenceReadWarnings(blocks, title, [currentRead, mapRead]);
         return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
+    }
+
+    private static UiEntityDossierBlock BuildLocationOverviewCard(UiTableRow row)
+    {
+        var section = row.Cells.Count > 0 ? row.Cells[0] : "Локация";
+        var title = row.Cells.Count > 1 && !string.IsNullOrWhiteSpace(row.Cells[1])
+            ? row.Cells[1]
+            : "Безымянная локация";
+        var summary = row.Cells.Count > 2 ? row.Cells[2] : string.Empty;
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "location-summary",
+            Title = title,
+            Subtitle = section,
+            Summary = FirstNonEmpty(summary, "Сведения о месте пока не уточнены."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = section,
+                    Tone = UiTone.Accent,
+                    Icon = "map"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "map",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks =
+                    [
+                        new UiKeyValueGridBlock
+                        {
+                            Items =
+                            [
+                                new UiKeyValueItem { Key = "Раздел", Value = section },
+                                new UiKeyValueItem { Key = "Сведения", Value = EmptyFallback(summary) }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+    }
+
+    private static ExplorerCommandResult BuildLocationStoragesDetail(
+        string command,
+        string commandToken,
+        ReferenceCommandDefinition definition,
+        IEnumerable<JsonReadResult> reads,
+        IReadOnlyList<ReferenceEntrySnapshot> entries,
+        string selector)
+    {
+        var blocks = new List<UiBlock>();
+        var entry = FindReferenceEntry(entries, selector);
+        if (entry == null)
+        {
+            blocks.Add(Message(UiNotificationSeverity.Warning, definition.NotFoundTitle, definition.NotFoundMessage));
+        }
+        else
+        {
+            var storages = EnumerateLocationStorages(entry.Node).ToList();
+            if (storages.Count == 0)
+            {
+                blocks.Add(Message(UiNotificationSeverity.Info, "Хранилища", "У этой локации не отмечены доступные хранилища."));
+            }
+            else
+            {
+                blocks.Add(new UiEntityDossierBlock
+                {
+                    EntityType = "location-storages",
+                    Title = $"Хранилища: {entry.Title}",
+                    Subtitle = entry.Section,
+                    Summary = DescribeInventoryCount(storages.Count, "хранилище", "хранилища", "хранилищ"),
+                    Facts =
+                    [
+                        new UiEntityFact
+                        {
+                            Label = "Хранилища",
+                            Value = string.Join("\n", storages.Select(GetLocationStorageDisplayName))
+                        },
+                        new UiEntityFact
+                        {
+                            Label = "Содержимое",
+                            Value = PreviewLocationStorageContents(storages)
+                        }
+                    ],
+                    Badges =
+                    [
+                        new UiEntityBadge
+                        {
+                            Label = DescribeInventoryCount(storages.Count, "хранилище", "хранилища", "хранилищ"),
+                            Tone = UiTone.Accent,
+                            Icon = "inventory"
+                        }
+                    ],
+                    Sections =
+                    [
+                        new UiEntityDossierSection
+                        {
+                            Id = "storages",
+                            Title = "Хранилища",
+                            Summary = "Отдельный список столов, сундуков и тайников этой локации.",
+                            Icon = "inventory",
+                            Presentation = "collection",
+                            Collapsible = true,
+                            InitiallyExpanded = true,
+                            Blocks = storages
+                                .Select(storage => (UiBlock)BuildLocationStorageCard(storage))
+                                .ToList()
+                        }
+                    ]
+                });
+            }
+        }
+
+        AddReferenceReadWarnings(blocks, definition.Title, reads);
+        return Completed(command, blocks, [
+            new UiAction
+            {
+                Id = definition.ActionIdPrefix + "-back-detail-" + ToActionIdPart(selector),
+                Label = entry == null ? $"Назад: {definition.Title}" : $"Назад: {entry.Title}",
+                Command = entry == null
+                    ? commandToken
+                    : BuildReferenceDetailCommand(commandToken, definition, entry.Selector),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false
+            },
+            new UiAction
+            {
+                Id = definition.ActionIdPrefix + "-back",
+                Label = $"Назад: {definition.Title}",
+                Command = commandToken,
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false
+            }
+        ]);
+    }
+
+    private static bool TryParseLocationStoragesRequest(string remainder, out string selector)
+    {
+        selector = string.Empty;
+        if (string.IsNullOrWhiteSpace(remainder))
+            return false;
+
+        var (kindToken, detailRemainder) = SplitFirstCombatArgument(remainder);
+        var normalized = kindToken.Trim().ToLowerInvariant();
+        if (normalized is not ("storage" or "storages" or "хранилище" or "хранилища" or "тайник" or "тайники"))
+            return false;
+
+        if (string.IsNullOrWhiteSpace(detailRemainder))
+            return false;
+
+        selector = NormalizeCombatSelector(detailRemainder);
+        return true;
+    }
+
+    private static List<UiBlock> BuildLocationExitCards(JsonArray? exits)
+    {
+        if (exits == null)
+            return [];
+
+        var blocks = new List<UiBlock>();
+        foreach (var exit in exits.OfType<JsonObject>())
+        {
+            var name = FirstNonEmpty(
+                GetLocationNodeString(exit, "name", "targetLocationName"),
+                GetLocationNodeString(exit, "targetLocationId"),
+                "Выход");
+            var facts = new List<UiKeyValueItem>();
+            AddLocationFact(facts, "Описание", GetLocationNodeString(exit, "shortDescription", "description"));
+            AddLocationFact(facts, "Направление", TranslateLocationDirection(GetLocationNodeString(exit, "direction")));
+            AddLocationFact(facts, "Тип перехода", TranslateLocationLinkType(GetLocationNodeString(exit, "linkType", "type")));
+            AddLocationFact(facts, "Состояние", FirstNonEmpty(
+                DescribeLinkState(GetLocationNodeString(exit, "linkState")),
+                "открыт"));
+            AddLocationFact(facts, "Куда ведёт", GetLocationNodeString(exit, "targetLocationName", "targetLocationId"));
+
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "location-exit",
+                Title = name,
+                Subtitle = "Выход",
+                Summary = FirstNonEmpty(GetLocationNodeString(exit, "shortDescription", "description"), DescribeLinkState(GetLocationNodeString(exit, "linkState"))),
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = "Выход",
+                        Tone = UiTone.Accent,
+                        Icon = "map"
+                    }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "details",
+                        Title = "Сведения",
+                        Icon = "map",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = facts.Count > 0 ? [new UiKeyValueGridBlock { Items = facts }] : []
+                    }
+                ]
+            });
+        }
+
+        return blocks;
+    }
+
+    private static bool HasLocationStorages(JsonObject location) =>
+        EnumerateLocationStorages(location).Any();
+
+    private static IEnumerable<JsonObject> EnumerateLocationStorages(JsonObject location)
+    {
+        foreach (var storage in EnumerateLocationStorageArray(location["locationStorages"]))
+            yield return storage;
+        foreach (var storage in EnumerateLocationStorageArray(location["storages"]))
+            yield return storage;
+    }
+
+    private static IEnumerable<JsonObject> EnumerateLocationStorageArray(JsonNode? node)
+    {
+        if (node is not JsonArray storages)
+            yield break;
+
+        foreach (var storage in storages.OfType<JsonObject>())
+            yield return storage;
+    }
+
+    private static UiAction BuildLocationStoragesAction(string commandToken, ReferenceEntrySnapshot entry) =>
+        new()
+        {
+            Id = "location-storages-" + ToActionIdPart(entry.Selector),
+            Label = "Открыть хранилища: " + entry.Title,
+            Command = BuildLocationStoragesCommand(commandToken, entry.Selector),
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false,
+            Payload = new JsonObject
+            {
+                ["selector"] = entry.Selector,
+                ["title"] = entry.Title
+            }
+        };
+
+    private static string BuildLocationStoragesCommand(string commandToken, string selector)
+    {
+        var detailToken = string.Equals(commandToken, "/локации", StringComparison.OrdinalIgnoreCase)
+            ? "хранилища"
+            : "storages";
+        return commandToken + " " + detailToken + " " + FormatCombatCommandArgument(selector);
+    }
+
+    private static string GetLocationStorageDisplayName(JsonObject storage) =>
+        FirstNonEmpty(
+            GetLocationNodeString(storage, "name", "storageName", "displayName"),
+            "Хранилище");
+
+    private static string PreviewLocationStorageContents(IReadOnlyList<JsonObject> storages)
+    {
+        var itemNames = storages
+            .SelectMany(static storage => storage["contents"] is JsonArray contents
+                ? contents.OfType<JsonObject>()
+                : [])
+            .Select(static item => FirstNonEmpty(
+                GetLocationNodeString(item, "name", "itemName", "displayName"),
+                "Предмет"))
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Take(6)
+            .ToList();
+
+        return itemNames.Count == 0 ? "не отмечено" : string.Join("\n", itemNames);
+    }
+
+    private static UiEntityDossierBlock BuildLocationStorageCard(JsonObject storage)
+    {
+        var name = GetLocationStorageDisplayName(storage);
+        var facts = new List<UiKeyValueItem>();
+        AddLocationFact(facts, "Доступ", DescribeReferenceStatus(GetLocationNodeString(storage, "accessLevel", "access")));
+        AddLocationFact(facts, "Полный доступ", FormatBooleanYesNo(storage["hasFullAccess"]));
+        AddLocationFact(facts, "Описание", GetLocationNodeString(storage, "description", "summary"));
+
+        var contents = BuildLocationStorageContentBlocks(storage["contents"] as JsonArray);
+        var sections = new List<UiEntityDossierSection>
+        {
+            new()
+            {
+                Id = "details",
+                Title = "Сведения",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = facts.Count > 0 ? [new UiKeyValueGridBlock { Items = facts }] : []
+            }
+        };
+        if (contents.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "contents",
+                Title = "Содержимое",
+                Summary = "Предметы, которые сейчас отмечены внутри хранилища.",
+                Icon = "inventory",
+                Presentation = "collection",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = contents
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "location-storage",
+            Title = name,
+            Subtitle = "Хранилище",
+            Summary = FirstNonEmpty(GetLocationNodeString(storage, "description", "summary"), DescribeInventoryCount(contents.Count, "предмет", "предмета", "предметов")),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeReferenceStatus(GetLocationNodeString(storage, "accessLevel", "access")),
+                    Tone = UiTone.Accent,
+                    Icon = "inventory"
+                }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static List<UiBlock> BuildLocationStorageContentBlocks(JsonArray? contents)
+    {
+        if (contents == null)
+            return [];
+
+        var blocks = new List<UiBlock>();
+        foreach (var item in contents.OfType<JsonObject>())
+        {
+            var name = FirstNonEmpty(GetLocationNodeString(item, "name", "itemName", "displayName"), "Предмет");
+            var facts = new List<UiKeyValueItem>();
+            AddLocationFact(facts, "Тип", GetLocationNodeString(item, "type"));
+            AddLocationFact(facts, "Группа", GetLocationNodeString(item, "group"));
+            AddLocationFact(facts, "Количество", FirstNonEmpty(GetLocationNodeString(item, "count", "quantity"), "1"));
+            AddLocationFact(facts, "Описание", GetLocationNodeString(item, "description", "summary"));
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "location-storage-item",
+                Title = name,
+                Subtitle = FirstNonEmpty(GetLocationNodeString(item, "type"), "Предмет"),
+                Summary = GetLocationNodeString(item, "description", "summary"),
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "details",
+                        Title = "Сведения",
+                        Icon = "inventory",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = facts.Count > 0 ? [new UiKeyValueGridBlock { Items = facts }] : []
+                    }
+                ]
+            });
+        }
+
+        return blocks;
+    }
+
+    private static string FormatBooleanYesNo(JsonNode? node)
+    {
+        if (node == null)
+            return string.Empty;
+
+        return node.GetValueKind() switch
+        {
+            JsonValueKind.True => "да",
+            JsonValueKind.False => "нет",
+            _ when TryGetScalarString(node, out var value) => StructuredBonusDisplay.FormatScalar(value),
+            _ => string.Empty
+        };
     }
 
     private static JsonObject? UnwrapCurrentLocationNode(JsonNode? node)
@@ -2963,13 +5686,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static string DescribeCurrentLocation(JsonObject location) =>
         JoinLocationDetails(
             GetLocationNodeString(location, "region"),
-            GetLocationNodeString(location, "locationType"),
+            TranslateLocationType(GetLocationNodeString(location, "locationType")),
             GetLocationNodeString(location, "description", "shortDescription"));
 
     private static string DescribeWorldMapLocation(JsonObject location) =>
         JoinLocationDetails(
-            GetLocationNodeString(location, "locationType"),
-            GetLocationNodeString(location, "indoorType"),
+            TranslateLocationType(GetLocationNodeString(location, "locationType")),
+            TranslateIndoorLocationType(GetLocationNodeString(location, "indoorType")),
             GetLocationNodeString(location, "shortDescription", "description"),
             GetLocationNodeString(location, "lastEventsDescription"));
 
@@ -2985,8 +5708,80 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return string.IsNullOrWhiteSpace(label) ? string.Empty : $"состояние пути: {label}";
     }
 
+    private static string TranslateLocationType(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "indoor" => "помещение",
+            "outdoor" => "открытая местность",
+            "city" => "городская локация",
+            "gate" => "ворота",
+            "market" => "рынок",
+            "district" => "квартал",
+            "building" => "здание",
+            "dungeon" => "подземелье",
+            "cave" or "cavesystem" or "cave_system" => "пещерная система",
+            "vehicle" => "транспорт",
+            "uniqueindoor" or "unique_indoor" => "особое помещение",
+            _ => StructuredBonusDisplay.FormatScalar(value)
+        };
+
+    private static string TranslateIndoorLocationType(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "building" => "здание",
+            "dungeon" => "подземелье",
+            "cavesystem" or "cave_system" => "пещерная система",
+            "vehicle" => "транспорт",
+            "uniqueindoor" or "unique_indoor" => "особое помещение",
+            _ => StructuredBonusDisplay.FormatScalar(value)
+        };
+
+    private static string TranslateLocationBiome(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "urban" => "город",
+            "forest" => "лес",
+            "mountain" => "горы",
+            "swamp" => "болото",
+            "desert" => "пустошь",
+            "coast" => "побережье",
+            _ => StructuredBonusDisplay.FormatScalar(value)
+        };
+
+    private static string TranslateLocationLinkType(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "door" => "дверь",
+            "hiddendoor" or "hidden_door" => "скрытая дверь",
+            "stairs" => "лестница",
+            "route" => "маршрут",
+            "road" => "дорога",
+            "bridge" => "мост",
+            "portal" => "портал",
+            _ => StructuredBonusDisplay.FormatScalar(value)
+        };
+
+    private static string TranslateLocationDirection(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "north" or "n" => "север",
+            "south" or "s" => "юг",
+            "east" or "e" => "восток",
+            "west" or "w" => "запад",
+            "up" => "вверх",
+            "down" => "вниз",
+            "inside" or "in" => "внутрь",
+            "outside" or "out" => "наружу",
+            _ => StructuredBonusDisplay.FormatScalar(value)
+        };
+
     private static string JoinLocationDetails(params string[] parts) =>
-        string.Join("; ", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
+        string.Join("\n", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
 
     private static string GetLocationNodeString(JsonNode? node, params string[] properties)
     {
@@ -2998,14 +5793,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
 
         return string.Empty;
-    }
-
-    private static void AddLocationRawState(List<UiBlock> blocks, string title, JsonReadResult read)
-    {
-        if (read.Node != null)
-            blocks.Add(Raw($"Полная запись: {title}", read.Node));
-        else if (read.FileExists)
-            blocks.Add(Message(UiNotificationSeverity.Warning, title, "Одна из записей локаций найдена, но не разобрана как JSON."));
     }
 
     private static async Task<ExplorerCommandResult> BuildTransport(string command, FileSystemManager fs)
@@ -3046,37 +5833,111 @@ public static class ExplorerMortalWorldCommandResultBuilder
             })
             .ToList();
 
+        var sections = new List<UiEntityDossierSection>();
         if (vehicleRows.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "vehicles",
                 Title = title,
-                Columns = ["Транспорт", "Тип", "Сведения", "Подробно"],
-                Rows = vehicleRows
+                Summary = "Доступные средства перемещения и их текущее состояние.",
+                Icon = "transport",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = vehicleRows.Select(static row => (UiBlock)BuildTransportOverviewCard(row)).ToList()
             });
         }
 
-        var summaryRows = new List<UiTableRow>();
-        AddTransportSummaryRow(summaryRows, vehiclesRead, "vehicles|UpdateVehicles", "Транспорта");
-        AddTransportSummaryRow(summaryRows, mapRead, "transportRoutes", "Маршрутов");
-        AddTransportSummaryRow(summaryRows, currentRead, "availableTransport", "Доступного транспорта");
-        if (summaryRows.Count > 0)
+        var summaryItems = new List<UiKeyValueItem>();
+        AddTransportSummaryItem(summaryItems, vehiclesRead, "vehicles|UpdateVehicles", "Транспорта");
+        AddTransportSummaryItem(summaryItems, mapRead, "transportRoutes", "Маршрутов");
+        AddTransportSummaryItem(summaryItems, currentRead, "availableTransport", "Доступного транспорта");
+        if (summaryItems.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Insert(0, new UiEntityDossierSection
             {
+                Id = "summary",
                 Title = "Сводка транспорта",
-                Columns = ["Раздел", "Состояние"],
-                Rows = summaryRows
+                Summary = "Короткая сводка по транспорту и маршрутам.",
+                Icon = "transport",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = summaryItems }]
             });
         }
 
-        if (blocks.Count == 0)
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "transport",
+                Title = title,
+                Subtitle = "Средства перемещения",
+                Summary = entries.Count > 0
+                    ? DescribeInventoryCount(entries.Count, "средство", "средства", "средств")
+                    : "Транспорт пока не обнаружен.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = entries.Count > 0
+                            ? DescribeInventoryCount(entries.Count, "средство", "средства", "средств")
+                            : "пусто",
+                        Tone = entries.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                        Icon = "transport"
+                    }
+                ],
+                Sections = sections
+            });
+        }
+        else
+        {
             blocks.Add(Message(UiNotificationSeverity.Info, title, "Транспорт пока не обнаружен."));
+        }
 
-        AddTransportRawState(blocks, title, vehiclesRead);
-        AddTransportRawState(blocks, title, mapRead);
-        AddTransportRawState(blocks, title, currentRead);
+        AddReferenceReadWarnings(blocks, title, [vehiclesRead, mapRead, currentRead]);
         return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
+    }
+
+    private static UiEntityDossierBlock BuildTransportOverviewCard(UiTableRow row)
+    {
+        var title = row.Cells.Count > 0 && !string.IsNullOrWhiteSpace(row.Cells[0])
+            ? row.Cells[0]
+            : "Транспорт";
+        var type = row.Cells.Count > 1 ? row.Cells[1] : string.Empty;
+        var details = row.Cells.Count > 2 ? row.Cells[2] : string.Empty;
+        var facts = new List<UiKeyValueItem>();
+        AddReferenceDetailItem(facts, "Тип", type);
+        AddReferenceDetailItem(facts, "Состояние", details);
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "transport-summary",
+            Title = title,
+            Subtitle = FirstNonEmpty(type, "Транспорт"),
+            Summary = FirstNonEmpty(details, "Подробности доступны в карточке транспорта."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = FirstNonEmpty(type, "Транспорт"),
+                    Tone = UiTone.Accent,
+                    Icon = "transport"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "transport",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
     }
 
     private static ExplorerCommandResult BuildTransportDetail(
@@ -3134,7 +5995,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             Node: vehicle);
     }
 
-    private static UiPanelBlock BuildVehicleDetailPanel(ReferenceEntrySnapshot entry)
+    private static UiEntityDossierBlock BuildVehicleDetailPanel(ReferenceEntrySnapshot entry)
     {
         var vehicle = entry.Node;
         var items = new List<UiKeyValueItem>
@@ -3146,34 +6007,58 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddReferenceDetailItem(items, "Где", FirstReferenceNodeString(vehicle, "currentLocation", "currentLocationId", "locationName"));
         AddReferenceDetailItem(items, "Вместимость", FirstReferenceNodeString(vehicle, "capacity"));
         AddReferenceDetailItem(items, "Описание", FirstReferenceNodeString(vehicle, "description", "summary", "notes"));
-        AddReferenceDetailItem(items, "Подробности", DescribeVehicleExtraPayload(vehicle));
 
-        return new UiPanelBlock
+        var blocks = new List<UiBlock>
         {
-            Title = $"Транспорт: {entry.Title}",
-            Blocks = [new UiKeyValueGridBlock { Items = items }]
+            new UiKeyValueGridBlock { Items = items }
         };
-    }
+        AddReferenceAdditionalDetailBlocks(
+            blocks,
+            vehicle,
+            "name",
+            "vehicleName",
+            "type",
+            "vehicleType",
+            "availability",
+            "status",
+            "isActive",
+            "currentLocation",
+            "currentLocationId",
+            "locationName",
+            "capacity",
+            "description",
+            "summary",
+            "notes");
 
-    private static string DescribeVehicleExtraPayload(JsonObject vehicle)
-    {
-        var parts = new List<string>();
-        foreach (var property in vehicle)
+        return new UiEntityDossierBlock
         {
-            if (property.Key is "name" or "vehicleName" or "type" or "vehicleType" or "availability" or "status" or
-                "isActive" or "currentLocation" or "currentLocationId" or "locationName" or "capacity" or
-                "description" or "summary" or "notes" ||
-                IsTechnicalReferenceProperty(property.Key))
-            {
-                continue;
-            }
-
-            var value = DescribeNodeForReferenceDetail(property.Value);
-            if (!string.IsNullOrWhiteSpace(value))
-                parts.Add($"{DescribeReferenceFieldLabel(property.Key)}: {value}");
-        }
-
-        return string.Join("; ", parts);
+            EntityType = "transport-detail",
+            Title = $"Транспорт: {entry.Title}",
+            Subtitle = DescribeVehicleType(vehicle),
+            Summary = FirstNonEmpty(DescribeVehicleNode(vehicle), FirstReferenceNodeString(vehicle, "description", "summary", "notes")),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeVehicleType(vehicle),
+                    Tone = UiTone.Accent,
+                    Icon = "transport"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "details",
+                    Title = "Сведения",
+                    Summary = "Состояние транспорта и полезные игровые параметры.",
+                    Icon = "transport",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = blocks
+                }
+            ]
+        };
     }
 
     private static IEnumerable<JsonObject> EnumerateVehicleObjects(JsonNode? node)
@@ -3244,8 +6129,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return string.Empty;
     }
 
-    private static void AddTransportSummaryRow(
-        List<UiTableRow> rows,
+    private static void AddTransportSummaryItem(
+        List<UiKeyValueItem> items,
         JsonReadResult read,
         string propertyName,
         string label)
@@ -3254,15 +6139,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (status == "отсутствует")
             return;
 
-        rows.Add(new UiTableRow { Cells = [label, status] });
-    }
-
-    private static void AddTransportRawState(List<UiBlock> blocks, string title, JsonReadResult read)
-    {
-        if (read.Node != null)
-            blocks.Add(Raw($"Полная запись: {title}", read.Node));
-        else if (read.FileExists)
-            blocks.Add(Message(UiNotificationSeverity.Warning, title, "Одна из записей транспорта найдена, но не разобрана как JSON."));
+        items.Add(new UiKeyValueItem { Key = label, Value = status });
     }
 
     private static async Task<ExplorerCommandResult> BuildInteractions(string command, FileSystemManager fs)
@@ -3285,55 +6162,77 @@ public static class ExplorerMortalWorldCommandResultBuilder
         IReadOnlyList<InteractionPlayerSnapshot> players,
         IReadOnlyList<InteractionRecordSnapshot> records)
     {
-        var blocks = new List<UiBlock>
+        var sections = new List<UiEntityDossierSection>
         {
-            new UiTableBlock
+            new()
             {
+                Id = "summary",
                 Title = "Взаимодействия игроков",
-                Columns = ["Раздел", "Состояние"],
-                Rows =
+                Summary = "Короткая сводка по игрокам и записям взаимодействий.",
+                Icon = "interactions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
                 [
-                    new UiTableRow { Cells = ["Игроки", DescribeCombatCount(players.Count, "игрок", "игрока", "игроков")] },
-                    new UiTableRow { Cells = ["Записи", DescribeCombatCount(records.Count, "запись", "записи", "записей")] }
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            new UiKeyValueItem { Key = "Игроки", Value = DescribeCombatCount(players.Count, "игрок", "игрока", "игроков") },
+                            new UiKeyValueItem { Key = "Записи", Value = DescribeCombatCount(records.Count, "запись", "записи", "записей") }
+                        ]
+                    }
                 ]
             }
         };
 
         if (players.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "players",
                 Title = "Игроки",
-                Columns = ["Игрок", "Связь / контекст", "Состояние", "Подробно"],
-                Rows = players.Select(player => new UiTableRow
-                {
-                    Cells =
-                    [
-                        player.Name,
-                        EmptyFallback(DescribeInteractionPlayerContext(player.Node)),
-                        EmptyFallback(DescribeInteractionPlayerStatus(player.Node)),
-                        BuildInteractionPlayerDetailCommand(commandToken, player.Selector)
-                    ]
-                }).ToList()
+                Summary = "Игроки, с которыми есть видимые взаимодействия.",
+                Icon = "interactions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = players.Select(static player => (UiBlock)BuildInteractionPlayerOverviewCard(player)).ToList()
             });
         }
 
         if (records.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            sections.Add(new UiEntityDossierSection
             {
+                Id = "records",
                 Title = "Записи взаимодействий",
-                Columns = ["Запись", "Игрок", "Состояние", "Подробно"],
-                Rows = records.Take(12).Select(record => new UiTableRow
-                {
-                    Cells =
-                    [
-                        record.Title,
-                        record.PlayerName,
-                        EmptyFallback(DescribeInteractionRecordStatus(record.Node)),
-                        BuildInteractionRecordDetailCommand(commandToken, record.Selector)
-                    ]
-                }).ToList()
+                Summary = "Последние видимые записи. Полные сведения открываются отдельной карточкой.",
+                Icon = "interactions",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = records.Take(12).Select(static record => (UiBlock)BuildInteractionRecordOverviewCard(record)).ToList()
+            });
+        }
+
+        var blocks = new List<UiBlock>();
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "interactions",
+                Title = "Взаимодействия игроков",
+                Subtitle = "Совместные сцены",
+                Summary = DescribeCombatCount(records.Count, "запись", "записи", "записей"),
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = DescribeCombatCount(players.Count, "игрок", "игрока", "игроков"),
+                        Tone = players.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                        Icon = "interactions"
+                    }
+                ],
+                Sections = sections
             });
         }
 
@@ -3342,6 +6241,63 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Info, "Взаимодействия игроков", "Данные взаимодействий ещё не созданы."));
 
         return Completed(command, blocks, BuildInteractionOverviewActions(commandToken, players, records));
+    }
+
+    private static UiEntityDossierBlock BuildInteractionPlayerOverviewCard(InteractionPlayerSnapshot player)
+    {
+        var facts = new List<UiKeyValueItem>();
+        AddInteractionDetailItem(facts, "Связь / контекст", DescribeInteractionPlayerContext(player.Node));
+        AddInteractionDetailItem(facts, "Состояние", DescribeInteractionPlayerStatus(player.Node));
+        AddInteractionDetailItem(facts, "Записи", DescribeCombatCount(player.Records.Count, "запись", "записи", "записей"));
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "interaction-player-summary",
+            Title = player.Name,
+            Subtitle = "Игрок",
+            Summary = FirstNonEmpty(DescribeInteractionPlayerContext(player.Node), DescribeInteractionPlayerStatus(player.Node), "Есть видимые взаимодействия."),
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "interactions",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
+    }
+
+    private static UiEntityDossierBlock BuildInteractionRecordOverviewCard(InteractionRecordSnapshot record)
+    {
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Игрок", Value = record.PlayerName }
+        };
+        AddInteractionDetailItem(facts, "Состояние", DescribeInteractionRecordStatus(record.Node));
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "interaction-record-summary",
+            Title = record.Title,
+            Subtitle = record.PlayerName,
+            Summary = FirstNonEmpty(DescribeInteractionRecordSummary(record.Node), "Подробности доступны в карточке записи."),
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Кратко",
+                    Icon = "interactions",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
     }
 
     private static ExplorerCommandResult BuildInteractionDetail(
@@ -3376,7 +6332,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 }
                 else
                 {
-                    blocks.Add(BuildInteractionPlayerDetailPanel(commandToken, player));
+                    blocks.Add(BuildInteractionPlayerDetailPanel(player));
                     actions.AddRange(BuildInteractionRecordActions(commandToken, player.Records));
                 }
                 break;
@@ -3402,12 +6358,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks, actions);
     }
 
-    private static UiPanelBlock BuildInteractionPlayerDetailPanel(string commandToken, InteractionPlayerSnapshot player)
+    private static UiEntityDossierBlock BuildInteractionPlayerDetailPanel(InteractionPlayerSnapshot player)
     {
-        var detailItems = new List<UiKeyValueItem>
-        {
-            new() { Key = "Метка", Value = player.Selector }
-        };
+        var detailItems = new List<UiKeyValueItem>();
 
         AddInteractionDetailItem(detailItems, "Связь", FirstInteractionNodeString(player.Node, "relationship", "relation", "relationshipSummary", "attitude"));
         AddInteractionDetailItem(detailItems, "Контекст", FirstInteractionNodeString(player.Node, "context", "sceneContext", "interactionContext", "role", "faction", "location"));
@@ -3422,35 +6375,64 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (player.Records.Count > 0)
         {
-            blocks.Add(new UiTableBlock
+            blocks.Add(new UiEntityDossierBlock
             {
+                EntityType = "interaction-player-entries",
                 Title = "Записи этого игрока",
-                Columns = ["Запись", "Состояние", "Кратко", "Подробно"],
-                Rows = player.Records.Select(record => new UiTableRow
-                {
-                    Cells =
-                    [
-                        record.Title,
-                        EmptyFallback(DescribeInteractionRecordStatus(record.Node)),
-                        EmptyFallback(DescribeInteractionRecordSummary(record.Node)),
-                        BuildInteractionRecordDetailCommand(commandToken, record.Selector)
-                    ]
-                }).ToList()
+                Subtitle = player.Name,
+                Summary = DescribeCombatCount(player.Records.Count, "запись", "записи", "записей"),
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "entries",
+                        Title = "Записи",
+                        Icon = "interactions",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = player.Records
+                            .Select(static record => (UiBlock)BuildInteractionRecordOverviewCard(record))
+                            .ToList()
+                    }
+                ]
             });
         }
 
-        return new UiPanelBlock
+        return new UiEntityDossierBlock
         {
+            EntityType = "interaction-player",
             Title = $"Игрок: {player.Name}",
-            Blocks = blocks
+            Subtitle = "Взаимодействия",
+            Summary = FirstNonEmpty(DescribeInteractionPlayerContext(player.Node), DescribeInteractionPlayerStatus(player.Node), "Видимая запись игрока."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeCombatCount(player.Records.Count, "запись", "записи", "записей"),
+                    Tone = player.Records.Count > 0 ? UiTone.Accent : UiTone.Muted,
+                    Icon = "interactions"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "details",
+                    Title = "Сведения",
+                    Summary = "Контекст игрока и связанные записи.",
+                    Icon = "interactions",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = blocks
+                }
+            ]
         };
     }
 
-    private static UiPanelBlock BuildInteractionRecordDetailPanel(InteractionRecordSnapshot record)
+    private static UiEntityDossierBlock BuildInteractionRecordDetailPanel(InteractionRecordSnapshot record)
     {
         var detailItems = new List<UiKeyValueItem>
         {
-            new() { Key = "Метка", Value = record.Selector },
             new() { Key = "Игрок", Value = record.PlayerName }
         };
 
@@ -3466,13 +6448,42 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInteractionDetailItem(detailItems, "Итог", FirstInteractionNodeString(record.Node, "outcome", "result", "resolution"));
         AddInteractionDetailItem(detailItems, "Последствия", DescribeNodeForInteractionDetail(record.Node["consequences"] ?? record.Node["effects"] ?? record.Node["impact"]));
         AddInteractionDetailItem(detailItems, "Следующий шаг", FirstInteractionNodeString(record.Node, "nextStep", "followUp", "hook", "visibleNextStep"));
-        AddInteractionDetailItem(detailItems, "Подробности", DescribeInteractionRecordPayload(record.Node));
         AddInteractionDetailItem(detailItems, "Метки", JoinNodeValues(record.Node["tags"]));
 
-        return new UiPanelBlock
+        var blocks = new List<UiBlock>
         {
+            new UiKeyValueGridBlock { Items = detailItems }
+        };
+        AddInteractionAdditionalDetailBlocks(blocks, record.Node);
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "interaction-record",
             Title = $"Запись взаимодействия: {record.Title}",
-            Blocks = [new UiKeyValueGridBlock { Items = detailItems }]
+            Subtitle = record.PlayerName,
+            Summary = FirstNonEmpty(DescribeInteractionRecordSummary(record.Node), DescribeInteractionRecordStatus(record.Node), "Видимая запись взаимодействия."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = record.PlayerName,
+                    Tone = UiTone.Accent,
+                    Icon = "interactions"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "details",
+                    Title = "Сведения",
+                    Summary = "Контекст, участники, последствия и следующий шаг.",
+                    Icon = "interactions",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = blocks
+                }
+            ]
         };
     }
 
@@ -3537,10 +6548,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 continue;
 
             index++;
-            var name = FirstNonEmpty(
+            var name = BuildInteractionPlayerDisplayName(
                 FirstInteractionNodeString(playerNode, "displayName", "playerName", "name", "characterName", "targetPlayerName"),
                 key,
-                $"Игрок {index}");
+                index);
             var identity = FirstNonEmpty(
                 FirstInteractionNodeString(playerNode, "playerId", "characterId", "targetPlayerId", "sourcePlayerId", "id"),
                 key,
@@ -3618,7 +6629,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             if (string.IsNullOrWhiteSpace(FirstInteractionNodeString(clone, "playerId", "displayName", "playerName", "name", "id")))
             {
                 clone["playerId"] = key;
-                clone["displayName"] = key;
+                clone["displayName"] = BuildInteractionPlayerDisplayName(string.Empty, key, 1);
             }
 
             return clone;
@@ -3632,7 +6643,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return new JsonObject
             {
                 ["playerId"] = key,
-                ["displayName"] = key,
+                ["displayName"] = BuildInteractionPlayerDisplayName(string.Empty, key, 1),
                 ["summary"] = scalar
             };
         }
@@ -3644,9 +6655,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
         new()
         {
             ["playerId"] = key,
-            ["displayName"] = key,
+            ["displayName"] = BuildInteractionPlayerDisplayName(string.Empty, key, 1),
             ["records"] = records.DeepClone()
         };
+
+    private static string BuildInteractionPlayerDisplayName(string candidate, string key, int index)
+    {
+        var value = FirstNonEmpty(candidate, key);
+        if (string.IsNullOrWhiteSpace(value) || IsLikelyTechnicalIdentifier(value))
+            return $"Игрок {Math.Max(1, index)}";
+
+        return value;
+    }
+
+    private static bool IsLikelyTechnicalIdentifier(string value)
+    {
+        var trimmed = value.Trim();
+        if (!trimmed.Contains('_', StringComparison.Ordinal) &&
+            !trimmed.Contains("::", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return trimmed.All(static ch =>
+            ch is '_' or '-' or ':' ||
+            char.IsAsciiLetterLower(ch) ||
+            char.IsAsciiDigit(ch));
+    }
 
     private static bool LooksLikeInteractionPlayer(JsonObject node) =>
         !string.IsNullOrWhiteSpace(FirstInteractionNodeString(node, "playerId", "displayName", "playerName", "characterId", "targetPlayerId", "name")) ||
@@ -3823,20 +6858,186 @@ public static class ExplorerMortalWorldCommandResultBuilder
             items.Add(new UiKeyValueItem { Key = key, Value = value.Trim() });
     }
 
-    private static string DescribeInteractionRecordPayload(JsonObject record)
+    private static void AddInteractionAdditionalDetailBlocks(List<UiBlock> blocks, JsonObject record)
     {
-        var parts = new List<string>();
+        var scalarItems = new List<UiKeyValueItem>();
         foreach (var property in record)
         {
             if (IsKnownInteractionRecordDetailProperty(property.Key) || IsTechnicalInteractionProperty(property.Key))
                 continue;
 
-            var value = DescribeNodeForInteractionDetail(property.Value);
-            if (!string.IsNullOrWhiteSpace(value))
-                parts.Add($"{DescribeInteractionFieldLabel(property.Key)}: {value}");
+            var label = DescribeInteractionNestedFieldLabel(property.Key);
+            if (TryGetScalarString(property.Value, out var scalar))
+            {
+                if (!string.IsNullOrWhiteSpace(scalar))
+                    scalarItems.Add(new UiKeyValueItem { Key = label, Value = scalar.Trim() });
+                continue;
+            }
+
+            AddInteractionDetailSection(blocks, ToInteractionDetailSectionTitle(label, property.Key), property.Value);
         }
 
-        return string.Join("; ", parts);
+        if (scalarItems.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "interaction-extra",
+                Title = "Дополнительные сведения",
+                Subtitle = "Раздел",
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Поля",
+                        Icon = "interactions",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = [new UiKeyValueGridBlock { Items = scalarItems }]
+                    }
+                ]
+            });
+        }
+    }
+
+    private static void AddInteractionDetailSection(List<UiBlock> blocks, string title, JsonNode? node)
+    {
+        var sectionBlocks = BuildInteractionDetailBlocks(node);
+        if (sectionBlocks.Count == 0)
+            return;
+
+        blocks.Add(new UiEntityDossierBlock
+        {
+            EntityType = "interaction-section",
+            Title = title,
+            Subtitle = "Вложенный раздел",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = StableId(title),
+                    Title = "Сведения",
+                    Icon = "interactions",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = sectionBlocks
+                }
+            ]
+        });
+    }
+
+    private static List<UiBlock> BuildInteractionDetailBlocks(JsonNode? node)
+    {
+        if (node == null)
+            return [];
+
+        if (TryGetScalarString(node, out var scalar))
+            return string.IsNullOrWhiteSpace(scalar)
+                ? []
+                : [new UiTextBlock { Text = scalar.Trim(), Tone = UiTone.Default }];
+
+        if (node is JsonArray array)
+        {
+            var blocks = new List<UiBlock>();
+            var listItems = new List<string>();
+            var index = 0;
+            foreach (var item in array)
+            {
+                index++;
+                if (item is JsonObject itemObj)
+                {
+                    var card = BuildInteractionObjectCard(itemObj, $"Запись {index}");
+                    if (card != null)
+                        blocks.Add(card);
+                    continue;
+                }
+
+                var value = DescribeNodeForInteractionDetail(item);
+                if (!string.IsNullOrWhiteSpace(value))
+                    listItems.Add(value);
+            }
+
+            if (listItems.Count > 0)
+                blocks.Insert(0, new UiListBlock { Items = listItems });
+            return blocks;
+        }
+
+        return node is JsonObject objectNode ? BuildInteractionObjectBlocks(objectNode) : [];
+    }
+
+    private static UiEntityDossierBlock? BuildInteractionObjectCard(JsonObject obj, string fallbackTitle)
+    {
+        var blocks = BuildInteractionObjectBlocks(obj);
+        if (blocks.Count == 0)
+            return null;
+
+        var title = FirstNonEmpty(
+            FirstInteractionNodeString(obj, "displayName", "name", "title", "questName", "actionName", "itemName", "characterName", "npcName"),
+            fallbackTitle);
+        return new UiEntityDossierBlock
+        {
+            EntityType = "interaction-entry-detail",
+            Title = title,
+            Subtitle = "Запись",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "fields",
+                    Title = "Сведения",
+                    Icon = "interactions",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = blocks
+                }
+            ]
+        };
+    }
+
+    private static List<UiBlock> BuildInteractionObjectBlocks(JsonObject obj)
+    {
+        var scalarItems = new List<UiKeyValueItem>();
+        var nestedBlocks = new List<UiBlock>();
+        foreach (var property in obj)
+        {
+            if (IsTechnicalInteractionProperty(property.Key))
+                continue;
+
+            var label = DescribeInteractionNestedFieldLabel(property.Key);
+            if (TryGetScalarString(property.Value, out var scalar))
+            {
+                if (!string.IsNullOrWhiteSpace(scalar))
+                    scalarItems.Add(new UiKeyValueItem { Key = label, Value = scalar.Trim() });
+                continue;
+            }
+
+            AddInteractionDetailSection(nestedBlocks, ToInteractionDetailSectionTitle(label, property.Key), property.Value);
+        }
+
+        var blocks = new List<UiBlock>();
+        if (scalarItems.Count > 0)
+            blocks.Add(new UiKeyValueGridBlock { Items = scalarItems });
+        blocks.AddRange(nestedBlocks);
+        return blocks;
+    }
+
+    private static string DescribeInteractionNestedFieldLabel(string propertyName)
+    {
+        var label = DescribeInteractionFieldLabel(propertyName);
+        return string.Equals(label, "деталь", StringComparison.OrdinalIgnoreCase)
+            ? StructuredBonusDisplay.FieldLabel(propertyName)
+            : label;
+    }
+
+    private static string ToInteractionDetailSectionTitle(string label, string propertyName)
+    {
+        var title = string.Equals(label, "деталь", StringComparison.OrdinalIgnoreCase)
+            ? HumanizeReferenceKey(propertyName)
+            : label.Trim();
+        if (string.IsNullOrWhiteSpace(title))
+            title = "Сведения";
+
+        return char.ToUpperInvariant(title[0]) + title[1..];
     }
 
     private static string DescribeInteractionPlayerContext(JsonObject player) =>
@@ -3903,7 +7104,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return scalar;
 
         if (node is JsonArray array)
-            return string.Join("; ", array.Select(DescribeNodeForInteractionDetail).Where(static part => !string.IsNullOrWhiteSpace(part)));
+            return string.Join("\n", array.Select(DescribeNodeForInteractionDetail).Where(static part => !string.IsNullOrWhiteSpace(part)));
 
         if (node is JsonObject obj)
         {
@@ -3918,7 +7119,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     parts.Add($"{DescribeInteractionFieldLabel(property.Key)}: {value}");
             }
 
-            return string.Join("; ", parts);
+            return string.Join("\n", parts);
         }
 
         return string.Empty;
@@ -3964,7 +7165,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         DescribeNodeForInteractionDetail(node);
 
     private static string JoinInteractionDetails(params string?[] values) =>
-        string.Join("; ", values.Where(static value => !string.IsNullOrWhiteSpace(value)).Select(static value => value!.Trim()));
+        string.Join("\n", values.Where(static value => !string.IsNullOrWhiteSpace(value)).Select(static value => value!.Trim()));
 
     private static string FirstInteractionNodeString(JsonNode? node, params string[] properties)
     {
@@ -4014,91 +7215,189 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            new UiTableBlock
-            {
-                Title = "Боевая обстановка",
-                Columns = ["Раздел", "Состояние"],
-                Rows =
-                [
-                    new UiTableRow { Cells = ["Враги", DescribeCombatCount(enemies.Count, "враг", "врага", "врагов")] },
-                    new UiTableRow { Cells = ["Союзники", DescribeCombatCount(allies.Count, "союзник", "союзника", "союзников")] },
-                    new UiTableRow { Cells = ["Боевой журнал", DescribeCombatCount(logEntries.Count, "запись", "записи", "записей")] }
-                ]
-            }
+            BuildCombatOverviewDossier(enemies, allies, logEntries)
         };
-
-        if (enemies.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Враги",
-                Columns = ["Враг", "Состояние", "Намерение", "Подробно"],
-                Rows = enemies
-                    .Select(static combatant => new UiTableRow
-                    {
-                        Cells =
-                        [
-                            combatant.Name,
-                            DescribeCombatantOverview(combatant),
-                            EmptyFallback(DescribeCombatantIntent(combatant.Node)),
-                            BuildCombatDetailCommand(CombatantKind.Enemy, combatant.Selector)
-                        ]
-                    })
-                    .ToList()
-            });
-        }
-
-        if (allies.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Союзники",
-                Columns = ["Союзник", "Состояние", "Действие", "Подробно"],
-                Rows = allies
-                    .Select(static combatant => new UiTableRow
-                    {
-                        Cells =
-                        [
-                            combatant.Name,
-                            DescribeCombatantOverview(combatant),
-                            EmptyFallback(DescribeCombatantIntent(combatant.Node)),
-                            BuildCombatDetailCommand(CombatantKind.Ally, combatant.Selector)
-                        ]
-                    })
-                    .ToList()
-            });
-        }
-
-        if (logEntries.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Боевой журнал",
-                Columns = ["Запись", "Событие", "Подробно"],
-                Rows = logEntries
-                    .Take(10)
-                    .Select(static entry => new UiTableRow
-                    {
-                        Cells =
-                        [
-                            entry.Title,
-                            EmptyFallback(entry.Summary),
-                            BuildCombatLogDetailCommand(entry.Selector)
-                        ]
-                    })
-                    .ToList()
-            });
-        }
 
         AddCombatReadWarnings(blocks, state);
 
         if (blocks.Count == 1 && enemies.Count == 0 && allies.Count == 0 && logEntries.Count == 0)
             blocks.Add(Message(UiNotificationSeverity.Info, "Бой", "Нет данных о бое. Вы не в сражении."));
 
-        AddCombatRawState(blocks, state.Enemies, "Полная запись врагов");
-        AddCombatRawState(blocks, state.Allies, "Полная запись союзников");
-        AddCombatRawState(blocks, state.Log, "Полный боевой журнал");
         return Completed(command, blocks, BuildCombatOverviewActions(enemies, allies, logEntries));
+    }
+
+    private static UiEntityDossierBlock BuildCombatOverviewDossier(
+        IReadOnlyList<CombatantSnapshot> enemies,
+        IReadOnlyList<CombatantSnapshot> allies,
+        IReadOnlyList<CombatLogSnapshot> logEntries)
+    {
+        var sections = new List<UiEntityDossierSection>
+        {
+            new()
+            {
+                Id = "summary",
+                Title = "Сводка",
+                Summary = "Кто сейчас участвует в бою и сколько записей уже есть в журнале.",
+                Icon = "combat",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
+                [
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            new UiKeyValueItem { Key = "Враги", Value = DescribeCombatCount(enemies.Count, "враг", "врага", "врагов") },
+                            new UiKeyValueItem { Key = "Союзники", Value = DescribeCombatCount(allies.Count, "союзник", "союзника", "союзников") },
+                            new UiKeyValueItem { Key = "Боевой журнал", Value = DescribeCombatCount(logEntries.Count, "запись", "записи", "записей") }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        if (enemies.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "enemies",
+                Title = "Враги",
+                Summary = "Краткие карточки противников. Подробности открываются отдельным действием.",
+                Icon = "combat",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = enemies.Select(static combatant => (UiBlock)BuildCombatantOverviewCard(combatant, "Враг")).ToList()
+            });
+        }
+
+        if (allies.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "allies",
+                Title = "Союзники",
+                Summary = "Союзники и их текущие намерения.",
+                Icon = "character",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = allies.Select(static combatant => (UiBlock)BuildCombatantOverviewCard(combatant, "Союзник")).ToList()
+            });
+        }
+
+        if (logEntries.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "combat-log",
+                Title = "Боевой журнал",
+                Summary = "Последние записи боя. Полная запись открывается отдельным действием.",
+                Icon = "book",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = logEntries.Take(10).Select(static entry => (UiBlock)BuildCombatLogOverviewCard(entry)).ToList()
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "combat-overview",
+            Title = "Боевая обстановка",
+            Subtitle = enemies.Count > 0 ? "Сражение активно" : "Обзор боя",
+            Summary = enemies.Count > 0
+                ? "Здесь собраны участники текущего столкновения, их намерения и последние события боя."
+                : "Данных о текущем сражении пока нет.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeCombatCount(enemies.Count, "враг", "врага", "врагов"),
+                    Tone = enemies.Count > 0 ? UiTone.Warning : UiTone.Muted,
+                    Icon = "combat"
+                },
+                new UiEntityBadge
+                {
+                    Label = DescribeCombatCount(allies.Count, "союзник", "союзника", "союзников"),
+                    Tone = allies.Count > 0 ? UiTone.Success : UiTone.Muted,
+                    Icon = "character"
+                }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static UiEntityDossierBlock BuildCombatantOverviewCard(CombatantSnapshot combatant, string role)
+    {
+        var facts = BuildCombatantFacts(combatant);
+        return new UiEntityDossierBlock
+        {
+            EntityType = "combatant-summary",
+            Title = combatant.Name,
+            Subtitle = role,
+            Summary = FirstNonEmpty(DescribeCombatantIntent(combatant.Node), DescribeCombatantOverview(combatant), "Подробности доступны в карточке участника боя."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = role,
+                    Tone = combatant.Kind == CombatantKind.Enemy ? UiTone.Warning : UiTone.Success,
+                    Icon = combatant.Kind == CombatantKind.Enemy ? "combat" : "character"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "state",
+                    Title = "Состояние",
+                    Icon = "combat",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ]
+        };
+    }
+
+    private static UiEntityDossierBlock BuildCombatLogOverviewCard(CombatLogSnapshot entry)
+    {
+        return new UiEntityDossierBlock
+        {
+            EntityType = "combat-log-summary",
+            Title = entry.Title,
+            Subtitle = "Запись боя",
+            Summary = FirstNonEmpty(entry.Summary, entry.Result, "Подробности доступны в записи боя."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = "журнал",
+                    Tone = UiTone.Accent,
+                    Icon = "book"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "summary",
+                    Title = "Кратко",
+                    Icon = "book",
+                    Collapsible = true,
+                    InitiallyExpanded = false,
+                    Blocks =
+                    [
+                        new UiKeyValueGridBlock
+                        {
+                            Items =
+                            [
+                                new UiKeyValueItem { Key = "Событие", Value = EmptyFallback(entry.Summary) },
+                                new UiKeyValueItem { Key = "Итог", Value = EmptyFallback(entry.Result) }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
     }
 
     private static ExplorerCommandResult BuildCombatDetail(
@@ -4118,7 +7417,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 if (enemy == null)
                     blocks.Add(Message(UiNotificationSeverity.Warning, "Враг не найден", "Такой враг не отмечен в текущей боевой обстановке."));
                 else
-                    blocks.Add(BuildCombatantDetailPanel(enemy, "Враг"));
+                    blocks.Add(BuildCombatantDetailDossier(enemy, "Враг"));
                 break;
             }
             case CombatDetailKind.Ally:
@@ -4127,7 +7426,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 if (ally == null)
                     blocks.Add(Message(UiNotificationSeverity.Warning, "Союзник не найден", "Такой союзник не отмечен в текущей боевой обстановке."));
                 else
-                    blocks.Add(BuildCombatantDetailPanel(ally, "Союзник"));
+                    blocks.Add(BuildCombatantDetailDossier(ally, "Союзник"));
                 break;
             }
             case CombatDetailKind.Log:
@@ -4136,7 +7435,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 if (entry == null)
                     blocks.Add(Message(UiNotificationSeverity.Warning, "Запись боя не найдена", "Такая запись не найдена в боевом журнале."));
                 else
-                    blocks.Add(BuildCombatLogDetailPanel(entry));
+                    blocks.Add(BuildCombatLogDetailDossier(entry));
                 break;
             }
             case CombatDetailKind.Unknown:
@@ -4161,7 +7460,72 @@ public static class ExplorerMortalWorldCommandResultBuilder
         ]);
     }
 
-    private static UiPanelBlock BuildCombatantDetailPanel(CombatantSnapshot combatant, string titlePrefix)
+    private static UiEntityDossierBlock BuildCombatantDetailDossier(CombatantSnapshot combatant, string titlePrefix)
+    {
+        var sections = new List<UiEntityDossierSection>
+        {
+            new()
+            {
+                Id = "state",
+                Title = "Состояние",
+                Summary = "Ключевые боевые параметры участника.",
+                Icon = "combat",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = BuildCombatantFacts(combatant) }]
+            }
+        };
+
+        var effectCards = BuildCombatEffectCards(combatant.Node);
+        if (effectCards.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "effects",
+                Title = "Эффекты",
+                Summary = "Усиления, помехи и статусы, влияющие на участника боя.",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = effectCards
+            });
+        }
+
+        var actionCards = BuildCombatActionCards(combatant.Node);
+        if (actionCards.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "actions",
+                Title = "Действия",
+                Summary = "Доступные или отмеченные боевые действия участника.",
+                Icon = "combat",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = actionCards
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "combatant",
+            Title = $"{titlePrefix}: {combatant.Name}",
+            Subtitle = titlePrefix,
+            Summary = FirstNonEmpty(DescribeCombatantIntent(combatant.Node), FirstCombatNodeString(combatant.Node, "description", "notes", "summary")),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = titlePrefix,
+                    Tone = combatant.Kind == CombatantKind.Enemy ? UiTone.Warning : UiTone.Success,
+                    Icon = combatant.Kind == CombatantKind.Enemy ? "combat" : "character"
+                }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static List<UiKeyValueItem> BuildCombatantFacts(CombatantSnapshot combatant)
     {
         var detailItems = new List<UiKeyValueItem>
         {
@@ -4176,41 +7540,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (!string.IsNullOrWhiteSpace(description))
             detailItems.Add(new UiKeyValueItem { Key = "Заметки", Value = description });
 
-        var blocks = new List<UiBlock>
-        {
-            new UiKeyValueGridBlock { Items = detailItems }
-        };
-
-        var effectRows = BuildCombatEffectRows(combatant.Node);
-        if (effectRows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Эффекты",
-                Columns = ["Раздел", "Эффект", "Сила", "Длительность", "Источник"],
-                Rows = effectRows
-            });
-        }
-
-        var actionRows = BuildCombatActionRows(combatant.Node);
-        if (actionRows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Действия",
-                Columns = ["Действие", "Цена", "Эффект"],
-                Rows = actionRows
-            });
-        }
-
-        return new UiPanelBlock
-        {
-            Title = $"{titlePrefix}: {combatant.Name}",
-            Blocks = blocks
-        };
+        return detailItems;
     }
 
-    private static UiPanelBlock BuildCombatLogDetailPanel(CombatLogSnapshot entry)
+    private static UiEntityDossierBlock BuildCombatLogDetailDossier(CombatLogSnapshot entry)
     {
         var items = new List<UiKeyValueItem>
         {
@@ -4219,19 +7552,135 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (!string.IsNullOrWhiteSpace(entry.Turn))
             items.Add(new UiKeyValueItem { Key = "Ход", Value = entry.Turn });
-        if (entry.Participants.Count > 0)
-            items.Add(new UiKeyValueItem { Key = "Участники", Value = string.Join(", ", entry.Participants) });
         if (!string.IsNullOrWhiteSpace(entry.Result))
             items.Add(new UiKeyValueItem { Key = "Итог", Value = entry.Result });
-        if (entry.Consequences.Count > 0)
-            items.Add(new UiKeyValueItem { Key = "Последствия", Value = string.Join("; ", entry.Consequences) });
 
-        return new UiPanelBlock
+        var sections = new List<UiEntityDossierSection>
         {
+            new()
+            {
+                Id = "summary",
+                Title = "Событие",
+                Summary = "Что произошло в этой записи боя.",
+                Icon = "book",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = items }]
+            }
+        };
+
+        if (entry.Participants.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "participants",
+                Title = "Участники",
+                Icon = "character",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiListBlock { Items = entry.Participants.ToList(), Ordered = false }]
+            });
+        }
+
+        if (entry.Consequences.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "consequences",
+                Title = "Последствия",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiListBlock { Items = entry.Consequences.ToList(), Ordered = false }]
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "combat-log-entry",
             Title = $"Запись боя: {entry.Title}",
-            Blocks = [new UiKeyValueGridBlock { Items = items }]
+            Subtitle = "Боевой журнал",
+            Summary = FirstNonEmpty(entry.Summary, entry.Result),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = "журнал",
+                    Tone = UiTone.Accent,
+                    Icon = "book"
+                }
+            ],
+            Sections = sections
         };
     }
+
+    private static List<UiBlock> BuildCombatEffectCards(JsonObject combatant) =>
+        BuildCombatEffectRows(combatant)
+            .Select(static row => (UiBlock)new UiEntityDossierBlock
+            {
+                EntityType = "combat-effect",
+                Title = row.Cells.ElementAtOrDefault(1) ?? "Эффект",
+                Subtitle = row.Cells.ElementAtOrDefault(0) ?? "Эффект",
+                Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(4), row.Cells.ElementAtOrDefault(2), row.Cells.ElementAtOrDefault(3)),
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Подробности",
+                        Icon = "effect",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks =
+                        [
+                            new UiKeyValueGridBlock
+                            {
+                                Items =
+                                [
+                                    new UiKeyValueItem { Key = "Раздел", Value = EmptyFallback(row.Cells.ElementAtOrDefault(0) ?? string.Empty) },
+                                    new UiKeyValueItem { Key = "Сила", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) },
+                                    new UiKeyValueItem { Key = "Длительность", Value = EmptyFallback(row.Cells.ElementAtOrDefault(3) ?? string.Empty) },
+                                    new UiKeyValueItem { Key = "Источник", Value = EmptyFallback(row.Cells.ElementAtOrDefault(4) ?? string.Empty) }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            })
+            .ToList();
+
+    private static List<UiBlock> BuildCombatActionCards(JsonObject combatant) =>
+        BuildCombatActionRows(combatant)
+            .Select(static row => (UiBlock)new UiEntityDossierBlock
+            {
+                EntityType = "combat-action",
+                Title = row.Cells.ElementAtOrDefault(0) ?? "Действие",
+                Subtitle = "Боевой приём",
+                Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(2), row.Cells.ElementAtOrDefault(1)),
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Подробности",
+                        Icon = "combat",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks =
+                        [
+                            new UiKeyValueGridBlock
+                            {
+                                Items =
+                                [
+                                    new UiKeyValueItem { Key = "Цена", Value = EmptyFallback(row.Cells.ElementAtOrDefault(1) ?? string.Empty) },
+                                    new UiKeyValueItem { Key = "Эффект", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            })
+            .ToList();
 
     private static List<UiTableRow> BuildCombatEffectRows(JsonObject combatant)
     {
@@ -4304,7 +7753,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             parts.Add(JoinCombatDetails(type, value, target, description));
         }
 
-        return EmptyFallback(string.Join("; ", parts.Where(static part => !string.IsNullOrWhiteSpace(part))));
+        return EmptyFallback(string.Join("\n", parts.Where(static part => !string.IsNullOrWhiteSpace(part))));
     }
 
     private static IReadOnlyList<UiAction> BuildCombatOverviewActions(
@@ -4538,13 +7987,53 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static (string First, string Remainder) SplitFirstCombatArgument(string value)
     {
-        var parts = value.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        var trimmed = value.Trim();
+        if (string.IsNullOrWhiteSpace(trimmed))
+            return (string.Empty, string.Empty);
+
+        if (trimmed[0] == '"')
+            return SplitQuotedCombatArgument(trimmed);
+
+        var parts = trimmed.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
         return parts.Length switch
         {
             0 => (string.Empty, string.Empty),
             1 => (parts[0], string.Empty),
             _ => (parts[0], parts[1])
         };
+    }
+
+    private static (string First, string Remainder) SplitQuotedCombatArgument(string value)
+    {
+        var chars = new List<char>();
+        var escaped = false;
+        for (var i = 1; i < value.Length; i++)
+        {
+            var ch = value[i];
+            if (escaped)
+            {
+                chars.Add(ch);
+                escaped = false;
+                continue;
+            }
+
+            if (ch == '\\')
+            {
+                escaped = true;
+                continue;
+            }
+
+            if (ch == '"')
+            {
+                var first = new string(chars.ToArray());
+                var remainder = i + 1 < value.Length ? value[(i + 1)..].TrimStart() : string.Empty;
+                return (first, remainder);
+            }
+
+            chars.Add(ch);
+        }
+
+        return (value, string.Empty);
     }
 
     private static string DescribeCombatantOverview(CombatantSnapshot combatant) =>
@@ -4750,7 +8239,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
     }
 
     private static string JoinCombatDetails(params string[] parts) =>
-        string.Join("; ", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
+        string.Join("\n", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
 
     private static void AddCombatReadWarnings(List<UiBlock> blocks, CombatState state)
     {
@@ -4763,12 +8252,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
     {
         if (read.FileExists && read.Node == null && !string.IsNullOrWhiteSpace(read.Error))
             blocks.Add(Message(UiNotificationSeverity.Warning, "Бой", $"Запись {section} найдена, но не разобрана как JSON."));
-    }
-
-    private static void AddCombatRawState(List<UiBlock> blocks, JsonReadResult read, string title)
-    {
-        if (read.Node != null)
-            blocks.Add(Raw(title, read.Node));
     }
 
     private static async Task<ExplorerCommandResult> BuildBooks(string command, FileSystemManager fs)
@@ -4815,17 +8298,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (shelf.Items.Count > 0)
         {
-            blocks.Add(new UiTableBlock
-            {
-                Title = title,
-                Columns = ["Документ", "Источник", "Доступ", "Кратко"],
-                Rows = shelf.Items
-                    .Select(static item => new UiTableRow
-                    {
-                        Cells = [item.Title, item.Source, item.AccessStatus, item.Summary]
-                    })
-                    .ToList()
-            });
+            blocks.Add(BuildBookShelfDossier(title, shelf));
         }
         else
         {
@@ -4839,20 +8312,89 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks, BuildBookReadActions(shelf));
     }
 
-    private static UiPanelBlock BuildBookDetailBlock(ReadableDocumentShelfItem item)
+    private static UiEntityDossierBlock BuildBookShelfDossier(string title, ReadableDocumentShelf shelf)
     {
-        var blocks = new List<UiBlock>
+        var documentCards = shelf.Items
+            .Select(static item => (UiBlock)BuildBookShelfItemCard(item))
+            .ToList();
+
+        return new UiEntityDossierBlock
         {
-            new UiKeyValueGridBlock
+            EntityType = "document-shelf",
+            Title = title,
+            Subtitle = "Документы и книги",
+            Summary = "Выберите документ из действий, чтобы открыть полный текст.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeInventoryCount(shelf.Items.Count, "документ", "документа", "документов"),
+                    Tone = UiTone.Accent,
+                    Icon = "book"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "documents",
+                    Title = "Документы",
+                    Summary = "Краткие карточки показывают источник, доступ и объем текста без раскрытия полного содержимого.",
+                    Icon = "book",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = documentCards
+                }
+            ]
+        };
+    }
+
+    private static UiEntityDossierBlock BuildBookShelfItemCard(ReadableDocumentShelfItem item) =>
+        new()
+        {
+            EntityType = "document-summary",
+            Title = item.Title,
+            Subtitle = item.Source,
+            Summary = string.Join(". ", new[] { item.AccessStatus, item.CountLabel, item.Summary }
+                .Where(static value => !string.IsNullOrWhiteSpace(value))),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = item.AccessStatus,
+                    Tone = item.HasReadableContent ? UiTone.Success : UiTone.Warning,
+                    Icon = "book"
+                }
+            ]
+        };
+
+    private static UiEntityDossierBlock BuildBookDetailBlock(ReadableDocumentShelfItem item)
+    {
+        var sections = new List<UiEntityDossierSection>
+        {
+            new()
             {
-                Items =
+                Id = "facts",
+                Title = "Сведения",
+                Summary = "Откуда взят документ и доступен ли полный текст.",
+                Icon = "book",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
                 [
-                    new UiKeyValueItem { Key = "Источник", Value = item.Source },
-                    new UiKeyValueItem { Key = "Доступ", Value = item.AccessStatus }
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            new UiKeyValueItem { Key = "Источник", Value = item.Source },
+                            new UiKeyValueItem { Key = "Доступ", Value = item.AccessStatus }
+                        ]
+                    }
                 ]
             }
         };
 
+        var contentBlocks = new List<UiBlock>();
         if (item.HasReadableContent)
         {
             for (var index = 0; index < item.Entries.Count; index++)
@@ -4860,12 +8402,12 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 var prefix = item.Entries.Count == 1
                     ? string.Empty
                     : $"Запись {index + 1}. ";
-                blocks.Add(new UiTextBlock { Text = prefix + item.Entries[index], Tone = UiTone.Default });
+                contentBlocks.Add(new UiTextBlock { Text = prefix + item.Entries[index], Tone = UiTone.Default });
             }
         }
         else
         {
-            blocks.Add(new UiMessageBlock
+            contentBlocks.Add(new UiMessageBlock
             {
                 Severity = UiNotificationSeverity.Warning,
                 Title = "Текст недоступен",
@@ -4873,10 +8415,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
             });
         }
 
-        return new UiPanelBlock
+        sections.Add(new UiEntityDossierSection
         {
+            Id = "content",
+            Title = "Текст",
+            Summary = item.HasReadableContent ? "Содержимое выбранного документа." : "Причина, по которой документ пока нельзя прочитать.",
+            Icon = "book",
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Blocks = contentBlocks
+        });
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "document",
             Title = $"Чтение: {item.Title}",
-            Blocks = blocks
+            Subtitle = item.Source,
+            Summary = item.Summary,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = item.AccessStatus,
+                    Tone = item.HasReadableContent ? UiTone.Success : UiTone.Warning,
+                    Icon = "book"
+                }
+            ],
+            Sections = sections
         };
     }
 
@@ -4949,19 +8514,35 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return Completed(command, BuildInventoryItemDetailBlocks(selected, sidecars), BuildInventoryBackActions(commandToken));
         }
 
+        var sections = new List<UiEntityDossierSection>();
+        var inventoryFacts = new List<UiKeyValueItem>();
         var totalWeight = GetNodeString(root, "totalWeight");
         var maxWeight = GetNodeString(root, "maxWeight");
         if (!string.IsNullOrEmpty(totalWeight))
         {
             var weightText = !string.IsNullOrEmpty(maxWeight)
-                ? $"⚖ {totalWeight} / {maxWeight}"
-                : $"⚖ {totalWeight}";
-            blocks.Add(new UiTextBlock { Text = weightText, Tone = UiTone.Muted });
+                ? $"{totalWeight} / {maxWeight}"
+                : totalWeight;
+            inventoryFacts.Add(new UiKeyValueItem { Key = "⚖ Нагрузка", Value = weightText });
         }
 
         var money = GetNodeString(root, "money");
         if (!string.IsNullOrEmpty(money) && money != "0")
-            blocks.Add(new UiTextBlock { Text = $"💰 Деньги: {money}", Tone = UiTone.Default });
+            inventoryFacts.Add(new UiKeyValueItem { Key = "💰 Деньги", Value = money });
+
+        if (inventoryFacts.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "inventory-summary",
+                Title = "Сводка",
+                Summary = "Общая нагрузка и переносимые ценности.",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiKeyValueGridBlock { Items = inventoryFacts }]
+            });
+        }
 
         if (root["resources"] is JsonObject resources && resources.Count > 0)
         {
@@ -4977,7 +8558,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
             }
 
             if (resourceItems.Count > 0)
-                blocks.Add(new UiKeyValueGridBlock { Items = resourceItems });
+            {
+                sections.Add(new UiEntityDossierSection
+                {
+                    Id = "resources",
+                    Title = "Ресурсы",
+                    Summary = "Материалы и валюты, доступные персонажу.",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = [new UiKeyValueGridBlock { Items = resourceItems }]
+                });
+            }
         }
 
         var equipment = (root["equipment"] ?? root["equippedItems"]) as JsonObject;
@@ -4997,65 +8589,201 @@ public static class ExplorerMortalWorldCommandResultBuilder
             }
 
             if (equipmentRows.Count > 0)
-                blocks.Add(Panel("⚔️ Экипировка", new UiKeyValueGridBlock { Items = equipmentRows }));
+            {
+                sections.Add(new UiEntityDossierSection
+                {
+                    Id = "equipment",
+                    Title = "Экипировка",
+                    Summary = "Что сейчас надето или закреплено в слотах.",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = [new UiKeyValueGridBlock { Items = equipmentRows }]
+                });
+            }
         }
 
         if (root["items"] is JsonArray itemsArray && itemsArray.Count > 0)
         {
-            var rows = new List<UiTableRow>();
+            var itemCards = new List<UiBlock>();
             foreach (var item in itemsArray)
             {
                 if (item == null)
                     continue;
 
-                var name = GetNodeString(item, "name") ?? GetNodeString(item, "itemName") ?? "???";
-                var type = GetNodeString(item, "type") ?? string.Empty;
-                var quantity = GetNodeString(item, "count") ?? GetNodeString(item, "quantity") ?? "1";
-                var durability = GetNodeString(item, "durability") ?? string.Empty;
-
-                var flags = new List<string>();
-                if (item["isBroken"]?.GetValueKind() == JsonValueKind.True)
-                    flags.Add("⚠ СЛОМАН");
-                if (item["isEmpty"]?.GetValueKind() == JsonValueKind.True)
-                    flags.Add("⚠ ПУСТО");
-                if (!string.IsNullOrEmpty(durability))
-                {
-                    var durabilityText = durability.Replace("%", string.Empty).Trim();
-                    if (int.TryParse(durabilityText, out var durabilityValue) && durabilityValue == 0)
-                        flags.Add("⚠ СЛОМАН");
-                }
-
-                rows.Add(new UiTableRow
-                {
-                    Cells =
-                    [
-                        name,
-                        type,
-                        quantity != "1" ? quantity : "1",
-                        durability,
-                        flags.Count > 0 ? string.Join(" ", flags) : "✓"
-                    ]
-                });
+                if (item is JsonObject obj)
+                    itemCards.Add(BuildInventoryOverviewItemCard(commandToken, obj));
             }
 
-            blocks.Add(new UiTableBlock
+            if (itemCards.Count > 0)
             {
-                Title = $"📦 Предметы ({itemsArray.Count})",
-                Columns = ["Название", "Тип", "Кол-во", "Прочность", "Статус"],
-                Rows = rows
-            });
+                sections.Add(new UiEntityDossierSection
+                {
+                    Id = "items",
+                    Title = "Предметы",
+                    Summary = $"{itemCards.Count} предметов в инвентаре.",
+                    Icon = "inventory",
+                    Presentation = "collection",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = itemCards
+                });
+            }
         }
         else
         {
-            blocks.Add(new UiTextBlock { Text = "Инвентарь пуст.", Tone = UiTone.Muted });
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "items",
+                Title = "Предметы",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiTextBlock { Text = "Инвентарь пуст.", Tone = UiTone.Muted }]
+            });
         }
 
-        blocks.Add(Raw("Полный JSON items.json", read.Node));
-        await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_resources.json", "Ресурсы предметов");
-        await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_bonds.json", "Связи предметов");
-        await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_text_updates.json", "Тексты предметов");
+        if (sections.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "inventory",
+                Title = "Инвентарь",
+                Subtitle = "Снаряжение и переносимые вещи",
+                Summary = "Здесь собраны ресурсы, экипировка и предметы, доступные персонажу.",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = root["items"] is JsonArray itemArray
+                            ? DescribeInventoryCount(itemArray.Count, "предмет", "предмета", "предметов")
+                            : "без предметов",
+                        Tone = UiTone.Accent,
+                        Icon = "inventory"
+                    }
+                ],
+                Sections = sections
+            });
+        }
 
         return Completed(command, blocks, BuildInventoryActions(commandToken, inventoryContext));
+    }
+
+    private static UiEntityDossierBlock BuildInventoryOverviewItemCard(string commandToken, JsonObject item)
+    {
+        var identity = FirstNonEmpty(GetInventoryItemIdentity(item), GetInventoryItemName(item));
+        var name = GetNodeString(item, "name") ?? GetNodeString(item, "itemName") ?? "???";
+        var type = FormatInventoryProtocolValue(GetNodeString(item, "type") ?? string.Empty);
+        var quality = FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(item, "quality"), GetNodeString(item, "rarity")));
+        var quantity = FirstNonEmpty(GetNodeString(item, "count"), GetNodeString(item, "quantity"), "1");
+        var durability = GetNodeString(item, "durability") ?? string.Empty;
+        var description = FirstNonEmpty(GetNodeString(item, "description"), GetNodeString(item, "lore"));
+        var facts = new List<UiKeyValueItem>
+        {
+            new() { Key = "Тип", Value = string.IsNullOrWhiteSpace(type) ? "предмет" : type },
+            new() { Key = "Количество", Value = string.IsNullOrWhiteSpace(quantity) ? "1" : quantity }
+        };
+
+        AddInventoryFact(facts, "Качество", quality);
+        AddInventoryFact(facts, "Вес", FormatInventoryMeasure(GetNodeString(item, "weight"), "кг"));
+        AddInventoryFact(facts, "Цена", GetNodeString(item, "price"));
+        if (!string.IsNullOrWhiteSpace(durability))
+            facts.Add(new UiKeyValueItem { Key = "Прочность", Value = durability });
+        AddInventoryFact(facts, "Слот", FormatInventorySlot(FirstNonEmpty(
+            GetNodeString(item, "equipmentSlot"),
+            GetNodeString(item, "slot"),
+            GetNodeString(item, "equipSlot"))));
+        AddInventoryFact(facts, "Аксессуар для", GetNodeString(item, "accessoryForSlot"));
+        AddInventoryFact(facts, "Группа", GetNodeString(item, "group"));
+
+        var broken = item["isBroken"]?.GetValueKind() == JsonValueKind.True;
+        var empty = item["isEmpty"]?.GetValueKind() == JsonValueKind.True;
+        if (!string.IsNullOrEmpty(durability))
+        {
+            var durabilityText = durability.Replace("%", string.Empty).Trim();
+            if (int.TryParse(durabilityText, out var durabilityValue) && durabilityValue == 0)
+                broken = true;
+        }
+
+        var status = broken
+            ? "сломано"
+            : empty
+                ? "пусто"
+                : "в порядке";
+        facts.Add(new UiKeyValueItem { Key = "Состояние", Value = status });
+
+        var summary = FirstNonEmpty(
+            description,
+            JoinCombatDetails(
+                string.IsNullOrWhiteSpace(type) ? string.Empty : "Тип: " + type,
+                string.IsNullOrWhiteSpace(quality) ? string.Empty : "Качество: " + quality,
+                string.IsNullOrWhiteSpace(GetNodeString(item, "group")) ? string.Empty : "Группа: " + GetNodeString(item, "group")));
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "inventory-item-summary",
+            Title = name,
+            Subtitle = string.IsNullOrWhiteSpace(type) ? "Предмет" : type,
+            Summary = summary,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = FirstNonEmpty(quality, status),
+                    Tone = broken ? UiTone.Warning : UiTone.Accent,
+                    Icon = "inventory"
+                },
+                new UiEntityBadge
+                {
+                    Label = status,
+                    Tone = broken ? UiTone.Warning : UiTone.Success,
+                    Icon = "inventory"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "facts",
+                    Title = "Сведения",
+                    Summary = "Ключевые свойства предмета для выбора и использования.",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                }
+            ],
+            PrimaryAction = new UiAction
+            {
+                Id = InventoryEquipmentService.BuildActionId("inventory-detail", identity),
+                Label = $"Открыть отдельно: «{name}»",
+                Command = BuildInventoryItemDetailCommand(commandToken, identity),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["itemIdentity"] = identity,
+                    ["itemName"] = name,
+                    ["itemType"] = type
+                }
+            }
+        };
+    }
+
+    private static string DescribeInventoryCount(int count, string singular, string paucal, string plural)
+    {
+        var abs = Math.Abs(count);
+        var lastTwo = abs % 100;
+        var last = abs % 10;
+        var word = lastTwo is >= 11 and <= 14
+            ? plural
+            : last switch
+            {
+                1 => singular,
+                2 or 3 or 4 => paucal,
+                _ => plural
+            };
+        return $"{count} {word}";
     }
 
     private static IReadOnlyList<UiAction> BuildInventoryActions(string commandToken, InventoryEquipmentContext? inventory)
@@ -5222,10 +8950,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
     {
         var itemName = GetInventoryItemName(item);
         var blocks = new List<UiBlock>();
-        var detailBlocks = new List<UiBlock>();
+        var sections = new List<UiEntityDossierSection>();
+        var overviewBlocks = new List<UiBlock>();
         var description = FirstNonEmpty(GetNodeString(item, "description"), GetNodeString(item, "lore"));
         if (!string.IsNullOrWhiteSpace(description))
-            detailBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
+            overviewBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
 
         var facts = new List<UiKeyValueItem>();
         AddInventoryFact(facts, "Тип", FormatInventoryProtocolValue(GetNodeString(item, "type") ?? string.Empty));
@@ -5247,12 +8976,28 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (TryGetNodeBool(item, "isSentient", out var isSentient) && isSentient)
             facts.Add(new UiKeyValueItem { Key = "Разумность", Value = "разумный предмет" });
         if (facts.Count > 0)
-            detailBlocks.Add(new UiKeyValueGridBlock { Items = facts });
+            overviewBlocks.Add(new UiKeyValueGridBlock { Items = facts });
 
-        AddInventorySummaryList(detailBlocks, "Бонусы", item["bonuses"]);
-        AddInventorySummaryList(detailBlocks, "Эффекты", item["effects"]);
-        AddInventorySummaryList(detailBlocks, "Особые свойства", item["specialProperties"]);
-        AddStructuredBonusBlock(detailBlocks, item["structuredBonuses"] as JsonArray);
+        if (overviewBlocks.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "overview",
+                Title = "Сведения",
+                Summary = "Основные свойства предмета, которые влияют на использование и экипировку.",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = overviewBlocks
+            });
+        }
+
+        AddInventorySummarySection(sections, "Бонусы", item["bonuses"]);
+        AddInventorySummarySection(sections, "Эффекты", item["effects"]);
+        AddInventorySummarySection(sections, "Особые свойства", item["specialProperties"]);
+        AddStructuredBonusSection(sections, item["structuredBonuses"] as JsonArray);
+
+        var detailBlocks = new List<UiBlock>();
         AddInventoryCombatEffectBlock(detailBlocks, item["combatEffect"]);
         AddInventoryCustomPropertiesBlock(detailBlocks, item["customProperties"]);
         AddInventoryContainerBlock(detailBlocks, item);
@@ -5262,13 +9007,49 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInventoryContentBlock(detailBlocks, item["textContent"], sidecars.Text?["textContent"]);
         AddInventoryJournalBlock(detailBlocks, item["journalEntries"], sidecars.Journal?["journalEntries"]);
 
-        if (detailBlocks.Count == 0)
-            detailBlocks.Add(new UiTextBlock { Text = "Подробная информация по предмету пока не заполнена.", Tone = UiTone.Muted });
-
-        blocks.Add(new UiPanelBlock
+        if (detailBlocks.Count > 0)
         {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "details",
+                Title = "Дополнительно",
+                Summary = "Боевые, текстовые и служебные сведения предмета.",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = detailBlocks
+            });
+        }
+
+        if (sections.Count == 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "empty",
+                Title = "Сведения",
+                Icon = "inventory",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks = [new UiTextBlock { Text = "Подробная информация по предмету пока не заполнена.", Tone = UiTone.Muted }]
+            });
+        }
+
+        blocks.Add(new UiEntityDossierBlock
+        {
+            EntityType = "inventory-item",
             Title = $"Предмет: {itemName}",
-            Blocks = detailBlocks
+            Subtitle = FormatInventoryProtocolValue(GetNodeString(item, "type") ?? "Предмет"),
+            Summary = description,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = FirstNonEmpty(FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(item, "quality"), GetNodeString(item, "rarity"))), "предмет"),
+                    Tone = UiTone.Accent,
+                    Icon = "inventory"
+                }
+            ],
+            Sections = sections
         });
         blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /инв.", Tone = UiTone.Muted });
         return blocks;
@@ -5289,6 +9070,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
         blocks.Add(new UiPanelBlock
         {
             Title = title,
+            Blocks =
+            [
+                new UiListBlock
+                {
+                    Items = items,
+                    Ordered = false
+                }
+            ]
+        });
+    }
+
+    private static void AddInventorySummarySection(List<UiEntityDossierSection> sections, string title, JsonNode? node)
+    {
+        var items = EnumerateInventorySummaryTexts(node).ToList();
+        if (items.Count == 0)
+            return;
+
+        sections.Add(new UiEntityDossierSection
+        {
+            Id = StableId(title),
+            Title = title,
+            Summary = "Краткое игровое описание эффектов предмета.",
+            Icon = "inventory",
+            Collapsible = true,
+            InitiallyExpanded = true,
             Blocks =
             [
                 new UiListBlock
@@ -5338,42 +9144,129 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static void AddStructuredBonusBlock(List<UiBlock> blocks, JsonArray? bonuses)
     {
-        if (bonuses == null || bonuses.Count == 0)
+        var cards = BuildStructuredBonusCards(bonuses);
+        if (cards.Count == 0)
             return;
 
-        var rows = new List<UiTableRow>();
+        blocks.Add(new UiEntityDossierBlock
+        {
+            EntityType = "structured-bonuses",
+            Title = "Структурные бонусы",
+            Subtitle = "Механические свойства",
+            Summary = "Каждый бонус показан отдельной карточкой, а его поля разложены по строкам.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeInventoryCount(cards.Count, "бонус", "бонуса", "бонусов"),
+                    Tone = UiTone.Success,
+                    Icon = "inventory"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "bonuses",
+                    Title = "Бонусы",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = cards
+                }
+            ]
+        });
+    }
+
+    private static void AddStructuredBonusSection(List<UiEntityDossierSection> sections, JsonArray? bonuses)
+    {
+        var cards = BuildStructuredBonusCards(bonuses);
+
+        if (cards.Count == 0)
+            return;
+
+        sections.Add(new UiEntityDossierSection
+        {
+            Id = "structured-bonuses",
+            Title = "Структурные бонусы",
+            Summary = "Механические бонусы предмета, разложенные по полям.",
+            Icon = "inventory",
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Blocks = cards
+        });
+    }
+
+    private static List<UiBlock> BuildStructuredBonusCards(JsonArray? bonuses)
+    {
+        if (bonuses == null || bonuses.Count == 0)
+            return [];
+
+        var cards = new List<UiBlock>();
         var index = 0;
         foreach (var bonus in bonuses)
         {
             index++;
             if (bonus is not JsonObject obj)
             {
-                rows.Add(new UiTableRow
+                var value = FormatInventoryNodeValue(bonus);
+                if (string.IsNullOrWhiteSpace(value))
+                    continue;
+
+                cards.Add(new UiEntityDossierBlock
                 {
-                    Cells = [$"Бонус {index}", "Значение", FormatInventoryNodeValue(bonus)]
+                    EntityType = "structured-bonus",
+                    Title = $"Бонус {index}",
+                    Subtitle = "Структурный бонус",
+                    Summary = value
                 });
                 continue;
             }
 
             var title = FirstNonEmpty(GetNodeString(obj, "summary"), $"Бонус {index}");
-            foreach (var property in obj)
-            {
-                rows.Add(new UiTableRow
+            var facts = obj
+                .Select(property => new UiKeyValueItem
                 {
-                    Cells = [title, GetStructuredBonusFieldLabel(property.Key), FormatInventoryNodeValue(property.Value, property.Key)]
-                });
-            }
-        }
+                    Key = GetStructuredBonusFieldLabel(property.Key),
+                    Value = FormatInventoryNodeValue(property.Value, property.Key)
+                })
+                .Where(static item => !string.IsNullOrWhiteSpace(item.Value))
+                .ToList();
+            if (facts.Count == 0)
+                continue;
 
-        if (rows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
+            cards.Add(new UiEntityDossierBlock
             {
-                Title = "Структурные бонусы",
-                Columns = ["Бонус", "Поле", "Значение"],
-                Rows = rows
+                EntityType = "structured-bonus",
+                Title = title,
+                Subtitle = "Структурный бонус",
+                Summary = FirstNonEmpty(GetNodeString(obj, "description"), GetNodeString(obj, "condition")),
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = FirstNonEmpty(FormatInventoryProtocolValue(GetNodeString(obj, "bonusType") ?? string.Empty), "бонус"),
+                        Tone = UiTone.Success,
+                        Icon = "inventory"
+                    }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Поля бонуса",
+                        Summary = "Каждое поле бонуса показано отдельно, без технической таблицы.",
+                        Icon = "inventory",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                    }
+                ]
             });
         }
+
+        return cards;
     }
 
     private static void AddInventoryCombatEffectBlock(List<UiBlock> blocks, JsonNode? node)
@@ -5383,11 +9276,63 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (rows.Count == 0)
             return;
 
-        blocks.Add(new UiTableBlock
+        blocks.Add(new UiEntityDossierBlock
         {
+            EntityType = "inventory-combat-effects",
             Title = "Боевые эффекты",
-            Columns = ["Источник", "Тип", "Значение", "Описание"],
-            Rows = rows
+            Subtitle = "Боевые свойства",
+            Summary = "Эффекты, которые предмет или состояние добавляет в бою.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeInventoryCount(rows.Count, "эффект", "эффекта", "эффектов"),
+                    Tone = UiTone.Warning,
+                    Icon = "combat"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "effects",
+                    Title = "Эффекты",
+                    Icon = "combat",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = rows.Select(static row => (UiBlock)new UiEntityDossierBlock
+                    {
+                        EntityType = "inventory-combat-effect",
+                        Title = row.Cells.ElementAtOrDefault(1) ?? "Эффект",
+                        Subtitle = row.Cells.ElementAtOrDefault(0) ?? "Источник",
+                        Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(3), row.Cells.ElementAtOrDefault(2)),
+                        Sections =
+                        [
+                            new UiEntityDossierSection
+                            {
+                                Id = "fields",
+                                Title = "Подробности",
+                                Icon = "combat",
+                                Collapsible = true,
+                                InitiallyExpanded = true,
+                                Blocks =
+                                [
+                                    new UiKeyValueGridBlock
+                                    {
+                                        Items =
+                                        [
+                                            new UiKeyValueItem { Key = "Источник", Value = EmptyFallback(row.Cells.ElementAtOrDefault(0) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Тип", Value = EmptyFallback(row.Cells.ElementAtOrDefault(1) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Значение", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Описание", Value = EmptyFallback(row.Cells.ElementAtOrDefault(3) ?? string.Empty) }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }).ToList()
+                }
+            ]
         });
     }
 
@@ -5440,7 +9385,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var cost = GetNodeString(action, "actionCost");
         if (!string.IsNullOrWhiteSpace(cost))
             parts.Add("стоимость: " + FormatInventoryProtocolValue(cost));
-        return string.Join("; ", parts);
+        return string.Join("\n", parts);
     }
 
     private static string FormatInventoryCombatEffectValue(JsonObject effect)
@@ -5458,7 +9403,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var duration = GetNodeString(effect, "duration");
         if (!string.IsNullOrWhiteSpace(duration) && duration != "0")
             parts.Add("длительность: " + duration);
-        return string.Join("; ", parts);
+        return string.Join("\n", parts);
     }
 
     private static void AddInventoryCustomPropertiesBlock(List<UiBlock> blocks, JsonNode? node)
@@ -5481,15 +9426,57 @@ public static class ExplorerMortalWorldCommandResultBuilder
             .Where(static row => row.Cells.Any(static cell => !string.IsNullOrWhiteSpace(cell)))
             .ToList();
 
-        if (rows.Count > 0)
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiEntityDossierBlock
         {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Особые свойства",
-                Columns = ["Когда", "Цель", "Изменение", "Описание"],
-                Rows = rows
-            });
-        }
+            EntityType = "inventory-custom-properties",
+            Title = "Особые свойства",
+            Subtitle = "Контекстные эффекты",
+            Summary = "Дополнительные правила взаимодействия предмета или состояния.",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "properties",
+                    Title = "Свойства",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = rows.Select(static row => (UiBlock)new UiEntityDossierBlock
+                    {
+                        EntityType = "inventory-custom-property",
+                        Title = row.Cells.ElementAtOrDefault(0) ?? "Свойство",
+                        Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(3), row.Cells.ElementAtOrDefault(2), row.Cells.ElementAtOrDefault(1)),
+                        Sections =
+                        [
+                            new UiEntityDossierSection
+                            {
+                                Id = "fields",
+                                Title = "Подробности",
+                                Icon = "inventory",
+                                Collapsible = true,
+                                InitiallyExpanded = true,
+                                Blocks =
+                                [
+                                    new UiKeyValueGridBlock
+                                    {
+                                        Items =
+                                        [
+                                            new UiKeyValueItem { Key = "Когда", Value = EmptyFallback(row.Cells.ElementAtOrDefault(0) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Цель", Value = EmptyFallback(row.Cells.ElementAtOrDefault(1) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Изменение", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Описание", Value = EmptyFallback(row.Cells.ElementAtOrDefault(3) ?? string.Empty) }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }).ToList()
+                }
+            ]
+        });
     }
 
     private static void AddInventoryContainerBlock(List<UiBlock> blocks, JsonObject item)
@@ -5535,15 +9522,56 @@ public static class ExplorerMortalWorldCommandResultBuilder
             });
         }
 
-        if (rows.Count > 0)
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiEntityDossierBlock
         {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Разбирается на",
-                Columns = ["Материал", "Кол-во", "Вес", "Описание"],
-                Rows = rows
-            });
-        }
+            EntityType = "inventory-disassembly",
+            Title = "Разбирается на",
+            Subtitle = "Материалы",
+            Summary = "Что можно получить при разборе предмета.",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "materials",
+                    Title = "Материалы",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = rows.Select(static row => (UiBlock)new UiEntityDossierBlock
+                    {
+                        EntityType = "inventory-material",
+                        Title = row.Cells.ElementAtOrDefault(0) ?? "Материал",
+                        Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(3), row.Cells.ElementAtOrDefault(2), row.Cells.ElementAtOrDefault(1)),
+                        Sections =
+                        [
+                            new UiEntityDossierSection
+                            {
+                                Id = "fields",
+                                Title = "Подробности",
+                                Icon = "inventory",
+                                Collapsible = true,
+                                InitiallyExpanded = true,
+                                Blocks =
+                                [
+                                    new UiKeyValueGridBlock
+                                    {
+                                        Items =
+                                        [
+                                            new UiKeyValueItem { Key = "Количество", Value = EmptyFallback(row.Cells.ElementAtOrDefault(1) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Вес", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Описание", Value = EmptyFallback(row.Cells.ElementAtOrDefault(3) ?? string.Empty) }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }).ToList()
+                }
+            ]
+        });
     }
 
     private static void AddInventoryResourceBlock(List<UiBlock> blocks, JsonObject item, JsonObject? resourceEntry)
@@ -5588,22 +9616,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (bondEntry["fateCards"] is JsonArray fateCards && fateCards.Count > 0)
         {
-            panelBlocks.Add(new UiTableBlock
+            panelBlocks.Add(new UiEntityDossierBlock
             {
+                EntityType = "inventory-fate-cards",
                 Title = "Карты судьбы предмета",
-                Columns = ["Карта", "Статус", "Описание"],
-                Rows = fateCards
-                    .OfType<JsonObject>()
-                    .Select(static card => new UiTableRow
+                Subtitle = "Связь с владельцем",
+                Summary = "Сюжетные вехи, которые предмет открывает через связь с владельцем.",
+                Sections =
+                [
+                    new UiEntityDossierSection
                     {
-                        Cells =
-                        [
-                            FirstNonEmpty(GetNodeString(card, "name"), GetNodeString(card, "cardName"), "Карта"),
-                            TryGetNodeBool(card, "isUnlocked", out var unlocked) && unlocked ? "разблокирована" : "закрыта",
-                            FirstNonEmpty(GetNodeString(card, "description"), GetNodeString(card, "summary"))
-                        ]
-                    })
-                    .ToList()
+                        Id = "cards",
+                        Title = "Карты",
+                        Icon = "inventory",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = fateCards
+                            .OfType<JsonObject>()
+                            .Select(static card => (UiBlock)new UiEntityDossierBlock
+                            {
+                                EntityType = "inventory-fate-card",
+                                Title = FirstNonEmpty(GetNodeString(card, "name"), GetNodeString(card, "cardName"), "Карта"),
+                                Subtitle = TryGetNodeBool(card, "isUnlocked", out var unlocked) && unlocked ? "разблокирована" : "закрыта",
+                                Summary = FirstNonEmpty(GetNodeString(card, "description"), GetNodeString(card, "summary"))
+                            })
+                            .ToList()
+                    }
+                ]
             });
         }
 
@@ -5802,7 +9841,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (node is JsonArray array)
         {
-            return string.Join("; ", array
+            return string.Join("\n", array
                 .Select(item => FormatInventoryNodeValue(item, fieldName))
                 .Where(static value => !string.IsNullOrWhiteSpace(value)));
         }
@@ -5814,7 +9853,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 GetNodeString(obj, "description"),
                 GetNodeString(obj, "effectDescription"),
                 GetNodeString(obj, "name"),
-                string.Join("; ", obj
+                string.Join("\n", obj
                     .Select(property => $"{GetStructuredBonusFieldLabel(property.Key)}: {FormatInventoryNodeValue(property.Value, property.Key)}")
                     .Where(static value => !string.IsNullOrWhiteSpace(value))));
         }
@@ -5840,13 +9879,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static string NormalizeInventoryLookup(string value) =>
         NormalizeReferenceSelector(NormalizeCombatSelector(value));
-
-    private static async Task AddRawJsonIfPresent(List<UiBlock> blocks, FileSystemManager fs, string path, string title)
-    {
-        var read = await ReadJson(fs, path);
-        if (read.Node != null)
-            blocks.Add(Raw(title, read.Node));
-    }
 
     private static void AddBookReadWarning(List<UiBlock> blocks, string title, JsonReadResult read)
     {
@@ -5967,13 +9999,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
             Message = message
         };
 
-    private static UiRawJsonBlock Raw(string title, JsonNode node) =>
-        new()
-        {
-            Title = title,
-            Json = node.DeepClone()
-        };
-
     private static bool TryGetScalarString(JsonNode? node, out string value)
     {
         value = string.Empty;
@@ -6075,6 +10100,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private enum NpcSectionDetailKind
     {
         Overview,
+        Profile,
         Section,
         Unknown
     }

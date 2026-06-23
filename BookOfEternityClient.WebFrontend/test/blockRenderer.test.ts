@@ -32,15 +32,18 @@ describe('BlockRenderer source', () => {
     expect(source).toContain("import { sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';");
     expect(source).toContain("toPlayerFacingText(block.title, 'Панель')");
     expect(source).toContain("const title = sanitizePlayerMessage(block.title, 'Сообщение').safe;");
-    expect(source).toContain("export function BlockList({ blocks, advancedEnabled = false }: { blocks: UiBlock[]; advancedEnabled?: boolean }) {");
-    expect(source).toContain("blocks.map((block, i) => <BlockRenderer key={`${block.kind}-${i}`} block={block} advancedEnabled={advancedEnabled} />)");
+    expect(source).toContain('export function BlockList({');
+    expect(source).toContain('onAction?: (action: UiAction) => void;');
+    expect(source).toContain('availableActions?: UiAction[];');
+    expect(source).toContain('onAction={onAction}');
+    expect(source).toContain('availableActions={availableActions}');
   });
 
   it('hides rawJson blocks by default and restores JsonTreeViewer after advanced opt-in', () => {
     const source = readBlockRendererSource();
 
     expect(source).toContain("import { JsonTreeViewer } from './JsonTreeViewer';");
-    expect(source).toContain("import type { UiBlock, UiTableBlock, UiTone } from '../api/contracts';");
+    expect(source).toContain("import type { UiAction, UiBlock, UiTableBlock, UiTone } from '../api/contracts';");
     expect(source).toContain('if (advancedEnabled) {');
     expect(source).toContain("<JsonTreeViewer data={block.json}");
     expect(source).toContain('return null;');

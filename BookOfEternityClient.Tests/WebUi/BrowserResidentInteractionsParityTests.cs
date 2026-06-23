@@ -614,9 +614,6 @@ public sealed class BrowserResidentInteractionsParityTests : IDisposable
         var result = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest("/help"));
 
         var text = CollectResultAndPromptText(result);
-        Assert.Contains("/abode_residents", text, StringComparison.Ordinal);
-        Assert.Contains("/resident_interaction", text, StringComparison.Ordinal);
-        Assert.Contains("/resident_transfer", text, StringComparison.Ordinal);
         Assert.Contains("обител", text, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -856,9 +853,7 @@ public sealed class BrowserResidentInteractionsParityTests : IDisposable
         new(id, "browser", "Browser resident test", TimeSpan.FromSeconds(120));
 
     private static string CollectResultAndPromptText(ExplorerCommandResult result) =>
-        CollectBlockText(result.Blocks) + "\n" +
-        string.Join("\n", result.Prompts.Select(CollectPromptText)) + "\n" +
-        string.Join("\n", result.Notifications.Select(notification => $"{notification.Title}\n{notification.Message}"));
+        UiTestTextCollector.CollectResultAndPromptText(result);
 
     private static string CollectPromptText(UiPrompt prompt)
     {

@@ -137,7 +137,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             CommandKind.SoulRelics => await BuildSoulRelics(normalizedCommand, fs),
             CommandKind.AfterlifeArchive => await BuildAfterlifeArchive(normalizedCommand, fs),
             CommandKind.ArchiveCandidates => await BuildArchiveCandidates(normalizedCommand, fs),
-            CommandKind.SoulQuests => await BuildJsonFile(normalizedCommand, fs, "Квесты души", "game_state/meta/guardians.json"),
+            CommandKind.SoulQuests => await BuildSoulQuests(normalizedCommand, fs),
             CommandKind.Codex => await BuildJsonFile(normalizedCommand, fs, "Кодекс", "lore/codex_entries.json", BuildCodexSummary),
             CommandKind.Achievements => await BuildJsonFile(normalizedCommand, fs, "Достижения", "game_state/meta/achievements.json", BuildAchievementsSummary),
             CommandKind.Chronicle => await BuildChronicle(normalizedCommand, fs),
@@ -249,14 +249,15 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         var changeRows = BuildMortalStatusChangeRows(statusChanges, experience);
         if (changeRows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Последние изменения",
-                Columns = ["Параметр", "Изменение", "Комментарий"],
-                Rows = changeRows
-            });
-        }
+            AddStatusRowsDossier(
+                blocks,
+                "Последние изменения",
+                "status-changes",
+                "status-change",
+                "Что изменилось за последний ход.",
+                "status",
+                ["Параметр", "Изменение", "Комментарий"],
+                changeRows);
 
         AddMortalStatusEffectBlocks(blocks, effectsRead.Node);
         AddMortalStatusWoundBlocks(blocks, woundsRead.Node);
@@ -427,12 +428,15 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         if (rows.Count == 0)
             return;
 
-        blocks.Add(new UiTableBlock
-        {
-            Title = "Активные эффекты",
-            Columns = ["Эффект", "Что делает", "Цель / срок", "Источник и описание"],
-            Rows = rows
-        });
+        AddStatusRowsDossier(
+            blocks,
+            "Активные эффекты",
+            "status-effects",
+            "status-effect",
+            "Эффекты, которые сейчас влияют на персонажа.",
+            "effect",
+            ["Эффект", "Что делает", "Цель / срок", "Источник и описание"],
+            rows);
     }
 
     private static void AddMortalStatusWoundBlocks(List<UiBlock> blocks, JsonNode? woundsRoot)
@@ -460,12 +464,15 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         if (rows.Count == 0)
             return;
 
-        blocks.Add(new UiTableBlock
-        {
-            Title = "Раны",
-            Columns = ["Рана", "Тяжесть", "Влияние", "Лечение"],
-            Rows = rows
-        });
+        AddStatusRowsDossier(
+            blocks,
+            "Раны",
+            "status-wounds",
+            "status-wound",
+            "Повреждения и их текущее лечение.",
+            "effect",
+            ["Рана", "Тяжесть", "Влияние", "Лечение"],
+            rows);
     }
 
     private static void AddMortalStatusCustomStateBlocks(List<UiBlock> blocks, JsonNode? statesRoot)
@@ -497,12 +504,121 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         if (rows.Count == 0)
             return;
 
-        blocks.Add(new UiTableBlock
+        AddStatusRowsDossier(
+            blocks,
+            "Особые состояния",
+            "status-custom-states",
+            "status-custom-state",
+            "Дополнительные шкалы и состояния персонажа.",
+            "status",
+            ["Состояние", "Значение", "Подробно"],
+            rows);
+    }
+
+    private static void AddStatusRowsDossier(
+        List<UiBlock> blocks,
+        string title,
+        string entityType,
+        string itemEntityType,
+        string summary,
+        string icon,
+        IReadOnlyList<string> columns,
+        IReadOnlyList<UiTableRow> rows)
+    {
+        if (rows.Count == 0)
+            return;
+
+        blocks.Add(new UiEntityDossierBlock
         {
-            Title = "Особые состояния",
-            Columns = ["Состояние", "Значение", "Подробно"],
-            Rows = rows
+            EntityType = entityType,
+            Title = title,
+            Subtitle = "Статус персонажа",
+            Summary = summary,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = FormatStatusEntryCount(rows.Count),
+                    Tone = UiTone.Accent,
+                    Icon = icon
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = StableStatusId(title),
+                    Title = title,
+                    Icon = icon,
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = rows.Select(row => (UiBlock)BuildStatusRowCard(itemEntityType, icon, columns, row)).ToList()
+                }
+            ]
         });
+    }
+
+    private static UiEntityDossierBlock BuildStatusRowCard(
+        string entityType,
+        string icon,
+        IReadOnlyList<string> columns,
+        UiTableRow row)
+    {
+        var title = row.Cells.Count > 0 ? EmptyFallback(row.Cells[0]) : "Запись";
+        var items = new List<UiKeyValueItem>();
+        for (var index = 1; index < row.Cells.Count && index < columns.Count; index++)
+        {
+            var value = row.Cells[index];
+            if (!IsUnknownValue(value))
+                items.Add(new UiKeyValueItem { Key = columns[index], Value = value.Trim() });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = entityType,
+            Title = title,
+            Subtitle = columns.Count > 0 ? columns[0] : "Запись",
+            Summary = FirstNonEmpty(row.Cells.Skip(1).Where(static cell => !IsUnknownValue(cell)).ToArray()),
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "details",
+                    Title = "Подробности",
+                    Icon = icon,
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = items.Count > 0
+                        ? [new UiKeyValueGridBlock { Items = items }]
+                        : [new UiTextBlock { Text = "Подробности пока не указаны.", Tone = UiTone.Muted }]
+                }
+            ]
+        };
+    }
+
+    private static string FormatStatusEntryCount(int count)
+    {
+        var mod100 = count % 100;
+        var mod10 = count % 10;
+        var word = mod100 is >= 11 and <= 14
+            ? "записей"
+            : mod10 switch
+            {
+                1 => "запись",
+                >= 2 and <= 4 => "записи",
+                _ => "записей"
+            };
+        return $"{count} {word}";
+    }
+
+    private static string StableStatusId(string value)
+    {
+        var chars = value
+            .Trim()
+            .Select(static ch => char.IsLetterOrDigit(ch) ? char.ToLowerInvariant(ch) : '-')
+            .ToArray();
+        var id = new string(chars).Trim('-');
+        return string.IsNullOrWhiteSpace(id) ? "status" : id;
     }
 
     private static JsonObject? UnwrapObject(JsonNode? node, params string[] wrapperProperties)
@@ -1922,6 +2038,241 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 ("Квест", JoinNonEmpty(" / ", GetString(target, "questId", string.Empty), GetNumberOrString(target, "questOrdinal"))),
                 ("Фрагмент истины", GetString(target, "revelationId")),
                 ("Преимущество", GetString(target, "advantageId"))));
+    }
+
+    private static async Task<ExplorerCommandResult> BuildSoulQuests(string command, FileSystemManager fs)
+    {
+        var read = await ReadJson(fs, "game_state/quests/soul_quests.json");
+        if (read.Node is not JsonObject root)
+        {
+            return Completed(command,
+                new UiEntityDossierBlock
+                {
+                    EntityType = "soul-quests",
+                    Title = "Квесты души",
+                    Subtitle = "Духовные поручения и долгие линии души",
+                    Summary = "Активных квестов души сейчас нет.",
+                    Badges =
+                    [
+                        new UiEntityBadge { Label = "0 квестов", Icon = "quests", Tone = UiTone.Muted }
+                    ]
+                });
+        }
+
+        var quests = root["quests"] as JsonArray ?? root["UpdateSoulQuests"] as JsonArray;
+        var questCards = quests?
+            .OfType<JsonObject>()
+            .Select(quest => BuildSoulQuestCard(quest, BuildGuardianNameLookup(root, fs)))
+            .Where(static card => !string.IsNullOrWhiteSpace(card.Title))
+            .ToList() ?? [];
+
+        var activeCount = quests?.OfType<JsonObject>().Count(static quest =>
+            string.Equals(GetString(quest, "status", string.Empty), "active", StringComparison.OrdinalIgnoreCase)) ?? 0;
+
+        return Completed(command,
+            new UiEntityDossierBlock
+            {
+                EntityType = "soul-quests",
+                Title = "Квесты души",
+                Subtitle = "Духовные поручения и долгие линии души",
+                Summary = questCards.Count == 0
+                    ? "Активных квестов души сейчас нет."
+                    : "Квесты, которые переживают отдельные жизни и связывают душу с Хранителями, Обителями и будущими возвращениями.",
+                Badges =
+                [
+                    new UiEntityBadge { Label = $"{questCards.Count} квестов", Icon = "quests", Tone = UiTone.Accent },
+                    new UiEntityBadge { Label = $"{activeCount} активных", Icon = "sparkles", Tone = activeCount > 0 ? UiTone.Warning : UiTone.Muted }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "soul-quest-list",
+                        Title = "Текущие квесты",
+                        Icon = "quests",
+                        Presentation = "cards",
+                        CollectionLabel = $"{questCards.Count} записей",
+                        Cards = questCards
+                    }
+                ]
+            });
+    }
+
+    private static UiEntityCard BuildSoulQuestCard(JsonObject quest, IReadOnlyDictionary<string, string> guardianNames)
+    {
+        var title = FirstNonEmpty(
+            GetString(quest, "title", string.Empty),
+            GetString(quest, "questName", string.Empty),
+            "Квест души");
+        var status = DescribeSoulQuestStatus(GetString(quest, "status", string.Empty));
+        var summary = FirstNonEmpty(
+            GetString(quest, "description", string.Empty),
+            GetString(quest, "summary", string.Empty),
+            "Описание пока не записано.");
+
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Хранитель", DescribeSoulQuestGuardian(GetString(quest, "guardianId", string.Empty), guardianNames));
+        AddFactIfKnown(facts, "Прогресс", DescribeSoulQuestProgress(quest["progress"] as JsonObject));
+        AddFactIfKnown(facts, "Связь между жизнями", GetBool(quest, "crossIncarnation") ? "сохраняется между воплощениями" : string.Empty);
+
+        var nested = new List<UiEntityCard>();
+        nested.AddRange(BuildSoulQuestObjectiveCards(quest["objectives"] as JsonArray));
+        var rewards = BuildSoulQuestRewardCard(quest["rewards"] as JsonObject);
+        if (rewards != null)
+            nested.Add(rewards);
+
+        return new UiEntityCard
+        {
+            Title = title,
+            Subtitle = status,
+            Icon = "quests",
+            Summary = summary,
+            Badges =
+            [
+                new UiEntityBadge { Label = status, Icon = "sparkles", Tone = DescribeSoulQuestTone(status) }
+            ],
+            Facts = facts,
+            Nested = nested
+        };
+    }
+
+    private static IEnumerable<UiEntityCard> BuildSoulQuestObjectiveCards(JsonArray? objectives)
+    {
+        if (objectives == null)
+            yield break;
+
+        foreach (var (objective, index) in objectives.OfType<JsonObject>().Select((objective, index) => (objective, index)))
+        {
+            var status = DescribeSoulQuestStatus(GetString(objective, "status", string.Empty));
+            yield return new UiEntityCard
+            {
+                Title = FirstNonEmpty(GetString(objective, "description", string.Empty), $"Цель {index + 1}"),
+                Subtitle = "Цель квеста",
+                Icon = "target",
+                Summary = status,
+                Badges =
+                [
+                    new UiEntityBadge { Label = status, Icon = "check", Tone = DescribeSoulQuestTone(status) }
+                ]
+            };
+        }
+    }
+
+    private static UiEntityCard? BuildSoulQuestRewardCard(JsonObject? rewards)
+    {
+        if (rewards == null)
+            return null;
+
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Чернильные Перья", GetNumberOrString(rewards, "inkFeathers"));
+        AddFactIfKnown(facts, "Искры Света", GetNumberOrString(rewards, "lightSparks"));
+        AddFactIfKnown(facts, "Опыт просветления", GetNumberOrString(rewards, "enlightenmentExperience"));
+
+        var notes = rewards["notes"] is JsonArray notesArray
+            ? notesArray.Select(DescribeReadableJsonValue).Where(static value => !IsUnknownReadableJsonValue(value)).ToList()
+            : [];
+
+        if (facts.Count == 0 && notes.Count == 0)
+            return null;
+
+        return new UiEntityCard
+        {
+            Title = "Награды",
+            Subtitle = "Что может дать завершение",
+            Icon = "reward",
+            Facts = facts,
+            List = notes
+        };
+    }
+
+    private static IReadOnlyDictionary<string, string> BuildGuardianNameLookup(JsonObject soulQuestRoot, FileSystemManager fs)
+    {
+        var names = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        AddGuardianNamesFromNode(soulQuestRoot, names);
+
+        var read = ReadJson(fs, "game_state/meta/guardians.json").GetAwaiter().GetResult();
+        AddGuardianNamesFromNode(read.Node, names);
+        return names;
+    }
+
+    private static void AddGuardianNamesFromNode(JsonNode? node, Dictionary<string, string> names)
+    {
+        if (node is JsonObject obj)
+        {
+            var id = FirstNonEmpty(
+                GetString(obj, "guardianId", string.Empty),
+                GetString(obj, "id", string.Empty),
+                GetString(obj, "profileId", string.Empty));
+            var name = FirstNonEmpty(
+                GetString(obj, "currentDisplayName", string.Empty),
+                GetString(obj, "displayName", string.Empty),
+                GetString(obj, "name", string.Empty),
+                GetString(obj, "canonicalName", string.Empty));
+
+            if (!string.IsNullOrWhiteSpace(id) && !string.IsNullOrWhiteSpace(name))
+                names[id] = name;
+
+            foreach (var child in obj.Select(static property => property.Value))
+                AddGuardianNamesFromNode(child, names);
+        }
+        else if (node is JsonArray array)
+        {
+            foreach (var child in array)
+                AddGuardianNamesFromNode(child, names);
+        }
+    }
+
+    private static string DescribeSoulQuestGuardian(string guardianId, IReadOnlyDictionary<string, string> guardianNames)
+    {
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return string.Empty;
+
+        return guardianNames.TryGetValue(guardianId, out var name) && !string.IsNullOrWhiteSpace(name)
+            ? name
+            : "Хранитель";
+    }
+
+    private static string DescribeSoulQuestProgress(JsonObject? progress)
+    {
+        if (progress == null)
+            return string.Empty;
+
+        var summary = GetString(progress, "summary", string.Empty);
+        var completed = GetNumberOrString(progress, "completedObjectives");
+        var total = GetNumberOrString(progress, "totalObjectives");
+        var numeric = !IsUnknownReadableJsonValue(completed) && !IsUnknownReadableJsonValue(total)
+            ? $"{completed}/{total}"
+            : string.Empty;
+        return JoinNonEmpty(" - ", numeric, summary);
+    }
+
+    private static string DescribeSoulQuestStatus(string status) =>
+        status.Trim().ToLowerInvariant() switch
+        {
+            "active" => "активен",
+            "completed" => "завершён",
+            "failed" => "провален",
+            "available" => "доступен",
+            "pending" => "ожидает",
+            "locked" => "закрыт",
+            _ => EmptyFallback(status)
+        };
+
+    private static UiTone DescribeSoulQuestTone(string status) =>
+        status.Trim().ToLowerInvariant() switch
+        {
+            "активен" or "доступен" => UiTone.Warning,
+            "завершён" => UiTone.Success,
+            "провален" => UiTone.Error,
+            _ => UiTone.Muted
+        };
+
+    private static void AddFactIfKnown(List<UiEntityFact> facts, string label, string value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || IsUnknownReadableJsonValue(value))
+            return;
+
+        facts.Add(new UiEntityFact { Label = label, Value = value });
     }
 
     private static async Task<ExplorerCommandResult> BuildJsonFile(

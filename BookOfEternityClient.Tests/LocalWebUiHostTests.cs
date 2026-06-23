@@ -1330,7 +1330,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         response.EnsureSuccessStatusCode();
         Assert.Equal("/help", root["command"]!.GetValue<string>());
         Assert.Equal("Completed", root["state"]!.GetValue<string>());
-        Assert.Equal("table", root["blocks"]![0]!["kind"]!.GetValue<string>());
+        Assert.Equal("entityDossier", root["blocks"]![0]!["kind"]!.GetValue<string>());
     }
 
     [Fact]
@@ -1387,7 +1387,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         response.EnsureSuccessStatusCode();
         Assert.Equal("/spiritual_action", root["command"]!.GetValue<string>());
         Assert.Equal("RequiresInput", root["state"]!.GetValue<string>());
-        Assert.Equal("panel", root["blocks"]![0]!["kind"]!.GetValue<string>());
+        Assert.Equal("entityDossier", root["blocks"]![0]!["kind"]!.GetValue<string>());
         Assert.Contains("Локальный ход", root["blocks"]![0]!["title"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
         Assert.NotEmpty(root["prompts"]!.AsArray());
     }

@@ -152,11 +152,14 @@ public sealed class ExplorerWebCommandService
         if (request.AdvancedEnabled == true || _stateManager.Settings.ShowGmThoughts)
             return result;
 
-        var metadata = BrowserPlayerCommandMenuBuilder.GetCoverageMetadata(descriptor);
-        if (!string.Equals(metadata.Surface, "player-default", StringComparison.OrdinalIgnoreCase))
+        if (descriptor.BrowserHandlerKind == ExplorerCommandBrowserHandlerKind.Help)
             return result;
 
-        return new ExplorerCommandResult
+        var metadata = BrowserPlayerCommandMenuBuilder.GetCoverageMetadata(descriptor);
+        if (!string.Equals(metadata.Surface, "player-default", StringComparison.OrdinalIgnoreCase))
+            return BrowserEntityDossierPrototypeNormalizer.Normalize(result);
+
+        var projected = new ExplorerCommandResult
         {
             Command = result.Command,
             State = result.State,
@@ -166,6 +169,8 @@ public sealed class ExplorerWebCommandService
             Notifications = result.Notifications,
             InteractiveSession = result.InteractiveSession
         };
+
+        return BrowserEntityDossierPrototypeNormalizer.Normalize(projected);
     }
 
     private static List<UiBlock> ProjectPlayerDefaultBlocks(IEnumerable<UiBlock> blocks)

@@ -575,6 +575,32 @@ public sealed class ExplorerWebCommandServiceTestsShiningAbodeDrilldowns : IDisp
                 foreach (var child in panel.Blocks)
                     CollectBlockText(child, parts);
                 break;
+            case UiEntityDossierBlock dossier:
+                parts.Add(dossier.Title);
+                parts.Add(dossier.Subtitle);
+                parts.Add(dossier.Summary);
+                parts.AddRange(dossier.Badges.Select(static badge => badge.Label));
+                CollectEntityFacts(dossier.Facts, parts);
+                CollectEntityMetrics(dossier.Metrics, parts);
+                CollectEntityHints(dossier.Hints, parts);
+                parts.AddRange(dossier.List);
+                foreach (var card in dossier.Cards)
+                    CollectEntityCardText(card, parts);
+                foreach (var section in dossier.Sections)
+                {
+                    parts.Add(section.Title);
+                    parts.Add(section.Summary);
+                    parts.Add(section.CollectionLabel);
+                    CollectEntityFacts(section.Facts, parts);
+                    CollectEntityMetrics(section.Metrics, parts);
+                    CollectEntityHints(section.Hints, parts);
+                    parts.AddRange(section.List);
+                    foreach (var card in section.Cards)
+                        CollectEntityCardText(card, parts);
+                    foreach (var child in section.Blocks)
+                        CollectBlockText(child, parts);
+                }
+                break;
             case UiMessageBlock message:
                 parts.Add(message.Title);
                 parts.Add(message.Message);
@@ -597,6 +623,51 @@ public sealed class ExplorerWebCommandServiceTestsShiningAbodeDrilldowns : IDisp
                 foreach (var cell in row.Cells)
                     parts.Add(cell);
                 break;
+        }
+    }
+
+    private static void CollectEntityCardText(UiEntityCard card, List<string> parts)
+    {
+        parts.Add(card.Title);
+        parts.Add(card.Subtitle);
+        parts.Add(card.Summary);
+        parts.AddRange(card.Badges.Select(static badge => badge.Label));
+        CollectEntityFacts(card.Facts, parts);
+        CollectEntityMetrics(card.Metrics, parts);
+        CollectEntityHints(card.Hints, parts);
+        parts.AddRange(card.List);
+        foreach (var child in card.Nested)
+            CollectEntityCardText(child, parts);
+        foreach (var child in card.Cards)
+            CollectEntityCardText(child, parts);
+    }
+
+    private static void CollectEntityFacts(IEnumerable<UiEntityFact> facts, List<string> parts)
+    {
+        foreach (var fact in facts)
+        {
+            parts.Add(fact.Label);
+            parts.Add(fact.Value);
+        }
+    }
+
+    private static void CollectEntityMetrics(IEnumerable<UiEntityMetric> metrics, List<string> parts)
+    {
+        foreach (var metric in metrics)
+        {
+            parts.Add(metric.Label);
+            parts.Add(metric.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            parts.Add(metric.Max.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            parts.Add(metric.Note);
+        }
+    }
+
+    private static void CollectEntityHints(IEnumerable<UiEntityHint> hints, List<string> parts)
+    {
+        foreach (var hint in hints)
+        {
+            parts.Add(hint.Title);
+            parts.Add(hint.Text);
         }
     }
 

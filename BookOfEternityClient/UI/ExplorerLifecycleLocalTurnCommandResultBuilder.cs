@@ -1099,7 +1099,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         return Option(
             FirstNonEmpty(item.Identity, item.Name),
             item.Name,
-            $"Совместимых стопок: {compatible.Count}; после объединения: {compatible.Sum(static match => match.Count)} шт.");
+            $"Совместимых стопок: {compatible.Count}. После объединения будет {compatible.Sum(static match => match.Count)} шт.");
     }
 
     private static string FormatInventoryCount(InventoryManagementItem item) =>
@@ -3059,7 +3059,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         Option(
             entry.ArchiveId,
             entry.Title,
-            $"{AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType)}; редкость: {FormatRarityForPlayer(entry.Rarity)}. {entry.Summary}");
+            $"{AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType)}. Редкость: {FormatRarityForPlayer(entry.Rarity)}. {entry.Summary}");
 
     private static List<UiAction> BuildArchiveConsultationDetailActions(BrowserAfterlifeArchiveActionContext context)
     {

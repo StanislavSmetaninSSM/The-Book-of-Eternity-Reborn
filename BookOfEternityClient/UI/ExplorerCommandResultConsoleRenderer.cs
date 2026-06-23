@@ -36,6 +36,7 @@ public static class ExplorerCommandResultConsoleRenderer
         UiRawJsonBlock rawJson => RenderRawJson(rawJson),
         UiImageBlock image => RenderImage(image),
         UiMapBlock map => RenderMap(map),
+        UiEntityDossierBlock dossier => RenderEntityDossier(dossier),
         _ => GameInterface.SafeMarkupText(block.ToString() ?? string.Empty)
     };
 
@@ -192,6 +193,169 @@ public static class ExplorerCommandResultConsoleRenderer
             Padding = new Padding(1, 0),
             Expand = true
         };
+    }
+
+    private static IRenderable RenderEntityDossier(UiEntityDossierBlock block)
+    {
+        var grid = new Grid();
+        grid.AddColumn();
+
+        AddTextRow(grid, block.Subtitle, UiTone.Muted);
+        AddTextRow(grid, block.Summary, UiTone.Default);
+        AddBadgeRow(grid, block.Badges);
+        AddFactRows(grid, block.Facts);
+        AddMetricRows(grid, block.Metrics);
+        AddHintRows(grid, block.Hints);
+        AddListRows(grid, block.List);
+
+        foreach (var card in block.Cards)
+            grid.AddRow(RenderEntityCard(card));
+
+        foreach (var section in block.Sections)
+            grid.AddRow(RenderEntitySection(section));
+
+        return new Panel(grid)
+        {
+            Header = GameInterface.SafePanelHeader(string.IsNullOrWhiteSpace(block.Title) ? "Сведения" : block.Title),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Grey),
+            Padding = new Padding(1, 0),
+            Expand = true
+        };
+    }
+
+    private static IRenderable RenderEntitySection(UiEntityDossierSection section)
+    {
+        var grid = new Grid();
+        grid.AddColumn();
+
+        AddTextRow(grid, section.Summary, UiTone.Muted);
+        AddFactRows(grid, section.Facts);
+        AddMetricRows(grid, section.Metrics);
+        AddHintRows(grid, section.Hints);
+        AddListRows(grid, section.List);
+
+        foreach (var card in section.Cards)
+            grid.AddRow(RenderEntityCard(card));
+
+        foreach (var child in section.Blocks)
+            grid.AddRow(RenderBlock(child));
+
+        return new Panel(grid)
+        {
+            Header = GameInterface.SafePanelHeader(string.IsNullOrWhiteSpace(section.Title) ? "Раздел" : section.Title),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Grey),
+            Padding = new Padding(1, 0),
+            Expand = true
+        };
+    }
+
+    private static IRenderable RenderEntityCard(UiEntityCard card)
+    {
+        var grid = new Grid();
+        grid.AddColumn();
+
+        AddTextRow(grid, card.Subtitle, UiTone.Muted);
+        AddTextRow(grid, card.Summary, UiTone.Default);
+        AddBadgeRow(grid, card.Badges);
+        AddFactRows(grid, card.Facts);
+        AddMetricRows(grid, card.Metrics);
+        AddHintRows(grid, card.Hints);
+        AddListRows(grid, card.List);
+
+        foreach (var child in card.Nested)
+            grid.AddRow(RenderEntityCard(child));
+
+        foreach (var child in card.Cards)
+            grid.AddRow(RenderEntityCard(child));
+
+        return new Panel(grid)
+        {
+            Header = GameInterface.SafePanelHeader(string.IsNullOrWhiteSpace(card.Title) ? "Запись" : card.Title),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Grey),
+            Padding = new Padding(1, 0),
+            Expand = true
+        };
+    }
+
+    private static void AddTextRow(Grid grid, string? text, UiTone tone)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return;
+
+        grid.AddRow(GameInterface.SafeMarkup(ApplyTone(GameInterface.EscapeMarkup(text), tone), "entity text"));
+    }
+
+    private static void AddBadgeRow(Grid grid, IReadOnlyList<UiEntityBadge> badges)
+    {
+        var labels = badges
+            .Select(static badge => badge.Label)
+            .Where(static label => !string.IsNullOrWhiteSpace(label))
+            .ToList();
+        if (labels.Count == 0)
+            return;
+
+        grid.AddRow(GameInterface.SafeMarkupText(string.Join(" • ", labels)));
+    }
+
+    private static void AddFactRows(Grid grid, IReadOnlyList<UiEntityFact> facts)
+    {
+        if (facts.Count == 0)
+            return;
+
+        var table = new Table()
+            .Border(TableBorder.None)
+            .HideHeaders()
+            .Expand()
+            .AddColumn(new TableColumn(string.Empty).NoWrap())
+            .AddColumn(string.Empty);
+
+        foreach (var fact in facts)
+        {
+            table.AddRow(
+                GameInterface.SafeMarkup($"[bold]{GameInterface.EscapeMarkup(fact.Label)}[/]", "entity fact label"),
+                GameInterface.SafeMarkupText(fact.Value));
+        }
+
+        grid.AddRow(table);
+    }
+
+    private static void AddMetricRows(Grid grid, IReadOnlyList<UiEntityMetric> metrics)
+    {
+        foreach (var metric in metrics)
+        {
+            var value = metric.Max > 0 ? $"{metric.Value:0}/{metric.Max:0}" : metric.Value.ToString("0");
+            if (!string.IsNullOrWhiteSpace(metric.Note))
+                value += $" ({metric.Note})";
+
+            grid.AddRow(GameInterface.SafeMarkupText($"{metric.Label}: {value}"));
+        }
+    }
+
+    private static void AddHintRows(Grid grid, IReadOnlyList<UiEntityHint> hints)
+    {
+        foreach (var hint in hints)
+        {
+            var title = string.IsNullOrWhiteSpace(hint.Title) ? "Заметка" : hint.Title;
+            grid.AddRow(new Panel(GameInterface.SafeMarkupText(hint.Text))
+            {
+                Header = GameInterface.SafePanelHeader(title),
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Grey),
+                Padding = new Padding(1, 0),
+                Expand = true
+            });
+        }
+    }
+
+    private static void AddListRows(Grid grid, IReadOnlyList<string> items)
+    {
+        if (items.Count == 0)
+            return;
+
+        grid.AddRow(RenderList(new UiListBlock { Items = items.ToList() }));
     }
 
     private static IRenderable RenderActions(IReadOnlyList<UiAction> actions)

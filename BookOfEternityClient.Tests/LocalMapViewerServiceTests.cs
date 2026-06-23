@@ -25,7 +25,7 @@ public sealed class LocalMapViewerServiceTests : IDisposable
 
         var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
 
-        Assert.Equal("Mortal World", map.Realm);
+        Assert.Equal("Смертный мир", map.Realm);
         Assert.Equal("loc_square", map.CurrentNodeId);
         Assert.Contains(map.ZLevels, static level => level.Z == 0 && level.Label.Contains("зем", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(map.ZLevels, static level => level.Z == -1);
@@ -85,7 +85,7 @@ public sealed class LocalMapViewerServiceTests : IDisposable
         Assert.Contains(map.ZLevels, static level => level.Z == 2 && level.Label.Contains("+2", StringComparison.Ordinal));
         Assert.Contains(current.Details, static item => item.Key == "Известность" && item.Value.Contains("visited", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(current.Details, static item => item.Key == "Открыта" && item.Value.Contains("да", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(current.Details, static item => item.Key == "Биом" && item.Value.Contains("ash_coast", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(current.Details, static item => item.Key == "Биом" && item.Value.Contains("ash coast", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(current.Details, static item => item.Key == "Последние события" && item.Value.Contains("осады", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(current.Details, static item => item.Key == "Выходы" && item.Value.Contains("винтовая лестница", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(map.Nodes, static node => node.Id == "loc_tower_base");
@@ -289,7 +289,7 @@ public sealed class LocalMapViewerServiceTests : IDisposable
 
         var map = await LocalMapViewService.BuildChaosSeaMapAsync(_fs);
 
-        Assert.Equal("Chaos Sea", map.Realm);
+        Assert.Equal("Море Хаоса", map.Realm);
         Assert.Equal("abode_azalia", map.CurrentNodeId);
         Assert.Contains(map.Layers, static layer => layer.Id == "chaos_sea" && layer.IsDefault);
         Assert.Contains(map.ZLevels, static level => level.Z == 0 && level.Label.Contains("созвезд", StringComparison.OrdinalIgnoreCase));
@@ -332,7 +332,7 @@ public sealed class LocalMapViewerServiceTests : IDisposable
 
         var map = await LocalMapViewService.BuildShiningAbodeMapAsync(_fs);
 
-        Assert.Equal("Shining Abode", map.Realm);
+        Assert.Equal("Сияющая Обитель", map.Realm);
         Assert.Equal("hall_dawn", map.CurrentNodeId);
         Assert.Contains(map.Layers, static layer => layer.Id == "shining_abode" && layer.IsDefault);
         Assert.Contains(map.ZLevels, static level => level.Z == 0 && level.Label.Contains("мандал", StringComparison.OrdinalIgnoreCase));
@@ -352,7 +352,7 @@ public sealed class LocalMapViewerServiceTests : IDisposable
 
         var faction = Assert.Single(map.Nodes, node => node.Id == "faction_lanterns");
         Assert.Contains(faction.Details, static item => item.Key == "Зал" && item.Value.Contains("Зал Рассвета", StringComparison.Ordinal));
-        Assert.Contains(faction.Details, static item => item.Key == "Лидерство" && item.Value.Contains("secure", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(faction.Details, static item => item.Key == "Лидерство" && item.Value.Contains("устойчив", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(faction.Details, static item => item.Key == "Резиденты" && item.Value.Contains("Светозарный судья", StringComparison.Ordinal));
         Assert.Contains(faction.Details, static item => item.Key == "Проекты" && item.Value.Contains("Световой мост", StringComparison.Ordinal));
     }
@@ -411,7 +411,7 @@ public sealed class LocalMapViewerServiceTests : IDisposable
 
         var map = await LocalMapViewService.BuildShiningAbodeMapAsync(_fs);
 
-        Assert.Equal("Shining Abode", map.Realm);
+        Assert.Equal("Сияющая Обитель", map.Realm);
         Assert.Contains(map.Nodes, static node => node.Id == "hall_unassigned" && node.Label.Contains("Без закреплённого зала", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(map.Nodes, static node => node.Id == "faction_exiles" && node.OwnerFactionId == "faction_exiles");
         Assert.Contains(map.Links, static link => link.SourceNodeId == "hall_unassigned" && link.TargetNodeId == "faction_exiles");

@@ -174,6 +174,37 @@ function sanitizePlayerDefaultBlock(
         blocks: childBlocks
       };
     }
+    case 'entityDossier': {
+      const sections = block.sections.flatMap((section) => {
+        const childBlocks = sanitizePlayerDefaultBlocks(section.blocks, options);
+        return childBlocks.length > 0
+          ? [{
+              ...section,
+              title: sanitizePlayerDefaultCommandText(section.title, options.blockTitleFallback),
+              summary: sanitizePlayerDefaultCommandText(section.summary, ''),
+              blocks: childBlocks
+            }]
+          : [];
+      });
+      if (sections.length === 0 && !block.summary && !block.media) {
+        return null;
+      }
+
+      return {
+        ...block,
+        title: sanitizePlayerDefaultCommandText(block.title, options.blockTitleFallback),
+        subtitle: sanitizePlayerDefaultCommandText(block.subtitle, ''),
+        summary: sanitizePlayerDefaultCommandText(block.summary, ''),
+        badges: block.badges.map((badge) => ({
+          ...badge,
+          label: sanitizePlayerDefaultCommandText(badge.label, options.blockTitleFallback)
+        })),
+        media: block.media && ![block.media.title, block.media.altText].some(isUnsafePlayerDefaultCommandText)
+          ? block.media
+          : null,
+        sections
+      };
+    }
     case 'table': {
       const title = sanitizePlayerDefaultCommandText(block.title, '');
       if (!title || block.columns.some(isUnsafePlayerDefaultCommandText) || block.rows.some((row) => row.cells.some(isUnsafePlayerDefaultCommandText))) {

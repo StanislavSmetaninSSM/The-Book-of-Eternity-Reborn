@@ -66,6 +66,23 @@ export function renderCommandBlock(block: UiBlock): ReactNode {
           {block.blocks.map((child, index) => <div key={`${child.kind}-${index}`}>{renderCommandBlock(child)}</div>)}
         </div>
       );
+    case 'entityDossier':
+      return (
+        <div className="summary-card entity-dossier">
+          <h5>{toPlayerFacingText(block.title, 'Досье')}</h5>
+          {block.subtitle && <p className="muted">{toPlayerFacingText(block.subtitle, '')}</p>}
+          {block.summary && <p>{toPlayerFacingText(block.summary, '')}</p>}
+          {block.sections.map((section, index) => (
+            <div className="summary-card" key={section.id || index}>
+              <h6>{toPlayerFacingText(section.title, 'Раздел')}</h6>
+              {section.summary && <p className="muted">{toPlayerFacingText(section.summary, '')}</p>}
+              {section.blocks.map((child, childIndex) => (
+                <div key={`${child.kind}-${childIndex}`}>{renderCommandBlock(child)}</div>
+              ))}
+            </div>
+          ))}
+        </div>
+      );
     case 'table':
       return (
         <div className="command-table">

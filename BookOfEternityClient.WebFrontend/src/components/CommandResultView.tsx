@@ -96,7 +96,12 @@ export function CommandResultView() {
       )}
 
       <div className="command-result-view__content">
-        <BlockList blocks={result.blocks} advancedEnabled={advancedEnabled} />
+        <BlockList
+          blocks={result.blocks}
+          advancedEnabled={advancedEnabled}
+          onAction={handleActionClick}
+          availableActions={result.actions}
+        />
       </div>
 
       {result.actions.length > 0 && (

@@ -2,6 +2,11 @@ import type {
   ExplorerCommandResult,
   UiAction,
   UiBlock,
+  UiEntityCard,
+  UiEntityDossierSection,
+  UiEntityFact,
+  UiEntityHint,
+  UiEntityMetric,
   UiPrompt,
   UiSelectionOption
 } from '../api/contracts';
@@ -233,6 +238,53 @@ function sanitizeUiBlockForPlayer(block: UiBlock): UiBlock | null {
           blocks
         };
       }
+    case 'entityDossier':
+      {
+        const sections = block.sections.flatMap(sanitizeEntitySectionForPlayer);
+        const cards = block.cards.map(sanitizeEntityCardForPlayer);
+        const facts = block.facts.map(sanitizeEntityFactForPlayer);
+        const metrics = block.metrics.map(sanitizeEntityMetricForPlayer);
+        const hints = block.hints.map(sanitizeEntityHintForPlayer);
+        const list = block.list.map((item) => safePlayerText(item, 'пункт списка'));
+
+        if (
+          sections.length === 0 &&
+          cards.length === 0 &&
+          facts.length === 0 &&
+          metrics.length === 0 &&
+          hints.length === 0 &&
+          list.length === 0 &&
+          !block.summary &&
+          !block.media
+        ) {
+          return null;
+        }
+
+        return {
+          ...block,
+          title: safePlayerText(block.title, 'Досье'),
+          subtitle: safePlayerText(block.subtitle, ''),
+          summary: safePlayerText(block.summary, ''),
+          badges: block.badges.map((badge) => ({
+            ...badge,
+            label: safePlayerText(badge.label, 'метка')
+          })),
+          media: block.media
+            ? {
+                ...block.media,
+                title: safePlayerText(block.media.title, 'Образ'),
+                altText: safePlayerText(block.media.altText, block.media.title || 'Образ')
+              }
+            : null,
+          facts,
+          metrics,
+          hints,
+          list,
+          cards,
+          sections,
+          primaryAction: block.primaryAction ? sanitizeUiActionForPlayer(block.primaryAction) : null
+        };
+      }
     case 'table':
       return {
         ...block,
@@ -276,6 +328,95 @@ function sanitizeUiBlockForPlayer(block: UiBlock): UiBlock | null {
         title: safePlayerText(block.title, 'Карта')
       };
   }
+}
+
+function sanitizeEntitySectionForPlayer(section: UiEntityDossierSection): UiEntityDossierSection[] {
+  const blocks = section.blocks.flatMap((child) => {
+    const sanitized = sanitizeUiBlockForPlayer(child);
+    return sanitized ? [sanitized] : [];
+  });
+  const cards = section.cards.map(sanitizeEntityCardForPlayer);
+  const facts = section.facts.map(sanitizeEntityFactForPlayer);
+  const metrics = section.metrics.map(sanitizeEntityMetricForPlayer);
+  const hints = section.hints.map(sanitizeEntityHintForPlayer);
+  const list = section.list.map((item) => safePlayerText(item, 'пункт списка'));
+
+  if (
+    blocks.length === 0 &&
+    cards.length === 0 &&
+    facts.length === 0 &&
+    metrics.length === 0 &&
+    hints.length === 0 &&
+    list.length === 0 &&
+    !section.summary
+  ) {
+    return [];
+  }
+
+  return [{
+    ...section,
+    title: safePlayerText(section.title, 'Раздел'),
+    summary: safePlayerText(section.summary, ''),
+    collectionLabel: safePlayerText(section.collectionLabel, ''),
+    presentation: safePlayerText(section.presentation, ''),
+    facts,
+    metrics,
+    hints,
+    list,
+    cards,
+    blocks
+  }];
+}
+
+function sanitizeEntityCardForPlayer(card: UiEntityCard): UiEntityCard {
+  return {
+    ...card,
+    title: safePlayerText(card.title, 'Карточка'),
+    subtitle: safePlayerText(card.subtitle, ''),
+    summary: safePlayerText(card.summary, ''),
+    badges: card.badges.map((badge) => ({
+      ...badge,
+      label: safePlayerText(badge.label, 'метка')
+    })),
+    media: card.media
+      ? {
+          ...card.media,
+          title: safePlayerText(card.media.title, 'Образ'),
+          altText: safePlayerText(card.media.altText, card.media.title || 'Образ')
+        }
+      : null,
+    facts: card.facts.map(sanitizeEntityFactForPlayer),
+    metrics: card.metrics.map(sanitizeEntityMetricForPlayer),
+    hints: card.hints.map(sanitizeEntityHintForPlayer),
+    list: card.list.map((item) => safePlayerText(item, 'пункт списка')),
+    nested: card.nested.map(sanitizeEntityCardForPlayer),
+    cards: card.cards.map(sanitizeEntityCardForPlayer),
+    primaryAction: card.primaryAction ? sanitizeUiActionForPlayer(card.primaryAction) : null
+  };
+}
+
+function sanitizeEntityFactForPlayer(fact: UiEntityFact): UiEntityFact {
+  return {
+    ...fact,
+    label: safePlayerLabel(fact.label, 'Параметр'),
+    value: safePlayerText(fact.value, '—')
+  };
+}
+
+function sanitizeEntityMetricForPlayer(metric: UiEntityMetric): UiEntityMetric {
+  return {
+    ...metric,
+    label: safePlayerLabel(metric.label, 'Показатель'),
+    note: safePlayerText(metric.note, '')
+  };
+}
+
+function sanitizeEntityHintForPlayer(hint: UiEntityHint): UiEntityHint {
+  return {
+    ...hint,
+    title: safePlayerText(hint.title, 'Подсказка'),
+    text: safePlayerText(hint.text, '')
+  };
 }
 
 function sanitizeUiActionForPlayer(action: UiAction): UiAction {
@@ -324,4 +465,14 @@ function sanitizeUiSelectionOptionForPlayer(option: UiSelectionOption): UiSelect
 
 function safePlayerText(text: string | null | undefined, fallback: string): string {
   return sanitizePlayerMessage(text, fallback).safe;
+}
+
+function safePlayerLabel(text: string | null | undefined, fallback: string): string {
+  return stripLeadingDecorativeSymbols(safePlayerText(text, fallback)) || fallback;
+}
+
+function stripLeadingDecorativeSymbols(value: string): string {
+  return value
+    .replace(/^([\p{Extended_Pictographic}\p{Emoji_Presentation}\u2600-\u27bf]\ufe0f?\s*)+/u, '')
+    .trim();
 }

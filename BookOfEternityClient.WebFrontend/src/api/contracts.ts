@@ -655,6 +655,7 @@ export interface ExplorerCommandResult {
 export type UiBlock =
   | UiTextBlock
   | UiPanelBlock
+  | UiEntityDossierBlock
   | UiTableBlock
   | UiListBlock
   | UiKeyValueGridBlock
@@ -672,6 +673,92 @@ export interface UiTextBlock {
 export interface UiPanelBlock {
   kind: 'panel';
   title: string;
+  blocks: UiBlock[];
+}
+
+export interface UiEntityDossierBlock {
+  kind: 'entityDossier';
+  entityType: string;
+  title: string;
+  subtitle: string;
+  summary: string;
+  badges: UiEntityBadge[];
+  media: UiEntityMedia | null;
+  facts: UiEntityFact[];
+  metrics: UiEntityMetric[];
+  hints: UiEntityHint[];
+  list: string[];
+  cards: UiEntityCard[];
+  sections: UiEntityDossierSection[];
+  primaryAction?: UiAction | null;
+}
+
+export interface UiEntityBadge {
+  label: string;
+  tone: UiTone;
+  icon: string;
+}
+
+export interface UiEntityMedia {
+  title: string;
+  url: string;
+  mediaId: string;
+  relativePath: string;
+  altText: string;
+  contentType: string;
+  length: number;
+  modifiedAtUtc: IsoDateTimeString;
+}
+
+export interface UiEntityFact {
+  label: string;
+  value: string;
+}
+
+export interface UiEntityMetric {
+  label: string;
+  value: number;
+  max: number;
+  tone: UiTone;
+  note: string;
+}
+
+export interface UiEntityHint {
+  title: string;
+  text: string;
+  tone: UiTone;
+}
+
+export interface UiEntityCard {
+  title: string;
+  subtitle: string;
+  summary: string;
+  icon: string;
+  badges: UiEntityBadge[];
+  media: UiEntityMedia | null;
+  facts: UiEntityFact[];
+  metrics: UiEntityMetric[];
+  hints: UiEntityHint[];
+  list: string[];
+  nested: UiEntityCard[];
+  cards: UiEntityCard[];
+  primaryAction?: UiAction | null;
+}
+
+export interface UiEntityDossierSection {
+  id: string;
+  title: string;
+  summary: string;
+  icon: string;
+  collectionLabel: string;
+  presentation?: string;
+  collapsible: boolean;
+  initiallyExpanded: boolean;
+  facts: UiEntityFact[];
+  metrics: UiEntityMetric[];
+  hints: UiEntityHint[];
+  list: string[];
+  cards: UiEntityCard[];
   blocks: UiBlock[];
 }
 

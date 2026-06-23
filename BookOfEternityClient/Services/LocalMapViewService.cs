@@ -94,7 +94,7 @@ public static class LocalMapViewService
 
         return new MapViewDto
         {
-            Realm = "Mortal World",
+            Realm = "Смертный мир",
             Title = "Карта смертного мира",
             CurrentNodeId = currentNodeId,
             Layers =
@@ -193,7 +193,7 @@ public static class LocalMapViewService
 
         return new MapViewDto
         {
-            Realm = "Chaos Sea",
+            Realm = "Море Хаоса",
             Title = "Карта Моря Хаоса: созвездие Обителей",
             CurrentNodeId = currentAbodeId,
             Layers =
@@ -248,7 +248,7 @@ public static class LocalMapViewService
 
         return new MapViewDto
         {
-            Realm = "Shining Abode",
+            Realm = "Сияющая Обитель",
             Title = "Карта Сияющей Обители: залы и фракции",
             CurrentNodeId = currentHallId,
             Layers =
@@ -481,12 +481,33 @@ public static class LocalMapViewService
 
         var parts = new[]
         {
-            GetString(leadership, "leadershipState", "state"),
-            GetString(leadership, "headActorType", "leaderType"),
-            GetString(leadership, "headActorId", "leaderId")
+            DescribeShiningLeadershipState(GetString(leadership, "leadershipState", "state")),
+            DescribeShiningActorType(GetString(leadership, "headActorType", "leaderType"))
         }.Where(static value => !string.IsNullOrWhiteSpace(value));
         return string.Join(", ", parts);
     }
+
+    private static string DescribeShiningLeadershipState(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "secure" => "устойчивое лидерство",
+            "contested" => "оспариваемое лидерство",
+            "vacant" => "без лидера",
+            "unstable" => "нестабильное лидерство",
+            _ => HumanizeMapProtocolValue(value)
+        };
+
+    private static string DescribeShiningActorType(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "resident" or "shining_resident" => "резидент",
+            "guardian" => "Хранитель",
+            "shining_faction_head" => "глава фракции",
+            "radiant_actor" => "сияющий актор",
+            _ => HumanizeMapProtocolValue(value)
+        };
 
     private static string DescribeShiningFactionResidents(JsonElement root, string factionId)
     {
@@ -646,7 +667,10 @@ public static class LocalMapViewService
             var draft = GetOrCreateNode(nodes, abodeId);
             draft.Layer = ChaosSeaLayerId;
             draft.Type = Prefer(draft.Type, "guardian_abode");
-            draft.Label = Prefer(draft.Label, entry.ValueKind == JsonValueKind.Object ? GetString(entry, "name", "title", "abodeName") : string.Empty, abodeId);
+            draft.Label = PreferPlayerFacingLabel(
+                draft.Label,
+                entry.ValueKind == JsonValueKind.Object ? GetString(entry, "name", "title", "displayName", "abodeName") : string.Empty,
+                abodeId);
             draft.GuardianId = Prefer(draft.GuardianId, entry.ValueKind == JsonValueKind.Object ? GetString(entry, "guardianId") : string.Empty);
             AddDetail(draft, "Открытие", discoveryState);
             AddDetail(draft, "Хранитель", entry.ValueKind == JsonValueKind.Object ? GetString(entry, "guardianName", "guardianDisplayName") : string.Empty);
@@ -685,7 +709,7 @@ public static class LocalMapViewService
         var draft = GetOrCreateNode(nodes, abodeId);
         draft.Layer = ChaosSeaLayerId;
         draft.Type = isLocked ? "locked_guardian_abode" : isHinted ? "hinted_guardian_abode" : "guardian_abode";
-        draft.Label = Prefer(draft.Label, GetString(abode, "name", "title", "abodeName"), abodeId);
+        draft.Label = PreferPlayerFacingLabel(draft.Label, GetString(abode, "name", "title", "displayName", "abodeName"), abodeId);
         draft.IsCurrent |= isCurrent;
         draft.GuardianId = Prefer(draft.GuardianId, guardianId);
         draft.Domain = Prefer(draft.Domain, GetString(guardian, "domain", "guardianDomain"));
@@ -693,7 +717,7 @@ public static class LocalMapViewService
         AddDetail(draft, "Открытие", isDiscovered ? "открыта" : isHinted ? "намёк" : "закрыта");
         AddDetail(draft, "Хранитель", GetString(guardian, "canonicalName", "guardianName", "name", "displayName"));
         AddDetail(draft, "Активный Хранитель", isActiveGuardian ? "да" : string.Empty);
-        AddDetail(draft, "Домен", draft.Domain);
+        AddDetail(draft, "Домен", DescribeChaosDomain(draft.Domain));
         AddDetail(draft, "Репутация", DescribeGuardianReputation(guardian));
         AddDetail(draft, "Сила Обители", DescribeAbodePower(guardian, abode));
         AddDetail(draft, "Резиденты", DescribeFirstArrayCount(abode, guardian, "residents", "abodeResidents", "residentCompanions"));
@@ -787,9 +811,9 @@ public static class LocalMapViewService
 
             var values = array.EnumerateArray()
                 .Select(static item => item.ValueKind == JsonValueKind.String
-                    ? item.GetString()
+                    ? DescribeStringArrayItem(item.GetString())
                     : item.ValueKind == JsonValueKind.Object
-                        ? GetString(item, "label", "name", "actionType", "id")
+                        ? DescribeStringArrayItem(GetString(item, "label", "name", "actionType", "id"))
                         : string.Empty)
                 .Where(static value => !string.IsNullOrWhiteSpace(value))
                 .Take(6)
@@ -799,6 +823,35 @@ public static class LocalMapViewService
         }
 
         return string.Empty;
+    }
+
+    private static string DescribeStringArrayItem(string? value)
+    {
+        var trimmed = value?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(trimmed))
+            return string.Empty;
+
+        var normalized = trimmed.ToLowerInvariant();
+        if (normalized.StartsWith("resident_", StringComparison.Ordinal) ||
+            normalized.StartsWith("actor_", StringComparison.Ordinal) ||
+            normalized.StartsWith("npc_", StringComparison.Ordinal) ||
+            normalized.StartsWith("guardian_", StringComparison.Ordinal))
+        {
+            return string.Empty;
+        }
+
+        return normalized switch
+        {
+            "secure" => "защищено",
+            "resident" => "резиденты",
+            "talk" => "разговор",
+            "history" => "история",
+            "trade" => "торговля",
+            "project" => "проект",
+            "offering" => "подношение",
+            "visit" => "посещение",
+            _ => HumanizeMapProtocolValue(trimmed)
+        };
     }
 
     private static void AddChaosNavigationLinks(Dictionary<string, MapLinkDto> links, JsonElement navigation)
@@ -1010,10 +1063,10 @@ public static class LocalMapViewService
             draft.HasCoordinates = true;
         }
 
-        AddDetail(draft, "Тип", draft.Type);
+        AddDetail(draft, "Тип", DescribeMapNodeType(draft.Type));
         AddDetail(draft, "Регион", GetString(location, "region", "area"));
-        AddDetail(draft, "Биом", GetString(location, "biome"));
-        AddDetail(draft, "Известность", GetString(location, "knownState", "discoveryState", "knownStatus", "state"));
+        AddDetail(draft, "Биом", DescribeMapBiome(GetString(location, "biome")));
+        AddDetail(draft, "Известность", DescribeDiscoveryState(GetString(location, "knownState", "discoveryState", "knownStatus", "state")));
         if (TryGetBool(location, out var discovered, "discovered", "isDiscovered", "known"))
             AddDetail(draft, "Открыта", discovered ? "да" : "нет");
         AddDetail(draft, "Описание", GetString(location, "description", "shortDescription"));
@@ -1155,12 +1208,12 @@ public static class LocalMapViewService
         AddDetail(
             draft,
             "Контроль фракций",
-            string.Join("; ", draft.FactionControls
+            string.Join("\n", draft.FactionControls
                 .OrderByDescending(static control => control.ControlLevel)
                 .Select(static control =>
                 {
                     var name = string.IsNullOrWhiteSpace(control.FactionName) ? control.FactionId : control.FactionName;
-                    var type = string.IsNullOrWhiteSpace(control.ControlType) ? "control" : control.ControlType;
+                    var type = string.IsNullOrWhiteSpace(control.ControlType) ? "контроль" : control.ControlType;
                     return $"{name}: {type} {control.ControlLevel}";
                 })));
 
@@ -1342,6 +1395,35 @@ public static class LocalMapViewService
                 ? candidate.Trim()
                 : fallback;
 
+    private static string PreferPlayerFacingLabel(string current, string candidate, string fallback = "")
+    {
+        if (!string.IsNullOrWhiteSpace(candidate) &&
+            (string.IsNullOrWhiteSpace(current) || IsLikelyMapTechnicalIdentifier(current)))
+        {
+            return candidate.Trim();
+        }
+
+        if (!string.IsNullOrWhiteSpace(current))
+            return current.Trim();
+
+        return string.IsNullOrWhiteSpace(fallback) ? string.Empty : fallback.Trim();
+    }
+
+    private static bool IsLikelyMapTechnicalIdentifier(string value)
+    {
+        var trimmed = value.Trim();
+        if (!trimmed.Contains('_', StringComparison.Ordinal) &&
+            !trimmed.Contains("::", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return trimmed.All(static ch =>
+            ch is '_' or '-' or ':' ||
+            char.IsAsciiLetterLower(ch) ||
+            char.IsAsciiDigit(ch));
+    }
+
     private static void AddDetail(NodeDraft draft, string key, string value)
     {
         if (string.IsNullOrWhiteSpace(value) ||
@@ -1351,6 +1433,80 @@ public static class LocalMapViewService
         }
 
         draft.Details.Add(new MapDetailItemDto { Key = key, Value = value.Trim() });
+    }
+
+    private static string DescribeMapNodeType(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "indoor" => "помещение",
+            "outdoor" => "открытая местность",
+            "city" => "городская локация",
+            "gate" => "ворота",
+            "market" => "рынок",
+            "district" => "квартал",
+            "building" => "здание",
+            "dungeon" => "подземелье",
+            "cave" or "cavesystem" or "cave_system" => "пещерная система",
+            "vehicle" => "транспорт",
+            "guardian_abode" => "Обитель Хранителя",
+            "locked_guardian_abode" => "закрытая Обитель Хранителя",
+            "hinted_guardian_abode" => "намеченная Обитель Хранителя",
+            "shining_hall" => "зал Сияющей Обители",
+            "shining_faction" => "фракция Сияющей Обители",
+            "shining_abode_district" or "shining abode district" => "район Сияющей Обители",
+            "shining_influence_zone" => "зона влияния Сияющей Обители",
+            _ => HumanizeMapProtocolValue(value)
+        };
+
+    private static string DescribeMapBiome(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "urban" => "город",
+            "forest" => "лес",
+            "mountain" => "горы",
+            "swamp" => "болото",
+            "desert" => "пустошь",
+            "coast" => "побережье",
+            _ => HumanizeMapProtocolValue(value)
+        };
+
+    private static string DescribeChaosDomain(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "memory" => "память",
+            "passage" => "переходы",
+            "fire" => "огонь",
+            "shadow" => "тень",
+            "oath" => "клятва",
+            "archive" => "архив",
+            _ => HumanizeMapProtocolValue(value)
+        };
+
+    private static string DescribeDiscoveryState(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "known" or "discovered" or "open" => "известна",
+            "unknown" => "неизвестна",
+            "rumored" or "hinted" => "по слухам",
+            "locked" => "закрыта",
+            _ => HumanizeMapProtocolValue(value)
+        };
+
+    private static string HumanizeMapProtocolValue(string value)
+    {
+        var trimmed = value.Trim();
+        if (string.IsNullOrWhiteSpace(trimmed))
+            return string.Empty;
+
+        return string.Concat(trimmed.Select((ch, index) =>
+                index > 0 && char.IsUpper(ch) ? " " + ch : ch.ToString()))
+            .Replace('_', ' ')
+            .Replace('-', ' ')
+            .Trim();
     }
 
     private static string GetString(JsonElement element, params string[] names)
@@ -1495,7 +1651,7 @@ public static class LocalMapViewService
         {
             Id = Id,
             Label = string.IsNullOrWhiteSpace(Label) ? Id : Label,
-            Type = Type,
+            Type = DescribeMapNodeType(Type),
             X = X,
             Y = Y,
             Z = Z,

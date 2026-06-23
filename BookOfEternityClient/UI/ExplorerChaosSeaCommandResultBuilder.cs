@@ -317,6 +317,8 @@ public static class ExplorerChaosSeaCommandResultBuilder
         if (politics.Node == null)
             return MissingOrMalformed(command, "Политика Хранителей", politics);
 
+        var guardians = await ReadJson(fs, GuardiansPath);
+        var labels = BuildGuardianPoliticsLabels(guardians.Node);
         var root = politics.Node;
         var relations = VisibleObjects(root[ChaosSeaGuardianPoliticsState.RelationsProperty] as JsonArray).ToList();
         var projects = VisibleObjects(root[ChaosSeaGuardianPoliticsState.ProjectsProperty] as JsonArray).ToList();
@@ -345,12 +347,12 @@ public static class ExplorerChaosSeaCommandResultBuilder
             {
                 Title = "Связи Хранителей",
                 Columns = ["Источник", "Цель", "Тип", "Отношение", "Причина"],
-                Rows = relations.Select(static relation => new UiTableRow
+                Rows = relations.Select(relation => new UiTableRow
                 {
                     Cells =
                     [
-                        GetString(relation, "sourceGuardianId"),
-                        GetString(relation, "targetGuardianId"),
+                        ResolveGuardianLabel(GetString(relation, "sourceGuardianId"), labels),
+                        ResolveGuardianLabel(GetString(relation, "targetGuardianId"), labels),
                         TranslateRelationType(GetString(relation, "relationType")),
                         GetNumberOrString(relation, "attitudeScore", "0"),
                         GetString(relation, "reason")
@@ -365,13 +367,13 @@ public static class ExplorerChaosSeaCommandResultBuilder
             {
                 Title = "Политические проекты",
                 Columns = ["Проект", "Владелец", "Цель", "Статус", "Прогресс", "Сводка"],
-                Rows = projects.Select(static project => new UiTableRow
+                Rows = projects.Select(project => new UiTableRow
                 {
                     Cells =
                     [
-                        GetString(project, "projectId"),
-                        GetString(project, "ownerGuardianId"),
-                        GetString(project, "targetGuardianId"),
+                        FirstNonEmpty(GetString(project, "title", "displayName", "name"), "Политический проект"),
+                        ResolveGuardianLabel(GetString(project, "ownerGuardianId"), labels),
+                        ResolveGuardianLabel(GetString(project, "targetGuardianId"), labels),
                         TranslateProjectStatus(GetString(project, "status")),
                         $"{GetNumberOrString(project, "currentProgress", "0")}/{GetNumberOrString(project, "requiredProgress", "0")}",
                         GetString(project, "summary")
@@ -386,13 +388,13 @@ public static class ExplorerChaosSeaCommandResultBuilder
             {
                 Title = "Зоны влияния",
                 Columns = ["Зона", "Хранитель", "Область", "Влияние", "Контроль"],
-                Rows = zones.Select(static zone => new UiTableRow
+                Rows = zones.Select(zone => new UiTableRow
                 {
                     Cells =
                     [
                         GetString(zone, "displayName", "zoneId"),
-                        GetString(zone, "guardianId"),
-                        $"{GetString(zone, "scopeType")}:{GetString(zone, "scopeId")}",
+                        ResolveGuardianLabel(GetString(zone, "guardianId"), labels),
+                        ResolveGuardianPoliticsScope(zone, labels),
                         GetNumberOrString(zone, "influenceValue", "0"),
                         GetNumberOrString(zone, "controlLevel", "0")
                     ]
@@ -1007,6 +1009,89 @@ public static class ExplorerChaosSeaCommandResultBuilder
     private static string AbodeName(JsonObject? abode) =>
         EmptyFallback(GetString(abode, "name", "abodeName", "displayName", "abodeId"));
 
+    private static GuardianPoliticsLabels BuildGuardianPoliticsLabels(JsonNode? guardiansRoot)
+    {
+        var guardianLabels = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var abodeLabels = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var guardian in EnumerateGuardians(guardiansRoot))
+        {
+            var guardianId = GuardianSelector(guardian);
+            var guardianName = GuardianName(guardian);
+            if (!string.IsNullOrWhiteSpace(guardianId) && !string.IsNullOrWhiteSpace(guardianName))
+                guardianLabels[guardianId] = guardianName;
+
+            if (guardian["abode"] is not JsonObject abode)
+                continue;
+
+            var abodeId = AbodeSelector(abode);
+            var abodeName = AbodeName(abode);
+            if (!string.IsNullOrWhiteSpace(abodeId) && !string.IsNullOrWhiteSpace(abodeName))
+                abodeLabels[abodeId] = abodeName;
+        }
+
+        return new GuardianPoliticsLabels(guardianLabels, abodeLabels);
+    }
+
+    private static string ResolveGuardianLabel(string guardianId, GuardianPoliticsLabels labels)
+    {
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return "не указано";
+
+        if (labels.Guardians.TryGetValue(guardianId, out var label) && !string.IsNullOrWhiteSpace(label))
+            return label;
+
+        return IsLikelyTechnicalIdentifier(guardianId) ? "Хранитель" : EmptyFallback(guardianId);
+    }
+
+    private static string ResolveGuardianPoliticsScope(JsonObject zone, GuardianPoliticsLabels labels)
+    {
+        var displayName = GetString(zone, "displayName", "zoneName", "name");
+        if (!string.IsNullOrWhiteSpace(displayName))
+            return displayName;
+
+        var scopeType = GetString(zone, "scopeType", "type");
+        var scopeId = GetString(zone, "scopeId", "abodeId", "locationId", "id");
+        if (scopeType.Equals("abode", StringComparison.OrdinalIgnoreCase) &&
+            labels.Abodes.TryGetValue(scopeId, out var abodeName) &&
+            !string.IsNullOrWhiteSpace(abodeName))
+        {
+            return abodeName;
+        }
+
+        var typeLabel = DescribeGuardianPoliticsScopeType(scopeType);
+        if (IsLikelyTechnicalIdentifier(scopeId))
+            return typeLabel;
+
+        return JoinNonEmpty(": ", typeLabel, scopeId);
+    }
+
+    private static string DescribeGuardianPoliticsScopeType(string scopeType) =>
+        scopeType.Trim().ToLowerInvariant() switch
+        {
+            "" => "область влияния",
+            "abode" => "Обитель",
+            "route" => "маршрут",
+            "guardian" => "Хранитель",
+            "region" => "область",
+            _ => scopeType.Replace('_', ' ')
+        };
+
+    private static bool IsLikelyTechnicalIdentifier(string value)
+    {
+        var trimmed = value.Trim();
+        if (!trimmed.Contains('_', StringComparison.Ordinal) &&
+            !trimmed.Contains("::", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return trimmed.All(static ch =>
+            ch is '_' or '-' or ':' ||
+            char.IsAsciiLetterLower(ch) ||
+            char.IsAsciiDigit(ch));
+    }
+
     private static string PowerEntrySelector(JsonObject entry) =>
         GetString(entry, "entryId", "eventId", "id", "title", "reason");
 
@@ -1445,9 +1530,25 @@ public static class ExplorerChaosSeaCommandResultBuilder
     private static string EmptyFallback(string? value) =>
         string.IsNullOrWhiteSpace(value) ? "не указано" : value.Trim();
 
+    private static string FirstNonEmpty(params string?[] values) =>
+        values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value))?.Trim() ?? string.Empty;
+
+    private static string JoinNonEmpty(string separator, params string?[] values)
+    {
+        var parts = values
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Select(static value => value!.Trim())
+            .ToArray();
+        return parts.Length == 0 ? "не указано" : string.Join(separator, parts);
+    }
+
     private sealed record CommandRequest(string Command, string CommandToken, string Arguments);
 
     private readonly record struct DetailRequest(string Token, string Selector);
+
+    private sealed record GuardianPoliticsLabels(
+        IReadOnlyDictionary<string, string> Guardians,
+        IReadOnlyDictionary<string, string> Abodes);
 
     private sealed record AbodeSnapshot(
         string Selector,

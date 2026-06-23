@@ -6,6 +6,7 @@ namespace BookOfEternityClient.CommandProtocol;
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "kind")]
 [JsonDerivedType(typeof(UiTextBlock), "text")]
 [JsonDerivedType(typeof(UiPanelBlock), "panel")]
+[JsonDerivedType(typeof(UiEntityDossierBlock), "entityDossier")]
 [JsonDerivedType(typeof(UiTableBlock), "table")]
 [JsonDerivedType(typeof(UiListBlock), "list")]
 [JsonDerivedType(typeof(UiKeyValueGridBlock), "keyValueGrid")]
@@ -26,6 +27,99 @@ public sealed class UiTextBlock : UiBlock
 public sealed class UiPanelBlock : UiBlock
 {
     public string Title { get; init; } = string.Empty;
+    public List<UiBlock> Blocks { get; init; } = [];
+}
+
+public sealed class UiEntityDossierBlock : UiBlock
+{
+    public string EntityType { get; init; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
+    public string Subtitle { get; init; } = string.Empty;
+    public string Summary { get; init; } = string.Empty;
+    public List<UiEntityBadge> Badges { get; init; } = [];
+    public UiEntityMedia? Media { get; init; }
+    public List<UiEntityFact> Facts { get; init; } = [];
+    public List<UiEntityMetric> Metrics { get; init; } = [];
+    public List<UiEntityHint> Hints { get; init; } = [];
+    public List<string> List { get; init; } = [];
+    public List<UiEntityCard> Cards { get; init; } = [];
+    public List<UiEntityDossierSection> Sections { get; init; } = [];
+    public UiAction? PrimaryAction { get; init; }
+}
+
+public sealed class UiEntityBadge
+{
+    public string Label { get; init; } = string.Empty;
+    public UiTone Tone { get; init; } = UiTone.Default;
+    public string Icon { get; init; } = string.Empty;
+}
+
+public sealed class UiEntityMedia
+{
+    public string Title { get; init; } = string.Empty;
+    public string Url { get; init; } = string.Empty;
+    public string MediaId { get; init; } = string.Empty;
+    public string RelativePath { get; init; } = string.Empty;
+    public string AltText { get; init; } = string.Empty;
+    public string ContentType { get; init; } = string.Empty;
+    public long Length { get; init; }
+    public DateTimeOffset ModifiedAtUtc { get; init; }
+}
+
+public sealed class UiEntityFact
+{
+    public string Label { get; init; } = string.Empty;
+    public string Value { get; init; } = string.Empty;
+}
+
+public sealed class UiEntityMetric
+{
+    public string Label { get; init; } = string.Empty;
+    public double Value { get; init; }
+    public double Max { get; init; } = 100;
+    public UiTone Tone { get; init; } = UiTone.Default;
+    public string Note { get; init; } = string.Empty;
+}
+
+public sealed class UiEntityHint
+{
+    public string Title { get; init; } = string.Empty;
+    public string Text { get; init; } = string.Empty;
+    public UiTone Tone { get; init; } = UiTone.Default;
+}
+
+public sealed class UiEntityCard
+{
+    public string Title { get; init; } = string.Empty;
+    public string Subtitle { get; init; } = string.Empty;
+    public string Summary { get; init; } = string.Empty;
+    public string Icon { get; init; } = string.Empty;
+    public List<UiEntityBadge> Badges { get; init; } = [];
+    public UiEntityMedia? Media { get; init; }
+    public List<UiEntityFact> Facts { get; init; } = [];
+    public List<UiEntityMetric> Metrics { get; init; } = [];
+    public List<UiEntityHint> Hints { get; init; } = [];
+    public List<string> List { get; init; } = [];
+    public List<UiEntityCard> Nested { get; init; } = [];
+    public List<UiEntityCard> Cards { get; init; } = [];
+    public UiAction? PrimaryAction { get; init; }
+}
+
+public sealed class UiEntityDossierSection
+{
+    public string Id { get; init; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
+    public string Summary { get; init; } = string.Empty;
+    public string Icon { get; init; } = string.Empty;
+    public string CollectionLabel { get; init; } = string.Empty;
+    public string Presentation { get; init; } = string.Empty;
+    public bool Collapsible { get; init; }
+    public bool InitiallyExpanded { get; init; } = true;
+    public List<UiEntityFact> Facts { get; init; } = [];
+    public List<UiEntityMetric> Metrics { get; init; } = [];
+    public List<UiEntityHint> Hints { get; init; } = [];
+    public List<string> List { get; init; } = [];
+    public List<UiEntityCard> Cards { get; init; } = [];
     public List<UiBlock> Blocks { get; init; } = [];
 }
 
