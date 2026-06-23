@@ -274,6 +274,23 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
         Assert.DoesNotMatch(AdjacentCombatPercentagesPattern(), text);
     }
 
+    [Theory]
+    [InlineData("/где_я")]
+    [InlineData("/погода")]
+    [InlineData("/фракции")]
+    [InlineData("/чужие_нити")]
+    public async Task MortalReadOnlyCommandsLocalizeCommonProtocolValues(string command)
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            command);
+        var text = CollectResultText(result);
+
+        Assert.DoesNotContain("Month of Beginnings", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("rising", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotMatch(GluedRivalStatusSummaryPattern(), text);
+    }
+
     [Fact]
     public async Task MortalNpcOverviewCardsExposeDirectProfileActions()
     {
@@ -870,4 +887,7 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
 
     [GeneratedRegex(@"\b\d{1,2}:\s+\d{2}\b", RegexOptions.CultureInvariant)]
     private static partial Regex TimeWithWhitespaceAfterColonPattern();
+
+    [GeneratedRegex(@"нарастает\s+Неизвестный", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex GluedRivalStatusSummaryPattern();
 }

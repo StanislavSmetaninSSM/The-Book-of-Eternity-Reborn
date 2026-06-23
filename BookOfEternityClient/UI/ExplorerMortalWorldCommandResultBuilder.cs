@@ -3142,7 +3142,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (string.IsNullOrWhiteSpace(events))
             return;
 
-        blocks.Add(Panel("Последние события", new UiTextBlock { Text = events, Tone = UiTone.Default }));
+        blocks.Add(Panel("Последние события", new UiTextBlock
+        {
+            Text = ExplorerPlayerFacingLabels.WorldTime(events),
+            Tone = UiTone.Default
+        }));
     }
 
     private static IEnumerable<string> EnumerateLocationTextEntries(JsonNode? node)
@@ -4614,12 +4618,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
             FirstReferenceNodeString(node, "objective", "summary", "description"),
             $"{section} {index}");
 
-    private static string DescribeReferenceSummary(JsonObject node) =>
-        FirstNonEmpty(
-            JoinReferenceDetails(
-                DescribeReferenceStatus(FirstReferenceNodeString(node, "status", "state", "stage", "phase", "accessLevel", "availability")),
-                FirstReferenceNodeString(node, "summary", "description", "skillDescription", "objective", "visibleReason", "scenarioCore")),
+    private static string DescribeReferenceSummary(JsonObject node)
+    {
+        var status = DescribeReferenceStatus(FirstReferenceNodeString(node, "status", "state", "stage", "phase", "accessLevel", "availability"));
+        var summary = FirstReferenceNodeString(node, "summary", "description", "skillDescription", "objective", "visibleReason", "scenarioCore");
+        if (!string.IsNullOrWhiteSpace(status) && !string.IsNullOrWhiteSpace(summary))
+            return $"Состояние: {status}. {summary}";
+
+        return FirstNonEmpty(
+            status,
+            summary,
             DescribeNodeForReferenceDetail(node["objectives"]));
+    }
 
     private static void AddReferenceAdditionalDetailBlocks(
         List<UiBlock> blocks,
@@ -4857,6 +4867,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "failed" => "провалено",
             "pending" or "waiting" => "ожидает",
             "contested" => "оспаривается",
+            "rising" => "нарастает",
             "owner" => "полный доступ",
             "shared" => "совместный доступ",
             "read" or "reader" => "доступ на чтение",
