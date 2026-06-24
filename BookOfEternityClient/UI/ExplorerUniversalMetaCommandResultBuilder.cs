@@ -1787,8 +1787,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            Panel("Хроника", Grid(reads.Select(static read =>
-                (read.Title, DescribeReadableJsonFileState(read.Read))).ToArray()))
+            BuildChronicleOverviewDossier(reads)
         };
 
         foreach (var (title, read) in reads)
@@ -1809,6 +1808,56 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         }
 
         return Completed(command, blocks);
+    }
+
+    private static UiEntityDossierBlock BuildChronicleOverviewDossier(
+        IReadOnlyList<(string Title, JsonReadResult Read)> reads)
+    {
+        var cards = reads
+            .Select(static read =>
+            {
+                var status = DescribeReadableJsonFileState(read.Read);
+                return new UiEntityCard
+                {
+                    Title = read.Title,
+                    Subtitle = "Источник хроники",
+                    Summary = status,
+                    Icon = "book-open",
+                    Facts =
+                    [
+                        new UiEntityFact { Label = "Состояние", Value = status }
+                    ],
+                    Badges =
+                    [
+                        new UiEntityBadge
+                        {
+                            Label = status,
+                            Tone = read.Read.Node != null ? UiTone.Accent : read.Read.FileExists ? UiTone.Warning : UiTone.Muted,
+                            Icon = "book-open"
+                        }
+                    ]
+                };
+            })
+            .ToList();
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "chronicle-overview",
+            Title = "Хроника",
+            Summary = "Сводка доступных хроник и сюжетных записей.",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "chronicle-sources",
+                    Title = "Источники хроники",
+                    Icon = "book-open",
+                    Presentation = "cards",
+                    CollectionLabel = FormatStatusEntryCount(cards.Count),
+                    Cards = cards
+                }
+            ]
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildStory(string command, FileSystemManager fs)

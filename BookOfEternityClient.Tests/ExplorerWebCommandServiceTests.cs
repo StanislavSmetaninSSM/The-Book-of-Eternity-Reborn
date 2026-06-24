@@ -1848,6 +1848,12 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Выяснить, кто управляет рынком", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "panel" &&
+            dossier.Title == "Хроника");
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "chronicle-overview" &&
+            dossier.Title == "Хроника");
         foreach (var forbidden in new[] { "JSON:", "entryId", "eventType", "character_chronicle", "player_chronicle", "plot_outline", "game_state/", ".json" })
             Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
         AssertNoFlattenedStructuredDetails(result);
