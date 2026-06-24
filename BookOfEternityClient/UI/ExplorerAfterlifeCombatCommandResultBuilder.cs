@@ -1606,13 +1606,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            Panel("Духовные искусства",
-                Grid(
-                    ("Просветление", GetNumberOrString(combatProfile, "enlightenmentTier", "0")),
-                    ("Сияние", GetNumberOrString(combatProfile, "radianceTier", "0")),
-                    ("Средоточие Души", GetNumberOrString(combatProfile, "spiritFocusTier", "0")),
-                    ("Особых искусств игрока", (learnedSpecialArts?.Count ?? 0).ToString()),
-                    ("Режим браузера", "локальная прокачка доступна через форму")))
+            BuildSpiritualArtsOverviewDossier(combatProfile, learnedSpecialArts)
         };
 
         blocks.Add(BuildStandardSpiritualArtsDossier(standardArts));
@@ -1654,6 +1648,31 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 }
             ]);
     }
+
+    private static UiEntityDossierBlock BuildSpiritualArtsOverviewDossier(JsonObject? combatProfile, JsonArray? learnedSpecialArts) =>
+        new()
+        {
+            EntityType = "spiritual-arts-overview",
+            Title = "Духовные искусства",
+            Subtitle = "Прокачка и известные приёмы души",
+            Summary = "Здесь видно текущую духовную подготовку, обычные приёмы и особые искусства, которые уже открыты душе.",
+            Facts =
+            [
+                new UiEntityFact { Label = "Просветление", Value = $"{GetNumberOrString(combatProfile, "enlightenmentTier", "0")} ступень" },
+                new UiEntityFact { Label = "Сияние", Value = $"{GetNumberOrString(combatProfile, "radianceTier", "0")} ступень" },
+                new UiEntityFact { Label = "Средоточие Души", Value = $"{GetNumberOrString(combatProfile, "spiritFocusTier", "0")} ступень" },
+                new UiEntityFact { Label = "Особых искусств игрока", Value = (learnedSpecialArts?.Count ?? 0).ToString() }
+            ],
+            Hints =
+            [
+                new UiEntityHint
+                {
+                    Title = "Прокачка",
+                    Text = "Прокачка доступна через форму команды: выберите цель и валюту, затем подтвердите действие.",
+                    Tone = UiTone.Accent
+                }
+            ]
+        };
 
     private static UiEntityDossierBlock BuildStandardSpiritualArtsDossier(JsonObject? standardArts) =>
         new()

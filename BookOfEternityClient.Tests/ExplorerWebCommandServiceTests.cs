@@ -6030,6 +6030,30 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SpiritualArts_OverviewRendersDossierCardsWithoutLegacyPanels()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_arts"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static dossier => dossier.EntityType == "panel" || dossier.EntityType == "collection");
+
+        var overview = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "spiritual-arts-overview");
+
+        Assert.Equal("Духовные искусства", overview.Title);
+        Assert.Contains("Средоточие Души", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Зеркало Ночной Розы", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_SpiritualAction_SanitizesActiveCombatConditionRawJson()
     {
         await SeedUniversalMetaFilesAsync();
