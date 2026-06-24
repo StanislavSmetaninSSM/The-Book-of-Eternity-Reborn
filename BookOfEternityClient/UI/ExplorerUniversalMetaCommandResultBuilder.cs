@@ -1651,32 +1651,72 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         LocalizationManager loc)
     {
         var files = fs.GetAllGameStateFiles();
-        var rows = files
-            .OrderBy(static path => path, StringComparer.OrdinalIgnoreCase)
-            .Take(40)
-            .Select(path => new UiTableRow
+        var cards = files
+            .GroupBy(path => DescribeDebugStateGroup(ToRelativeGameSessionPath(fs, path)), StringComparer.OrdinalIgnoreCase)
+            .OrderBy(static group => group.Key, StringComparer.CurrentCultureIgnoreCase)
+            .Select(static group => new UiEntityCard
             {
-                Cells =
-                [
-                    ToRelativeGameSessionPath(fs, path),
-                    SafeFileLength(path).ToString()
-                ]
+                Title = group.Key,
+                Summary = group.Count() == 1 ? "1 файл состояния" : $"{group.Count()} файлов состояния",
+                Icon = "file-text"
             })
             .ToList();
 
         return Completed(command,
-            Panel(loc.T("debug_info"),
-                Grid(
-                    ("Файлов состояния", files.Length.ToString()),
-                    ("Сессия", EmptyFallback(stateManager.CurrentState.SessionId)),
-                    ("Язык", loc.CurrentLanguage),
-                    ("BasePath", fs.BasePath))),
-            new UiTableBlock
+            new UiEntityDossierBlock
             {
-                Title = "Файлы состояния",
-                Columns = ["Путь", "Байт"],
-                Rows = rows
+                EntityType = "debug-summary",
+                Title = loc.T("debug_info"),
+                Summary = "Краткая диагностика состояния без раскрытия локальных путей и файловых контрактов.",
+                Facts =
+                [
+                    new UiEntityFact { Label = "Файлов состояния", Value = files.Length.ToString() },
+                    new UiEntityFact { Label = "Сессия", Value = EmptyFallback(stateManager.CurrentState.SessionId) },
+                    new UiEntityFact { Label = "Язык", Value = loc.CurrentLanguage }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "debug-state-groups",
+                        Title = "Разделы состояния",
+                        Icon = "folder",
+                        Presentation = "collection",
+                        CollectionLabel = cards.Count == 1 ? "1 раздел" : $"{cards.Count} разделов",
+                        Cards = cards
+                    }
+                ]
             });
+    }
+
+    private static string DescribeDebugStateGroup(string relativePath)
+    {
+        var normalized = relativePath.Replace('\\', '/');
+        if (normalized.StartsWith("game_state/core/", StringComparison.OrdinalIgnoreCase))
+            return "Основное состояние";
+        if (normalized.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase))
+            return "Персонажи";
+        if (normalized.StartsWith("game_state/player/", StringComparison.OrdinalIgnoreCase))
+            return "Герой";
+        if (normalized.StartsWith("game_state/inventory/", StringComparison.OrdinalIgnoreCase))
+            return "Инвентарь";
+        if (normalized.StartsWith("game_state/quests/", StringComparison.OrdinalIgnoreCase))
+            return "Квесты и сюжет";
+        if (normalized.StartsWith("game_state/meta/", StringComparison.OrdinalIgnoreCase))
+            return "Мета-состояние";
+        if (normalized.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase))
+            return "Фракции";
+        if (normalized.StartsWith("game_state/locations/", StringComparison.OrdinalIgnoreCase))
+            return "Локации";
+        if (normalized.StartsWith("game_state/combat/", StringComparison.OrdinalIgnoreCase))
+            return "Бой";
+        if (normalized.StartsWith("output/", StringComparison.OrdinalIgnoreCase))
+            return "Вывод ГМ";
+        if (normalized.StartsWith("lore/", StringComparison.OrdinalIgnoreCase))
+            return "Лор и архив";
+        if (normalized.StartsWith("stories/", StringComparison.OrdinalIgnoreCase))
+            return "Истории";
+        return "Прочие данные";
     }
 
     private static ExplorerCommandResult BuildDirectoryList(string command, FileSystemManager fs, string title, string relativePath)

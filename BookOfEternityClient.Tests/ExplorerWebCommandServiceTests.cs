@@ -215,6 +215,27 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("internalCode", payload, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_Debug_RendersStateSummaryWithoutLocalPaths()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/core/player_status.json", "{}");
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", "{}");
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/debug", AdvancedEnabled: false));
+
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Файлов состояния", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сессия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Основное состояние", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Персонажи", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        foreach (var forbidden in new[] { "BasePath", _rootPath, "game_state/", "output/", ".json", "Путь" })
+            Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/квесты", "Печать с крыльями")]
     [InlineData("/навыки", "Чувство магических потоков")]
