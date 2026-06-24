@@ -978,15 +978,6 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         if (matchedRequestedItem != null)
             candidates = [matchedRequestedItem];
 
-        var rows = candidates
-            .Select(static item => Row(
-                item.Name,
-                FirstNonEmpty(item.Type, "тип не указан"),
-                string.IsNullOrWhiteSpace(item.ResolvedSlot)
-                    ? "выберите слот"
-                    : InventoryEquipmentService.FormatSlotName(item.ResolvedSlot)))
-            .ToList();
-
         var statusText = candidates.Count == 0
             ? "В рюкзаке нет обычных предметов, которые можно экипировать."
             : "Выберите предмет, слот и подтвердите экипировку. Запись выполняется локально после проверки хода и блокировки интерфейса.";
@@ -994,24 +985,15 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
-            {
-                Title = "Экипировка предмета",
-                Blocks =
-                [
-                    new UiTextBlock
-                    {
-                        Text = statusText,
-                        Tone = candidates.Count == 0 ? UiTone.Muted : UiTone.Accent
-                    },
-                    new UiTableBlock
-                    {
-                        Title = "Доступные предметы",
-                        Columns = ["Предмет", "Тип", "Слот"],
-                        Rows = rows
-                    }
-                ]
-            }
+            BuildInventoryActionDossier(
+                "inventory-equip",
+                "Экипировка предмета",
+                statusText,
+                "inventory-equip-candidates",
+                "Доступные предметы",
+                candidates.Count == 1 ? "1 предмет" : $"{candidates.Count} предметов",
+                candidates.Select(static item => BuildInventoryEquipmentCandidateCard(item)).ToList(),
+                candidates.Count == 0 ? UiTone.Muted : UiTone.Accent)
         };
 
         if (candidates.Count == 0)
@@ -1077,33 +1059,20 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 equipped = [matched];
         }
 
-        var rows = equipped
-            .Select(static item => Row(item.SlotLabel, item.ItemName))
-            .ToList();
-
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
-            {
-                Title = "Снятие предмета",
-                Blocks =
-                [
-                    new UiTextBlock
-                    {
-                        Text = equipped.Count == 0
-                            ? "Обычные экипированные предметы не найдены."
-                            : "Выберите слот и подтвердите снятие предмета в рюкзак.",
-                        Tone = equipped.Count == 0 ? UiTone.Muted : UiTone.Accent
-                    },
-                    new UiTableBlock
-                    {
-                        Title = "Экипировано",
-                        Columns = ["Слот", "Предмет"],
-                        Rows = rows
-                    }
-                ]
-            }
+            BuildInventoryActionDossier(
+                "inventory-unequip",
+                "Снятие предмета",
+                equipped.Count == 0
+                    ? "Обычные экипированные предметы не найдены."
+                    : "Выберите слот и подтвердите снятие предмета в рюкзак.",
+                "inventory-equipped-items",
+                "Экипировано",
+                equipped.Count == 1 ? "1 предмет" : $"{equipped.Count} предметов",
+                equipped.Select(static item => BuildEquippedInventoryCard(item)).ToList(),
+                equipped.Count == 0 ? UiTone.Muted : UiTone.Accent)
         };
 
         if (equipped.Count == 0)
@@ -1155,26 +1124,15 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
-            {
-                Title = "Выброс предмета",
-                Blocks =
-                [
-                    new UiTextBlock
-                    {
-                        Text = BuildInventoryDropStatusText(candidates.Count, requestedItem),
-                        Tone = candidates.Count == 0 ? UiTone.Muted : UiTone.Accent
-                    },
-                    new UiTableBlock
-                    {
-                        Title = "Доступные предметы",
-                        Columns = ["Предмет", "Количество", "Состояние"],
-                        Rows = candidates
-                            .Select(static item => Row(item.Name, FormatInventoryCount(item), FormatInventoryPlacement(item)))
-                            .ToList()
-                    }
-                ]
-            }
+            BuildInventoryActionDossier(
+                "inventory-drop",
+                "Выброс предмета",
+                BuildInventoryDropStatusText(candidates.Count, requestedItem),
+                "inventory-drop-candidates",
+                "Доступные предметы",
+                candidates.Count == 1 ? "1 предмет" : $"{candidates.Count} предметов",
+                candidates.Select(static item => BuildInventoryManagementCard(item)).ToList(),
+                candidates.Count == 0 ? UiTone.Muted : UiTone.Accent)
         };
 
         if (candidates.Count == 0)
@@ -1224,26 +1182,20 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
-            {
-                Title = "Разделение стопки",
-                Blocks =
-                [
-                    new UiTextBlock
-                    {
-                        Text = BuildInventorySplitStatusText(candidates.Count, matchedRequestedItem, requestedItem),
-                        Tone = candidates.Count == 0 ? UiTone.Muted : UiTone.Accent
-                    },
-                    new UiTableBlock
-                    {
-                        Title = "Стопки для разделения",
-                        Columns = ["Предмет", "Количество", "Можно отделить"],
-                        Rows = candidates
-                            .Select(static item => Row(item.Name, item.Count.ToString(), $"1-{item.Count - 1}"))
-                            .ToList()
-                    }
-                ]
-            }
+            BuildInventoryActionDossier(
+                "inventory-split",
+                "Разделение стопки",
+                BuildInventorySplitStatusText(candidates.Count, matchedRequestedItem, requestedItem),
+                "inventory-split-candidates",
+                "Стопки для разделения",
+                candidates.Count == 1 ? "1 стопка" : $"{candidates.Count} стопок",
+                candidates
+                    .Select(static item => BuildInventoryManagementCard(
+                        item,
+                        "Стопка",
+                        [new UiEntityFact { Label = "Можно отделить", Value = $"1-{item.Count - 1}" }]))
+                    .ToList(),
+                candidates.Count == 0 ? UiTone.Muted : UiTone.Accent)
         };
 
         if (candidates.Count == 0)
@@ -1313,32 +1265,17 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
-            {
-                Title = "Объединение стопок",
-                Blocks =
-                [
-                    new UiTextBlock
-                    {
-                        Text = BuildInventoryMergeStatusText(candidates.Count, matchedRequestedItem, requestedItem),
-                        Tone = candidates.Count == 0 ? UiTone.Muted : UiTone.Accent
-                    },
-                    new UiTableBlock
-                    {
-                        Title = "Совместимые стопки",
-                        Columns = ["Предмет", "Стопок", "Итог"],
-                        Rows = inventory == null
-                            ? []
-                            : candidates
-                                .Select(item =>
-                                {
-                                    var compatible = InventoryManagementService.FindCompatibleStacks(inventory, item);
-                                    return Row(item.Name, compatible.Count.ToString(), compatible.Sum(static match => match.Count).ToString());
-                                })
-                                .ToList()
-                    }
-                ]
-            }
+            BuildInventoryActionDossier(
+                "inventory-merge",
+                "Объединение стопок",
+                BuildInventoryMergeStatusText(candidates.Count, matchedRequestedItem, requestedItem),
+                "inventory-merge-candidates",
+                "Совместимые стопки",
+                candidates.Count == 1 ? "1 группа стопок" : $"{candidates.Count} групп стопок",
+                inventory == null
+                    ? []
+                    : candidates.Select(item => BuildInventoryMergeCard(inventory, item)).ToList(),
+                candidates.Count == 0 ? UiTone.Muted : UiTone.Accent)
         };
 
         if (candidates.Count == 0)
@@ -1659,12 +1596,58 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
     }
 
     private static string FormatInventoryCount(InventoryManagementItem item) =>
-        item.Count == 1 ? "1 шт." : $"{item.Count} шт.";
+        FormatInventoryCount(item.Count);
+
+    private static string FormatInventoryCount(int count) =>
+        count == 1 ? "1 шт." : $"{count} шт.";
 
     private static string FormatInventoryPlacement(InventoryManagementItem item) =>
         string.IsNullOrWhiteSpace(item.EquippedSlot)
             ? "В рюкзаке"
             : $"Экипирован: {InventoryEquipmentService.FormatSlotName(item.EquippedSlot)}";
+
+    private static void AddInventoryFactIfKnown(List<UiEntityFact> facts, string label, string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        facts.Add(new UiEntityFact { Label = label, Value = value.Trim() });
+    }
+
+    private static string FormatInventoryDurability(JsonObject item)
+    {
+        var durability = GetString(item, "durability");
+        if (string.IsNullOrWhiteSpace(durability))
+            return string.Empty;
+
+        var maxDurability = GetString(item, "maxDurability");
+        return string.IsNullOrWhiteSpace(maxDurability)
+            ? durability
+            : $"{durability}/{maxDurability}";
+    }
+
+    private static string FormatInventoryItemTypeForPlayer(string? itemType)
+    {
+        if (string.IsNullOrWhiteSpace(itemType))
+            return string.Empty;
+
+        return itemType.Trim().ToLowerInvariant() switch
+        {
+            "weapon" => "оружие",
+            "helmet" or "head" => "шлем",
+            "armor" or "chest" => "доспех",
+            "boots" or "feet" => "обувь",
+            "gloves" or "hands" => "перчатки",
+            "ring" or "ring1" or "ring2" => "кольцо",
+            "amulet" or "neck" => "амулет",
+            "utility" => "полезный предмет",
+            "consumable" => "расходуемый предмет",
+            "document" => "документ",
+            "book" => "книга",
+            "soul_relic" or "soulrelic" => "реликвия души",
+            _ => itemType.Trim()
+        };
+    }
 
     private static async Task<ExplorerCommandResult> BuildNpcTalkAsync(string command, FileSystemManager fs)
     {
@@ -3069,6 +3052,121 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     MinLines = 2,
                     MaxLines = 6
                 }
+            ]);
+    }
+
+    private static UiEntityDossierBlock BuildInventoryActionDossier(
+        string entityType,
+        string title,
+        string summary,
+        string sectionId,
+        string sectionTitle,
+        string collectionLabel,
+        List<UiEntityCard> cards,
+        UiTone summaryTone) =>
+        new()
+        {
+            EntityType = entityType,
+            Title = title,
+            Summary = summary,
+            Hints =
+            [
+                new UiEntityHint
+                {
+                    Title = "Что произойдёт",
+                    Text = summary,
+                    Tone = summaryTone
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = sectionId,
+                    Title = sectionTitle,
+                    Icon = "package",
+                    Presentation = "cards",
+                    CollectionLabel = collectionLabel,
+                    Cards = cards
+                }
+            ]
+        };
+
+    private static UiEntityCard BuildInventoryEquipmentCandidateCard(InventoryEquipmentItem item)
+    {
+        var slot = string.IsNullOrWhiteSpace(item.ResolvedSlot)
+            ? "нужно выбрать вручную"
+            : InventoryEquipmentService.FormatSlotName(item.ResolvedSlot);
+        var facts = new List<UiEntityFact>
+        {
+            new() { Label = "Тип", Value = FormatInventoryItemTypeForPlayer(item.Type) },
+            new() { Label = "Слот", Value = slot },
+            new() { Label = "Состояние", Value = item.IsBroken ? "повреждён" : "можно экипировать" }
+        };
+
+        return new UiEntityCard
+        {
+            Title = item.Name,
+            Subtitle = "Предмет для экипировки",
+            Summary = string.IsNullOrWhiteSpace(item.ResolvedSlot)
+                ? "Предмет можно экипировать, но подходящий слот нужно выбрать вручную."
+                : $"Предмет можно экипировать в слот: {slot}.",
+            Icon = "package",
+            Facts = facts
+        };
+    }
+
+    private static UiEntityCard BuildEquippedInventoryCard(EquippedInventoryItem item) =>
+        new()
+        {
+            Title = item.ItemName,
+            Subtitle = item.SlotLabel,
+            Summary = $"Предмет сейчас занимает слот: {item.SlotLabel}.",
+            Icon = "package",
+            Facts =
+            [
+                new UiEntityFact { Label = "Слот", Value = item.SlotLabel },
+                new UiEntityFact { Label = "Действие", Value = "снять в рюкзак" }
+            ]
+        };
+
+    private static UiEntityCard BuildInventoryManagementCard(
+        InventoryManagementItem item,
+        string subtitle = "Предмет",
+        IReadOnlyList<UiEntityFact>? extraFacts = null)
+    {
+        var facts = new List<UiEntityFact>
+        {
+            new() { Label = "Количество", Value = FormatInventoryCount(item) },
+            new() { Label = "Где находится", Value = FormatInventoryPlacement(item) }
+        };
+        AddInventoryFactIfKnown(facts, "Тип", FormatInventoryItemTypeForPlayer(GetString(item.Data, "type")));
+        AddInventoryFactIfKnown(facts, "Качество", FormatRarityForPlayer(GetString(item.Data, "quality"), string.Empty));
+        AddInventoryFactIfKnown(facts, "Прочность", FormatInventoryDurability(item.Data));
+        if (extraFacts != null)
+            facts.AddRange(extraFacts);
+
+        return new UiEntityCard
+        {
+            Title = item.Name,
+            Subtitle = subtitle,
+            Summary = $"{FormatInventoryCount(item)}. {FormatInventoryPlacement(item)}.",
+            Icon = "package",
+            Facts = facts
+        };
+    }
+
+    private static UiEntityCard BuildInventoryMergeCard(
+        InventoryManagementContext inventory,
+        InventoryManagementItem item)
+    {
+        var compatible = InventoryManagementService.FindCompatibleStacks(inventory, item);
+        return BuildInventoryManagementCard(
+            item,
+            "Группа совместимых стопок",
+            [
+                new UiEntityFact { Label = "Совместимых стопок", Value = compatible.Count.ToString() },
+                new UiEntityFact { Label = "После объединения", Value = FormatInventoryCount(compatible.Sum(static match => match.Count)) }
             ]);
     }
 

@@ -3879,6 +3879,38 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("game_state/control", blockText, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Theory]
+    [InlineData("/экипировать sword_1", "inventory-equip", "Экипировка предмета", "Кривой меч")]
+    [InlineData("/снять head", "inventory-unequip", "Снятие предмета", "Железный шлем")]
+    [InlineData("/выбросить_предмет torch_1", "inventory-drop", "Выброс предмета", "Факел")]
+    [InlineData("/разделить_стопку torch_1", "inventory-split", "Разделение стопки", "Факел")]
+    [InlineData("/объединить_стопки torch_1", "inventory-merge", "Объединение стопок", "Факел")]
+    public async Task ExecuteAsync_InventoryActionPrompts_RenderDossierCardsInsteadOfTables(
+        string command,
+        string expectedEntityType,
+        string expectedTitle,
+        string expectedItemName)
+    {
+        await SeedInventoryEquipmentItemsAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            command,
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), block =>
+            block.EntityType == expectedEntityType &&
+            block.Title == expectedTitle);
+        Assert.Contains(dossier.Sections, static section =>
+            section.Presentation == "cards" &&
+            section.Cards.Count > 0);
+        Assert.Contains(expectedItemName, CollectBlockText([dossier]), StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public async Task SubmitPromptSessionAsync_InventoryEquip_WritesEquipmentAndReleasesLock()
     {
@@ -8124,6 +8156,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             { "existedId": "sword_1", "name": "Кривой меч", "type": "weapon", "durability": "100%" },
             { "existedId": "helmet_1", "name": "Железный шлем", "type": "helmet", "durability": "100%" },
             { "existedId": "torch_1", "name": "Факел", "type": "utility", "count": 2 },
+            { "existedId": "torch_2", "name": "Факел", "type": "utility", "count": 3 },
             { "existedId": "broken_bow_1", "name": "Сломанный лук", "type": "weapon", "durability": "0%" },
             { "relicId": "soul_relic_1", "name": "Реликвия души", "type": "soul_relic", "equipmentSlot": "ring1" }
           ]
