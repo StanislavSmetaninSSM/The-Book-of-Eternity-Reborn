@@ -3508,27 +3508,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
-            {
-                Title = "Открыть Судьбу",
-                Blocks =
-                [
-                    new UiTextBlock
-                    {
-                        Text = $"Раскрытие покажет предстоящие кубики и базу судьбы. Стоимость: {cost} Чернильных Перьев; после списания останется {remaining}.",
-                        Tone = UiTone.Accent
-                    },
-                    new UiKeyValueGridBlock
-                    {
-                        Items =
-                        [
-                            KeyValue("Доступно Перьев", availableFeathers.ToString()),
-                            KeyValue("Стоимость", $"{cost} Чернильных Перьев"),
-                            KeyValue("После списания", remaining.ToString())
-                        ]
-                    }
-                ]
-            }
+            BuildFateRevealDossier(availableFeathers, cost, remaining)
         };
 
         return Result(
@@ -3616,31 +3596,12 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         }
 
         var remaining = availableFeathers - cost;
+        var dice = FormatDiceUsed(pending.PreGeneratedDices1d20);
+        var gacha = FormatGachaBaseSummary(pending.GachaBaseResult);
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
-            {
-                Title = "Переписать Судьбу",
-                Blocks =
-                [
-                    new UiTextBlock
-                    {
-                        Text = $"Переписывание заменит текущие кости судьбы и Гача-базу новым открытым набором. Стоимость: {cost} Чернильных Перьев; после списания останется {remaining}.",
-                        Tone = UiTone.Warning
-                    },
-                    new UiKeyValueGridBlock
-                    {
-                        Items =
-                        [
-                            KeyValue("Текущие кубики", FormatDiceUsed(pending.PreGeneratedDices1d20)),
-                            KeyValue("Гача-база", FormatGachaBaseSummary(pending.GachaBaseResult)),
-                            KeyValue("Стоимость", $"{cost} Чернильных Перьев"),
-                            KeyValue("После списания", remaining.ToString())
-                        ]
-                    }
-                ]
-            }
+            BuildFateRewriteDossier(dice, gacha, availableFeathers, cost, remaining)
         };
 
         return Result(
@@ -3657,6 +3618,154 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     DefaultValue = false
                 }
             ]);
+    }
+
+    private static UiEntityDossierBlock BuildFateRevealDossier(
+        int availableFeathers,
+        int cost,
+        int remaining)
+    {
+        var summary = $"Раскрытие покажет предстоящие кубики и базу судьбы. Стоимость: {cost} Чернильных Перьев; после списания останется {remaining}.";
+        return new UiEntityDossierBlock
+        {
+            EntityType = "fate-reveal",
+            Title = "Открыть Судьбу",
+            Summary = summary,
+            Facts =
+            [
+                new UiEntityFact { Label = "Доступно Перьев", Value = availableFeathers.ToString() },
+                new UiEntityFact { Label = "Стоимость", Value = $"{cost} Чернильных Перьев" },
+                new UiEntityFact { Label = "После списания", Value = remaining.ToString() }
+            ],
+            Hints =
+            [
+                new UiEntityHint
+                {
+                    Title = "Что откроется",
+                    Text = summary,
+                    Tone = UiTone.Accent
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "fate-reveal-cost",
+                    Title = "Цена раскрытия",
+                    Icon = "sparkles",
+                    Presentation = "cards",
+                    CollectionLabel = "1 расчёт",
+                    Cards =
+                    [
+                        new UiEntityCard
+                        {
+                            Title = "Расход Чернильных Перьев",
+                            Subtitle = "Перед подтверждением",
+                            Summary = $"Будет списано {cost} Чернильных Перьев, останется {remaining}.",
+                            Icon = "sparkles",
+                            Facts =
+                            [
+                                new UiEntityFact { Label = "Сейчас", Value = availableFeathers.ToString() },
+                                new UiEntityFact { Label = "Списать", Value = $"{cost} Чернильных Перьев" },
+                                new UiEntityFact { Label = "Останется", Value = remaining.ToString() }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+    }
+
+    private static UiEntityDossierBlock BuildFateRewriteDossier(
+        string dice,
+        string gacha,
+        int availableFeathers,
+        int cost,
+        int remaining)
+    {
+        var summary = $"Переписывание заменит текущие кости судьбы и Гача-базу новым открытым набором. Стоимость: {cost} Чернильных Перьев; после списания останется {remaining}.";
+        return new UiEntityDossierBlock
+        {
+            EntityType = "fate-rewrite",
+            Title = "Переписать Судьбу",
+            Summary = summary,
+            Facts =
+            [
+                new UiEntityFact { Label = "Текущие кубики", Value = dice },
+                new UiEntityFact { Label = "Гача-база", Value = gacha },
+                new UiEntityFact { Label = "Стоимость", Value = $"{cost} Чернильных Перьев" },
+                new UiEntityFact { Label = "После списания", Value = remaining.ToString() }
+            ],
+            Hints =
+            [
+                new UiEntityHint
+                {
+                    Title = "Что изменится",
+                    Text = summary,
+                    Tone = UiTone.Warning
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "fate-rewrite-current",
+                    Title = "Текущая открытая судьба",
+                    Icon = "dice",
+                    Presentation = "cards",
+                    CollectionLabel = "2 значения",
+                    Cards =
+                    [
+                        new UiEntityCard
+                        {
+                            Title = "Кубики судьбы",
+                            Subtitle = "Будут заменены",
+                            Summary = dice,
+                            Icon = "dice",
+                            Facts =
+                            [
+                                new UiEntityFact { Label = "Текущие кубики", Value = dice }
+                            ]
+                        },
+                        new UiEntityCard
+                        {
+                            Title = "Гача-база",
+                            Subtitle = "Будет заменена",
+                            Summary = gacha,
+                            Icon = "sparkles",
+                            Facts =
+                            [
+                                new UiEntityFact { Label = "Текущая база", Value = gacha }
+                            ]
+                        }
+                    ]
+                },
+                new UiEntityDossierSection
+                {
+                    Id = "fate-rewrite-cost",
+                    Title = "Цена переписывания",
+                    Icon = "sparkles",
+                    Presentation = "cards",
+                    CollectionLabel = "1 расчёт",
+                    Cards =
+                    [
+                        new UiEntityCard
+                        {
+                            Title = "Расход Чернильных Перьев",
+                            Subtitle = "Перед подтверждением",
+                            Summary = $"Будет списано {cost} Чернильных Перьев, останется {remaining}.",
+                            Icon = "sparkles",
+                            Facts =
+                            [
+                                new UiEntityFact { Label = "Сейчас", Value = availableFeathers.ToString() },
+                                new UiEntityFact { Label = "Списать", Value = $"{cost} Чернильных Перьев" },
+                                new UiEntityFact { Label = "Останется", Value = remaining.ToString() }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildGachaAsync(

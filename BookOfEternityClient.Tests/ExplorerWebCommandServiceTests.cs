@@ -3682,6 +3682,64 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_FateActionPrompts_RenderDossierCardsInsteadOfKeyValuePanels()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Mortal World",
+          "inkFeathers": {
+            "current": 80,
+            "total": 120
+          }
+        }
+        """);
+
+        var reveal = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/reveal_fate"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, reveal.State);
+        Assert.Empty(reveal.Blocks.SelectMany(EnumerateKeyValueGrids));
+        Assert.Empty(reveal.Blocks.SelectMany(EnumerateTables));
+        var revealDossier = Assert.Single(reveal.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "fate-reveal" &&
+            block.Title == "Открыть Судьбу");
+        var revealText = CollectBlockText([revealDossier]);
+        Assert.Contains("8 Чернильных Перьев", revealText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("72", revealText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(reveal.Prompts, static prompt => prompt.Id == "confirm_ink_feather_fate_reveal");
+
+        await _fs.WriteFileAtomicAsync(PendingTurnStateService.PendingDiceStatePath, """
+        {
+          "preGeneratedDices1d20": [4, 9, 16, 2, 5, 8, 11, 14, 17, 20, 1, 3, 6, 7, 10, 12, 13, 15, 18, 19],
+          "gachaBaseResult": {
+            "diceUsed": [11, 12, 13],
+            "baseScore": 44,
+            "baseRarity": "Rare",
+            "formula": "client-computed gacha base (range 4-80)"
+          },
+          "isFateLocked": true,
+          "createdAtUtc": "2026-06-02T00:00:00Z",
+          "lastUpdatedUtc": "2026-06-02T00:00:00Z"
+        }
+        """);
+
+        var rewrite = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/rewrite_fate"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, rewrite.State);
+        Assert.Empty(rewrite.Blocks.SelectMany(EnumerateKeyValueGrids));
+        Assert.Empty(rewrite.Blocks.SelectMany(EnumerateTables));
+        var rewriteDossier = Assert.Single(rewrite.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "fate-rewrite" &&
+            block.Title == "Переписать Судьбу");
+        var rewriteText = CollectBlockText([rewriteDossier]);
+        Assert.Contains("[4, 9, 16", rewriteText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("редкая (44)", rewriteText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("20 Чернильных Перьев", rewriteText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("60", rewriteText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Rare", rewriteText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(rewrite.Prompts, static prompt => prompt.Id == "confirm_ink_feather_fate_rewrite");
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Inventory_AddsEquipAndUnequipActionsForOrdinaryItems()
     {
         await SeedInventoryEquipmentItemsAsync();
@@ -8816,6 +8874,31 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             foreach (var child in panel.Blocks)
             foreach (var childTable in EnumerateTables(child))
                 yield return childTable;
+        }
+    }
+
+    private static IEnumerable<UiKeyValueGridBlock> EnumerateKeyValueGrids(UiBlock block)
+    {
+        if (block is UiKeyValueGridBlock grid)
+        {
+            yield return grid;
+            yield break;
+        }
+
+        if (block is UiEntityDossierBlock dossier)
+        {
+            foreach (var section in dossier.Sections)
+            foreach (var child in section.Blocks)
+            foreach (var childGrid in EnumerateKeyValueGrids(child))
+                yield return childGrid;
+            yield break;
+        }
+
+        if (block is UiPanelBlock panel)
+        {
+            foreach (var child in panel.Blocks)
+            foreach (var childGrid in EnumerateKeyValueGrids(child))
+                yield return childGrid;
         }
     }
 
