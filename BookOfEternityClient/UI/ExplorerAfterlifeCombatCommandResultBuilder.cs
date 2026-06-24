@@ -1044,32 +1044,64 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     }
 
     private static ExplorerCommandResult BuildHelp(string command) =>
-        Completed(command,
-            Panel("Духовный бой",
-                new UiListBlock
+        Completed(command, BuildSpiritualCombatHelpDossier());
+
+    private static UiEntityDossierBlock BuildSpiritualCombatHelpDossier() =>
+        new()
+        {
+            EntityType = "spiritual-combat-help",
+            Title = "Духовный бой",
+            Subtitle = "Правила посмертных противостояний",
+            Summary = "Духовный бой использует позицию, напряжение, контроль, оковы и очки действий вместо смертного здоровья и энергии.",
+            Hints =
+            [
+                new UiEntityHint
                 {
-                    Items =
-                    [
-                        "Духовный бой посмертия не использует здоровье, энергию и смертные боевые навыки.",
-                        "Спорные обмены используют d20, модификаторы, позицию, контроль/оковы и аудит кубиков.",
-                        "Давление ухудшает напряжение противника; защита снижает входящий вред; контрприём разворачивает конкретное входящее действие.",
-                        "Манёвр меняет позицию и будущие бонусы; оковы создают контроль; разрыв оков снимает или ослабляет контроль.",
-                        "Собрать Средоточие восстанавливает ОД, но опасно против давления, манёвра, оков и принудительного воплощения.",
-                        "Критическая 20 и критическая 1 симметричны и ограничиваются масштабом сцены.",
-                        "Победа в проверяемом конфликте может дать Чернильные Перья в Море Хаоса или Искры Света в Сияющей Обители."
-                    ]
-                }),
-            new UiTableBlock
-            {
-                Title = "Духовные искусства и контрприёмы",
-                Columns = ["Искусство", "Игровой смысл", "Сильнее против", "Его контрит"],
-                Rows = AfterlifeSpiritualConflictState.SpiritualArts
-                    .Select(art => new UiTableRow
-                    {
-                        Cells = [DescribeArt(art.ArtId), art.MechanicalUse, DescribeStrongAgainst(art.ArtId), DescribeCounteredBy(art.ArtId)]
-                    })
-                    .ToList()
-            });
+                    Title = "Главное отличие",
+                    Text = "Духовный бой посмертия не использует здоровье, энергию и смертные боевые навыки.",
+                    Tone = UiTone.Default
+                },
+                new UiEntityHint
+                {
+                    Title = "Проверки",
+                    Text = "Спорные обмены используют d20, модификаторы, позицию, контроль и оковы.",
+                    Tone = UiTone.Default
+                },
+                new UiEntityHint
+                {
+                    Title = "Награды",
+                    Text = "Победа в проверяемом конфликте может дать Чернильные Перья в Море Хаоса или Искры Света в Сияющей Обители.",
+                    Tone = UiTone.Accent
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "spiritual-combat-help-arts",
+                    Title = "Духовные искусства и контрприёмы",
+                    Summary = "Базовые действия духовного боя и то, как они перекрывают друг друга.",
+                    Icon = "sparkles",
+                    Presentation = "cards",
+                    CollectionLabel = $"{AfterlifeSpiritualConflictState.SpiritualArts.Count} искусств",
+                    Cards = AfterlifeSpiritualConflictState.SpiritualArts
+                        .Select(static art => new UiEntityCard
+                        {
+                            Title = DescribeArt(art.ArtId),
+                            Subtitle = "духовное искусство",
+                            Icon = "sparkles",
+                            Summary = art.MechanicalUse,
+                            Facts =
+                            [
+                                new UiEntityFact { Label = "Игровой смысл", Value = art.MechanicalUse },
+                                new UiEntityFact { Label = "Сильнее против", Value = DescribeStrongAgainst(art.ArtId) },
+                                new UiEntityFact { Label = "Чем перекрывается", Value = DescribeCounteredBy(art.ArtId) }
+                            ]
+                        })
+                        .ToList()
+                }
+            ]
+        };
 
     private static async Task<ExplorerCommandResult> BuildArts(
         CommandRequest request,
