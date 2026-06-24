@@ -13,6 +13,7 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             ["Mortal Realm"] = "Смертный мир",
             ["Chaos Sea"] = "Море Хаоса",
             ["Shining Abode"] = "Сияющая Обитель",
+            ["Month of Beginnings"] = "Месяц Начал",
             ["Common"] = "обычное",
             ["Uncommon"] = "необычное",
             ["Rare"] = "редкое",
@@ -55,6 +56,7 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             ["position"] = "позиция",
             ["mark"] = "метка",
             ["won"] = "победа",
+            ["rising"] = "нарастает",
             ["Counter"] = "контрприём",
             ["KnowledgeBased"] = "основан на знаниях",
             ["Memory"] = "память",
@@ -342,6 +344,8 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             }
         }
 
+        RemoveSummaryDuplicateGenericFacts(facts, summary);
+
         return new UiEntityCard
         {
             Title = SanitizePlayerFacingValue(dossier.Title),
@@ -558,7 +562,7 @@ internal static class BrowserEntityDossierPrototypeNormalizer
     {
         key = string.Empty;
         pairValue = string.Empty;
-        var separator = value.IndexOf(':', StringComparison.Ordinal);
+        var separator = FindStructuredDetailSeparator(value);
         if (separator <= 0 || separator >= value.Length - 1)
             return false;
 
@@ -576,6 +580,24 @@ internal static class BrowserEntityDossierPrototypeNormalizer
         key = candidateKey;
         pairValue = candidateValue;
         return true;
+    }
+
+    private static int FindStructuredDetailSeparator(string value)
+    {
+        for (var index = 0; index < value.Length; index++)
+        {
+            if (value[index] != ':')
+                continue;
+
+            var previousIsDigit = index > 0 && char.IsDigit(value[index - 1]);
+            var nextIsDigit = index + 1 < value.Length && char.IsDigit(value[index + 1]);
+            if (previousIsDigit && nextIsDigit)
+                continue;
+
+            return index;
+        }
+
+        return -1;
     }
 
     private static bool LooksLikeStructuredDetailValue(string value)
@@ -879,15 +901,19 @@ internal static class BrowserEntityDossierPrototypeNormalizer
 
     private static UiEntityCard NormalizeCard(UiEntityCard card)
     {
+        var summary = SanitizePlayerFacingValue(card.Summary);
+        var facts = CloneFacts(card.Facts);
+        RemoveSummaryDuplicateGenericFacts(facts, summary);
+
         return new UiEntityCard
         {
             Title = SanitizePlayerFacingValue(card.Title),
             Subtitle = SanitizePlayerFacingValue(card.Subtitle),
-            Summary = SanitizePlayerFacingValue(card.Summary),
+            Summary = summary,
             Icon = card.Icon,
             Badges = CloneBadges(card.Badges),
             Media = card.Media,
-            Facts = CloneFacts(card.Facts),
+            Facts = facts,
             Metrics = CloneMetrics(card.Metrics),
             Hints = CloneHints(card.Hints),
             List = CloneList(card.List),
@@ -895,6 +921,16 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             Cards = card.Cards.Select(NormalizeCard).ToList(),
             PrimaryAction = CloneAction(card.PrimaryAction)
         };
+    }
+
+    private static void RemoveSummaryDuplicateGenericFacts(List<UiEntityFact> facts, string summary)
+    {
+        if (string.IsNullOrWhiteSpace(summary))
+            return;
+
+        facts.RemoveAll(fact =>
+            IsGenericDetailKey(fact.Label) &&
+            string.Equals(fact.Value?.Trim(), summary.Trim(), StringComparison.OrdinalIgnoreCase));
     }
 
     private static UiAction? CloneAction(UiAction? action)
@@ -1185,6 +1221,9 @@ internal static class BrowserEntityDossierPrototypeNormalizer
         }
 
         if (HasCyrillic(trimmed))
+            return false;
+
+        if (Regex.IsMatch(trimmed, @"^[+-]?\d+(?:[.,]\d+)?%?$", RegexOptions.CultureInvariant))
             return false;
 
         if (Regex.IsMatch(trimmed, @"^\d+\s*[-–—]\s*\d+$", RegexOptions.CultureInvariant))

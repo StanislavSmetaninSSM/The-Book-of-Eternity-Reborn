@@ -1560,7 +1560,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Купеческая гильдия", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Карманники у ворот", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("выследить владельца рунической перчатки", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Month of Beginnings", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Месяц Начал", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Month of Beginnings", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("08:15", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Сырой туман ещё держится у ворот", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
@@ -1612,7 +1613,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var payload = SerializeResult(result);
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        Assert.Contains("Month of Beginnings", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Месяц Начал", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Month of Beginnings", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("08:15", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("каменный город", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("туман", text, StringComparison.OrdinalIgnoreCase);

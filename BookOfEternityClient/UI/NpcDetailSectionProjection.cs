@@ -211,15 +211,19 @@ internal static class NpcDetailSectionProjection
         NpcDetailSectionDocuments documents)
     {
         var rows = new List<UiTableRow>();
-        AddObjectArray(rows, npc["npcRelationships"], "Связь");
+        AddRelationshipArrayRows(rows, npc["npcRelationships"], "Связь");
 
         if (npc["relationshipLock"] is JsonObject relationshipLock)
-            rows.Add(new UiTableRow { Cells = ["Замок отношения", DescribeNodeValue(relationshipLock)] });
+        {
+            var lockDetails = DescribeRelationshipLock(relationshipLock);
+            if (!string.IsNullOrWhiteSpace(lockDetails))
+                rows.Add(new UiTableRow { Cells = ["Замок отношения", lockDetails] });
+        }
         if (npc["relationshipData"] is JsonObject relationshipData)
-            rows.Add(new UiTableRow { Cells = ["Отношение", DescribeNodeValue(relationshipData)] });
+            rows.Add(new UiTableRow { Cells = ["Отношение", DescribeRelationshipEntry(relationshipData)] });
 
         foreach (var entry in CollectMatchingObjects(documents.Relationships, npcId, npcName))
-            rows.Add(new UiTableRow { Cells = ["Отношение", DescribeNodeValue(entry)] });
+            rows.Add(new UiTableRow { Cells = ["Отношение", DescribeRelationshipEntry(entry)] });
 
         if (rows.Count == 0)
             return;
@@ -588,6 +592,113 @@ internal static class NpcDetailSectionProjection
             if (!string.IsNullOrWhiteSpace(details))
                 target.Add(new UiTableRow { Cells = [label, details] });
         }
+    }
+
+    private static void AddRelationshipArrayRows(List<UiTableRow> target, JsonNode? node, string label)
+    {
+        if (node is not JsonArray array)
+            return;
+
+        foreach (var item in array.OfType<JsonObject>())
+        {
+            var details = DescribeRelationshipEntry(item);
+            if (!string.IsNullOrWhiteSpace(details))
+                target.Add(new UiTableRow { Cells = [label, details] });
+        }
+    }
+
+    private static string DescribeRelationshipEntry(JsonObject entry)
+    {
+        var parts = new List<string>();
+        AddRelationshipPart(parts, "Кто", FirstNonEmpty(GetNodeString(entry, "targetNpcName"), GetNodeString(entry, "sourceNpcName"), GetNodeString(entry, "NPCName")));
+        AddRelationshipPart(parts, "Тип связи", DescribeRelationshipType(FirstNonEmpty(
+            GetNodeString(entry, "relationshipStatus"),
+            GetNodeString(entry, "newRelationshipStatus"),
+            GetNodeString(entry, "relationshipType"))));
+        AddRelationshipPart(parts, "Уровень отношения", FirstNonEmpty(
+            GetNodeString(entry, "newRelationshipLevel"),
+            GetNodeString(entry, "relationshipLevel"),
+            GetNodeString(entry, "currentRelationshipLevel")));
+        if (entry["relationshipLock"] is JsonObject relationshipLock)
+        {
+            var lockDetails = DescribeRelationshipLock(relationshipLock);
+            AddRelationshipPart(parts, "Замок отношения", lockDetails);
+        }
+        if (entry["lockUpdate"] is JsonObject lockUpdate)
+        {
+            var lockDetails = DescribeRelationshipLock(lockUpdate);
+            AddRelationshipPart(parts, "Замок отношения", lockDetails);
+        }
+        AddRelationshipPart(parts, "Причина", FirstNonEmpty(
+            GetNodeString(entry, "statusReason"),
+            GetNodeString(entry, "newStatusReason"),
+            GetNodeString(entry, "changeReason"),
+            GetNodeString(entry, "reason")));
+        AddRelationshipPart(parts, "Ход", GetNodeString(entry, "turn"));
+
+        if (parts.Count == 0)
+            return DescribeNodeValue(entry);
+
+        return string.Join("; ", parts);
+    }
+
+    private static string DescribeRelationshipLock(JsonObject relationshipLock)
+    {
+        var parts = new List<string>();
+        if ((TryGetNodeBool(relationshipLock, "isLocked", out var isLocked) && isLocked) ||
+            (TryGetNodeBool(relationshipLock, "newIsLocked", out var newIsLocked) && newIsLocked))
+        {
+            AddRelationshipPart(parts, "Блокировка", "да");
+        }
+
+        AddRelationshipPart(parts, "Порог отношения", FirstNonEmpty(
+            GetNodeString(relationshipLock, "currentCap"),
+            GetNodeString(relationshipLock, "newCurrentCap")));
+
+        var breakthroughQuest = DescribeRelationshipQuestState(FirstNonEmpty(
+            GetNodeString(relationshipLock, "breakthroughQuestId"),
+            GetNodeString(relationshipLock, "newBreakthroughQuestId")));
+        AddRelationshipPart(parts, "Квест прорыва", breakthroughQuest);
+
+        AddRelationshipPart(parts, "Причина", FirstNonEmpty(
+            GetNodeString(relationshipLock, "lockReason"),
+            GetNodeString(relationshipLock, "reason")));
+        AddRelationshipPart(parts, "Подсказка", GetNodeString(relationshipLock, "breakthroughHint"));
+
+        return string.Join("; ", parts);
+    }
+
+    private static string DescribeRelationshipQuestState(string? questId)
+    {
+        if (string.IsNullOrWhiteSpace(questId) || string.Equals(questId, "_clear_", StringComparison.OrdinalIgnoreCase))
+            return string.Empty;
+
+        return string.Equals(questId, "__UNBREAKABLE__", StringComparison.OrdinalIgnoreCase)
+            ? "прорыв невозможен"
+            : "назначен";
+    }
+
+    private static string DescribeRelationshipType(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        return value.Trim().ToLowerInvariant() switch
+        {
+            "player" => "герой",
+            "rival" => "соперник",
+            "ally" => "союзник",
+            "friend" => "друг",
+            "enemy" => "враг",
+            "neutral" => "нейтрально",
+            _ => value.Trim()
+        };
+    }
+
+    private static void AddRelationshipPart(List<string> parts, string label, string? value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+            parts.Add(label + ": " + value.Trim());
     }
 
     private static void AddNamedArrayRows(List<UiTableRow> rows, string label, JsonNode? node)

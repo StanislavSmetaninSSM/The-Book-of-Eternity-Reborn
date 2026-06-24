@@ -27,6 +27,17 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     }
 
     [Theory]
+    [MemberData(nameof(MortalEntityDetailCommandInvocations))]
+    public async Task MortalEntityDetailCommands_DoNotFlattenStructuredDataIntoPlayerFacingText(string command)
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            command);
+
+        AssertNoPresentationAntiPatterns(command, result);
+    }
+
+    [Theory]
     [MemberData(nameof(ChaosSeaEntityCommandInvocations))]
     public async Task ChaosSeaEntityCommands_DoNotFlattenStructuredDataIntoPlayerFacingText(string command)
     {
@@ -52,15 +63,85 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     {
         yield return ["/статус"];
         yield return ["/инв"];
+        yield return ["/нпс"];
+        yield return ["/квесты"];
+        yield return ["/карта"];
+        yield return ["/где_я"];
+        yield return ["/фракции"];
         yield return ["/навыки"];
         yield return ["/статы"];
         yield return ["/новости_мира"];
-        yield return ["/нпс"];
-        yield return ["/квесты"];
-        yield return ["/фракции"];
-        yield return ["/эффекты"];
-        yield return ["/книги"];
+        yield return ["/чужие_нити"];
+        yield return ["/коррективы_хранителя"];
         yield return ["/локации"];
+        yield return ["/транспорт"];
+        yield return ["/эффекты"];
+        yield return ["/бой"];
+        yield return ["/погода"];
+        yield return ["/книги"];
+        yield return ["/доступ_к_хранилищам"];
+        yield return ["/взаимодействия"];
+    }
+
+    public static IEnumerable<object[]> MortalEntityDetailCommandInvocations()
+    {
+        yield return ["/инв предмет item_dark_travel_cloak"];
+        yield return ["/нпс персонаж npc_valmont_steward_marius"];
+        yield return ["/нпс раздел npc_valmont_steward_marius mechanics"];
+        yield return ["/квесты квест quest_valmont_letter"];
+        yield return ["/фракции фракция faction_merchant_guild"];
+        yield return ["/навыки навык skill_quick_lunge"];
+        yield return ["/новости_мира событие world_event_valmont_letter"];
+        yield return ["/локации локация loc_valmont_bedroom_initial"];
+        yield return ["/локации хранилища loc_valmont_bedroom_initial"];
+        yield return ["/транспорт транспорт transport_valmont_carriage"];
+        yield return ["/эффекты эффект лёгкое_недомогание"];
+        yield return ["/бой враг 1"];
+        yield return ["/бой журнал 1"];
+        yield return ["/доступ_к_хранилищам хранилище storage_valmont_private_desk"];
+        yield return ["/взаимодействия запись player_test_companion-1"];
+    }
+
+    [Fact]
+    public void MortalReadOnlyIssue1268Commands_AreCoveredByBrowserPresentationAudit()
+    {
+        var auditedIds = MortalEntityCommandInvocations()
+            .Select(static invocation => (string)invocation[0])
+            .Select(static command => ExplorerCommandParser.Parse(command).Descriptor?.Id)
+            .Where(static id => !string.IsNullOrWhiteSpace(id))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        string[] requiredIds =
+        [
+            "inventory",
+            "npcs",
+            "quests",
+            "map",
+            "where_am_i",
+            "factions",
+            "skills",
+            "stats",
+            "world_news",
+            "rival_threads",
+            "guardian_corrections",
+            "locations",
+            "transport",
+            "effects",
+            "combat",
+            "weather",
+            "books",
+            "storage_access",
+            "interactions"
+        ];
+
+        var missing = requiredIds
+            .Where(id => !auditedIds.Contains(id))
+            .ToList();
+
+        Assert.True(
+            missing.Count == 0,
+            "Issue #1268 mortal read-only commands missing from browser presentation audit: " +
+            string.Join(", ", missing));
     }
 
     public static IEnumerable<object[]> ChaosSeaEntityCommandInvocations()
@@ -174,6 +255,104 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
 
         Assert.Contains("08:15", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("08: 15", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotMatch(TimeWithWhitespaceAfterColonPattern(), text);
+    }
+
+    [Fact]
+    public async Task MortalLocationOverviewCardsSplitPlaceFactsFromNarrative()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/локации");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Покои виконта де Вальмонта", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Регион", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тип", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Роскошные покои", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("помещение Роскошные покои", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("помещение здание Длинный коридор", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Month of Beginnings", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MortalTransportOverviewCardsSplitStateLocationAndCapacity()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/транспорт");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Карета дома Вальмонт", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Состояние", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Местоположение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Вместимость", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Активен (оседлан/управляется) Покои виконта", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MortalCombatOverviewSummariesExplainHealthAndPoiseValues()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/бой");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Теневой посыльный", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Здоровье", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стойкость", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotMatch(AdjacentCombatPercentagesPattern(), text);
+    }
+
+    [Fact]
+    public async Task MortalCombatLogOverviewUsesPlayerFacingRussianText()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/бой");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Последняя стычка: Ночной визитёр", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("проверка Восприятия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("против сложности 12", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("против защиты 13", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("###", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("**", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("vs DC", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("vs AC", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("- Атака", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Итог: не указано", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MortalCombatOverviewOmitsEmptyCombatantStateFacts()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/бой");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Теневой посыльный", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Дворецкий Мариус", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Состояние: не указано", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Намерение: не указано", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/где_я")]
+    [InlineData("/погода")]
+    [InlineData("/фракции")]
+    [InlineData("/чужие_нити")]
+    public async Task MortalReadOnlyCommandsLocalizeCommonProtocolValues(string command)
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            command);
+        var text = CollectResultText(result);
+
+        Assert.DoesNotContain("Month of Beginnings", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("rising", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotMatch(GluedRivalStatusSummaryPattern(), text);
     }
 
     [Fact]
@@ -207,6 +386,108 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     }
 
     [Fact]
+    public async Task MortalNpcRelationshipCardsLabelNumericRelationshipValues()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/нпс");
+
+        var relationshipCards = EnumerateEntityCards(result.Blocks)
+            .Where(static card =>
+                card.Title.Contains("Отношение", StringComparison.OrdinalIgnoreCase) ||
+                card.Title.Contains("Замок отношения", StringComparison.OrdinalIgnoreCase) ||
+                card.Subtitle.Contains("Отношения", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        Assert.NotEmpty(relationshipCards);
+        Assert.Contains(
+            relationshipCards,
+            static card => card.Facts.Any(static fact =>
+                string.Equals(fact.Label, "Уровень отношения", StringComparison.OrdinalIgnoreCase) &&
+                int.TryParse(fact.Value, out _)));
+        Assert.Contains(
+            relationshipCards,
+            static card => card.Facts.Any(static fact =>
+                string.Equals(fact.Label, "Уровень отношения", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(fact.Value, "-80", StringComparison.OrdinalIgnoreCase)));
+        Assert.Contains(
+            relationshipCards,
+            static card => card.Facts.Any(static fact =>
+                string.Equals(fact.Label, "Порог отношения", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(fact.Value, "-50", StringComparison.OrdinalIgnoreCase)));
+        Assert.DoesNotContain(
+            relationshipCards,
+            static card => int.TryParse(card.Summary, out _) ||
+                           card.Facts.Any(static fact =>
+                               string.Equals(fact.Label, "Подробности", StringComparison.OrdinalIgnoreCase) &&
+                               int.TryParse(fact.Value, out _)));
+        Assert.DoesNotContain(
+            relationshipCards,
+            static card => card.Title.Contains("Замок отношения", StringComparison.OrdinalIgnoreCase) &&
+                           string.IsNullOrWhiteSpace(card.Summary) &&
+                           card.Facts.Count == 0 &&
+                           card.Metrics.Count == 0 &&
+                           card.List.Count == 0 &&
+                           card.Cards.Count == 0 &&
+                           card.Nested.Count == 0);
+        Assert.DoesNotContain(
+            relationshipCards,
+            static card => card.Facts.Count == 1 &&
+                           string.Equals(card.Facts[0].Label, "Кто", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task MortalNpcCardsDoNotRepeatSummaryAsGenericDetails()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/нпс");
+
+        var npcCards = EnumerateEntityCards(result.Blocks)
+            .Where(static card => !string.IsNullOrWhiteSpace(card.Summary))
+            .ToList();
+
+        Assert.NotEmpty(npcCards);
+        Assert.DoesNotContain(
+            npcCards,
+            static card => card.Facts.Any(fact =>
+                IsGenericDetailsColumn(fact.Label) &&
+                string.Equals(fact.Value, card.Summary, StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [Fact]
+    public async Task MortalQuestOverviewUsesPlotOutlineEntriesInsteadOfContainer()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/квесты");
+
+        Assert.Contains(
+            result.Actions,
+            static action => action.Label.Contains("Письмо на прикроватном столике", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(
+            result.Actions,
+            static action => action.Label.Contains("Безопасный выезд через гильдию", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(
+            result.Actions,
+            static action => action.Label.Contains("Сюжетных записей 3", StringComparison.OrdinalIgnoreCase));
+
+        var cards = EnumerateEntityCards(result.Blocks).ToList();
+        Assert.Contains(
+            cards,
+            static card => string.Equals(card.Title, "Письмо на прикроватном столике", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(
+            cards,
+            static card => string.Equals(card.Title, "Безопасный выезд через гильдию", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(
+            cards,
+            static card => card.Title.Contains("Сюжетных записей 3", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(
+            cards,
+            static card => card.Summary.Contains("Available", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task MortalInventoryOverviewCardsExposeUsefulItemDataAndDirectOpenActions()
     {
         var result = await ExecuteFromLoadedSaveAsync(
@@ -230,6 +511,99 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
             HasFact(card, "Количество") &&
             (HasFact(card, "Группа") || HasFact(card, "Слот") || HasFact(card, "Цена")) &&
             !IsDurabilityOnlySummary(card.Summary));
+    }
+
+    [Fact]
+    public async Task MortalInteractionPlayerCardsUseRecordSummaryInsteadOfGenericPlaceholder()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/взаимодействия");
+
+        var playerCards = EnumerateEntityCards(result.Blocks)
+            .Where(static card => string.Equals(card.Title, "Игрок 1", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        Assert.NotEmpty(playerCards);
+        Assert.Contains(
+            playerCards,
+            static card => card.Summary.Contains("Помогает проверить взаимодействия с другими участниками сцены", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(
+            playerCards,
+            static card => string.Equals(card.Summary, "Есть видимые взаимодействия.", StringComparison.OrdinalIgnoreCase) ||
+                           string.Equals(card.Summary, "Видимая запись игрока.", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task MortalBooksOverviewDoesNotRepeatCountsOrUnreadableReasons()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/книги");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Можно читать. 3 записи. Господин де Вальмонт", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Не прочесть. Это не текстовый документ", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("3 записи. 3 записи:", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("1 запись. 1 запись:", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(". .", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            "Это не текстовый документ, а латунная печать для подтверждения права говорить от имени караванного мастера. . Это не текстовый документ",
+            text,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/книги")]
+    [InlineData("/эффекты")]
+    [InlineData("/бой")]
+    [InlineData("/новости_мира")]
+    [InlineData("/взаимодействия")]
+    public async Task MortalReadOnlySummariesAvoidUiInstructionCopy(string command)
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            command);
+        var text = CollectResultText(result);
+
+        Assert.DoesNotContain("Выберите", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полные данные", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полные сведения", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Подробности открываются", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("отдельным действием", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/квесты")]
+    [InlineData("/фракции")]
+    [InlineData("/навыки")]
+    [InlineData("/чужие_нити")]
+    [InlineData("/коррективы_хранителя")]
+    [InlineData("/доступ_к_хранилищам")]
+    public async Task MortalReferenceBundlesUseCommandSpecificSummaries(string command)
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            command);
+        var text = CollectResultText(result);
+
+        Assert.DoesNotContain("Что уже отмечено в книге.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Известные записи этого раздела.", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MortalCurrentLocationSplitsDifficultyProfileIntoLocalizedFacts()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/где_я");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Боевая опасность", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Опасность окружения", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Социальное напряжение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сложность исследования", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("бой: 30 окружение", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -270,6 +644,32 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
         Assert.Contains("Караванная служба", detailText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Кредит доверия", detailText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Долг за спасение каравана", detailText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MortalFactionCardsAvoidDuplicateSelfCardsAndEmptyResourceFields()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/фракции");
+        var text = CollectResultText(result);
+
+        Assert.DoesNotContain("Содержание за ход: не указано", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("нужно репутации: 10 Спасти", text, StringComparison.OrdinalIgnoreCase);
+
+        var factionCards = EnumerateEntityCards(result.Blocks)
+            .Where(static card =>
+                card.Title.Contains("гильд", StringComparison.OrdinalIgnoreCase) ||
+                card.Subtitle.Contains("Фракц", StringComparison.OrdinalIgnoreCase) ||
+                card.Badges.Any(static badge => badge.Label.Contains("Фракц", StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        Assert.NotEmpty(factionCards);
+        Assert.DoesNotContain(
+            factionCards,
+            static card => card.Cards.Any(child =>
+                string.Equals(child.Title, card.Title, StringComparison.OrdinalIgnoreCase) &&
+                child.Subtitle.Contains("Фракц", StringComparison.OrdinalIgnoreCase)));
     }
 
     [Fact]
@@ -614,6 +1014,7 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
                 {
                     values.Add(fact.Label);
                     values.Add(fact.Value);
+                    values.Add($"{fact.Label}: {fact.Value}");
                 }
                 foreach (var metric in dossier.Metrics)
                 {
@@ -636,6 +1037,7 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
                     {
                         values.Add(fact.Label);
                         values.Add(fact.Value);
+                        values.Add($"{fact.Label}: {fact.Value}");
                     }
                     foreach (var card in section.Cards)
                         CollectCardText(card, values);
@@ -672,6 +1074,7 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
         {
             values.Add(fact.Label);
             values.Add(fact.Value);
+            values.Add($"{fact.Label}: {fact.Value}");
         }
         foreach (var metric in card.Metrics)
         {
@@ -763,4 +1166,13 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
 
     [GeneratedRegex(@"\b(?:DTO|Ui[A-Z]\w+|game_state/|pending_|debug|internal|[a-z]+[A-Z][a-zA-Z]+|[a-z]+_[a-z0-9_]+)\b", RegexOptions.CultureInvariant)]
     private static partial Regex RawProtocolTokenPattern();
+
+    [GeneratedRegex(@"(?<![\p{L}\p{N}])\d+%/100%\s+\d+%/100%(?![\p{L}\p{N}])", RegexOptions.CultureInvariant)]
+    private static partial Regex AdjacentCombatPercentagesPattern();
+
+    [GeneratedRegex(@"\b\d{1,2}:\s+\d{2}\b", RegexOptions.CultureInvariant)]
+    private static partial Regex TimeWithWhitespaceAfterColonPattern();
+
+    [GeneratedRegex(@"нарастает\s+Неизвестный", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex GluedRivalStatusSummaryPattern();
 }

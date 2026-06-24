@@ -4,6 +4,9 @@ Source issue: #948 - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternit
 
 Audit date: 2026-06-16
 
+Latest refresh: 2026-06-24, issue #1268 -
+https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1268
+
 ## Scope
 
 This audit covers every Mortal World read-only command whose descriptor uses
@@ -229,3 +232,51 @@ argument preservation for the existing Mortal World reference-style read-only
 commands listed above. It does not change GM-authored response fields, state
 schema, validation, normalizer behavior, prompts, examples, or afterlife
 contracts.
+
+## Audit Refresh In #1268
+
+The #1268 pass re-ran the Mortal World command-display fixture through the
+browser command-result surface and the shared console renderer. The console
+client remains the completeness reference; browser output was adjusted where it
+lost player-facing meaning, flattened detail, or leaked UI/debug wording.
+
+### #1268 Command Status
+
+| Command id | Primary alias | Status | #1268 notes |
+| --- | --- | --- | --- |
+| `inventory` | `/inv` | fixed | Item cards expose useful facts and direct open actions; book/document summaries no longer duplicate counts or unreadable reasons. |
+| `npcs` | `/npc` | fixed | NPC overview cards expose direct profile actions, merchant affordances, relationship values, and no longer use generic technical summaries. |
+| `quests` | `/quests` | fixed | Plot-outline entries render as individual quest cards; reference-bundle section summaries are now quest-specific. |
+| `map` | `/map` | ok / follow-up | Read-only map summary distinguishes created locations from planned exits. Rich full-screen map interaction remains tracked separately by #1264. |
+| `where_am_i` | `/where_am_i` | fixed | Current-location difficulty profiles now split into localized facts such as combat, environment, social, and exploration danger instead of one glued line. |
+| `factions` | `/factions` | fixed | Faction cards include ranks, branches, chronicles, resources, and no duplicate self-cards; reference summaries are faction-specific. |
+| `skills` | `/skills` | fixed | Skill overview/detail output localizes protocol values and is covered by representative detail-command anti-pattern tests. |
+| `stats` | `/stats` | fixed | Computed characteristics and temporary modifiers render as localized sections/cards, not one-line key dumps. |
+| `world_news` | `/world_news` | fixed | Overview and details use player-facing summaries; visibility enums are localized and service-style action guidance was removed. |
+| `rival_threads` | `/rival_threads` | fixed | Reference summaries are rival-thread specific and classifier guards against generic reference placeholders. |
+| `guardian_corrections` | `/guardian_corrections` | fixed | Reference summaries are correction-specific and detail commands remain covered by read-only argument tests. |
+| `locations` | `/locations` | fixed / follow-up | Overview/detail location facts are separated from narrative and storages are opened through a separate detail surface; richer browser map UX remains #1264. |
+| `transport` | `/transport` | fixed | Transport cards split state, location, route, capacity, and durability; detail command is covered by representative anti-pattern tests. |
+| `effects` | `/effects` | fixed | Effect summaries no longer tell the player about UI mechanics and visible fallback states remain readable. |
+| `combat` | `/combat` | fixed | Combatants omit empty `не указано` state/intent facts, health/poise are labeled, and combat log markdown/check notation is normalized. |
+| `weather` | `/weather` | ok | The current fixture contains only a description and stable tendency; renderer keeps the player-facing weather summary and preserves clock formatting. |
+| `books` | `/books` | fixed | Shelf summaries show source/access/excerpt without repeated `N записей` prefixes and without duplicated unreadable reasons. |
+| `storage_access` | `/storage_access` | fixed | Reference summaries are storage-specific and storage detail commands are covered by representative anti-pattern tests. |
+| `interactions` | `/interactions` | fixed | Player cards use real linked interaction summaries; record summaries no longer say that full details open elsewhere. |
+
+### #1268 Regression Guards
+
+- `BrowserCommandPresentationAuditTests` covers every Mortal World read-only
+  command listed above and 15 representative detail commands.
+- `MortalCommandDisplaySaveTests` loads
+  `mortal_world_command_display_fixture.zip`, validates it, executes all
+  Mortal World command descriptors/aliases plus practical universal previews,
+  and renders each result through `ExplorerCommandResultConsoleRenderer`.
+- `ConsoleCommandOutputQualityClassifier` now fails on raw JSON/technical
+  markers and on player-facing UI instruction copy such as `Полные сведения`,
+  `Подробности открываются`, `Что уже отмечено в книге`, and
+  `Известные записи этого раздела`.
+
+Contract impact for #1268: player-facing command-result rendering and tests
+only. The pass does not change GM-authored response fields, state schema,
+validation, normalizer behavior, prompts, examples, or afterlife contracts.
