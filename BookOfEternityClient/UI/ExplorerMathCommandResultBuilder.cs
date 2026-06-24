@@ -66,7 +66,7 @@ public static class ExplorerMathCommandResultBuilder
             {
                 Severity = UiNotificationSeverity.Error,
                 Title = "Ошибка Математика",
-                Message = $"{result.ErrorCode}: {result.ErrorMessage}"
+                Message = result.ErrorMessage ?? "Проверь формулу, переменные, скобки и деление на ноль."
             });
         }
 
@@ -195,9 +195,20 @@ public static class ExplorerMathCommandResultBuilder
             return "нет";
 
         return result.DecimalPlaces.HasValue
-            ? $"{result.RoundingMode}, знаков: {result.DecimalPlaces.Value}"
-            : result.RoundingMode.ToString();
+            ? $"{DescribeRoundingMode(result.RoundingMode)}, знаков: {result.DecimalPlaces.Value}"
+            : DescribeRoundingMode(result.RoundingMode);
     }
+
+    private static string DescribeRoundingMode(MathAssistantRoundingMode mode) =>
+        mode switch
+        {
+            MathAssistantRoundingMode.Floor => "вниз",
+            MathAssistantRoundingMode.Ceiling => "вверх",
+            MathAssistantRoundingMode.ToZero => "к нулю",
+            MathAssistantRoundingMode.AwayFromZero => "от нуля",
+            MathAssistantRoundingMode.ToNearest => "до ближайшего",
+            _ => "нет"
+        };
 
     private static IReadOnlyList<string> SplitCommandTokens(string text) =>
         text.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);

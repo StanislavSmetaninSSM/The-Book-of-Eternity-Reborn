@@ -1770,6 +1770,30 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_MathCommandWithRounding_LocalizesRoundingMode()
+    {
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/math 10 / 3 rounding=floor decimalPlaces=0"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("вниз", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("знаков: 0", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Floor", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_MathCommandWithInvalidExpression_HidesInternalErrorCode()
+    {
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/math 2 apples + 3"));
+
+        Assert.Equal(CommandExecutionState.Failed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Формула не вычислена", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Формула не разобрана", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("unexpected_token", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_GalleryWithImages_ReturnsImageBlocks()
     {
         WriteSessionImage("images/npcs/ashen_knight.png");

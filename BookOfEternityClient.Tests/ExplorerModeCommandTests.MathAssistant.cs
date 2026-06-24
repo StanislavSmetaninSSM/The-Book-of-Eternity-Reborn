@@ -34,6 +34,19 @@ public sealed partial class ExplorerModeCommandTests
     }
 
     [Fact]
+    public async Task TryProcessCommand_MathRounding_RendersLocalizedRoundingMode()
+    {
+        var result = await _explorer.TryProcessCommand("/math 10 / 3 rounding=floor decimalPlaces=0");
+
+        Assert.Equal(string.Empty, result);
+        var text = ExtractRenderedText();
+        Assert.Contains("вниз", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("знаков: 0", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Floor", text, StringComparison.Ordinal);
+        AssertNoHiddenExplorerErrors("math_rounding_localized");
+    }
+
+    [Fact]
     public async Task TryProcessCommand_MathInvalidExpression_RendersSafeError()
     {
         var result = await _explorer.TryProcessCommand("/math 2 apples + 3");
@@ -41,7 +54,8 @@ public sealed partial class ExplorerModeCommandTests
         Assert.Equal(string.Empty, result);
         var text = ExtractRenderedText();
         Assert.Contains("Формула не вычислена", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("unexpected_token", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Формула не разобрана", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("unexpected_token", text, StringComparison.OrdinalIgnoreCase);
         AssertNoHiddenExplorerErrors("math_invalid_expression");
     }
 }
