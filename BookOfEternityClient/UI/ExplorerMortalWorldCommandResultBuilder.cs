@@ -3837,22 +3837,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     Icon = "factions"
                 }
             ],
-            Facts = overviewItems
-                .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
-                .ToList(),
-            Cards =
-            [
-                new UiEntityCard
-                {
-                    Title = entry.Title,
-                    Subtitle = "Фракция",
-                    Summary = summary,
-                    Icon = "factions",
-                    Facts = overviewItems
-                        .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
-                        .ToList()
-                }
-            ],
             Sections = sections
         };
     }
@@ -3882,9 +3866,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     Icon = "factions"
                 }
             ],
-            Facts = BuildFactionOverviewItems(entry, related)
-                .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
-                .ToList(),
             Sections = sections
         };
     }
@@ -3974,7 +3955,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     .Select(row => (UiBlock)BuildReferenceRowDossier(
                         "faction-rank",
                         "Ранг",
-                        ["Ранг", "Ветвь", "Преимущества"],
+                        ["Ранг", "Ветвь", "Преимущества", "Нужная репутация", "Условие открытия"],
                         row,
                         "factions"))
                     .ToList()
@@ -4199,10 +4180,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
         {
             Cells =
             [
-                EmptyFallback(name),
-                EmptyFallback(stock),
-                EmptyFallback(income),
-                EmptyFallback(upkeep)
+                name,
+                stock,
+                income,
+                upkeep
             ]
         });
     }
@@ -4251,27 +4232,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     FirstReferenceNodeString(rank, "rankNameMale"),
                     FirstReferenceNodeString(rank, "rankNameFemale")));
             var branch = FirstNonEmpty(FirstReferenceNodeString(rank, "branch", "branchName"), branchName);
-            var benefits = JoinReferenceDetails(
-                DescribeNodeForReferenceDetail(rank["benefits"] ?? rank["perks"] ?? rank["permissions"]),
-                FormatFactionRequiredReputation(FirstReferenceNodeString(rank, "requiredReputation")),
-                FirstReferenceNodeString(rank, "unlockCondition"));
-            if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(branch) && string.IsNullOrWhiteSpace(benefits))
+            var benefits = DescribeNodeForReferenceDetail(rank["benefits"] ?? rank["perks"] ?? rank["permissions"]);
+            var requiredReputation = FirstReferenceNodeString(rank, "requiredReputation");
+            var unlockCondition = FirstReferenceNodeString(rank, "unlockCondition");
+            if (string.IsNullOrWhiteSpace(name) &&
+                string.IsNullOrWhiteSpace(branch) &&
+                string.IsNullOrWhiteSpace(benefits) &&
+                string.IsNullOrWhiteSpace(requiredReputation) &&
+                string.IsNullOrWhiteSpace(unlockCondition))
+            {
                 continue;
+            }
 
             rows.Add(new UiTableRow
             {
                 Cells =
                 [
-                    EmptyFallback(name),
-                    EmptyFallback(branch),
-                    EmptyFallback(benefits)
+                    name,
+                    branch,
+                    benefits,
+                    requiredReputation,
+                    unlockCondition
                 ]
             });
         }
     }
-
-    private static string FormatFactionRequiredReputation(string value) =>
-        string.IsNullOrWhiteSpace(value) ? string.Empty : $"нужно репутации: {value.Trim()}";
 
     private static List<UiTableRow> BuildFactionChronicleRows(IReadOnlyList<ReferenceEntrySnapshot> related)
     {

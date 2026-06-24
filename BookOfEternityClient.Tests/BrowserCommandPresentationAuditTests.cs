@@ -510,6 +510,32 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     }
 
     [Fact]
+    public async Task MortalFactionCardsAvoidDuplicateSelfCardsAndEmptyResourceFields()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/фракции");
+        var text = CollectResultText(result);
+
+        Assert.DoesNotContain("Содержание за ход: не указано", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("нужно репутации: 10 Спасти", text, StringComparison.OrdinalIgnoreCase);
+
+        var factionCards = EnumerateEntityCards(result.Blocks)
+            .Where(static card =>
+                card.Title.Contains("гильд", StringComparison.OrdinalIgnoreCase) ||
+                card.Subtitle.Contains("Фракц", StringComparison.OrdinalIgnoreCase) ||
+                card.Badges.Any(static badge => badge.Label.Contains("Фракц", StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        Assert.NotEmpty(factionCards);
+        Assert.DoesNotContain(
+            factionCards,
+            static card => card.Cards.Any(child =>
+                string.Equals(child.Title, card.Title, StringComparison.OrdinalIgnoreCase) &&
+                child.Subtitle.Contains("Фракц", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [Fact]
     public async Task MortalLocationCardsUsePlaceDataWithoutUiInstructionNoise()
     {
         var overview = await ExecuteFromLoadedSaveAsync(
