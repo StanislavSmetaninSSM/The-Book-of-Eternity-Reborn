@@ -27,6 +27,17 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     }
 
     [Theory]
+    [MemberData(nameof(MortalEntityDetailCommandInvocations))]
+    public async Task MortalEntityDetailCommands_DoNotFlattenStructuredDataIntoPlayerFacingText(string command)
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            command);
+
+        AssertNoPresentationAntiPatterns(command, result);
+    }
+
+    [Theory]
     [MemberData(nameof(ChaosSeaEntityCommandInvocations))]
     public async Task ChaosSeaEntityCommands_DoNotFlattenStructuredDataIntoPlayerFacingText(string command)
     {
@@ -70,6 +81,25 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
         yield return ["/книги"];
         yield return ["/доступ_к_хранилищам"];
         yield return ["/взаимодействия"];
+    }
+
+    public static IEnumerable<object[]> MortalEntityDetailCommandInvocations()
+    {
+        yield return ["/инв предмет item_dark_travel_cloak"];
+        yield return ["/нпс персонаж npc_valmont_steward_marius"];
+        yield return ["/нпс раздел npc_valmont_steward_marius mechanics"];
+        yield return ["/квесты квест quest_valmont_letter"];
+        yield return ["/фракции фракция faction_merchant_guild"];
+        yield return ["/навыки навык skill_quick_lunge"];
+        yield return ["/новости_мира событие world_event_valmont_letter"];
+        yield return ["/локации локация loc_valmont_bedroom_initial"];
+        yield return ["/локации хранилища loc_valmont_bedroom_initial"];
+        yield return ["/транспорт транспорт transport_valmont_carriage"];
+        yield return ["/эффекты эффект лёгкое_недомогание"];
+        yield return ["/бой враг 1"];
+        yield return ["/бой журнал 1"];
+        yield return ["/доступ_к_хранилищам хранилище storage_valmont_private_desk"];
+        yield return ["/взаимодействия запись player_test_companion-1"];
     }
 
     [Fact]
