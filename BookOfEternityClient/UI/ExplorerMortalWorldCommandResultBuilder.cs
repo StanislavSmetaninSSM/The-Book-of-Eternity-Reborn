@@ -8430,8 +8430,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             EntityType = "document-summary",
             Title = item.Title,
             Subtitle = item.Source,
-            Summary = string.Join(". ", new[] { item.AccessStatus, item.CountLabel, item.Summary }
-                .Where(static value => !string.IsNullOrWhiteSpace(value))),
+            Summary = BuildBookShelfItemSummary(item),
             Badges =
             [
                 new UiEntityBadge
@@ -8442,6 +8441,63 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 }
             ]
         };
+
+    private static string BuildBookShelfItemSummary(ReadableDocumentShelfItem item)
+    {
+        var parts = new List<string>();
+        AddBookSummaryPart(parts, item.AccessStatus);
+
+        if (item.HasReadableContent)
+        {
+            AddBookSummaryPart(parts, item.CountLabel);
+            AddBookSummaryPart(parts, RemoveBookSummaryPrefix(item.Summary, item.CountLabel));
+        }
+        else
+        {
+            AddBookSummaryPart(parts, FirstNonEmpty(item.UnreadableReason, item.Summary, item.CountLabel));
+        }
+
+        return JoinBookSummaryParts(parts);
+    }
+
+    private static void AddBookSummaryPart(List<string> parts, string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        var normalized = value.Trim();
+        if (parts.Any(part => string.Equals(part.Trim().TrimEnd('.'), normalized.TrimEnd('.'), StringComparison.OrdinalIgnoreCase)))
+            return;
+
+        parts.Add(normalized);
+    }
+
+    private static string RemoveBookSummaryPrefix(string summary, string prefix)
+    {
+        var normalized = summary.Trim();
+        var cleanPrefix = prefix.Trim();
+        if (string.IsNullOrWhiteSpace(cleanPrefix))
+            return normalized;
+
+        if (normalized.StartsWith(cleanPrefix + ":", StringComparison.OrdinalIgnoreCase))
+            return normalized[(cleanPrefix.Length + 1)..].TrimStart();
+
+        if (normalized.StartsWith(cleanPrefix + ".", StringComparison.OrdinalIgnoreCase))
+            return normalized[(cleanPrefix.Length + 1)..].TrimStart();
+
+        return normalized;
+    }
+
+    private static string JoinBookSummaryParts(IReadOnlyList<string> parts)
+    {
+        if (parts.Count == 0)
+            return string.Empty;
+
+        return string.Join(". ", parts.Select((part, index) =>
+            index == parts.Count - 1
+                ? part.Trim()
+                : part.Trim().TrimEnd('.')));
+    }
 
     private static UiEntityDossierBlock BuildBookDetailBlock(ReadableDocumentShelfItem item)
     {

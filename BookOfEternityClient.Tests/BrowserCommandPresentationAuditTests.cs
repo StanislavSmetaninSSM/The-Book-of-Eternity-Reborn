@@ -505,6 +505,25 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     }
 
     [Fact]
+    public async Task MortalBooksOverviewDoesNotRepeatCountsOrUnreadableReasons()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/книги");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Можно читать. 3 записи. Господин де Вальмонт", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Не прочесть. Это не текстовый документ", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("3 записи. 3 записи:", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("1 запись. 1 запись:", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(". .", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            "Это не текстовый документ, а латунная печать для подтверждения права говорить от имени караванного мастера. . Это не текстовый документ",
+            text,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task MortalFactionCardsExposeRanksChroniclesAndResourcesBeyondPowerProfile()
     {
         var overview = await ExecuteFromLoadedSaveAsync(
