@@ -19,10 +19,22 @@ public sealed partial class BrowserCommandPresentationAuditTests
     {
         var result = await ExecuteFromLoadedSaveAsync("mortal_world_command_display_fixture.zip", "/help");
 
-        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>());
-        Assert.Contains(table.Columns, column => string.Equals(column, "EN", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(table.Columns, column => string.Equals(column, "RU", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(table.Columns, column => string.Equals(column, "Описание", StringComparison.OrdinalIgnoreCase));
+        var dossier = Assert.Single(result.Blocks.OfType<UiEntityDossierBlock>());
+        Assert.Equal("help", dossier.EntityType);
+        Assert.Contains(dossier.Sections.SelectMany(static section => section.Cards), static card =>
+            card.Facts.Any(static fact =>
+                fact.Label.Equals("Команда", StringComparison.OrdinalIgnoreCase) &&
+                fact.Value.Equals("/inv", StringComparison.OrdinalIgnoreCase)) &&
+            card.Facts.Any(static fact =>
+                fact.Label.Equals("Русская команда", StringComparison.OrdinalIgnoreCase) &&
+                fact.Value.Equals("/инв", StringComparison.OrdinalIgnoreCase)));
+        Assert.Contains(dossier.Sections.SelectMany(static section => section.Cards), static card =>
+            card.Facts.Any(static fact =>
+                fact.Label.Equals("Команда", StringComparison.OrdinalIgnoreCase) &&
+                fact.Value.Equals("/npc /npcs", StringComparison.OrdinalIgnoreCase)) &&
+            card.Facts.Any(static fact =>
+                fact.Label.Equals("Русская команда", StringComparison.OrdinalIgnoreCase) &&
+                fact.Value.Equals("/нпс", StringComparison.OrdinalIgnoreCase)));
 
         var text = CollectResultText(result);
         Assert.Contains("/инв", text, StringComparison.OrdinalIgnoreCase);
@@ -30,6 +42,7 @@ public sealed partial class BrowserCommandPresentationAuditTests
         Assert.Contains("/квесты", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Показать инвентарь", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("объекта в разделе", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiTableBlock);
     }
 
     [Theory]

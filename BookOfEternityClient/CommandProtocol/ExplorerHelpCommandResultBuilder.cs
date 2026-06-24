@@ -27,9 +27,158 @@ internal static class ExplorerHelpCommandResultBuilder
         {
             Command = context.Command,
             State = CommandExecutionState.Completed,
-            Blocks = [table]
+            Blocks = [BuildDossier(context, table)]
         };
     }
+
+    private static UiEntityDossierBlock BuildDossier(ExplorerHelpCommandContext context, UiTableBlock table)
+    {
+        var sections = new List<UiEntityDossierSection>();
+        var sectionTitle = "Команды";
+        var cards = new List<UiEntityCard>();
+        var notes = new List<string>();
+
+        void FlushSection()
+        {
+            if (cards.Count == 0 && notes.Count == 0)
+                return;
+
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = $"help-section-{sections.Count + 1}",
+                Title = sectionTitle,
+                Summary = BuildSectionSummary(cards.Count, notes.Count),
+                Icon = "help-circle",
+                CollectionLabel = cards.Count == 1 ? "1 команда" : $"{cards.Count} команд",
+                Presentation = "collection",
+                Collapsible = true,
+                InitiallyExpanded = sections.Count < 2,
+                Hints = notes
+                    .Select(static note => new UiEntityHint
+                    {
+                        Title = "Примечание",
+                        Text = note,
+                        Tone = UiTone.Subtle
+                    })
+                    .ToList(),
+                Cards = cards
+            });
+
+            cards = new List<UiEntityCard>();
+            notes = new List<string>();
+        }
+
+        foreach (var row in table.Rows)
+        {
+            var en = Cell(row, 0);
+            var ru = Cell(row, 1);
+            var description = Cell(row, 2);
+
+            if (string.IsNullOrWhiteSpace(en) &&
+                string.IsNullOrWhiteSpace(ru) &&
+                string.IsNullOrWhiteSpace(description))
+                continue;
+
+            if (IsSectionRow(en, ru, description))
+            {
+                FlushSection();
+                sectionTitle = ExtractSectionTitle(en);
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(en) &&
+                string.IsNullOrWhiteSpace(ru) &&
+                string.IsNullOrWhiteSpace(description))
+            {
+                notes.Add(en);
+                continue;
+            }
+
+            cards.Add(BuildCommandCard(en, ru, description));
+        }
+
+        FlushSection();
+
+        var commandCount = sections.Sum(static section => section.Cards.Count);
+        return new UiEntityDossierBlock
+        {
+            EntityType = "help",
+            Title = string.IsNullOrWhiteSpace(table.Title) ? "Помощь" : table.Title,
+            Subtitle = BuildRealmSubtitle(context),
+            Summary = "Справка показывает доступные команды текущего режима и кратко объясняет, зачем они нужны игроку.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = $"{commandCount} команд",
+                    Tone = UiTone.Accent,
+                    Icon = "terminal"
+                },
+                new UiEntityBadge
+                {
+                    Label = BuildRealmSubtitle(context),
+                    Tone = UiTone.Subtle,
+                    Icon = "map"
+                }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static UiEntityCard BuildCommandCard(string en, string ru, string description)
+    {
+        var title = string.IsNullOrWhiteSpace(ru) ? en : ru;
+        var facts = new List<UiEntityFact>();
+
+        if (!string.IsNullOrWhiteSpace(en))
+            facts.Add(new UiEntityFact { Label = "Команда", Value = en });
+        if (!string.IsNullOrWhiteSpace(ru) && !string.Equals(ru, en, StringComparison.OrdinalIgnoreCase))
+            facts.Add(new UiEntityFact { Label = "Русская команда", Value = ru });
+
+        return new UiEntityCard
+        {
+            Title = title,
+            Subtitle = string.IsNullOrWhiteSpace(en) || string.Equals(en, title, StringComparison.OrdinalIgnoreCase)
+                ? string.Empty
+                : en,
+            Summary = description,
+            Icon = "terminal",
+            Facts = facts
+        };
+    }
+
+    private static string BuildRealmSubtitle(ExplorerHelpCommandContext context)
+    {
+        if (context.IsPendingShiningAbodeBootstrap)
+            return "Передача из Сияющей Обители";
+        if (context.IsShiningAbode)
+            return "Сияющая Обитель";
+        if (context.IsChaosSea)
+            return "Море Хаоса";
+        return "Смертная жизнь";
+    }
+
+    private static string BuildSectionSummary(int commandCount, int noteCount)
+    {
+        if (noteCount == 0)
+            return commandCount == 1 ? "Одна доступная команда." : $"{commandCount} доступных команд.";
+
+        var commandText = commandCount == 1 ? "1 команда" : $"{commandCount} команд";
+        var noteText = noteCount == 1 ? "1 примечание" : $"{noteCount} примечаний";
+        return $"{commandText}, {noteText}.";
+    }
+
+    private static bool IsSectionRow(string en, string ru, string description) =>
+        string.IsNullOrWhiteSpace(ru) &&
+        string.IsNullOrWhiteSpace(description) &&
+        en.StartsWith("── ", StringComparison.Ordinal) &&
+        en.EndsWith(" ──", StringComparison.Ordinal);
+
+    private static string ExtractSectionTitle(string raw) =>
+        raw.Trim().Trim('─').Trim();
+
+    private static string Cell(UiTableRow row, int index) =>
+        index < row.Cells.Count ? row.Cells[index] : string.Empty;
 
     private static void AddPendingShiningBootstrapRows(UiTableBlock table)
     {
