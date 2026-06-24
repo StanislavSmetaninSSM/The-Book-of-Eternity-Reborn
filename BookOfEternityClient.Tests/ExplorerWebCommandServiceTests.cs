@@ -167,6 +167,30 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_Mods_RendersMarkdownCardsWithoutFileNamesOrPaths()
+    {
+        await _fs.WriteFileAtomicAsync("mods/test_mod.md", """
+        # Тонкая настройка мира
+
+        Правило влияет на тон повествования и границы допустимой сцены.
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/mods"));
+
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Моды", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тонкая настройка мира", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Правило влияет на тон повествования", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.Title.Equals("Моды", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        foreach (var forbidden in new[] { "test_mod.md", ".md", "game_session", "mods/test_mod", _rootPath })
+            Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/квесты", "Печать с крыльями")]
     [InlineData("/навыки", "Чувство магических потоков")]

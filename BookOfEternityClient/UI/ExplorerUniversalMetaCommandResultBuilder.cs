@@ -1683,30 +1683,121 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
     private static ExplorerCommandResult BuildDirectoryList(string command, FileSystemManager fs, string title, string relativePath)
     {
         var root = fs.ResolvePath(relativePath);
-        var rows = new List<UiTableRow>();
+        var cards = new List<UiEntityCard>();
         if (Directory.Exists(root))
         {
             foreach (var path in Directory.EnumerateFileSystemEntries(root).OrderBy(static path => path, StringComparer.OrdinalIgnoreCase))
             {
-                rows.Add(new UiTableRow
-                {
-                    Cells =
-                    [
-                        Path.GetFileName(path),
-                        Directory.Exists(path) ? "папка" : "файл",
-                        ToRelativeGameSessionPath(fs, path)
-                    ]
-                });
+                var card = BuildDirectoryEntryCard(path);
+                if (card != null)
+                    cards.Add(card);
             }
         }
 
+        if (cards.Count == 0)
+        {
+            return Completed(command,
+                Message(
+                    UiNotificationSeverity.Info,
+                    title,
+                    "Записей пока нет."));
+        }
+
         return Completed(command,
-            new UiTableBlock
+            new UiEntityDossierBlock
             {
+                EntityType = "directory-list",
                 Title = title,
-                Columns = ["Имя", "Тип", "Путь"],
-                Rows = rows
+                Summary = "Подключённые игровые материалы и правила, которые меняют тон или ограничения партии.",
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "directory-items",
+                        Title = "Записи",
+                        Icon = "scroll",
+                        Presentation = "collection",
+                        CollectionLabel = cards.Count == 1 ? "1 запись" : $"{cards.Count} записей",
+                        Cards = cards
+                    }
+                ]
             });
+    }
+
+    private static UiEntityCard? BuildDirectoryEntryCard(string path)
+    {
+        if (Directory.Exists(path))
+        {
+            return new UiEntityCard
+            {
+                Title = HumanizeFileName(Path.GetFileName(path)),
+                Subtitle = "Папка",
+                Summary = "Набор связанных материалов.",
+                Icon = "folder"
+            };
+        }
+
+        if (!File.Exists(path))
+            return null;
+
+        var fileName = Path.GetFileName(path);
+        var title = HumanizeFileName(Path.GetFileNameWithoutExtension(path));
+        var summary = "Описание пока не добавлено.";
+        if (string.Equals(Path.GetExtension(path), ".md", StringComparison.OrdinalIgnoreCase))
+        {
+            var markdown = ReadMarkdownSummary(path);
+            title = FirstNonEmpty(markdown.Title, title);
+            summary = FirstNonEmpty(markdown.Summary, summary);
+        }
+
+        return new UiEntityCard
+        {
+            Title = title,
+            Subtitle = "Игровой модификатор",
+            Summary = summary,
+            Icon = "scroll",
+            Facts =
+            [
+                new UiEntityFact { Label = "Тип", Value = DescribePlayerFacingFileKind(fileName) }
+            ]
+        };
+    }
+
+    private static (string Title, string Summary) ReadMarkdownSummary(string path)
+    {
+        try
+        {
+            var lines = File.ReadAllLines(path)
+                .Select(static line => line.Trim())
+                .Where(static line => !string.IsNullOrWhiteSpace(line))
+                .ToArray();
+            var title = lines
+                .FirstOrDefault(static line => line.StartsWith("#", StringComparison.Ordinal))?
+                .TrimStart('#', ' ', '\t') ?? string.Empty;
+            var summary = lines.FirstOrDefault(line => !line.StartsWith("#", StringComparison.Ordinal) &&
+                                                       !string.Equals(line, title, StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
+            return (title, summary);
+        }
+        catch
+        {
+            return (string.Empty, string.Empty);
+        }
+    }
+
+    private static string DescribePlayerFacingFileKind(string fileName)
+    {
+        var extension = Path.GetExtension(fileName);
+        return string.Equals(extension, ".md", StringComparison.OrdinalIgnoreCase)
+            ? "Текстовое правило"
+            : "Материал";
+    }
+
+    private static string HumanizeFileName(string? fileName)
+    {
+        if (string.IsNullOrWhiteSpace(fileName))
+            return "Запись";
+
+        return fileName.Replace('_', ' ').Replace('-', ' ').Trim();
     }
 
     private static async Task<ExplorerCommandResult> BuildSystemGuardians(string command, FileSystemManager fs)
