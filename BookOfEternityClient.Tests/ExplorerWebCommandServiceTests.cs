@@ -2071,6 +2071,32 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_Validate_RendersIssueDossierWithoutTechnicalPathsOrCodes()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{ invalid json");
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/validate"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "validation-report" &&
+            dossier.Title.Contains("Валидация", StringComparison.OrdinalIgnoreCase));
+
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Ошибка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Невалидный JSON", text, StringComparison.OrdinalIgnoreCase);
+
+        var payload = SerializeResult(result);
+        foreach (var forbidden in new[] { "game_state/", ".json", "invalid_json_file", "StateJson", "ProtocolViolation" })
+        {
+            Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public async Task ExecuteAsync_LocalTurnCommandWithActiveGmTurn_ShowsPendingTurnProtocolState()
     {
         await SeedUniversalMetaFilesAsync();
@@ -2099,6 +2125,59 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Активный ход GM", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("input/turn_request.json", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/control/pending_turn_snapshot.json", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WorldSetup_RendersReadableSummaryWithoutRawJsonOrPaths()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(WorldDirectiveService.PendingSetupPath, """
+        {
+          "mode": "manual",
+          "worldDirectives": {
+            "worldTitle": "Королевство пепельных колоколов",
+            "settingSummary": "Зимняя страна с падающими династиями и церковными интригами.",
+            "startingSituation": "Душа должна родиться в доме изгнанного нотариуса.",
+            "mandatoryThemes": ["память рода", "цена клятвы"],
+            "forbiddenElements": ["лёгкий комедийный тон"]
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(ScenarioCoreService.ManifestPath, """
+        {
+          "sourcePath": "game_state/control/incarnation_world_setup.json",
+          "scenarioCore": {
+            "summary": "Падение дома начинается с исчезновения семейной печати.",
+            "playerRole": "наследник с чужими воспоминаниями",
+            "mainConflict": "городские кланы спорят за право назначить регента"
+          },
+          "candidateAssertions": ["мир должен остаться мрачным"],
+          "scenarioCoreAssertions": [
+            { "assertion": "печать важна для первой арки", "status": "confirmed" }
+          ],
+          "openCorrectionSlots": ["уточнить первую фракцию-союзника"]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/world_setup"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "world-setup" &&
+            dossier.Title.Contains("Подготовка следующего мира", StringComparison.OrdinalIgnoreCase));
+
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Королевство пепельных колоколов", text, StringComparison.Ordinal);
+        Assert.Contains("Зимняя страна", text, StringComparison.Ordinal);
+        Assert.Contains("Падение дома", text, StringComparison.Ordinal);
+        Assert.Contains("память рода", text, StringComparison.Ordinal);
+
+        var payload = SerializeResult(result);
+        foreach (var forbidden in new[] { "game_state/", ".json", "sourcePath", "worldDirectives", "scenarioCoreAssertions", "openCorrectionSlots", "currentRealm" })
+        {
+            Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     [Fact]

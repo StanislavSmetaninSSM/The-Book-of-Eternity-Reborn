@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -19,6 +20,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
     private const string PendingTurnSnapshotDirectory = "game_state/control/pending_turn_snapshot";
     private const string ExplorerRollbackDirectory = "game_state/control/explorer_local_turn_rollback";
     private const string SoulStatePath = "game_state/meta/soul_state.json";
+    private static readonly Regex PlayerFacingStatePathRegex = new(@"(?:game_state|lore|output|input|ready|stories)/[^\s,;:)]+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex PlayerFacingJsonFileRegex = new(@"[A-Za-z0-9_\-]+\.json(?:\.[A-Za-z0-9_\-\[\]]+)?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public static bool CanBuild(string command) => NormalizeCommand(command) switch
     {
@@ -123,45 +126,246 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     ? UiNotificationSeverity.Error
                     : UiNotificationSeverity.Warning,
                 $"Валидация: найдено проблем {issues.Count}",
-                "Браузерный режим выполняет тот же ValidationService, что и консольная команда /validate."));
+                "Проверка состояния нашла нарушения, которые могут мешать игре. Ниже показаны основные разделы и первые проблемы для исправления."));
 
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Сводка проблем",
-                Columns = ["Уровень", "Категория", "Раздел", "Количество"],
-                Rows = issues
-                    .GroupBy(static issue => new
-                    {
-                        issue.Severity,
-                        issue.Category,
-                        Section = string.IsNullOrWhiteSpace(issue.Section) ? "General" : issue.Section
-                    })
-                    .OrderByDescending(static group => group.Count())
-                    .ThenBy(static group => group.Key.Severity.ToString(), StringComparer.OrdinalIgnoreCase)
-                    .Take(12)
-                    .Select(static group => Row(
-                        group.Key.Severity.ToString(),
-                        group.Key.Category.ToString(),
-                        group.Key.Section,
-                        group.Count().ToString()))
-                    .ToList()
-            });
-
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Первые проблемы",
-                Columns = ["Файл", "Код", "Проблема", "Подсказка"],
-                Rows = issues.Take(20)
-                    .Select(static issue => Row(
-                        issue.FilePath,
-                        string.IsNullOrWhiteSpace(issue.Code) ? "-" : issue.Code!,
-                        issue.Message,
-                        string.IsNullOrWhiteSpace(issue.RepairHint) ? "-" : issue.RepairHint!))
-                    .ToList()
-            });
+            blocks.Add(BuildValidationDossier(issues));
         }
 
         return Result(command, CommandExecutionState.Completed, blocks);
+    }
+
+    private static UiEntityDossierBlock BuildValidationDossier(IReadOnlyList<ValidationIssue> issues)
+    {
+        var errorCount = issues.Count(static issue => issue.Severity == IssueSeverity.Error);
+        var warningCount = issues.Count(static issue => issue.Severity == IssueSeverity.Warning);
+        var infoCount = issues.Count(static issue => issue.Severity == IssueSeverity.Info);
+        var worstSeverity = errorCount > 0
+            ? IssueSeverity.Error
+            : warningCount > 0
+                ? IssueSeverity.Warning
+                : IssueSeverity.Info;
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "validation-report",
+            Title = "Валидация состояния",
+            Subtitle = "Проверка целостности игровых данных",
+            Summary = $"Найдено проблем: {issues.Count}. Сначала исправляйте ошибки, затем предупреждения.",
+            Badges =
+            [
+                new UiEntityBadge { Label = DescribeValidationSeverity(worstSeverity), Tone = ToneForValidationSeverity(worstSeverity), Icon = "alert-triangle" }
+            ],
+            Facts =
+            [
+                new UiEntityFact { Label = "Ошибки", Value = errorCount.ToString() },
+                new UiEntityFact { Label = "Предупреждения", Value = warningCount.ToString() },
+                new UiEntityFact { Label = "Информация", Value = infoCount.ToString() }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "validation-summary",
+                    Title = "Сводка по разделам",
+                    Summary = "Где сосредоточены проблемы состояния.",
+                    Icon = "list-checks",
+                    CollectionLabel = "разделы",
+                    Presentation = "cards",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Cards = BuildValidationSummaryCards(issues)
+                },
+                new UiEntityDossierSection
+                {
+                    Id = "validation-issues",
+                    Title = "Первые проблемы",
+                    Summary = issues.Count > 20
+                        ? "Показаны первые 20 проблем. После их исправления запустите проверку снова."
+                        : "Показаны найденные проблемы.",
+                    Icon = "alert-circle",
+                    CollectionLabel = "проблемы",
+                    Presentation = "cards",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Cards = issues.Take(20).Select(BuildValidationIssueCard).ToList()
+                }
+            ]
+        };
+    }
+
+    private static List<UiEntityCard> BuildValidationSummaryCards(IReadOnlyList<ValidationIssue> issues) =>
+        issues
+            .GroupBy(static issue => new
+            {
+                issue.Severity,
+                issue.Category,
+                Section = string.IsNullOrWhiteSpace(issue.Section) ? "General" : issue.Section
+            })
+            .OrderByDescending(static group => group.Count())
+            .ThenBy(static group => group.Key.Severity.ToString(), StringComparer.OrdinalIgnoreCase)
+            .Take(12)
+            .Select(static group => new UiEntityCard
+            {
+                Title = DescribeValidationSection(group.Key.Section),
+                Subtitle = DescribeValidationCategory(group.Key.Category),
+                Icon = "shield-alert",
+                Badges =
+                [
+                    new UiEntityBadge
+                    {
+                        Label = DescribeValidationSeverity(group.Key.Severity),
+                        Tone = ToneForValidationSeverity(group.Key.Severity),
+                        Icon = "alert-triangle"
+                    }
+                ],
+                Facts =
+                [
+                    new UiEntityFact { Label = "Количество", Value = group.Count().ToString() },
+                    new UiEntityFact { Label = "Уровень", Value = DescribeValidationSeverity(group.Key.Severity) }
+                ]
+            })
+            .ToList();
+
+    private static UiEntityCard BuildValidationIssueCard(ValidationIssue issue)
+    {
+        var facts = new List<UiEntityFact>
+        {
+            new() { Label = "Уровень", Value = DescribeValidationSeverity(issue.Severity) },
+            new() { Label = "Раздел", Value = DescribeValidationSection(issue.Section) },
+            new() { Label = "Тип проверки", Value = DescribeValidationCategory(issue.Category) }
+        };
+
+        AddValidationFactIfKnown(facts, "Ожидалось", issue.Expected);
+        AddValidationFactIfKnown(facts, "Получено", issue.Actual);
+
+        var hints = new List<UiEntityHint>();
+        var repairHint = SanitizeValidationPlayerText(issue.RepairHint);
+        if (!string.IsNullOrWhiteSpace(repairHint))
+        {
+            hints.Add(new UiEntityHint
+            {
+                Title = "Как исправить",
+                Text = repairHint,
+                Tone = UiTone.Accent
+            });
+        }
+
+        return new UiEntityCard
+        {
+            Title = $"{DescribeValidationSeverity(issue.Severity)}: {DescribeValidationSection(issue.Section)}",
+            Summary = SanitizeValidationPlayerText(issue.Message),
+            Icon = "alert-circle",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeValidationSeverity(issue.Severity),
+                    Tone = ToneForValidationSeverity(issue.Severity),
+                    Icon = "alert-triangle"
+                }
+            ],
+            Facts = facts,
+            Hints = hints
+        };
+    }
+
+    private static void AddValidationFactIfKnown(List<UiEntityFact> facts, string label, string? value)
+    {
+        var sanitized = SanitizeValidationPlayerText(value);
+        if (string.IsNullOrWhiteSpace(sanitized))
+            return;
+
+        facts.Add(new UiEntityFact { Label = label, Value = sanitized });
+    }
+
+    private static string DescribeValidationSeverity(IssueSeverity severity) => severity switch
+    {
+        IssueSeverity.Error => "Ошибка",
+        IssueSeverity.Warning => "Предупреждение",
+        IssueSeverity.Info => "Информация",
+        _ => "Проблема"
+    };
+
+    private static UiTone ToneForValidationSeverity(IssueSeverity severity) => severity switch
+    {
+        IssueSeverity.Error => UiTone.Error,
+        IssueSeverity.Warning => UiTone.Warning,
+        IssueSeverity.Info => UiTone.Subtle,
+        _ => UiTone.Default
+    };
+
+    private static string DescribeValidationCategory(IssueCategory category) => category switch
+    {
+        IssueCategory.ProtocolViolation => "Нарушение игрового правила",
+        IssueCategory.StateConsistency => "Согласованность состояния",
+        IssueCategory.ClientOwnedSurface => "Данные клиента",
+        _ => "Проверка состояния"
+    };
+
+    private static string DescribeValidationSection(string? section)
+    {
+        if (string.IsNullOrWhiteSpace(section))
+            return "Общие данные";
+
+        return section.Trim() switch
+        {
+            "General" => "Общие данные",
+            "StateJson" => "Файлы состояния",
+            "LoreJson" => "Лор и справочники",
+            "RequiredFiles" => "Обязательные данные",
+            "RequiredFields" => "Обязательные поля",
+            "SoulState" => "Душа",
+            "CriticalState" => "Критическое состояние",
+            "WorldSetup" => "Подготовка мира",
+            "ControlFiles" => "Контроль хода",
+            "PendingTurnSnapshot" => "Текущий ход",
+            "ProgressionSchedule" => "Расписание прогрессии",
+            "SystemMods" => "Модификации",
+            _ => HumanizeValidationIdentifier(section)
+        };
+    }
+
+    private static string HumanizeValidationIdentifier(string value)
+    {
+        var normalized = value.Replace('_', ' ').Replace('-', ' ').Trim();
+        if (string.IsNullOrWhiteSpace(normalized))
+            return "Общие данные";
+
+        var words = new List<string>();
+        var current = new List<char>();
+        foreach (var ch in normalized)
+        {
+            if (current.Count > 0 && char.IsUpper(ch) && !char.IsUpper(current[^1]))
+            {
+                words.Add(new string(current.ToArray()));
+                current.Clear();
+            }
+
+            current.Add(ch);
+        }
+
+        if (current.Count > 0)
+            words.Add(new string(current.ToArray()));
+
+        return string.Join(' ', words).Trim();
+    }
+
+    private static string SanitizeValidationPlayerText(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return string.Empty;
+
+        var clean = text.Trim().Replace('\\', '/');
+        clean = PlayerFacingStatePathRegex.Replace(clean, "файл состояния");
+        clean = PlayerFacingJsonFileRegex.Replace(clean, "файл состояния");
+        clean = clean.Replace("valid JSON", "валидный JSON", StringComparison.OrdinalIgnoreCase)
+            .Replace("invalid JSON", "невалидный JSON", StringComparison.OrdinalIgnoreCase)
+            .Replace("canonical state file", "канонический файл состояния", StringComparison.OrdinalIgnoreCase)
+            .Replace("canonical JSON", "канонический JSON", StringComparison.OrdinalIgnoreCase)
+            .Replace("client-side", "на стороне клиента", StringComparison.OrdinalIgnoreCase)
+            .Replace("daemon/script", "внешний процесс", StringComparison.OrdinalIgnoreCase)
+            .Replace("non-JSON serialization artifacts", "посторонние данные вместо JSON", StringComparison.OrdinalIgnoreCase);
+        return clean;
     }
 
     private static async Task<ExplorerCommandResult> BuildWorldSetupAsync(
@@ -175,32 +379,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
-            {
-                Title = "Подготовка следующего мира",
-                Blocks =
-                [
-                    new UiTextBlock
-                    {
-                        Text = stateManager.CurrentState.IsInAfterlifeRealm
-                            ? "Настройка следующей смертной жизни доступна в загробье. Браузер показывает client-owned контракт и форму редактирования/очистки."
-                            : "Подготовка следующего мира доступна только в Море Хаоса или Сияющей Обители; в смертной жизни используется /world_rules.",
-                        Tone = stateManager.CurrentState.IsInAfterlifeRealm ? UiTone.Accent : UiTone.Warning
-                    },
-                    new UiKeyValueGridBlock
-                    {
-                        Items =
-                        [
-                            KeyValue("Файл подготовки", WorldDirectiveService.PendingSetupPath),
-                            KeyValue("Сценарное ядро", ScenarioCoreService.ManifestPath),
-                            KeyValue("Текущий realm", stateManager.CurrentState.CurrentRealm ?? "?")
-                        ]
-                    }
-                ]
-            }
+            BuildWorldSetupDossier(pending, scenario, stateManager)
         };
-        AddRawOrWarning(blocks, "JSON: incarnation_world_setup", pending);
-        AddRawOrWarning(blocks, "JSON: next_life_scenario_core", scenario);
 
         var prompts = new List<UiPrompt>
         {
@@ -213,7 +393,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 [
                     Option("create_or_edit", "Создать / редактировать", "Записать или заменить подготовку следующей смертной жизни."),
                     Option("apply_profile", "Применить профиль", "Использовать профиль из папки world_profiles."),
-                    Option("clear", "Очистить", "Удалить client-owned подготовку мира и сценарное ядро.")
+                    Option("clear", "Очистить", "Удалить подготовку мира и сценарное ядро.")
                 ]
             },
             new UiTextInputPrompt
@@ -233,6 +413,325 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         };
 
         return Result(command, localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput, blocks, prompts: prompts);
+    }
+
+    private static UiEntityDossierBlock BuildWorldSetupDossier(
+        JsonReadResult pending,
+        JsonReadResult scenario,
+        StateManager stateManager)
+    {
+        var isAvailable = stateManager.CurrentState.IsInAfterlifeRealm;
+        var realmName = DescribeWorldSetupRealm(stateManager.CurrentState.CurrentRealm);
+        var pendingRoot = pending.Node as JsonObject;
+        var scenarioRoot = scenario.Node as JsonObject;
+
+        var sections = new List<UiEntityDossierSection>
+        {
+            BuildWorldDirectiveSection(pendingRoot, pending),
+            BuildScenarioCoreSection(scenarioRoot, scenario)
+        };
+
+        var correctionSection = BuildScenarioCorrectionSection(scenarioRoot);
+        if (correctionSection != null)
+            sections.Add(correctionSection);
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "world-setup",
+            Title = "Подготовка следующего мира",
+            Subtitle = "Настройка следующей смертной жизни",
+            Summary = isAvailable
+                ? "Здесь можно подготовить основу будущей смертной жизни: мир, стартовую ситуацию, тон и сценарное ядро."
+                : "Подготовка следующей смертной жизни доступна в загробье. В смертной жизни для правил мира используется команда /world_rules.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = isAvailable ? "Доступно" : "Недоступно здесь",
+                    Tone = isAvailable ? UiTone.Success : UiTone.Warning,
+                    Icon = isAvailable ? "check-circle" : "alert-triangle"
+                }
+            ],
+            Facts =
+            [
+                new UiEntityFact { Label = "Текущее место души", Value = realmName },
+                new UiEntityFact { Label = "Директивы мира", Value = pending.Node == null ? "не заданы" : "подготовлены" },
+                new UiEntityFact { Label = "Сценарное ядро", Value = scenario.Node == null ? "не задано" : "подготовлено" }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static UiEntityDossierSection BuildWorldDirectiveSection(JsonObject? root, JsonReadResult read)
+    {
+        var directives = root?["worldDirectives"] as JsonObject ?? root;
+        var cards = new List<UiEntityCard>();
+
+        if (!read.FileExists || directives == null)
+        {
+            cards.Add(new UiEntityCard
+            {
+                Title = "Директивы мира пока не заданы",
+                Summary = read.FileExists && !string.IsNullOrWhiteSpace(read.Error)
+                    ? "Сохранённая подготовка мира повреждена и должна быть переписана."
+                    : "Можно создать новую подготовку мира через форму ниже.",
+                Icon = "scroll-text"
+            });
+        }
+        else
+        {
+            var title = FirstNonEmpty(
+                SanitizeWorldSetupText(GetString(directives, "worldTitle")),
+                SanitizeWorldSetupText(GetString(root, "worldTitle")),
+                "Новая смертная жизнь");
+            var summary = FirstNonEmpty(
+                SanitizeWorldSetupText(GetString(directives, "settingSummary")),
+                SanitizeWorldSetupText(GetString(directives, "summary")),
+                "Краткое описание мира пока не указано.");
+
+            var facts = new List<UiEntityFact>();
+            AddWorldSetupFactIfKnown(facts, "Режим", DescribeWorldSetupMode(GetString(root, "mode")));
+            AddWorldSetupFactIfKnown(facts, "Стартовая ситуация", GetString(directives, "startingSituation"));
+            AddWorldSetupFactIfKnown(facts, "Роль персонажа", FirstNonEmpty(GetString(directives, "playerRole"), GetString(directives, "protagonistRole")));
+
+            var nested = new List<UiEntityCard>();
+            AddWorldSetupListCard(nested, "Обязательные темы", directives["mandatoryThemes"] as JsonArray);
+            AddWorldSetupListCard(nested, "Запреты тона и содержания", directives["forbiddenElements"] as JsonArray);
+            AddWorldSetupListCard(nested, "Важные акценты", directives["requiredElements"] as JsonArray);
+
+            cards.Add(new UiEntityCard
+            {
+                Title = title,
+                Summary = summary,
+                Icon = "scroll-text",
+                Facts = facts,
+                Nested = nested
+            });
+        }
+
+        return new UiEntityDossierSection
+        {
+            Id = "world-directives",
+            Title = "Директивы мира",
+            Summary = "Игровые требования к будущей смертной жизни.",
+            Icon = "scroll-text",
+            CollectionLabel = "директивы",
+            Presentation = "cards",
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Cards = cards
+        };
+    }
+
+    private static UiEntityDossierSection BuildScenarioCoreSection(JsonObject? root, JsonReadResult read)
+    {
+        var core = root?["scenarioCore"] as JsonObject ?? root;
+        var cards = new List<UiEntityCard>();
+
+        if (!read.FileExists || core == null)
+        {
+            cards.Add(new UiEntityCard
+            {
+                Title = "Сценарное ядро пока не задано",
+                Summary = read.FileExists && !string.IsNullOrWhiteSpace(read.Error)
+                    ? "Сохранённое сценарное ядро повреждено и должно быть переписано."
+                    : "После подготовки мира здесь появится краткая основа будущей арки.",
+                Icon = "book-open"
+            });
+        }
+        else
+        {
+            var facts = new List<UiEntityFact>();
+            AddWorldSetupFactIfKnown(facts, "Роль персонажа", GetString(core, "playerRole"));
+            AddWorldSetupFactIfKnown(facts, "Главный конфликт", GetString(core, "mainConflict"));
+            AddWorldSetupFactIfKnown(facts, "Начальная сцена", GetString(core, "openingScene"));
+
+            cards.Add(new UiEntityCard
+            {
+                Title = FirstNonEmpty(SanitizeWorldSetupText(GetString(core, "title")), "Сценарное ядро"),
+                Summary = FirstNonEmpty(
+                    SanitizeWorldSetupText(GetString(core, "summary")),
+                    "Сводка сценарного ядра пока не указана."),
+                Icon = "book-open",
+                Facts = facts
+            });
+        }
+
+        return new UiEntityDossierSection
+        {
+            Id = "scenario-core",
+            Title = "Сценарное ядро",
+            Summary = "Сжатая основа будущего приключения.",
+            Icon = "book-open",
+            CollectionLabel = "ядро",
+            Presentation = "cards",
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Cards = cards
+        };
+    }
+
+    private static UiEntityDossierSection? BuildScenarioCorrectionSection(JsonObject? root)
+    {
+        if (root == null)
+            return null;
+
+        var cards = new List<UiEntityCard>();
+        AddWorldSetupListCard(cards, "Кандидатные условия", root["candidateAssertions"] as JsonArray);
+        AddScenarioAssertionCards(cards, root["scenarioCoreAssertions"] as JsonArray);
+        AddWorldSetupListCard(cards, "Что нужно уточнить", root["openCorrectionSlots"] as JsonArray);
+
+        if (cards.Count == 0)
+            return null;
+
+        return new UiEntityDossierSection
+        {
+            Id = "scenario-notes",
+            Title = "Проверочные заметки",
+            Summary = "Что уже зафиксировано и что ещё стоит уточнить перед стартом жизни.",
+            Icon = "clipboard-check",
+            CollectionLabel = "заметки",
+            Presentation = "cards",
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Cards = cards
+        };
+    }
+
+    private static void AddScenarioAssertionCards(List<UiEntityCard> cards, JsonArray? assertions)
+    {
+        if (assertions == null || assertions.Count == 0)
+            return;
+
+        var nested = new List<UiEntityCard>();
+        var index = 1;
+        foreach (var item in assertions)
+        {
+            if (item is JsonObject assertion)
+            {
+                nested.Add(new UiEntityCard
+                {
+                    Title = $"Условие {index++}",
+                    Summary = SanitizeWorldSetupText(FirstNonEmpty(GetString(assertion, "assertion"), GetString(assertion, "summary"), GetString(assertion, "text"))),
+                    Icon = "check-circle",
+                    Facts =
+                    [
+                        new UiEntityFact { Label = "Статус", Value = DescribeScenarioAssertionStatus(GetString(assertion, "status")) }
+                    ]
+                });
+                continue;
+            }
+
+            var scalar = SanitizeWorldSetupText(NodeToPlayerText(item));
+            if (!string.IsNullOrWhiteSpace(scalar))
+            {
+                nested.Add(new UiEntityCard
+                {
+                    Title = $"Условие {index++}",
+                    Summary = scalar,
+                    Icon = "check-circle"
+                });
+            }
+        }
+
+        if (nested.Count == 0)
+            return;
+
+        cards.Add(new UiEntityCard
+        {
+            Title = "Проверенные условия ядра",
+            Summary = "Условия, которые должны оставаться верными при запуске будущей жизни.",
+            Icon = "clipboard-check",
+            Nested = nested
+        });
+    }
+
+    private static void AddWorldSetupListCard(List<UiEntityCard> cards, string title, JsonArray? values)
+    {
+        if (values == null || values.Count == 0)
+            return;
+
+        var items = values
+            .Select(NodeToPlayerText)
+            .Select(SanitizeWorldSetupText)
+            .Where(static item => !string.IsNullOrWhiteSpace(item))
+            .ToList();
+        if (items.Count == 0)
+            return;
+
+        cards.Add(new UiEntityCard
+        {
+            Title = title,
+            Icon = "list",
+            List = items
+        });
+    }
+
+    private static void AddWorldSetupFactIfKnown(List<UiEntityFact> facts, string label, string? value)
+    {
+        var sanitized = SanitizeWorldSetupText(value);
+        if (string.IsNullOrWhiteSpace(sanitized))
+            return;
+
+        facts.Add(new UiEntityFact { Label = label, Value = sanitized });
+    }
+
+    private static string NodeToPlayerText(JsonNode? node)
+    {
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<string>(out var text))
+                return text ?? string.Empty;
+            if (value.TryGetValue<int>(out var number))
+                return number.ToString();
+            if (value.TryGetValue<bool>(out var boolean))
+                return boolean ? "да" : "нет";
+        }
+
+        return string.Empty;
+    }
+
+    private static string DescribeWorldSetupRealm(string? realm) => realm switch
+    {
+        null or "" => "не указано",
+        "Chaos Sea" => "Море Хаоса",
+        "Shining Abode" => "Сияющая Обитель",
+        "Mortal World" => "Смертный мир",
+        _ => SanitizeWorldSetupText(realm)
+    };
+
+    private static string DescribeWorldSetupMode(string? mode) => mode switch
+    {
+        null or "" => string.Empty,
+        "manual" => "ручная настройка",
+        "profile" => "профиль мира",
+        "create_or_edit" => "создание или редактирование",
+        "apply_profile" => "профиль мира",
+        "clear" => "очистка подготовки",
+        _ => SanitizeWorldSetupText(mode)
+    };
+
+    private static string DescribeScenarioAssertionStatus(string? status) => status switch
+    {
+        null or "" => "не указан",
+        "confirmed" => "подтверждено",
+        "pending" => "требует проверки",
+        "rejected" => "отклонено",
+        _ => SanitizeWorldSetupText(status)
+    };
+
+    private static string SanitizeWorldSetupText(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return string.Empty;
+
+        var clean = text.Trim().Replace('\\', '/');
+        clean = PlayerFacingStatePathRegex.Replace(clean, "служебная запись");
+        clean = PlayerFacingJsonFileRegex.Replace(clean, "служебная запись");
+        clean = clean.Replace("scenarioCore", "сценарное ядро", StringComparison.OrdinalIgnoreCase)
+            .Replace("worldDirectives", "директивы мира", StringComparison.OrdinalIgnoreCase)
+            .Replace("currentRealm", "текущее место души", StringComparison.OrdinalIgnoreCase);
+        return clean;
     }
 
     private static async Task<ExplorerCommandResult> BuildStatDistributionAsync(string command, FileSystemManager fs)
