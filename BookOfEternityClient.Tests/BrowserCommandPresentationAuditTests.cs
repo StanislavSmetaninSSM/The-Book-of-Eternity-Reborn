@@ -274,6 +274,26 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
         Assert.DoesNotMatch(AdjacentCombatPercentagesPattern(), text);
     }
 
+    [Fact]
+    public async Task MortalCombatLogOverviewUsesPlayerFacingRussianText()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/бой");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Последняя стычка: Ночной визитёр", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("проверка Восприятия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("против сложности 12", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("против защиты 13", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("###", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("**", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("vs DC", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("vs AC", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("- Атака", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Итог: не указано", text, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/где_я")]
     [InlineData("/погода")]

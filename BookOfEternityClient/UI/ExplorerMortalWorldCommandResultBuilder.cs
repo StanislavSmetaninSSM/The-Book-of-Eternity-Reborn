@@ -7398,6 +7398,26 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static UiEntityDossierBlock BuildCombatLogOverviewCard(CombatLogSnapshot entry)
     {
+        var sections = new List<UiEntityDossierSection>();
+        var facts = new List<UiKeyValueItem>();
+        if (!string.IsNullOrWhiteSpace(entry.Turn))
+            facts.Add(new UiKeyValueItem { Key = "Ход", Value = entry.Turn });
+        if (!string.IsNullOrWhiteSpace(entry.Result))
+            facts.Add(new UiKeyValueItem { Key = "Итог", Value = entry.Result });
+
+        if (facts.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "summary",
+                Title = "Кратко",
+                Icon = "book",
+                Collapsible = true,
+                InitiallyExpanded = false,
+                Blocks = [new UiKeyValueGridBlock { Items = facts }]
+            });
+        }
+
         return new UiEntityDossierBlock
         {
             EntityType = "combat-log-summary",
@@ -7413,28 +7433,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     Icon = "book"
                 }
             ],
-            Sections =
-            [
-                new UiEntityDossierSection
-                {
-                    Id = "summary",
-                    Title = "Кратко",
-                    Icon = "book",
-                    Collapsible = true,
-                    InitiallyExpanded = false,
-                    Blocks =
-                    [
-                        new UiKeyValueGridBlock
-                        {
-                            Items =
-                            [
-                                new UiKeyValueItem { Key = "Событие", Value = EmptyFallback(entry.Summary) },
-                                new UiKeyValueItem { Key = "Итог", Value = EmptyFallback(entry.Result) }
-                            ]
-                        }
-                    ]
-                }
-            ]
+            Sections = sections
         };
     }
 
@@ -7921,30 +7920,49 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 var title = !string.IsNullOrWhiteSpace(round)
                     ? $"Раунд {round}"
                     : FirstNonEmpty(FirstCombatNodeString(obj, "title", "eventTitle"), $"Запись {index}");
-                var summary = FirstNonEmpty(
+                var summary = NormalizeCombatLogText(FirstNonEmpty(
                     FirstCombatNodeString(obj, "summary", "description", "message", "narrative"),
-                    FirstCombatNodeString(obj, "result", "outcome"));
+                    FirstCombatNodeString(obj, "result", "outcome")));
                 yield return new CombatLogSnapshot(
                     selector,
-                    title,
+                    NormalizeCombatLogText(title),
                     summary,
-                    turn,
-                    EnumerateStringValues(obj["participants"]).ToList(),
-                    FirstCombatNodeString(obj, "result", "outcome"),
-                    EnumerateStringValues(obj["consequences"]).ToList());
+                    NormalizeCombatLogText(turn),
+                    EnumerateStringValues(obj["participants"]).Select(NormalizeCombatLogText).ToList(),
+                    NormalizeCombatLogText(FirstCombatNodeString(obj, "result", "outcome")),
+                    EnumerateStringValues(obj["consequences"]).Select(NormalizeCombatLogText).ToList());
             }
             else if (!string.IsNullOrWhiteSpace(logNode.Line))
             {
                 yield return new CombatLogSnapshot(
                     index.ToString(),
                     $"Строка {index}",
-                    logNode.Line,
+                    NormalizeCombatLogText(logNode.Line),
                     string.Empty,
                     [],
                     string.Empty,
                     []);
             }
         }
+    }
+
+    private static string NormalizeCombatLogText(string value)
+    {
+        var normalized = value.Trim();
+        while (normalized.StartsWith('#'))
+            normalized = normalized[1..].TrimStart();
+
+        if (normalized.StartsWith("- ", StringComparison.Ordinal))
+            normalized = normalized[2..].TrimStart();
+
+        normalized = normalized
+            .Replace("**", string.Empty, StringComparison.Ordinal)
+            .Replace(" vs DC ", " против сложности ", StringComparison.OrdinalIgnoreCase)
+            .Replace(" vs AC ", " против защиты ", StringComparison.OrdinalIgnoreCase)
+            .Replace("DC ", "сложность ", StringComparison.OrdinalIgnoreCase)
+            .Replace("AC ", "защита ", StringComparison.OrdinalIgnoreCase);
+
+        return normalized.Trim();
     }
 
     private static IEnumerable<(JsonObject? Object, string Line)> EnumerateCombatLogNodes(JsonNode? node)
