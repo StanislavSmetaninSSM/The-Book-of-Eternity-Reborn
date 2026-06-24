@@ -42,12 +42,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         if (pending.Request != null)
         {
             return Completed(command,
-                Panel("Поиск Крыльев Ангелов",
-                    Grid(
-                        ("Состояние", "ожидает закрытия ГМ"),
-                        ("RequestId", GetString(pending.Request, "requestId")),
-                        ("Маршрут", DescribeSarefWingsRouteSafety(GetString(pending.Request, "routeSafety", string.Empty))))),
-                Raw($"Полный JSON {SarefMainStoryState.PendingWingsInfiltrationPath}", pending.Request));
+                BuildSarefWingsInfiltrationDossier(pending.Request, "ожидает закрытия ГМ"));
         }
 
         var blocker = await SourceOfLightCapstoneState.TryDescribeBlockingPendingContractAsync(fs, shiningRoot);
@@ -68,14 +63,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         return RequiresInput(command,
             [
-                Panel("Поиск Крыльев Ангелов",
-                    Grid(
-                        ("Маршрут", DescribeSarefWingsRouteSafety(GetString(request, "routeSafety", string.Empty))),
-                        ("Режим входа", GetString(request, "entryMode")),
-                        ("Фрагментов", CountArray(request, "routeFragments").ToString()),
-                        ("Замен", CountArray(request, "substituteFragments").ToString()),
-                        ("Доступных преимуществ", CountArray(request, "availableAdvantages").ToString()))),
-                Raw($"Предпросмотр JSON {SarefMainStoryState.PendingWingsInfiltrationPath}", request)
+                BuildSarefWingsInfiltrationDossier(request, "готов к началу")
             ],
             [
                 new UiSelectionPrompt
@@ -89,6 +77,133 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     ]
                 }
             ]);
+    }
+
+    private static UiEntityDossierBlock BuildSarefWingsInfiltrationDossier(JsonObject request, string state)
+    {
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Состояние", state);
+        AddFactIfKnown(facts, "Маршрут", DescribeSarefWingsRouteSafety(GetString(request, "routeSafety", string.Empty)));
+        AddFactIfKnown(facts, "Режим входа", DescribeSarefWingsEntryMode(GetString(request, "entryMode", string.Empty)));
+        AddFactIfKnown(facts, "Фрагментов маршрута", CountArray(request, "routeFragments").ToString());
+        AddFactIfKnown(facts, "Запасных фрагментов", CountArray(request, "substituteFragments").ToString());
+        AddFactIfKnown(facts, "Доступных преимуществ", CountArray(request, "availableAdvantages").ToString());
+
+        var sections = new List<UiEntityDossierSection>
+        {
+            new()
+            {
+                Id = "saref-wings-infiltration-overview",
+                Title = "Сведения",
+                Icon = "route",
+                Presentation = "facts",
+                Facts = facts
+            }
+        };
+
+        AddSarefWingsObjectArraySection(sections, request, "routeFragments", "Фрагменты маршрута", "map");
+        AddSarefWingsObjectArraySection(sections, request, "substituteFragments", "Запасные фрагменты", "layers");
+        AddSarefWingsObjectArraySection(sections, request, "availableAdvantages", "Доступные преимущества", "sparkles");
+        AddSarefWingsStringArraySection(sections, request, "disadvantages", "Риски маршрута", "alert-triangle");
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "saref-wings-infiltration",
+            Title = "Поиск Крыльев Ангелов",
+            Subtitle = state,
+            Summary = "Маршрут внедрения в Крылья Ангелов готовится как сюжетное действие для ГМа.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = DescribeSarefWingsRouteSafety(GetString(request, "routeSafety", string.Empty)),
+                    Icon = "route",
+                    Tone = UiTone.Accent
+                }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static void AddSarefWingsObjectArraySection(
+        List<UiEntityDossierSection> sections,
+        JsonObject request,
+        string propertyName,
+        string title,
+        string icon)
+    {
+        if (request[propertyName] is not JsonArray array || array.Count == 0)
+            return;
+
+        var cards = array
+            .OfType<JsonObject>()
+            .Select((item, index) => BuildSarefWingsCard(item, index, icon))
+            .ToList();
+        if (cards.Count == 0)
+            return;
+
+        sections.Add(new UiEntityDossierSection
+        {
+            Id = "saref-wings-" + propertyName,
+            Title = title,
+            Icon = icon,
+            Presentation = "cards",
+            CollectionLabel = cards.Count == 1 ? "1 запись" : $"{cards.Count} записей",
+            Cards = cards
+        });
+    }
+
+    private static UiEntityCard BuildSarefWingsCard(JsonObject item, int index, string icon)
+    {
+        var category = GetString(item, "category", string.Empty);
+        var displayName = FirstNonEmpty(
+            GetString(item, "displayName", string.Empty),
+            GetString(item, "name", string.Empty),
+            DescribeSarefFragmentCategory(category),
+            $"Запись {index + 1}");
+        var summary = FirstNonEmpty(
+            GetString(item, "summary", string.Empty),
+            GetString(item, "description", string.Empty),
+            "Подробности пока не записаны.");
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Категория", DescribeSarefFragmentCategory(category));
+        AddFactIfKnown(facts, "Состояние", DescribeSarefAdvantageState(GetString(item, "state", string.Empty)));
+
+        return new UiEntityCard
+        {
+            Title = displayName,
+            Summary = summary,
+            Icon = icon,
+            Facts = facts
+        };
+    }
+
+    private static void AddSarefWingsStringArraySection(
+        List<UiEntityDossierSection> sections,
+        JsonObject request,
+        string propertyName,
+        string title,
+        string icon)
+    {
+        if (request[propertyName] is not JsonArray array || array.Count == 0)
+            return;
+
+        var values = array
+            .Select(static item => item?.GetValue<string>() ?? string.Empty)
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+        if (values.Count == 0)
+            return;
+
+        sections.Add(new UiEntityDossierSection
+        {
+            Id = "saref-wings-" + propertyName,
+            Title = title,
+            Icon = icon,
+            Presentation = "list",
+            CollectionLabel = values.Count == 1 ? "1 запись" : $"{values.Count} записей",
+            List = values
+        });
     }
 
     private static async Task<ExplorerCommandResult> BuildSarefUseAdvantage(string command, FileSystemManager fs)
@@ -387,6 +502,34 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             SarefMainStoryState.WingsRouteSafetyRisky => "рискованный маршрут",
             SarefMainStoryState.WingsRouteSafetyDesperate => "отчаянный маршрут",
             _ => string.IsNullOrWhiteSpace(routeSafety) ? "не указано" : routeSafety
+        };
+
+    private static string DescribeSarefWingsEntryMode(string entryMode) =>
+        entryMode.ToLowerInvariant() switch
+        {
+            "safe_infiltration" => "осторожное внедрение",
+            "risky_infiltration" => "рискованное внедрение",
+            "desperate_infiltration" => "отчаянное внедрение",
+            _ => string.IsNullOrWhiteSpace(entryMode) ? "не указано" : entryMode
+        };
+
+    private static string DescribeSarefFragmentCategory(string category) =>
+        category.ToLowerInvariant() switch
+        {
+            SarefMainStoryState.CategoryIdentity => "личность",
+            SarefMainStoryState.CategoryMethod => "метод",
+            SarefMainStoryState.CategoryFaction => "фракция",
+            SarefMainStoryState.CategoryPath => "путь",
+            _ => string.IsNullOrWhiteSpace(category) ? "не указано" : category
+        };
+
+    private static string DescribeSarefAdvantageState(string state) =>
+        state.ToLowerInvariant() switch
+        {
+            SarefMainStoryState.AdvantageStateAvailable => "доступно",
+            SarefMainStoryState.AdvantageStatePassive => "пассивно",
+            SarefMainStoryState.AdvantageStateSpent => "использовано",
+            _ => string.IsNullOrWhiteSpace(state) ? string.Empty : state
         };
 
     private static UiSelectionOption Option(string value, string label, string description) =>

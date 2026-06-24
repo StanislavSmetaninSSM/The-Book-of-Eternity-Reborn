@@ -2918,6 +2918,49 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SarefFindWings_RendersPlayerFacingDossierWithoutRawJson()
+    {
+        await SeedShiningAbodeFilesAsync();
+        _fs.DeleteFile("game_state/control/pending_shining_abode_actions.json");
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefWingsRouteState());
+
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/сареф найти_крылья"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, started.State);
+        Assert.DoesNotContain(started.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(started.Blocks.SelectMany(EnumerateKeyValueGrids));
+        Assert.Contains(started.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "saref-wings-infiltration" &&
+            dossier.Title == "Поиск Крыльев Ангелов");
+        var startedText = CollectBlockText(started.Blocks);
+        Assert.Contains("безопасный маршрут", startedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("JSON", startedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("requestId", startedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("pending_", startedText, StringComparison.OrdinalIgnoreCase);
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["saref_wings_action"] = JsonValue.Create("start")
+            }));
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+
+        var waiting = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/сареф найти_крылья"));
+        Assert.Equal(CommandExecutionState.Completed, waiting.State);
+        Assert.DoesNotContain(waiting.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(waiting.Blocks.SelectMany(EnumerateKeyValueGrids));
+        Assert.Contains(waiting.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "saref-wings-infiltration" &&
+            dossier.Title == "Поиск Крыльев Ангелов");
+        var waitingText = CollectBlockText(waiting.Blocks);
+        Assert.Contains("ожидает закрытия ГМ", waitingText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("JSON", waitingText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("requestId", waitingText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("pending_", waitingText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task SubmitPromptSessionAsync_SarefAdvantage_ReturnsGmPayload()
     {
         await SeedUniversalMetaFilesAsync();
