@@ -5498,6 +5498,36 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_AfterlifeChronicles_OverviewRendersDossierCardsWithoutLegacyTables()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeChroniclesRawLeakFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_chronicles"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "afterlife-chronicles");
+        var chronicleSection = Assert.Single(
+            dossier.Sections,
+            static section => section.Id == "visible-afterlife-chronicles");
+        var chronicleCard = Assert.Single(chronicleSection.Cards);
+
+        Assert.Equal("Хроники посмертия", dossier.Title);
+        Assert.Contains("Зал зеркальной клятвы", chronicleCard.Title, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Игрок впервые вошёл в зал отражений", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Зал отражений запомнил голос игрока", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Понять, почему зеркала зовут игрока", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_chronicle_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_AfterlifeChronicles_MissingStateReturnsFriendlyEmptyState()
     {
         await SeedAfterlifeCombatAndEntityFilesAsync();

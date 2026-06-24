@@ -342,12 +342,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            Panel("Хроники посмертия",
-                Grid(
-                    ("Хроник", totalChronicles.ToString()),
-                    ("Показано игроку", visibleChronicles.Count.ToString()),
-                    ("Скрытых/служебных записей не показано", hiddenCount.ToString()),
-                    ("Последний ход", DescribeChronicleLatestTurn(visibleChronicles))))
+            BuildAfterlifeChroniclesDossier(visibleChronicles, totalChronicles, hiddenCount)
         };
 
         if (read.FileExists && read.Node == null)
@@ -366,17 +361,166 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         }
         else
         {
-            blocks.Add(BuildChronicleSummaryTable(visibleChronicles));
-
-            var timeline = BuildChronicleTimelineTable(visibleChronicles);
-            if (timeline.Rows.Count > 0)
-                blocks.Add(timeline);
+            blocks.AddRange(BuildAfterlifeChronicleTimelineBlocks(visibleChronicles));
         }
 
         if (includeRawDiagnostics && read.Node != null)
             blocks.Add(Raw($"Полный JSON {AfterlifeChronicleState.StatePath}", read.Node));
 
         return Completed(request.Command, blocks, BuildChronicleActions(visibleChronicles));
+    }
+
+    private static UiEntityDossierBlock BuildAfterlifeChroniclesDossier(
+        IReadOnlyList<JsonObject> chronicles,
+        int totalChronicles,
+        int hiddenChronicles)
+    {
+        var summary = chronicles.Count > 0
+            ? "Хроники посмертия показывают, какие события уже стали памятью мира и какие нити остаются открыты."
+            : "Пока нет хроник, видимых текущей душе.";
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "afterlife-chronicles",
+            Title = "Хроники посмертия",
+            Subtitle = "Память сцен, решений и последствий",
+            Summary = summary,
+            Facts =
+            [
+                new UiEntityFact { Label = "Показано хроник", Value = chronicles.Count.ToString() },
+                new UiEntityFact { Label = "Скрытых записей", Value = hiddenChronicles.ToString() },
+                new UiEntityFact { Label = "Всего записей", Value = totalChronicles.ToString() },
+                new UiEntityFact { Label = "Последний ход", Value = DescribeChronicleLatestTurn(chronicles) }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "visible-afterlife-chronicles",
+                    Title = "Видимые хроники",
+                    Summary = "Карточки раскрывают последнее событие, последствия и незакрытые сюжетные нити.",
+                    Icon = "book-open",
+                    Presentation = "cards",
+                    CollectionLabel = $"{chronicles.Count} хроник",
+                    Collapsible = chronicles.Count > 4,
+                    InitiallyExpanded = true,
+                    Cards = chronicles.Select(BuildAfterlifeChronicleCard).ToList()
+                }
+            ]
+        };
+    }
+
+    private static UiEntityCard BuildAfterlifeChronicleCard(JsonObject chronicle)
+    {
+        var selector = ChronicleSelector(chronicle);
+        var title = ChronicleDisplayName(chronicle, selector);
+        var lastEvent = SafeChronicleText(GetString(chronicle, "lastEventsDescription", ""));
+        var eventDescriptions = EnumerateChronicleTextArray(chronicle, "eventDescriptions").ToArray();
+        var consequences = EnumerateChronicleTextArray(chronicle, "persistentConsequences").ToArray();
+        var openThreads = EnumerateChronicleTextArray(chronicle, "openThreads").ToArray();
+        var summary = FirstNonEmpty(lastEvent, eventDescriptions.FirstOrDefault() ?? string.Empty, "подробности хроники пока не описаны");
+
+        var hints = new List<UiEntityHint>();
+        AddChronicleHint(hints, "Последнее событие", lastEvent, UiTone.Default);
+        AddChronicleHint(hints, "Записанные события", eventDescriptions, UiTone.Default);
+        AddChronicleHint(hints, "Последствия", consequences, UiTone.Accent);
+        AddChronicleHint(hints, "Открытые нити", openThreads, UiTone.Warning);
+
+        return new UiEntityCard
+        {
+            Title = title,
+            Subtitle = DescribeChronicleScope(chronicle),
+            Icon = "book-open",
+            Summary = summary,
+            Facts =
+            [
+                new UiEntityFact { Label = "Область", Value = DescribeChronicleScope(chronicle) },
+                new UiEntityFact { Label = "Последний ход", Value = GetNumberOrString(chronicle, "lastUpdatedTurn", "?") },
+                new UiEntityFact { Label = "Участники", Value = DescribeChronicleParticipants(chronicle) }
+            ],
+            Hints = hints,
+            PrimaryAction = string.IsNullOrWhiteSpace(selector)
+                ? null
+                : DetailAction(
+                    "afterlife-chronicle-detail-" + ToActionIdPart(selector),
+                    "Открыть хронику",
+                    BuildChronicleDetailCommand(selector))
+        };
+    }
+
+    private static IEnumerable<UiBlock> BuildAfterlifeChronicleTimelineBlocks(IReadOnlyList<JsonObject> chronicles)
+    {
+        var timelineCards = new List<UiEntityCard>();
+        foreach (var chronicle in chronicles)
+        {
+            var chronicleName = ChronicleDisplayName(chronicle, ChronicleSelector(chronicle));
+            foreach (var eventText in EnumerateChronicleTextArray(chronicle, "eventDescriptions"))
+            {
+                timelineCards.Add(new UiEntityCard
+                {
+                    Title = DescribeChronicleEventTurn(chronicle, eventText, preferLastUpdatedTurn: false),
+                    Subtitle = chronicleName,
+                    Icon = "scroll-text",
+                    Summary = eventText
+                });
+            }
+
+            var lastEvents = SafeChronicleText(GetString(chronicle, "lastEventsDescription", ""));
+            if (!string.IsNullOrWhiteSpace(lastEvents))
+            {
+                timelineCards.Add(new UiEntityCard
+                {
+                    Title = DescribeChronicleEventTurn(chronicle, lastEvents, preferLastUpdatedTurn: true),
+                    Subtitle = chronicleName,
+                    Icon = "scroll-text",
+                    Summary = lastEvents
+                });
+            }
+        }
+
+        if (timelineCards.Count == 0)
+            yield break;
+
+        yield return new UiEntityDossierBlock
+        {
+            EntityType = "afterlife-chronicle-timeline",
+            Title = "Хронология",
+            Subtitle = "Последовательность видимых событий",
+            Summary = "Короткая лента событий из открытых хроник.",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "afterlife-chronicle-timeline-events",
+                    Title = "События",
+                    Icon = "scroll-text",
+                    Presentation = "cards",
+                    CollectionLabel = $"{timelineCards.Count} событий",
+                    Collapsible = timelineCards.Count > 6,
+                    InitiallyExpanded = true,
+                    Cards = timelineCards
+                        .OrderByDescending(static card => TryParseInt(card.Title, out var turn) ? turn : 0)
+                        .ThenBy(static card => card.Subtitle, StringComparer.OrdinalIgnoreCase)
+                        .ToList()
+                }
+            ]
+        };
+    }
+
+    private static void AddChronicleHint(List<UiEntityHint> hints, string title, IReadOnlyCollection<string> values, UiTone tone)
+    {
+        if (values.Count == 0)
+            return;
+
+        hints.Add(new UiEntityHint { Title = title, Text = string.Join(Environment.NewLine, values), Tone = tone });
+    }
+
+    private static void AddChronicleHint(List<UiEntityHint> hints, string title, string value, UiTone tone)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        hints.Add(new UiEntityHint { Title = title, Text = value, Tone = tone });
     }
 
     private static async Task<ExplorerCommandResult> BuildInbox(CommandRequest request, FileSystemManager fs)
@@ -2346,15 +2490,62 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
     private static string DescribeChronicleScope(JsonObject chronicle)
     {
-        var scopeType = SafeChronicleText(GetString(chronicle, "scopeType", ""));
-        var scopeId = SafeChronicleText(GetString(chronicle, "scopeId", ""));
-        if (string.IsNullOrWhiteSpace(scopeType) && string.IsNullOrWhiteSpace(scopeId))
+        var scopeType = GetString(chronicle, "scopeType", "");
+        var scopeLabel = DescribeChronicleScopeType(scopeType);
+        var scopeName = SafeChronicleText(FirstNonEmpty(
+            GetString(chronicle, "scopeName", ""),
+            GetString(chronicle, "locationName", ""),
+            GetString(chronicle, "guardianName", ""),
+            GetString(chronicle, "factionName", "")));
+        if (string.IsNullOrWhiteSpace(scopeName))
+        {
+            var scopeId = SafeChronicleText(GetString(chronicle, "scopeId", ""));
+            if (!LooksLikeTechnicalIdentifier(scopeId))
+                scopeName = scopeId;
+        }
+
+        if (string.IsNullOrWhiteSpace(scopeLabel) && string.IsNullOrWhiteSpace(scopeName))
             return "не указано";
-        if (string.IsNullOrWhiteSpace(scopeType))
-            return scopeId;
-        if (string.IsNullOrWhiteSpace(scopeId))
-            return scopeType;
-        return $"{scopeType}:{scopeId}";
+        if (string.IsNullOrWhiteSpace(scopeLabel))
+            return scopeName;
+        if (string.IsNullOrWhiteSpace(scopeName))
+            return scopeLabel;
+
+        return $"{scopeLabel}: {scopeName}";
+    }
+
+    private static string DescribeChronicleScopeType(string scopeType) =>
+        scopeType.Trim().ToLowerInvariant() switch
+        {
+            "guardian_scene" => "сцена Хранителя",
+            "guardian" => "Хранитель",
+            "resident_scene" => "сцена резидента",
+            "resident" => "резидент",
+            "player_soul" => "душа игрока",
+            "soul" => "душа",
+            "realm" => "область",
+            "chaos_sea" => "Море Хаоса",
+            "shining_abode" => "Сияющая Обитель",
+            "location" => "место",
+            "faction" => "фракция",
+            "project" => "проект",
+            "conflict" => "конфликт",
+            "custom" => "особая хроника",
+            "" => string.Empty,
+            _ => LooksLikeTechnicalIdentifier(scopeType) ? "хроника" : SafeChronicleText(scopeType)
+        };
+
+    private static bool LooksLikeTechnicalIdentifier(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var trimmed = value.Trim();
+        return trimmed.Contains('_', StringComparison.Ordinal) ||
+               trimmed.Contains(':', StringComparison.Ordinal) ||
+               trimmed.Contains("Id", StringComparison.Ordinal) ||
+               trimmed.Contains("ID", StringComparison.Ordinal) ||
+               trimmed.Contains("id", StringComparison.Ordinal);
     }
 
     private static string DescribeChronicleParticipants(JsonObject chronicle)

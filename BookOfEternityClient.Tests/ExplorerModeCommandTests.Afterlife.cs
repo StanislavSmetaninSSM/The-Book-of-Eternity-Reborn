@@ -200,7 +200,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var text = ExtractRenderedText();
         Assert.Contains("Хроники посмертия", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Зал зеркальной клятвы", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("guardian_scene:guardian_mirror", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("сцена Хранителя", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guardian_scene:guardian_mirror", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Игрок впервые вошёл в зал отражений", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Игрок услышал зов зеркал", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Зал отражений запомнил голос игрока", text, StringComparison.OrdinalIgnoreCase);
