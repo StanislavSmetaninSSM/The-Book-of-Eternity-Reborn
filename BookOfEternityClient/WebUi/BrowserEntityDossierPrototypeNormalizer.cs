@@ -1207,6 +1207,9 @@ internal static class BrowserEntityDossierPrototypeNormalizer
         if (HasCyrillic(trimmed))
             return false;
 
+        if (Regex.IsMatch(trimmed, @"^[+-]?\d+(?:[.,]\d+)?%?$", RegexOptions.CultureInvariant))
+            return false;
+
         if (Regex.IsMatch(trimmed, @"^\d+\s*[-–—]\s*\d+$", RegexOptions.CultureInvariant))
             return false;
 

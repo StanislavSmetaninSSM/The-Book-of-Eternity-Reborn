@@ -322,6 +322,57 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     }
 
     [Fact]
+    public async Task MortalNpcRelationshipCardsLabelNumericRelationshipValues()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/нпс");
+
+        var relationshipCards = EnumerateEntityCards(result.Blocks)
+            .Where(static card =>
+                card.Title.Contains("Отношение", StringComparison.OrdinalIgnoreCase) ||
+                card.Title.Contains("Замок отношения", StringComparison.OrdinalIgnoreCase) ||
+                card.Subtitle.Contains("Отношения", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        Assert.NotEmpty(relationshipCards);
+        Assert.Contains(
+            relationshipCards,
+            static card => card.Facts.Any(static fact =>
+                string.Equals(fact.Label, "Уровень отношения", StringComparison.OrdinalIgnoreCase) &&
+                int.TryParse(fact.Value, out _)));
+        Assert.Contains(
+            relationshipCards,
+            static card => card.Facts.Any(static fact =>
+                string.Equals(fact.Label, "Уровень отношения", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(fact.Value, "-80", StringComparison.OrdinalIgnoreCase)));
+        Assert.Contains(
+            relationshipCards,
+            static card => card.Facts.Any(static fact =>
+                string.Equals(fact.Label, "Порог отношения", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(fact.Value, "-50", StringComparison.OrdinalIgnoreCase)));
+        Assert.DoesNotContain(
+            relationshipCards,
+            static card => int.TryParse(card.Summary, out _) ||
+                           card.Facts.Any(static fact =>
+                               string.Equals(fact.Label, "Подробности", StringComparison.OrdinalIgnoreCase) &&
+                               int.TryParse(fact.Value, out _)));
+        Assert.DoesNotContain(
+            relationshipCards,
+            static card => card.Title.Contains("Замок отношения", StringComparison.OrdinalIgnoreCase) &&
+                           string.IsNullOrWhiteSpace(card.Summary) &&
+                           card.Facts.Count == 0 &&
+                           card.Metrics.Count == 0 &&
+                           card.List.Count == 0 &&
+                           card.Cards.Count == 0 &&
+                           card.Nested.Count == 0);
+        Assert.DoesNotContain(
+            relationshipCards,
+            static card => card.Facts.Count == 1 &&
+                           string.Equals(card.Facts[0].Label, "Кто", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task MortalInventoryOverviewCardsExposeUsefulItemDataAndDirectOpenActions()
     {
         var result = await ExecuteFromLoadedSaveAsync(
