@@ -129,11 +129,17 @@ public sealed class BrowserMortalWorldWriteService
         LocalUiSessionLockOwner owner)
     {
         var raw = ReadAnswer(answers, "stat_allocation_json");
-        if (string.IsNullOrWhiteSpace(raw))
-            return BrowserPromptWriteResult.ValidationError("Укажите JSON распределения характеристик.");
-
-        if (!TryParseAllocation(raw, out var allocation, out var error))
+        Dictionary<string, int> allocation;
+        string error;
+        if (!string.IsNullOrWhiteSpace(raw))
+        {
+            if (!TryParseAllocation(raw, out allocation, out error))
+                return BrowserPromptWriteResult.ValidationError(error);
+        }
+        else if (!TryParsePromptAllocation(answers, out allocation, out error))
+        {
             return BrowserPromptWriteResult.ValidationError(error);
+        }
 
         if (allocation.Count == 0)
             return BrowserPromptWriteResult.ValidationError("Распределение не содержит положительных значений.");
@@ -781,13 +787,13 @@ public sealed class BrowserMortalWorldWriteService
         }
         catch (Exception ex)
         {
-            error = $"JSON распределения не читается: {ex.Message}";
+            error = $"Распределение характеристик не читается: {ex.Message}";
             return false;
         }
 
         if (node is not JsonObject obj)
         {
-            error = "JSON распределения должен быть объектом.";
+            error = "Распределение характеристик должно быть набором характеристик и положительных чисел.";
             return false;
         }
 
@@ -807,6 +813,34 @@ public sealed class BrowserMortalWorldWriteService
             }
 
             allocation[key] = amount;
+        }
+
+        return true;
+    }
+
+    private static bool TryParsePromptAllocation(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        out Dictionary<string, int> allocation,
+        out string error)
+    {
+        allocation = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        error = string.Empty;
+
+        foreach (var stat in Characteristics.All)
+        {
+            var raw = ReadAnswer(answers, $"stat_{stat}");
+            if (string.IsNullOrWhiteSpace(raw))
+                continue;
+
+            var statName = Characteristics.RussianNames.GetValueOrDefault(stat, stat);
+            if (!int.TryParse(raw.Trim(), out var amount) || amount < 0)
+            {
+                error = $"Значение для «{statName}» должно быть неотрицательным целым числом.";
+                return false;
+            }
+
+            if (amount > 0)
+                allocation[stat] = amount;
         }
 
         return true;

@@ -739,58 +739,87 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var localTurn = BuildLocalTurnStatus(fs);
         var statPoints = await ReadJson(fs, "game_state/player/stat_points.json");
         var characteristics = await ReadJson(fs, "game_state/misc/characteristics.json");
-        var rows = new List<UiTableRow>();
-        foreach (var stat in Characteristics.All)
-        {
-            var value = TryGetInt(characteristics.Node as JsonObject, stat, 1);
-            rows.Add(Row(
-                Characteristics.RussianNames.GetValueOrDefault(stat, stat),
-                stat,
-                value.ToString()));
-        }
-
         var unspent = TryGetInt(statPoints.Node as JsonObject, "unspentStatPoints", 0);
+        var characteristicCards = Characteristics.All
+            .Select(stat => BuildStatDistributionCard(characteristics.Node as JsonObject, stat))
+            .ToList();
+        var prompts = Characteristics.All
+            .Select(stat =>
+            {
+                var name = Characteristics.RussianNames.GetValueOrDefault(stat, stat);
+                return (UiPrompt)new UiTextInputPrompt
+                {
+                    Id = $"stat_{stat}",
+                    Prompt = $"{name}: добавить очков",
+                    Placeholder = "0",
+                    DefaultValue = "0",
+                    Required = false
+                };
+            })
+            .ToList();
+
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
+            new UiEntityDossierBlock
             {
+                EntityType = "stat-distribution",
                 Title = "Распределение характеристик",
-                Blocks =
+                Summary = unspent > 0
+                    ? $"Доступно очков характеристик: {unspent}. Укажите, сколько очков добавить к нужным характеристикам."
+                    : "Нераспределённых очков характеристик сейчас нет.",
+                Facts =
                 [
-                    new UiTextBlock
+                    new UiEntityFact { Label = "Доступно очков", Value = unspent.ToString() }
+                ],
+                Hints =
+                [
+                    new UiEntityHint
                     {
+                        Title = "Как распределить",
                         Text = unspent > 0
-                            ? $"Доступно очков характеристик: {unspent}. Браузерная форма безопасно распределяет очки без console-key навигации."
-                            : "Нераспределённых очков характеристик сейчас нет.",
+                            ? "Заполните только те характеристики, которые хотите повысить. Пустые поля и нули не тратят очки."
+                            : "Очков для распределения сейчас нет, но текущие значения можно посмотреть ниже.",
                         Tone = unspent > 0 ? UiTone.Accent : UiTone.Muted
-                    },
-                    new UiTableBlock
+                    }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
                     {
+                        Id = "stat-distribution-characteristics",
                         Title = "Текущие характеристики",
-                        Columns = ["Название", "Ключ", "Значение"],
-                        Rows = rows
+                        Icon = "package",
+                        Presentation = "cards",
+                        CollectionLabel = $"{characteristicCards.Count} характеристик",
+                        Cards = characteristicCards
                     }
                 ]
             }
         };
-        AddRawOrWarning(blocks, "JSON: stat_points", statPoints);
 
         return Result(
             command,
             localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
             blocks,
-            prompts:
+            prompts: prompts);
+    }
+
+    private static UiEntityCard BuildStatDistributionCard(JsonObject? characteristics, string stat)
+    {
+        var name = Characteristics.RussianNames.GetValueOrDefault(stat, stat);
+        var value = TryGetInt(characteristics, stat, 1);
+        return new UiEntityCard
+        {
+            Title = name,
+            Subtitle = "Характеристика",
+            Summary = $"Текущее значение: {value}.",
+            Icon = "package",
+            Facts =
             [
-                new UiLongTextInputPrompt
-                {
-                    Id = "stat_allocation_json",
-                    Prompt = "Распределение очков JSON",
-                    Placeholder = "{ \"strength\": 1, \"wisdom\": 2 }",
-                    MinLines = 2,
-                    MaxLines = 8
-                }
-            ]);
+                new UiEntityFact { Label = "Текущее значение", Value = value.ToString() }
+            ]
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildCompanionDirectiveAsync(string command, FileSystemManager fs)

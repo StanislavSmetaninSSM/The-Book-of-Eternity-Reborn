@@ -2318,7 +2318,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             started.InteractiveSession!.SessionId,
             new Dictionary<string, JsonNode?>
             {
-                ["stat_allocation_json"] = JsonValue.Create("{ \"strength\": 2, \"wisdom\": 1 }")
+                ["stat_strength"] = JsonValue.Create("2"),
+                ["stat_wisdom"] = JsonValue.Create("1")
             },
             OwnerId: "browser-test"));
 
@@ -2346,7 +2347,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             started.InteractiveSession!.SessionId,
             new Dictionary<string, JsonNode?>
             {
-                ["stat_allocation_json"] = JsonValue.Create("{ \"strength\": 2 }")
+                ["stat_strength"] = JsonValue.Create("2")
             },
             OwnerId: "browser-test"));
 
@@ -2401,6 +2402,38 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         {
             Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
         }
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Distribute_RendersDossierCardsAndPlayerFacingPrompts()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/player/stat_points.json", "{ \"unspentStatPoints\": 3 }");
+        await _fs.WriteFileAtomicAsync("game_state/misc/characteristics.json", """
+        {
+          "strength": 1,
+          "wisdom": 2
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/distribute"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "stat-distribution" &&
+            block.Title == "Распределение характеристик");
+        var text = CollectBlockText([dossier]);
+        Assert.Contains("Доступно очков", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сила", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Мудрость", text, StringComparison.OrdinalIgnoreCase);
+        var promptText = CollectPromptAndNotificationText(result);
+        Assert.Contains(result.Prompts, static prompt => prompt.Id == "stat_strength");
+        Assert.Contains(result.Prompts, static prompt => prompt.Id == "stat_wisdom");
+        Assert.DoesNotContain("JSON", text + "\n" + promptText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("strength", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("stat_points", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
