@@ -1652,6 +1652,58 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("soul_state", payload, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_Chronicle_RendersReadableSectionsWithoutRawJson()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/character_chronicle.json", """
+        [
+          {
+            "entryId": "chronicle_valmont_rebirth_001",
+            "title": "Возвращение в Вальмонт",
+            "summary": "Душа Асурана вновь открыла глаза в семейной библиотеке.",
+            "eventType": "rebirth",
+            "turnNumber": 1
+          }
+        ]
+        """);
+        await _fs.WriteFileAtomicAsync("lore/chaos_sea/player_chronicle.json", """
+        {
+          "entries": [
+            {
+              "title": "Пепельная Искра",
+              "content": "Память о первой сделке с хранителем.",
+              "status": "unlocked"
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/quests/plot_outline.json", """
+        {
+          "mainArc": {
+            "summary": "Выяснить, кто управляет рынком.",
+            "nextImmediateStep": "Найти связного в трактире."
+          }
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/chronicle", AdvancedEnabled: false));
+
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Хроника", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Возвращение в Вальмонт", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Душа Асурана вновь открыла глаза", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Пепельная Искра", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Выяснить, кто управляет рынком", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        foreach (var forbidden in new[] { "JSON:", "entryId", "eventType", "character_chronicle", "player_chronicle", "plot_outline", "game_state/", ".json" })
+            Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
+        AssertNoFlattenedStructuredDetails(result);
+    }
+
     [Theory]
     [InlineData("/codex", "Первый знак", "Тестовая запись кодекса")]
     [InlineData("/achievements", "Первое испытание", "Проверить браузерный вывод")]

@@ -1508,17 +1508,39 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
     private static async Task<ExplorerCommandResult> BuildChronicle(string command, FileSystemManager fs)
     {
+        var files = new[]
+        {
+            ("Хроника персонажа", "game_state/meta/character_chronicle.json"),
+            ("Хроника игрока", "lore/chaos_sea/player_chronicle.json"),
+            ("Сюжетный план", "game_state/quests/plot_outline.json")
+        };
+        var reads = new List<(string Title, JsonReadResult Read)>();
+        foreach (var (title, path) in files)
+            reads.Add((title, await ReadJson(fs, path)));
+
         var blocks = new List<UiBlock>
         {
-            Panel("Хроника", Grid(
-                ("character_chronicle", await DescribeJsonFile(fs, "game_state/meta/character_chronicle.json")),
-                ("player_chronicle", await DescribeJsonFile(fs, "lore/chaos_sea/player_chronicle.json")),
-                ("plot_outline", await DescribeJsonFile(fs, "game_state/quests/plot_outline.json"))))
+            Panel("Хроника", Grid(reads.Select(static read =>
+                (read.Title, DescribeReadableJsonFileState(read.Read))).ToArray()))
         };
 
-        await AddRawJsonIfPresent(blocks, fs, "game_state/meta/character_chronicle.json", "JSON: character_chronicle");
-        await AddRawJsonIfPresent(blocks, fs, "lore/chaos_sea/player_chronicle.json", "JSON: player_chronicle");
-        await AddRawJsonIfPresent(blocks, fs, "game_state/quests/plot_outline.json", "JSON: plot_outline");
+        foreach (var (title, read) in reads)
+        {
+            if (read.Node != null)
+            {
+                blocks.AddRange(BuildReadableJsonBlocks(title, read.Node));
+                continue;
+            }
+
+            if (read.FileExists)
+            {
+                blocks.Add(Message(
+                    UiNotificationSeverity.Warning,
+                    title,
+                    "Запись найдена, но её не удалось прочитать."));
+            }
+        }
+
         return Completed(command, blocks);
     }
 
@@ -2718,6 +2740,10 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             "summary" => "Кратко",
             "description" => "Описание",
             "content" => "Текст",
+            "mainArc" => "Основная арка",
+            "nextImmediateStep" => "Следующий шаг",
+            "eventType" => "Тип события",
+            "turnNumber" => "Ход",
             "category" => "Категория",
             "type" => "Тип",
             "status" or "state" => "Состояние",
@@ -2742,6 +2768,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             "unlocked" => "открыто",
             "locked" => "закрыто",
             "pending" => "ожидает",
+            "rebirth" => "перерождение",
             _ => value
         };
 
@@ -2791,6 +2818,13 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         if (read.Node != null)
             return "прочитано";
         return read.FileExists ? "повреждён" : "отсутствует";
+    }
+
+    private static string DescribeReadableJsonFileState(JsonReadResult read)
+    {
+        if (read.Node != null)
+            return "прочитано";
+        return read.FileExists ? "требует починки" : "пока нет данных";
     }
 
     private static async Task<JsonReadResult> ReadJson(FileSystemManager fs, string path)
