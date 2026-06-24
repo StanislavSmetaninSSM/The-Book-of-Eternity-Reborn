@@ -200,12 +200,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            Panel("Угрозы посмертия",
-                Grid(
-                    ("Всего известных системе", (threats?.Count ?? 0).ToString()),
-                    ("Видимых игроку", visibleThreats.Count.ToString()),
-                    ("Скрытых угроз не показано", hiddenCount.ToString()),
-                    ("Активных видимых действий", activeVisible.ToString())))
+            BuildAfterlifeThreatsDossier(visibleThreats, threats?.Count ?? 0, hiddenCount, activeVisible)
         };
 
         if (read.FileExists && read.Node == null)
@@ -214,35 +209,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             return Completed(request.Command, blocks);
         }
 
-        if (visibleThreats.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Видимые угрозы",
-                Columns = ["Угроза", "Область", "Напряжённость угрозы", "Архетип", "Активность", "Давление", "Связи", "Подробно"],
-                Rows = visibleThreats
-                    .Select(threat =>
-                    {
-                        var selector = ThreatSelector(threat);
-                        return new UiTableRow
-                        {
-                            Cells =
-                            [
-                                GetString(threat, "displayName", GetString(threat, "threatId", "Без названия")),
-                                DescribeRealm(GetString(threat, "realm", "?")),
-                                GetNumberOrString(threat, "intensity", "0"),
-                                DescribeThreatArchetype(threat["threatArchetype"] as JsonObject),
-                                DescribeThreatActivity(threat["currentActivity"] as JsonObject),
-                                DescribeThreatImpact(threat["impactProfile"] as JsonObject),
-                                DescribeThreatLinks(threat),
-                                string.IsNullOrWhiteSpace(selector) ? "не указано" : BuildThreatDetailCommand(selector)
-                            ]
-                        };
-                    })
-                    .ToList()
-            });
-        }
-        else
+        if (visibleThreats.Count == 0)
         {
             blocks.Add(Message("Видимых угроз нет", "Скрытые угрозы, если они есть, не раскрываются обычному интерфейсу до сюжетного раскрытия."));
         }
@@ -251,6 +218,106 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             blocks.Add(Raw($"Полный JSON {AfterlifeActiveThreatState.StatePath}", read.Node));
 
         return Completed(request.Command, blocks, BuildThreatActions(visibleThreats));
+    }
+
+    private static UiEntityDossierBlock BuildAfterlifeThreatsDossier(
+        IReadOnlyList<JsonObject> visibleThreats,
+        int totalThreats,
+        int hiddenThreats,
+        int activeVisible)
+    {
+        var summary = visibleThreats.Count > 0
+            ? "Открытые душе угрозы посмертия: кто давит на сцену, чем опасен след и куда открыть подробности."
+            : "Сейчас нет угроз, раскрытых текущей душе.";
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "afterlife-threats",
+            Title = "Угрозы посмертия",
+            Subtitle = "Видимые следы опасностей в посмертии",
+            Summary = summary,
+            Facts =
+            [
+                new UiEntityFact { Label = "Показано угроз", Value = visibleThreats.Count.ToString() },
+                new UiEntityFact { Label = "Скрытых угроз", Value = hiddenThreats.ToString() },
+                new UiEntityFact { Label = "Активных действий", Value = activeVisible.ToString() },
+                new UiEntityFact { Label = "Всего записей", Value = totalThreats.ToString() }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "visible-afterlife-threats",
+                    Title = "Видимые угрозы",
+                    Summary = "Каждая карточка показывает текущий след угрозы, её давление и команду открытия подробностей.",
+                    Icon = "alert-triangle",
+                    Presentation = "cards",
+                    CollectionLabel = $"{visibleThreats.Count} угроз",
+                    Collapsible = visibleThreats.Count > 4,
+                    InitiallyExpanded = true,
+                    Cards = visibleThreats.Select(BuildAfterlifeThreatCard).ToList()
+                }
+            ]
+        };
+    }
+
+    private static UiEntityCard BuildAfterlifeThreatCard(JsonObject threat)
+    {
+        var selector = ThreatSelector(threat);
+        var name = ThreatDisplayName(threat, selector);
+        var activity = threat["currentActivity"] as JsonObject;
+        var summary = FirstNonEmpty(
+            SafePlayerText(GetString(activity, "description", ""), string.Empty),
+            SafePlayerText(GetString(activity, "narrativeSummary", ""), string.Empty),
+            DescribeThreatImpact(threat["impactProfile"] as JsonObject));
+
+        return new UiEntityCard
+        {
+            Title = name,
+            Subtitle = DescribeRealm(GetString(threat, "realm", "?")),
+            Icon = "alert-triangle",
+            Summary = SafePlayerText(summary, "угроза раскрыта, но её текущий след не описан"),
+            Badges =
+            [
+                new UiEntityBadge { Label = $"напряжённость {GetNumberOrString(threat, "intensity", "0")}", Tone = UiTone.Warning, Icon = "gauge" }
+            ],
+            Facts =
+            [
+                new UiEntityFact { Label = "Область", Value = DescribeRealm(GetString(threat, "realm", "?")) },
+                new UiEntityFact { Label = "Напряжённость угрозы", Value = GetNumberOrString(threat, "intensity", "0") },
+                new UiEntityFact { Label = "Архетип", Value = DescribeThreatArchetype(threat["threatArchetype"] as JsonObject) },
+                new UiEntityFact { Label = "Активность", Value = DescribeThreatActivity(activity) },
+                new UiEntityFact { Label = "Давление", Value = DescribeThreatImpact(threat["impactProfile"] as JsonObject) },
+                new UiEntityFact { Label = "Связи", Value = DescribeThreatLinks(threat) }
+            ],
+            Hints = BuildThreatCardHints(threat),
+            PrimaryAction = string.IsNullOrWhiteSpace(selector)
+                ? null
+                : DetailAction(
+                    "afterlife-threat-detail-" + ToActionIdPart(selector),
+                    "Открыть подробности угрозы",
+                    BuildThreatDetailCommand(selector))
+        };
+    }
+
+    private static List<UiEntityHint> BuildThreatCardHints(JsonObject threat)
+    {
+        var hints = new List<UiEntityHint>();
+        var activity = threat["currentActivity"] as JsonObject;
+        var narrative = SafePlayerText(GetString(activity, "narrativeSummary", ""), string.Empty);
+        if (!string.IsNullOrWhiteSpace(narrative))
+            hints.Add(new UiEntityHint { Title = "Как это ощущается", Text = narrative, Tone = UiTone.Default });
+
+        var ledger = (threat["ledger"] as JsonArray)?
+            .OfType<JsonObject>()
+            .Select(static entry => SafePlayerText(GetString(entry, "summary", ""), string.Empty))
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Take(3)
+            .ToArray() ?? [];
+        if (ledger.Length > 0)
+            hints.Add(new UiEntityHint { Title = "Последний след", Text = string.Join(Environment.NewLine, ledger), Tone = UiTone.Accent });
+
+        return hints;
     }
 
     private static async Task<ExplorerCommandResult> BuildChronicles(

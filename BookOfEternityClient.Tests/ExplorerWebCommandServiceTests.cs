@@ -5732,6 +5732,35 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("API", action.Label, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeThreats_OverviewRendersDossierCardsWithoutLegacyTables()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeThreatsDrilldownFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_threats"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "afterlife-threats");
+        var threatSection = Assert.Single(
+            dossier.Sections,
+            static section => section.Id == "visible-afterlife-threats");
+        var threatCard = Assert.Single(threatSection.Cards);
+
+        Assert.Equal("Угрозы посмертия", dossier.Title);
+        Assert.Contains("Охотник зеркального долга", threatCard.Title, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Долг следует за душой", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Напряжённость угрозы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_threat_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/afterlife_profiles профиль player_soul", "Профиль посмертия: Test Soul", "Зеркало Ночной Розы", "hidden_saref_combat_effect_marker")]
     [InlineData("/afterlife_threats угроза threat_mirror_hunter", "Угроза посмертия: Охотник зеркального долга", "Долг следует за душой", "hidden_threat_marker")]
