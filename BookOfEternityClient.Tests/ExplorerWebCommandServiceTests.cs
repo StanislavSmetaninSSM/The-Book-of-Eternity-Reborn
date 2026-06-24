@@ -5929,6 +5929,31 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SpiritualCombatLog_OverviewRendersDossierCardsWithoutLegacyTables()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_combat_log"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "spiritual-combat-log");
+        var exchanges = Assert.Single(dossier.Sections, static section => section.Id == "spiritual-combat-log-exchanges");
+        var recent = Assert.Single(dossier.Sections, static section => section.Id == "spiritual-combat-log-recent");
+
+        Assert.Contains("Журнал духовного боя", dossier.Title, StringComparison.OrdinalIgnoreCase);
+        Assert.Single(exchanges.Cards);
+        Assert.Single(recent.Cards);
+        Assert.Contains("Давление", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Чернильные Перья", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_SpiritualAction_SanitizesActiveCombatConditionRawJson()
     {
         await SeedUniversalMetaFilesAsync();

@@ -782,7 +782,9 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
     private static UiEntityCard BuildSpiritualExchangeCard(
         JsonObject exchange,
-        Func<string, string> detailCommandBuilder)
+        Func<string, string> detailCommandBuilder,
+        string actionIdPrefix = "spiritual-conflict-exchange-detail-",
+        string actionLabel = "Открыть обмен")
     {
         var selector = SpiritualExchangeSelector(exchange);
         var title = SpiritualExchangeDisplayName(exchange, selector);
@@ -808,8 +810,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             PrimaryAction = string.IsNullOrWhiteSpace(selector)
                 ? null
                 : DetailAction(
-                    "spiritual-conflict-exchange-detail-" + ToActionIdPart(selector),
-                    "Открыть обмен",
+                    actionIdPrefix + ToActionIdPart(selector),
+                    actionLabel,
                     detailCommandBuilder(selector))
         };
     }
@@ -860,24 +862,9 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            Panel("Журнал духовного боя",
-                Grid(
-                    ("Активный конфликт", DescribeActiveConflict(active)),
-                    ("Обменов активного конфликта", exchangeLog.Count.ToString()),
-                    ("Недавних завершённых конфликтов", recent.Count.ToString()),
-                    ("Источник", "журнал духовного боя")))
+            BuildSpiritualCombatLogDossier(active, exchangeLog, recent)
         };
 
-        if (exchangeLog.Count > 0)
-            blocks.Add(BuildExchangeTable(exchangeLog, BuildCombatLogExchangeDetailCommand));
-        if (active?["combatConditions"] is JsonArray combatConditions)
-        {
-            var visibleConditions = BuildVisibleCombatConditionsTable(combatConditions);
-            if (visibleConditions != null)
-                blocks.Add(visibleConditions);
-        }
-        if (recent.Count > 0)
-            blocks.Add(BuildRecentConflictTable(recent, BuildCombatLogRecentDetailCommand));
         if (exchangeLog.Count == 0 && recent.Count == 0)
             blocks.Add(Message("Журнал пуст", "Когда ГМ проведёт обмен или завершит конфликт, здесь появятся кубики, позиция, напряжение и награды."));
 
@@ -887,6 +874,123 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             SanitizeCombatConditionsForPlayer(read),
             includeRawDiagnostics);
         return Completed(request.Command, blocks, BuildCombatLogActions(exchangeLog, recent));
+    }
+
+    private static UiEntityDossierBlock BuildSpiritualCombatLogDossier(
+        JsonObject? active,
+        IReadOnlyList<JsonObject> exchangeLog,
+        IReadOnlyList<JsonObject> recent)
+    {
+        var sections = new List<UiEntityDossierSection>();
+        if (exchangeLog.Count > 0)
+        {
+            sections.Add(BuildSpiritualCombatLogExchangeSection(exchangeLog));
+        }
+
+        if (active?["combatConditions"] is JsonArray combatConditions)
+        {
+            var conditions = BuildSpiritualConflictConditionsSection(combatConditions);
+            if (conditions != null)
+            {
+                sections.Add(new UiEntityDossierSection
+                {
+                    Id = "spiritual-combat-log-conditions",
+                    Title = conditions.Title,
+                    Summary = "Условия, которые действовали или продолжают действовать в текущем духовном конфликте.",
+                    Icon = conditions.Icon,
+                    Presentation = conditions.Presentation,
+                    CollectionLabel = conditions.CollectionLabel,
+                    Collapsible = conditions.Collapsible,
+                    InitiallyExpanded = conditions.InitiallyExpanded,
+                    Cards = conditions.Cards
+                });
+            }
+        }
+
+        if (recent.Count > 0)
+        {
+            sections.Add(BuildSpiritualCombatLogRecentSection(recent));
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "spiritual-combat-log",
+            Title = "Журнал духовного боя",
+            Subtitle = "Обмены, условия и завершённые итоги",
+            Summary = "Краткая история активного духовного конфликта и последних завершённых противостояний.",
+            Facts =
+            [
+                new UiEntityFact { Label = "Активный конфликт", Value = DescribeActiveConflict(active) },
+                new UiEntityFact { Label = "Обменов активного конфликта", Value = exchangeLog.Count.ToString() },
+                new UiEntityFact { Label = "Недавних завершённых конфликтов", Value = recent.Count.ToString() }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static UiEntityDossierSection BuildSpiritualCombatLogExchangeSection(IReadOnlyList<JsonObject> exchangeLog) =>
+        new()
+        {
+            Id = "spiritual-combat-log-exchanges",
+            Title = "Обмены активного конфликта",
+            Summary = "Открытые записи обменов с исходом, позицией, бросками и наградами.",
+            Icon = "swords",
+            Presentation = "cards",
+            CollectionLabel = $"{exchangeLog.Count} обменов",
+            Collapsible = exchangeLog.Count > 4,
+            InitiallyExpanded = true,
+            Cards = exchangeLog
+                .Select(exchange => BuildSpiritualExchangeCard(
+                    exchange,
+                    BuildCombatLogExchangeDetailCommand,
+                    "spiritual-combat-log-exchange-detail-",
+                    "Открыть запись боя"))
+                .ToList()
+        };
+
+    private static UiEntityDossierSection BuildSpiritualCombatLogRecentSection(IReadOnlyList<JsonObject> recent) =>
+        new()
+        {
+            Id = "spiritual-combat-log-recent",
+            Title = "Недавние завершённые конфликты",
+            Summary = "Итоги уже закрытых духовных конфликтов и полученные награды.",
+            Icon = "scroll-text",
+            Presentation = "cards",
+            CollectionLabel = $"{recent.Count} итогов",
+            Collapsible = recent.Count > 4,
+            InitiallyExpanded = true,
+            Cards = recent.Select(BuildRecentConflictCard).ToList()
+        };
+
+    private static UiEntityCard BuildRecentConflictCard(JsonObject conflict)
+    {
+        var selector = RecentConflictSelector(conflict);
+        var title = RecentConflictDisplayName(conflict, selector);
+        var summary = SafePlayerText(
+            FirstNonEmpty(GetString(conflict, "resolutionSummary", ""), DescribePlayerOutcome(GetString(conflict, "playerOutcome", GetString(conflict, "outcome", "?")))),
+            DescribePlayerOutcome(GetString(conflict, "playerOutcome", GetString(conflict, "outcome", "?"))));
+
+        return new UiEntityCard
+        {
+            Title = title,
+            Subtitle = DescribeRecentResolutionState(GetString(conflict, "resolutionState", "?")),
+            Icon = "scroll-text",
+            Summary = summary,
+            Facts =
+            [
+                new UiEntityFact { Label = "Состояние", Value = DescribeRecentResolutionState(GetString(conflict, "resolutionState", "?")) },
+                new UiEntityFact { Label = "Исход", Value = DescribePlayerOutcome(GetString(conflict, "playerOutcome", GetString(conflict, "outcome", "?"))) },
+                new UiEntityFact { Label = "Действие", Value = DescribeArt(GetString(conflict, "operationType", "?")) },
+                new UiEntityFact { Label = "Ход", Value = GetNumberOrString(conflict, "resolvedAtTurn", "?") },
+                new UiEntityFact { Label = "Награда", Value = DescribeReward(conflict["rewardAudit"] as JsonObject) }
+            ],
+            PrimaryAction = string.IsNullOrWhiteSpace(selector)
+                ? null
+                : DetailAction(
+                    "spiritual-combat-log-recent-detail-" + ToActionIdPart(selector),
+                    "Открыть итог",
+                    BuildCombatLogRecentDetailCommand(selector))
+        };
     }
 
     private static ExplorerCommandResult BuildHelp(string command) =>
