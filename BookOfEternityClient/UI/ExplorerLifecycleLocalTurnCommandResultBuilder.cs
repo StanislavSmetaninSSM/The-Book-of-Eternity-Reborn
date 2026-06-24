@@ -1828,30 +1828,11 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
-            {
-                Title = "Разговор с НПС",
-                Blocks =
-                [
-                    new UiTextBlock
-                    {
-                        Text = statusText,
-                        Tone = selected == null && !string.IsNullOrWhiteSpace(requestedNpcId) ? UiTone.Warning : UiTone.Accent
-                    },
-                    new UiTableBlock
-                    {
-                        Title = "Известные персонажи",
-                        Columns = ["Имя", "Где находится", "Отношение"],
-                        Rows = orderedNpcs
-                            .Take(20)
-                            .Select(static npc => Row(
-                                npc.Name,
-                                FirstNonEmpty(npc.Location, "-"),
-                                string.IsNullOrWhiteSpace(npc.Relationship) ? "-" : npc.Relationship))
-                            .ToList()
-                    }
-                ]
-            }
+            BuildNpcConversationDossier(
+                statusText,
+                orderedNpcs,
+                selected,
+                selected == null && !string.IsNullOrWhiteSpace(requestedNpcId) ? UiTone.Warning : UiTone.Accent)
         };
 
         return Result(
@@ -1883,6 +1864,77 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     MaxLines = 6
                 }
             ]);
+    }
+
+    private static UiEntityDossierBlock BuildNpcConversationDossier(
+        string statusText,
+        IReadOnlyList<NpcConversationOption> npcs,
+        NpcConversationOption? selected,
+        UiTone statusTone)
+    {
+        var visibleNpcs = npcs.Take(20).ToList();
+        var collectionLabel = npcs.Count == 1
+            ? "1 персонаж"
+            : visibleNpcs.Count == npcs.Count
+                ? $"{npcs.Count} персонажей"
+                : $"{visibleNpcs.Count} из {npcs.Count} персонажей";
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "npc-conversation",
+            Title = "Разговор с НПС",
+            Summary = statusText,
+            Hints =
+            [
+                new UiEntityHint
+                {
+                    Title = selected == null ? "Выбор собеседника" : "Выбранный собеседник",
+                    Text = statusText,
+                    Tone = statusTone
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "npc-conversation-known-npcs",
+                    Title = "Известные персонажи",
+                    Summary = "Выберите, с кем начать отдельную сцену разговора, и опишите тему для следующего хода.",
+                    Icon = "users",
+                    Presentation = "cards",
+                    CollectionLabel = collectionLabel,
+                    Cards = visibleNpcs
+                        .Select(npc => BuildNpcConversationCard(npc, selected))
+                        .ToList()
+                }
+            ]
+        };
+    }
+
+    private static UiEntityCard BuildNpcConversationCard(
+        NpcConversationOption npc,
+        NpcConversationOption? selected)
+    {
+        var isSelected = selected != null &&
+            string.Equals(npc.NpcId, selected.NpcId, StringComparison.OrdinalIgnoreCase);
+        var location = FirstNonEmpty(npc.Location, "местоположение не указано");
+        var relationship = FirstNonEmpty(npc.Relationship, "отношение не указано");
+
+        return new UiEntityCard
+        {
+            Title = npc.Name,
+            Subtitle = isSelected ? "Выбранный собеседник" : "Известный персонаж",
+            Summary = $"Где находится: {location}. Отношение: {relationship}.",
+            Icon = "user",
+            Badges = isSelected
+                ? [new UiEntityBadge { Label = "Выбран", Tone = UiTone.Accent }]
+                : [],
+            Facts =
+            [
+                new UiEntityFact { Label = "Где находится", Value = location },
+                new UiEntityFact { Label = "Отношение", Value = relationship }
+            ]
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildNpcTradeAsync(

@@ -4236,6 +4236,38 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_NpcTalk_RendersDossierCardsInsteadOfTables()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Mortal World"
+        }
+        """);
+        await SeedRichNpcDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc_talk npc_serafina"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "npc-conversation" &&
+            block.Title == "Разговор с НПС");
+        var section = Assert.Single(dossier.Sections, static section => section.Id == "npc-conversation-known-npcs");
+        Assert.Equal("cards", section.Presentation);
+        Assert.Contains(section.Cards, static card =>
+            card.Title == "Серафина" &&
+            card.Facts.Any(static fact => fact.Label == "Где находится" && fact.Value == "Северные ворота") &&
+            card.Facts.Any(static fact => fact.Label == "Отношение" && fact.Value == "42"));
+
+        var text = CollectBlockText([dossier]);
+        Assert.Contains("Выбран собеседник: Серафина", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Северные ворота", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("npc_serafina", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_NpcSectionDetail_ShowsOnlyRequestedDrilldownSection()
     {
         await SeedRichNpcDrilldownFilesAsync();
