@@ -2990,6 +2990,26 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SarefAgenda_RendersAgendaDossierInsteadOfLegacyPanel()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefActionReadyState());
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/сареф поручение"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateKeyValueGrids));
+        Assert.Empty(result.Blocks.SelectMany(EnumeratePanels));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "saref-agenda" &&
+            dossier.Title == "Текущая повестка");
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Подчинить последнюю независимую фракцию", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("не завершено", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task SubmitPromptSessionAsync_SarefAdvantage_ReturnsGmPayload()
     {
         await SeedUniversalMetaFilesAsync();

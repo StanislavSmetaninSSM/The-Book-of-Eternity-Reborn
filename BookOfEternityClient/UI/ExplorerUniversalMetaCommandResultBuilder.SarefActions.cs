@@ -377,11 +377,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         return RequiresInput(command,
             [
                 BuildSarefActionOverview(story.Root, "Поручение Сарефа"),
-                Panel("Текущая повестка",
-                    Grid(
-                        ("Цель", GetString(agenda, "currentObjective")),
-                        ("Поручений", CountArray(agenda, "assignments").ToString()),
-                        ("Доминирование", agenda["dominationScene"] is JsonObject ? "есть сцена" : "не завершено")))
+                BuildSarefAgendaDossier(agenda)
             ],
             [
                 new UiSelectionPrompt
@@ -406,6 +402,41 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     Placeholder = "Опишите поручение, целевую фракцию, доказательство или итог сцены."
                 }
             ]);
+    }
+
+    private static UiEntityDossierBlock BuildSarefAgendaDossier(JsonObject agenda)
+    {
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Цель", GetString(agenda, "currentObjective"));
+        AddFactIfKnown(facts, "Поручений", CountArray(agenda, "assignments").ToString());
+        AddFactIfKnown(facts, "Доминирование", agenda["dominationScene"] is JsonObject ? "есть сцена" : "не завершено");
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "saref-agenda",
+            Title = "Текущая повестка",
+            Summary = FirstNonEmpty(GetString(agenda, "currentObjective", string.Empty), "Текущая цель Сарефа пока не записана."),
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = agenda["dominationScene"] is JsonObject ? "финал записан" : "финал не завершён",
+                    Icon = "list-check",
+                    Tone = agenda["dominationScene"] is JsonObject ? UiTone.Success : UiTone.Warning
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "saref-agenda-current",
+                    Title = "Повестка",
+                    Icon = "list-check",
+                    Presentation = "facts",
+                    Facts = facts
+                }
+            ]
+        };
     }
 
     private static ExplorerCommandResult RequiresInput(string command, IEnumerable<UiBlock> blocks, IEnumerable<UiPrompt> prompts) =>
