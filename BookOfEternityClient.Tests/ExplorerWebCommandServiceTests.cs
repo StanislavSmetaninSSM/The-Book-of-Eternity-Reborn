@@ -191,6 +191,30 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_Gm_RendersThoughtsWithoutRawDebugJson()
+    {
+        await _fs.WriteFileAtomicAsync("output/debug_logs.json", """
+        {
+          "gm_thoughts_markdown": "ГМ заметил: игрок осторожно проверяет письмо.",
+          "last_validation_payload": {
+            "internalCode": "debug-only"
+          }
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/gm", AdvancedEnabled: false));
+
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("ГМ заметил", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("output/debug_logs.json", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("internalCode", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/квесты", "Печать с крыльями")]
     [InlineData("/навыки", "Чувство магических потоков")]

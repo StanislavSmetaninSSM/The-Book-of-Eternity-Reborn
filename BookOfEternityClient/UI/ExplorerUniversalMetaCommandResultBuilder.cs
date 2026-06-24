@@ -1641,8 +1641,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             {
                 Tone = UiTone.Subtle,
                 Text = GetString(read.Node, "gm_thoughts_markdown", "Нет данных ГМ.")
-            },
-            Raw("Полный JSON output/debug_logs.json", read.Node));
+            });
     }
 
     private static ExplorerCommandResult BuildDebug(
