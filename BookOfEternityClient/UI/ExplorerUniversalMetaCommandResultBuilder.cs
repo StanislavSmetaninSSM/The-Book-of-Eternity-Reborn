@@ -141,7 +141,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             CommandKind.Codex => await BuildJsonFile(normalizedCommand, fs, "Кодекс", "lore/codex_entries.json", BuildCodexSummary),
             CommandKind.Achievements => await BuildJsonFile(normalizedCommand, fs, "Достижения", "game_state/meta/achievements.json", BuildAchievementsSummary),
             CommandKind.Chronicle => await BuildChronicle(normalizedCommand, fs),
-            CommandKind.Story => BuildStory(normalizedCommand, fs),
+            CommandKind.Story => await BuildStory(normalizedCommand, fs),
             CommandKind.Behavior => await BuildJsonFile(normalizedCommand, fs, "Поведение игрока", "game_state/meta/player_behavior.json"),
             CommandKind.Lives => await BuildSoulSection(normalizedCommand, fs, "История жизней", "livesHistory"),
             CommandKind.Feathers => await BuildInkFeathers(normalizedCommand, fs, stateManager),
@@ -1544,31 +1544,75 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         return Completed(command, blocks);
     }
 
-    private static ExplorerCommandResult BuildStory(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildStory(string command, FileSystemManager fs)
     {
-        var storiesDir = fs.ResolvePath("stories");
-        if (!Directory.Exists(storiesDir))
-            return Completed(command, Message(UiNotificationSeverity.Info, "Рассказ", "Папка stories пока не создана."));
+        var storyService = new StoryService(fs, NullLogger<StoryService>.Instance);
+        var stories = storyService.GetAvailableStories();
+        if (stories.Count == 0)
+            return Completed(command, Message(UiNotificationSeverity.Info, "Рассказ", "Рассказ пока пуст. Сыграйте несколько ходов, и история начнёт записываться."));
 
-        var rows = Directory.GetFiles(storiesDir, "*.jsonl", SearchOption.TopDirectoryOnly)
-            .OrderBy(static path => path, StringComparer.OrdinalIgnoreCase)
-            .Select(path => new UiTableRow
-            {
-                Cells =
-                [
-                    Path.GetFileNameWithoutExtension(path),
-                    SafeCountLines(path).ToString()
-                ]
-            })
-            .ToList();
+        var cards = new List<UiEntityCard>();
+        foreach (var story in stories)
+        {
+            var entries = await storyService.ReadStoryAsync(story.RelativePath, lastN: 6);
+            cards.Add(BuildStoryCard(story, entries));
+        }
 
         return Completed(command,
-            new UiTableBlock
+            new UiEntityDossierBlock
             {
+                EntityType = "story",
                 Title = "Рассказ",
-                Columns = ["Рассказ", "Записей"],
-                Rows = rows
+                Summary = "Художественная летопись сыгранных ходов и переходов между главами.",
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "story-chapters",
+                        Title = "Главы",
+                        Icon = "book-open",
+                        Presentation = "collection",
+                        CollectionLabel = cards.Count == 1 ? "1 глава" : $"{cards.Count} глав",
+                        Cards = cards
+                    }
+                ]
             });
+    }
+
+    private static UiEntityCard BuildStoryCard(StoryFileInfo story, IReadOnlyList<StoryEntry> entries)
+    {
+        return new UiEntityCard
+        {
+            Title = story.DisplayName,
+            Subtitle = story.EntryCount == 1 ? "1 запись" : $"{story.EntryCount} записей",
+            Summary = entries.Count == 0
+                ? "Эта глава пока пуста."
+                : "Последние записи главы.",
+            Icon = "book-open",
+            Facts =
+            [
+                new UiEntityFact { Label = "Записей", Value = story.EntryCount.ToString() }
+            ],
+            Nested = entries.Select(BuildStoryEntryCard).ToList()
+        };
+    }
+
+    private static UiEntityCard BuildStoryEntryCard(StoryEntry entry)
+    {
+        var facts = new List<UiEntityFact>();
+        if (entry.Turn >= 0)
+            AddFactIfKnown(facts, "Ход", entry.Turn.ToString());
+        AddFactIfKnown(facts, "Царство", ExplorerPlayerFacingLabels.Realm(entry.Realm ?? string.Empty));
+        AddFactIfKnown(facts, "Действие", entry.Player);
+        AddFactIfKnown(facts, "Локация", entry.Location ?? string.Empty);
+
+        return new UiEntityCard
+        {
+            Title = entry.Turn < 0 ? FirstNonEmpty(entry.Player.Trim('[', ']'), "Переход") : $"Ход {entry.Turn}",
+            Summary = FirstNonEmpty(entry.Narrative, "Запись без текста."),
+            Icon = entry.Turn < 0 ? "sparkles" : "scroll",
+            Facts = facts
+        };
     }
 
     private static ExplorerCommandResult BuildGallery(string command, FileSystemManager fs)

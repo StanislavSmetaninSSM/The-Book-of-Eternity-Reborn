@@ -236,6 +236,29 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_Story_RendersReadableEntriesWithoutStoryFileNames()
+    {
+        await _fs.WriteFileAtomicAsync("stories/chaos_sea.jsonl", """
+        {"turn":1,"timestamp":"2026-05-20T00:00:00Z","realm":"Chaos Sea","player":"Асур","narrative":"Душа проснулась на черном берегу Моря Хаоса."}
+        {"turn":2,"timestamp":"2026-05-20T00:05:00Z","realm":"Chaos Sea","player":"Асур","narrative":"Хранитель протянул фонарь и попросил не смотреть в воду."}
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/story", AdvancedEnabled: false));
+
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Рассказ", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Душа проснулась", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Хранитель протянул фонарь", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.Title.Equals("Рассказ", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        foreach (var forbidden in new[] { "chaos_sea", ".jsonl", "stories/", _rootPath })
+            Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/квесты", "Печать с крыльями")]
     [InlineData("/навыки", "Чувство магических потоков")]
