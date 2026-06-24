@@ -484,6 +484,27 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     }
 
     [Fact]
+    public async Task MortalInteractionPlayerCardsUseRecordSummaryInsteadOfGenericPlaceholder()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/взаимодействия");
+
+        var playerCards = EnumerateEntityCards(result.Blocks)
+            .Where(static card => string.Equals(card.Title, "Игрок 1", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        Assert.NotEmpty(playerCards);
+        Assert.Contains(
+            playerCards,
+            static card => card.Summary.Contains("Помогает проверить взаимодействия с другими участниками сцены", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(
+            playerCards,
+            static card => string.Equals(card.Summary, "Есть видимые взаимодействия.", StringComparison.OrdinalIgnoreCase) ||
+                           string.Equals(card.Summary, "Видимая запись игрока.", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task MortalFactionCardsExposeRanksChroniclesAndResourcesBeyondPowerProfile()
     {
         var overview = await ExecuteFromLoadedSaveAsync(

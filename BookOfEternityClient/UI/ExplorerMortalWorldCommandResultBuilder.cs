@@ -6278,7 +6278,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             EntityType = "interaction-player-summary",
             Title = player.Name,
             Subtitle = "Игрок",
-            Summary = FirstNonEmpty(DescribeInteractionPlayerContext(player.Node), DescribeInteractionPlayerStatus(player.Node), "Есть видимые взаимодействия."),
+            Summary = DescribeInteractionPlayerSummary(player),
             Sections =
             [
                 new UiEntityDossierSection
@@ -6426,7 +6426,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             EntityType = "interaction-player",
             Title = $"Игрок: {player.Name}",
             Subtitle = "Взаимодействия",
-            Summary = FirstNonEmpty(DescribeInteractionPlayerContext(player.Node), DescribeInteractionPlayerStatus(player.Node), "Видимая запись игрока."),
+            Summary = DescribeInteractionPlayerSummary(player),
             Badges =
             [
                 new UiEntityBadge
@@ -7072,6 +7072,21 @@ public static class ExplorerMortalWorldCommandResultBuilder
         JoinInteractionDetails(
             DescribeInteractionStatus(FirstInteractionNodeString(player, "status", "state", "availability")),
             DescribeInteractionVisibility(FirstInteractionNodeString(player, "visibility")));
+
+    private static string DescribeInteractionPlayerSummary(InteractionPlayerSnapshot player)
+    {
+        var recordSummary = player.Records
+            .Select(static record => FirstNonEmpty(DescribeInteractionRecordSummary(record.Node), record.Title))
+            .FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value));
+
+        return FirstNonEmpty(
+            DescribeInteractionPlayerContext(player.Node),
+            DescribeInteractionPlayerStatus(player.Node),
+            recordSummary,
+            player.Records.Count > 0
+                ? DescribeCombatCount(player.Records.Count, "связанная запись", "связанные записи", "связанных записей")
+                : "Взаимодействия с этим игроком пока не описаны.");
+    }
 
     private static string DescribeInteractionRecordStatus(JsonObject record) =>
         JoinInteractionDetails(
