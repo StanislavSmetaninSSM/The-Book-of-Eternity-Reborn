@@ -294,6 +294,20 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
         Assert.DoesNotContain("Итог: не указано", text, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task MortalCombatOverviewOmitsEmptyCombatantStateFacts()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/бой");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Теневой посыльный", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Дворецкий Мариус", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Состояние: не указано", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Намерение: не указано", text, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/где_я")]
     [InlineData("/погода")]

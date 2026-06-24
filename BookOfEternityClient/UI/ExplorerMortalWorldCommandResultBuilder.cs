@@ -7549,20 +7549,27 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static List<UiKeyValueItem> BuildCombatantFacts(CombatantSnapshot combatant)
     {
-        var detailItems = new List<UiKeyValueItem>
-        {
-            new() { Key = "Состояние", Value = EmptyFallback(DescribeCombatantStatus(combatant.Node)) },
-            new() { Key = "Роль / угроза", Value = EmptyFallback(DescribeCombatantRole(combatant.Node)) },
-            new() { Key = "Здоровье", Value = EmptyFallback(DescribeCombatantHealth(combatant.Node)) },
-            new() { Key = "Стойкость", Value = EmptyFallback(DescribeCombatantPoise(combatant.Node)) },
-            new() { Key = "Намерение", Value = EmptyFallback(DescribeCombatantIntent(combatant.Node)) }
-        };
+        var detailItems = new List<UiKeyValueItem>();
+
+        AddCombatantFact(detailItems, "Состояние", DescribeCombatantStatus(combatant.Node));
+        AddCombatantFact(detailItems, "Роль / угроза", DescribeCombatantRole(combatant.Node));
+        AddCombatantFact(detailItems, "Здоровье", DescribeCombatantHealth(combatant.Node));
+        AddCombatantFact(detailItems, "Стойкость", DescribeCombatantPoise(combatant.Node));
+        AddCombatantFact(detailItems, "Намерение", DescribeCombatantIntent(combatant.Node));
 
         var description = FirstCombatNodeString(combatant.Node, "description", "notes", "summary");
         if (!string.IsNullOrWhiteSpace(description))
             detailItems.Add(new UiKeyValueItem { Key = "Заметки", Value = description });
 
         return detailItems;
+    }
+
+    private static void AddCombatantFact(List<UiKeyValueItem> items, string key, string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        items.Add(new UiKeyValueItem { Key = key, Value = value.Trim() });
     }
 
     private static UiEntityDossierBlock BuildCombatLogDetailDossier(CombatLogSnapshot entry)
