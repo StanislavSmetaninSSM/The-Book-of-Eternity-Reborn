@@ -67,6 +67,13 @@ public sealed class BrowserTradeParityTests : IDisposable
         Assert.Contains(choice.Options, option => option.Value == "sell:item_sell_lantern_001");
         Assert.Contains(choice.Options, option => option.Value == "buyback:npc_buyback_001");
         Assert.Contains(result.Prompts, prompt => prompt.Id == "confirm_trade_write");
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "npc-trade" &&
+            block.Title == "Торговля с НПС");
+        Assert.Contains(dossier.Sections, static section => section.Id == "npc-trade-buy" && section.Presentation == "cards");
+        Assert.Contains(dossier.Sections, static section => section.Id == "npc-trade-sell" && section.Presentation == "cards");
+        Assert.Contains(dossier.Sections, static section => section.Id == "npc-trade-buyback" && section.Presentation == "cards");
 
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Марек", text, StringComparison.Ordinal);
@@ -1222,6 +1229,51 @@ public sealed class BrowserTradeParityTests : IDisposable
     private static string CollectResultText(ExplorerCommandResult result) =>
         CollectBlockText(result.Blocks) + "\n" +
         string.Join("\n", result.Notifications.Select(notification => $"{notification.Title}\n{notification.Message}"));
+
+    private static IEnumerable<UiEntityDossierBlock> EnumerateEntityDossiers(UiBlock block)
+    {
+        if (block is UiEntityDossierBlock dossier)
+        {
+            yield return dossier;
+            foreach (var section in dossier.Sections)
+            foreach (var child in section.Blocks)
+            foreach (var nested in EnumerateEntityDossiers(child))
+                yield return nested;
+            yield break;
+        }
+
+        if (block is not UiPanelBlock panel)
+            yield break;
+
+        foreach (var child in panel.Blocks)
+        foreach (var nested in EnumerateEntityDossiers(child))
+            yield return nested;
+    }
+
+    private static IEnumerable<UiTableBlock> EnumerateTables(UiBlock block)
+    {
+        if (block is UiTableBlock table)
+        {
+            yield return table;
+            yield break;
+        }
+
+        if (block is UiEntityDossierBlock dossier)
+        {
+            foreach (var section in dossier.Sections)
+            foreach (var child in section.Blocks)
+            foreach (var nested in EnumerateTables(child))
+                yield return nested;
+            yield break;
+        }
+
+        if (block is not UiPanelBlock panel)
+            yield break;
+
+        foreach (var child in panel.Blocks)
+        foreach (var nested in EnumerateTables(child))
+            yield return nested;
+    }
 
     private static void AssertPlayerFacingFailureCopy(ExplorerCommandResult result)
     {

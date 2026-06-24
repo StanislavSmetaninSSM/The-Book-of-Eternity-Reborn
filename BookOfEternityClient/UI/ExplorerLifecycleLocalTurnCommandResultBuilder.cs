@@ -1967,56 +1967,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
-            {
-                Title = "Торговля с НПС",
-                Blocks =
-                [
-                    new UiTextBlock
-                    {
-                        Text = BuildTradeStatusText(view.TradeBlocked, view.BlockReason, view.InventoryReady, view.InventoryRequestPending, view.InventoryStatusMessage, "Витрина торговца готова."),
-                        Tone = view.TradeBlocked ? UiTone.Warning : view.InventoryReady ? UiTone.Accent : UiTone.Muted
-                    },
-                    new UiKeyValueGridBlock
-                    {
-                        Items =
-                        [
-                            KeyValue("Торговец", view.NpcName),
-                            KeyValue("Профиль", view.MerchantProfileDisplay),
-                            KeyValue("Деньги", view.CurrentMoney.ToString()),
-                            KeyValue("Витрина", view.InventoryReady ? "готова" : view.InventoryRequestPending ? "ожидает ГМ" : "нужно запросить")
-                        ]
-                    },
-                    new UiTableBlock
-                    {
-                        Title = "Покупка",
-                        Columns = ["Товар", "Редкость", "Цена", "Статус"],
-                        Rows = view.Offers
-                            .Select(offer => Row(
-                                offer.Name,
-                                FormatRarityForPlayer(offer.Rarity, "-"),
-                                offer.Price.ToString(),
-                                offer.SoldOut ? "куплено" : view.CurrentMoney < offer.Price ? "не хватает денег" : "доступно"))
-                            .ToList()
-                    },
-                    new UiTableBlock
-                    {
-                        Title = "Продажа из рюкзака",
-                        Columns = ["Предмет", "Редкость", "Цена"],
-                        Rows = sellOffers
-                            .Select(offer => Row(offer.Name, FormatRarityForPlayer(offer.Rarity, "-"), offer.Price.ToString()))
-                            .ToList()
-                    },
-                    new UiTableBlock
-                    {
-                        Title = "Обратный выкуп",
-                        Columns = ["Предмет", "Редкость", "Цена"],
-                        Rows = view.BuybackOffers
-                            .Select(offer => Row(offer.Name, FormatRarityForPlayer(offer.Rarity, "-"), offer.Price.ToString()))
-                            .ToList()
-                    }
-                ]
-            }
+            BuildNpcTradeDossier(view, sellOffers)
         };
 
         if (options.Count == 0)
@@ -2037,6 +1988,147 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 },
                 TradeConfirmationPrompt()
             ]);
+    }
+
+    private static UiEntityDossierBlock BuildNpcTradeDossier(
+        NpcTradeService.NpcTradeView view,
+        IReadOnlyList<NpcTradeService.NpcSellOffer> sellOffers)
+    {
+        var statusText = BuildTradeStatusText(
+            view.TradeBlocked,
+            view.BlockReason,
+            view.InventoryReady,
+            view.InventoryRequestPending,
+            view.InventoryStatusMessage,
+            "Витрина торговца готова.");
+        var statusTone = view.TradeBlocked ? UiTone.Warning : view.InventoryReady ? UiTone.Accent : UiTone.Muted;
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "npc-trade",
+            Title = "Торговля с НПС",
+            Summary = statusText,
+            Facts =
+            [
+                new UiEntityFact { Label = "Торговец", Value = view.NpcName },
+                new UiEntityFact { Label = "Профиль", Value = view.MerchantProfileDisplay },
+                new UiEntityFact { Label = "Деньги", Value = view.CurrentMoney.ToString() },
+                new UiEntityFact { Label = "Витрина", Value = FormatTradeInventoryStatus(view) }
+            ],
+            Hints =
+            [
+                new UiEntityHint
+                {
+                    Title = "Состояние торговли",
+                    Text = statusText,
+                    Tone = statusTone
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "npc-trade-buy",
+                    Title = "Покупка",
+                    Icon = "package",
+                    Presentation = "cards",
+                    CollectionLabel = view.Offers.Count == 1 ? "1 товар" : $"{view.Offers.Count} товаров",
+                    Cards = view.Offers.Select(offer => BuildNpcTradeBuyCard(view, offer)).ToList()
+                },
+                new UiEntityDossierSection
+                {
+                    Id = "npc-trade-sell",
+                    Title = "Продажа из рюкзака",
+                    Summary = sellOffers.Count == 0
+                        ? "Сейчас нет предметов, которые можно продать этому торговцу из рюкзака."
+                        : "Предметы из рюкзака, которые торговец готов купить.",
+                    Icon = "package",
+                    Presentation = "cards",
+                    CollectionLabel = sellOffers.Count == 1 ? "1 предмет" : $"{sellOffers.Count} предметов",
+                    Cards = sellOffers.Select(static offer => BuildNpcTradeSellCard(offer)).ToList()
+                },
+                new UiEntityDossierSection
+                {
+                    Id = "npc-trade-buyback",
+                    Title = "Обратный выкуп",
+                    Summary = view.BuybackOffers.Count == 0
+                        ? "Нет ранее проданных предметов, доступных для обратного выкупа."
+                        : "Предметы, которые можно выкупить обратно.",
+                    Icon = "package",
+                    Presentation = "cards",
+                    CollectionLabel = view.BuybackOffers.Count == 1 ? "1 предмет" : $"{view.BuybackOffers.Count} предметов",
+                    Cards = view.BuybackOffers.Select(offer => BuildNpcTradeBuybackCard(view, offer)).ToList()
+                }
+            ]
+        };
+    }
+
+    private static UiEntityCard BuildNpcTradeBuyCard(
+        NpcTradeService.NpcTradeView view,
+        NpcTradeService.NpcTradeOffer offer)
+    {
+        var status = offer.SoldOut
+            ? "куплено"
+            : view.CurrentMoney < offer.Price
+                ? "не хватает денег"
+                : "доступно";
+        return new UiEntityCard
+        {
+            Title = offer.Name,
+            Subtitle = $"Цена: {offer.Price}",
+            Summary = FirstNonEmpty(offer.Description, $"Редкость: {FormatRarityForPlayer(offer.Rarity)}. Статус: {status}."),
+            Icon = "package",
+            Facts =
+            [
+                new UiEntityFact { Label = "Редкость", Value = FormatRarityForPlayer(offer.Rarity, "-") },
+                new UiEntityFact { Label = "Цена", Value = offer.Price.ToString() },
+                new UiEntityFact { Label = "Статус", Value = status }
+            ]
+        };
+    }
+
+    private static UiEntityCard BuildNpcTradeSellCard(NpcTradeService.NpcSellOffer offer) =>
+        new()
+        {
+            Title = offer.Name,
+            Subtitle = $"Продажа: {offer.Price}",
+            Summary = FirstNonEmpty(offer.Description, $"Торговец готов купить предмет за {offer.Price}."),
+            Icon = "package",
+            Facts =
+            [
+                new UiEntityFact { Label = "Редкость", Value = FormatRarityForPlayer(offer.Rarity, "-") },
+                new UiEntityFact { Label = "Цена продажи", Value = offer.Price.ToString() }
+            ]
+        };
+
+    private static UiEntityCard BuildNpcTradeBuybackCard(
+        NpcTradeService.NpcTradeView view,
+        NpcTradeService.NpcBuybackOffer offer)
+    {
+        var status = view.CurrentMoney < offer.Price ? "не хватает денег" : "доступно";
+        return new UiEntityCard
+        {
+            Title = offer.Name,
+            Subtitle = $"Выкуп: {offer.Price}",
+            Summary = FirstNonEmpty(offer.Description, $"Ранее продано за {offer.SoldForPrice}. Сейчас можно выкупить за {offer.Price}."),
+            Icon = "package",
+            Facts =
+            [
+                new UiEntityFact { Label = "Редкость", Value = FormatRarityForPlayer(offer.Rarity, "-") },
+                new UiEntityFact { Label = "Цена выкупа", Value = offer.Price.ToString() },
+                new UiEntityFact { Label = "Ранее продано за", Value = offer.SoldForPrice.ToString() },
+                new UiEntityFact { Label = "Статус", Value = status }
+            ]
+        };
+    }
+
+    private static string FormatTradeInventoryStatus(NpcTradeService.NpcTradeView view)
+    {
+        if (view.TradeBlocked)
+            return "недоступна";
+        if (view.InventoryReady)
+            return "готова";
+        return view.InventoryRequestPending ? "ожидает ГМ" : "нужно запросить";
     }
 
     private static async Task<ExplorerCommandResult> BuildShiningTradeAsync(
