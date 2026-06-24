@@ -2148,109 +2148,194 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     "Ты пока не знаешь, что искать."));
         }
 
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Стадия раскрытия", DescribeSarefRevealStage(GetString(root, "revealStage", SarefMainStoryState.RevealStageUnknown)));
+        AddFactIfKnown(facts, "Фрагментов", CountArray(root, "sarefRevelations").ToString());
+        AddFactIfKnown(facts, "Преимуществ", CountArray(root, "sarefAdvantages").ToString());
+        AddFactIfKnown(facts, "Использований преимуществ", CountArray(root, "sarefAdvantageUses").ToString());
+        AddFactIfKnown(facts, "Известных агентов", CountNestedArray(root, "factionLinks", "knownAgents").ToString());
+        AddFactIfKnown(facts, "Финал", DescribeSarefNestedStatus(root["finalConfrontation"] as JsonObject));
+        AddFactIfKnown(facts, "Клятва", DescribeSarefNestedStatus(root["playerOathState"] as JsonObject));
+
+        var sections = new List<UiEntityDossierSection>();
+        AddSectionIfPresent(sections, BuildSarefStoryArraySection("Раскрытые фрагменты", "saref-revelations", root["sarefRevelations"] as JsonArray, "Фрагмент"));
+        AddSectionIfPresent(sections, BuildSarefStoryArraySection("Преимущества", "saref-advantages", root["sarefAdvantages"] as JsonArray, "Преимущество"));
+        AddSectionIfPresent(sections, BuildSarefStoryArraySection("Использования преимуществ", "saref-advantage-uses", root["sarefAdvantageUses"] as JsonArray, "Использование"));
+        AddSectionIfPresent(sections, BuildSarefFactionLinksSection(root["factionLinks"] as JsonObject));
+        AddSectionIfPresent(sections, BuildSarefStoryArraySection("Возможные исходы", "saref-defeat-outcomes", root["defeatOutcomes"] as JsonArray, "Исход"));
+        AddSectionIfPresent(sections, BuildSarefStoryArraySection("Финалы", "saref-endings", root["endings"] as JsonArray, "Финал"));
+
         var blocks = new List<UiBlock>
         {
-            Panel("Крылья над Бездной",
-                Grid(
-                    ("Стадия раскрытия", DescribeSarefRevealStage(GetString(root, "revealStage", SarefMainStoryState.RevealStageUnknown))),
-                    ("Фрагментов", CountArray(root, "sarefRevelations").ToString()),
-                    ("Преимуществ", CountArray(root, "sarefAdvantages").ToString()),
-                    ("Использований преимуществ", CountArray(root, "sarefAdvantageUses").ToString()),
-                    ("Известных агентов", CountNestedArray(root, "factionLinks", "knownAgents").ToString()),
-                    ("Финал", DescribeNested(root, "finalConfrontation")),
-                    ("Клятва", DescribeNested(root, "playerOathState"))))
+            new UiEntityDossierBlock
+            {
+                EntityType = "saref-story",
+                Title = "Крылья над Бездной",
+                Summary = "Скрытая сюжетная линия Сарефа: раскрытые фрагменты, преимущества, связи и возможные исходы.",
+                Facts = facts,
+                Sections = sections
+            }
         };
-
-        AddSarefStoryArrayTable(blocks, "Раскрытые фрагменты", root["sarefRevelations"] as JsonArray);
-        AddSarefStoryArrayTable(blocks, "Преимущества", root["sarefAdvantages"] as JsonArray);
-        AddSarefStoryArrayTable(blocks, "Использования преимуществ", root["sarefAdvantageUses"] as JsonArray);
-        AddSarefFactionLinks(blocks, root["factionLinks"] as JsonObject);
-        AddSarefStoryArrayTable(blocks, "Возможные исходы", root["defeatOutcomes"] as JsonArray);
-        AddSarefStoryArrayTable(blocks, "Финалы", root["endings"] as JsonArray);
 
         return Completed(command, blocks);
     }
 
-    private static void AddSarefFactionLinks(List<UiBlock> blocks, JsonObject? factionLinks)
+    private static string DescribeSarefNestedStatus(JsonObject? obj)
     {
-        if (factionLinks == null)
-            return;
+        if (obj == null)
+            return "не указано";
 
-        var rows = new List<UiTableRow>();
-        AddSarefStoryRows(rows, "Тени", factionLinks["shadowTraces"] as JsonArray);
-        AddSarefStoryRows(rows, "Агенты", factionLinks["knownAgents"] as JsonArray);
-        AddSarefStoryRows(rows, "Фракции", factionLinks["factions"] as JsonArray);
-        if (rows.Count == 0)
-            return;
-
-        blocks.Add(new UiTableBlock
-        {
-            Title = "Связи Сарефа",
-            Columns = ["Раздел", "Описание", "Детали"],
-            Rows = rows
-        });
+        return FirstReadableJsonValue(
+            DescribeSarefGenericStatus(GetString(obj, "status", string.Empty)),
+            DescribeSarefGenericStatus(GetString(obj, "state", string.Empty)),
+            GetString(obj, "summary", string.Empty),
+            GetString(obj, "currentObjective", string.Empty));
     }
 
-    private static void AddSarefStoryArrayTable(List<UiBlock> blocks, string title, JsonArray? array)
+    private static UiEntityDossierSection? BuildSarefStoryArraySection(
+        string title,
+        string id,
+        JsonArray? array,
+        string fallbackPrefix)
     {
-        if (array == null || array.Count == 0)
-            return;
+        var cards = array?
+            .OfType<JsonObject>()
+            .Select((item, index) => BuildSarefStoryCard(item, fallbackPrefix, index))
+            .Where(static card => !string.IsNullOrWhiteSpace(card.Title))
+            .ToList() ?? [];
 
-        var rows = new List<UiTableRow>();
-        AddSarefStoryRows(rows, string.Empty, array);
-        if (rows.Count == 0)
-            return;
+        if (cards.Count == 0)
+            return null;
 
-        blocks.Add(new UiTableBlock
+        return new UiEntityDossierSection
+        {
+            Id = id,
+            Title = title,
+            Icon = "scroll",
+            Presentation = "cards",
+            CollectionLabel = cards.Count == 1 ? "1 запись" : $"{cards.Count} записей",
+            Cards = cards
+        };
+    }
+
+    private static UiEntityCard BuildSarefStoryCard(JsonObject item, string fallbackPrefix, int index)
+    {
+        var category = TranslateSarefCategory(GetString(item, "category", string.Empty));
+        var status = FirstReadableJsonValue(
+            DescribeSarefGenericStatus(GetString(item, "status", string.Empty)),
+            DescribeSarefGenericStatus(GetString(item, "state", string.Empty)));
+        var title = FirstReadableJsonValue(
+            GetString(item, "name", string.Empty),
+            GetString(item, "displayName", string.Empty),
+            GetString(item, "title", string.Empty),
+            IsUnknownReadableJsonValue(category) ? string.Empty : category,
+            $"{fallbackPrefix} {index + 1}");
+        var summary = FirstReadableJsonValue(
+            GetString(item, "summary", string.Empty),
+            GetString(item, "description", string.Empty),
+            GetString(item, "outcome", string.Empty),
+            GetString(item, "result", string.Empty),
+            "Подробности пока не записаны.");
+
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Источник", FormatSarefSource(item));
+        AddFactIfKnown(facts, "Ход раскрытия", GetString(item, "revealedAtTurn", string.Empty));
+        AddFactIfKnown(facts, "Состояние", status);
+        AddFactIfKnown(facts, "Категория", category);
+
+        var list = BuildSarefStoryList(item);
+
+        return new UiEntityCard
         {
             Title = title,
-            Columns = ["Запись", "Описание", "Детали"],
-            Rows = rows
-        });
+            Subtitle = IsUnknownReadableJsonValue(status) ? fallbackPrefix : status,
+            Summary = summary,
+            Icon = "scroll",
+            Facts = facts,
+            List = list
+        };
     }
 
-    private static void AddSarefStoryRows(List<UiTableRow> rows, string prefix, JsonArray? array)
+    private static List<string> BuildSarefStoryList(JsonObject item)
+    {
+        var list = new List<string>();
+        AddSarefStringArrayItems(list, item["applicableScenes"], TranslateSarefSceneType);
+        AddSarefStringArrayItems(list, item["requirements"], static value => value);
+        AddSarefStringArrayItems(list, item["consequences"], static value => value);
+        return list;
+    }
+
+    private static void AddSarefStringArrayItems(List<string> list, JsonNode? node, Func<string, string> map)
+    {
+        if (node is not JsonArray array)
+            return;
+
+        foreach (var value in array)
+        {
+            if (!TryGetScalarString(value, out var text) || string.IsNullOrWhiteSpace(text))
+                continue;
+
+            var mapped = map(text);
+            if (!IsUnknownReadableJsonValue(mapped))
+                list.Add(mapped);
+        }
+    }
+
+    private static UiEntityDossierSection? BuildSarefFactionLinksSection(JsonObject? factionLinks)
+    {
+        if (factionLinks == null)
+            return null;
+
+        var cards = new List<UiEntityCard>();
+        AddSarefFactionLinkCards(cards, "Тени", factionLinks["shadowTraces"] as JsonArray);
+        AddSarefFactionLinkCards(cards, "Агенты", factionLinks["knownAgents"] as JsonArray);
+        AddSarefFactionLinkCards(cards, "Фракции", factionLinks["factions"] as JsonArray);
+
+        var wingsFaction = GetString(factionLinks, "wingsFactionId", string.Empty);
+        if (!string.IsNullOrWhiteSpace(wingsFaction))
+        {
+            cards.Add(new UiEntityCard
+            {
+                Title = "Крылья Ангелов",
+                Subtitle = "Фракционная связь",
+                Summary = "Линия Сарефа связана с фракцией Крыльев Ангелов.",
+                Icon = "users"
+            });
+        }
+
+        if (cards.Count == 0)
+            return null;
+
+        return new UiEntityDossierSection
+        {
+            Id = "saref-faction-links",
+            Title = "Связи Сарефа",
+            Icon = "users",
+            Presentation = "cards",
+            CollectionLabel = cards.Count == 1 ? "1 связь" : $"{cards.Count} связей",
+            Cards = cards
+        };
+    }
+
+    private static void AddSarefFactionLinkCards(List<UiEntityCard> cards, string prefix, JsonArray? array)
     {
         if (array == null)
             return;
 
-        foreach (var (item, index) in array.OfType<JsonObject>().Select((item, index) => (item, index)))
+        cards.AddRange(array
+            .OfType<JsonObject>()
+            .Select((item, index) => BuildSarefStoryCard(item, prefix, index)));
+    }
+
+    private static string TranslateSarefSceneType(string sceneType) =>
+        sceneType.Trim().ToLowerInvariant() switch
         {
-            var title = FirstReadableJsonValue(
-                GetString(item, "name", string.Empty),
-                GetString(item, "displayName", string.Empty),
-                GetString(item, "title", string.Empty),
-                string.IsNullOrWhiteSpace(prefix) ? $"Запись {index + 1}" : prefix);
-            var summary = FirstReadableJsonValue(
-                GetString(item, "summary", string.Empty),
-                GetString(item, "description", string.Empty),
-                GetString(item, "outcome", string.Empty),
-                GetString(item, "result", string.Empty));
-            var details = BuildSarefStoryDetail(item);
-            if (IsUnknownReadableJsonValue(summary) && IsUnknownReadableJsonValue(details))
-                continue;
-
-            rows.Add(Row(
-                string.IsNullOrWhiteSpace(prefix) ? title : JoinNonEmpty(": ", prefix, title),
-                summary,
-                details));
-        }
-    }
-
-    private static string BuildSarefStoryDetail(JsonObject item)
-    {
-        var parts = new[]
-            {
-                FormatSarefSource(item),
-                GetString(item, "revealedAtTurn", string.Empty) is { Length: > 0 } turn ? $"ход {turn}" : string.Empty,
-                GetString(item, "status", string.Empty) is { Length: > 0 } status ? DescribeSarefGenericStatus(status) : string.Empty,
-                GetString(item, "category", string.Empty) is { Length: > 0 } category ? TranslateSarefCategory(category) : string.Empty
-            }
-            .Where(static value => !string.IsNullOrWhiteSpace(value))
-            .ToArray();
-
-        return parts.Length == 0 ? "не указано" : string.Join("; ", parts);
-    }
+            "oath_break" => "разрыв клятвы",
+            "saref_confrontation" => "столкновение с Сарефом",
+            "combat" => "бой",
+            "negotiation" => "переговоры",
+            _ => sceneType.Trim()
+        };
 
     private static string FormatSarefSource(JsonObject item)
     {
@@ -2290,6 +2375,8 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             "oath" => "клятва",
             "memory" => "память",
             "route" => "маршрут",
+            "method" => "метод",
+            "path" => "путь",
             _ => EmptyFallback(category)
         };
 
@@ -2299,7 +2386,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         if (read.Node is not JsonObject root)
         {
             var message = read.FileExists
-                ? $"Файл найден, но не разобран как состояние скрытой линии: {read.Path}. {read.Error}"
+                ? "Состояние скрытой линии найдено, но его не удалось прочитать. Запустите проверку данных и исправьте запись Сарефа."
                 : "Активного Воспоминания нет. Это не Врата Памяти и не Наследие Памяти: Воспоминание появляется только как особый слой 4-го квеста Хранителя в линии Сарефа.";
             return Completed(command, Message(read.FileExists ? UiNotificationSeverity.Warning : UiNotificationSeverity.Info, "Воспоминание", message));
         }
@@ -2320,15 +2407,45 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             : GetString(role, "displayName", GetString(role, "roleId", "не указана"));
         var roleSummary = role == null ? string.Empty : GetString(role, "summary", string.Empty);
 
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Сцена", title);
+        AddFactIfKnown(facts, "Состояние", DescribeSarefMemorySceneStatus(GetString(scene, "status", string.Empty)));
+        AddFactIfKnown(facts, "Память Хранителя", GetString(scene, "guardianId"));
+        AddFactIfKnown(facts, "Квест", JoinNonEmpty(" / ", GetString(scene, "questId", string.Empty), GetNumberOrString(scene, "questOrdinal")));
+        AddFactIfKnown(facts, "Роль внутри сцены", JoinNonEmpty(" - ", roleName, roleSummary));
+
+        var sections = new List<UiEntityDossierSection>();
+        AddSectionIfPresent(sections, BuildMemorySceneObjectSection("Границы сцены", "memory-boundaries", scene["boundaries"] as JsonArray, "boundaryId", preferName: false));
+        AddSectionIfPresent(sections, BuildMemorySceneObjectSection("Доступные способности", "memory-abilities", scene["abilities"] as JsonArray, "abilityId", preferName: true));
+        AddSectionIfPresent(sections, BuildMemorySceneNodeSection(scene["requiredStoryNodes"] as JsonArray));
+        sections.Add(new UiEntityDossierSection
+        {
+            Id = "memory-success-condition",
+            Title = "Условие успеха",
+            Icon = "target",
+            Presentation = "cards",
+            Cards = [BuildMemorySceneSuccessConditionCard(scene["successCondition"] as JsonObject)]
+        });
+        sections.Add(new UiEntityDossierSection
+        {
+            Id = "memory-closure-target",
+            Title = "Что закрывает сцена",
+            Icon = "check",
+            Presentation = "cards",
+            Cards = [BuildMemorySceneClosureTargetCard(scene["closureTarget"] as JsonObject)]
+        });
+
         var blocks = new List<UiBlock>
         {
-            Panel("Воспоминание",
-                Grid(
-                    ("Сцена", title),
-                    ("Состояние", DescribeSarefMemorySceneStatus(GetString(scene, "status", string.Empty))),
-                    ("Память Хранителя", GetString(scene, "guardianId")),
-                    ("Квест", JoinNonEmpty(" / ", GetString(scene, "questId", string.Empty), GetNumberOrString(scene, "questOrdinal"))),
-                    ("Роль внутри сцены", JoinNonEmpty(" - ", roleName, roleSummary)))),
+            new UiEntityDossierBlock
+            {
+                EntityType = "saref-memory-scene",
+                Title = "Воспоминание",
+                Subtitle = title,
+                Summary = "Особый слой памяти в линии Сарефа: сцена показывает прошлый факт, но не позволяет напрямую переписать историю.",
+                Facts = facts,
+                Sections = sections
+            },
             new UiTextBlock
             {
                 Tone = UiTone.Warning,
@@ -2336,97 +2453,156 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             }
         };
 
-        blocks.Add(BuildMemorySceneObjectTable("Границы сцены", scene["boundaries"] as JsonArray, "boundaryId", preferName: false));
-        blocks.Add(BuildMemorySceneObjectTable("Доступные способности", scene["abilities"] as JsonArray, "abilityId", preferName: true));
-        blocks.Add(BuildMemorySceneNodeTable(scene["requiredStoryNodes"] as JsonArray));
-        blocks.Add(BuildMemorySceneSuccessCondition(scene["successCondition"] as JsonObject));
-        blocks.Add(BuildMemorySceneClosureTarget(scene["closureTarget"] as JsonObject));
         return Completed(command, blocks);
     }
 
-    private static UiTableBlock BuildMemorySceneObjectTable(string title, JsonArray? array, string idProperty, bool preferName)
+    private static void AddSectionIfPresent(List<UiEntityDossierSection> sections, UiEntityDossierSection? section)
     {
-        var rows = new List<UiTableRow>();
-        if (array != null)
-        {
-            foreach (var item in array.OfType<JsonObject>())
-            {
-                var name = preferName
-                    ? GetString(item, "name", GetString(item, "displayName", GetString(item, idProperty)))
-                    : GetString(item, "displayName", GetString(item, "name", GetString(item, idProperty)));
-                rows.Add(new UiTableRow
-                {
-                    Cells =
-                    [
-                        name,
-                        GetString(item, "summary", GetString(item, "description", "не указано"))
-                    ]
-                });
-            }
-        }
+        if (section != null)
+            sections.Add(section);
+    }
 
-        if (rows.Count == 0)
-            rows.Add(new UiTableRow { Cells = ["не указано", "не указано"] });
+    private static UiEntityDossierSection? BuildMemorySceneObjectSection(
+        string title,
+        string id,
+        JsonArray? array,
+        string idProperty,
+        bool preferName)
+    {
+        var cards = array?
+            .OfType<JsonObject>()
+            .Select(item => BuildMemorySceneObjectCard(item, idProperty, preferName))
+            .Where(static card => !string.IsNullOrWhiteSpace(card.Title))
+            .ToList() ?? [];
 
-        return new UiTableBlock
+        if (cards.Count == 0)
+            return null;
+
+        return new UiEntityDossierSection
         {
+            Id = id,
             Title = title,
-            Columns = ["Название", "Описание"],
-            Rows = rows
+            Icon = "sparkles",
+            Presentation = "cards",
+            CollectionLabel = cards.Count == 1 ? "1 запись" : $"{cards.Count} записей",
+            Cards = cards
         };
     }
 
-    private static UiTableBlock BuildMemorySceneNodeTable(JsonArray? nodes)
+    private static UiEntityCard BuildMemorySceneObjectCard(JsonObject item, string idProperty, bool preferName)
     {
-        var rows = new List<UiTableRow>();
-        if (nodes != null)
-        {
-            foreach (var node in nodes.OfType<JsonObject>())
-            {
-                rows.Add(new UiTableRow
-                {
-                    Cells =
-                    [
-                        DescribeSarefMemorySceneNodeStatus(GetString(node, "status", string.Empty)),
-                        GetString(node, "summary", GetString(node, "title", GetString(node, "nodeId")))
-                    ]
-                });
-            }
-        }
+        var name = preferName
+            ? GetString(item, "name", GetString(item, "displayName", GetString(item, idProperty)))
+            : GetString(item, "displayName", GetString(item, "name", GetString(item, idProperty)));
+        var summary = FirstNonEmpty(
+            GetString(item, "summary", string.Empty),
+            GetString(item, "description", string.Empty),
+            "Описание пока не указано.");
 
-        if (rows.Count == 0)
-            rows.Add(new UiTableRow { Cells = ["не указано", "не указано"] });
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Состояние", DescribeSarefGenericStatus(GetString(item, "status", string.Empty)));
+        AddFactIfKnown(facts, "Категория", TranslateSarefCategory(GetString(item, "category", string.Empty)));
 
-        return new UiTableBlock
+        return new UiEntityCard
         {
-            Title = "Обязательные сюжетные узлы",
-            Columns = ["Состояние", "Узел"],
-            Rows = rows
+            Title = name,
+            Summary = summary,
+            Icon = "sparkles",
+            Facts = facts
         };
     }
 
-    private static UiPanelBlock BuildMemorySceneSuccessCondition(JsonObject? condition)
+    private static UiEntityDossierSection? BuildMemorySceneNodeSection(JsonArray? nodes)
+    {
+        var cards = nodes?
+            .OfType<JsonObject>()
+            .Select(BuildMemorySceneNodeCard)
+            .ToList() ?? [];
+
+        if (cards.Count == 0)
+            return null;
+
+        return new UiEntityDossierSection
+        {
+            Id = "memory-required-nodes",
+            Title = "Обязательные сюжетные узлы",
+            Icon = "history",
+            Presentation = "cards",
+            CollectionLabel = cards.Count == 1 ? "1 узел" : $"{cards.Count} узлов",
+            Cards = cards
+        };
+    }
+
+    private static UiEntityCard BuildMemorySceneNodeCard(JsonObject node)
+    {
+        var status = DescribeSarefMemorySceneNodeStatus(GetString(node, "status", string.Empty));
+        return new UiEntityCard
+        {
+            Title = FirstNonEmpty(GetString(node, "summary", string.Empty), GetString(node, "title", string.Empty), "Сюжетный узел"),
+            Subtitle = status,
+            Summary = status,
+            Icon = "history",
+            Badges =
+            [
+                new UiEntityBadge { Label = status, Icon = "check", Tone = string.Equals(status, "завершён", StringComparison.OrdinalIgnoreCase) ? UiTone.Success : UiTone.Warning }
+            ]
+        };
+    }
+
+    private static UiEntityCard BuildMemorySceneSuccessConditionCard(JsonObject? condition)
     {
         if (condition == null)
-            return Panel("Условие успеха", Grid(("Описание", "не указано")));
+        {
+            return new UiEntityCard
+            {
+                Title = "Условие успеха",
+                Summary = "Условие успеха пока не указано.",
+                Icon = "target"
+            };
+        }
 
-        return Panel("Условие успеха",
-            Grid(
-                ("Описание", GetString(condition, "summary", GetString(condition, "conditionId"))),
-                ("Состояние", GetBool(condition, "satisfied") ? "выполнено" : "ещё не выполнено")));
+        var satisfied = GetBool(condition, "satisfied");
+        return new UiEntityCard
+        {
+            Title = "Условие успеха",
+            Summary = GetString(condition, "summary", GetString(condition, "conditionId")),
+            Icon = "target",
+            Badges =
+            [
+                new UiEntityBadge { Label = satisfied ? "выполнено" : "ещё не выполнено", Icon = "check", Tone = satisfied ? UiTone.Success : UiTone.Warning }
+            ],
+            Facts =
+            [
+                new UiEntityFact { Label = "Состояние", Value = satisfied ? "выполнено" : "ещё не выполнено" }
+            ]
+        };
     }
 
-    private static UiPanelBlock BuildMemorySceneClosureTarget(JsonObject? target)
+    private static UiEntityCard BuildMemorySceneClosureTargetCard(JsonObject? target)
     {
         if (target == null)
-            return Panel("Что закрывает сцена", Grid(("Цель", "не указано")));
+        {
+            return new UiEntityCard
+            {
+                Title = "Что закрывает сцена",
+                Summary = "Цель закрытия пока не указана.",
+                Icon = "check"
+            };
+        }
 
-        return Panel("Что закрывает сцена",
-            Grid(
-                ("Хранитель", GetString(target, "guardianId")),
-                ("Квест", JoinNonEmpty(" / ", GetString(target, "questId", string.Empty), GetNumberOrString(target, "questOrdinal"))),
-                ("Фрагмент истины", GetString(target, "revelationId")),
-                ("Преимущество", GetString(target, "advantageId"))));
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Хранитель", GetString(target, "guardianId"));
+        AddFactIfKnown(facts, "Квест", JoinNonEmpty(" / ", GetString(target, "questId", string.Empty), GetNumberOrString(target, "questOrdinal")));
+        AddFactIfKnown(facts, "Фрагмент истины", GetString(target, "revelationId"));
+        AddFactIfKnown(facts, "Преимущество", GetString(target, "advantageId"));
+
+        return new UiEntityCard
+        {
+            Title = "Что закрывает сцена",
+            Summary = facts.Count == 0 ? "Цель закрытия пока не указана." : "Эта сцена закрывает конкретный долг памяти.",
+            Icon = "check",
+            Facts = facts
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildSoulQuests(string command, FileSystemManager fs)

@@ -2857,6 +2857,24 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SarefStory_RendersPlayerFacingDossierWithoutTables()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefActionReadyState());
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/saref"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Крылья над Бездной", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Лунный Разрез Клятвы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "saref-story" &&
+            dossier.Sections.Any(static section => section.Cards.Count > 0));
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Soul_RendersPlayerFacingSummaryWithoutRawJson()
     {
         await SeedUniversalMetaFilesAsync();
@@ -2876,7 +2894,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task ExecuteAsync_MemoryScene_ReturnsPlayerReadableDto()
+    public async Task ExecuteAsync_MemoryScene_ReturnsPlayerReadableDossierWithoutTables()
     {
         await SeedUniversalMetaFilesAsync();
         await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, """
@@ -2926,6 +2944,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Это не Врата Памяти", text, StringComparison.Ordinal);
         Assert.Contains("не Наследие Памяти", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Memory Gates", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "saref-memory-scene" &&
+            dossier.Sections.Any(static section => section.Cards.Count > 0));
     }
 
     [Fact]
