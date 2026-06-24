@@ -528,6 +528,7 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     [InlineData("/эффекты")]
     [InlineData("/бой")]
     [InlineData("/новости_мира")]
+    [InlineData("/взаимодействия")]
     public async Task MortalReadOnlySummariesAvoidUiInstructionCopy(string command)
     {
         var result = await ExecuteFromLoadedSaveAsync(
@@ -537,8 +538,42 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
 
         Assert.DoesNotContain("Выберите", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Полные данные", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полные сведения", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Подробности открываются", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("отдельным действием", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/квесты")]
+    [InlineData("/фракции")]
+    [InlineData("/навыки")]
+    [InlineData("/чужие_нити")]
+    [InlineData("/коррективы_хранителя")]
+    [InlineData("/доступ_к_хранилищам")]
+    public async Task MortalReferenceBundlesUseCommandSpecificSummaries(string command)
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            command);
+        var text = CollectResultText(result);
+
+        Assert.DoesNotContain("Что уже отмечено в книге.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Известные записи этого раздела.", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MortalCurrentLocationSplitsDifficultyProfileIntoLocalizedFacts()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/где_я");
+        var text = CollectResultText(result);
+
+        Assert.Contains("Боевая опасность", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Опасность окружения", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Социальное напряжение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сложность исследования", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("бой: 30 окружение", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

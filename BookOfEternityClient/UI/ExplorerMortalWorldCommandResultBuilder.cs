@@ -2775,7 +2775,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             AddLocationFact(facts, "Тип", TranslateLocationType(GetLocationNodeString(location, "locationType", "type")));
             AddLocationFact(facts, "Внутренний тип", TranslateIndoorLocationType(GetLocationNodeString(location, "indoorType")));
             AddLocationFact(facts, "Биом", TranslateLocationBiome(GetLocationNodeString(location, "biome")));
-            AddLocationFact(facts, "Опасность", DescribeLocationDifficulty(location));
+            AddLocationDifficultyFacts(facts, location);
 
             var panelBlocks = new List<UiBlock>();
             var description = GetLocationNodeString(location, "description", "shortDescription");
@@ -3187,6 +3187,30 @@ public static class ExplorerMortalWorldCommandResultBuilder
             items.Add(new UiKeyValueItem { Key = key, Value = value.Trim() });
     }
 
+    private static void AddLocationDifficultyFacts(List<UiKeyValueItem> items, JsonObject location)
+    {
+        var simple = GetLocationNodeString(location, "difficulty", "danger", "dangerLevel");
+        if (!string.IsNullOrWhiteSpace(simple))
+        {
+            AddLocationFact(items, "Опасность", DescribeThreatDanger(simple));
+            return;
+        }
+
+        var profile = location["externalDifficultyProfile"] as JsonObject ??
+                      location["internalDifficultyProfile"] as JsonObject;
+        if (profile == null)
+            return;
+
+        foreach (var property in profile)
+        {
+            var value = FormatLocationTextEntry(property.Value);
+            if (string.IsNullOrWhiteSpace(value))
+                continue;
+
+            AddLocationFact(items, TranslateLocationDifficultyKey(property.Key), value);
+        }
+    }
+
     private static string DescribeLocationDifficulty(JsonObject location)
     {
         var simple = GetLocationNodeString(location, "difficulty", "danger", "dangerLevel");
@@ -3209,6 +3233,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
             .Where(static part => !string.IsNullOrWhiteSpace(part));
         return string.Join("\n", parts);
     }
+
+    private static string TranslateLocationDifficultyKey(string key) =>
+        key.Trim().ToLowerInvariant() switch
+        {
+            "combat" or "combatdanger" or "combatdifficulty" => "Боевая опасность",
+            "environment" or "environmental" or "environmentdanger" => "Опасность окружения",
+            "social" or "socialdanger" or "socialdifficulty" => "Социальное напряжение",
+            "exploration" or "explorationdanger" or "explorationdifficulty" => "Сложность исследования",
+            "magic" or "arcanedanger" or "magicaldanger" => "Магическая опасность",
+            "stealth" or "stealthdifficulty" => "Сложность скрытности",
+            _ => StructuredBonusDisplay.FieldLabel(key)
+        };
 
     private static string DescribeWeatherTendency(string tendency) =>
         tendency.Trim().ToUpperInvariant() switch
@@ -3290,7 +3326,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             {
                 Id = "summary",
                 Title = "Сводка",
-                Summary = "Что уже отмечено в книге.",
+                Summary = DescribeReferenceSummarySection(definition),
                 Icon = "reference",
                 Collapsible = true,
                 InitiallyExpanded = true,
@@ -3303,11 +3339,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
             sections.Add(new UiEntityDossierSection
             {
                 Id = "entries",
-                    Title = "Записи",
-                    Summary = "Известные записи этого раздела.",
-                    Icon = "reference",
-                    Presentation = "collection",
-                    Collapsible = true,
+                Title = "Записи",
+                Summary = DescribeReferenceEntriesSection(definition),
+                Icon = "reference",
+                Presentation = "collection",
+                Collapsible = true,
                 InitiallyExpanded = true,
                 Blocks = entries
                     .Select(entry => (UiBlock)BuildReferenceOverviewCard(definition, entry, entries))
@@ -3347,6 +3383,30 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddReferenceReadWarnings(blocks, definition.Title, reads.Values);
         return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
     }
+
+    private static string DescribeReferenceSummarySection(ReferenceCommandDefinition definition) =>
+        definition.Title switch
+        {
+            "Квесты" => "Активные задачи, завершённые поручения и сюжетные зацепки текущей главы.",
+            "Фракции" => "Силы мира, их хроники, проекты, особые состояния и отношение к герою.",
+            "Навыки" => "Активные и пассивные умения, доступные персонажу.",
+            "Чужие нити" => "Линии соперников и чужих сил, которые уже влияют на историю.",
+            "Коррективы Хранителя" => "Мягкие правки судьбы, которые уже изменили сцену или помогли герою.",
+            "Доступ к хранилищам" => "Тайники, столы, сундуки и права доступа, открытые персонажу.",
+            _ => "Краткая сводка по разделам и найденным записям."
+        };
+
+    private static string DescribeReferenceEntriesSection(ReferenceCommandDefinition definition) =>
+        definition.Title switch
+        {
+            "Квесты" => "Каждая задача или сюжетная запись показана отдельной карточкой.",
+            "Фракции" => "Каждая фракция, хроника или особое состояние показаны отдельной карточкой.",
+            "Навыки" => "Каждый навык показан отдельной карточкой с кратким эффектом.",
+            "Чужие нити" => "Каждая чужая линия показана отдельной карточкой.",
+            "Коррективы Хранителя" => "Каждая корректива показана отдельной карточкой.",
+            "Доступ к хранилищам" => "Каждое доступное хранилище показано отдельной карточкой.",
+            _ => "Каждая найденная запись показана отдельной карточкой."
+        };
 
     private static UiEntityDossierBlock BuildReferenceOverviewCard(
         ReferenceCommandDefinition definition,
@@ -3521,7 +3581,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddLocationFact(facts, "Направление", TranslateLocationDirection(GetLocationNodeString(location, "direction")));
         AddLocationFact(facts, "Дистанция", GetLocationNodeString(location, "distance"));
         AddLocationFact(facts, "Путь", DescribeLinkState(GetLocationNodeString(location, "linkState")));
-        AddLocationFact(facts, "Опасность", DescribeLocationDifficulty(location));
+        AddLocationDifficultyFacts(facts, location);
 
         var sections = new List<UiEntityDossierSection>();
         var descriptionBlocks = new List<UiBlock>();
@@ -6229,7 +6289,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             {
                 Id = "records",
                 Title = "Записи взаимодействий",
-                Summary = "Последние видимые записи. Полные сведения открываются отдельной карточкой.",
+                Summary = "Последние видимые сцены, реплики и совместные действия игроков.",
                 Icon = "interactions",
                 Collapsible = true,
                 InitiallyExpanded = true,
