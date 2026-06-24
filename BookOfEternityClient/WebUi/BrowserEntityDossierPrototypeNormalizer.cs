@@ -344,6 +344,8 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             }
         }
 
+        RemoveSummaryDuplicateGenericFacts(facts, summary);
+
         return new UiEntityCard
         {
             Title = SanitizePlayerFacingValue(dossier.Title),
@@ -899,15 +901,19 @@ internal static class BrowserEntityDossierPrototypeNormalizer
 
     private static UiEntityCard NormalizeCard(UiEntityCard card)
     {
+        var summary = SanitizePlayerFacingValue(card.Summary);
+        var facts = CloneFacts(card.Facts);
+        RemoveSummaryDuplicateGenericFacts(facts, summary);
+
         return new UiEntityCard
         {
             Title = SanitizePlayerFacingValue(card.Title),
             Subtitle = SanitizePlayerFacingValue(card.Subtitle),
-            Summary = SanitizePlayerFacingValue(card.Summary),
+            Summary = summary,
             Icon = card.Icon,
             Badges = CloneBadges(card.Badges),
             Media = card.Media,
-            Facts = CloneFacts(card.Facts),
+            Facts = facts,
             Metrics = CloneMetrics(card.Metrics),
             Hints = CloneHints(card.Hints),
             List = CloneList(card.List),
@@ -915,6 +921,16 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             Cards = card.Cards.Select(NormalizeCard).ToList(),
             PrimaryAction = CloneAction(card.PrimaryAction)
         };
+    }
+
+    private static void RemoveSummaryDuplicateGenericFacts(List<UiEntityFact> facts, string summary)
+    {
+        if (string.IsNullOrWhiteSpace(summary))
+            return;
+
+        facts.RemoveAll(fact =>
+            IsGenericDetailKey(fact.Label) &&
+            string.Equals(fact.Value?.Trim(), summary.Trim(), StringComparison.OrdinalIgnoreCase));
     }
 
     private static UiAction? CloneAction(UiAction? action)

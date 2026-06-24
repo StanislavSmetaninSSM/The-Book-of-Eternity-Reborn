@@ -373,6 +373,25 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     }
 
     [Fact]
+    public async Task MortalNpcCardsDoNotRepeatSummaryAsGenericDetails()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/нпс");
+
+        var npcCards = EnumerateEntityCards(result.Blocks)
+            .Where(static card => !string.IsNullOrWhiteSpace(card.Summary))
+            .ToList();
+
+        Assert.NotEmpty(npcCards);
+        Assert.DoesNotContain(
+            npcCards,
+            static card => card.Facts.Any(fact =>
+                IsGenericDetailsColumn(fact.Label) &&
+                string.Equals(fact.Value, card.Summary, StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [Fact]
     public async Task MortalInventoryOverviewCardsExposeUsefulItemDataAndDirectOpenActions()
     {
         var result = await ExecuteFromLoadedSaveAsync(
