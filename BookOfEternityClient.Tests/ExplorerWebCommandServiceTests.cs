@@ -1450,6 +1450,12 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateKeyValueGrids));
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumeratePanels), static panel =>
+            panel.Title is "Прогресс" or "Ресурсы и нагрузка" or "Скрытность");
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "panel" &&
+            dossier.Title is "Прогресс" or "Ресурсы и нагрузка" or "Скрытность");
 
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Асуран де Вальмонт", text, StringComparison.OrdinalIgnoreCase);

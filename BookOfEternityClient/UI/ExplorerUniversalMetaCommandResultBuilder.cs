@@ -222,17 +222,32 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         var progressRows = BuildMortalStatusProgressRows(experience);
         if (progressRows.Count > 0)
-            blocks.Add(Panel("Прогресс", new UiKeyValueGridBlock { Items = progressRows }));
+            blocks.Add(BuildStatusFactDossier(
+                "Прогресс",
+                "mortal-status-progress",
+                "Уровень, опыт и усилия персонажа.",
+                "trending-up",
+                progressRows));
 
         var resourceRows = BuildMortalStatusResourceRows(status, inventory, weight);
         if (resourceRows.Count > 0)
-            blocks.Add(Panel("Ресурсы и нагрузка", new UiKeyValueGridBlock { Items = resourceRows }));
+            blocks.Add(BuildStatusFactDossier(
+                "Ресурсы и нагрузка",
+                "mortal-status-resources",
+                "Деньги, переносимый вес и дополнительные расходы.",
+                "package",
+                resourceRows));
 
         if (stealth != null)
         {
             var stealthRows = BuildMortalStatusStealthRows(stealth);
             if (stealthRows.Count > 0)
-                blocks.Add(Panel("Скрытность", new UiKeyValueGridBlock { Items = stealthRows }));
+                blocks.Add(BuildStatusFactDossier(
+                    "Скрытность",
+                    "mortal-status-stealth",
+                    "Текущее положение персонажа относительно наблюдателей.",
+                    "eye",
+                    stealthRows));
         }
 
         if (activeConditions.Count > 0)
@@ -264,6 +279,56 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         AddMortalStatusCustomStateBlocks(blocks, customStatesRead.Node);
 
         return ExplorerMortalEffectDetailActions.Build("/эффекты", effectsRead.Node);
+    }
+
+    private static UiEntityDossierBlock BuildStatusFactDossier(
+        string title,
+        string entityType,
+        string summary,
+        string icon,
+        IReadOnlyList<UiKeyValueItem> items)
+    {
+        var facts = items
+            .Where(static item => !IsUnknownValue(item.Key) && !IsUnknownValue(item.Value))
+            .Select(static item => new UiEntityFact { Label = item.Key, Value = item.Value })
+            .ToList();
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = entityType,
+            Title = title,
+            Subtitle = "Статус персонажа",
+            Summary = summary,
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = FormatStatusEntryCount(facts.Count),
+                    Tone = UiTone.Accent,
+                    Icon = icon
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = StableStatusId(title),
+                    Title = title,
+                    Icon = icon,
+                    Presentation = "cards",
+                    CollectionLabel = FormatStatusEntryCount(facts.Count),
+                    Cards = facts
+                        .Select(fact => new UiEntityCard
+                        {
+                            Title = fact.Label,
+                            Summary = fact.Value,
+                            Icon = icon,
+                            Facts = [fact]
+                        })
+                        .ToList()
+                }
+            ]
+        };
     }
 
     private static List<UiKeyValueItem> BuildMortalStatusProgressRows(JsonObject? experience)
