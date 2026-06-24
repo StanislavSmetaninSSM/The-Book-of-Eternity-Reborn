@@ -116,7 +116,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 new("game_state/quests/regular_quests.json", "quests|activeQuests", "Активных"),
                 new("game_state/quests/regular_quests.json", "completedQuests", "Завершённых"),
                 new("game_state/quests/quest_history.json", "questHistory|entries", "Исторических записей"),
-                new("game_state/quests/plot_outline.json", "plotOutline|entries", "Сюжетных записей")
+                new("game_state/quests/plot_outline.json", "plotOutline.entries|entries", "Сюжетных записей")
                 ])),
             CommandKind.Map => await BuildMap(commandToken, fs),
             CommandKind.CurrentLocation => await BuildCurrentLocation(commandToken, fs),
@@ -4866,6 +4866,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "completed" or "complete" or "closed" => "завершено",
             "failed" => "провалено",
             "pending" or "waiting" => "ожидает",
+            "available" => "доступно",
             "contested" => "оспаривается",
             "rising" => "нарастает",
             "owner" => "полный доступ",
@@ -5017,11 +5018,28 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         foreach (var candidate in propertyName.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
-            if (obj.TryGetPropertyValue(candidate, out var value) && value != null)
+            var value = ResolveSpecCandidate(obj, candidate);
+            if (value != null)
                 return value;
         }
 
         return null;
+    }
+
+    private static JsonNode? ResolveSpecCandidate(JsonObject root, string candidate)
+    {
+        JsonNode? current = root;
+        foreach (var segment in candidate.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            if (current is not JsonObject obj ||
+                !obj.TryGetPropertyValue(segment, out current) ||
+                current == null)
+            {
+                return null;
+            }
+        }
+
+        return current;
     }
 
     private static string DescribeSummaryNode(JsonNode node)

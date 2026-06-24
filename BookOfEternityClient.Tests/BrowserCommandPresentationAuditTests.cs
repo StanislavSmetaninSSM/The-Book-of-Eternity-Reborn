@@ -392,6 +392,38 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     }
 
     [Fact]
+    public async Task MortalQuestOverviewUsesPlotOutlineEntriesInsteadOfContainer()
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            "/квесты");
+
+        Assert.Contains(
+            result.Actions,
+            static action => action.Label.Contains("Письмо на прикроватном столике", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(
+            result.Actions,
+            static action => action.Label.Contains("Безопасный выезд через гильдию", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(
+            result.Actions,
+            static action => action.Label.Contains("Сюжетных записей 3", StringComparison.OrdinalIgnoreCase));
+
+        var cards = EnumerateEntityCards(result.Blocks).ToList();
+        Assert.Contains(
+            cards,
+            static card => string.Equals(card.Title, "Письмо на прикроватном столике", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(
+            cards,
+            static card => string.Equals(card.Title, "Безопасный выезд через гильдию", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(
+            cards,
+            static card => card.Title.Contains("Сюжетных записей 3", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(
+            cards,
+            static card => card.Summary.Contains("Available", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task MortalInventoryOverviewCardsExposeUsefulItemDataAndDirectOpenActions()
     {
         var result = await ExecuteFromLoadedSaveAsync(
