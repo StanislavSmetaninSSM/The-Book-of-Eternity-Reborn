@@ -150,7 +150,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             CommandKind.Gm => await BuildGmThoughts(normalizedCommand, fs, loc),
             CommandKind.Debug => BuildDebug(normalizedCommand, fs, stateManager, loc),
             CommandKind.Mods => BuildDirectoryList(normalizedCommand, fs, "Моды", "mods"),
-            CommandKind.SystemGuardians => BuildSystemGuardians(normalizedCommand, fs),
+            CommandKind.SystemGuardians => await BuildSystemGuardians(normalizedCommand, fs),
             CommandKind.SarefStory => await BuildSarefStory(normalizedCommand, fs),
             CommandKind.SarefFindWings => await BuildSarefFindWings(normalizedCommand, stateManager, fs),
             CommandKind.SarefUseAdvantage => await BuildSarefUseAdvantage(normalizedCommand, fs),
@@ -1709,27 +1709,12 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             });
     }
 
-    private static ExplorerCommandResult BuildSystemGuardians(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildSystemGuardians(string command, FileSystemManager fs)
     {
-        var root = Path.Combine(fs.BasePath, SystemGuardianLibraryService.RootDirectoryName);
-        var rows = new List<UiTableRow>();
-        if (Directory.Exists(root))
-        {
-            foreach (var manifest in Directory.GetFiles(root, "manifest.json", SearchOption.AllDirectories)
-                         .OrderBy(static path => path, StringComparer.OrdinalIgnoreCase))
-            {
-                rows.Add(new UiTableRow
-                {
-                    Cells =
-                    [
-                        Path.GetFileName(Path.GetDirectoryName(manifest) ?? manifest),
-                        ToRelativeBasePath(fs, manifest)
-                    ]
-                });
-            }
-        }
+        var service = new SystemGuardianLibraryService(fs, NullLogger<SystemGuardianLibraryService>.Instance);
+        var presets = await service.GetAvailablePresetsAsync(includeDossier: true);
 
-        if (rows.Count == 0)
+        if (presets.Count == 0)
         {
             return Completed(command,
                 Message(
@@ -1739,12 +1724,71 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         }
 
         return Completed(command,
-            new UiTableBlock
+            new UiEntityDossierBlock
             {
+                EntityType = "system-guardians",
                 Title = "Извечные хранители",
-                Columns = ["Preset", "Manifest"],
-                Rows = rows
+                Summary = "Глобальные архетипы Хранителей, которых душа может встретить или целенаправленно искать.",
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "system-guardian-presets",
+                        Title = "Доступные Хранители",
+                        Icon = "shield",
+                        Presentation = "collection",
+                        CollectionLabel = presets.Count == 1 ? "1 хранитель" : $"{presets.Count} хранителей",
+                        Cards = presets.Select(BuildSystemGuardianPresetCard).ToList()
+                    }
+                ]
             });
+    }
+
+    private static UiEntityCard BuildSystemGuardianPresetCard(SystemGuardianLibraryService.SystemGuardianPresetDescriptor preset)
+    {
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Обитель", preset.AbodeName);
+        AddFactIfKnown(facts, "Темы", preset.CoreValues.Count == 0 ? string.Empty : string.Join(", ", preset.CoreValues));
+        AddFactIfKnown(facts, "Образ", preset.DefaultAppearanceDescription);
+
+        var nested = new List<UiEntityCard>();
+        var dossier = ToPlayerFacingMarkdownSnippet(preset.DossierMarkdown);
+        if (!IsUnknownReadableJsonValue(dossier))
+        {
+            nested.Add(new UiEntityCard
+            {
+                Title = "Досье",
+                Icon = "scroll",
+                Summary = dossier
+            });
+        }
+
+        return new UiEntityCard
+        {
+            Title = FirstNonEmpty(preset.DisplayName, preset.PresetId, "Извечный хранитель"),
+            Subtitle = "Системный Хранитель",
+            Summary = FirstNonEmpty(preset.Summary, "Краткое описание пока не добавлено."),
+            Icon = "shield",
+            Facts = facts,
+            Nested = nested
+        };
+    }
+
+    private static string ToPlayerFacingMarkdownSnippet(string? markdown)
+    {
+        if (string.IsNullOrWhiteSpace(markdown))
+            return "не указано";
+
+        var lines = markdown
+            .Replace("\r\n", "\n")
+            .Replace('\r', '\n')
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(static line => line.TrimStart('#', ' ', '\t'))
+            .Where(static line => !string.IsNullOrWhiteSpace(line))
+            .Take(6)
+            .ToArray();
+
+        return lines.Length == 0 ? "не указано" : string.Join(Environment.NewLine, lines);
     }
 
     private static async Task<ExplorerCommandResult> BuildSarefStory(string command, FileSystemManager fs)

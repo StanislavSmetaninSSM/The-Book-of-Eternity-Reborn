@@ -142,6 +142,31 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("system_guardians", text, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_SystemGuardians_RendersPresetDossiersWithoutManifestPaths()
+    {
+        await SeedWebSystemGuardianPresetAsync("azalia", "Азалия", "Обитель Неутолимого Пламени");
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/system_guardians"));
+
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Извечные хранители", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Азалия", text, StringComparison.Ordinal);
+        Assert.Contains("Тестовый системный хранитель для browser tests.", text, StringComparison.Ordinal);
+        Assert.Contains("ценность 1", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Обитель Неутолимого Пламени", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тестовое досье для браузерного вывода.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.Title.Equals("Извечные хранители", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        foreach (var forbidden in new[] { "Preset", "Manifest", "system_guardians" })
+            Assert.DoesNotContain(forbidden, text, StringComparison.OrdinalIgnoreCase);
+        foreach (var forbidden in new[] { "manifest.json", ".json", _rootPath })
+            Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/квесты", "Печать с крыльями")]
     [InlineData("/навыки", "Чувство магических потоков")]
@@ -5241,6 +5266,44 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         {"turn":1,"timestamp":"2026-05-20T00:00:00Z","realm":"Chaos Sea","player":"test","narrative":"story"}
 
         """);
+    }
+
+    private async Task SeedWebSystemGuardianPresetAsync(string presetId, string displayName, string abodeName)
+    {
+        var presetDir = Path.Combine(
+            _fs.BasePath,
+            SystemGuardianLibraryService.RootDirectoryName,
+            SystemGuardianLibraryService.BuiltInDirectoryName,
+            presetId);
+        Directory.CreateDirectory(presetDir);
+
+        await File.WriteAllTextAsync(Path.Combine(presetDir, "manifest.json"), $$"""
+        {
+          "presetId": "{{presetId}}",
+          "displayName": "{{displayName}}",
+          "summary": "Тестовый системный хранитель для browser tests.",
+          "alwaysAvailable": true,
+          "category": "system_guardian",
+          "identity": {
+            "domain": "Social",
+            "archetype": "Test Archetype",
+            "tone": "Measured",
+            "coreValues": ["ценность 1", "ценность 2"]
+          },
+          "abode": {
+            "name": "{{abodeName}}",
+            "theme": "тестовая обитель"
+          },
+          "authoring": {
+            "author": "tests",
+            "version": "1.0"
+          }
+        }
+        """);
+
+        await File.WriteAllTextAsync(
+            Path.Combine(presetDir, "dossier.md"),
+            $"# {displayName}\n\nТестовое досье для браузерного вывода.");
     }
 
     private void WriteSessionImage(string relativePath)
