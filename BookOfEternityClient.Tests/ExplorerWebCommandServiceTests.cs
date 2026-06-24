@@ -1774,7 +1774,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task ExecuteAsync_Lives_RendersLifeHistoryRowsWithoutRawJson()
+    public async Task ExecuteAsync_Lives_RendersLifeHistoryDossierCardsWithoutRawJson()
     {
         await SeedUniversalMetaFilesAsync();
 
@@ -1786,6 +1786,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("История жизней", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Первая жизнь", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Инкарнация", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "life-history" &&
+            dossier.Sections.Any(static section => section.Cards.Count > 0));
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("soul_state", payload, StringComparison.OrdinalIgnoreCase);

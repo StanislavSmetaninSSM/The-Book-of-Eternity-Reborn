@@ -817,37 +817,70 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             return MissingOrMalformed(command, title, read);
 
         var section = read.Node[propertyName];
+        var lifeCards = section is JsonArray { Count: > 0 } history
+            ? history
+                .OfType<JsonObject>()
+                .Select(BuildLifeHistoryCard)
+                .ToList()
+            : [];
         var blocks = new List<UiBlock>
         {
-            Panel(title,
-                Grid(
-                    ("Записей", section is JsonArray array ? array.Count.ToString() : "0"),
-                    ("Статус", section == null ? "не найдено" : "найдено")))
+            new UiEntityDossierBlock
+            {
+                EntityType = "life-history",
+                Title = title,
+                Summary = section == null
+                    ? "История прошлых жизней пока не найдена."
+                    : "Краткая летопись завершённых воплощений души.",
+                Facts =
+                [
+                    new UiEntityFact { Label = "Записей", Value = lifeCards.Count.ToString() },
+                    new UiEntityFact { Label = "Состояние", Value = section == null ? "не найдено" : "найдено" }
+                ],
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "life-history-records",
+                        Title = "Воплощения",
+                        Icon = "history",
+                        Presentation = "cards",
+                        CollectionLabel = lifeCards.Count == 1 ? "1 жизнь" : $"{lifeCards.Count} жизней",
+                        Cards = lifeCards
+                    }
+                ]
+            }
         };
 
-        if (section is JsonArray { Count: > 0 } history)
-        {
-            var rows = history
-                .OfType<JsonObject>()
-                .Select((life, index) => Row(
-                    FirstNonEmpty(GetNumberOrString(life, "incarnation"), GetNumberOrString(life, "incarnationNumber"), (index + 1).ToString()),
-                    DescribeLifeIdentity(life),
-                    DescribeLifeOutcome(life),
-                    DescribeLifeRewards(life)))
-                .ToList();
-
-            if (rows.Count > 0)
-            {
-                blocks.Add(new UiTableBlock
-                {
-                    Title = title,
-                    Columns = ["Инкарнация", "Кем и где", "Итог", "Награды"],
-                    Rows = rows
-                });
-            }
-        }
-
         return Completed(command, blocks);
+    }
+
+    private static UiEntityCard BuildLifeHistoryCard(JsonObject life, int index)
+    {
+        var incarnation = FirstNonEmpty(
+            GetNumberOrString(life, "incarnation"),
+            GetNumberOrString(life, "incarnationNumber"),
+            (index + 1).ToString());
+        var identity = DescribeLifeIdentity(life);
+        var outcome = DescribeLifeOutcome(life);
+        var rewards = DescribeLifeRewards(life);
+
+        var facts = new List<UiEntityFact>
+        {
+            new() { Label = "Инкарнация", Value = incarnation }
+        };
+        AddFactIfKnown(facts, "Кем и где", identity);
+        AddFactIfKnown(facts, "Итог", outcome);
+        AddFactIfKnown(facts, "Награды", rewards);
+
+        return new UiEntityCard
+        {
+            Title = $"Инкарнация {incarnation}",
+            Subtitle = IsUnknownValue(identity) ? "Прошлая жизнь" : identity,
+            Summary = IsUnknownValue(outcome) ? "Итог жизни пока не описан." : outcome,
+            Icon = "history",
+            Facts = facts
+        };
     }
 
     private static string DescribeLifeIdentity(JsonObject life)
