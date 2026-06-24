@@ -89,7 +89,7 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
                 EntityType = "world-news",
                 Title = "Новости мира",
                 Subtitle = "Краткая сводка",
-                Summary = "Сводка показывает, что изменилось в мире. Подробности каждой записи открываются отдельным действием.",
+                Summary = "События, флаги и долгие последствия текущей главы.",
                 Badges =
                 [
                     new UiEntityBadge

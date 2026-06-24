@@ -523,6 +523,24 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
             StringComparison.OrdinalIgnoreCase);
     }
 
+    [Theory]
+    [InlineData("/книги")]
+    [InlineData("/эффекты")]
+    [InlineData("/бой")]
+    [InlineData("/новости_мира")]
+    public async Task MortalReadOnlySummariesAvoidUiInstructionCopy(string command)
+    {
+        var result = await ExecuteFromLoadedSaveAsync(
+            "mortal_world_command_display_fixture.zip",
+            command);
+        var text = CollectResultText(result);
+
+        Assert.DoesNotContain("Выберите", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полные данные", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Подробности открываются", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("отдельным действием", text, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public async Task MortalFactionCardsExposeRanksChroniclesAndResourcesBeyondPowerProfile()
     {

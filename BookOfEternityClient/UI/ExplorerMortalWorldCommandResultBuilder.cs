@@ -735,7 +735,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             {
                 Id = "active-effects",
                 Title = "Активные записи",
-                Summary = "Краткие карточки эффектов. Полные данные открываются отдельным действием.",
+                Summary = "Видимые состояния, временные помехи и магические отклики, которые сейчас влияют на персонажа.",
                 Icon = "effect",
                 Collapsible = true,
                 InitiallyExpanded = true,
@@ -7300,7 +7300,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             {
                 Id = "enemies",
                 Title = "Враги",
-                Summary = "Краткие карточки противников. Подробности открываются отдельным действием.",
+                Summary = "Противники, которые сейчас участвуют в столкновении.",
                 Icon = "combat",
                 Collapsible = true,
                 InitiallyExpanded = true,
@@ -7328,7 +7328,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             {
                 Id = "combat-log",
                 Title = "Боевой журнал",
-                Summary = "Последние записи боя. Полная запись открывается отдельным действием.",
+                Summary = "Последние события столкновения в порядке боевого журнала.",
                 Icon = "book",
                 Collapsible = true,
                 InitiallyExpanded = true,
@@ -8398,7 +8398,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             EntityType = "document-shelf",
             Title = title,
             Subtitle = "Документы и книги",
-            Summary = "Выберите документ из действий, чтобы открыть полный текст.",
+            Summary = "Письма, книги и записи, найденные в инвентаре и связанных досье.",
             Badges =
             [
                 new UiEntityBadge
@@ -8414,7 +8414,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 {
                     Id = "documents",
                     Title = "Документы",
-                    Summary = "Краткие карточки показывают источник, доступ и объем текста без раскрытия полного содержимого.",
+                    Summary = "Источник, доступ и короткий фрагмент каждого найденного документа.",
                     Icon = "book",
                     Collapsible = true,
                     InitiallyExpanded = true,
