@@ -5,6 +5,7 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models.GameState;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -170,25 +171,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         var state = stateManager.CurrentState;
         var blocks = new List<UiBlock>
         {
-            Panel("Статус",
-                Grid(
-                    ("Царство", ExplorerPlayerFacingLabels.Realm(state.CurrentRealm)),
-                    ("Душа", EmptyFallback(state.SoulName)),
-                    ("Форма души", EmptyFallback(state.SoulFormDescription)),
-                    ("Инкарнация", state.Incarnation.ToString()),
-                    ("Персонаж", EmptyFallback(state.CharacterName)),
-                    ("Класс / раса", JoinNonEmpty(" / ", state.CharacterClass, state.CharacterRace)),
-                    ("Локация", EmptyFallback(state.CurrentLocation)),
-                    ("Время мира", EmptyFallback(ExplorerPlayerFacingLabels.WorldTime(state.WorldTime))),
-                    ("Состояние", EmptyFallback(state.PlayerStatus.CurrentCondition)),
-                    ("Здоровье", EmptyFallback(state.PlayerStatus.HealthPercentage)),
-                    ("Энергия", EmptyFallback(state.PlayerStatus.EnergyPercentage)),
-                    ("Равновесие", EmptyFallback(state.PlayerStatus.PoisePercentage)),
-                    ("Чернильные Перья", state.InkFeathers.ToString()),
-                    ("Просветление", EmptyFallback(state.EnlightenmentTier)),
-                    ("Активный Хранитель", EmptyFallback(state.ActiveGuardianName)),
-                    ("Сияние", $"{state.ShiningRadianceExperience} XP / тир {state.ShiningRadianceTier}"),
-                    ("Искры Света", state.ShiningLightSparks.ToString())))
+            BuildStatusOverviewDossier(state)
         };
 
         var actions = Enumerable.Empty<UiAction>();
@@ -196,6 +179,35 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             actions = await AddMortalStatusDetailBlocks(blocks, fs, state.PlayerStatus.ActiveConditions);
 
         return Completed(command, blocks, actions);
+    }
+
+    private static UiEntityDossierBlock BuildStatusOverviewDossier(AggregatedGameState state)
+    {
+        var rows = new List<UiKeyValueItem>();
+        AddStatusRow(rows, "Царство", ExplorerPlayerFacingLabels.Realm(state.CurrentRealm));
+        AddStatusRow(rows, "Душа", EmptyFallback(state.SoulName));
+        AddStatusRow(rows, "Форма души", EmptyFallback(state.SoulFormDescription));
+        AddStatusRow(rows, "Инкарнация", state.Incarnation.ToString());
+        AddStatusRow(rows, "Персонаж", EmptyFallback(state.CharacterName));
+        AddStatusRow(rows, "Класс / раса", JoinNonEmpty(" / ", state.CharacterClass, state.CharacterRace));
+        AddStatusRow(rows, "Локация", EmptyFallback(state.CurrentLocation));
+        AddStatusRow(rows, "Время мира", EmptyFallback(ExplorerPlayerFacingLabels.WorldTime(state.WorldTime)));
+        AddStatusRow(rows, "Состояние", EmptyFallback(state.PlayerStatus.CurrentCondition));
+        AddStatusRow(rows, "Здоровье", EmptyFallback(state.PlayerStatus.HealthPercentage));
+        AddStatusRow(rows, "Энергия", EmptyFallback(state.PlayerStatus.EnergyPercentage));
+        AddStatusRow(rows, "Равновесие", EmptyFallback(state.PlayerStatus.PoisePercentage));
+        AddStatusRow(rows, "Чернильные Перья", state.InkFeathers.ToString());
+        AddStatusRow(rows, "Просветление", EmptyFallback(state.EnlightenmentTier));
+        AddStatusRow(rows, "Активный Хранитель", EmptyFallback(state.ActiveGuardianName));
+        AddStatusRow(rows, "Сияние", $"{state.ShiningRadianceExperience} XP / тир {state.ShiningRadianceTier}");
+        AddStatusRow(rows, "Искры Света", state.ShiningLightSparks.ToString());
+
+        return BuildStatusFactDossier(
+            "Статус",
+            "status-overview",
+            "Общее состояние души, текущего персонажа и доступных ресурсов.",
+            "user",
+            rows);
     }
 
     private static async Task<IReadOnlyList<UiAction>> AddMortalStatusDetailBlocks(
@@ -252,14 +264,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         if (activeConditions.Count > 0)
         {
-            blocks.Add(Panel("Активные состояния",
-                new UiListBlock
-                {
-                    Items = activeConditions
-                        .Where(static condition => !string.IsNullOrWhiteSpace(condition))
-                        .Select(static condition => condition.Trim())
-                        .ToList()
-                }));
+            blocks.Add(BuildActiveConditionsDossier(activeConditions));
         }
 
         var changeRows = BuildMortalStatusChangeRows(statusChanges, experience);
@@ -279,6 +284,41 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         AddMortalStatusCustomStateBlocks(blocks, customStatesRead.Node);
 
         return ExplorerMortalEffectDetailActions.Build("/эффекты", effectsRead.Node);
+    }
+
+    private static UiEntityDossierBlock BuildActiveConditionsDossier(IReadOnlyList<string> activeConditions)
+    {
+        var conditions = activeConditions
+            .Where(static condition => !string.IsNullOrWhiteSpace(condition))
+            .Select(static condition => condition.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "status-active-conditions",
+            Title = "Активные состояния",
+            Subtitle = "Статус персонажа",
+            Summary = conditions.Count == 1
+                ? "Сейчас активно одно состояние."
+                : $"Сейчас активно {conditions.Count} состояний.",
+            Badges =
+            [
+                new UiEntityBadge { Label = FormatStatusEntryCount(conditions.Count), Icon = "activity", Tone = UiTone.Accent }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "active-conditions",
+                    Title = "Состояния",
+                    Icon = "activity",
+                    Presentation = "list",
+                    CollectionLabel = FormatStatusEntryCount(conditions.Count),
+                    List = conditions
+                }
+            ]
+        };
     }
 
     private static UiEntityDossierBlock BuildStatusFactDossier(
