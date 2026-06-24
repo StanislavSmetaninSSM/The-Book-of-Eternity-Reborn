@@ -5463,6 +5463,35 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("hidden_saref_agent_marker", payload, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfiles_OverviewRendersDossierCardsWithoutLegacyTables()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeProfilesRawLeakFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "afterlife-profiles");
+        var profileSection = Assert.Single(
+            dossier.Sections,
+            static section => section.Id == "visible-afterlife-profiles");
+        var profileCard = Assert.Single(profileSection.Cards);
+
+        Assert.Equal("Профили сущностей посмертия", dossier.Title);
+        Assert.Contains("Хранитель Открытой Розы", profileCard.Title, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Открытая карта клятвы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Открытая цель: защитить игрока", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_actor_motivation_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/afterlife_chronicles")]
     [InlineData("/хроники_посмертия")]

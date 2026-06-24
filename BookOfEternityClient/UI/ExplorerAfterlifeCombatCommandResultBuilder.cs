@@ -92,6 +92,37 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             return BuildProfileDetail(request.Command, visibleProfiles, detail.Selector);
 
         var hiddenCount = Math.Max(0, allProfiles.Count - visibleProfiles.Count);
+        if (includeRawDiagnostics)
+            return BuildProfilesDiagnosticProjection(request.Command, read, visibleProfiles, hiddenCount);
+
+        var blocks = new List<UiBlock>
+        {
+            BuildAfterlifeProfilesDossier(visibleProfiles, allProfiles.Count, hiddenCount)
+        };
+
+        if (visibleProfiles.Count == 0)
+        {
+            blocks.Add(Message(
+                "Профили не найдены",
+                allProfiles.Count > 0
+                    ? "Известные записи сейчас скрыты от текущей души."
+                    : "Когда ГМ откроет значимые сущности посмертия, они появятся здесь."));
+        }
+
+        AddRawOrWarning(
+            blocks,
+            "Профили посмертия",
+            read,
+            includeRawDiagnostics: false);
+        return Completed(request.Command, blocks, BuildProfileActions(visibleProfiles));
+    }
+
+    private static ExplorerCommandResult BuildProfilesDiagnosticProjection(
+        string command,
+        JsonReadResult read,
+        IReadOnlyList<JsonObject> visibleProfiles,
+        int hiddenCount)
+    {
         var blocks = new List<UiBlock>
         {
             Panel("Профили сущностей посмертия",
@@ -101,7 +132,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     ("Опасных развеивателей души", CountProfilesWithDissipation(visibleProfiles).ToString()),
                     ("Особых духовных искусств", CountNestedArray(visibleProfiles, "specialArts").ToString()),
                     ("Кастомных состояний", CountNestedArray(visibleProfiles, AfterlifeEntityProfileState.CustomStatesProperty).ToString()),
-                    ("Открытых карт судьбы", CountUnlockedFateCards(visibleProfiles, includeRawDiagnostics).ToString()),
+                    ("Открытых карт судьбы", CountUnlockedFateCards(visibleProfiles, includeHiddenDiagnostics: true).ToString()),
                     ("Активных личных квестов", CountActiveProfileQuests(visibleProfiles).ToString())))
         };
 
@@ -126,7 +157,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                                 DescribeProfileProgression(profile),
                                 DescribeStandardArts(profile["standardArts"] as JsonObject),
                                 DescribeSpecialArts(profile["specialArts"] as JsonArray),
-                                DescribeFateCards(profile["fateCards"] as JsonArray, includeRawDiagnostics),
+                                DescribeFateCards(profile["fateCards"] as JsonArray, includeHiddenDiagnostics: true),
                                 DescribeProfileAgency(profile),
                                 DescribeDissipation(profile),
                                 string.IsNullOrWhiteSpace(selector) ? "не указано" : BuildProfileDetailCommand(selector)
@@ -136,11 +167,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     .ToList()
             });
 
-            var relationshipsTable = BuildProfileRelationshipsTable(visibleProfiles, includeRawDiagnostics);
+            var relationshipsTable = BuildProfileRelationshipsTable(visibleProfiles, includeHiddenDiagnostics: true);
             if (relationshipsTable != null)
                 blocks.Add(relationshipsTable);
 
-            var masksTable = BuildProfileMasksTable(visibleProfiles, includeRawDiagnostics);
+            var masksTable = BuildProfileMasksTable(visibleProfiles, includeHiddenDiagnostics: true);
             if (masksTable != null)
                 blocks.Add(masksTable);
 
@@ -170,18 +201,455 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             blocks.Add(Message(
                 "Профили не найдены",
-                allProfiles.Count > 0
+                visibleProfiles.Count > 0
                     ? "Известные записи сейчас скрыты от текущей души."
                     : "Когда ГМ откроет значимые сущности посмертия, они появятся здесь."));
         }
 
         AddRawOrWarning(
             blocks,
-            includeRawDiagnostics ? $"Полный JSON {AfterlifeEntityProfileState.StatePath}" : "Профили посмертия",
+            $"Полный JSON {AfterlifeEntityProfileState.StatePath}",
             read,
-            includeRawDiagnostics);
-        return Completed(request.Command, blocks, BuildProfileActions(visibleProfiles));
+            includeRawDiagnostics: true);
+        return Completed(command, blocks, BuildProfileActions(visibleProfiles));
     }
+
+    private static UiEntityDossierBlock BuildAfterlifeProfilesDossier(
+        IReadOnlyList<JsonObject> visibleProfiles,
+        int totalProfiles,
+        int hiddenProfiles)
+    {
+        var relationships = BuildProfileRelationshipCards(visibleProfiles).ToList();
+        var masks = BuildProfileMaskCards(visibleProfiles).ToList();
+        var progression = BuildProfileProgressionCards(visibleProfiles).ToList();
+        var summary = visibleProfiles.Count > 0
+            ? "Открытые душе профили посмертия: сущности, их намерения, связи, маски и духовная прогрессия."
+            : "Сейчас нет профилей посмертия, раскрытых текущей душе.";
+
+        var sections = new List<UiEntityDossierSection>
+        {
+            new()
+            {
+                Id = "visible-afterlife-profiles",
+                Title = "Открытые сущности",
+                Summary = "Карточки показывают тип сущности, область, ресурсы, цели, активность и опасность.",
+                Icon = "user-round",
+                Presentation = "cards",
+                CollectionLabel = $"{visibleProfiles.Count} профилей",
+                Collapsible = visibleProfiles.Count > 4,
+                InitiallyExpanded = true,
+                Cards = visibleProfiles.Select(BuildAfterlifeProfileCard).ToList()
+            }
+        };
+
+        if (relationships.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "afterlife-profile-relationships",
+                Title = "Отношения",
+                Summary = "Связи, текущий уровень доверия или конфликта и ближайшее условие раскрытия.",
+                Icon = "link",
+                Presentation = "cards",
+                CollectionLabel = $"{relationships.Count} связей",
+                Collapsible = relationships.Count > 4,
+                InitiallyExpanded = true,
+                Cards = relationships
+            });
+        }
+
+        if (masks.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "afterlife-profile-masks",
+                Title = "Маски",
+                Summary = "Активные и уже раскрытые образы сущностей без скрытых GM-деталей.",
+                Icon = "venetian-mask",
+                Presentation = "cards",
+                CollectionLabel = $"{masks.Count} масок",
+                Collapsible = masks.Count > 4,
+                InitiallyExpanded = true,
+                Cards = masks
+            });
+        }
+
+        if (progression.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "afterlife-profile-progression",
+                Title = "Стратегии развития",
+                Summary = "Как сущности собираются усиливать духовные искусства и ресурсы.",
+                Icon = "trending-up",
+                Presentation = "cards",
+                CollectionLabel = $"{progression.Count} стратегий",
+                Collapsible = progression.Count > 4,
+                InitiallyExpanded = true,
+                Cards = progression
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "afterlife-profiles",
+            Title = "Профили сущностей посмертия",
+            Subtitle = "Сущности, связи и скрытые роли посмертия",
+            Summary = summary,
+            Facts =
+            [
+                new UiEntityFact { Label = "Показано профилей", Value = visibleProfiles.Count.ToString() },
+                new UiEntityFact { Label = "Скрытых профилей", Value = hiddenProfiles.ToString() },
+                new UiEntityFact { Label = "Всего записей", Value = totalProfiles.ToString() },
+                new UiEntityFact { Label = "Опасных развеивателей души", Value = CountProfilesWithDissipation(visibleProfiles).ToString() },
+                new UiEntityFact { Label = "Открытых карт судьбы", Value = CountUnlockedFateCards(visibleProfiles, includeHiddenDiagnostics: false).ToString() },
+                new UiEntityFact { Label = "Активных личных квестов", Value = CountActiveProfileQuests(visibleProfiles).ToString() }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static UiEntityCard BuildAfterlifeProfileCard(JsonObject profile)
+    {
+        var selector = ProfileSelector(profile);
+        var name = ProfileDisplayName(profile, selector);
+        var goals = profile["goals"] as JsonObject;
+        var currentActivity = profile["currentActivity"] as JsonObject;
+        var progression = profile["progression"] as JsonObject;
+        var enlightenment = progression?["enlightenment"] as JsonObject;
+        var radiance = progression?["radiance"] as JsonObject;
+        var summary = FirstSafePlayerText(
+            GetString(goals, "shortTermGoal", ""),
+            GetString(currentActivity, "summary", ""),
+            GetString(profile, "locationName", ""),
+            DescribeActorType(GetString(profile, "actorType", "сущность")));
+
+        return new UiEntityCard
+        {
+            Title = name,
+            Subtitle = $"{DescribeActorType(GetString(profile, "actorType", "?"))} - {DescribeRealm(GetString(profile, "realm", "?"))}",
+            Icon = "user-round",
+            Summary = summary,
+            Badges = BuildProfileBadges(profile),
+            Facts =
+            [
+                new UiEntityFact { Label = "Тип", Value = DescribeActorType(GetString(profile, "actorType", "?")) },
+                new UiEntityFact { Label = "Область", Value = DescribeRealm(GetString(profile, "realm", "?")) },
+                new UiEntityFact { Label = "Место", Value = SafePlayerText(GetString(profile, "locationName", ""), "не указано") },
+                new UiEntityFact { Label = "Чернильные Перья", Value = GetNumberOrString(profile["currencies"] as JsonObject, "inkFeathers", "0") },
+                new UiEntityFact { Label = "Искры Света", Value = GetNumberOrString(profile["currencies"] as JsonObject, "lightSparks", "0") },
+                new UiEntityFact { Label = "Просветление", Value = $"{GetNumberOrString(enlightenment, "tier", "0")} ступень, опыт {GetNumberOrString(enlightenment, "experience", "0")}" },
+                new UiEntityFact { Label = "Сияние", Value = $"{GetNumberOrString(radiance, "tier", "0")} ступень, опыт {GetNumberOrString(radiance, "experience", "0")}" },
+                new UiEntityFact { Label = "Обычных искусств", Value = CountObjectProperties(profile["standardArts"] as JsonObject).ToString() },
+                new UiEntityFact { Label = "Особых искусств", Value = CountArray(profile, "specialArts").ToString() },
+                new UiEntityFact { Label = "Открытых карт судьбы", Value = CountVisibleFateCards(profile).ToString() }
+            ],
+            Hints = BuildProfileCardHints(profile),
+            Cards = BuildProfileNestedCards(profile),
+            PrimaryAction = string.IsNullOrWhiteSpace(selector)
+                ? null
+                : DetailAction(
+                    "afterlife-profile-detail-" + ToActionIdPart(selector),
+                    "Открыть профиль",
+                    BuildProfileDetailCommand(selector))
+        };
+    }
+
+    private static List<UiEntityBadge> BuildProfileBadges(JsonObject profile)
+    {
+        var badges = new List<UiEntityBadge>();
+        var tier = GetInt(profile["soulDissipationTier"]);
+        if (tier > 0)
+            badges.Add(new UiEntityBadge { Label = $"развеивание души {tier}", Tone = UiTone.Warning, Icon = "alert-triangle" });
+
+        var activeQuests = CountActivePersonalQuests(profile);
+        if (activeQuests > 0)
+            badges.Add(new UiEntityBadge { Label = $"квестов {activeQuests}", Tone = UiTone.Accent, Icon = "scroll-text" });
+
+        return badges;
+    }
+
+    private static List<UiEntityHint> BuildProfileCardHints(JsonObject profile)
+    {
+        var hints = new List<UiEntityHint>();
+        var goals = profile["goals"] as JsonObject;
+        AddProfileHint(hints, "Ближайшая цель", GetString(goals, "shortTermGoal", ""), UiTone.Default);
+        AddProfileHint(hints, "Долгая цель", GetString(goals, "longTermGoal", ""), UiTone.Default);
+        AddProfileHint(hints, "План", GetString(goals, "plan", ""), UiTone.Default);
+
+        var currentActivity = profile["currentActivity"] as JsonObject;
+        AddProfileHint(hints, "Сейчас", GetString(currentActivity, "summary", ""), UiTone.Accent);
+
+        var activeQuests = (profile["personalQuests"] as JsonArray)?
+            .OfType<JsonObject>()
+            .Where(static quest => string.Equals(GetString(quest, "status", ""), "active", StringComparison.OrdinalIgnoreCase))
+            .Select(static quest =>
+            {
+                var title = GetString(quest, "title", GetString(quest, "questId", "личный квест"));
+                var plan = GetString(quest, "planSummary", "");
+                return string.IsNullOrWhiteSpace(plan) ? title : $"{title}: {plan}";
+            })
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToArray() ?? [];
+        if (activeQuests.Length > 0)
+            hints.Add(new UiEntityHint { Title = "Личные квесты", Text = string.Join(Environment.NewLine, activeQuests), Tone = UiTone.Accent });
+
+        return hints;
+    }
+
+    private static void AddProfileHint(List<UiEntityHint> hints, string title, string value, UiTone tone)
+    {
+        var safe = SafePlayerText(value, string.Empty);
+        if (!string.IsNullOrWhiteSpace(safe))
+            hints.Add(new UiEntityHint { Title = title, Text = safe, Tone = tone });
+    }
+
+    private static List<UiEntityCard> BuildProfileNestedCards(JsonObject profile)
+    {
+        var cards = new List<UiEntityCard>();
+        if (profile["standardArts"] is JsonObject standardArts && standardArts.Count > 0)
+        {
+            cards.Add(new UiEntityCard
+            {
+                Title = "Духовные искусства",
+                Subtitle = "обычные действия",
+                Icon = "sparkles",
+                List = standardArts
+                    .Select(art => $"{DescribeArt(art.Key)} - уровень {GetNumberOrString(standardArts, art.Key, "0")}")
+                    .ToList()
+            });
+        }
+
+        if (profile["specialArts"] is JsonArray specialArts)
+        {
+            var specialCards = specialArts
+                .OfType<JsonObject>()
+                .Select(static art => new UiEntityCard
+                {
+                    Title = GetString(art, "displayName", GetString(art, "artId", "Особое искусство")),
+                    Subtitle = "особое искусство",
+                    Icon = "sparkles",
+                    Summary = SafePlayerText(GetString(art, "effectSummary", ""), "эффект не описан"),
+                    Facts =
+                    [
+                        new UiEntityFact { Label = "Базовое действие", Value = DescribeArt(GetString(art, "baseOperation", "")) },
+                        new UiEntityFact { Label = "Ступень", Value = GetNumberOrString(art, "tier", "0") },
+                        new UiEntityFact { Label = "Стоимость", Value = $"{GetNumberOrString(art, "costMultiplierPercent", "100")}% от базовой" },
+                        new UiEntityFact { Label = "Можно обучить душу", Value = BoolToRu(art["canTeachPlayer"]) }
+                    ],
+                    Hints = BuildSpecialArtHints(art)
+                })
+                .ToList();
+            if (specialCards.Count > 0)
+            {
+                cards.Add(new UiEntityCard
+                {
+                    Title = "Особые искусства",
+                    Subtitle = $"{specialCards.Count} записей",
+                    Icon = "sparkles",
+                    Cards = specialCards
+                });
+            }
+        }
+
+        var fateCards = EnumerateVisibleFateCards(profile).ToList();
+        if (fateCards.Count > 0)
+        {
+            cards.Add(new UiEntityCard
+            {
+                Title = "Карты судьбы",
+                Subtitle = $"{fateCards.Count} открыто",
+                Icon = "scroll-text",
+                Cards = fateCards.Select(static card => new UiEntityCard
+                {
+                    Title = GetString(card, "nameRu", GetString(card, "cardId", "Карта судьбы")),
+                    Subtitle = DescribeFateCardStatus(GetString(card, "status", "locked")),
+                    Icon = "scroll-text",
+                    Summary = SafePlayerText(GetString(card, "storyMeaning", ""), "смысл карты не описан")
+                }).ToList()
+            });
+        }
+
+        if (profile[AfterlifeEntityProfileState.CustomStatesProperty] is JsonArray states)
+        {
+            var stateCards = states
+                .OfType<JsonObject>()
+                .Select(static state => new UiEntityCard
+                {
+                    Title = GetString(state, "stateName", GetString(state, "stateId", "Состояние")),
+                    Subtitle = "состояние",
+                    Icon = "gauge",
+                    Facts =
+                    [
+                        new UiEntityFact { Label = "Текущее значение", Value = GetNumberOrString(state, "currentValue", "0") },
+                        new UiEntityFact { Label = "Максимум", Value = GetNumberOrString(state, "maxValue", "0") }
+                    ]
+                })
+                .ToList();
+            if (stateCards.Count > 0)
+            {
+                cards.Add(new UiEntityCard
+                {
+                    Title = "Состояния",
+                    Subtitle = $"{stateCards.Count} записей",
+                    Icon = "gauge",
+                    Cards = stateCards
+                });
+            }
+        }
+
+        return cards;
+    }
+
+    private static List<UiEntityHint> BuildSpecialArtHints(JsonObject art)
+    {
+        var hints = new List<UiEntityHint>();
+        var combatEffect = art["combatEffect"] as JsonObject;
+        AddProfileHint(hints, "Боевой эффект", GetString(combatEffect, "summary", ""), UiTone.Accent);
+        AddProfileHint(hints, "Срабатывает", GetString(combatEffect, "trigger", ""), UiTone.Default);
+        AddProfileHint(hints, "Выигрыш", GetString(combatEffect, "allowedPayoff", ""), UiTone.Default);
+        AddProfileHint(hints, "Ограничение", GetString(combatEffect, "limit", ""), UiTone.Warning);
+        return hints;
+    }
+
+    private static IEnumerable<UiEntityCard> BuildProfileRelationshipCards(IEnumerable<JsonObject> profiles)
+    {
+        foreach (var profile in profiles)
+        {
+            if (profile[AfterlifeEntityProfileState.RelationshipsProperty] is not JsonArray relationships)
+                continue;
+
+            var profileName = ProfileDisplayName(profile, ProfileSelector(profile));
+            foreach (var relationship in relationships.OfType<JsonObject>())
+            {
+                var axis = DescribeAfterlifeRelationshipAxis(GetString(relationship, "axis", "?"));
+                var target = DescribeRelationshipTargetForPlayer(relationship);
+                yield return new UiEntityCard
+                {
+                    Title = $"{axis}: {target}",
+                    Subtitle = profileName,
+                    Icon = "link",
+                    Summary = DescribeRelationshipProgressForPlayer(relationship),
+                    Facts =
+                    [
+                        new UiEntityFact { Label = "Сущность", Value = profileName },
+                        new UiEntityFact { Label = "Цель связи", Value = target },
+                        new UiEntityFact { Label = "Текущий уровень", Value = DescribeRelationshipProgressForPlayer(relationship) },
+                        new UiEntityFact { Label = "Ближайший порог", Value = DescribeNearestRelationshipThreshold(relationship) },
+                        new UiEntityFact { Label = "Условие открытия", Value = DescribeRelationshipUnlockConditionForPlayer(relationship) }
+                    ],
+                    Hints = BuildRelationshipQuestHints(relationship)
+                };
+            }
+        }
+    }
+
+    private static List<UiEntityHint> BuildRelationshipQuestHints(JsonObject relationship)
+    {
+        var hints = new List<UiEntityHint>();
+        var quests = relationship[AfterlifeEntityProfileState.RelationshipGateQuestsProperty] as JsonArray;
+        if (quests == null)
+            return hints;
+
+        foreach (var quest in quests.OfType<JsonObject>())
+        {
+            var title = GetString(quest, "title", "Испытание отношений");
+            var scene = SafePlayerText(GetString(quest, "sceneSummary", ""), string.Empty);
+            var success = SafePlayerText(GetString(quest, "successCondition", ""), string.Empty);
+            var text = JoinNonEmpty(Environment.NewLine, scene, success);
+            if (!string.IsNullOrWhiteSpace(text))
+                hints.Add(new UiEntityHint { Title = title, Text = text, Tone = UiTone.Accent });
+        }
+
+        return hints;
+    }
+
+    private static IEnumerable<UiEntityCard> BuildProfileMaskCards(IEnumerable<JsonObject> profiles)
+    {
+        foreach (var profile in profiles)
+        {
+            if (profile[AfterlifeEntityProfileState.MasksProperty] is not JsonArray masks)
+                continue;
+
+            var profileName = ProfileDisplayName(profile, ProfileSelector(profile));
+            var activeMaskId = GetString(profile, AfterlifeEntityProfileState.ActiveMaskIdProperty, "");
+            foreach (var mask in masks.OfType<JsonObject>())
+            {
+                var maskId = GetString(mask, "maskId", "");
+                var isActive = !string.IsNullOrWhiteSpace(maskId) &&
+                               string.Equals(maskId, activeMaskId, StringComparison.OrdinalIgnoreCase);
+                var isRevealed = IsAfterlifeMaskRevealed(mask);
+                if (!isActive && !isRevealed)
+                    continue;
+
+                var displayName = GetString(mask, "displayName", string.IsNullOrWhiteSpace(maskId) ? "Маска" : maskId);
+                var publicArchetype = SafePlayerText(GetString(mask, "publicArchetype", ""), "роль не указана");
+                var visiblePersonality = SafePlayerText(GetString(mask, "visiblePersonality", ""), "поведение не описано");
+                yield return new UiEntityCard
+                {
+                    Title = displayName,
+                    Subtitle = profileName,
+                    Icon = "venetian-mask",
+                    Summary = visiblePersonality,
+                    Facts =
+                    [
+                        new UiEntityFact { Label = "Сущность", Value = profileName },
+                        new UiEntityFact { Label = "Статус", Value = DescribeMaskStatus(isActive, isRevealed) },
+                        new UiEntityFact { Label = "Публичная роль", Value = publicArchetype },
+                        new UiEntityFact { Label = "Видимое поведение", Value = visiblePersonality },
+                        new UiEntityFact { Label = "Риск обмана", Value = DescribeMaskRisk(GetString(mask, "deceptionRisk", "")) }
+                    ]
+                };
+            }
+        }
+    }
+
+    private static IEnumerable<UiEntityCard> BuildProfileProgressionCards(IEnumerable<JsonObject> profiles)
+    {
+        foreach (var profile in profiles)
+        {
+            if (profile["progressionStrategy"] is not JsonObject strategy)
+                continue;
+
+            var priorities = (strategy["priorityOrder"] as JsonArray)?
+                .Select(static item => DescribeArt(GetNodeString(item)))
+                .Where(static value => !string.IsNullOrWhiteSpace(value))
+                .ToList() ?? [];
+
+            yield return new UiEntityCard
+            {
+                Title = ProfileDisplayName(profile, ProfileSelector(profile)),
+                Subtitle = "стратегия развития",
+                Icon = "trending-up",
+                Summary = SafePlayerText(GetString(strategy, "summary", ""), "стратегия не описана"),
+                Facts =
+                [
+                    new UiEntityFact { Label = "Последний цикл", Value = GetString(strategy, "lastAutoProgressionCycleKey", "нет") }
+                ],
+                List = priorities
+            };
+        }
+    }
+
+    private static IEnumerable<JsonObject> EnumerateVisibleFateCards(JsonObject profile) =>
+        (profile["fateCards"] as JsonArray)?
+            .OfType<JsonObject>()
+            .Where(static card => IsFateCardPlayerVisible(card)) ?? [];
+
+    private static int CountVisibleFateCards(JsonObject profile) =>
+        EnumerateVisibleFateCards(profile).Count();
+
+    private static int CountActivePersonalQuests(JsonObject profile) =>
+        (profile["personalQuests"] as JsonArray)?
+            .OfType<JsonObject>()
+            .Count(static quest => string.Equals(GetString(quest, "status", ""), "active", StringComparison.OrdinalIgnoreCase)) ?? 0;
+
+    private static int CountObjectProperties(JsonObject? value) => value?.Count ?? 0;
+
+    private static string BoolToRu(JsonNode? node) =>
+        node is JsonValue value && value.TryGetValue<bool>(out var result)
+            ? result ? "да" : "нет"
+            : "не указано";
 
     private static async Task<ExplorerCommandResult> BuildThreats(
         CommandRequest request,
