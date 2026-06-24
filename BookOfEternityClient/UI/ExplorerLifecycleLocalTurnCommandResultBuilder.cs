@@ -1322,9 +1322,6 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             return Result(command, CommandExecutionState.Completed, blocks);
         }
 
-        var storageRows = context.Storages
-            .Select(static storage => Row(storage.Name, storage.ContentsCount.ToString()))
-            .ToList();
         var canDeposit = context.InventoryItems.Count > 0 && context.Storages.Count > 0;
         var canRetrieve = context.Storages.Any(static storage => storage.Contents.Count > 0);
         var statusText = (canDeposit, canRetrieve) switch
@@ -1335,24 +1332,19 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             _ => "Сейчас нет доступных предметов для перемещения между рюкзаком и хранилищем."
         };
 
-        blocks.Add(new UiPanelBlock
-        {
-            Title = "Предметы в хранилище",
-            Blocks =
-            [
-                new UiTextBlock
-                {
-                    Text = statusText,
-                    Tone = canDeposit || canRetrieve ? UiTone.Accent : UiTone.Muted
-                },
-                new UiTableBlock
-                {
-                    Title = "Доступные хранилища",
-                    Columns = ["Хранилище", "Предметов"],
-                    Rows = storageRows
-                }
-            ]
-        });
+        blocks.Add(BuildStorageTransportMoveDossier(
+            "storage-move",
+            "Предметы в хранилище",
+            statusText,
+            "available-storages",
+            "Доступные хранилища",
+            context.Storages.Count == 1 ? "1 хранилище" : $"{context.Storages.Count} хранилищ",
+            context.Storages.Select(static storage => BuildStorageMoveStorageCard(storage)).ToList(),
+            "storage-inventory-items",
+            "Рюкзак",
+            context.InventoryItems.Count == 1 ? "1 предмет" : $"{context.InventoryItems.Count} предметов",
+            context.InventoryItems.Select(static item => BuildStorageTransportItemCard(item, "В рюкзаке")).ToList(),
+            canDeposit || canRetrieve ? UiTone.Accent : UiTone.Muted));
 
         if (!canDeposit && !canRetrieve)
             return Result(command, CommandExecutionState.Completed, blocks);
@@ -1429,9 +1421,6 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             return Result(command, CommandExecutionState.Completed, blocks);
         }
 
-        var vehicleRows = context.Vehicles
-            .Select(static vehicle => Row(vehicle.Name, vehicle.ContentsCount.ToString()))
-            .ToList();
         var canDeposit = context.InventoryItems.Count > 0 && context.Vehicles.Count > 0;
         var canRetrieve = context.Vehicles.Any(static vehicle => vehicle.Contents.Count > 0);
         var statusText = (canDeposit, canRetrieve) switch
@@ -1442,24 +1431,19 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             _ => "Сейчас нет доступных предметов для перемещения между рюкзаком и транспортом."
         };
 
-        blocks.Add(new UiPanelBlock
-        {
-            Title = "Предметы в транспорте",
-            Blocks =
-            [
-                new UiTextBlock
-                {
-                    Text = statusText,
-                    Tone = canDeposit || canRetrieve ? UiTone.Accent : UiTone.Muted
-                },
-                new UiTableBlock
-                {
-                    Title = "Доступный транспорт",
-                    Columns = ["Транспорт", "Предметов"],
-                    Rows = vehicleRows
-                }
-            ]
-        });
+        blocks.Add(BuildStorageTransportMoveDossier(
+            "vehicle-move",
+            "Предметы в транспорте",
+            statusText,
+            "available-vehicles",
+            "Доступный транспорт",
+            context.Vehicles.Count == 1 ? "1 транспорт" : $"{context.Vehicles.Count} транспорта",
+            context.Vehicles.Select(static vehicle => BuildVehicleMoveVehicleCard(vehicle)).ToList(),
+            "vehicle-inventory-items",
+            "Рюкзак",
+            context.InventoryItems.Count == 1 ? "1 предмет" : $"{context.InventoryItems.Count} предметов",
+            context.InventoryItems.Select(static item => BuildStorageTransportItemCard(item, "В рюкзаке")).ToList(),
+            canDeposit || canRetrieve ? UiTone.Accent : UiTone.Muted));
 
         if (!canDeposit && !canRetrieve)
             return Result(command, CommandExecutionState.Completed, blocks);
@@ -1517,6 +1501,108 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 }
             ]);
     }
+
+    private static UiEntityDossierBlock BuildStorageTransportMoveDossier(
+        string entityType,
+        string title,
+        string summary,
+        string targetSectionId,
+        string targetSectionTitle,
+        string targetCollectionLabel,
+        List<UiEntityCard> targetCards,
+        string inventorySectionId,
+        string inventorySectionTitle,
+        string inventoryCollectionLabel,
+        List<UiEntityCard> inventoryCards,
+        UiTone summaryTone) =>
+        new()
+        {
+            EntityType = entityType,
+            Title = title,
+            Summary = summary,
+            Hints =
+            [
+                new UiEntityHint
+                {
+                    Title = "Как выбрать",
+                    Text = summary,
+                    Tone = summaryTone
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = targetSectionId,
+                    Title = targetSectionTitle,
+                    Icon = "archive",
+                    Presentation = "cards",
+                    CollectionLabel = targetCollectionLabel,
+                    Cards = targetCards
+                },
+                new UiEntityDossierSection
+                {
+                    Id = inventorySectionId,
+                    Title = inventorySectionTitle,
+                    Summary = "Предметы, которые можно положить в выбранное место.",
+                    Icon = "package",
+                    Presentation = "cards",
+                    CollectionLabel = inventoryCollectionLabel,
+                    Cards = inventoryCards
+                }
+            ]
+        };
+
+    private static UiEntityCard BuildStorageMoveStorageCard(StorageMoveStorage storage) =>
+        new()
+        {
+            Title = storage.Name,
+            Subtitle = "Хранилище",
+            Summary = storage.ContentsCount == 0
+                ? "Хранилище доступно, но сейчас пусто."
+                : $"Внутри: {FormatInventoryCount(storage.ContentsCount)}.",
+            Icon = "archive",
+            Facts =
+            [
+                new UiEntityFact { Label = "Предметов внутри", Value = FormatInventoryCount(storage.ContentsCount) },
+                new UiEntityFact { Label = "Доступ", Value = "открыт" }
+            ],
+            Nested = storage.Contents
+                .Select(static item => BuildStorageTransportItemCard(item, "Внутри хранилища"))
+                .ToList()
+        };
+
+    private static UiEntityCard BuildVehicleMoveVehicleCard(VehicleMoveVehicle vehicle) =>
+        new()
+        {
+            Title = vehicle.Name,
+            Subtitle = "Транспорт",
+            Summary = vehicle.ContentsCount == 0
+                ? "Транспорт доступен, но сейчас пуст."
+                : $"В транспорте: {FormatInventoryCount(vehicle.ContentsCount)}.",
+            Icon = "package",
+            Facts =
+            [
+                new UiEntityFact { Label = "Предметов внутри", Value = FormatInventoryCount(vehicle.ContentsCount) }
+            ],
+            Nested = vehicle.Contents
+                .Select(static item => BuildStorageTransportItemCard(item, "В транспорте"))
+                .ToList()
+        };
+
+    private static UiEntityCard BuildStorageTransportItemCard(StorageTransportItemOption item, string subtitle) =>
+        new()
+        {
+            Title = item.Label,
+            Subtitle = subtitle,
+            Summary = item.Description,
+            Icon = "package",
+            Facts =
+            [
+                new UiEntityFact { Label = "Предмет", Value = item.Name },
+                new UiEntityFact { Label = "Состояние", Value = item.Description }
+            ]
+        };
 
     private static ExplorerCommandResult StorageTransportMortalRealmBlocker(string command, UiPanelBlock localTurnPanel) =>
         Result(

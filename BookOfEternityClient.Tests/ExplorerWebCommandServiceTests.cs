@@ -3911,6 +3911,39 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(expectedItemName, CollectBlockText([dossier]), StringComparison.OrdinalIgnoreCase);
     }
 
+    [Theory]
+    [InlineData("/хранилище_предметы", "storage-move", "Предметы в хранилище", "Приватный письменный стол", "Письмо с печатью")]
+    [InlineData("/транспорт_предметы", "vehicle-move", "Предметы в транспорте", "Серый конь", "Седельная сумка")]
+    public async Task ExecuteAsync_StorageAndVehicleMovePrompts_RenderDossierCardsInsteadOfTables(
+        string command,
+        string expectedEntityType,
+        string expectedTitle,
+        string expectedTargetName,
+        string expectedStoredItemName)
+    {
+        await SeedStorageTransportPromptDataAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            command,
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), block =>
+            block.EntityType == expectedEntityType &&
+            block.Title == expectedTitle);
+        Assert.Contains(dossier.Sections, static section =>
+            section.Presentation == "cards" &&
+            section.Cards.Count > 0);
+        var dossierText = CollectBlockText([dossier]);
+        Assert.Contains(expectedTargetName, dossierText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(expectedStoredItemName, dossierText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Рюкзак", dossierText, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public async Task SubmitPromptSessionAsync_InventoryEquip_WritesEquipmentAndReleasesLock()
     {
@@ -8159,6 +8192,52 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             { "existedId": "torch_2", "name": "Факел", "type": "utility", "count": 3 },
             { "existedId": "broken_bow_1", "name": "Сломанный лук", "type": "weapon", "durability": "0%" },
             { "relicId": "soul_relic_1", "name": "Реликвия души", "type": "soul_relic", "equipmentSlot": "ring1" }
+          ]
+        }
+        """);
+    }
+
+    private async Task SeedStorageTransportPromptDataAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Mortal World"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+        {
+          "items": [
+            { "existedId": "seal_letter_1", "name": "Запечатанное письмо", "type": "document", "count": 1 },
+            { "existedId": "travel_ration_1", "name": "Дорожный паёк", "type": "consumable", "count": 2 }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "locationId": "loc_valmont_room",
+          "name": "Покои виконта де Вальмонта",
+          "locationStorages": [
+            {
+              "storageId": "storage_valmont_private_desk",
+              "name": "Приватный письменный стол",
+              "hasFullAccess": true,
+              "contents": [
+                { "existedId": "desk_letter_1", "name": "Письмо с печатью", "type": "document", "count": 1 }
+              ]
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/misc/vehicles.json", """
+        {
+          "vehicles": [
+            {
+              "vehicleId": "vehicle_gray_horse",
+              "name": "Серый конь",
+              "inventory": [
+                { "existedId": "saddlebag_1", "name": "Седельная сумка", "type": "container", "count": 1 }
+              ]
+            }
           ]
         }
         """);
