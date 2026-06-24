@@ -617,40 +617,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            Panel("Духовный конфликт",
-                Grid(
-                    ("Активный конфликт", DescribeActiveConflict(active)),
-                    ("Область", DescribeRealm(GetString(active, "realm", "?"))),
-                    ("Модель сторон", DescribeSideModel(GetString(active, "sideModel", "?"))),
-                    ("Позиция", DescribeConflictPosition(GetString(active, "conflictPosition", "contested"))),
-                    ("Напряжение игрока", DescribeStrain(GetString(active, "playerSideStrain", "clear"))),
-                    ("Напряжение противника", DescribeStrain(GetString(active, "oppositionSideStrain", "clear"))),
-                    ("Контроль/оковы", DescribeControlState(active?["controlState"] as JsonObject)),
-                    ("ОД", DescribeActionEconomy(active?["actionEconomy"] as JsonObject)),
-                    ("Обменов", exchangeLog.Count.ToString())))
+            BuildSpiritualConflictDossier(active, exchangeLog)
         };
 
-        if (active != null)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Стороны конфликта",
-                Columns = ["Сторона", "Ведущий", "Участников"],
-                Rows =
-                [
-                    SideRow("Сторона игрока", active["playerSide"] as JsonObject),
-                    SideRow("Противостоящая сторона", active["oppositionSide"] as JsonObject)
-                ]
-            });
-
-            var visibleConditions = BuildVisibleCombatConditionsTable(active["combatConditions"] as JsonArray);
-            if (visibleConditions != null)
-                blocks.Add(visibleConditions);
-
-            if (exchangeLog.Count > 0)
-                blocks.Add(BuildExchangeTable(exchangeLog, BuildConflictExchangeDetailCommand));
-        }
-        else
+        if (active == null)
         {
             blocks.Add(Message("Активного духовного конфликта нет", "Сейчас нет открытого духовного противостояния; когда ГМ начнёт сцену, она появится здесь."));
         }
@@ -661,6 +631,187 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             SanitizeCombatConditionsForPlayer(read),
             includeRawDiagnostics);
         return Completed(request.Command, blocks, BuildConflictExchangeActions(exchangeLog));
+    }
+
+    private static UiEntityDossierBlock BuildSpiritualConflictDossier(
+        JsonObject? active,
+        IReadOnlyList<JsonObject> exchangeLog)
+    {
+        var sections = new List<UiEntityDossierSection>();
+        if (active != null)
+        {
+            sections.Add(BuildSpiritualConflictSidesSection(active));
+            var conditions = BuildSpiritualConflictConditionsSection(active["combatConditions"] as JsonArray);
+            if (conditions != null)
+                sections.Add(conditions);
+            if (exchangeLog.Count > 0)
+                sections.Add(BuildSpiritualConflictExchangesSection(exchangeLog, BuildConflictExchangeDetailCommand));
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "spiritual-conflict",
+            Title = "Духовный конфликт",
+            Subtitle = active == null ? "активного противостояния нет" : DescribeRealm(GetString(active, "realm", "?")),
+            Summary = active == null
+                ? "Сейчас нет открытого духовного противостояния."
+                : "Текущее духовное противостояние: стороны, позиция, напряжение, условия и последние обмены.",
+            Facts =
+            [
+                new UiEntityFact { Label = "Активный конфликт", Value = DescribeActiveConflict(active) },
+                new UiEntityFact { Label = "Область", Value = DescribeRealm(GetString(active, "realm", "?")) },
+                new UiEntityFact { Label = "Модель сторон", Value = DescribeSideModel(GetString(active, "sideModel", "?")) },
+                new UiEntityFact { Label = "Позиция", Value = DescribeConflictPosition(GetString(active, "conflictPosition", "contested")) },
+                new UiEntityFact { Label = "Напряжение души", Value = DescribeStrain(GetString(active, "playerSideStrain", "clear")) },
+                new UiEntityFact { Label = "Напряжение противника", Value = DescribeStrain(GetString(active, "oppositionSideStrain", "clear")) },
+                new UiEntityFact { Label = "Контроль / оковы", Value = DescribeControlState(active?["controlState"] as JsonObject) },
+                new UiEntityFact { Label = "Очки действий", Value = DescribeActionEconomy(active?["actionEconomy"] as JsonObject) },
+                new UiEntityFact { Label = "Обменов", Value = exchangeLog.Count.ToString() }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static UiEntityDossierSection BuildSpiritualConflictSidesSection(JsonObject active) =>
+        new()
+        {
+            Id = "spiritual-conflict-sides",
+            Title = "Стороны конфликта",
+            Summary = "Кто сейчас ведёт духовное противостояние.",
+            Icon = "users",
+            Presentation = "cards",
+            CollectionLabel = "2 стороны",
+            Cards =
+            [
+                BuildSpiritualConflictSideCard("Сторона души", active["playerSide"] as JsonObject),
+                BuildSpiritualConflictSideCard("Противостоящая сторона", active["oppositionSide"] as JsonObject)
+            ]
+        };
+
+    private static UiEntityCard BuildSpiritualConflictSideCard(string title, JsonObject? side)
+    {
+        var lead = side?["leadContestant"] as JsonObject;
+        var leadName = GetString(lead, "displayName", GetString(lead, "actorId", "не указан"));
+        var participantCount = CountArray(side, "contestants");
+        return new UiEntityCard
+        {
+            Title = title,
+            Subtitle = leadName,
+            Icon = "user",
+            Summary = participantCount > 0
+                ? $"{leadName}{Environment.NewLine}Участников: {participantCount}"
+                : leadName,
+            Facts =
+            [
+                new UiEntityFact { Label = "Ведущий", Value = leadName },
+                new UiEntityFact { Label = "Участников", Value = participantCount.ToString() }
+            ]
+        };
+    }
+
+    private static UiEntityDossierSection? BuildSpiritualConflictConditionsSection(JsonArray? combatConditions)
+    {
+        var cards = BuildVisibleCombatConditionCards(combatConditions).ToList();
+        if (cards.Count == 0)
+            return null;
+
+        return new UiEntityDossierSection
+        {
+            Id = "spiritual-conflict-conditions",
+            Title = "Боевые условия",
+            Summary = "Временные метки, оковы и обстоятельства, которые меняют ближайшие духовные действия.",
+            Icon = "sparkles",
+            Presentation = "cards",
+            CollectionLabel = $"{cards.Count} условий",
+            Collapsible = cards.Count > 4,
+            InitiallyExpanded = true,
+            Cards = cards
+        };
+    }
+
+    private static IEnumerable<UiEntityCard> BuildVisibleCombatConditionCards(JsonArray? combatConditions)
+    {
+        if (combatConditions == null)
+            yield break;
+
+        foreach (var condition in combatConditions
+                     .OfType<JsonObject>()
+                     .Where(AfterlifeCombatConditionPlayerAuditSanitizer.IsVisibleToPlayer)
+                     .Where(static condition => string.Equals(GetString(condition, "status", "active"), "active", StringComparison.OrdinalIgnoreCase)))
+        {
+            var title = GetString(condition, "displayName", GetString(condition, "name", "Без названия"));
+            var summary = SafePlayerText(GetString(condition, "summary", ""), "условие активно, подробность не описана");
+            yield return new UiEntityCard
+            {
+                Title = title,
+                Subtitle = DescribeCombatConditionKind(GetString(condition, "kind", "")),
+                Icon = "sparkles",
+                Summary = summary,
+                Facts =
+                [
+                    new UiEntityFact { Label = "Вид", Value = DescribeCombatConditionKind(GetString(condition, "kind", "")) },
+                    new UiEntityFact { Label = "Цель", Value = DescribeCombatConditionTarget(condition) },
+                    new UiEntityFact { Label = "Источник", Value = DescribeCombatConditionSource(condition["source"] as JsonObject) },
+                    new UiEntityFact { Label = "Действия", Value = DescribeCombatConditionOperations(condition["affectedOperations"] as JsonArray) },
+                    new UiEntityFact { Label = "Срок", Value = DescribeCombatConditionDuration(condition["duration"] as JsonObject) },
+                    new UiEntityFact { Label = "Ответ", Value = DescribeCombatConditionCounterplay(condition["counterplay"] as JsonArray) }
+                ],
+                Hints =
+                [
+                    new UiEntityHint { Title = "Эффект", Text = summary, Tone = UiTone.Accent }
+                ]
+            };
+        }
+    }
+
+    private static UiEntityDossierSection BuildSpiritualConflictExchangesSection(
+        IReadOnlyList<JsonObject> exchangeLog,
+        Func<string, string> detailCommandBuilder) =>
+        new()
+        {
+            Id = "spiritual-conflict-exchanges",
+            Title = "Обмены активного конфликта",
+            Summary = "Последние открытые обмены духовного боя.",
+            Icon = "swords",
+            Presentation = "cards",
+            CollectionLabel = $"{exchangeLog.Count} обменов",
+            Collapsible = exchangeLog.Count > 4,
+            InitiallyExpanded = true,
+            Cards = exchangeLog.Select(exchange => BuildSpiritualExchangeCard(exchange, detailCommandBuilder)).ToList()
+        };
+
+    private static UiEntityCard BuildSpiritualExchangeCard(
+        JsonObject exchange,
+        Func<string, string> detailCommandBuilder)
+    {
+        var selector = SpiritualExchangeSelector(exchange);
+        var title = SpiritualExchangeDisplayName(exchange, selector);
+        var summary = SafePlayerText(
+            FirstNonEmpty(GetString(exchange, "resultSummary", ""), GetString(exchange, "summary", ""), DescribeOutcome(GetString(exchange, "outcome", "?"))),
+            DescribeOutcome(GetString(exchange, "outcome", "?")));
+
+        return new UiEntityCard
+        {
+            Title = title,
+            Subtitle = DescribeArt(GetString(exchange, "operationType", "?")),
+            Icon = "swords",
+            Summary = summary,
+            Facts =
+            [
+                new UiEntityFact { Label = "Действие", Value = DescribeArt(GetString(exchange, "operationType", "?")) },
+                new UiEntityFact { Label = "Исход", Value = DescribeOutcome(GetString(exchange, "outcome", "?")) },
+                new UiEntityFact { Label = "Позиция", Value = DescribeBeforeAfter(exchange, "conflictPosition", DescribeConflictPosition) },
+                new UiEntityFact { Label = "Напряжение", Value = DescribeBeforeAfter(exchange, "oppositionSideStrain", DescribeStrain) },
+                new UiEntityFact { Label = "Кубики", Value = DescribeDice(exchange["diceAudit"] as JsonObject) },
+                new UiEntityFact { Label = "Награда", Value = DescribeReward(exchange["rewardAudit"] as JsonObject) }
+            ],
+            PrimaryAction = string.IsNullOrWhiteSpace(selector)
+                ? null
+                : DetailAction(
+                    "spiritual-conflict-exchange-detail-" + ToActionIdPart(selector),
+                    "Открыть обмен",
+                    detailCommandBuilder(selector))
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildCombatLog(
@@ -1664,16 +1815,19 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             var targetSideValue = GetString(target, "side", GetString(target, "targetSide", "?"));
             var targetActorValue = GetString(target, "displayName", GetString(target, "actorId", GetString(target, "actorRef", "")));
-            return string.IsNullOrWhiteSpace(targetActorValue)
-                ? targetSideValue
-                : $"{targetSideValue}:{targetActorValue}";
+            var nestedSideLabel = DescribeCombatConditionSide(targetSideValue);
+            if (string.IsNullOrWhiteSpace(targetActorValue) || LooksLikeTechnicalIdentifier(targetActorValue))
+                return nestedSideLabel;
+
+            return $"{nestedSideLabel}: {targetActorValue}";
         }
 
-        var targetSide = GetString(condition, "targetSide", "?");
+        var rootTargetSide = GetString(condition, "targetSide", "?");
         var targetActor = GetString(condition, "targetActorRef", GetString(condition, "targetActorId", ""));
-        return string.IsNullOrWhiteSpace(targetActor)
-            ? targetSide
-            : $"{targetSide}:{targetActor}";
+        var sideLabel = DescribeCombatConditionSide(rootTargetSide);
+        return string.IsNullOrWhiteSpace(targetActor) || LooksLikeTechnicalIdentifier(targetActor)
+            ? sideLabel
+            : $"{sideLabel}: {targetActor}";
     }
 
     private static string DescribeCombatConditionSource(JsonObject? source)
@@ -1682,13 +1836,20 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             return "не указан";
 
         var type = GetString(source, "type", GetString(source, "sourceType", ""));
-        var actorId = GetString(source, "actorId", GetString(source, "sourceId", ""));
+        var actorType = GetString(source, "actorType", "");
         var displayName = GetString(source, "displayName", "");
-        var parts = new[] { type, actorId, displayName }
-            .Where(static value => !string.IsNullOrWhiteSpace(value))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToArray();
-        return parts.Length == 0 ? "не указан" : string.Join(":", parts);
+        var sourceType = DescribeCombatConditionSourceType(type);
+        var actorLabel = !string.IsNullOrWhiteSpace(displayName) && !LooksLikeTechnicalIdentifier(displayName)
+            ? displayName
+            : DescribeActorType(actorType);
+        if (string.IsNullOrWhiteSpace(sourceType) && string.IsNullOrWhiteSpace(actorLabel))
+            return "не указан";
+        if (string.IsNullOrWhiteSpace(sourceType))
+            return actorLabel;
+        if (string.IsNullOrWhiteSpace(actorLabel) || actorLabel == actorType)
+            return sourceType;
+
+        return $"{sourceType}: {actorLabel}";
     }
 
     private static string DescribeCombatConditionDuration(JsonObject? duration)
@@ -1699,14 +1860,112 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         var parts = new List<string>();
         var type = GetString(duration, "type", "");
         if (!string.IsNullOrWhiteSpace(type))
-            parts.Add(type);
+            parts.Add(DescribeCombatConditionDurationType(type));
         if (duration.ContainsKey("remainingUses"))
-            parts.Add($"remainingUses={GetNumberOrString(duration, "remainingUses", "?")}");
+            parts.Add($"осталось применений: {GetNumberOrString(duration, "remainingUses", "?")}");
         if (duration.ContainsKey("expiresAtTurn"))
-            parts.Add($"expiresAtTurn={GetNumberOrString(duration, "expiresAtTurn", "?")}");
+            parts.Add($"до хода {GetNumberOrString(duration, "expiresAtTurn", "?")}");
         if (duration.ContainsKey("until"))
-            parts.Add($"until={GetString(duration, "until", "?")}");
-        return parts.Count == 0 ? "не указано" : string.Join("; ", parts);
+            parts.Add($"до события: {DescribeCombatConditionFreeText(GetString(duration, "until", "?"))}");
+        return parts.Count == 0 ? "не указано" : string.Join(Environment.NewLine, parts);
+    }
+
+    private static string DescribeCombatConditionKind(string kind) =>
+        kind.Trim().ToLowerInvariant() switch
+        {
+            "mark" => "метка",
+            "vow" => "клятва",
+            "binding" => "оковы",
+            "pressure" => "давление",
+            "guard" => "защита",
+            "counter" => "контрприём",
+            "maneuver" => "манёвр",
+            "buff" => "усиление",
+            "debuff" => "ослабление",
+            "" => "условие",
+            _ => LooksLikeTechnicalIdentifier(kind) ? "условие" : kind
+        };
+
+    private static string DescribeCombatConditionSide(string side) =>
+        side.Trim().ToLowerInvariant() switch
+        {
+            "player" or "player_side" or "playerside" => "душа игрока",
+            "opposition" or "opposition_side" or "oppositionside" => "противник",
+            "both" => "обе стороны",
+            "" or "?" => "не указано",
+            _ => LooksLikeTechnicalIdentifier(side) ? "сторона конфликта" : side
+        };
+
+    private static string DescribeCombatConditionSourceType(string type) =>
+        type.Trim().ToLowerInvariant() switch
+        {
+            "special_art" => "особое духовное искусство",
+            "standard_art" => "духовное искусство",
+            "story_link" => "сюжетная связь",
+            "combat_condition" => "боевое условие",
+            "guardian" => "Хранитель",
+            "resident" => "резидент",
+            "profile" => "профиль сущности",
+            "" => string.Empty,
+            _ => LooksLikeTechnicalIdentifier(type) ? "источник" : type
+        };
+
+    private static string DescribeCombatConditionDurationType(string type) =>
+        type.Trim().ToLowerInvariant() switch
+        {
+            "next_matching_operation" => "до следующего подходящего действия",
+            "scene" => "до конца сцены",
+            "turns" => "несколько ходов",
+            "until_removed" => "пока не снято действием",
+            "instant" => "мгновенно",
+            "" => "не указано",
+            _ => LooksLikeTechnicalIdentifier(type) ? "по условию сцены" : type
+        };
+
+    private static string DescribeCombatConditionOperations(JsonArray? operations)
+    {
+        if (operations == null)
+            return "нет";
+
+        var values = operations
+            .Select(GetNodeString)
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Select(static value => DescribeArt(value!))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        return values.Length == 0 ? "нет" : string.Join(Environment.NewLine, values);
+    }
+
+    private static string DescribeCombatConditionCounterplay(JsonArray? counterplay)
+    {
+        if (counterplay == null)
+            return "нет";
+
+        var values = counterplay
+            .Select(GetNodeString)
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Select(static value => DescribeCombatConditionFreeText(value!))
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        return values.Length == 0 ? "нет" : string.Join(Environment.NewLine, values);
+    }
+
+    private static string DescribeCombatConditionFreeText(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var text = value.Trim()
+            .Replace("break_binding", "разрыв оков", StringComparison.OrdinalIgnoreCase)
+            .Replace("recover_spiritual_power", "собрать Средоточие", StringComparison.OrdinalIgnoreCase)
+            .Replace("pressure", "давление", StringComparison.OrdinalIgnoreCase)
+            .Replace("counter", "контрприём", StringComparison.OrdinalIgnoreCase)
+            .Replace("guard", "защита", StringComparison.OrdinalIgnoreCase)
+            .Replace("maneuver", "манёвр", StringComparison.OrdinalIgnoreCase)
+            .Replace("binding", "оковы", StringComparison.OrdinalIgnoreCase)
+            .Replace("rollMode", "режим броска", StringComparison.OrdinalIgnoreCase);
+        return SafePlayerText(text, string.Empty);
     }
 
     private static string DescribeStringArray(JsonArray? array)

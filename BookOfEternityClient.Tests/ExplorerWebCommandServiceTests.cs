@@ -5900,6 +5900,35 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SpiritualConflict_OverviewRendersDossierCardsWithoutLegacyTables()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeConflictStateWithCombatConditionsAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_conflict"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "spiritual-conflict");
+        Assert.Contains(dossier.Sections, static section => section.Id == "spiritual-conflict-sides");
+        var conditions = Assert.Single(dossier.Sections, static section => section.Id == "spiritual-conflict-conditions");
+        Assert.Single(conditions.Cards);
+
+        Assert.Contains("Духовный конфликт", dossier.Title, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Разогретая клятва", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Клятва подсвечена", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Обмены активного конфликта", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("mark_oath_flare_001", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_SpiritualAction_SanitizesActiveCombatConditionRawJson()
     {
         await SeedUniversalMetaFilesAsync();
