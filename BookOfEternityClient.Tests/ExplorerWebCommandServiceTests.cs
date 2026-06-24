@@ -3615,7 +3615,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task ExecuteAsync_SoulRelics_RendersStatusTableAndPlayerActions()
+    public async Task ExecuteAsync_SoulRelics_RendersDossierCardsAndPlayerActions()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
@@ -3655,6 +3655,9 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Шлем Тишины", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("легендарное", text, StringComparison.OrdinalIgnoreCase);
         Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "soul-relics" &&
+            dossier.Sections.Any(static section => section.Cards.Count > 0));
 
         var equipAction = Assert.Single(result.Actions, action => action.Id == "soul-relic-equip-relic_stored");
         Assert.Equal("/soul_relic_equip relic_stored", equipAction.Command);
@@ -3665,6 +3668,33 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal("/soul_relic_unequip head", unequipAction.Command);
         Assert.Equal(UiActionStyle.Secondary, unequipAction.Style);
         Assert.False(unequipAction.RequiresConfirmation);
+    }
+
+    [Theory]
+    [InlineData("/soul_relics", "soul-relics", "Реликвии души", "Клинок Памяти")]
+    [InlineData("/afterlife_archive", "afterlife-archive", "Архив души", "Песнь Первого Маяка")]
+    [InlineData("/archive_candidates", "archive-candidates", "Кандидаты в Архив", "Песня маяка")]
+    public async Task ExecuteAsync_AfterlifeRelicArchiveOverviews_RenderNamedDossiersInsteadOfGenericTables(
+        string command,
+        string entityType,
+        string expectedTitle,
+        string expectedEntry)
+    {
+        await SeedRichAfterlifeRelicArchiveDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), dossier =>
+            dossier.EntityType == entityType &&
+            dossier.Title.Contains(expectedTitle, StringComparison.OrdinalIgnoreCase) &&
+            dossier.Sections.Any(static section => section.Cards.Count > 0));
+
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains(expectedEntry, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("ID", text, StringComparison.Ordinal);
+        AssertNoAfterlifeIssue1064TechnicalLeak(result);
     }
 
     [Theory]
