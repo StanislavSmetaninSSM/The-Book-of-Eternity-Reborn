@@ -140,4 +140,42 @@ public sealed class ConsoleCommandOutputQualityClassifierTests
         Assert.False(report.IsUsablePlayerOutput);
         Assert.Contains(report.Violations, violation => violation.Contains("null", StringComparison.OrdinalIgnoreCase));
     }
+
+    [Fact]
+    public void Classify_DefaultPlayerOutputFlagsUiInstructionCopyAndGenericReferenceSummaries()
+    {
+        var result = new ExplorerCommandResult
+        {
+            Command = "/взаимодействия",
+            State = CommandExecutionState.Completed,
+            Blocks =
+            [
+                new UiEntityDossierBlock
+                {
+                    Title = "Взаимодействия игроков",
+                    Summary = "Что уже отмечено в книге.",
+                    Sections =
+                    [
+                        new UiEntityDossierSection
+                        {
+                            Title = "Записи",
+                            Summary = "Последние видимые записи. Полные сведения открываются отдельной карточкой."
+                        },
+                        new UiEntityDossierSection
+                        {
+                            Title = "Сводка",
+                            Summary = "Известные записи этого раздела."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        var report = ConsoleCommandOutputQualityClassifier.Classify(result);
+
+        Assert.False(report.IsUsablePlayerOutput);
+        Assert.Contains(report.Violations, violation => violation.Contains("Полные сведения", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(report.Violations, violation => violation.Contains("Что уже отмечено в книге", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(report.Violations, violation => violation.Contains("Известные записи этого раздела", StringComparison.OrdinalIgnoreCase));
+    }
 }
