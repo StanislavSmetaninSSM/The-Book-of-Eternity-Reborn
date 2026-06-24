@@ -2961,6 +2961,35 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SarefUseAdvantage_RendersDossiersInsteadOfPanelAndTable()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefActionReadyState());
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/сареф преимущество"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateKeyValueGrids));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Empty(result.Blocks.SelectMany(EnumeratePanels));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "saref-action-overview" &&
+            dossier.Title == "Использовать преимущество");
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "saref-advantages" &&
+            dossier.Title == "Доступные преимущества" &&
+            dossier.Sections.Any(static section => section.Cards.Count > 0));
+
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Лунный Разрез Клятвы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Можно рассечь одну ложную печать", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("advantageId", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("API", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task SubmitPromptSessionAsync_SarefAdvantage_ReturnsGmPayload()
     {
         await SeedUniversalMetaFilesAsync();

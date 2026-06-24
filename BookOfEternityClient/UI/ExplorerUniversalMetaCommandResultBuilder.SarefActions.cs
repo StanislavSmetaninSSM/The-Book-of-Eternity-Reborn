@@ -225,7 +225,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         return RequiresInput(command,
             [
                 BuildSarefActionOverview(story.Root, "Использовать преимущество"),
-                BuildSarefAdvantageTable(advantages)
+                BuildSarefAdvantageDossier(advantages)
             ],
             [
                 new UiSelectionPrompt
@@ -437,31 +437,86 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 "Скрытая нить",
                 "Ты пока не знаешь, что искать."));
 
-    private static UiPanelBlock BuildSarefActionOverview(JsonObject root, string title) =>
-        Panel(title,
-            Grid(
-                ("Стадия", DescribeSarefRevealStage(GetString(root, "revealStage", string.Empty))),
-                ("Фрагментов", CountArray(root, "sarefRevelations").ToString()),
-                ("Преимуществ", CountArray(root, "sarefAdvantages").ToString()),
-                ("Клятва", root["playerOathState"] is JsonObject oath ? GetString(oath, "state") : "нет")));
+    private static UiEntityDossierBlock BuildSarefActionOverview(JsonObject root, string title)
+    {
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Стадия", DescribeSarefRevealStage(GetString(root, "revealStage", string.Empty)));
+        AddFactIfKnown(facts, "Фрагментов", CountArray(root, "sarefRevelations").ToString());
+        AddFactIfKnown(facts, "Преимуществ", CountArray(root, "sarefAdvantages").ToString());
+        AddFactIfKnown(facts, "Клятва", root["playerOathState"] is JsonObject oath ? DescribeSarefOathState(GetString(oath, "state", string.Empty)) : "нет");
 
-    private static UiTableBlock BuildSarefAdvantageTable(IEnumerable<JsonObject> advantages) =>
-        new()
+        return new UiEntityDossierBlock
         {
-            Title = "Доступные преимущества",
-            Columns = ["ID", "Название", "Описание"],
-            Rows = advantages
-                .Select(advantage => new UiTableRow
+            EntityType = "saref-action-overview",
+            Title = title,
+            Summary = "Сводка текущего положения линии Сарефа перед выбором действия.",
+            Badges =
+            [
+                new UiEntityBadge { Label = DescribeSarefRevealStage(GetString(root, "revealStage", string.Empty)), Icon = "sparkles", Tone = UiTone.Accent }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
                 {
-                    Cells =
-                    [
-                        GetString(advantage, "advantageId"),
-                        GetString(advantage, "displayName", GetString(advantage, "advantageId")),
-                        GetString(advantage, "summary", "Без описания.")
-                    ]
-                })
-                .ToList()
+                    Id = "saref-action-overview",
+                    Title = "Сведения",
+                    Icon = "sparkles",
+                    Presentation = "facts",
+                    Facts = facts
+                }
+            ]
         };
+    }
+
+    private static UiEntityDossierBlock BuildSarefAdvantageDossier(IEnumerable<JsonObject> advantages)
+    {
+        var cards = advantages
+            .Select(BuildSarefAdvantageCard)
+            .ToList();
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "saref-advantages",
+            Title = "Доступные преимущества",
+            Summary = cards.Count == 1
+                ? "Можно применить одно подготовленное преимущество."
+                : $"Можно применить {cards.Count} подготовленных преимуществ.",
+            Badges =
+            [
+                new UiEntityBadge { Label = cards.Count == 1 ? "1 преимущество" : $"{cards.Count} преимуществ", Icon = "sparkles", Tone = UiTone.Accent }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "saref-advantages",
+                    Title = "Преимущества",
+                    Icon = "sparkles",
+                    Presentation = "cards",
+                    CollectionLabel = cards.Count == 1 ? "1 преимущество" : $"{cards.Count} преимуществ",
+                    Cards = cards
+                }
+            ]
+        };
+    }
+
+    private static UiEntityCard BuildSarefAdvantageCard(JsonObject advantage)
+    {
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Состояние", DescribeSarefAdvantageState(GetString(advantage, "state", string.Empty)));
+        AddFactIfKnown(facts, "Сцены", DescribeSarefScenes(advantage["applicableScenes"] as JsonArray));
+
+        return new UiEntityCard
+        {
+            Title = FirstNonEmpty(
+                GetString(advantage, "displayName", string.Empty),
+                GetString(advantage, "name", string.Empty),
+                "Преимущество"),
+            Summary = FirstNonEmpty(GetString(advantage, "summary", string.Empty), "Описание преимущества пока не записано."),
+            Icon = "sparkles",
+            Facts = facts
+        };
+    }
 
     private static IEnumerable<JsonObject> EnumerateUsableSarefAdvantages(JsonObject root)
     {
@@ -530,6 +585,39 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             SarefMainStoryState.AdvantageStatePassive => "пассивно",
             SarefMainStoryState.AdvantageStateSpent => "использовано",
             _ => string.IsNullOrWhiteSpace(state) ? string.Empty : state
+        };
+
+    private static string DescribeSarefOathState(string state) =>
+        state.ToLowerInvariant() switch
+        {
+            "oathbound" or "oathbound_to_saref" => "связана клятвой",
+            "strained" => "клятва напряжена",
+            "broken" => "клятва разорвана",
+            _ => string.IsNullOrWhiteSpace(state) ? "нет" : state
+        };
+
+    private static string DescribeSarefScenes(JsonArray? scenes)
+    {
+        if (scenes == null || scenes.Count == 0)
+            return string.Empty;
+
+        var labels = scenes
+            .Select(static scene => TryGetScalarString(scene, out var value) ? DescribeSarefScene(value) : string.Empty)
+            .Where(static label => !string.IsNullOrWhiteSpace(label))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        return labels.Count == 0 ? string.Empty : string.Join(", ", labels);
+    }
+
+    private static string DescribeSarefScene(string scene) =>
+        scene.ToLowerInvariant() switch
+        {
+            SarefMainStoryState.SceneWingsInfiltration => "внедрение в Крылья",
+            SarefMainStoryState.SceneSarefConfrontation => "конфронтация с Сарефом",
+            SarefMainStoryState.SceneOathBreak => "разрыв клятвы",
+            SarefMainStoryState.SceneMemoryAttack => "атака на память",
+            SarefMainStoryState.SceneFactionConflict => "конфликт фракций",
+            _ => scene
         };
 
     private static UiSelectionOption Option(string value, string label, string description) =>
