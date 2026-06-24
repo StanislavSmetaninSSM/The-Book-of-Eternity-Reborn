@@ -2000,6 +2000,25 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_WorldRules_EmptyReadableJsonUsesDossierFallbackInsteadOfLegacyPanel()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(WorldDirectiveService.ActiveDirectivesPath, "{}");
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/world_rules", AdvancedEnabled: false));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateKeyValueGrids));
+        Assert.Empty(result.Blocks.SelectMany(EnumeratePanels));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "metadata-empty" &&
+            dossier.Title == "Досье текущего мира");
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Досье текущего мира", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("пока нет заполненных разделов", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Behavior_RendersNestedAssessmentAsDossierFacts()
     {
         await SeedUniversalMetaFilesAsync();

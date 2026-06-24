@@ -3270,10 +3270,40 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         blocks.AddRange(BuildReadableJsonBlocks(title, read.Node));
         if (blocks.Count == 0)
-            blocks.Add(Panel(title, Grid(("Статус", "прочитано"))));
+            blocks.Add(BuildEmptyReadableJsonDossier(title));
 
         return Completed(command, blocks);
     }
+
+    private static UiEntityDossierBlock BuildEmptyReadableJsonDossier(string title) =>
+        new()
+        {
+            EntityType = "metadata-empty",
+            Title = title,
+            Summary = "Данные прочитаны, но в них пока нет заполненных разделов для показа.",
+            Badges =
+            [
+                new UiEntityBadge { Label = "пусто", Icon = "file-text", Tone = UiTone.Muted }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = StableStatusId(title) + "-empty",
+                    Title = "Состояние",
+                    Icon = "file-text",
+                    Presentation = "text",
+                    Blocks =
+                    [
+                        new UiTextBlock
+                        {
+                            Text = "Файл найден и прочитан, но игроку пока нет чего здесь смотреть.",
+                            Tone = UiTone.Muted
+                        }
+                    ]
+                }
+            ]
+        };
 
     private static IReadOnlyList<UiBlock> BuildReadableJsonBlocks(string title, JsonNode node)
     {
