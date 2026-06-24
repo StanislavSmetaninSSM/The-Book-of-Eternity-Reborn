@@ -5954,6 +5954,30 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_AfterlifeInbox_OverviewRendersDossierCardsWithoutLegacyTablesAndKeepsPrompts()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_inbox"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Contains(result.Prompts, static prompt => prompt.Id == "notification_action");
+        Assert.Contains(result.Prompts, static prompt => prompt.Id == "notification_id");
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "afterlife-inbox");
+        var notifications = Assert.Single(dossier.Sections, static section => section.Id == "afterlife-inbox-notifications");
+
+        Assert.Contains("Уведомления загробья", dossier.Title, StringComparison.OrdinalIgnoreCase);
+        Assert.Single(notifications.Cards);
+        Assert.Contains("Хранитель предлагает тёмный след", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_SpiritualAction_SanitizesActiveCombatConditionRawJson()
     {
         await SeedUniversalMetaFilesAsync();

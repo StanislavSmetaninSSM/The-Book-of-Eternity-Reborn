@@ -536,34 +536,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            Panel("Уведомления загробья",
-                Grid(
-                    ("Всего", notifications.Count.ToString()),
-                    ("Непрочитано", unread.ToString()),
-                    ("Режим браузера", "отметка прочитанным доступна через форму")))
+            BuildAfterlifeInboxDossier(notifications, notificationNodes, unread)
         };
 
-        if (notifications.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Ответы ГМ и уведомления",
-                Columns = ["Статус", "Тип", "Сводка", "Источник", "Ход", "Подробно"],
-                Rows = notifications.Select(notification => new UiTableRow
-                {
-                    Cells =
-                    [
-                        DescribeNotificationStatus(notification.Status),
-                        AfterlifeNotificationState.GetTypeLabel(notification.NotificationType),
-                        EmptyFallback(notification.Summary),
-                        DescribeNotificationSource(notification),
-                        notification.CreatedAtTurn > 0 ? notification.CreatedAtTurn.ToString() : "?",
-                        BuildInboxNotificationDetailCommand(notification.NotificationId)
-                    ]
-                }).ToList()
-            });
-        }
-        else
+        if (notifications.Count == 0)
         {
             blocks.Add(Message("Нет уведомлений", "Пока нет ответов Хранителей, Архива, резидентов или Сияющей Обители."));
         }
@@ -593,6 +569,80 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     Placeholder = "Только для режима «Отметить одно»"
                 }
             ]);
+    }
+
+    private static UiEntityDossierBlock BuildAfterlifeInboxDossier(
+        IReadOnlyList<AfterlifeNotificationState.NotificationEntry> notifications,
+        IReadOnlyDictionary<string, JsonObject> notificationNodes,
+        int unread)
+    {
+        return new UiEntityDossierBlock
+        {
+            EntityType = "afterlife-inbox",
+            Title = "Уведомления загробья",
+            Subtitle = "Ответы ГМ, Хранителей, Архива и Обители",
+            Summary = notifications.Count > 0
+                ? "Открытые уведомления загробья. Каждое можно открыть отдельно или отметить прочитанным через форму."
+                : "Пока нет ответов Хранителей, Архива, резидентов или Сияющей Обители.",
+            Facts =
+            [
+                new UiEntityFact { Label = "Всего уведомлений", Value = notifications.Count.ToString() },
+                new UiEntityFact { Label = "Непрочитано", Value = unread.ToString() },
+                new UiEntityFact { Label = "Отметка прочитанным", Value = "доступна через форму" }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "afterlife-inbox-notifications",
+                    Title = "Ответы и уведомления",
+                    Summary = "Карточки показывают источник, тип и краткое содержание уведомления.",
+                    Icon = "mail",
+                    Presentation = "cards",
+                    CollectionLabel = $"{notifications.Count} уведомлений",
+                    Collapsible = notifications.Count > 4,
+                    InitiallyExpanded = true,
+                    Cards = notifications.Select(notification =>
+                    {
+                        notificationNodes.TryGetValue(notification.NotificationId, out var raw);
+                        return BuildAfterlifeInboxNotificationCard(notification, raw);
+                    }).ToList()
+                }
+            ]
+        };
+    }
+
+    private static UiEntityCard BuildAfterlifeInboxNotificationCard(
+        AfterlifeNotificationState.NotificationEntry notification,
+        JsonObject? raw)
+    {
+        var source = DescribeNotificationSource(notification);
+        var title = FirstNonEmpty(source, EmptyFallback(notification.Summary, "Уведомление загробья"));
+        var details = BuildInboxDetailLines(notification, raw).ToArray();
+
+        return new UiEntityCard
+        {
+            Title = title,
+            Subtitle = AfterlifeNotificationState.GetTypeLabel(notification.NotificationType),
+            Icon = string.Equals(notification.Status, AfterlifeNotificationState.StatusUnread, StringComparison.OrdinalIgnoreCase) ? "mail" : "mail-open",
+            Summary = EmptyFallback(notification.Summary),
+            Facts =
+            [
+                new UiEntityFact { Label = "Статус", Value = DescribeNotificationStatus(notification.Status) },
+                new UiEntityFact { Label = "Тип", Value = AfterlifeNotificationState.GetTypeLabel(notification.NotificationType) },
+                new UiEntityFact { Label = "Источник", Value = source },
+                new UiEntityFact { Label = "Ход", Value = notification.CreatedAtTurn > 0 ? notification.CreatedAtTurn.ToString() : "не указан" }
+            ],
+            Hints = details
+                .Select(static detail => new UiEntityHint { Title = detail.Label, Text = detail.Value, Tone = UiTone.Default })
+                .ToList(),
+            PrimaryAction = string.IsNullOrWhiteSpace(notification.NotificationId)
+                ? null
+                : DetailAction(
+                    "afterlife-inbox-detail-" + ToActionIdPart(notification.NotificationId),
+                    "Открыть уведомление",
+                    BuildInboxNotificationDetailCommand(notification.NotificationId))
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildConflict(
