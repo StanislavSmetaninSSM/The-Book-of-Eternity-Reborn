@@ -448,7 +448,7 @@ export function MapBlock({ block, variant = 'full' }: MapBlockProps) {
                 <h3>{mapTitle}</h3>
                 <p>{mapSubtitle}</p>
               </div>
-              <button type="button" className="secondary" onClick={() => setIsFullscreen(false)}>Закрыть</button>
+              <button type="button" className="map-fullscreen-close-button secondary" onClick={() => setIsFullscreen(false)}>Закрыть</button>
             </header>
             {renderToolbar(true)}
             <div className="map-fullscreen-content">

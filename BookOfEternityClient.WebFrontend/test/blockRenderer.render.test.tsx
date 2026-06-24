@@ -932,9 +932,11 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     expect(mapBlock).toContain('event.currentTarget.setPointerCapture');
     expect(mapBlock).toContain('buttons !== 1');
     expect(mapBlock).toContain('map-fullscreen-dialog');
+    expect(mapBlock).toContain('map-fullscreen-close-button');
     expect(commandUi).toContain('.map-atlas-frame--fullscreen');
     expect(commandUi).toContain('.map-atlas-frame--panning');
     expect(commandUi).toContain('.map-fullscreen-dialog');
+    expect(commandUi).toContain('.map-fullscreen-close-button');
   });
 
   it('renders the selected map node after other nodes so it stays on top visually', () => {
