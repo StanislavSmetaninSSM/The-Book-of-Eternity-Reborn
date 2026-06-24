@@ -1617,40 +1617,9 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
     private static ExplorerCommandResult BuildGallery(string command, FileSystemManager fs)
     {
-        var imagesDir = fs.ResolvePath("images");
-        var rows = new List<UiTableRow>();
         var media = new LocalMediaService(fs);
         var imageReferences = media.EnumerateGallery().ToList();
-        if (Directory.Exists(imagesDir))
-        {
-            foreach (var directory in Directory.GetDirectories(imagesDir).OrderBy(static path => path, StringComparer.OrdinalIgnoreCase))
-            {
-                rows.Add(new UiTableRow
-                {
-                    Cells =
-                    [
-                        Path.GetFileName(directory),
-                        Directory.GetFiles(directory, "*", SearchOption.AllDirectories).Length.ToString(),
-                        ToRelativeGameSessionPath(fs, directory)
-                    ]
-                });
-            }
-        }
-
-        if (rows.Count == 0)
-        {
-            rows.Add(new UiTableRow { Cells = ["images", "0", "game_session/images"] });
-        }
-
-        var blocks = new List<UiBlock>
-        {
-            new UiTableBlock
-            {
-                Title = "Галерея",
-                Columns = ["Раздел", "Файлов", "Путь"],
-                Rows = rows
-            }
-        };
+        var blocks = new List<UiBlock>();
 
         if (imageReferences.Count == 0)
         {
@@ -1658,13 +1627,31 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         }
         else
         {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "gallery",
+                Title = "Галерея",
+                Summary = "Визуальные материалы текущей истории.",
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "gallery-images",
+                        Title = "Изображения",
+                        Icon = "image",
+                        Presentation = "collection",
+                        CollectionLabel = imageReferences.Count == 1 ? "1 изображение" : $"{imageReferences.Count} изображений",
+                        Cards = imageReferences.Select(BuildGalleryImageCard).ToList()
+                    }
+                ]
+            });
             blocks.AddRange(imageReferences.Select(static image => new UiImageBlock
             {
-                Title = image.FileName,
+                Title = HumanizeFileName(Path.GetFileNameWithoutExtension(image.FileName)),
                 Url = image.Url,
                 MediaId = image.MediaId,
                 RelativePath = image.RelativePath,
-                AltText = image.FileName,
+                AltText = HumanizeFileName(Path.GetFileNameWithoutExtension(image.FileName)),
                 ContentType = image.ContentType,
                 Length = image.Length,
                 ModifiedAtUtc = image.ModifiedAtUtc
@@ -1673,6 +1660,32 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         return Completed(command, blocks);
     }
+
+    private static UiEntityCard BuildGalleryImageCard(LocalMediaReference image)
+    {
+        return new UiEntityCard
+        {
+            Title = HumanizeFileName(Path.GetFileNameWithoutExtension(image.FileName)),
+            Subtitle = DescribeImageContentType(image.ContentType),
+            Summary = image.Length > 0 ? $"{image.Length} байт" : "Изображение готово к просмотру.",
+            Icon = "image",
+            Facts =
+            [
+                new UiEntityFact { Label = "Формат", Value = DescribeImageContentType(image.ContentType) }
+            ]
+        };
+    }
+
+    private static string DescribeImageContentType(string contentType) =>
+        contentType.ToLowerInvariant() switch
+        {
+            "image/png" => "PNG",
+            "image/jpeg" => "JPEG",
+            "image/gif" => "GIF",
+            "image/bmp" => "BMP",
+            "image/webp" => "WebP",
+            _ => "изображение"
+        };
 
     private static async Task<ExplorerCommandResult> BuildGmThoughts(string command, FileSystemManager fs, LocalizationManager loc)
     {

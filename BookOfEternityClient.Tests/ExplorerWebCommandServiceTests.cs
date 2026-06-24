@@ -259,6 +259,28 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_Gallery_RendersImageCardsWithoutDirectoryPathTable()
+    {
+        WriteSessionImage("images/npcs/ashen_knight.png");
+        WriteSessionImage("images/scenes/scene_001.webp");
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/gallery", AdvancedEnabled: false));
+
+        var text = CollectBlockText(result.Blocks);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Галерея", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ashen knight", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("сцена 001", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.Title.Equals("Галерея", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain("game_session", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("images/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Путь", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(2, result.Blocks.OfType<UiImageBlock>().Count());
+    }
+
     [Theory]
     [InlineData("/квесты", "Печать с крыльями")]
     [InlineData("/навыки", "Чувство магических потоков")]
@@ -2018,7 +2040,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             Assert.StartsWith("/api/media/", image.Url, StringComparison.Ordinal);
             Assert.StartsWith("images/", image.RelativePath, StringComparison.Ordinal);
         });
-        Assert.Contains(images, image => image.Title.Contains("ashen_knight", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(images, image => image.Title.Contains("ashen knight", StringComparison.OrdinalIgnoreCase));
     }
 
     [Theory]
