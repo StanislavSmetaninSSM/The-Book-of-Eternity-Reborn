@@ -1802,6 +1802,47 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_Feathers_RendersFateCurrencyDossierWithoutGenericGrid()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Смертный мир",
+          "currentIncarnation": 2,
+          "inkFeathers": { "current": 80, "total": 120 }
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/feathers", AdvancedEnabled: false));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateKeyValueGrids));
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumeratePanels), static panel =>
+            panel.Title.Equals("Чернильные Перья", StringComparison.OrdinalIgnoreCase));
+
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "ink-feathers" &&
+            block.Title.Equals("Чернильные Перья", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(dossier.Sections, static section => section.Title == "Баланс");
+        Assert.Contains(dossier.Sections, static section => section.Title == "Действия судьбы");
+
+        var text = CollectBlockText([dossier]);
+        Assert.Contains("Сейчас", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("80", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Всего накоплено", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("120", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Открыть Судьбу", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.Actions, static action =>
+            action.Command.Equals("/reveal_fate", StringComparison.OrdinalIgnoreCase) &&
+            action.Label.Contains("Открыть Судьбу", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain("currentRealm", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Chronicle_RendersReadableSectionsWithoutRawJson()
     {
         await SeedUniversalMetaFilesAsync();

@@ -1165,21 +1165,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            Panel(
-                "Чернильные Перья",
-                new UiTextBlock
-                {
-                    Text = "Чернильные Перья можно потратить на раскрытие или переписывание судьбы во время смертной жизни.",
-                    Tone = UiTone.Accent
-                },
-                Grid(
-                    ("Сейчас", current.ToString()),
-                    ("Всего накоплено", total.ToString()),
-                    ("Открытая судьба", hasLockedFate ? "есть" : "нет"),
-                    ("Открыть Судьбу", current >= revealCost ? $"{revealCost} Чернильных Перьев" : $"нужно {revealCost}, доступно {current}"),
-                    ("Переписать Судьбу", hasLockedFate
-                        ? current >= rewriteCost ? $"{rewriteCost} Чернильных Перьев" : $"нужно {rewriteCost}, доступно {current}"
-                        : "сначала откройте судьбу")))
+            BuildInkFeathersDossier(current, total, hasLockedFate, revealCost, rewriteCost, isMortalRealm)
         };
 
         if (!isMortalRealm)
@@ -1223,6 +1209,125 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             State = CommandExecutionState.Completed,
             Blocks = blocks,
             Actions = actions
+        };
+    }
+
+    private static UiEntityDossierBlock BuildInkFeathersDossier(
+        int current,
+        int total,
+        bool hasLockedFate,
+        int revealCost,
+        int rewriteCost,
+        bool isMortalRealm)
+    {
+        var revealAvailability = isMortalRealm
+            ? current >= revealCost ? "доступно" : $"нужно {revealCost}, доступно {current}"
+            : "только в смертной жизни";
+        var rewriteAvailability = !isMortalRealm
+            ? "только в смертной жизни"
+            : hasLockedFate
+                ? current >= rewriteCost ? "доступно" : $"нужно {rewriteCost}, доступно {current}"
+                : "сначала откройте судьбу";
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "ink-feathers",
+            Title = "Чернильные Перья",
+            Subtitle = "Ресурс судьбы",
+            Summary = "Чернильные Перья тратятся на раскрытие и переписывание судьбы во время смертной жизни.",
+            Badges =
+            [
+                new UiEntityBadge { Label = $"{current} доступно", Tone = UiTone.Accent, Icon = "feather" },
+                new UiEntityBadge { Label = $"{total} всего", Tone = UiTone.Muted, Icon = "archive" }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "ink-feather-balance",
+                    Title = "Баланс",
+                    Icon = "feather",
+                    Presentation = "cards",
+                    CollectionLabel = "3 показателя",
+                    Cards =
+                    [
+                        new UiEntityCard
+                        {
+                            Title = "Сейчас",
+                            Summary = $"{current} Чернильных Перьев",
+                            Icon = "feather",
+                            Facts =
+                            [
+                                new UiEntityFact { Label = "Доступно для трат", Value = current.ToString() }
+                            ]
+                        },
+                        new UiEntityCard
+                        {
+                            Title = "Всего накоплено",
+                            Summary = $"{total} Чернильных Перьев",
+                            Icon = "archive",
+                            Facts =
+                            [
+                                new UiEntityFact { Label = "Накоплено за историю души", Value = total.ToString() }
+                            ]
+                        },
+                        new UiEntityCard
+                        {
+                            Title = "Открытая судьба",
+                            Summary = hasLockedFate ? "есть форма судьбы для переписывания" : "форма судьбы ещё не открыта",
+                            Icon = "sparkles",
+                            Facts =
+                            [
+                                new UiEntityFact { Label = "Состояние", Value = hasLockedFate ? "есть" : "нет" }
+                            ]
+                        }
+                    ]
+                },
+                new UiEntityDossierSection
+                {
+                    Id = "ink-feather-fate-actions",
+                    Title = "Действия судьбы",
+                    Icon = "sparkles",
+                    Presentation = "cards",
+                    CollectionLabel = "2 действия",
+                    Cards =
+                    [
+                        new UiEntityCard
+                        {
+                            Title = "Открыть Судьбу",
+                            Summary = revealAvailability,
+                            Icon = "eye",
+                            Facts =
+                            [
+                                new UiEntityFact { Label = "Стоимость", Value = $"{revealCost} Чернильных Перьев" },
+                                new UiEntityFact { Label = "Доступность", Value = revealAvailability }
+                            ]
+                        },
+                        new UiEntityCard
+                        {
+                            Title = "Переписать Судьбу",
+                            Summary = rewriteAvailability,
+                            Icon = "pen-line",
+                            Facts =
+                            [
+                                new UiEntityFact { Label = "Стоимость", Value = $"{rewriteCost} Чернильных Перьев" },
+                                new UiEntityFact { Label = "Доступность", Value = rewriteAvailability }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            Hints =
+            [
+                new UiEntityHint
+                {
+                    Title = "Когда доступно",
+                    Text = isMortalRealm
+                        ? "Раскрытие судьбы доступно сейчас, если хватает Перьев."
+                        : "Раскрытие и переписывание судьбы доступны только во время смертной жизни.",
+                    Tone = isMortalRealm ? UiTone.Accent : UiTone.Warning
+                }
+            ]
         };
     }
 
