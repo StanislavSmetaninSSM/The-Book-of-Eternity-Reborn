@@ -1955,6 +1955,47 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Theory]
+    [InlineData("/codex", "codex-summary", "Кодекс")]
+    [InlineData("/achievements", "achievements-summary", "Достижения")]
+    public async Task ExecuteAsync_CodexAndAchievements_RenderSummaryDossiersInsteadOfLegacyPanels(
+        string command,
+        string expectedEntityType,
+        string expectedTitle)
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/achievements.json", """
+        {
+          "unlockedAchievements": [
+            {
+              "achievementName": "Первое испытание",
+              "description": "Проверить браузерный вывод",
+              "status": "unlocked"
+            }
+          ],
+          "trackedProgress": [
+            {
+              "achievementName": "Следующий шаг",
+              "description": "Продолжить аудит команд",
+              "current": 1,
+              "total": 3
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command, AdvancedEnabled: false));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateKeyValueGrids));
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateEntityDossiers), dossier =>
+            dossier.EntityType == "panel" &&
+            dossier.Title.Equals(expectedTitle, StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), dossier =>
+            dossier.EntityType == expectedEntityType &&
+            dossier.Title.Equals(expectedTitle, StringComparison.OrdinalIgnoreCase));
+    }
+
     [Fact]
     public async Task ExecuteAsync_Behavior_RendersNestedAssessmentAsDossierFacts()
     {

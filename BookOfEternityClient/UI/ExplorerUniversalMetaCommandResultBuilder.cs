@@ -3705,13 +3705,62 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         string.Equals(value.Trim(), "не указано", StringComparison.OrdinalIgnoreCase);
 
     private static UiBlock BuildCodexSummary(JsonNode node) =>
-        Panel("Кодекс", Grid(
-            ("Записей", (CountArray(node, "entries") + CountArray(node, "codexEntries")).ToString())));
+        BuildMetaSummaryDossier(
+            "codex-summary",
+            "Кодекс",
+            "Сводка записей кодекса, доступных текущей душе.",
+            "book-open",
+            new UiEntityFact
+            {
+                Label = "Записей",
+                Value = (CountArray(node, "entries") + CountArray(node, "codexEntries")).ToString()
+            });
 
     private static UiBlock BuildAchievementsSummary(JsonNode node) =>
-        Panel("Достижения", Grid(
-            ("Открыто", CountArray(node, "unlockedAchievements").ToString()),
-            ("В процессе", CountArray(node, "trackedProgress").ToString())));
+        BuildMetaSummaryDossier(
+            "achievements-summary",
+            "Достижения",
+            "Сводка постоянных достижений и текущего прогресса.",
+            "trophy",
+            new UiEntityFact { Label = "Открыто", Value = CountArray(node, "unlockedAchievements").ToString() },
+            new UiEntityFact { Label = "В процессе", Value = CountArray(node, "trackedProgress").ToString() });
+
+    private static UiEntityDossierBlock BuildMetaSummaryDossier(
+        string entityType,
+        string title,
+        string summary,
+        string icon,
+        params UiEntityFact[] facts) =>
+        new()
+        {
+            EntityType = entityType,
+            Title = title,
+            Summary = summary,
+            Badges =
+            [
+                new UiEntityBadge { Label = FormatStatusEntryCount(facts.Length), Icon = icon, Tone = UiTone.Accent }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = StableStatusId(title) + "-summary",
+                    Title = "Сводка",
+                    Icon = icon,
+                    Presentation = "cards",
+                    CollectionLabel = FormatStatusEntryCount(facts.Length),
+                    Cards = facts
+                        .Select(fact => new UiEntityCard
+                        {
+                            Title = fact.Label,
+                            Summary = fact.Value,
+                            Icon = icon,
+                            Facts = [fact]
+                        })
+                        .ToList()
+                }
+            ]
+        };
 
     private static ExplorerCommandResult MissingOrMalformed(string command, string title, JsonReadResult read) =>
         Completed(command,
