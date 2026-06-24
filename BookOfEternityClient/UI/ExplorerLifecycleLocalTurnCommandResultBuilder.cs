@@ -799,37 +799,36 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var npcCore = await ReadJson(fs, "game_state/npcs/npc_core.json");
         var companions = CollectObjects(npcCore.Node)
             .Where(static item => string.Equals(GetString(item, "progressionType"), "Companion", StringComparison.OrdinalIgnoreCase))
-            .Select(static item => Row(
-                FirstNonEmpty(GetString(item, "name"), GetString(item, "displayName"), "?"),
-                FirstNonEmpty(GetString(item, "npcId"), GetString(item, "id"), "-"),
-                FirstNonEmpty(GetString(item, "playerCompanionDirective"), "не задана")))
             .ToList();
+        var companionCards = companions.Select(BuildCompanionDirectiveCard).ToList();
 
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
+            new UiEntityDossierBlock
             {
+                EntityType = "companion-directives",
                 Title = "Директивы компаньонов",
-                Blocks =
+                Summary = companions.Count == 0
+                    ? "Активные компаньоны не найдены."
+                    : "Здесь можно задать короткий стратегический приказ постоянному спутнику.",
+                Sections =
                 [
-                    new UiTextBlock
+                    new UiEntityDossierSection
                     {
-                        Text = companions.Count == 0
-                            ? "Активные компаньоны не найдены."
-                            : "Выберите компаньона и задайте короткую стратегическую директиву. Это client-authored поле playerCompanionDirective.",
-                        Tone = companions.Count == 0 ? UiTone.Muted : UiTone.Accent
-                    },
-                    new UiTableBlock
-                    {
+                        Id = "companion-directive-list",
                         Title = "Компаньоны",
-                        Columns = ["Имя", "ID", "Текущая директива"],
-                        Rows = companions
+                        Icon = "users",
+                        Presentation = "cards",
+                        CollectionLabel = companionCards.Count == 1 ? "1 компаньон" : $"{companionCards.Count} компаньонов",
+                        Cards = companionCards
                     }
                 ]
             }
         };
-        AddRawOrWarning(blocks, "JSON: npc_core", npcCore);
+
+        if (companions.Count == 0)
+            return Result(command, localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.Completed, blocks);
 
         return Result(
             command,
@@ -837,7 +836,19 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             blocks,
             prompts:
             [
-                new UiTextInputPrompt { Id = "companion_id", Prompt = "ID компаньона", Placeholder = "npcId" },
+                new UiSelectionPrompt
+                {
+                    Id = "companion_id",
+                    Prompt = "Компаньон",
+                    Required = true,
+                    Options = companions.Select(static item =>
+                    {
+                        var id = FirstNonEmpty(GetString(item, "npcId"), GetString(item, "id"));
+                        var name = FirstNonEmpty(GetString(item, "name"), GetString(item, "displayName"), id);
+                        var directive = FirstNonEmpty(GetString(item, "playerCompanionDirective"), "директива не задана");
+                        return Option(id, name, directive);
+                    }).ToList()
+                },
                 new UiLongTextInputPrompt
                 {
                     Id = "companion_directive",
@@ -849,44 +860,59 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             ]);
     }
 
+    private static UiEntityCard BuildCompanionDirectiveCard(JsonObject item)
+    {
+        var name = FirstNonEmpty(GetString(item, "name"), GetString(item, "displayName"), "Компаньон");
+        var directive = FirstNonEmpty(GetString(item, "playerCompanionDirective"), "Директива пока не задана.");
+        return new UiEntityCard
+        {
+            Title = name,
+            Subtitle = "Компаньон",
+            Summary = directive,
+            Icon = "users",
+            Facts =
+            [
+                new UiEntityFact { Label = "Текущая директива", Value = directive }
+            ]
+        };
+    }
+
     private static async Task<ExplorerCommandResult> BuildFactionDirectiveAsync(string command, FileSystemManager fs)
     {
         var localTurn = BuildLocalTurnStatus(fs);
         var factionsRoot = await ReadJson(fs, "game_state/factions/faction_core.json");
         var factions = CollectObjects(factionsRoot.Node)
             .Where(static item => TryGetBool(item, "isPlayerFaction") || TryGetBool(item, "isPlayerMember"))
-            .Select(static item => Row(
-                FirstNonEmpty(GetString(item, "name"), GetString(item, "factionName"), "?"),
-                FirstNonEmpty(GetString(item, "factionId"), "-"),
-                TryGetBool(item, "isPlayerFaction") ? "лидер" : "участник",
-                FirstNonEmpty(GetString(item, "playerStrategyDirective"), "не задана")))
             .ToList();
+        var factionCards = factions.Select(BuildFactionDirectiveCard).ToList();
 
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
+            new UiEntityDossierBlock
             {
+                EntityType = "faction-directives",
                 Title = "Директивы фракций",
-                Blocks =
+                Summary = factions.Count == 0
+                    ? "Фракции игрока или членство во фракциях не найдены."
+                    : "Здесь можно задать стратегический приказ фракции, которой игрок руководит или в которой участвует.",
+                Sections =
                 [
-                    new UiTextBlock
+                    new UiEntityDossierSection
                     {
-                        Text = factions.Count == 0
-                            ? "Фракции игрока или членство во фракциях не найдены."
-                            : "Выберите фракцию и задайте стратегическую директиву. Это client-authored поле playerStrategyDirective.",
-                        Tone = factions.Count == 0 ? UiTone.Muted : UiTone.Accent
-                    },
-                    new UiTableBlock
-                    {
+                        Id = "faction-directive-list",
                         Title = "Фракции",
-                        Columns = ["Название", "ID", "Роль", "Текущая директива"],
-                        Rows = factions
+                        Icon = "flag",
+                        Presentation = "cards",
+                        CollectionLabel = factionCards.Count == 1 ? "1 фракция" : $"{factionCards.Count} фракций",
+                        Cards = factionCards
                     }
                 ]
             }
         };
-        AddRawOrWarning(blocks, "JSON: faction_core", factionsRoot);
+
+        if (factions.Count == 0)
+            return Result(command, localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.Completed, blocks);
 
         return Result(
             command,
@@ -894,7 +920,19 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             blocks,
             prompts:
             [
-                new UiTextInputPrompt { Id = "faction_id", Prompt = "ID фракции", Placeholder = "factionId" },
+                new UiSelectionPrompt
+                {
+                    Id = "faction_id",
+                    Prompt = "Фракция",
+                    Required = true,
+                    Options = factions.Select(static item =>
+                    {
+                        var id = FirstNonEmpty(GetString(item, "factionId"), GetString(item, "id"));
+                        var name = FirstNonEmpty(GetString(item, "name"), GetString(item, "factionName"), id);
+                        var role = TryGetBool(item, "isPlayerFaction") ? "лидер" : "участник";
+                        return Option(id, name, role);
+                    }).ToList()
+                },
                 new UiLongTextInputPrompt
                 {
                     Id = "faction_directive",
@@ -904,6 +942,25 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     MaxLines = 6
                 }
             ]);
+    }
+
+    private static UiEntityCard BuildFactionDirectiveCard(JsonObject item)
+    {
+        var name = FirstNonEmpty(GetString(item, "name"), GetString(item, "factionName"), "Фракция");
+        var directive = FirstNonEmpty(GetString(item, "playerStrategyDirective"), "Директива пока не задана.");
+        var role = TryGetBool(item, "isPlayerFaction") ? "лидер" : "участник";
+        return new UiEntityCard
+        {
+            Title = name,
+            Subtitle = role,
+            Summary = directive,
+            Icon = "flag",
+            Facts =
+            [
+                new UiEntityFact { Label = "Роль игрока", Value = role },
+                new UiEntityFact { Label = "Текущая директива", Value = directive }
+            ]
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildInventoryEquipAsync(string command, FileSystemManager fs)
@@ -2969,37 +3026,33 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
     {
         var localTurn = BuildLocalTurnStatus(fs);
         var recipes = await ReadJson(fs, "game_state/inventory/recipes.json");
-        var recipeRows = CollectObjects(recipes.Node)
+        var recipeCards = CollectObjects(recipes.Node)
             .Where(static item => !string.IsNullOrWhiteSpace(FirstNonEmpty(GetString(item, "recipeName"), GetString(item, "name"))))
-            .Select(static item => Row(
-                FirstNonEmpty(GetString(item, "recipeName"), GetString(item, "name"), "?"),
-                FirstNonEmpty(GetString(item, "craftedItemName"), GetString(item, "resultItemName"), "-"),
-                FirstNonEmpty(GetString(item, "recipeRank"), "-")))
+            .Select(BuildCraftRecipeCard)
             .ToList();
 
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
+            new UiEntityDossierBlock
             {
+                EntityType = "craft-requests",
                 Title = "Ремесло",
-                Blocks =
+                Summary = "Выберите известный рецепт или опишите новое ремесленное действие. ГМ разыграет результат в следующем принятом ходе.",
+                Sections =
                 [
-                    new UiTextBlock
+                    new UiEntityDossierSection
                     {
-                        Text = "Выберите известный рецепт или опишите новое ремесленное действие. ГМ разыграет результат в следующем принятом ходе.",
-                        Tone = UiTone.Accent
-                    },
-                    new UiTableBlock
-                    {
+                        Id = "craft-known-recipes",
                         Title = "Известные рецепты",
-                        Columns = ["Рецепт", "Результат", "Ранг"],
-                        Rows = recipeRows
+                        Icon = "hammer",
+                        Presentation = "cards",
+                        CollectionLabel = recipeCards.Count == 1 ? "1 рецепт" : $"{recipeCards.Count} рецептов",
+                        Cards = recipeCards
                     }
                 ]
             }
         };
-        AddRawOrWarning(blocks, "JSON: recipes", recipes);
 
         return Result(
             command,
@@ -3017,6 +3070,26 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     MaxLines = 6
                 }
             ]);
+    }
+
+    private static UiEntityCard BuildCraftRecipeCard(JsonObject item)
+    {
+        var name = FirstNonEmpty(GetString(item, "recipeName"), GetString(item, "name"), "Рецепт");
+        var result = FirstNonEmpty(GetString(item, "craftedItemName"), GetString(item, "resultItemName"), "результат не указан");
+        var rank = FirstNonEmpty(GetString(item, "recipeRank"), GetString(item, "rank"), "ранг не указан");
+
+        return new UiEntityCard
+        {
+            Title = name,
+            Subtitle = result,
+            Summary = $"Результат: {result}. Ранг: {rank}.",
+            Icon = "hammer",
+            Facts =
+            [
+                new UiEntityFact { Label = "Результат", Value = result },
+                new UiEntityFact { Label = "Ранг", Value = rank }
+            ]
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildInkFeatherRevealFateAsync(

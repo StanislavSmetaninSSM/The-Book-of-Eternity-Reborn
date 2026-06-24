@@ -2362,6 +2362,47 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.True(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
+    [Theory]
+    [InlineData("/companion_directive", "companion-directives", "Директивы компаньонов")]
+    [InlineData("/faction_directive", "faction-directives", "Директивы фракций")]
+    [InlineData("/craft", "craft-requests", "Ремесло")]
+    public async Task ExecuteAsync_MortalActionPromptScreens_RenderDossiersWithoutTechnicalTables(
+        string command,
+        string entityType,
+        string expectedTitle)
+    {
+        await SeedUniversalMetaFilesAsync();
+        await SeedMortalActionPromptDataAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Contains(expectedTitle, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), dossier =>
+            dossier.EntityType == entityType &&
+            dossier.Title.Contains(expectedTitle, StringComparison.OrdinalIgnoreCase));
+
+        foreach (var forbidden in new[]
+        {
+            "client-authored",
+            "JSON",
+            "playerCompanionDirective",
+            "playerStrategyDirective",
+            "stat_points",
+            "npc_core",
+            "faction_core",
+            "recipes.json",
+            "game_state/"
+        })
+        {
+            Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
     [Fact]
     public async Task SubmitPromptSessionAsync_CompanionDirective_UpdatesNpcCore()
     {
@@ -5514,6 +5555,46 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync("stories/chaos_sea.jsonl", """
         {"turn":1,"timestamp":"2026-05-20T00:00:00Z","realm":"Chaos Sea","player":"test","narrative":"story"}
 
+        """);
+    }
+
+    private async Task SeedMortalActionPromptDataAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "npcs": [
+            {
+              "npcId": "npc_companion_1",
+              "name": "Мирра",
+              "progressionType": "Companion",
+              "playerCompanionDirective": "Держаться рядом с раненым учеником."
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", """
+        {
+          "factions": [
+            {
+              "factionId": "faction_player_1",
+              "name": "Серые знамена",
+              "isPlayerFaction": true,
+              "playerStrategyDirective": "Укрепить северные заставы."
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/recipes.json", """
+        {
+          "recipes": [
+            {
+              "recipeId": "healing_salve",
+              "recipeName": "Лечебная мазь",
+              "craftedItemName": "Припарка",
+              "recipeRank": "ученик"
+            }
+          ]
+        }
         """);
     }
 
