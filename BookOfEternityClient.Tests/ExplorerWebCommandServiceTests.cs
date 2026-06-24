@@ -3953,6 +3953,31 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Theory]
+    [InlineData("/soul_relics реликвия relic_memory_blade", "soul-relic-detail", "Реликвия души: Клинок Памяти", "Метки")]
+    [InlineData("/afterlife_archive запись archive_lore_001", "afterlife-archive-detail", "Архив души: Песнь Первого Маяка", "Метки")]
+    [InlineData("/archive_candidates кандидат candidate_mayak", "archive-candidate-detail", "Кандидат в Архив: Песня маяка", "Метки")]
+    public async Task ExecuteAsync_AfterlifeRelicArchiveDetails_RenderDossiersInsteadOfLegacyPanels(
+        string command,
+        string expectedEntityType,
+        string expectedTitle,
+        string expectedSectionTitle)
+    {
+        await SeedRichAfterlifeRelicArchiveDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateKeyValueGrids));
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Empty(result.Blocks.SelectMany(EnumeratePanels));
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), dossier =>
+            dossier.EntityType == expectedEntityType &&
+            dossier.Title.Equals(expectedTitle, StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(dossier.Sections, section => section.Title.Equals("Сведения", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(dossier.Sections, section => section.Title.Equals(expectedSectionTitle, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
     [InlineData("/soul_relics реликвия relic_memory_blade", "Реликвия души: Клинок Памяти", "Память режет тьму", "Шлем Тишины")]
     [InlineData("/afterlife_archive запись archive_lore_001", "Архив души: Песнь Первого Маяка", "Полный текст маяка", "Запечатанный договор")]
     [InlineData("/archive_candidates кандидат candidate_mayak", "Кандидат в Архив: Песня маяка", "Кандидат хранит свет", "Тайный договор")]

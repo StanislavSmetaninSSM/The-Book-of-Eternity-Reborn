@@ -1474,27 +1474,88 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             GetString(relic, "effect", string.Empty),
             GetString(relic, "lore", string.Empty));
 
-        var blocks = new List<UiBlock>
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Состояние", detail.Value.Status);
+        AddFactIfKnown(facts, "Слот", SoulRelicEquipmentService.FormatSlotLabel(slot));
+        AddFactIfKnown(facts, "Редкость", FormatRarityForPlayer(rarity));
+        AddFactIfKnown(facts, "Совместимые слоты", DescribeStringArray(relic["compatibleSlots"]));
+
+        var sections = new List<UiEntityDossierSection>
         {
-            Panel($"Реликвия души: {name}",
-                Grid(
-                    ("Состояние", detail.Value.Status),
-                    ("Слот", SoulRelicEquipmentService.FormatSlotLabel(slot)),
-                    ("Редкость", rarity),
-                    ("ID", EmptyFallback(relicId)),
-                    ("Совместимые слоты", DescribeStringArray(relic["compatibleSlots"])))),
-            new UiTextBlock { Text = description, Tone = UiTone.Accent }
+            BuildAfterlifeDetailFactsSection("soul-relic-detail-facts", "Сведения", "sparkles", facts),
+            BuildAfterlifeDetailTextSection("soul-relic-detail-description", "Описание", "file-text", description, UiTone.Accent)
         };
 
         if (!string.IsNullOrWhiteSpace(effect))
-            blocks.Add(new UiTextBlock { Text = effect, Tone = UiTone.Subtle });
+            sections.Add(BuildAfterlifeDetailTextSection("soul-relic-detail-effect", "Эффект", "sparkles", effect, UiTone.Subtle));
 
         var tags = DescribeStringArray(relic["tags"]);
         if (tags != "не указано")
-            blocks.Add(Panel("Метки", Grid(("Метки", tags))));
+            sections.Add(BuildAfterlifeTagSection("soul-relic-detail-tags", tags));
 
-        return Completed(command, blocks);
+        return Completed(
+            command,
+            new UiEntityDossierBlock
+            {
+                EntityType = "soul-relic-detail",
+                Title = $"Реликвия души: {name}",
+                Subtitle = detail.Value.Status,
+                Summary = description,
+                Badges =
+                [
+                    new UiEntityBadge { Label = detail.Value.Status, Icon = "sparkles", Tone = UiTone.Accent },
+                    new UiEntityBadge { Label = FormatRarityForPlayer(rarity), Icon = "gem", Tone = UiTone.Muted }
+                ],
+                Sections = sections
+            });
     }
+
+    private static UiEntityDossierSection BuildAfterlifeDetailFactsSection(
+        string id,
+        string title,
+        string icon,
+        IReadOnlyList<UiEntityFact> facts) =>
+        new()
+        {
+            Id = id,
+            Title = title,
+            Icon = icon,
+            Presentation = "facts",
+            CollectionLabel = FormatStatusEntryCount(facts.Count),
+            Facts = facts.ToList()
+        };
+
+    private static UiEntityDossierSection BuildAfterlifeDetailTextSection(
+        string id,
+        string title,
+        string icon,
+        string text,
+        UiTone tone) =>
+        new()
+        {
+            Id = id,
+            Title = title,
+            Icon = icon,
+            Presentation = "text",
+            Blocks =
+            [
+                new UiTextBlock { Text = text, Tone = tone }
+            ]
+        };
+
+    private static UiEntityDossierSection BuildAfterlifeTagSection(string id, string tags) =>
+        new()
+        {
+            Id = id,
+            Title = "Метки",
+            Icon = "tags",
+            Presentation = "list",
+            CollectionLabel = "метки",
+            List = tags
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(static tag => !IsUnknownValue(tag))
+                .ToList()
+        };
 
     private static List<UiAction> BuildSoulRelicActions(SoulRelicEquipmentContext context)
     {
@@ -1697,36 +1758,50 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         var content = GetString(entry, "content", string.Empty);
         var reservation = AfterlifeArchiveState.GetReservationObject(entry);
 
-        var blocks = new List<UiBlock>
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Тип", AfterlifeArchiveState.GetEntryTypeLabel(GetString(entry, "entryType", string.Empty)));
+        AddFactIfKnown(facts, "Редкость", FormatRarityForPlayer(GetString(entry, "rarity", string.Empty)));
+        AddFactIfKnown(facts, "Источник", AfterlifeArchiveState.GetSourceKindLabel(GetString(entry, "sourceKind", string.Empty)));
+        AddFactIfKnown(facts, "Жизнь-источник", FirstNonEmpty(GetString(entry, "sourceLife", string.Empty), "не указана"));
+        AddFactIfKnown(facts, "Состояние", DescribeArchiveEntryReservation(entry));
+
+        var sections = new List<UiEntityDossierSection>
         {
-            Panel($"Архив души: {title}",
-                Grid(
-                    ("Тип", AfterlifeArchiveState.GetEntryTypeLabel(GetString(entry, "entryType", string.Empty))),
-                    ("Редкость", FirstNonEmpty(GetString(entry, "rarity", string.Empty), "Common")),
-                    ("Источник", AfterlifeArchiveState.GetSourceKindLabel(GetString(entry, "sourceKind", string.Empty))),
-                    ("Жизнь-источник", FirstNonEmpty(GetString(entry, "sourceLife", string.Empty), "не указана")),
-                    ("Связанный фрагмент", EmptyFallback(GetString(entry, "sourceEntryId", string.Empty))),
-                    ("Состояние", DescribeArchiveEntryReservation(entry)))),
-            new UiTextBlock { Text = summary, Tone = UiTone.Accent }
+            BuildAfterlifeDetailFactsSection("afterlife-archive-detail-facts", "Сведения", "book-open", facts),
+            BuildAfterlifeDetailTextSection("afterlife-archive-detail-summary", "Кратко", "file-text", summary, UiTone.Accent)
         };
 
         if (!string.IsNullOrWhiteSpace(content))
-            blocks.Add(new UiTextBlock { Text = content, Tone = UiTone.Subtle });
+            sections.Add(BuildAfterlifeDetailTextSection("afterlife-archive-detail-content", "Содержание", "book-open", content, UiTone.Subtle));
 
         var tags = DescribeStringArray(entry["tags"]);
         if (tags != "не указано")
-            blocks.Add(Panel("Метки", Grid(("Метки", tags))));
+            sections.Add(BuildAfterlifeTagSection("afterlife-archive-detail-tags", tags));
 
         if (reservation != null)
         {
-            blocks.Add(Panel("Резерв",
-                Grid(
-                    ("Действие", AfterlifeArchiveState.GetReservationLabel(GetString(reservation, "reservationKind", string.Empty))),
-                    ("Хранитель", EmptyFallback(GetString(reservation, "guardianName", string.Empty))),
-                    ("Проект", EmptyFallback(GetString(reservation, "targetProjectName", string.Empty))))));
+            var reservationFacts = new List<UiEntityFact>();
+            AddFactIfKnown(reservationFacts, "Действие", AfterlifeArchiveState.GetReservationLabel(GetString(reservation, "reservationKind", string.Empty)));
+            AddFactIfKnown(reservationFacts, "Хранитель", GetString(reservation, "guardianName", string.Empty));
+            AddFactIfKnown(reservationFacts, "Проект", GetString(reservation, "targetProjectName", string.Empty));
+            sections.Add(BuildAfterlifeDetailFactsSection("afterlife-archive-detail-reservation", "Резерв", "lock", reservationFacts));
         }
 
-        return Completed(command, blocks);
+        return Completed(
+            command,
+            new UiEntityDossierBlock
+            {
+                EntityType = "afterlife-archive-detail",
+                Title = $"Архив души: {title}",
+                Subtitle = AfterlifeArchiveState.GetEntryTypeLabel(GetString(entry, "entryType", string.Empty)),
+                Summary = summary,
+                Badges =
+                [
+                    new UiEntityBadge { Label = FormatRarityForPlayer(GetString(entry, "rarity", string.Empty)), Icon = "sparkles", Tone = UiTone.Accent },
+                    new UiEntityBadge { Label = DescribeArchiveEntryReservation(entry), Icon = "archive", Tone = AfterlifeArchiveState.IsReserved(entry) ? UiTone.Warning : UiTone.Success }
+                ],
+                Sections = sections
+            });
     }
 
     private static UiAction BuildAfterlifeArchiveDetailAction(JsonObject entry)
@@ -1841,27 +1916,41 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         var title = FirstNonEmpty(GetString(candidate, "title", string.Empty), candidateId, selector);
         var summary = FirstNonEmpty(GetString(candidate, "summary", string.Empty), "Краткое описание кандидата пока не добавлено.");
         var content = GetString(candidate, "content", string.Empty);
-        var blocks = new List<UiBlock>
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Тип", AfterlifeArchiveState.GetEntryTypeLabel(GetString(candidate, "proposedEntryType", string.Empty)));
+        AddFactIfKnown(facts, "Редкость", FormatRarityForPlayer(GetString(candidate, "rarity", string.Empty)));
+        AddFactIfKnown(facts, "Состояние", DescribeArchiveCandidateStatus(GetString(candidate, "status", string.Empty)));
+        AddFactIfKnown(facts, "Источник", AfterlifeArchiveState.GetSourceKindLabel(GetString(candidate, "sourceKind", string.Empty)));
+        AddFactIfKnown(facts, "Жизнь-источник", FirstNonEmpty(GetString(candidate, "sourceLife", string.Empty), "не указана"));
+
+        var sections = new List<UiEntityDossierSection>
         {
-            Panel($"Кандидат в Архив: {title}",
-                Grid(
-                    ("Тип", AfterlifeArchiveState.GetEntryTypeLabel(GetString(candidate, "proposedEntryType", string.Empty))),
-                    ("Редкость", FirstNonEmpty(GetString(candidate, "rarity", string.Empty), "Common")),
-                    ("Состояние", DescribeArchiveCandidateStatus(GetString(candidate, "status", string.Empty))),
-                    ("Источник", AfterlifeArchiveState.GetSourceKindLabel(GetString(candidate, "sourceKind", string.Empty))),
-                    ("Жизнь-источник", FirstNonEmpty(GetString(candidate, "sourceLife", string.Empty), "не указана")),
-                    ("Связанный фрагмент", EmptyFallback(GetString(candidate, "sourceEntryId", string.Empty))))),
-            new UiTextBlock { Text = summary, Tone = UiTone.Accent }
+            BuildAfterlifeDetailFactsSection("archive-candidate-detail-facts", "Сведения", "archive", facts),
+            BuildAfterlifeDetailTextSection("archive-candidate-detail-summary", "Кратко", "file-text", summary, UiTone.Accent)
         };
 
         if (!string.IsNullOrWhiteSpace(content))
-            blocks.Add(new UiTextBlock { Text = content, Tone = UiTone.Subtle });
+            sections.Add(BuildAfterlifeDetailTextSection("archive-candidate-detail-content", "Содержание", "book-open", content, UiTone.Subtle));
 
         var tags = DescribeStringArray(candidate["tags"]);
         if (tags != "не указано")
-            blocks.Add(Panel("Метки", Grid(("Метки", tags))));
+            sections.Add(BuildAfterlifeTagSection("archive-candidate-detail-tags", tags));
 
-        return Completed(command, blocks);
+        return Completed(
+            command,
+            new UiEntityDossierBlock
+            {
+                EntityType = "archive-candidate-detail",
+                Title = $"Кандидат в Архив: {title}",
+                Subtitle = DescribeArchiveCandidateStatus(GetString(candidate, "status", string.Empty)),
+                Summary = summary,
+                Badges =
+                [
+                    new UiEntityBadge { Label = FormatRarityForPlayer(GetString(candidate, "rarity", string.Empty)), Icon = "sparkles", Tone = UiTone.Accent },
+                    new UiEntityBadge { Label = DescribeArchiveCandidateStatus(GetString(candidate, "status", string.Empty)), Icon = "check", Tone = UiTone.Warning }
+                ],
+                Sections = sections
+            });
     }
 
     private static UiAction BuildArchiveCandidateDetailAction(JsonObject candidate)
