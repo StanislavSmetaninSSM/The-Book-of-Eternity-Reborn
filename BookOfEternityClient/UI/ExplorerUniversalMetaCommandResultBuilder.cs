@@ -799,12 +799,11 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 Grid(
                     ("Имя души", GetString(read.Node, "soulName")),
                     ("Форма души", EmptyFallback(GetString(read.Node, "soulFormDescription"))),
-                    ("Царство", GetString(read.Node, "currentRealm")),
+                    ("Царство", ExplorerPlayerFacingLabels.Realm(GetString(read.Node, "currentRealm"))),
                     ("Инкарнация", GetNumberOrString(read.Node, "currentIncarnation")),
                     ("Чернильные Перья", DescribeInkFeathers(read.Node)),
                     ("Просветление", DescribeNested(read.Node, "enlightenment")),
-                    ("Жизней в истории", CountArray(read.Node, "livesHistory").ToString()))),
-            Raw("Полный JSON game_state/meta/soul_state.json", read.Node));
+                    ("Жизней в истории", CountArray(read.Node, "livesHistory").ToString()))));
     }
 
     private static async Task<ExplorerCommandResult> BuildSoulSection(

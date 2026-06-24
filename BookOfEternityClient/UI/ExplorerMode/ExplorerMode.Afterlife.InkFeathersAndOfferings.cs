@@ -32,6 +32,7 @@ public partial class ExplorerMode
         var soulName = GetStr(root, "soulName", "Безымянная душа");
         var soulFormDescription = GetStr(root, "soulFormDescription", "");
         var currentRealm = GetStr(root, "currentRealm", _stateManager.CurrentState.CurrentRealm);
+        var currentRealmLabel = ExplorerPlayerFacingLabels.Realm(currentRealm);
         var currentIncarnation = GetInt(root, "currentIncarnation", 0);
         var currentFeathers = ReadInkFeathersCurrent(root);
         var totalFeathers = ReadInkFeathersTotal(root);
@@ -48,7 +49,7 @@ public partial class ExplorerMode
             string.IsNullOrWhiteSpace(soulFormDescription)
                 ? "  🪞 Форма души: [dim]пока не описана[/]"
                 : $"  🪞 Форма души: [white]{Markup.Escape(soulFormDescription)}[/]",
-            $"  🌌 Текущая фаза: [cyan]{Markup.Escape(currentRealm)}[/]",
+            $"  🌌 Текущая фаза: [cyan]{Markup.Escape(currentRealmLabel)}[/]",
             $"  🔄 Инкарнация: [yellow]{currentIncarnation}[/]",
             $"  🪶 Чернильные Перья сейчас: [gold1]{currentFeathers}[/]",
             $"  🧾 Всего получено Чернильных Перьев: [gold1]{totalFeathers}[/]"

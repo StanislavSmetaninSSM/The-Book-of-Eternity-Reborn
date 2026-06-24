@@ -2543,6 +2543,25 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_Soul_RendersPlayerFacingSummaryWithoutRawJson()
+    {
+        await SeedUniversalMetaFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/soul"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Душа", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Test Soul", text, StringComparison.Ordinal);
+        Assert.Contains("Море Хаоса", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Chaos Sea", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("soul_state", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полный JSON", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_MemoryScene_ReturnsPlayerReadableDto()
     {
         await SeedUniversalMetaFilesAsync();
