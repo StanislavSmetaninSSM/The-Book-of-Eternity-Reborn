@@ -1707,6 +1707,46 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_Behavior_RendersNestedAssessmentAsDossierFacts()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/player_behavior.json", """
+        {
+          "playerBehaviorAssessment": {
+            "dominantPattern": "Осторожный переговорщик",
+            "summary": "Игрок избегает насилия и собирает сведения перед риском.",
+            "confidence": "high"
+          },
+          "historyManipulationCoefficient": 1.25
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/behavior", AdvancedEnabled: false));
+
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        var dossiers = result.Blocks.SelectMany(EnumerateEntityDossiers).ToList();
+        Assert.Contains(dossiers, static dossier =>
+            dossier.Title.Equals("Поведение игрока", StringComparison.OrdinalIgnoreCase));
+        var cards = dossiers.SelectMany(static dossier => dossier.Sections).SelectMany(static section => section.Cards).ToList();
+        var hasAssessmentCard = cards.Any(static card =>
+            card.Title.Equals("Оценка поведения", StringComparison.OrdinalIgnoreCase) &&
+            card.Facts.Any(static fact =>
+                fact.Label.Equals("Основной паттерн", StringComparison.OrdinalIgnoreCase) &&
+                fact.Value.Equals("Осторожный переговорщик", StringComparison.Ordinal)) &&
+            card.Facts.Any(static fact =>
+                fact.Label.Equals("Кратко", StringComparison.OrdinalIgnoreCase) &&
+                fact.Value.Contains("избегает насилия", StringComparison.OrdinalIgnoreCase)));
+        Assert.True(hasAssessmentCard, payload);
+
+        Assert.DoesNotContain("Основной паттерн: Осторожный переговорщик;", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Уверенность", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("высокая", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("playerBehaviorAssessment", text, StringComparison.OrdinalIgnoreCase);
+        AssertNoFlattenedStructuredDetails(result);
+    }
+
     [Theory]
     [MemberData(nameof(PlayerDefaultReadOnlyCommands))]
     public async Task ExecuteAsync_PlayerDefaultReadOnlyCommands_RenderPlayerFacingDefaultOutput(

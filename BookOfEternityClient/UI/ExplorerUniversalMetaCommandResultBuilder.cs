@@ -2298,48 +2298,268 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
     private static IReadOnlyList<UiBlock> BuildReadableJsonBlocks(string title, JsonNode node)
     {
-        var blocks = new List<UiBlock>();
-        if (node is JsonArray rootArray)
+        var dossier = BuildReadableJsonDossier(title, "metadata", node, initiallyExpandedSections: 3);
+        return dossier == null ? [] : [dossier];
+    }
+
+    private static UiEntityDossierBlock? BuildReadableJsonDossier(
+        string title,
+        string entityType,
+        JsonNode? node,
+        int initiallyExpandedSections = 2)
+    {
+        if (node is JsonArray array)
         {
-            AddReadableJsonArrayBlock(blocks, title, "Записи", rootArray);
-            return blocks;
+            var section = BuildReadableJsonArraySection(title, "items", "Записи", array, 0);
+            if (section == null)
+                return null;
+
+            return new UiEntityDossierBlock
+            {
+                EntityType = entityType,
+                Title = title,
+                Sections = [section]
+            };
         }
 
-        if (node is not JsonObject root)
+        if (node is not JsonObject obj)
         {
             if (TryGetScalarString(node, out var scalar))
-                blocks.Add(Panel(title, Grid(("Значение", scalar))));
-            return blocks;
+            {
+                return new UiEntityDossierBlock
+                {
+                    EntityType = entityType,
+                    Title = title,
+                    Facts = [new UiEntityFact { Label = "Значение", Value = scalar }]
+                };
+            }
+
+            return null;
         }
 
-        var scalarRows = new List<UiTableRow>();
-        foreach (var property in root)
+        var facts = BuildReadableJsonFacts(obj);
+        var sections = BuildReadableJsonSections(obj, initiallyExpandedSections);
+
+        if (facts.Count == 0 && sections.Count == 0)
+            return null;
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = entityType,
+            Title = title,
+            Facts = facts,
+            Sections = sections
+        };
+    }
+
+    private static List<UiEntityFact> BuildReadableJsonFacts(JsonObject obj)
+    {
+        var facts = new List<UiEntityFact>();
+        foreach (var property in obj)
         {
             if (IsTechnicalReadableJsonProperty(property.Key))
                 continue;
 
-            if (property.Value is JsonArray array)
+            if (property.Value is JsonObject or JsonArray)
+                continue;
+
+            var value = DescribeReadableJsonValue(property.Value);
+            if (!IsUnknownReadableJsonValue(value))
+                facts.Add(new UiEntityFact { Label = TranslateReadableJsonField(property.Key), Value = value });
+        }
+
+        return facts;
+    }
+
+    private static List<UiEntityDossierSection> BuildReadableJsonSections(JsonObject obj, int initiallyExpandedSections)
+    {
+        var sections = new List<UiEntityDossierSection>();
+        foreach (var property in obj)
+        {
+            if (IsTechnicalReadableJsonProperty(property.Key))
+                continue;
+
+            UiEntityDossierSection? section = null;
+            var label = TranslateReadableJsonField(property.Key);
+            if (property.Value is JsonObject nestedObject)
             {
-                AddReadableJsonArrayBlock(blocks, title, TranslateReadableJsonField(property.Key), array);
+                section = BuildReadableJsonObjectSection(label, property.Key, nestedObject, sections.Count, initiallyExpandedSections);
+            }
+            else if (property.Value is JsonArray nestedArray)
+            {
+                section = BuildReadableJsonArraySection(label, property.Key, label, nestedArray, sections.Count);
+            }
+
+            if (section != null)
+                sections.Add(section);
+        }
+
+        return sections;
+    }
+
+    private static UiEntityDossierSection? BuildReadableJsonObjectSection(
+        string label,
+        string propertyName,
+        JsonObject obj,
+        int sectionIndex,
+        int initiallyExpandedSections)
+    {
+        var dossier = BuildReadableJsonDossier(label, "metadata-section", obj, initiallyExpandedSections: 1);
+        if (dossier == null)
+            return null;
+
+        return new UiEntityDossierSection
+        {
+            Id = "json-" + propertyName,
+            Title = label,
+            Summary = DescribeReadableJsonPrimaryText(obj),
+            Icon = "file-text",
+            Collapsible = true,
+            InitiallyExpanded = sectionIndex < initiallyExpandedSections,
+            Blocks = [dossier]
+        };
+    }
+
+    private static UiEntityDossierSection? BuildReadableJsonArraySection(
+        string ownerTitle,
+        string propertyName,
+        string sectionLabel,
+        JsonArray array,
+        int sectionIndex)
+    {
+        if (array.Count == 0)
+            return null;
+
+        var cards = new List<UiEntityCard>();
+        var list = new List<string>();
+        var index = 0;
+        foreach (var item in array.Take(24))
+        {
+            if (item is JsonObject obj)
+            {
+                var card = BuildReadableJsonCard(obj, index);
+                if (card != null)
+                    cards.Add(card);
+            }
+            else
+            {
+                var value = DescribeReadableJsonValue(item);
+                if (!IsUnknownReadableJsonValue(value))
+                    list.Add(value);
+            }
+
+            index++;
+        }
+
+        if (cards.Count == 0 && list.Count == 0)
+            return null;
+
+        var omitted = array.Count > index ? $"Показано {index} из {array.Count}." : string.Empty;
+        return new UiEntityDossierSection
+        {
+            Id = "json-" + propertyName,
+            Title = sectionLabel,
+            Summary = omitted,
+            Icon = "list",
+            CollectionLabel = array.Count == 1 ? "1 запись" : $"{array.Count} записей",
+            Presentation = cards.Count > 0 ? "collection" : "list",
+            Collapsible = array.Count > 6 || sectionIndex > 1,
+            InitiallyExpanded = sectionIndex < 2,
+            Cards = cards,
+            List = list
+        };
+    }
+
+    private static UiEntityCard? BuildReadableJsonCard(JsonObject obj, int index)
+    {
+        var title = DescribeReadableJsonTitle(obj, index);
+        var summary = DescribeReadableJsonPrimaryText(obj);
+        var facts = BuildReadableJsonCardFacts(obj);
+        var nested = BuildReadableJsonNestedCards(obj);
+
+        if (IsUnknownReadableJsonValue(title) &&
+            IsUnknownReadableJsonValue(summary) &&
+            facts.Count == 0 &&
+            nested.Count == 0)
+        {
+            return null;
+        }
+
+        return new UiEntityCard
+        {
+            Title = title,
+            Summary = IsUnknownReadableJsonValue(summary) ? string.Empty : summary,
+            Icon = "file-text",
+            Facts = facts,
+            Nested = nested
+        };
+    }
+
+    private static List<UiEntityFact> BuildReadableJsonCardFacts(JsonObject obj)
+    {
+        var facts = new List<UiEntityFact>();
+        foreach (var property in obj)
+        {
+            if (IsTechnicalReadableJsonProperty(property.Key) ||
+                IsReadableJsonTitleOrSummaryProperty(property.Key) ||
+                property.Value is JsonObject or JsonArray)
+            {
                 continue;
             }
 
             var value = DescribeReadableJsonValue(property.Value);
             if (!IsUnknownReadableJsonValue(value))
-                scalarRows.Add(Row(TranslateReadableJsonField(property.Key), value));
+                facts.Add(new UiEntityFact { Label = TranslateReadableJsonField(property.Key), Value = value });
         }
 
-        if (scalarRows.Count > 0)
+        return facts;
+    }
+
+    private static List<UiEntityCard> BuildReadableJsonNestedCards(JsonObject obj)
+    {
+        var nested = new List<UiEntityCard>();
+        foreach (var property in obj)
         {
-            blocks.Add(new UiTableBlock
+            if (IsTechnicalReadableJsonProperty(property.Key))
+                continue;
+
+            var label = TranslateReadableJsonField(property.Key);
+            if (property.Value is JsonObject nestedObject)
             {
-                Title = title + ": сведения",
-                Columns = ["Раздел", "Значение"],
-                Rows = scalarRows
-            });
+                var card = BuildReadableJsonCard(nestedObject, nested.Count);
+                if (card != null)
+                    nested.Add(WithReadableTitle(card, label));
+            }
+            else if (property.Value is JsonArray nestedArray)
+            {
+                var list = nestedArray
+                    .Select(DescribeReadableJsonValue)
+                    .Where(static value => !IsUnknownReadableJsonValue(value))
+                    .Take(12)
+                    .ToList();
+                if (list.Count > 0)
+                    nested.Add(new UiEntityCard { Title = label, Icon = "list", List = list });
+            }
         }
 
-        return blocks;
+        return nested;
+
+        static UiEntityCard WithReadableTitle(UiEntityCard source, string title) => new()
+        {
+            Title = title,
+            Subtitle = source.Subtitle,
+            Summary = source.Summary,
+            Icon = source.Icon,
+            Badges = source.Badges,
+            Media = source.Media,
+            Facts = source.Facts,
+            Metrics = source.Metrics,
+            Hints = source.Hints,
+            List = source.List,
+            Nested = source.Nested,
+            Cards = source.Cards,
+            PrimaryAction = source.PrimaryAction
+        };
     }
 
     private static void AddReadableJsonArrayBlock(
@@ -2422,7 +2642,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
     private static string DescribeReadableJsonValue(JsonNode? node)
     {
         if (TryGetScalarString(node, out var scalar))
-            return scalar;
+            return TranslateReadableJsonScalar(scalar);
 
         if (node is JsonArray array)
         {
@@ -2471,6 +2691,10 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             "source" or "sourceName" or "sourceKind" or "createdAt" or "updatedAt" or
             "progress" or "current" or "total";
 
+    private static bool IsReadableJsonTitleOrSummaryProperty(string propertyName) =>
+        propertyName is "title" or "displayName" or "name" or "questName" or "achievementName" or
+            "summary" or "description" or "content" or "text" or "details" or "dominantPattern";
+
     private static bool IsTechnicalReadableJsonProperty(string propertyName) =>
         propertyName.Equals("id", StringComparison.OrdinalIgnoreCase) ||
         propertyName.EndsWith("Id", StringComparison.OrdinalIgnoreCase) ||
@@ -2505,7 +2729,20 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             "progress" => "Прогресс",
             "current" => "Сейчас",
             "total" => "Всего",
+            "confidence" => "Уверенность",
             _ => propertyName.Replace('_', ' ')
+        };
+
+    private static string TranslateReadableJsonScalar(string value) =>
+        value.Trim() switch
+        {
+            "high" => "высокая",
+            "medium" => "средняя",
+            "low" => "низкая",
+            "unlocked" => "открыто",
+            "locked" => "закрыто",
+            "pending" => "ожидает",
+            _ => value
         };
 
     private static string FirstReadableJsonValue(params string[] values)
