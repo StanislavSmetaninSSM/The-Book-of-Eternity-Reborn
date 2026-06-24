@@ -2963,6 +2963,12 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "panel" &&
+            dossier.Title == "Душа");
+        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
+            dossier.EntityType == "soul-profile" &&
+            dossier.Title == "Душа");
         var text = CollectBlockText(result.Blocks);
         var payload = SerializeResult(result);
         Assert.Contains("Душа", text, StringComparison.OrdinalIgnoreCase);

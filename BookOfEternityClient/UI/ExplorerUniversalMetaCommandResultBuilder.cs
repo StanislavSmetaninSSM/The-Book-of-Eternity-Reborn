@@ -860,15 +860,80 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             return MissingOrMalformed(command, "Душа", read);
 
         return Completed(command,
-            Panel("Душа",
-                Grid(
-                    ("Имя души", GetString(read.Node, "soulName")),
-                    ("Форма души", EmptyFallback(GetString(read.Node, "soulFormDescription"))),
-                    ("Царство", ExplorerPlayerFacingLabels.Realm(GetString(read.Node, "currentRealm"))),
-                    ("Инкарнация", GetNumberOrString(read.Node, "currentIncarnation")),
-                    ("Чернильные Перья", DescribeInkFeathers(read.Node)),
-                    ("Просветление", DescribeNested(read.Node, "enlightenment")),
-                    ("Жизней в истории", CountArray(read.Node, "livesHistory").ToString()))));
+            BuildSoulProfileDossier(read.Node));
+    }
+
+    private static UiEntityDossierBlock BuildSoulProfileDossier(JsonNode soul)
+    {
+        var soulName = EmptyFallback(GetString(soul, "soulName"));
+        var soulForm = EmptyFallback(GetString(soul, "soulFormDescription"));
+        var realm = ExplorerPlayerFacingLabels.Realm(GetString(soul, "currentRealm"));
+        var incarnation = GetNumberOrString(soul, "currentIncarnation");
+        var feathers = DescribeInkFeathers(soul);
+        var enlightenment = DescribeNested(soul, "enlightenment");
+        var lives = CountArray(soul, "livesHistory").ToString();
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "soul-profile",
+            Title = "Душа",
+            Subtitle = soulName,
+            Summary = $"Душа сейчас находится в царстве: {realm}.",
+            Facts =
+            [
+                new UiEntityFact { Label = "Имя души", Value = soulName },
+                new UiEntityFact { Label = "Форма души", Value = soulForm },
+                new UiEntityFact { Label = "Царство", Value = realm },
+                new UiEntityFact { Label = "Инкарнация", Value = incarnation },
+                new UiEntityFact { Label = "Чернильные Перья", Value = feathers },
+                new UiEntityFact { Label = "Просветление", Value = enlightenment },
+                new UiEntityFact { Label = "Жизней в истории", Value = lives }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "soul-identity",
+                    Title = "Облик души",
+                    Icon = "sparkles",
+                    Presentation = "cards",
+                    CollectionLabel = "2 записи",
+                    Cards =
+                    [
+                        new UiEntityCard
+                        {
+                            Title = "Имя души",
+                            Summary = soulName,
+                            Icon = "sparkles",
+                            Facts = [new UiEntityFact { Label = "Имя", Value = soulName }]
+                        },
+                        new UiEntityCard
+                        {
+                            Title = "Форма души",
+                            Summary = soulForm,
+                            Icon = "user",
+                            Facts = [new UiEntityFact { Label = "Описание формы", Value = soulForm }]
+                        }
+                    ]
+                },
+                new UiEntityDossierSection
+                {
+                    Id = "soul-progression",
+                    Title = "Путь души",
+                    Icon = "map",
+                    Presentation = "cards",
+                    CollectionLabel = "5 записей",
+                    Cards =
+                    [
+                        new UiEntityCard { Title = "Царство", Summary = realm, Icon = "map", Facts = [new UiEntityFact { Label = "Царство", Value = realm }] },
+                        new UiEntityCard { Title = "Инкарнация", Summary = incarnation, Icon = "repeat", Facts = [new UiEntityFact { Label = "Текущая инкарнация", Value = incarnation }] },
+                        new UiEntityCard { Title = "Чернильные Перья", Summary = feathers, Icon = "feather", Facts = [new UiEntityFact { Label = "Баланс", Value = feathers }] },
+                        new UiEntityCard { Title = "Просветление", Summary = enlightenment, Icon = "sparkles", Facts = [new UiEntityFact { Label = "Состояние", Value = enlightenment }] },
+                        new UiEntityCard { Title = "История жизней", Summary = lives, Icon = "book-open", Facts = [new UiEntityFact { Label = "Записей", Value = lives }] }
+                    ]
+                }
+            ]
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildSoulSection(
