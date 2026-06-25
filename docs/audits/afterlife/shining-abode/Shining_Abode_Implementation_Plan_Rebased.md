@@ -8,8 +8,8 @@
 
 - если старый implementation plan и этот файл конфликтуют, **этот файл главнее**;
 - таблицы, числовые формулы, rarity/service/project rules и общий gameplay-intent по-прежнему брать из:
-  - `OtherGuides/Shining_Abode_Endgame_Design_Plan.md`
-  - `OtherGuides/Shining_Abode_Implementation_Plan.md`
+  - `docs/audits/afterlife/shining-abode/Shining_Abode_Endgame_Design_Plan.md`
+  - `docs/audits/afterlife/shining-abode/Shining_Abode_Implementation_Plan.md`
 - этот rebased plan отвечает не за lore/formula detail, а за **правильную интеграцию в нынешние runtime, lifecycle, validation и resident contracts**.
 
 ---
@@ -370,4 +370,3 @@ Validation должна explicitly reject attempts to model the same thing in tw
 - resident Shining membership is additive to the already-implemented resident personality/devotion system
 - no new duplicate guardian or resident source-of-truth files are introduced
 - `Shining Abode` implementation must be validator-first and authority-safe, not UI-first
-

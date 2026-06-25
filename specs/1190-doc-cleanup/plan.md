@@ -28,7 +28,10 @@ Clean obsolete agent/developer planning noise out of game-facing documentation d
 
 **Scale/Scope**: Repo-wide docs audit, with first-pass focus on `OtherGuides`, root README-like files, `TaskGuides`, `Rules`, `Examples`, and stray technical files outside designated technical directories.
 
-**Source Issue(s)**: #1190 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1190
+**Source Issue(s)**:
+
+- #1190 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1190
+- #1248 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1248
 
 **Contract Scope**: GM-facing docs, examples/reference integrity.
 
@@ -71,7 +74,7 @@ BookOfEternityClient.Tests/          # Only update if source guards reference re
 AGENTS.md                            # Spec Kit active plan pointer only
 ```
 
-**Structure Decision**: Keep technical working artifacts inside `docs/superpowers/**` and Spec Kit artifacts inside `specs/1190-doc-cleanup/**`. Remove or relocate only files that are misleading in game-facing directories.
+**Structure Decision**: Keep technical working artifacts inside `docs/superpowers/**`, audit archives inside `docs/audits/**`, and Spec Kit artifacts inside `specs/1190-doc-cleanup/**`. Remove or relocate only files that are misleading in game-facing directories.
 
 ## Complexity Tracking
 

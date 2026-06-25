@@ -17,3 +17,24 @@ Issues for work tracking, `specs/` for active Spec Kit features, and
 Before deleting or moving a file from this directory, check references from
 launcher prompts, `TaskGuides/`, `Examples/`, tests, and other `OtherGuides`
 files. Some guides are player/GM contracts even when their names look technical.
+
+## Current Files
+
+- `Actor_Brain_2_0.md` - GM-facing actor reasoning guidance.
+- `Afterlife_Combat_Terminology_Glossary.md` - Russian labels and mechanics
+  glossary for afterlife spiritual conflict.
+- `Afterlife_Contract_Matrix.md` - mandatory Chaos Sea and Shining Abode
+  contract matrix.
+- `Afterlife_Pending_Control_Surface_Inventory.json` - current pending/control
+  inventory for afterlife documentation coverage.
+- `CLI_Narrative_Style_Guide.txt` - narrative style guidance.
+- `CLI_World_Logic_Guide.txt` - world-logic guidance.
+- `GM_Worker_Bridges.md` - current GM worker bridge guidance.
+- `Saref_Character_Bible.md` - Saref lore and character reference.
+- `Saref_Memory_System_Boundaries.md` - Saref memory-system boundary guide.
+- `Shining_Abode_Contract.md` - compact current Shining Abode contract summary.
+- `Shining_Abode_README.md` - Shining Abode reading map and archive notice.
+- `System_Guardian_Dossier_Standard.md` - current Guardian dossier standard.
+
+Historical implementation plans, design notes, and E2E audit matrices belong in
+`docs/audits/`, not here.

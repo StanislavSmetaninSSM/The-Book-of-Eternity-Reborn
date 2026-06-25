@@ -4,9 +4,9 @@
 
 Это **дополнение** к:
 
-- `OtherGuides/Shining_Abode_Endgame_Design_Plan.md`
-- `OtherGuides/Shining_Abode_Implementation_Plan.md`
-- `OtherGuides/Shining_Abode_Implementation_Plan_Rebased.md`
+- `docs/audits/afterlife/shining-abode/Shining_Abode_Endgame_Design_Plan.md`
+- `docs/audits/afterlife/shining-abode/Shining_Abode_Implementation_Plan.md`
+- `docs/audits/afterlife/shining-abode/Shining_Abode_Implementation_Plan_Rebased.md`
 
 Если старые Shining docs конфликтуют с этим файлом в части:
 

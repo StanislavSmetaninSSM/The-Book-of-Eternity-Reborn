@@ -10,7 +10,9 @@
 
 ## Source Issues & Scope
 
-- **Source GitHub issue(s)**: #1190 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1190
+- **Source GitHub issue(s)**:
+  - #1190 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1190
+  - #1248 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1248
 - **Issue type**: task / documentation / tech-debt
 - **Spec Kit justification**: This is a repo-wide documentation cleanup that changes GM-facing directories and may remove or relocate files referenced by prompts, tests, examples, or manifests.
 - **Contract scope**: GM-facing docs, repository documentation, examples/reference integrity.
@@ -61,7 +63,7 @@ A developer or agent should not encounter broken references after noisy files ar
 
 - **FR-001**: Audit markdown, text, JSON manifest, and README-like files outside `docs/superpowers/**` for obsolete agent/developer noise.
 - **FR-002**: Classify suspect files as keep, remove, relocate, or follow-up.
-- **FR-003**: Remove files that are obsolete, development-only, completed implementation plans, or misleading to GM usage, when they have no required live references.
+- **FR-003**: Remove or archive files that are obsolete, development-only, completed implementation plans, or misleading to GM usage, after live GM rules are preserved in current guidance.
 - **FR-004**: Preserve current GM-facing guidance, examples, validation manifests, afterlife contract docs, and prompt-linked documents.
 - **FR-005**: Update or remove references to deleted files in docs, prompts, tests, manifests, and scripts.
 - **FR-006**: Record ambiguous files in the PR summary or a follow-up issue instead of deleting them silently.

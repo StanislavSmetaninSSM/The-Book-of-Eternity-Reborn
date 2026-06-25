@@ -130,8 +130,8 @@
 
 См.:
 
-- [Shining_Abode_Faction_Politics_Addendum.md](</E:/Games/The%20Book%20of%20Eternity%20Reborn/OtherGuides/Shining_Abode_Faction_Politics_Addendum.md>)
-- [Abode_Resident_Personality_And_Devotion_Design.md](</E:/Games/The%20Book%20of%20Eternity%20Reborn/OtherGuides/Abode_Resident_Personality_And_Devotion_Design.md>)
+- `docs/audits/afterlife/shining-abode/Shining_Abode_Faction_Politics_Addendum.md`
+- `docs/audits/afterlife/shining-abode/Abode_Resident_Personality_And_Devotion_Design.md`
 
 Причины не делать прямой type-rewrite:
 

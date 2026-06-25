@@ -83,5 +83,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 <!-- SPECKIT START -->
 Current Spec Kit plan for this branch:
-`specs/1251-network-pass-turn-multiplayer/plan.md`
+`specs/1190-doc-cleanup/plan.md`
 <!-- SPECKIT END -->

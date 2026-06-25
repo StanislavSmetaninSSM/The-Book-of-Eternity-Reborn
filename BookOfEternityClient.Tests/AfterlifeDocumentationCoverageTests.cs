@@ -1567,10 +1567,9 @@ public sealed class AfterlifeDocumentationCoverageTests
         var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
-        var implementationPlan = ReadRepoFile("OtherGuides", "Shining_Abode_Implementation_Plan.md");
-        var endgamePlan = ReadRepoFile("OtherGuides", "Shining_Abode_Endgame_Design_Plan.md");
+        var shiningContract = ReadRepoFile("OtherGuides", "Shining_Abode_Contract.md");
 
-        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, examples, implementationPlan, endgamePlan })
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, examples, shiningContract })
         {
             Assert.Contains("afterlife_return_guard.json", doc, StringComparison.Ordinal);
             Assert.Contains("fail-closed", doc, StringComparison.OrdinalIgnoreCase);
@@ -1585,9 +1584,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("repair", doc, StringComparison.OrdinalIgnoreCase);
         }
 
-        Assert.DoesNotContain("runtime normalization clears", implementationPlan, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("runtime health normalization clears", implementationPlan, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("runtime-normalization", endgamePlan, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("runtime normalization clears", shiningContract, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("runtime health normalization clears", shiningContract, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("runtime-normalization", shiningContract, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -3307,7 +3306,7 @@ public sealed class AfterlifeDocumentationCoverageTests
     [Fact]
     public void SarefMainStoryE2EAuditMatrixCoversIssue692StagesAndEvidence()
     {
-        var audit = ReadRepoFile("OtherGuides", "Saref_Main_Story_E2E_Audit_Matrix.md");
+        var audit = ReadRepoFile("docs", "audits", "afterlife", "saref", "Saref_Main_Story_E2E_Audit_Matrix.md");
 
         Assert.Contains("GitHub issue #692", audit, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Крылья над Бездной", audit, StringComparison.OrdinalIgnoreCase);

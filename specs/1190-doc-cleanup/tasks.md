@@ -2,7 +2,7 @@
 
 **Input**: Design documents from `specs/1190-doc-cleanup/`
 
-**Prerequisites**: `plan.md`, `spec.md`, GitHub issue #1190
+**Prerequisites**: `plan.md`, `spec.md`, GitHub issues #1190 and #1248
 
 **Tests**: This is documentation cleanup. Test-first runtime coverage is not applicable to deleting obsolete unreferenced docs; reference searches and docs/source-guard tests are required.
 
@@ -38,7 +38,14 @@
 - [x] T013 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests|BrowserFrontendWorkspaceTests"`.
   - Result: docs/afterlife subset passed separately (`103/103`). The full listed filter was also run and failed in unrelated `BrowserFrontendWorkspaceTests` assertions for existing frontend source-guard expectations; this cleanup diff does not touch frontend files.
 - [x] T014 Inspect final `OtherGuides` and root guidance file lists for remaining obvious noise.
-- [ ] T015 Commit changes with issue reference #1190 and open a PR.
+- [x] T015 Commit previous cleanup changes with issue reference #1190.
+- [x] T016 [P] #1248 Move or archive Shining/Saref implementation-design/audit files out of `OtherGuides/`.
+- [x] T017 #1248 Add current GM-facing `OtherGuides/Shining_Abode_Contract.md` replacement summary.
+- [x] T018 #1248 Update `OtherGuides/Shining_Abode_README.md`, `Afterlife_Contract_Matrix.md`, and docs/source-guard tests to stop treating archived implementation plans as normal GM context.
+- [x] T019 #1248 Run reference checks for moved Shining/Saref filenames and document any remaining archive-only references.
+  - Result: no old Shining/Saref implementation-plan path remains in `OtherGuides`, prompts, examples, rules, task guides, or runtime code; the only live filename reference is the docs/audit path read by `AfterlifeDocumentationCoverageTests`.
+- [x] T020 #1248 Run targeted documentation/source-guard verification.
+  - Result: `130/130` tests passed for `AfterlifeDocumentationCoverageTests|ExampleDocumentationValidationTests|GmWorkerBridgeDocumentationTests|RepositoryEncodingScannerTests|SystemGuardianLibraryServiceTests`; `git diff --check` reported no errors, CRLF warnings only.
 
 ## Dependencies & Execution Order
 

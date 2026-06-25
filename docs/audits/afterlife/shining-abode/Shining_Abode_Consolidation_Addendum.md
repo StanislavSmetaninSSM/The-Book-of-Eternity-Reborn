@@ -4,9 +4,9 @@
 
 Этот документ закрывает оставшиеся implementation gaps в:
 
-- `OtherGuides/Shining_Abode_Implementation_Plan.md`
-- `OtherGuides/Shining_Abode_Implementation_Plan_Rebased.md`
-- `OtherGuides/Shining_Abode_Faction_Politics_Addendum.md`
+- `docs/audits/afterlife/shining-abode/Shining_Abode_Implementation_Plan.md`
+- `docs/audits/afterlife/shining-abode/Shining_Abode_Implementation_Plan_Rebased.md`
+- `docs/audits/afterlife/shining-abode/Shining_Abode_Faction_Politics_Addendum.md`
 
 При конфликте приоритет такой:
 
