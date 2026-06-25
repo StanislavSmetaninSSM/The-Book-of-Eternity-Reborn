@@ -3930,7 +3930,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             localTurn.Panel,
             "Архивная консультация",
             "Выберите свободную запись Архива и дружественного Хранителя. После подтверждения запись будет зарезервирована до ответа ГМ.",
-            context);
+            context,
+            isProjectFuel: false);
 
         return Result(
             command,
@@ -3985,7 +3986,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             localTurn.Panel,
             "Подпитка проекта Архивом",
             "Выберите свободную запись Архива и дружественного Хранителя с активным проектом. После подтверждения запись будет зарезервирована до ответа ГМ.",
-            context);
+            context,
+            isProjectFuel: true);
 
         return Result(
             command,
@@ -4051,48 +4053,132 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         UiPanelBlock localTurnPanel,
         string title,
         string statusText,
-        BrowserAfterlifeArchiveActionContext context)
+        BrowserAfterlifeArchiveActionContext context,
+        bool isProjectFuel)
     {
-        List<string> guardianColumns = context.Guardians.Any(static guardian => guardian.FuelAvailable)
-            ? ["Хранитель", "Репутация", "Проект"]
-            : ["Хранитель", "Репутация", "Домен"];
-
         return
         [
             localTurnPanel,
-            new UiPanelBlock
-            {
-                Title = title,
-                Blocks =
-                [
-                    new UiTextBlock
-                    {
-                        Text = statusText,
-                        Tone = UiTone.Accent
-                    },
-                    new UiTableBlock
-                    {
-                        Title = "Свободные записи Архива",
-                        Columns = ["Запись", "Тип", "Редкость"],
-                        Rows = context.Entries
-                            .Select(static entry => Row(entry.Title, AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType), FormatRarityForPlayer(entry.Rarity, "-")))
-                            .ToList()
-                    },
-                    new UiTableBlock
-                    {
-                        Title = "Дружественные Хранители",
-                        Columns = guardianColumns,
-                        Rows = context.Guardians
-                            .Select(static guardian => Row(
-                                guardian.GuardianName,
-                                guardian.Reputation.ToString(),
-                                guardian.FuelAvailable ? guardian.TargetProjectName : FirstNonEmpty(guardian.Domain, "не указан")))
-                            .ToList()
-                    }
-                ]
-            }
+            BuildArchiveActionDossier(title, statusText, context, isProjectFuel)
         ];
     }
+
+    private static UiEntityDossierBlock BuildArchiveActionDossier(
+        string title,
+        string statusText,
+        BrowserAfterlifeArchiveActionContext context,
+        bool isProjectFuel)
+    {
+        return new UiEntityDossierBlock
+        {
+            EntityType = isProjectFuel ? "archive-project-fuel" : "archive-consultation",
+            Title = title,
+            Subtitle = isProjectFuel ? "выбор записи Архива для проекта Хранителя" : "выбор записи Архива и Хранителя",
+            Summary = statusText,
+            Badges =
+            [
+                new UiEntityBadge { Label = "локальное действие", Tone = UiTone.Accent },
+                new UiEntityBadge { Label = FormatRealmForPlayer(context.CurrentRealm), Tone = UiTone.Default }
+            ],
+            Facts =
+            [
+                new UiEntityFact { Label = "Свободных записей", Value = context.Entries.Count.ToString() },
+                new UiEntityFact { Label = isProjectFuel ? "Проектов для подпитки" : "Доступных Хранителей", Value = context.Guardians.Count.ToString() }
+            ],
+            Hints =
+            [
+                new UiEntityHint
+                {
+                    Title = isProjectFuel ? "Что произойдёт после подтверждения" : "Что произойдёт после подтверждения",
+                    Text = isProjectFuel
+                        ? "Выбранная запись будет зарезервирована как вклад в активный проект Хранителя до ответа ГМ."
+                        : "Выбранная запись будет зарезервирована для консультации у Хранителя до ответа ГМ.",
+                    Tone = UiTone.Accent
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "archive-action-entries",
+                    Title = "Свободные записи Архива",
+                    Summary = "Записи, которые можно выбрать для этого действия.",
+                    Icon = "archive",
+                    Presentation = "cards",
+                    CollectionLabel = context.Entries.Count == 1 ? "1 запись" : $"{context.Entries.Count} записей",
+                    Cards = context.Entries.Select(BuildArchiveEntryCard).ToList()
+                },
+                new UiEntityDossierSection
+                {
+                    Id = isProjectFuel ? "archive-action-project-guardians" : "archive-action-guardians",
+                    Title = isProjectFuel ? "Хранители и проекты" : "Дружественные Хранители",
+                    Summary = isProjectFuel
+                        ? "Хранители с активными проектами, которые могут принять запись Архива."
+                        : "Хранители, у которых можно запросить толкование выбранной записи.",
+                    Icon = "user",
+                    Presentation = "cards",
+                    CollectionLabel = context.Guardians.Count == 1 ? "1 Хранитель" : $"{context.Guardians.Count} Хранителей",
+                    Cards = context.Guardians
+                        .Select(guardian => isProjectFuel ? BuildArchiveProjectFuelGuardianCard(guardian) : BuildArchiveGuardianCard(guardian))
+                        .ToList()
+                }
+            ]
+        };
+    }
+
+    private static UiEntityCard BuildArchiveEntryCard(BrowserAfterlifeArchiveEntryChoice entry) =>
+        new()
+        {
+            Title = entry.Title,
+            Subtitle = AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType),
+            Summary = FirstNonEmpty(entry.Summary, "Сохранённая запись Архива."),
+            Icon = "archive",
+            Facts =
+            [
+                new UiEntityFact { Label = "Тип записи", Value = AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType) },
+                new UiEntityFact { Label = "Редкость", Value = FormatRarityForPlayer(entry.Rarity, "-") }
+            ]
+        };
+
+    private static UiEntityCard BuildArchiveGuardianCard(BrowserAfterlifeArchiveGuardianChoice guardian) =>
+        new()
+        {
+            Title = guardian.GuardianName,
+            Subtitle = "Хранитель для консультации",
+            Summary = $"Домен: {FirstNonEmpty(guardian.Domain, "не указан")}. Репутация: {guardian.Reputation}.",
+            Icon = "user",
+            Facts =
+            [
+                new UiEntityFact { Label = "Домен", Value = FirstNonEmpty(guardian.Domain, "не указан") },
+                new UiEntityFact { Label = "Репутация", Value = guardian.Reputation.ToString() }
+            ],
+            PrimaryAction = DetailAction(
+                "archive-consultation-detail",
+                guardian.GuardianId,
+                guardian.GuardianName,
+                "/archive_consultation хранитель " + SoulRelicEquipmentService.FormatCommandArgument(guardian.GuardianId))
+        };
+
+    private static UiEntityCard BuildArchiveProjectFuelGuardianCard(BrowserAfterlifeArchiveGuardianChoice guardian) =>
+        new()
+        {
+            Title = guardian.GuardianName,
+            Subtitle = "Хранитель с активным проектом",
+            Summary = $"Проект: {FirstNonEmpty(guardian.TargetProjectName, "не указан")}. Репутация: {guardian.Reputation}.",
+            Icon = "user",
+            Facts =
+            [
+                new UiEntityFact { Label = "Проект", Value = FirstNonEmpty(guardian.TargetProjectName, "не указан") },
+                new UiEntityFact { Label = "Репутация", Value = guardian.Reputation.ToString() }
+            ],
+            PrimaryAction = string.IsNullOrWhiteSpace(guardian.TargetProjectId)
+                ? null
+                : DetailAction(
+                    "archive-project-fuel-detail",
+                    $"{guardian.GuardianId}-{guardian.TargetProjectId}",
+                    guardian.TargetProjectName,
+                    "/archive_project_fuel проект " + SoulRelicEquipmentService.FormatCommandArgument($"{guardian.GuardianId}::{guardian.TargetProjectId}"))
+        };
 
     private static UiSelectionOption BuildArchiveEntryOption(BrowserAfterlifeArchiveEntryChoice entry) =>
         Option(
@@ -4152,33 +4238,29 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             command,
             CommandExecutionState.Completed,
             [
-                new UiPanelBlock
+                new UiEntityDossierBlock
                 {
+                    EntityType = "archive-consultation-detail",
                     Title = $"Архивная консультация: {guardian.GuardianName}",
-                    Blocks =
+                    Subtitle = "Хранитель для толкования записи Архива",
+                    Summary = "Этот Хранитель доступен для архивной консультации. Выберите свободную запись Архива в форме, если хотите попросить его раскрыть смысл выбранного фрагмента.",
+                    Facts =
                     [
-                        new UiKeyValueGridBlock
-                        {
-                            Items =
-                            [
-                                KeyValue("Хранитель", guardian.GuardianName),
-                                KeyValue("Домен", FirstNonEmpty(guardian.Domain, "не указан")),
-                                KeyValue("Репутация", guardian.Reputation.ToString()),
-                                KeyValue("Свободных записей Архива", context.Entries.Count.ToString())
-                            ]
-                        },
-                        new UiTextBlock
-                        {
-                            Text = "Этот Хранитель доступен для архивной консультации. Выберите свободную запись Архива в форме, если хотите попросить его раскрыть смысл выбранного фрагмента.",
-                            Tone = UiTone.Accent
-                        },
-                        new UiTableBlock
+                        new UiEntityFact { Label = "Хранитель", Value = guardian.GuardianName },
+                        new UiEntityFact { Label = "Домен", Value = FirstNonEmpty(guardian.Domain, "не указан") },
+                        new UiEntityFact { Label = "Репутация", Value = guardian.Reputation.ToString() },
+                        new UiEntityFact { Label = "Свободных записей Архива", Value = context.Entries.Count.ToString() }
+                    ],
+                    Sections =
+                    [
+                        new UiEntityDossierSection
                         {
                             Title = "Свободные записи Архива",
-                            Columns = ["Запись", "Тип", "Редкость"],
-                            Rows = context.Entries
-                                .Select(static entry => Row(entry.Title, AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType), FormatRarityForPlayer(entry.Rarity, "-")))
-                                .ToList()
+                            Summary = "Любую из этих записей можно выбрать в форме консультации.",
+                            Icon = "archive",
+                            Presentation = "cards",
+                            CollectionLabel = context.Entries.Count == 1 ? "1 запись" : $"{context.Entries.Count} записей",
+                            Cards = context.Entries.Select(BuildArchiveEntryCard).ToList()
                         }
                     ]
                 }
@@ -4206,29 +4288,13 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 command,
                 CommandExecutionState.Completed,
                 [
-                    new UiPanelBlock
-                    {
-                        Title = $"Подпитка проекта: {blockedProjectName}",
-                        Blocks =
-                        [
-                            new UiKeyValueGridBlock
-                            {
-                                Items =
-                                [
-                                    KeyValue("Хранитель", guardianSelector),
-                                    KeyValue("Проект", blockedProjectName),
-                                    KeyValue("Тип", FormatProjectTypeForPlayer(GetString(blockedProject, "projectType"))),
-                                    KeyValue("Ранг", FormatProjectTierForPlayer(GetString(blockedProject, "projectTier"))),
-                                    KeyValue("Режим", FormatProjectModeForPlayer(GetString(blockedProject, "projectMode")))
-                                ]
-                            },
-                            new UiTextBlock
-                            {
-                                Text = context.BlockerMessage,
-                                Tone = UiTone.Warning
-                            }
-                        ]
-                    }
+                    BuildArchiveProjectFuelDetailDossier(
+                        guardianName: guardianSelector,
+                        guardianReputation: null,
+                        projectName: blockedProjectName,
+                        blockedProject,
+                        context.Entries,
+                        warning: context.BlockerMessage)
                 ]);
         }
 
@@ -4251,39 +4317,74 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             command,
             CommandExecutionState.Completed,
             [
-                new UiPanelBlock
-                {
-                    Title = $"Подпитка проекта: {projectName}",
-                    Blocks =
-                    [
-                        new UiKeyValueGridBlock
-                        {
-                            Items =
-                            [
-                                KeyValue("Хранитель", guardian.GuardianName),
-                                KeyValue("Репутация", guardian.Reputation.ToString()),
-                                KeyValue("Проект", projectName),
-                                KeyValue("Тип", FormatProjectTypeForPlayer(GetString(project, "projectType"))),
-                                KeyValue("Ранг", FormatProjectTierForPlayer(GetString(project, "projectTier"))),
-                                KeyValue("Режим", FormatProjectModeForPlayer(GetString(project, "projectMode")))
-                            ]
-                        },
-                        new UiTextBlock
-                        {
-                            Text = "Свободная запись Архива может стать топливом для этого проекта через форму подпитки. Деталь только показывает цель и не создаёт запрос.",
-                            Tone = UiTone.Accent
-                        },
-                        new UiTableBlock
-                        {
-                            Title = "Свободные записи Архива",
-                            Columns = ["Запись", "Тип", "Редкость"],
-                            Rows = context.Entries
-                                .Select(static entry => Row(entry.Title, AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType), FormatRarityForPlayer(entry.Rarity, "-")))
-                                .ToList()
-                        }
-                    ]
-                }
+                BuildArchiveProjectFuelDetailDossier(
+                    guardian.GuardianName,
+                    guardian.Reputation,
+                    projectName,
+                    project,
+                    context.Entries)
             ]);
+    }
+
+    private static UiEntityDossierBlock BuildArchiveProjectFuelDetailDossier(
+        string guardianName,
+        int? guardianReputation,
+        string projectName,
+        JsonObject project,
+        IReadOnlyList<BrowserAfterlifeArchiveEntryChoice> entries,
+        string warning = "")
+    {
+        var facts = new List<UiEntityFact>
+        {
+            new() { Label = "Хранитель", Value = guardianName },
+            new() { Label = "Проект", Value = projectName },
+            new() { Label = "Тип", Value = FormatProjectTypeForPlayer(GetString(project, "projectType")) },
+            new() { Label = "Ранг", Value = FormatProjectTierForPlayer(GetString(project, "projectTier")) },
+            new() { Label = "Режим", Value = FormatProjectModeForPlayer(GetString(project, "projectMode")) }
+        };
+        if (guardianReputation.HasValue)
+            facts.Insert(1, new UiEntityFact { Label = "Репутация", Value = guardianReputation.Value.ToString() });
+
+        var hints = new List<UiEntityHint>
+        {
+            new()
+            {
+                Title = "Как используется запись",
+                Text = "Свободная запись Архива может стать топливом для этого проекта через форму подпитки. Подробность только показывает цель и не создаёт запрос.",
+                Tone = UiTone.Accent
+            }
+        };
+        if (!string.IsNullOrWhiteSpace(warning))
+        {
+            hints.Add(new UiEntityHint
+            {
+                Title = "Почему действие сейчас недоступно",
+                Text = warning,
+                Tone = UiTone.Warning
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "archive-project-fuel-detail",
+            Title = $"Подпитка проекта: {projectName}",
+            Subtitle = "проект Хранителя для вложения записи Архива",
+            Summary = FirstNonEmpty(GetString(project, "summary"), "Активный проект Хранителя."),
+            Facts = facts,
+            Hints = hints,
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Title = "Свободные записи Архива",
+                    Summary = "Эти записи можно выбрать в форме подпитки проекта.",
+                    Icon = "archive",
+                    Presentation = "cards",
+                    CollectionLabel = entries.Count == 1 ? "1 запись" : $"{entries.Count} записей",
+                    Cards = entries.Select(BuildArchiveEntryCard).ToList()
+                }
+            ]
+        };
     }
 
     private static BrowserAfterlifeArchiveGuardianChoice? ResolveArchiveGuardian(

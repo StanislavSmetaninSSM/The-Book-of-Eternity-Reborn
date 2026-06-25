@@ -4070,6 +4070,34 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Theory]
+    [InlineData("/archive_consultation", "archive-consultation", "Архивная консультация", "Азалия")]
+    [InlineData("/archive_project_fuel", "archive-project-fuel", "Подпитка проекта Архивом", "Песнь кузни")]
+    public async Task ExecuteAsync_AfterlifeArchiveActionOverviews_RenderDossiersInsteadOfLegacyPanels(
+        string command,
+        string entityType,
+        string expectedTitle,
+        string expectedText)
+    {
+        await SeedRichAfterlifeRelicArchiveDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), dossier =>
+            dossier.EntityType == entityType &&
+            dossier.Title.Equals(expectedTitle, StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(dossier.Sections, static section => section.Title.Equals("Свободные записи Архива", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(dossier.Sections, static section => section.Title.Contains("Хранител", StringComparison.OrdinalIgnoreCase));
+
+        var text = CollectBlockText([dossier]);
+        Assert.Contains(expectedText, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("JSON", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
     [InlineData("/soul_relics", "soul-relic-detail-relic_memory_blade", "/soul_relics реликвия relic_memory_blade", "Клинок Памяти", "")]
     [InlineData("/soul_relic_equip", "soul-relic-detail-relic_memory_blade", "/soul_relics реликвия relic_memory_blade", "Клинок Памяти", "confirm_soul_relic_write")]
     [InlineData("/soul_relic_unequip", "soul-relic-detail-relic_silent_helm", "/soul_relics реликвия relic_silent_helm", "Шлем Тишины", "confirm_soul_relic_write")]
@@ -4154,6 +4182,32 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(expectedTitle, text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(expectedText, text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(excludedText, text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/archive_consultation хранитель guardian_azalia", "archive-consultation-detail", "Архивная консультация: Азалия", "Песнь Первого Маяка")]
+    [InlineData("/archive_project_fuel проект guardian_azalia::project_forge_song", "archive-project-fuel-detail", "Подпитка проекта: Песнь кузни", "Песнь Первого Маяка")]
+    public async Task ExecuteAsync_AfterlifeArchiveActionDetails_RenderDossiersInsteadOfLegacyPanels(
+        string command,
+        string expectedEntityType,
+        string expectedTitle,
+        string expectedArchiveEntry)
+    {
+        await SeedRichAfterlifeRelicArchiveDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), dossier =>
+            dossier.EntityType == expectedEntityType &&
+            dossier.Title.Equals(expectedTitle, StringComparison.OrdinalIgnoreCase));
+
+        var text = CollectBlockText([dossier]);
+        Assert.Contains(expectedArchiveEntry, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("JSON", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Theory]
