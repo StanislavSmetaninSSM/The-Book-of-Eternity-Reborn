@@ -63,7 +63,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         string command,
         StateManager stateManager,
         FileSystemManager fs,
-        ValidationService validationService)
+        ValidationService validationService,
+        bool includeRawDiagnostics = false)
     {
         var normalized = NormalizeCommand(command);
         return normalized switch
@@ -96,7 +97,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             "/resident_interaction" or "/общение_резидента" or "/поговорить_с_резидентом" or "/история_резидента" => await BuildResidentInteractionAsync(command, fs, stateManager),
             "/resident_transfer" or "/переход_резидента" => await BuildResidentTransferAsync(command, fs, stateManager),
             "/shining_trade" or "/сияющая_торговля" => await BuildShiningTradeAsync(command, fs, stateManager),
-            "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionAsync(command, fs, stateManager),
+            "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionAsync(command, fs, stateManager, includeRawDiagnostics),
             "/soul_relic_equip" or "/экипировать_реликвию" => await BuildSoulRelicEquipAsync(command, fs),
             "/soul_relic_unequip" or "/снять_реликвию" => await BuildSoulRelicUnequipAsync(command, fs),
             _ => null
@@ -4500,42 +4501,19 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
     private static async Task<ExplorerCommandResult> BuildSpiritualActionAsync(
         string command,
         FileSystemManager fs,
-        StateManager stateManager)
+        StateManager stateManager,
+        bool includeRawDiagnostics)
     {
-        var localTurn = BuildLocalTurnStatus(fs);
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         var conflictRoot = await ReadJson(fs, AfterlifeSpiritualConflictState.StatePath);
         var active = (conflictRoot.Node as JsonObject)?["activeConflict"] as JsonObject;
-        var conflictId = FirstNonEmpty(GetString(active, "conflictId"), "нет активного конфликта");
-
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            new UiPanelBlock
-            {
-                Title = "Духовное действие",
-                Blocks =
-                [
-                    new UiTextBlock
-                    {
-                        Text = active == null
-                            ? "Нет активного духовного конфликта. ГМ должен начать конфликт через принятый ход, либо игрок может описывать обычную прозу без явного route tag."
-                            : "Опишите одно намерение в активном духовном конфликте. Браузерный DTO фиксирует route tag и форму, но не вызывает console-bound отправку хода.",
-                        Tone = active == null ? UiTone.Warning : UiTone.Accent
-                    },
-                    new UiKeyValueGridBlock
-                    {
-                        Items =
-                        [
-                            KeyValue("Текущий realm", stateManager.CurrentState.CurrentRealm ?? "?"),
-                            KeyValue("Активный конфликт", conflictId),
-                            KeyValue("Response surface", AfterlifeSpiritualConflictState.ResponseField),
-                            KeyValue("State file", AfterlifeSpiritualConflictState.StatePath)
-                        ]
-                    }
-                ]
-            }
+            BuildSpiritualActionDossier(active, stateManager.CurrentState.CurrentRealm)
         };
-        AddRawOrWarning(blocks, "JSON: active afterlife spiritual conflict", new JsonReadResult(AfterlifeSpiritualConflictState.StatePath, conflictRoot.FileExists, AfterlifeCombatConditionPlayerAuditSanitizer.Sanitize(active), conflictRoot.Error));
+        if (includeRawDiagnostics)
+            AddRawOrWarning(blocks, "JSON: active afterlife spiritual conflict", new JsonReadResult(AfterlifeSpiritualConflictState.StatePath, conflictRoot.FileExists, AfterlifeCombatConditionPlayerAuditSanitizer.Sanitize(active), conflictRoot.Error));
 
         return Result(
             command,
@@ -4572,6 +4550,340 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 }
             ]);
     }
+
+    private static UiEntityDossierBlock BuildSpiritualActionDossier(JsonObject? active, string? currentRealm)
+    {
+        var visibleConditions = BuildVisibleSpiritualConditionCards(active).ToList();
+        if (visibleConditions.Count == 0)
+        {
+            visibleConditions.Add(new UiEntityCard
+            {
+                Title = active == null ? "Конфликт не начат" : "Нет открытых условий",
+                Subtitle = "Состояние духовного боя",
+                Summary = active == null
+                    ? "Сейчас нет активного духовного конфликта. Можно описывать обычное действие, но форма духовного действия полезна только после начала конфликта."
+                    : "В текущем конфликте нет видимых игроку условий, которые меняют выбор действия.",
+                Icon = "sparkles"
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "spiritual-action",
+            Title = "Духовное действие",
+            Subtitle = active == null ? "форма готова, но активного конфликта нет" : "форма действия в активном конфликте",
+            Summary = active == null
+                ? "Духовное действие станет полноценным ходом, когда ГМ откроет духовный конфликт."
+                : "Опишите одно ясное намерение души: что она делает, против кого направлено действие и какой исход пытается получить.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = active == null ? "нет активного конфликта" : "активный конфликт",
+                    Tone = active == null ? UiTone.Warning : UiTone.Accent
+                }
+            ],
+            Facts =
+            [
+                new UiEntityFact { Label = "Текущее царство", Value = FormatRealmForPlayer(currentRealm) },
+                new UiEntityFact { Label = "Активный конфликт", Value = active == null ? "нет" : FirstNonEmpty(GetString(active, "conflictId"), "без метки") }
+            ],
+            Hints =
+            [
+                new UiEntityHint
+                {
+                    Title = "Как описывать действие",
+                    Text = "Пишите художественно, но конкретно: выбранный приём, цель, риск и желаемый результат должны быть понятны ГМ.",
+                    Tone = UiTone.Accent
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "spiritual-action-state",
+                    Title = "Состояние конфликта",
+                    Icon = "target",
+                    Presentation = "cards",
+                    Cards = [BuildSpiritualConflictStateCard(active)]
+                },
+                new UiEntityDossierSection
+                {
+                    Id = "spiritual-action-visible-conditions",
+                    Title = "Видимые условия",
+                    Summary = "Открытые эффекты, которые игрок может учитывать при выборе действия.",
+                    Icon = "sparkles",
+                    Presentation = "cards",
+                    CollectionLabel = visibleConditions.Count == 1 ? "1 условие" : $"{visibleConditions.Count} условий",
+                    Cards = visibleConditions
+                }
+            ]
+        };
+    }
+
+    private static UiEntityCard BuildSpiritualConflictStateCard(JsonObject? active)
+    {
+        if (active == null)
+        {
+            return new UiEntityCard
+            {
+                Title = "Нет активного духовного конфликта",
+                Subtitle = "Свободная сцена",
+                Summary = "Форма может подготовить текст, но полноценное духовное действие появится после начала конфликта.",
+                Icon = "circle"
+            };
+        }
+
+        var player = GetObject(GetObject(active, "playerSide"), "leadContestant");
+        var opposition = GetObject(GetObject(active, "oppositionSide"), "leadContestant");
+        var playerName = FirstNonEmpty(GetString(player, "displayName"), "душа игрока");
+        var oppositionName = FirstNonEmpty(GetString(opposition, "displayName"), "противник");
+        var playerActionEconomy = GetObject(GetObject(active, "actionEconomy"), "player");
+        var oppositionActionEconomy = GetObject(GetObject(active, "actionEconomy"), "opposition");
+
+        return new UiEntityCard
+        {
+            Title = FirstNonEmpty(GetString(active, "conflictId"), "Активный конфликт"),
+            Subtitle = $"{playerName} против {oppositionName}",
+            Summary = "Выберите тип духовного действия и опишите один законченный ход.",
+            Icon = "swords",
+            Facts =
+            [
+                new UiEntityFact { Label = "Позиция", Value = FormatSpiritualConflictPosition(GetString(active, "conflictPosition")) },
+                new UiEntityFact { Label = "Состояние души", Value = FormatSpiritualStrain(GetString(active, "playerSideStrain")) },
+                new UiEntityFact { Label = "Состояние противника", Value = FormatSpiritualStrain(GetString(active, "oppositionSideStrain")) },
+                new UiEntityFact { Label = "Сила души", Value = FormatSpiritualActionEconomy(playerActionEconomy) },
+                new UiEntityFact { Label = "Сила противника", Value = FormatSpiritualActionEconomy(oppositionActionEconomy) },
+                new UiEntityFact { Label = "Разрешение", Value = FormatSpiritualResolutionState(GetString(active, "resolutionState")) }
+            ]
+        };
+    }
+
+    private static IEnumerable<UiEntityCard> BuildVisibleSpiritualConditionCards(JsonObject? active)
+    {
+        if (active?["combatConditions"] is not JsonArray conditions)
+            yield break;
+
+        foreach (var condition in conditions.OfType<JsonObject>().Where(IsPlayerVisibleSpiritualCondition))
+            yield return BuildSpiritualConditionCard(condition);
+    }
+
+    private static UiEntityCard BuildSpiritualConditionCard(JsonObject condition)
+    {
+        var source = condition["source"] as JsonObject;
+        var payoff = condition["payoff"] as JsonObject;
+        var duration = condition["duration"] as JsonObject;
+        var operations = FormatSpiritualOperations(condition["affectedOperations"] as JsonArray);
+        var counterplay = ReadStringArray(condition["counterplay"] as JsonArray).ToList();
+        List<UiEntityHint> hints = counterplay.Count == 0
+            ? []
+            : [new UiEntityHint { Title = "Как с этим работать", Text = string.Join(Environment.NewLine, counterplay), Tone = UiTone.Accent }];
+
+        return new UiEntityCard
+        {
+            Title = FirstNonEmpty(GetString(condition, "displayName"), GetString(condition, "conditionId"), "Условие"),
+            Subtitle = FormatSpiritualConditionKind(GetString(condition, "kind")),
+            Summary = FirstNonEmpty(GetString(condition, "summary"), "Открытое условие духовного боя."),
+            Icon = "sparkles",
+            Badges =
+            [
+                new UiEntityBadge { Label = FormatSpiritualConditionStatus(GetString(condition, "status")), Tone = UiTone.Accent },
+                new UiEntityBadge { Label = FormatSpiritualPolarity(GetString(condition, "polarity")), Tone = UiTone.Default }
+            ],
+            Facts =
+            [
+                new UiEntityFact { Label = "Источник", Value = FirstNonEmpty(GetString(source, "displayName"), FormatSpiritualSourceType(GetString(source, "type")), "не указан") },
+                new UiEntityFact { Label = "Цель", Value = FormatSpiritualConditionTargetSide(GetString(condition, "targetSide")) },
+                new UiEntityFact { Label = "Затрагивает действия", Value = operations },
+                new UiEntityFact { Label = "Эффект", Value = FormatSpiritualPayoff(payoff) },
+                new UiEntityFact { Label = "Длительность", Value = FormatSpiritualDuration(duration) }
+            ],
+            Hints = hints
+        };
+    }
+
+    private static bool IsPlayerVisibleSpiritualCondition(JsonObject condition)
+    {
+        var visibility = GetString(condition, "visibility").Trim().ToLowerInvariant();
+        return visibility is "player_visible" or "visible" or "public" or "revealed";
+    }
+
+    private static JsonObject? GetObject(JsonObject? obj, string propertyName) =>
+        obj != null && obj.TryGetPropertyValue(propertyName, out var node)
+            ? node as JsonObject
+            : null;
+
+    private static IEnumerable<string> ReadStringArray(JsonArray? values)
+    {
+        if (values == null)
+            yield break;
+
+        foreach (var value in values)
+        {
+            var text = value is JsonValue scalar && scalar.TryGetValue<string>(out var parsed)
+                ? parsed
+                : value?.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+            if (!string.IsNullOrWhiteSpace(text))
+                yield return text.Trim();
+        }
+    }
+
+    private static string FormatSpiritualOperations(JsonArray? operations)
+    {
+        var values = ReadStringArray(operations).Select(FormatSpiritualOperationType).ToList();
+        return values.Count == 0 ? "не указано" : string.Join(", ", values);
+    }
+
+    private static string FormatSpiritualActionEconomy(JsonObject? actionEconomy)
+    {
+        if (actionEconomy == null)
+            return "не указана";
+
+        var current = FirstNonEmpty(GetString(actionEconomy, "current"), "?");
+        var max = FirstNonEmpty(GetString(actionEconomy, "max"), "?");
+        return $"{current}/{max} ОД";
+    }
+
+    private static string FormatSpiritualPayoff(JsonObject? payoff)
+    {
+        if (payoff == null)
+            return "не указан";
+
+        var effect = FormatSpiritualPayoffEffect(GetString(payoff, "effect"));
+        var level = FormatSpiritualPayoffLevel(GetString(payoff, "level"));
+        return string.Equals(effect, level, StringComparison.OrdinalIgnoreCase) ? effect : $"{effect}, {level}";
+    }
+
+    private static string FormatSpiritualDuration(JsonObject? duration)
+    {
+        if (duration == null)
+            return "не указана";
+
+        var type = GetString(duration, "type").Trim().ToLowerInvariant() switch
+        {
+            "next_matching_operation" => "до следующего подходящего действия",
+            "scene" => "до конца сцены",
+            "round" => "до конца раунда",
+            "conflict" => "до конца конфликта",
+            var value when string.IsNullOrWhiteSpace(value) => "не указана",
+            var value => value.Replace('_', ' ')
+        };
+        var uses = GetString(duration, "remainingUses");
+        return string.IsNullOrWhiteSpace(uses) ? type : $"{type}; зарядов: {uses}";
+    }
+
+    private static string FormatSpiritualConflictPosition(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "advantaged" => "преимущество души",
+        "contested" => "спорная позиция",
+        "disadvantaged" => "душа под давлением",
+        "dominant" => "доминирование",
+        "cornered" => "зажатая позиция",
+        null or "" => "не указана",
+        _ => value.Trim().Replace('_', ' ')
+    };
+
+    private static string FormatSpiritualStrain(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "clear" => "нет напряжения",
+        "strained" => "напряжение",
+        "wounded" => "духовная рана",
+        "broken" => "сломленное состояние",
+        null or "" => "не указано",
+        _ => value.Trim().Replace('_', ' ')
+    };
+
+    private static string FormatSpiritualResolutionState(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "active" => "конфликт продолжается",
+        "resolved" => "конфликт завершён",
+        "paused" => "пауза",
+        null or "" => "не указано",
+        _ => value.Trim().Replace('_', ' ')
+    };
+
+    private static string FormatSpiritualConditionKind(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "mark" => "метка",
+        "vow" => "клятва",
+        "binding" => "оковы",
+        "stance" => "стойка",
+        "terrain" => "условие сцены",
+        null or "" => "условие",
+        _ => value.Trim().Replace('_', ' ')
+    };
+
+    private static string FormatSpiritualPolarity(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "buff" => "усиление",
+        "debuff" => "ослабление",
+        "neutral" => "нейтрально",
+        null or "" => "без полярности",
+        _ => value.Trim().Replace('_', ' ')
+    };
+
+    private static string FormatSpiritualConditionStatus(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "active" => "активно",
+        "spent" => "израсходовано",
+        "expired" => "завершено",
+        "suppressed" => "подавлено",
+        null or "" => "статус не указан",
+        _ => value.Trim().Replace('_', ' ')
+    };
+
+    private static string FormatSpiritualConditionTargetSide(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "player" => "душа игрока",
+        "opposition" => "противник",
+        "both" => "обе стороны",
+        null or "" => "не указана",
+        _ => value.Trim().Replace('_', ' ')
+    };
+
+    private static string FormatSpiritualOperationType(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "pressure" => "давление",
+        "guard" => "защита",
+        "maneuver" => "манёвр",
+        "counter" => "контрприём",
+        "binding" => "оковы",
+        "break_binding" => "разрыв оков",
+        "recover_spiritual_power" => "восстановление ОД",
+        "negotiate" => "переговоры",
+        null or "" => "не указано",
+        _ => value.Trim().Replace('_', ' ')
+    };
+
+    private static string FormatSpiritualSourceType(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "special_art" => "особое искусство",
+        "standard_art" => "духовное искусство",
+        "story_link" => "сюжетная связь",
+        "combat_condition" => "условие боя",
+        null or "" => string.Empty,
+        _ => value.Trim().Replace('_', ' ')
+    };
+
+    private static string FormatSpiritualPayoffEffect(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "advantage" => "преимущество",
+        "disadvantage" => "помеха",
+        "bonus" => "бонус",
+        "penalty" => "штраф",
+        null or "" => "эффект не указан",
+        _ => value.Trim().Replace('_', ' ')
+    };
+
+    private static string FormatSpiritualPayoffLevel(string? value) => value?.Trim().ToLowerInvariant() switch
+    {
+        "advantage" => "преимущество",
+        "disadvantage" => "помеха",
+        "minor" => "малый эффект",
+        "major" => "сильный эффект",
+        null or "" => "уровень не указан",
+        _ => value.Trim().Replace('_', ' ')
+    };
 
     private static LocalTurnStatus BuildLocalTurnStatus(FileSystemManager fs, bool playerFacing = false)
     {

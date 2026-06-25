@@ -6253,6 +6253,38 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SpiritualAction_DefaultViewRendersPlayerFacingDossierWithoutTechnicalDiagnostics()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await SeedChaosSeaFilesAsync();
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeConflictStateWithCombatConditionsAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_action"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(
+            result.Blocks.SelectMany(EnumeratePanels),
+            static panel => panel.Title.Contains("DTO", StringComparison.OrdinalIgnoreCase) ||
+                            panel.Title.Contains("protocol", StringComparison.OrdinalIgnoreCase));
+
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static candidate =>
+            candidate.EntityType == "spiritual-action");
+        Assert.Equal("Духовное действие", dossier.Title);
+
+        var text = CollectBlockText([dossier]);
+        Assert.Contains("Разогретая клятва", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тень Хранителя", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("route tag", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("response surface", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("state file", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_EmptyCommand_ReturnsFailedDto()
     {
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("   "));
@@ -9953,7 +9985,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 command,
                 _stateManager,
                 _fs,
-                _validationService);
+                _validationService,
+                advancedEnabled);
             if (lifecycle != null)
                 return lifecycle;
         }

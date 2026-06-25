@@ -130,7 +130,8 @@ public sealed class ExplorerWebCommandService
                 descriptor.AcceptsArguments ? parsed.BuilderCommand : commandToken,
                 _stateManager,
                 _fs,
-                _validationService),
+                _validationService,
+                request.AdvancedEnabled == true),
             _ => null
         };
         if (result != null)
