@@ -1003,6 +1003,47 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         };
     }
 
+    private static UiEntityDossierBlock BuildAfterlifeChronicleDetailDossier(JsonObject chronicle, string name)
+    {
+        var card = BuildAfterlifeChronicleCard(chronicle);
+        var eventCards = EnumerateChronicleTextArray(chronicle, "eventDescriptions")
+            .Select(eventText => new UiEntityCard
+            {
+                Title = DescribeChronicleEventTurn(chronicle, eventText, preferLastUpdatedTurn: false),
+                Subtitle = name,
+                Icon = "scroll-text",
+                Summary = eventText
+            })
+            .ToList();
+        var sections = new List<UiEntityDossierSection>();
+        if (eventCards.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "afterlife-chronicle-detail-events",
+                Title = "События хроники",
+                Summary = "События, которые игрок уже может знать из этой хроники.",
+                Icon = "scroll-text",
+                Presentation = "cards",
+                CollectionLabel = $"{eventCards.Count} событий",
+                Collapsible = eventCards.Count > 6,
+                InitiallyExpanded = true,
+                Cards = eventCards
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "afterlife-chronicle-detail",
+            Title = $"Хроника посмертия: {name}",
+            Subtitle = card.Subtitle,
+            Summary = card.Summary,
+            Facts = card.Facts,
+            Hints = card.Hints,
+            Sections = sections
+        };
+    }
+
     private static IEnumerable<UiBlock> BuildAfterlifeChronicleTimelineBlocks(IReadOnlyList<JsonObject> chronicles)
     {
         var timelineCards = new List<UiEntityCard>();
@@ -1958,35 +1999,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         var name = ChronicleDisplayName(chronicle, selector);
         var blocks = new List<UiBlock>
         {
-            Panel($"Хроника посмертия: {name}",
-                Grid(
-                    ("Область", DescribeChronicleScope(chronicle)),
-                    ("Последний ход", GetNumberOrString(chronicle, "lastUpdatedTurn", "?")),
-                    ("Последнее событие", SafeChronicleText(GetString(chronicle, "lastEventsDescription", "нет"))),
-                    ("Участники", DescribeChronicleParticipants(chronicle)),
-                    ("Последствия", DescribeChronicleStringArray(chronicle, "persistentConsequences")),
-                    ("Открытые нити", DescribeChronicleStringArray(chronicle, "openThreads"))))
+            BuildAfterlifeChronicleDetailDossier(chronicle, name)
         };
-
-        var eventRows = EnumerateChronicleTextArray(chronicle, "eventDescriptions")
-            .Select(eventText => new UiTableRow
-            {
-                Cells =
-                [
-                    DescribeChronicleEventTurn(chronicle, eventText, preferLastUpdatedTurn: false),
-                    eventText
-                ]
-            })
-            .ToList();
-        if (eventRows.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "События хроники",
-                Columns = ["Ход", "Событие"],
-                Rows = eventRows
-            });
-        }
 
         return Completed(command, blocks, BuildOverviewAction("afterlife-chronicles-overview", "К обзору хроник", "/afterlife_chronicles"));
     }

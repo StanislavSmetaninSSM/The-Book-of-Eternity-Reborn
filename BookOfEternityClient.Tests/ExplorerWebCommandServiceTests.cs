@@ -5898,6 +5898,31 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Напряжённость угрозы", text, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeChronicleDetail_RendersDossierCardsWithoutLegacyPanelsAndTables()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeChroniclesRawLeakFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_chronicles хроника guardian_scene_mirror"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        AssertNoAfterlifeReadOnlyDetailTechnicalLeak(result);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static dossier => dossier.EntityType == "panel" || dossier.EntityType == "collection");
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "afterlife-chronicle-detail");
+
+        Assert.Equal("Хроника посмертия: Зал зеркальной клятвы", dossier.Title);
+        Assert.Contains("Игрок впервые вошёл в зал отражений", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Понять, почему зеркала зовут игрока", text, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/afterlife_profiles профиль missing_profile")]
     [InlineData("/afterlife_threats угроза missing_threat")]
