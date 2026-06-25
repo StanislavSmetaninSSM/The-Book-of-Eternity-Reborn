@@ -5873,6 +5873,31 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Собрать Средоточие", text, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeThreatDetail_RendersDossierCardsWithoutLegacyPanels()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeThreatsDrilldownFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_threats угроза threat_mirror_hunter"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        AssertNoAfterlifeReadOnlyDetailTechnicalLeak(result);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static dossier => dossier.EntityType == "panel" || dossier.EntityType == "collection");
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "afterlife-threat-detail");
+
+        Assert.Equal("Угроза посмертия: Охотник зеркального долга", dossier.Title);
+        Assert.Contains("Долг следует за душой", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Напряжённость угрозы", text, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/afterlife_profiles профиль missing_profile")]
     [InlineData("/afterlife_threats угроза missing_threat")]

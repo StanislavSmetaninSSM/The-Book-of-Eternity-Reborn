@@ -835,6 +835,26 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         };
     }
 
+    private static UiEntityDossierBlock BuildAfterlifeThreatDetailDossier(JsonObject threat, string name)
+    {
+        var card = BuildAfterlifeThreatCard(threat);
+        var hints = new List<UiEntityHint>(card.Hints);
+        var description = SafePlayerText(GetString(threat["currentActivity"] as JsonObject, "description", ""), string.Empty);
+        if (!string.IsNullOrWhiteSpace(description))
+            hints.Add(new UiEntityHint { Title = "Текущий след угрозы", Text = description, Tone = UiTone.Warning });
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "afterlife-threat-detail",
+            Title = $"Угроза посмертия: {name}",
+            Subtitle = card.Subtitle,
+            Summary = card.Summary,
+            Badges = card.Badges,
+            Facts = card.Facts,
+            Hints = hints
+        };
+    }
+
     private static List<UiEntityHint> BuildThreatCardHints(JsonObject threat)
     {
         var hints = new List<UiEntityHint>();
@@ -1920,20 +1940,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         var name = ThreatDisplayName(threat, selector);
         var blocks = new List<UiBlock>
         {
-            Panel($"Угроза посмертия: {name}",
-                Grid(
-                    ("Область", DescribeRealm(GetString(threat, "realm", "?"))),
-                    ("Напряжённость угрозы", GetNumberOrString(threat, "intensity", "0")),
-                    ("Архетип", DescribeThreatArchetype(threat["threatArchetype"] as JsonObject)),
-                    ("Активность", DescribeThreatActivity(threat["currentActivity"] as JsonObject)),
-                    ("Давление", DescribeThreatImpact(threat["impactProfile"] as JsonObject)),
-                    ("Связи", DescribeThreatLinks(threat))))
+            BuildAfterlifeThreatDetailDossier(threat, name)
         };
-
-        var activity = threat["currentActivity"] as JsonObject;
-        var description = GetString(activity, "description", "");
-        if (!string.IsNullOrWhiteSpace(description))
-            blocks.Add(Message("Текущий след угрозы", description));
 
         return Completed(command, blocks, BuildOverviewAction("afterlife-threats-overview", "К обзору угроз", "/afterlife_threats"));
     }
