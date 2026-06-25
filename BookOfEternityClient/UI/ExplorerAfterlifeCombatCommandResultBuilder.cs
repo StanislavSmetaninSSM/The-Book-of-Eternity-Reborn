@@ -1241,6 +1241,22 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         };
     }
 
+    private static UiEntityDossierBlock BuildAfterlifeInboxNotificationDetailDossier(
+        AfterlifeNotificationState.NotificationEntry notification,
+        JsonObject? raw)
+    {
+        var card = BuildAfterlifeInboxNotificationCard(notification, raw);
+        return new UiEntityDossierBlock
+        {
+            EntityType = "afterlife-inbox-detail",
+            Title = "Уведомление загробья",
+            Subtitle = card.Title,
+            Summary = card.Summary,
+            Facts = card.Facts,
+            Hints = card.Hints
+        };
+    }
+
     private static async Task<ExplorerCommandResult> BuildConflict(
         CommandRequest request,
         FileSystemManager fs,
@@ -2019,25 +2035,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         notificationNodes.TryGetValue(notification.NotificationId, out var raw);
         var blocks = new List<UiBlock>
         {
-            Panel("Уведомление загробья",
-                Grid(
-                    ("Статус", DescribeNotificationStatus(notification.Status)),
-                    ("Тип", AfterlifeNotificationState.GetTypeLabel(notification.NotificationType)),
-                    ("Источник", DescribeNotificationSource(notification)),
-                    ("Ход", notification.CreatedAtTurn > 0 ? notification.CreatedAtTurn.ToString() : "?"),
-                    ("Сводка", EmptyFallback(notification.Summary))))
+            BuildAfterlifeInboxNotificationDetailDossier(notification, raw)
         };
-
-        var details = BuildInboxDetailLines(notification, raw).ToList();
-        if (details.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Связанный контекст",
-                Columns = ["Контекст", "Что открывает"],
-                Rows = details.Select(static detail => new UiTableRow { Cells = [detail.Label, detail.Value] }).ToList()
-            });
-        }
 
         return Completed(command, blocks, BuildInboxActions([notification], notificationNodes));
     }
