@@ -2600,9 +2600,24 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         return FirstReadableJsonValue(
             DescribeSarefGenericStatus(GetString(obj, "status", string.Empty)),
-            DescribeSarefGenericStatus(GetString(obj, "state", string.Empty)),
+            DescribeSarefNestedState(GetString(obj, "state", string.Empty)),
             GetString(obj, "summary", string.Empty),
             GetString(obj, "currentObjective", string.Empty));
+    }
+
+    private static string DescribeSarefNestedState(string state)
+    {
+        var oathState = state.ToLowerInvariant() switch
+        {
+            "oathbound" or "oathbound_to_saref" => "связана клятвой",
+            "strained" => "клятва напряжена",
+            "broken" => "клятва разорвана",
+            _ => string.Empty
+        };
+
+        return string.IsNullOrWhiteSpace(oathState)
+            ? DescribeSarefGenericStatus(state)
+            : oathState;
     }
 
     private static UiEntityDossierSection? BuildSarefStoryArraySection(

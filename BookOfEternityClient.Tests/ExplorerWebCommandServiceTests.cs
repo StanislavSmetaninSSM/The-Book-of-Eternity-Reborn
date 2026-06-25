@@ -3257,6 +3257,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains("Крылья над Бездной", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Лунный Разрез Клятвы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("связана клятвой", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("oathbound", text, StringComparison.OrdinalIgnoreCase);
         Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static dossier =>
             dossier.EntityType == "saref-story" &&
