@@ -243,7 +243,22 @@ public partial class ValidationService
         RequireString(entry, context, issues, "title");
         RequireString(entry, context, issues, "summary");
         var rarity = RequireString(entry, context, issues, "rarity");
-        ValidateNonNegativeIntegerField(entry, context, issues, "sourceLife", "AfterlifeArchive");
+        if (!entry.TryGetProperty("sourceLife", out _))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.sourceLife",
+                IssueSeverity.Error,
+                "afterlife archive sourceLife обязателен для canonical archive entry",
+                code: "afterlife_archive_missing_source_life",
+                section: "AfterlifeArchive",
+                expected: "non-negative integer",
+                actual: "missing",
+                repairHint: "Укажи sourceLife для каждой записи afterlifeArchive.stored[], чтобы accepted-turn strict canonical path мог проверить запись."));
+        }
+        else
+        {
+            ValidateNonNegativeIntegerField(entry, context, issues, "sourceLife", "AfterlifeArchive");
+        }
         var acquiredAtUtc = RequireString(entry, context, issues, "acquiredAtUtc");
         if (!string.IsNullOrWhiteSpace(acquiredAtUtc) && !DateTimeOffset.TryParse(acquiredAtUtc, out _))
         {

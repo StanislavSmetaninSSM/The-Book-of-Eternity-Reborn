@@ -84,6 +84,36 @@ public sealed class ChaosSeaCommandDisplaySaveTests : IDisposable
             "Loaded reusable Chaos Sea command display save has blocking validation issues:" +
             Environment.NewLine + string.Join(Environment.NewLine, blockingIssues.Select(static issue => issue.ToString())));
 
+        var soulStateJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.False(string.IsNullOrWhiteSpace(soulStateJson));
+        Assert.IsType<System.Text.Json.Nodes.JsonObject>(System.Text.Json.Nodes.JsonNode.Parse(soulStateJson));
+        var soulStateRoot = System.Text.Json.Nodes.JsonNode.Parse(soulStateJson)!.AsObject();
+        Assert.False(
+            AfterlifeArchiveState.TryDescribeInvalidCanonicalArchiveRoot(soulStateRoot, out var archiveFailure),
+            "Reusable Chaos Sea save must keep soul_state.afterlifeArchive in the same canonical shape accepted-turn normalization requires: " + archiveFailure);
+
+        var currentLocationJson = await fs.ReadFileAsync("game_state/world/current_location.json");
+        Assert.False(string.IsNullOrWhiteSpace(currentLocationJson));
+        using (var currentLocation = JsonDocument.Parse(currentLocationJson))
+        {
+            var locationText = currentLocation.RootElement.ToString();
+            Assert.Contains("Море Хаоса", locationText, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Вальмонт", locationText, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Этерни", locationText, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("loc_valmont", locationText, StringComparison.OrdinalIgnoreCase);
+        }
+
+        var narrativeJson = await fs.ReadFileAsync("output/narrative_response.json");
+        Assert.False(string.IsNullOrWhiteSpace(narrativeJson));
+        using (var narrative = JsonDocument.Parse(narrativeJson))
+        {
+            var narrativeText = narrative.RootElement.ToString();
+            Assert.Contains("Море Хаоса", narrativeText, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Азал", narrativeText, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Вальмонт", narrativeText, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("руническая перчатка", narrativeText, StringComparison.OrdinalIgnoreCase);
+        }
+
         Assert.Equal(sourceHashBefore, await ComputeSha256Async(sourceArchive));
         Assert.True(await saveLoad.LoadGameAsync(sourceArchive));
         Assert.Equal(sourceHashBefore, await ComputeSha256Async(sourceArchive));

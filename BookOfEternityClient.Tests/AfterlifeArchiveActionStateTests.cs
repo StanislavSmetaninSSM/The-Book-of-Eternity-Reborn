@@ -21,6 +21,37 @@ public sealed class AfterlifeArchiveActionStateTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CurrentArchiveEntryMissingSourceLife_ReturnsBlockingIssue()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 2,
+          "afterlifeArchive": {
+            "stored": [
+              {
+                "archiveId": "archive_missing_source_life",
+                "entryType": "lore_fragment",
+                "title": "Запись без жизни-источника",
+                "summary": "Эта запись не должна проходить accepted-turn strict canonical path.",
+                "rarity": "Rare",
+                "sourceKind": "codex",
+                "acquiredAtUtc": "2026-06-18T00:00:00Z"
+              }
+            ],
+            "actionReceipts": []
+          }
+        }
+        """);
+
+        var issues = await new ValidationService(_fs, NullLogger<ValidationService>.Instance).ValidateGameStateAsync();
+
+        Assert.Contains(issues, static issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.FilePath, "game_state/meta/soul_state.json.afterlifeArchive.stored[0].sourceLife", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task EnsureHealthyAsync_OutsideAfterlife_UnresolvedRequestRetainsReservationAndPendingFile()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
