@@ -3038,6 +3038,85 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SarefAgenda_RendersAssignmentsDominationAndOathBreakArc()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "revealStage": "confrontation_available",
+          "guardianQuestlines": [],
+          "latentTraces": [],
+          "sarefRevelations": [
+            { "revelationId": "rev_identity", "category": "identity", "revealedAtTurn": 50 },
+            { "revelationId": "rev_method", "category": "method", "revealedAtTurn": 51 },
+            { "revelationId": "rev_faction", "category": "faction", "revealedAtTurn": 52 },
+            { "revelationId": "rev_path", "category": "path", "revealedAtTurn": 53 }
+          ],
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [],
+          "factionLinks": { "visibility": "revealed", "wingsFactionId": "wings_of_angels" },
+          "finalConfrontation": { "status": "active", "sceneType": "saref_confrontation" },
+          "postStoryAgenda": {
+            "state": "oathbound_to_saref",
+            "currentObjective": "Подчинить совет Серого Пепла.",
+            "agendaSummary": "Сареф требует доказать полезность новой клятвы.",
+            "assignments": [
+              {
+                "assignmentId": "assignment_gray_ash",
+                "status": "active",
+                "targetFactionId": "faction_gray_ash",
+                "targetFactionName": "Совет Серого Пепла",
+                "campaignId": "campaign_gray_ash",
+                "campaignName": "Кампания раскола Серого Пепла",
+                "summary": "Подорвать влияние серого совета через открытый раскол."
+              }
+            ],
+            "dominationScene": {
+              "status": "completed",
+              "summary": "Совет Серого Пепла преклонил знамена перед Крыльями.",
+              "resolvedAtTurn": 94
+            },
+            "oathBreakArc": {
+              "arcId": "oathbreak_lucian",
+              "state": "active",
+              "route": "lucian",
+              "summary": "Люциан ищет слабое место в чужой клятве.",
+              "proofSummary": "Лунный разрез показывает подменённую печать."
+            }
+          },
+          "playerOathState": { "state": "oathbound", "oathId": "saref_oath_001" },
+          "defeatOutcomes": [],
+          "endings": [],
+          "sarefPersonalBond": null
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/сареф поручение"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.Empty(result.Blocks.SelectMany(EnumeratePanels));
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Подчинить совет Серого Пепла", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сареф требует доказать полезность новой клятвы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Подорвать влияние серого совета", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Целевая фракция", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Совет Серого Пепла", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Кампания", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Кампания раскола Серого Пепла", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Финал власти Сарефа", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Совет Серого Пепла преклонил знамена", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Арка разрыва клятвы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Лунный разрез показывает подменённую печать", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("assignments", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("dominationScene", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("oathBreakArc", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("faction_gray_ash", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("campaign_gray_ash", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task SubmitPromptSessionAsync_SarefAdvantage_ReturnsGmPayload()
     {
         await SeedUniversalMetaFilesAsync();

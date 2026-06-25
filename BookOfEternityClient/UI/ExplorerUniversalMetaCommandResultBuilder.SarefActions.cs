@@ -407,15 +407,36 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
     private static UiEntityDossierBlock BuildSarefAgendaDossier(JsonObject agenda)
     {
         var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Состояние", DescribeSarefPostStoryState(GetString(agenda, "state", string.Empty)));
         AddFactIfKnown(facts, "Цель", GetString(agenda, "currentObjective"));
+        AddFactIfKnown(facts, "Пояснение", GetString(agenda, "agendaSummary"));
         AddFactIfKnown(facts, "Поручений", CountArray(agenda, "assignments").ToString());
         AddFactIfKnown(facts, "Доминирование", agenda["dominationScene"] is JsonObject ? "есть сцена" : "не завершено");
+
+        var sections = new List<UiEntityDossierSection>
+        {
+            new()
+            {
+                Id = "saref-agenda-current",
+                Title = "Повестка",
+                Icon = "list-check",
+                Presentation = "facts",
+                Facts = facts
+            }
+        };
+
+        AddSectionIfPresent(sections, BuildSarefAgendaAssignmentsSection(agenda["assignments"] as JsonArray));
+        AddSectionIfPresent(sections, BuildSarefDominationSceneSection(agenda["dominationScene"] as JsonObject));
+        AddSectionIfPresent(sections, BuildSarefOathBreakArcSection(agenda["oathBreakArc"] as JsonObject));
 
         return new UiEntityDossierBlock
         {
             EntityType = "saref-agenda",
             Title = "Текущая повестка",
-            Summary = FirstNonEmpty(GetString(agenda, "currentObjective", string.Empty), "Текущая цель Сарефа пока не записана."),
+            Summary = FirstNonEmpty(
+                GetString(agenda, "agendaSummary", string.Empty),
+                GetString(agenda, "currentObjective", string.Empty),
+                "Текущая цель Сарефа пока не записана."),
             Badges =
             [
                 new UiEntityBadge
@@ -425,14 +446,122 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     Tone = agenda["dominationScene"] is JsonObject ? UiTone.Success : UiTone.Warning
                 }
             ],
-            Sections =
+            Sections = sections
+        };
+    }
+
+    private static UiEntityDossierSection? BuildSarefAgendaAssignmentsSection(JsonArray? assignments)
+    {
+        var cards = assignments?
+            .OfType<JsonObject>()
+            .Select(BuildSarefAgendaAssignmentCard)
+            .Where(static card => !string.IsNullOrWhiteSpace(card.Title))
+            .ToList() ?? [];
+
+        if (cards.Count == 0)
+            return null;
+
+        return new UiEntityDossierSection
+        {
+            Id = "saref-agenda-assignments",
+            Title = "Поручения Сарефа",
+            Icon = "list-check",
+            Presentation = "cards",
+            CollectionLabel = cards.Count == 1 ? "1 поручение" : $"{cards.Count} поручений",
+            Cards = cards
+        };
+    }
+
+    private static UiEntityCard BuildSarefAgendaAssignmentCard(JsonObject assignment)
+    {
+        var status = DescribeSarefAssignmentStatus(GetString(assignment, "status", string.Empty));
+        var summary = FirstNonEmpty(
+            GetString(assignment, "summary", string.Empty),
+            GetString(assignment, "objective", string.Empty),
+            "Подробности поручения пока не записаны.");
+
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Состояние", status);
+        AddFactIfKnown(facts, "Целевая фракция", FirstNonEmpty(
+            GetString(assignment, "targetFactionName", string.Empty),
+            GetString(assignment, "targetFactionDisplayName", string.Empty),
+            GetString(assignment, "targetFactionId", string.Empty)));
+        AddFactIfKnown(facts, "Кампания", FirstNonEmpty(
+            GetString(assignment, "campaignName", string.Empty),
+            GetString(assignment, "campaignDisplayName", string.Empty),
+            GetString(assignment, "campaignId", string.Empty)));
+        AddFactIfKnown(facts, "Ход выдачи", GetNumberOrString(assignment, "assignedAtTurn"));
+        AddFactIfKnown(facts, "Ход закрытия", GetNumberOrString(assignment, "resolvedAtTurn"));
+
+        return new UiEntityCard
+        {
+            Title = FirstNonEmpty(
+                GetString(assignment, "displayName", string.Empty),
+                GetString(assignment, "name", string.Empty),
+                GetString(assignment, "objective", string.Empty),
+                GetString(assignment, "assignmentId", string.Empty),
+                "Поручение Сарефа"),
+            Subtitle = status,
+            Summary = summary,
+            Icon = "list-check",
+            Facts = facts
+        };
+    }
+
+    private static UiEntityDossierSection? BuildSarefDominationSceneSection(JsonObject? dominationScene)
+    {
+        if (dominationScene == null)
+            return null;
+
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Состояние", DescribeSarefAssignmentStatus(GetString(dominationScene, "status", string.Empty)));
+        AddFactIfKnown(facts, "Ход", GetNumberOrString(dominationScene, "resolvedAtTurn"));
+        AddFactIfKnown(facts, "Источник", GetString(dominationScene, "source"));
+
+        return new UiEntityDossierSection
+        {
+            Id = "saref-agenda-domination",
+            Title = "Финал власти Сарефа",
+            Icon = "crown",
+            Presentation = "cards",
+            Cards =
             [
-                new UiEntityDossierSection
+                new UiEntityCard
                 {
-                    Id = "saref-agenda-current",
-                    Title = "Повестка",
-                    Icon = "list-check",
-                    Presentation = "facts",
+                    Title = "Финал власти Сарефа",
+                    Summary = FirstNonEmpty(
+                        GetString(dominationScene, "summary", string.Empty),
+                        "Финальная сцена власти записана, но описание пока отсутствует."),
+                    Icon = "crown",
+                    Facts = facts
+                }
+            ]
+        };
+    }
+
+    private static UiEntityDossierSection? BuildSarefOathBreakArcSection(JsonObject? arc)
+    {
+        if (arc == null)
+            return null;
+
+        var facts = new List<UiEntityFact>();
+        AddFactIfKnown(facts, "Состояние", DescribeSarefOathBreakState(GetString(arc, "state", string.Empty)));
+        AddFactIfKnown(facts, "Путь", DescribeSarefOathBreakRoute(GetString(arc, "route", string.Empty)));
+        AddFactIfKnown(facts, "Доказательство", GetString(arc, "proofSummary"));
+
+        return new UiEntityDossierSection
+        {
+            Id = "saref-agenda-oath-break",
+            Title = "Арка разрыва клятвы",
+            Icon = "unlink",
+            Presentation = "cards",
+            Cards =
+            [
+                new UiEntityCard
+                {
+                    Title = FirstNonEmpty(GetString(arc, "displayName", string.Empty), GetString(arc, "arcId", string.Empty), "Арка разрыва клятвы"),
+                    Summary = FirstNonEmpty(GetString(arc, "summary", string.Empty), "Арка разрыва клятвы пока без описания."),
+                    Icon = "unlink",
                     Facts = facts
                 }
             ]
@@ -580,6 +709,47 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         return root["postStoryAgenda"] is JsonObject agenda &&
                string.Equals(GetString(agenda, "state", string.Empty), SarefMainStoryState.PostStoryStateOathbound, StringComparison.OrdinalIgnoreCase);
     }
+
+    private static string DescribeSarefPostStoryState(string state) =>
+        state.ToLowerInvariant() switch
+        {
+            SarefMainStoryState.PostStoryStateOathbound => "связана послесюжетной клятвой",
+            "active" => "активно",
+            "completed" => "завершено",
+            _ => string.IsNullOrWhiteSpace(state) ? "не указано" : state
+        };
+
+    private static string DescribeSarefAssignmentStatus(string status) =>
+        status.ToLowerInvariant() switch
+        {
+            "active" => "активно",
+            "completed" => "завершено",
+            "failed" => "провалено",
+            "cancelled" => "отменено",
+            "blocked" => "заблокировано",
+            _ => string.IsNullOrWhiteSpace(status) ? "не указано" : status
+        };
+
+    private static string DescribeSarefOathBreakState(string state) =>
+        state.ToLowerInvariant() switch
+        {
+            "active" => "активно",
+            "completed" => "завершено",
+            "failed" => "провалено",
+            "blocked" => "заблокировано",
+            _ => string.IsNullOrWhiteSpace(state) ? "не указано" : state
+        };
+
+    private static string DescribeSarefOathBreakRoute(string route) =>
+        route.ToLowerInvariant() switch
+        {
+            SarefMainStoryState.OathBreakRouteSeret => "Серет",
+            SarefMainStoryState.OathBreakRouteLucian => "Люциан",
+            SarefMainStoryState.OathBreakRouteIlarion => "Иларион",
+            SarefMainStoryState.OathBreakRouteVeyra => "Вейра",
+            SarefMainStoryState.OathBreakRouteDeepStoryEvidence => "глубокое доказательство",
+            _ => string.IsNullOrWhiteSpace(route) ? "не указано" : route
+        };
 
     private static string DescribeSarefWingsRouteSafety(string routeSafety) =>
         routeSafety.ToLowerInvariant() switch
