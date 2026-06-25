@@ -6336,6 +6336,8 @@ Afterlife-origin companion manifestation handoff:
 pending_resident_companion_manifestation_request.json is not closable in Chaos Sea or Shining Abode. Valid non-empty files are preserved as next-life context and do not block Soul Gates; malformed files block Soul Gates until repair.
 pending_npc_social_interactions.json, pending_npc_trade_inventory_requests.json, and `[NPC_TRADE_REQUEST]` are MortalWorldProfile-only. If any of them exists during Chaos Sea or Shining Abode, treat it as wrong-realm repair-only context: do not close it through npcInteractionJournalUpdates, do not write UpdateNPCs or UpdateNpcTradeInventoryReceipts, and do not mutate game_state/npcs/*.
 Valid explicit-empty realm-wrong request files may be client-cleared as stale clutter. Malformed realm-wrong pending files are preserved for repair; do not "fix" them by writing an afterlife receipt or by materializing MortalWorldProfile NPCs.
+If an accepted afterlife response accidentally mutates MortalWorldProfile files, the client may restore/delete those wrong-realm files from the validated pending-turn snapshot before repair and record `game_state/control/validation_auto_rollback_report.json`. This is diagnostic recovery only; the GM must still author the afterlife turn without Mortal World substitutions.
+After such recovery, snapshot-matched baseline validation errors from restored MortalWorldProfile files are outside the current afterlife repair scope. The GM must not edit those files by hand to make the current afterlife turn pass; fix only the actual listed afterlife/protocol errors.
 
 It can still originate from afterlife resident rewards or imprint-bearing Soul Relics. When it appears later in MortalWorldProfile, the GM must preserve and use:
 - requestId

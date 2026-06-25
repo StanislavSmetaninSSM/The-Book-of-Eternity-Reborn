@@ -17,17 +17,27 @@
                - Examples/E_CLI_Afterlife_Turns.txt (MUST-read after the matrix whenever currentRealm is `Chaos Sea` or `Shining Abode`; use examples 14-28 for Shining core actions, freeform Guardian commands, combined scheduler + pending-contract turns, ordinary living-world turns without pending files, system Guardian attraction, protected return guard, direct resident/pending-backed tags, freeform Abode search, afterlife spiritual conflicts, Source of Light, Профили сущностей посмертия, Chaos Sea Guardian politics, and the hidden Saref / `Крылья над Бездной` main-story contract)
                - When writing JSON/state files from PowerShell, use explicit UTF-8 and data objects only (`[ordered]@{}` / `@()`), never script blocks (`{}`)
                
-            2. **Read Current Game State:**
-               - game_state/player/ files (character, inventory, status)
-               - game_state/world/ files (location, time, weather)
-               - game_state/npcs/ files (active NPCs and their states)
-               - game_state/quests/ files (active quest progress)
+            2. **Read Realm Gate State Before Other Game State:**
+               - Realm Gate is the first state read after `input/turn_request.json`.
+               - Read `game_state/meta/soul_state.json`, determine `currentRealm`, and select `AfterlifeProfile` or `MortalWorldProfile` before reading world, NPC, faction, quest, inventory, combat, or mortal misc state.
+               - In `Chaos Sea` or `Shining Abode`, do not read `game_state/world/*`, `game_state/npcs/*`, `game_state/factions/*`, `game_state/player/*`, `game_state/inventory/*`, `game_state/combat/*`, Mortal quest files, or Mortal misc files for ordinary turn planning until after Realm Gate selects MortalWorldProfile.
+               - Plain rule for CLI agents: do not read game_state/world/*, game_state/npcs/*, game_state/factions/*, or other MortalWorldProfile files in afterlife turns.
+               - If an afterlife repair request mentions those mortal paths, treat them as wrong-realm repair-only context: remove/avoid the illegal afterlife mutation and do not continue processing mortal systems.
+               - The client may auto-rollback forbidden wrong-realm mutations from the validated `game_state/control/pending_turn_snapshot` and write `game_state/control/validation_auto_rollback_report.json` before repair. Treat that report as diagnostic evidence only; it is not permission to author MortalWorldProfile changes from afterlife.
+               - If the client restored a forbidden file to the validated snapshot, remaining snapshot-matched baseline validation errors are outside this afterlife repair scope; do not manually repair those baseline errors by editing MortalWorldProfile files.
+
+            3. **Read Current Game State For The Selected Profile:**
+               - MortalWorldProfile only: game_state/player/ files (character, inventory, status)
+               - MortalWorldProfile only: game_state/world/ files (location, time, weather)
+               - MortalWorldProfile only: game_state/npcs/ files (active NPCs and their states)
+               - MortalWorldProfile only: game_state/quests/ files (active quest progress)
+               - AfterlifeProfile only: game_state/meta/ soul, guardian, abode, resident, afterlife profile, threat, chronicle, spiritual conflict, and Shining Abode files allowed by the matrix
                
-            3. **Read System State:**
+            4. **Read System State:**
                - game_state/control/ files (life transitions, incarnation, `game_state/control/ascension.json`)
                - game_state/history/ files (recent events, patterns)
                
-            4. **Read Reference Data as Needed:**
+            5. **Read Reference Data as Needed:**
                - lore/ files (world information)
                - game_state/core/system_mods.json (active global system mods; only activeMods[] are canonical)
                - game_session/mods/ source files only for the mods listed in activeMods[]

@@ -1643,6 +1643,88 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifePromptDocsRequireRealmGateBeforeReadingMortalWorldState()
+    {
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+
+        Assert.Contains("Realm Gate is the first state read", taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("do not read game_state/world/*, game_state/npcs/*, game_state/factions/*", taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("until after Realm Gate selects MortalWorldProfile", taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("do not read or repair mortal world files", daemonScript, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("before reading world, NPC, faction, quest, inventory, combat, or mortal misc state", daemonScript, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("before terminal", daemonScript, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("restore or remove those wrong-realm changes", daemonScript, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("validation_auto_rollback_report.json", daemonScript, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("validation_auto_rollback_report.json", taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("restored a forbidden file to the validated snapshot", daemonScript, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("do not manually repair those baseline errors by editing MortalWorldProfile files", taskGuide, StringComparison.OrdinalIgnoreCase);
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        Assert.Contains("validation_auto_rollback_report.json", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("validation_auto_rollback_report.json", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("snapshot-matched baseline validation errors", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("snapshot-matched baseline validation errors", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.True(
+            Regex.Matches(daemonScript, @"AfterlifeRealmGateDirective", RegexOptions.IgnoreCase).Count >= 4,
+            "Normal turn, repair, and terminal protocol prompts must all include the afterlife realm gate directive.");
+    }
+
+    [Fact]
+    public void GmDaemonPromptsUseRepoLocalAbsoluteDocumentationPaths()
+    {
+        var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+
+        Assert.Contains("$script:RepoRootPath", daemonScript, StringComparison.Ordinal);
+        Assert.Contains("$script:TaskGuideMainPath", daemonScript, StringComparison.Ordinal);
+        Assert.Contains("$script:ExampleMainPath", daemonScript, StringComparison.Ordinal);
+        Assert.Contains("$script:AfterlifeMatrixPath", daemonScript, StringComparison.Ordinal);
+        Assert.Contains("$script:AfterlifeTurnsExamplePath", daemonScript, StringComparison.Ordinal);
+        Assert.Contains("Do not search other worktrees for GM docs", daemonScript, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "read TaskGuides/CLI_Step_Main.txt and Examples/E_CLI_Step_Main.txt",
+            daemonScript,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "plus TaskGuides/CLI_Step_Main.txt and Examples/E_CLI_Step_Main.txt",
+            daemonScript,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AgentInstructionsRequirePromptDocsImpactCheckForAllRealms()
+    {
+        var instructions = ReadRepoFile("AGENTS.md");
+
+        Assert.Contains("Before finishing any gameplay or GM-authored contract change", instructions, StringComparison.Ordinal);
+        Assert.Contains("Mortal World and afterlife", instructions, StringComparison.Ordinal);
+        Assert.Contains("record either the prompt/docs/example updates or the no-update rationale", instructions, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AgentInstructionsRequireHarnessFirstGmReliabilityWork()
+    {
+        var instructions = ReadRepoFile("AGENTS.md");
+
+        Assert.Contains("GM harness engineering guardrail", instructions, StringComparison.Ordinal);
+        Assert.Contains("harness engineering before prompt-only fixes", instructions, StringComparison.Ordinal);
+        Assert.Contains("validators, normalizers, canonical state contracts", instructions, StringComparison.Ordinal);
+        Assert.Contains("pending-turn snapshots, rollback reports, repair loops", instructions, StringComparison.Ordinal);
+        Assert.Contains("daemon/bridge controls", instructions, StringComparison.Ordinal);
+        Assert.Contains("Prompts still matter", instructions, StringComparison.Ordinal);
+        Assert.Contains("update the relevant GM-facing prompts, docs, and examples", instructions, StringComparison.Ordinal);
+        Assert.Contains("A prompt-only fix is", instructions, StringComparison.Ordinal);
+        Assert.Contains("acceptable only when the tracked task or final report explicitly explains why", instructions, StringComparison.Ordinal);
+        Assert.Contains("Apply the same rule during live GM tests", instructions, StringComparison.Ordinal);
+        Assert.Contains("gets stuck in repair loops", instructions, StringComparison.Ordinal);
+        Assert.Contains("treat that friction as harness feedback", instructions, StringComparison.Ordinal);
+        Assert.Contains("client, daemon, bridge", instructions, StringComparison.Ordinal);
+        Assert.Contains("validator, repair request, snapshot, rollback mechanism", instructions, StringComparison.Ordinal);
+        Assert.Contains("agent-console surface", instructions, StringComparison.Ordinal);
+        Assert.Contains("clearer tool, narrower task packet, safer default", instructions, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MortalNpcSocialTopicContractIsDocumented()
     {
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");

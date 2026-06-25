@@ -54,6 +54,35 @@ an existing example that proves the GM can author the new or changed behavior.
 If no suitable example file exists, add one or create a tracked follow-up issue
 before completion.
 
+Before finishing any gameplay or GM-authored contract change, explicitly check
+whether Mortal World and afterlife prompts, docs, examples, manifests, and source
+guards need updates; record either the prompt/docs/example updates or the no-update rationale in the final report or PR summary.
+
+## GM harness engineering guardrail
+
+When the GM or another game-running agent makes a technical mistake, prefer
+harness engineering before prompt-only fixes. First ask whether the class of
+error can be prevented, constrained, detected, repaired, rolled back, or made
+unrepresentable by validators, normalizers, canonical state contracts,
+pending-turn snapshots, rollback reports, repair loops, generated fixtures,
+command protocols, runtime tools, or daemon/bridge controls.
+
+Prompts still matter: after the harness/tooling change is designed or made,
+update the relevant GM-facing prompts, docs, and examples so the GM understands
+the available tools, constraints, and expected workflow. A prompt-only fix is
+acceptable only when the tracked task or final report explicitly explains why a
+harness/tooling change is not appropriate for that problem.
+
+Apply the same rule during live GM tests. If the GM agent repeatedly cannot
+complete a turn, gets stuck in repair loops, misunderstands a contract, or needs
+manual reasoning to undo file damage, treat that friction as harness feedback.
+Before blaming the prompt or the model, ask whether the client, daemon, bridge,
+validator, repair request, snapshot, rollback mechanism, agent-console surface,
+fixture, or command tooling can take that work over or make the bad action
+impossible. Live-test notes should record not only player-facing bugs, but also
+where the GM needed a clearer tool, narrower task packet, safer default, or
+automatic repair/rollback.
+
 ## Afterlife contract documentation guardrail
 
 If you change any `Chaos Sea` / `Shining Abode` runtime contract, update the GM-facing documentation in the same change.
@@ -83,5 +112,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 <!-- SPECKIT START -->
 Current Spec Kit plan for this branch:
-`specs/1190-doc-cleanup/plan.md`
+`specs/1273-afterlife-auto-realm-rollback/plan.md`
 <!-- SPECKIT END -->

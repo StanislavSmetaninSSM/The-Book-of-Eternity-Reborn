@@ -19,6 +19,7 @@ public class SaveLoadService
         "game_state/control/pending_turn_snapshot.json",
         "game_state/control/validation_repair_request.json",
         "game_state/control/validation_repair_ready.json",
+        RealmSegregationAutoRollbackService.ReportPath,
         "game_state/control/terminal_protocol_failure_request.json",
         "game_state/control/life_transitions.json",
         "game_state/control/incarnation_trigger.json",

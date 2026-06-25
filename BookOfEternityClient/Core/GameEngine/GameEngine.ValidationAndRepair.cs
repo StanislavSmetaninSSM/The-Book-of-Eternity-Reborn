@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -8,6 +9,7 @@ using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Spectre.Console;
 
 namespace BookOfEternityClient.Core;
@@ -59,12 +61,21 @@ public partial class GameEngine
                 issues.AddRange(await _progressionSchedule.ValidateAcceptedTurnOutcomeAsync(progressionControl));
             var errors = PrioritizeValidationErrors(issues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
 
+            if (allowRepairLoop)
+                errors = await FilterRestoredForbiddenRealmBaselineErrorsAsync(source, errors);
+
             if (errors.Count == 0)
             {
                 await DeleteValidationRepairFilesAsync();
                 if (progressionControl != null)
                     await _progressionSchedule.ApplyAcceptedTurnOutcomeAsync(progressionControl);
                 return true;
+            }
+
+            if (allowRepairLoop && await TryAutoRollbackRealmSegregationViolationsAsync(source, errors))
+            {
+                await RefreshRuntimeStateAsync();
+                continue;
             }
 
             _logger.LogError("Нарушение контракта состояния после {Source}: {Count} ошибок", source, errors.Count);
@@ -209,6 +220,95 @@ public partial class GameEngine
     private static bool RequiresFreshNarrativePayload(string source)
     {
         return source is "ответа GM" or "late response GM" or "обработки хода" or "оценки жизни";
+    }
+
+    private async Task<bool> TryAutoRollbackRealmSegregationViolationsAsync(
+        string source,
+        IReadOnlyCollection<ValidationIssue> errors)
+    {
+        var realmSegregationErrors = errors
+            .Where(error => string.Equals(error.Code, "realm_segregation_violation", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        if (realmSegregationErrors.Count == 0)
+            return false;
+
+        var forbiddenPaths = realmSegregationErrors
+            .SelectMany(ExtractRealmSegregationPaths)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        if (forbiddenPaths.Count == 0)
+            return false;
+
+        var sourceRealm = realmSegregationErrors
+            .Select(ExtractRealmSegregationSourceRealm)
+            .FirstOrDefault(realm => !string.IsNullOrWhiteSpace(realm));
+
+        var rollbackService = new RealmSegregationAutoRollbackService(
+            _fs,
+            NullLogger<RealmSegregationAutoRollbackService>.Instance);
+        var result = await rollbackService.TryRollbackForbiddenRealmMutationsAsync(
+            sourceRealm,
+            forbiddenPaths,
+            source);
+
+        if (!result.RolledBack)
+            return false;
+
+        _logger.LogWarning(
+            "Client auto-rolled back {Count} forbidden realm mutations after {Source}; report: {ReportPath}",
+            result.Actions.Count,
+            source,
+            result.ReportPath);
+        return true;
+    }
+
+    private async Task<List<ValidationIssue>> FilterRestoredForbiddenRealmBaselineErrorsAsync(
+        string source,
+        List<ValidationIssue> errors)
+    {
+        if (errors.Count == 0)
+            return errors;
+
+        var rollbackService = new RealmSegregationAutoRollbackService(
+            _fs,
+            NullLogger<RealmSegregationAutoRollbackService>.Instance);
+        var result = await rollbackService.FilterRestoredForbiddenBaselineIssuesAsync(
+            _stateManager.CurrentState.CurrentRealm,
+            errors);
+
+        if (result.SuppressedIssues.Count == 0)
+            return errors;
+
+        _logger.LogWarning(
+            "Suppressed {Count} restored forbidden-realm baseline validation errors after {Source}; these files match the validated pending-turn snapshot and remain outside GM repair scope for the current realm.",
+            result.SuppressedIssues.Count,
+            source);
+
+        return PrioritizeValidationErrors(result.RemainingIssues).ToList();
+    }
+
+    private static IEnumerable<string> ExtractRealmSegregationPaths(ValidationIssue issue)
+    {
+        var actual = issue.Actual ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(actual))
+            yield break;
+
+        var pathList = actual.Split(" | surfaces:", 2, StringSplitOptions.None)[0];
+        foreach (var candidate in pathList.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+        {
+            var normalized = candidate.Replace('\\', '/');
+            if (normalized.StartsWith("game_state/", StringComparison.OrdinalIgnoreCase))
+                yield return normalized;
+        }
+    }
+
+    private static string? ExtractRealmSegregationSourceRealm(ValidationIssue issue)
+    {
+        var match = Regex.Match(
+            issue.Message,
+            @"pre-turn realm '([^']+)'",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        return match.Success ? match.Groups[1].Value : null;
     }
 
     private static bool RequiresAcceptedTurnPayloadValidation(string source)
