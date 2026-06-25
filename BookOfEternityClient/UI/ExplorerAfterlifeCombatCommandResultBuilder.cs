@@ -355,6 +355,73 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         };
     }
 
+    private static UiEntityDossierBlock BuildAfterlifeProfileDetailDossier(JsonObject profile, string name)
+    {
+        var card = BuildAfterlifeProfileCard(profile);
+        var questCards = BuildProfileQuestCards(profile);
+        var sections = new List<UiEntityDossierSection>();
+        if (questCards.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "afterlife-profile-personal-quests",
+                Title = "Личные квесты",
+                Summary = "Активные личные сюжетные задачи этой сущности.",
+                Icon = "scroll-text",
+                Presentation = "cards",
+                CollectionLabel = $"{questCards.Count} квестов",
+                Collapsible = questCards.Count > 4,
+                InitiallyExpanded = true,
+                Cards = questCards
+            });
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "afterlife-profile-detail",
+            Title = $"Профиль посмертия: {name}",
+            Subtitle = card.Subtitle,
+            Summary = card.Summary,
+            Badges = card.Badges,
+            Facts = card.Facts,
+            Hints = card.Hints,
+            Cards = card.Cards,
+            Sections = sections
+        };
+    }
+
+    private static List<UiEntityCard> BuildProfileQuestCards(JsonObject profile) =>
+        (profile["personalQuests"] as JsonArray)?
+            .OfType<JsonObject>()
+            .Where(static quest => string.Equals(GetString(quest, "status", ""), "active", StringComparison.OrdinalIgnoreCase))
+            .Select(static quest =>
+            {
+                var title = GetString(quest, "title", GetString(quest, "questId", "личный квест"));
+                var summary = SafePlayerText(GetString(quest, "planSummary", GetString(quest, "sceneSummary", "")), "подробности квеста не указаны");
+                return new UiEntityCard
+                {
+                    Title = title,
+                    Subtitle = DescribeAfterlifeRelationshipQuestStatus(GetString(quest, "status", "active")),
+                    Icon = "scroll-text",
+                    Summary = summary,
+                    Facts =
+                    [
+                        new UiEntityFact { Label = "Состояние", Value = DescribeAfterlifeRelationshipQuestStatus(GetString(quest, "status", "active")) },
+                        new UiEntityFact { Label = "Кратко", Value = summary }
+                    ],
+                    Hints = BuildProfileQuestHints(quest)
+                };
+            })
+            .ToList() ?? [];
+
+    private static List<UiEntityHint> BuildProfileQuestHints(JsonObject quest)
+    {
+        var hints = new List<UiEntityHint>();
+        AddProfileHint(hints, "Сцена", GetString(quest, "sceneSummary", ""), UiTone.Default);
+        AddProfileHint(hints, "Условие успеха", GetString(quest, "successCondition", ""), UiTone.Accent);
+        return hints;
+    }
+
     private static List<UiEntityBadge> BuildProfileBadges(JsonObject profile)
     {
         var badges = new List<UiEntityBadge>();
@@ -1835,40 +1902,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         var name = ProfileDisplayName(profile, selector);
         var blocks = new List<UiBlock>
         {
-            Panel($"Профиль посмертия: {name}",
-                Grid(
-                    ("Тип", DescribeActorType(GetString(profile, "actorType", "?"))),
-                    ("Область", DescribeRealm(GetString(profile, "realm", "?"))),
-                    ("Ресурсы", DescribeProfileCurrencies(profile)),
-                    ("Прогрессия", DescribeProfileProgression(profile)),
-                    ("Духовные искусства", DescribeStandardArts(profile["standardArts"] as JsonObject)),
-                    ("Особые искусства", DescribeSpecialArts(profile["specialArts"] as JsonArray)),
-                    ("Карты судьбы", DescribeFateCards(profile["fateCards"] as JsonArray, includeHiddenDiagnostics: false)),
-                    ("Цели/активность", DescribeProfileAgency(profile)),
-                    ("Опасность", DescribeDissipation(profile))))
+            BuildAfterlifeProfileDetailDossier(profile, name)
         };
-
-        var activeQuests = (profile["personalQuests"] as JsonArray)?
-            .OfType<JsonObject>()
-            .Where(static quest => string.Equals(GetString(quest, "status", ""), "active", StringComparison.OrdinalIgnoreCase))
-            .ToList() ?? [];
-        if (activeQuests.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Личные квесты",
-                Columns = ["Квест", "Состояние", "Кратко"],
-                Rows = activeQuests.Select(static quest => new UiTableRow
-                {
-                    Cells =
-                    [
-                        GetString(quest, "title", GetString(quest, "questId", "квест")),
-                        DescribeAfterlifeRelationshipQuestStatus(GetString(quest, "status", "active")),
-                        GetString(quest, "planSummary", GetString(quest, "sceneSummary", "не указано"))
-                    ]
-                }).ToList()
-            });
-        }
 
         return Completed(command, blocks, BuildOverviewAction("afterlife-profiles-overview", "К обзору профилей", "/afterlife_profiles"));
     }

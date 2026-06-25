@@ -5849,6 +5849,30 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain(excludedText, text, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfileDetail_RendersDossierCardsWithoutLegacyPanels()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles профиль player_soul"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        AssertNoAfterlifeReadOnlyDetailTechnicalLeak(result);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static dossier => dossier.EntityType == "panel" || dossier.EntityType == "collection");
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "afterlife-profile-detail");
+
+        Assert.Equal("Профиль посмертия: Test Soul", dossier.Title);
+        Assert.Contains("Зеркало Ночной Розы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Собрать Средоточие", text, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/afterlife_profiles профиль missing_profile")]
     [InlineData("/afterlife_threats угроза missing_threat")]
