@@ -19,22 +19,31 @@ Accepted prototype reference:
 
 ## Implementation Tasks Tracked By GitHub Issues
 
-- [ ] #1255 Define semantic entity UI block contract for dossiers/cards.
-- [ ] #1256 Render semantic entity dossiers with cards, nested cards, icons, and readable spacing.
-- [ ] #1257 Add localization and semantic formatting layer for entity fields and enum values.
-- [ ] #1258 Migrate NPC command output to entity dossier cards.
-- [ ] #1259 Migrate Mortal World entity commands to dossier cards.
-- [ ] #1260 Migrate afterlife entity command output to dossier cards.
-- [ ] #1261 Add command-surface audit tests for entity presentation anti-patterns.
-- [ ] #1262 Media preview and lightbox support for entity cards.
+- [x] #1255 Define semantic entity UI block contract for dossiers/cards.
+- [x] #1256 Render semantic entity dossiers with cards, nested cards, icons, and readable spacing.
+- [x] #1257 Add localization and semantic formatting layer for entity fields and enum values.
+- [x] #1258 Migrate NPC command output to entity dossier cards.
+- [x] #1259 Migrate Mortal World entity commands to dossier cards.
+- [x] #1260 Migrate afterlife entity command output to entity dossier cards.
+- [x] #1261 Add command-surface audit tests for entity presentation anti-patterns.
+- [x] #1262 Media preview and lightbox support for entity cards.
 
 ## Mandatory Review Checklist For Child Tasks
 
-- [ ] The implementation follows `docs/web-ui/browser-entity-dossier-format.md`.
-- [ ] The implementation was compared against the accepted prototype paths above.
-- [ ] Complex entity details are not rendered as normal tables.
-- [ ] Nested data is shown as nested cards.
-- [ ] Large collections follow the threshold rules and use collection browser at 21+ items.
-- [ ] Stable labels and enum-like values are localized to Russian.
-- [ ] Media previews open in a lightbox when media is present.
-- [ ] Browser checks show no text overlap and no horizontal overflow.
+- [x] The implementation follows `docs/web-ui/browser-entity-dossier-format.md`.
+- [x] The implementation was compared against the accepted prototype paths above.
+- [x] Complex entity details are not rendered as normal tables.
+- [x] Nested data is shown as nested cards.
+- [x] Large collections follow the threshold rules and use collection browser at 21+ items.
+- [x] Stable labels and enum-like values are localized to Russian.
+- [x] Media previews open in a lightbox when media is present.
+- [x] Browser checks show no text overlap and no horizontal overflow.
+
+## Closure Evidence
+
+- #1255-#1262 are implemented and closed in GitHub.
+- #1253 is handled by the command-surface audit coverage from #1261 plus the
+  dossier/card migrations from #1258-#1260.
+- Focused regression suites to keep current before closing this epic:
+  `BrowserCommandPresentationAuditTests`, `BrowserApiContractTests`, and
+  frontend player-facing/block-renderer tests.
