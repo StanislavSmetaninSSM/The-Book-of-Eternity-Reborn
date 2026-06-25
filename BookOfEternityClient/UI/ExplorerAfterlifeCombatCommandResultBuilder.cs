@@ -1698,6 +1698,33 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         };
     }
 
+    private static UiEntityDossierBlock BuildSpiritualRecentConflictDetailDossier(JsonObject conflict, string name)
+    {
+        var resolution = SafePlayerText(GetString(conflict, "resolutionSummary", ""), string.Empty);
+        var outcome = DescribePlayerOutcome(GetString(conflict, "playerOutcome", GetString(conflict, "outcome", "?")));
+        var hints = new List<UiEntityHint>();
+        if (!string.IsNullOrWhiteSpace(resolution))
+            hints.Add(new UiEntityHint { Title = "Решение", Text = resolution, Tone = UiTone.Accent });
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "spiritual-recent-conflict-detail",
+            Title = $"Итог духовного боя: {name}",
+            Subtitle = outcome,
+            Summary = string.IsNullOrWhiteSpace(resolution) ? outcome : resolution,
+            Facts =
+            [
+                new UiEntityFact { Label = "Состояние", Value = DescribeRecentResolutionState(GetString(conflict, "resolutionState", "?")) },
+                new UiEntityFact { Label = "Исход", Value = outcome },
+                new UiEntityFact { Label = "Действие", Value = DescribeArt(GetString(conflict, "operationType", "?")) },
+                new UiEntityFact { Label = "Ход", Value = GetNumberOrString(conflict, "resolvedAtTurn", "?") },
+                new UiEntityFact { Label = "Награда", Value = DescribeRewardWithReason(conflict["rewardAudit"] as JsonObject) },
+                new UiEntityFact { Label = "Решение", Value = string.IsNullOrWhiteSpace(resolution) ? "не указано" : resolution }
+            ],
+            Hints = hints
+        };
+    }
+
     private static ExplorerCommandResult BuildHelp(string command) =>
         Completed(command, BuildSpiritualCombatHelpDossier());
 
@@ -2128,14 +2155,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         var name = RecentConflictDisplayName(conflict, selector);
         var blocks = new List<UiBlock>
         {
-            Panel($"Итог духовного боя: {name}",
-                Grid(
-                    ("Состояние", DescribeRecentResolutionState(GetString(conflict, "resolutionState", "?"))),
-                    ("Исход", DescribePlayerOutcome(GetString(conflict, "playerOutcome", GetString(conflict, "outcome", "?")))),
-                    ("Действие", DescribeArt(GetString(conflict, "operationType", "?"))),
-                    ("Ход", GetNumberOrString(conflict, "resolvedAtTurn", "?")),
-                    ("Награда", DescribeRewardWithReason(conflict["rewardAudit"] as JsonObject)),
-                    ("Решение", SafePlayerText(GetString(conflict, "resolutionSummary", ""), "не указано"))))
+            BuildSpiritualRecentConflictDetailDossier(conflict, name)
         };
 
         return Completed(command, blocks, BuildOverviewAction("spiritual-combat-log-overview", "К журналу духовного боя", "/spiritual_combat_log"));
