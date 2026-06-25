@@ -3346,6 +3346,72 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_MemoryScene_RendersNamedClosureTargetsWithoutRawIds()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "revealStage": "name_revealed",
+          "guardianQuestlines": [],
+          "latentTraces": [],
+          "sarefRevelations": [],
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [],
+          "memoryScene": {
+            "sceneId": "memory_scene_azalia_q4",
+            "title": "Ложа белых перьев",
+            "status": "active",
+            "layer": "Воспоминание",
+            "guardianId": "guardian_azalia",
+            "guardianName": "Азалия",
+            "questId": "azalia_saref_q4",
+            "questName": "Четвёртая правда Азалии",
+            "questOrdinal": 4,
+            "role": { "roleId": "azalia_white_lodge_witness", "displayName": "Свидетель ложи", "summary": "Роль внутри старого предательства." },
+            "boundaries": [ { "summary": "Сареф уже вошёл в ложу; это нельзя отменить." } ],
+            "abilities": [ { "abilityId": "read_oath", "name": "Прочитать клятву", "summary": "Увидеть скрытую цену белых перьев." } ],
+            "requiredStoryNodes": [ { "status": "pending", "summary": "Увидеть предательство." } ],
+            "successCondition": { "conditionId": "condition_wings_truth", "displayName": "Понять исток Крыльев", "satisfied": false },
+            "closureTarget": {
+              "guardianId": "guardian_azalia",
+              "guardianName": "Азалия",
+              "questId": "azalia_saref_q4",
+              "questName": "Четвёртая правда Азалии",
+              "questOrdinal": 4,
+              "revelationId": "revelation_identity",
+              "revelationName": "Имя Сарефа",
+              "advantageId": "adv_lucian_oath_cut",
+              "advantageName": "Лунный Разрез Клятвы"
+            }
+          },
+          "factionLinks": { "visibility": "hidden" },
+          "defeatOutcomes": [],
+          "endings": [],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/воспоминание_статус"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Азалия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Четвёртая правда Азалии", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Понять исток Крыльев", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Фрагмент истины", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Имя Сарефа", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Преимущество", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Лунный Разрез Клятвы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guardian_azalia", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("azalia_saref_q4", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("condition_wings_truth", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("revelation_identity", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("adv_lucian_oath_cut", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_MemorySceneSubcommand_RoutesThroughSharedParser()
     {
         await SeedUniversalMetaFilesAsync();

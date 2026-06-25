@@ -2823,8 +2823,16 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         var facts = new List<UiEntityFact>();
         AddFactIfKnown(facts, "Сцена", title);
         AddFactIfKnown(facts, "Состояние", DescribeSarefMemorySceneStatus(GetString(scene, "status", string.Empty)));
-        AddFactIfKnown(facts, "Память Хранителя", GetString(scene, "guardianId"));
-        AddFactIfKnown(facts, "Квест", JoinNonEmpty(" / ", GetString(scene, "questId", string.Empty), GetNumberOrString(scene, "questOrdinal")));
+        AddFactIfKnown(facts, "Память Хранителя", FirstNonEmpty(
+            GetString(scene, "guardianName", string.Empty),
+            GetString(scene, "guardianDisplayName", string.Empty),
+            GetString(scene, "guardianId", string.Empty)));
+        AddFactIfKnown(facts, "Квест", JoinNonEmpty(" / ",
+            FirstNonEmpty(
+                GetString(scene, "questName", string.Empty),
+                GetString(scene, "questDisplayName", string.Empty),
+                GetString(scene, "questId", string.Empty)),
+            GetNumberOrString(scene, "questOrdinal")));
         AddFactIfKnown(facts, "Роль внутри сцены", JoinNonEmpty(" - ", roleName, roleSummary));
 
         var sections = new List<UiEntityDossierSection>();
@@ -2978,7 +2986,11 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         return new UiEntityCard
         {
             Title = "Условие успеха",
-            Summary = GetString(condition, "summary", GetString(condition, "conditionId")),
+            Summary = FirstNonEmpty(
+                GetString(condition, "summary", string.Empty),
+                GetString(condition, "displayName", string.Empty),
+                GetString(condition, "name", string.Empty),
+                GetString(condition, "conditionId", string.Empty)),
             Icon = "target",
             Badges =
             [
@@ -3004,10 +3016,24 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         }
 
         var facts = new List<UiEntityFact>();
-        AddFactIfKnown(facts, "Хранитель", GetString(target, "guardianId"));
-        AddFactIfKnown(facts, "Квест", JoinNonEmpty(" / ", GetString(target, "questId", string.Empty), GetNumberOrString(target, "questOrdinal")));
-        AddFactIfKnown(facts, "Фрагмент истины", GetString(target, "revelationId"));
-        AddFactIfKnown(facts, "Преимущество", GetString(target, "advantageId"));
+        AddFactIfKnown(facts, "Хранитель", FirstNonEmpty(
+            GetString(target, "guardianName", string.Empty),
+            GetString(target, "guardianDisplayName", string.Empty),
+            GetString(target, "guardianId", string.Empty)));
+        AddFactIfKnown(facts, "Квест", JoinNonEmpty(" / ",
+            FirstNonEmpty(
+                GetString(target, "questName", string.Empty),
+                GetString(target, "questDisplayName", string.Empty),
+                GetString(target, "questId", string.Empty)),
+            GetNumberOrString(target, "questOrdinal")));
+        AddFactIfKnown(facts, "Фрагмент истины", FirstNonEmpty(
+            GetString(target, "revelationName", string.Empty),
+            GetString(target, "revelationDisplayName", string.Empty),
+            GetString(target, "revelationId", string.Empty)));
+        AddFactIfKnown(facts, "Преимущество", FirstNonEmpty(
+            GetString(target, "advantageName", string.Empty),
+            GetString(target, "advantageDisplayName", string.Empty),
+            GetString(target, "advantageId", string.Empty)));
 
         return new UiEntityCard
         {
