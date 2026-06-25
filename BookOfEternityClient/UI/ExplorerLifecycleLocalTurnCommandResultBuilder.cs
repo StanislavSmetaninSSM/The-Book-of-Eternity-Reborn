@@ -4687,6 +4687,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             Facts =
             [
                 new UiEntityFact { Label = "Текущее царство", Value = FormatRealmForPlayer(currentRealm) },
+                new UiEntityFact { Label = "Назначение формы", Value = "подготовка действия для обновления духовного конфликта" },
                 new UiEntityFact { Label = "Активный конфликт", Value = active == null ? "нет" : FirstNonEmpty(GetString(active, "conflictId"), "без метки") }
             ],
             Hints =
