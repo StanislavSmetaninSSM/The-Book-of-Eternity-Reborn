@@ -6197,7 +6197,25 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal("Обмен духовного конфликта: Давление", dossier.Title);
         Assert.Contains("Тень Хранителя", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Стоимость ОД", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стоимость души", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_SpiritualExchangeDetail_RendersActionPointCostAsSeparateFacts()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_conflict обмен exchange_1"));
+        var text = CollectBlockText(result.Blocks);
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "spiritual-exchange-detail");
+
+        Assert.Contains(dossier.Facts, static fact => fact.Label == "Стоимость души" && fact.Value == "2 ОД");
+        Assert.Contains(dossier.Facts, static fact => fact.Label == "Стоимость противника" && fact.Value == "1 ОД");
+        Assert.Contains(dossier.Facts, static fact => fact.Label == "Стоимость всего" && fact.Value == "3 ОД");
+        Assert.DoesNotContain("душа 2 ОД; противник 1 ОД", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -8601,6 +8619,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 "operationType": "pressure",
                 "outcome": "success",
                 "exchangeAtTurn": 6,
+                "actionPointCost": { "player": 2, "opposition": 1, "total": 3 },
                 "before": { "conflictPosition": "contested", "oppositionSideStrain": "clear" },
                 "after": { "conflictPosition": "player_advantaged", "oppositionSideStrain": "strained" },
                 "diceAudit": {

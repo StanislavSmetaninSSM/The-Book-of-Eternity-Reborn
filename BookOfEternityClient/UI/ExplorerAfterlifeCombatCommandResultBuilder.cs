@@ -1492,6 +1492,24 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         if (!string.IsNullOrWhiteSpace(resultSummary))
             hints.Add(new UiEntityHint { Title = "Итог обмена", Text = resultSummary, Tone = UiTone.Accent });
 
+        var facts = new List<UiEntityFact>
+        {
+            new() { Label = "Конфликт", Value = SafePlayerText(FirstNonEmpty(GetString(active, "displayName", ""), GetString(active, "conflictId", "")), "активный конфликт") },
+            new() { Label = "Сторона души", Value = DescribeConflictLead(active, "playerSide") },
+            new() { Label = "Противостояние", Value = DescribeConflictLead(active, "oppositionSide") },
+            new() { Label = "Действие", Value = DescribeArt(GetString(exchange, "operationType", "?")) },
+            new() { Label = "Заявка души", Value = SafePlayerText(GetString(exchange, "playerAction", ""), "не указана") },
+            new() { Label = "Давление противника", Value = SafePlayerText(GetString(exchange, "incomingAction", ""), "не указано") },
+            new() { Label = "Исход", Value = DescribeOutcome(GetString(exchange, "outcome", "?")) },
+            new() { Label = "Кубики", Value = DescribeDice(exchange["diceAudit"] as JsonObject) },
+            new() { Label = "Позиция", Value = DescribeBeforeAfter(exchange, "conflictPosition", DescribeConflictPosition) },
+            new() { Label = "Напряжение души", Value = DescribeBeforeAfter(exchange, "playerSideStrain", DescribeStrain) },
+            new() { Label = "Напряжение противника", Value = DescribeBeforeAfter(exchange, "oppositionSideStrain", DescribeStrain) },
+            new() { Label = "Ответы", Value = DescribeExchangeCounterplay(GetString(exchange, "operationType", "?")) }
+        };
+        AddExchangeActionPointCostFacts(facts, exchange);
+        facts.Add(new UiEntityFact { Label = "Награда", Value = DescribeRewardWithReason(exchange["rewardAudit"] as JsonObject) });
+
         return new UiEntityDossierBlock
         {
             EntityType = "spiritual-exchange-detail",
@@ -1500,25 +1518,39 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             Summary = string.IsNullOrWhiteSpace(resultSummary)
                 ? DescribeOutcome(GetString(exchange, "outcome", "?"))
                 : resultSummary,
-            Facts =
-            [
-                new UiEntityFact { Label = "Конфликт", Value = SafePlayerText(FirstNonEmpty(GetString(active, "displayName", ""), GetString(active, "conflictId", "")), "активный конфликт") },
-                new UiEntityFact { Label = "Сторона души", Value = DescribeConflictLead(active, "playerSide") },
-                new UiEntityFact { Label = "Противостояние", Value = DescribeConflictLead(active, "oppositionSide") },
-                new UiEntityFact { Label = "Действие", Value = DescribeArt(GetString(exchange, "operationType", "?")) },
-                new UiEntityFact { Label = "Заявка души", Value = SafePlayerText(GetString(exchange, "playerAction", ""), "не указана") },
-                new UiEntityFact { Label = "Давление противника", Value = SafePlayerText(GetString(exchange, "incomingAction", ""), "не указано") },
-                new UiEntityFact { Label = "Исход", Value = DescribeOutcome(GetString(exchange, "outcome", "?")) },
-                new UiEntityFact { Label = "Кубики", Value = DescribeDice(exchange["diceAudit"] as JsonObject) },
-                new UiEntityFact { Label = "Позиция", Value = DescribeBeforeAfter(exchange, "conflictPosition", DescribeConflictPosition) },
-                new UiEntityFact { Label = "Напряжение души", Value = DescribeBeforeAfter(exchange, "playerSideStrain", DescribeStrain) },
-                new UiEntityFact { Label = "Напряжение противника", Value = DescribeBeforeAfter(exchange, "oppositionSideStrain", DescribeStrain) },
-                new UiEntityFact { Label = "Ответы", Value = DescribeExchangeCounterplay(GetString(exchange, "operationType", "?")) },
-                new UiEntityFact { Label = "Стоимость ОД", Value = DescribeExchangeActionPointCost(exchange) },
-                new UiEntityFact { Label = "Награда", Value = DescribeRewardWithReason(exchange["rewardAudit"] as JsonObject) }
-            ],
+            Facts = facts,
             Hints = hints
         };
+    }
+
+    private static void AddExchangeActionPointCostFacts(List<UiEntityFact> facts, JsonObject exchange)
+    {
+        if (exchange["actionPointCost"] is JsonObject cost)
+        {
+            var added = false;
+            if (TryGetInt(cost["player"], out var playerCost))
+            {
+                facts.Add(new UiEntityFact { Label = "Стоимость души", Value = $"{playerCost} ОД" });
+                added = true;
+            }
+
+            if (TryGetInt(cost["opposition"], out var oppositionCost))
+            {
+                facts.Add(new UiEntityFact { Label = "Стоимость противника", Value = $"{oppositionCost} ОД" });
+                added = true;
+            }
+
+            if (TryGetInt(cost["total"], out var totalCost))
+            {
+                facts.Add(new UiEntityFact { Label = "Стоимость всего", Value = $"{totalCost} ОД" });
+                added = true;
+            }
+
+            if (added)
+                return;
+        }
+
+        facts.Add(new UiEntityFact { Label = "Стоимость ОД", Value = DescribeExchangeActionPointCost(exchange) });
     }
 
     private static async Task<ExplorerCommandResult> BuildCombatLog(
