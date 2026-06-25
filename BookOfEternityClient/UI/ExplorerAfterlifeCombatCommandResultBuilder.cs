@@ -1990,6 +1990,67 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         };
     }
 
+    private static UiEntityDossierBlock BuildStandardArtDetailDossier(
+        AfterlifeSpiritualConflictState.SpiritualArtDefinition art,
+        JsonObject? combatProfile,
+        int currentTier,
+        string availability) =>
+        new()
+        {
+            EntityType = "spiritual-art-detail",
+            Title = $"Духовное искусство: {DescribeArt(art.ArtId)}",
+            Subtitle = "стандартное духовное искусство",
+            Summary = SafePlayerText(DescribeStandardArtUse(art.ArtId), "контекст сцены"),
+            Facts =
+            [
+                new UiEntityFact { Label = "Тир", Value = currentTier.ToString() },
+                new UiEntityFact { Label = "Доступность", Value = availability },
+                new UiEntityFact { Label = "Применение", Value = SafePlayerText(DescribeStandardArtUse(art.ArtId), "контекст сцены") },
+                new UiEntityFact { Label = "Стоимость и темп", Value = DescribeArtCost(art.ArtId) },
+                new UiEntityFact { Label = "Ранг души", Value = DescribeCombatRanks(combatProfile) }
+            ],
+            Hints =
+            [
+                new UiEntityHint
+                {
+                    Title = "Граница действия",
+                    Text = "Осмотр ничего не прокачивает; локальная прокачка остаётся через форму /spiritual_arts.",
+                    Tone = UiTone.Default
+                }
+            ]
+        };
+
+    private static UiEntityDossierBlock BuildSpecialArtDetailDossier(JsonObject art, string name) =>
+        new()
+        {
+            EntityType = "spiritual-special-art-detail",
+            Title = $"Особое духовное искусство: {name}",
+            Subtitle = "особое духовное искусство",
+            Summary = SafePlayerText(GetString(art, "effectSummary", ""), "эффект не описан"),
+            Facts =
+            [
+                new UiEntityFact { Label = "Основа", Value = DescribeArt(GetString(art, "baseOperation", "?")) },
+                new UiEntityFact { Label = "Тир", Value = GetNumberOrString(art, "tier", "0") },
+                new UiEntityFact { Label = "Эффект", Value = SafePlayerText(DescribeSpecialArtEffect(art), "эффект не описан") },
+                new UiEntityFact { Label = "Стоимость", Value = DescribeSpecialArtCost(art) },
+                new UiEntityFact { Label = "Доступность", Value = "доступно текущей душе" },
+                new UiEntityFact { Label = "Применение", Value = SafePlayerText(GetString(art, "effectSummary", ""), "по контексту духовного боя") }
+            ],
+            Hints = BuildSpecialArtDetailHints(art)
+        };
+
+    private static List<UiEntityHint> BuildSpecialArtDetailHints(JsonObject art)
+    {
+        var hints = BuildSpecialArtHints(art);
+        hints.Add(new UiEntityHint
+        {
+            Title = "Граница действия",
+            Text = "Осмотр ничего не прокачивает; локальная прокачка остаётся через форму /spiritual_arts.",
+            Tone = UiTone.Default
+        });
+        return hints;
+    }
+
     private static void AddSpecialArtCombatFact(List<UiEntityFact> facts, string label, string value)
     {
         if (string.IsNullOrWhiteSpace(value) || value == "?")
@@ -2182,14 +2243,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             : $"пока закрыто до ранга, открывающего тир {art.MinUnlockTier}";
         var blocks = new List<UiBlock>
         {
-            Panel($"Духовное искусство: {DescribeArt(art.ArtId)}",
-                Grid(
-                    ("Тир", currentTier.ToString()),
-                    ("Доступность", availability),
-                    ("Применение", SafePlayerText(DescribeStandardArtUse(art.ArtId), "контекст сцены")),
-                    ("Стоимость и темп", DescribeArtCost(art.ArtId)),
-                    ("Ранг души", DescribeCombatRanks(combatProfile)),
-                    ("Граница действия", "Осмотр ничего не прокачивает; локальная прокачка остаётся через форму /spiritual_arts.")))
+            BuildStandardArtDetailDossier(art, combatProfile, currentTier, availability)
         };
 
         return Completed(command, blocks, BuildOverviewAction("spiritual-arts-overview", "К духовным искусствам", "/spiritual_arts"));
@@ -2212,15 +2266,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         var name = SpecialArtDisplayName(art, selector);
         var blocks = new List<UiBlock>
         {
-            Panel($"Особое духовное искусство: {name}",
-                Grid(
-                    ("Основа", DescribeArt(GetString(art, "baseOperation", "?"))),
-                    ("Тир", GetNumberOrString(art, "tier", "0")),
-                    ("Эффект", SafePlayerText(DescribeSpecialArtEffect(art), "эффект не описан")),
-                    ("Стоимость", DescribeSpecialArtCost(art)),
-                    ("Доступность", "доступно текущей душе"),
-                    ("Применение", SafePlayerText(GetString(art, "effectSummary", ""), "по контексту духовного боя")),
-                    ("Граница действия", "Осмотр ничего не прокачивает; локальная прокачка остаётся через форму /spiritual_arts.")))
+            BuildSpecialArtDetailDossier(art, name)
         };
 
         return Completed(command, blocks, BuildOverviewAction("spiritual-arts-overview", "К духовным искусствам", "/spiritual_arts"));

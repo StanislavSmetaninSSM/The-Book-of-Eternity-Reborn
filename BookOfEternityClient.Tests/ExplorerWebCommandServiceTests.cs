@@ -5996,6 +5996,35 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Theory]
+    [InlineData("/spiritual_arts искусство pressure", "spiritual-art-detail", "Духовное искусство: Давление", "база 3 ОД")]
+    [InlineData("/spiritual_arts особое rose_mirror_counter", "spiritual-special-art-detail", "Особое духовное искусство: Зеркало Ночной Розы", "Контрприём оставляет болезненный образ")]
+    public async Task ExecuteAsync_SpiritualArtDetails_RenderDossierCardsWithoutLegacyPanels(
+        string command,
+        string expectedEntityType,
+        string expectedTitle,
+        string expectedText)
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        AssertNoAfterlifeReadOnlyDetailTechnicalLeak(result);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static dossier => dossier.EntityType == "panel" || dossier.EntityType == "collection");
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            candidate => candidate.EntityType == expectedEntityType);
+
+        Assert.Equal(expectedTitle, dossier.Title);
+        Assert.Contains(expectedText, text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
     [InlineData("/afterlife_profiles профиль missing_profile")]
     [InlineData("/afterlife_threats угроза missing_threat")]
     [InlineData("/afterlife_chronicles хроника missing_chronicle")]
