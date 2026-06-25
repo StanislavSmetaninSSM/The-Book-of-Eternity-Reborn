@@ -83,5 +83,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 <!-- SPECKIT START -->
 Current Spec Kit plan for this branch:
-`specs/1119-browser-console-command-parity-audit/plan.md`
+`specs/1251-network-pass-turn-multiplayer/plan.md`
 <!-- SPECKIT END -->
