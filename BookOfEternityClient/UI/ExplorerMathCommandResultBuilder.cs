@@ -29,35 +29,13 @@ public static class ExplorerMathCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            new UiPanelBlock
-            {
-                Title = result.Success ? "Математик" : "Формула не вычислена",
-                Blocks =
-                [
-                    new UiKeyValueGridBlock
-                    {
-                        Items =
-                        [
-                            new UiKeyValueItem { Key = "Формула", Value = string.IsNullOrWhiteSpace(remainder) ? "(пусто)" : parsed.Expression },
-                            new UiKeyValueItem { Key = "Нормализовано", Value = string.IsNullOrWhiteSpace(result.NormalizedExpression) ? "(пусто)" : result.NormalizedExpression },
-                            new UiKeyValueItem { Key = "Результат", Value = result.Result?.ToString(CultureInfo.InvariantCulture) ?? "нет" },
-                            new UiKeyValueItem { Key = "До округления", Value = result.RawResult?.ToString(CultureInfo.InvariantCulture) ?? "нет" },
-                            new UiKeyValueItem { Key = "Округление", Value = DescribeRounding(result) }
-                        ]
-                    }
-                ]
-            }
+            BuildMathDossier(remainder, parsed, result)
         };
-
-        if (result.Variables.Count > 0)
-            blocks.Add(BuildVariablesTable(result.Variables));
 
         if (parsed.ParseWarnings.Count > 0 || result.Warnings.Count > 0)
         {
-            blocks.Add(new UiListBlock
-            {
-                Items = [.. parsed.ParseWarnings, .. result.Warnings]
-            });
+            var dossier = (UiEntityDossierBlock)blocks[0];
+            dossier.Sections.Add(BuildWarningsSection([.. parsed.ParseWarnings, .. result.Warnings]));
         }
 
         if (!result.Success)
@@ -78,24 +56,88 @@ public static class ExplorerMathCommandResultBuilder
         };
     }
 
-    private static UiTableBlock BuildVariablesTable(IReadOnlyDictionary<string, decimal> variables)
+    private static UiEntityDossierBlock BuildMathDossier(
+        string remainder,
+        ParsedMathCommand parsed,
+        MathAssistantEvaluationResult result)
     {
-        var table = new UiTableBlock
+        var sections = new List<UiEntityDossierSection>();
+        if (result.Variables.Count > 0)
+            sections.Add(BuildVariablesSection(result.Variables));
+
+        return new UiEntityDossierBlock
         {
+            EntityType = "math-assistant",
+            Title = result.Success ? "Математик" : "Формула не вычислена",
+            Subtitle = "локальный расчёт без изменения состояния",
+            Summary = result.Success
+                ? "Расчёт выполнен локально. Если значение применяется к состоянию игры, ГМ должен записать это отдельно."
+                : result.ErrorMessage ?? "Проверьте формулу, переменные, скобки и деление на ноль.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = result.Success ? "расчёт выполнен" : "нужна правка формулы",
+                    Tone = result.Success ? UiTone.Success : UiTone.Warning,
+                    Icon = result.Success ? "calculator" : "alert-triangle"
+                }
+            ],
+            Facts =
+            [
+                new UiEntityFact { Label = "Формула", Value = string.IsNullOrWhiteSpace(remainder) ? "(пусто)" : parsed.Expression },
+                new UiEntityFact { Label = "Нормализовано", Value = string.IsNullOrWhiteSpace(result.NormalizedExpression) ? "(пусто)" : result.NormalizedExpression },
+                new UiEntityFact { Label = "Результат", Value = result.Result?.ToString(CultureInfo.InvariantCulture) ?? "нет" },
+                new UiEntityFact { Label = "До округления", Value = result.RawResult?.ToString(CultureInfo.InvariantCulture) ?? "нет" },
+                new UiEntityFact { Label = "Округление", Value = DescribeRounding(result) }
+            ],
+            Sections = sections
+        };
+    }
+
+    private static UiEntityDossierSection BuildVariablesSection(IReadOnlyDictionary<string, decimal> variables) =>
+        new()
+        {
+            Id = "math-variables",
             Title = "Переменные",
-            Columns = ["Имя", "Значение"]
+            Summary = "Значения, подставленные в формулу.",
+            Icon = "calculator",
+            Presentation = "cards",
+            CollectionLabel = variables.Count == 1 ? "1 переменная" : $"{variables.Count} переменных",
+            Cards = variables
+                .OrderBy(static pair => pair.Key, StringComparer.OrdinalIgnoreCase)
+                .Select(static pair => new UiEntityCard
+                {
+                    Title = pair.Key,
+                    Subtitle = "переменная",
+                    Summary = pair.Value.ToString(CultureInfo.InvariantCulture),
+                    Icon = "hash",
+                    Facts =
+                    [
+                        new UiEntityFact { Label = "Значение", Value = pair.Value.ToString(CultureInfo.InvariantCulture) }
+                    ]
+                })
+                .ToList()
         };
 
-        foreach (var pair in variables.OrderBy(static pair => pair.Key, StringComparer.OrdinalIgnoreCase))
+    private static UiEntityDossierSection BuildWarningsSection(IReadOnlyList<string> warnings) =>
+        new()
         {
-            table.Rows.Add(new UiTableRow
-            {
-                Cells = [pair.Key, pair.Value.ToString(CultureInfo.InvariantCulture)]
-            });
-        }
-
-        return table;
-    }
+            Id = "math-warnings",
+            Title = "Предупреждения",
+            Summary = "Что было исправлено или распознано не полностью.",
+            Icon = "alert-triangle",
+            Presentation = "cards",
+            CollectionLabel = warnings.Count == 1 ? "1 предупреждение" : $"{warnings.Count} предупреждений",
+            Cards = warnings
+                .Where(static warning => !string.IsNullOrWhiteSpace(warning))
+                .Select(static warning => new UiEntityCard
+                {
+                    Title = "Предупреждение",
+                    Summary = warning.Trim(),
+                    Icon = "alert-triangle"
+                })
+                .ToList()
+        };
 
     private static ParsedMathCommand ParseRemainder(string remainder)
     {

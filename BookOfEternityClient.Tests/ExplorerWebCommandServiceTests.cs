@@ -2121,6 +2121,29 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_MathCommandWithVariables_RendersDossierCardsWithoutLegacyTables()
+    {
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/math base * tier base=10 tier=3"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(
+            result.Blocks.SelectMany(EnumerateEntityDossiers),
+            static dossier => dossier.EntityType == "panel");
+
+        var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "math-assistant");
+        Assert.Contains(dossier.Sections, static section => section.Title.Equals("Переменные", StringComparison.OrdinalIgnoreCase));
+
+        var text = CollectBlockText([dossier]);
+        Assert.Contains("Результат", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("30", text, StringComparison.Ordinal);
+        Assert.Contains("base", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("tier", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_MathCommandWithRounding_LocalizesRoundingMode()
     {
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/math 10 / 3 rounding=floor decimalPlaces=0"));
@@ -2245,6 +2268,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Активный ход GM", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("input/turn_request.json", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/control/pending_turn_snapshot.json", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("GM-turn protocol", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Browser-write", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("rollback", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("snapshot", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Артефакты протокола", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

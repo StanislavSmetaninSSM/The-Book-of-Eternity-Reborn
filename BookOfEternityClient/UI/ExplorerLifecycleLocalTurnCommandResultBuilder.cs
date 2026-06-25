@@ -374,7 +374,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         FileSystemManager fs,
         StateManager stateManager)
     {
-        var localTurn = BuildLocalTurnStatus(fs);
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         var pending = await ReadJson(fs, WorldDirectiveService.PendingSetupPath);
         var scenario = await ReadJson(fs, ScenarioCoreService.ManifestPath);
         var blocks = new List<UiBlock>
