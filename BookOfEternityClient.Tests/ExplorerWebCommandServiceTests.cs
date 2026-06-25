@@ -6253,6 +6253,25 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(expectedText, text, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_StandardSpiritualArtDetail_RendersSoulRanksAsSeparateFacts()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_arts искусство pressure"));
+        var text = CollectBlockText(result.Blocks);
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "spiritual-art-detail");
+
+        Assert.Contains(dossier.Facts, static fact => fact.Label == "Просветление" && fact.Value == "3 ступень");
+        Assert.Contains(dossier.Facts, static fact => fact.Label == "Сияние" && fact.Value == "1 ступень");
+        Assert.Contains(dossier.Facts, static fact => fact.Label == "Средоточие Души" && fact.Value == "2 ступень");
+        Assert.Contains(dossier.Facts, static fact => fact.Label == "Открытый тир");
+        Assert.DoesNotContain("Просветление 3;", text, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/afterlife_profiles профиль missing_profile")]
     [InlineData("/afterlife_threats угроза missing_threat")]

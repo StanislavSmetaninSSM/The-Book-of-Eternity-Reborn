@@ -2007,7 +2007,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 new UiEntityFact { Label = "Доступность", Value = availability },
                 new UiEntityFact { Label = "Применение", Value = SafePlayerText(DescribeStandardArtUse(art.ArtId), "контекст сцены") },
                 new UiEntityFact { Label = "Стоимость и темп", Value = DescribeArtCost(art.ArtId) },
-                new UiEntityFact { Label = "Ранг души", Value = DescribeCombatRanks(combatProfile) }
+                new UiEntityFact { Label = "Просветление", Value = $"{GetNumberOrString(combatProfile, "enlightenmentTier", "0")} ступень" },
+                new UiEntityFact { Label = "Сияние", Value = $"{GetNumberOrString(combatProfile, "radianceTier", "0")} ступень" },
+                new UiEntityFact { Label = "Средоточие Души", Value = $"{GetNumberOrString(combatProfile, "spiritFocusTier", "0")} ступень" },
+                new UiEntityFact { Label = "Открытый тир", Value = GetMaxUnlockedArtTier(combatProfile).ToString() }
             ],
             Hints =
             [
@@ -4064,17 +4067,6 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             .Select(definition => definition.UnlocksArtTier)
             .DefaultIfEmpty(0)
             .Max();
-
-    private static string DescribeCombatRanks(JsonObject? combatProfile)
-    {
-        if (combatProfile == null)
-            return "нет профиля";
-
-        return $"Просветление {GetNumberOrString(combatProfile, "enlightenmentTier", "0")}; " +
-               $"Сияние {GetNumberOrString(combatProfile, "radianceTier", "0")}; " +
-               $"Средоточие {GetNumberOrString(combatProfile, "spiritFocusTier", "0")}; " +
-               $"открытый тир {GetMaxUnlockedArtTier(combatProfile)}";
-    }
 
     private static string DescribeStandardArtUse(string artId) =>
         artId.Trim().ToLowerInvariant() switch
