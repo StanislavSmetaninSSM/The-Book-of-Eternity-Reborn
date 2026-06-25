@@ -412,6 +412,88 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     expect(html).not.toContain('<table>');
   });
 
+  it('renders entity media previews as accessible lightbox triggers with safe image metadata', () => {
+    const blocks: UiBlock[] = [
+      {
+        kind: 'entityDossier',
+        entityType: 'npc',
+        title: 'Мирра Ключница',
+        subtitle: 'Смотрительница архива',
+        summary: 'Знает, кто входил в покои после полуночи.',
+        badges: [],
+        media: {
+          kind: 'image',
+          title: 'Портрет Мирры',
+          url: '/api/media/npc-mirra',
+          mediaId: 'npc-mirra',
+          relativePath: 'images/npcs/mirra.png',
+          altText: 'Портрет Мирры Ключницы',
+          contentType: 'image/png',
+          length: 2048,
+          modifiedAtUtc: '2026-06-22T00:00:00Z'
+        },
+        facts: [],
+        metrics: [],
+        hints: [],
+        list: [],
+        cards: [],
+        sections: []
+      }
+    ];
+
+    const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
+    const source = readSource('src', 'components', 'BlockRenderer.tsx');
+
+    expect(html).toContain('class="media-preview"');
+    expect(html).toContain('aria-haspopup="dialog"');
+    expect(html).toContain('aria-label="Открыть изображение: Портрет Мирры"');
+    expect(html).toContain('alt="Портрет Мирры Ключницы"');
+    expect(html).toContain('media-preview__meta');
+    expect(html).toContain('PNG');
+    expect(html).toContain('2 КБ');
+    expect(html).not.toContain('images/npcs/mirra.png');
+    expect(source).toContain('dialog.showModal()');
+    expect(source).toContain('onClose={() => setOpen(false)}');
+    expect(source).toContain('aria-label="Закрыть изображение"');
+  });
+
+  it('does not render an empty media box when an entity has only incomplete media metadata', () => {
+    const blocks: UiBlock[] = [
+      {
+        kind: 'entityDossier',
+        entityType: 'item',
+        title: 'Пустой медиа-слот',
+        subtitle: 'Предмет',
+        summary: 'У предмета пока нет изображения.',
+        badges: [],
+        media: {
+          kind: 'image',
+          title: 'Недоступное изображение',
+          url: '',
+          mediaId: 'missing-media',
+          relativePath: 'images/items/missing.png',
+          altText: 'Недоступное изображение предмета',
+          contentType: 'image/png',
+          length: 0,
+          modifiedAtUtc: '2026-06-22T00:00:00Z'
+        },
+        facts: [],
+        metrics: [],
+        hints: [],
+        list: [],
+        cards: [],
+        sections: []
+      }
+    ];
+
+    const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
+
+    expect(html).toContain('Пустой медиа-слот');
+    expect(html).not.toContain('media-preview');
+    expect(html).not.toContain('Недоступное изображение предмета');
+    expect(html).not.toContain('images/items/missing.png');
+  });
+
   it('renders entity dossiers through the accepted prototype layout instead of the legacy generic wrapper', () => {
     const itemCards = Array.from({ length: 10 }, (_, index) => ({
       kind: 'entityDossier' as const,

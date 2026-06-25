@@ -405,6 +405,19 @@ body::before {
   line-height: var(--leading-snug);
 }
 
+.media-preview figcaption span {
+  display: block;
+}
+
+.media-preview__meta {
+  margin-top: 0.2rem;
+  color: color-mix(in srgb, var(--color-parchment-muted) 70%, transparent);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 /* ── Dossier Body ── */
 .dossier-body {
   display: grid;

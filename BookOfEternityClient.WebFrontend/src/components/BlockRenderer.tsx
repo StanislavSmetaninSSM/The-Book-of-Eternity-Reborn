@@ -329,6 +329,7 @@ type PrototypeMedia = {
   url: string;
   fullUrl: string;
   altText: string;
+  meta: string;
 };
 
 type PrototypeFact = {
@@ -1205,6 +1206,7 @@ function MediaPreview({ media, fallbackTitle }: { media: PrototypeMedia; fallbac
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const alt = media.altText || media.title || fallbackTitle;
   const caption = media.title || media.altText || fallbackTitle;
+  const openLabel = `Открыть изображение: ${caption || fallbackTitle}`;
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -1219,10 +1221,21 @@ function MediaPreview({ media, fallbackTitle }: { media: PrototypeMedia; fallbac
 
   return (
     <>
-      <button className="media-preview" type="button" onClick={() => setOpen(true)}>
+      <button
+        className="media-preview"
+        type="button"
+        aria-haspopup="dialog"
+        aria-label={openLabel}
+        onClick={() => setOpen(true)}
+      >
         <figure>
           <img src={media.url} alt={alt} loading="lazy" />
-          {caption && <figcaption>{caption}</figcaption>}
+          {(caption || media.meta) && (
+            <figcaption>
+              {caption && <span>{caption}</span>}
+              {media.meta && <span className="media-preview__meta">{media.meta}</span>}
+            </figcaption>
+          )}
         </figure>
       </button>
       {open && (
@@ -1260,8 +1273,50 @@ function mediaToPrototype(media: EntityDossierBlock['media'] | Extract<UiBlock, 
     title: toSafeBlockText(media.title, ''),
     url: media.url,
     fullUrl: media.url,
-    altText: 'altText' in media ? toSafeBlockText(media.altText, '') : ''
+    altText: 'altText' in media ? toSafeBlockText(media.altText, '') : '',
+    meta: formatMediaMeta(media)
   };
+}
+
+type RenderableMedia = NonNullable<EntityDossierBlock['media']> | Extract<UiBlock, { kind: 'image' }>;
+
+function formatMediaMeta(media: RenderableMedia): string {
+  const parts: string[] = [];
+  const contentType = 'contentType' in media ? media.contentType : '';
+  const length = 'length' in media ? media.length : 0;
+  const format = formatMediaType(contentType);
+  if (format) parts.push(format);
+  if (length > 0) parts.push(formatByteSize(length));
+  return parts.join(' • ');
+}
+
+function formatMediaType(contentType: string): string {
+  const normalized = toSafeBlockText(contentType, '').toLowerCase();
+  if (!normalized.startsWith('image/')) return '';
+  const subtype = normalized.slice('image/'.length).split(/[+;]/, 1)[0];
+  if (!subtype) return '';
+  if (subtype === 'jpeg') return 'JPG';
+  if (subtype === 'svg+xml') return 'SVG';
+  return subtype.toLocaleUpperCase('ru-RU');
+}
+
+function formatByteSize(bytes: number): string {
+  if (bytes >= 1024 * 1024) {
+    const value = bytes / (1024 * 1024);
+    return `${formatCompactNumber(value)} МБ`;
+  }
+
+  if (bytes >= 1024) {
+    const value = bytes / 1024;
+    return `${formatCompactNumber(value)} КБ`;
+  }
+
+  return `${bytes} Б`;
+}
+
+function formatCompactNumber(value: number): string {
+  if (Number.isInteger(value)) return String(value);
+  return value.toLocaleString('ru-RU', { maximumFractionDigits: 1 });
 }
 
 function isRelationSection(section: PrototypeSection): boolean {
