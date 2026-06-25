@@ -5947,6 +5947,30 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Азалия", text, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_SpiritualExchangeDetail_RendersDossierCardsWithoutLegacyPanels()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_conflict обмен exchange_1"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        AssertNoAfterlifeReadOnlyDetailTechnicalLeak(result);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static dossier => dossier.EntityType == "panel" || dossier.EntityType == "collection");
+
+        var dossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static candidate => candidate.EntityType == "spiritual-exchange-detail");
+
+        Assert.Equal("Обмен духовного конфликта: Давление", dossier.Title);
+        Assert.Contains("Тень Хранителя", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стоимость ОД", text, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/afterlife_profiles профиль missing_profile")]
     [InlineData("/afterlife_threats угроза missing_threat")]

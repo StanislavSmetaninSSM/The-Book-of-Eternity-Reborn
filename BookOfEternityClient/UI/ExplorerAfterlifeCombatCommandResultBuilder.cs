@@ -1478,6 +1478,49 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         };
     }
 
+    private static UiEntityDossierBlock BuildSpiritualExchangeDetailDossier(
+        JsonObject active,
+        JsonObject exchange,
+        string name,
+        string titlePrefix)
+    {
+        var resultSummary = SafePlayerText(
+            FirstNonEmpty(GetString(exchange, "resultSummary", ""), GetString(exchange, "summary", ""), GetString(exchange, "reason", "")),
+            string.Empty);
+
+        var hints = new List<UiEntityHint>();
+        if (!string.IsNullOrWhiteSpace(resultSummary))
+            hints.Add(new UiEntityHint { Title = "Итог обмена", Text = resultSummary, Tone = UiTone.Accent });
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "spiritual-exchange-detail",
+            Title = $"{titlePrefix}: {name}",
+            Subtitle = DescribeArt(GetString(exchange, "operationType", "?")),
+            Summary = string.IsNullOrWhiteSpace(resultSummary)
+                ? DescribeOutcome(GetString(exchange, "outcome", "?"))
+                : resultSummary,
+            Facts =
+            [
+                new UiEntityFact { Label = "Конфликт", Value = SafePlayerText(FirstNonEmpty(GetString(active, "displayName", ""), GetString(active, "conflictId", "")), "активный конфликт") },
+                new UiEntityFact { Label = "Сторона души", Value = DescribeConflictLead(active, "playerSide") },
+                new UiEntityFact { Label = "Противостояние", Value = DescribeConflictLead(active, "oppositionSide") },
+                new UiEntityFact { Label = "Действие", Value = DescribeArt(GetString(exchange, "operationType", "?")) },
+                new UiEntityFact { Label = "Заявка души", Value = SafePlayerText(GetString(exchange, "playerAction", ""), "не указана") },
+                new UiEntityFact { Label = "Давление противника", Value = SafePlayerText(GetString(exchange, "incomingAction", ""), "не указано") },
+                new UiEntityFact { Label = "Исход", Value = DescribeOutcome(GetString(exchange, "outcome", "?")) },
+                new UiEntityFact { Label = "Кубики", Value = DescribeDice(exchange["diceAudit"] as JsonObject) },
+                new UiEntityFact { Label = "Позиция", Value = DescribeBeforeAfter(exchange, "conflictPosition", DescribeConflictPosition) },
+                new UiEntityFact { Label = "Напряжение души", Value = DescribeBeforeAfter(exchange, "playerSideStrain", DescribeStrain) },
+                new UiEntityFact { Label = "Напряжение противника", Value = DescribeBeforeAfter(exchange, "oppositionSideStrain", DescribeStrain) },
+                new UiEntityFact { Label = "Ответы", Value = DescribeExchangeCounterplay(GetString(exchange, "operationType", "?")) },
+                new UiEntityFact { Label = "Стоимость ОД", Value = DescribeExchangeActionPointCost(exchange) },
+                new UiEntityFact { Label = "Награда", Value = DescribeRewardWithReason(exchange["rewardAudit"] as JsonObject) }
+            ],
+            Hints = hints
+        };
+    }
+
     private static async Task<ExplorerCommandResult> BuildCombatLog(
         CommandRequest request,
         FileSystemManager fs,
@@ -2059,29 +2102,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         var name = SpiritualExchangeDisplayName(exchange, selector);
         var blocks = new List<UiBlock>
         {
-            Panel($"{titlePrefix}: {name}",
-                Grid(
-                    ("Конфликт", SafePlayerText(FirstNonEmpty(GetString(active, "displayName", ""), GetString(active, "conflictId", "")), "активный конфликт")),
-                    ("Сторона души", DescribeConflictLead(active, "playerSide")),
-                    ("Противостояние", DescribeConflictLead(active, "oppositionSide")),
-                    ("Действие", DescribeArt(GetString(exchange, "operationType", "?"))),
-                    ("Заявка души", SafePlayerText(GetString(exchange, "playerAction", ""), "не указана")),
-                    ("Давление противника", SafePlayerText(GetString(exchange, "incomingAction", ""), "не указано")),
-                    ("Исход", DescribeOutcome(GetString(exchange, "outcome", "?"))),
-                    ("Кубики", DescribeDice(exchange["diceAudit"] as JsonObject)),
-                    ("Позиция", DescribeBeforeAfter(exchange, "conflictPosition", DescribeConflictPosition)),
-                    ("Напряжение души", DescribeBeforeAfter(exchange, "playerSideStrain", DescribeStrain)),
-                    ("Напряжение противника", DescribeBeforeAfter(exchange, "oppositionSideStrain", DescribeStrain)),
-                    ("Ответы", DescribeExchangeCounterplay(GetString(exchange, "operationType", "?"))),
-                    ("Стоимость ОД", DescribeExchangeActionPointCost(exchange)),
-                    ("Награда", DescribeRewardWithReason(exchange["rewardAudit"] as JsonObject))))
+            BuildSpiritualExchangeDetailDossier(active, exchange, name, titlePrefix)
         };
-
-        var resultSummary = SafePlayerText(
-            FirstNonEmpty(GetString(exchange, "resultSummary", ""), GetString(exchange, "summary", ""), GetString(exchange, "reason", "")),
-            string.Empty);
-        if (!string.IsNullOrWhiteSpace(resultSummary))
-            blocks.Add(Message("Итог обмена", resultSummary));
 
         return Completed(
             command,
