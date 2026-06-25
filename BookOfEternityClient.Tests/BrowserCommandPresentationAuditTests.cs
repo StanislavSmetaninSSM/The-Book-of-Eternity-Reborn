@@ -87,7 +87,14 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
     {
         yield return ["/инв предмет item_dark_travel_cloak"];
         yield return ["/нпс персонаж npc_valmont_steward_marius"];
+        yield return ["/нпс раздел npc_valmont_steward_marius journal"];
+        yield return ["/нпс раздел npc_valmont_steward_marius personal-quests"];
+        yield return ["/нпс раздел npc_valmont_steward_marius activities"];
+        yield return ["/нпс раздел npc_valmont_steward_marius relationships"];
+        yield return ["/нпс раздел npc_valmont_steward_marius personality"];
         yield return ["/нпс раздел npc_valmont_steward_marius mechanics"];
+        yield return ["/нпс раздел npc_valmont_steward_marius memory"];
+        yield return ["/нпс квест npc_valmont_steward_marius quest_marius_missing_key"];
         yield return ["/квесты квест quest_valmont_letter"];
         yield return ["/фракции фракция faction_merchant_guild"];
         yield return ["/навыки навык skill_quick_lunge"];
@@ -141,6 +148,36 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
         Assert.True(
             missing.Count == 0,
             "Issue #1268 mortal read-only commands missing from browser presentation audit: " +
+            string.Join(", ", missing));
+    }
+
+    [Fact]
+    public void MortalNpcIssue1258SectionDrilldowns_AreCoveredByBrowserPresentationAudit()
+    {
+        var auditedCommands = MortalEntityDetailCommandInvocations()
+            .Select(static invocation => (string)invocation[0])
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        string[] requiredCommands =
+        [
+            "/нпс персонаж npc_valmont_steward_marius",
+            "/нпс раздел npc_valmont_steward_marius journal",
+            "/нпс раздел npc_valmont_steward_marius personal-quests",
+            "/нпс раздел npc_valmont_steward_marius activities",
+            "/нпс раздел npc_valmont_steward_marius relationships",
+            "/нпс раздел npc_valmont_steward_marius personality",
+            "/нпс раздел npc_valmont_steward_marius mechanics",
+            "/нпс раздел npc_valmont_steward_marius memory",
+            "/нпс квест npc_valmont_steward_marius quest_marius_missing_key"
+        ];
+
+        var missing = requiredCommands
+            .Where(command => !auditedCommands.Contains(command))
+            .ToList();
+
+        Assert.True(
+            missing.Count == 0,
+            "Issue #1258 NPC drilldowns missing from browser presentation audit: " +
             string.Join(", ", missing));
     }
 
