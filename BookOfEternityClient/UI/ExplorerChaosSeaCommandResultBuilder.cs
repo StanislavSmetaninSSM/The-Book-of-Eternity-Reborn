@@ -116,44 +116,76 @@ public static class ExplorerChaosSeaCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            Panel("Хранители",
-                Grid(
-                    ("Хранителей", guardians.Count.ToString()),
-                    ("Активный Хранитель", DescribeActiveGuardian(read.Node)),
-                    ("Текущая Обитель", DescribeCurrentAbode(read.Node)),
-                    ("Ожидаемое создание Хранителя", DescribeNodePresence(read.Node["pendingGuardianCreation"]))))
+            BuildGuardiansOverviewDossier(read.Node, guardians)
         };
-
-        if (guardians.Count > 0)
-        {
-            blocks.Add(new UiTableBlock
-            {
-                Title = "Обзор Хранителей",
-                Columns = ["Хранитель", "Сфера", "Обитель", "Отношение", "Подробно"],
-                Rows = guardians.Select(static guardian =>
-                {
-                    var selector = GuardianSelector(guardian);
-                    return new UiTableRow
-                    {
-                        Cells =
-                        [
-                            GuardianName(guardian),
-                            EmptyFallback(GetString(guardian, "domain", "sphere", "mantleName")),
-                            AbodeName(guardian["abode"] as JsonObject),
-                            DescribeReputation(guardian),
-                            string.IsNullOrWhiteSpace(selector)
-                                ? "не указано"
-                                : BuildGuardianDetailCommand(selector)
-                        ]
-                    };
-                }).ToList()
-            });
-        }
 
         if (includeAdvancedDiagnostics)
             AddRawOrWarning(blocks, $"Полный JSON {GuardiansPath}", read);
 
         return Completed(request.Command, blocks, BuildGuardianActions(guardians));
+    }
+
+    private static UiEntityDossierBlock BuildGuardiansOverviewDossier(JsonNode? root, IReadOnlyList<JsonObject> guardians) =>
+        new()
+        {
+            EntityType = "chaos-sea-guardians",
+            Title = "Хранители",
+            Subtitle = "Море Хаоса",
+            Summary = "Известные душе Хранители, их сферы влияния, Обители и текущее отношение.",
+            Facts =
+            [
+                new UiEntityFact { Label = "Хранителей", Value = guardians.Count.ToString() },
+                new UiEntityFact { Label = "Активный Хранитель", Value = DescribeActiveGuardian(root) },
+                new UiEntityFact { Label = "Текущая Обитель", Value = DescribeCurrentAbode(root) },
+                new UiEntityFact { Label = "Ожидаемое создание Хранителя", Value = DescribeNodePresence(root?["pendingGuardianCreation"]) }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "chaos-sea-guardians-list",
+                    Title = "Известные Хранители",
+                    Summary = guardians.Count == 0
+                        ? "Душа пока не знает ни одного Хранителя."
+                        : "Карточки Хранителей открывают подробное досье без повторного ввода команды.",
+                    Icon = "shield",
+                    Presentation = "cards",
+                    CollectionLabel = guardians.Count == 1 ? "1 Хранитель" : $"{guardians.Count} Хранителей",
+                    Collapsible = guardians.Count > 4,
+                    InitiallyExpanded = true,
+                    Cards = guardians.Select(BuildGuardianOverviewCard).ToList()
+                }
+            ]
+        };
+
+    private static UiEntityCard BuildGuardianOverviewCard(JsonObject guardian)
+    {
+        var selector = GuardianSelector(guardian);
+        var name = GuardianName(guardian);
+        var domain = EmptyFallback(GetString(guardian, "domain", "sphere", "mantleName"));
+        var abode = AbodeName(guardian["abode"] as JsonObject);
+
+        return new UiEntityCard
+        {
+            Title = name,
+            Subtitle = domain,
+            Summary = string.IsNullOrWhiteSpace(GetString(guardian, "description", "summary"))
+                ? "Хранитель Моря Хаоса."
+                : GetString(guardian, "description", "summary"),
+            Icon = "shield",
+            Facts =
+            [
+                new UiEntityFact { Label = "Сфера", Value = domain },
+                new UiEntityFact { Label = "Обитель", Value = abode },
+                new UiEntityFact { Label = "Отношение", Value = DescribeReputation(guardian) }
+            ],
+            PrimaryAction = string.IsNullOrWhiteSpace(selector)
+                ? null
+                : DetailAction(
+                    "guardians-detail-" + ToActionIdPart(selector),
+                    $"Подробно: {name}",
+                    BuildGuardianDetailCommand(selector))
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildAbodePower(

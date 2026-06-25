@@ -1951,7 +1951,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(expectedDetail, text, StringComparison.OrdinalIgnoreCase);
         if (command.Equals("/behavior", StringComparison.OrdinalIgnoreCase))
             Assert.Contains("1.25", text, StringComparison.OrdinalIgnoreCase);
-        foreach (var forbidden in new[] { "JsonObject", "entries", "codexEntries", "unlockedAchievements", "trackedProgress" })
+        foreach (var forbidden in new[] { "JsonObject", "entries", "codexEntries", "unlockedAchievements", "trackedProgress", "sourceFile", ".json" })
             Assert.DoesNotContain(forbidden, text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
@@ -5321,6 +5321,31 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.False(action.RequiresConfirmation);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_ChaosSeaGuardiansOverview_RendersDossierCardsWithoutLegacyTables()
+    {
+        await SeedRichChaosSeaGuardianAbodeDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/guardians"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
+        Assert.DoesNotContain(
+            result.Blocks.SelectMany(EnumerateEntityDossiers),
+            static dossier => dossier.EntityType == "panel");
+
+        var dossier = Assert.Single(
+            result.Blocks.SelectMany(EnumerateEntityDossiers),
+            static candidate => candidate.EntityType == "chaos-sea-guardians");
+        var guardians = Assert.Single(dossier.Sections, static section => section.Id == "chaos-sea-guardians-list");
+
+        Assert.Equal("Хранители", dossier.Title);
+        Assert.Contains("Азалия", CollectBlockText([dossier]), StringComparison.OrdinalIgnoreCase);
+        Assert.NotEmpty(guardians.Cards);
+        Assert.All(guardians.Cards, static card => Assert.NotNull(card.PrimaryAction));
+    }
+
     [Theory]
     [InlineData("/guardians хранитель guardian_azalia", "Хранитель: Азалия", "Покровительница перекрёстков", "Серет")]
     [InlineData("/abodes обитель abode_azalia", "Обитель: Сад Ночных Роз", "Оранжерея памяти", "Зал Серета")]
@@ -6654,7 +6679,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync("lore/codex_entries.json", """
         {
           "entries": [
-            { "title": "Первый знак", "content": "Тестовая запись кодекса" }
+            { "title": "Первый знак", "content": "Тестовая запись кодекса", "sourceFile": "lore/current_world/history.json" }
           ]
         }
         """);

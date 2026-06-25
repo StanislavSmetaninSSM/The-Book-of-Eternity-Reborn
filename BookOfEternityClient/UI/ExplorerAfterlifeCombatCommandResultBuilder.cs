@@ -804,7 +804,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         var summary = FirstNonEmpty(
             SafePlayerText(GetString(activity, "description", ""), string.Empty),
             SafePlayerText(GetString(activity, "narrativeSummary", ""), string.Empty),
-            DescribeThreatImpact(threat["impactProfile"] as JsonObject));
+            DescribeThreatImpactSummary(threat["impactProfile"] as JsonObject));
 
         return new UiEntityCard
         {
@@ -816,15 +816,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             [
                 new UiEntityBadge { Label = $"напряжённость {GetNumberOrString(threat, "intensity", "0")}", Tone = UiTone.Warning, Icon = "gauge" }
             ],
-            Facts =
-            [
-                new UiEntityFact { Label = "Область", Value = DescribeRealm(GetString(threat, "realm", "?")) },
-                new UiEntityFact { Label = "Напряжённость угрозы", Value = GetNumberOrString(threat, "intensity", "0") },
-                new UiEntityFact { Label = "Архетип", Value = DescribeThreatArchetype(threat["threatArchetype"] as JsonObject) },
-                new UiEntityFact { Label = "Активность", Value = DescribeThreatActivity(activity) },
-                new UiEntityFact { Label = "Давление", Value = DescribeThreatImpact(threat["impactProfile"] as JsonObject) },
-                new UiEntityFact { Label = "Связи", Value = DescribeThreatLinks(threat) }
-            ],
+            Facts = BuildAfterlifeThreatFacts(threat, activity),
             Hints = BuildThreatCardHints(threat),
             PrimaryAction = string.IsNullOrWhiteSpace(selector)
                 ? null
@@ -833,6 +825,76 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     "Открыть подробности угрозы",
                     BuildThreatDetailCommand(selector))
         };
+    }
+
+    private static List<UiEntityFact> BuildAfterlifeThreatFacts(JsonObject threat, JsonObject? activity)
+    {
+        var facts = new List<UiEntityFact>
+        {
+            new() { Label = "Область", Value = DescribeRealm(GetString(threat, "realm", "?")) },
+            new() { Label = "Напряжённость угрозы", Value = GetNumberOrString(threat, "intensity", "0") }
+        };
+
+        AddThreatArchetypeFacts(facts, threat["threatArchetype"] as JsonObject);
+        AddThreatActivityFacts(facts, activity);
+        AddThreatImpactFacts(facts, threat["impactProfile"] as JsonObject);
+
+        var links = DescribeThreatLinks(threat);
+        if (!string.Equals(links, "нет", StringComparison.OrdinalIgnoreCase))
+            facts.Add(new UiEntityFact { Label = "Связи", Value = links });
+
+        return facts;
+    }
+
+    private static void AddThreatArchetypeFacts(List<UiEntityFact> facts, JsonObject? archetype)
+    {
+        if (archetype == null)
+        {
+            facts.Add(new UiEntityFact { Label = "Мотив угрозы", Value = "не указан" });
+            return;
+        }
+
+        facts.Add(new UiEntityFact { Label = "Мотив угрозы", Value = DescribeThreatMotivation(GetString(archetype, "motivation", "?")) });
+        facts.Add(new UiEntityFact { Label = "Метод угрозы", Value = DescribeThreatMethod(GetString(archetype, "method", "?")) });
+
+        var summary = SafePlayerText(GetString(archetype, "summary", ""), string.Empty);
+        if (!string.IsNullOrWhiteSpace(summary))
+            facts.Add(new UiEntityFact { Label = "Пояснение архетипа", Value = summary });
+    }
+
+    private static void AddThreatActivityFacts(List<UiEntityFact> facts, JsonObject? activity)
+    {
+        if (activity == null)
+        {
+            facts.Add(new UiEntityFact { Label = "Текущая активность", Value = "нет текущего действия" });
+            return;
+        }
+
+        facts.Add(new UiEntityFact
+        {
+            Label = "Текущая активность",
+            Value = SafePlayerText(GetString(activity, "summary", GetString(activity, "activityId", "активность")), "активность")
+        });
+        facts.Add(new UiEntityFact { Label = "Состояние активности", Value = DescribeThreatActivityState(GetString(activity, "activeState", "active")) });
+        facts.Add(new UiEntityFact { Label = "Активна с хода", Value = GetNumberOrString(activity, "startedAtTurn", "?") });
+    }
+
+    private static void AddThreatImpactFacts(List<UiEntityFact> facts, JsonObject? impact)
+    {
+        if (impact == null)
+        {
+            facts.Add(new UiEntityFact { Label = "Давление", Value = "не указано" });
+            return;
+        }
+
+        facts.Add(new UiEntityFact
+        {
+            Label = "Цель давления",
+            Value = SafePlayerText(GetString(impact, "primaryTargetName", GetString(impact, "primaryTargetId", "?")), "не указана")
+        });
+        facts.Add(new UiEntityFact { Label = "Тип цели", Value = DescribeThreatTargetType(GetString(impact, "primaryTargetType", "?")) });
+        facts.Add(new UiEntityFact { Label = "Вид давления", Value = DescribeThreatImpactType(GetString(impact, "primaryImpact", "?")) });
+        facts.Add(new UiEntityFact { Label = "Сила давления", Value = GetNumberOrString(impact, "baseImpactValue", "0") });
     }
 
     private static UiEntityDossierBlock BuildAfterlifeThreatDetailDossier(JsonObject threat, string name)
@@ -3347,41 +3409,28 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     private static bool IsThreatVisible(JsonObject threat) =>
         threat["visibleToPlayer"] is JsonValue value && value.TryGetValue<bool>(out var visible) && visible;
 
-    private static string DescribeThreatArchetype(JsonObject? archetype)
-    {
-        if (archetype == null)
-            return "не указан";
-
-        var motivation = DescribeThreatMotivation(GetString(archetype, "motivation", "?"));
-        var method = DescribeThreatMethod(GetString(archetype, "method", "?"));
-        var summary = GetString(archetype, "summary", "");
-        return string.IsNullOrWhiteSpace(summary)
-            ? $"{motivation}; метод: {method}"
-            : $"{motivation}; метод: {method}; {summary}";
-    }
-
-    private static string DescribeThreatActivity(JsonObject? activity)
-    {
-        if (activity == null)
-            return "нет текущего действия";
-
-        var summary = GetString(activity, "summary", GetString(activity, "activityId", "активность"));
-        var state = GetString(activity, "activeState", "active");
-        var turn = GetNumberOrString(activity, "startedAtTurn", "?");
-        return $"{summary}; состояние {state}; с хода {turn}";
-    }
-
-    private static string DescribeThreatImpact(JsonObject? impact)
+    private static string DescribeThreatImpactSummary(JsonObject? impact)
     {
         if (impact == null)
-            return "не указано";
+            return "угроза раскрыта, но её давление не описано";
 
-        var target = GetString(impact, "primaryTargetName", GetString(impact, "primaryTargetId", "?"));
-        var targetType = DescribeThreatTargetType(GetString(impact, "primaryTargetType", "?"));
+        var target = SafePlayerText(GetString(impact, "primaryTargetName", GetString(impact, "primaryTargetId", "")), "цель");
         var impactType = DescribeThreatImpactType(GetString(impact, "primaryImpact", "?"));
         var value = GetNumberOrString(impact, "baseImpactValue", "0");
-        return $"{targetType}: {target}; давление: {impactType}; сила {value}";
+        return $"Давит на {target}: {impactType}, сила {value}.";
     }
+
+    private static string DescribeThreatActivityState(string state) =>
+        state.Trim().ToLowerInvariant() switch
+        {
+            "active" => "активна",
+            "dormant" => "затаилась",
+            "paused" => "приостановлена",
+            "resolved" => "завершена",
+            "hidden" => "скрыта",
+            "revealed" => "раскрыта",
+            _ => state
+        };
 
     private static string DescribeThreatLinks(JsonObject threat)
     {

@@ -3748,6 +3748,9 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
     private static bool IsTechnicalReadableJsonProperty(string propertyName) =>
         propertyName.Equals("id", StringComparison.OrdinalIgnoreCase) ||
         propertyName.EndsWith("Id", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("sourceFile", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("sourcePath", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("filePath", StringComparison.OrdinalIgnoreCase) ||
         propertyName.Equals("schemaVersion", StringComparison.OrdinalIgnoreCase) ||
         propertyName.Equals("debugNotes", StringComparison.OrdinalIgnoreCase) ||
         propertyName.StartsWith("_", StringComparison.OrdinalIgnoreCase);
