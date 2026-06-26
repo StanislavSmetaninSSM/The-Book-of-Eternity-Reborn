@@ -483,6 +483,30 @@ public sealed class GmTurnHelperContractTests
         var bootstrap = daemon[bootstrapStart..bootstrapEnd];
         Assert.DoesNotContain("copied GM docs", bootstrap, StringComparison.Ordinal);
         Assert.DoesNotContain("copied guides and examples", bootstrap, StringComparison.Ordinal);
+        Assert.Contains("BOE_GM_BOOTSTRAP_READY", bootstrap, StringComparison.Ordinal);
+        Assert.Contains("finish your response", bootstrap, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("wait for the daemon", bootstrap, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("wait for a real correlated message", bootstrap, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void DaemonAutomaticDispatch_DoesNotSendBootstrapAsSeparateGmRequest()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var turnBlock = ExtractFunctionBlock(daemon, "function Process-Turn");
+        var repairBlock = ExtractFunctionBlock(daemon, "function Process-RepairRequest");
+        var terminalFailureBlock = ExtractFunctionBlock(daemon, "function Process-TerminalProtocolFailureRequest");
+
+        Assert.Contains("function Ensure-CliBootstrapSent", daemon, StringComparison.Ordinal);
+        Assert.DoesNotContain("Ensure-CliBootstrapSent", turnBlock, StringComparison.Ordinal);
+        Assert.DoesNotContain("Ensure-CliBootstrapSent", repairBlock, StringComparison.Ordinal);
+        Assert.DoesNotContain("Ensure-CliBootstrapSent", terminalFailureBlock, StringComparison.Ordinal);
+
+        var startupWaitIndex = daemon.IndexOf("Waiting for turns... (Ctrl+C to stop)", StringComparison.Ordinal);
+        var processExistingIndex = daemon.IndexOf("# Process existing request if any", startupWaitIndex, StringComparison.Ordinal);
+        Assert.True(startupWaitIndex >= 0 && processExistingIndex > startupWaitIndex, "Expected daemon startup wait section.");
+        var startupWaitBlock = daemon[startupWaitIndex..processExistingIndex];
+        Assert.DoesNotContain("Ensure-CliBootstrapSent", startupWaitBlock, StringComparison.Ordinal);
     }
 
     [Fact]

@@ -930,7 +930,7 @@ BOOTSTRAP GM SESSION
 
 This is bootstrap only, not an active turn.
 Do NOT write ready/turn_complete.json or ready/turn_error.json yet.
-Wait for a real correlated message that explicitly references input\turn_request.json with the current sessionId/requestId/turnNumber.
+A real turn prompt will explicitly reference input\turn_request.json with the current sessionId/requestId/turnNumber.
 $($script:GmContextPackDirective)
 $($script:GmTurnHelperDirective)
 
@@ -939,7 +939,8 @@ Bootstrap scope: read only context_pack_manifest.json and README.md.
 Do not open copied guides/examples during bootstrap.
 Open large copied docs only when a per-turn, repair, or terminal-failure prompt explicitly names them.
 Do not browse repository implementation code or repo-root planning documents during bootstrap.
-After bootstrap, wait for the daemon's per-turn or repair prompt.
+After bootstrap, reply with exactly BOE_GM_BOOTSTRAP_READY and finish your response.
+Do not keep this bootstrap request open; returning to the CLI input prompt is what lets the bridge accept the real turn.
 "@
     $dispatch = Send-ToCliWindow -Message $message
     if ($dispatch -eq "sent" -or $dispatch -eq "clipboard") {
@@ -1020,22 +1021,11 @@ function Process-Turn {
         $requestId = if ($turnRequest.requestId) { $turnRequest.requestId } else { "<missing-requestId>" }
         $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmCompactTemplateDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
 
-        $bootstrapSent = Ensure-CliBootstrapSent
         $completionPath = Join-Path $ReadyDir "turn_complete.json"
         $errorPath = Join-Path $ReadyDir "turn_error.json"
         $terminalSignal = Get-CorrelatedTerminalSignal -TurnRequest $turnRequest -CompletionPath $completionPath -ErrorPath $errorPath
 
         if ($null -eq $terminalSignal) {
-            if (-not $bootstrapSent) {
-                while (-not (Ensure-CliBootstrapSent)) {
-                    if (!(Test-Path $RequestPath)) {
-                        Write-Log "  Turn cancelled while waiting for bridge/bootstrap dispatch" -Level "WARN" -Color Yellow
-                        return
-                    }
-                    Start-Sleep -Seconds 1
-                }
-            }
-
             $dispatch = Dispatch-WithRetry -Message $message -PendingPath $RequestPath
             if ($dispatch -eq "cancelled") {
                 Write-Log "  Turn cancelled while waiting for bridge turn dispatch" -Level "WARN" -Color Yellow
@@ -1183,7 +1173,6 @@ function Process-RepairRequest {
         Write-Host ""
         Write-Log "Repair request for turn #$turnNumber (attempt $attempt)" -Level "REPAIR" -Color Yellow
 
-        Ensure-CliBootstrapSent
         Dispatch-WithRetry -Message $message -PendingPath $RepairPath | Out-Null
     }
     catch {
@@ -1278,7 +1267,6 @@ function Process-TerminalProtocolFailureRequest {
         Write-Host ""
         Write-Log "Terminal protocol failure for turn #$turnNumber" -Level "PROTOCOL" -Color Red
 
-        Ensure-CliBootstrapSent
         Dispatch-WithRetry -Message $message -PendingPath $FailurePath | Out-Null
     }
     catch {
@@ -1460,8 +1448,6 @@ try {
     Write-Host ""
     Write-Log "Waiting for turns... (Ctrl+C to stop)" -Color Yellow
     Write-Host ""
-
-    Ensure-CliBootstrapSent
 
     # Process existing request if any
     if (Test-Path $TurnRequestFile) {
