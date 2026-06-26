@@ -65,14 +65,14 @@
 **Independent Test**: Manual live run produces ledger records and rubric notes tied to follow-up issues/comments.
 
 - [X] T023 [US5] Add a live-test checklist or generated context-pack note for the rubric dimensions from #1290.
-- [ ] T024 [US5] Run a short live GM bridge test with `codex --dangerously-bypass-approvals-and-sandbox`.
-- [ ] T025 [US5] Record findings as comments on #1285-#1290 or create follow-up issues for repeated harness gaps.
+- [X] T024 [US5] Run a short live GM bridge test with `codex --dangerously-bypass-approvals-and-sandbox`.
+- [X] T025 [US5] Record findings as comments on #1285-#1290 or create follow-up issues for repeated harness gaps.
 
 ## Final Phase: Polish & Verification
 
-- [ ] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
-- [ ] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
-- [ ] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.
+- [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
+- [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
+- [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.
 
 ## Dependencies
 
