@@ -824,6 +824,81 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonContextPack_RendersBoundedRelevantExperienceLessons()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-experience-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            var ledgerPath = Path.Combine(control, "gm_trajectory_ledger.jsonl");
+            var ledgerLines = Enumerable.Range(1, 7)
+                .Select(i => $$"""
+                    {"recordId":"gmtraj_relevant_{{i}}","kind":"repair","sessionId":"prior","turnId":"repair-{{i}}","requestId":"repair-{{i}}","turnNumber":{{i}},"realm":"ChaosSea","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1","actorReasoning":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"rejected","issueKinds":["actor_reasoning_missing"],"repairPacketRefs":["packet-{{i}}"]},"repair":{"attempts":{{i}},"status":"requested"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":false,"playerFacingOutputPresent":false,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-06-26T10:0{{i}}:00Z"}
+                    """.Trim())
+                .Append("""
+                    {"recordId":"gmtraj_irrelevant_mortal","kind":"repair","sessionId":"prior","turnId":"repair-mortal","requestId":"repair-mortal","turnNumber":90,"realm":"MortalWorld","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"rejected","issueKinds":["inventory_item_missing"],"repairPacketRefs":["packet-mortal"]},"repair":{"attempts":1,"status":"requested"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":false,"playerFacingOutputPresent":false,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-06-26T09:00:00Z"}
+                    """.Trim());
+            File.WriteAllText(ledgerPath, string.Join(Environment.NewLine, ledgerLines) + Environment.NewLine, Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-repair",
+                  "turnNumber": 100,
+                  "currentRealm": "Chaos Sea",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "actor_reasoning_missing",
+                      "category": "StateConsistency",
+                      "section": "DebugLogs",
+                      "message": "Actor reasoning is missing."
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            Assert.True(WaitForFileContaining(lessonsJsonPath, "actor_reasoning_missing", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var rootElement = document.RootElement;
+            Assert.Equal(5, rootElement.GetProperty("lessons").GetArrayLength());
+            Assert.Equal("ChaosSea", rootElement.GetProperty("query").GetProperty("realm").GetString());
+            Assert.Equal("validation_repair", rootElement.GetProperty("query").GetProperty("mode").GetString());
+            Assert.Equal("actor_reasoning_missing", rootElement.GetProperty("query").GetProperty("issueKinds")[0].GetString());
+            Assert.DoesNotContain("inventory_item_missing", rootElement.GetRawText(), StringComparison.Ordinal);
+            Assert.Contains("validators and current templates remain authoritative", rootElement.GetProperty("guidance").GetString(), StringComparison.OrdinalIgnoreCase);
+
+            var firstLesson = rootElement.GetProperty("lessons")[0];
+            Assert.Equal("actor_reasoning_missing", firstLesson.GetProperty("match").GetProperty("issueKinds")[0].GetString());
+            Assert.Equal("ACTOR_REASONING_TEMPLATE.md", firstLesson.GetProperty("preferredHarnessSurface").GetString());
+            Assert.Equal("v1", firstLesson.GetProperty("versions").GetProperty("template").GetString());
+            Assert.DoesNotContain("Process turn #", firstLesson.GetRawText(), StringComparison.Ordinal);
+
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(File.Exists(lessonsMarkdownPath));
+            var readme = File.ReadAllText(Path.Combine(control, "gm_context_pack", "README.md"), Encoding.UTF8);
+            Assert.Contains("GM_EXPERIENCE_LESSONS", readme, StringComparison.Ordinal);
+            Assert.Contains("hints", readme, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonTurnAndRepairPrompts_PreferCompactTemplatesOverLargeExamples()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");

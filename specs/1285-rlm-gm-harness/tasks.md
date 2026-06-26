@@ -31,10 +31,10 @@
 
 **Independent Test**: Given mixed trajectory records, only relevant compact lessons are selected under the configured cap.
 
-- [ ] T011 [US2] Add failing tests for experience lesson relevance filtering and output caps in `BookOfEternityClient.Tests/GmTurnHelperContractTests.cs`.
-- [ ] T012 [US2] Implement compact lesson extraction and context-pack rendering in the existing context-pack generation flow.
-- [ ] T013 [US2] Add version/staleness fields so old template or contract advice does not silently override current validators.
-- [ ] T014 [US2] Update GM-facing prompt/docs so lessons are hints subordinate to validators and templates.
+- [X] T011 [US2] Add failing tests for experience lesson relevance filtering and output caps in `BookOfEternityClient.Tests/GmTurnHelperContractTests.cs`.
+- [X] T012 [US2] Implement compact lesson extraction and context-pack rendering in the existing context-pack generation flow.
+- [X] T013 [US2] Add version/staleness fields so old template or contract advice does not silently override current validators.
+- [X] T014 [US2] Update GM-facing prompt/docs so lessons are hints subordinate to validators and templates.
 
 ## Phase 5: User Story 3 - Safe GM Context-Probing Surface (P2)
 
