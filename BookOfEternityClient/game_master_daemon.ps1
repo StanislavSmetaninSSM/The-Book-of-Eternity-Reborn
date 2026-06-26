@@ -125,10 +125,13 @@ $script:GmExperienceLessonJsonPath = Join-Path $script:GmContextPackRoot "Lesson
 $script:GmExperienceLessonMarkdownPath = Join-Path $script:GmContextPackRoot "Lessons\GM_EXPERIENCE_LESSONS.md"
 $script:GmSafeProbeJsonPath = Join-Path $script:GmContextPackRoot "Probes\GM_SAFE_PROBES.json"
 $script:GmSafeProbeMarkdownPath = Join-Path $script:GmContextPackRoot "Probes\GM_SAFE_PROBES.md"
+$script:GmLiveTestRubricJsonPath = Join-Path $script:GmContextPackRoot "Rubrics\GM_LIVE_TEST_RUBRIC.json"
+$script:GmLiveTestRubricMarkdownPath = Join-Path $script:GmContextPackRoot "Rubrics\GM_LIVE_TEST_RUBRIC.md"
 $script:GmCompactTemplateDirective = ""
 $script:GmExperienceLessonsDirective = ""
 $script:GmSafeProbeDirective = ""
 $script:GmSourceFallbackDirective = ""
+$script:GmLiveTestRubricDirective = ""
 
 function Quote-PowerShellSingleQuotedString {
     param([string]$Value)
@@ -664,6 +667,106 @@ function Write-GmSafeProbes {
     }
 }
 
+function Write-GmLiveTestRubric {
+    $rubricDir = Split-Path $script:GmLiveTestRubricJsonPath -Parent
+    if (!(Test-Path $rubricDir)) {
+        New-Item -ItemType Directory -Path $rubricDir -Force | Out-Null
+    }
+
+    $notesPath = "game_state/control/gm_live_test_notes.jsonl"
+    $dimensions = @(
+        [ordered]@{
+            id = "turn_success"
+            prompt = "Valid output, player-facing narrative, correct command lifecycle, and exactly one terminal signal."
+        },
+        [ordered]@{
+            id = "harness_containment"
+            prompt = "No implementation-code browsing, no raw wrong-realm writes, no direct worker canonical writes."
+        },
+        [ordered]@{
+            id = "friction"
+            prompt = "Time to first valid turn, repair loops, missing-tool moments, context pack size/read volume."
+        },
+        [ordered]@{
+            id = "delegation"
+            prompt = "Whether a worker was used or should have been used; proposal quality and apply/reject outcome."
+        },
+        [ordered]@{
+            id = "experience_memory"
+            prompt = "Whether retrieved lessons, safe probes, and compact templates were used and helped."
+        },
+        [ordered]@{
+            id = "follow_up_generation"
+            prompt = "Repeated GM difficulty becomes a harness, validator/normalizer, rollback/tool issue, or explicit no-change rationale."
+        }
+    )
+
+    $payload = [ordered]@{
+        schemaVersion = 1
+        generatedAtUtc = (Get-Date).ToUniversalTime().ToString("o")
+        issue = "#1290"
+        notesPath = $notesPath
+        ledgerPath = "game_state/control/gm_trajectory_ledger.jsonl"
+        workerAuditPath = "game_state/control/gm_worker_audit.jsonl"
+        dimensions = $dimensions
+        noteSchema = [ordered]@{
+            noteId = "gmlivetest_<short_id>"
+            recordId = "gmtraj_<id or unknown>"
+            requestId = "<request id or empty>"
+            turnNumber = 0
+            realm = "MortalWorld|ChaosSea|ShiningAbode|Unknown"
+            dimension = "turn_success|harness_containment|friction|delegation|experience_memory|follow_up_generation"
+            severity = "info|warning|blocker"
+            observation = "<what happened>"
+            harnessFollowUp = "<tool/validator/rollback/template/worker change, issue ref, or no-change rationale>"
+            issueRef = "#<issue number or empty>"
+            createdAtUtc = "<ISO 8601 UTC timestamp>"
+        }
+    }
+
+    Set-Content -LiteralPath $script:GmLiveTestRubricJsonPath -Value (($payload | ConvertTo-Json -Depth 8) + [Environment]::NewLine) -Encoding UTF8
+
+    $markdown = @(
+        "# GM Live-Test Rubric",
+        "",
+        "Use this during harness live tests. The goal is not only to finish a turn; record whether the harness made the GM's work bounded, safe, and easy.",
+        "",
+        "- Issue: #1290",
+        '- Trajectory ledger: `game_state/control/gm_trajectory_ledger.jsonl`',
+        '- Worker audit: `game_state/control/gm_worker_audit.jsonl`',
+        "- Structured notes: ``$notesPath``",
+        "",
+        "## Dimensions",
+        ""
+    )
+    foreach ($dimension in $dimensions) {
+        $markdown += "### $($dimension.id)"
+        $markdown += $dimension.prompt
+        $markdown += ""
+    }
+    $markdown += "## Structured Note Shape"
+    $markdown += ""
+    $markdown += "Append one JSON object per line to ``$notesPath`` when a notable success, friction point, missing tool, delegation decision, or follow-up appears."
+    $markdown += ""
+    $markdown += '```json'
+    $markdown += ($payload.noteSchema | ConvertTo-Json -Depth 4)
+    $markdown += '```'
+    $markdown += ""
+    $markdown += "Repeated difficulty should become a harness issue, validator/normalizer issue, rollback/tool issue, worker-packet issue, or explicit no-change rationale."
+
+    Set-Content -LiteralPath $script:GmLiveTestRubricMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine) -Encoding UTF8
+
+    return [ordered]@{
+        role = "live_test_rubric"
+        relativePath = "Rubrics/GM_LIVE_TEST_RUBRIC.json"
+        generated = $true
+        sessionPath = $script:GmLiveTestRubricJsonPath
+        markdownPath = $script:GmLiveTestRubricMarkdownPath
+        notesPath = $notesPath
+        dimensionCount = $dimensions.Count
+    }
+}
+
 function Write-GmContextPack {
     if (!(Test-Path $script:GmContextPackRoot)) {
         New-Item -ItemType Directory -Path $script:GmContextPackRoot -Force | Out-Null
@@ -877,6 +980,7 @@ Use exact actor names from state/validation packets. Keep punctuation stable; do
 
     $experienceLessons = Write-GmExperienceLessons
     $safeProbes = Write-GmSafeProbes
+    $liveTestRubric = Write-GmLiveTestRubric
 
     $readmePath = Join-Path $script:GmContextPackRoot "README.md"
     $readme = @"
@@ -892,6 +996,7 @@ Start here instead of browsing repository implementation code.
 - Use Probes/GM_SAFE_PROBES.md for bounded read-only context questions before implementation source.
 - Use Templates/* before opening large copied examples for common turn, repair, progression, actor reasoning, and tempoAdvantage shapes.
 - Use Lessons/GM_EXPERIENCE_LESSONS.md as short hints only; validators and current templates remain authoritative.
+- Use Rubrics/GM_LIVE_TEST_RUBRIC.md during live tests to record harness friction and follow-up notes in game_state/control/gm_live_test_notes.jsonl.
 - Open large copied docs only when a per-turn, repair, or terminal-failure prompt explicitly names them.
 - Use '$($script:GmTurnHelperBootstrapPath)' for safe JSON writes and terminal signals.
 - During normal play or validation repair, do not read implementation code such as BookOfEternityClient/**/*.cs.
@@ -912,12 +1017,14 @@ Start here instead of browsing repository implementation code.
         templates = $templates
         experienceLessons = $experienceLessons
         safeProbes = $safeProbes
+        liveTestRubric = $liveTestRubric
         rules = @(
             "Bootstrap scope: read only context_pack_manifest.json and README.md.",
             "Do not open copied guides/examples during bootstrap; open them only when a per-turn, repair, or terminal-failure prompt explicitly names them.",
             "Use Probes/GM_SAFE_PROBES.md for bounded read-only context probes before considering implementation source.",
             "Use compact Templates/* before opening large copied examples for common turn, repair, progression, actor reasoning, and tempoAdvantage field names.",
             "Use Lessons/GM_EXPERIENCE_LESSONS.md as hints only; validators and current compact templates remain authoritative.",
+            "Use Rubrics/GM_LIVE_TEST_RUBRIC.md during live tests to connect observations to gm_trajectory_ledger.jsonl record ids and follow-up issues.",
             "Use session-local copied GM docs/examples before repository files when a turn/repair prompt names those docs.",
             "Do not read implementation code such as BookOfEternityClient/**/*.cs during normal play or validation repair.",
             "For validation repair, prefer validation_repair_request.json.harnessRepairPackets, session state/control files, and helper commands over source-code archaeology."
@@ -939,6 +1046,7 @@ Start here instead of browsing repository implementation code.
     $script:GmExperienceLessonsDirective = " Experience lessons are hints only: '$($script:GmExperienceLessonMarkdownPath)'. Use them to avoid repeated mistakes, but current validators, repair packets, and compact templates remain authoritative."
     $script:GmSafeProbeDirective = " Safe GM probes are first for bounded context questions: '$($script:GmSafeProbeMarkdownPath)'. They are read-only; if a needed fact is missing, record a missing harness surface instead of treating implementation source as normal workflow."
     $script:GmSourceFallbackDirective = " Do not read implementation code such as BookOfEternityClient/**/*.cs during normal play or validation repair; use safe GM probes, validation_repair_request.json.harnessRepairPackets, session state/control files, helper commands, and named copied GM docs instead."
+    $script:GmLiveTestRubricDirective = " Live-test rubric: '$($script:GmLiveTestRubricMarkdownPath)'. When running a harness live test, tie notable observations to gm_trajectory_ledger.jsonl records and append structured notes to game_state/control/gm_live_test_notes.jsonl."
 }
 
 Write-GmTurnHelperBootstrap
@@ -1983,7 +2091,7 @@ function Process-Turn {
 
         # Send processing command to CLI window
         $requestId = if ($turnRequest.requestId) { $turnRequest.requestId } else { "<missing-requestId>" }
-        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
+        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
 
         $completionPath = Join-Path $ReadyDir "turn_complete.json"
         $errorPath = Join-Path $ReadyDir "turn_error.json"
@@ -2162,7 +2270,7 @@ function Process-RepairRequest {
         }
 
         $readyPath = "$GameSessionPath\game_state\control\validation_repair_ready.json"
-        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples. Also use '$($script:CompactActorReasoningTemplatePath)' for actor coverage repairs and prefer validation_repair_request.json.harnessRepairPackets over source-code archaeology. Read '$($script:TaskGuideMainPath)' for repair phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) Fix only the listed validation errors in the already written files IN PLACE. Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
+        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples. Also use '$($script:CompactActorReasoningTemplatePath)' for actor coverage repairs and prefer validation_repair_request.json.harnessRepairPackets over source-code archaeology. Read '$($script:TaskGuideMainPath)' for repair phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) Fix only the listed validation errors in the already written files IN PLACE. Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
         if ($hasDiagnosticOnlyMetadata) {
             $message += " The current repair request marks sessionId/requestId/turnNumber as diagnostic-only sentinel values because validated pending snapshot context is unavailable or invalid. Do NOT copy those sentinel metadata into $readyPath. First restore pending snapshot context/authority and then use the freshest client-authored repair request with valid metadata before writing validation_repair_ready.json."
         }
@@ -2270,7 +2378,7 @@ function Process-TerminalProtocolFailureRequest {
             }
         }
 
-        $message = "Terminal protocol failure for turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\terminal_protocol_failure_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for terminal protocol phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) This is NOT validation_repair_request.json and NOT a repair loop. The client already closed the current wait cycle. Do NOT create validation_repair_ready.json. Do NOT create a new turn on your own. Fix your terminal-signal discipline for the NEXT correct client request: exactly one terminal signal, terminal signal written last, never both turn_complete and turn_error for one request."
+        $message = "Terminal protocol failure for turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\terminal_protocol_failure_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for terminal protocol phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) This is NOT validation_repair_request.json and NOT a repair loop. The client already closed the current wait cycle. Do NOT create validation_repair_ready.json. Do NOT create a new turn on your own. Fix your terminal-signal discipline for the NEXT correct client request: exactly one terminal signal, terminal signal written last, never both turn_complete and turn_error for one request."
         if ($hasDiagnosticOnlyMetadata) {
             $message += " The sessionId/requestId/turnNumber in this terminal protocol failure request are diagnostic-only sentinel values because validated pending snapshot context is unavailable or invalid. Do NOT treat them as authoritative correlation metadata for the next step; restore pending snapshot context/authority first and then wait for the freshest correct client request."
         }

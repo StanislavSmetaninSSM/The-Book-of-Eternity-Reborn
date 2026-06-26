@@ -64,7 +64,7 @@
 
 **Independent Test**: Manual live run produces ledger records and rubric notes tied to follow-up issues/comments.
 
-- [ ] T023 [US5] Add a live-test checklist or generated context-pack note for the rubric dimensions from #1290.
+- [X] T023 [US5] Add a live-test checklist or generated context-pack note for the rubric dimensions from #1290.
 - [ ] T024 [US5] Run a short live GM bridge test with `codex --dangerously-bypass-approvals-and-sandbox`.
 - [ ] T025 [US5] Record findings as comments on #1285-#1290 or create follow-up issues for repeated harness gaps.
 

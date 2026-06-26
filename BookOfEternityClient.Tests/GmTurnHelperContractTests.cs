@@ -535,6 +535,24 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonContextPack_ExposesLiveTestRubric()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("Rubrics\\GM_LIVE_TEST_RUBRIC.md", daemon, StringComparison.Ordinal);
+        Assert.Contains("Rubrics\\GM_LIVE_TEST_RUBRIC.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("gm_live_test_notes.jsonl", daemon, StringComparison.Ordinal);
+        Assert.Contains("turn_success", daemon, StringComparison.Ordinal);
+        Assert.Contains("harness_containment", daemon, StringComparison.Ordinal);
+        Assert.Contains("friction", daemon, StringComparison.Ordinal);
+        Assert.Contains("delegation", daemon, StringComparison.Ordinal);
+        Assert.Contains("experience_memory", daemon, StringComparison.Ordinal);
+        Assert.Contains("follow_up_generation", daemon, StringComparison.Ordinal);
+        Assert.Contains("$script:GmLiveTestRubricDirective", daemon, StringComparison.Ordinal);
+        Assert.Contains("$($script:GmLiveTestRubricDirective)", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void DaemonCompactTemplates_DoNotTeachInvalidValidationShapes()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -1050,7 +1068,7 @@ public sealed class GmTurnHelperContractTests
             Assert.DoesNotContain("Process turn #", firstLesson.GetRawText(), StringComparison.Ordinal);
 
             var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
-            Assert.True(File.Exists(lessonsMarkdownPath));
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "GM Experience Lessons", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
             var readmePath = Path.Combine(control, "gm_context_pack", "README.md");
             Assert.True(WaitForFileContaining(readmePath, "GM_EXPERIENCE_LESSONS", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
             var readme = File.ReadAllText(readmePath, Encoding.UTF8);
