@@ -225,7 +225,10 @@ function Invoke-BridgeRequestChecked {
 }
 
 function Start-Bridge {
-    param([string]$ResolvedSessionPath)
+    param(
+        [string]$ResolvedSessionPath,
+        [bool]$VisibleBridge = $false
+    )
 
     $status = Read-BridgeStatus $ResolvedSessionPath
     if ($status -and $status.helperPid) {
@@ -267,18 +270,31 @@ catch {{
     $hostScript = $hostScriptTemplate -f $bridgeCommand
     $encodedHostScript = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($hostScript))
 
+    $windowStyle = if ($VisibleBridge) { "Normal" } else { "Hidden" }
+
     Start-Process -FilePath "powershell.exe" `
         -ArgumentList @("-NoExit", "-ExecutionPolicy", "Bypass", "-EncodedCommand", $encodedHostScript) `
-        -WorkingDirectory $repoRoot | Out-Null
+        -WorkingDirectory $repoRoot `
+        -WindowStyle $windowStyle | Out-Null
 
-    Write-Host "GM bridge starting in a new console window..." -ForegroundColor Green
+    if ($VisibleBridge) {
+        Write-Host "GM bridge starting in a visible console window..." -ForegroundColor Green
+    }
+    else {
+        Write-Host "GM bridge starting in a hidden console window. Use status/diagnostics to inspect it." -ForegroundColor Green
+    }
 }
 
 $resolvedSessionPath = Resolve-SessionPath $SessionPath
 
 switch ($Action.ToLowerInvariant()) {
     "start-bridge" {
-        Start-Bridge -ResolvedSessionPath $resolvedSessionPath
+        $visibleBridge = @($Arguments | Where-Object {
+            [string]::Equals($_, "visible", [System.StringComparison]::OrdinalIgnoreCase) -or
+            [string]::Equals($_, "-visible", [System.StringComparison]::OrdinalIgnoreCase) -or
+            [string]::Equals($_, "--visible", [System.StringComparison]::OrdinalIgnoreCase)
+        }).Count -gt 0
+        Start-Bridge -ResolvedSessionPath $resolvedSessionPath -VisibleBridge $visibleBridge
         break
     }
     "status" {
@@ -346,7 +362,7 @@ switch ($Action.ToLowerInvariant()) {
     }
     default {
         Write-Host "Usage:" -ForegroundColor Yellow
-        Write-Host "  .\bookofeternity.ps1 start-bridge [-SessionPath <path>]" -ForegroundColor Yellow
+        Write-Host "  .\bookofeternity.ps1 start-bridge [visible] [-SessionPath <path>]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 status [-SessionPath <path>]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 diagnostics [-SessionPath <path>]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 addText <text> [-SessionPath <path>]" -ForegroundColor Yellow

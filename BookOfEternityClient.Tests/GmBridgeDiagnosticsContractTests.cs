@@ -182,9 +182,45 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("_status.State = \"Ready\";", source, StringComparison.Ordinal);
         Assert.Contains("_status.LastError = null;", source, StringComparison.Ordinal);
         Assert.True(
-            source.IndexOf("RefreshDispatchFailureRecoveryIfCliPromptReady();", StringComparison.Ordinal) <
+            source.IndexOf("await RefreshBridgeAutomationStateAsync();", StringComparison.Ordinal) <
             source.IndexOf("case \"dispatchprompt\":", StringComparison.Ordinal),
             "Status and dispatch requests must recover a stale DispatchFailed state before rejecting the next prompt.");
+    }
+
+    [Fact]
+    public void BridgeHost_AutoAcceptsTrustPromptOnlyForSessionContextPack()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("AutoAcceptSessionContextPackTrustPromptAsync", source, StringComparison.Ordinal);
+        Assert.Contains("IsWorkspaceTrustPrompt", source, StringComparison.Ordinal);
+        Assert.Contains("IsSessionContextPackWorkingDirectory", source, StringComparison.Ordinal);
+        Assert.Contains("game_state", source, StringComparison.Ordinal);
+        Assert.Contains("gm_context_pack", source, StringComparison.Ordinal);
+        Assert.Contains("_lastAutoTrustOutputVersion", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BridgeHost_AutoMarksReadyOnlyAtIdleCodexPrompt()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("AutoMarkReadyIfCliPromptReady", source, StringComparison.Ordinal);
+        Assert.Contains("IsCodexCliIdlePrompt", source, StringComparison.Ordinal);
+        Assert.Contains("OpenAI Codex", source, StringComparison.Ordinal);
+        Assert.Contains("Starting MCP servers", source, StringComparison.Ordinal);
+        Assert.Contains("Codex CLI is not at an idle input prompt", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void LauncherScript_StartBridgeDefaultsHiddenAndAllowsVisibleFallback()
+    {
+        var source = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");
+
+        Assert.Contains("-WindowStyle $windowStyle", source, StringComparison.Ordinal);
+        Assert.Contains("$visibleBridge", source, StringComparison.Ordinal);
+        Assert.Contains("visible", source, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("GM bridge starting in a hidden console window", source, StringComparison.Ordinal);
     }
 
     [Fact]

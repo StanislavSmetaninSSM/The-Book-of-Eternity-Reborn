@@ -112,6 +112,7 @@ internal sealed class BridgeHost : IDisposable
     private CancellationTokenSource? _shellLoopCts;
     private long _outputVersion;
     private TaskCompletionSource<bool> _outputChanged = CreateOutputSignal();
+    private long _lastAutoTrustOutputVersion = -1;
     private BridgeStatus _status;
 
     public BridgeHost(string sessionPath, string pipeName)
@@ -160,7 +161,7 @@ internal sealed class BridgeHost : IDisposable
                         HandlePtyExited_NoThrow();
                 }
 
-                RefreshDispatchFailureRecoveryIfCliPromptReady();
+                await RefreshBridgeAutomationStateAsync();
                 await Task.Delay(250, _cts.Token);
             }
         }
@@ -232,6 +233,8 @@ internal sealed class BridgeHost : IDisposable
     private async Task<BridgeResponse> HandleRequestAsync(BridgeRequest request)
     {
         var command = (request.Command ?? string.Empty).Trim().ToLowerInvariant();
+        await RefreshBridgeAutomationStateAsync();
+
         switch (command)
         {
             case "status":
@@ -517,11 +520,68 @@ internal sealed class BridgeHost : IDisposable
         await WaitForOutputQuietPeriodAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1), _cts.Token);
     }
 
+    private async Task RefreshBridgeAutomationStateAsync()
+    {
+        await AutoAcceptSessionContextPackTrustPromptAsync();
+        AutoMarkReadyIfCliPromptReady();
+        RefreshDispatchFailureRecoveryIfCliPromptReady();
+    }
+
+    private async Task AutoAcceptSessionContextPackTrustPromptAsync()
+    {
+        var visibleText = ReadVisibleConsoleText();
+        if (!IsWorkspaceTrustPrompt(visibleText))
+            return;
+
+        long outputVersion;
+        string workingDirectory;
+        lock (_sync)
+        {
+            outputVersion = _outputVersion;
+            workingDirectory = _status.ShellWorkingDirectory;
+        }
+
+        if (outputVersion == _lastAutoTrustOutputVersion ||
+            !IsSessionContextPackWorkingDirectory(workingDirectory))
+        {
+            return;
+        }
+
+        _lastAutoTrustOutputVersion = outputVersion;
+        await WriteToPtyAsync(string.Empty, appendEnter: true);
+    }
+
+    private void AutoMarkReadyIfCliPromptReady()
+    {
+        var visibleText = ReadVisibleConsoleText();
+        if (!IsCodexCliIdlePrompt(visibleText))
+            return;
+
+        lock (_sync)
+        {
+            if (_status.Ready ||
+                string.Equals(_status.State, "Busy", StringComparison.Ordinal) ||
+                string.Equals(_status.State, "Dispatching", StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _status.Ready = true;
+            _status.State = "Ready";
+            _status.LastError = null;
+            WriteStatusFile();
+        }
+    }
+
     private CliPromptReadiness ProbeCliPromptReadinessForDispatch()
     {
         var visibleText = ReadVisibleConsoleText();
         if (string.IsNullOrWhiteSpace(visibleText))
-            return CliPromptReadiness.Ready();
+        {
+            return IsCodexCliConfigured()
+                ? CliPromptReadiness.NotReady("Codex CLI is not at an idle input prompt.")
+                : CliPromptReadiness.Ready();
+        }
 
         var normalized = NormalizeVisibleConsoleText(visibleText);
         if (IsCodexCliWorkingScreen(normalized))
@@ -535,17 +595,70 @@ internal sealed class BridgeHost : IDisposable
             return CliPromptReadiness.NotReady("Codex CLI is waiting for a workspace trust confirmation.");
         }
 
+        if (IsCodexCliConfigured() && !IsCodexCliIdlePrompt(normalized))
+            return CliPromptReadiness.NotReady("Codex CLI is not at an idle input prompt.");
+
         return CliPromptReadiness.Ready();
     }
 
     private static string NormalizeVisibleConsoleText(string visibleText) =>
         visibleText.Replace('\u00A0', ' ');
 
+    private bool IsCodexCliConfigured()
+    {
+        string? launchCommand;
+        lock (_sync)
+            launchCommand = _status.CliLaunchCommand;
+
+        return IsCodexCliCommand(launchCommand);
+    }
+
+    private static bool IsCodexCliCommand(string? launchCommand) =>
+        !string.IsNullOrWhiteSpace(launchCommand) &&
+        launchCommand.Contains("codex", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsWorkspaceTrustPrompt(string visibleText)
+    {
+        if (string.IsNullOrWhiteSpace(visibleText))
+            return false;
+
+        var normalized = NormalizeVisibleConsoleText(visibleText);
+        return normalized.Contains("Do you trust the contents of this directory", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Contains("Do you trust", StringComparison.OrdinalIgnoreCase) &&
+               normalized.Contains("Press enter to continue", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool IsSessionContextPackWorkingDirectory(string? workingDirectory)
+    {
+        if (string.IsNullOrWhiteSpace(workingDirectory))
+            return false;
+
+        var fullPath = Path.GetFullPath(workingDirectory);
+        var contextPackPath = Path.GetFullPath(Path.Combine(_sessionPath, "game_state", "control", "gm_context_pack"));
+        return string.Equals(fullPath, contextPackPath, StringComparison.OrdinalIgnoreCase) ||
+               fullPath.StartsWith(contextPackPath + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) ||
+               fullPath.StartsWith(contextPackPath + Path.AltDirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+    }
+
     private static bool IsCodexCliWorkingScreen(string visibleText)
     {
         var normalized = NormalizeVisibleConsoleText(visibleText);
-        return normalized.Contains("esc to interrupt", StringComparison.OrdinalIgnoreCase) &&
+        return normalized.Contains("Starting MCP servers", StringComparison.OrdinalIgnoreCase) ||
+            normalized.Contains("esc to interrupt", StringComparison.OrdinalIgnoreCase) &&
             normalized.Contains("Working", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsCodexCliIdlePrompt(string visibleText)
+    {
+        if (string.IsNullOrWhiteSpace(visibleText))
+            return false;
+
+        var normalized = NormalizeVisibleConsoleText(visibleText);
+        if (IsWorkspaceTrustPrompt(normalized) || IsCodexCliWorkingScreen(normalized))
+            return false;
+
+        return normalized.Contains("OpenAI Codex", StringComparison.OrdinalIgnoreCase) &&
+            normalized.Contains("›", StringComparison.Ordinal);
     }
 
     private void RefreshDispatchFailureRecoveryIfCliPromptReady()
