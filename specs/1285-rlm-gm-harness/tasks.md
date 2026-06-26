@@ -4,14 +4,14 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 Link this Spec Kit feature from `AGENTS.md` and `.specify/feature.json`.
-- [ ] T002 Add GitHub issue references #1285-#1290 to implementation commits and issue comments as work progresses.
+- [X] T001 Link this Spec Kit feature from `AGENTS.md` and `.specify/feature.json`.
+- [X] T002 Add GitHub issue references #1285-#1290 to implementation commits and issue comments as work progresses.
 
 ## Phase 2: Foundational
 
-- [ ] T003 Finish and verify #1280 compact turn/repair templates in `BookOfEternityClient/game_master_daemon.ps1` and `BookOfEternityClient.Tests/GmTurnHelperContractTests.cs`.
-- [ ] T004 [P] Review existing worker proposal and validation repair docs in `OtherGuides/GM_Worker_Bridges.md` and `Examples/example_validation_manifest.json` for references that the new ledger must preserve.
-- [ ] T005 [P] Identify current session context-pack output paths in `BookOfEternityClient/game_master_daemon.ps1` and related tests before adding new artifacts.
+- [X] T003 Finish and verify #1280 compact turn/repair templates in `BookOfEternityClient/game_master_daemon.ps1` and `BookOfEternityClient.Tests/GmTurnHelperContractTests.cs`.
+- [X] T004 [P] Review existing worker proposal and validation repair docs in `OtherGuides/GM_Worker_Bridges.md` and `Examples/example_validation_manifest.json` for references that the new ledger must preserve.
+- [X] T005 [P] Identify current session context-pack output paths in `BookOfEternityClient/game_master_daemon.ps1` and related tests before adding new artifacts.
 
 ## Phase 3: User Story 1 - Live Turn Trajectory Ledger (P1)
 
@@ -19,11 +19,11 @@
 
 **Independent Test**: Simulate successful and repair turns and assert ledger records include identity, validation, repair, worker, rollback, timing, and rubric fields.
 
-- [ ] T006 [US1] Add failing tests for successful-turn trajectory emission in `BookOfEternityClient.Tests/GmTurnHelperContractTests.cs`.
-- [ ] T007 [US1] Add failing tests for repair-turn trajectory emission in `BookOfEternityClient.Tests/GmTurnHelperContractTests.cs`.
-- [ ] T008 [US1] Implement trajectory record creation in `BookOfEternityClient/game_master_daemon.ps1` or the existing harness owner selected by nearby code.
-- [ ] T009 [US1] Include validation, repair, worker, rollback, dispatch, and rubric fields without embedding giant prompts or secrets.
-- [ ] T010 [US1] Update GM-facing guidance if the ledger path or interpretation is exposed to the GM.
+- [X] T006 [US1] Add failing tests for successful-turn trajectory emission in `BookOfEternityClient.Tests/GmTurnHelperContractTests.cs`.
+- [X] T007 [US1] Add failing tests for repair-turn trajectory emission in `BookOfEternityClient.Tests/GmTurnHelperContractTests.cs`.
+- [X] T008 [US1] Implement trajectory record creation in `BookOfEternityClient/game_master_daemon.ps1` or the existing harness owner selected by nearby code.
+- [X] T009 [US1] Include validation, repair, worker, rollback, dispatch, and rubric fields without embedding giant prompts or secrets.
+- [X] T010 [US1] Update GM-facing guidance if the ledger path or interpretation is exposed to the GM. Ledger is harness-owned and not exposed as GM instruction yet; no prompt/example update required for US1.
 
 ## Phase 4: User Story 2 - Compact Experience Memory (P2)
 

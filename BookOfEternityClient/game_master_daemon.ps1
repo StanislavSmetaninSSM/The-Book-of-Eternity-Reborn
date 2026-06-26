@@ -105,6 +105,7 @@ $TerminalProtocolFailureRequestFile = Join-Path $ControlDir "terminal_protocol_f
 $CliBindingFile = Join-Path $ControlDir "gm_cli_window_binding.json"
 $BridgeStatusFile = Join-Path $ControlDir "gm_bridge_status.json"
 $BridgeControlScript = Join-Path $PSScriptRoot "Launcher\bookofeternity.ps1"
+$script:GmTrajectoryLedgerPath = Join-Path $ControlDir "gm_trajectory_ledger.jsonl"
 
 foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
     if (!(Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
@@ -669,6 +670,276 @@ function Write-Log {
     }
 }
 
+function New-GmDispatchDiagnostics {
+    param(
+        [string]$Status = "not_dispatched",
+        [int]$Attempts = 0,
+        [int]$BusyRetries = 0,
+        [bool]$Timeout = $false
+    )
+
+    return [pscustomobject]@{
+        Status = $Status
+        Attempts = $Attempts
+        BusyRetries = $BusyRetries
+        Timeout = $Timeout
+    }
+}
+
+function ConvertTo-GmTrajectoryRealm {
+    param([string]$Realm)
+
+    if ([string]::IsNullOrWhiteSpace($Realm)) {
+        return "Unknown"
+    }
+
+    $normalized = $Realm.Trim()
+    if ([string]::Equals($normalized, "Chaos Sea", [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($normalized, "Море Хаоса", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return "ChaosSea"
+    }
+
+    if ([string]::Equals($normalized, "Shining Abode", [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($normalized, "Сияющая Обитель", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return "ShiningAbode"
+    }
+
+    if ([string]::Equals($normalized, "Mortal World", [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($normalized, "MortalWorld", [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($normalized, "Смертный мир", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return "MortalWorld"
+    }
+
+    return "Unknown"
+}
+
+function Get-GmTrajectoryRealm {
+    param([object]$RequestObject)
+
+    if ($null -ne $RequestObject.currentRealm) {
+        return ConvertTo-GmTrajectoryRealm ([string]$RequestObject.currentRealm)
+    }
+
+    if ($null -ne $RequestObject.progressionControl -and $null -ne $RequestObject.progressionControl.currentRealm) {
+        return ConvertTo-GmTrajectoryRealm ([string]$RequestObject.progressionControl.currentRealm)
+    }
+
+    return "Unknown"
+}
+
+function Get-GmTrajectoryIssueKinds {
+    param([object]$RequestObject)
+
+    $kinds = @()
+    if ($null -ne $RequestObject.errors) {
+        foreach ($err in @($RequestObject.errors)) {
+            if ($null -ne $err.code -and -not [string]::IsNullOrWhiteSpace([string]$err.code)) {
+                $kinds += [string]$err.code
+            }
+            elseif ($null -ne $err.category -and -not [string]::IsNullOrWhiteSpace([string]$err.category)) {
+                $kinds += [string]$err.category
+            }
+        }
+    }
+
+    return @($kinds | Select-Object -Unique)
+}
+
+function Get-GmTrajectoryRepairPacketRefs {
+    param([object]$RequestObject)
+
+    $refs = @()
+    if ($null -ne $RequestObject.harnessRepairPackets) {
+        foreach ($packet in @($RequestObject.harnessRepairPackets)) {
+            if ($null -ne $packet.packetId -and -not [string]::IsNullOrWhiteSpace([string]$packet.packetId)) {
+                $refs += [string]$packet.packetId
+            }
+            elseif ($null -ne $packet.id -and -not [string]::IsNullOrWhiteSpace([string]$packet.id)) {
+                $refs += [string]$packet.id
+            }
+        }
+    }
+
+    return @($refs | Select-Object -Unique)
+}
+
+function Get-GmTrajectoryRollbackEvents {
+    param([datetime]$SinceUtc)
+
+    $reportPath = Join-Path $ControlDir "validation_auto_rollback_report.json"
+    if (!(Test-Path $reportPath)) {
+        return @()
+    }
+
+    try {
+        $fileInfo = Get-Item $reportPath
+        if ($SinceUtc -ne [datetime]::MinValue -and $fileInfo.LastWriteTimeUtc -lt $SinceUtc) {
+            return @()
+        }
+
+        $report = Get-Content -Path $reportPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $issueCount = if ($null -ne $report.issues) { @($report.issues).Count } else { 0 }
+        $restoredCount = if ($null -ne $report.restoredFiles) { @($report.restoredFiles).Count } else { 0 }
+        $deletedCount = if ($null -ne $report.deletedFiles) { @($report.deletedFiles).Count } else { 0 }
+        if ($issueCount -eq 0 -and $restoredCount -eq 0 -and $deletedCount -eq 0) {
+            return @()
+        }
+
+        return @([ordered]@{
+            path = "game_state/control/validation_auto_rollback_report.json"
+            issueCount = $issueCount
+            restoredCount = $restoredCount
+            deletedCount = $deletedCount
+        })
+    }
+    catch {
+        return @([ordered]@{
+            path = "game_state/control/validation_auto_rollback_report.json"
+            unreadable = $true
+        })
+    }
+}
+
+function ConvertTo-GmTrajectoryActionSummary {
+    param([object]$RequestObject)
+
+    if ($null -eq $RequestObject.playerAction) {
+        return ""
+    }
+
+    $text = ([string]$RequestObject.playerAction).Trim()
+    if ($text.Length -le 160) {
+        return $text
+    }
+
+    return $text.Substring(0, 157) + "..."
+}
+
+function Get-GmTrajectoryOutputFiles {
+    param([object]$TerminalSignal)
+
+    if ($null -eq $TerminalSignal -or $null -eq $TerminalSignal.Signal -or $null -eq $TerminalSignal.Signal.filesModified) {
+        return @()
+    }
+
+    $files = @()
+    foreach ($file in @($TerminalSignal.Signal.filesModified)) {
+        if ($null -ne $file -and -not [string]::IsNullOrWhiteSpace([string]$file)) {
+            $files += ([string]$file).Replace('\', '/')
+        }
+    }
+
+    return @($files | Select-Object -Unique)
+}
+
+function Write-GmTrajectoryRecord {
+    param(
+        [string]$Kind,
+        [string]$Mode,
+        [object]$RequestObject,
+        [object]$Dispatch,
+        [string]$ValidationStatus,
+        [string[]]$IssueKinds = @(),
+        [string[]]$RepairPacketRefs = @(),
+        [int]$RepairAttempts = 0,
+        [string]$RepairStatus = "none",
+        [object]$TerminalSignal = $null,
+        [datetime]$StartedAtUtc = [datetime]::MinValue,
+        [nullable[double]]$DurationSeconds = $null,
+        [string]$MissingHarnessTool = $null
+    )
+
+    try {
+        $dispatchStatus = if ($Dispatch -and $Dispatch.Status) { [string]$Dispatch.Status } else { "not_dispatched" }
+        $dispatchAttempts = if ($Dispatch -and $null -ne $Dispatch.Attempts) { [int]$Dispatch.Attempts } else { 0 }
+        $dispatchBusyRetries = if ($Dispatch -and $null -ne $Dispatch.BusyRetries) { [int]$Dispatch.BusyRetries } else { 0 }
+        $dispatchTimeout = if ($Dispatch -and $null -ne $Dispatch.Timeout) { [bool]$Dispatch.Timeout } else { $false }
+        $rollbackEvents = @(Get-GmTrajectoryRollbackEvents -SinceUtc $StartedAtUtc)
+        $rawWrongRealmWrite = $false
+        foreach ($rollbackEvent in $rollbackEvents) {
+            if (($rollbackEvent.issueCount -as [int]) -gt 0 -or
+                ($rollbackEvent.restoredCount -as [int]) -gt 0 -or
+                ($rollbackEvent.deletedCount -as [int]) -gt 0) {
+                $rawWrongRealmWrite = $true
+            }
+        }
+
+        $terminalKind = if ($null -ne $TerminalSignal -and $null -ne $TerminalSignal.Kind) { [string]$TerminalSignal.Kind } else { "none" }
+        $terminalPath = if ($null -ne $TerminalSignal -and $null -ne $TerminalSignal.Path) {
+            $relative = [string]$TerminalSignal.Path
+            if ($relative.StartsWith($GameSessionPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+                $relative = $relative.Substring($GameSessionPath.Length).TrimStart('\', '/')
+            }
+            $relative.Replace('\', '/')
+        } else {
+            $null
+        }
+
+        $requestId = if ($null -ne $RequestObject.requestId) { [string]$RequestObject.requestId } else { "" }
+        $record = [ordered]@{
+            recordId = "gmtraj_" + [guid]::NewGuid().ToString("N")
+            kind = $Kind
+            sessionId = if ($null -ne $RequestObject.sessionId) { [string]$RequestObject.sessionId } else { "" }
+            turnId = $requestId
+            requestId = $requestId
+            turnNumber = if ($null -ne $RequestObject.turnNumber) { [int]$RequestObject.turnNumber } else { -1 }
+            realm = Get-GmTrajectoryRealm -RequestObject $RequestObject
+            mode = $Mode
+            actionSummary = ConvertTo-GmTrajectoryActionSummary -RequestObject $RequestObject
+            contextPackPath = "game_state/control/gm_context_pack"
+            templateVersions = [ordered]@{
+                turnOutput = "v1"
+                validationRepair = "v1"
+                progressionReport = "v1"
+                actorReasoning = "v1"
+                tempoAdvantage = "v1"
+            }
+            outputFiles = @(Get-GmTrajectoryOutputFiles -TerminalSignal $TerminalSignal)
+            dispatch = [ordered]@{
+                attempts = $dispatchAttempts
+                busyRetries = $dispatchBusyRetries
+                timeout = $dispatchTimeout
+                status = $dispatchStatus
+            }
+            validation = [ordered]@{
+                status = $ValidationStatus
+                issueKinds = @($IssueKinds)
+                repairPacketRefs = @($RepairPacketRefs)
+            }
+            repair = [ordered]@{
+                attempts = $RepairAttempts
+                status = $RepairStatus
+            }
+            workerEvents = @()
+            rollbackEvents = @($rollbackEvents)
+            terminal = [ordered]@{
+                kind = $terminalKind
+                signalPath = $terminalPath
+            }
+            durationSeconds = $DurationSeconds
+            rubric = [ordered]@{
+                validTurn = [string]::Equals($ValidationStatus, "accepted", [System.StringComparison]::OrdinalIgnoreCase)
+                playerFacingOutputPresent = Test-Path (Join-Path $OutputDir "narrative_response.json")
+                implementationSourceRead = $false
+                rawWrongRealmWrite = $rawWrongRealmWrite
+                manualReasoningNeeded = $false
+                missingHarnessTool = $MissingHarnessTool
+            }
+            createdAt = (Get-Date).ToUniversalTime().ToString("o")
+        }
+
+        $ledgerDir = Split-Path $script:GmTrajectoryLedgerPath -Parent
+        if (!(Test-Path $ledgerDir)) {
+            New-Item -ItemType Directory -Path $ledgerDir -Force | Out-Null
+        }
+
+        Add-Content -Path $script:GmTrajectoryLedgerPath -Value ($record | ConvertTo-Json -Depth 8 -Compress) -Encoding UTF8
+    }
+    catch {
+        Write-Log "  Failed to write GM trajectory ledger: $_" -Level "WARN" -Color Yellow
+    }
+}
+
 function Get-TurnRequestKey {
     param([psobject]$TurnRequest)
 
@@ -1009,25 +1280,40 @@ Do not keep this bootstrap request open; returning to the CLI input prompt is wh
 function Dispatch-WithRetry {
     param(
         [string]$Message,
-        [string]$PendingPath = ""
+        [string]$PendingPath = "",
+        [switch]$ReturnDetails
     )
+
+    $attempts = 0
+    $busyRetries = 0
 
     while ($true) {
         if ($PendingPath -and !(Test-Path $PendingPath)) {
+            if ($ReturnDetails) {
+                return (New-GmDispatchDiagnostics -Status "cancelled" -Attempts $attempts -BusyRetries $busyRetries)
+            }
             return "cancelled"
         }
 
+        $attempts++
         $dispatch = Send-ToCliWindow -Message $Message
         if ($dispatch -eq "sent" -or $dispatch -eq "clipboard") {
+            if ($ReturnDetails) {
+                return (New-GmDispatchDiagnostics -Status $dispatch -Attempts $attempts -BusyRetries $busyRetries)
+            }
             return $dispatch
         }
 
         if ($dispatch -like "bridge-*") {
+            $busyRetries++
             Write-Log "  -> Waiting for GM bridge to become available/ready..." -Level "WARN" -Color Yellow
             Start-Sleep -Seconds 1
             continue
         }
 
+        if ($ReturnDetails) {
+            return (New-GmDispatchDiagnostics -Status $dispatch -Attempts $attempts -BusyRetries $busyRetries)
+        }
         return $dispatch
     }
 }
@@ -1078,11 +1364,23 @@ function Process-Turn {
         $completionPath = Join-Path $ReadyDir "turn_complete.json"
         $errorPath = Join-Path $ReadyDir "turn_error.json"
         $terminalSignal = Get-CorrelatedTerminalSignal -TurnRequest $turnRequest -CompletionPath $completionPath -ErrorPath $errorPath
+        $dispatchDiagnostics = New-GmDispatchDiagnostics -Status "preexisting-terminal"
+        $missingHarnessTool = $null
 
         if ($null -eq $terminalSignal) {
-            $dispatch = Dispatch-WithRetry -Message $message -PendingPath $RequestPath
-            if ($dispatch -eq "cancelled") {
+            $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RequestPath -ReturnDetails
+            if ($dispatchDiagnostics.Status -eq "cancelled") {
                 Write-Log "  Turn cancelled while waiting for bridge turn dispatch" -Level "WARN" -Color Yellow
+                Write-GmTrajectoryRecord `
+                    -Kind "turn" `
+                    -Mode "ordinary" `
+                    -RequestObject $turnRequest `
+                    -Dispatch $dispatchDiagnostics `
+                    -ValidationStatus "not_run" `
+                    -RepairStatus "interrupted" `
+                    -StartedAtUtc $turnStart.ToUniversalTime() `
+                    -DurationSeconds ((Get-Date) - $turnStart).TotalSeconds `
+                    -MissingHarnessTool "turn_cancelled_before_dispatch"
                 return
             }
         }
@@ -1121,6 +1419,8 @@ function Process-Turn {
         if ($TurnTimeout -gt 0 -and $elapsed -ge $TurnTimeout -and $null -eq $terminalSignal) {
             $script:ErrorCount++
             Write-Log "  Timeout after ${elapsed}s" -Level "ERROR" -Color Red
+            $dispatchDiagnostics.Timeout = $true
+            $missingHarnessTool = "gm_turn_timeout"
             $timeoutSignal = @{
                 sessionId = $turnRequest.sessionId
                 requestId = $turnRequest.requestId
@@ -1141,10 +1441,29 @@ function Process-Turn {
         if ($null -ne $terminalSignal -and $terminalSignal.Kind -eq "conflict") {
             $duration = ((Get-Date) - $turnStart).TotalSeconds
             Write-Log "  Terminal protocol conflict ($([math]::Round($duration, 1))s): both turn_complete.json and turn_error.json match the same request" -Level "TURN" -Color Red
+            Write-GmTrajectoryRecord `
+                -Kind "turn" `
+                -Mode "ordinary" `
+                -RequestObject $turnRequest `
+                -Dispatch $dispatchDiagnostics `
+                -ValidationStatus "rejected" `
+                -TerminalSignal $terminalSignal `
+                -StartedAtUtc $turnStart.ToUniversalTime() `
+                -DurationSeconds $duration `
+                -MissingHarnessTool "terminal_signal_conflict"
         }
         elseif ($null -ne $terminalSignal -and $terminalSignal.Kind -eq "success") {
             $duration = ((Get-Date) - $turnStart).TotalSeconds
             Write-Log "  Done ($([math]::Round($duration, 1))s)" -Level "TURN" -Color Green
+            Write-GmTrajectoryRecord `
+                -Kind "turn" `
+                -Mode "ordinary" `
+                -RequestObject $turnRequest `
+                -Dispatch $dispatchDiagnostics `
+                -ValidationStatus "accepted" `
+                -TerminalSignal $terminalSignal `
+                -StartedAtUtc $turnStart.ToUniversalTime() `
+                -DurationSeconds $duration
         }
         elseif ($null -ne $terminalSignal -and $terminalSignal.Kind -eq "error") {
             $duration = ((Get-Date) - $turnStart).TotalSeconds
@@ -1156,6 +1475,16 @@ function Process-Turn {
             catch {
                 Write-Log "  Terminal error ($([math]::Round($duration, 1))s): unreadable turn_error.json" -Level "TURN" -Color Yellow
             }
+            Write-GmTrajectoryRecord `
+                -Kind "turn" `
+                -Mode "ordinary" `
+                -RequestObject $turnRequest `
+                -Dispatch $dispatchDiagnostics `
+                -ValidationStatus "rejected" `
+                -TerminalSignal $terminalSignal `
+                -StartedAtUtc $turnStart.ToUniversalTime() `
+                -DurationSeconds $duration `
+                -MissingHarnessTool $missingHarnessTool
         }
 
         if ($null -ne $terminalSignal) {
@@ -1227,7 +1556,18 @@ function Process-RepairRequest {
         Write-Host ""
         Write-Log "Repair request for turn #$turnNumber (attempt $attempt)" -Level "REPAIR" -Color Yellow
 
-        Dispatch-WithRetry -Message $message -PendingPath $RepairPath | Out-Null
+        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ReturnDetails
+        Write-GmTrajectoryRecord `
+            -Kind "repair" `
+            -Mode "validation_repair" `
+            -RequestObject $repair `
+            -Dispatch $dispatchDiagnostics `
+            -ValidationStatus "rejected" `
+            -IssueKinds (Get-GmTrajectoryIssueKinds -RequestObject $repair) `
+            -RepairPacketRefs (Get-GmTrajectoryRepairPacketRefs -RequestObject $repair) `
+            -RepairAttempts $attempt `
+            -RepairStatus "requested" `
+            -StartedAtUtc $fileInfo.LastWriteTimeUtc
     }
     catch {
         $script:ErrorCount++
@@ -1321,7 +1661,19 @@ function Process-TerminalProtocolFailureRequest {
         Write-Host ""
         Write-Log "Terminal protocol failure for turn #$turnNumber" -Level "PROTOCOL" -Color Red
 
-        Dispatch-WithRetry -Message $message -PendingPath $FailurePath | Out-Null
+        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $FailurePath -ReturnDetails
+        Write-GmTrajectoryRecord `
+            -Kind "terminal" `
+            -Mode "terminal_protocol" `
+            -RequestObject $failure `
+            -Dispatch $dispatchDiagnostics `
+            -ValidationStatus "rejected" `
+            -IssueKinds (Get-GmTrajectoryIssueKinds -RequestObject $failure) `
+            -RepairPacketRefs (Get-GmTrajectoryRepairPacketRefs -RequestObject $failure) `
+            -RepairAttempts 0 `
+            -RepairStatus "none" `
+            -StartedAtUtc $fileInfo.LastWriteTimeUtc `
+            -MissingHarnessTool "terminal_protocol_failure"
     }
     catch {
         $script:ErrorCount++

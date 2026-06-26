@@ -660,6 +660,170 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonTrajectoryLedger_RecordsSuccessfulTurnOutcome()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-trajectory-success-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+        Directory.CreateDirectory(Path.Combine(session, "output"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-success",
+                  "turnNumber": 77,
+                  "currentRealm": "Chaos Sea",
+                  "playerAction": "I test the compact GM trajectory ledger.",
+                  "progressionControl": {
+                    "currentRealm": "Chaos Sea"
+                  }
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-success",
+                  "turnNumber": 77
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(Path.Combine(session, "game_state", "control", "pending_turn_snapshot.authority.json"), "{}", Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "ready", "turn_complete.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-success",
+                  "turnNumber": 77,
+                  "status": "success",
+                  "filesModified": [
+                    "output/narrative_response.json"
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "output", "narrative_response.json"),
+                """
+                {
+                  "response": "The turn produced player-facing text."
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var ledgerPath = Path.Combine(session, "game_state", "control", "gm_trajectory_ledger.jsonl");
+            Assert.True(WaitForFileContaining(ledgerPath, "request-success", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            using var document = JsonDocument.Parse(File.ReadLines(ledgerPath, Encoding.UTF8).Last());
+            var record = document.RootElement;
+            Assert.Equal("turn", record.GetProperty("kind").GetString());
+            Assert.Equal("ordinary", record.GetProperty("mode").GetString());
+            Assert.Equal("trajectory-session", record.GetProperty("sessionId").GetString());
+            Assert.Equal("request-success", record.GetProperty("turnId").GetString());
+            Assert.Equal(77, record.GetProperty("turnNumber").GetInt32());
+            Assert.Equal("ChaosSea", record.GetProperty("realm").GetString());
+            Assert.Equal("game_state/control/gm_context_pack", record.GetProperty("contextPackPath").GetString());
+            Assert.Equal("v1", record.GetProperty("templateVersions").GetProperty("turnOutput").GetString());
+            Assert.Equal("preexisting-terminal", record.GetProperty("dispatch").GetProperty("status").GetString());
+            Assert.False(record.GetProperty("dispatch").GetProperty("timeout").GetBoolean());
+            Assert.Equal("output/narrative_response.json", record.GetProperty("outputFiles")[0].GetString());
+            Assert.Equal("accepted", record.GetProperty("validation").GetProperty("status").GetString());
+            Assert.Equal(0, record.GetProperty("repair").GetProperty("attempts").GetInt32());
+            Assert.True(record.GetProperty("rubric").GetProperty("validTurn").GetBoolean());
+            Assert.True(record.GetProperty("rubric").GetProperty("playerFacingOutputPresent").GetBoolean());
+            Assert.False(record.GetProperty("rubric").GetProperty("rawWrongRealmWrite").GetBoolean());
+            Assert.DoesNotContain("Process turn #77", record.GetRawText(), StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonTrajectoryLedger_RecordsValidationRepairRequest()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-trajectory-repair-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-repair",
+                  "turnNumber": 78,
+                  "currentRealm": "Mortal World",
+                  "revalidationAttempt": 2,
+                  "summaryGroups": [
+                    "Inventory state is inconsistent."
+                  ],
+                  "errors": [
+                    {
+                      "code": "inventory_item_missing",
+                      "category": "StateConsistency",
+                      "section": "Inventory",
+                      "message": "Referenced item is missing."
+                    }
+                  ],
+                  "harnessRepairPackets": [
+                    {
+                      "packetId": "repair-packet-1"
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var ledgerPath = Path.Combine(session, "game_state", "control", "gm_trajectory_ledger.jsonl");
+            Assert.True(WaitForFileContaining(ledgerPath, "request-repair", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            using var document = JsonDocument.Parse(File.ReadLines(ledgerPath, Encoding.UTF8).Last());
+            var record = document.RootElement;
+            Assert.Equal("repair", record.GetProperty("kind").GetString());
+            Assert.Equal("validation_repair", record.GetProperty("mode").GetString());
+            Assert.Equal("trajectory-session", record.GetProperty("sessionId").GetString());
+            Assert.Equal("request-repair", record.GetProperty("turnId").GetString());
+            Assert.Equal(78, record.GetProperty("turnNumber").GetInt32());
+            Assert.Equal("MortalWorld", record.GetProperty("realm").GetString());
+            Assert.Equal("rejected", record.GetProperty("validation").GetProperty("status").GetString());
+            Assert.Equal("inventory_item_missing", record.GetProperty("validation").GetProperty("issueKinds")[0].GetString());
+            Assert.Equal("repair-packet-1", record.GetProperty("validation").GetProperty("repairPacketRefs")[0].GetString());
+            Assert.Equal(2, record.GetProperty("repair").GetProperty("attempts").GetInt32());
+            Assert.Equal("requested", record.GetProperty("repair").GetProperty("status").GetString());
+            Assert.False(record.GetProperty("rubric").GetProperty("validTurn").GetBoolean());
+            Assert.False(record.GetProperty("rubric").GetProperty("playerFacingOutputPresent").GetBoolean());
+            Assert.DoesNotContain("validation_repair_request.json", record.GetRawText(), StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonTurnAndRepairPrompts_PreferCompactTemplatesOverLargeExamples()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -802,6 +966,91 @@ public sealed class GmTurnHelperContractTests
         {
             try { File.Delete(scriptPath); } catch { /* ignored */ }
         }
+    }
+
+    private static Process StartDaemon(string session, string logPath)
+    {
+        var daemonPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "game_master_daemon.ps1");
+        return Process.Start(new ProcessStartInfo
+        {
+            FileName = "powershell.exe",
+            Arguments = string.Join(
+                " ",
+                "-NoLogo",
+                "-NoProfile",
+                "-ExecutionPolicy Bypass",
+                "-File " + QuoteProcessArgument(daemonPath),
+                "-GameSessionPath " + QuoteProcessArgument(session),
+                "-PollingInterval 5000",
+                "-TurnTimeout 1",
+                "-LogFile " + QuoteProcessArgument(logPath)),
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            StandardOutputEncoding = Encoding.UTF8,
+            StandardErrorEncoding = Encoding.UTF8
+        }) ?? throw new InvalidOperationException("Failed to start game_master_daemon.ps1.");
+    }
+
+    private static void StopProcess(Process? process)
+    {
+        if (process is { HasExited: false })
+        {
+            try { process.Kill(entireProcessTree: true); } catch { /* ignored */ }
+        }
+
+        process?.Dispose();
+    }
+
+    private static bool WaitForFileContaining(string path, string expectedText, Process? process, TimeSpan timeout)
+    {
+        var deadline = DateTime.UtcNow + timeout;
+        while (DateTime.UtcNow < deadline)
+        {
+            if (File.Exists(path) && File.ReadAllText(path, Encoding.UTF8).Contains(expectedText, StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            if (process is { HasExited: true })
+            {
+                return File.Exists(path) &&
+                    File.ReadAllText(path, Encoding.UTF8).Contains(expectedText, StringComparison.Ordinal);
+            }
+
+            Thread.Sleep(100);
+        }
+
+        return false;
+    }
+
+    private static string ReadProcessOutput(Process? process)
+    {
+        if (process == null)
+        {
+            return "Process was not started.";
+        }
+
+        if (!process.HasExited)
+        {
+            return "Process is still running.";
+        }
+
+        return process.StandardError.ReadToEnd() + process.StandardOutput.ReadToEnd();
+    }
+
+    private static void WriteDaemonConfig(string session)
+    {
+        File.WriteAllText(
+            Path.Combine(session, "config.json"),
+            """
+            {
+              "GmBridgeEnabled": false,
+              "GmBridgeBackend": "Disabled"
+            }
+            """,
+            Encoding.UTF8);
     }
 
     private static string QuotePowerShell(string value) =>
