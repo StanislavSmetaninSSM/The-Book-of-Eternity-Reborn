@@ -42,10 +42,10 @@
 
 **Independent Test**: Generated context packs expose safe probes/templates and ordinary play prompts do not direct the GM to source code as default authority.
 
-- [ ] T015 [US3] Add failing tests for safe-probe/context-pack references and source-path avoidance in `BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs`.
-- [ ] T016 [US3] Add generated safe-probe index or summaries for realm, pending contracts, validation issues, output templates, rollback status, and worker roles.
-- [ ] T017 [US3] Update daemon prompts to prefer safe probes, compact templates, and repair packets before implementation source.
-- [ ] T018 [US3] Update GM-facing docs/examples for Mortal World and afterlife if new probe guidance affects GM workflow.
+- [X] T015 [US3] Add failing tests for safe-probe/context-pack references and source-path avoidance in `BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs`.
+- [X] T016 [US3] Add generated safe-probe index or summaries for realm, pending contracts, validation issues, output templates, rollback status, and worker roles.
+- [X] T017 [US3] Update daemon prompts to prefer safe probes, compact templates, and repair packets before implementation source.
+- [X] T018 [US3] Update GM-facing docs/examples for Mortal World and afterlife if new probe guidance affects GM workflow. Generated context-pack README/manifest/directives were updated; no Mortal World or afterlife gameplay examples are required because this adds harness navigation guidance, not a GM-authored gameplay contract.
 
 ## Phase 6: User Story 4 - Recursive Worker Delegation Flow (P3)
 

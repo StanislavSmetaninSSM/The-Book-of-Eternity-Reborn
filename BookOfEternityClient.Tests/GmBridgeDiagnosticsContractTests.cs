@@ -235,6 +235,34 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("Proposal inbox", source, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void DaemonContextPack_ExposesSafeGmProbeSurfaceBeforeSourceFallback()
+    {
+        var source = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("Probes\\GM_SAFE_PROBES.json", source, StringComparison.Ordinal);
+        Assert.Contains("Probes\\GM_SAFE_PROBES.md", source, StringComparison.Ordinal);
+        Assert.Contains("current_realm_mode_summary", source, StringComparison.Ordinal);
+        Assert.Contains("active_pending_contracts", source, StringComparison.Ordinal);
+        Assert.Contains("validation_issue_summary", source, StringComparison.Ordinal);
+        Assert.Contains("allowed_output_templates", source, StringComparison.Ordinal);
+        Assert.Contains("rollback_status", source, StringComparison.Ordinal);
+        Assert.Contains("worker_role_summary", source, StringComparison.Ordinal);
+        Assert.Contains("read-only", source, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("missing harness surface", source, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("$script:GmSafeProbeDirective", source, StringComparison.Ordinal);
+        Assert.Contains("$($script:GmSafeProbeDirective)", source, StringComparison.Ordinal);
+        Assert.Contains("$script:GmSourceFallbackDirective", source, StringComparison.Ordinal);
+        Assert.Contains("$($script:GmSourceFallbackDirective)", source, StringComparison.Ordinal);
+        Assert.Contains("Do not read implementation code", source, StringComparison.Ordinal);
+
+        var turnPromptIndex = source.IndexOf("Process turn #$turnNumber", StringComparison.Ordinal);
+        var safeProbeIndex = source.IndexOf("$($script:GmSafeProbeDirective)", turnPromptIndex, StringComparison.Ordinal);
+        var sourceFallbackIndex = source.IndexOf("$($script:GmSourceFallbackDirective)", turnPromptIndex, StringComparison.Ordinal);
+        Assert.True(safeProbeIndex > turnPromptIndex, "Turn prompt should include safe probe guidance.");
+        Assert.True(sourceFallbackIndex > safeProbeIndex, "Safe probes should be presented before implementation-source avoidance/fallback language.");
+    }
+
     private static string ReadRepoFile(string relativePath)
     {
         var root = LocateRepoRoot();

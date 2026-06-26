@@ -887,7 +887,9 @@ public sealed class GmTurnHelperContractTests
 
             var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
             Assert.True(File.Exists(lessonsMarkdownPath));
-            var readme = File.ReadAllText(Path.Combine(control, "gm_context_pack", "README.md"), Encoding.UTF8);
+            var readmePath = Path.Combine(control, "gm_context_pack", "README.md");
+            Assert.True(WaitForFileContaining(readmePath, "GM_EXPERIENCE_LESSONS", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+            var readme = File.ReadAllText(readmePath, Encoding.UTF8);
             Assert.Contains("GM_EXPERIENCE_LESSONS", readme, StringComparison.Ordinal);
             Assert.Contains("hints", readme, StringComparison.OrdinalIgnoreCase);
         }
