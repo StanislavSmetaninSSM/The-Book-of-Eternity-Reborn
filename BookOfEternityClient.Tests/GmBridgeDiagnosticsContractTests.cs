@@ -188,13 +188,14 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
-    public void BridgeHost_AutoAcceptsTrustPromptOnlyForSessionContextPack()
+    public void BridgeHost_AutoAcceptsTrustPromptOnlyForTrustedSessionDirectories()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
 
-        Assert.Contains("AutoAcceptSessionContextPackTrustPromptAsync", source, StringComparison.Ordinal);
+        Assert.Contains("AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync", source, StringComparison.Ordinal);
         Assert.Contains("IsWorkspaceTrustPrompt", source, StringComparison.Ordinal);
-        Assert.Contains("IsSessionContextPackWorkingDirectory", source, StringComparison.Ordinal);
+        Assert.Contains("IsTrustedCodexWorkingDirectory", source, StringComparison.Ordinal);
+        Assert.Contains("var sessionRootPath = Path.GetFullPath(_sessionPath);", source, StringComparison.Ordinal);
         Assert.Contains("game_state", source, StringComparison.Ordinal);
         Assert.Contains("gm_context_pack", source, StringComparison.Ordinal);
         Assert.Contains("_lastAutoTrustOutputVersion", source, StringComparison.Ordinal);

@@ -522,12 +522,12 @@ internal sealed class BridgeHost : IDisposable
 
     private async Task RefreshBridgeAutomationStateAsync()
     {
-        await AutoAcceptSessionContextPackTrustPromptAsync();
+        await AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync();
         AutoMarkReadyIfCliPromptReady();
         RefreshDispatchFailureRecoveryIfCliPromptReady();
     }
 
-    private async Task AutoAcceptSessionContextPackTrustPromptAsync()
+    private async Task AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync()
     {
         var visibleText = ReadVisibleConsoleText();
         if (!IsWorkspaceTrustPrompt(visibleText))
@@ -542,7 +542,7 @@ internal sealed class BridgeHost : IDisposable
         }
 
         if (outputVersion == _lastAutoTrustOutputVersion ||
-            !IsSessionContextPackWorkingDirectory(workingDirectory))
+            !IsTrustedCodexWorkingDirectory(workingDirectory))
         {
             return;
         }
@@ -628,14 +628,16 @@ internal sealed class BridgeHost : IDisposable
                normalized.Contains("Press enter to continue", StringComparison.OrdinalIgnoreCase);
     }
 
-    private bool IsSessionContextPackWorkingDirectory(string? workingDirectory)
+    private bool IsTrustedCodexWorkingDirectory(string? workingDirectory)
     {
         if (string.IsNullOrWhiteSpace(workingDirectory))
             return false;
 
         var fullPath = Path.GetFullPath(workingDirectory);
+        var sessionRootPath = Path.GetFullPath(_sessionPath);
         var contextPackPath = Path.GetFullPath(Path.Combine(_sessionPath, "game_state", "control", "gm_context_pack"));
-        return string.Equals(fullPath, contextPackPath, StringComparison.OrdinalIgnoreCase) ||
+        return string.Equals(fullPath, sessionRootPath, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(fullPath, contextPackPath, StringComparison.OrdinalIgnoreCase) ||
                fullPath.StartsWith(contextPackPath + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) ||
                fullPath.StartsWith(contextPackPath + Path.AltDirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
     }
