@@ -109,3 +109,78 @@ cd "E:\Games\The Book of Eternity Reborn\BookOfEternityClient\Launcher"
 - всё равно сможет использовать binding для диагностики
 - будет копировать команды в clipboard
 - не будет сам пытаться вставлять и нажимать `Enter`
+
+## ConPTY bridge readiness
+
+При использовании `GmBridgeBackend = ConPTYBridge` флаг `Ready` означает, что
+bridge можно просить принять новый prompt. Перед фактической вставкой bridge
+дополнительно очищает незавершённую строку ввода Codex CLI и проверяет видимый
+экран PTY.
+
+Если Codex CLI всё ещё выполняет старый запрос (`Working ... esc to interrupt`)
+или ждёт подтверждения доверия к директории, bridge не вставляет ход игрока и
+переводит статус в `DispatchFailed` / `Ready = false`. Это защита от ситуации,
+когда новый ход попадает в активный экран Codex вместо новой задачи ГМа.
+
+Диагностика:
+
+```powershell
+cd "E:\Games\The Book of Eternity Reborn"
+.\BookOfEternityClient\Launcher\bookofeternity.ps1 diagnostics
+```
+
+После того как Codex CLI снова ждёт ввод, можно отметить bridge готовым:
+
+```powershell
+.\BookOfEternityClient\Launcher\bookofeternity.ps1 ready
+```
+
+## GM turn helper
+
+Daemon создаёт для каждой активной сессии bootstrap-файл:
+
+```text
+game_state\control\gm_turn_helper.bootstrap.ps1
+```
+
+ГМ может dot-source-ить его в Codex CLI:
+
+```powershell
+. "...\game_state\control\gm_turn_helper.bootstrap.ps1"
+```
+
+После этого доступны функции:
+
+- `Write-BoeJson -RelativePath "output/narrative_response.json" -Data <object>` — безопасная UTF-8 запись JSON внутри текущей `game_session`.
+- `Complete-BoeTurn -FilesModified @("output/narrative_response.json")` — пишет `ready/turn_complete.json` с точными `sessionId/requestId/turnNumber` из текущего `input/turn_request.json`.
+- `Fail-BoeTurn -ErrorMessage "..."` — пишет `ready/turn_error.json` с той же корреляцией.
+- `Complete-BoeValidationRepair` — пишет `game_state/control/validation_repair_ready.json` из текущего `validation_repair_request.json`.
+
+Если активный `turn_request.json` или repair request уже исчез, helper падает с понятной ошибкой и не пишет stale terminal signal.
+Helper также отклоняет запись и `filesModified` для client-owned runtime-файлов: `input/turn_request.json`, `game_state/history/chat_log.json`, pending-turn snapshots, `validation_repair_request.json`, `terminal_protocol_failure_request.json`, `gm_bridge_status.json`, `stories/*.jsonl`.
+Когда `game_state/meta/soul_state.json.currentRealm` равен `Chaos Sea` или `Shining Abode`, helper дополнительно отклоняет wrong-realm записи и `filesModified` для Mortal World profile путей: `game_state/world/`, `game_state/npcs/`, `game_state/factions/`, `game_state/player/`, `game_state/inventory/`, `game_state/combat/`, `game_state/quests/`.
+`input/turn_request.json` нельзя удалять или переписывать из daemon/GM-скрипта: клиент использует его как authority до принятия, отклонения или отмены хода.
+
+## GM context pack
+
+Daemon также создаёт session-local пакет контекста:
+
+```text
+game_state\control\gm_context_pack\
+  README.md
+  context_pack_manifest.json
+  TaskGuides\...
+  Examples\...
+  OtherGuides\...
+```
+
+Пакет содержит только GM-facing документы и примеры, нужные для текущей live-сессии. Prompt daemon указывает ГМу начинать с `context_pack_manifest.json` и не читать implementation code вроде `BookOfEternityClient/**/*.cs` во время обычного хода или repair.
+
+Bootstrap-сообщение daemon больше не вставляет полный `CLI_Launch_Script.md` в Codex. Оно только указывает на session-local context pack, `gm_turn_helper.bootstrap.ps1` и режим ожидания настоящего per-turn/repair prompt. Это снижает шанс, что ГМ уйдет читать repo-root документы и планы вместо текущего игрового состояния.
+
+Если ГМу не хватает правила, правильный путь такой:
+
+- текущий `input\turn_request.json`;
+- `game_state\control\validation_repair_request.json` и `harnessRepairPackets[]`, если это repair;
+- session-local `gm_turn_helper.bootstrap.ps1`;
+- документы и примеры из `gm_context_pack`.

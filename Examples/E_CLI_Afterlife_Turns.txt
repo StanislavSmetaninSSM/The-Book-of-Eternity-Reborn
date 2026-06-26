@@ -94,11 +94,55 @@ Every accepted afterlife turn must follow this order:
 9. Report:
    - If any afterlife cycle is due, write `progressionProcessingReport` with exact processed counts and exact per-contour `newLast*Ordinal`.
    - Copy `sessionId`, `requestId`, and `turnNumber` from the current `input/turn_request.json`; do not invent new correlation values.
+   - Do not delete or rewrite `input/turn_request.json`; it remains client-owned authority until the client closes the wait cycle.
    - The report is the only GM-authored scheduler proof. Never write processed counts, `last*Ordinal` markers, catch-up baselines, or pending cycle counts into `progression_schedule.json`.
 
 10. Final audit:
    - Remove stale Mortal World outputs.
    - Do not author `afterlife_notifications.json`; the client derives it from canonical receipts/state.
+
+==================================================
+GUARDIAN SCOPE REPAIR PACKET EXAMPLE
+==================================================
+
+When the client rejects a Chaos Sea or Shining Abode turn and writes `game_state/control/validation_repair_request.json`, this is not a new turn. If the request contains `harnessRepairPackets[]`, read those packets before individual `errors[]`.
+If the daemon prompt provides `game_state/control/gm_context_pack/context_pack_manifest.json`, start from that session-local context pack and its copied GM docs/examples. Do not open `BookOfEternityClient/**/*.cs` during live repair; the packet, manifest, session state/control files, and helper bootstrap are the intended harness.
+
+Example fragment:
+
+```json
+{
+  "harnessRepairPackets": [
+    {
+      "kind": "guardian_scope_repair",
+      "targetFiles": [
+        "game_state/meta/guardians.json",
+        "game_state/meta/guardian_projects.json",
+        "output/debug_logs.json"
+      ],
+      "canonicalActorNames": [ "Азалия" ],
+      "debugLogTemplate": "## Охват NPC-анализа\nРежим: Guardian-centric\nРелевантные акторы: Азалия\n...\n## Guardian Thoughts\n### Азалия\n- Ситуация: ...\n- Мысли: ...\n- Действия: ..."
+    },
+    {
+      "kind": "actor_reasoning_subpoint_repair",
+      "targetFiles": [
+        "output/debug_logs.json"
+      ],
+      "canonicalActorNames": [ "Азалия", "Пепельная Искра" ],
+      "debugLogTemplate": "## Размышления акторов\n### Азалия\n- Ситуация: ...\n- Мысли: ...\n- Действия: ...\n\n### Пепельная Искра\n- Ситуация: ...\n- Мысли: ...\n- Действия: ..."
+    }
+  ]
+}
+```
+
+Correct repair behavior:
+- Repair only files listed in `targetFiles` unless another current error explicitly names a different file.
+- In `output/debug_logs.json.gm_thoughts_markdown`, use `canonicalActorNames[]` exactly for `Relevant actors` and for `### <Guardian Name>` headings. Do not use raw `guardianId` or stale mirror-only aliases as actor names.
+- In `game_state/meta/guardians.json`, treat `activeGuardian` and `guardians[]` as materialized mirrors. Reconstruct them from the validated pre-turn Guardian baseline plus authorized same-turn Guardian mutations. Do not treat the raw current mirror as the authority source.
+- If `game_state/meta/guardian_projects.json` is listed, treat `activeProjects` the same way: restore the kernel-authoritative tracker state from the validated pre-turn project baseline plus authorized same-turn project commands. Do not start or preserve a project only because the rejected materialized file contains it.
+- If the packet kind is `actor_reasoning_subpoint_repair`, do not rewrite the turn. Repair only `output/debug_logs.json.gm_thoughts_markdown`, preserve existing accepted content, create any missing `### <actor>` block from `canonicalActorNames[]`, and make sure every listed actor has separate `- Ситуация:`, `- Мысли:`, and `- Действия:` bullets under that heading.
+- Do not read implementation code such as `BookOfEternityClient/**/*.cs` during repair. Use the repair packet, this example, GM guides, and session control/snapshot files.
+- After repairing the files, call `Complete-BoeValidationRepair` or create `game_state/control/validation_repair_ready.json` with exact `sessionId`, `requestId`, and `turnNumber` from the same current repair request.
 
 ==================================================
 COMBINED TURN DECISION TREE

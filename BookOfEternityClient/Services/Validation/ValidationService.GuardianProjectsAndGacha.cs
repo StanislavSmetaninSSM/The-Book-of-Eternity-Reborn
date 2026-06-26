@@ -600,10 +600,12 @@ public partial class ValidationService
             root.TryGetProperty("activeProjects", out _) ||
             root.TryGetProperty("completedProjects", out _) ||
             root.TryGetProperty("temporaryProjectModifiers", out _);
+        var hasAuthoritativeDirectTrackerState = GuardianProjectTrackerHasAuthorityData(root);
+        var requiresProjectAuthority = hasProjectCommandFields || hasAuthoritativeDirectTrackerState;
         if (!isTrackerFile && !hasProjectCommandFields)
             return;
 
-        if ((hasProjectCommandFields || hasDirectTrackerState) &&
+        if (requiresProjectAuthority &&
             !TryRequireGuardianPreTurnBaseline(
                 contextPrefix,
                 "Guardian project/gacha validation требует readable validated pre-turn guardians baseline и не использует current guardians[] как fallback authority.",
@@ -615,7 +617,7 @@ public partial class ValidationService
             return;
         }
 
-        if ((hasProjectCommandFields || hasDirectTrackerState) &&
+        if (requiresProjectAuthority &&
             !TryRequireGuardianProjectTrackerPreTurnBaseline(
                 contextPrefix,
                 "Guardian project/gacha validation требует readable validated pre-turn project tracker baseline и не использует current tracker state как fallback authority.",
@@ -641,7 +643,7 @@ public partial class ValidationService
         if (root.TryGetProperty("temporaryProjectModifiers", out var temporaryModifiers))
             ValidateGuardianProjectTemporaryModifiers(temporaryModifiers, $"{contextPrefix}.temporaryProjectModifiers", issues);
 
-        if (isTrackerFile && hasDirectTrackerState)
+        if (isTrackerFile && requiresProjectAuthority)
             ValidateGuardianProjectMaterializedStateAgainstAuthority(root, contextPrefix, issues);
 
         var knownProjects = ReadKnownGuardianProjectKeysForValidation();
@@ -657,6 +659,20 @@ public partial class ValidationService
             ValidateGuardianProjectUpdateCommands(updateCommands, $"{contextPrefix}.guardianProjectUpdates", issues, knownProjects, startedThisTurn, knownGuardianIds);
         if (root.TryGetProperty("completeGuardianProjects", out var completeCommands))
             ValidateGuardianProjectCompletionCommands(completeCommands, $"{contextPrefix}.completeGuardianProjects", issues, knownProjects, knownProjectDetails, startedProjectDetails, startedThisTurn, relationshipScores, knownGuardianIds);
+    }
+
+    private static bool GuardianProjectTrackerHasAuthorityData(JsonElement root)
+    {
+        return HasNonEmptyArray(root, "activeProjects") ||
+               HasNonEmptyArray(root, "completedProjects") ||
+               HasNonEmptyArray(root, "temporaryProjectModifiers");
+
+        static bool HasNonEmptyArray(JsonElement owner, string propertyName)
+        {
+            return owner.TryGetProperty(propertyName, out var array) &&
+                   array.ValueKind == JsonValueKind.Array &&
+                   array.GetArrayLength() > 0;
+        }
     }
 
     private bool TryRequireGuardianPreTurnBaseline(

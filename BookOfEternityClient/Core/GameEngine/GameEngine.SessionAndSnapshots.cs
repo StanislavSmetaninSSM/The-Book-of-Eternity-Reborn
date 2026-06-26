@@ -1133,7 +1133,10 @@ public partial class GameEngine
         _fs.DeleteFile("ready/turn_complete.json");
         _fs.DeleteFile("ready/turn_error.json");
         if (!hasIncarnationTrigger)
+        {
+            _fs.DeleteFile("input/turn_request.json");
             await CleanupPendingTurnSnapshotAsync();
+        }
         await CleanupResolvedAfterlifePendingContractsAfterAcceptedTurnAsync();
     }
 

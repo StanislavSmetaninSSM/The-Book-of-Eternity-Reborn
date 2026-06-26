@@ -95,7 +95,8 @@ public partial class ValidationService
 
 
     private void ValidateFullFactionObject(JsonElement item, string itemContext, List<ValidationIssue> issues,
-        HashSet<string>? knownPermanentFactionIds, HashSet<string>? knownCanonicalFactionNames)
+        HashSet<string>? knownPermanentFactionIds, HashSet<string>? knownCanonicalFactionNames,
+        HashSet<string>? sameTurnFactionInitialIds)
     {
         var factionId = GetFirstNonEmptyString(item, "factionId");
         var initialId = GetFirstNonEmptyString(item, "initialId");
@@ -236,6 +237,7 @@ public partial class ValidationService
         if (!hasFactionId &&
             hasInitialId &&
             knownCanonicalFactionNames != null &&
+            (sameTurnFactionInitialIds == null || !sameTurnFactionInitialIds.Contains(initialId!)) &&
             !string.IsNullOrWhiteSpace(factionName) &&
             knownCanonicalFactionNames.Contains(factionName))
         {
@@ -694,7 +696,7 @@ public partial class ValidationService
                 string.Equals(propName, "factionDataChanges", StringComparison.OrdinalIgnoreCase) ||
                 IsLikelyFullFactionObject(item))
             {
-                ValidateFullFactionObject(item, itemContext, issues, knownPermanentFactionIds, knownCanonicalFactionNames);
+                ValidateFullFactionObject(item, itemContext, issues, knownPermanentFactionIds, knownCanonicalFactionNames, sameTurnFactionInitialIds);
                 continue;
             }
 
@@ -1208,8 +1210,9 @@ public partial class ValidationService
                     if (item.ValueKind != JsonValueKind.Object)
                         continue;
 
+                    var factionId = GetFirstNonEmptyString(item, "factionId");
                     var name = GetFirstNonEmptyString(item, "name", "factionName");
-                    if (!string.IsNullOrWhiteSpace(name))
+                    if (!string.IsNullOrWhiteSpace(factionId) && !string.IsNullOrWhiteSpace(name))
                         target.Add(name);
                 }
             }

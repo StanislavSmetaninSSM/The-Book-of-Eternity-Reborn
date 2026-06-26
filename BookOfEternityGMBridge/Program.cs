@@ -160,6 +160,7 @@ internal sealed class BridgeHost : IDisposable
                         HandlePtyExited_NoThrow();
                 }
 
+                RefreshDispatchFailureRecoveryIfCliPromptReady();
                 await Task.Delay(250, _cts.Token);
             }
         }
@@ -275,9 +276,18 @@ internal sealed class BridgeHost : IDisposable
 
                 try
                 {
+                    var visibilitySettings = LoadBridgeConfig();
+                    await ClearPendingInputBeforePromptDispatchAsync();
+                    var readiness = ProbeCliPromptReadinessForDispatch();
+                    if (!readiness.IsReady)
+                    {
+                        return FailWithLastError(
+                            "GM CLI is not ready for a new prompt: " + readiness.Reason +
+                            " Dispatch was blocked so the player turn is not pasted into an active or confirmation screen.");
+                    }
+
                     long outputVersionBefore;
                     int outputLengthBefore;
-                    var visibilitySettings = LoadBridgeConfig();
                     lock (_sync)
                     {
                         outputVersionBefore = _outputVersion;
@@ -302,7 +312,22 @@ internal sealed class BridgeHost : IDisposable
                         }
 
                         await WaitForOutputQuietPeriodAsync(TimeSpan.FromMilliseconds(250), TimeSpan.FromSeconds(2), _cts.Token);
+                        long outputVersionBeforeEnter;
+                        lock (_sync)
+                            outputVersionBeforeEnter = _outputVersion;
+
                         await WriteToPtyAsync(string.Empty, appendEnter: true);
+                        var submitted = await WaitForPromptSubmittedAfterEnterAsync(
+                            request.Text ?? string.Empty,
+                            outputVersionBeforeEnter,
+                            visibilitySettings,
+                            TimeSpan.FromSeconds(5),
+                            _cts.Token);
+                        if (!submitted)
+                        {
+                            return FailWithLastError(
+                                "Prompt was visible and Enter was sent, but the CLI did not transition away from the pasted prompt marker. Dispatch was not confirmed; use diagnostics/sendEnter or restart the shell before retrying.");
+                        }
                     }
                 }
                 finally
@@ -486,6 +511,70 @@ internal sealed class BridgeHost : IDisposable
         }
     }
 
+    private async Task ClearPendingInputBeforePromptDispatchAsync()
+    {
+        await WriteToPtyAsync("\u0015", appendEnter: false);
+        await WaitForOutputQuietPeriodAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1), _cts.Token);
+    }
+
+    private CliPromptReadiness ProbeCliPromptReadinessForDispatch()
+    {
+        var visibleText = ReadVisibleConsoleText();
+        if (string.IsNullOrWhiteSpace(visibleText))
+            return CliPromptReadiness.Ready();
+
+        var normalized = NormalizeVisibleConsoleText(visibleText);
+        if (IsCodexCliWorkingScreen(normalized))
+        {
+            return CliPromptReadiness.NotReady("Codex CLI is still working on a previous request.");
+        }
+
+        if (normalized.Contains("trust this", StringComparison.OrdinalIgnoreCase) ||
+            normalized.Contains("Do you trust", StringComparison.OrdinalIgnoreCase))
+        {
+            return CliPromptReadiness.NotReady("Codex CLI is waiting for a workspace trust confirmation.");
+        }
+
+        return CliPromptReadiness.Ready();
+    }
+
+    private static string NormalizeVisibleConsoleText(string visibleText) =>
+        visibleText.Replace('\u00A0', ' ');
+
+    private static bool IsCodexCliWorkingScreen(string visibleText)
+    {
+        var normalized = NormalizeVisibleConsoleText(visibleText);
+        return normalized.Contains("esc to interrupt", StringComparison.OrdinalIgnoreCase) &&
+            normalized.Contains("Working", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void RefreshDispatchFailureRecoveryIfCliPromptReady()
+    {
+        bool shouldProbe;
+        lock (_sync)
+        {
+            shouldProbe = string.Equals(_status.State, "DispatchFailed", StringComparison.Ordinal) && !_status.Ready;
+        }
+
+        if (!shouldProbe)
+            return;
+
+        var readiness = ProbeCliPromptReadinessForDispatch();
+        if (!readiness.IsReady)
+            return;
+
+        lock (_sync)
+        {
+            if (!string.Equals(_status.State, "DispatchFailed", StringComparison.Ordinal) || _status.Ready)
+                return;
+
+            _status.Ready = true;
+            _status.State = "Ready";
+            _status.LastError = null;
+            WriteStatusFile();
+        }
+    }
+
     private async Task WriteToPtyAsync(string text, bool appendEnter)
     {
         Stream? input;
@@ -640,6 +729,52 @@ internal sealed class BridgeHost : IDisposable
                     GmBridgePasteVisibilityPolicy.IsPromptVisible(prompt, screen, visibilitySettings))
                 {
                     return true;
+                }
+
+                waitTask = _outputChanged.Task;
+            }
+
+            var remaining = deadline - DateTime.UtcNow;
+            if (remaining <= TimeSpan.Zero)
+                break;
+
+            try
+            {
+                await waitTask.WaitAsync(remaining, cancellationToken);
+            }
+            catch (TimeoutException)
+            {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    private async Task<bool> WaitForPromptSubmittedAfterEnterAsync(
+        string prompt,
+        long outputVersionBeforeEnter,
+        GameSettings visibilitySettings,
+        TimeSpan timeout,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(prompt))
+            return true;
+
+        var deadline = DateTime.UtcNow + timeout;
+        while (DateTime.UtcNow < deadline)
+        {
+            Task waitTask;
+            lock (_sync)
+            {
+                var screen = ReadVisibleConsoleText();
+                if (_outputVersion > outputVersionBeforeEnter)
+                {
+                    if (IsCodexCliWorkingScreen(screen) ||
+                        !GmBridgePasteVisibilityPolicy.IsPromptVisible(prompt, screen, visibilitySettings))
+                    {
+                        return true;
+                    }
                 }
 
                 waitTask = _outputChanged.Task;
@@ -1162,6 +1297,12 @@ internal sealed class BridgeDiagnostics
     public string RecentOutputTail { get; set; } = string.Empty;
     public string VisibleScreenText { get; set; } = string.Empty;
     public List<GmWorkerProposalInboxEntry> WorkerProposalInbox { get; set; } = new();
+}
+
+internal sealed record CliPromptReadiness(bool IsReady, string Reason)
+{
+    public static CliPromptReadiness Ready() => new(true, string.Empty);
+    public static CliPromptReadiness NotReady(string reason) => new(false, reason);
 }
 
 internal static class NativeMethods

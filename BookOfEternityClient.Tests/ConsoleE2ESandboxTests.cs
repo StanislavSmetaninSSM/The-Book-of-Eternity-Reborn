@@ -28,6 +28,19 @@ public sealed class ConsoleE2ESandboxTests : IDisposable
     }
 
     [Fact]
+    public void CreateFromFixture_CopiesSystemGuardianLibraryAlongsideGameSession()
+    {
+        var repoRoot = FindRepositoryRoot();
+        var fixtureGameSessionPath = Path.Combine(repoRoot, "FileSystemExample", "game_session");
+
+        using var sandbox = ConsoleE2ESandbox.CreateFromFixture(fixtureGameSessionPath, _tempRoot);
+
+        var sandboxLibraryPath = Path.Combine(sandbox.BasePath, "system_guardians");
+        Assert.True(Directory.Exists(sandboxLibraryPath));
+        Assert.True(Directory.Exists(Path.Combine(sandboxLibraryPath, "built_in")));
+    }
+
+    [Fact]
     public void CreateFromFixture_IsolatesRunsAndDeletesSandboxByDefault()
     {
         var repoRoot = FindRepositoryRoot();

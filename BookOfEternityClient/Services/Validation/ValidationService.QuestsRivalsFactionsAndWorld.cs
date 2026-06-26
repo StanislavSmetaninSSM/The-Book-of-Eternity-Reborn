@@ -1586,7 +1586,14 @@ public partial class ValidationService
 	            issues.Add(new ValidationIssue(
 	                itemContext,
 	                IssueSeverity.Error,
-	                "Каноническое faction state должно содержать permanent factionId"));
+	                "Каноническое faction state должно содержать permanent factionId",
+	                code: "canonical_faction_sidecar_requires_permanent_faction_id",
+	                section: "Factions",
+	                expected: "existing permanent factionId from faction_core.json",
+	                actual: item.TryGetProperty("factionId", out var actualFactionIdNode)
+	                    ? actualFactionIdNode.ValueKind.ToString()
+	                    : "missing",
+	                repairHint: "Sidecar faction-файлы описывают только уже закреплённые фракции. Для новой same-turn фракции не создавай sidecar entry до появления permanent factionId; используй faction_core.json с factionId=null, initialId и isNewFaction=true."));
 	        }
 	        else
 	        {

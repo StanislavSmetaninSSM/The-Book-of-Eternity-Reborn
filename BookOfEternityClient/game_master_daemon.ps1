@@ -74,6 +74,7 @@ $script:ErrorCount = 0
 $script:StartTime = Get-Date
 $script:IsProcessing = $false
 $script:BootstrapSent = $false
+$script:ObservedTerminalRequestKeys = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
 $script:RepoRootPath = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $script:TaskGuideMainPath = Join-Path $script:RepoRootPath "TaskGuides\CLI_Step_Main.txt"
 $script:ExampleMainPath = Join-Path $script:RepoRootPath "Examples\E_CLI_Step_Main.txt"
@@ -97,6 +98,8 @@ $ReadyDir  = Join-Path $GameSessionPath "ready"
 $OutputDir = Join-Path $GameSessionPath "output"
 $ControlDir = Join-Path $GameSessionPath "game_state\control"
 $TurnRequestFile = Join-Path $InputDir "turn_request.json"
+$PendingTurnSnapshotManifestFile = Join-Path $ControlDir "pending_turn_snapshot.json"
+$PendingTurnSnapshotAuthorityFile = Join-Path $ControlDir "pending_turn_snapshot.authority.json"
 $RepairRequestFile = Join-Path $ControlDir "validation_repair_request.json"
 $TerminalProtocolFailureRequestFile = Join-Path $ControlDir "terminal_protocol_failure_request.json"
 $CliBindingFile = Join-Path $ControlDir "gm_cli_window_binding.json"
@@ -106,6 +109,130 @@ $BridgeControlScript = Join-Path $PSScriptRoot "Launcher\bookofeternity.ps1"
 foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
     if (!(Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
 }
+
+$script:GmTurnHelperBootstrapPath = Join-Path $ControlDir "gm_turn_helper.bootstrap.ps1"
+$script:GmTurnHelperDirective = " GM turn helper: dot-source '$script:GmTurnHelperBootstrapPath' before writing output/state files. Use Read-BoeJson -RelativePath '<file>' for JSON reads, Write-BoeJson -RelativePath '<file>' -Data <object> for JSON writes, Get-BoeJsonValue -Object <jsonObject> -Names @('NPCId','npcId','id') for optional or differently cased JSON fields, Set-BoeJsonProperty -Object <jsonObject> -Name '<field>' -Value <value> to add or update optional object properties, and Add-BoeJsonArrayItem -Object <jsonObject> -PropertyName '<arrayProperty>' -Item <object> -UniqueBy '<idField>' when adding/upserting JSON array entries. PowerShell collapses single JSON array items into scalars, so prefer Add-BoeJsonArrayItem over manual `$array += ...` for fields such as customProperties, entries, objectives, contents, journalEntries, and similar collections. Use Complete-BoeTurn -FilesModified @('<file>') as the LAST action for successful turns, Fail-BoeTurn -ErrorMessage '<reason>' as the LAST action for terminal errors, and Complete-BoeValidationRepair as the LAST action after validation repairs. Fail-BoeTurn writes ready/turn_error.json and then fails the shell command deliberately, so do not report success after calling it. These helpers copy exact sessionId/requestId/turnNumber from the current client-authored request and refuse stale missing context. Helper writes and filesModified reject client-owned runtime state such as input/turn_request.json, game_state/history/chat_log.json, pending_turn_snapshot files, validation_repair_request.json, terminal_protocol_failure_request.json, gm_bridge_status.json, and stories/*.jsonl; let the client maintain those surfaces. When currentRealm is Chaos Sea or Shining Abode, helper writes and filesModified also reject wrong-realm Mortal World profile paths under game_state/world, game_state/npcs, game_state/factions, game_state/player, game_state/inventory, game_state/combat, and game_state/quests. Never delete or rewrite input/turn_request.json; it is client-owned authority until the client closes the wait cycle."
+$script:GmContextPackRoot = Join-Path $ControlDir "gm_context_pack"
+$script:GmContextPackManifestPath = Join-Path $script:GmContextPackRoot "context_pack_manifest.json"
+$script:GmContextPackDirective = ""
+
+function Quote-PowerShellSingleQuotedString {
+    param([string]$Value)
+    return "'" + $Value.Replace("'", "''") + "'"
+}
+
+function Write-GmTurnHelperBootstrap {
+    $helperPath = Join-Path $PSScriptRoot "Launcher\GM_Turn_Helper.ps1"
+    $content = @(
+        ". $(Quote-PowerShellSingleQuotedString $helperPath)",
+        "Initialize-BoeGmTurnHelper -GameSessionPath $(Quote-PowerShellSingleQuotedString $GameSessionPath)"
+    ) -join [Environment]::NewLine
+
+    Set-Content -LiteralPath $script:GmTurnHelperBootstrapPath -Value ($content + [Environment]::NewLine) -Encoding UTF8
+}
+
+function Copy-GmContextPackFile {
+    param(
+        [string]$RelativePath,
+        [string]$Role
+    )
+
+    $sourcePath = Join-Path $script:RepoRootPath $RelativePath
+    if (!(Test-Path $sourcePath)) {
+        return $null
+    }
+
+    $destinationPath = Join-Path $script:GmContextPackRoot $RelativePath
+    $destinationDir = Split-Path -Parent $destinationPath
+    if (!(Test-Path $destinationDir)) {
+        New-Item -ItemType Directory -Path $destinationDir -Force | Out-Null
+    }
+
+    Copy-Item -LiteralPath $sourcePath -Destination $destinationPath -Force
+
+    return [ordered]@{
+        role = $Role
+        relativePath = $RelativePath.Replace("\", "/")
+        sourcePath = (Resolve-Path $sourcePath).Path
+        sessionPath = $destinationPath
+    }
+}
+
+function Write-GmContextPack {
+    if (!(Test-Path $script:GmContextPackRoot)) {
+        New-Item -ItemType Directory -Path $script:GmContextPackRoot -Force | Out-Null
+    }
+
+    $docSpecs = @(
+        @("CLI_Agent_Daemon_Specification.md", "daemon_protocol"),
+        @("TaskGuides\CLI_Step_Main.txt", "main_turn_guide"),
+        @("Examples\E_CLI_Step_Main.txt", "main_turn_example"),
+        @("Examples\E_CLI_Afterlife_Turns.txt", "afterlife_turn_examples"),
+        @("OtherGuides\Afterlife_Contract_Matrix.md", "afterlife_contract_matrix"),
+        @("OtherGuides\Afterlife_Combat_Terminology_Glossary.md", "afterlife_combat_glossary"),
+        @("Examples\E_CLI_Ink_Feather_Actions.txt", "ink_feather_action_example")
+    )
+
+    $docs = @()
+    foreach ($docSpec in $docSpecs) {
+        $copied = Copy-GmContextPackFile -RelativePath $docSpec[0] -Role $docSpec[1]
+        if ($null -ne $copied) {
+            $docs += $copied
+        }
+    }
+
+    $readmePath = Join-Path $script:GmContextPackRoot "README.md"
+    $readme = @"
+# GM Session Context Pack
+
+This folder is generated for the current live game session.
+
+Start here instead of browsing repository implementation code.
+
+- Read context_pack_manifest.json first.
+- Bootstrap scope: read only context_pack_manifest.json and README.md.
+- Do not open copied guides/examples during bootstrap; they are large and route-specific.
+- Open large copied docs only when a per-turn, repair, or terminal-failure prompt explicitly names them.
+- Use '$($script:GmTurnHelperBootstrapPath)' for safe JSON writes and terminal signals.
+- During normal play or validation repair, do not read implementation code such as BookOfEternityClient/**/*.cs.
+- If validation repair is requested, use game_state/control/validation_repair_request.json, especially harnessRepairPackets[].
+"@
+    Set-Content -LiteralPath $readmePath -Value ($readme + [Environment]::NewLine) -Encoding UTF8
+
+    $manifest = [ordered]@{
+        schemaVersion = 1
+        generatedAtUtc = (Get-Date).ToUniversalTime().ToString("o")
+        gameSessionPath = $GameSessionPath
+        repoRootPath = $script:RepoRootPath
+        contextPackRoot = $script:GmContextPackRoot
+        manifestPath = $script:GmContextPackManifestPath
+        readmePath = $readmePath
+        turnHelperBootstrapPath = $script:GmTurnHelperBootstrapPath
+        docs = $docs
+        rules = @(
+            "Bootstrap scope: read only context_pack_manifest.json and README.md.",
+            "Do not open copied guides/examples during bootstrap; open them only when a per-turn, repair, or terminal-failure prompt explicitly names them.",
+            "Use session-local copied GM docs/examples before repository files when a turn/repair prompt names those docs.",
+            "Do not read implementation code such as BookOfEternityClient/**/*.cs during normal play or validation repair.",
+            "For validation repair, prefer validation_repair_request.json.harnessRepairPackets, session state/control files, and helper commands over source-code archaeology."
+        )
+    }
+
+    Set-Content -LiteralPath $script:GmContextPackManifestPath -Value ($manifest | ConvertTo-Json -Depth 8) -Encoding UTF8
+
+    $script:TaskGuideMainPath = Join-Path $script:GmContextPackRoot "TaskGuides\CLI_Step_Main.txt"
+    $script:ExampleMainPath = Join-Path $script:GmContextPackRoot "Examples\E_CLI_Step_Main.txt"
+    $script:AfterlifeMatrixPath = Join-Path $script:GmContextPackRoot "OtherGuides\Afterlife_Contract_Matrix.md"
+    $script:AfterlifeTurnsExamplePath = Join-Path $script:GmContextPackRoot "Examples\E_CLI_Afterlife_Turns.txt"
+    $script:AfterlifeCombatGlossaryPath = Join-Path $script:GmContextPackRoot "OtherGuides\Afterlife_Combat_Terminology_Glossary.md"
+    $script:InkFeatherExamplePath = Join-Path $script:GmContextPackRoot "Examples\E_CLI_Ink_Feather_Actions.txt"
+    $script:AfterlifeExamplesDirective = $script:AfterlifeExamplesDirective.Replace($script:RepoRootPath, $script:GmContextPackRoot)
+    $script:GmContextPackDirective = " GM session context pack is the first authority: Manifest='$($script:GmContextPackManifestPath)', Root='$($script:GmContextPackRoot)', README='$readmePath'. Bootstrap scope: read only context_pack_manifest.json and README.md. Do not open copied guides/examples during bootstrap; open large copied docs only when a per-turn, repair, or terminal-failure prompt explicitly names them. Do not read implementation code such as BookOfEternityClient/**/*.cs during normal play or validation repair; use validation_repair_request.json.harnessRepairPackets, session state/control files, helper commands, and named copied GM docs instead."
+    $script:GmDocPathDirective = " GM documentation paths are session-local and authoritative: TaskGuide='$($script:TaskGuideMainPath)', MainExample='$($script:ExampleMainPath)', AfterlifeMatrix='$($script:AfterlifeMatrixPath)', AfterlifeTurns='$($script:AfterlifeTurnsExamplePath)'. Do not search repository source or other worktrees for GM docs; use these context-pack paths first."
+}
+
+Write-GmTurnHelperBootstrap
+Write-GmContextPack
 
 $script:LastRepairRequestWrite = [datetime]::MinValue
 $script:LastTerminalProtocolFailureWrite = [datetime]::MinValue
@@ -308,6 +435,63 @@ function Write-Log {
     Write-Host $logLine -ForegroundColor $Color
     if ($LogFile) {
         try { Add-Content -Path $LogFile -Value $logLine -Encoding UTF8 -ErrorAction SilentlyContinue } catch { }
+    }
+}
+
+function Get-TurnRequestKey {
+    param([psobject]$TurnRequest)
+
+    $sessionId = [string]$TurnRequest.sessionId
+    $requestId = [string]$TurnRequest.requestId
+    $turnNumber = [int]$TurnRequest.turnNumber
+    return "$sessionId|$requestId|$turnNumber"
+}
+
+function Test-TurnRequestHasPendingSnapshotContext {
+    param([psobject]$TurnRequest)
+
+    if (!(Test-Path $PendingTurnSnapshotManifestFile) -or !(Test-Path $PendingTurnSnapshotAuthorityFile)) {
+        return $false
+    }
+
+    try {
+        $requestSessionId = [string]$TurnRequest.sessionId
+        $requestId = [string]$TurnRequest.requestId
+        $turnNumber = [int]$TurnRequest.turnNumber
+        if ([string]::IsNullOrWhiteSpace($requestSessionId) -or [string]::IsNullOrWhiteSpace($requestId)) {
+            return $false
+        }
+
+        $manifest = Get-Content -Path $PendingTurnSnapshotManifestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $manifestSessionId = [string]$manifest.sessionId
+        $manifestRequestId = [string]$manifest.requestId
+        $manifestTurnNumber = [int]$manifest.turnNumber
+
+        return [string]::Equals($manifestSessionId, $requestSessionId, [System.StringComparison]::OrdinalIgnoreCase) -and
+            [string]::Equals($manifestRequestId, $requestId, [System.StringComparison]::OrdinalIgnoreCase) -and
+            $manifestTurnNumber -eq $turnNumber
+    }
+    catch {
+        Write-Log "  Pending turn snapshot context is unreadable: $_" -Level "WARN" -Color Yellow
+        return $false
+    }
+}
+
+function Test-ObservedTerminalRequestKey {
+    param([string]$Key)
+
+    if ([string]::IsNullOrWhiteSpace($Key)) {
+        return $false
+    }
+
+    return $script:ObservedTerminalRequestKeys.Contains($Key)
+}
+
+function Add-ObservedTerminalRequestKey {
+    param([string]$Key)
+
+    if (![string]::IsNullOrWhiteSpace($Key)) {
+        [void]$script:ObservedTerminalRequestKeys.Add($Key)
     }
 }
 
@@ -564,25 +748,21 @@ function Send-ToCliWindow {
 function Ensure-CliBootstrapSent {
     if ($script:BootstrapSent) { return $true }
 
-    if (-not $script:LaunchScriptPath) {
-        Write-Log "  -> CLI_Launch_Script.md not found; bootstrap message skipped." -Level "WARN" -Color Yellow
-        $script:BootstrapSent = $true
-        return $true
-    }
-
-    $launchScript = Get-Content -Path $script:LaunchScriptPath -Raw -Encoding UTF8
     $message = @"
 BOOTSTRAP GM SESSION
 
 This is bootstrap only, not an active turn.
 Do NOT write ready/turn_complete.json or ready/turn_error.json yet.
 Wait for a real correlated message that explicitly references input\turn_request.json with the current sessionId/requestId/turnNumber.
+$($script:GmContextPackDirective)
+$($script:GmTurnHelperDirective)
 
-Read and follow the full launch script below before processing turns:
-
-===== BEGIN CLI_LAUNCH_SCRIPT =====
-$launchScript
-===== END CLI_LAUNCH_SCRIPT =====
+Read '$($script:GmContextPackManifestPath)' and '$($script:GmContextPackRoot)\README.md' as the session-local starting context.
+Bootstrap scope: read only context_pack_manifest.json and README.md.
+Do not open copied guides/examples during bootstrap.
+Open large copied docs only when a per-turn, repair, or terminal-failure prompt explicitly names them.
+Do not browse repository implementation code or repo-root planning documents during bootstrap.
+After bootstrap, wait for the daemon's per-turn or repair prompt.
 "@
     $dispatch = Send-ToCliWindow -Message $message
     if ($dispatch -eq "sent" -or $dispatch -eq "clipboard") {
@@ -641,6 +821,17 @@ function Process-Turn {
     try {
         $turnRequest = Get-Content -Path $RequestPath -Raw -Encoding UTF8 | ConvertFrom-Json
         $turnNumber = $turnRequest.turnNumber
+        $turnRequestKey = Get-TurnRequestKey -TurnRequest $turnRequest
+        if (Test-ObservedTerminalRequestKey -Key $turnRequestKey) {
+            return
+        }
+
+        if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest)) {
+            Write-Log "  Skipping stale turn request without matching pending snapshot context (requestKey=$turnRequestKey)." -Level "WARN" -Color Yellow
+            Add-ObservedTerminalRequestKey -Key $turnRequestKey
+            return
+        }
+
         $playerAction = if ($turnRequest.playerAction.Length -gt 80) {
             $turnRequest.playerAction.Substring(0, 77) + "..."
         } else { $turnRequest.playerAction }
@@ -650,7 +841,7 @@ function Process-Turn {
 
         # Send processing command to CLI window
         $requestId = if ($turnRequest.requestId) { $turnRequest.requestId } else { "<missing-requestId>" }
-        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmDocPathDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:TaskGuideMainPath)' and '$($script:ExampleMainPath)' before writing files.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
+        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:TaskGuideMainPath)' and '$($script:ExampleMainPath)' before writing files.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
 
         $bootstrapSent = Ensure-CliBootstrapSent
         $completionPath = Join-Path $ReadyDir "turn_complete.json"
@@ -690,6 +881,12 @@ function Process-Turn {
 
             if (!(Test-Path $RequestPath)) {
                 Write-Log "  Turn cancelled by client" -Level "WARN" -Color Yellow
+                break
+            }
+
+            if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest)) {
+                Write-Log "  Turn wait closed because the client no longer has matching pending snapshot context. The client likely consumed the terminal signal first." -Level "WARN" -Color Yellow
+                Add-ObservedTerminalRequestKey -Key $turnRequestKey
                 break
             }
 
@@ -740,8 +937,9 @@ function Process-Turn {
             }
         }
 
-        # Cleanup input
-        if (Test-Path $RequestPath) { Remove-Item $RequestPath -Force -ErrorAction SilentlyContinue }
+        if ($null -ne $terminalSignal) {
+            Add-ObservedTerminalRequestKey -Key $turnRequestKey
+        }
     }
     catch {
         $script:ErrorCount++
@@ -790,7 +988,7 @@ function Process-RepairRequest {
         }
 
         $readyPath = "$GameSessionPath\game_state\control\validation_repair_ready.json"
-        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmDocPathDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json plus '$($script:TaskGuideMainPath)' and '$($script:ExampleMainPath)'.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) Fix only the listed validation errors in the already written files IN PLACE. Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
+        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json plus '$($script:TaskGuideMainPath)' and '$($script:ExampleMainPath)'.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) Fix only the listed validation errors in the already written files IN PLACE. Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
         if ($hasDiagnosticOnlyMetadata) {
             $message += " The current repair request marks sessionId/requestId/turnNumber as diagnostic-only sentinel values because validated pending snapshot context is unavailable or invalid. Do NOT copy those sentinel metadata into $readyPath. First restore pending snapshot context/authority and then use the freshest client-authored repair request with valid metadata before writing validation_repair_ready.json."
         }
@@ -809,7 +1007,7 @@ function Process-RepairRequest {
         Write-Log "Repair request for turn #$turnNumber (attempt $attempt)" -Level "REPAIR" -Color Yellow
 
         Ensure-CliBootstrapSent
-        Send-ToCliWindow -Message $message | Out-Null
+        Dispatch-WithRetry -Message $message -PendingPath $RepairPath | Out-Null
     }
     catch {
         $script:ErrorCount++
@@ -886,7 +1084,7 @@ function Process-TerminalProtocolFailureRequest {
             }
         }
 
-        $message = "Terminal protocol failure for turn #$turnNumber (requestId=$requestId).$($script:GmDocPathDirective) You MUST reread $GameSessionPath\game_state\control\terminal_protocol_failure_request.json plus '$($script:TaskGuideMainPath)' and '$($script:ExampleMainPath)'.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) This is NOT validation_repair_request.json and NOT a repair loop. The client already closed the current wait cycle. Do NOT create validation_repair_ready.json. Do NOT create a new turn on your own. Fix your terminal-signal discipline for the NEXT correct client request: exactly one terminal signal, terminal signal written last, never both turn_complete and turn_error for one request."
+        $message = "Terminal protocol failure for turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\terminal_protocol_failure_request.json plus '$($script:TaskGuideMainPath)' and '$($script:ExampleMainPath)'.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) This is NOT validation_repair_request.json and NOT a repair loop. The client already closed the current wait cycle. Do NOT create validation_repair_ready.json. Do NOT create a new turn on your own. Fix your terminal-signal discipline for the NEXT correct client request: exactly one terminal signal, terminal signal written last, never both turn_complete and turn_error for one request."
         if ($hasDiagnosticOnlyMetadata) {
             $message += " The sessionId/requestId/turnNumber in this terminal protocol failure request are diagnostic-only sentinel values because validated pending snapshot context is unavailable or invalid. Do NOT treat them as authoritative correlation metadata for the next step; restore pending snapshot context/authority first and then wait for the freshest correct client request."
         }
@@ -904,7 +1102,7 @@ function Process-TerminalProtocolFailureRequest {
         Write-Log "Terminal protocol failure for turn #$turnNumber" -Level "PROTOCOL" -Color Red
 
         Ensure-CliBootstrapSent
-        Send-ToCliWindow -Message $message | Out-Null
+        Dispatch-WithRetry -Message $message -PendingPath $FailurePath | Out-Null
     }
     catch {
         $script:ErrorCount++

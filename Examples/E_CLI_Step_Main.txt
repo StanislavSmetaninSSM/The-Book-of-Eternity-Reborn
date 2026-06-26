@@ -491,6 +491,32 @@ IMPORTANT:
 - declared `Relevant actors` must cover any structured actor updates already written into state, such as `UpdateNPCs`, actor-specific NPC update arrays, and `UpdateGuardians`
 - `Scene-local + Relevant actors: нет` is valid only when no such structured actor updates are emitted
 - unresolved ID-only structured updates should not be hard-rejected solely because the client could not recover a reliable name alias from current state
+- if `validation_repair_request.json.harnessRepairPackets[]` is present, follow those packets before free-form interpretation of `errors[]`
+
+Faction identity repair packet example:
+{
+  "kind": "faction_identity_repair",
+  "priority": "high",
+  "title": "Faction identity repair",
+  "targetFiles": [
+    "game_state/factions/faction_core.json",
+    "game_state/factions/faction_custom.json",
+    "game_state/control/pending_turn_snapshot/game_state/factions/faction_core.json"
+  ],
+  "steps": [
+    "Use game_state/control/pending_turn_snapshot/game_state/factions/faction_core.json as authority for whether the faction was already permanent before this turn or was still a same-turn temporary faction.",
+    "If the snapshot entry has factionId = null plus a non-empty initialId, restore current faction identity to factionId = null, exact initialId, and isNewFaction = true.",
+    "If the snapshot entry has a non-empty factionId, use that exact permanent factionId and remove initialId/isNewFaction.",
+    "If a sidecar faction file contains this temporary faction with factionId = null, remove that sidecar entry until the client materializes a permanent factionId."
+  ],
+  "doNotDo": [
+    "Do not invent a permanent factionId from the faction name.",
+    "Do not write temporary same-turn faction identities into faction sidecar files.",
+    "Do not delete ranks, resources, projects, chronicles, or reputation details just to silence identity validation."
+  ]
+}
+
+For example, if the snapshot has `factionId: null`, `initialId: "temp-faction-merchant-guild-eternia"`, and `isNewFaction: true`, the GM must restore that temporary identity shape instead of trying names such as `faction_merchant_guild` or `faction_capital_merchants`.
 
 VALIDATION CONTRACT SUMMARY:
 - client checks correlated `sessionId/requestId/turnNumber`

@@ -652,6 +652,9 @@ public partial class GameEngine
 
     private async Task ProcessPlayerTurn(string action, string? extraSystemReminder = null)
     {
+        if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
+            return;
+
         var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
         RollbackSnapshot? backedUpFiles = null;
         TurnRequest? request = null;

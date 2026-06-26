@@ -44,6 +44,19 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
+    public void BridgeHost_ConfirmsPromptLeavesInputAfterAppendEnter()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("WaitForPromptSubmittedAfterEnterAsync", source, StringComparison.Ordinal);
+        Assert.Contains("Prompt was visible and Enter was sent, but the CLI did not transition away from the pasted prompt marker", source, StringComparison.Ordinal);
+        Assert.True(
+            source.IndexOf("await WriteToPtyAsync(string.Empty, appendEnter: true);", StringComparison.Ordinal) <
+            source.IndexOf("WaitForPromptSubmittedAfterEnterAsync", StringComparison.Ordinal),
+            "The bridge must press Enter before waiting for the submitted/working screen.");
+    }
+
+    [Fact]
     public void LauncherScript_ExposesDiagnosticsCommand()
     {
         var source = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");
@@ -124,6 +137,54 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("case \"dispatchworkertask\":", source, StringComparison.Ordinal);
         Assert.Contains("GmWorkerProposalOnlyDispatchService", source, StringComparison.Ordinal);
         Assert.Contains("WorkerDispatch", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BridgeHost_ClearsPendingCliInputBeforeDispatchPrompt()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("ClearPendingInputBeforePromptDispatchAsync", source, StringComparison.Ordinal);
+        Assert.Contains("\"\\u0015\"", source, StringComparison.Ordinal);
+        Assert.Contains("await ClearPendingInputBeforePromptDispatchAsync();", source, StringComparison.Ordinal);
+        Assert.True(
+            source.IndexOf("await ClearPendingInputBeforePromptDispatchAsync();", StringComparison.Ordinal) <
+            source.IndexOf("var payload = BuildBracketedPastePayload", StringComparison.Ordinal),
+            "Pending CLI drafts must be cleared before the bridge pastes a GM prompt.");
+    }
+
+    [Fact]
+    public void BridgeHost_RefusesPromptDispatchWhileCodexCliIsWorking()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("ProbeCliPromptReadinessForDispatch", source, StringComparison.Ordinal);
+        Assert.Contains("GM CLI is not ready for a new prompt", source, StringComparison.Ordinal);
+        Assert.Contains("esc to interrupt", source, StringComparison.Ordinal);
+        Assert.True(
+            source.IndexOf("await ClearPendingInputBeforePromptDispatchAsync();", StringComparison.Ordinal) <
+            source.IndexOf("var readiness = ProbeCliPromptReadinessForDispatch();", StringComparison.Ordinal),
+            "The bridge should clear idle-line drafts before probing visible CLI readiness.");
+        Assert.True(
+            source.IndexOf("var readiness = ProbeCliPromptReadinessForDispatch();", StringComparison.Ordinal) <
+            source.IndexOf("var payload = BuildBracketedPastePayload", StringComparison.Ordinal),
+            "The bridge must verify that Codex is idle before pasting the GM prompt.");
+    }
+
+    [Fact]
+    public void BridgeHost_RecoversDispatchFailedStatusWhenCodexPromptReturns()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("RefreshDispatchFailureRecoveryIfCliPromptReady", source, StringComparison.Ordinal);
+        Assert.Contains("string.Equals(_status.State, \"DispatchFailed\", StringComparison.Ordinal)", source, StringComparison.Ordinal);
+        Assert.Contains("_status.Ready = true;", source, StringComparison.Ordinal);
+        Assert.Contains("_status.State = \"Ready\";", source, StringComparison.Ordinal);
+        Assert.Contains("_status.LastError = null;", source, StringComparison.Ordinal);
+        Assert.True(
+            source.IndexOf("RefreshDispatchFailureRecoveryIfCliPromptReady();", StringComparison.Ordinal) <
+            source.IndexOf("case \"dispatchprompt\":", StringComparison.Ordinal),
+            "Status and dispatch requests must recover a stale DispatchFailed state before rejecting the next prompt.");
     }
 
     [Fact]

@@ -11,6 +11,8 @@
             <![CDATA[
             1. **Read Primary Input:**
                - input/turn_request.json (player's action, turn metadata, pre-generated dice)
+               - If the daemon prompt names a session-local `game_state/control/gm_context_pack/context_pack_manifest.json`, read that manifest/README first and use the copied GM-facing guides/examples from that context pack before repository paths.
+               - During normal play and validation repair, do not read implementation code such as `BookOfEternityClient/**/*.cs` to infer game rules. If a rule is missing from GM-facing docs, use the current request, validation repair packet, session state/control files, and helper tools; do not perform source-code archaeology in a live turn.
                - Examples/E_CLI_Step_Main.txt (MUST-read examples for NPC scope, reasoning blocks, repair loop, and terminal protocol failures)
                - Examples/E_CLI_Ink_Feather_Actions.txt (MUST-read whenever the turn uses any GM-side INK_FEATHER_ACTION)
                - OtherGuides/Afterlife_Contract_Matrix.md (MUST-read whenever currentRealm is `Chaos Sea` or `Shining Abode`; use it to select the exact canonical state surfaces, receipts, reports, and forbidden substitutions before writing files)
@@ -602,6 +604,7 @@
                - ready/turn_complete.json (terminal success signal with exact sessionId/requestId/turnNumber, ISO timestamp, status="success", and filesModified[])
                - ready/turn_error.json (terminal error signal with exact sessionId/requestId/turnNumber, ISO timestamp, status="error", and non-empty error)
                - exactly ONE of these two files may exist for a single sessionId/requestId/turnNumber
+               - never delete or rewrite `input/turn_request.json`; it is client-owned authority until the client accepts, rejects, or cancels the wait cycle
             ]]>
         </Phase>
 
@@ -610,15 +613,23 @@
             **REPAIR LOOP EDGE CASES:**
             - If the client writes `game_state/control/validation_repair_request.json`, this is NOT a new turn.
             - Read the latest repair request every time; the client may rewrite it after a failed recheck.
+            - If the request contains `harnessRepairPackets[]`, process those packets before individual `errors[]`: each packet is a client-built minimal repair route for a known multi-error pattern.
+            - For `harnessRepairPackets[].kind = "guardian_scope_repair"`, repair only the listed `targetFiles`. Treat `canonicalActorNames[]`, `steps[]`, and `debugLogTemplate` as the authoritative checklist for this repair attempt. If the packet lists `game_state/meta/guardian_projects.json`, restore `activeProjects` from validated pre-turn tracker authority plus authorized same-turn project commands; do not invent a project from the current materialized file. Do not read implementation code (`BookOfEternityClient/**/*.cs`) to infer repair rules.
+            - For `harnessRepairPackets[].kind = "actor_reasoning_subpoint_repair"`, repair only `output/debug_logs.json.gm_thoughts_markdown`: create any missing `### <actor>` headings from `canonicalActorNames[]`, add separate bullets exactly `- Ситуация:`, `- Мысли:`, and `- Действия:`, preserve unrelated accepted content, then call `Complete-BoeValidationRepair` as the last action.
+            - For `harnessRepairPackets[].kind = "faction_identity_repair"`, compare current `game_state/factions/faction_core.json` with `game_state/control/pending_turn_snapshot/game_state/factions/faction_core.json`. If the snapshot entry is a same-turn temporary faction, restore `factionId=null`, exact `initialId`, and `isNewFaction=true`; if it is a permanent pre-existing faction, use the exact snapshot `factionId` and remove temporary identity fields. Never invent a permanent faction id from a faction name. Sidecar faction files such as `faction_custom.json`, `faction_structure.json`, `faction_resources.json`, and `faction_projects.json` may reference only permanent `factionId`; do not create sidecar entries for temporary same-turn factions before the client materializes a permanent id.
+            - In Guardian repair packets, `game_state/meta/guardians.json.activeGuardian` and `guardians[]` are materialized mirror surfaces. Do not use raw current mirror data as authority; rewrite them from the validated pre-turn Guardian baseline plus authorized same-turn Guardian mutations.
+            - In Guardian repair packets, `output/debug_logs.json.gm_thoughts_markdown` must include the listed Guardian names in Relevant actors and must include `### <Guardian Name>` reasoning blocks with situation, thoughts, and actions.
             - If your `validation_repair_ready.json` is malformed or has wrong `sessionId/requestId/turnNumber`, the client will reject it, rewrite the repair request, and the daemon will ping you again.
             - Fix already written files IN PLACE, then recreate `validation_repair_ready.json` with exact metadata copied from the current `validation_repair_request.json`.
             - During repair mode, do NOT create a new `turn_request.json` and do NOT treat repair as a fresh turn.
+            - The GM turn helper rejects client-owned runtime files in `Write-BoeJson` and `Complete-BoeTurn -FilesModified`: do not write or list `input/turn_request.json`, `game_state/history/chat_log.json`, pending-turn snapshots, `validation_repair_request.json`, `terminal_protocol_failure_request.json`, `gm_bridge_status.json`, or `stories/*.jsonl`.
             - If the client receives `ready/turn_error.json` for a transition flow, it may restore the full pre-turn tracked file set, including deleting newly created tracked files.
             - If a cancelled wait later produces `ready/turn_error.json`, that late error signal will still be consumed and cleaned by the client.
             - If the client writes `game_state/control/terminal_protocol_failure_request.json`, this is NOT `validation_repair_request.json` and NOT a repair loop.
             - `terminal_protocol_failure_request.json` means the terminal ready signal itself was malformed, mismatched, or ambiguously duplicated.
             - In that case, do NOT create `validation_repair_ready.json`, do NOT create a new turn on your own, and do NOT assume the client is still waiting.
             - For one turn there must be exactly one terminal signal: either `ready/turn_complete.json` or `ready/turn_error.json`, but never both.
+            - Do not delete `input/turn_request.json` while handling terminal protocol failures; the client owns the file and uses it to validate pending-turn authority.
             ]]>
         </Phase>
     </CLIWorkflow>

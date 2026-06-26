@@ -1,0 +1,484 @@
+Set-StrictMode -Off
+
+$script:BoeGameSessionPath = $null
+
+function Initialize-BoeGmTurnHelper {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$GameSessionPath
+    )
+
+    if (!(Test-Path -LiteralPath $GameSessionPath)) {
+        throw "Game session path does not exist: $GameSessionPath"
+    }
+
+    $script:BoeGameSessionPath = (Resolve-Path -LiteralPath $GameSessionPath).Path
+}
+
+function Assert-BoeGmTurnHelperInitialized {
+    if ([string]::IsNullOrWhiteSpace($script:BoeGameSessionPath)) {
+        throw "GM turn helper is not initialized. Run Initialize-BoeGmTurnHelper -GameSessionPath <path> first."
+    }
+}
+
+function Resolve-BoeSessionPath {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RelativePath
+    )
+
+    Assert-BoeGmTurnHelperInitialized
+
+    if ([System.IO.Path]::IsPathRooted($RelativePath)) {
+        $fullPath = [System.IO.Path]::GetFullPath($RelativePath)
+    }
+    else {
+        $normalized = $RelativePath.Replace('/', [System.IO.Path]::DirectorySeparatorChar)
+        $fullPath = [System.IO.Path]::GetFullPath((Join-Path $script:BoeGameSessionPath $normalized))
+    }
+
+    $sessionRoot = [System.IO.Path]::GetFullPath($script:BoeGameSessionPath)
+    if (!$fullPath.StartsWith($sessionRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Path is outside game_session: $RelativePath"
+    }
+
+    return $fullPath
+}
+
+function Read-BoeJson {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RelativePath
+    )
+
+    $path = Resolve-BoeSessionPath -RelativePath $RelativePath
+    if (!(Test-Path -LiteralPath $path)) {
+        throw "JSON file does not exist: $RelativePath"
+    }
+
+    return Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+}
+
+function Get-BoeJsonValue {
+    param(
+        [AllowNull()]
+        [object]$Object,
+
+        [Parameter(Mandatory = $true)]
+        [string[]]$Names,
+
+        [object]$Default = $null
+    )
+
+    if ($null -eq $Object) {
+        return $Default
+    }
+
+    foreach ($name in @($Names)) {
+        if ([string]::IsNullOrWhiteSpace($name)) {
+            continue
+        }
+
+        if ($Object -is [System.Collections.IDictionary]) {
+            if ($Object.Contains($name)) {
+                return $Object[$name]
+            }
+
+            foreach ($key in $Object.Keys) {
+                if ([string]::Equals([string]$key, $name, [System.StringComparison]::OrdinalIgnoreCase)) {
+                    return $Object[$key]
+                }
+            }
+        }
+
+        $property = $Object.PSObject.Properties |
+            Where-Object { [string]::Equals($_.Name, $name, [System.StringComparison]::OrdinalIgnoreCase) } |
+            Select-Object -First 1
+
+        if ($null -ne $property) {
+            return $property.Value
+        }
+    }
+
+    return $Default
+}
+
+function Get-BoeJsonArrayItems {
+    param(
+        [AllowNull()]
+        [object]$Value
+    )
+
+    if ($null -eq $Value) {
+        return
+    }
+
+    if ($Value -is [System.Array]) {
+        foreach ($item in $Value) {
+            $item
+        }
+        return
+    }
+
+    $Value
+}
+
+function Set-BoeJsonProperty {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Object,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Name,
+
+        [AllowNull()]
+        [object]$Value
+    )
+
+    if ($Object -is [System.Collections.IDictionary]) {
+        $Object[$Name] = $Value
+        return
+    }
+
+    $property = $Object.PSObject.Properties |
+        Where-Object { [string]::Equals($_.Name, $Name, [System.StringComparison]::OrdinalIgnoreCase) } |
+        Select-Object -First 1
+
+    if ($null -ne $property) {
+        $property.Value = $Value
+        return
+    }
+
+    $Object | Add-Member -NotePropertyName $Name -NotePropertyValue $Value
+}
+
+function Add-BoeJsonArrayItem {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Object,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PropertyName,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Item,
+
+        [string]$UniqueBy = ""
+    )
+
+    $existingValue = Get-BoeJsonValue -Object $Object -Names @($PropertyName)
+    $existingItems = @(Get-BoeJsonArrayItems -Value $existingValue)
+    $nextItems = New-Object System.Collections.Generic.List[object]
+
+    $replacementKey = $null
+    if (![string]::IsNullOrWhiteSpace($UniqueBy)) {
+        $replacementKey = Get-BoeJsonValue -Object $Item -Names @($UniqueBy)
+    }
+
+    foreach ($existingItem in $existingItems) {
+        if (![string]::IsNullOrWhiteSpace($UniqueBy) -and $null -ne $replacementKey) {
+            $existingKey = Get-BoeJsonValue -Object $existingItem -Names @($UniqueBy)
+            if ($null -ne $existingKey -and [string]::Equals([string]$existingKey, [string]$replacementKey, [System.StringComparison]::OrdinalIgnoreCase)) {
+                continue
+            }
+        }
+
+        $nextItems.Add($existingItem)
+    }
+
+    $nextItems.Add($Item)
+    $arrayValue = [object[]]$nextItems.ToArray()
+    Set-BoeJsonProperty -Object $Object -Name $PropertyName -Value $arrayValue
+
+    return ,$arrayValue
+}
+
+function Normalize-BoeRelativePath {
+    param(
+        [AllowNull()]
+        [string]$RelativePath
+    )
+
+    if ([string]::IsNullOrWhiteSpace($RelativePath)) {
+        return ""
+    }
+
+    return $RelativePath.Replace('\', '/').TrimStart('/').Trim()
+}
+
+function Convert-BoeFullPathToSessionRelativePath {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$FullPath
+    )
+
+    Assert-BoeGmTurnHelperInitialized
+
+    $full = [System.IO.Path]::GetFullPath($FullPath)
+    $sessionRoot = [System.IO.Path]::GetFullPath($script:BoeGameSessionPath).TrimEnd(
+        [System.IO.Path]::DirectorySeparatorChar,
+        [System.IO.Path]::AltDirectorySeparatorChar)
+    $prefix = $sessionRoot + [System.IO.Path]::DirectorySeparatorChar
+
+    if ([string]::Equals($full, $sessionRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+        return ""
+    }
+
+    if (!$full.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Path is outside game_session: $FullPath"
+    }
+
+    return Normalize-BoeRelativePath -RelativePath $full.Substring($prefix.Length)
+}
+
+function Get-BoePolicyRelativePath {
+    param(
+        [AllowNull()]
+        [string]$Path
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Path)) {
+        return ""
+    }
+
+    if ([System.IO.Path]::IsPathRooted($Path)) {
+        $fullPath = Resolve-BoeSessionPath -RelativePath $Path
+        return Convert-BoeFullPathToSessionRelativePath -FullPath $fullPath
+    }
+
+    return Normalize-BoeRelativePath -RelativePath $Path
+}
+
+function Test-BoeClientOwnedRuntimePath {
+    param(
+        [AllowNull()]
+        [string]$RelativePath
+    )
+
+    $path = Normalize-BoeRelativePath -RelativePath $RelativePath
+    if ([string]::IsNullOrWhiteSpace($path)) {
+        return $false
+    }
+
+    if ([string]::Equals($path, "input/turn_request.json", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $true
+    }
+
+    if ([string]::Equals($path, "game_state/history/chat_log.json", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $true
+    }
+
+    if ([string]::Equals($path, "game_state/control/pending_turn_snapshot.json", [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($path, "game_state/control/pending_turn_snapshot.authority.json", [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($path, "game_state/control/pending_turn_snapshot_manifest.json", [System.StringComparison]::OrdinalIgnoreCase) -or
+        $path.StartsWith("game_state/control/pending_turn_snapshot/", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $true
+    }
+
+    if ([string]::Equals($path, "game_state/control/validation_repair_request.json", [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($path, "game_state/control/terminal_protocol_failure_request.json", [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($path, "game_state/control/gm_bridge_status.json", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $true
+    }
+
+    if ($path.StartsWith("stories/", [System.StringComparison]::OrdinalIgnoreCase) -and
+        $path.EndsWith(".jsonl", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $true
+    }
+
+    return $false
+}
+
+function Get-BoeCurrentRealm {
+    Assert-BoeGmTurnHelperInitialized
+
+    $path = Resolve-BoeSessionPath -RelativePath "game_state/meta/soul_state.json"
+    if (!(Test-Path -LiteralPath $path)) {
+        return ""
+    }
+
+    try {
+        $state = Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+        $realm = Get-BoeJsonValue -Object $state -Names @("currentRealm")
+        if ($null -eq $realm) {
+            return ""
+        }
+
+        return [string]$realm
+    }
+    catch {
+        return ""
+    }
+}
+
+function Test-BoeAfterlifeRealm {
+    $realm = Get-BoeCurrentRealm
+    return [string]::Equals($realm, "Chaos Sea", [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($realm, "Shining Abode", [System.StringComparison]::OrdinalIgnoreCase)
+}
+
+function Test-BoeMortalWorldProfilePath {
+    param(
+        [AllowNull()]
+        [string]$RelativePath
+    )
+
+    $path = Normalize-BoeRelativePath -RelativePath $RelativePath
+    if ([string]::IsNullOrWhiteSpace($path)) {
+        return $false
+    }
+
+    foreach ($prefix in @(
+        "game_state/world/",
+        "game_state/npcs/",
+        "game_state/factions/",
+        "game_state/player/",
+        "game_state/inventory/",
+        "game_state/combat/",
+        "game_state/quests/"
+    )) {
+        if ($path.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $true
+        }
+    }
+
+    return $false
+}
+
+function Assert-BoeRealmWritableRuntimePath {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RelativePath
+    )
+
+    $policyPath = Get-BoePolicyRelativePath -Path $RelativePath
+    if ((Test-BoeMortalWorldProfilePath -RelativePath $policyPath) -and (Test-BoeAfterlifeRealm)) {
+        $realm = Get-BoeCurrentRealm
+        throw "Path is wrong realm Mortal World profile state while currentRealm is '$realm' and must not be written by the GM helper: $RelativePath"
+    }
+}
+
+function Assert-BoeGmWritableRuntimePath {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RelativePath
+    )
+
+    $policyPath = Get-BoePolicyRelativePath -Path $RelativePath
+    if (Test-BoeClientOwnedRuntimePath -RelativePath $policyPath) {
+        throw "Path is client-owned runtime state and must not be written by the GM helper: $RelativePath"
+    }
+
+    Assert-BoeRealmWritableRuntimePath -RelativePath $policyPath
+}
+
+function Assert-BoeGmFilesModifiedEntries {
+    param(
+        [AllowNull()]
+        [string[]]$FilesModified
+    )
+
+    foreach ($entry in @($FilesModified)) {
+        $policyPath = Get-BoePolicyRelativePath -Path $entry
+        if (Test-BoeClientOwnedRuntimePath -RelativePath $policyPath) {
+            throw "filesModified contains client-owned runtime state. Remove this entry and let the client maintain it: $entry"
+        }
+
+        Assert-BoeRealmWritableRuntimePath -RelativePath $policyPath
+    }
+}
+
+function Write-BoeJson {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RelativePath,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Data,
+
+        [int]$Depth = 100,
+
+        [switch]$AllowClientOwnedRuntimeWrite
+    )
+
+    if (!$AllowClientOwnedRuntimeWrite) {
+        Assert-BoeGmWritableRuntimePath -RelativePath $RelativePath
+    }
+
+    $path = Resolve-BoeSessionPath -RelativePath $RelativePath
+    $parent = Split-Path -Parent $path
+    if (!(Test-Path -LiteralPath $parent)) {
+        New-Item -ItemType Directory -Path $parent -Force | Out-Null
+    }
+
+    $effectiveDepth = [Math]::Max(1, [Math]::Min($Depth, 100))
+    $json = $Data | ConvertTo-Json -Depth $effectiveDepth
+    $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+    [System.IO.File]::WriteAllText($path, $json + [Environment]::NewLine, $utf8NoBom)
+}
+
+function Get-BoeCurrentTurnRequest {
+    $path = Resolve-BoeSessionPath -RelativePath "input/turn_request.json"
+    if (!(Test-Path -LiteralPath $path)) {
+        throw "Current input/turn_request.json is missing. The daemon may have already closed this wait cycle; do not write a stale terminal signal."
+    }
+
+    return Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+}
+
+function Complete-BoeTurn {
+    param(
+        [string[]]$FilesModified = @()
+    )
+
+    Assert-BoeGmFilesModifiedEntries -FilesModified $FilesModified
+
+    $turn = Get-BoeCurrentTurnRequest
+    $signal = [ordered]@{
+        sessionId = [string]$turn.sessionId
+        requestId = [string]$turn.requestId
+        turnNumber = [int]$turn.turnNumber
+        timestamp = [DateTimeOffset]::UtcNow.ToString("O")
+        status = "success"
+        filesModified = @($FilesModified)
+    }
+
+    Write-BoeJson -RelativePath "ready/turn_complete.json" -Data $signal -Depth 20 -AllowClientOwnedRuntimeWrite
+}
+
+function Fail-BoeTurn {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ErrorMessage
+    )
+
+    $turn = Get-BoeCurrentTurnRequest
+    $signal = [ordered]@{
+        sessionId = [string]$turn.sessionId
+        requestId = [string]$turn.requestId
+        turnNumber = [int]$turn.turnNumber
+        timestamp = [DateTimeOffset]::UtcNow.ToString("O")
+        status = "error"
+        error = $ErrorMessage
+    }
+
+    Write-BoeJson -RelativePath "ready/turn_error.json" -Data $signal -Depth 20 -AllowClientOwnedRuntimeWrite
+    throw "GM turn failed: $ErrorMessage"
+}
+
+function Complete-BoeValidationRepair {
+    $repair = Read-BoeJson -RelativePath "game_state/control/validation_repair_request.json"
+    if ($repair.metadataDiagnosticOnly) {
+        throw "validation_repair_request.json uses diagnostic-only metadata. Do not write validation_repair_ready.json from this request."
+    }
+
+    $signal = [ordered]@{
+        sessionId = [string]$repair.sessionId
+        requestId = [string]$repair.requestId
+        turnNumber = [int]$repair.turnNumber
+        timestamp = [DateTimeOffset]::UtcNow.ToString("O")
+        status = "success"
+    }
+
+    Write-BoeJson -RelativePath "game_state/control/validation_repair_ready.json" -Data $signal -Depth 20
+}

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -498,6 +499,9 @@ public partial class GameEngine
             RevalidationAttempt = attempt,
             GmInstructions = gmInstructions,
             SummaryGroups = BuildValidationSummaryLines(prioritizedErrors, 6),
+            HarnessRepairPackets = BuildValidationRepairHarnessPackets(
+                prioritizedErrors,
+                await ReadCurrentGuardianRepairActorNameHintsAsync()),
             Errors = prioritizedErrors.Select(e => new ValidationRepairIssue
             {
                 Code = e.Code ?? "validation_error",
@@ -515,6 +519,354 @@ public partial class GameEngine
 
         await _fs.WriteFileAtomicAsync(ValidationRepairRequestPath, JsonSerializer.Serialize(request, JsonOpts));
         await RunWorkerValidationRepairIfAvailableAsync(prioritizedErrors, requestMetadata, request.DetectedAtUtc, attempt);
+    }
+
+    private static List<ValidationRepairHarnessPacket> BuildValidationRepairHarnessPackets(
+        IReadOnlyList<ValidationIssue> errors,
+        IReadOnlyCollection<string>? guardianActorNameHints = null)
+    {
+        var packets = new List<ValidationRepairHarnessPacket>();
+        var guardianScopeErrors = errors.Where(IsGuardianScopeRepairIssue).ToList();
+        var guardianScopeActorNames = CollectRepairActorNames(guardianScopeErrors, guardianActorNameHints);
+        var actorReasoningSubpointErrors = errors
+            .Where(IsActorReasoningSubpointRepairIssue)
+            .Where(issue => !guardianScopeActorNames.Contains(NormalizeRepairActorName(issue.Actor)))
+            .ToList();
+        var factionIdentityErrors = errors.Where(IsFactionIdentityRepairIssue).ToList();
+
+        if (guardianScopeErrors.Count > 0)
+            packets.Add(BuildGuardianScopeRepairPacket(guardianScopeErrors, guardianActorNameHints));
+
+        if (actorReasoningSubpointErrors.Count > 0)
+            packets.Add(BuildActorReasoningSubpointRepairPacket(actorReasoningSubpointErrors));
+
+        if (factionIdentityErrors.Count > 0)
+            packets.Add(BuildFactionIdentityRepairPacket(factionIdentityErrors));
+
+        return packets;
+    }
+
+    private static bool IsGuardianScopeRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Code, "guardian_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "guardian_project_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "structured_guardian_update_out_of_scope", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "active_guardian_missing_from_scope", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsActorReasoningSubpointRepairIssue(ValidationIssue issue)
+    {
+        return IsGuardianReasoningSection(issue.Section) &&
+               (string.Equals(issue.Code, "missing_actor_block", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "missing_actor_situation", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "missing_actor_thoughts", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "missing_actor_actions", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsFactionIdentityRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Code, "faction_full_object_existing_requires_faction_id", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "faction_full_object_unknown_faction_id", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "faction_full_object_conflicting_identity", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "faction_full_object_requires_explicit_null_faction_id", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "faction_full_object_requires_explicit_create_flag", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "faction_command_unknown_faction_id", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "canonical_faction_sidecar_requires_permanent_faction_id", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "canonical_faction_sidecar_unknown_faction_id", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static ValidationRepairHarnessPacket BuildGuardianScopeRepairPacket(
+        IReadOnlyList<ValidationIssue> guardianScopeErrors,
+        IReadOnlyCollection<string>? guardianActorNameHints = null)
+    {
+        var actorNames = CollectRepairActorNames(guardianScopeErrors, guardianActorNameHints)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (actorNames.Count == 0)
+            actorNames.Add("активный Хранитель из game_state/meta/guardians.json");
+
+        var targetFiles = guardianScopeErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("output/debug_logs.json");
+        if (!targetFiles.Contains("game_state/meta/guardians.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/meta/guardians.json");
+        if (guardianScopeErrors.Any(issue => string.Equals(issue.Code, "guardian_project_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase)) &&
+            !targetFiles.Contains("game_state/meta/guardian_projects.json", StringComparer.OrdinalIgnoreCase))
+        {
+            targetFiles.Add("game_state/meta/guardian_projects.json");
+        }
+
+        var actorList = string.Join(", ", actorNames);
+        var headingExamples = string.Join(", ", actorNames.Select(actor => $"### {actor}"));
+        var template = BuildGuardianScopeDebugLogTemplate(actorList, actorNames);
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "guardian_scope_repair",
+            Priority = "high",
+            Title = "Guardian scope and materialized mirror repair",
+            TargetFiles = targetFiles,
+            CanonicalActorNames = actorNames,
+            Steps = new List<string>
+            {
+                "In game_state/meta/guardians.json, do not treat current activeGuardian or current guardians[] as authority. Rewrite activeGuardian and guardians[] to the kernel-authoritative Guardian state reconstructed from the validated pre-turn snapshot plus authorized same-turn Guardian mutations.",
+                "If game_state/meta/guardian_projects.json is listed, rewrite activeProjects to the kernel-authoritative project tracker state from the validated pre-turn snapshot plus authorized same-turn project commands; do not invent or start a project just because the current materialized file contains it.",
+                $"In output/debug_logs.json.gm_thoughts_markdown, set NPC scope mode to Guardian-centric or Mixed and include exactly these Guardian names in Relevant actors: {actorList}.",
+                $"Add a reasoning block for every listed Guardian. Minimal required heading shapes: {headingExamples}; use client-recognized bullet labels exactly like - Ситуация:, - Мысли:, and - Действия:.",
+                "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from the current validation_repair_request.json."
+            },
+            DebugLogTemplate = template,
+            DoNotDo = new List<string>
+            {
+                "Do not copy stale mirror-only activeGuardian aliases into Relevant actors.",
+                "Do not use raw guardianId as the actor name in Relevant actors or reasoning headings.",
+                "Do not remove the Guardian mutation from the turn just to silence scope validation unless the mutation was actually unintended.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this repair packet, the validation request, GM docs, and session snapshot/control files."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildActorReasoningSubpointRepairPacket(
+        IReadOnlyList<ValidationIssue> actorReasoningErrors)
+    {
+        var actorNames = actorReasoningErrors
+            .Select(issue => NormalizeRepairActorName(issue.Actor))
+            .Where(actor => !string.IsNullOrWhiteSpace(actor))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (actorNames.Count == 0)
+            actorNames.Add("актор из ошибки validation_repair_request.json");
+
+        var targetFiles = actorReasoningErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("output/debug_logs.json");
+
+        var actorList = string.Join(", ", actorNames);
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "actor_reasoning_subpoint_repair",
+            Priority = "high",
+            Title = "Actor reasoning block/subpoint repair",
+            TargetFiles = targetFiles,
+            CanonicalActorNames = actorNames,
+            Steps = new List<string>
+            {
+                $"In output/debug_logs.json.gm_thoughts_markdown, repair or create a missing reasoning block for exactly these actors: {actorList}.",
+                "Inside every listed actor block, include separate bullet subpoints with these exact client-recognized labels: - Ситуация:, - Мысли:, and - Действия:.",
+                "Keep the actor heading shape as ### <actor name>. Do not merge the three subpoints into one paragraph or one bullet.",
+                "Preserve unrelated accepted debug log content and do not create a new turn.",
+                "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from the current validation_repair_request.json."
+            },
+            DebugLogTemplate = BuildActorReasoningSubpointDebugLogTemplate(actorNames),
+            DoNotDo = new List<string>
+            {
+                "Do not write ready/turn_complete.json for validation repair.",
+                "Do not use slash-only labels or a single combined sentence when the validator requested separate subpoints.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, the validation request, GM docs, and session files."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildFactionIdentityRepairPacket(
+        IReadOnlyList<ValidationIssue> factionIdentityErrors)
+    {
+        var targetFiles = factionIdentityErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("game_state/factions/faction_core.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/factions/faction_core.json");
+        if (!targetFiles.Contains("game_state/control/pending_turn_snapshot/game_state/factions/faction_core.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/control/pending_turn_snapshot/game_state/factions/faction_core.json");
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "faction_identity_repair",
+            Priority = "high",
+            Title = "Faction identity repair",
+            TargetFiles = targetFiles,
+            Steps = new List<string>
+            {
+                "Use game_state/control/pending_turn_snapshot/game_state/factions/faction_core.json as the authority for whether the faction was already permanent before this turn or was still a same-turn temporary faction.",
+                "If the matching faction in pending_turn_snapshot has factionId = null plus a non-empty initialId, restore the current object to the same temporary identity shape: factionId = null, the exact initialId, and isNewFaction = true.",
+                "If the matching faction in pending_turn_snapshot has a non-empty factionId, use that exact permanent factionId and remove initialId/isNewFaction from the existing faction object.",
+                "After restoring the identity shape, preserve the intended turn content updates around the faction instead of replacing the whole file with a minimal skeleton.",
+                "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not invent a permanent factionId from the faction name.",
+                "Do not convert a same-turn temporary faction into an existing permanent faction just because validation mentions existing faction wording.",
+                "Do not delete unrelated faction ranks, resources, projects, chronicles, or reputation details to silence identity validation.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this repair packet, the validation request, and session snapshot/control files."
+            }
+        };
+    }
+
+    private async Task<IReadOnlyCollection<string>> ReadCurrentGuardianRepairActorNameHintsAsync()
+    {
+        const string path = "game_state/meta/guardians.json";
+        var json = await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(json))
+            return Array.Empty<string>();
+
+        try
+        {
+            if (JsonNode.Parse(json) is not JsonObject root)
+                return Array.Empty<string>();
+
+            var names = new List<string>();
+            AddGuardianRepairActorNameHint(names, root["activeGuardian"]);
+            if (root["guardians"] is JsonArray guardians)
+            {
+                foreach (var guardian in guardians)
+                    AddGuardianRepairActorNameHint(names, guardian);
+            }
+
+            return names
+                .Select(NormalizeRepairActorName)
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+        }
+        catch
+        {
+            return Array.Empty<string>();
+        }
+    }
+
+    private static HashSet<string> CollectRepairActorNames(
+        IReadOnlyList<ValidationIssue> errors,
+        IReadOnlyCollection<string>? fallbackHints = null)
+    {
+        var names = errors
+            .Select(issue => NormalizeRepairActorName(issue.Actor))
+            .Where(actor => !string.IsNullOrWhiteSpace(actor))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        if (names.Count == 0 && fallbackHints is { Count: > 0 })
+        {
+            foreach (var actor in fallbackHints.Select(NormalizeRepairActorName).Where(actor => !string.IsNullOrWhiteSpace(actor)))
+                names.Add(actor);
+        }
+
+        return names;
+    }
+
+    private static void AddGuardianRepairActorNameHint(List<string> names, JsonNode? node)
+    {
+        if (node is not JsonObject guardian)
+            return;
+
+        foreach (var key in new[] { "displayName", "name", "guardianName" })
+        {
+            var value = guardian[key]?.GetValue<string>();
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                names.Add(value);
+                return;
+            }
+        }
+    }
+
+    private static bool IsGuardianReasoningSection(string? section)
+    {
+        return string.Equals(section, "npc_scope", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(section, "npc_reasoning", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(section, "Guardians", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(section, "UpdateGuardians", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string NormalizeRepairActorName(string? actor)
+    {
+        if (string.IsNullOrWhiteSpace(actor))
+            return string.Empty;
+
+        return actor.Trim().TrimEnd('.', ',', ';', ':', '!', '?').Trim();
+    }
+
+    private static string NormalizeRepairTargetPath(string path)
+    {
+        var normalized = path.Replace('\\', '/');
+        if (normalized.StartsWith("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/meta/guardians.json";
+        if (normalized.StartsWith("game_state/meta/guardian_projects.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/meta/guardian_projects.json";
+        if (normalized.StartsWith("output/debug_logs.json", StringComparison.OrdinalIgnoreCase))
+            return "output/debug_logs.json";
+        foreach (var factionFile in new[]
+                 {
+                     "game_state/factions/faction_core.json",
+                     "game_state/factions/faction_structure.json",
+                     "game_state/factions/faction_resources.json",
+                     "game_state/factions/faction_projects.json",
+                     "game_state/factions/faction_custom.json",
+                     "game_state/factions/faction_chronicles.json"
+                 })
+        {
+            if (normalized.StartsWith(factionFile, StringComparison.OrdinalIgnoreCase))
+                return factionFile;
+        }
+        return normalized;
+    }
+
+    private static string BuildGuardianScopeDebugLogTemplate(string actorList, IReadOnlyList<string> actorNames)
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine("## Охват NPC-анализа");
+        builder.AppendLine("Режим: Guardian-centric");
+        builder.AppendLine($"Релевантные акторы: {actorList}");
+        builder.AppendLine("Почему они релевантны: ход меняет или использует активного Хранителя, поэтому его нужно явно покрыть reasoning scope.");
+        builder.AppendLine("Акторы вне охвата: нет");
+        builder.AppendLine("Почему они вне охвата: все измененные Guardian-сущности перечислены выше.");
+        builder.AppendLine();
+        builder.AppendLine("## Guardian Thoughts");
+        foreach (var actor in actorNames)
+        {
+            builder.AppendLine($"### {actor}");
+            builder.AppendLine("- Ситуация: кратко опиши текущую ситуацию Хранителя в этом ходе.");
+            builder.AppendLine("- Мысли: кратко опиши мотивы/оценку Хранителя.");
+            builder.AppendLine("- Действия: кратко опиши, что Хранитель делает или меняет в состоянии.");
+            builder.AppendLine();
+        }
+
+        return builder.ToString().TrimEnd();
+    }
+
+    private static string BuildActorReasoningSubpointDebugLogTemplate(IReadOnlyList<string> actorNames)
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine("## Размышления акторов");
+        foreach (var actor in actorNames)
+        {
+            builder.AppendLine($"### {actor}");
+            builder.AppendLine("- Ситуация: кратко опиши, в каком положении актор находится в этом ходе.");
+            builder.AppendLine("- Мысли: кратко опиши мотивы, оценку или внутреннюю реакцию актора.");
+            builder.AppendLine("- Действия: кратко опиши, что актор делает, решает или меняет в состоянии.");
+            builder.AppendLine();
+        }
+
+        return builder.ToString().TrimEnd();
     }
 
     private async Task RunWorkerValidationRepairIfAvailableAsync(

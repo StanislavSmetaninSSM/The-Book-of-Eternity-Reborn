@@ -37,6 +37,12 @@ public sealed class ConsoleE2ESandbox : IDisposable
         Directory.CreateDirectory(sandboxBasePath);
         CopyDirectory(fixtureGameSessionPath, sandboxGameSessionPath);
 
+        var systemGuardianLibraryPath = TryFindSystemGuardianLibrarySource(fixtureGameSessionPath);
+        if (systemGuardianLibraryPath != null)
+            CopyDirectory(
+                systemGuardianLibraryPath,
+                Path.Combine(sandboxBasePath, "system_guardians"));
+
         return new ConsoleE2ESandbox(sandboxBasePath, deleteOnDispose: !preserveArtifacts);
     }
 
@@ -68,5 +74,24 @@ public sealed class ConsoleE2ESandbox : IDisposable
             var destinationSubdirectory = Path.Combine(destinationDirectory, Path.GetFileName(sourceSubdirectory));
             CopyDirectory(sourceSubdirectory, destinationSubdirectory);
         }
+    }
+
+    private static string? TryFindSystemGuardianLibrarySource(string fixtureGameSessionPath)
+    {
+        var dir = new DirectoryInfo(fixtureGameSessionPath);
+        while (dir != null)
+        {
+            var siblingLibrary = Path.Combine(dir.FullName, "system_guardians");
+            if (Directory.Exists(siblingLibrary))
+                return siblingLibrary;
+
+            var repositoryClientLibrary = Path.Combine(dir.FullName, "BookOfEternityClient", "system_guardians");
+            if (Directory.Exists(repositoryClientLibrary))
+                return repositoryClientLibrary;
+
+            dir = dir.Parent;
+        }
+
+        return null;
     }
 }

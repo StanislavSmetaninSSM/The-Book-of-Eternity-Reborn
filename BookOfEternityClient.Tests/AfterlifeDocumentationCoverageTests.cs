@@ -1725,6 +1725,32 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeDocsExplainGuardianScopeRepairHarnessPackets()
+    {
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { taskGuide, matrix, examples })
+        {
+            Assert.Contains("harnessRepairPackets", doc, StringComparison.Ordinal);
+            Assert.Contains("guardian_scope_repair", doc, StringComparison.Ordinal);
+            Assert.Contains("actor_reasoning_subpoint_repair", doc, StringComparison.Ordinal);
+            Assert.Contains("activeGuardian", doc, StringComparison.Ordinal);
+            Assert.Contains("guardians[]", doc, StringComparison.Ordinal);
+            Assert.Contains("guardian_projects.json", doc, StringComparison.Ordinal);
+            Assert.Contains("Ситуация:", doc, StringComparison.Ordinal);
+            Assert.Contains("Мысли:", doc, StringComparison.Ordinal);
+            Assert.Contains("Действия:", doc, StringComparison.Ordinal);
+            Assert.Contains("implementation code", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("canonicalActorNames", examples, StringComparison.Ordinal);
+        Assert.Contains("debugLogTemplate", examples, StringComparison.Ordinal);
+        Assert.Contains("materialized mirrors", examples, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void MortalNpcSocialTopicContractIsDocumented()
     {
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");

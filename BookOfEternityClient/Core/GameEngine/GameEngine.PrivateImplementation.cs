@@ -85,7 +85,20 @@ public partial class GameEngine
         public int RevalidationAttempt { get; set; }
         public string GmInstructions { get; set; } = "";
         public List<string> SummaryGroups { get; set; } = new();
+        public List<ValidationRepairHarnessPacket> HarnessRepairPackets { get; set; } = new();
         public List<ValidationRepairIssue> Errors { get; set; } = new();
+    }
+
+    private sealed class ValidationRepairHarnessPacket
+    {
+        public string Kind { get; set; } = "";
+        public string Priority { get; set; } = "";
+        public string Title { get; set; } = "";
+        public List<string> TargetFiles { get; set; } = new();
+        public List<string> CanonicalActorNames { get; set; } = new();
+        public List<string> Steps { get; set; } = new();
+        public string DebugLogTemplate { get; set; } = "";
+        public List<string> DoNotDo { get; set; } = new();
     }
 
     private sealed class ValidationRepairIssue
