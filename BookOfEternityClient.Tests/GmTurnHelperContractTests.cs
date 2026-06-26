@@ -535,6 +535,131 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonCompactTemplates_DoNotTeachInvalidValidationShapes()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("$turnOutputTemplate", daemon, StringComparison.Ordinal);
+        Assert.Contains("output/debug_logs.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("output/interface_updates.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("\"timestamp\"", daemon, StringComparison.Ordinal);
+        Assert.Contains("\"dialogueOptions\": [", daemon, StringComparison.Ordinal);
+        Assert.Contains("\"text\":", daemon, StringComparison.Ordinal);
+        Assert.Contains("\"category\":", daemon, StringComparison.Ordinal);
+        Assert.Contains("__ACTOR_SITUATION_LABEL__", daemon, StringComparison.Ordinal);
+        Assert.Contains("__ACTOR_THOUGHTS_LABEL__", daemon, StringComparison.Ordinal);
+        Assert.Contains("__ACTOR_ACTIONS_LABEL__", daemon, StringComparison.Ordinal);
+
+        var progressionTemplate = ExtractTemplateBlock(daemon, "Templates\\PROGRESSION_REPORT_TEMPLATE.json");
+        Assert.Contains("\"progressionProcessingReport\"", progressionTemplate, StringComparison.Ordinal);
+        Assert.DoesNotContain(": null", progressionTemplate, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"summary\"", progressionTemplate, StringComparison.Ordinal);
+        Assert.Contains("\"newLastWorldSimulationTimeInMinutes\": 0", progressionTemplate, StringComparison.Ordinal);
+        Assert.Contains("\"newLastShiningTradeCycleOrdinal\": 0", progressionTemplate, StringComparison.Ordinal);
+
+        Assert.Contains("$actorReasoningTemplate", daemon, StringComparison.Ordinal);
+        Assert.Contains("## NPC Scope", daemon, StringComparison.Ordinal);
+        Assert.Contains("Scene-local | World-progression | Guardian-centric | Mixed", daemon, StringComparison.Ordinal);
+        Assert.Contains("Why relevant", daemon, StringComparison.Ordinal);
+        Assert.Contains("Why outside scope", daemon, StringComparison.Ordinal);
+        Assert.Contains("## Reasoning", daemon, StringComparison.Ordinal);
+        Assert.Contains("New-StringFromCodePoints", daemon, StringComparison.Ordinal);
+        Assert.DoesNotContain("## Scope\n", daemon, StringComparison.Ordinal);
+        Assert.DoesNotContain("## Actor reasoning", daemon, StringComparison.Ordinal);
+        Assert.DoesNotContain("AfterlifeProfile", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DaemonContextPack_RuntimeGeneratedTemplatesPreserveRussianLabels()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-context-pack-runtime-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        Directory.CreateDirectory(session);
+
+        Process? process = null;
+        try
+        {
+            var daemonPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "game_master_daemon.ps1");
+            process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = string.Join(
+                    " ",
+                    "-NoLogo",
+                    "-NoProfile",
+                    "-ExecutionPolicy Bypass",
+                    "-File " + QuoteProcessArgument(daemonPath),
+                    "-GameSessionPath " + QuoteProcessArgument(session),
+                    "-PollingInterval 5000",
+                    "-LogFile " + QuoteProcessArgument(logPath)),
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                StandardOutputEncoding = Encoding.UTF8,
+                StandardErrorEncoding = Encoding.UTF8
+            });
+            Assert.NotNull(process);
+
+            var actorTemplatePath = Path.Combine(
+                session,
+                "game_state",
+                "control",
+                "gm_context_pack",
+                "Templates",
+                "ACTOR_REASONING_TEMPLATE.md");
+            var turnTemplatePath = Path.Combine(
+                session,
+                "game_state",
+                "control",
+                "gm_context_pack",
+                "Templates",
+                "TURN_OUTPUT_TEMPLATE.md");
+
+            var deadline = DateTime.UtcNow.AddSeconds(20);
+            while (DateTime.UtcNow < deadline && (!File.Exists(actorTemplatePath) || !File.Exists(turnTemplatePath)))
+            {
+                if (process.HasExited)
+                {
+                    break;
+                }
+
+                Thread.Sleep(100);
+            }
+
+            var stdOut = process.HasExited ? process.StandardOutput.ReadToEnd() : string.Empty;
+            var stdErr = process.HasExited ? process.StandardError.ReadToEnd() : string.Empty;
+            Assert.True(File.Exists(actorTemplatePath), stdErr + stdOut);
+            Assert.True(File.Exists(turnTemplatePath), stdErr + stdOut);
+
+            var actorTemplate = File.ReadAllText(actorTemplatePath, Encoding.UTF8);
+            var turnTemplate = File.ReadAllText(turnTemplatePath, Encoding.UTF8);
+            Assert.Contains("- Ситуация:", actorTemplate, StringComparison.Ordinal);
+            Assert.Contains("- Мысли:", actorTemplate, StringComparison.Ordinal);
+            Assert.Contains("- Действия:", actorTemplate, StringComparison.Ordinal);
+            Assert.Contains("- Ситуация:", turnTemplate, StringComparison.Ordinal);
+            Assert.Contains("\"dialogueOptions\": [", turnTemplate, StringComparison.Ordinal);
+            Assert.Contains("\"text\":", turnTemplate, StringComparison.Ordinal);
+            Assert.Contains("\"category\":", turnTemplate, StringComparison.Ordinal);
+            Assert.Contains("\"timestamp\"", turnTemplate, StringComparison.Ordinal);
+            Assert.DoesNotContain("РЎРё", actorTemplate, StringComparison.Ordinal);
+            Assert.DoesNotContain("РњС‹", actorTemplate, StringComparison.Ordinal);
+            Assert.DoesNotContain("Р”Рµ", actorTemplate, StringComparison.Ordinal);
+        }
+        finally
+        {
+            if (process is { HasExited: false })
+            {
+                try { process.Kill(entireProcessTree: true); } catch { /* ignored */ }
+            }
+
+            process?.Dispose();
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonTurnAndRepairPrompts_PreferCompactTemplatesOverLargeExamples()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -699,6 +824,22 @@ public sealed class GmTurnHelperContractTests
         var nextFunction = text.IndexOf("\nfunction ", start + functionHeader.Length, StringComparison.Ordinal);
         Assert.True(nextFunction > start, $"Expected another function after {functionHeader}.");
         return text[start..nextFunction];
+    }
+
+    private static string ExtractTemplateBlock(string text, string relativePath)
+    {
+        var marker = "-RelativePath \"" + relativePath + "\"";
+        var start = text.IndexOf(marker, StringComparison.Ordinal);
+        Assert.True(start >= 0, $"Expected template {relativePath}.");
+
+        var contentStart = text.IndexOf("-Content @'", start, StringComparison.Ordinal);
+        Assert.True(contentStart > start, $"Expected content here-string for template {relativePath}.");
+        var bodyStart = text.IndexOf('\n', contentStart);
+        Assert.True(bodyStart > contentStart, $"Expected template body for {relativePath}.");
+
+        var end = text.IndexOf("\n'@", bodyStart, StringComparison.Ordinal);
+        Assert.True(end > bodyStart, $"Expected template terminator for {relativePath}.");
+        return text[bodyStart..end];
     }
 
     private static string LocateRepoRoot()

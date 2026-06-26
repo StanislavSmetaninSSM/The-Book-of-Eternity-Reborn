@@ -127,6 +127,16 @@ function Quote-PowerShellSingleQuotedString {
     return "'" + $Value.Replace("'", "''") + "'"
 }
 
+function New-StringFromCodePoints {
+    param([int[]]$CodePoints)
+
+    return [string]::Concat(($CodePoints | ForEach-Object { [char]$_ }))
+}
+
+$script:ActorSituationLabel = New-StringFromCodePoints @(0x0421, 0x0438, 0x0442, 0x0443, 0x0430, 0x0446, 0x0438, 0x044F)
+$script:ActorThoughtsLabel = New-StringFromCodePoints @(0x041C, 0x044B, 0x0441, 0x043B, 0x0438)
+$script:ActorActionsLabel = New-StringFromCodePoints @(0x0414, 0x0435, 0x0439, 0x0441, 0x0442, 0x0432, 0x0438, 0x044F)
+
 function Write-GmTurnHelperBootstrap {
     $helperPath = Join-Path $PSScriptRoot "Launcher\GM_Turn_Helper.ps1"
     $content = @(
@@ -211,7 +221,7 @@ function Write-GmContextPack {
     }
 
     $templates = @()
-    $templates += Write-GmContextPackTemplate -RelativePath "Templates\TURN_OUTPUT_TEMPLATE.md" -Role "compact_turn_output_template" -Content @'
+    $turnOutputTemplate = @'
 # Compact Turn Output Template
 
 Use this before opening large examples for ordinary live turns.
@@ -230,6 +240,40 @@ Use this before opening large examples for ordinary live turns.
 - `output/interface_updates.json`: UI hints only when useful.
 - `game_state/control/progression_report.json`: only when `progressionControl` says scheduler work is due.
 
+## Output file skeletons
+
+`output/narrative_response.json`:
+
+```json
+{
+  "response": "<player-facing prose>",
+  "timestamp": "<ISO 8601 UTC timestamp>"
+}
+```
+
+`output/debug_logs.json`:
+
+```json
+{
+  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local | World-progression | Guardian-centric | Mixed\n- Relevant actors: <actors or none>\n- Why relevant: <why these actors matter>\n- Actors outside scope: <actors or none>\n- Why outside scope: <why excluded actors do not matter>\n\n## Reasoning\n### <actor if any>\n- __ACTOR_SITUATION_LABEL__: ...\n- __ACTOR_THOUGHTS_LABEL__: ...\n- __ACTOR_ACTIONS_LABEL__: ...",
+  "timestamp": "<ISO 8601 UTC timestamp>"
+}
+```
+
+`output/interface_updates.json`:
+
+```json
+{
+  "dialogueOptions": [
+    {
+      "text": "<player-facing option text>",
+      "category": "neutral"
+    }
+  ],
+  "timestamp": "<ISO 8601 UTC timestamp>"
+}
+```
+
 ## Terminal rule
 
 Never write terminal files manually. Use:
@@ -246,6 +290,8 @@ Add every state/output file you changed. Do not include client-owned files:
 `input/turn_request.json`, `pending_turn_snapshot*`, `validation_repair_request.json`,
 `terminal_protocol_failure_request.json`, `gm_bridge_status.json`, or `stories/*.jsonl`.
 '@
+    $turnOutputTemplate = $turnOutputTemplate.Replace("__ACTOR_SITUATION_LABEL__", $script:ActorSituationLabel).Replace("__ACTOR_THOUGHTS_LABEL__", $script:ActorThoughtsLabel).Replace("__ACTOR_ACTIONS_LABEL__", $script:ActorActionsLabel)
+    $templates += Write-GmContextPackTemplate -RelativePath "Templates\TURN_OUTPUT_TEMPLATE.md" -Role "compact_turn_output_template" -Content $turnOutputTemplate
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\VALIDATION_REPAIR_TEMPLATE.md" -Role "compact_validation_repair_template" -Content @'
 # Compact Validation Repair Template
 
@@ -275,57 +321,65 @@ Complete-BoeValidationRepair
 '@
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\PROGRESSION_REPORT_TEMPLATE.json" -Role "compact_progression_report_template" -Content @'
 {
-  "sessionId": "<copy exact input/turn_request.json.sessionId>",
-  "requestId": "<copy exact input/turn_request.json.requestId>",
-  "turnNumber": 0,
-  "worldCyclesProcessed": 0,
-  "factionCyclesProcessed": 0,
-  "chaosSeaCyclesProcessed": 0,
-  "guardianProjectCyclesProcessed": 0,
-  "residentAgencyCyclesProcessed": 0,
-  "shiningAbodeCyclesProcessed": 0,
-  "shiningFactionCyclesProcessed": 0,
-  "shiningTradeCyclesProcessed": 0,
-  "newLastWorldSimulationTimeInMinutes": null,
-  "newLastFactionSimulationTimeInMinutes": null,
-  "newLastChaosSeaSimulationOrdinal": null,
-  "newLastGuardianProjectCycleOrdinal": null,
-  "newLastResidentAgencyCycleOrdinal": null,
-  "newLastShiningAbodeCycleOrdinal": null,
-  "newLastShiningFactionCycleOrdinal": null,
-  "newLastShiningTradeCycleOrdinal": null,
-  "afterlifeCatchupProcessed": false,
-  "afterlifeCatchupSummaryEventsProcessed": 0,
-  "summary": "Что именно было обработано и почему остальные счетчики остались нулевыми."
+  "progressionProcessingReport": {
+    "sessionId": "<copy exact input/turn_request.json.sessionId>",
+    "requestId": "<copy exact input/turn_request.json.requestId>",
+    "turnNumber": 0,
+    "worldCyclesProcessed": 0,
+    "factionCyclesProcessed": 0,
+    "chaosSeaCyclesProcessed": 0,
+    "guardianProjectCyclesProcessed": 0,
+    "residentAgencyCyclesProcessed": 0,
+    "shiningAbodeCyclesProcessed": 0,
+    "shiningFactionCyclesProcessed": 0,
+    "shiningTradeCyclesProcessed": 0,
+    "newLastWorldSimulationTimeInMinutes": 0,
+    "newLastFactionSimulationTimeInMinutes": 0,
+    "newLastChaosSeaSimulationOrdinal": 0,
+    "newLastGuardianProjectCycleOrdinal": 0,
+    "newLastResidentAgencyCycleOrdinal": 0,
+    "newLastShiningAbodeCycleOrdinal": 0,
+    "newLastShiningFactionCycleOrdinal": 0,
+    "newLastShiningTradeCycleOrdinal": 0,
+    "afterlifeCatchupProcessed": false,
+    "afterlifeCatchupSummaryEventsProcessed": 0
+  }
 }
 '@
-    $templates += Write-GmContextPackTemplate -RelativePath "Templates\ACTOR_REASONING_TEMPLATE.md" -Role "compact_actor_reasoning_template" -Content @'
+    $actorReasoningTemplate = @'
 # Compact Actor Reasoning Template
 
 Use this before opening large examples when `gm_thoughts_markdown` or structured actor coverage is needed.
+Use only validator-supported scope modes: `Scene-local`, `World-progression`, `Guardian-centric`, or `Mixed`.
+Do not invent any other scope mode.
 
 ## Output shape
 
 ```markdown
-## Scope
-- Realm: Chaos Sea | Shining Abode | Mortal World
+## NPC Scope
+- Mode: Scene-local | World-progression | Guardian-centric | Mixed
 - Files changed: output/narrative_response.json, ...
-- Why these files are in scope: ...
+- Relevant actors: <comma-separated actors, or none>
+- Why relevant: <why these actors matter for this turn>
+- Actors outside scope: <actors deliberately excluded, or none>
+- Why outside scope: <why excluded actors do not matter>
 
-## Actor reasoning
+## Reasoning
 ### <exact actor display name from state or packet>
-- Intent: what the actor wants this turn.
-- Evidence: what state/request proves this actor matters.
-- Decision: what changed or why no state change was needed.
+- __ACTOR_SITUATION_LABEL__: what situation/current position makes this actor relevant.
+- __ACTOR_THOUGHTS_LABEL__: what the actor wants, fears, evaluates, or decides internally.
+- __ACTOR_ACTIONS_LABEL__: what changed, what the actor did, or why no state change was needed.
 
 ### <next exact actor display name>
-- Intent: ...
-- Evidence: ...
-- Decision: ...
+- __ACTOR_SITUATION_LABEL__: ...
+- __ACTOR_THOUGHTS_LABEL__: ...
+- __ACTOR_ACTIONS_LABEL__: ...
 ```
 
-Use exact actor names from state/validation packets. Keep punctuation stable; if a packet names `Стая охотников за душами`, do not invent `Стая охотников за душами.`.
+Use exact actor names from state/validation packets. Keep punctuation stable; do not add punctuation that is not present in the canonical actor name.
 '@
+    $actorReasoningTemplate = $actorReasoningTemplate.Replace("__ACTOR_SITUATION_LABEL__", $script:ActorSituationLabel).Replace("__ACTOR_THOUGHTS_LABEL__", $script:ActorThoughtsLabel).Replace("__ACTOR_ACTIONS_LABEL__", $script:ActorActionsLabel)
+    $templates += Write-GmContextPackTemplate -RelativePath "Templates\ACTOR_REASONING_TEMPLATE.md" -Role "compact_actor_reasoning_template" -Content $actorReasoningTemplate
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json" -Role "compact_tempo_advantage_template" -Content @'
 {
   "tempoAdvantage": {
@@ -336,13 +390,13 @@ Use exact actor names from state/validation packets. Keep punctuation stable; if
     "sourceExchangeId": "exchange_<id>",
     "status": "available",
     "level": "advantage",
-    "summary": "Одноразовое темповое окно после успешной защиты от прямого давления."
+    "summary": "<Russian player-facing summary of the one-use tempo window created by a successful guard>"
   },
   "consumeThroughRollMode": {
     "effectiveMode": "advantage",
     "advantageSources": [
       {
-        "summary": "Темповое окно после защиты.",
+        "summary": "<Russian player-facing summary of the tempo window>",
         "source": "tempoAdvantage",
         "sourceId": "tempo_guard_<turn>_<short_id>",
         "sourceType": "guard_tempo_window",
