@@ -486,6 +486,63 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonContextPack_GeneratesCompactTurnAndRepairTemplates()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("Templates\\TURN_OUTPUT_TEMPLATE.md", daemon, StringComparison.Ordinal);
+        Assert.Contains("Templates\\VALIDATION_REPAIR_TEMPLATE.md", daemon, StringComparison.Ordinal);
+        Assert.Contains("Templates\\PROGRESSION_REPORT_TEMPLATE.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("Templates\\ACTOR_REASONING_TEMPLATE.md", daemon, StringComparison.Ordinal);
+        Assert.Contains("Templates\\AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json", daemon, StringComparison.Ordinal);
+
+        Assert.Contains("compact_turn_output_template", daemon, StringComparison.Ordinal);
+        Assert.Contains("compact_validation_repair_template", daemon, StringComparison.Ordinal);
+        Assert.Contains("compact_progression_report_template", daemon, StringComparison.Ordinal);
+        Assert.Contains("compact_actor_reasoning_template", daemon, StringComparison.Ordinal);
+        Assert.Contains("compact_tempo_advantage_template", daemon, StringComparison.Ordinal);
+
+        Assert.Contains("$script:CompactTurnOutputTemplatePath", daemon, StringComparison.Ordinal);
+        Assert.Contains("$script:CompactValidationRepairTemplatePath", daemon, StringComparison.Ordinal);
+        Assert.Contains("$script:CompactProgressionReportTemplatePath", daemon, StringComparison.Ordinal);
+        Assert.Contains("$script:CompactActorReasoningTemplatePath", daemon, StringComparison.Ordinal);
+        Assert.Contains("$script:CompactTempoAdvantageTemplatePath", daemon, StringComparison.Ordinal);
+        Assert.Contains("$script:GmCompactTemplateDirective", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DaemonTurnAndRepairPrompts_PreferCompactTemplatesOverLargeExamples()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var turnBlock = ExtractFunctionBlock(daemon, "function Process-Turn");
+        var repairBlock = ExtractFunctionBlock(daemon, "function Process-RepairRequest");
+        var terminalFailureBlock = ExtractFunctionBlock(daemon, "function Process-TerminalProtocolFailureRequest");
+
+        Assert.Contains("$($script:GmCompactTemplateDirective)", turnBlock, StringComparison.Ordinal);
+        Assert.Contains("$($script:GmCompactTemplateDirective)", repairBlock, StringComparison.Ordinal);
+        Assert.Contains("$($script:GmCompactTemplateDirective)", terminalFailureBlock, StringComparison.Ordinal);
+
+        Assert.Contains("'$($script:CompactTurnOutputTemplatePath)'", turnBlock, StringComparison.Ordinal);
+        Assert.Contains("'$($script:CompactProgressionReportTemplatePath)'", turnBlock, StringComparison.Ordinal);
+        Assert.Contains("'$($script:CompactActorReasoningTemplatePath)'", turnBlock, StringComparison.Ordinal);
+        Assert.Contains("'$($script:CompactTempoAdvantageTemplatePath)'", turnBlock, StringComparison.Ordinal);
+        Assert.Contains("before opening large copied examples", turnBlock, StringComparison.Ordinal);
+
+        Assert.Contains("'$($script:CompactValidationRepairTemplatePath)'", repairBlock, StringComparison.Ordinal);
+        Assert.Contains("'$($script:CompactActorReasoningTemplatePath)'", repairBlock, StringComparison.Ordinal);
+        Assert.Contains("harnessRepairPackets", repairBlock, StringComparison.Ordinal);
+        Assert.Contains("before opening large copied examples", repairBlock, StringComparison.Ordinal);
+
+        Assert.Contains("'$($script:CompactValidationRepairTemplatePath)'", terminalFailureBlock, StringComparison.Ordinal);
+        Assert.Contains("terminal_protocol_failure_request.json", terminalFailureBlock, StringComparison.Ordinal);
+        Assert.Contains("before opening large copied examples", terminalFailureBlock, StringComparison.Ordinal);
+
+        Assert.DoesNotContain("You MUST read '$($script:TaskGuideMainPath)' and '$($script:ExampleMainPath)' before writing files.", turnBlock, StringComparison.Ordinal);
+        Assert.DoesNotContain("You MUST reread $GameSessionPath\\game_state\\control\\validation_repair_request.json plus '$($script:TaskGuideMainPath)' and '$($script:ExampleMainPath)'.", repairBlock, StringComparison.Ordinal);
+        Assert.DoesNotContain("You MUST reread $GameSessionPath\\game_state\\control\\terminal_protocol_failure_request.json plus '$($script:TaskGuideMainPath)' and '$($script:ExampleMainPath)'.", terminalFailureBlock, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void DaemonTerminalObservation_DoesNotDeleteClientOwnedTurnRequest()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
