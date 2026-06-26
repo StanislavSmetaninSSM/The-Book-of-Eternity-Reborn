@@ -85,14 +85,18 @@ public sealed record WorkerTaskPacket
     public int SchemaVersion { get; init; } = 1;
     public string TaskId { get; init; } = "";
     public string WorkerId { get; init; } = "";
+    public WorkerRole Role { get; init; } = WorkerRole.ValidationRepair;
     public WorkerTaskType TaskType { get; init; } = WorkerTaskType.ValidationRepair;
     public string CreatedAtUtc { get; init; } = "";
+    public int TimeoutSeconds { get; init; }
     public WorkerTurnReference SourceTurn { get; init; } = new();
     public IReadOnlyList<WorkerValidationIssue> ValidationIssues { get; init; } = [];
     public WorkerDraftRequest? DraftRequest { get; init; }
     public IReadOnlyList<WorkerFileReference> ContextFiles { get; init; } = [];
     public IReadOnlyList<string> AllowedProposalPaths { get; init; } = [];
     public string ResponseContract { get; init; } = "worker-proposal-v1";
+    public IReadOnlyList<string> AcceptanceCriteria { get; init; } = [];
+    public IReadOnlyList<string> ForbiddenActions { get; init; } = [];
     public string Instructions { get; init; } = "";
 }
 

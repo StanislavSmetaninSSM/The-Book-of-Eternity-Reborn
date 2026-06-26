@@ -47,8 +47,10 @@ packet from `BOE_WORKER_TASK_PATH`, writes the proposal JSON to
   "schemaVersion": 1,
   "taskId": "worker_task_20260620_0001",
   "workerId": "validation_repair_codex",
+  "role": "validation-repair",
   "taskType": "validation-repair",
   "createdAtUtc": "2026-06-20T00:00:00Z",
+  "timeoutSeconds": 180,
   "sourceTurn": {
     "sessionId": "test-session",
     "requestId": "test-request",
@@ -69,6 +71,16 @@ packet from `BOE_WORKER_TASK_PATH`, writes the proposal JSON to
   ],
   "allowedProposalPaths": ["game_state/world/weather.json"],
   "responseContract": "worker-proposal-v1",
+  "acceptanceCriteria": [
+    "Return a worker-proposal-v1 JSON proposal.",
+    "Include changedFiles only for allowedProposalPaths.",
+    "Validation must pass after the apply gate applies proposed changes."
+  ],
+  "forbiddenActions": [
+    "Do not edit canonical game_session files directly.",
+    "Do not write outside allowedProposalPaths.",
+    "Do not create terminal signals or validation ready files manually."
+  ],
   "instructions": "Return a minimal repair proposal. Do not change files outside allowedProposalPaths."
 }
 ```
@@ -158,6 +170,12 @@ Audit events:
   }
 }
 ```
+
+The same compact audit information is copied into
+`game_state/control/gm_trajectory_ledger.jsonl` as `workerEvents[]`, so live
+tests can see whether the main GM used a worker, received a proposal, and
+accepted or rejected it through the apply gate without embedding raw prompts or
+full proposal payloads.
 
 ```json
 {

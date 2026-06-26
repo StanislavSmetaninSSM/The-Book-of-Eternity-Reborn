@@ -43,8 +43,10 @@ public static class GmWorkerTaskPacketBuilder
         {
             TaskId = taskId,
             WorkerId = profile.WorkerId,
+            Role = profile.Role,
             TaskType = WorkerTaskType.ValidationRepair,
             CreatedAtUtc = createdAtUtc,
+            TimeoutSeconds = profile.TimeoutSeconds,
             SourceTurn = sourceTurn,
             ValidationIssues = validationIssues.Select(issue => new WorkerValidationIssue
             {
@@ -54,6 +56,19 @@ public static class GmWorkerTaskPacketBuilder
             }).ToArray(),
             ContextFiles = contextFiles,
             AllowedProposalPaths = allowedPaths,
+            AcceptanceCriteria =
+            [
+                "Return a worker-proposal-v1 JSON proposal.",
+                "Include changedFiles only for allowedProposalPaths.",
+                "Validation must pass after the apply gate applies proposed changes.",
+                "Keep session/request/turn metadata tied to sourceTurn."
+            ],
+            ForbiddenActions =
+            [
+                "Do not edit canonical game_session files directly.",
+                "Do not write outside allowedProposalPaths.",
+                "Do not create terminal signals or validation ready files manually."
+            ],
             Instructions =
                 "Return a worker-proposal-v1 JSON proposal. Include changedFiles only for allowedProposalPaths. " +
                 "Do not edit canonical game_session files directly."
@@ -86,12 +101,27 @@ public static class GmWorkerTaskPacketBuilder
         {
             TaskId = taskId,
             WorkerId = profile.WorkerId,
+            Role = profile.Role,
             TaskType = WorkerTaskType.NarrativeDraft,
             CreatedAtUtc = createdAtUtc,
+            TimeoutSeconds = profile.TimeoutSeconds,
             SourceTurn = sourceTurn,
             DraftRequest = draftRequest,
             ContextFiles = contextFiles,
             AllowedProposalPaths = [],
+            AcceptanceCriteria =
+            [
+                "Return a worker-proposal-v1 JSON proposal.",
+                "Include draftText for main-GM review.",
+                "Use findings only for compact notes the main GM can accept, reject, or rewrite.",
+                "Do not resolve the player turn or assert canonical state changes."
+            ],
+            ForbiddenActions =
+            [
+                "Do not edit canonical game_session files directly.",
+                "Do not include changedFiles.",
+                "Do not write player-facing output or terminal signals."
+            ],
             Instructions =
                 "Return a worker-proposal-v1 JSON proposal with draftText and optional findings. " +
                 "This is proposal-only: do not include changedFiles and do not edit canonical game_session files directly."
@@ -131,11 +161,26 @@ public static class GmWorkerTaskPacketBuilder
         {
             TaskId = taskId,
             WorkerId = profile.WorkerId,
+            Role = profile.Role,
             TaskType = WorkerTaskType.Analysis,
             CreatedAtUtc = createdAtUtc,
+            TimeoutSeconds = profile.TimeoutSeconds,
             SourceTurn = sourceTurn,
             ContextFiles = contextFiles,
             AllowedProposalPaths = [],
+            AcceptanceCriteria =
+            [
+                "Return a worker-proposal-v1 JSON proposal.",
+                "Include findings that answer the requested questions.",
+                "Keep recommendations scoped to supplied read-only context references.",
+                "Mark uncertainty instead of broad source spelunking."
+            ],
+            ForbiddenActions =
+            [
+                "Do not edit canonical game_session files directly.",
+                "Do not include changedFiles.",
+                "Do not write player-facing output or terminal signals."
+            ],
             Instructions =
                 "Return a worker-proposal-v1 JSON proposal with findings only. " +
                 "This is proposal-only: do not include changedFiles and do not edit canonical game_session files directly. " +

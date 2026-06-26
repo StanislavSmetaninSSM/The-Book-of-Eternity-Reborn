@@ -1310,6 +1310,149 @@ function Get-GmTrajectoryOutputFiles {
     return @($files | Select-Object -Unique)
 }
 
+function Get-GmTrajectoryDetailValues {
+    param(
+        [object]$Details,
+        [string]$Key
+    )
+
+    if ($null -eq $Details -or $null -eq $Details.PSObject -or $null -eq $Details.PSObject.Properties[$Key]) {
+        return @()
+    }
+
+    $raw = $Details.PSObject.Properties[$Key].Value
+    $values = @()
+    foreach ($value in @($raw)) {
+        if ($null -ne $value -and -not [string]::IsNullOrWhiteSpace([string]$value)) {
+            $values += [string]$value
+        }
+    }
+
+    return @($values)
+}
+
+function Get-GmTrajectoryFirstDetailValue {
+    param(
+        [object]$Details,
+        [string]$Key
+    )
+
+    $values = @(Get-GmTrajectoryDetailValues -Details $Details -Key $Key)
+    if ($values.Count -eq 0) {
+        return ""
+    }
+
+    return [string]$values[0]
+}
+
+function ConvertTo-GmTrajectoryWorkerTaskType {
+    param([object]$AuditEvent)
+
+    $fromDetails = Get-GmTrajectoryFirstDetailValue -Details $AuditEvent.details -Key "taskType"
+    if (-not [string]::IsNullOrWhiteSpace($fromDetails)) {
+        return $fromDetails
+    }
+
+    $summary = if ($AuditEvent.summary) { ([string]$AuditEvent.summary).ToLowerInvariant() } else { "" }
+    $taskId = if ($AuditEvent.taskId) { ([string]$AuditEvent.taskId).ToLowerInvariant() } else { "" }
+    $joined = "$summary $taskId"
+    if ($joined.Contains("validation") -and $joined.Contains("repair")) {
+        return "validation-repair"
+    }
+    if ($joined.Contains("narrative")) {
+        return "narrative-draft"
+    }
+    if ($joined.Contains("analysis")) {
+        return "analysis"
+    }
+
+    return ""
+}
+
+function ConvertTo-GmTrajectoryWorkerEvent {
+    param([object]$AuditEvent)
+
+    $taskType = ConvertTo-GmTrajectoryWorkerTaskType -AuditEvent $AuditEvent
+    $allowedPaths = @(Get-GmTrajectoryDetailValues -Details $AuditEvent.details -Key "allowedProposalPaths")
+    $changedFiles = @(Get-GmTrajectoryDetailValues -Details $AuditEvent.details -Key "changedFiles")
+    $appliedFiles = @(Get-GmTrajectoryDetailValues -Details $AuditEvent.details -Key "appliedFiles")
+    $rejectionReasons = @(Get-GmTrajectoryDetailValues -Details $AuditEvent.details -Key "rejectionReasons")
+    $proposalOnly = $taskType -in @("narrative-draft", "analysis", "lore-consistency", "npc-analysis", "qte-content")
+    if ($taskType -eq "validation-repair") {
+        $proposalOnly = $false
+    }
+
+    $summary = if ($AuditEvent.summary) { ([string]$AuditEvent.summary).Trim() } else { "" }
+    if ($summary.Length -gt 180) {
+        $summary = $summary.Substring(0, 177) + "..."
+    }
+
+    return [ordered]@{
+        eventId = if ($AuditEvent.eventId) { [string]$AuditEvent.eventId } else { "" }
+        eventType = if ($AuditEvent.eventType) { [string]$AuditEvent.eventType } else { "" }
+        workerId = if ($AuditEvent.workerId) { [string]$AuditEvent.workerId } else { "" }
+        taskId = if ($AuditEvent.taskId) { [string]$AuditEvent.taskId } else { "" }
+        proposalId = if ($AuditEvent.proposalId) { [string]$AuditEvent.proposalId } else { "" }
+        timestampUtc = if ($AuditEvent.timestampUtc) { [string]$AuditEvent.timestampUtc } else { "" }
+        summary = $summary
+        taskType = $taskType
+        proposalOnly = $proposalOnly
+        allowedProposalPathCount = $allowedPaths.Count
+        changedFileCount = $changedFiles.Count
+        appliedFileCount = $appliedFiles.Count
+        rejectionCount = $rejectionReasons.Count
+    }
+}
+
+function Get-GmTrajectoryWorkerEvents {
+    param([datetime]$SinceUtc)
+
+    $auditPath = Join-Path $ControlDir "gm_worker_audit.jsonl"
+    if (!(Test-Path $auditPath)) {
+        return @()
+    }
+
+    $events = @()
+    foreach ($line in @(Get-Content -Path $auditPath -Encoding UTF8 -ErrorAction SilentlyContinue)) {
+        if ([string]::IsNullOrWhiteSpace($line)) { continue }
+        try {
+            $auditEvent = $line | ConvertFrom-Json
+            $timestampUtc = [datetime]::MinValue
+            if ($auditEvent.timestampUtc) {
+                try {
+                    $timestampUtc = ([datetimeoffset]::Parse([string]$auditEvent.timestampUtc)).UtcDateTime
+                }
+                catch { }
+            }
+
+            if ($SinceUtc -ne [datetime]::MinValue -and $timestampUtc -ne [datetime]::MinValue -and $timestampUtc -lt $SinceUtc) {
+                continue
+            }
+
+            $events += (ConvertTo-GmTrajectoryWorkerEvent -AuditEvent $auditEvent)
+        }
+        catch {
+            $events += [ordered]@{
+                eventId = ""
+                eventType = "unreadable"
+                workerId = ""
+                taskId = ""
+                proposalId = ""
+                timestampUtc = ""
+                summary = "Unreadable gm_worker_audit.jsonl entry."
+                taskType = ""
+                proposalOnly = $true
+                allowedProposalPathCount = 0
+                changedFileCount = 0
+                appliedFileCount = 0
+                rejectionCount = 0
+            }
+        }
+    }
+
+    return @($events | Select-Object -Last 20)
+}
+
 function Write-GmTrajectoryRecord {
     param(
         [string]$Kind,
@@ -1333,6 +1476,7 @@ function Write-GmTrajectoryRecord {
         $dispatchBusyRetries = if ($Dispatch -and $null -ne $Dispatch.BusyRetries) { [int]$Dispatch.BusyRetries } else { 0 }
         $dispatchTimeout = if ($Dispatch -and $null -ne $Dispatch.Timeout) { [bool]$Dispatch.Timeout } else { $false }
         $rollbackEvents = @(Get-GmTrajectoryRollbackEvents -SinceUtc $StartedAtUtc)
+        $workerEvents = @(Get-GmTrajectoryWorkerEvents -SinceUtc $StartedAtUtc)
         $rawWrongRealmWrite = $false
         foreach ($rollbackEvent in $rollbackEvents) {
             if (($rollbackEvent.issueCount -as [int]) -gt 0 -or
@@ -1388,7 +1532,7 @@ function Write-GmTrajectoryRecord {
                 attempts = $RepairAttempts
                 status = $RepairStatus
             }
-            workerEvents = @()
+            workerEvents = @($workerEvents)
             rollbackEvents = @($rollbackEvents)
             terminal = [ordered]@{
                 kind = $terminalKind

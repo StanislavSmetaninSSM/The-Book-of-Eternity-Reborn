@@ -45,8 +45,10 @@ canonical state or include `changedFiles`.
   "schemaVersion": 1,
   "taskId": "worker_task_20260620_0002",
   "workerId": "narrative_draft_codex",
+  "role": "narrative-draft",
   "taskType": "narrative-draft",
   "createdAtUtc": "2026-06-20T00:05:00Z",
+  "timeoutSeconds": 120,
   "sourceTurn": {
     "sessionId": "test-session",
     "requestId": "test-request",
@@ -71,6 +73,16 @@ canonical state or include `changedFiles`.
   ],
   "allowedProposalPaths": [],
   "responseContract": "worker-proposal-v1",
+  "acceptanceCriteria": [
+    "Return a worker-proposal-v1 JSON proposal.",
+    "Include draftText for main-GM review.",
+    "Do not resolve the player turn or assert canonical state changes."
+  ],
+  "forbiddenActions": [
+    "Do not edit canonical game_session files directly.",
+    "Do not include changedFiles.",
+    "Do not write player-facing output or terminal signals."
+  ],
   "instructions": "Return draftText and optional findings only. This task is proposal-only; do not include changedFiles."
 }
 ```
@@ -148,3 +160,8 @@ Proposal inbox review:
 The inbox entry is diagnostic/read-only. It helps the main GM inspect the draft
 without opening raw JSON, but it does not apply the draft or send it to the
 player.
+
+The dispatch and proposal receipt also appear as compact `workerEvents[]` in
+`game_state/control/gm_trajectory_ledger.jsonl`. The ledger records ids,
+task type, proposal-only status, and file-count summaries; it does not embed
+the full draft text or raw prompt.

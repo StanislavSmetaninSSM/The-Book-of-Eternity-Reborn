@@ -26,6 +26,29 @@ game state.
 - Stored proposals are inspectable through GM worker proposal inbox diagnostics.
   The inbox is read-only and does not apply proposal-only drafts.
 
+## Recursive Delegation Cycle
+
+Use workers as bounded RLM-like subcalls, not as alternate GMs.
+
+1. Decide whether delegation is useful: use it for validation repair, narrative
+   drafting, lore consistency checks, NPC/faction/QTE analysis, or afterlife
+   content review when the main GM would otherwise block on a narrow subtask.
+2. Send a scoped `WorkerTaskPacket`. The packet must include `role`,
+   `taskType`, `timeoutSeconds`, read-only `contextFiles`,
+   `allowedProposalPaths`, `responseContract`, `acceptanceCriteria`, and
+   `forbiddenActions`.
+3. Treat the result as a proposal. The main GM may quote, rewrite, reject, or
+   ignore `draftText`/findings. The worker never decides the player turn.
+4. For changed files, use the apply gate. Never copy a worker's proposed file
+   content into canonical state by hand.
+5. Record what happened. Worker dispatch/proposal/apply events are written to
+   `game_state/control/gm_worker_audit.jsonl`, and compact summaries are copied
+   into `game_state/control/gm_trajectory_ledger.jsonl` as `workerEvents[]` for
+   live-test and harness review.
+
+If a useful worker task cannot be expressed with these fields, record that as a
+missing harness surface instead of giving a worker broad repository authority.
+
 ## Runtime Environment Contract
 
 When the worker pool launches a worker task, it starts the configured

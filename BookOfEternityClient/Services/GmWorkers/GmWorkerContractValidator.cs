@@ -56,10 +56,24 @@ public static class GmWorkerContractValidator
         ValidateId(task.WorkerId, "workerId", errors);
         if (!string.Equals(task.WorkerId, profile.WorkerId, StringComparison.Ordinal))
             errors.Add("task.workerId must match profile.workerId.");
+        if (task.Role != profile.Role)
+            errors.Add("task.role must match profile.role.");
         if (!profile.Permissions.TaskTypes.Contains(task.TaskType))
             errors.Add($"Task type {task.TaskType} is not allowed by the worker profile.");
         RequireText(task.CreatedAtUtc, "createdAtUtc", errors);
+        if (task.TimeoutSeconds <= 0)
+            errors.Add("timeoutSeconds must be greater than zero.");
+        else if (task.TimeoutSeconds > profile.TimeoutSeconds)
+            errors.Add("task.timeoutSeconds must not exceed profile.timeoutSeconds.");
         RequireText(task.ResponseContract, "responseContract", errors);
+        if (task.AcceptanceCriteria.Count == 0)
+            errors.Add("acceptanceCriteria must contain at least one criterion.");
+        foreach (var criterion in task.AcceptanceCriteria)
+            RequireText(criterion, "acceptanceCriteria", errors);
+        if (task.ForbiddenActions.Count == 0)
+            errors.Add("forbiddenActions must contain at least one forbidden action.");
+        foreach (var action in task.ForbiddenActions)
+            RequireText(action, "forbiddenActions", errors);
         RequireText(task.Instructions, "instructions", errors);
 
         foreach (var issue in task.ValidationIssues)

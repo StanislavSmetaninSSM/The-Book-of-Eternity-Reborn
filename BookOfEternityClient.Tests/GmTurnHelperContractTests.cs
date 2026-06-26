@@ -824,6 +824,170 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonTrajectoryLedger_IncludesProposalOnlyWorkerEvents()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-trajectory-worker-proposal-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+        Directory.CreateDirectory(Path.Combine(session, "output"));
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-worker-proposal",
+                  "turnNumber": 79,
+                  "currentRealm": "Mortal World",
+                  "playerAction": "I ask the GM to draft a tense scene.",
+                  "progressionControl": {
+                    "currentRealm": "Mortal World"
+                  }
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "pending_turn_snapshot.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-worker-proposal",
+                  "turnNumber": 79
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(Path.Combine(control, "pending_turn_snapshot.authority.json"), "{}", Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "ready", "turn_complete.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-worker-proposal",
+                  "turnNumber": 79,
+                  "status": "success",
+                  "filesModified": [
+                    "output/narrative_response.json"
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "output", "narrative_response.json"),
+                """
+                {
+                  "response": "The main GM used a worker draft without exposing it directly."
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "gm_worker_audit.jsonl"),
+                """
+                {"schemaVersion":1,"eventId":"worker_audit_narrative_dispatch","eventType":"task-dispatched","workerId":"narrative_draft_codex","taskId":"worker_task_narrative_0001","timestampUtc":"2099-01-01T00:00:00Z","summary":"Dispatched NarrativeDraft worker task.","details":{"taskType":["narrative-draft"],"responseContract":["worker-proposal-v1"],"allowedProposalPaths":[]}}
+                {"schemaVersion":1,"eventId":"worker_audit_narrative_proposal","eventType":"proposal-received","workerId":"narrative_draft_codex","taskId":"worker_task_narrative_0001","proposalId":"worker_proposal_narrative_0001","timestampUtc":"2099-01-01T00:00:01Z","summary":"Drafted scene for main-GM review.","details":{"changedFiles":[]}}
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var ledgerPath = Path.Combine(control, "gm_trajectory_ledger.jsonl");
+            Assert.True(WaitForFileContaining(ledgerPath, "request-worker-proposal", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            using var document = JsonDocument.Parse(File.ReadLines(ledgerPath, Encoding.UTF8).Last());
+            var record = document.RootElement;
+            var workerEvents = record.GetProperty("workerEvents").EnumerateArray().ToArray();
+            Assert.Contains(workerEvents, workerEvent =>
+                workerEvent.GetProperty("eventType").GetString() == "task-dispatched" &&
+                workerEvent.GetProperty("workerId").GetString() == "narrative_draft_codex" &&
+                workerEvent.GetProperty("taskType").GetString() == "narrative-draft" &&
+                workerEvent.GetProperty("proposalOnly").GetBoolean());
+            Assert.Contains(workerEvents, workerEvent =>
+                workerEvent.GetProperty("eventType").GetString() == "proposal-received" &&
+                workerEvent.GetProperty("proposalId").GetString() == "worker_proposal_narrative_0001" &&
+                workerEvent.GetProperty("changedFileCount").GetInt32() == 0);
+            Assert.DoesNotContain("Raw WorkerTaskPacket JSON", record.GetRawText(), StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonTrajectoryLedger_IncludesValidationRepairWorkerEvents()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-trajectory-worker-repair-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-worker-repair",
+                  "turnNumber": 80,
+                  "currentRealm": "Mortal World",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "normalized_weather_missing_description",
+                      "category": "StateConsistency",
+                      "section": "Weather",
+                      "message": "Weather description is missing.",
+                      "filePath": "game_state/world/weather.json"
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "gm_worker_audit.jsonl"),
+                """
+                {"schemaVersion":1,"eventId":"worker_audit_repair_dispatch","eventType":"task-dispatched","workerId":"validation_repair_codex","taskId":"worker_task_validation_repair_0001","timestampUtc":"2099-01-01T00:00:00Z","summary":"Dispatched ValidationRepair worker task.","details":{"taskType":["validation-repair"],"responseContract":["worker-proposal-v1"],"allowedProposalPaths":["game_state/world/weather.json"]}}
+                {"schemaVersion":1,"eventId":"worker_audit_repair_applied","eventType":"proposal-applied","workerId":"validation_repair_codex","taskId":"worker_task_validation_repair_0001","proposalId":"worker_proposal_validation_repair_0001","timestampUtc":"2099-01-01T00:00:02Z","summary":"Apply gate decision: Accepted.","details":{"appliedFiles":["game_state/world/weather.json"],"rejectionReasons":[]}}
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var ledgerPath = Path.Combine(control, "gm_trajectory_ledger.jsonl");
+            Assert.True(WaitForFileContaining(ledgerPath, "request-worker-repair", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            using var document = JsonDocument.Parse(File.ReadLines(ledgerPath, Encoding.UTF8).Last());
+            var record = document.RootElement;
+            var workerEvents = record.GetProperty("workerEvents").EnumerateArray().ToArray();
+            Assert.Contains(workerEvents, workerEvent =>
+                workerEvent.GetProperty("eventType").GetString() == "task-dispatched" &&
+                workerEvent.GetProperty("taskType").GetString() == "validation-repair" &&
+                workerEvent.GetProperty("allowedProposalPathCount").GetInt32() == 1 &&
+                !workerEvent.GetProperty("proposalOnly").GetBoolean());
+            Assert.Contains(workerEvents, workerEvent =>
+                workerEvent.GetProperty("eventType").GetString() == "proposal-applied" &&
+                workerEvent.GetProperty("proposalId").GetString() == "worker_proposal_validation_repair_0001" &&
+                workerEvent.GetProperty("appliedFileCount").GetInt32() == 1);
+            Assert.DoesNotContain("weather description is missing", record.GetRawText(), StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonContextPack_RendersBoundedRelevantExperienceLessons()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-experience-lessons-" + Guid.NewGuid().ToString("N"));

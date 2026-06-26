@@ -53,10 +53,10 @@
 
 **Independent Test**: Simulate proposal-only and validation-repair worker events and assert no direct canonical writes occur.
 
-- [ ] T019 [US4] Add failing tests for worker delegation events appearing in the trajectory ledger.
-- [ ] T020 [US4] Ensure task packets include role, task type, context refs, allowed surfaces, schema, timeout, acceptance criteria, and forbidden actions.
-- [ ] T021 [US4] Ensure worker proposal receipt, rejection, apply, timeout, and validation outcomes are recorded in ledger records.
-- [ ] T022 [US4] Update `OtherGuides/GM_Worker_Bridges.md` with the delegation workflow and authority limits.
+- [X] T019 [US4] Add failing tests for worker delegation events appearing in the trajectory ledger.
+- [X] T020 [US4] Ensure task packets include role, task type, context refs, allowed surfaces, schema, timeout, acceptance criteria, and forbidden actions.
+- [X] T021 [US4] Ensure worker proposal receipt, rejection, apply, timeout, and validation outcomes are recorded in ledger records.
+- [X] T022 [US4] Update `OtherGuides/GM_Worker_Bridges.md` with the delegation workflow and authority limits.
 
 ## Phase 7: User Story 5 - RLM-Inspired Live-Test Rubric (P3)
 

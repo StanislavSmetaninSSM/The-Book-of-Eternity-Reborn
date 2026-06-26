@@ -61,7 +61,7 @@ public sealed class GmWorkerBridgeLifecycleTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
@@ -113,7 +113,7 @@ public sealed class GmWorkerBridgeLifecycleTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
@@ -154,7 +154,7 @@ public sealed class GmWorkerBridgeLifecycleTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
@@ -184,7 +184,7 @@ public sealed class GmWorkerBridgeLifecycleTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 1
             };
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);

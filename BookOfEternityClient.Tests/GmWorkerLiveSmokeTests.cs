@@ -54,7 +54,7 @@ public sealed class GmWorkerLiveSmokeTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
             var audit = new GmWorkerAuditLog(fs);
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit);
 
@@ -120,7 +120,7 @@ public sealed class GmWorkerLiveSmokeTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.NarrativeDraftTask();
+            var task = GmWorkerBridgeTestFixtures.NarrativeDraftTask() with { TimeoutSeconds = profile.TimeoutSeconds };
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var run = await pool.RunTaskAsync(profile, task);

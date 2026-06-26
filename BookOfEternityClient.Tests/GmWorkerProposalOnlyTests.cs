@@ -32,8 +32,14 @@ public sealed class GmWorkerProposalOnlyTests
             "2026-06-20T00:05:00Z");
 
         Assert.Equal(WorkerTaskType.NarrativeDraft, task.TaskType);
+        Assert.Equal(profile.Role, task.Role);
+        Assert.Equal(profile.TimeoutSeconds, task.TimeoutSeconds);
         Assert.Empty(task.AllowedProposalPaths);
         Assert.NotNull(task.DraftRequest);
+        Assert.Contains(task.AcceptanceCriteria, criterion =>
+            criterion.Contains("draftText", StringComparison.Ordinal));
+        Assert.Contains(task.ForbiddenActions, action =>
+            action.Contains("canonical game_session files", StringComparison.OrdinalIgnoreCase));
         Assert.Contains("proposal-only", task.Instructions, StringComparison.OrdinalIgnoreCase);
 
         var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
@@ -59,8 +65,14 @@ public sealed class GmWorkerProposalOnlyTests
             "2026-06-20T00:30:00Z");
 
         Assert.Equal(WorkerTaskType.Analysis, task.TaskType);
+        Assert.Equal(profile.Role, task.Role);
+        Assert.Equal(profile.TimeoutSeconds, task.TimeoutSeconds);
         Assert.Empty(task.AllowedProposalPaths);
         Assert.Null(task.DraftRequest);
+        Assert.Contains(task.AcceptanceCriteria, criterion =>
+            criterion.Contains("findings", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(task.ForbiddenActions, action =>
+            action.Contains("changedFiles", StringComparison.Ordinal));
         Assert.Contains("proposal-only", task.Instructions, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("NPC quest details", task.Instructions, StringComparison.Ordinal);
         Assert.Contains("detail menus", task.Instructions, StringComparison.Ordinal);

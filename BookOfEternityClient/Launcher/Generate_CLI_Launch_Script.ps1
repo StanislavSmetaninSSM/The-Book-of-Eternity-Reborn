@@ -108,6 +108,13 @@ file content to the player until you review it, edit it if needed, and make it
 part of your own final response. Workers never resolve the player action, never
 own a turn, and never write canonical `game_session` state directly.
 
+Delegation cycle: decide that a narrow worker helps, send a scoped
+`WorkerTaskPacket` with role/taskType/context/timeout/acceptanceCriteria,
+review the `worker-proposal-v1` response, apply changed files only through the
+apply gate, and continue as the sole main GM. Worker dispatch/proposal/apply
+events are recorded in `game_state/control/gm_worker_audit.jsonl` and compact
+`workerEvents[]` in `game_state/control/gm_trajectory_ledger.jsonl`.
+
 All paths relative to:
 {{REPO_ROOT}}
 

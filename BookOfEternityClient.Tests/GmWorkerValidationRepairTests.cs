@@ -40,7 +40,15 @@ public sealed class GmWorkerValidationRepairTests
 
         Assert.Equal("worker_task_test", task.TaskId);
         Assert.Equal(profile.WorkerId, task.WorkerId);
+        Assert.Equal(profile.Role, task.Role);
         Assert.Equal(WorkerTaskType.ValidationRepair, task.TaskType);
+        Assert.Equal(profile.TimeoutSeconds, task.TimeoutSeconds);
+        Assert.Contains(task.AcceptanceCriteria, criterion =>
+            criterion.Contains("worker-proposal-v1", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(task.AcceptanceCriteria, criterion =>
+            criterion.Contains("validation", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(task.ForbiddenActions, action =>
+            action.Contains("canonical game_session files", StringComparison.OrdinalIgnoreCase));
         Assert.Contains("game_state/world/weather.json", task.AllowedProposalPaths);
         Assert.Contains(task.ValidationIssues, issue =>
             issue.Code == "normalized_weather_missing_description" &&

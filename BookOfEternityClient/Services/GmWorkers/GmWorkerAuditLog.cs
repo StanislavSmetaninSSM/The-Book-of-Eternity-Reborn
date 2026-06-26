@@ -47,7 +47,11 @@ public sealed class GmWorkerAuditLog
             Summary = $"Dispatched {task.TaskType} worker task.",
             Details = new Dictionary<string, IReadOnlyList<string>>
             {
-                ["allowedProposalPaths"] = task.AllowedProposalPaths
+                ["taskType"] = [ToKebabCase(task.TaskType)],
+                ["responseContract"] = [task.ResponseContract],
+                ["timeoutSeconds"] = [task.TimeoutSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture)],
+                ["allowedProposalPaths"] = task.AllowedProposalPaths,
+                ["acceptanceCriteria"] = task.AcceptanceCriteria
             }
         });
 
@@ -108,4 +112,15 @@ public sealed class GmWorkerAuditLog
 
     private static string CreateEventId() =>
         "worker_audit_" + DateTimeOffset.UtcNow.ToString("yyyyMMddHHmmssfff");
+
+    private static string ToKebabCase(WorkerTaskType taskType) =>
+        taskType switch
+        {
+            WorkerTaskType.ValidationRepair => "validation-repair",
+            WorkerTaskType.NarrativeDraft => "narrative-draft",
+            WorkerTaskType.LoreConsistency => "lore-consistency",
+            WorkerTaskType.NpcAnalysis => "npc-analysis",
+            WorkerTaskType.QteContent => "qte-content",
+            _ => taskType.ToString().ToLowerInvariant()
+        };
 }
