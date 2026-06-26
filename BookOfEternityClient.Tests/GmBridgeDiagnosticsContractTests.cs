@@ -208,8 +208,19 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("AutoMarkReadyIfCliPromptReady", source, StringComparison.Ordinal);
         Assert.Contains("IsCodexCliIdlePrompt", source, StringComparison.Ordinal);
         Assert.Contains("OpenAI Codex", source, StringComparison.Ordinal);
-        Assert.Contains("Starting MCP servers", source, StringComparison.Ordinal);
+        Assert.Contains("Starting MCP server", source, StringComparison.Ordinal);
         Assert.Contains("Codex CLI is not at an idle input prompt", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BridgeHost_TreatsCodexBootAndModelLoadingScreensAsNotReady()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("Booting MCP server", source, StringComparison.Ordinal);
+        Assert.Contains("model:", source, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("loading", source, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("IsWorkspaceTrustPrompt(normalized) || IsCodexCliWorkingScreen(normalized)", source, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -221,6 +232,18 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("$visibleBridge", source, StringComparison.Ordinal);
         Assert.Contains("visible", source, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("GM bridge starting in a hidden console window", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void LauncherScript_StartBridgePrefersBuiltExecutableToAvoidStaleBuildLocks()
+    {
+        var source = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");
+
+        Assert.Contains("$bridgeExe", source, StringComparison.Ordinal);
+        Assert.Contains("BookOfEternityGMBridge.exe", source, StringComparison.Ordinal);
+        Assert.Contains("Test-Path $bridgeExe", source, StringComparison.Ordinal);
+        Assert.Contains("& \"{1}\" --host --sessionPath \"{2}\" --pipeName \"{3}\"", source, StringComparison.Ordinal);
+        Assert.Contains("dotnet run --project", source, StringComparison.Ordinal);
     }
 
     [Fact]

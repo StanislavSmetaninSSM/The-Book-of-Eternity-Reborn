@@ -104,8 +104,11 @@ $RepairRequestFile = Join-Path $ControlDir "validation_repair_request.json"
 $TerminalProtocolFailureRequestFile = Join-Path $ControlDir "terminal_protocol_failure_request.json"
 $CliBindingFile = Join-Path $ControlDir "gm_cli_window_binding.json"
 $BridgeStatusFile = Join-Path $ControlDir "gm_bridge_status.json"
+$DaemonStatusFile = Join-Path $ControlDir "gm_daemon_status.json"
 $BridgeControlScript = Join-Path $PSScriptRoot "Launcher\bookofeternity.ps1"
 $script:GmTrajectoryLedgerPath = Join-Path $ControlDir "gm_trajectory_ledger.jsonl"
+$script:DaemonCommandLine = [Environment]::CommandLine
+$script:DaemonLastHeartbeatUtc = [DateTime]::MinValue
 
 foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
     if (!(Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
@@ -1256,6 +1259,79 @@ function Write-Log {
     }
 }
 
+function Test-DaemonProcessAlive {
+    param([object]$ProcessId)
+
+    if ($null -eq $ProcessId) {
+        return $false
+    }
+
+    $pidValue = 0
+    if (-not [int]::TryParse([string]$ProcessId, [ref]$pidValue)) {
+        return $false
+    }
+
+    try {
+        $null = Get-Process -Id $pidValue -ErrorAction Stop
+        return $true
+    }
+    catch {
+        return $false
+    }
+}
+
+function Read-DaemonStatus {
+    if (!(Test-Path $DaemonStatusFile)) {
+        return $null
+    }
+
+    try {
+        return Get-Content -Path $DaemonStatusFile -Raw -Encoding UTF8 | ConvertFrom-Json
+    }
+    catch {
+        return $null
+    }
+}
+
+function Write-DaemonStatus {
+    param([string]$Status = "running")
+
+    $payload = [ordered]@{
+        status = $Status
+        pid = $PID
+        sessionPath = $GameSessionPath
+        startedAtUtc = $script:StartTime.ToUniversalTime().ToString("o")
+        heartbeatAtUtc = (Get-Date).ToUniversalTime().ToString("o")
+        command = $script:DaemonCommandLine
+        turnCount = $script:TurnCount
+        errorCount = $script:ErrorCount
+    }
+
+    Set-Content -Path $DaemonStatusFile -Value ($payload | ConvertTo-Json -Depth 4) -Encoding UTF8
+}
+
+function Assert-SingleDaemonInstance {
+    $status = Read-DaemonStatus
+    if ($null -ne $status -and $null -ne $status.pid) {
+        $pidValue = 0
+        if ([int]::TryParse([string]$status.pid, [ref]$pidValue) -and $pidValue -ne $PID -and (Test-DaemonProcessAlive -ProcessId $pidValue)) {
+            throw "GM daemon already running for this game_session (pid=$pidValue, sessionPath=$($status.sessionPath), startedAtUtc=$($status.startedAtUtc), heartbeatAtUtc=$($status.heartbeatAtUtc)). Stop that process before starting another daemon for this session. Status file: $DaemonStatusFile"
+        }
+    }
+
+    Write-DaemonStatus -Status "running"
+}
+
+function Update-DaemonHeartbeat {
+    $nowUtc = (Get-Date).ToUniversalTime()
+    if (($nowUtc - $script:DaemonLastHeartbeatUtc).TotalSeconds -lt 5) {
+        return
+    }
+
+    $script:DaemonLastHeartbeatUtc = $nowUtc
+    Write-DaemonStatus -Status "running"
+}
+
 function New-GmDispatchDiagnostics {
     param(
         [string]$Status = "not_dispatched",
@@ -2158,6 +2234,7 @@ function Process-Turn {
                 requestId = $turnRequest.requestId
                 turnNumber = $turnNumber
                 status = "error"
+                harnessSource = "gm_daemon_timeout"
                 timestamp = (Get-Date).ToUniversalTime().ToString("o")
                 error = "Timeout after ${elapsed}s"
             }
@@ -2506,6 +2583,11 @@ function Get-CorrelatedTerminalSignal {
     }
 
     if ($matchedSignals.Count -gt 1) {
+        $resolvedTimeoutConflict = Resolve-DaemonTimeoutTerminalConflict -MatchedSignals $matchedSignals
+        if ($null -ne $resolvedTimeoutConflict) {
+            return $resolvedTimeoutConflict
+        }
+
         return [pscustomobject]@{
             Kind = "conflict"
             Signals = $matchedSignals
@@ -2519,9 +2601,42 @@ function Get-CorrelatedTerminalSignal {
     return $null
 }
 
+function Test-DaemonTimeoutTerminalSignal {
+    param([psobject]$SignalEntry)
+
+    if ($null -eq $SignalEntry -or $SignalEntry.Kind -ne "error" -or $null -eq $SignalEntry.Signal) {
+        return $false
+    }
+
+    $signal = $SignalEntry.Signal
+    return [string]$signal.harnessSource -eq "gm_daemon_timeout" -or
+        ([string]$signal.error).StartsWith("Timeout after ", [System.StringComparison]::OrdinalIgnoreCase)
+}
+
+function Resolve-DaemonTimeoutTerminalConflict {
+    param([object[]]$MatchedSignals)
+
+    $successSignals = @($MatchedSignals | Where-Object { $_.Kind -eq "success" })
+    $timeoutSignals = @($MatchedSignals | Where-Object { Test-DaemonTimeoutTerminalSignal -SignalEntry $_ })
+
+    if ($successSignals.Count -eq 1 -and $timeoutSignals.Count -gt 0 -and ($successSignals.Count + $timeoutSignals.Count) -eq $MatchedSignals.Count) {
+        foreach ($timeoutSignal in $timeoutSignals) {
+            $fileName = Split-Path $timeoutSignal.Path -Leaf
+            Write-Log "  Removed stale daemon timeout terminal signal artifact: $fileName" -Level "WARN" -Color Yellow
+            Remove-Item $timeoutSignal.Path -Force -ErrorAction SilentlyContinue
+        }
+
+        return $successSignals[0]
+    }
+
+    return $null
+}
+
 # ═══════════════════════════════════════════════
 # FileSystemWatcher & Main Loop
 # ═══════════════════════════════════════════════
+
+Assert-SingleDaemonInstance
 
 $watcher = New-Object System.IO.FileSystemWatcher
 $watcher.Path = $InputDir
@@ -2609,6 +2724,7 @@ try {
     $statusTimer = 0
     while ($true) {
         Start-Sleep -Milliseconds $PollingInterval
+        Update-DaemonHeartbeat
 
         if ((Test-Path $TurnRequestFile) -and !$script:IsProcessing) {
             Process-Turn -RequestPath $TurnRequestFile
@@ -2636,6 +2752,7 @@ finally {
     $repairWatcher.Dispose()
     $terminalProtocolFailureWatcher.EnableRaisingEvents = $false
     $terminalProtocolFailureWatcher.Dispose()
+    Write-DaemonStatus -Status "stopped"
     Write-Host ""
     Write-Log "Daemon stopped. Turns: $($script:TurnCount), Errors: $($script:ErrorCount)" -Level "SHUTDOWN" -Color Yellow
 }

@@ -643,7 +643,10 @@ internal sealed class BridgeHost : IDisposable
     private static bool IsCodexCliWorkingScreen(string visibleText)
     {
         var normalized = NormalizeVisibleConsoleText(visibleText);
-        return normalized.Contains("Starting MCP servers", StringComparison.OrdinalIgnoreCase) ||
+        return normalized.Contains("Starting MCP server", StringComparison.OrdinalIgnoreCase) ||
+            normalized.Contains("Booting MCP server", StringComparison.OrdinalIgnoreCase) ||
+            normalized.Contains("model:", StringComparison.OrdinalIgnoreCase) &&
+            normalized.Contains("loading", StringComparison.OrdinalIgnoreCase) ||
             normalized.Contains("esc to interrupt", StringComparison.OrdinalIgnoreCase) &&
             normalized.Contains("Working", StringComparison.OrdinalIgnoreCase);
     }

@@ -255,7 +255,13 @@ function Start-Bridge {
         throw "Bridge project not found: $projectPath"
     }
 
-    $bridgeCommand = 'Set-Location "{0}"; dotnet run --project "{1}" -- --host --sessionPath "{2}" --pipeName "{3}"' -f $repoRoot, $projectPath, $ResolvedSessionPath, $pipeName
+    $bridgeExe = Join-Path $repoRoot "BookOfEternityGMBridge\bin\Debug\net8.0-windows\BookOfEternityGMBridge.exe"
+    $bridgeCommand = if (Test-Path $bridgeExe) {
+        'Set-Location "{0}"; & "{1}" --host --sessionPath "{2}" --pipeName "{3}"' -f $repoRoot, $bridgeExe, $ResolvedSessionPath, $pipeName
+    }
+    else {
+        'Set-Location "{0}"; dotnet run --project "{1}" -- --host --sessionPath "{2}" --pipeName "{3}"' -f $repoRoot, $projectPath, $ResolvedSessionPath, $pipeName
+    }
     $hostScriptTemplate = @'
 $ErrorActionPreference = 'Stop'
 try {{

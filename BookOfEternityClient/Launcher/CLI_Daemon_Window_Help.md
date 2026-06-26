@@ -184,3 +184,18 @@ Bootstrap-сообщение daemon больше не вставляет пол�
 - `game_state\control\validation_repair_request.json` и `harnessRepairPackets[]`, если это repair;
 - session-local `gm_turn_helper.bootstrap.ps1`;
 - документы и примеры из `gm_context_pack`.
+
+## Daemon status and live-test cleanup
+
+Daemon пишет session-local диагностический файл:
+
+```text
+game_state\control\gm_daemon_status.json
+```
+
+В нём есть `pid`, `sessionPath`, `startedAtUtc`, `heartbeatAtUtc`, `turnCount` и `errorCount`.
+При старте daemon проверяет этот файл и не запускает второй активный daemon для той же `game_session`.
+Если запуск остановился с сообщением `GM daemon already running for this game_session`, сначала останови процесс с указанным `pid` или убедись, что процесс уже умер, и только затем запускай daemon снова.
+
+Daemon-owned timeout для live-test помечается как `harnessSource = "gm_daemon_timeout"`.
+Если после такого timeout появляется настоящий `ready/turn_complete.json` с той же `sessionId/requestId/turnNumber`, daemon удаляет свой stale timeout artifact и принимает успешный ответ, чтобы harness timeout не превращался в ложный terminal protocol conflict.

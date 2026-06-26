@@ -1197,6 +1197,32 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("break", guardBlock, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void DaemonStartup_UsesSessionLocalStatusAndRefusesActivePeer()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("$DaemonStatusFile", daemon, StringComparison.Ordinal);
+        Assert.Contains("gm_daemon_status.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("function Test-DaemonProcessAlive", daemon, StringComparison.Ordinal);
+        Assert.Contains("function Assert-SingleDaemonInstance", daemon, StringComparison.Ordinal);
+        Assert.Contains("GM daemon already running for this game_session", daemon, StringComparison.Ordinal);
+        Assert.Contains("Write-DaemonStatus", daemon, StringComparison.Ordinal);
+        Assert.Contains("heartbeatAtUtc", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DaemonTerminalSignalConflict_PrefersRealSuccessOverDaemonTimeoutArtifact()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("harnessSource = \"gm_daemon_timeout\"", daemon, StringComparison.Ordinal);
+        Assert.Contains("Resolve-DaemonTimeoutTerminalConflict", daemon, StringComparison.Ordinal);
+        Assert.Contains("Removed stale daemon timeout terminal signal artifact", daemon, StringComparison.Ordinal);
+        Assert.Contains("$matchedSignals.Count -gt 1", daemon, StringComparison.Ordinal);
+        Assert.Contains("return $resolvedTimeoutConflict", daemon, StringComparison.Ordinal);
+    }
+
     private static (int ExitCode, string StdOut, string StdErr) RunPowerShell(string command)
     {
         var scriptPath = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-test-" + Guid.NewGuid().ToString("N") + ".ps1");
