@@ -214,6 +214,17 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
+    public void BridgeHost_TreatsCompletedCodexTurnPromptAsIdleEvenWhenHeaderScrolledAway()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("IsCodexCliCompletedTurnIdlePrompt", source, StringComparison.Ordinal);
+        Assert.Contains("Run /review on my current changes", source, StringComparison.Ordinal);
+        Assert.Contains("Worked for", source, StringComparison.Ordinal);
+        Assert.Contains("gpt-", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BridgeHost_TreatsCodexBootAndModelLoadingScreensAsNotReady()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");

@@ -663,6 +663,16 @@ internal sealed class BridgeHost : IDisposable
             return false;
 
         return normalized.Contains("OpenAI Codex", StringComparison.OrdinalIgnoreCase) &&
+            normalized.Contains("›", StringComparison.Ordinal) ||
+            IsCodexCliCompletedTurnIdlePrompt(normalized);
+    }
+
+    private static bool IsCodexCliCompletedTurnIdlePrompt(string visibleText)
+    {
+        var normalized = NormalizeVisibleConsoleText(visibleText);
+        return normalized.Contains("Worked for", StringComparison.OrdinalIgnoreCase) &&
+            normalized.Contains("Run /review on my current changes", StringComparison.OrdinalIgnoreCase) &&
+            normalized.Contains("gpt-", StringComparison.OrdinalIgnoreCase) &&
             normalized.Contains("›", StringComparison.Ordinal);
     }
 
