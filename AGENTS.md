@@ -112,5 +112,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 <!-- SPECKIT START -->
 Current Spec Kit plan for this branch:
-`specs/1277-gm-session-context-pack/plan.md`
+`specs/1285-rlm-gm-harness/plan.md`
 <!-- SPECKIT END -->
