@@ -1816,6 +1816,64 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonContextPack_RoutesNpcLocationExperienceLessonToMortalNpcTemplate()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-npc-location-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(control, "gm_trajectory_ledger.jsonl"),
+                """
+                {"recordId":"gmtraj_npc_location_fix","kind":"repair","sessionId":"prior","turnId":"repair-npc-location","requestId":"repair-npc-location","turnNumber":4,"realm":"MortalWorld","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1","actorReasoning":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"accepted","issueKinds":["npc_same_turn_initial_location_requires_null_current_location","missing_actor_current_location"],"repairPacketRefs":[]},"repair":{"attempts":1,"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-06-26T10:01:00Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-repair",
+                  "turnNumber": 5,
+                  "currentRealm": "Mortal World",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "npc_same_turn_initial_location_requires_null_current_location",
+                      "category": "StateConsistency",
+                      "section": "NPC",
+                      "message": "Same-turn NPC location shape is invalid."
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "MORTAL_NPC_UPDATE_TEMPLATE.md", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var lesson = document.RootElement.GetProperty("lessons")[0];
+            Assert.Equal("MORTAL_NPC_UPDATE_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
+            Assert.Contains("currentLocationId to JSON null", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
+            Assert.Contains("initialLocationId", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonTurnAndRepairPrompts_PreferCompactTemplatesOverLargeExamples()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");

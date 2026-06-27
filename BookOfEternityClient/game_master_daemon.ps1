@@ -374,6 +374,14 @@ function Get-GmExperiencePreferredSurface {
     param([string[]]$IssueKinds)
 
     $joined = (($IssueKinds | ForEach-Object { [string]$_ }) -join " ").ToLowerInvariant()
+    if ($joined.Contains("mortal_relevant_actor_missing_persistence") -or
+        $joined.Contains("npc_") -or
+        $joined.Contains("npc.") -or
+        $joined.Contains("current_location") -or
+        $joined.Contains("missing_actor_current_location")) {
+        return "MORTAL_NPC_UPDATE_TEMPLATE.md"
+    }
+
     if ($joined.Contains("actor") -or $joined.Contains("reasoning") -or $joined.Contains("npc_scope")) {
         return "ACTOR_REASONING_TEMPLATE.md"
     }
@@ -402,11 +410,9 @@ function New-GmExperienceLesson {
         @()
     }
     $issueSummary = if ($issueKinds.Count -gt 0) { ($issueKinds -join ", ") } else { "unclassified harness friction" }
-    $hasMortalNpcPersistenceIssue = $issueKinds | Where-Object {
-        [string]::Equals([string]$_, "mortal_relevant_actor_missing_persistence", [System.StringComparison]::OrdinalIgnoreCase)
-    }
-    $fix = if ($hasMortalNpcPersistenceIssue) {
-        "Before completing a Mortal World turn, either remove background-only names from NPC Scope / Relevant actors into Actors outside scope, or materialize every present, speaking, clue-bearing, relationship-changing, or state-changing NPC through UpdateNPCs/NPCsInScene plus any needed NPC journal, quest, relationship, activity, or effect update."
+    $hasMortalNpcIssue = $preferredSurface -eq "MORTAL_NPC_UPDATE_TEMPLATE.md"
+    $fix = if ($hasMortalNpcIssue) {
+        "Use MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json. Materialize meaningful Mortal World NPCs through UpdateNPCs/NPCsInScene. For same-turn scene NPCs set initialLocationId to the current location id, currentLocationId to JSON null, currentLocationName to the visible location, and keep NPCsInScene/NPCs full objects, relationshipLock, goals, personalityTraits, attitude, and culturalStance in canonical shapes. If an NPC is only background-only color, move the name from Relevant actors to Actors outside scope instead of creating a partial NPC object."
     }
     elseif ($repairPacketRefs.Count -gt 0) {
         "Open validation_repair_request.json.harnessRepairPackets first, patch only named files, then use the compact repair/template surface."
@@ -422,6 +428,9 @@ function New-GmExperienceLesson {
     if ($null -ne $Record.templateVersions) {
         if ($null -ne $Record.templateVersions.actorReasoning -and $preferredSurface -eq "ACTOR_REASONING_TEMPLATE.md") {
             $templateVersion = [string]$Record.templateVersions.actorReasoning
+        }
+        elseif ($preferredSurface -eq "MORTAL_NPC_UPDATE_TEMPLATE.md") {
+            $templateVersion = if ($null -ne $Record.templateVersions.mortalNpc) { [string]$Record.templateVersions.mortalNpc } else { "v1" }
         }
         elseif ($null -ne $Record.templateVersions.progressionReport -and $preferredSurface -eq "PROGRESSION_REPORT_TEMPLATE.json") {
             $templateVersion = [string]$Record.templateVersions.progressionReport
