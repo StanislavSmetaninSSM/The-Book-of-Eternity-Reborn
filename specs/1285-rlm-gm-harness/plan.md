@@ -34,6 +34,9 @@ Implement an RLM-inspired GM harness layer without adding unsafe arbitrary REPL 
 
 **Source Issue(s)**:
 - #1285 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1285
+- #1281 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1281
+- #1282 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1282
+- #1283 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1283
 - #1286 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1286
 - #1287 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1287
 - #1288 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1288

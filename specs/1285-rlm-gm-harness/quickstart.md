@@ -4,7 +4,7 @@
 
 - Working repository checkout.
 - Existing local game session data.
-- GitHub issue links #1285-#1290 available for traceability.
+- GitHub issue links #1281-#1283 and #1285-#1290 available for traceability.
 - Codex CLI available for live GM bridge tests when running the manual scenario.
 
 ## Focused automated verification
@@ -43,7 +43,9 @@ It normalizes snapshot paths and excludes generated harness files such as bridge
 5. Confirm a GM trajectory ledger record is written.
 6. If a validation repair happens, confirm the ledger records issue kind, repair packet, attempt count, and final status.
 7. If a worker is used, confirm dispatch/proposal/apply decision appears in the ledger.
-8. Apply the live-test rubric:
+8. For afterlife turns, confirm `Complete-BoeTurn` / `Complete-BoeValidationRepair` block raw Mortal World profile mutations before terminal completion.
+9. For Chaos Sea spiritual conflict turns, confirm the compact `AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json` prevents missing `advantageId` / `sourceId` repairs when a guard-created tempo window is used.
+10. Apply the live-test rubric:
    - valid turn
    - player-facing output present
    - no implementation-source browsing as ordinary workflow
@@ -52,7 +54,7 @@ It normalizes snapshot paths and excludes generated harness files such as bridge
    - missing harness tool moments
    - worker usefulness
    - experience lesson usefulness
-9. Convert repeated high-friction findings into GitHub issues or comments.
+11. Convert repeated high-friction findings into GitHub issues or comments.
 
 ## Expected result
 

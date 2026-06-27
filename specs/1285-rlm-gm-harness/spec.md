@@ -12,6 +12,9 @@
 
 - **Source GitHub issue(s)**:
   - #1285 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1285
+  - #1281 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1281
+  - #1282 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1282
+  - #1283 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1283
   - #1286 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1286
   - #1287 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1287
   - #1288 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1288
@@ -131,6 +134,9 @@ As the developer, I need the next live GM test to measure harness quality, not j
 - **FR-010**: The next live-test checklist MUST record harness friction and convert repeated GM difficulty into harness follow-up issues or issue comments.
 - **FR-011**: GM-facing prompts/docs/examples MUST explain any new trajectory, experience-memory, safe-probe, or delegation workflow added by the implementation.
 - **FR-012**: The feature MUST NOT add normal gameplay reliance on arbitrary REPL execution, arbitrary shell execution, or direct worker writes to canonical game state.
+- **FR-013**: During afterlife live turns and repairs, GM helper completion MUST detect raw Mortal World profile mutations against the pending-turn snapshot before writing completion signals, so wrong-realm writes are blocked before stable acceptance.
+- **FR-014**: Actor reasoning validation MUST tolerate harmless trailing punctuation differences between declared actor names and `###` reasoning block headings without weakening canonical actor identity checks.
+- **FR-015**: Afterlife spiritual-conflict context packs MUST expose a compact `tempoAdvantage` template with required `advantageId`, `sourceId`, and `guard_tempo_window` consumption fields.
 
 ### Key Entities
 
@@ -149,6 +155,7 @@ As the developer, I need the next live GM test to measure harness quality, not j
 - **SC-003**: Ordinary GM turn/repair prompts expose session-local safe surfaces and do not present repo implementation files as the default source of truth.
 - **SC-004**: At least one worker proposal path is represented in the ledger without granting direct canonical write authority.
 - **SC-005**: The next live test reports turn duration, repair count, containment status, missing-tool findings, and follow-up issue/comment links.
+- **SC-006**: An afterlife helper completion attempt with raw Mortal World profile mutations fails before `ready/turn_complete.json` or `validation_repair_ready.json` is written.
 
 ## Verification Plan
 

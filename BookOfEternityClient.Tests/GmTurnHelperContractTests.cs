@@ -375,6 +375,185 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void Helper_CompleteBoeTurnRejectsRawMortalWorldProfileMutationInAfterlifeRealm()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-wrong-realm-raw-mutation-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "meta"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "factions"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control", "pending_turn_snapshot", "game_state", "factions"));
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "meta", "soul_state.json"),
+                """
+                {
+                  "currentRealm": "Chaos Sea"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-wrong-realm-raw",
+                  "turnNumber": 45,
+                  "playerAction": "test"
+                }
+                """,
+                Encoding.UTF8);
+
+            const string snapshotFactionJson = "{ \"factions\": [{ \"id\": \"old\" }] }";
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot", "game_state", "factions", "faction_core.json"),
+                snapshotFactionJson,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "factions", "faction_core.json"),
+                "{ \"factions\": [{ \"id\": \"raw_wrong_realm_change\" }] }",
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "Complete-BoeTurn -FilesModified @('output/narrative_response.json')"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("wrong-realm", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("game_state/factions/faction_core.json", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(Path.Combine(session, "ready", "turn_complete.json")));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void Helper_CompleteBoeValidationRepairRejectsRawNewMortalWorldProfileFileInAfterlifeRealm()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-wrong-realm-raw-repair-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "meta"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "npcs"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control", "pending_turn_snapshot"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "meta", "soul_state.json"),
+                """
+                {
+                  "currentRealm": "Shining Abode"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-wrong-realm-raw-repair",
+                  "turnNumber": 46,
+                  "metadataDiagnosticOnly": false
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "npcs", "npc_core.json"),
+                "{ \"NPCsInScene\": [{ \"npcId\": \"raw_wrong_realm_new\" }] }",
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "Complete-BoeValidationRepair"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("wrong-realm", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("game_state/npcs/npc_core.json", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(Path.Combine(session, "game_state", "control", "validation_repair_ready.json")));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void Helper_CompleteBoeTurnRejectsRawDeletedMortalWorldProfileFileInAfterlifeRealm()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-wrong-realm-raw-delete-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "meta"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "player"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control", "pending_turn_snapshot", "game_state", "player"));
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "meta", "soul_state.json"),
+                """
+                {
+                  "currentRealm": "Chaos Sea"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-wrong-realm-delete",
+                  "turnNumber": 47,
+                  "playerAction": "test"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot", "game_state", "player", "player_status.json"),
+                "{ \"health\": { \"current\": 85 } }",
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "Complete-BoeTurn -FilesModified @('output/narrative_response.json')"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("wrong-realm", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("game_state/player/player_status.json", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(Path.Combine(session, "ready", "turn_complete.json")));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void Helper_WriteBoeJsonRejectsClientOwnedAbsoluteRuntimeFiles()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-client-owned-absolute-" + Guid.NewGuid().ToString("N"));

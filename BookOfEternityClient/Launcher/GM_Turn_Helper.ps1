@@ -388,6 +388,153 @@ function Assert-BoeGmFilesModifiedEntries {
     }
 }
 
+function Get-BoeFileSha256 {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+
+    if (!(Test-Path -LiteralPath $Path)) {
+        return ""
+    }
+
+    $stream = [System.IO.File]::OpenRead($Path)
+    try {
+        $sha = [System.Security.Cryptography.SHA256]::Create()
+        try {
+            $bytes = $sha.ComputeHash($stream)
+            return [System.BitConverter]::ToString($bytes).Replace("-", "")
+        }
+        finally {
+            $sha.Dispose()
+        }
+    }
+    finally {
+        $stream.Dispose()
+    }
+}
+
+function Get-BoeRawMortalWorldProfileMutations {
+    if (!(Test-BoeAfterlifeRealm)) {
+        return @()
+    }
+
+    $snapshotRoot = Resolve-BoeSessionPath -RelativePath "game_state/control/pending_turn_snapshot"
+    if (!(Test-Path -LiteralPath $snapshotRoot)) {
+        return @()
+    }
+
+    $violations = @()
+    $seenCurrentPaths = @{}
+    foreach ($prefix in @(
+        "game_state/world",
+        "game_state/npcs",
+        "game_state/factions",
+        "game_state/player",
+        "game_state/inventory",
+        "game_state/combat",
+        "game_state/quests"
+    )) {
+        $root = Resolve-BoeSessionPath -RelativePath $prefix
+        if (!(Test-Path -LiteralPath $root)) {
+            continue
+        }
+
+        foreach ($file in Get-ChildItem -LiteralPath $root -File -Recurse -ErrorAction SilentlyContinue) {
+            $relativePath = Convert-BoeFullPathToSessionRelativePath -FullPath $file.FullName
+            if (!(Test-BoeMortalWorldProfilePath -RelativePath $relativePath)) {
+                continue
+            }
+
+            $seenCurrentPaths[$relativePath.ToLowerInvariant()] = $true
+            $snapshotPath = Join-Path $snapshotRoot ($relativePath.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
+            if (!(Test-Path -LiteralPath $snapshotPath)) {
+                $violations += [pscustomobject]@{
+                    path = $relativePath
+                    reason = "new forbidden Mortal World profile file"
+                }
+                continue
+            }
+
+            $currentHash = Get-BoeFileSha256 -Path $file.FullName
+            $snapshotHash = Get-BoeFileSha256 -Path $snapshotPath
+            if (![string]::Equals($currentHash, $snapshotHash, [System.StringComparison]::OrdinalIgnoreCase)) {
+                $violations += [pscustomobject]@{
+                    path = $relativePath
+                    reason = "changed from pending-turn snapshot"
+                }
+            }
+        }
+    }
+
+    $snapshotRootFull = [System.IO.Path]::GetFullPath($snapshotRoot).TrimEnd(
+        [System.IO.Path]::DirectorySeparatorChar,
+        [System.IO.Path]::AltDirectorySeparatorChar)
+    $snapshotPrefix = $snapshotRootFull + [System.IO.Path]::DirectorySeparatorChar
+
+    foreach ($prefix in @(
+        "game_state/world",
+        "game_state/npcs",
+        "game_state/factions",
+        "game_state/player",
+        "game_state/inventory",
+        "game_state/combat",
+        "game_state/quests"
+    )) {
+        $snapshotPrefixRoot = Join-Path $snapshotRoot ($prefix.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
+        if (!(Test-Path -LiteralPath $snapshotPrefixRoot)) {
+            continue
+        }
+
+        foreach ($snapshotFile in Get-ChildItem -LiteralPath $snapshotPrefixRoot -File -Recurse -ErrorAction SilentlyContinue) {
+            $snapshotFull = [System.IO.Path]::GetFullPath($snapshotFile.FullName)
+            if (!$snapshotFull.StartsWith($snapshotPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+                continue
+            }
+
+            $relativePath = Normalize-BoeRelativePath -RelativePath $snapshotFull.Substring($snapshotPrefix.Length)
+            if (!(Test-BoeMortalWorldProfilePath -RelativePath $relativePath)) {
+                continue
+            }
+
+            if ($seenCurrentPaths.ContainsKey($relativePath.ToLowerInvariant())) {
+                continue
+            }
+
+            $currentPath = Resolve-BoeSessionPath -RelativePath $relativePath
+            if (!(Test-Path -LiteralPath $currentPath)) {
+                $violations += [pscustomobject]@{
+                    path = $relativePath
+                    reason = "deleted from pending-turn snapshot"
+                }
+            }
+        }
+    }
+
+    return $violations
+}
+
+function Assert-BoeNoRawMortalWorldProfileMutations {
+    param(
+        [string]$Operation = "GM turn helper completion"
+    )
+
+    $violations = @(Get-BoeRawMortalWorldProfileMutations)
+    if ($violations.Count -eq 0) {
+        return
+    }
+
+    $details = ($violations |
+        Select-Object -First 12 |
+        ForEach-Object { "$($_.path) ($($_.reason))" }) -join "; "
+    if ($violations.Count -gt 12) {
+        $details += "; ..."
+    }
+
+    $realm = Get-BoeCurrentRealm
+    throw "$Operation blocked: raw wrong-realm Mortal World profile mutations detected while currentRealm is '$realm'. Restore or remove these changes before completing the turn: $details"
+}
+
 function Write-BoeJson {
     param(
         [Parameter(Mandatory = $true)]
@@ -432,6 +579,7 @@ function Complete-BoeTurn {
     )
 
     Assert-BoeGmFilesModifiedEntries -FilesModified $FilesModified
+    Assert-BoeNoRawMortalWorldProfileMutations -Operation "Complete-BoeTurn"
 
     $turn = Get-BoeCurrentTurnRequest
     $signal = [ordered]@{
@@ -471,6 +619,8 @@ function Complete-BoeValidationRepair {
     if ($repair.metadataDiagnosticOnly) {
         throw "validation_repair_request.json uses diagnostic-only metadata. Do not write validation_repair_ready.json from this request."
     }
+
+    Assert-BoeNoRawMortalWorldProfileMutations -Operation "Complete-BoeValidationRepair"
 
     $signal = [ordered]@{
         sessionId = [string]$repair.sessionId

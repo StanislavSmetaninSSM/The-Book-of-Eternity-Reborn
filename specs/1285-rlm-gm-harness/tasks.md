@@ -73,6 +73,9 @@
 - [X] T029 [Follow-up #1292] Prevent Codex bridge from marking `Ready=true` while Codex CLI is still booting MCP servers or showing `model: loading`.
 - [X] T030 [Follow-up #1291] Make `start-bridge` prefer an existing `BookOfEternityGMBridge.exe` launch path so stale bridge processes do not force a rebuild and DLL copy.
 - [X] T031 [Follow-up #1293] Add session-local daemon status/heartbeat, active-peer refusal, and daemon-timeout terminal artifact resolution before the next live test.
+- [X] T032 [Follow-up #1282] Normalize actor reasoning block matching for harmless trailing punctuation and add regression coverage.
+- [X] T033 [Follow-up #1281] Add GM helper preflight that blocks raw Mortal World profile mutations against the pending-turn snapshot before afterlife turn/repair completion.
+- [ ] T034 [Follow-up #1283] Repeat a Chaos Sea spiritual-conflict live turn and verify the compact `tempoAdvantage` template prevents `advantageId` / `sourceId` repair.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.
