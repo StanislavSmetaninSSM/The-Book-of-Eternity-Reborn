@@ -671,9 +671,18 @@ internal sealed class BridgeHost : IDisposable
     {
         var normalized = NormalizeVisibleConsoleText(visibleText);
         return normalized.Contains("Worked for", StringComparison.OrdinalIgnoreCase) &&
-            normalized.Contains("Run /review on my current changes", StringComparison.OrdinalIgnoreCase) &&
-            normalized.Contains("gpt-", StringComparison.OrdinalIgnoreCase) &&
-            normalized.Contains("›", StringComparison.Ordinal);
+            normalized.Contains("›", StringComparison.Ordinal) &&
+            IsCodexCliModelFooter(normalized) &&
+            (normalized.Contains("Run /review on my current changes", StringComparison.OrdinalIgnoreCase) ||
+             normalized.Contains("Find and fix a bug in @filename", StringComparison.OrdinalIgnoreCase) ||
+             normalized.Contains("gpt-", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsCodexCliModelFooter(string visibleText)
+    {
+        var normalized = NormalizeVisibleConsoleText(visibleText);
+        return normalized.Contains("gpt-", StringComparison.OrdinalIgnoreCase) &&
+            normalized.Contains("·", StringComparison.Ordinal);
     }
 
     private void RefreshDispatchFailureRecoveryIfCliPromptReady()

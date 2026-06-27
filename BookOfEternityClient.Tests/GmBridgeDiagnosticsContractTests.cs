@@ -220,6 +220,7 @@ public sealed class GmBridgeDiagnosticsContractTests
 
         Assert.Contains("IsCodexCliCompletedTurnIdlePrompt", source, StringComparison.Ordinal);
         Assert.Contains("Run /review on my current changes", source, StringComparison.Ordinal);
+        Assert.Contains("Find and fix a bug in @filename", source, StringComparison.Ordinal);
         Assert.Contains("Worked for", source, StringComparison.Ordinal);
         Assert.Contains("gpt-", source, StringComparison.Ordinal);
     }
