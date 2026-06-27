@@ -77,4 +77,29 @@ public sealed partial class GuardianSystemRegressionTests
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "mortal_relevant_actor_missing_persistence", StringComparison.OrdinalIgnoreCase));
     }
+
+    [Fact]
+    public async Task AcceptedTurnReasoning_ActorBlockMatchesHarmlessTrailingPunctuation()
+    {
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 0
+        }
+        """);
+        await WriteRawAsync("output/debug_logs.json", """
+        {
+          "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Mixed\n- Релевантные акторы: Стая охотников за душами.\n- Почему они релевантны: Стая прямо давит на душу во время духовного конфликта.\n- Акторы вне охвата: нет\n- Почему они вне охвата: Остальные силы в сцене не принимают решений.\n\n## Reasoning\n### Стая охотников за душами\n- Ситуация: Стая окружает душу у трещины в сером приливе.\n- Мысли: Она ищет слабое место, но боится ответного света.\n- Действия: Она давит на границу защиты и готовится отступить при яркой вспышке.\n",
+          "timestamp": "2026-06-27T12:00:00Z"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "missing_actor_block", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actor, "Стая охотников за душами.", StringComparison.OrdinalIgnoreCase));
+    }
 }

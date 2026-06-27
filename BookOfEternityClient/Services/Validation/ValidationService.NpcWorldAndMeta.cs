@@ -2097,7 +2097,7 @@ public partial class ValidationService
             if (!trimmed.StartsWith("###", StringComparison.Ordinal))
                 continue;
 
-            if (!trimmed.Contains(actorName, StringComparison.OrdinalIgnoreCase))
+            if (!IsReasoningBlockHeadingForActor(trimmed, actorName))
                 continue;
 
             var buffer = new List<string> { lines[i] };
@@ -2114,6 +2114,33 @@ public partial class ValidationService
         }
 
         return false;
+    }
+
+    private static bool IsReasoningBlockHeadingForActor(string heading, string actorName)
+    {
+        if (heading.Contains(actorName, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        var normalizedHeading = NormalizeReasoningActorHeading(heading);
+        var normalizedActor = NormalizeReasoningActorHeading(actorName);
+        if (string.IsNullOrWhiteSpace(normalizedActor))
+            return false;
+
+        return normalizedHeading.Contains(normalizedActor, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string NormalizeReasoningActorHeading(string value)
+    {
+        var normalized = value.Trim();
+        while (normalized.StartsWith("#", StringComparison.Ordinal))
+            normalized = normalized[1..].TrimStart();
+
+        normalized = normalized.Trim();
+        normalized = normalized.TrimEnd('.', '。', '!', '?', '！', '？', ',', ';', ':', '…').TrimEnd();
+        while (normalized.Contains("  ", StringComparison.Ordinal))
+            normalized = normalized.Replace("  ", " ", StringComparison.Ordinal);
+
+        return normalized;
     }
 
     private static bool ContainsAny(string text, params string[] fragments)
