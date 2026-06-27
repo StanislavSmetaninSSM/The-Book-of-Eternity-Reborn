@@ -125,6 +125,7 @@ $script:CompactTurnOutputTemplatePath = Join-Path $script:GmContextPackRoot "Tem
 $script:CompactValidationRepairTemplatePath = Join-Path $script:GmContextPackRoot "Templates\VALIDATION_REPAIR_TEMPLATE.md"
 $script:CompactProgressionReportTemplatePath = Join-Path $script:GmContextPackRoot "Templates\PROGRESSION_REPORT_TEMPLATE.json"
 $script:CompactActorReasoningTemplatePath = Join-Path $script:GmContextPackRoot "Templates\ACTOR_REASONING_TEMPLATE.md"
+$script:CompactMortalNpcTemplatePath = Join-Path $script:GmContextPackRoot "Templates\MORTAL_NPC_UPDATE_TEMPLATE.md"
 $script:CompactTempoAdvantageTemplatePath = Join-Path $script:GmContextPackRoot "Templates\AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json"
 $script:GmExperienceLessonJsonPath = Join-Path $script:GmContextPackRoot "Lessons\GM_EXPERIENCE_LESSONS.json"
 $script:GmExperienceLessonMarkdownPath = Join-Path $script:GmContextPackRoot "Lessons\GM_EXPERIENCE_LESSONS.md"
@@ -626,7 +627,7 @@ function Write-GmSafeProbes {
             probeId = "allowed_output_templates"
             purpose = "Point to compact executable templates for common output shapes."
             readOnly = $true
-            sourceAuthority = @("Templates/TURN_OUTPUT_TEMPLATE.md", "Templates/VALIDATION_REPAIR_TEMPLATE.md", "Templates/PROGRESSION_REPORT_TEMPLATE.json", "Templates/ACTOR_REASONING_TEMPLATE.md", "Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json")
+            sourceAuthority = @("Templates/TURN_OUTPUT_TEMPLATE.md", "Templates/VALIDATION_REPAIR_TEMPLATE.md", "Templates/PROGRESSION_REPORT_TEMPLATE.json", "Templates/ACTOR_REASONING_TEMPLATE.md", "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md", "Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json")
             outputShape = [ordered]@{
                 templateRefs = @()
                 version = "v1"
@@ -984,6 +985,118 @@ Use exact actor names from state/validation packets. Keep punctuation stable; do
 '@
     $actorReasoningTemplate = $actorReasoningTemplate.Replace("__ACTOR_SITUATION_LABEL__", $script:ActorSituationLabel).Replace("__ACTOR_THOUGHTS_LABEL__", $script:ActorThoughtsLabel).Replace("__ACTOR_ACTIONS_LABEL__", $script:ActorActionsLabel)
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\ACTOR_REASONING_TEMPLATE.md" -Role "compact_actor_reasoning_template" -Content $actorReasoningTemplate
+    $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_NPC_UPDATE_TEMPLATE.md" -Role "compact_mortal_npc_update_template" -Content @'
+# Compact Mortal World NPC Update Template
+
+Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_core.json`.
+
+## When to use
+
+- A Mortal World turn introduces a named NPC who is present, speaks, gives a clue, changes state, or changes relationship.
+- Validation reports `mortal_relevant_actor_missing_persistence`, `npc_full_object_missing_required_fields`, `npc_attitude_relationship_tier_mismatch`, `npc_invalid_cultural_stance`, `npc_same_turn_initial_location_requires_null_current_location`, `npc_journal_unknown_npc_reference`, `missing_actor_current_location`, or object/nullability errors under `game_state/npcs/npc_core.json`.
+
+## Same-turn scene NPC rules
+
+- Put scene-local present NPCs in `NPCsInScene`.
+- For an NPC first introduced in the same turn, set `initialLocationId` to the current location id and set `currentLocationId` to `null`.
+- Keep `currentLocationName` as the visible current location name.
+- Use canonical `culturalStance`: `Conformist`, `Pragmatist`, or `Dissident`.
+- Keep `relationshipLevel` numeric. For neutral/unknown NPCs use `0` and `attitude: "Neutral"`.
+- Nullable string fields must be either a real string or JSON `null`, not `{}` and not missing when validator names them.
+- Object-shaped fields must stay objects: `progressionTrackers`, `goals`, `relationshipLock`, `personalityTraits[]` entries.
+
+## Minimal safe NPC scene object
+
+```json
+{
+  "npcId": "npc_<stable_slug>",
+  "npcName": "<visible Russian name>",
+  "name": "<same visible Russian name>",
+  "role": "<short role in this scene>",
+  "image_prompt": "<English image prompt>",
+  "rarity": "Common",
+  "worldview": "<one sentence>",
+  "personalityArchetype": "<stable_snake_case>",
+  "culturalStance": "Pragmatist",
+  "race": "Человек",
+  "class": "<social/combat role>",
+  "appearanceDescription": "<visible appearance>",
+  "history": "<relevant known background>",
+  "progressionType": "static_social_npc",
+  "initialLocationId": "<current location id>",
+  "currentLocationId": null,
+  "currentLocationName": "<current location name>",
+  "age": 30,
+  "level": 1,
+  "experience": 0,
+  "experienceForNextLevel": 100,
+  "relationshipLevel": 0,
+  "attitude": "Neutral",
+  "playerCompanionDirective": "not_companion",
+  "culturalLayer": "<world/culture/faction context>",
+  "personalityTraits": [
+    {
+      "traitId": "trait_<npc_slug>_<short>",
+      "name": "<trait name>",
+      "summary": "<short trait summary>",
+      "traitName": "<same trait name>",
+      "description": "<short description>",
+      "valueDescription": "<how it matters in play>"
+    }
+  ],
+  "maxWeight": 0,
+  "totalWeight": 0,
+  "isOverloaded": false,
+  "progressionTrackers": {
+    "active": [],
+    "completed": [],
+    "summary": "No mechanical progression tracker changed in this scene."
+  },
+  "plans": "<immediate plan or empty string>",
+  "personalQuests": [],
+  "relationshipLock": {
+    "isLocked": false,
+    "lockState": "none",
+    "reason": "",
+    "breakthroughQuestId": null
+  },
+  "characteristics": {
+    "strength": 8,
+    "dexterity": 10,
+    "constitution": 10,
+    "intelligence": 10,
+    "wisdom": 10,
+    "faith": 8,
+    "attractiveness": 10,
+    "trade": 8,
+    "persuasion": 10,
+    "perception": 10,
+    "luck": 9,
+    "speed": 8
+  },
+  "activeSkills": [],
+  "passiveSkills": [],
+  "equippedItems": {},
+  "fateCards": [],
+  "inventory": [],
+  "goals": {
+    "primary": {
+      "goalId": "goal_<npc_slug>_<short>",
+      "title": "<goal title>",
+      "status": "active",
+      "summary": "<why it matters now>"
+    },
+    "shortTerm": "<current scene aim>",
+    "longTerm": "<longer aim>"
+  },
+  "sceneStatus": "present",
+  "turn": 0,
+  "lastSeenAtUtc": "<ISO 8601 UTC timestamp>"
+}
+```
+
+If the NPC is only background color and does not act, speak, give clues, or change state, do not put them in `Relevant actors`; move them to `Actors outside scope` instead of creating a partial NPC object.
+'@
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json" -Role "compact_tempo_advantage_template" -Content @'
 {
   "tempoAdvantage": {
@@ -1028,7 +1141,7 @@ Start here instead of browsing repository implementation code.
 - Bootstrap scope: read only context_pack_manifest.json and README.md.
 - Do not open copied guides/examples during bootstrap; they are large and route-specific.
 - Use Probes/GM_SAFE_PROBES.md for bounded read-only context questions before implementation source.
-- Use Templates/* before opening large copied examples for common turn, repair, progression, actor reasoning, and tempoAdvantage shapes.
+- Use Templates/* before opening large copied examples for common turn, repair, progression, Mortal World NPC updates, actor reasoning, and tempoAdvantage shapes.
 - Use Lessons/GM_EXPERIENCE_LESSONS.md as short hints only; validators and current templates remain authoritative.
 - Use Rubrics/GM_LIVE_TEST_RUBRIC.md during live tests to record harness friction and follow-up notes in game_state/control/gm_live_test_notes.jsonl.
 - Open large copied docs only when a per-turn, repair, or terminal-failure prompt explicitly names them.
@@ -1056,7 +1169,7 @@ Start here instead of browsing repository implementation code.
             "Bootstrap scope: read only context_pack_manifest.json and README.md.",
             "Do not open copied guides/examples during bootstrap; open them only when a per-turn, repair, or terminal-failure prompt explicitly names them.",
             "Use Probes/GM_SAFE_PROBES.md for bounded read-only context probes before considering implementation source.",
-            "Use compact Templates/* before opening large copied examples for common turn, repair, progression, actor reasoning, and tempoAdvantage field names.",
+            "Use compact Templates/* before opening large copied examples for common turn, repair, progression, Mortal World NPC update, actor reasoning, and tempoAdvantage field names.",
             "Use Lessons/GM_EXPERIENCE_LESSONS.md as hints only; validators and current compact templates remain authoritative.",
             "Use Rubrics/GM_LIVE_TEST_RUBRIC.md during live tests to connect observations to gm_trajectory_ledger.jsonl record ids and follow-up issues.",
             "Use session-local copied GM docs/examples before repository files when a turn/repair prompt names those docs.",
@@ -1076,7 +1189,7 @@ Start here instead of browsing repository implementation code.
     $script:AfterlifeExamplesDirective = $script:AfterlifeExamplesDirective.Replace($script:RepoRootPath, $script:GmContextPackRoot)
     $script:GmContextPackDirective = " GM session context pack is the first authority: Manifest='$($script:GmContextPackManifestPath)', Root='$($script:GmContextPackRoot)', README='$readmePath'. Bootstrap scope: read only context_pack_manifest.json and README.md. Do not open copied guides/examples during bootstrap; open large copied docs only when a per-turn, repair, or terminal-failure prompt explicitly names them."
     $script:GmDocPathDirective = " GM documentation paths are session-local and authoritative: TaskGuide='$($script:TaskGuideMainPath)', MainExample='$($script:ExampleMainPath)', AfterlifeMatrix='$($script:AfterlifeMatrixPath)', AfterlifeTurns='$($script:AfterlifeTurnsExamplePath)'. Do not search repository source or other worktrees for GM docs; use these context-pack paths first."
-    $script:GmCompactTemplateDirective = " Compact GM templates are first for executable shapes: Turn='$($script:CompactTurnOutputTemplatePath)', Repair='$($script:CompactValidationRepairTemplatePath)', ProgressionReport='$($script:CompactProgressionReportTemplatePath)', ActorReasoning='$($script:CompactActorReasoningTemplatePath)', TempoAdvantage='$($script:CompactTempoAdvantageTemplatePath)'. Use these before opening large copied examples; open long examples only for route-specific contracts not covered by compact templates."
+    $script:GmCompactTemplateDirective = " Compact GM templates are first for executable shapes: Turn='$($script:CompactTurnOutputTemplatePath)', Repair='$($script:CompactValidationRepairTemplatePath)', ProgressionReport='$($script:CompactProgressionReportTemplatePath)', ActorReasoning='$($script:CompactActorReasoningTemplatePath)', MortalNpc='$($script:CompactMortalNpcTemplatePath)', TempoAdvantage='$($script:CompactTempoAdvantageTemplatePath)'. Use these before opening large copied examples; open long examples only for route-specific contracts not covered by compact templates."
     $script:GmExperienceLessonsDirective = " Experience lessons are hints only: '$($script:GmExperienceLessonMarkdownPath)'. Use them to avoid repeated mistakes, but current validators, repair packets, and compact templates remain authoritative."
     $script:GmSafeProbeDirective = " Safe GM probes are first for bounded context questions: '$($script:GmSafeProbeMarkdownPath)'. They are read-only; if a needed fact is missing, record a missing harness surface instead of treating implementation source as normal workflow."
     $script:GmSourceFallbackDirective = " Do not read implementation code such as BookOfEternityClient/**/*.cs during normal play or validation repair; use safe GM probes, validation_repair_request.json.harnessRepairPackets, session state/control files, helper commands, and named copied GM docs instead."
@@ -2405,7 +2518,7 @@ function Process-Turn {
 
         # Send processing command to CLI window
         $requestId = if ($turnRequest.requestId) { $turnRequest.requestId } else { "<missing-requestId>" }
-        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
+        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', '$($script:CompactMortalNpcTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. If a Mortal World turn creates or updates NPCs, use '$($script:CompactMortalNpcTemplatePath)' before editing game_state/npcs/npc_core.json. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
 
         $completionPath = Join-Path $ReadyDir "turn_complete.json"
         $errorPath = Join-Path $ReadyDir "turn_error.json"
@@ -2605,7 +2718,7 @@ function Process-RepairRequest {
         }
 
         $readyPath = "$GameSessionPath\game_state\control\validation_repair_ready.json"
-        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples. Also use '$($script:CompactActorReasoningTemplatePath)' for actor coverage repairs and prefer validation_repair_request.json.harnessRepairPackets over source-code archaeology. Read '$($script:TaskGuideMainPath)' for repair phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) Fix only the listed validation errors in the already written files IN PLACE. Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
+        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples. Also use '$($script:CompactActorReasoningTemplatePath)' for actor coverage repairs; use '$($script:CompactMortalNpcTemplatePath)' for any repair touching game_state/npcs/npc_core.json or NPC validation errors; and prefer validation_repair_request.json.harnessRepairPackets over source-code archaeology. Read '$($script:TaskGuideMainPath)' for repair phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) Fix only the listed validation errors in the already written files IN PLACE. Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
         if ($hasDiagnosticOnlyMetadata) {
             $message += " The current repair request marks sessionId/requestId/turnNumber as diagnostic-only sentinel values because validated pending snapshot context is unavailable or invalid. Do NOT copy those sentinel metadata into $readyPath. First restore pending snapshot context/authority and then use the freshest client-authored repair request with valid metadata before writing validation_repair_ready.json."
         }

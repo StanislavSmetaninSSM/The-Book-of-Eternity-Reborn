@@ -1771,6 +1771,51 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonContextPack_RendersMortalNpcUpdateTemplate()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-npc-template-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+
+        Process? process = null;
+        try
+        {
+            Directory.CreateDirectory(session);
+            WriteDaemonConfig(session);
+            process = StartDaemon(session, logPath);
+
+            var templatePath = Path.Combine(
+                session,
+                "game_state",
+                "control",
+                "gm_context_pack",
+                "Templates",
+                "MORTAL_NPC_UPDATE_TEMPLATE.md");
+            Assert.True(WaitForFileContaining(templatePath, "Minimal safe NPC scene object", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var template = File.ReadAllText(templatePath, Encoding.UTF8);
+            Assert.Contains("NPCsInScene", template, StringComparison.Ordinal);
+            Assert.Contains("\"currentLocationId\": null", template, StringComparison.Ordinal);
+            Assert.Contains("\"attitude\": \"Neutral\"", template, StringComparison.Ordinal);
+            Assert.Contains("Conformist", template, StringComparison.Ordinal);
+            Assert.Contains("Pragmatist", template, StringComparison.Ordinal);
+            Assert.Contains("Dissident", template, StringComparison.Ordinal);
+            Assert.Contains("relationshipLock", template, StringComparison.Ordinal);
+            Assert.Contains("Actors outside scope", template, StringComparison.Ordinal);
+
+            var readmePath = Path.Combine(session, "game_state", "control", "gm_context_pack", "README.md");
+            Assert.True(WaitForFileContaining(readmePath, "Mortal World NPC updates", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+            var readme = File.ReadAllText(readmePath, Encoding.UTF8);
+            Assert.Contains("Mortal World NPC updates", readme, StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonTurnAndRepairPrompts_PreferCompactTemplatesOverLargeExamples()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -1785,11 +1830,13 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("'$($script:CompactTurnOutputTemplatePath)'", turnBlock, StringComparison.Ordinal);
         Assert.Contains("'$($script:CompactProgressionReportTemplatePath)'", turnBlock, StringComparison.Ordinal);
         Assert.Contains("'$($script:CompactActorReasoningTemplatePath)'", turnBlock, StringComparison.Ordinal);
+        Assert.Contains("'$($script:CompactMortalNpcTemplatePath)'", turnBlock, StringComparison.Ordinal);
         Assert.Contains("'$($script:CompactTempoAdvantageTemplatePath)'", turnBlock, StringComparison.Ordinal);
         Assert.Contains("before opening large copied examples", turnBlock, StringComparison.Ordinal);
 
         Assert.Contains("'$($script:CompactValidationRepairTemplatePath)'", repairBlock, StringComparison.Ordinal);
         Assert.Contains("'$($script:CompactActorReasoningTemplatePath)'", repairBlock, StringComparison.Ordinal);
+        Assert.Contains("'$($script:CompactMortalNpcTemplatePath)'", repairBlock, StringComparison.Ordinal);
         Assert.Contains("harnessRepairPackets", repairBlock, StringComparison.Ordinal);
         Assert.Contains("before opening large copied examples", repairBlock, StringComparison.Ordinal);
 
