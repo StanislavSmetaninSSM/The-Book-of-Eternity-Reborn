@@ -11,7 +11,8 @@ public static class GmWorkerBridgeProfileTemplates
         CreateNarrativeDraftCodexTemplate(),
         CreateAnalysisCodexTemplate(),
         CreateInventoryContentCodexTemplate(),
-        CreateSkillContentCodexTemplate()
+        CreateSkillContentCodexTemplate(),
+        CreateNpcContentCodexTemplate()
     ];
 
     public static WorkerBridgeProfile CreateValidationRepairCodexTemplate() => new()
@@ -101,6 +102,23 @@ public static class GmWorkerBridgeProfileTemplates
                 "game_state/player/**",
                 "game_state/skills/**",
                 "game_state/combat/**",
+                "game_state/world/**",
+                "lore/**",
+                "Rules/**",
+                "TaskGuides/**"
+            ]);
+
+    public static WorkerBridgeProfile CreateNpcContentCodexTemplate() =>
+        CreateContentAuthoringCodexTemplate(
+            "npc_content_codex",
+            "Codex NPC content author",
+            WorkerRole.NpcContent,
+            WorkerTaskType.NpcContent,
+            [
+                "game_state/core/**",
+                "game_state/npcs/**",
+                "game_state/factions/**",
+                "game_state/quests/**",
                 "game_state/world/**",
                 "lore/**",
                 "Rules/**",

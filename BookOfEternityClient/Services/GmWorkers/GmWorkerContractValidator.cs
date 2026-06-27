@@ -346,6 +346,8 @@ public static class GmWorkerContractValidator
             ValidateInventoryAuthoringProposal(proposal, errors);
         if (proposal.Domain == WorkerAuthoringDomain.Skill)
             ValidateSkillAuthoringProposal(proposal, errors);
+        if (proposal.Domain == WorkerAuthoringDomain.Npc)
+            ValidateNpcAuthoringProposal(proposal, errors);
     }
 
     private static void ValidateInventoryAuthoringProposal(
@@ -461,6 +463,49 @@ public static class GmWorkerContractValidator
         entity.RequiredFields.Any(field =>
             names.Any(name => string.Equals(field.Name, name, StringComparison.OrdinalIgnoreCase)) &&
             field.Value.Trim().Length >= minLength);
+
+    private static void ValidateNpcAuthoringProposal(
+        WorkerContentAuthoringProposal proposal,
+        List<string> errors)
+    {
+        foreach (var entity in proposal.CreatedEntities.Concat(proposal.UpdatedEntities))
+        {
+            if (!string.Equals(entity.EntityType, "npc", StringComparison.OrdinalIgnoreCase))
+                errors.Add($"npc authoring entity {entity.EntityId} must use entityType npc.");
+
+            if (entity.Summary.Trim().Length < 50)
+                errors.Add($"npc authoring entity {entity.EntityId} must include a useful player-facing summary, not only a role label.");
+
+            if (!HasDetailedField(entity, 40, "description", "playerFacingDescription", "player-facing-description", "displayDescription"))
+                errors.Add($"npc authoring entity {entity.EntityId} must include a detailed player-facing description.");
+            if (!HasDetailedField(entity, 30, "publicKnowledge", "public-knowledge"))
+                errors.Add($"npc authoring entity {entity.EntityId} must include public knowledge visible or discoverable by the player.");
+            if (!HasDetailedField(entity, 30, "privateKnowledge", "private-knowledge", "secrets"))
+                errors.Add($"npc authoring entity {entity.EntityId} must include private knowledge or secrets for main-GM review.");
+            if (!HasDetailedField(entity, 30, "thoughtJournal", "thoughts", "thoughtEntries"))
+                errors.Add($"npc authoring entity {entity.EntityId} must include thought journal entries as a separate linked section.");
+            if (!HasDetailedField(entity, 30, "relationshipHooks", "relationships", "relationshipGates"))
+                errors.Add($"npc authoring entity {entity.EntityId} must include relationship hooks as a separate linked section.");
+            if (!HasDetailedField(entity, 30, "personalQuests", "personalQuest", "questHooks"))
+                errors.Add($"npc authoring entity {entity.EntityId} must include personal quest hooks as a separate linked section.");
+            if (!HasDetailedField(entity, 30, "dialogueSeeds", "dialogueOptions", "dialogueHooks"))
+                errors.Add($"npc authoring entity {entity.EntityId} must include dialogue seeds for player interaction.");
+            if (!HasDetailedField(entity, 30, "detailSurfaces", "detailCommands", "menuSurfaces"))
+                errors.Add($"npc authoring entity {entity.EntityId} must list detail menu/command surfaces that reveal thoughts, quests, relationships, and dialogue details.");
+
+            if (!HasText(entity.Relationships, "location", "scene") &&
+                !HasLinkForEntity(proposal.RequiredLinks, entity.EntityId, "location", "scene"))
+            {
+                errors.Add($"npc authoring entity {entity.EntityId} must link to a current location or scene.");
+            }
+
+            if (!HasText(entity.Relationships, "faction", "quest", "relationship", "thought", "dialogue") &&
+                !HasLinkForEntity(proposal.RequiredLinks, entity.EntityId, "faction", "quest", "relationship", "thought", "dialogue"))
+            {
+                errors.Add($"npc authoring entity {entity.EntityId} must link NPC details to factions, quests, relationships, thoughts, or dialogue surfaces.");
+            }
+        }
+    }
 
     private static WorkerAuthoringDomain? TaskTypeToDomain(WorkerTaskType taskType) =>
         taskType switch

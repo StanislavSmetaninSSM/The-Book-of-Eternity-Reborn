@@ -1,0 +1,161 @@
+# Example: GM worker npc-content
+
+This example shows a proposal-only NPC content worker. The worker prepares an
+NPC dossier for the main GM. It does not write canonical `game_session` files
+and it does not decide that the NPC already exists in the scene.
+
+Worker profile:
+
+```json
+{
+  "workerId": "npc_content_codex",
+  "displayName": "Codex NPC content author",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "role": "npc-content",
+  "enabled": true,
+  "launchVisibility": "hidden",
+  "timeoutSeconds": 150,
+  "maxConcurrentTasks": 1,
+  "permissions": {
+    "taskTypes": ["npc-content"],
+    "readPaths": [
+      "game_state/core/**",
+      "game_state/npcs/**",
+      "game_state/factions/**",
+      "game_state/quests/**",
+      "game_state/world/**",
+      "lore/**",
+      "Rules/**",
+      "TaskGuides/**"
+    ],
+    "proposalWritePaths": [],
+    "proposalOnly": true,
+    "requiresValidation": false
+  }
+}
+```
+
+The worker process receives `BOE_WORKER_TASK_PATH`,
+`BOE_WORKER_PROPOSAL_PATH`, and `BOE_WORKER_SESSION_PATH`. It reads the task
+packet and writes exactly one proposal JSON to `BOE_WORKER_PROPOSAL_PATH`.
+For npc-content tasks it must keep `changedFiles` empty and return
+`authoringProposal`.
+
+GM bridge dispatch request:
+
+```json
+{
+  "command": "dispatchworkertask",
+  "workerTaskType": "npc-content",
+  "authoringDomain": "npc",
+  "authoringGoal": "Prepare an NPC dossier for the manor investigation scene.",
+  "entityHints": ["senior steward", "witness", "merchant guild contact"],
+  "requiredLinks": ["current location", "faction reputation", "personal quest"],
+  "outputNotes": ["Return separate thoughts, quests, relationship hooks, and dialogue seeds."],
+  "contextPaths": ["game_state/npcs/npc_core.json", "game_state/world/current_location.json"]
+}
+```
+
+Worker proposal:
+
+```json
+{
+  "schemaVersion": 1,
+  "proposalId": "worker_proposal_20260620_0005",
+  "taskId": "worker_task_20260620_0005",
+  "workerId": "npc_content_codex",
+  "status": "completed",
+  "summary": "Prepared an NPC dossier with separate thoughts, quests, relationships, and dialogue hooks.",
+  "changedFiles": [],
+  "findings": [
+    {
+      "kind": "validator-risk",
+      "message": "NPC proposals must be linked to location, faction, and quest surfaces before the main GM accepts them."
+    }
+  ],
+  "draftText": null,
+  "authoringProposal": {
+    "domain": "npc",
+    "goal": "Prepare an NPC dossier for the manor investigation scene.",
+    "createdEntities": [
+      {
+        "entityType": "npc",
+        "entityId": "npc_marius_de_grand",
+        "displayName": "Мариус де Гран",
+        "summary": "Старший дворецкий Вальмонтов знает ночной распорядок, боится гильдейского долга и может стать связующим свидетелем расследования.",
+        "requiredFields": [
+          {
+            "name": "description",
+            "value": "Сухой пожилой дворецкий с безупречной памятью на ключи, лица и поздние визиты; говорит ровно, но выдает тревогу, когда речь заходит о купеческой гильдии."
+          },
+          {
+            "name": "publicKnowledge",
+            "value": "Игрок может узнать, что Мариус первым заметил письмо и усилил ночной надзор после странного шороха у северного коридора."
+          },
+          {
+            "name": "privateKnowledge",
+            "value": "Мариус скрывает, что долг семьи перед гильдией дает торговцам рычаг давления на прислугу и доступ к боковым дверям."
+          },
+          {
+            "name": "thoughtJournal",
+            "value": "Запись мыслей: Мариус боится, что если письмо связано с долгом, обвинят слуг, а не настоящего ночного гостя."
+          },
+          {
+            "name": "relationshipHooks",
+            "value": "Доверие растет, если игрок защищает прислугу от обвинений; падает, если он угрожает раскрыть долг без доказательств."
+          },
+          {
+            "name": "personalQuests",
+            "value": "Личный квест: найти, кто пользовался боковой дверью после полуночи, не подставив служанку Ирен."
+          },
+          {
+            "name": "dialogueSeeds",
+            "value": "Реплики: спросить о ночной вахте; попросить список ключей; осторожно упомянуть купеческую гильдию."
+          },
+          {
+            "name": "detailSurfaces",
+            "value": "/нпс Мариус де Гран; /нпс Мариус де Гран мысли; /нпс Мариус де Гран квесты; /торговать если гильдейская связь станет открытой."
+          }
+        ],
+        "relationships": ["current location", "merchant guild faction", "personal quest", "thought journal", "dialogue options"]
+      }
+    ],
+    "updatedEntities": [],
+    "requiredLinks": [
+      {
+        "source": "npc_marius_de_grand",
+        "target": "location_valmont_manor",
+        "reason": "The NPC must appear in the current manor location or a reachable adjacent room."
+      },
+      {
+        "source": "npc_marius_de_grand",
+        "target": "faction_merchant_guild",
+        "reason": "The debt hook only matters if faction reputation and influence can reference it."
+      },
+      {
+        "source": "npc_marius_de_grand",
+        "target": "quest_side_door_after_midnight",
+        "reason": "The personal quest must be discoverable through NPC detail menus and dialogue."
+      }
+    ],
+    "validatorRisks": [
+      {
+        "code": "npc_linked_details_required",
+        "message": "NPC thoughts, quests, and relationships are useless if they are not linked to visible detail commands.",
+        "mitigation": "Keep detailSurfaces and requiredLinks beside the proposed NPC profile."
+      }
+    ],
+    "gmReviewNotes": ["Review privateKnowledge privacy before showing the NPC dossier to the player."]
+  },
+  "selfCheck": {
+    "scopeReviewed": true,
+    "validationExpectedToPass": true,
+    "notes": ["Proposal-only NPC authoring task; no file changes included."]
+  },
+  "createdAtUtc": "2026-06-20T01:45:20Z"
+}
+```
+
+The inbox entry is diagnostic/read-only. If the main GM likes the proposal, the
+main GM rewrites it into normal NPC, faction, quest, and dialogue state updates
+and validation remains authoritative.

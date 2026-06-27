@@ -19,6 +19,9 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerBridgeProfile SkillContentCodexProfile() =>
         GmWorkerBridgeProfileTemplates.CreateSkillContentCodexTemplate() with { Enabled = true };
 
+    public static WorkerBridgeProfile NpcContentCodexProfile() =>
+        GmWorkerBridgeProfileTemplates.CreateNpcContentCodexTemplate() with { Enabled = true };
+
     public static WorkerTaskPacket ValidationRepairTask() => new()
     {
         TaskId = "worker_task_20260620_0001",
@@ -183,6 +186,50 @@ internal static class GmWorkerBridgeTestFixtures
             new WorkerFileReference
             {
                 Path = "game_state/skills/skills.json",
+                Sha256 = "example"
+            }
+        ],
+        AllowedProposalPaths = [],
+        AcceptanceCriteria =
+        [
+            "Return a worker-proposal-v1 JSON proposal.",
+            "Include authoringProposal for main-GM review."
+        ],
+        ForbiddenActions =
+        [
+            "Do not edit canonical game_session files directly.",
+            "Do not include changedFiles."
+        ],
+        Instructions = "Return authoringProposal only. Do not include changedFiles."
+    };
+
+    public static WorkerTaskPacket NpcContentTask() => new()
+    {
+        TaskId = "worker_task_20260620_0005",
+        WorkerId = "npc_content_codex",
+        Role = WorkerRole.NpcContent,
+        TaskType = WorkerTaskType.NpcContent,
+        CreatedAtUtc = "2026-06-20T01:45:00Z",
+        TimeoutSeconds = 150,
+        SourceTurn = new WorkerTurnReference
+        {
+            SessionId = "test-session",
+            RequestId = "test-request",
+            TurnNumber = 16
+        },
+        AuthoringRequest = new WorkerContentAuthoringRequest
+        {
+            Domain = WorkerAuthoringDomain.Npc,
+            Goal = "Prepare an NPC dossier for the manor investigation scene.",
+            EntityHints = ["senior steward", "witness", "merchant guild contact"],
+            RequiredLinks = ["current location", "faction reputation", "personal quest"],
+            OutputNotes = ["Return separate thoughts, quests, relationship hooks, and dialogue seeds."]
+        },
+        ContextFiles =
+        [
+            new WorkerFileReference
+            {
+                Path = "game_state/npcs/npc_core.json",
                 Sha256 = "example"
             }
         ],
@@ -438,5 +485,120 @@ internal static class GmWorkerBridgeTestFixtures
             Notes = ["Proposal-only skill authoring task; no file changes included."]
         },
         CreatedAtUtc = "2026-06-20T01:15:20Z"
+    };
+
+    public static WorkerProposal NpcContentProposal() => new()
+    {
+        ProposalId = "worker_proposal_20260620_0005",
+        TaskId = "worker_task_20260620_0005",
+        WorkerId = "npc_content_codex",
+        Status = WorkerProposalStatus.Completed,
+        Summary = "Prepared an NPC dossier with separate thoughts, quests, relationships, and dialogue hooks.",
+        ChangedFiles = [],
+        Findings =
+        [
+            new WorkerFinding
+            {
+                Kind = "validator-risk",
+                Message = "NPC proposals must be linked to location, faction, and quest surfaces before the main GM accepts them."
+            }
+        ],
+        AuthoringProposal = new WorkerContentAuthoringProposal
+        {
+            Domain = WorkerAuthoringDomain.Npc,
+            Goal = "Prepare an NPC dossier for the manor investigation scene.",
+            CreatedEntities =
+            [
+                new WorkerAuthoredEntity
+                {
+                    EntityType = "npc",
+                    EntityId = "npc_marius_de_grand",
+                    DisplayName = "Мариус де Гран",
+                    Summary = "Старший дворецкий Вальмонтов знает ночной распорядок, боится гильдейского долга и может стать связующим свидетелем расследования.",
+                    RequiredFields =
+                    [
+                        new WorkerAuthoredField
+                        {
+                            Name = "description",
+                            Value = "Сухой пожилой дворецкий с безупречной памятью на ключи, лица и поздние визиты; говорит ровно, но выдает тревогу, когда речь заходит о купеческой гильдии."
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "publicKnowledge",
+                            Value = "Игрок может узнать, что Мариус первым заметил письмо и усилил ночной надзор после странного шороха у северного коридора."
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "privateKnowledge",
+                            Value = "Мариус скрывает, что долг семьи перед гильдией дает торговцам рычаг давления на прислугу и доступ к боковым дверям."
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "thoughtJournal",
+                            Value = "Запись мыслей: Мариус боится, что если письмо связано с долгом, обвинят слуг, а не настоящего ночного гостя."
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "relationshipHooks",
+                            Value = "Доверие растет, если игрок защищает прислугу от обвинений; падает, если он угрожает раскрыть долг без доказательств."
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "personalQuests",
+                            Value = "Личный квест: найти, кто пользовался боковой дверью после полуночи, не подставив служанку Ирен."
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "dialogueSeeds",
+                            Value = "Реплики: спросить о ночной вахте; попросить список ключей; осторожно упомянуть купеческую гильдию."
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "detailSurfaces",
+                            Value = "/нпс Мариус де Гран; /нпс Мариус де Гран мысли; /нпс Мариус де Гран квесты; /торговать если гильдейская связь станет открытой."
+                        }
+                    ],
+                    Relationships = ["current location", "merchant guild faction", "personal quest", "thought journal", "dialogue options"]
+                }
+            ],
+            RequiredLinks =
+            [
+                new WorkerRequiredEntityLink
+                {
+                    Source = "npc_marius_de_grand",
+                    Target = "location_valmont_manor",
+                    Reason = "The NPC must appear in the current manor location or a reachable adjacent room."
+                },
+                new WorkerRequiredEntityLink
+                {
+                    Source = "npc_marius_de_grand",
+                    Target = "faction_merchant_guild",
+                    Reason = "The debt hook only matters if faction reputation and influence can reference it."
+                },
+                new WorkerRequiredEntityLink
+                {
+                    Source = "npc_marius_de_grand",
+                    Target = "quest_side_door_after_midnight",
+                    Reason = "The personal quest must be discoverable through NPC detail menus and dialogue."
+                }
+            ],
+            ValidatorRisks =
+            [
+                new WorkerValidatorRisk
+                {
+                    Code = "npc_linked_details_required",
+                    Message = "NPC thoughts, quests, and relationships are useless if they are not linked to visible detail commands.",
+                    Mitigation = "Keep detailSurfaces and requiredLinks beside the proposed NPC profile."
+                }
+            ],
+            GmReviewNotes = ["Review privateKnowledge privacy before showing the NPC dossier to the player."]
+        },
+        SelfCheck = new WorkerSelfCheck
+        {
+            ScopeReviewed = true,
+            ValidationExpectedToPass = true,
+            Notes = ["Proposal-only NPC authoring task; no file changes included."]
+        },
+        CreatedAtUtc = "2026-06-20T01:45:20Z"
     };
 }

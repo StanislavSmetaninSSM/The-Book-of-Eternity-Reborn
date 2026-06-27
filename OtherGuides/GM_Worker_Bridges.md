@@ -174,6 +174,21 @@ Codex skill content-authoring example:
 }
 ```
 
+Codex NPC content-authoring example:
+
+```json
+{
+  "workerId": "npc_content_codex",
+  "displayName": "Codex NPC content author",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "role": "npc-content",
+  "enabled": false,
+  "launchVisibility": "hidden",
+  "timeoutSeconds": 150,
+  "maxConcurrentTasks": 1
+}
+```
+
 Use dry-run mode to inspect the generated prompt without launching an external
 agent:
 
@@ -262,6 +277,16 @@ Additional skill-content requirements:
 - proposed skills/effects must link to the effect, status, combat,
   characteristic-check, or progression surface the main GM should update.
 
+Additional npc-content requirements:
+
+- every proposed NPC must include public knowledge, private knowledge, thought
+  journal entries, relationship hooks, personal quest hooks, dialogue seeds,
+  and detail menu/command surfaces as separate fields;
+- NPC details must link to a current location/scene and to the faction, quest,
+  relationship, thought, or dialogue surfaces that should reveal the data;
+- the worker must not collapse thoughts, quests, relationships, and secrets
+  into one summary paragraph.
+
 ## Supported MVP Tasks
 
 ### validation-repair
@@ -321,3 +346,4 @@ canonical files.
 - `Examples/E_CLI_GM_Worker_Narrative_Draft.txt`
 - `Examples/E_CLI_GM_Worker_Content_Authoring.txt`
 - `Examples/E_CLI_GM_Worker_Skill_Content.txt`
+- `Examples/E_CLI_GM_Worker_Npc_Content.txt`

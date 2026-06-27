@@ -121,6 +121,23 @@ function New-DefaultGmWorkerBridgeProfiles {
                 proposalOnly = $true
                 requiresValidation = $false
             }
+        },
+        [ordered]@{
+            workerId = "npc_content_codex"
+            displayName = "Codex NPC content author"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codexWorker`" -TimeoutSeconds 120"
+            role = "npc-content"
+            enabled = $false
+            launchVisibility = "hidden"
+            timeoutSeconds = 150
+            maxConcurrentTasks = 1
+            permissions = [ordered]@{
+                taskTypes = @("npc-content")
+                readPaths = @("game_state/core/**", "game_state/npcs/**", "game_state/factions/**", "game_state/quests/**", "game_state/world/**", "lore/**", "Rules/**", "TaskGuides/**")
+                proposalWritePaths = @()
+                proposalOnly = $true
+                requiresValidation = $false
+            }
         }
     )
 }

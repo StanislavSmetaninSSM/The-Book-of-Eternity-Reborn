@@ -249,6 +249,59 @@ public sealed class GmWorkerProposalOnlyTests
     }
 
     [Fact]
+    public void ValidateProposal_NpcContentRequiresLinkedDossierSections()
+    {
+        var profile = GmWorkerBridgeTestFixtures.NpcContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.NpcContentTask();
+        var valid = GmWorkerBridgeTestFixtures.NpcContentProposal();
+
+        var validResult = GmWorkerContractValidator.ValidateProposal(valid, task, profile);
+
+        Assert.True(validResult.IsValid, string.Join(Environment.NewLine, validResult.Errors));
+
+        var thinNpc = valid.AuthoringProposal!.CreatedEntities[0] with
+        {
+            Summary = "Дворецкий.",
+            RequiredFields =
+            [
+                new WorkerAuthoredField
+                {
+                    Name = "description",
+                    Value = "Старый дворецкий."
+                }
+            ],
+            Relationships = []
+        };
+        var thinProposal = valid with
+        {
+            AuthoringProposal = valid.AuthoringProposal with
+            {
+                CreatedEntities = [thinNpc],
+                RequiredLinks = []
+            }
+        };
+
+        var thinResult = GmWorkerContractValidator.ValidateProposal(thinProposal, task, profile);
+
+        Assert.False(thinResult.IsValid);
+        Assert.Contains(thinResult.Errors, error =>
+            error.Contains("npc", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("public", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(thinResult.Errors, error =>
+            error.Contains("npc", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("thought", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(thinResult.Errors, error =>
+            error.Contains("npc", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("quest", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(thinResult.Errors, error =>
+            error.Contains("npc", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("relationship", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(thinResult.Errors, error =>
+            error.Contains("npc", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("detail", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ApplyAsync_RejectsProposalOnlyChangedFilesWithoutWritingCanonicalFile()
     {
         var root = CreateTempRoot();

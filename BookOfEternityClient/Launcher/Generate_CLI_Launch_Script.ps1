@@ -103,7 +103,7 @@ Allowed delegation uses:
 - `dispatchworkertask` with `workerTaskType = "analysis"`: request
   proposal-only consistency, lore, NPC, QTE, or output-review analysis.
 - `dispatchworkertask` with content authoring `workerTaskType` values such as
-  `"inventory-content"` or `"skill-content"`: request structured entity proposals. Include
+  `"inventory-content"`, `"skill-content"`, or `"npc-content"`: request structured entity proposals. Include
   `authoringGoal`, optional `authoringDomain`, `entityHints`, `requiredLinks`,
   `outputNotes`, and read-only `contextPaths`. The worker must return
   `authoringProposal`, not `changedFiles`. For inventory content, item
