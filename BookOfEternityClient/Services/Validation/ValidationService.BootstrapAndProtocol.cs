@@ -1012,6 +1012,7 @@ public partial class ValidationService
             "realm_segregation_missing_validated_tracked_baseline",
             "RealmSegregation",
             "Для realm segregation validation tracked files из validated pre-turn surface должны иметь snapshot entry/hash; missing validated baseline недопустим.");
+        changedFiles = await FilterRealmSegregationSemanticNoOpChangedFilesAsync(manifest, changedFiles);
         if (changedFiles.Count == 0)
             return;
 
@@ -1050,6 +1051,85 @@ public partial class ValidationService
             expected: expected,
             actual: actual,
             repairHint: repairHint));
+    }
+
+    private async Task<List<string>> FilterRealmSegregationSemanticNoOpChangedFilesAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        List<string> changedFiles)
+    {
+        var filtered = new List<string>();
+        foreach (var changedFile in changedFiles)
+        {
+            if (!await IsRealmSegregationSemanticNoOpChangeAsync(manifest, changedFile))
+                filtered.Add(changedFile);
+        }
+
+        return filtered;
+    }
+
+    private async Task<bool> IsRealmSegregationSemanticNoOpChangeAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        string relativePath)
+    {
+        try
+        {
+            var previous = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, relativePath);
+            var current = await _fs.ReadFileAsync(relativePath);
+            if (string.IsNullOrWhiteSpace(previous) || string.IsNullOrWhiteSpace(current))
+                return false;
+
+            var previousNode = JsonNode.Parse(previous);
+            var currentNode = JsonNode.Parse(current);
+            if (previousNode == null || currentNode == null)
+                return false;
+
+            var normalizedPrevious = NormalizeJsonEmptyContainers(previousNode);
+            var normalizedCurrent = NormalizeJsonEmptyContainers(currentNode);
+            return JsonNode.DeepEquals(normalizedPrevious, normalizedCurrent);
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private static JsonNode? NormalizeJsonEmptyContainers(JsonNode? node)
+    {
+        switch (node)
+        {
+            case null:
+                return null;
+            case JsonObject obj:
+            {
+                var normalized = new JsonObject();
+                foreach (var property in obj.OrderBy(property => property.Key, StringComparer.Ordinal))
+                {
+                    var value = NormalizeJsonEmptyContainers(property.Value);
+                    if (IsEmptyJsonContainer(value))
+                        continue;
+
+                    normalized[property.Key] = value;
+                }
+
+                return normalized;
+            }
+            case JsonArray array:
+            {
+                var normalized = new JsonArray();
+                foreach (var item in array)
+                    normalized.Add(NormalizeJsonEmptyContainers(item));
+
+                return normalized;
+            }
+            default:
+                return node.DeepClone();
+        }
+    }
+
+    private static bool IsEmptyJsonContainer(JsonNode? node)
+    {
+        return node is JsonObject obj && obj.Count == 0 ||
+               node is JsonArray array && array.Count == 0;
     }
 
     private async Task<List<string>> FilterAllowedMortalGuardianQuestProgressFilesAsync(

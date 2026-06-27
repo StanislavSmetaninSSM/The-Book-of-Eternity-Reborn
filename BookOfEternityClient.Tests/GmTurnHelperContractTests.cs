@@ -14,6 +14,7 @@ public sealed class GmTurnHelperContractTests
         var session = Path.Combine(root, "game_session");
         Directory.CreateDirectory(Path.Combine(session, "input"));
         Directory.CreateDirectory(Path.Combine(session, "ready"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
 
         try
         {
@@ -27,6 +28,20 @@ public sealed class GmTurnHelperContractTests
                   "playerAction": "test"
                 }
                 """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-123",
+                  "turnNumber": 42
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.authority.json"),
+                "{}",
                 Encoding.UTF8);
 
             var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
@@ -50,6 +65,49 @@ public sealed class GmTurnHelperContractTests
             Assert.Equal(42, rootElement.GetProperty("turnNumber").GetInt32());
             Assert.Equal("success", rootElement.GetProperty("status").GetString());
             Assert.Equal("output/narrative_response.json", rootElement.GetProperty("filesModified")[0].GetString());
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void Helper_CompleteBoeTurnRejectsMissingPendingSnapshotContext()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-missing-snapshot-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-missing-snapshot",
+                  "turnNumber": 44,
+                  "playerAction": "test"
+                }
+                """,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "Complete-BoeTurn -FilesModified @('output/narrative_response.json')"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("pending_turn_snapshot", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(Path.Combine(session, "ready", "turn_complete.json")));
         }
         finally
         {
@@ -106,6 +164,7 @@ public sealed class GmTurnHelperContractTests
         var session = Path.Combine(root, "game_session");
         Directory.CreateDirectory(Path.Combine(session, "input"));
         Directory.CreateDirectory(Path.Combine(session, "ready"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
 
         try
         {
@@ -119,6 +178,20 @@ public sealed class GmTurnHelperContractTests
                   "playerAction": "test"
                 }
                 """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-err",
+                  "turnNumber": 7
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.authority.json"),
+                "{}",
                 Encoding.UTF8);
 
             var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
@@ -470,6 +543,20 @@ public sealed class GmTurnHelperContractTests
                 }
                 """,
                 Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-wrong-realm-semantic-json",
+                  "turnNumber": 45
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.authority.json"),
+                "{}",
+                Encoding.UTF8);
 
             File.WriteAllText(
                 Path.Combine(session, "game_state", "control", "pending_turn_snapshot", "game_state", "factions", "faction_core.json"),
@@ -501,6 +588,86 @@ public sealed class GmTurnHelperContractTests
 
             Assert.Equal(0, result.ExitCode);
             Assert.True(File.Exists(Path.Combine(session, "ready", "turn_complete.json")));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void Helper_CompleteBoeTurnIgnoresMortalWorldRollbackArtifactsInAfterlifeRealm()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-wrong-realm-rollback-artifact-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "meta"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "world"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control", "pending_turn_snapshot", "game_state", "world"));
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "meta", "soul_state.json"),
+                """
+                {
+                  "currentRealm": "Chaos Sea"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-wrong-realm-rollback-artifact",
+                  "turnNumber": 46,
+                  "playerAction": "test"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-wrong-realm-rollback-artifact",
+                  "turnNumber": 46
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.authority.json"),
+                "{}",
+                Encoding.UTF8);
+
+            const string currentLocationJson = """{"locationId":"loc_old","name":"Порог"}""";
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot", "game_state", "world", "current_location.json"),
+                currentLocationJson,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "world", "current_location.json"),
+                currentLocationJson,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "world", "current_location.json.rollback.123456"),
+                currentLocationJson,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "Complete-BoeTurn -FilesModified @('output/narrative_response.json')"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.True(File.Exists(Path.Combine(session, "ready", "turn_complete.json")), result.StdErr + result.StdOut);
         }
         finally
         {
@@ -1505,6 +1672,26 @@ public sealed class GmTurnHelperContractTests
 
         Assert.Contains("Dispatch-WithRetry -Message $message", functionBlock, StringComparison.Ordinal);
         Assert.DoesNotContain("Send-ToCliWindow -Message $message | Out-Null", functionBlock, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DaemonRepairDispatch_SkipsDiagnosticOnlyRepairRequests()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        var functionBlock = ExtractFunctionBlock(daemon, "function Process-RepairRequest");
+
+        Assert.Contains("metadataDiagnosticOnly", functionBlock, StringComparison.Ordinal);
+        var guardIndex = functionBlock.IndexOf("$hasDiagnosticOnlyMetadata", StringComparison.Ordinal);
+        var dispatchIndex = functionBlock.IndexOf("Dispatch-WithRetry -Message $message", StringComparison.Ordinal);
+        Assert.True(guardIndex >= 0, "Expected Process-RepairRequest to inspect metadataDiagnosticOnly.");
+        Assert.True(dispatchIndex > guardIndex, "Expected diagnostic-only guard before repair dispatch.");
+
+        var guardBlock = functionBlock[guardIndex..dispatchIndex];
+        Assert.Contains("Skipping diagnostic-only validation repair request", guardBlock, StringComparison.Ordinal);
+        Assert.Contains("Write-GmTrajectoryRecord", guardBlock, StringComparison.Ordinal);
+        Assert.Contains("-RepairStatus \"diagnostic-only-skipped\"", guardBlock, StringComparison.Ordinal);
+        Assert.Contains("return", guardBlock, StringComparison.Ordinal);
     }
 
     [Fact]

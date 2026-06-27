@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
@@ -102,11 +103,13 @@ public partial class GameEngine
 
     private async Task<bool> ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
         string source,
+        ValidatedPendingTurnSnapshotContext? activeSnapshotContext,
         RollbackSnapshot? rollbackSnapshot,
         int expectedTurn,
         ProgressionControl? progressionControl)
     {
         var criticalRepairAttempt = 0;
+        using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);
 
         while (true)
         {
@@ -127,7 +130,7 @@ public partial class GameEngine
                 continue;
             }
 
-            if (!await RefreshAcceptedTurnCanonicalStateForValidationAsync(expectedTurn))
+            if (!await RefreshAcceptedTurnCanonicalStateForValidationAsync(expectedTurn, activeSnapshotContext))
             {
                 criticalRepairAttempt++;
                 var baselineErrors = new List<ValidationIssue>
@@ -180,9 +183,11 @@ public partial class GameEngine
         }
     }
 
-    private async Task<bool> RefreshAcceptedTurnCanonicalStateForValidationAsync(int expectedTurn)
+    private async Task<bool> RefreshAcceptedTurnCanonicalStateForValidationAsync(
+        int expectedTurn,
+        ValidatedPendingTurnSnapshotContext? activeSnapshotContext)
     {
-        var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);
+        var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn, activeSnapshotContext);
         if (snapshot == null)
             return false;
 
@@ -355,13 +360,78 @@ public partial class GameEngine
             Expand = true
         });
         AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
+
+        if (_inputSource is AgentConsoleLiveInputSource liveInput)
+        {
+            var plainLines = new List<string>
+            {
+                $"Нарушение контракта GM после {source}",
+                "Клиент отклонил состояние как несовместимое с Rules/API.",
+                ""
+            };
+
+            if (summaryLines.Count > 0)
+            {
+                plainLines.Add("Основные группы ошибок:");
+                plainLines.AddRange(summaryLines.Select(summary => "• " + summary));
+                plainLines.Add("");
+            }
+
+            foreach (var issue in errors.Take(10))
+            {
+                plainLines.Add("• " + BuildIssueDisplayLabel(issue));
+                if (!string.IsNullOrWhiteSpace(issue.RepairHint))
+                    plainLines.Add("  Исправление: " + issue.RepairHint);
+            }
+
+            if (errors.Count > 10)
+                plainLines.Add($"... и ещё {errors.Count - 10} ошибок");
+
+            plainLines.Add("");
+            plainLines.Add(_loc.T("press_any_key"));
+
+            liveInput.PublishSnapshot(new AgentConsoleSnapshot
+            {
+                ScreenId = "contract-validation-error",
+                Mode = AgentConsoleMode.Error,
+                Title = "Нарушение контракта GM",
+                PlainText = string.Join(Environment.NewLine, plainLines),
+                AwaitingInput = true,
+                InputKind = AgentConsoleInputKind.Key,
+                Actions =
+                [
+                    new AgentConsoleAction
+                    {
+                        Id = "continue",
+                        Label = "Продолжить",
+                        Shortcut = "enter",
+                        IsDefault = true
+                    }
+                ],
+                RenderedAtUtc = DateTimeOffset.UtcNow,
+                UpdatedAtUtc = DateTimeOffset.UtcNow,
+                Diagnostics =
+                [
+                    new AgentConsoleDiagnostic
+                    {
+                        Severity = AgentConsoleDiagnosticSeverity.Error,
+                        Code = "contract-validation-error",
+                        Message = $"Клиент отклонил состояние после {source}."
+                    }
+                ]
+            }, "Rendered contract validation error.");
+        }
+
         _inputSource.ReadKey(intercept: true);
     }
 
     private async Task<bool> WaitForContractRepairAsync(string source, List<ValidationIssue> errors,
         int attempt, RollbackSnapshot? rollbackSnapshot)
     {
-        await WriteValidationRepairRequestAsync(source, errors, attempt);
+        var metadataDiagnosticOnly = await WriteValidationRepairRequestAsync(source, errors, attempt);
+        if (metadataDiagnosticOnly)
+            return await FailClosedDiagnosticOnlyValidationRepairAsync(source, errors, attempt, rollbackSnapshot);
+
         var rollbackAvailable = HasRollbackCapability(rollbackSnapshot);
         while (true)
         {
@@ -480,7 +550,7 @@ public partial class GameEngine
         }
     }
 
-    private async Task WriteValidationRepairRequestAsync(string source, List<ValidationIssue> errors, int attempt)
+    private async Task<bool> WriteValidationRepairRequestAsync(string source, List<ValidationIssue> errors, int attempt)
     {
         var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
         var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
@@ -518,7 +588,60 @@ public partial class GameEngine
         };
 
         await _fs.WriteFileAtomicAsync(ValidationRepairRequestPath, JsonSerializer.Serialize(request, JsonOpts));
-        await RunWorkerValidationRepairIfAvailableAsync(prioritizedErrors, requestMetadata, request.DetectedAtUtc, attempt);
+        if (!metadataDiagnosticOnly)
+            await RunWorkerValidationRepairIfAvailableAsync(prioritizedErrors, requestMetadata, request.DetectedAtUtc, attempt);
+        return metadataDiagnosticOnly;
+    }
+
+    private async Task<bool> FailClosedDiagnosticOnlyValidationRepairAsync(
+        string source,
+        List<ValidationIssue> errors,
+        int attempt,
+        RollbackSnapshot? rollbackSnapshot)
+    {
+        var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
+        _logger.LogError(
+            "Diagnostic-only validation repair request cannot be completed by GM after {Source}; failing closed instead of waiting for validation_repair_ready.json.",
+            source);
+
+        var report = new
+        {
+            source,
+            detectedAtUtc = DateTime.UtcNow.ToString("o"),
+            attempt,
+            reason = "Diagnostic-only validation repair request cannot be completed by GM because active pending-turn metadata is missing or unusable.",
+            rollbackAvailable = HasRollbackCapability(rollbackSnapshot),
+            summaryGroups = BuildValidationSummaryLines(prioritizedErrors, 6),
+            errors = prioritizedErrors.Select(e => new
+            {
+                code = e.Code ?? "validation_error",
+                filePath = e.FilePath,
+                severity = e.Severity.ToString(),
+                category = e.Category.ToString(),
+                message = e.Message,
+                actor = e.Actor,
+                section = e.Section,
+                expected = e.Expected,
+                actual = e.Actual,
+                repairHint = e.RepairHint
+            }).ToList()
+        };
+
+        if (HasRollbackCapability(rollbackSnapshot))
+        {
+            await RestorePreTurnBackup(rollbackSnapshot!);
+            CleanupBackup(rollbackSnapshot!);
+            AnsiConsole.MarkupLine("[yellow]↩ Клиент остановил неремонтопригодный diagnostic-only repair и восстановил состояние из rollback backup.[/]");
+        }
+        else
+        {
+            AnsiConsole.MarkupLine("[yellow]⚠ Клиент остановил неремонтопригодный diagnostic-only repair. Автоматический rollback для этого режима недоступен.[/]");
+        }
+
+        await _fs.WriteFileAtomicAsync(ValidationDiagnosticFailureReportPath, JsonSerializer.Serialize(report, JsonOpts));
+        await _progressionSchedule.DeleteTransientReportAsync();
+        await DeleteValidationRepairFilesAsync();
+        return false;
     }
 
     private static List<ValidationRepairHarnessPacket> BuildValidationRepairHarnessPackets(

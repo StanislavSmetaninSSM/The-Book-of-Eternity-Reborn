@@ -504,18 +504,31 @@ public partial class GameEngine
             yield return Path.GetRelativePath(sessionRoot, absoluteFile).Replace('\\', '/');
     }
 
-    private async Task<Dictionary<string, string>?> LoadCanonicalBaselineSnapshotAsync(int expectedTurnNumber)
+    private async Task<Dictionary<string, string>?> LoadCanonicalBaselineSnapshotAsync(
+        int expectedTurnNumber,
+        ValidatedPendingTurnSnapshotContext? activeSnapshotContext = null)
     {
-        var manifest = await LoadPendingTurnSnapshotManifestAsync();
-        if (manifest == null)
-            return null;
+        PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload? payload;
+        if (activeSnapshotContext != null)
+        {
+            if (activeSnapshotContext.TurnNumber != expectedTurnNumber)
+                return null;
 
-        if (manifest.TurnNumber != expectedTurnNumber)
-            return null;
+            payload = activeSnapshotContext.Payload;
+        }
+        else
+        {
+            var manifest = await LoadPendingTurnSnapshotManifestAsync();
+            if (manifest == null)
+                return null;
 
-        var payload = await LoadValidatedCurrentPendingTurnSnapshotAuthorityPayloadAsync(manifest);
-        if (payload == null)
-            return null;
+            if (manifest.TurnNumber != expectedTurnNumber)
+                return null;
+
+            payload = await LoadValidatedCurrentPendingTurnSnapshotAuthorityPayloadAsync(manifest);
+            if (payload == null)
+                return null;
+        }
 
         var canonicalFiles = new HashSet<string>(CanonicalStateNormalizer.CanonicalAccumulatedFiles, StringComparer.OrdinalIgnoreCase);
         var baselineCanonicalFiles = payload.RollbackBaselineFiles

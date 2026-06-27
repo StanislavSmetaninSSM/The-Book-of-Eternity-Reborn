@@ -11,6 +11,51 @@ using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
+    private ValidationPendingTurnSnapshotManifest? _prevalidatedPendingTurnSnapshotOverride;
+
+    internal IDisposable UsePrevalidatedPendingTurnSnapshotScope(object? manifest)
+    {
+        var previous = _prevalidatedPendingTurnSnapshotOverride;
+        _prevalidatedPendingTurnSnapshotOverride = ConvertToValidationPendingTurnSnapshotManifest(manifest);
+        return new PrevalidatedPendingTurnSnapshotScope(this, previous);
+    }
+
+    private static ValidationPendingTurnSnapshotManifest? ConvertToValidationPendingTurnSnapshotManifest(object? manifest)
+    {
+        if (manifest == null)
+            return null;
+
+        if (manifest is ValidationPendingTurnSnapshotManifest validationManifest)
+            return validationManifest;
+
+        var json = JsonSerializer.Serialize(manifest, manifest.GetType(), ManifestHashJsonOpts);
+        return JsonSerializer.Deserialize<ValidationPendingTurnSnapshotManifest>(json, ManifestJsonOpts);
+    }
+
+    private sealed class PrevalidatedPendingTurnSnapshotScope : IDisposable
+    {
+        private readonly ValidationService _service;
+        private readonly ValidationPendingTurnSnapshotManifest? _previous;
+        private bool _disposed;
+
+        public PrevalidatedPendingTurnSnapshotScope(
+            ValidationService service,
+            ValidationPendingTurnSnapshotManifest? previous)
+        {
+            _service = service;
+            _previous = previous;
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _service._prevalidatedPendingTurnSnapshotOverride = _previous;
+            _disposed = true;
+        }
+    }
+
     private async Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadInternalAsync()
     {
         var issues = new List<ValidationIssue>();
@@ -2644,6 +2689,9 @@ public partial class ValidationService
 
     private ValidatedPendingTurnSnapshotLookup LoadValidatedPendingTurnSnapshotLookupSync()
     {
+        if (_prevalidatedPendingTurnSnapshotOverride != null)
+            return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
+
         var manifestExists = File.Exists(_fs.ResolvePath(PendingTurnSnapshotManifestPath));
         var manifest = LoadValidationPendingTurnSnapshotManifestSync();
         var authorityJson = ReadPendingTurnSnapshotAuthoritySync();
@@ -4279,6 +4327,9 @@ public partial class ValidationService
 
     private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync()
     {
+        if (_prevalidatedPendingTurnSnapshotOverride != null)
+            return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
+
         var manifestExists = _fs.FileExists(PendingTurnSnapshotManifestPath);
         var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
         var authorityJson = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);

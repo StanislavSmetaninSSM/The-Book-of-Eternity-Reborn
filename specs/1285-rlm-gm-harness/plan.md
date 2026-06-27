@@ -33,6 +33,7 @@ Implement an RLM-inspired GM harness layer without adding unsafe arbitrary REPL 
 **Scale/Scope**: One active local game session, one main GM bridge, optional hidden worker tasks, bounded context-pack artifacts.
 
 **Source Issue(s)**:
+- #1249 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1249
 - #1285 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1285
 - #1281 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1281
 - #1282 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1282

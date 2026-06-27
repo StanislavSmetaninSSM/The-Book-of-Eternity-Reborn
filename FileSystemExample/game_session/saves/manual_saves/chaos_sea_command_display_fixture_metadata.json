@@ -4,7 +4,8 @@
   "saveName": "Chaos Sea Command Display Fixture (#1096)",
   "archiveFile": "chaos_sea_command_display_fixture.zip",
   "sourceIssues": [
-    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1096"
+    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1096",
+    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1249"
   ],
   "createdFor": "Reusable Chaos Sea afterlife console/browser command-display QA",
   "timestamp": "2026-06-18T00:00:00Z",
@@ -17,7 +18,8 @@
   "inkFeathers": 90,
   "fixtureNotes": [
     "guardian_project_journal.json provides the journal-backed project display target; guardian_projects.json intentionally has no active tracker state because activeProjects require a validated pre-turn tracker baseline that manual saves do not preserve.",
-    "/archive_project_fuel renders the project context plus a clear unavailable reason until a validated active project exists."
+    "/archive_project_fuel renders the project context plus a clear unavailable reason until a validated active project exists.",
+    "The archive is also clean for Chaos Sea live E2E baseline: stale Mortal World NPC/faction command-delta arrays are empty so accepted-turn validation does not force the GM to repair unrelated mortal-world surfaces during afterlife play."
   ],
   "coverage": {
     "chaosSeaAliases": "all ExplorerCommandGroup.ChaosSea aliases covered by specs/1092-mortal-command-fixture-coverage/contracts/chaos-sea-command-fixture-checklist.md",

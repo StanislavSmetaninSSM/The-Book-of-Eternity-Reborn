@@ -34,6 +34,16 @@ public sealed class GameEngineSourceGuardTests
             "game_master_daemon.ps1"));
     }
 
+    private static string ExtractMethodSource(string source, string methodHeader)
+    {
+        var start = source.IndexOf(methodHeader, StringComparison.Ordinal);
+        Assert.True(start >= 0, $"Expected method header {methodHeader}.");
+
+        var nextMethod = source.IndexOf("\n    private ", start + methodHeader.Length, StringComparison.Ordinal);
+        Assert.True(nextMethod > start, $"Expected another private method after {methodHeader}.");
+        return source[start..nextMethod];
+    }
+
     [Fact]
     public void NewGameFlow_MustCheckInitialWaitResultBeforeEnteringGameLoop()
     {
@@ -344,6 +354,55 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void ProcessPlayerTurn_MustKeepValidatedPendingSnapshotContextAcrossLongGmWait()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var methodStart = source.IndexOf("private async Task ProcessPlayerTurn(", StringComparison.Ordinal);
+        Assert.True(methodStart >= 0, "ProcessPlayerTurn must exist.");
+        var nextMethodStart = source.IndexOf("    internal static bool", methodStart, StringComparison.Ordinal);
+        Assert.True(nextMethodStart > methodStart, "ProcessPlayerTurn method boundary must be discoverable.");
+        var methodSource = source[methodStart..nextMethodStart];
+
+        var writeRequestIndex = methodSource.IndexOf("await _fs.WriteFileAtomicAsync(\"input/turn_request.json\"", StringComparison.Ordinal);
+        var snapshotContextIndex = methodSource.IndexOf("activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(", StringComparison.Ordinal);
+        var waitIndex = methodSource.IndexOf("if (await WaitForTerminalSignalAsync()", StringComparison.Ordinal);
+
+        Assert.True(writeRequestIndex >= 0, "ProcessPlayerTurn must write input/turn_request.json.");
+        Assert.True(snapshotContextIndex > writeRequestIndex, "ProcessPlayerTurn must validate pending snapshot after writing the current request.");
+        Assert.True(waitIndex > snapshotContextIndex, "ProcessPlayerTurn must keep the validated snapshot context in memory before the long GM wait starts.");
+    }
+
+    [Fact]
+    public void AcceptedTurnValidation_MustUsePreWaitPendingSnapshotContextForCanonicalBaseline()
+    {
+        var turnSource = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var validationSource = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
+
+        Assert.Contains("ValidateAcceptedTurnOutcomeWithRepairLoopAsync(", turnSource, StringComparison.Ordinal);
+        Assert.Contains("activeSnapshotContext,", turnSource, StringComparison.Ordinal);
+        Assert.Contains("ValidatedPendingTurnSnapshotContext? activeSnapshotContext,", validationSource, StringComparison.Ordinal);
+        Assert.Contains("RefreshAcceptedTurnCanonicalStateForValidationAsync(expectedTurn, activeSnapshotContext)", validationSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);", validationSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AcceptedTurnValidation_MustExposePreWaitPendingSnapshotContextToValidators()
+    {
+        var validationSource = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
+        var serviceSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.AcceptedTurnAndInkFeathers.cs"));
+
+        Assert.Contains("using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);", validationSource, StringComparison.Ordinal);
+        Assert.Contains("_prevalidatedPendingTurnSnapshotOverride", serviceSource, StringComparison.Ordinal);
+        Assert.Contains("if (_prevalidatedPendingTurnSnapshotOverride != null)", serviceSource, StringComparison.Ordinal);
+        Assert.Contains("return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);", serviceSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void CheckLifeTransitions_MustClearAcceptedTurnReadySignalBeforeDispatchingLifeEvaluation()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
@@ -547,6 +606,52 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("var metadataDiagnosticOnly = BuildProtocolRequestMetadataDiagnosticOnly(pendingSnapshot);", source, StringComparison.Ordinal);
         Assert.Contains("MetadataDiagnosticOnly = metadataDiagnosticOnly,", source, StringComparison.Ordinal);
         Assert.Contains("return pendingSnapshot.Status is PendingTurnSnapshotResolutionStatus.Missing or PendingTurnSnapshotResolutionStatus.Unusable;", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DiagnosticOnlyValidationRepair_MustFailClosedWithoutWaitingForGmReady()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
+        var method = ExtractMethodSource(source, "private async Task<bool> WaitForContractRepairAsync(");
+
+        var writeRequestIndex = method.IndexOf("await WriteValidationRepairRequestAsync(", StringComparison.Ordinal);
+        var diagnosticGuardIndex = method.IndexOf("FailClosedDiagnosticOnlyValidationRepairAsync(", StringComparison.Ordinal);
+        var waitLoopIndex = method.IndexOf("while (true)", StringComparison.Ordinal);
+
+        Assert.True(writeRequestIndex >= 0, "WaitForContractRepairAsync must write the client-authored repair request first.");
+        Assert.True(diagnosticGuardIndex > writeRequestIndex, "Diagnostic-only repair handling must inspect the freshly written request.");
+        Assert.True(waitLoopIndex > diagnosticGuardIndex, "Diagnostic-only repair must fail closed before waiting for validation_repair_ready.json.");
+        Assert.Contains("ValidationDiagnosticFailureReportPath", source, StringComparison.Ordinal);
+        Assert.Contains("Diagnostic-only validation repair request cannot be completed by GM", source, StringComparison.Ordinal);
+        Assert.Contains("await DeleteValidationRepairFilesAsync();", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DiagnosticOnlyValidationRepair_MustPreserveFailureReportAfterRollback()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
+        var method = ExtractMethodSource(source, "private async Task<bool> FailClosedDiagnosticOnlyValidationRepairAsync(");
+
+        var rollbackIndex = method.IndexOf("await RestorePreTurnBackup(rollbackSnapshot!);", StringComparison.Ordinal);
+        var reportWriteIndex = method.IndexOf("await _fs.WriteFileAtomicAsync(ValidationDiagnosticFailureReportPath", StringComparison.Ordinal);
+        var cleanupIndex = method.IndexOf("await DeleteValidationRepairFilesAsync();", StringComparison.Ordinal);
+
+        Assert.True(rollbackIndex >= 0, "Diagnostic-only fail-closed path should use rollback when available.");
+        Assert.True(reportWriteIndex > rollbackIndex, "Diagnostic failure report must be written after rollback so the backup restore cannot erase it.");
+        Assert.True(cleanupIndex > reportWriteIndex, "Repair cleanup must not run before the preserved diagnostic failure report is written.");
+    }
+
+    [Fact]
+    public void ContractValidationErrorScreen_MustExposeAgentConsoleKeyContinuation()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
+        var method = ExtractMethodSource(source, "private void ShowContractValidationErrors(");
+
+        Assert.Contains("AgentConsoleLiveInputSource", method, StringComparison.Ordinal);
+        Assert.Contains("Mode = AgentConsoleMode.Error", method, StringComparison.Ordinal);
+        Assert.Contains("InputKind = AgentConsoleInputKind.Key", method, StringComparison.Ordinal);
+        Assert.Contains("new AgentConsoleAction", method, StringComparison.Ordinal);
+        Assert.Contains("Shortcut = \"enter\"", method, StringComparison.Ordinal);
     }
 
     [Fact]

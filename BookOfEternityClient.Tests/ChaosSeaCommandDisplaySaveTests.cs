@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -117,6 +118,49 @@ public sealed class ChaosSeaCommandDisplaySaveTests : IDisposable
         Assert.Equal(sourceHashBefore, await ComputeSha256Async(sourceArchive));
         Assert.True(await saveLoad.LoadGameAsync(sourceArchive));
         Assert.Equal(sourceHashBefore, await ComputeSha256Async(sourceArchive));
+    }
+
+    [Fact]
+    public void NamedChaosSeaCommandDisplaySave_HasCleanAcceptedTurnBaselineForLiveE2E()
+    {
+        var sourceArchive = GetSourceArchivePath();
+        Assert.True(File.Exists(sourceArchive), $"Missing reusable Chaos Sea command display save: {sourceArchive}");
+
+        using var archive = ZipFile.OpenRead(sourceArchive);
+        var failures = new List<string>();
+
+        AssertNoNonEmptyTopLevelArrays(
+            archive,
+            "game_state/npcs/npc_core.json",
+            failures,
+            "UpdateNPCs",
+            "NPCsInScene",
+            "NPCsRenameData");
+        AssertNoNonEmptyTopLevelArrays(
+            archive,
+            "game_state/npcs/npc_memory.json",
+            failures,
+            "NPCUnlockedMemories");
+
+        AssertNoNonEmptyTopLevelArrays(
+            archive,
+            "game_state/factions/faction_core.json",
+            failures,
+            "factions",
+            "factionDataChanges",
+            "factionRankChanges",
+            "factionBonusChanges",
+            "factionResourceChanges",
+            "factionProjectUpdates",
+            "completeFactionProjects",
+            "factionCustomStateChanges");
+        AssertNoNonEmptyTopLevelArrays(archive, "game_state/factions/faction_custom.json", failures, "entries");
+        AssertNoNonEmptyTopLevelArrays(archive, "game_state/factions/faction_chronicles.json", failures, "entries");
+
+        Assert.True(
+            failures.Count == 0,
+            "Reusable Chaos Sea command display save must be clean enough for accepted-turn live E2E baseline:" +
+            Environment.NewLine + string.Join(Environment.NewLine, failures));
     }
 
     [Theory]
@@ -297,6 +341,83 @@ public sealed class ChaosSeaCommandDisplaySaveTests : IDisposable
         await using var stream = File.OpenRead(path);
         var hash = await SHA256.HashDataAsync(stream);
         return Convert.ToHexString(hash);
+    }
+
+    private static JsonObject? ReadArchiveJsonObject(ZipArchive archive, string relativePath)
+    {
+        var entry = archive.GetEntry(relativePath);
+        Assert.NotNull(entry);
+        using var stream = entry.Open();
+        return JsonNode.Parse(stream) as JsonObject;
+    }
+
+    private static void AssertNoNonEmptyTopLevelArrays(
+        ZipArchive archive,
+        string relativePath,
+        List<string> failures,
+        params string[] propertyNames)
+    {
+        var root = ReadArchiveJsonObject(archive, relativePath);
+        if (root == null)
+        {
+            failures.Add($"{relativePath} must contain a JSON object root.");
+            return;
+        }
+
+        foreach (var propertyName in propertyNames)
+        {
+            if (root[propertyName] is not JsonArray array)
+                continue;
+
+            if (array.Count > 0)
+                failures.Add($"{relativePath}.{propertyName} is a same-turn GM delta surface and must be absent or empty in reusable live E2E saves.");
+        }
+    }
+
+    private static void AssertSidecarFactionIdsResolve(
+        ZipArchive archive,
+        string relativePath,
+        string arrayPropertyName,
+        HashSet<string> permanentFactionIds,
+        List<string> failures)
+    {
+        var root = ReadArchiveJsonObject(archive, relativePath);
+        if (root == null)
+        {
+            failures.Add($"{relativePath} must contain a JSON object root.");
+            return;
+        }
+
+        if (root[arrayPropertyName] is not JsonArray entries)
+            return;
+
+        for (var i = 0; i < entries.Count; i++)
+        {
+            if (entries[i] is not JsonObject entry)
+                continue;
+
+            var factionId = entry["factionId"]?.GetValue<string>();
+            if (!string.IsNullOrWhiteSpace(factionId) && !permanentFactionIds.Contains(factionId))
+                failures.Add($"{relativePath}.{arrayPropertyName}[{i}].factionId references unknown factionId '{factionId}'.");
+        }
+    }
+
+    private static bool HasNonEmptyValue(JsonNode? node)
+    {
+        if (node == null)
+            return false;
+
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<string>(out var text))
+                return !string.IsNullOrWhiteSpace(text);
+            if (value.TryGetValue<bool>(out _))
+                return true;
+            if (value.TryGetValue<int>(out _))
+                return true;
+        }
+
+        return node.GetValueKind() != JsonValueKind.Null;
     }
 
     private static IEnumerable<(string Id, string Command)> PracticalUniversalChaosSeaPreviewCommands()

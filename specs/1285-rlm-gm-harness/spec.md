@@ -11,6 +11,7 @@
 ## Source Issues & Scope
 
 - **Source GitHub issue(s)**:
+  - #1249 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1249
   - #1285 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1285
   - #1281 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1281
   - #1282 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1282
@@ -137,6 +138,9 @@ As the developer, I need the next live GM test to measure harness quality, not j
 - **FR-013**: During afterlife live turns and repairs, GM helper completion MUST detect raw Mortal World profile mutations against the pending-turn snapshot before writing completion signals, so wrong-realm writes are blocked before stable acceptance. JSON files MUST be compared semantically so formatting-only snapshot serialization differences are not treated as GM mutations.
 - **FR-014**: Actor reasoning validation MUST tolerate harmless trailing punctuation differences between declared actor names and `###` reasoning block headings without weakening canonical actor identity checks.
 - **FR-015**: Afterlife spiritual-conflict context packs MUST expose a compact `tempoAdvantage` template with required `advantageId`, `sourceId`, and `guard_tempo_window` consumption fields.
+- **FR-016**: Diagnostic-only validation repair requests MUST fail closed in the client without waiting for GM-authored `validation_repair_ready.json`, preserve a machine-readable `validation_diagnostic_failure_report.json` after rollback, and expose any player/agent pause as Agent Console key input.
+- **FR-017**: Authorized Chaos Sea abode travel MUST project the target discovered abode and its Guardian into guardian policy authority for the same turn, so the guardian-scope validator treats the accepted `[CHAOS_SEA_TRAVEL]` transition as canonical instead of stale pre-turn state.
+- **FR-018**: Afterlife wrong-realm mutation guards MUST ignore helper/rollback backup artifacts such as `*.rollback.*` while continuing to reject real Mortal World profile file creations, deletions, or semantic mutations.
 
 ### Key Entities
 

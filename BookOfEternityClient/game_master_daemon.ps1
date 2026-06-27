@@ -115,7 +115,7 @@ foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
 }
 
 $script:GmTurnHelperBootstrapPath = Join-Path $ControlDir "gm_turn_helper.bootstrap.ps1"
-$script:GmTurnHelperDirective = " GM turn helper: dot-source '$script:GmTurnHelperBootstrapPath' before writing output/state files. Use Read-BoeJson -RelativePath '<file>' for JSON reads, Write-BoeJson -RelativePath '<file>' -Data <object> for JSON writes, Get-BoeJsonValue -Object <jsonObject> -Names @('NPCId','npcId','id') for optional or differently cased JSON fields, Set-BoeJsonProperty -Object <jsonObject> -Name '<field>' -Value <value> to add or update optional object properties, and Add-BoeJsonArrayItem -Object <jsonObject> -PropertyName '<arrayProperty>' -Item <object> -UniqueBy '<idField>' when adding/upserting JSON array entries. PowerShell collapses single JSON array items into scalars, so prefer Add-BoeJsonArrayItem over manual `$array += ...` for fields such as customProperties, entries, objectives, contents, journalEntries, and similar collections. Use Complete-BoeTurn -FilesModified @('<file>') as the LAST action for successful turns, Fail-BoeTurn -ErrorMessage '<reason>' as the LAST action for terminal errors, and Complete-BoeValidationRepair as the LAST action after validation repairs. Fail-BoeTurn writes ready/turn_error.json and then fails the shell command deliberately, so do not report success after calling it. These helpers copy exact sessionId/requestId/turnNumber from the current client-authored request and refuse stale missing context. Helper writes and filesModified reject client-owned runtime state such as input/turn_request.json, game_state/history/chat_log.json, pending_turn_snapshot files, validation_repair_request.json, terminal_protocol_failure_request.json, gm_bridge_status.json, and stories/*.jsonl; let the client maintain those surfaces. When currentRealm is Chaos Sea or Shining Abode, helper writes and filesModified reject wrong-realm Mortal World profile paths under game_state/world, game_state/npcs, game_state/factions, game_state/player, game_state/inventory, game_state/combat, and game_state/quests; Complete-BoeTurn and Complete-BoeValidationRepair also compare these paths with game_state/control/pending_turn_snapshot and block raw wrong-realm mutations before writing completion signals. Never delete or rewrite input/turn_request.json; it is client-owned authority until the client closes the wait cycle."
+$script:GmTurnHelperDirective = " GM turn helper: dot-source '$script:GmTurnHelperBootstrapPath' before writing output/state files. Use Read-BoeJson -RelativePath '<file>' for JSON reads, Write-BoeJson -RelativePath '<file>' -Data <object> for JSON writes, Get-BoeJsonValue -Object <jsonObject> -Names @('NPCId','npcId','id') for optional or differently cased JSON fields, Set-BoeJsonProperty -Object <jsonObject> -Name '<field>' -Value <value> to add or update optional object properties, and Add-BoeJsonArrayItem -Object <jsonObject> -PropertyName '<arrayProperty>' -Item <object> -UniqueBy '<idField>' when adding/upserting JSON array entries. PowerShell collapses single JSON array items into scalars, so prefer Add-BoeJsonArrayItem over manual `$array += ...` for fields such as customProperties, entries, objectives, contents, journalEntries, and similar collections. Use Complete-BoeTurn -FilesModified @('<file>') as the LAST action for successful turns, Fail-BoeTurn -ErrorMessage '<reason>' as the LAST action for terminal errors, and Complete-BoeValidationRepair as the LAST action after validation repairs. Fail-BoeTurn writes ready/turn_error.json and then fails the shell command deliberately, so do not report success after calling it. These helpers copy exact sessionId/requestId/turnNumber from the current client-authored request and refuse stale missing context. Complete-BoeTurn and Fail-BoeTurn also require current game_state/control/pending_turn_snapshot.json plus game_state/control/pending_turn_snapshot.authority.json with matching sessionId/requestId/turnNumber; if that pending authority is missing, stop and do not write a terminal signal. Helper writes and filesModified reject client-owned runtime state such as input/turn_request.json, game_state/history/chat_log.json, pending_turn_snapshot files, validation_repair_request.json, validation_diagnostic_failure_report.json, terminal_protocol_failure_request.json, gm_bridge_status.json, and stories/*.jsonl; let the client maintain those surfaces. When currentRealm is Chaos Sea or Shining Abode, helper writes and filesModified reject wrong-realm Mortal World profile paths under game_state/world, game_state/npcs, game_state/factions, game_state/player, game_state/inventory, game_state/combat, and game_state/quests; Complete-BoeTurn and Complete-BoeValidationRepair also compare these paths with game_state/control/pending_turn_snapshot and block raw wrong-realm mutations before writing completion signals. Never delete or rewrite input/turn_request.json or pending_turn_snapshot files; they are client-owned authority until the client closes the wait cycle."
 $script:GmContextPackRoot = Join-Path $ControlDir "gm_context_pack"
 $script:GmContextPackManifestPath = Join-Path $script:GmContextPackRoot "context_pack_manifest.json"
 $script:GmContextPackDirective = ""
@@ -861,7 +861,8 @@ Complete-BoeTurn -FilesModified @(
 
 Add every state/output file you changed. Do not include client-owned files:
 `input/turn_request.json`, `pending_turn_snapshot*`, `validation_repair_request.json`,
-`terminal_protocol_failure_request.json`, `gm_bridge_status.json`, or `stories/*.jsonl`.
+`validation_diagnostic_failure_report.json`, `terminal_protocol_failure_request.json`,
+`gm_bridge_status.json`, or `stories/*.jsonl`.
 '@
     $turnOutputTemplate = $turnOutputTemplate.Replace("__ACTOR_SITUATION_LABEL__", $script:ActorSituationLabel).Replace("__ACTOR_THOUGHTS_LABEL__", $script:ActorThoughtsLabel).Replace("__ACTOR_ACTIONS_LABEL__", $script:ActorActionsLabel)
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\TURN_OUTPUT_TEMPLATE.md" -Role "compact_turn_output_template" -Content $turnOutputTemplate
@@ -2465,6 +2466,29 @@ function Process-RepairRequest {
         Write-Log "Repair request for turn #$turnNumber (attempt $attempt)" -Level "REPAIR" -Color Yellow
 
         $null = Write-GmExperienceLessons
+
+        if ($hasDiagnosticOnlyMetadata) {
+            Write-Log "  -> Skipping diagnostic-only validation repair request (metadataDiagnosticOnly=true); waiting for client-owned snapshot/metadata resolution." -Level "WARN" -Color Yellow
+            $dispatchDiagnostics = [pscustomobject]@{
+                Status = "skipped-diagnostic-only"
+                Attempts = 0
+                BusyRetries = 0
+                Timeout = $false
+            }
+            Write-GmTrajectoryRecord `
+                -Kind "repair" `
+                -Mode "validation_repair" `
+                -RequestObject $repair `
+                -Dispatch $dispatchDiagnostics `
+                -ValidationStatus "rejected" `
+                -IssueKinds (Get-GmTrajectoryIssueKinds -RequestObject $repair) `
+                -RepairPacketRefs (Get-GmTrajectoryRepairPacketRefs -RequestObject $repair) `
+                -RepairAttempts $attempt `
+                -RepairStatus "diagnostic-only-skipped" `
+                -MissingHarnessTool "client_owned_diagnostic_repair_resolution" `
+                -StartedAtUtc $fileInfo.LastWriteTimeUtc
+            return
+        }
 
         $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ReturnDetails
         Write-GmTrajectoryRecord `

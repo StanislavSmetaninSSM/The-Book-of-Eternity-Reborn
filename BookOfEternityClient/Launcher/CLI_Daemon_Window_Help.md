@@ -153,12 +153,14 @@ game_state\control\gm_turn_helper.bootstrap.ps1
 
 - `Write-BoeJson -RelativePath "output/narrative_response.json" -Data <object>` — безопасная UTF-8 запись JSON внутри текущей `game_session`.
 - `Complete-BoeTurn -FilesModified @("output/narrative_response.json")` — пишет `ready/turn_complete.json` с точными `sessionId/requestId/turnNumber` из текущего `input/turn_request.json`.
+- `Complete-BoeTurn` и `Fail-BoeTurn` требуют, чтобы текущие `game_state/control/pending_turn_snapshot.json` и `game_state/control/pending_turn_snapshot.authority.json` всё ещё существовали и совпадали с `input/turn_request.json`. Если pending authority уже исчезла, helper падает и не пишет stale terminal signal.
 - `Fail-BoeTurn -ErrorMessage "..."` — пишет `ready/turn_error.json` с той же корреляцией.
 - `Complete-BoeValidationRepair` — пишет `game_state/control/validation_repair_ready.json` из текущего `validation_repair_request.json`.
 
-Если активный `turn_request.json` или repair request уже исчез, helper падает с понятной ошибкой и не пишет stale terminal signal.
+Если активный `turn_request.json`, pending snapshot authority или repair request уже исчезли, helper падает с понятной ошибкой и не пишет stale terminal signal.
 Helper также отклоняет запись и `filesModified` для client-owned runtime-файлов: `input/turn_request.json`, `game_state/history/chat_log.json`, pending-turn snapshots, `validation_repair_request.json`, `terminal_protocol_failure_request.json`, `gm_bridge_status.json`, `stories/*.jsonl`.
 Когда `game_state/meta/soul_state.json.currentRealm` равен `Chaos Sea` или `Shining Abode`, helper дополнительно отклоняет wrong-realm записи и `filesModified` для Mortal World profile путей: `game_state/world/`, `game_state/npcs/`, `game_state/factions/`, `game_state/player/`, `game_state/inventory/`, `game_state/combat/`, `game_state/quests/`.
+Rollback backup artifacts с фрагментом `.rollback.` в имени файла не считаются canonical profile mutation и не должны указываться в `filesModified`; настоящие JSON-файлы профиля Mortal World по-прежнему сравниваются с pending snapshot и блокируются при semantic mutation.
 `input/turn_request.json` нельзя удалять или переписывать из daemon/GM-скрипта: клиент использует его как authority до принятия, отклонения или отмены хода.
 
 ## GM context pack

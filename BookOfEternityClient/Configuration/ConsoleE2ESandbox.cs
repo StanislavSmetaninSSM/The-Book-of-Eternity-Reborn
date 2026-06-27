@@ -1,5 +1,7 @@
 namespace BookOfEternityClient.Configuration;
 
+using System.IO.Compression;
+
 /// <summary>
 /// Creates disposable, per-run base paths for console E2E runs.
 /// The client receives <see cref="BasePath" /> as its legacy path argument and reads state from BasePath/game_session.
@@ -46,6 +48,36 @@ public sealed class ConsoleE2ESandbox : IDisposable
         return new ConsoleE2ESandbox(sandboxBasePath, deleteOnDispose: !preserveArtifacts);
     }
 
+    public static ConsoleE2ESandbox CreateFromManualSaveArchive(
+        string manualSaveArchivePath,
+        string? artifactRoot = null,
+        bool preserveArtifacts = false)
+    {
+        if (!File.Exists(manualSaveArchivePath))
+            throw new FileNotFoundException(
+                $"E2E manual save archive was not found: {manualSaveArchivePath}",
+                manualSaveArchivePath);
+
+        var root = artifactRoot ?? Path.Combine(Path.GetTempPath(), "boe-console-e2e");
+        Directory.CreateDirectory(root);
+
+        var sandboxBasePath = Path.Combine(root, "run-" + Guid.NewGuid().ToString("N"));
+        var sandboxGameSessionPath = Path.Combine(sandboxBasePath, "game_session");
+        Directory.CreateDirectory(sandboxGameSessionPath);
+        ExtractArchiveToDirectory(manualSaveArchivePath, sandboxGameSessionPath);
+
+        var sourceDirectory = Path.GetDirectoryName(Path.GetFullPath(manualSaveArchivePath));
+        var systemGuardianLibraryPath = sourceDirectory is null
+            ? null
+            : TryFindSystemGuardianLibrarySource(sourceDirectory);
+        if (systemGuardianLibraryPath != null)
+            CopyDirectory(
+                systemGuardianLibraryPath,
+                Path.Combine(sandboxBasePath, "system_guardians"));
+
+        return new ConsoleE2ESandbox(sandboxBasePath, deleteOnDispose: !preserveArtifacts);
+    }
+
     public void Dispose()
     {
         if (_disposed)
@@ -73,6 +105,34 @@ public sealed class ConsoleE2ESandbox : IDisposable
         {
             var destinationSubdirectory = Path.Combine(destinationDirectory, Path.GetFileName(sourceSubdirectory));
             CopyDirectory(sourceSubdirectory, destinationSubdirectory);
+        }
+    }
+
+    private static void ExtractArchiveToDirectory(string archivePath, string destinationDirectory)
+    {
+        var destinationRoot = Path.GetFullPath(destinationDirectory);
+        if (!destinationRoot.EndsWith(Path.DirectorySeparatorChar))
+            destinationRoot += Path.DirectorySeparatorChar;
+
+        using var archive = ZipFile.OpenRead(archivePath);
+        foreach (var entry in archive.Entries)
+        {
+            if (string.IsNullOrWhiteSpace(entry.FullName))
+                continue;
+
+            var destinationPath = Path.GetFullPath(Path.Combine(destinationDirectory, entry.FullName));
+            if (!destinationPath.StartsWith(destinationRoot, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException($"E2E manual save archive contains an unsafe entry path: {entry.FullName}");
+
+            if (entry.FullName.EndsWith("/", StringComparison.Ordinal) ||
+                entry.FullName.EndsWith("\\", StringComparison.Ordinal))
+            {
+                Directory.CreateDirectory(destinationPath);
+                continue;
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+            entry.ExtractToFile(destinationPath, overwrite: false);
         }
     }
 

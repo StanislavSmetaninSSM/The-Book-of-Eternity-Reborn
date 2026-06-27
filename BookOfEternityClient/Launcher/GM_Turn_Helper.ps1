@@ -276,6 +276,7 @@ function Test-BoeClientOwnedRuntimePath {
     }
 
     if ([string]::Equals($path, "game_state/control/validation_repair_request.json", [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($path, "game_state/control/validation_diagnostic_failure_report.json", [System.StringComparison]::OrdinalIgnoreCase) -or
         [string]::Equals($path, "game_state/control/terminal_protocol_failure_request.json", [System.StringComparison]::OrdinalIgnoreCase) -or
         [string]::Equals($path, "game_state/control/gm_bridge_status.json", [System.StringComparison]::OrdinalIgnoreCase)) {
         return $true
@@ -343,6 +344,20 @@ function Test-BoeMortalWorldProfilePath {
     }
 
     return $false
+}
+
+function Test-BoeRollbackArtifactPath {
+    param(
+        [AllowNull()]
+        [string]$RelativePath
+    )
+
+    $path = Normalize-BoeRelativePath -RelativePath $RelativePath
+    if ([string]::IsNullOrWhiteSpace($path)) {
+        return $false
+    }
+
+    return $path.IndexOf(".rollback.", [System.StringComparison]::OrdinalIgnoreCase) -ge 0
 }
 
 function Assert-BoeRealmWritableRuntimePath {
@@ -514,6 +529,10 @@ function Get-BoeRawMortalWorldProfileMutations {
                 continue
             }
 
+            if (Test-BoeRollbackArtifactPath -RelativePath $relativePath) {
+                continue
+            }
+
             $seenCurrentPaths[$relativePath.ToLowerInvariant()] = $true
             $snapshotPath = Join-Path $snapshotRoot ($relativePath.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
             if (!(Test-Path -LiteralPath $snapshotPath)) {
@@ -562,6 +581,10 @@ function Get-BoeRawMortalWorldProfileMutations {
 
             $relativePath = Normalize-BoeRelativePath -RelativePath $snapshotFull.Substring($snapshotPrefix.Length)
             if (!(Test-BoeMortalWorldProfilePath -RelativePath $relativePath)) {
+                continue
+            }
+
+            if (Test-BoeRollbackArtifactPath -RelativePath $relativePath) {
                 continue
             }
 
@@ -641,6 +664,34 @@ function Get-BoeCurrentTurnRequest {
     return Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
 }
 
+function Assert-BoeCurrentPendingSnapshotContext {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$TurnRequest
+    )
+
+    $manifestPath = Resolve-BoeSessionPath -RelativePath "game_state/control/pending_turn_snapshot.json"
+    if (!(Test-Path -LiteralPath $manifestPath)) {
+        throw "Current game_state/control/pending_turn_snapshot.json is missing. The client no longer has active pending-turn authority; do not write a stale terminal signal."
+    }
+
+    $authorityPath = Resolve-BoeSessionPath -RelativePath "game_state/control/pending_turn_snapshot.authority.json"
+    if (!(Test-Path -LiteralPath $authorityPath)) {
+        throw "Current game_state/control/pending_turn_snapshot.authority.json is missing. The client no longer has active pending-turn authority; do not write a stale terminal signal."
+    }
+
+    $manifest = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    $manifestSessionId = [string]$manifest.sessionId
+    $manifestRequestId = [string]$manifest.requestId
+    $manifestTurnNumber = [int]$manifest.turnNumber
+
+    if ($manifestSessionId -ne [string]$TurnRequest.sessionId -or
+        $manifestRequestId -ne [string]$TurnRequest.requestId -or
+        $manifestTurnNumber -ne [int]$TurnRequest.turnNumber) {
+        throw "Current pending_turn_snapshot context does not match input/turn_request.json; do not write a stale terminal signal."
+    }
+}
+
 function Complete-BoeTurn {
     param(
         [string[]]$FilesModified = @()
@@ -650,6 +701,7 @@ function Complete-BoeTurn {
     Assert-BoeNoRawMortalWorldProfileMutations -Operation "Complete-BoeTurn"
 
     $turn = Get-BoeCurrentTurnRequest
+    Assert-BoeCurrentPendingSnapshotContext -TurnRequest $turn
     $signal = [ordered]@{
         sessionId = [string]$turn.sessionId
         requestId = [string]$turn.requestId
@@ -669,6 +721,7 @@ function Fail-BoeTurn {
     )
 
     $turn = Get-BoeCurrentTurnRequest
+    Assert-BoeCurrentPendingSnapshotContext -TurnRequest $turn
     $signal = [ordered]@{
         sessionId = [string]$turn.sessionId
         requestId = [string]$turn.requestId

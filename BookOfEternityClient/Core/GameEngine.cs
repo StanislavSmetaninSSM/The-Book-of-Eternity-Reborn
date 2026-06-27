@@ -63,6 +63,7 @@ public partial class GameEngine
     private const string PendingTurnSnapshotDirectory = "game_state/control/pending_turn_snapshot";
     private const string ValidationRepairRequestPath = "game_state/control/validation_repair_request.json";
     private const string ValidationRepairReadyPath = "game_state/control/validation_repair_ready.json";
+    private const string ValidationDiagnosticFailureReportPath = "game_state/control/validation_diagnostic_failure_report.json";
     private const string TerminalProtocolFailureRequestPath = "game_state/control/terminal_protocol_failure_request.json";
     private const string OrdinaryPlayerTurnSourceLabel = "обработки хода";
 

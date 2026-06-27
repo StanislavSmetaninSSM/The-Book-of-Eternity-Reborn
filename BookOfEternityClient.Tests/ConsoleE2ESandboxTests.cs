@@ -41,6 +41,29 @@ public sealed class ConsoleE2ESandboxTests : IDisposable
     }
 
     [Fact]
+    public void CreateFromManualSaveArchive_ExtractsSaveAndCopiesSystemGuardianLibraryAlongsideGameSession()
+    {
+        var repoRoot = FindRepositoryRoot();
+        var archivePath = Path.Combine(
+            repoRoot,
+            "FileSystemExample",
+            "game_session",
+            "saves",
+            "manual_saves",
+            "chaos_sea_command_display_fixture.zip");
+
+        using var sandbox = ConsoleE2ESandbox.CreateFromManualSaveArchive(archivePath, _tempRoot);
+
+        Assert.True(File.Exists(Path.Combine(sandbox.GameSessionPath, "game_state", "meta", "soul_state.json")));
+        Assert.True(File.Exists(Path.Combine(
+            sandbox.BasePath,
+            "system_guardians",
+            "built_in",
+            "azalia",
+            "manifest.json")));
+    }
+
+    [Fact]
     public void CreateFromFixture_IsolatesRunsAndDeletesSandboxByDefault()
     {
         var repoRoot = FindRepositoryRoot();

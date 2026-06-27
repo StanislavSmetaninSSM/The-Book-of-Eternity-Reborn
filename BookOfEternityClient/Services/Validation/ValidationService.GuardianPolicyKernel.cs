@@ -22,6 +22,10 @@ public partial class ValidationService
         ValidationPendingTurnSnapshotManifest? Manifest,
         string? SnapshotJson);
 
+    private sealed record ChaosSeaTravelAuthorityProjection(
+        string TargetAbodeId,
+        string TargetGuardianId);
+
     private enum GuardianBaselineFailureKind
     {
         None,
@@ -510,6 +514,11 @@ public partial class ValidationService
             return;
 
         var authorizedCreatesById = BuildAuthorizedGuardianCreateObjectsForAuthority(context);
+        var chaosSeaTravelProjection = TryResolveCurrentChaosSeaTravelAuthorityProjection(
+            context,
+            out var resolvedChaosSeaTravelProjection)
+            ? resolvedChaosSeaTravelProjection
+            : null;
         if (HasResolvedGenericSharedStrictPreTurnGuardianAuthority(context))
         {
             var genericSharedCurrentBaselineRoot = TryParseJsonObject(context.GenericSharedStrictPreTurnAuthorityRoot);
@@ -523,6 +532,7 @@ public partial class ValidationService
                     context.AuthorizedCurrentGuardianPowerEvents,
                     currentTurn,
                     context.AuthorizedSameTurnGuardianQuestProgressUpdates);
+                ApplyChaosSeaTravelAuthorityProjection(currentAuthorityRoot, chaosSeaTravelProjection);
                 context.CurrentAuthorityRoot = CloneJsonObjectToElement(currentAuthorityRoot);
                 context.HasCurrentAuthorityRoot = true;
             }
@@ -543,6 +553,7 @@ public partial class ValidationService
             context.AuthorizedCurrentGuardianPowerEvents,
             currentTurn,
             context.AuthorizedSameTurnGuardianQuestProgressUpdates);
+        ApplyChaosSeaTravelAuthorityProjection(strictCurrentAuthorityRoot, chaosSeaTravelProjection);
         context.StrictCurrentAuthorityRoot = CloneJsonObjectToElement(strictCurrentAuthorityRoot);
         context.HasStrictCurrentAuthorityRoot = true;
         }
@@ -550,6 +561,131 @@ public partial class ValidationService
         {
             context.IsBuildingGuardianAuthorityRoots = false;
         }
+    }
+
+    private bool TryResolveCurrentChaosSeaTravelAuthorityProjection(
+        GuardianPolicyContext context,
+        out ChaosSeaTravelAuthorityProjection projection)
+    {
+        projection = null!;
+        var playerAction = ReadCurrentPlayerActionForGuardianAuthoritySync();
+        if (string.IsNullOrWhiteSpace(playerAction) ||
+            !playerAction.Contains("[CHAOS_SEA_TRAVEL]", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var preTurnRealm = TryResolvePreTurnRealmSync();
+        if (!IsExactChaosSeaRealm(preTurnRealm))
+            return false;
+
+        var targetAbodeId = ExtractChaosSeaTravelActionValue(playerAction, "targetAbodeId");
+        var targetGuardianId = ExtractChaosSeaTravelActionValue(playerAction, "targetGuardianId");
+        if (string.IsNullOrWhiteSpace(targetAbodeId) || string.IsNullOrWhiteSpace(targetGuardianId))
+            return false;
+
+        var preTurnRootElement = context.HasPreTurnAuthorityRoot
+            ? context.PreTurnAuthorityRoot
+            : context.PreTurnRoot;
+        var preTurnRoot = TryParseJsonObject(preTurnRootElement);
+        if (preTurnRoot == null)
+            return false;
+
+        if (!ContainsString(preTurnRoot["chaosSeaNavigation"]?["discoveredAbodes"], targetAbodeId))
+            return false;
+
+        var preTurnTargetGuardian = FindGuardianNode(preTurnRoot["guardians"], targetGuardianId);
+        if (preTurnTargetGuardian?["abode"] is not JsonObject preTurnTargetAbode ||
+            preTurnTargetAbode["isDiscovered"]?.GetValueKind() != JsonValueKind.True)
+        {
+            return false;
+        }
+
+        var preTurnTargetAbodeId = GetNodeString(preTurnTargetAbode["abodeId"]) ??
+                                   GetNodeString(preTurnTargetAbode["id"]);
+        if (!string.Equals(preTurnTargetAbodeId, targetAbodeId, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        projection = new ChaosSeaTravelAuthorityProjection(targetAbodeId, targetGuardianId);
+        return true;
+    }
+
+    private string? ReadCurrentPlayerActionForGuardianAuthoritySync()
+    {
+        foreach (var relativePath in new[]
+                 {
+                     "input/turn_request.json",
+                     "game_state/control/validation_repair_request.json",
+                     "ready/turn_complete.json"
+                 })
+        {
+            var playerAction = ReadPlayerActionFromJsonFileSync(relativePath);
+            if (!string.IsNullOrWhiteSpace(playerAction))
+                return playerAction;
+        }
+
+        var manifest = LoadValidatedCurrentPendingTurnSnapshotManifestSync();
+        return string.IsNullOrWhiteSpace(manifest?.PlayerAction) ? null : manifest.PlayerAction;
+    }
+
+    private string? ReadPlayerActionFromJsonFileSync(string relativePath)
+    {
+        var json = ReadCurrentTrackedFileSync(relativePath);
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            return doc.RootElement.ValueKind == JsonValueKind.Object &&
+                   doc.RootElement.TryGetProperty("playerAction", out var playerAction) &&
+                   playerAction.ValueKind == JsonValueKind.String
+                ? playerAction.GetString()
+                : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static void ApplyChaosSeaTravelAuthorityProjection(
+        JsonObject authorityRoot,
+        ChaosSeaTravelAuthorityProjection? projection)
+    {
+        if (projection == null)
+            return;
+
+        var targetGuardian = FindGuardianNode(authorityRoot["guardians"], projection.TargetGuardianId);
+        if (targetGuardian == null)
+            return;
+
+        if (targetGuardian["abode"] is not JsonObject abode ||
+            abode["isDiscovered"]?.GetValueKind() != JsonValueKind.True)
+        {
+            return;
+        }
+
+        var targetGuardianAbodeId = GetNodeString(abode["abodeId"]) ?? GetNodeString(abode["id"]);
+        if (!string.Equals(targetGuardianAbodeId, projection.TargetAbodeId, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        authorityRoot["activeGuardian"] = targetGuardian.DeepClone();
+        if (authorityRoot["chaosSeaNavigation"] is not JsonObject navigation)
+        {
+            navigation = new JsonObject();
+            authorityRoot["chaosSeaNavigation"] = navigation;
+        }
+
+        navigation["currentAbodeId"] = projection.TargetAbodeId;
+        if (navigation["discoveredAbodes"] is not JsonArray discoveredAbodes)
+        {
+            discoveredAbodes = new JsonArray();
+            navigation["discoveredAbodes"] = discoveredAbodes;
+        }
+
+        if (!ContainsString(discoveredAbodes, projection.TargetAbodeId))
+            discoveredAbodes.Add(projection.TargetAbodeId);
     }
 
     private bool TryBuildGenericSharedStrictValidatedPreTurnGuardianAuthorityRoot(

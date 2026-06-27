@@ -36,7 +36,24 @@ Keep all generated logs and copied session data outside the repository.
 $RunRoot = Join-Path $env:TEMP ("boe-gm-workers-live-" + (Get-Date -Format "yyyyMMdd-HHmmss"))
 New-Item -ItemType Directory -Force -Path $RunRoot | Out-Null
 Copy-Item -Recurse -Path "FileSystemExample\game_session" -Destination (Join-Path $RunRoot "game_session")
+Copy-Item -Recurse -Path "BookOfEternityClient\system_guardians" -Destination (Join-Path $RunRoot "system_guardians")
 $SessionPath = Join-Path $RunRoot "game_session"
+```
+
+The console client receives `$RunRoot` as its base path, not `$SessionPath`.
+Keep `system_guardians` next to `game_session`; otherwise validators that resolve
+system guardian presets from the base path can report false errors such as an
+unknown Eternal Guardian preset during Chaos Sea tests.
+
+For a named command-display save, extract the archive into the disposable
+`game_session` and still copy `system_guardians` next to it:
+
+```powershell
+$RunRoot = Join-Path $env:TEMP ("boe-chaos-console-live-" + (Get-Date -Format "yyyyMMdd-HHmmss"))
+$SessionPath = Join-Path $RunRoot "game_session"
+New-Item -ItemType Directory -Force -Path $SessionPath | Out-Null
+Expand-Archive -LiteralPath "FileSystemExample\game_session\saves\manual_saves\chaos_sea_command_display_fixture.zip" -DestinationPath $SessionPath
+Copy-Item -Recurse -Path "BookOfEternityClient\system_guardians" -Destination (Join-Path $RunRoot "system_guardians")
 ```
 
 Enable the three Codex worker templates in the copied `config.json`. The file
@@ -122,6 +139,29 @@ Start-Sleep -Seconds 8
 .\BookOfEternityClient\Launcher\bookofeternity.ps1 ready -SessionPath $SessionPath
 .\BookOfEternityClient\Launcher\bookofeternity.ps1 diagnostics -SessionPath $SessionPath |
   Set-Content -LiteralPath (Join-Path $RunRoot "bridge.diagnostics.before.json") -Encoding UTF8
+```
+
+## Launch the GM daemon
+
+The console client writes `input/turn_request.json`, but the daemon is the
+component that watches that request and dispatches it to the bridge. A ready
+bridge without a running daemon leaves the client waiting for a GM turn forever.
+
+```powershell
+$DaemonPath = (Resolve-Path "BookOfEternityClient\game_master_daemon.ps1").Path
+$DaemonLogPath = Join-Path $RunRoot "daemon.log"
+$DaemonArgs = '-NoLogo -NoProfile -ExecutionPolicy Bypass -File "{0}" -GameSessionPath "{1}" -AutoPaste -TurnTimeout 900 -LogFile "{2}"' -f `
+  $DaemonPath,
+  $SessionPath,
+  $DaemonLogPath
+
+$Daemon = Start-Process -FilePath "powershell.exe" `
+  -ArgumentList $DaemonArgs `
+  -WorkingDirectory (Get-Location) `
+  -RedirectStandardOutput (Join-Path $RunRoot "daemon.stdout.txt") `
+  -RedirectStandardError (Join-Path $RunRoot "daemon.stderr.txt") `
+  -WindowStyle Hidden `
+  -PassThru
 ```
 
 ## Dispatch proposal-only worker tasks

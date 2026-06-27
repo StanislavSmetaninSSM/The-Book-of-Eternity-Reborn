@@ -111,15 +111,54 @@ public sealed class ChaosSeaTravelValidationTests : IDisposable
             issue.Code?.StartsWith("chaos_sea_travel_", StringComparison.OrdinalIgnoreCase) == true);
     }
 
+    [Fact]
+    public async Task DebugResolveGuardianPolicyContextAsync_ChaosSeaTravelProjectsTargetGuardianIntoAuthority()
+    {
+        await WriteNodeAsync("game_state/meta/soul_state.json", CreateSoulRoot());
+        await WriteNodeAsync("input/turn_request.json", CreateTravelTurnRequest());
+        await WriteNodeAsync("game_state/meta/guardians.json", CreateGuardiansRoot(
+            activeGuardianId: "guardian_target_001",
+            currentAbodeId: "abode_target_001",
+            discoveredAbodes: new[] { "abode_current_001", "abode_target_001" },
+            targetAbodeDiscovered: true));
+        await WritePendingTurnSnapshotAsync(CreateSoulRoot(), CreatePreTurnGuardiansRoot());
+
+        var snapshot = await _validator.DebugResolveGuardianPolicyContextAsync();
+
+        Assert.True(snapshot.HasCurrentAuthorityRoot,
+            $"CurrentAuthorityRootJson is null. Strict={snapshot.StrictPreTurnGuardianAuthorityStatus}: {snapshot.StrictPreTurnGuardianAuthorityFailureDescription}; " +
+            $"Generic={snapshot.GenericSharedStrictPreTurnGuardianAuthorityStatus}: {snapshot.GenericSharedStrictPreTurnGuardianAuthorityFailureDescription}; " +
+            $"Manifest={snapshot.ManifestStatus}; GuardiansSnapshot={snapshot.PreTurnGuardiansSnapshotFileStatus}");
+        var authorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
+        Assert.Equal("guardian_target_001", authorityRoot["activeGuardian"]?["guardianId"]?.GetValue<string>());
+        Assert.Equal("abode_target_001", authorityRoot["chaosSeaNavigation"]?["currentAbodeId"]?.GetValue<string>());
+    }
+
     private async Task WritePendingTurnSnapshotAsync(JsonObject preTurnSoulRoot, JsonObject preTurnGuardiansRoot)
     {
         const string soulSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
         const string guardiansSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json";
+        var trackerSnapshotPath = $"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}";
+        var journalSnapshotPath = $"game_state/control/pending_turn_snapshot/{GuardianPowerEventState.JournalPath}";
+        var trackerRoot = new JsonObject
+        {
+            ["activeProjects"] = new JsonArray(),
+            ["completedProjects"] = new JsonArray(),
+            ["temporaryProjectModifiers"] = new JsonArray()
+        };
+        var journalRoot = new JsonObject
+        {
+            ["entries"] = new JsonArray()
+        };
         await WriteNodeAsync(soulSnapshotPath, preTurnSoulRoot);
         await WriteNodeAsync(guardiansSnapshotPath, preTurnGuardiansRoot);
+        await WriteNodeAsync(trackerSnapshotPath, trackerRoot);
+        await WriteNodeAsync(journalSnapshotPath, journalRoot);
 
         var soulSnapshotJson = await _fs.ReadFileAsync(soulSnapshotPath) ?? string.Empty;
         var guardiansSnapshotJson = await _fs.ReadFileAsync(guardiansSnapshotPath) ?? string.Empty;
+        var trackerSnapshotJson = await _fs.ReadFileAsync(trackerSnapshotPath) ?? string.Empty;
+        var journalSnapshotJson = await _fs.ReadFileAsync(journalSnapshotPath) ?? string.Empty;
         var manifest = new JsonObject
         {
             ["sessionId"] = "session",
@@ -130,12 +169,16 @@ public sealed class ChaosSeaTravelValidationTests : IDisposable
             ["files"] = new JsonObject
             {
                 ["game_state/meta/soul_state.json"] = soulSnapshotPath,
-                ["game_state/meta/guardians.json"] = guardiansSnapshotPath
+                ["game_state/meta/guardians.json"] = guardiansSnapshotPath,
+                [GuardianProjectState.TrackerPath] = trackerSnapshotPath,
+                [GuardianPowerEventState.JournalPath] = journalSnapshotPath
             },
             ["snapshotFileHashes"] = new JsonObject
             {
                 ["game_state/meta/soul_state.json"] = PendingTurnSnapshotAuthority.ComputeSha256(soulSnapshotJson),
-                ["game_state/meta/guardians.json"] = PendingTurnSnapshotAuthority.ComputeSha256(guardiansSnapshotJson)
+                ["game_state/meta/guardians.json"] = PendingTurnSnapshotAuthority.ComputeSha256(guardiansSnapshotJson),
+                [GuardianProjectState.TrackerPath] = PendingTurnSnapshotAuthority.ComputeSha256(trackerSnapshotJson),
+                [GuardianPowerEventState.JournalPath] = PendingTurnSnapshotAuthority.ComputeSha256(journalSnapshotJson)
             },
             ["clientOwnedValidationHashes"] = new JsonObject(),
             ["rollbackBackups"] = new JsonObject(),
@@ -188,56 +231,98 @@ public sealed class ChaosSeaTravelValidationTests : IDisposable
         string activeGuardianId,
         string currentAbodeId,
         IEnumerable<string> discoveredAbodes,
-        bool targetAbodeDiscovered) => new()
+        bool targetAbodeDiscovered)
     {
-        ["guardians"] = new JsonArray
+        var guardians = new JsonArray
         {
-            new JsonObject
+            CreateGuardian("guardian_current_001", "Азалия", "Social", "abode_current_001", "Шелковая Обитель", true),
+            CreateGuardian("guardian_target_001", "Мириэль", "Magic", "abode_target_001", "Сад Переходов", targetAbodeDiscovered),
+            CreateGuardian("guardian_other_001", "Орион", "Knowledge", "abode_other_001", "Башня Ориона", true)
+        };
+
+        var activeGuardian = activeGuardianId.Contains("target", StringComparison.OrdinalIgnoreCase)
+            ? CreateGuardian("guardian_target_001", "Мириэль", "Magic", "abode_target_001", "Сад Переходов", targetAbodeDiscovered)
+            : activeGuardianId.Contains("current", StringComparison.OrdinalIgnoreCase)
+                ? CreateGuardian("guardian_current_001", "Азалия", "Social", "abode_current_001", "Шелковая Обитель", true)
+                : CreateGuardian("guardian_other_001", "Орион", "Knowledge", "abode_other_001", "Башня Ориона", true);
+
+        return new JsonObject
+        {
+            ["guardians"] = guardians,
+            ["activeGuardian"] = activeGuardian,
+            ["chaosSeaNavigation"] = new JsonObject
             {
-                ["guardianId"] = "guardian_current_001",
-                ["canonicalName"] = "Азалия",
-                ["domain"] = "Social",
-                ["abode"] = new JsonObject
-                {
-                    ["abodeId"] = "abode_current_001",
-                    ["name"] = "Шелковая Обитель",
-                    ["isDiscovered"] = true
-                }
-            },
-            new JsonObject
-            {
-                ["guardianId"] = "guardian_target_001",
-                ["canonicalName"] = "Мириэль",
-                ["domain"] = "Magic",
-                ["abode"] = new JsonObject
-                {
-                    ["abodeId"] = "abode_target_001",
-                    ["name"] = "Сад Переходов",
-                    ["isDiscovered"] = targetAbodeDiscovered
-                }
-            },
-            new JsonObject
-            {
-                ["guardianId"] = "guardian_other_001",
-                ["canonicalName"] = "Орион",
-                ["domain"] = "Knowledge",
-                ["abode"] = new JsonObject
-                {
-                    ["abodeId"] = "abode_other_001",
-                    ["name"] = "Башня Ориона",
-                    ["isDiscovered"] = true
-                }
+                ["currentAbodeId"] = currentAbodeId,
+                ["discoveredAbodes"] = new JsonArray(discoveredAbodes.Select(id => JsonValue.Create(id)).ToArray())
             }
-        },
-        ["activeGuardian"] = new JsonObject
+        };
+    }
+
+    private static JsonObject CreateGuardian(
+        string guardianId,
+        string name,
+        string domain,
+        string abodeId,
+        string abodeName,
+        bool abodeDiscovered) => new()
+    {
+        ["guardianId"] = guardianId,
+        ["canonicalName"] = name,
+        ["nameVariants"] = new JsonObject
         {
-            ["guardianId"] = activeGuardianId,
-            ["canonicalName"] = activeGuardianId.Contains("target", StringComparison.OrdinalIgnoreCase) ? "Мириэль" : "Орион"
+            ["default"] = name,
+            ["feminine"] = name,
+            ["masculine"] = null,
+            ["neutral"] = null
         },
-        ["chaosSeaNavigation"] = new JsonObject
+        ["manifestation"] = new JsonObject
         {
-            ["currentAbodeId"] = currentAbodeId,
-            ["discoveredAbodes"] = new JsonArray(discoveredAbodes.Select(id => JsonValue.Create(id)).ToArray())
+            ["currentDisplayName"] = name,
+            ["formFlexibility"] = "selective",
+            ["currentPresentationStyle"] = "feminine",
+            ["currentPronouns"] = "она/её",
+            ["appearanceDescription"] = $"{name} guards a discovered Chaos Sea abode."
+        },
+        ["manifestationHistory"] = new JsonArray(),
+        ["domain"] = domain,
+        ["abode"] = new JsonObject
+        {
+            ["abodeId"] = abodeId,
+            ["name"] = abodeName,
+            ["title"] = abodeName,
+            ["isDiscovered"] = abodeDiscovered
+        },
+        ["personalityProfile"] = new JsonObject
+        {
+            ["archetype"] = $"{domain} Keeper",
+            ["speechPattern"] = "Measured",
+            ["coreValues"] = new JsonArray("memory", "balance")
+        },
+        ["relationshipData"] = new JsonObject
+        {
+            ["currentReputation"] = 10,
+            ["reputationHistory"] = new JsonArray(),
+            ["lastInteraction"] = null
+        },
+        ["abodePower"] = new JsonObject
+        {
+            ["currentPower"] = 10,
+            ["tier"] = "Стабильная",
+            ["lastUpdatedAt"] = "2026-04-24T00:00:00Z",
+            ["history"] = new JsonArray()
+        },
+        ["guardianRelationships"] = new JsonArray(),
+        ["questManagement"] = new JsonObject
+        {
+            ["availableQuests"] = new JsonArray(),
+            ["activeQuests"] = new JsonArray(),
+            ["completedQuests"] = new JsonArray()
+        },
+        ["gachaSystem"] = new JsonObject
+        {
+            ["chargesPerReturn"] = 0,
+            ["chargesUsedThisReturn"] = 0,
+            ["gachaHistory"] = new JsonArray()
         }
     };
 

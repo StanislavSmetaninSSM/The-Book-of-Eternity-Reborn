@@ -124,6 +124,42 @@ public sealed class AfterlifeRealmSegregationValidationTests : IDisposable
             issue.Actual?.Contains(ShiningAbodeState.StatePath, StringComparison.OrdinalIgnoreCase) == true);
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_ChaosSeaTurnWithOnlyEmptyDefaultMortalArrayAdded_DoesNotFailRealmSegregation()
+    {
+        const string preTurnSoul = """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Chaos Sea"
+        }
+        """;
+        const string preTurnProjects = """
+        {
+          "activeProjects": []
+        }
+        """;
+        const string currentProjects = """
+        {
+          "activeProjects": [],
+          "completedProjects": []
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await _fs.WriteFileAtomicAsync("game_state/factions/faction_projects.json", currentProjects);
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await WriteSnapshotFileAsync("game_state/factions/faction_projects.json", preTurnProjects);
+        await WriteValidatedSnapshotManifestAsync(
+            ("game_state/meta/soul_state.json", preTurnSoul),
+            ("game_state/factions/faction_projects.json", preTurnProjects));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "realm_segregation_violation", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("game_state/factions/faction_projects.json", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
     [Theory]
     [MemberData(nameof(MortalForbiddenAfterlifeStateFiles))]
     public async Task ValidateGameStateAsync_MortalWorldTurnChangingAfterlifeAuthorityFile_FailsRealmSegregation(

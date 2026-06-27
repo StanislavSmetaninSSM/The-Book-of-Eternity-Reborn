@@ -5,7 +5,7 @@
 ## Phase 1: Setup
 
 - [X] T001 Link this Spec Kit feature from `AGENTS.md` and `.specify/feature.json`.
-- [X] T002 Add GitHub issue references #1285-#1290 to implementation commits and issue comments as work progresses.
+- [X] T002 Add GitHub issue references #1249 and #1285-#1290 to implementation commits and issue comments as work progresses.
 
 ## Phase 2: Foundational
 
@@ -77,6 +77,17 @@
 - [X] T033 [Follow-up #1281] Add GM helper preflight that blocks raw Mortal World profile mutations against the pending-turn snapshot before afterlife turn/repair completion.
 - [X] T035 [Follow-up #1281] Compare pending-turn snapshot JSON semantically so formatting-only serialization differences do not trigger false wrong-realm mutation rollback during afterlife live tests.
 - [X] T034 [Follow-up #1283] Repeat a Chaos Sea spiritual-conflict live turn and verify the compact `tempoAdvantage` template prevents `advantageId` / `sourceId` repair.
+- [X] T036 [Follow-up #1249] Ignore realm-segregation false positives caused only by normalizer-added empty JSON containers in tracked files.
+- [X] T037 [Follow-up #1249] Skip diagnostic-only validation repair requests in the daemon instead of dispatching them back to the GM bridge.
+- [X] T038 [Follow-up #1249] Update the live runbook so Agent Console live tests launch the console client, main bridge, and `game_master_daemon.ps1`.
+- [X] T039 [Follow-up #1249] Quote the daemon live-run launch command so repository paths with spaces do not break `Start-Process`.
+- [X] T040 [Follow-up #1249] Fail closed client-owned diagnostic-only validation repair requests instead of waiting forever for `validation_repair_ready.json`.
+- [X] T041 [Follow-up #1249] Preserve `validation_diagnostic_failure_report.json` after rollback and expose contract-error pause screens as Agent Console key input.
+- [X] T042 [Follow-up #1249] Update the live runbook so disposable Agent Console runroots copy `system_guardians` next to `game_session`.
+- [X] T043 [Follow-up #1249] Retest Chaos Sea abode travel with live Codex GM bridge and confirm diagnostic-only repair returns to a playable prompt instead of hanging.
+- [X] T044 [Follow-up #1249] Project authorized `[CHAOS_SEA_TRAVEL]` target guardian/abode into guardian policy authority so discovered-abode travel is not rejected as stale active-guardian state.
+- [X] T045 [Follow-up #1249] Ignore `.rollback.*` backup artifacts in the afterlife wrong-realm raw profile mutation scanner while still blocking real Mortal World profile mutations.
+- [X] T046 [Follow-up #1249] Retest `/обители` Chaos Sea travel with the live Codex GM bridge and confirm accepted validation, updated active guardian, and a playable prompt.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.

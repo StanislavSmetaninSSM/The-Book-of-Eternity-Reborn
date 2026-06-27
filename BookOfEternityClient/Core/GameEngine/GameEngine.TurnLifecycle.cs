@@ -59,6 +59,7 @@ public partial class GameEngine
             var expectedTurn = signal?.TurnNumber ?? snapshotContext?.TurnNumber ?? (_gameLoop.TurnNumber + 1);
             if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                     "ответа GM",
+                    snapshotContext,
                     rollbackSnapshot,
                     expectedTurn,
                     snapshotContext?.ProgressionControl))
@@ -405,6 +406,7 @@ public partial class GameEngine
                 var acceptedLateResponse = false;
                 if (await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                         "late response GM",
+                        snapshotContext,
                         rollbackSnapshot,
                         signalTurn ?? expectedTurn,
                         snapshotContext?.ProgressionControl))
@@ -658,6 +660,7 @@ public partial class GameEngine
         var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
         RollbackSnapshot? backedUpFiles = null;
         TurnRequest? request = null;
+        ValidatedPendingTurnSnapshotContext? activeSnapshotContext = null;
 
         try
         {
@@ -713,6 +716,11 @@ public partial class GameEngine
             ClearTransientOutputFiles();
             await _fs.WriteFileAtomicAsync("input/turn_request.json",
                 JsonSerializer.Serialize(request, JsonOpts));
+
+            var activeManifest = await LoadPendingTurnSnapshotManifestAsync();
+            activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);
+            if (activeSnapshotContext == null)
+                throw new InvalidOperationException("Turn staging failed to create a validated pending snapshot context.");
         }
         catch (Exception ex)
         {
@@ -756,7 +764,7 @@ public partial class GameEngine
             throw;
         }
 
-        if (backedUpFiles == null || request == null)
+        if (backedUpFiles == null || request == null || activeSnapshotContext == null)
             throw new InvalidOperationException("Turn staging failed before rollback snapshot and request were created.");
 
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
@@ -775,8 +783,6 @@ public partial class GameEngine
             return;
         }
 
-        var activeManifest = await LoadPendingTurnSnapshotManifestAsync();
-        var activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);
         var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(activeSnapshotContext, backedUpFiles);
         if (terminalOutcome.Kind == "failure")
             return;
@@ -796,6 +802,7 @@ public partial class GameEngine
         // Read and validate the response before accepting the turn
         if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                 "обработки хода",
+                activeSnapshotContext,
                 backedUpFiles,
                 request.TurnNumber,
                 request.ProgressionControl))
@@ -1534,6 +1541,7 @@ public partial class GameEngine
                 var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
                 if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                         "оценки жизни",
+                        snapshotContext,
                         BuildValidatedRollbackSnapshot(snapshotContext),
                         _gameLoop.TurnNumber + 1,
                         evalRequest.ProgressionControl))
