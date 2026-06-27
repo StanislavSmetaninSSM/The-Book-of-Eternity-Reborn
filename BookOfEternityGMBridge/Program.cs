@@ -113,6 +113,7 @@ internal sealed class BridgeHost : IDisposable
     private long _outputVersion;
     private TaskCompletionSource<bool> _outputChanged = CreateOutputSignal();
     private long _lastAutoTrustOutputVersion = -1;
+    private long _lastAutoUpdateSkipOutputVersion = -1;
     private BridgeStatus _status;
 
     public BridgeHost(string sessionPath, string pipeName)
@@ -523,6 +524,7 @@ internal sealed class BridgeHost : IDisposable
     private async Task RefreshBridgeAutomationStateAsync()
     {
         await AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync();
+        await AutoSkipCodexUpdatePromptAsync();
         AutoMarkReadyIfCliPromptReady();
         RefreshDispatchFailureRecoveryIfCliPromptReady();
     }
@@ -549,6 +551,23 @@ internal sealed class BridgeHost : IDisposable
 
         _lastAutoTrustOutputVersion = outputVersion;
         await WriteToPtyAsync(string.Empty, appendEnter: true);
+    }
+
+    private async Task AutoSkipCodexUpdatePromptAsync()
+    {
+        var visibleText = ReadVisibleConsoleText();
+        if (!IsCodexCliUpdatePrompt(visibleText))
+            return;
+
+        long outputVersion;
+        lock (_sync)
+            outputVersion = _outputVersion;
+
+        if (outputVersion == _lastAutoUpdateSkipOutputVersion)
+            return;
+
+        _lastAutoUpdateSkipOutputVersion = outputVersion;
+        await WriteToPtyAsync("3", appendEnter: true);
     }
 
     private void AutoMarkReadyIfCliPromptReady()
@@ -587,6 +606,11 @@ internal sealed class BridgeHost : IDisposable
         if (IsCodexCliWorkingScreen(normalized))
         {
             return CliPromptReadiness.NotReady("Codex CLI is still working on a previous request.");
+        }
+
+        if (IsCodexCliUpdatePrompt(normalized))
+        {
+            return CliPromptReadiness.NotReady("Codex CLI is waiting at an update prompt.");
         }
 
         if (normalized.Contains("trust this", StringComparison.OrdinalIgnoreCase) ||
@@ -628,6 +652,17 @@ internal sealed class BridgeHost : IDisposable
                normalized.Contains("Press enter to continue", StringComparison.OrdinalIgnoreCase);
     }
 
+    private static bool IsCodexCliUpdatePrompt(string visibleText)
+    {
+        if (string.IsNullOrWhiteSpace(visibleText))
+            return false;
+
+        var normalized = NormalizeVisibleConsoleText(visibleText);
+        return normalized.Contains("Update available!", StringComparison.OrdinalIgnoreCase) &&
+            normalized.Contains("Skip until next version", StringComparison.OrdinalIgnoreCase) &&
+            normalized.Contains("Press enter to continue", StringComparison.OrdinalIgnoreCase);
+    }
+
     private bool IsTrustedCodexWorkingDirectory(string? workingDirectory)
     {
         if (string.IsNullOrWhiteSpace(workingDirectory))
@@ -659,7 +694,7 @@ internal sealed class BridgeHost : IDisposable
             return false;
 
         var normalized = NormalizeVisibleConsoleText(visibleText);
-        if (IsWorkspaceTrustPrompt(normalized) || IsCodexCliWorkingScreen(normalized))
+        if (IsWorkspaceTrustPrompt(normalized) || IsCodexCliUpdatePrompt(normalized) || IsCodexCliWorkingScreen(normalized))
             return false;
 
         return normalized.Contains("OpenAI Codex", StringComparison.OrdinalIgnoreCase) &&

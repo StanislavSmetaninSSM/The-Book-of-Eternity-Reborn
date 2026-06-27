@@ -202,6 +202,19 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
+    public void BridgeHost_AutoSkipsCodexUpdatePromptWithoutMarkingReady()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("AutoSkipCodexUpdatePromptAsync", source, StringComparison.Ordinal);
+        Assert.Contains("IsCodexCliUpdatePrompt", source, StringComparison.Ordinal);
+        Assert.Contains("Update available!", source, StringComparison.Ordinal);
+        Assert.Contains("Skip until next version", source, StringComparison.Ordinal);
+        Assert.Contains("await WriteToPtyAsync(\"3\", appendEnter: true);", source, StringComparison.Ordinal);
+        Assert.Contains("Codex CLI is waiting at an update prompt.", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BridgeHost_AutoMarksReadyOnlyAtIdleCodexPrompt()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
@@ -233,7 +246,7 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("Booting MCP server", source, StringComparison.Ordinal);
         Assert.Contains("model:", source, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("loading", source, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("IsWorkspaceTrustPrompt(normalized) || IsCodexCliWorkingScreen(normalized)", source, StringComparison.Ordinal);
+        Assert.Contains("IsWorkspaceTrustPrompt(normalized) || IsCodexCliUpdatePrompt(normalized) || IsCodexCliWorkingScreen(normalized)", source, StringComparison.Ordinal);
     }
 
     [Fact]
