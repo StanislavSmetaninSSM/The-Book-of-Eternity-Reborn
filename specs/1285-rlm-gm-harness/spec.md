@@ -141,6 +141,8 @@ As the developer, I need the next live GM test to measure harness quality, not j
 - **FR-016**: Diagnostic-only validation repair requests MUST fail closed in the client without waiting for GM-authored `validation_repair_ready.json`, preserve a machine-readable `validation_diagnostic_failure_report.json` after rollback, and expose any player/agent pause as Agent Console key input.
 - **FR-017**: Authorized Chaos Sea abode travel MUST project the target discovered abode and its Guardian into guardian policy authority for the same turn, so the guardian-scope validator treats the accepted `[CHAOS_SEA_TRAVEL]` transition as canonical instead of stale pre-turn state.
 - **FR-018**: Afterlife wrong-realm mutation guards MUST ignore helper/rollback backup artifacts such as `*.rollback.*` while continuing to reject real Mortal World profile file creations, deletions, or semantic mutations.
+- **FR-019**: Worker dispatch MUST preserve and validate a proposal already written to the proposal inbox even if the worker CLI later times out or exits nonzero, because the proposal remains proposal-only and still has to pass the existing schema and apply gate before any canonical state changes.
+- **FR-020**: Worker runner prompts MUST include a self-contained `worker-proposal-v1` JSON skeleton and required-field rules, so hidden workers can produce validator-compatible proposals without reading implementation source or guessing contract fields.
 
 ### Key Entities
 

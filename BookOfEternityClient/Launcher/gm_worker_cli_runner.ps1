@@ -152,6 +152,33 @@ Output contract:
 - If the task is proposal-only, keep changedFiles empty and return draftText and/or findings.
 - Leave schema validation, scope checks, and canonical application to the main GM apply gate.
 
+Required worker-proposal-v1 JSON shape:
+{
+  "schemaVersion": 1,
+  "proposalId": "worker_proposal_<safe_unique_id>",
+  "taskId": "<copy task.taskId exactly>",
+  "workerId": "<copy task.workerId exactly>",
+  "status": "completed",
+  "summary": "<one compact sentence describing the proposal>",
+  "changedFiles": [],
+  "findings": [],
+  "draftText": null,
+  "selfCheck": {
+    "scopeReviewed": true,
+    "validationExpectedToPass": true,
+    "notes": []
+  },
+  "createdAtUtc": "<UTC ISO-8601 timestamp>"
+}
+
+Required-field rules:
+- Do not omit summary, status, changedFiles, findings, selfCheck, or createdAtUtc.
+- Use exact taskId and workerId values from the WorkerTaskPacket below.
+- For proposal-only tasks, changedFiles must be [].
+- For narrative-draft tasks, draftText must contain the proposed prose.
+- For analysis tasks, findings should contain compact objects with kind and message.
+- For validation-repair tasks that are allowed to propose files, every changedFiles item needs path, changeKind, and contentRef unless it is a delete.
+
 Raw WorkerTaskPacket JSON begins on the next line.
 BEGIN_WORKER_TASK_JSON
 $TaskJson

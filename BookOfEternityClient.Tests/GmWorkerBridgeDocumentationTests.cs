@@ -83,6 +83,8 @@ public sealed class GmWorkerBridgeDocumentationTests
 
         Assert.Contains("hidden/background", guide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("apply gate", guide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("writes a valid proposal and only then times out", guide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("proposal-received", guide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("validation-repair", repair, StringComparison.Ordinal);
         Assert.Contains("proposal-applied", repair, StringComparison.Ordinal);
         Assert.Contains("narrative-draft", narrative, StringComparison.Ordinal);
@@ -122,6 +124,8 @@ public sealed class GmWorkerBridgeDocumentationTests
 
         Assert.Contains("codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -", guide, StringComparison.Ordinal);
         Assert.Contains("worker-proposal-v1", runner, StringComparison.Ordinal);
+        Assert.Contains("Required worker-proposal-v1 JSON shape", runner, StringComparison.Ordinal);
+        Assert.Contains("Do not omit summary, status, changedFiles, findings, selfCheck, or createdAtUtc.", runner, StringComparison.Ordinal);
         Assert.Contains("Do not edit canonical game_session files directly.", runner, StringComparison.Ordinal);
     }
 

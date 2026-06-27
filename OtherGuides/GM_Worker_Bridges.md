@@ -67,6 +67,12 @@ After validation, the main GM/daemon stores it under
 and use safe relative `contentRef` paths. The worker must not overwrite
 canonical files such as `game_state/...` directly.
 
+If a worker CLI writes a valid proposal and only then times out or exits with a
+nonzero code, the worker pool preserves the proposal and records it as
+`proposal-received`. The abnormal exit remains diagnostic evidence, but the
+proposal is still proposal-only: the main GM must review it and any canonical
+change must still pass the apply gate.
+
 ## Local CLI Worker Runner
 
 Worker profiles should prefer the repo-owned runner entrypoint instead of a
@@ -74,6 +80,10 @@ bare raw agent command. The runner reads the same `BOE_WORKER_*`
 environment variables, builds a strict prompt with the task packet and proposal
 contract, feeds that prompt to the configured agent command through UTF-8
 stdin, and requires the agent to write a non-empty proposal handoff file.
+The runner prompt must include a self-contained `worker-proposal-v1` JSON
+skeleton with required fields such as `summary`, `status`, `changedFiles`,
+`findings`, `selfCheck`, and `createdAtUtc`; workers must not need to read
+implementation source to discover the proposal schema.
 Hidden/background worker commands must be non-interactive; Codex workers should
 use `codex exec ... -`, while the interactive `codex ...` command remains for
 the visible main GM console.
@@ -203,9 +213,10 @@ Live dispatch status:
 - If the apply gate accepts the proposal, the client creates
   `game_state/control/validation_repair_ready.json` with the active
   session/request/turn metadata so the existing repair loop can revalidate.
-- If the worker times out, exits with an error, writes malformed JSON, returns a
-  rejected proposal, or fails validation, the ready file is not created and the
-  legacy repair loop remains active for the main GM/manual repair path.
+- If the worker times out, exits with an error before writing a valid proposal,
+  writes malformed JSON, returns a rejected proposal, or fails validation, the
+  ready file is not created and the legacy repair loop remains active for the
+  main GM/manual repair path.
 
 ### narrative-draft
 

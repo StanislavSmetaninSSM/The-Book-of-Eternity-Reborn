@@ -141,6 +141,69 @@ public sealed class GmWorkerBridgeLifecycleTests
     }
 
     [Fact]
+    public async Task RunTaskAsync_WhenWorkerExitsNonZeroAfterWritingValidProposal_PreservesProposal()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var scriptPath = Path.Combine(root, "fake-worker-proposal-then-nonzero.ps1");
+            await File.WriteAllTextAsync(scriptPath, """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = 'worker_proposal_nonzero_after_write'
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Proposal was written before the worker CLI failed.'
+                    changedFiles = @()
+                    findings = @([ordered]@{
+                        kind = 'proposal-before-exit'
+                        message = 'The proposal file is valid even though the process exits nonzero.'
+                    })
+                    draftText = $null
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('valid proposal was written first')
+                    }
+                    createdAtUtc = '2026-06-20T00:20:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                Write-Error 'worker cli failed after writing proposal'
+                exit 3
+                """);
+            var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            var result = await pool.RunTaskAsync(profile, task);
+            var stored = await new GmWorkerProposalStore(fs).ReadProposalAsync("worker_proposal_nonzero_after_write");
+            var auditEvents = await new GmWorkerAuditLog(fs).ReadEventsAsync();
+
+            Assert.Equal(3, result.ExitCode);
+            Assert.False(result.TimedOut);
+            Assert.Equal(WorkerBridgeState.Stopped, result.Status.State);
+            Assert.NotNull(result.Proposal);
+            Assert.Equal("worker_proposal_nonzero_after_write", result.Proposal!.ProposalId);
+            Assert.NotNull(stored);
+            Assert.Collection(
+                auditEvents,
+                first => Assert.Equal("task-dispatched", first.EventType),
+                second => Assert.Equal("proposal-received", second.EventType));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task RunTaskAsync_WhenWorkerExitsBeforeProtocolAcceptance_NeverReportsReady()
     {
         var root = CreateTempRoot();
@@ -163,6 +226,67 @@ public sealed class GmWorkerBridgeLifecycleTests
             Assert.False(result.Status.Ready);
             Assert.DoesNotContain(result.StatusHistory, status => status.Ready);
             Assert.DoesNotContain(result.StatusHistory, status => status.State == WorkerBridgeState.Ready);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_WhenWorkerTimesOutAfterWritingValidProposal_PreservesProposal()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var scriptPath = Path.Combine(root, "fake-worker-proposal-then-timeout.ps1");
+            await File.WriteAllTextAsync(scriptPath, """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = 'worker_proposal_timeout_after_write'
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Proposal was written before the worker process timed out.'
+                    changedFiles = @()
+                    findings = @([ordered]@{
+                        kind = 'proposal-before-timeout'
+                        message = 'The proposal file is valid even though the process keeps running.'
+                    })
+                    draftText = $null
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('valid proposal was written first')
+                    }
+                    createdAtUtc = '2026-06-20T00:25:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                Start-Sleep -Seconds 30
+                """);
+            var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 3
+            };
+            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            var result = await pool.RunTaskAsync(profile, task);
+            var stored = await new GmWorkerProposalStore(fs).ReadProposalAsync("worker_proposal_timeout_after_write");
+            var auditEvents = await new GmWorkerAuditLog(fs).ReadEventsAsync();
+
+            Assert.True(result.TimedOut);
+            Assert.Equal(WorkerBridgeState.Stopped, result.Status.State);
+            Assert.NotNull(result.Proposal);
+            Assert.Equal("worker_proposal_timeout_after_write", result.Proposal!.ProposalId);
+            Assert.NotNull(stored);
+            Assert.Collection(
+                auditEvents,
+                first => Assert.Equal("task-dispatched", first.EventType),
+                second => Assert.Equal("proposal-received", second.EventType));
         }
         finally
         {

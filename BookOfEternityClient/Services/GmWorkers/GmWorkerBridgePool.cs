@@ -146,6 +146,28 @@ public sealed class GmWorkerBridgePool
                 var output = await ReadProcessOutputAsync(outputTask);
                 var stderr = await ReadProcessOutputAsync(errorTask);
                 var message = $"Worker task timed out after {profile.TimeoutSeconds} seconds.";
+                var existingProposalResult = await TryReadAndStoreExistingProposalAsync(profile, task, proposalInboxPath);
+                if (existingProposalResult.Attempted)
+                {
+                    var state = existingProposalResult.Proposal == null
+                        ? existingProposalResult.Result.Status.State
+                        : WorkerBridgeState.Stopped;
+                    var proposalStatus = Track(
+                        state,
+                        ready: false,
+                        existingProposalResult.Proposal == null ? existingProposalResult.Result.Status.LastError : message,
+                        processId);
+                    return existingProposalResult.Result with
+                    {
+                        Status = proposalStatus,
+                        StatusHistory = statusHistory.ToArray(),
+                        Proposal = existingProposalResult.Proposal,
+                        StandardOutput = output,
+                        StandardError = stderr,
+                        TimedOut = existingProposalResult.Proposal != null
+                    };
+                }
+
                 await RecordTerminalEventAsync("task-timed-out", profile, task, message, stderr.Length == 0 ? [] : [stderr]);
                 var status = Track(WorkerBridgeState.TimedOut, ready: false, message, processId);
                 return new GmWorkerTaskRunResult
@@ -164,6 +186,28 @@ public sealed class GmWorkerBridgePool
             if (exitCode != 0)
             {
                 var message = $"Worker process exited with code {exitCode}.";
+                var existingProposalResult = await TryReadAndStoreExistingProposalAsync(profile, task, proposalInboxPath);
+                if (existingProposalResult.Attempted)
+                {
+                    var state = existingProposalResult.Proposal == null
+                        ? existingProposalResult.Result.Status.State
+                        : WorkerBridgeState.Stopped;
+                    var proposalStatus = Track(
+                        state,
+                        ready: false,
+                        existingProposalResult.Proposal == null ? existingProposalResult.Result.Status.LastError : message,
+                        processId);
+                    return existingProposalResult.Result with
+                    {
+                        Status = proposalStatus,
+                        StatusHistory = statusHistory.ToArray(),
+                        Proposal = existingProposalResult.Proposal,
+                        ExitCode = exitCode,
+                        StandardOutput = standardOutput,
+                        StandardError = standardError
+                    };
+                }
+
                 await RecordTerminalEventAsync("task-failed", profile, task, message, standardError.Length == 0 ? [] : [standardError]);
                 var status = Track(WorkerBridgeState.Failed, ready: false, message, processId);
                 return new GmWorkerTaskRunResult
@@ -384,6 +428,18 @@ public sealed class GmWorkerBridgePool
             await _auditLog.RecordProposalReceivedAsync(proposal!);
 
         return (proposal, new GmWorkerTaskRunResult());
+    }
+
+    private async Task<(bool Attempted, WorkerProposal? Proposal, GmWorkerTaskRunResult Result)> TryReadAndStoreExistingProposalAsync(
+        WorkerBridgeProfile profile,
+        WorkerTaskPacket task,
+        string proposalInboxPath)
+    {
+        if (!_fs.FileExists(proposalInboxPath))
+            return (false, null, new GmWorkerTaskRunResult());
+
+        var proposalResult = await ReadAndStoreProposalAsync(profile, task, proposalInboxPath);
+        return (true, proposalResult.Proposal, proposalResult.Result);
     }
 
     private static WorkerBridgeStatus CreateStatus(

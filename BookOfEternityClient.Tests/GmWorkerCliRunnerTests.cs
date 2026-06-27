@@ -55,6 +55,61 @@ public sealed class GmWorkerCliRunnerTests
     }
 
     [Fact]
+    public async Task RunnerDryRun_WritesSelfContainedProposalSchema()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var sessionPath = Path.Combine(root, "game_session");
+            var taskPath = Path.Combine(root, "task.json");
+            var proposalPath = Path.Combine(root, "worker_proposals", "inbox", "task-schema", "proposal.json");
+            var promptPath = Path.Combine(root, "prompt-schema.txt");
+            Directory.CreateDirectory(sessionPath);
+            await File.WriteAllTextAsync(taskPath, """
+                {
+                  "schemaVersion": 1,
+                  "taskId": "worker_task_runner_schema",
+                  "workerId": "narrative_draft_codex",
+                  "taskType": "narrative-draft",
+                  "responseContract": "worker-proposal-v1",
+                  "instructions": "Return a scene draft."
+                }
+                """, Encoding.UTF8);
+
+            var result = await RunRunnerAsync(
+                ["-DryRun", "-PromptOutPath", promptPath],
+                new Dictionary<string, string>
+                {
+                    ["BOE_WORKER_TASK_PATH"] = taskPath,
+                    ["BOE_WORKER_PROPOSAL_PATH"] = proposalPath,
+                    ["BOE_WORKER_SESSION_PATH"] = sessionPath
+                });
+
+            Assert.Equal(0, result.ExitCode);
+            var prompt = await File.ReadAllTextAsync(promptPath, Encoding.UTF8);
+            Assert.Contains("Required worker-proposal-v1 JSON shape", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"schemaVersion\": 1", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"proposalId\"", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"taskId\"", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"workerId\"", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"status\": \"completed\"", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"summary\"", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"changedFiles\": []", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"findings\": []", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"draftText\"", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"selfCheck\"", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"scopeReviewed\": true", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"validationExpectedToPass\": true", prompt, StringComparison.Ordinal);
+            Assert.Contains("\"createdAtUtc\"", prompt, StringComparison.Ordinal);
+            Assert.Contains("Do not omit summary, status, changedFiles, findings, selfCheck, or createdAtUtc.", prompt, StringComparison.Ordinal);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task RunnerDryRun_WhenEnvironmentMissing_ReportsMissingVariable()
     {
         var result = await RunRunnerAsync(

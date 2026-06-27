@@ -108,10 +108,10 @@ $Config | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $ConfigPath -Encod
 $Port = 8790
 $Base = "http://127.0.0.1:$Port"
 $Token = ([Convert]::ToHexString([Security.Cryptography.RandomNumberGenerator]::GetBytes(32))).ToLowerInvariant()
+$ClientExe = Resolve-Path "BookOfEternityClient\bin\Debug\net8.0\BookOfEternityClient.exe"
 
-$Client = Start-Process -FilePath "dotnet" `
+$Client = Start-Process -FilePath $ClientExe `
   -ArgumentList @(
-    "run", "--project", "BookOfEternityClient\BookOfEternityClient.csproj", "--no-restore", "--",
     $RunRoot,
     "--agent-console", "--agent-url", $Base, "--agent-token", $Token, "--plain-output"
   ) `
@@ -121,6 +121,10 @@ $Client = Start-Process -FilePath "dotnet" `
   -WindowStyle Hidden `
   -PassThru
 ```
+
+Use the prebuilt executable for live runs after the prerequisite build. `dotnet run`
+rebuilds the client and can fail if another live client is still holding
+`BookOfEternityClient.exe`.
 
 Poll until the snapshot is non-empty:
 
@@ -217,6 +221,10 @@ $Analysis | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath (Join-Path $RunR
 Expected result: both responses have `ok=true`, `workerDispatch.outcome=Completed`,
 and non-empty `proposalId`. The proposals are stored under
 `game_session/worker_proposals/`.
+
+If a Codex worker writes a valid proposal but the CLI runner exits late or times
+out, the dispatch should still return `Completed`; preserve `dispatch.*.json`
+and `gm_worker_audit.jsonl` so the abnormal exit can be inspected separately.
 
 ## Exercise validation-repair
 

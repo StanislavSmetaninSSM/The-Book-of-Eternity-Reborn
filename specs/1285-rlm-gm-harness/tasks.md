@@ -88,6 +88,8 @@
 - [X] T044 [Follow-up #1249] Project authorized `[CHAOS_SEA_TRAVEL]` target guardian/abode into guardian policy authority so discovered-abode travel is not rejected as stale active-guardian state.
 - [X] T045 [Follow-up #1249] Ignore `.rollback.*` backup artifacts in the afterlife wrong-realm raw profile mutation scanner while still blocking real Mortal World profile mutations.
 - [X] T046 [Follow-up #1249] Retest `/обители` Chaos Sea travel with the live Codex GM bridge and confirm accepted validation, updated active guardian, and a playable prompt.
+- [X] T047 [Follow-up #1249/#1288] Treat a valid worker proposal written before worker timeout/nonzero exit as a proposal-received result, while still rejecting missing or invalid proposals.
+- [X] T048 [Follow-up #1249/#1288] Make the worker CLI runner prompt include a self-contained `worker-proposal-v1` JSON skeleton and required-field rules before the next live worker delegation test.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.
