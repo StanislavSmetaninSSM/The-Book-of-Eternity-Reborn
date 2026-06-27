@@ -106,7 +106,9 @@ Allowed delegation uses:
   `"inventory-content"`: request structured entity proposals. Include
   `authoringGoal`, optional `authoringDomain`, `entityHints`, `requiredLinks`,
   `outputNotes`, and read-only `contextPaths`. The worker must return
-  `authoringProposal`, not `changedFiles`.
+  `authoringProposal`, not `changedFiles`. For inventory content, item
+  proposals must include player-facing descriptions, storage/owner links, and
+  balance details.
 
 Worker output is GM-only. Do not show worker `draftText`, findings,
 `authoringProposal`, or proposed file content to the player until you review it,

@@ -240,6 +240,26 @@ internal static class GmWorkerBridgeTestFixtures
                         {
                             Name = "slot",
                             Value = "hands"
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "description",
+                            Value = "Кожаный футляр с тонкими стальными отмычками и натяжителями; пригоден для простых замков, но не вскрывает магические печати сам по себе."
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "quality",
+                            Value = "обычное"
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "value",
+                            Value = "35"
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "balanceNote",
+                            Value = "Дает повод для lockpicking QTE, но не гарантирует успех и не заменяет проверку навыка."
                         }
                     ],
                     Relationships = ["player inventory", "lockpicking QTE"]

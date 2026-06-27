@@ -134,6 +134,22 @@ Worker proposal:
           {
             "name": "slot",
             "value": "hands"
+          },
+          {
+            "name": "description",
+            "value": "Leather case with fine picks and tension tools; useful for simple locks but not magical seals."
+          },
+          {
+            "name": "quality",
+            "value": "common"
+          },
+          {
+            "name": "value",
+            "value": "35"
+          },
+          {
+            "name": "balanceNote",
+            "value": "Enables lockpicking QTE attempts without guaranteeing success."
           }
         ],
         "relationships": ["player inventory", "lockpicking QTE"]

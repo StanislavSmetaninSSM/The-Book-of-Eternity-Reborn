@@ -224,6 +224,17 @@ other workers, but `authoringProposal` is mandatory. It must include:
 These proposals are review-only. The main GM can rewrite them into normal game
 state updates, but the worker cannot apply them directly.
 
+Additional inventory-content requirements:
+
+- every proposed item must include a player-facing description field, not only
+  an internal key or slot;
+- every proposed item must be linked to an owner, inventory, storage, or
+  container that the main GM will review before accepting it;
+- every proposed item must include balance details such as value, price,
+  quality, rarity, or a balance note;
+- book/document items must link to readable content or explicitly flag the
+  missing readable content as a GM review gap.
+
 ## Supported MVP Tasks
 
 ### validation-repair

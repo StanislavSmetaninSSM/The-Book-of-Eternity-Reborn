@@ -315,6 +315,8 @@ public static class GmWorkerContractValidator
             errors.Add("authoringProposal.gmReviewNotes must contain at least one main-GM review note.");
         foreach (var note in proposal.GmReviewNotes)
             RequireText(note, "authoringProposal.gmReviewNotes", errors);
+
+        ValidateDomainAuthoringProposal(proposal, errors);
     }
 
     private static void ValidateAuthoredEntity(
@@ -335,6 +337,82 @@ public static class GmWorkerContractValidator
         foreach (var relationship in entity.Relationships)
             RequireText(relationship, $"{fieldName}.relationships", errors);
     }
+
+    private static void ValidateDomainAuthoringProposal(
+        WorkerContentAuthoringProposal proposal,
+        List<string> errors)
+    {
+        if (proposal.Domain == WorkerAuthoringDomain.Inventory)
+            ValidateInventoryAuthoringProposal(proposal, errors);
+    }
+
+    private static void ValidateInventoryAuthoringProposal(
+        WorkerContentAuthoringProposal proposal,
+        List<string> errors)
+    {
+        foreach (var entity in proposal.CreatedEntities.Concat(proposal.UpdatedEntities))
+        {
+            if (!string.Equals(entity.EntityType, "item", StringComparison.OrdinalIgnoreCase))
+            {
+                errors.Add($"inventory authoring entity {entity.EntityId} must use entityType item.");
+            }
+
+            if (!HasAnyField(entity, "description", "playerFacingDescription", "player-facing-description", "displayDescription"))
+            {
+                errors.Add($"inventory authoring entity {entity.EntityId} must include a player-facing description field.");
+            }
+
+            if (!HasAnyField(entity, "value", "price", "cost", "quality", "rarity", "balanceNote", "balance-note"))
+            {
+                errors.Add($"inventory authoring entity {entity.EntityId} must include balance details such as value, price, quality, rarity, or balanceNote.");
+            }
+
+            if (!HasAnyField(entity, "owner", "ownerId", "inventoryOwner", "storage", "storageId", "container", "containerId") &&
+                !HasText(entity.Relationships, "inventory", "storage", "container", "owner") &&
+                !HasLinkForEntity(proposal.RequiredLinks, entity.EntityId, "inventory", "storage", "container", "owner"))
+            {
+                errors.Add($"inventory authoring entity {entity.EntityId} must include an owner/storage link reviewed by the main GM.");
+            }
+
+            if (LooksLikeReadableDocument(entity) &&
+                !HasText(entity.Relationships, "readable", "content", "book", "document") &&
+                !HasLinkForEntity(proposal.RequiredLinks, entity.EntityId, "readable", "content", "book", "document"))
+            {
+                errors.Add($"inventory document/book entity {entity.EntityId} must link to readable content or mark that content as a GM review gap.");
+            }
+        }
+    }
+
+    private static bool HasAnyField(WorkerAuthoredEntity entity, params string[] names) =>
+        entity.RequiredFields.Any(field => names.Any(name =>
+            string.Equals(field.Name, name, StringComparison.OrdinalIgnoreCase)));
+
+    private static bool HasText(IEnumerable<string> values, params string[] fragments) =>
+        values.Any(value => fragments.Any(fragment =>
+            value.Contains(fragment, StringComparison.OrdinalIgnoreCase)));
+
+    private static bool HasLinkForEntity(
+        IReadOnlyList<WorkerRequiredEntityLink> links,
+        string entityId,
+        params string[] fragments) =>
+        links.Any(link =>
+            (string.Equals(link.Source, entityId, StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(link.Target, entityId, StringComparison.OrdinalIgnoreCase)) &&
+            (HasText([link.Source, link.Target, link.Reason], fragments)));
+
+    private static bool LooksLikeReadableDocument(WorkerAuthoredEntity entity) =>
+        HasText(
+            [
+                entity.EntityType,
+                entity.DisplayName,
+                entity.Summary,
+                .. entity.RequiredFields.Select(field => field.Name),
+                .. entity.RequiredFields.Select(field => field.Value)
+            ],
+            "book",
+            "document",
+            "книга",
+            "документ");
 
     private static WorkerAuthoringDomain? TaskTypeToDomain(WorkerTaskType taskType) =>
         taskType switch

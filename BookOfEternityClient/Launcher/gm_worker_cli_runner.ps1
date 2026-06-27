@@ -180,6 +180,7 @@ Required-field rules:
 - For narrative-draft tasks, draftText must contain the proposed prose.
 - For analysis tasks, findings should contain compact objects with kind and message.
 - For content-authoring tasks, authoringProposal is required and must contain domain, goal, createdEntities or updatedEntities, requiredLinks, validatorRisks, and gmReviewNotes.
+- For inventory-content tasks, each item proposal must include player-facing description, owner/storage or inventory link, and balance details such as value, price, quality, rarity, or balanceNote. Book/document items must link to readable content or explicitly flag that gap for main-GM review.
 - For validation-repair tasks that are allowed to propose files, every changedFiles item needs path, changeKind, and contentRef unless it is a delete.
 
 Raw WorkerTaskPacket JSON begins on the next line.

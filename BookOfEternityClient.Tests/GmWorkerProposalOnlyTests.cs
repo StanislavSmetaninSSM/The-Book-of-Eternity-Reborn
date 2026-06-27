@@ -152,6 +152,47 @@ public sealed class GmWorkerProposalOnlyTests
     }
 
     [Fact]
+    public void ValidateProposal_InventoryContentRequiresPlayerFacingItemDetailsAndStorageLinks()
+    {
+        var profile = GmWorkerBridgeTestFixtures.InventoryContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.InventoryContentTask();
+        var proposal = GmWorkerBridgeTestFixtures.InventoryContentProposal();
+        var incompleteEntity = proposal.AuthoringProposal!.CreatedEntities[0] with
+        {
+            RequiredFields =
+            [
+                new WorkerAuthoredField
+                {
+                    Name = "slot",
+                    Value = "hands"
+                }
+            ],
+            Relationships = ["lockpicking QTE"]
+        };
+        var incompleteProposal = proposal with
+        {
+            AuthoringProposal = proposal.AuthoringProposal with
+            {
+                CreatedEntities = [incompleteEntity],
+                RequiredLinks = []
+            }
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(incompleteProposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("inventory", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("description", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(result.Errors, error =>
+            error.Contains("inventory", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("storage", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(result.Errors, error =>
+            error.Contains("inventory", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("balance", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ApplyAsync_RejectsProposalOnlyChangedFilesWithoutWritingCanonicalFile()
     {
         var root = CreateTempRoot();

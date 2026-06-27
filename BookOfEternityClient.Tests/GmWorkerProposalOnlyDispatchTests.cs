@@ -157,6 +157,18 @@ public sealed class GmWorkerProposalOnlyDispatchTests
                             requiredFields = @([ordered]@{
                                 name = 'slot'
                                 value = 'hands'
+                            }, [ordered]@{
+                                name = 'description'
+                                value = 'Leather case with fine picks and tension tools; useful for simple locks but not magical seals.'
+                            }, [ordered]@{
+                                name = 'quality'
+                                value = 'common'
+                            }, [ordered]@{
+                                name = 'value'
+                                value = '35'
+                            }, [ordered]@{
+                                name = 'balanceNote'
+                                value = 'Enables lockpicking QTE attempts without guaranteeing success.'
                             })
                             relationships = @('player inventory', 'lockpicking QTE')
                         })
