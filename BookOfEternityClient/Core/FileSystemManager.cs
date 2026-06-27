@@ -133,8 +133,19 @@ public class FileSystemManager
     public void DeleteFile(string relativePath)
     {
         var fullPath = ResolvePath(relativePath);
-        if (File.Exists(fullPath))
-            File.Delete(fullPath);
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                if (File.Exists(fullPath))
+                    File.Delete(fullPath);
+                return;
+            }
+            catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
+            {
+                Thread.Sleep(TransientFileAccessRetryDelay);
+            }
+        }
     }
 
     /// <summary>

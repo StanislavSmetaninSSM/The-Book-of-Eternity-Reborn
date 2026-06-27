@@ -124,11 +124,60 @@ Result:
 - 2 targeted tests passed.
 - 69 daemon/bridge contract tests passed.
 
+## Post-T050/T051 Live Retest
+
+Run root: `C:\Temp\boe-rlm-live-turn-postfix-20260628-001625`
+
+Player action:
+
+```text
+Осмотреть письмо и печать, сверить знак с семейным архивом, а затем проверить окно и подоконник на следы ночного посланника.
+```
+
+Confirmed harness improvement:
+- The ordinary turn trajectory was recorded with
+  `validation.status=rejected`, `repair.status=requested`, and
+  `rubric.validTurn=false` when a correlated validation repair request appeared
+  after terminal success.
+- The record carried `mortal_relevant_actor_missing_persistence`, so T051
+  worked in the live path and did not promote the terminal-success file into a
+  false accepted turn.
+
+New harness blocker:
+- After the repair path, the console client crashed while deleting
+  `input/turn_request.json`.
+- The error was a transient file-access race: another local process briefly held
+  the file while `CleanupAcceptedTurnTerminalArtifactsAsync()` called
+  `FileSystemManager.DeleteFile()`.
+
+Implemented follow-up:
+- T052 gives `FileSystemManager.DeleteFile()` the same transient retry behavior
+  already used by session file reads and atomic writes.
+- The regression test holds `input/turn_request.json` open briefly and verifies
+  delete waits, succeeds, and removes the file.
+
+Automated checks after T052:
+
+```powershell
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~FileSystemManagerTests.DeleteFile_WhenTargetIsBrieflyLocked_RetriesUntilDeleteSucceeds"
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~FileSystemManagerTests"
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"
+```
+
+Result:
+- The new regression test failed before the fix with the same `IOException`
+  class seen in the live run.
+- 1 targeted delete-lock test passed after the fix.
+- 3 `FileSystemManagerTests` passed.
+- 69 daemon/bridge contract tests passed.
+
 ## Next Run
 
-Repeat a short Mortal World Agent Console live turn after rebuilding/running the
-current harness changes. Expected evidence:
+Repeat a short Mortal World Agent Console live turn after rebuilding/running
+T052. Expected evidence:
 - No false accepted ordinary-turn trajectory when validation repair follows.
 - Rejected repair attempts do not appear in `GM_EXPERIENCE_LESSONS` as accepted
   guidance.
+- Accepted-turn cleanup does not crash if bridge/daemon briefly holds
+  `input/turn_request.json`.
 - Playable prompt returns with fewer manual harness ambiguities recorded.

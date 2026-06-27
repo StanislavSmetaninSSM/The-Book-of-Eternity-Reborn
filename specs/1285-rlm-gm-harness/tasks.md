@@ -93,6 +93,7 @@
 - [ ] T049 [Follow-up #1249/#1290] Run one short Mortal World console live gameplay turn through Agent Console and Codex GM after the RLM harness fixes, then record player-facing and harness-friction findings.
 - [X] T050 [Follow-up #1249/#1290] Prevent rejected validation-repair trajectories from being promoted into "accepted fix" experience lessons.
 - [X] T051 [Follow-up #1249/#1290] Mark ordinary turn trajectory validation as rejected when a correlated validation repair request exists after terminal success, instead of recording a false accepted turn.
+- [X] T052 [Follow-up #1249/#1290] Retry transient runtime artifact deletes so accepted-turn cleanup does not crash when bridge/daemon briefly holds `input/turn_request.json`.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.
