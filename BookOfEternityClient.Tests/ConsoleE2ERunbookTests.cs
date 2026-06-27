@@ -61,6 +61,42 @@ public sealed class ConsoleE2ERunbookTests
     }
 
     [Fact]
+    public void LauncherScriptExposesSafeDaemonStartAction()
+    {
+        var launcher = ReadRepoFile("BookOfEternityClient", "Launcher", "bookofeternity.ps1");
+
+        foreach (var requiredText in new[]
+        {
+            "start-daemon",
+            "Start-Daemon",
+            "game_master_daemon.ps1",
+            "-EncodedCommand",
+            "daemonPid",
+            "daemon.log"
+        })
+        {
+            Assert.Contains(requiredText, launcher, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void GmWorkersLiveRunbookUsesLauncherDaemonStart()
+    {
+        var runbook = ReadRepoFile("docs", "e2e", "gm-workers-live-regression-runbook.md");
+
+        foreach (var requiredText in new[]
+        {
+            "bookofeternity.ps1 start-daemon",
+            "--timeout 900",
+            "daemon.start.json",
+            "daemonPid"
+        })
+        {
+            Assert.Contains(requiredText, runbook, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void ScriptedAgentRunbookLinksToLiveAgentConsoleRunbook()
     {
         var runbook = ReadRepoFile("docs", "e2e", "console-agent-runbook.md");

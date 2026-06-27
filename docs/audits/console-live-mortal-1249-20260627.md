@@ -233,3 +233,28 @@ Run teardown:
   bridge process.
 - The remaining console client and daemon PIDs for this run were stopped
   explicitly after artifact capture.
+
+### Follow-up: daemon launch quoting friction
+
+During setup, the first daemon launch attempt used a hand-rolled
+`Start-Process -ArgumentList` array. Windows PowerShell split the repository
+path at `E:\Games\The`, so `-File` failed before the daemon started.
+
+Harness conclusion:
+- Live-test agents should not have to hand-roll daemon `Start-Process` calls
+  for repository paths with spaces.
+- This belongs in launcher tooling, not only in prompt/runbook wording.
+
+Implemented follow-up:
+- T053 adds `bookofeternity.ps1 start-daemon`.
+- The launcher action starts `game_master_daemon.ps1` through an encoded
+  PowerShell host command, returns JSON with `daemonPid`, `logFile`, and
+  launch settings, and keeps the daemon hidden by default.
+- `docs/e2e/gm-workers-live-regression-runbook.md` now uses
+  `bookofeternity.ps1 start-daemon` and preserves `daemon.start.json`.
+
+Verification:
+- Source/runbook guard tests failed before implementation and passed after it.
+- A runtime smoke launched the daemon through `start-daemon --timeout 1`,
+  confirmed the returned PID was alive and the log file existed, then stopped
+  that daemon process.

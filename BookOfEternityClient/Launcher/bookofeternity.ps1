@@ -291,6 +291,108 @@ catch {{
     }
 }
 
+function ConvertTo-PowerShellSingleQuotedLiteral {
+    param([string]$Value)
+    return "'" + ($Value -replace "'", "''") + "'"
+}
+
+function Start-Daemon {
+    param(
+        [string]$ResolvedSessionPath,
+        [string[]]$DaemonArguments
+    )
+
+    $visibleDaemon = $false
+    $autoPaste = $true
+    $turnTimeout = 900
+    $pasteMode = "RightClick"
+    $basePath = Split-Path $ResolvedSessionPath -Parent
+    $logFile = Join-Path $basePath "daemon.log"
+
+    for ($index = 0; $index -lt $DaemonArguments.Count; $index++) {
+        $arg = $DaemonArguments[$index]
+        if ([string]::Equals($arg, "visible", [System.StringComparison]::OrdinalIgnoreCase) -or
+            [string]::Equals($arg, "-visible", [System.StringComparison]::OrdinalIgnoreCase) -or
+            [string]::Equals($arg, "--visible", [System.StringComparison]::OrdinalIgnoreCase)) {
+            $visibleDaemon = $true
+            continue
+        }
+
+        if ([string]::Equals($arg, "--no-autopaste", [System.StringComparison]::OrdinalIgnoreCase)) {
+            $autoPaste = $false
+            continue
+        }
+
+        if ([string]::Equals($arg, "--timeout", [System.StringComparison]::OrdinalIgnoreCase)) {
+            if ($index + 1 -ge $DaemonArguments.Count) {
+                throw "Missing value for --timeout."
+            }
+            $turnTimeout = [int]$DaemonArguments[++$index]
+            continue
+        }
+
+        if ([string]::Equals($arg, "--log", [System.StringComparison]::OrdinalIgnoreCase)) {
+            if ($index + 1 -ge $DaemonArguments.Count) {
+                throw "Missing value for --log."
+            }
+            $logFile = $DaemonArguments[++$index]
+            continue
+        }
+
+        if ([string]::Equals($arg, "--paste-mode", [System.StringComparison]::OrdinalIgnoreCase)) {
+            if ($index + 1 -ge $DaemonArguments.Count) {
+                throw "Missing value for --paste-mode."
+            }
+            $pasteMode = $DaemonArguments[++$index]
+            if (@("RightClick", "ShiftInsert", "CtrlV") -notcontains $pasteMode) {
+                throw "Unsupported --paste-mode '$pasteMode'."
+            }
+            continue
+        }
+
+        throw "Unknown start-daemon argument: $arg"
+    }
+
+    $daemonScript = Join-Path (Get-ClientRoot) "game_master_daemon.ps1"
+    if (!(Test-Path $daemonScript)) {
+        throw "GM daemon script not found: $daemonScript"
+    }
+
+    $daemonInvocation = "& {0} -GameSessionPath {1} -PasteMode {2} -TurnTimeout {3} -LogFile {4}" -f `
+        (ConvertTo-PowerShellSingleQuotedLiteral $daemonScript),
+        (ConvertTo-PowerShellSingleQuotedLiteral $ResolvedSessionPath),
+        (ConvertTo-PowerShellSingleQuotedLiteral $pasteMode),
+        $turnTimeout,
+        (ConvertTo-PowerShellSingleQuotedLiteral $logFile)
+
+    if ($autoPaste) {
+        $daemonInvocation += " -AutoPaste"
+    }
+
+    $hostScript = @"
+`$ErrorActionPreference = 'Stop'
+$daemonInvocation
+"@
+    $encodedHostScript = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($hostScript))
+    $windowStyle = if ($visibleDaemon) { "Normal" } else { "Hidden" }
+
+    $process = Start-Process -FilePath "powershell.exe" `
+        -ArgumentList @("-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass", "-EncodedCommand", $encodedHostScript) `
+        -WorkingDirectory (Get-RepoRoot) `
+        -WindowStyle $windowStyle `
+        -PassThru
+
+    [pscustomobject]@{
+        ok = $true
+        daemonPid = $process.Id
+        sessionPath = $ResolvedSessionPath
+        logFile = $logFile
+        visible = $visibleDaemon
+        autoPaste = $autoPaste
+        turnTimeout = $turnTimeout
+    } | ConvertTo-Json -Depth 4
+}
+
 function Invoke-PrepareTurn {
     param(
         [string]$ResolvedSessionPath,
@@ -336,6 +438,10 @@ switch ($Action.ToLowerInvariant()) {
             [string]::Equals($_, "--visible", [System.StringComparison]::OrdinalIgnoreCase)
         }).Count -gt 0
         Start-Bridge -ResolvedSessionPath $resolvedSessionPath -VisibleBridge $visibleBridge
+        break
+    }
+    "start-daemon" {
+        Start-Daemon -ResolvedSessionPath $resolvedSessionPath -DaemonArguments $Arguments
         break
     }
     "status" {
@@ -405,6 +511,7 @@ switch ($Action.ToLowerInvariant()) {
         Write-Host "Usage:" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 -SessionPath <game_session path> prepare-turn --action <text> [--session-id <id>] [--request-id <id>] [--turn-number <n>] [--dice `"1,2,3`"]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 start-bridge [visible] [-SessionPath <path>]" -ForegroundColor Yellow
+        Write-Host "  .\bookofeternity.ps1 start-daemon [visible] [--timeout <seconds>] [--log <path>] [--paste-mode RightClick|ShiftInsert|CtrlV] [--no-autopaste] [-SessionPath <path>]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 status [-SessionPath <path>]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 diagnostics [-SessionPath <path>]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 addText <text> [-SessionPath <path>]" -ForegroundColor Yellow

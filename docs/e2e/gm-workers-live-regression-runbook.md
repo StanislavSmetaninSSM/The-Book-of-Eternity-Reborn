@@ -152,21 +152,16 @@ component that watches that request and dispatches it to the bridge. A ready
 bridge without a running daemon leaves the client waiting for a GM turn forever.
 
 ```powershell
-$DaemonPath = (Resolve-Path "BookOfEternityClient\game_master_daemon.ps1").Path
 $DaemonLogPath = Join-Path $RunRoot "daemon.log"
-$DaemonArgs = '-NoLogo -NoProfile -ExecutionPolicy Bypass -File "{0}" -GameSessionPath "{1}" -AutoPaste -TurnTimeout 900 -LogFile "{2}"' -f `
-  $DaemonPath,
-  $SessionPath,
-  $DaemonLogPath
-
-$Daemon = Start-Process -FilePath "powershell.exe" `
-  -ArgumentList $DaemonArgs `
-  -WorkingDirectory (Get-Location) `
-  -RedirectStandardOutput (Join-Path $RunRoot "daemon.stdout.txt") `
-  -RedirectStandardError (Join-Path $RunRoot "daemon.stderr.txt") `
-  -WindowStyle Hidden `
-  -PassThru
+$Daemon = .\BookOfEternityClient\Launcher\bookofeternity.ps1 start-daemon -SessionPath $SessionPath --timeout 900 --log $DaemonLogPath |
+  ConvertFrom-Json
+$Daemon | ConvertTo-Json -Depth 8 |
+  Set-Content -LiteralPath (Join-Path $RunRoot "daemon.start.json") -Encoding UTF8
+$Daemon.daemonPid
 ```
+
+The launcher action uses an encoded PowerShell host command internally so paths
+with spaces, such as the repository root, do not break daemon startup.
 
 ## Dispatch proposal-only worker tasks
 
