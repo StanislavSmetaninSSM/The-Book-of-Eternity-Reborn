@@ -95,7 +95,10 @@ public partial class GameEngine
         public string Priority { get; set; } = "";
         public string Title { get; set; } = "";
         public List<string> TargetFiles { get; set; } = new();
+        public List<string> TemplateRefs { get; set; } = new();
         public List<string> CanonicalActorNames { get; set; } = new();
+        public List<string> ExpectedShape { get; set; } = new();
+        public List<string> SafeCorrectionRules { get; set; } = new();
         public List<string> Steps { get; set; } = new();
         public string DebugLogTemplate { get; set; } = "";
         public List<string> DoNotDo { get; set; } = new();

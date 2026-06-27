@@ -829,6 +829,10 @@ public partial class GameEngine
             .Where(issue => !guardianScopeActorNames.Contains(NormalizeRepairActorName(issue.Actor)))
             .ToList();
         var factionIdentityErrors = errors.Where(IsFactionIdentityRepairIssue).ToList();
+        var mortalNpcLocationErrors = errors.Where(IsMortalNpcLocationRepairIssue).ToList();
+        var mortalNpcFullObjectErrors = errors.Where(IsMortalNpcFullObjectRepairIssue).ToList();
+        var mortalNpcRelationshipEnumErrors = errors.Where(IsMortalNpcRelationshipEnumRepairIssue).ToList();
+        var mortalNpcReferenceErrors = errors.Where(IsMortalNpcReferenceRepairIssue).ToList();
 
         if (guardianScopeErrors.Count > 0)
             packets.Add(BuildGuardianScopeRepairPacket(guardianScopeErrors, guardianActorNameHints));
@@ -838,6 +842,18 @@ public partial class GameEngine
 
         if (factionIdentityErrors.Count > 0)
             packets.Add(BuildFactionIdentityRepairPacket(factionIdentityErrors));
+
+        if (mortalNpcLocationErrors.Count > 0)
+            packets.Add(BuildMortalNpcLocationRepairPacket(mortalNpcLocationErrors));
+
+        if (mortalNpcFullObjectErrors.Count > 0)
+            packets.Add(BuildMortalNpcFullObjectRepairPacket(mortalNpcFullObjectErrors));
+
+        if (mortalNpcRelationshipEnumErrors.Count > 0)
+            packets.Add(BuildMortalNpcRelationshipEnumRepairPacket(mortalNpcRelationshipEnumErrors));
+
+        if (mortalNpcReferenceErrors.Count > 0)
+            packets.Add(BuildMortalNpcReferenceRepairPacket(mortalNpcReferenceErrors));
 
         return packets;
     }
@@ -869,6 +885,55 @@ public partial class GameEngine
                string.Equals(issue.Code, "faction_command_unknown_faction_id", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "canonical_faction_sidecar_requires_permanent_faction_id", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "canonical_faction_sidecar_unknown_faction_id", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMortalNpcLocationRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Code, "missing_actor_current_location", StringComparison.OrdinalIgnoreCase) ||
+               (IsMortalNpcRepairPath(issue.FilePath) &&
+                (string.Equals(issue.Code, "current_location_new_scene_missing_initial_id_for_npc_scene", StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(issue.Code, "missing_actor_current_location", StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(issue.Code, "npc_initial_location_same_turn_target_unknown", StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(issue.Code, "npc_same_turn_initial_location_requires_null_current_location", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    private static bool IsMortalNpcFullObjectRepairIssue(ValidationIssue issue)
+    {
+        if (!IsMortalNpcRepairPath(issue.FilePath))
+            return false;
+
+        if (IsMortalNpcLocationRepairIssue(issue) || IsMortalNpcRelationshipEnumRepairIssue(issue))
+            return false;
+
+        if (string.Equals(issue.Code, "npc_full_object_missing_required_fields", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        var code = issue.Code ?? string.Empty;
+        return code.StartsWith("npc_", StringComparison.OrdinalIgnoreCase) &&
+               (code.Contains("object", StringComparison.OrdinalIgnoreCase) ||
+                code.Contains("null", StringComparison.OrdinalIgnoreCase) ||
+                code.Contains("shape", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsMortalNpcRelationshipEnumRepairIssue(ValidationIssue issue)
+    {
+        return IsMortalNpcRepairPath(issue.FilePath) &&
+               (string.Equals(issue.Code, "npc_attitude_relationship_tier_mismatch", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "npc_invalid_cultural_stance", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsMortalNpcReferenceRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Code, "npc_journal_unknown_npc_reference", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMortalNpcRepairPath(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        var normalized = path.Replace('\\', '/');
+        return normalized.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase);
     }
 
     private static ValidationRepairHarnessPacket BuildGuardianScopeRepairPacket(
@@ -1018,6 +1083,217 @@ public partial class GameEngine
         };
     }
 
+    private static ValidationRepairHarnessPacket BuildMortalNpcLocationRepairPacket(
+        IReadOnlyList<ValidationIssue> mortalNpcLocationErrors)
+    {
+        var actorNames = CollectRepairActorNames(mortalNpcLocationErrors)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var targetFiles = BuildMortalNpcTargetFiles(mortalNpcLocationErrors, includeNpcCoreWhenMissing: false);
+        var touchesNpcCore = targetFiles.Contains("game_state/npcs/npc_core.json", StringComparer.OrdinalIgnoreCase);
+        var touchesDebugLog = targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase);
+        var steps = new List<string>
+        {
+            "Open Templates/MORTAL_NPC_UPDATE_TEMPLATE.md before repairing NPC location validation errors."
+        };
+        if (touchesNpcCore)
+        {
+            steps.Add("For NPCsInScene entries created this same turn, set initialLocationId to the current location id, currentLocationId to JSON null, and currentLocationName to the visible current location name.");
+            steps.Add("If a persistent NPC location is missing in game_state/npcs/npc_core.json, set currentLocationId/currentLocationName from the intended scene or move command; do not leave both location ids empty.");
+            steps.Add("Keep NPCsInScene and NPCs entries as full canonical objects; do not replace them with short display-only rows.");
+        }
+        if (touchesDebugLog)
+        {
+            steps.Add("In output/debug_logs.json.gm_thoughts_markdown, add a current location / Текущая локация subpoint inside each listed NPC reasoning block.");
+            steps.Add("The current-location subpoint must say where the NPC is now and whether the NPC stays there or moves during this turn.");
+        }
+        steps.Add("After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json.");
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_npc_location_repair",
+            Priority = "high",
+            Title = "Mortal NPC same-turn location repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md" },
+            CanonicalActorNames = actorNames,
+            ExpectedShape = new List<string>
+            {
+                "Same-turn scene NPCs live in game_state/npcs/npc_core.json under NPCsInScene and/or NPCs as full objects, not as partial name-only stubs.",
+                "For an NPC introduced in the current scene: initialLocationId = current location id, currentLocationId = JSON null, currentLocationName = visible current location name.",
+                "For an already persistent NPC moved by the turn: keep permanent npcId, set currentLocationId/currentLocationName to the destination, and do not invent a same-turn initialId."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Patch only game_state/npcs/npc_core.json unless another file is explicitly listed by validation_repair_request.json.",
+                "Use the current turn/request location authority already present in session state or pending snapshot; do not invent a location id from prose.",
+                "Preserve intended NPC personality, goals, relationshipLock, journals, and unrelated NPC entries while repairing only the location fields."
+            },
+            Steps = steps,
+            DoNotDo = new List<string>
+            {
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer NPC location rules.",
+                "Do not silence the issue by deleting a meaningful NPC from Relevant actors or NPCsInScene.",
+                "Do not set currentLocationId to a non-null value for a same-turn scene NPC that validator says must use initialLocationId."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildMortalNpcFullObjectRepairPacket(
+        IReadOnlyList<ValidationIssue> mortalNpcFullObjectErrors)
+    {
+        var actorNames = CollectRepairActorNames(mortalNpcFullObjectErrors)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var targetFiles = BuildMortalNpcTargetFiles(mortalNpcFullObjectErrors, includeNpcCoreWhenMissing: true);
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_npc_full_object_repair",
+            Priority = "high",
+            Title = "Mortal NPC full object shape repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md" },
+            CanonicalActorNames = actorNames,
+            ExpectedShape = new List<string>
+            {
+                "Every meaningful Mortal World NPC update must materialize a full NPC object in game_state/npcs/npc_core.json.",
+                "Required profile/social fields include display identity, rarity, worldview, personalityArchetype, culturalStance, race, class, appearanceDescription, history, progressionType, relationshipLevel, attitude, relationshipLock, goals, and personalityTraits.",
+                "Collections such as relationshipLock, goals, personalityTraits, customProperties, journalEntries, and related arrays stay JSON arrays/objects even when they contain one item."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Complete the existing NPC object instead of replacing the file with a minimal skeleton.",
+                "For background-only names that should not persist, remove them from structured actor/NPC updates instead of creating a partial NPC.",
+                "Keep all user-visible NPC prose meaningful; required fields should not be filled with placeholders like unknown/TBD unless the story explicitly supports uncertainty."
+            },
+            Steps = new List<string>
+            {
+                "Open Templates/MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json.",
+                "Find each NPC named by the validation errors and expand it to the canonical full NPC object shape instead of leaving a partial row.",
+                "Ensure relationshipLock is an object/array in the expected canonical shape, goals is a collection of concrete goals, and personalityTraits is a collection of concrete traits.",
+                "Ensure attitude is synchronized with relationshipLevel and culturalStance uses Conformist, Pragmatist, or Dissident.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not delete meaningful NPCs or story hooks to avoid filling required fields.",
+                "Do not use raw nulls for required strings or collapse single-item arrays into scalars.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer NPC object rules."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildMortalNpcRelationshipEnumRepairPacket(
+        IReadOnlyList<ValidationIssue> mortalNpcRelationshipEnumErrors)
+    {
+        var actorNames = CollectRepairActorNames(mortalNpcRelationshipEnumErrors)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var targetFiles = BuildMortalNpcTargetFiles(mortalNpcRelationshipEnumErrors, includeNpcCoreWhenMissing: true);
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_npc_relationship_enum_repair",
+            Priority = "high",
+            Title = "Mortal NPC relationship tier and cultural stance repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md" },
+            CanonicalActorNames = actorNames,
+            ExpectedShape = new List<string>
+            {
+                "NPC attitude is a canonical Russian relationship tier derived from relationshipLevel.",
+                "Allowed attitude tiers: Непримиримый Враг, Противник, Неприязнь, Нейтралитет, Доверие и Расположение, Глубокая Связь, Легендарная Преданность.",
+                "NPC culturalStance is one of the canonical enum values: Conformist, Pragmatist, Dissident."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Change attitude and/or relationshipLevel together so the tier and score agree.",
+                "Use culturalStance enum values exactly as written; put localized prose in separate display/description fields, not in culturalStance.",
+                "Preserve the NPC's existing story relationship meaning; do not reset relationshipLevel to zero unless neutral is the intended repair."
+            },
+            Steps = new List<string>
+            {
+                "Open Templates/MORTAL_NPC_UPDATE_TEMPLATE.md and patch the listed NPC entries in game_state/npcs/npc_core.json.",
+                "Map relationshipLevel to one canonical attitude tier: Непримиримый Враг / Противник / Неприязнь / Нейтралитет / Доверие и Расположение / Глубокая Связь / Легендарная Преданность.",
+                "Set culturalStance only to Conformist, Pragmatist, or Dissident.",
+                "If the relationship meaning in prose conflicts with the numeric level, adjust the smallest necessary field pair and keep a coherent repair note in debug output.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not write English attitude labels such as Friendly/Hostile into NPC attitude.",
+                "Do not localize culturalStance into Russian inside the enum field.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer relationship enum rules."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildMortalNpcReferenceRepairPacket(
+        IReadOnlyList<ValidationIssue> mortalNpcReferenceErrors)
+    {
+        var actorNames = CollectRepairActorNames(mortalNpcReferenceErrors)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var targetFiles = BuildMortalNpcTargetFiles(mortalNpcReferenceErrors, includeNpcCoreWhenMissing: true);
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_npc_reference_repair",
+            Priority = "high",
+            Title = "Mortal NPC reference repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md" },
+            CanonicalActorNames = actorNames,
+            ExpectedShape = new List<string>
+            {
+                "NPCJournals and other NPC sidecar updates must reference an existing NPCId or NPCName from canonical game_state/npcs/npc_core.json.",
+                "If the actor became meaningful this turn, materialize a full NPC object first; if the actor was only background color, remove the orphan sidecar/journal update."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Do not create orphan NPCJournals entries for names that are absent from npc_core.json.",
+                "Preserve journal prose only after it is attached to an existing or newly materialized full NPC.",
+                "Prefer correcting the reference to an existing NPC over inventing a new NPC when the name clearly points to a current character."
+            },
+            Steps = new List<string>
+            {
+                "Open Templates/MORTAL_NPC_UPDATE_TEMPLATE.md before repairing NPCJournals or other NPC references.",
+                "Compare the referenced NPCId/NPCName with game_state/npcs/npc_core.json.",
+                "If the NPC exists, correct the journal/reference to the exact existing NPCId or NPCName.",
+                "If the NPC is genuinely introduced by this turn, add/complete the full NPC object in game_state/npcs/npc_core.json before keeping NPCJournals.",
+                "If the reference was only background-only color, remove the orphan NPCJournals/reference update instead of creating a partial NPC.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not leave NPCJournals pointing at unknown names or ids.",
+                "Do not create a partial NPC object just to satisfy the reference.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer NPC reference rules."
+            }
+        };
+    }
+
+    private static List<string> BuildMortalNpcTargetFiles(
+        IReadOnlyList<ValidationIssue> errors,
+        bool includeNpcCoreWhenMissing)
+    {
+        var targetFiles = errors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (includeNpcCoreWhenMissing &&
+            !targetFiles.Contains("game_state/npcs/npc_core.json", StringComparer.OrdinalIgnoreCase))
+        {
+            targetFiles.Add("game_state/npcs/npc_core.json");
+        }
+
+        return targetFiles;
+    }
+
     private async Task<IReadOnlyCollection<string>> ReadCurrentGuardianRepairActorNameHintsAsync()
     {
         const string path = "game_state/meta/guardians.json";
@@ -1110,6 +1386,17 @@ public partial class GameEngine
             return "game_state/meta/guardian_projects.json";
         if (normalized.StartsWith("output/debug_logs.json", StringComparison.OrdinalIgnoreCase))
             return "output/debug_logs.json";
+        foreach (var npcFile in new[]
+                 {
+                     "game_state/npcs/npc_core.json",
+                     "game_state/npcs/npc_interaction_journal.json",
+                     "game_state/npcs/npc_masks.json",
+                     "game_state/npcs/npc_memory.json"
+                 })
+        {
+            if (normalized.StartsWith(npcFile, StringComparison.OrdinalIgnoreCase))
+                return npcFile;
+        }
         foreach (var factionFile in new[]
                  {
                      "game_state/factions/faction_core.json",

@@ -107,6 +107,7 @@
 - [X] T063 [Follow-up #1219] Harden `inventory-content` proposals with player-facing item descriptions, owner/storage links, balance details, readable-content link checks for book/document items, and matching GM-facing documentation/examples.
 - [X] T064 [Follow-up #1221] Add `skill-content` worker template, skill/effect proposal validation for detailed descriptions, localized scaling, bonus explanations, effect/status/combat links, and matching GM-facing documentation/examples.
 - [X] T065 [Follow-up #1220] Add `npc-content` worker template, NPC dossier validation for separate public/private knowledge, thought journal, relationship hooks, personal quests, dialogue seeds, detail surfaces, required links, and matching GM-facing documentation/examples.
+- [X] T066 [Follow-up #1302] Add compact Mortal NPC validation repair packets for same-turn location, debug-log current-location, full-object shape, relationship tier, cultural stance, and orphan journal/reference errors, with template refs, expected shape, safe correction rules, and GM-facing example guidance.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.

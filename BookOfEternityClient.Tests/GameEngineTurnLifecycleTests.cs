@@ -687,6 +687,234 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             item => item.Contains("invent a permanent factionId", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalNpcLocationErrors_AddsHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/npcs/npc_core.json.NPCsInScene[0].currentLocationId",
+                IssueSeverity.Error,
+                "Same-turn scene NPC must not use currentLocationId.",
+                code: "npc_same_turn_initial_location_requires_null_current_location",
+                actor: "Мариус де Гран",
+                section: "UpdateNPCs",
+                expected: "initialLocationId=current location and currentLocationId=null",
+                actual: "currentLocationId=loc_library"),
+            new(
+                "game_state/npcs/npc_core.json.NPCsInScene[0].initialLocationId",
+                IssueSeverity.Error,
+                "Current location scene NPC is missing the same-turn initial location id.",
+                code: "current_location_new_scene_missing_initial_id_for_npc_scene",
+                actor: "Мариус де Гран",
+                section: "UpdateNPCs",
+                expected: "initialLocationId from current location",
+                actual: "missing")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_npc_location_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Templates/MORTAL_NPC_UPDATE_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Мариус де Гран", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("initialLocationId", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("currentLocationId", StringComparison.OrdinalIgnoreCase) && step.Contains("null", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("NPCsInScene", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalNpcReasoningLocationErrors_TargetsDebugLog()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                "NPC reasoning block is missing current location.",
+                code: "missing_actor_current_location",
+                actor: "Ирен Соль",
+                section: "npc_reasoning",
+                expected: "Current location / Текущая локация / currentLocationId line inside actor block",
+                actual: "missing")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_npc_location_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("output/debug_logs.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.DoesNotContain("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Ирен Соль", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("output/debug_logs.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("current location", StringComparison.OrdinalIgnoreCase) || step.Contains("Текущ", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalNpcJournalReferenceErrors_AddsReferencePacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "output/structured_state_updates.json.npcJournals[0]",
+                IssueSeverity.Error,
+                "NPC journal references an unknown NPC.",
+                code: "npc_journal_unknown_npc_reference",
+                actor: "Ночной посыльный",
+                section: "NPCJournals",
+                expected: "existing NPCId/NPCName from pre-turn/current npc_core.json",
+                actual: "npc_night_messenger")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_npc_reference_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Templates/MORTAL_NPC_UPDATE_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Ночной посыльный", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("NPCJournals", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("existing NPC", StringComparison.OrdinalIgnoreCase) || step.Contains("full NPC", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalNpcFullObjectErrors_AddsHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/npcs/npc_core.json.NPCs[0]",
+                IssueSeverity.Error,
+                "Full NPC object is missing required fields.",
+                code: "npc_full_object_missing_required_fields",
+                actor: "Ирен Соль",
+                section: "UpdateNPCs",
+                expected: "full NPC object with profile, social, location, relationshipLock, goals, personalityTraits, attitude, culturalStance",
+                actual: "missing worldview, race, class, appearanceDescription")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_npc_full_object_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Templates/MORTAL_NPC_UPDATE_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Ирен Соль", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("full NPC object", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("relationshipLock", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("goals", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("personalityTraits", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalNpcRelationshipAndCulturalErrors_AddsHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/npcs/npc_core.json.NPCs[0].attitude",
+                IssueSeverity.Error,
+                "NPC attitude must match relationship tier.",
+                code: "npc_attitude_relationship_tier_mismatch",
+                actor: "Ренар",
+                section: "UpdateNPCs",
+                expected: "attitude derived from relationshipLevel",
+                actual: "Friendly"),
+            new(
+                "game_state/npcs/npc_core.json.NPCs[0].culturalStance",
+                IssueSeverity.Error,
+                "NPC culturalStance must be canonical.",
+                code: "npc_invalid_cultural_stance",
+                actor: "Ренар",
+                section: "UpdateNPCs",
+                expected: "Conformist|Pragmatist|Dissident",
+                actual: "Loyalist")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_npc_relationship_enum_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Templates/MORTAL_NPC_UPDATE_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Ренар", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("Непримиримый Враг", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("Conformist", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("Pragmatist", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("Dissident", StringComparison.OrdinalIgnoreCase));
+    }
+
 
     [Theory]
     [InlineData("[ABODE_OFFERING] Игрок подносит Реликвию Души.", true)]

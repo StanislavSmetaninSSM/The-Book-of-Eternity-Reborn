@@ -518,6 +518,34 @@ Faction identity repair packet example:
 
 For example, if the snapshot has `factionId: null`, `initialId: "temp-faction-merchant-guild-eternia"`, and `isNewFaction: true`, the GM must restore that temporary identity shape instead of trying names such as `faction_merchant_guild` or `faction_capital_merchants`.
 
+Mortal NPC repair packets:
+{
+  "kind": "mortal_npc_location_repair",
+  "priority": "high",
+  "title": "Mortal NPC same-turn location repair",
+  "targetFiles": [
+    "game_state/npcs/npc_core.json"
+  ],
+  "templateRefs": [
+    "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md"
+  ],
+  "expectedShape": [
+    "Same-turn scene NPCs use initialLocationId = current location id, currentLocationId = null, and currentLocationName = visible current location name.",
+    "Existing persistent NPCs keep permanent npcId and use currentLocationId/currentLocationName for a move."
+  ],
+  "safeCorrectionRules": [
+    "Patch only targetFiles unless the repair request lists another file.",
+    "Use the current turn/session location authority; do not invent a location id from prose."
+  ],
+  "steps": [
+    "Read templateRefs before editing game_state/npcs/npc_core.json.",
+    "Repair the listed NPC entries in place, preserving personality, goals, relationshipLock, journals, and unrelated NPCs.",
+    "Call Complete-BoeValidationRepair as the last action."
+  ]
+}
+
+The same NPC packet family can appear as `mortal_npc_full_object_repair` for missing required profile/social fields, `mortal_npc_relationship_enum_repair` for `attitude`/`relationshipLevel` and `culturalStance`, or `mortal_npc_reference_repair` for orphan `NPCJournals`/sidecar references. For those packets, follow `expectedShape[]` and `safeCorrectionRules[]` first; do not search implementation code to rediscover canonical fields.
+
 VALIDATION CONTRACT SUMMARY:
 - client checks correlated `sessionId/requestId/turnNumber`
 - client checks valid JSON
