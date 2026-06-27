@@ -414,6 +414,74 @@ function Get-BoeFileSha256 {
     }
 }
 
+function ConvertTo-BoeCanonicalJsonString {
+    param(
+        [AllowNull()]
+        $Value
+    )
+
+    if ($null -eq $Value) {
+        return "null"
+    }
+
+    if ($Value -is [System.Management.Automation.PSCustomObject]) {
+        $parts = @()
+        foreach ($property in @($Value.PSObject.Properties | Sort-Object Name)) {
+            $name = ConvertTo-Json -InputObject $property.Name -Compress
+            $propertyValue = ConvertTo-BoeCanonicalJsonString -Value $property.Value
+            $parts += "${name}:$propertyValue"
+        }
+
+        return "{" + ($parts -join ",") + "}"
+    }
+
+    if ($Value -is [System.Collections.IDictionary]) {
+        $parts = @()
+        foreach ($key in @($Value.Keys | Sort-Object)) {
+            $name = ConvertTo-Json -InputObject ([string]$key) -Compress
+            $propertyValue = ConvertTo-BoeCanonicalJsonString -Value $Value[$key]
+            $parts += "${name}:$propertyValue"
+        }
+
+        return "{" + ($parts -join ",") + "}"
+    }
+
+    if (($Value -is [System.Collections.IEnumerable]) -and !($Value -is [string])) {
+        $items = @()
+        foreach ($item in $Value) {
+            $items += ConvertTo-BoeCanonicalJsonString -Value $item
+        }
+
+        return "[" + ($items -join ",") + "]"
+    }
+
+    return ConvertTo-Json -InputObject $Value -Compress
+}
+
+function Get-BoeComparableFileSignature {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+
+    if (!(Test-Path -LiteralPath $Path)) {
+        return ""
+    }
+
+    if ([string]::Equals([System.IO.Path]::GetExtension($Path), ".json", [System.StringComparison]::OrdinalIgnoreCase)) {
+        try {
+            $raw = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
+            $parsed = ConvertFrom-Json -InputObject $raw
+            return "json:" + (ConvertTo-BoeCanonicalJsonString -Value $parsed)
+        }
+        catch {
+            # Invalid JSON still needs deterministic comparison; fall back to byte identity.
+        }
+    }
+
+    return "sha256:" + (Get-BoeFileSha256 -Path $Path)
+}
+
 function Get-BoeRawMortalWorldProfileMutations {
     if (!(Test-BoeAfterlifeRealm)) {
         return @()
@@ -456,9 +524,9 @@ function Get-BoeRawMortalWorldProfileMutations {
                 continue
             }
 
-            $currentHash = Get-BoeFileSha256 -Path $file.FullName
-            $snapshotHash = Get-BoeFileSha256 -Path $snapshotPath
-            if (![string]::Equals($currentHash, $snapshotHash, [System.StringComparison]::OrdinalIgnoreCase)) {
+            $currentSignature = Get-BoeComparableFileSignature -Path $file.FullName
+            $snapshotSignature = Get-BoeComparableFileSignature -Path $snapshotPath
+            if (![string]::Equals($currentSignature, $snapshotSignature, [System.StringComparison]::Ordinal)) {
                 $violations += [pscustomobject]@{
                     path = $relativePath
                     reason = "changed from pending-turn snapshot"

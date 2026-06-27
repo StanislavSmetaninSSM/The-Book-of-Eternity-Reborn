@@ -75,6 +75,7 @@
 - [X] T031 [Follow-up #1293] Add session-local daemon status/heartbeat, active-peer refusal, and daemon-timeout terminal artifact resolution before the next live test.
 - [X] T032 [Follow-up #1282] Normalize actor reasoning block matching for harmless trailing punctuation and add regression coverage.
 - [X] T033 [Follow-up #1281] Add GM helper preflight that blocks raw Mortal World profile mutations against the pending-turn snapshot before afterlife turn/repair completion.
+- [X] T035 [Follow-up #1281] Compare pending-turn snapshot JSON semantically so formatting-only serialization differences do not trigger false wrong-realm mutation rollback during afterlife live tests.
 - [ ] T034 [Follow-up #1283] Repeat a Chaos Sea spiritual-conflict live turn and verify the compact `tempoAdvantage` template prevents `advantageId` / `sourceId` repair.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.

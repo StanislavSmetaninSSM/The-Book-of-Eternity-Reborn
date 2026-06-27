@@ -134,7 +134,7 @@ As the developer, I need the next live GM test to measure harness quality, not j
 - **FR-010**: The next live-test checklist MUST record harness friction and convert repeated GM difficulty into harness follow-up issues or issue comments.
 - **FR-011**: GM-facing prompts/docs/examples MUST explain any new trajectory, experience-memory, safe-probe, or delegation workflow added by the implementation.
 - **FR-012**: The feature MUST NOT add normal gameplay reliance on arbitrary REPL execution, arbitrary shell execution, or direct worker writes to canonical game state.
-- **FR-013**: During afterlife live turns and repairs, GM helper completion MUST detect raw Mortal World profile mutations against the pending-turn snapshot before writing completion signals, so wrong-realm writes are blocked before stable acceptance.
+- **FR-013**: During afterlife live turns and repairs, GM helper completion MUST detect raw Mortal World profile mutations against the pending-turn snapshot before writing completion signals, so wrong-realm writes are blocked before stable acceptance. JSON files MUST be compared semantically so formatting-only snapshot serialization differences are not treated as GM mutations.
 - **FR-014**: Actor reasoning validation MUST tolerate harmless trailing punctuation differences between declared actor names and `###` reasoning block headings without weakening canonical actor identity checks.
 - **FR-015**: Afterlife spiritual-conflict context packs MUST expose a compact `tempoAdvantage` template with required `advantageId`, `sourceId`, and `guard_tempo_window` consumption fields.
 

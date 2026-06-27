@@ -439,6 +439,76 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void Helper_CompleteBoeTurnAllowsSemanticallySameMortalWorldSnapshotJsonInAfterlifeRealm()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-wrong-realm-semantic-json-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "meta"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "factions"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control", "pending_turn_snapshot", "game_state", "factions"));
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "meta", "soul_state.json"),
+                """
+                {
+                  "currentRealm": "Chaos Sea"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-wrong-realm-semantic-json",
+                  "turnNumber": 45,
+                  "playerAction": "test"
+                }
+                """,
+                Encoding.UTF8);
+
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot", "game_state", "factions", "faction_core.json"),
+                """
+                {
+                  "factions": [
+                    {
+                      "id": "merchant_guild",
+                      "stage": 2
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "factions", "faction_core.json"),
+                """{"factions":[{"id":"merchant_guild","stage":2}]}""",
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "Complete-BoeTurn -FilesModified @('output/narrative_response.json')"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.True(File.Exists(Path.Combine(session, "ready", "turn_complete.json")));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void Helper_CompleteBoeValidationRepairRejectsRawNewMortalWorldProfileFileInAfterlifeRealm()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-wrong-realm-raw-repair-" + Guid.NewGuid().ToString("N"));
