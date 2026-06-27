@@ -459,6 +459,26 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
         rejectionCode = AgentConsoleInputRejectionCode.None;
         rejectionMessage = string.Empty;
 
+        if (snapshot.InputKind == AgentConsoleInputKind.Text)
+        {
+            var text = actionIndex >= 0 &&
+                       actionIndex < (snapshot.Prompt?.Choices.Count ?? 0) &&
+                       !string.IsNullOrWhiteSpace(snapshot.Prompt?.Choices[actionIndex])
+                ? snapshot.Prompt!.Choices[actionIndex]
+                : action.Label;
+
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                rejectionCode = AgentConsoleInputRejectionCode.UnsupportedActionResolution;
+                rejectionMessage = $"Action '{action.Id}' cannot be resolved to text input.";
+                return false;
+            }
+
+            queuedInput = QueuedInput.ForLine(text);
+            inputKind = AgentConsoleInputKind.Text;
+            return true;
+        }
+
         if (snapshot.InputKind is not (AgentConsoleInputKind.Key
             or AgentConsoleInputKind.MenuSelection
             or AgentConsoleInputKind.Confirmation))

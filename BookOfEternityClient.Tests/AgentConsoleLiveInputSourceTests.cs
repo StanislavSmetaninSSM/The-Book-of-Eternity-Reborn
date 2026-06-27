@@ -104,6 +104,53 @@ public sealed class AgentConsoleLiveInputSourceTests
     }
 
     [Fact]
+    public void TryQueueAction_WhenTextPromptChoiceIsSelected_QueuesChoiceTextLine()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildTextSnapshot("game-loop") with
+        {
+            Actions =
+            [
+                new AgentConsoleAction
+                {
+                    Id = "option-0",
+                    Label = "Inspect the sealed letter."
+                },
+                new AgentConsoleAction
+                {
+                    Id = "option-1",
+                    Label = "Call the trusted servant."
+                }
+            ],
+            Prompt = new AgentConsolePrompt
+            {
+                PromptId = "prompt",
+                Text = "What next?",
+                InputKind = AgentConsoleInputKind.Text,
+                Choices =
+                [
+                    "Inspect the sealed letter.",
+                    "Call the trusted servant."
+                ]
+            }
+        });
+
+        var result = input.TryQueueAction(new AgentConsoleActionRequest
+        {
+            ActionId = "option-1",
+            ScreenId = "game-loop",
+            InputKind = AgentConsoleInputKind.Text
+        });
+
+        Assert.True(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
+        Assert.Equal(AgentConsoleEventKind.InputAccepted, result.Event.Kind);
+        Assert.Equal(AgentConsoleInputKind.Text, result.Event.InputKind);
+        Assert.Equal("Call the trusted servant.", input.ReadLine());
+    }
+
+    [Fact]
     public void TryQueueAction_WhenActionIsDisabled_RejectsWithoutConsumingQueuedInput()
     {
         var store = new AgentConsoleStateStore();
