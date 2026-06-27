@@ -245,8 +245,7 @@ internal sealed class BridgeHost : IDisposable
                 return BridgeResponse.Success(SnapshotStatus(), SnapshotDiagnostics());
 
             case "setready":
-                SetReady(request.Ready ?? true);
-                return BridgeResponse.Success(SnapshotStatus());
+                return SetReady(request.Ready ?? true);
 
             case "dispatchworkertask":
                 return await DispatchWorkerTaskAsync(request);
@@ -491,8 +490,28 @@ internal sealed class BridgeHost : IDisposable
         }
     }
 
-    private void SetReady(bool ready)
+    private BridgeResponse SetReady(bool ready)
     {
+        if (ready)
+        {
+            var readiness = ProbeCliPromptReadinessForDispatch();
+            if (!readiness.IsReady)
+            {
+                var message = "Cannot mark bridge ready: " + readiness.Reason;
+                lock (_sync)
+                {
+                    _status.Ready = false;
+                    _status.State = "OperatorNotReady";
+                    _status.LastError = message;
+                    WriteStatusFile();
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("[Bridge] " + message);
+                return BridgeResponse.Failure(message, SnapshotStatus());
+            }
+        }
+
         lock (_sync)
         {
             _status.Ready = ready;
@@ -505,6 +524,8 @@ internal sealed class BridgeHost : IDisposable
         Console.WriteLine(ready
             ? "[Bridge] Marked READY. Daemon may dispatch prompts now."
             : "[Bridge] Marked NOT READY. Daemon dispatch should pause or fallback.");
+
+        return BridgeResponse.Success(SnapshotStatus());
     }
 
     private void EnsureShellAlive()

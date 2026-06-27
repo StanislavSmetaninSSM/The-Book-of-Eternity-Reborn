@@ -172,6 +172,22 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
+    public void BridgeHost_ManualReadyMustProbeCodexCliReadiness()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        var setReadyMethod = source.IndexOf("private BridgeResponse SetReady(bool ready)", StringComparison.Ordinal);
+        Assert.True(setReadyMethod >= 0, "Manual setReady should return a response so it can fail closed.");
+
+        var readinessProbe = source.IndexOf("var readiness = ProbeCliPromptReadinessForDispatch();", setReadyMethod, StringComparison.Ordinal);
+        var readyAssignment = source.IndexOf("_status.Ready = ready;", setReadyMethod, StringComparison.Ordinal);
+
+        Assert.True(readinessProbe > setReadyMethod, "Manual ready must probe the visible Codex CLI state before accepting Ready=true.");
+        Assert.True(readyAssignment > readinessProbe, "Manual ready must not set Ready=true before the Codex readiness probe.");
+        Assert.Contains("Cannot mark bridge ready", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BridgeHost_MarksNotReadyWhileDispatchedCodexPromptIsRunning()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
