@@ -104,6 +104,23 @@ function New-DefaultGmWorkerBridgeProfiles {
                 proposalOnly = $true
                 requiresValidation = $false
             }
+        },
+        [ordered]@{
+            workerId = "skill_content_codex"
+            displayName = "Codex skill content author"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codexWorker`" -TimeoutSeconds 120"
+            role = "skill-content"
+            enabled = $false
+            launchVisibility = "hidden"
+            timeoutSeconds = 150
+            maxConcurrentTasks = 1
+            permissions = [ordered]@{
+                taskTypes = @("skill-content")
+                readPaths = @("game_state/core/**", "game_state/player/**", "game_state/skills/**", "game_state/combat/**", "game_state/world/**", "lore/**", "Rules/**", "TaskGuides/**")
+                proposalWritePaths = @()
+                proposalOnly = $true
+                requiresValidation = $false
+            }
         }
     )
 }

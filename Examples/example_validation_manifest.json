@@ -21,6 +21,13 @@
       "statePath": "worker_proposals/<proposalId>/proposal.json",
       "responseSurface": "worker-proposal-v1 authoringProposal",
       "description": "Hidden/background proposal-only content-authoring worker profile, read-only task packet, structured authoringProposal, review-only inbox diagnostics, and rejection of changedFiles or direct canonical writes."
+    },
+    {
+      "contractId": "gm_worker_skill_content_v1",
+      "file": "E_CLI_GM_Worker_Skill_Content.txt",
+      "statePath": "worker_proposals/<proposalId>/proposal.json",
+      "responseSurface": "worker-proposal-v1 authoringProposal",
+      "description": "Hidden/background proposal-only skill-content worker profile, localized scaling details, player-facing descriptions, bonus explanations, required effect/status/combat links, and rejection of short bonus-only skill proposals."
     }
   ],
   "afterlifeEntityProfileCoverage": [

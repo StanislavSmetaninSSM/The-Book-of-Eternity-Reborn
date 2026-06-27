@@ -16,6 +16,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("E_CLI_GM_Worker_Validation_Repair.txt", manifest, StringComparison.Ordinal);
         Assert.Contains("E_CLI_GM_Worker_Narrative_Draft.txt", manifest, StringComparison.Ordinal);
         Assert.Contains("E_CLI_GM_Worker_Content_Authoring.txt", manifest, StringComparison.Ordinal);
+        Assert.Contains("E_CLI_GM_Worker_Skill_Content.txt", manifest, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -82,6 +83,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         var repair = ReadRepoFile("Examples/E_CLI_GM_Worker_Validation_Repair.txt");
         var narrative = ReadRepoFile("Examples/E_CLI_GM_Worker_Narrative_Draft.txt");
         var contentAuthoring = ReadRepoFile("Examples/E_CLI_GM_Worker_Content_Authoring.txt");
+        var skillContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Skill_Content.txt");
 
         Assert.Contains("hidden/background", guide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("apply gate", guide, StringComparison.OrdinalIgnoreCase);
@@ -94,6 +96,9 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("inventory-content", contentAuthoring, StringComparison.Ordinal);
         Assert.Contains("authoringProposal", contentAuthoring, StringComparison.Ordinal);
         Assert.Contains("proposal-only", contentAuthoring, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("skill-content", skillContent, StringComparison.Ordinal);
+        Assert.Contains("localizedScalingAttribute", skillContent, StringComparison.Ordinal);
+        Assert.Contains("bonusExplanation", skillContent, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -104,8 +109,9 @@ public sealed class GmWorkerBridgeDocumentationTests
         var repair = ReadRepoFile("Examples/E_CLI_GM_Worker_Validation_Repair.txt");
         var narrative = ReadRepoFile("Examples/E_CLI_GM_Worker_Narrative_Draft.txt");
         var contentAuthoring = ReadRepoFile("Examples/E_CLI_GM_Worker_Content_Authoring.txt");
+        var skillContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Skill_Content.txt");
 
-        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring })
+        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent })
         {
             Assert.Contains("BOE_WORKER_TASK_PATH", source, StringComparison.Ordinal);
             Assert.Contains("BOE_WORKER_PROPOSAL_PATH", source, StringComparison.Ordinal);
@@ -121,9 +127,10 @@ public sealed class GmWorkerBridgeDocumentationTests
         var repair = ReadRepoFile("Examples/E_CLI_GM_Worker_Validation_Repair.txt");
         var narrative = ReadRepoFile("Examples/E_CLI_GM_Worker_Narrative_Draft.txt");
         var contentAuthoring = ReadRepoFile("Examples/E_CLI_GM_Worker_Content_Authoring.txt");
+        var skillContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Skill_Content.txt");
         var runner = ReadRepoFile("BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1");
 
-        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring })
+        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent })
         {
             Assert.Contains("gm_worker_cli_runner.ps1", source, StringComparison.Ordinal);
             Assert.Contains("-AgentCommand", source, StringComparison.Ordinal);
@@ -150,6 +157,7 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("narrative_draft_codex", source, StringComparison.Ordinal);
             Assert.Contains("analysis_codex", source, StringComparison.Ordinal);
             Assert.Contains("inventory_content_codex", source, StringComparison.Ordinal);
+            Assert.Contains("skill_content_codex", source, StringComparison.Ordinal);
             Assert.Contains("gm_worker_cli_runner.ps1", source, StringComparison.Ordinal);
             Assert.Contains("enabled = $false", source, StringComparison.OrdinalIgnoreCase);
         }
@@ -163,6 +171,7 @@ public sealed class GmWorkerBridgeDocumentationTests
             "OtherGuides/GM_Worker_Bridges.md",
             "Examples/E_CLI_GM_Worker_Narrative_Draft.txt",
             "Examples/E_CLI_GM_Worker_Content_Authoring.txt",
+            "Examples/E_CLI_GM_Worker_Skill_Content.txt",
             "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
             "BookOfEternityClient/Launcher/CLI_Daemon_Window_Help.md",
             "BookOfEternityClient/Launcher/GM_Daemon_ConPTY_Proposal.md",
@@ -191,6 +200,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("\"enabled\": false", guide, StringComparison.Ordinal);
         Assert.Contains("analysis_codex", guide, StringComparison.Ordinal);
         Assert.Contains("inventory_content_codex", guide, StringComparison.Ordinal);
+        Assert.Contains("skill_content_codex", guide, StringComparison.Ordinal);
         Assert.Contains("enable one template explicitly", guide, StringComparison.OrdinalIgnoreCase);
     }
 

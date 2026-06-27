@@ -159,6 +159,21 @@ Codex inventory content-authoring example:
 }
 ```
 
+Codex skill content-authoring example:
+
+```json
+{
+  "workerId": "skill_content_codex",
+  "displayName": "Codex skill content author",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "role": "skill-content",
+  "enabled": false,
+  "launchVisibility": "hidden",
+  "timeoutSeconds": 150,
+  "maxConcurrentTasks": 1
+}
+```
+
 Use dry-run mode to inspect the generated prompt without launching an external
 agent:
 
@@ -235,6 +250,18 @@ Additional inventory-content requirements:
 - book/document items must link to readable content or explicitly flag the
   missing readable content as a GM review gap.
 
+Additional skill-content requirements:
+
+- every proposed skill/effect must include a detailed player-facing
+  description, not only a short `+1` label;
+- scaling from a characteristic must include localized display text and a
+  readable scaling explanation; if there is no scaling, include
+  `noScalingReason`;
+- every proposed structured/mechanical bonus must include a player-facing
+  explanation of when it applies;
+- proposed skills/effects must link to the effect, status, combat,
+  characteristic-check, or progression surface the main GM should update.
+
 ## Supported MVP Tasks
 
 ### validation-repair
@@ -293,3 +320,4 @@ canonical files.
 - `Examples/E_CLI_GM_Worker_Validation_Repair.txt`
 - `Examples/E_CLI_GM_Worker_Narrative_Draft.txt`
 - `Examples/E_CLI_GM_Worker_Content_Authoring.txt`
+- `Examples/E_CLI_GM_Worker_Skill_Content.txt`

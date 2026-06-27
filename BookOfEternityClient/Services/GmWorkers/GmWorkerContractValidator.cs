@@ -344,6 +344,8 @@ public static class GmWorkerContractValidator
     {
         if (proposal.Domain == WorkerAuthoringDomain.Inventory)
             ValidateInventoryAuthoringProposal(proposal, errors);
+        if (proposal.Domain == WorkerAuthoringDomain.Skill)
+            ValidateSkillAuthoringProposal(proposal, errors);
     }
 
     private static void ValidateInventoryAuthoringProposal(
@@ -413,6 +415,52 @@ public static class GmWorkerContractValidator
             "document",
             "книга",
             "документ");
+
+    private static void ValidateSkillAuthoringProposal(
+        WorkerContentAuthoringProposal proposal,
+        List<string> errors)
+    {
+        foreach (var entity in proposal.CreatedEntities.Concat(proposal.UpdatedEntities))
+        {
+            if (!string.Equals(entity.EntityType, "skill", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(entity.EntityType, "effect", StringComparison.OrdinalIgnoreCase))
+            {
+                errors.Add($"skill authoring entity {entity.EntityId} must use entityType skill or effect.");
+            }
+
+            if (entity.Summary.Trim().Length < 40)
+                errors.Add($"skill authoring entity {entity.EntityId} must include a detailed player-facing summary, not a short bonus label.");
+
+            if (!HasDetailedField(entity, 40, "description", "playerFacingDescription", "player-facing-description", "displayDescription"))
+                errors.Add($"skill authoring entity {entity.EntityId} must include a detailed player-facing description field.");
+
+            var hasScalingAttribute = HasAnyField(entity, "scalingAttribute", "scalingStat", "characteristic", "attribute");
+            var hasNoScalingReason = HasAnyField(entity, "noScalingReason", "no-scaling-reason");
+            if (!hasScalingAttribute && !hasNoScalingReason)
+                errors.Add($"skill authoring entity {entity.EntityId} must include scalingAttribute or noScalingReason.");
+            if (hasScalingAttribute && !HasAnyField(entity, "localizedScalingAttribute", "scalingAttributeRu", "localizedCharacteristic", "attributeRu"))
+                errors.Add($"skill authoring entity {entity.EntityId} must include localized scaling attribute text.");
+            if (!HasDetailedField(entity, 30, "scalingExplanation", "scalingRule", "noScalingReason", "no-scaling-reason"))
+                errors.Add($"skill authoring entity {entity.EntityId} must include a readable scaling explanation.");
+
+            if (HasAnyField(entity, "bonus", "structuredBonus", "mechanicalBonus") &&
+                !HasDetailedField(entity, 30, "bonusExplanation", "structuredBonusExplanation", "mechanicalBonusExplanation"))
+            {
+                errors.Add($"skill authoring entity {entity.EntityId} must include player-facing bonus explanation for every proposed bonus.");
+            }
+
+            if (!HasText(entity.Relationships, "effect", "status", "combat", "characteristic", "check", "skill") &&
+                !HasLinkForEntity(proposal.RequiredLinks, entity.EntityId, "effect", "status", "combat", "characteristic", "check", "skill"))
+            {
+                errors.Add($"skill authoring entity {entity.EntityId} must link to effects, status, combat, characteristic checks, or skill progression surfaces.");
+            }
+        }
+    }
+
+    private static bool HasDetailedField(WorkerAuthoredEntity entity, int minLength, params string[] names) =>
+        entity.RequiredFields.Any(field =>
+            names.Any(name => string.Equals(field.Name, name, StringComparison.OrdinalIgnoreCase)) &&
+            field.Value.Trim().Length >= minLength);
 
     private static WorkerAuthoringDomain? TaskTypeToDomain(WorkerTaskType taskType) =>
         taskType switch

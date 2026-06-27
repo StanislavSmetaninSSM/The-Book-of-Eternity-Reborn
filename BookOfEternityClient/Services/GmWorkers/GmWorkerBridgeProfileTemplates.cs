@@ -10,7 +10,8 @@ public static class GmWorkerBridgeProfileTemplates
         CreateValidationRepairCodexTemplate(),
         CreateNarrativeDraftCodexTemplate(),
         CreateAnalysisCodexTemplate(),
-        CreateInventoryContentCodexTemplate()
+        CreateInventoryContentCodexTemplate(),
+        CreateSkillContentCodexTemplate()
     ];
 
     public static WorkerBridgeProfile CreateValidationRepairCodexTemplate() => new()
@@ -84,6 +85,23 @@ public static class GmWorkerBridgeProfileTemplates
                 "game_state/inventory/**",
                 "game_state/world/**",
                 "game_state/skills/**",
+                "lore/**",
+                "Rules/**",
+                "TaskGuides/**"
+            ]);
+
+    public static WorkerBridgeProfile CreateSkillContentCodexTemplate() =>
+        CreateContentAuthoringCodexTemplate(
+            "skill_content_codex",
+            "Codex skill content author",
+            WorkerRole.SkillContent,
+            WorkerTaskType.SkillContent,
+            [
+                "game_state/core/**",
+                "game_state/player/**",
+                "game_state/skills/**",
+                "game_state/combat/**",
+                "game_state/world/**",
                 "lore/**",
                 "Rules/**",
                 "TaskGuides/**"

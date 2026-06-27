@@ -105,6 +105,7 @@
 - [X] T061 [Follow-up #1300] Reduce GM bridge not-ready delay after a safe Codex prompt returns, while preserving boot/trust/update/model-loading guards.
 - [X] T062 [Follow-up #1218] Add a shared content-authoring worker contract with structured `authoringProposal`, a disabled inventory worker template, proposal-only validation, inbox diagnostics, launcher defaults, and GM-facing documentation/example coverage.
 - [X] T063 [Follow-up #1219] Harden `inventory-content` proposals with player-facing item descriptions, owner/storage links, balance details, readable-content link checks for book/document items, and matching GM-facing documentation/examples.
+- [X] T064 [Follow-up #1221] Add `skill-content` worker template, skill/effect proposal validation for detailed descriptions, localized scaling, bonus explanations, effect/status/combat links, and matching GM-facing documentation/examples.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.

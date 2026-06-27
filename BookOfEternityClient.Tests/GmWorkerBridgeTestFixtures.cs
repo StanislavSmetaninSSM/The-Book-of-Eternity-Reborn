@@ -16,6 +16,9 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerBridgeProfile InventoryContentCodexProfile() =>
         GmWorkerBridgeProfileTemplates.CreateInventoryContentCodexTemplate() with { Enabled = true };
 
+    public static WorkerBridgeProfile SkillContentCodexProfile() =>
+        GmWorkerBridgeProfileTemplates.CreateSkillContentCodexTemplate() with { Enabled = true };
+
     public static WorkerTaskPacket ValidationRepairTask() => new()
     {
         TaskId = "worker_task_20260620_0001",
@@ -136,6 +139,50 @@ internal static class GmWorkerBridgeTestFixtures
             new WorkerFileReference
             {
                 Path = "game_state/world/current_location.json",
+                Sha256 = "example"
+            }
+        ],
+        AllowedProposalPaths = [],
+        AcceptanceCriteria =
+        [
+            "Return a worker-proposal-v1 JSON proposal.",
+            "Include authoringProposal for main-GM review."
+        ],
+        ForbiddenActions =
+        [
+            "Do not edit canonical game_session files directly.",
+            "Do not include changedFiles."
+        ],
+        Instructions = "Return authoringProposal only. Do not include changedFiles."
+    };
+
+    public static WorkerTaskPacket SkillContentTask() => new()
+    {
+        TaskId = "worker_task_20260620_0004",
+        WorkerId = "skill_content_codex",
+        Role = WorkerRole.SkillContent,
+        TaskType = WorkerTaskType.SkillContent,
+        CreatedAtUtc = "2026-06-20T01:15:00Z",
+        TimeoutSeconds = 150,
+        SourceTurn = new WorkerTurnReference
+        {
+            SessionId = "test-session",
+            RequestId = "test-request",
+            TurnNumber = 15
+        },
+        AuthoringRequest = new WorkerContentAuthoringRequest
+        {
+            Domain = WorkerAuthoringDomain.Skill,
+            Goal = "Prepare stealth and court-intrigue skill proposals for the current character.",
+            EntityHints = ["stealth skill", "court etiquette"],
+            RequiredLinks = ["player skills", "temporary effects"],
+            OutputNotes = ["Return detailed player-facing explanations for bonuses and scaling."]
+        },
+        ContextFiles =
+        [
+            new WorkerFileReference
+            {
+                Path = "game_state/skills/skills.json",
                 Sha256 = "example"
             }
         ],
@@ -292,5 +339,104 @@ internal static class GmWorkerBridgeTestFixtures
             Notes = ["Proposal-only authoring task; no file changes included."]
         },
         CreatedAtUtc = "2026-06-20T00:45:20Z"
+    };
+
+    public static WorkerProposal SkillContentProposal() => new()
+    {
+        ProposalId = "worker_proposal_20260620_0004",
+        TaskId = "worker_task_20260620_0004",
+        WorkerId = "skill_content_codex",
+        Status = WorkerProposalStatus.Completed,
+        Summary = "Prepared skill proposals with localized scaling and player-facing bonus explanations.",
+        ChangedFiles = [],
+        Findings =
+        [
+            new WorkerFinding
+            {
+                Kind = "validator-risk",
+                Message = "Skill bonuses must be linked to effects/status/combat surfaces before the main GM accepts them."
+            }
+        ],
+        AuthoringProposal = new WorkerContentAuthoringProposal
+        {
+            Domain = WorkerAuthoringDomain.Skill,
+            Goal = "Prepare stealth and court-intrigue skill proposals for the current character.",
+            CreatedEntities =
+            [
+                new WorkerAuthoredEntity
+                {
+                    EntityType = "skill",
+                    EntityId = "skill_shadow_courtesy",
+                    DisplayName = "Теневая учтивость",
+                    Summary = "Навык помогает скрывать намерения в аристократических сценах и связывает социальное давление с осторожным перемещением.",
+                    RequiredFields =
+                    [
+                        new WorkerAuthoredField
+                        {
+                            Name = "description",
+                            Value = "Персонаж умеет вести светскую беседу так, чтобы не выдать цель визита, отвлечь свидетелей и получить шанс уйти из комнаты без лишнего внимания."
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "scalingAttribute",
+                            Value = "dexterity"
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "localizedScalingAttribute",
+                            Value = "Ловкость"
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "scalingExplanation",
+                            Value = "Ловкость влияет на то, насколько тихо персонаж меняет позицию во время разговора; социальная часть остается предметом решения ГМа."
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "structuredBonus",
+                            Value = "Скрытность +1 в светских сценах"
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "bonusExplanation",
+                            Value = "Бонус применяется только там, где персонаж одновременно действует в салоне и пытается не привлечь внимание."
+                        }
+                    ],
+                    Relationships = ["player skills", "temporary effects", "social stealth checks"]
+                }
+            ],
+            RequiredLinks =
+            [
+                new WorkerRequiredEntityLink
+                {
+                    Source = "skill_shadow_courtesy",
+                    Target = "player_skills",
+                    Reason = "Main GM must decide whether this skill is learned, granted by background, or only proposed for future progression."
+                },
+                new WorkerRequiredEntityLink
+                {
+                    Source = "skill_shadow_courtesy",
+                    Target = "temporary_effects",
+                    Reason = "If the skill creates a situational bonus, it must be represented through an explicit effect/status surface."
+                }
+            ],
+            ValidatorRisks =
+            [
+                new WorkerValidatorRisk
+                {
+                    Code = "skill_bonus_explanation_required",
+                    Message = "Structured bonuses without player-facing explanation become unreadable in status/skill screens.",
+                    Mitigation = "Keep bonusExplanation beside every proposed structuredBonus."
+                }
+            ],
+            GmReviewNotes = ["Review whether the skill is permanent or a temporary lesson before adding it to canonical state."]
+        },
+        SelfCheck = new WorkerSelfCheck
+        {
+            ScopeReviewed = true,
+            ValidationExpectedToPass = true,
+            Notes = ["Proposal-only skill authoring task; no file changes included."]
+        },
+        CreatedAtUtc = "2026-06-20T01:15:20Z"
     };
 }

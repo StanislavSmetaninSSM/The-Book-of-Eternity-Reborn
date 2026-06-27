@@ -1,0 +1,195 @@
+# Example: GM worker skill-content
+
+This example shows a proposal-only skill-content worker. The worker prepares
+skills/effects for the main GM to review. It does not write canonical
+`game_session` files and it does not decide that the skill already exists.
+
+Worker profile:
+
+```json
+{
+  "workerId": "skill_content_codex",
+  "displayName": "Codex skill content author",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "role": "skill-content",
+  "enabled": true,
+  "launchVisibility": "hidden",
+  "timeoutSeconds": 150,
+  "maxConcurrentTasks": 1,
+  "permissions": {
+    "taskTypes": ["skill-content"],
+    "readPaths": [
+      "game_state/core/**",
+      "game_state/player/**",
+      "game_state/skills/**",
+      "game_state/combat/**",
+      "game_state/world/**",
+      "lore/**",
+      "Rules/**",
+      "TaskGuides/**"
+    ],
+    "proposalWritePaths": [],
+    "proposalOnly": true,
+    "requiresValidation": false
+  }
+}
+```
+
+The worker process receives `BOE_WORKER_TASK_PATH`,
+`BOE_WORKER_PROPOSAL_PATH`, and `BOE_WORKER_SESSION_PATH`. It reads the task
+packet and writes exactly one proposal JSON to `BOE_WORKER_PROPOSAL_PATH`.
+For skill-content tasks it must keep `changedFiles` empty and return
+`authoringProposal`.
+
+Task packet:
+
+```json
+{
+  "schemaVersion": 1,
+  "taskId": "worker_task_20260620_0004",
+  "workerId": "skill_content_codex",
+  "role": "skill-content",
+  "taskType": "skill-content",
+  "createdAtUtc": "2026-06-20T01:15:00Z",
+  "timeoutSeconds": 150,
+  "sourceTurn": {
+    "sessionId": "test-session",
+    "requestId": "test-request",
+    "turnNumber": 15
+  },
+  "validationIssues": [],
+  "authoringRequest": {
+    "domain": "skill",
+    "goal": "Prepare stealth and court-intrigue skill proposals for the current character.",
+    "entityHints": ["stealth skill", "court etiquette"],
+    "requiredLinks": ["player skills", "temporary effects"],
+    "outputNotes": ["Return detailed player-facing explanations for bonuses and scaling."]
+  },
+  "contextFiles": [
+    {
+      "path": "game_state/skills/skills.json",
+      "sha256": "sha-skills"
+    }
+  ],
+  "allowedProposalPaths": [],
+  "responseContract": "worker-proposal-v1",
+  "acceptanceCriteria": [
+    "Return a worker-proposal-v1 JSON proposal.",
+    "Include a structured authoringProposal with createdEntities or updatedEntities.",
+    "Include requiredLinks, validatorRisks, and gmReviewNotes for main-GM review.",
+    "Do not apply or persist any entity changes yourself."
+  ],
+  "forbiddenActions": [
+    "Do not edit canonical game_session files directly.",
+    "Do not include changedFiles.",
+    "Do not write player-facing output or terminal signals."
+  ],
+  "instructions": "Return authoringProposal only. This task is proposal-only; do not include changedFiles."
+}
+```
+
+GM bridge dispatch request:
+
+```json
+{
+  "command": "dispatchworkertask",
+  "workerTaskType": "skill-content",
+  "authoringDomain": "skill",
+  "authoringGoal": "Prepare stealth and court-intrigue skill proposals for the current character.",
+  "entityHints": ["stealth skill", "court etiquette"],
+  "requiredLinks": ["player skills", "temporary effects"],
+  "outputNotes": ["Return detailed player-facing explanations for bonuses and scaling."],
+  "contextPaths": ["game_state/skills/skills.json"]
+}
+```
+
+Worker proposal:
+
+```json
+{
+  "schemaVersion": 1,
+  "proposalId": "worker_proposal_20260620_0004",
+  "taskId": "worker_task_20260620_0004",
+  "workerId": "skill_content_codex",
+  "status": "completed",
+  "summary": "Prepared skill proposals with localized scaling and player-facing bonus explanations.",
+  "changedFiles": [],
+  "findings": [
+    {
+      "kind": "validator-risk",
+      "message": "Skill bonuses must be linked to effects/status/combat surfaces before the main GM accepts them."
+    }
+  ],
+  "draftText": null,
+  "authoringProposal": {
+    "domain": "skill",
+    "goal": "Prepare stealth and court-intrigue skill proposals for the current character.",
+    "createdEntities": [
+      {
+        "entityType": "skill",
+        "entityId": "skill_shadow_courtesy",
+        "displayName": "Теневая учтивость",
+        "summary": "Навык помогает скрывать намерения в аристократических сценах и связывает социальное давление с осторожным перемещением.",
+        "requiredFields": [
+          {
+            "name": "description",
+            "value": "Персонаж умеет вести светскую беседу так, чтобы не выдать цель визита, отвлечь свидетелей и получить шанс уйти из комнаты без лишнего внимания."
+          },
+          {
+            "name": "scalingAttribute",
+            "value": "dexterity"
+          },
+          {
+            "name": "localizedScalingAttribute",
+            "value": "Ловкость"
+          },
+          {
+            "name": "scalingExplanation",
+            "value": "Ловкость влияет на то, насколько тихо персонаж меняет позицию во время разговора; социальная часть остается предметом решения ГМа."
+          },
+          {
+            "name": "structuredBonus",
+            "value": "Скрытность +1 в светских сценах"
+          },
+          {
+            "name": "bonusExplanation",
+            "value": "Бонус применяется только там, где персонаж одновременно действует в салоне и пытается не привлечь внимание."
+          }
+        ],
+        "relationships": ["player skills", "temporary effects", "social stealth checks"]
+      }
+    ],
+    "updatedEntities": [],
+    "requiredLinks": [
+      {
+        "source": "skill_shadow_courtesy",
+        "target": "player_skills",
+        "reason": "The main GM must decide whether this skill is learned, granted by background, or only proposed for future progression."
+      },
+      {
+        "source": "skill_shadow_courtesy",
+        "target": "temporary_effects",
+        "reason": "If the skill creates a situational bonus, it must be represented through an explicit effect/status surface."
+      }
+    ],
+    "validatorRisks": [
+      {
+        "code": "skill_bonus_explanation_required",
+        "message": "Structured bonuses without player-facing explanation become unreadable in status/skill screens.",
+        "mitigation": "Keep bonusExplanation beside every proposed structuredBonus."
+      }
+    ],
+    "gmReviewNotes": ["Review whether the skill is permanent or a temporary lesson before adding it to canonical state."]
+  },
+  "selfCheck": {
+    "scopeReviewed": true,
+    "validationExpectedToPass": true,
+    "notes": ["Proposal-only skill authoring task; no file changes included."]
+  },
+  "createdAtUtc": "2026-06-20T01:15:20Z"
+}
+```
+
+The inbox entry is diagnostic/read-only. If the main GM likes the proposal, the
+main GM rewrites it into the normal skill/effect state update path and
+validation remains authoritative.

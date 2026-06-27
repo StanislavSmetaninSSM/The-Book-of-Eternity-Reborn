@@ -193,6 +193,62 @@ public sealed class GmWorkerProposalOnlyTests
     }
 
     [Fact]
+    public void ValidateProposal_SkillContentRequiresDetailedExplanationsAndLocalizedScaling()
+    {
+        var profile = GmWorkerBridgeTestFixtures.SkillContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.SkillContentTask();
+        var valid = GmWorkerBridgeTestFixtures.SkillContentProposal();
+
+        var validResult = GmWorkerContractValidator.ValidateProposal(valid, task, profile);
+
+        Assert.True(validResult.IsValid, string.Join(Environment.NewLine, validResult.Errors));
+
+        var incompleteSkill = valid.AuthoringProposal!.CreatedEntities[0] with
+        {
+            Summary = "Скрытность +1.",
+            RequiredFields =
+            [
+                new WorkerAuthoredField
+                {
+                    Name = "structuredBonus",
+                    Value = "stealth +1"
+                },
+                new WorkerAuthoredField
+                {
+                    Name = "scalingAttribute",
+                    Value = "dexterity"
+                }
+            ],
+            Relationships = []
+        };
+        var incompleteProposal = valid with
+        {
+            AuthoringProposal = valid.AuthoringProposal with
+            {
+                CreatedEntities = [incompleteSkill],
+                RequiredLinks = []
+            }
+        };
+
+        var incompleteResult = GmWorkerContractValidator.ValidateProposal(incompleteProposal, task, profile);
+
+        Assert.False(incompleteResult.IsValid);
+        Assert.Contains(incompleteResult.Errors, error =>
+            error.Contains("skill", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("description", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(incompleteResult.Errors, error =>
+            error.Contains("skill", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("localized", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(incompleteResult.Errors, error =>
+            error.Contains("skill", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("bonus", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("explanation", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(incompleteResult.Errors, error =>
+            error.Contains("skill", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("effect", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ApplyAsync_RejectsProposalOnlyChangedFilesWithoutWritingCanonicalFile()
     {
         var root = CreateTempRoot();
