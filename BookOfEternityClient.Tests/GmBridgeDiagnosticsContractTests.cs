@@ -261,6 +261,32 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
+    public void BridgeHost_AutoClearsReadyWhenCodexCliIsWorking()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("AutoMarkNotReadyIfCliWorking", source, StringComparison.Ordinal);
+        Assert.Contains("Codex CLI is working; bridge is not ready for a new prompt.", source, StringComparison.Ordinal);
+
+        var refreshMethod = source.IndexOf("private async Task RefreshBridgeAutomationStateAsync()", StringComparison.Ordinal);
+        var notReadyCall = source.IndexOf("AutoMarkNotReadyIfCliWorking();", refreshMethod, StringComparison.Ordinal);
+        var readyCall = source.IndexOf("AutoMarkReadyIfCliPromptReady();", refreshMethod, StringComparison.Ordinal);
+
+        Assert.True(refreshMethod >= 0, "Bridge automation refresh must exist.");
+        Assert.True(notReadyCall > refreshMethod, "Bridge should clear stale ready state during refresh.");
+        Assert.True(readyCall > notReadyCall, "Bridge should clear working state before considering auto-ready.");
+    }
+
+    [Fact]
+    public void BridgeHost_AutoReadyOnlyBlocksActiveDispatchNotEveryBusyState()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("string.Equals(_status.LastPromptDispatchState, \"Dispatching\", StringComparison.Ordinal)", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("string.Equals(_status.State, \"Busy\", StringComparison.Ordinal) ||", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BridgeHost_TreatsCompletedCodexTurnPromptAsIdleEvenWhenHeaderScrolledAway()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
@@ -304,6 +330,82 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("Test-Path $bridgeExe", source, StringComparison.Ordinal);
         Assert.Contains("& \"{1}\" --host --sessionPath \"{2}\" --pipeName \"{3}\"", source, StringComparison.Ordinal);
         Assert.Contains("dotnet run --project", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BridgeHost_ShutdownWritesResponseBeforeCancellingServerLoop()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("ShutdownAfterResponse", source, StringComparison.Ordinal);
+        Assert.Contains("BridgeResponse.Shutdown", source, StringComparison.Ordinal);
+
+        var shutdownCase = source.IndexOf("case \"shutdown\":", StringComparison.Ordinal);
+        Assert.True(shutdownCase >= 0, "Bridge host must expose a shutdown command.");
+
+        var shutdownResponse = source.IndexOf("BridgeResponse.Shutdown", shutdownCase, StringComparison.Ordinal);
+        var directCancel = source.IndexOf("_cts.Cancel();", shutdownCase, StringComparison.Ordinal);
+        Assert.True(shutdownResponse > shutdownCase, "Shutdown command must return a response object.");
+        Assert.True(
+            directCancel < 0 || shutdownResponse < directCancel,
+            "Shutdown must not cancel the bridge token before the pipe response is written.");
+    }
+
+    [Fact]
+    public void BridgeStatus_IncludesSessionPathForSessionLocalShutdownReports()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("public string SessionPath", source, StringComparison.Ordinal);
+        Assert.Contains("SessionPath = _sessionPath", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void LauncherScript_ShutdownBridgeUsesSessionLocalFallback()
+    {
+        var source = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");
+
+        Assert.Contains("function Invoke-BridgeShutdown", source, StringComparison.Ordinal);
+        Assert.Contains("function Stop-SessionLocalBridgeProcesses", source, StringComparison.Ordinal);
+        Assert.Contains("function Get-ProcessDescendantIds", source, StringComparison.Ordinal);
+        Assert.Contains("already-stopped", source, StringComparison.Ordinal);
+        Assert.Contains("-FallbackUsed $true", source, StringComparison.Ordinal);
+        Assert.Contains("command = \"shutdown\"", source, StringComparison.Ordinal);
+
+        var shutdownAction = source.IndexOf("\"shutdown-bridge\" {", StringComparison.Ordinal);
+        var shutdownFunction = source.IndexOf("Invoke-BridgeShutdown", shutdownAction, StringComparison.Ordinal);
+        var plainRequest = source.IndexOf("Invoke-BridgeRequestChecked -ResolvedSessionPath $resolvedSessionPath -Payload @{\r\n            command = \"shutdown\"", shutdownAction, StringComparison.Ordinal);
+        Assert.True(shutdownFunction > shutdownAction, "shutdown-bridge must use the dedicated shutdown path.");
+        Assert.True(plainRequest < 0 || shutdownFunction < plainRequest, "shutdown-bridge must not rely only on the generic checked request.");
+    }
+
+    [Fact]
+    public void LauncherScript_HiddenBridgeHostDoesNotKeepNoExitShellAlive()
+    {
+        var source = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");
+
+        Assert.Contains("$bridgeHostArguments", source, StringComparison.Ordinal);
+        Assert.Contains("if ($VisibleBridge)", source, StringComparison.Ordinal);
+        Assert.Contains("$bridgeHostArguments += \"-NoExit\"", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("-ArgumentList @(\"-NoExit\", \"-ExecutionPolicy\", \"Bypass\", \"-EncodedCommand\", $encodedHostScript)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DaemonBridgeDispatch_RefreshesDiagnosticsBeforeNotReadyFallback()
+    {
+        var source = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("function Refresh-GmBridgeReadiness", source, StringComparison.Ordinal);
+        Assert.Contains("diagnostics -SessionPath $GameSessionPath", source, StringComparison.Ordinal);
+        Assert.Contains("GM bridge readiness refresh via diagnostics", source, StringComparison.Ordinal);
+
+        var notReadyCheck = source.IndexOf("if (-not $status.ready -and -not $AllowNotReady)", StringComparison.Ordinal);
+        var refresh = source.IndexOf("Refresh-GmBridgeReadiness", notReadyCheck, StringComparison.Ordinal);
+        var fallback = source.IndexOf("return \"bridge-not-ready\"", notReadyCheck, StringComparison.Ordinal);
+
+        Assert.True(notReadyCheck >= 0, "Daemon must still guard against dispatch while bridge is not ready.");
+        Assert.True(refresh > notReadyCheck, "Daemon should ask the bridge to refresh diagnostics before waiting.");
+        Assert.True(fallback > refresh, "Daemon should only return bridge-not-ready after diagnostics refresh cannot prove readiness.");
     }
 
     [Fact]

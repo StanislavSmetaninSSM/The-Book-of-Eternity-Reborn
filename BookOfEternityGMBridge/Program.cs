@@ -133,6 +133,7 @@ internal sealed class BridgeHost : IDisposable
             State = "Starting",
             Ready = false,
             HelperPid = Environment.ProcessId,
+            SessionPath = _sessionPath,
             PipeName = _pipeName,
             StartedAtUtc = DateTimeOffset.UtcNow.ToString("O"),
             UpdatedAtUtc = DateTimeOffset.UtcNow.ToString("O")
@@ -213,7 +214,12 @@ internal sealed class BridgeHost : IDisposable
             {
                 var request = await ReadMessageAsync<BridgeRequest>(server, cancellationToken) ?? new BridgeRequest();
                 var response = await HandleRequestAsync(request);
-                await WriteMessageAsync(server, response, cancellationToken);
+                await WriteMessageAsync(
+                    server,
+                    response,
+                    response.ShutdownAfterResponse ? CancellationToken.None : cancellationToken);
+                if (response.ShutdownAfterResponse)
+                    _cts.Cancel();
             }
             catch (OperationCanceledException)
             {
@@ -358,8 +364,15 @@ internal sealed class BridgeHost : IDisposable
                 return BridgeResponse.Success(SnapshotStatus());
 
             case "shutdown":
-                _cts.Cancel();
-                return BridgeResponse.Success(SnapshotStatus());
+                lock (_sync)
+                {
+                    _status.Ready = false;
+                    _status.State = "ShuttingDown";
+                    _status.LastError = null;
+                    WriteStatusFile();
+                }
+
+                return BridgeResponse.Shutdown(SnapshotStatus());
 
             default:
                 return BridgeResponse.Failure($"Unknown bridge command '{request.Command}'.", SnapshotStatus());
@@ -547,6 +560,7 @@ internal sealed class BridgeHost : IDisposable
     {
         await AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync();
         await AutoSkipCodexUpdatePromptAsync();
+        AutoMarkNotReadyIfCliWorking();
         AutoMarkReadyIfCliPromptReady();
         RefreshDispatchFailureRecoveryIfCliPromptReady();
     }
@@ -601,8 +615,8 @@ internal sealed class BridgeHost : IDisposable
         lock (_sync)
         {
             if (_status.Ready ||
-                string.Equals(_status.State, "Busy", StringComparison.Ordinal) ||
-                string.Equals(_status.State, "Dispatching", StringComparison.Ordinal))
+                string.Equals(_status.State, "Dispatching", StringComparison.Ordinal) ||
+                string.Equals(_status.LastPromptDispatchState, "Dispatching", StringComparison.Ordinal))
             {
                 return;
             }
@@ -610,6 +624,29 @@ internal sealed class BridgeHost : IDisposable
             _status.Ready = true;
             _status.State = "Ready";
             _status.LastError = null;
+            WriteStatusFile();
+        }
+    }
+
+    private void AutoMarkNotReadyIfCliWorking()
+    {
+        var visibleText = ReadVisibleConsoleText();
+        if (!IsCodexCliWorkingScreen(visibleText))
+            return;
+
+        const string message = "Codex CLI is working; bridge is not ready for a new prompt.";
+        lock (_sync)
+        {
+            if (!_status.Ready &&
+                string.Equals(_status.State, "Busy", StringComparison.Ordinal) &&
+                string.Equals(_status.LastError, message, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _status.Ready = false;
+            _status.State = "Busy";
+            _status.LastError = message;
             WriteStatusFile();
         }
     }
@@ -1423,6 +1460,8 @@ internal sealed class BridgeResponse
     public BridgeStatus? Status { get; set; }
     public BridgeDiagnostics? Diagnostics { get; set; }
     public GmWorkerProposalOnlyDispatchResult? WorkerDispatch { get; set; }
+    [JsonIgnore]
+    public bool ShutdownAfterResponse { get; set; }
 
     public static BridgeResponse Success(BridgeStatus status) => new()
     {
@@ -1448,6 +1487,13 @@ internal sealed class BridgeResponse
         WorkerDispatch = workerDispatch
     };
 
+    public static BridgeResponse Shutdown(BridgeStatus status) => new()
+    {
+        Ok = true,
+        Status = status,
+        ShutdownAfterResponse = true
+    };
+
     public static BridgeResponse Failure(string error, BridgeStatus status) => new()
     {
         Ok = false,
@@ -1470,6 +1516,7 @@ internal sealed record BridgeStatus
     public string State { get; set; } = "Starting";
     public bool Ready { get; set; }
     public int HelperPid { get; set; }
+    public string SessionPath { get; set; } = string.Empty;
     public int? ShellPid { get; set; }
     public int? CliProcessId { get; set; }
     public string PipeName { get; set; } = string.Empty;

@@ -224,6 +224,236 @@ function Invoke-BridgeRequestChecked {
     return $response
 }
 
+function Test-ProcessAliveById {
+    param([int]$ProcessId)
+
+    try {
+        $null = Get-Process -Id $ProcessId -ErrorAction Stop
+        return $true
+    }
+    catch {
+        return $false
+    }
+}
+
+function Get-ProcessDescendantIds {
+    param([int[]]$RootProcessIds)
+
+    if ($null -eq $RootProcessIds -or $RootProcessIds.Count -eq 0) {
+        return @()
+    }
+
+    $allProcesses = @()
+    try {
+        $allProcesses = @(Get-CimInstance Win32_Process -ErrorAction Stop | Select-Object ProcessId, ParentProcessId)
+    }
+    catch {
+        return @()
+    }
+
+    $remainingParents = New-Object System.Collections.Generic.Queue[int]
+    $seen = New-Object System.Collections.Generic.HashSet[int]
+    foreach ($rootProcessId in $RootProcessIds) {
+        if ($rootProcessId -gt 0 -and $seen.Add($rootProcessId)) {
+            $remainingParents.Enqueue($rootProcessId)
+        }
+    }
+
+    $descendants = New-Object System.Collections.Generic.List[int]
+    while ($remainingParents.Count -gt 0) {
+        $parentId = $remainingParents.Dequeue()
+        foreach ($process in $allProcesses) {
+            if ([int]$process.ParentProcessId -ne $parentId) {
+                continue
+            }
+
+            $childId = [int]$process.ProcessId
+            if ($childId -le 0 -or -not $seen.Add($childId)) {
+                continue
+            }
+
+            $descendants.Add($childId)
+            $remainingParents.Enqueue($childId)
+        }
+    }
+
+    return @($descendants)
+}
+
+function Get-BridgeTrackedProcessIds {
+    param([object]$Status)
+
+    if ($null -eq $Status) {
+        return @()
+    }
+
+    $rootIds = New-Object System.Collections.Generic.List[int]
+    foreach ($name in @("helperPid", "shellPid", "cliProcessId")) {
+        $value = $Status.$name
+        $processId = 0
+        if ($null -ne $value -and [int]::TryParse([string]$value, [ref]$processId) -and $processId -gt 0) {
+            $rootIds.Add($processId)
+        }
+    }
+
+    $descendantIds = @(Get-ProcessDescendantIds -RootProcessIds @($rootIds))
+    $combined = @($descendantIds) + @($rootIds)
+    return @($combined | Where-Object { $_ -gt 0 -and $_ -ne $PID } | Select-Object -Unique)
+}
+
+function Wait-TrackedProcessesExit {
+    param(
+        [int[]]$ProcessIds,
+        [int]$TimeoutMilliseconds = 5000
+    )
+
+    $deadline = [DateTimeOffset]::UtcNow.AddMilliseconds($TimeoutMilliseconds)
+    do {
+        $remaining = @($ProcessIds | Where-Object { Test-ProcessAliveById -ProcessId $_ })
+        if ($remaining.Count -eq 0) {
+            return @()
+        }
+
+        Start-Sleep -Milliseconds 200
+    } while ([DateTimeOffset]::UtcNow -lt $deadline)
+
+    return @($ProcessIds | Where-Object { Test-ProcessAliveById -ProcessId $_ })
+}
+
+function Stop-SessionLocalBridgeProcesses {
+    param([object]$Status)
+
+    $processIds = @(Get-BridgeTrackedProcessIds -Status $Status)
+    $stoppedProcessIds = New-Object System.Collections.Generic.List[int]
+    foreach ($processId in $processIds) {
+        if (-not (Test-ProcessAliveById -ProcessId $processId)) {
+            continue
+        }
+
+        try {
+            Stop-Process -Id $processId -Force -ErrorAction Stop
+            $stoppedProcessIds.Add($processId)
+        }
+        catch {
+            # Keep going so the report can include every remaining process.
+        }
+    }
+
+    $remainingProcessIds = @(Wait-TrackedProcessesExit -ProcessIds $processIds -TimeoutMilliseconds 2000)
+    return [pscustomobject][ordered]@{
+        processIds = @($processIds)
+        stoppedProcessIds = @($stoppedProcessIds)
+        remainingProcessIds = @($remainingProcessIds)
+    }
+}
+
+function Remove-BridgeStatusFileIfStopped {
+    param([string]$ResolvedSessionPath)
+
+    $statusPath = Get-BridgeStatusPath $ResolvedSessionPath
+    Remove-Item $statusPath -Force -ErrorAction SilentlyContinue
+}
+
+function New-BridgeShutdownResult {
+    param(
+        [string]$ResolvedSessionPath,
+        [bool]$Ok,
+        [string]$Status,
+        [bool]$FallbackUsed,
+        [object]$BridgeResponse,
+        [object]$ProcessReport,
+        [string]$ErrorMessage = ""
+    )
+
+    $processIds = if ($null -ne $ProcessReport) { @($ProcessReport.processIds) } else { @() }
+    $stoppedProcessIds = if ($null -ne $ProcessReport) { @($ProcessReport.stoppedProcessIds) } else { @() }
+    $remainingProcessIds = if ($null -ne $ProcessReport) { @($ProcessReport.remainingProcessIds) } else { @() }
+
+    return [pscustomobject][ordered]@{
+        ok = $Ok
+        command = "shutdown"
+        status = $Status
+        sessionPath = $ResolvedSessionPath
+        fallbackUsed = $FallbackUsed
+        error = $ErrorMessage
+        processIds = @($processIds)
+        stoppedProcessIds = @($stoppedProcessIds)
+        remainingProcessIds = @($remainingProcessIds)
+        bridgeResponse = $BridgeResponse
+    }
+}
+
+function Invoke-BridgeShutdown {
+    param([string]$ResolvedSessionPath)
+
+    $statusBefore = Read-BridgeStatus $ResolvedSessionPath
+    if ($null -eq $statusBefore) {
+        return New-BridgeShutdownResult `
+            -ResolvedSessionPath $ResolvedSessionPath `
+            -Ok $true `
+            -Status "already-stopped" `
+            -FallbackUsed $false `
+            -BridgeResponse $null `
+            -ProcessReport $null
+    }
+
+    try {
+        $response = Invoke-BridgeRequest -ResolvedSessionPath $ResolvedSessionPath -Payload @{
+            command = "shutdown"
+        }
+        Assert-BridgeResponseOk -Response $response
+
+        $trackedStatus = if ($null -ne $response.status) { $response.status } else { $statusBefore }
+        $processIds = @(Get-BridgeTrackedProcessIds -Status $trackedStatus)
+        $remainingProcessIds = @(Wait-TrackedProcessesExit -ProcessIds $processIds -TimeoutMilliseconds 5000)
+        if ($remainingProcessIds.Count -eq 0) {
+            Remove-BridgeStatusFileIfStopped -ResolvedSessionPath $ResolvedSessionPath
+            return New-BridgeShutdownResult `
+                -ResolvedSessionPath $ResolvedSessionPath `
+                -Ok $true `
+                -Status "graceful-stopped" `
+                -FallbackUsed $false `
+                -BridgeResponse $response `
+                -ProcessReport ([pscustomobject][ordered]@{
+                    processIds = @($processIds)
+                    stoppedProcessIds = @()
+                    remainingProcessIds = @()
+                })
+        }
+
+        $fallback = Stop-SessionLocalBridgeProcesses -Status $trackedStatus
+        $ok = @($fallback.remainingProcessIds).Count -eq 0
+        if ($ok) {
+            Remove-BridgeStatusFileIfStopped -ResolvedSessionPath $ResolvedSessionPath
+        }
+
+        return New-BridgeShutdownResult `
+            -ResolvedSessionPath $ResolvedSessionPath `
+            -Ok $ok `
+            -Status $(if ($ok) { "fallback-stopped" } else { "fallback-failed" }) `
+            -FallbackUsed $true `
+            -BridgeResponse $response `
+            -ProcessReport $fallback `
+            -ErrorMessage "Graceful shutdown did not stop all tracked session-local processes within timeout."
+    }
+    catch {
+        $fallback = Stop-SessionLocalBridgeProcesses -Status $statusBefore
+        $ok = @($fallback.remainingProcessIds).Count -eq 0
+        if ($ok) {
+            Remove-BridgeStatusFileIfStopped -ResolvedSessionPath $ResolvedSessionPath
+        }
+
+        return New-BridgeShutdownResult `
+            -ResolvedSessionPath $ResolvedSessionPath `
+            -Ok $ok `
+            -Status $(if ($ok) { "fallback-stopped" } else { "fallback-failed" }) `
+            -FallbackUsed $true `
+            -BridgeResponse $null `
+            -ProcessReport $fallback `
+            -ErrorMessage $_.Exception.Message
+    }
+}
+
 function Start-Bridge {
     param(
         [string]$ResolvedSessionPath,
@@ -277,9 +507,14 @@ catch {{
     $encodedHostScript = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($hostScript))
 
     $windowStyle = if ($VisibleBridge) { "Normal" } else { "Hidden" }
+    $bridgeHostArguments = @()
+    if ($VisibleBridge) {
+        $bridgeHostArguments += "-NoExit"
+    }
+    $bridgeHostArguments += @("-ExecutionPolicy", "Bypass", "-EncodedCommand", $encodedHostScript)
 
     Start-Process -FilePath "powershell.exe" `
-        -ArgumentList @("-NoExit", "-ExecutionPolicy", "Bypass", "-EncodedCommand", $encodedHostScript) `
+        -ArgumentList $bridgeHostArguments `
         -WorkingDirectory $repoRoot `
         -WindowStyle $windowStyle | Out-Null
 
@@ -502,9 +737,7 @@ switch ($Action.ToLowerInvariant()) {
         break
     }
     "shutdown-bridge" {
-        Invoke-BridgeRequestChecked -ResolvedSessionPath $resolvedSessionPath -Payload @{
-            command = "shutdown"
-        } | ConvertTo-Json -Depth 8
+        Invoke-BridgeShutdown -ResolvedSessionPath $resolvedSessionPath | ConvertTo-Json -Depth 8
         break
     }
     default {

@@ -1354,6 +1354,37 @@ function Ensure-GmBridgeStarted {
     }
 }
 
+function Refresh-GmBridgeReadiness {
+    if (!(Test-Path $BridgeControlScript)) {
+        return $null
+    }
+
+    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+    try {
+        $responseJson = (& $BridgeControlScript diagnostics -SessionPath $GameSessionPath) -join "`n"
+        if ([string]::IsNullOrWhiteSpace($responseJson)) {
+            Write-Log "  -> GM bridge readiness refresh via diagnostics returned an empty response." -Level "WARN" -Color Yellow
+            return $null
+        }
+
+        $response = $responseJson | ConvertFrom-Json
+        $stopwatch.Stop()
+        $state = if ($null -ne $response.status -and $response.status.state) { [string]$response.status.state } else { "<unknown>" }
+        $ready = $false
+        if ($null -ne $response.status -and $null -ne $response.status.ready) {
+            $ready = [bool]$response.status.ready
+        }
+
+        Write-Log "  -> GM bridge readiness refresh via diagnostics: ready=$ready state=$state elapsedMs=$($stopwatch.ElapsedMilliseconds)" -Color DarkGray
+        return $response.status
+    }
+    catch {
+        $stopwatch.Stop()
+        Write-Log "  -> GM bridge readiness refresh via diagnostics failed after $($stopwatch.ElapsedMilliseconds)ms: $_" -Level "WARN" -Color Yellow
+        return $null
+    }
+}
+
 function Send-ToGmBridge {
     param(
         [string]$Message,
@@ -1371,6 +1402,13 @@ function Send-ToGmBridge {
     if ($null -eq $status) {
         Write-Log "  -> GM bridge status file not found. Falling back." -Level "WARN" -Color Yellow
         return "bridge-unavailable"
+    }
+
+    if (-not $status.ready -and -not $AllowNotReady) {
+        $refreshedStatus = Refresh-GmBridgeReadiness
+        if ($null -ne $refreshedStatus -and $refreshedStatus.ready) {
+            $status = $refreshedStatus
+        }
     }
 
     if (-not $status.ready -and -not $AllowNotReady) {
