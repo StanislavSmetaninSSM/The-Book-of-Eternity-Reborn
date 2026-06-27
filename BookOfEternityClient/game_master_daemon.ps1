@@ -401,7 +401,13 @@ function New-GmExperienceLesson {
         @()
     }
     $issueSummary = if ($issueKinds.Count -gt 0) { ($issueKinds -join ", ") } else { "unclassified harness friction" }
-    $fix = if ($repairPacketRefs.Count -gt 0) {
+    $hasMortalNpcPersistenceIssue = $issueKinds | Where-Object {
+        [string]::Equals([string]$_, "mortal_relevant_actor_missing_persistence", [System.StringComparison]::OrdinalIgnoreCase)
+    }
+    $fix = if ($hasMortalNpcPersistenceIssue) {
+        "Before completing a Mortal World turn, either remove background-only names from NPC Scope / Relevant actors into Actors outside scope, or materialize every present, speaking, clue-bearing, relationship-changing, or state-changing NPC through UpdateNPCs/NPCsInScene plus any needed NPC journal, quest, relationship, activity, or effect update."
+    }
+    elseif ($repairPacketRefs.Count -gt 0) {
         "Open validation_repair_request.json.harnessRepairPackets first, patch only named files, then use the compact repair/template surface."
     }
     elseif ($preferredSurface -eq "ACTOR_REASONING_TEMPLATE.md") {

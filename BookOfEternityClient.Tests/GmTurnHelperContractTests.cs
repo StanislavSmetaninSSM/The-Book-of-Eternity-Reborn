@@ -1713,6 +1713,64 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonContextPack_RendersActionableMortalNpcPersistenceLesson()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-npc-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            var ledgerPath = Path.Combine(control, "gm_trajectory_ledger.jsonl");
+            File.WriteAllText(
+                ledgerPath,
+                """
+                {"recordId":"gmtraj_mortal_npc_fix","kind":"repair","sessionId":"prior","turnId":"repair-npc","requestId":"repair-npc","turnNumber":2,"realm":"MortalWorld","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1","actorReasoning":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"accepted","issueKinds":["mortal_relevant_actor_missing_persistence"],"repairPacketRefs":[]},"repair":{"attempts":1,"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-06-26T10:01:00Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-repair",
+                  "turnNumber": 3,
+                  "currentRealm": "Mortal World",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "mortal_relevant_actor_missing_persistence",
+                      "category": "StateConsistency",
+                      "section": "npc_scope",
+                      "message": "Mortal World relevant actor has no persistent NPC surface."
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "mortal_relevant_actor_missing_persistence", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
+            Assert.Contains("UpdateNPCs", markdown, StringComparison.Ordinal);
+            Assert.Contains("NPCsInScene", markdown, StringComparison.Ordinal);
+            Assert.Contains("Actors outside scope", markdown, StringComparison.Ordinal);
+            Assert.Contains("background-only", markdown, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonTurnAndRepairPrompts_PreferCompactTemplatesOverLargeExamples()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");

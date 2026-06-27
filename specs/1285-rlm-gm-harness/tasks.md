@@ -98,6 +98,7 @@
 - [X] T054 [Follow-up #1249/#1290] Prevent bridge `ready`/diagnostics from reporting `Ready=true` while Codex CLI is still booting MCP servers after the trust prompt.
 - [X] T055 [Follow-up #1249/#1290] Ensure validation repair loops write an accepted terminal trajectory record when the final repair clears validation and the client returns to a playable prompt.
 - [X] T056 [Follow-up #1249/#1290] Allow Agent Console `/action` to select text-prompt choices so live-test agents do not need to parse and resubmit option text manually.
+- [X] T057 [Follow-up #1249/#1290] Make RLM lessons for `mortal_relevant_actor_missing_persistence` actionable enough to prevent repeated NPC persistence repair loops during live tests.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.
