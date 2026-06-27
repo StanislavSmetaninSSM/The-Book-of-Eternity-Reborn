@@ -181,3 +181,55 @@ T052. Expected evidence:
 - Accepted-turn cleanup does not crash if bridge/daemon briefly holds
   `input/turn_request.json`.
 - Playable prompt returns with fewer manual harness ambiguities recorded.
+
+## T052 Live Verification Run
+
+Run root: `C:\Temp\boe-rlm-live-turn-t052-20260628-010111`
+
+Setup:
+- Disposable copy of `FileSystemExample/game_session`.
+- `BookOfEternityClient/system_guardians` copied next to `game_session`.
+- Console client launched through Agent Console at `http://127.0.0.1:37421`.
+- Main bridge command: `codex --dangerously-bypass-approvals-and-sandbox`.
+- Daemon launched with `-AutoPaste -TurnTimeout 900`.
+
+Player action:
+
+```text
+Осмотреть письмо и печать, сверить знак с семейным архивом, затем проверить окно и подоконник на следы ночного посланника и тихо прислушаться к коридору.
+```
+
+Result:
+- The turn completed in 364.5 seconds.
+- `gm_trajectory_ledger.jsonl` recorded `validation.status=accepted`,
+  `repair.attempts=0`, `repair.status=none`, and `rubric.validTurn=true`.
+- `input/turn_request.json`, `ready/turn_complete.json`, and the pending-turn
+  snapshot files were cleaned; the console client did not crash in accepted-turn
+  cleanup after T052.
+- Agent Console returned to a playable `game-loop` text prompt for turn 1 with
+  three player-facing options.
+- A post-turn `/где_я` command returned location details and then returned to
+  the game prompt after an Agent Console Enter key.
+
+Player-facing assessment:
+- The narrative was readable and suitably grounded: the seal, archive clue,
+  window trace, and corridor pause were understandable without debug terms.
+- The accepted output persisted the local clue into the location's latest event;
+  `/где_я` showed the updated time `08:10` and the turn-1 location event.
+- A small console polish gap remains: `/где_я` still exposes the raw location
+  type `indoor` in player-facing output. This is not a harness blocker, but it
+  belongs in the broader console command polish sweep.
+
+Harness assessment:
+- T050/T051/T052 are live-verified for this path: no rejected lesson promotion,
+  no false accepted trajectory, and no accepted-turn cleanup crash.
+- Codex GM stayed within helper-driven session operations; the ledger recorded
+  `implementationSourceRead=false`.
+- The remaining recurring cost is latency: one ordinary accepted turn took just
+  over six minutes on `gpt-5.5 xhigh`.
+
+Run teardown:
+- The bridge shutdown request returned an empty response after closing the
+  bridge process.
+- The remaining console client and daemon PIDs for this run were stopped
+  explicitly after artifact capture.
