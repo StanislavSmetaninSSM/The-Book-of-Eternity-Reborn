@@ -545,9 +545,182 @@ public partial class GameEngine
                 continue;
             }
 
+            await AppendAcceptedValidationRepairTrajectoryAsync(source, errors, attempt, ready, pendingSnapshot);
             await DeleteValidationRepairReadyAsync();
             return true;
         }
+    }
+
+    private async Task AppendAcceptedValidationRepairTrajectoryAsync(
+        string source,
+        List<ValidationIssue> errors,
+        int attempt,
+        ValidationRepairReady ready,
+        PendingTurnSnapshotResolution pendingSnapshot)
+    {
+        const string ledgerPath = "game_state/control/gm_trajectory_ledger.jsonl";
+
+        try
+        {
+            var context = pendingSnapshot.Context;
+            var realmResolution = BuildValidationRepairTrajectoryRealmResolution(context);
+            var record = new
+            {
+                recordId = "gmtraj_" + Guid.NewGuid().ToString("N"),
+                kind = "repair",
+                sessionId = ready.SessionId,
+                turnId = ready.RequestId,
+                requestId = ready.RequestId,
+                turnNumber = ready.TurnNumber,
+                realm = realmResolution.Realm,
+                realmResolution,
+                mode = "validation_repair",
+                actionSummary = BuildValidationRepairTrajectoryActionSummary(context),
+                contextPackPath = "game_state/control/gm_context_pack",
+                templateVersions = new
+                {
+                    turnOutput = "v1",
+                    validationRepair = "v1",
+                    progressionReport = "v1",
+                    actorReasoning = "v1",
+                    tempoAdvantage = "v1"
+                },
+                outputFiles = Array.Empty<string>(),
+                dispatch = new
+                {
+                    attempts = 0,
+                    busyRetries = 0,
+                    timeout = false,
+                    status = "client_observed_terminal"
+                },
+                validation = new
+                {
+                    status = "accepted",
+                    issueKinds = BuildValidationRepairTrajectoryIssueKinds(errors),
+                    repairPacketRefs = Array.Empty<string>()
+                },
+                repair = new
+                {
+                    attempts = attempt,
+                    status = "accepted"
+                },
+                workerEvents = Array.Empty<object>(),
+                rollbackEvents = Array.Empty<object>(),
+                terminal = new
+                {
+                    kind = "validation_repair_ready",
+                    signalPath = ValidationRepairReadyPath
+                },
+                durationSeconds = (double?)null,
+                rubric = new
+                {
+                    validTurn = true,
+                    playerFacingOutputPresent = _fs.FileExists("output/narrative_response.json"),
+                    implementationSourceRead = false,
+                    rawWrongRealmWrite = false,
+                    manualReasoningNeeded = false,
+                    missingHarnessTool = (string?)null
+                },
+                createdAt = DateTime.UtcNow.ToString("o"),
+                observedBy = "client"
+            };
+
+            var fullPath = _fs.ResolvePath(ledgerPath);
+            var directory = Path.GetDirectoryName(fullPath);
+            if (!string.IsNullOrWhiteSpace(directory))
+                Directory.CreateDirectory(directory);
+
+            var json = JsonSerializer.Serialize(record, new JsonSerializerOptions(JsonOpts)
+            {
+                WriteIndented = false
+            });
+            await File.AppendAllTextAsync(fullPath, json + Environment.NewLine, Encoding.UTF8);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(
+                ex,
+                "Failed to append accepted validation repair trajectory after {Source}. Gameplay continues without ledger entry.",
+                source);
+        }
+    }
+
+    private static string[] BuildValidationRepairTrajectoryIssueKinds(IEnumerable<ValidationIssue> errors)
+    {
+        return errors
+            .Select(error => string.IsNullOrWhiteSpace(error.Code)
+                ? error.Category.ToString()
+                : error.Code!)
+            .Where(kind => !string.IsNullOrWhiteSpace(kind))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(kind => kind, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
+    private static string BuildValidationRepairTrajectoryActionSummary(ValidatedPendingTurnSnapshotContext? context)
+    {
+        var text = context?.PlayerAction?.Trim();
+        if (string.IsNullOrWhiteSpace(text))
+            return string.Empty;
+        return text.Length <= 160 ? text : text[..157] + "...";
+    }
+
+    private sealed class ValidationRepairTrajectoryRealmResolution
+    {
+        public string Realm { get; init; } = "Unknown";
+        public string Source { get; init; } = "unavailable";
+        public string RawValue { get; init; } = string.Empty;
+        public string Reason { get; init; } = string.Empty;
+    }
+
+    private static ValidationRepairTrajectoryRealmResolution BuildValidationRepairTrajectoryRealmResolution(
+        ValidatedPendingTurnSnapshotContext? context)
+    {
+        var rawRealm = context?.ProgressionControl?.CurrentRealm;
+        if (!string.IsNullOrWhiteSpace(rawRealm))
+        {
+            var realm = NormalizeValidationRepairTrajectoryRealm(rawRealm);
+            return new ValidationRepairTrajectoryRealmResolution
+            {
+                Realm = realm,
+                Source = "pending_turn_snapshot.progressionControl.currentRealm",
+                RawValue = rawRealm,
+                Reason = realm == "Unknown" ? "unrecognized_current_realm" : string.Empty
+            };
+        }
+
+        return new ValidationRepairTrajectoryRealmResolution
+        {
+            Realm = "Unknown",
+            Source = context == null ? "pending_turn_snapshot.unavailable" : "pending_turn_snapshot.progressionControl.currentRealm",
+            RawValue = string.Empty,
+            Reason = context == null ? "missing_pending_turn_snapshot_context" : "missing_current_realm"
+        };
+    }
+
+    private static string NormalizeValidationRepairTrajectoryRealm(string realm)
+    {
+        var normalized = realm.Trim();
+        if (string.Equals(normalized, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "Море Хаоса", StringComparison.OrdinalIgnoreCase))
+        {
+            return "ChaosSea";
+        }
+
+        if (string.Equals(normalized, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase))
+        {
+            return "ShiningAbode";
+        }
+
+        if (string.Equals(normalized, "Mortal World", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "MortalWorld", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "Смертный мир", StringComparison.OrdinalIgnoreCase))
+        {
+            return "MortalWorld";
+        }
+
+        return "Unknown";
     }
 
     private async Task<bool> WriteValidationRepairRequestAsync(string source, List<ValidationIssue> errors, int attempt)

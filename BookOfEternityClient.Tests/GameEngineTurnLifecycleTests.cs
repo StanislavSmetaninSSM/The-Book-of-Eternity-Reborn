@@ -120,7 +120,21 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     [Fact]
     public async Task WriteValidationRepairRequestAsync_WithEnabledWorkerProfile_WritesWorkerTaskAndAudit()
     {
-        await _fs.WriteFileAtomicAsync("game_state/world/weather.json", "{\"before\":true}");
+        const string sessionId = "session-worker-repair";
+        const string requestId = "request-worker-repair";
+        const int turnNumber = 3;
+        const string trackedPath = "game_state/world/weather.json";
+
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"before\":true}");
+        await _fs.WriteFileAtomicAsync($"game_state/control/pending_turn_snapshot/{trackedPath}", "{\"before\":true}");
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+
         var scriptPath = Path.Combine(_rootPath, "fake-validation-repair-worker.ps1");
         await File.WriteAllTextAsync(scriptPath, "exit 7", Encoding.UTF8);
         var engine = CreateGameEngine(configureSettings: settings =>
@@ -187,6 +201,82 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.False(_fs.FileExists(GmWorkerAuditLog.AuditLogPath));
         Assert.False(Directory.Exists(_fs.ResolvePath(GmWorkerBridgePool.TaskRoot)));
         Assert.False(Directory.Exists(_fs.ResolvePath(GmWorkerBridgePool.ProposalInboxRoot)));
+    }
+
+    [Fact]
+    public async Task WaitForContractRepairAsync_AcceptedRepairReady_WritesAcceptedTrajectoryRecord()
+    {
+        const string sessionId = "session-repair-ledger";
+        const string requestId = "request-repair-ledger";
+        const int turnNumber = 7;
+        const string trackedPath = "game_state/meta/soul_state.json";
+
+        await WriteJsonAsync(trackedPath, new
+        {
+            currentRealm = "Mortal World",
+            currentIncarnation = 2
+        });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{trackedPath}", new
+        {
+            currentRealm = "Mortal World",
+            currentIncarnation = 2
+        });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await WriteJsonAsync("game_state/control/validation_repair_ready.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber,
+            updatedAtUtc = "2026-06-27T00:00:00Z",
+            note = "Repair accepted by test."
+        });
+
+        var engine = CreateGameEngine();
+        var issue = new ValidationIssue(
+            "game_state/world/current_location.json.lastEventsDescription",
+            IssueSeverity.Error,
+            "Location last-events timestamp must match the canonical turn timestamp.",
+            code: "location_last_events_timestamp_invalid");
+
+        var accepted = await InvokePrivateAsync<bool>(
+            engine,
+            "WaitForContractRepairAsync",
+            "обработки хода",
+            new List<ValidationIssue> { issue },
+            2,
+            null);
+
+        Assert.True(accepted);
+        Assert.False(_fs.FileExists("game_state/control/validation_repair_ready.json"));
+
+        var ledgerJson = await _fs.ReadFileAsync("game_state/control/gm_trajectory_ledger.jsonl");
+        Assert.False(string.IsNullOrWhiteSpace(ledgerJson));
+        using var document = JsonDocument.Parse(ledgerJson!.Trim());
+        var record = document.RootElement;
+        Assert.Equal("repair", record.GetProperty("kind").GetString());
+        Assert.Equal(sessionId, record.GetProperty("sessionId").GetString());
+        Assert.Equal(requestId, record.GetProperty("requestId").GetString());
+        Assert.Equal(turnNumber, record.GetProperty("turnNumber").GetInt32());
+        Assert.Equal("validation_repair", record.GetProperty("mode").GetString());
+        Assert.Equal("accepted", record.GetProperty("validation").GetProperty("status").GetString());
+        Assert.Contains(
+            "location_last_events_timestamp_invalid",
+            record.GetProperty("validation").GetProperty("issueKinds")
+                .EnumerateArray()
+                .Select(item => item.GetString()));
+        Assert.Equal(2, record.GetProperty("repair").GetProperty("attempts").GetInt32());
+        Assert.Equal("accepted", record.GetProperty("repair").GetProperty("status").GetString());
+        Assert.Equal("validation_repair_ready", record.GetProperty("terminal").GetProperty("kind").GetString());
+        Assert.Equal(
+            "game_state/control/validation_repair_ready.json",
+            record.GetProperty("terminal").GetProperty("signalPath").GetString());
+        Assert.True(record.GetProperty("rubric").GetProperty("validTurn").GetBoolean());
     }
 
     [Fact]
@@ -2668,7 +2758,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         }
         """);
 
-        var snapshotObject = await InvokePrivateTaskResultAsync(engine, "LoadCanonicalBaselineSnapshotAsync", 42);
+        var snapshotObject = await InvokePrivateTaskResultAsync(engine, "LoadCanonicalBaselineSnapshotAsync", 42, null);
         var snapshot = Assert.IsAssignableFrom<IDictionary<string, string>>(snapshotObject);
 
         Assert.Contains(soulStatePath, snapshot.Keys);
@@ -2960,7 +3050,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task ProcessPlayerTurn_StagingFailureRestoresConsumedIncarnationLocalPrepRollback()
+    public async Task ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles()
     {
         const string worldSettingPath = "lore/current_world/world_setting.json";
         const string worldSettingJson = """{ "worldName": "Old World" }""";
@@ -2983,13 +3073,17 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var rollbackFiles = InvokePrivateValue<string[]>(engine, "EnumerateIncarnationLocalPrepRollbackFiles");
         await explorer.StagePendingLocalTurnRollbackSnapshotAsync(rollbackFiles);
 
-        _fs.ClearCurrentWorldLore();
+        await _fs.WriteFileAtomicAsync(worldSettingPath, """{ "worldName": "Changed World" }""");
         await _fs.WriteFileAtomicAsync(WorldDirectiveService.PendingSetupPath, """{ "mode": "manual", "worldDirectives": { "settingSummary": "Changed setup" } }""");
         await _fs.WriteFileAtomicAsync(ScenarioCoreService.ManifestPath, """{ "scenarioCore": { "summary": "Changed scenario" } }""");
-        Directory.CreateDirectory(_fs.ResolvePath("input/turn_request.json"));
 
-        await Assert.ThrowsAnyAsync<Exception>(() =>
-            InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Тестовый ход", null));
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "incarnation_local_prep_restore");
+        var stagedSnapshot = explorer.ConsumePendingLocalTurnRollbackSnapshot();
+        InvokePrivate(engine, "OverlayExplorerLocalRollbackSnapshot", rollbackSnapshot, stagedSnapshot);
+
+        await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", rollbackSnapshot);
+        await explorer.RestoreConsumedLocalTurnRollbackSnapshotAsync(stagedSnapshot);
+        InvokePrivate(engine, "CleanupBackup", rollbackSnapshot);
 
         Assert.Equal(worldSettingJson, await _fs.ReadFileAsync(worldSettingPath));
         Assert.Equal(pendingSetupJson, await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath));

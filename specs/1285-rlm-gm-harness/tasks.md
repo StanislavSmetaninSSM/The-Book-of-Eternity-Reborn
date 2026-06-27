@@ -96,7 +96,7 @@
 - [X] T052 [Follow-up #1249/#1290] Retry transient runtime artifact deletes so accepted-turn cleanup does not crash when bridge/daemon briefly holds `input/turn_request.json`.
 - [X] T053 [Follow-up #1249/#1290] Add a safe launcher-owned `start-daemon` action so live tests do not hand-roll fragile `Start-Process -File` commands for paths with spaces.
 - [X] T054 [Follow-up #1249/#1290] Prevent bridge `ready`/diagnostics from reporting `Ready=true` while Codex CLI is still booting MCP servers after the trust prompt.
-- [ ] T055 [Follow-up #1249/#1290] Ensure validation repair loops write an accepted terminal trajectory record when the final repair clears validation and the client returns to a playable prompt.
+- [X] T055 [Follow-up #1249/#1290] Ensure validation repair loops write an accepted terminal trajectory record when the final repair clears validation and the client returns to a playable prompt.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.
