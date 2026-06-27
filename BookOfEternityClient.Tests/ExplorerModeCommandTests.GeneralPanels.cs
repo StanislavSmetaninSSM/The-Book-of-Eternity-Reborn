@@ -1054,6 +1054,27 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_CurrentLocation_LocalizesLocationType()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/world/current_location.json", new
+        {
+            name = "Покои виконта де Вальмонта",
+            locationType = "indoor",
+            indoorType = "Building",
+            description = "Роскошные покои в поместье Вальмонт."
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/где_я"));
+
+        Assert.Null(ex);
+        var output = ExtractRenderedText();
+        Assert.Contains("Тип: помещение", output, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Тип: indoor", output, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_Status_RendersWithoutHiddenErrors()
     {

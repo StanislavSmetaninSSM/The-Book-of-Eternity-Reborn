@@ -352,8 +352,10 @@ public partial class ExplorerMode
         var locType = GetStr(root, "locationType", "");
         var biome = GetStr(root, "biome", "");
         var typeInfo = new List<string>();
-        if (!string.IsNullOrEmpty(locType)) typeInfo.Add(locType);
-        if (!string.IsNullOrEmpty(biome)) typeInfo.Add(biome);
+        if (!string.IsNullOrEmpty(locType))
+            typeInfo.Add($"Тип: {FormatLocationTypeForPlayer(locType)}");
+        if (!string.IsNullOrEmpty(biome))
+            typeInfo.Add($"Биом: {FormatLocationBiomeForPlayer(biome)}");
         if (typeInfo.Count > 0)
             text.Add($"  [dim]{Markup.Escape(string.Join(" • ", typeInfo))}[/]");
 

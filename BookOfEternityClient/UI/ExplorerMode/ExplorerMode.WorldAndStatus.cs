@@ -64,7 +64,7 @@ public partial class ExplorerMode
         // Basic info
         var locType = GetStr(loc, "locationType", "");
         if (!string.IsNullOrEmpty(locType))
-            lines.Add($"  📋 Тип: [cyan]{Markup.Escape(locType)}[/]");
+            lines.Add($"  📋 Тип: [cyan]{Markup.Escape(FormatLocationTypeForPlayer(locType))}[/]");
 
         var indoorType = GetStr(loc, "indoorType", "");
         if (!string.IsNullOrEmpty(indoorType))

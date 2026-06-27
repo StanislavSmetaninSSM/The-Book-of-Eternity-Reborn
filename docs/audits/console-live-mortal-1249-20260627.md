@@ -258,3 +258,21 @@ Verification:
 - A runtime smoke launched the daemon through `start-daemon --timeout 1`,
   confirmed the returned PID was alive and the log file existed, then stopped
   that daemon process.
+
+### Follow-up: `/где_я` raw location type
+
+The T052 post-turn `/где_я` check exposed the raw `locationType` value
+`indoor` in player-facing console output. This was a polish defect rather than
+a harness blocker, but it directly affected live-test readability.
+
+Implemented follow-up:
+- Legacy console `/где_я` now labels location metadata as `Тип: ...` and
+  `Биом: ...`.
+- Shared ExplorerMode location display also formats known location types with
+  Russian player-facing labels.
+- Regression coverage asserts that `/где_я` renders `Тип: помещение` instead
+  of `Тип: indoor` for an indoor location.
+
+Verification:
+- `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~ExplorerModeCommandTests.TryProcessCommand_CurrentLocation_LocalizesLocationType"`
+- `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~ExplorerModeCommandTests"`
