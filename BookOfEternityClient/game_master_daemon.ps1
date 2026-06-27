@@ -109,6 +109,8 @@ $BridgeControlScript = Join-Path $PSScriptRoot "Launcher\bookofeternity.ps1"
 $script:GmTrajectoryLedgerPath = Join-Path $ControlDir "gm_trajectory_ledger.jsonl"
 $script:DaemonCommandLine = [Environment]::CommandLine
 $script:DaemonLastHeartbeatUtc = [DateTime]::MinValue
+$script:CorrelatedRepairGraceMilliseconds = 5000
+$script:CorrelatedRepairPollMilliseconds = 200
 
 foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
     if (!(Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
@@ -446,6 +448,28 @@ function New-GmExperienceLesson {
     }
 }
 
+function Test-GmExperienceRecordIsSuccessfulLessonSource {
+    param([object]$Record)
+
+    $issueKinds = @(Get-GmExperienceIssueKinds -Object $Record)
+    if ($issueKinds.Count -eq 0) {
+        return $false
+    }
+
+    if ($null -eq $Record.validation -or
+        -not [string]::Equals([string]$Record.validation.status, "accepted", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $false
+    }
+
+    $repairStatus = if ($null -ne $Record.repair -and $null -ne $Record.repair.status) {
+        [string]$Record.repair.status
+    } else {
+        ""
+    }
+
+    return @("accepted", "completed", "fixed", "success") -contains $repairStatus.ToLowerInvariant()
+}
+
 function Get-GmExperienceLessons {
     param(
         [object]$Query,
@@ -462,7 +486,7 @@ function Get-GmExperienceLessons {
         if ([string]::IsNullOrWhiteSpace($line)) { continue }
         try {
             $record = $line | ConvertFrom-Json
-            if ($null -eq $record.validation -or [string]$record.validation.status -ne "rejected") {
+            if (-not (Test-GmExperienceRecordIsSuccessfulLessonSource -Record $record)) {
                 continue
             }
             if (Test-GmExperienceRecordMatchesQuery -Record $record -Query $Query) {
@@ -502,7 +526,7 @@ function Write-GmExperienceLessons {
 
     $query = Get-GmExperienceQuery
     $lessons = @(Get-GmExperienceLessons -Query $query)
-    $guidance = "Experience lessons are hints only; validators and current templates remain authoritative."
+    $guidance = "Experience lessons are selected only from accepted prior repair outcomes. They are hints only; validators and current templates remain authoritative."
     $payload = [ordered]@{
         schemaVersion = 1
         generatedAtUtc = (Get-Date).ToUniversalTime().ToString("o")
@@ -1523,6 +1547,114 @@ function Get-GmTrajectoryRepairPacketRefs {
     return @($refs | Select-Object -Unique)
 }
 
+function Get-GmObjectPropertyValue {
+    param(
+        [object]$Object,
+        [string]$Name
+    )
+
+    if ($null -eq $Object -or $null -eq $Object.PSObject) {
+        return $null
+    }
+
+    $property = $Object.PSObject.Properties[$Name]
+    if ($null -eq $property) {
+        return $null
+    }
+
+    return $property.Value
+}
+
+function Test-GmRequestCorrelation {
+    param(
+        [object]$ExpectedRequest,
+        [object]$CandidateRequest
+    )
+
+    $expectedSessionId = Get-GmObjectPropertyValue -Object $ExpectedRequest -Name "sessionId"
+    $expectedRequestId = Get-GmObjectPropertyValue -Object $ExpectedRequest -Name "requestId"
+    $expectedTurnNumber = Get-GmObjectPropertyValue -Object $ExpectedRequest -Name "turnNumber"
+    $candidateSessionId = Get-GmObjectPropertyValue -Object $CandidateRequest -Name "sessionId"
+    $candidateRequestId = Get-GmObjectPropertyValue -Object $CandidateRequest -Name "requestId"
+    $candidateTurnNumber = Get-GmObjectPropertyValue -Object $CandidateRequest -Name "turnNumber"
+
+    if ([string]::IsNullOrWhiteSpace([string]$expectedSessionId) -or
+        [string]::IsNullOrWhiteSpace([string]$expectedRequestId) -or
+        [string]::IsNullOrWhiteSpace([string]$candidateSessionId) -or
+        [string]::IsNullOrWhiteSpace([string]$candidateRequestId)) {
+        return $false
+    }
+
+    $expectedTurn = -1
+    $candidateTurn = -2
+    if (-not [int]::TryParse([string]$expectedTurnNumber, [ref]$expectedTurn) -or
+        -not [int]::TryParse([string]$candidateTurnNumber, [ref]$candidateTurn)) {
+        return $false
+    }
+
+    return [string]::Equals([string]$expectedSessionId, [string]$candidateSessionId, [System.StringComparison]::Ordinal) -and
+        [string]::Equals([string]$expectedRequestId, [string]$candidateRequestId, [System.StringComparison]::Ordinal) -and
+        $expectedTurn -eq $candidateTurn
+}
+
+function Read-CorrelatedValidationRepairRequest {
+    param([object]$TurnRequest)
+
+    if (!(Test-Path $RepairRequestFile)) {
+        return $null
+    }
+
+    try {
+        $repair = Get-Content -Path $RepairRequestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        if (Test-GmRequestCorrelation -ExpectedRequest $TurnRequest -CandidateRequest $repair) {
+            return $repair
+        }
+    }
+    catch {
+        return $null
+    }
+
+    return $null
+}
+
+function Wait-CorrelatedValidationRepairRequest {
+    param(
+        [object]$TurnRequest,
+        [int]$GraceMilliseconds = 0
+    )
+
+    $repair = Read-CorrelatedValidationRepairRequest -TurnRequest $TurnRequest
+    if ($null -ne $repair -or $GraceMilliseconds -le 0) {
+        return $repair
+    }
+
+    $elapsed = 0
+    while ($elapsed -lt $GraceMilliseconds) {
+        $sleep = [Math]::Min($script:CorrelatedRepairPollMilliseconds, $GraceMilliseconds - $elapsed)
+        Start-Sleep -Milliseconds $sleep
+        $elapsed += $sleep
+
+        $repair = Read-CorrelatedValidationRepairRequest -TurnRequest $TurnRequest
+        if ($null -ne $repair) {
+            return $repair
+        }
+    }
+
+    return $null
+}
+
+function Get-GmValidationRepairAttempt {
+    param([object]$RepairRequest)
+
+    $attemptValue = Get-GmObjectPropertyValue -Object $RepairRequest -Name "revalidationAttempt"
+    $attempt = 0
+    if ($null -ne $attemptValue -and [int]::TryParse([string]$attemptValue, [ref]$attempt) -and $attempt -gt 0) {
+        return $attempt
+    }
+
+    return 1
+}
+
 function Get-GmTrajectoryRollbackEvents {
     param([datetime]$SinceUtc)
 
@@ -2363,16 +2495,36 @@ function Process-Turn {
         }
         elseif ($null -ne $terminalSignal -and $terminalSignal.Kind -eq "success") {
             $duration = ((Get-Date) - $turnStart).TotalSeconds
-            Write-Log "  Done ($([math]::Round($duration, 1))s)" -Level "TURN" -Color Green
-            Write-GmTrajectoryRecord `
-                -Kind "turn" `
-                -Mode "ordinary" `
-                -RequestObject $turnRequest `
-                -Dispatch $dispatchDiagnostics `
-                -ValidationStatus "accepted" `
-                -TerminalSignal $terminalSignal `
-                -StartedAtUtc $turnStart.ToUniversalTime() `
-                -DurationSeconds $duration
+            $repairGraceMs = if ($dispatchDiagnostics.Status -eq "preexisting-terminal") { 0 } else { $script:CorrelatedRepairGraceMilliseconds }
+            $correlatedRepair = Wait-CorrelatedValidationRepairRequest -TurnRequest $turnRequest -GraceMilliseconds $repairGraceMs
+            if ($null -ne $correlatedRepair) {
+                Write-Log "  Done, but correlated validation repair is pending ($([math]::Round($duration, 1))s)" -Level "TURN" -Color Yellow
+                Write-GmTrajectoryRecord `
+                    -Kind "turn" `
+                    -Mode "ordinary" `
+                    -RequestObject $turnRequest `
+                    -Dispatch $dispatchDiagnostics `
+                    -ValidationStatus "rejected" `
+                    -IssueKinds (Get-GmTrajectoryIssueKinds -RequestObject $correlatedRepair) `
+                    -RepairPacketRefs (Get-GmTrajectoryRepairPacketRefs -RequestObject $correlatedRepair) `
+                    -RepairAttempts (Get-GmValidationRepairAttempt -RepairRequest $correlatedRepair) `
+                    -RepairStatus "requested" `
+                    -TerminalSignal $terminalSignal `
+                    -StartedAtUtc $turnStart.ToUniversalTime() `
+                    -DurationSeconds $duration
+            }
+            else {
+                Write-Log "  Done ($([math]::Round($duration, 1))s)" -Level "TURN" -Color Green
+                Write-GmTrajectoryRecord `
+                    -Kind "turn" `
+                    -Mode "ordinary" `
+                    -RequestObject $turnRequest `
+                    -Dispatch $dispatchDiagnostics `
+                    -ValidationStatus "accepted" `
+                    -TerminalSignal $terminalSignal `
+                    -StartedAtUtc $turnStart.ToUniversalTime() `
+                    -DurationSeconds $duration
+            }
         }
         elseif ($null -ne $terminalSignal -and $terminalSignal.Kind -eq "error") {
             $duration = ((Get-Date) - $turnStart).TotalSeconds

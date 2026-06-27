@@ -1275,6 +1275,119 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonTrajectoryLedger_MarksTurnRejectedWhenCorrelatedRepairRequestExists()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-trajectory-turn-repair-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+        Directory.CreateDirectory(Path.Combine(session, "output"));
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-needs-repair",
+                  "turnNumber": 81,
+                  "currentRealm": "Mortal World",
+                  "playerAction": "I test terminal success followed by validation repair.",
+                  "progressionControl": {
+                    "currentRealm": "Mortal World"
+                  }
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "pending_turn_snapshot.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-needs-repair",
+                  "turnNumber": 81
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(Path.Combine(control, "pending_turn_snapshot.authority.json"), "{}", Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "ready", "turn_complete.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-needs-repair",
+                  "turnNumber": 81,
+                  "status": "success",
+                  "filesModified": [
+                    "output/narrative_response.json"
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "output", "narrative_response.json"),
+                """
+                {
+                  "response": "The terminal signal exists, but validation still needs repair."
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-needs-repair",
+                  "turnNumber": 81,
+                  "currentRealm": "Mortal World",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "location_last_events_timestamp_invalid",
+                      "category": "StateConsistency",
+                      "section": "Location",
+                      "message": "lastEventsDescription uses an invalid timestamp."
+                    }
+                  ],
+                  "harnessRepairPackets": [
+                    {
+                      "packetId": "repair-location-timestamp"
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var ledgerPath = Path.Combine(control, "gm_trajectory_ledger.jsonl");
+            Assert.True(WaitForFileContaining(ledgerPath, "location_last_events_timestamp_invalid", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var turnRecordJson = File.ReadLines(ledgerPath, Encoding.UTF8)
+                .Last(line => line.Contains("\"kind\":\"turn\"", StringComparison.Ordinal) &&
+                              line.Contains("request-needs-repair", StringComparison.Ordinal));
+            using var document = JsonDocument.Parse(turnRecordJson);
+            var record = document.RootElement;
+            Assert.Equal("rejected", record.GetProperty("validation").GetProperty("status").GetString());
+            Assert.Equal("location_last_events_timestamp_invalid", record.GetProperty("validation").GetProperty("issueKinds")[0].GetString());
+            Assert.Equal("repair-location-timestamp", record.GetProperty("validation").GetProperty("repairPacketRefs")[0].GetString());
+            Assert.Equal(1, record.GetProperty("repair").GetProperty("attempts").GetInt32());
+            Assert.Equal("requested", record.GetProperty("repair").GetProperty("status").GetString());
+            Assert.False(record.GetProperty("rubric").GetProperty("validTurn").GetBoolean());
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonTrajectoryLedger_UnknownRealmIncludesResolutionReason()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -1533,7 +1646,10 @@ public sealed class GmTurnHelperContractTests
             var ledgerPath = Path.Combine(control, "gm_trajectory_ledger.jsonl");
             var ledgerLines = Enumerable.Range(1, 7)
                 .Select(i => $$"""
-                    {"recordId":"gmtraj_relevant_{{i}}","kind":"repair","sessionId":"prior","turnId":"repair-{{i}}","requestId":"repair-{{i}}","turnNumber":{{i}},"realm":"ChaosSea","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1","actorReasoning":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"rejected","issueKinds":["actor_reasoning_missing"],"repairPacketRefs":["packet-{{i}}"]},"repair":{"attempts":{{i}},"status":"requested"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":false,"playerFacingOutputPresent":false,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-06-26T10:0{{i}}:00Z"}
+                    {"recordId":"gmtraj_relevant_{{i}}","kind":"repair","sessionId":"prior","turnId":"repair-{{i}}","requestId":"repair-{{i}}","turnNumber":{{i}},"realm":"ChaosSea","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1","actorReasoning":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"accepted","issueKinds":["actor_reasoning_missing"],"repairPacketRefs":["packet-{{i}}"]},"repair":{"attempts":{{i}},"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-06-26T10:0{{i}}:00Z"}
+                    """.Trim())
+                .Append("""
+                    {"recordId":"gmtraj_rejected_same_issue","kind":"repair","sessionId":"prior","turnId":"repair-rejected","requestId":"repair-rejected","turnNumber":89,"realm":"ChaosSea","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1","actorReasoning":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"rejected","issueKinds":["actor_reasoning_missing"],"repairPacketRefs":["packet-rejected"]},"repair":{"attempts":1,"status":"requested"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":false,"playerFacingOutputPresent":false,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-06-26T10:30:00Z"}
                     """.Trim())
                 .Append("""
                     {"recordId":"gmtraj_irrelevant_mortal","kind":"repair","sessionId":"prior","turnId":"repair-mortal","requestId":"repair-mortal","turnNumber":90,"realm":"MortalWorld","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"rejected","issueKinds":["inventory_item_missing"],"repairPacketRefs":["packet-mortal"]},"repair":{"attempts":1,"status":"requested"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":false,"playerFacingOutputPresent":false,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-06-26T09:00:00Z"}
@@ -1571,6 +1687,8 @@ public sealed class GmTurnHelperContractTests
             Assert.Equal("validation_repair", rootElement.GetProperty("query").GetProperty("mode").GetString());
             Assert.Equal("actor_reasoning_missing", rootElement.GetProperty("query").GetProperty("issueKinds")[0].GetString());
             Assert.DoesNotContain("inventory_item_missing", rootElement.GetRawText(), StringComparison.Ordinal);
+            Assert.DoesNotContain("gmtraj_rejected_same_issue", rootElement.GetRawText(), StringComparison.Ordinal);
+            Assert.Contains("accepted prior repair outcomes", rootElement.GetProperty("guidance").GetString(), StringComparison.OrdinalIgnoreCase);
             Assert.Contains("validators and current templates remain authoritative", rootElement.GetProperty("guidance").GetString(), StringComparison.OrdinalIgnoreCase);
 
             var firstLesson = rootElement.GetProperty("lessons")[0];
