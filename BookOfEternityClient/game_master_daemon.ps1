@@ -1375,18 +1375,115 @@ function ConvertTo-GmTrajectoryRealm {
     return "Unknown"
 }
 
+function New-GmTrajectoryRealmResolution {
+    param(
+        [string]$Realm,
+        [string]$Source,
+        [string]$RawValue = "",
+        [string]$Reason = ""
+    )
+
+    return [ordered]@{
+        realm = $Realm
+        source = $Source
+        rawValue = $RawValue
+        reason = $Reason
+    }
+}
+
+function Get-GmTrajectorySoulStateRealmCandidate {
+    $soulStatePath = Join-Path $GameSessionPath "game_state\meta\soul_state.json"
+    if (!(Test-Path $soulStatePath)) {
+        return $null
+    }
+
+    try {
+        $soulState = Get-Content -Path $soulStatePath -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ($null -ne $soulState.currentRealm -and -not [string]::IsNullOrWhiteSpace([string]$soulState.currentRealm)) {
+            return [pscustomobject]@{
+                Source = "soul_state.currentRealm"
+                RawValue = [string]$soulState.currentRealm
+            }
+        }
+    }
+    catch {
+        return [pscustomobject]@{
+            Source = "soul_state.currentRealm"
+            RawValue = ""
+            ReadError = $true
+        }
+    }
+
+    return $null
+}
+
+function Get-GmTrajectoryRealmResolution {
+    param([object]$RequestObject)
+
+    $candidates = @()
+    if ($null -ne $RequestObject.currentRealm -and -not [string]::IsNullOrWhiteSpace([string]$RequestObject.currentRealm)) {
+        $candidates += [pscustomobject]@{
+            Source = "turn_request.currentRealm"
+            RawValue = [string]$RequestObject.currentRealm
+        }
+    }
+
+    if ($null -ne $RequestObject.progressionControl -and
+        $null -ne $RequestObject.progressionControl.currentRealm -and
+        -not [string]::IsNullOrWhiteSpace([string]$RequestObject.progressionControl.currentRealm)) {
+        $candidates += [pscustomobject]@{
+            Source = "turn_request.progressionControl.currentRealm"
+            RawValue = [string]$RequestObject.progressionControl.currentRealm
+        }
+    }
+
+    $soulCandidate = Get-GmTrajectorySoulStateRealmCandidate
+    if ($null -ne $soulCandidate) {
+        $candidates += $soulCandidate
+    }
+
+    foreach ($candidate in @($candidates)) {
+        if ($candidate.ReadError) {
+            continue
+        }
+
+        $realm = ConvertTo-GmTrajectoryRealm ([string]$candidate.RawValue)
+        if ($realm -ne "Unknown") {
+            return New-GmTrajectoryRealmResolution `
+                -Realm $realm `
+                -Source ([string]$candidate.Source) `
+                -RawValue ([string]$candidate.RawValue)
+        }
+    }
+
+    $readErrorCandidate = @($candidates | Where-Object { $_.ReadError } | Select-Object -First 1)
+    if ($readErrorCandidate.Count -gt 0) {
+        return New-GmTrajectoryRealmResolution `
+            -Realm "Unknown" `
+            -Source ([string]$readErrorCandidate[0].Source) `
+            -Reason "unreadable_current_realm"
+    }
+
+    $unrecognizedCandidate = @($candidates | Select-Object -First 1)
+    if ($unrecognizedCandidate.Count -gt 0) {
+        return New-GmTrajectoryRealmResolution `
+            -Realm "Unknown" `
+            -Source ([string]$unrecognizedCandidate[0].Source) `
+            -RawValue ([string]$unrecognizedCandidate[0].RawValue) `
+            -Reason "unrecognized_current_realm"
+    }
+
+    return New-GmTrajectoryRealmResolution `
+        -Realm "Unknown" `
+        -Source "unavailable" `
+        -Reason "missing_current_realm"
+}
+
 function Get-GmTrajectoryRealm {
     param([object]$RequestObject)
 
-    if ($null -ne $RequestObject.currentRealm) {
-        return ConvertTo-GmTrajectoryRealm ([string]$RequestObject.currentRealm)
-    }
-
-    if ($null -ne $RequestObject.progressionControl -and $null -ne $RequestObject.progressionControl.currentRealm) {
-        return ConvertTo-GmTrajectoryRealm ([string]$RequestObject.progressionControl.currentRealm)
-    }
-
-    return "Unknown"
+    $resolution = Get-GmTrajectoryRealmResolution -RequestObject $RequestObject
+    return [string]$resolution.realm
 }
 
 function Get-GmTrajectoryIssueKinds {
@@ -1682,6 +1779,7 @@ function Write-GmTrajectoryRecord {
         }
 
         $requestId = if ($null -ne $RequestObject.requestId) { [string]$RequestObject.requestId } else { "" }
+        $realmResolution = Get-GmTrajectoryRealmResolution -RequestObject $RequestObject
         $record = [ordered]@{
             recordId = "gmtraj_" + [guid]::NewGuid().ToString("N")
             kind = $Kind
@@ -1689,7 +1787,8 @@ function Write-GmTrajectoryRecord {
             turnId = $requestId
             requestId = $requestId
             turnNumber = if ($null -ne $RequestObject.turnNumber) { [int]$RequestObject.turnNumber } else { -1 }
-            realm = Get-GmTrajectoryRealm -RequestObject $RequestObject
+            realm = [string]$realmResolution.realm
+            realmResolution = $realmResolution
             mode = $Mode
             actionSummary = ConvertTo-GmTrajectoryActionSummary -RequestObject $RequestObject
             contextPackPath = "game_state/control/gm_context_pack"

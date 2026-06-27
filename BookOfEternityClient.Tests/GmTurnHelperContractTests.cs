@@ -773,6 +773,102 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonTrajectoryLedger_ResolvesRealmFromSoulStateWhenTurnRequestOmitsRealm()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-trajectory-soul-realm-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+        Directory.CreateDirectory(Path.Combine(session, "output"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "meta"));
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "meta", "soul_state.json"),
+                """
+                {
+                  "currentRealm": "Mortal World"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-soul-realm",
+                  "turnNumber": 79,
+                  "playerAction": "I test realm fallback from canonical soul state."
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-soul-realm",
+                  "turnNumber": 79
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(Path.Combine(session, "game_state", "control", "pending_turn_snapshot.authority.json"), "{}", Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "ready", "turn_complete.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-soul-realm",
+                  "turnNumber": 79,
+                  "status": "success",
+                  "filesModified": [
+                    "output/narrative_response.json"
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "output", "narrative_response.json"),
+                """
+                {
+                  "response": "The turn produced player-facing text."
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var ledgerPath = Path.Combine(session, "game_state", "control", "gm_trajectory_ledger.jsonl");
+            Assert.True(WaitForFileContaining(ledgerPath, "request-soul-realm", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            using var document = JsonDocument.Parse(File.ReadLines(ledgerPath, Encoding.UTF8).Last());
+            var record = document.RootElement;
+            Assert.Equal("MortalWorld", record.GetProperty("realm").GetString());
+            Assert.Equal("soul_state.currentRealm", record.GetProperty("realmResolution").GetProperty("source").GetString());
+            Assert.Equal("Mortal World", record.GetProperty("realmResolution").GetProperty("rawValue").GetString());
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonTrajectoryLedger_UnknownRealmIncludesResolutionReason()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("realmResolution", daemon, StringComparison.Ordinal);
+        Assert.Contains("missing_current_realm", daemon, StringComparison.Ordinal);
+        Assert.Contains("soul_state.currentRealm", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void DaemonTrajectoryLedger_RecordsValidationRepairRequest()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-trajectory-repair-" + Guid.NewGuid().ToString("N"));
