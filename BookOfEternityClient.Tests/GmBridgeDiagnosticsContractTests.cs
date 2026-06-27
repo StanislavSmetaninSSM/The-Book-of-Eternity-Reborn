@@ -433,6 +433,11 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("allowed_output_templates", source, StringComparison.Ordinal);
         Assert.Contains("rollback_status", source, StringComparison.Ordinal);
         Assert.Contains("worker_role_summary", source, StringComparison.Ordinal);
+        Assert.Contains("\"inventory-content\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"npc-content\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"faction-content\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"location-content\"", source, StringComparison.Ordinal);
+        Assert.Contains("proposalOnlyTaskTypes", source, StringComparison.Ordinal);
         Assert.Contains("read-only", source, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("missing harness surface", source, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("$script:GmSafeProbeDirective", source, StringComparison.Ordinal);

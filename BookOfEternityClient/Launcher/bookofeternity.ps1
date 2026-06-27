@@ -87,6 +87,23 @@ function New-DefaultGmWorkerBridgeProfiles {
                 proposalOnly = $true
                 requiresValidation = $false
             }
+        },
+        [ordered]@{
+            workerId = "inventory_content_codex"
+            displayName = "Codex inventory content author"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codexWorker`" -TimeoutSeconds 120"
+            role = "inventory-content"
+            enabled = $false
+            launchVisibility = "hidden"
+            timeoutSeconds = 150
+            maxConcurrentTasks = 1
+            permissions = [ordered]@{
+                taskTypes = @("inventory-content")
+                readPaths = @("game_state/core/**", "game_state/inventory/**", "game_state/world/**", "game_state/skills/**", "lore/**", "Rules/**", "TaskGuides/**")
+                proposalWritePaths = @()
+                proposalOnly = $true
+                requiresValidation = $false
+            }
         }
     )
 }

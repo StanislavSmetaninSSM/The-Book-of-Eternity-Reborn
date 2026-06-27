@@ -102,11 +102,17 @@ Allowed delegation uses:
   proposal-only prose or scene options while you continue checking state.
 - `dispatchworkertask` with `workerTaskType = "analysis"`: request
   proposal-only consistency, lore, NPC, QTE, or output-review analysis.
+- `dispatchworkertask` with content authoring `workerTaskType` values such as
+  `"inventory-content"`: request structured entity proposals. Include
+  `authoringGoal`, optional `authoringDomain`, `entityHints`, `requiredLinks`,
+  `outputNotes`, and read-only `contextPaths`. The worker must return
+  `authoringProposal`, not `changedFiles`.
 
-Worker output is GM-only. Do not show worker `draftText`, findings, or proposed
-file content to the player until you review it, edit it if needed, and make it
-part of your own final response. Workers never resolve the player action, never
-own a turn, and never write canonical `game_session` state directly.
+Worker output is GM-only. Do not show worker `draftText`, findings,
+`authoringProposal`, or proposed file content to the player until you review it,
+edit it if needed, and make it part of your own final response. Workers never
+resolve the player action, never own a turn, and never write canonical
+`game_session` state directly.
 
 Delegation cycle: decide that a narrow worker helps, send a scoped
 `WorkerTaskPacket` with role/taskType/context/timeout/acceptanceCriteria,

@@ -14,6 +14,13 @@
       "statePath": "worker_proposals/<proposalId>/proposal.json",
       "responseSurface": "worker-proposal-v1 draftText",
       "description": "Hidden/background proposal-only narrative-draft worker profile, read-only task packet, draftText proposal, and rejection of changedFiles for proposal-only tasks."
+    },
+    {
+      "contractId": "gm_worker_content_authoring_v1",
+      "file": "E_CLI_GM_Worker_Content_Authoring.txt",
+      "statePath": "worker_proposals/<proposalId>/proposal.json",
+      "responseSurface": "worker-proposal-v1 authoringProposal",
+      "description": "Hidden/background proposal-only content-authoring worker profile, read-only task packet, structured authoringProposal, review-only inbox diagnostics, and rejection of changedFiles or direct canonical writes."
     }
   ],
   "afterlifeEntityProfileCoverage": [

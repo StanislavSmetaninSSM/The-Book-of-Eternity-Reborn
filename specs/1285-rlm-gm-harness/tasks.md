@@ -103,6 +103,7 @@
 - [X] T059 [Follow-up #1249/#1290] Route RLM lessons for NPC schema/location validation issues to `MORTAL_NPC_UPDATE_TEMPLATE.md` instead of generic validation or actor reasoning guidance.
 - [X] T060 [Follow-up #1299] Make `shutdown-bridge` deterministic, session-local, idempotent, and machine-readable with a bounded fallback for unresponsive bridge processes.
 - [X] T061 [Follow-up #1300] Reduce GM bridge not-ready delay after a safe Codex prompt returns, while preserving boot/trust/update/model-loading guards.
+- [X] T062 [Follow-up #1218] Add a shared content-authoring worker contract with structured `authoringProposal`, a disabled inventory worker template, proposal-only validation, inbox diagnostics, launcher defaults, and GM-facing documentation/example coverage.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.

@@ -9,7 +9,8 @@ public static class GmWorkerBridgeProfileTemplates
     [
         CreateValidationRepairCodexTemplate(),
         CreateNarrativeDraftCodexTemplate(),
-        CreateAnalysisCodexTemplate()
+        CreateAnalysisCodexTemplate(),
+        CreateInventoryContentCodexTemplate()
     ];
 
     public static WorkerBridgeProfile CreateValidationRepairCodexTemplate() => new()
@@ -66,6 +67,47 @@ public static class GmWorkerBridgeProfileTemplates
         {
             TaskTypes = [WorkerTaskType.Analysis],
             ReadPaths = ["game_state/**", "lore/**", "Rules/**", "TaskGuides/**"],
+            ProposalWritePaths = [],
+            ProposalOnly = true,
+            RequiresValidation = false
+        }
+    };
+
+    public static WorkerBridgeProfile CreateInventoryContentCodexTemplate() =>
+        CreateContentAuthoringCodexTemplate(
+            "inventory_content_codex",
+            "Codex inventory content author",
+            WorkerRole.InventoryContent,
+            WorkerTaskType.InventoryContent,
+            [
+                "game_state/core/**",
+                "game_state/inventory/**",
+                "game_state/world/**",
+                "game_state/skills/**",
+                "lore/**",
+                "Rules/**",
+                "TaskGuides/**"
+            ]);
+
+    private static WorkerBridgeProfile CreateContentAuthoringCodexTemplate(
+        string workerId,
+        string displayName,
+        WorkerRole role,
+        WorkerTaskType taskType,
+        IReadOnlyList<string> readPaths) => new()
+    {
+        WorkerId = workerId,
+        DisplayName = displayName,
+        LaunchCommand = BuildRunnerLaunchCommand(CodexWorkerExecCommand, timeoutSeconds: 120),
+        Role = role,
+        Enabled = false,
+        LaunchVisibility = WorkerLaunchVisibility.Hidden,
+        TimeoutSeconds = 150,
+        MaxConcurrentTasks = 1,
+        Permissions = new WorkerScopePolicy
+        {
+            TaskTypes = [taskType],
+            ReadPaths = readPaths,
             ProposalWritePaths = [],
             ProposalOnly = true,
             RequiresValidation = false

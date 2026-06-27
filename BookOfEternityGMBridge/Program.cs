@@ -1289,6 +1289,19 @@ internal sealed class BridgeHost : IDisposable
                 request.AnalysisGoal ?? "",
                 request.Questions,
                 request.ContextPaths),
+            _ when WorkerTaskTypes.IsContentAuthoring(taskType) =>
+                GmWorkerProposalOnlyDispatchRequest.ContentAuthoring(
+                    taskType,
+                    sourceTurn,
+                    new WorkerContentAuthoringRequest
+                    {
+                        Domain = ParseWorkerAuthoringDomain(request.AuthoringDomain, taskType),
+                        Goal = request.AuthoringGoal ?? "",
+                        EntityHints = request.EntityHints,
+                        RequiredLinks = request.RequiredLinks,
+                        OutputNotes = request.OutputNotes
+                    },
+                    request.ContextPaths),
             _ => new GmWorkerProposalOnlyDispatchRequest
             {
                 TaskType = taskType,
@@ -1309,7 +1322,54 @@ internal sealed class BridgeHost : IDisposable
             "lore-consistency" or "loreconsistency" => WorkerTaskType.LoreConsistency,
             "npc-analysis" or "npcanalysis" => WorkerTaskType.NpcAnalysis,
             "qte-content" or "qtecontent" => WorkerTaskType.QteContent,
+            "inventory-content" or "inventorycontent" => WorkerTaskType.InventoryContent,
+            "skill-content" or "skillcontent" => WorkerTaskType.SkillContent,
+            "npc-content" or "npccontent" => WorkerTaskType.NpcContent,
+            "social-dialogue-content" or "socialdialoguecontent" => WorkerTaskType.SocialDialogueContent,
+            "faction-content" or "factioncontent" => WorkerTaskType.FactionContent,
+            "location-content" or "locationcontent" => WorkerTaskType.LocationContent,
+            "quest-content" or "questcontent" => WorkerTaskType.QuestContent,
+            "book-document-content" or "bookdocumentcontent" => WorkerTaskType.BookDocumentContent,
+            "economy-crafting-content" or "economycraftingcontent" => WorkerTaskType.EconomyCraftingContent,
+            "world-state-content" or "worldstatecontent" => WorkerTaskType.WorldStateContent,
+            "encounter-content" or "encountercontent" => WorkerTaskType.EncounterContent,
             _ => WorkerTaskType.Analysis
+        };
+    }
+
+    private static WorkerAuthoringDomain ParseWorkerAuthoringDomain(string? domain, WorkerTaskType taskType)
+    {
+        var normalized = (domain ?? "").Trim().Replace("_", "-", StringComparison.Ordinal).ToLowerInvariant();
+        return normalized switch
+        {
+            "inventory" => WorkerAuthoringDomain.Inventory,
+            "skill" => WorkerAuthoringDomain.Skill,
+            "npc" => WorkerAuthoringDomain.Npc,
+            "social-dialogue" or "socialdialogue" => WorkerAuthoringDomain.SocialDialogue,
+            "faction" => WorkerAuthoringDomain.Faction,
+            "location" => WorkerAuthoringDomain.Location,
+            "quest" => WorkerAuthoringDomain.Quest,
+            "book-document" or "bookdocument" => WorkerAuthoringDomain.BookDocument,
+            "economy-crafting" or "economycrafting" => WorkerAuthoringDomain.EconomyCrafting,
+            "world-state" or "worldstate" => WorkerAuthoringDomain.WorldState,
+            "encounter" => WorkerAuthoringDomain.Encounter,
+            "qte" => WorkerAuthoringDomain.Qte,
+            _ => taskType switch
+            {
+                WorkerTaskType.InventoryContent => WorkerAuthoringDomain.Inventory,
+                WorkerTaskType.SkillContent => WorkerAuthoringDomain.Skill,
+                WorkerTaskType.NpcContent => WorkerAuthoringDomain.Npc,
+                WorkerTaskType.SocialDialogueContent => WorkerAuthoringDomain.SocialDialogue,
+                WorkerTaskType.FactionContent => WorkerAuthoringDomain.Faction,
+                WorkerTaskType.LocationContent => WorkerAuthoringDomain.Location,
+                WorkerTaskType.QuestContent => WorkerAuthoringDomain.Quest,
+                WorkerTaskType.BookDocumentContent => WorkerAuthoringDomain.BookDocument,
+                WorkerTaskType.EconomyCraftingContent => WorkerAuthoringDomain.EconomyCrafting,
+                WorkerTaskType.WorldStateContent => WorkerAuthoringDomain.WorldState,
+                WorkerTaskType.EncounterContent => WorkerAuthoringDomain.Encounter,
+                WorkerTaskType.QteContent => WorkerAuthoringDomain.Qte,
+                _ => WorkerAuthoringDomain.WorldState
+            }
         };
     }
 
@@ -1450,6 +1510,11 @@ internal sealed class BridgeRequest
     public string? TargetLength { get; set; }
     public string? AnalysisGoal { get; set; }
     public List<string> Questions { get; set; } = new();
+    public string? AuthoringDomain { get; set; }
+    public string? AuthoringGoal { get; set; }
+    public List<string> EntityHints { get; set; } = new();
+    public List<string> RequiredLinks { get; set; } = new();
+    public List<string> OutputNotes { get; set; } = new();
     public List<string> ContextPaths { get; set; } = new();
 }
 

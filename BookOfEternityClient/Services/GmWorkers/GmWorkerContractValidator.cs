@@ -103,6 +103,18 @@ public static class GmWorkerContractValidator
             errors.Add("validation-repair tasks must include validationIssues.");
         if (task.TaskType == WorkerTaskType.NarrativeDraft && task.DraftRequest == null)
             errors.Add("narrative-draft tasks must include draftRequest.");
+        if (WorkerTaskTypes.IsContentAuthoring(task.TaskType))
+        {
+            if (!profile.Permissions.ProposalOnly)
+                errors.Add("content-authoring workers must be proposal-only.");
+            if (task.AllowedProposalPaths.Count > 0)
+                errors.Add("content-authoring tasks must not include allowedProposalPaths.");
+            ValidateAuthoringRequest(task.AuthoringRequest, task.TaskType, errors);
+        }
+        else if (task.AuthoringRequest != null)
+        {
+            errors.Add("authoringRequest is only allowed for content-authoring tasks.");
+        }
 
         return ToResult(errors);
     }
@@ -148,6 +160,14 @@ public static class GmWorkerContractValidator
 
         if (task.TaskType == WorkerTaskType.NarrativeDraft && string.IsNullOrWhiteSpace(proposal.DraftText))
             errors.Add("narrative-draft proposals must include draftText.");
+        if (WorkerTaskTypes.IsContentAuthoring(task.TaskType))
+        {
+            ValidateAuthoringProposal(proposal.AuthoringProposal, task, errors);
+        }
+        else if (proposal.AuthoringProposal != null)
+        {
+            errors.Add("authoringProposal is only allowed for content-authoring proposals.");
+        }
 
         return ToResult(errors);
     }
@@ -225,4 +245,112 @@ public static class GmWorkerContractValidator
 
         return true;
     }
+
+    private static void ValidateAuthoringRequest(
+        WorkerContentAuthoringRequest? request,
+        WorkerTaskType taskType,
+        List<string> errors)
+    {
+        if (request == null)
+        {
+            errors.Add("content-authoring tasks must include authoringRequest.");
+            return;
+        }
+
+        if (TaskTypeToDomain(taskType) is { } expectedDomain && request.Domain != expectedDomain)
+            errors.Add($"authoringRequest.domain must match taskType {taskType}.");
+        RequireText(request.Goal, "authoringRequest.goal", errors);
+        foreach (var hint in request.EntityHints)
+            RequireText(hint, "authoringRequest.entityHints", errors);
+        foreach (var link in request.RequiredLinks)
+            RequireText(link, "authoringRequest.requiredLinks", errors);
+        foreach (var note in request.OutputNotes)
+            RequireText(note, "authoringRequest.outputNotes", errors);
+    }
+
+    private static void ValidateAuthoringProposal(
+        WorkerContentAuthoringProposal? proposal,
+        WorkerTaskPacket task,
+        List<string> errors)
+    {
+        if (proposal == null)
+        {
+            errors.Add("content-authoring proposals must include authoringProposal.");
+            return;
+        }
+
+        if (TaskTypeToDomain(task.TaskType) is { } expectedDomain && proposal.Domain != expectedDomain)
+            errors.Add($"authoringProposal.domain must match taskType {task.TaskType}.");
+        if (task.AuthoringRequest != null && proposal.Domain != task.AuthoringRequest.Domain)
+            errors.Add("authoringProposal.domain must match task.authoringRequest.domain.");
+        RequireText(proposal.Goal, "authoringProposal.goal", errors);
+
+        var entityCount = proposal.CreatedEntities.Count + proposal.UpdatedEntities.Count;
+        if (entityCount == 0)
+            errors.Add("authoringProposal must include at least one createdEntities or updatedEntities item.");
+        foreach (var entity in proposal.CreatedEntities)
+            ValidateAuthoredEntity(entity, "authoringProposal.createdEntities", errors);
+        foreach (var entity in proposal.UpdatedEntities)
+            ValidateAuthoredEntity(entity, "authoringProposal.updatedEntities", errors);
+
+        if (proposal.RequiredLinks.Count == 0)
+            errors.Add("authoringProposal.requiredLinks must contain at least one link the main GM must review.");
+        foreach (var link in proposal.RequiredLinks)
+        {
+            RequireText(link.Source, "authoringProposal.requiredLinks.source", errors);
+            RequireText(link.Target, "authoringProposal.requiredLinks.target", errors);
+            RequireText(link.Reason, "authoringProposal.requiredLinks.reason", errors);
+        }
+
+        if (proposal.ValidatorRisks.Count == 0)
+            errors.Add("authoringProposal.validatorRisks must contain at least one validator risk or no-risk note.");
+        foreach (var risk in proposal.ValidatorRisks)
+        {
+            ValidateId(risk.Code, "authoringProposal.validatorRisks.code", errors);
+            RequireText(risk.Message, "authoringProposal.validatorRisks.message", errors);
+            RequireText(risk.Mitigation, "authoringProposal.validatorRisks.mitigation", errors);
+        }
+
+        if (proposal.GmReviewNotes.Count == 0)
+            errors.Add("authoringProposal.gmReviewNotes must contain at least one main-GM review note.");
+        foreach (var note in proposal.GmReviewNotes)
+            RequireText(note, "authoringProposal.gmReviewNotes", errors);
+    }
+
+    private static void ValidateAuthoredEntity(
+        WorkerAuthoredEntity entity,
+        string fieldName,
+        List<string> errors)
+    {
+        RequireText(entity.EntityType, $"{fieldName}.entityType", errors);
+        ValidateId(entity.EntityId, $"{fieldName}.entityId", errors);
+        RequireText(entity.DisplayName, $"{fieldName}.displayName", errors);
+        RequireText(entity.Summary, $"{fieldName}.summary", errors);
+        foreach (var requiredField in entity.RequiredFields)
+        {
+            RequireText(requiredField.Name, $"{fieldName}.requiredFields.name", errors);
+            RequireText(requiredField.Value, $"{fieldName}.requiredFields.value", errors);
+        }
+
+        foreach (var relationship in entity.Relationships)
+            RequireText(relationship, $"{fieldName}.relationships", errors);
+    }
+
+    private static WorkerAuthoringDomain? TaskTypeToDomain(WorkerTaskType taskType) =>
+        taskType switch
+        {
+            WorkerTaskType.InventoryContent => WorkerAuthoringDomain.Inventory,
+            WorkerTaskType.SkillContent => WorkerAuthoringDomain.Skill,
+            WorkerTaskType.NpcContent => WorkerAuthoringDomain.Npc,
+            WorkerTaskType.SocialDialogueContent => WorkerAuthoringDomain.SocialDialogue,
+            WorkerTaskType.FactionContent => WorkerAuthoringDomain.Faction,
+            WorkerTaskType.LocationContent => WorkerAuthoringDomain.Location,
+            WorkerTaskType.QuestContent => WorkerAuthoringDomain.Quest,
+            WorkerTaskType.BookDocumentContent => WorkerAuthoringDomain.BookDocument,
+            WorkerTaskType.EconomyCraftingContent => WorkerAuthoringDomain.EconomyCrafting,
+            WorkerTaskType.WorldStateContent => WorkerAuthoringDomain.WorldState,
+            WorkerTaskType.EncounterContent => WorkerAuthoringDomain.Encounter,
+            WorkerTaskType.QteContent => WorkerAuthoringDomain.Qte,
+            _ => null
+        };
 }

@@ -82,6 +82,76 @@ public sealed class GmWorkerProposalOnlyTests
     }
 
     [Fact]
+    public void BuildContentAuthoringTask_ProducesStructuredProposalOnlyPacket()
+    {
+        var profile = GmWorkerBridgeTestFixtures.InventoryContentCodexProfile();
+        var task = GmWorkerTaskPacketBuilder.BuildContentAuthoringTask(
+            profile,
+            WorkerTaskType.InventoryContent,
+            "worker_task_inventory_content",
+            new WorkerTurnReference
+            {
+                SessionId = "test-session",
+                RequestId = "test-request",
+                TurnNumber = 14
+            },
+            new WorkerContentAuthoringRequest
+            {
+                Domain = WorkerAuthoringDomain.Inventory,
+                Goal = "Prepare two stealth-themed inventory item proposals for the current manor scene.",
+                EntityHints = ["lockpick", "dark cloak"],
+                RequiredLinks = ["current location", "player inventory"],
+                OutputNotes = ["Do not write canonical item JSON; return proposal details for main-GM review."]
+            },
+            [new WorkerFileReference { Path = "game_state/world/current_location.json", Sha256 = "sha-location" }],
+            "2026-06-20T00:45:00Z");
+
+        Assert.Equal(WorkerTaskType.InventoryContent, task.TaskType);
+        Assert.Equal(profile.Role, task.Role);
+        Assert.Equal(profile.TimeoutSeconds, task.TimeoutSeconds);
+        Assert.Empty(task.AllowedProposalPaths);
+        Assert.NotNull(task.AuthoringRequest);
+        Assert.Equal(WorkerAuthoringDomain.Inventory, task.AuthoringRequest!.Domain);
+        Assert.Contains(task.AcceptanceCriteria, criterion =>
+            criterion.Contains("authoringProposal", StringComparison.Ordinal));
+        Assert.Contains(task.ForbiddenActions, action =>
+            action.Contains("changedFiles", StringComparison.Ordinal));
+        Assert.Contains("proposal-only", task.Instructions, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("inventory", task.Instructions, StringComparison.OrdinalIgnoreCase);
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Errors));
+    }
+
+    [Fact]
+    public void ValidateProposal_ContentAuthoringRequiresStructuredAuthoringProposal()
+    {
+        var profile = GmWorkerBridgeTestFixtures.InventoryContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.InventoryContentTask();
+
+        var missingAuthoring = GmWorkerBridgeTestFixtures.InventoryContentProposal() with
+        {
+            AuthoringProposal = null
+        };
+        var missingResult = GmWorkerContractValidator.ValidateProposal(missingAuthoring, task, profile);
+
+        Assert.False(missingResult.IsValid);
+        Assert.Contains(missingResult.Errors, error =>
+            error.Contains("authoringProposal", StringComparison.Ordinal));
+
+        var valid = GmWorkerBridgeTestFixtures.InventoryContentProposal();
+        var validResult = GmWorkerContractValidator.ValidateProposal(valid, task, profile);
+
+        Assert.True(validResult.IsValid, string.Join(Environment.NewLine, validResult.Errors));
+        Assert.Empty(valid.ChangedFiles);
+        Assert.Equal(WorkerAuthoringDomain.Inventory, valid.AuthoringProposal!.Domain);
+        Assert.NotEmpty(valid.AuthoringProposal.CreatedEntities);
+        Assert.NotEmpty(valid.AuthoringProposal.RequiredLinks);
+        Assert.NotEmpty(valid.AuthoringProposal.ValidatorRisks);
+        Assert.NotEmpty(valid.AuthoringProposal.GmReviewNotes);
+    }
+
+    [Fact]
     public async Task ApplyAsync_RejectsProposalOnlyChangedFilesWithoutWritingCanonicalFile()
     {
         var root = CreateTempRoot();

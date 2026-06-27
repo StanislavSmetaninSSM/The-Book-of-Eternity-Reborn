@@ -662,7 +662,24 @@ function Write-GmSafeProbes {
             sourceAuthority = @("config.json:GmWorkerBridgeProfiles", "game_state/control/gm_worker_audit.jsonl", "worker_proposals/inbox")
             outputShape = [ordered]@{
                 enabledRoles = @()
-                proposalOnlyTaskTypes = @()
+                proposalOnlyTaskTypes = @(
+                    "narrative-draft",
+                    "analysis",
+                    "lore-consistency",
+                    "npc-analysis",
+                    "qte-content",
+                    "inventory-content",
+                    "skill-content",
+                    "npc-content",
+                    "social-dialogue-content",
+                    "faction-content",
+                    "location-content",
+                    "quest-content",
+                    "book-document-content",
+                    "economy-crafting-content",
+                    "world-state-content",
+                    "encounter-content"
+                )
                 validationRepairProfiles = @()
             }
             limitations = "Worker proposals are suggestions until the apply gate accepts them."
@@ -1263,6 +1280,23 @@ function New-DefaultGmWorkerBridgeProfiles {
             permissions = [ordered]@{
                 taskTypes = @("analysis")
                 readPaths = @("game_state/**", "lore/**", "Rules/**", "TaskGuides/**")
+                proposalWritePaths = @()
+                proposalOnly = $true
+                requiresValidation = $false
+            }
+        },
+        [ordered]@{
+            workerId = "inventory_content_codex"
+            displayName = "Codex inventory content author"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codexWorker`" -TimeoutSeconds 120"
+            role = "inventory-content"
+            enabled = $false
+            launchVisibility = "hidden"
+            timeoutSeconds = 150
+            maxConcurrentTasks = 1
+            permissions = [ordered]@{
+                taskTypes = @("inventory-content")
+                readPaths = @("game_state/core/**", "game_state/inventory/**", "game_state/world/**", "game_state/skills/**", "lore/**", "Rules/**", "TaskGuides/**")
                 proposalWritePaths = @()
                 proposalOnly = $true
                 requiresValidation = $false
@@ -1957,7 +1991,24 @@ function ConvertTo-GmTrajectoryWorkerEvent {
     $changedFiles = @(Get-GmTrajectoryDetailValues -Details $AuditEvent.details -Key "changedFiles")
     $appliedFiles = @(Get-GmTrajectoryDetailValues -Details $AuditEvent.details -Key "appliedFiles")
     $rejectionReasons = @(Get-GmTrajectoryDetailValues -Details $AuditEvent.details -Key "rejectionReasons")
-    $proposalOnly = $taskType -in @("narrative-draft", "analysis", "lore-consistency", "npc-analysis", "qte-content")
+    $proposalOnly = $taskType -in @(
+        "narrative-draft",
+        "analysis",
+        "lore-consistency",
+        "npc-analysis",
+        "qte-content",
+        "inventory-content",
+        "skill-content",
+        "npc-content",
+        "social-dialogue-content",
+        "faction-content",
+        "location-content",
+        "quest-content",
+        "book-document-content",
+        "economy-crafting-content",
+        "world-state-content",
+        "encounter-content"
+    )
     if ($taskType -eq "validation-repair") {
         $proposalOnly = $false
     }

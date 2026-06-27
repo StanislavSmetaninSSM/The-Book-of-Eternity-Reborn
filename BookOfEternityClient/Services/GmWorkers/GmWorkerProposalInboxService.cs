@@ -21,6 +21,11 @@ public sealed record GmWorkerProposalInboxEntry
     public IReadOnlyList<string> ChangedFiles { get; init; } = [];
     public int FindingCount { get; init; }
     public IReadOnlyList<WorkerFinding> Findings { get; init; } = [];
+    public WorkerAuthoringDomain? AuthoringDomain { get; init; }
+    public int AuthoringCreatedEntityCount { get; init; }
+    public int AuthoringUpdatedEntityCount { get; init; }
+    public int AuthoringRequiredLinkCount { get; init; }
+    public IReadOnlyList<string> AuthoringGmReviewNotes { get; init; } = [];
     public IReadOnlyList<string> SelfCheckNotes { get; init; } = [];
     public string ApplyState { get; init; } = "";
     public IReadOnlyList<string> RelatedAuditEventTypes { get; init; } = [];
@@ -128,6 +133,11 @@ public sealed class GmWorkerProposalInboxService
             ChangedFiles = proposal.ChangedFiles.Select(file => file.Path).ToArray(),
             FindingCount = proposal.Findings.Count,
             Findings = proposal.Findings,
+            AuthoringDomain = proposal.AuthoringProposal?.Domain,
+            AuthoringCreatedEntityCount = proposal.AuthoringProposal?.CreatedEntities.Count ?? 0,
+            AuthoringUpdatedEntityCount = proposal.AuthoringProposal?.UpdatedEntities.Count ?? 0,
+            AuthoringRequiredLinkCount = proposal.AuthoringProposal?.RequiredLinks.Count ?? 0,
+            AuthoringGmReviewNotes = proposal.AuthoringProposal?.GmReviewNotes ?? [],
             SelfCheckNotes = proposal.SelfCheck.Notes,
             ApplyState = ResolveApplyState(relatedAudit),
             RelatedAuditEventTypes = relatedAudit.Select(auditEvent => auditEvent.EventType).Distinct(StringComparer.Ordinal).ToArray(),
@@ -182,8 +192,7 @@ public sealed class GmWorkerProposalInboxService
 
     private static string ResolveReviewMode(WorkerProposal proposal, WorkerTaskPacket? task)
     {
-        if (task?.TaskType is WorkerTaskType.NarrativeDraft or WorkerTaskType.Analysis or
-            WorkerTaskType.LoreConsistency or WorkerTaskType.NpcAnalysis or WorkerTaskType.QteContent)
+        if (task?.TaskType is { } taskType && WorkerTaskTypes.IsProposalOnlyReview(taskType))
         {
             return "review-only";
         }

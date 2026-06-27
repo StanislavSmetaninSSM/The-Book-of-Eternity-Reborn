@@ -13,6 +13,8 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerBridgeProfile AnalysisCodexProfile() =>
         GmWorkerBridgeProfileTemplates.CreateAnalysisCodexTemplate() with { Enabled = true };
 
+    public static WorkerBridgeProfile InventoryContentCodexProfile() =>
+        GmWorkerBridgeProfileTemplates.CreateInventoryContentCodexTemplate() with { Enabled = true };
 
     public static WorkerTaskPacket ValidationRepairTask() => new()
     {
@@ -107,6 +109,50 @@ internal static class GmWorkerBridgeTestFixtures
         Instructions = "Return draftText and optional findings only. Do not include changedFiles."
     };
 
+    public static WorkerTaskPacket InventoryContentTask() => new()
+    {
+        TaskId = "worker_task_20260620_0003",
+        WorkerId = "inventory_content_codex",
+        Role = WorkerRole.InventoryContent,
+        TaskType = WorkerTaskType.InventoryContent,
+        CreatedAtUtc = "2026-06-20T00:45:00Z",
+        TimeoutSeconds = 150,
+        SourceTurn = new WorkerTurnReference
+        {
+            SessionId = "test-session",
+            RequestId = "test-request",
+            TurnNumber = 14
+        },
+        AuthoringRequest = new WorkerContentAuthoringRequest
+        {
+            Domain = WorkerAuthoringDomain.Inventory,
+            Goal = "Prepare stealth inventory item proposals for the current manor scene.",
+            EntityHints = ["lockpick set"],
+            RequiredLinks = ["player inventory"],
+            OutputNotes = ["Return structured proposal only."]
+        },
+        ContextFiles =
+        [
+            new WorkerFileReference
+            {
+                Path = "game_state/world/current_location.json",
+                Sha256 = "example"
+            }
+        ],
+        AllowedProposalPaths = [],
+        AcceptanceCriteria =
+        [
+            "Return a worker-proposal-v1 JSON proposal.",
+            "Include authoringProposal for main-GM review."
+        ],
+        ForbiddenActions =
+        [
+            "Do not edit canonical game_session files directly.",
+            "Do not include changedFiles."
+        ],
+        Instructions = "Return authoringProposal only. Do not include changedFiles."
+    };
+
     public static WorkerProposal ValidationRepairProposal() => new()
     {
         ProposalId = "worker_proposal_20260620_0001",
@@ -158,5 +204,73 @@ internal static class GmWorkerBridgeTestFixtures
             Notes = ["Proposal-only task; no file changes included."]
         },
         CreatedAtUtc = "2026-06-20T00:05:20Z"
+    };
+
+    public static WorkerProposal InventoryContentProposal() => new()
+    {
+        ProposalId = "worker_proposal_20260620_0003",
+        TaskId = "worker_task_20260620_0003",
+        WorkerId = "inventory_content_codex",
+        Status = WorkerProposalStatus.Completed,
+        Summary = "Prepared stealth inventory item proposals for main-GM review.",
+        ChangedFiles = [],
+        Findings =
+        [
+            new WorkerFinding
+            {
+                Kind = "validator-risk",
+                Message = "Accepted items must be linked to an inventory container by the main GM."
+            }
+        ],
+        AuthoringProposal = new WorkerContentAuthoringProposal
+        {
+            Domain = WorkerAuthoringDomain.Inventory,
+            Goal = "Prepare stealth inventory item proposals for the current manor scene.",
+            CreatedEntities =
+            [
+                new WorkerAuthoredEntity
+                {
+                    EntityType = "item",
+                    EntityId = "item_valmont_lockpick_set",
+                    DisplayName = "Набор тонких отмычек Вальмонта",
+                    Summary = "Компактный набор для тихого вскрытия простых замков.",
+                    RequiredFields =
+                    [
+                        new WorkerAuthoredField
+                        {
+                            Name = "slot",
+                            Value = "hands"
+                        }
+                    ],
+                    Relationships = ["player inventory", "lockpicking QTE"]
+                }
+            ],
+            RequiredLinks =
+            [
+                new WorkerRequiredEntityLink
+                {
+                    Source = "item_valmont_lockpick_set",
+                    Target = "player_inventory",
+                    Reason = "Main GM must decide whether the item is discovered or already carried."
+                }
+            ],
+            ValidatorRisks =
+            [
+                new WorkerValidatorRisk
+                {
+                    Code = "inventory_storage_link_required",
+                    Message = "Item proposal is useless unless linked to an inventory container.",
+                    Mitigation = "Main GM should add accepted items through the normal inventory state surface."
+                }
+            ],
+            GmReviewNotes = ["Review balance before adding bonuses."]
+        },
+        SelfCheck = new WorkerSelfCheck
+        {
+            ScopeReviewed = true,
+            ValidationExpectedToPass = true,
+            Notes = ["Proposal-only authoring task; no file changes included."]
+        },
+        CreatedAtUtc = "2026-06-20T00:45:20Z"
     };
 }

@@ -1,0 +1,192 @@
+# Example: GM worker content-authoring
+
+This example shows a proposal-only content worker. The worker prepares
+structured entity proposals for the main GM. It does not write canonical
+`game_session` files and it does not decide that the proposed content exists in
+the world.
+
+Worker profile:
+
+```json
+{
+  "workerId": "inventory_content_codex",
+  "displayName": "Codex inventory content author",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "role": "inventory-content",
+  "enabled": true,
+  "launchVisibility": "hidden",
+  "timeoutSeconds": 120,
+  "maxConcurrentTasks": 1,
+  "permissions": {
+    "taskTypes": ["inventory-content"],
+    "readPaths": [
+      "game_state/core/**",
+      "game_state/inventory/**",
+      "game_state/world/**",
+      "game_state/skills/**",
+      "lore/**",
+      "Rules/**",
+      "TaskGuides/**"
+    ],
+    "proposalWritePaths": [],
+    "proposalOnly": true,
+    "requiresValidation": false
+  }
+}
+```
+
+The worker process receives `BOE_WORKER_TASK_PATH`,
+`BOE_WORKER_PROPOSAL_PATH`, and `BOE_WORKER_SESSION_PATH`. It reads the task
+packet and writes exactly one proposal JSON to `BOE_WORKER_PROPOSAL_PATH`.
+For content-authoring tasks it must keep `changedFiles` empty and return
+`authoringProposal`.
+
+Task packet:
+
+```json
+{
+  "schemaVersion": 1,
+  "taskId": "worker_task_20260620_0003",
+  "workerId": "inventory_content_codex",
+  "role": "inventory-content",
+  "taskType": "inventory-content",
+  "createdAtUtc": "2026-06-20T00:45:00Z",
+  "timeoutSeconds": 120,
+  "sourceTurn": {
+    "sessionId": "test-session",
+    "requestId": "test-request",
+    "turnNumber": 14
+  },
+  "validationIssues": [],
+  "authoringRequest": {
+    "domain": "inventory",
+    "goal": "Prepare stealth inventory item proposals for the current manor scene.",
+    "entityHints": ["lockpick set", "dark travel cloak"],
+    "requiredLinks": ["player inventory", "current location"],
+    "outputNotes": ["Return structured proposal only; the main GM decides what is accepted."]
+  },
+  "contextFiles": [
+    {
+      "path": "game_state/world/current_location.json",
+      "sha256": "sha-location"
+    }
+  ],
+  "allowedProposalPaths": [],
+  "responseContract": "worker-proposal-v1",
+  "acceptanceCriteria": [
+    "Return a worker-proposal-v1 JSON proposal.",
+    "Include a structured authoringProposal with createdEntities or updatedEntities.",
+    "Include requiredLinks, validatorRisks, and gmReviewNotes for main-GM review.",
+    "Do not apply or persist any entity changes yourself."
+  ],
+  "forbiddenActions": [
+    "Do not edit canonical game_session files directly.",
+    "Do not include changedFiles.",
+    "Do not write player-facing output or terminal signals."
+  ],
+  "instructions": "Return authoringProposal only. This task is proposal-only; do not include changedFiles."
+}
+```
+
+GM bridge dispatch request:
+
+```json
+{
+  "command": "dispatchworkertask",
+  "workerTaskType": "inventory-content",
+  "authoringDomain": "inventory",
+  "authoringGoal": "Prepare stealth inventory item proposals for the current manor scene.",
+  "entityHints": ["lockpick set", "dark travel cloak"],
+  "requiredLinks": ["player inventory", "current location"],
+  "outputNotes": ["Return structured proposal only; the main GM decides what is accepted."],
+  "contextPaths": ["game_state/world/current_location.json"]
+}
+```
+
+Worker proposal:
+
+```json
+{
+  "schemaVersion": 1,
+  "proposalId": "worker_proposal_20260620_0003",
+  "taskId": "worker_task_20260620_0003",
+  "workerId": "inventory_content_codex",
+  "status": "completed",
+  "summary": "Prepared stealth inventory item proposals for main-GM review.",
+  "changedFiles": [],
+  "findings": [
+    {
+      "kind": "validator-risk",
+      "message": "Accepted items must be linked to an inventory container by the main GM."
+    }
+  ],
+  "draftText": null,
+  "authoringProposal": {
+    "domain": "inventory",
+    "goal": "Prepare stealth inventory item proposals for the current manor scene.",
+    "createdEntities": [
+      {
+        "entityType": "item",
+        "entityId": "item_valmont_lockpick_set",
+        "displayName": "Valmont lockpick set",
+        "summary": "Compact set for quiet simple lock opening.",
+        "requiredFields": [
+          {
+            "name": "slot",
+            "value": "hands"
+          }
+        ],
+        "relationships": ["player inventory", "lockpicking QTE"]
+      }
+    ],
+    "updatedEntities": [],
+    "requiredLinks": [
+      {
+        "source": "item_valmont_lockpick_set",
+        "target": "player_inventory",
+        "reason": "The main GM must decide whether the item is discovered, bought, or already carried."
+      }
+    ],
+    "validatorRisks": [
+      {
+        "code": "inventory_storage_link_required",
+        "message": "Item proposals are not useful unless linked to an inventory container.",
+        "mitigation": "Add accepted items through the normal inventory state surface."
+      }
+    ],
+    "gmReviewNotes": ["Review balance before adding bonuses or QTE advantages."]
+  },
+  "selfCheck": {
+    "scopeReviewed": true,
+    "validationExpectedToPass": true,
+    "notes": ["Proposal-only authoring task; no file changes included."]
+  },
+  "createdAtUtc": "2026-06-20T00:45:20Z"
+}
+```
+
+Proposal inbox review:
+
+```json
+{
+  "proposalId": "worker_proposal_20260620_0003",
+  "workerId": "inventory_content_codex",
+  "taskId": "worker_task_20260620_0003",
+  "taskType": "inventory-content",
+  "status": "completed",
+  "summary": "Prepared stealth inventory item proposals for main-GM review.",
+  "reviewMode": "review-only",
+  "authoringDomain": "inventory",
+  "authoringCreatedEntityCount": 1,
+  "authoringUpdatedEntityCount": 0,
+  "authoringRequiredLinkCount": 1,
+  "changedFileCount": 0,
+  "findingCount": 1,
+  "applyState": ""
+}
+```
+
+The inbox entry is diagnostic/read-only. It helps the main GM inspect the
+proposal without opening raw JSON, but it does not create the item. If the main
+GM likes the proposal, the main GM rewrites it into the normal inventory state
+update path and validation remains authoritative.

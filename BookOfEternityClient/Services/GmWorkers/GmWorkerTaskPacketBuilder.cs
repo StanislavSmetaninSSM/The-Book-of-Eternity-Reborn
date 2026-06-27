@@ -193,4 +193,77 @@ public static class GmWorkerTaskPacketBuilder
 
         return task;
     }
+
+    public static WorkerTaskPacket BuildContentAuthoringTask(
+        WorkerBridgeProfile profile,
+        WorkerTaskType taskType,
+        string taskId,
+        WorkerTurnReference sourceTurn,
+        WorkerContentAuthoringRequest authoringRequest,
+        IReadOnlyList<WorkerFileReference> contextFiles,
+        string createdAtUtc)
+    {
+        var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
+        if (!profileValidation.IsValid)
+            throw new ArgumentException(string.Join(Environment.NewLine, profileValidation.Errors), nameof(profile));
+        if (!WorkerTaskTypes.IsContentAuthoring(taskType))
+            throw new ArgumentException("Task type must be a content-authoring task.", nameof(taskType));
+        if (!profile.Permissions.TaskTypes.Contains(taskType))
+            throw new ArgumentException($"Worker profile cannot handle {taskType} tasks.", nameof(profile));
+        if (!profile.Permissions.ProposalOnly)
+            throw new ArgumentException("Content-authoring workers must be proposal-only.", nameof(profile));
+        if (string.IsNullOrWhiteSpace(authoringRequest.Goal))
+            throw new ArgumentException("Authoring goal is required.", nameof(authoringRequest));
+
+        var hintsText = authoringRequest.EntityHints.Count == 0
+            ? "No entity hints were provided."
+            : string.Join(Environment.NewLine, authoringRequest.EntityHints.Select((hint, index) => $"{index + 1}. {hint}"));
+        var linksText = authoringRequest.RequiredLinks.Count == 0
+            ? "No required links were provided."
+            : string.Join(Environment.NewLine, authoringRequest.RequiredLinks.Select((link, index) => $"{index + 1}. {link}"));
+        var notesText = authoringRequest.OutputNotes.Count == 0
+            ? "No additional output notes were provided."
+            : string.Join(Environment.NewLine, authoringRequest.OutputNotes.Select((note, index) => $"{index + 1}. {note}"));
+
+        var task = new WorkerTaskPacket
+        {
+            TaskId = taskId,
+            WorkerId = profile.WorkerId,
+            Role = profile.Role,
+            TaskType = taskType,
+            CreatedAtUtc = createdAtUtc,
+            TimeoutSeconds = profile.TimeoutSeconds,
+            SourceTurn = sourceTurn,
+            AuthoringRequest = authoringRequest,
+            ContextFiles = contextFiles,
+            AllowedProposalPaths = [],
+            AcceptanceCriteria =
+            [
+                "Return a worker-proposal-v1 JSON proposal.",
+                "Include a structured authoringProposal with createdEntities or updatedEntities.",
+                "Include requiredLinks, validatorRisks, and gmReviewNotes for main-GM review.",
+                "Do not apply or persist any entity changes yourself."
+            ],
+            ForbiddenActions =
+            [
+                "Do not edit canonical game_session files directly.",
+                "Do not include changedFiles.",
+                "Do not write player-facing output or terminal signals.",
+                "Do not invent hidden authority beyond supplied context references."
+            ],
+            Instructions =
+                "Return a worker-proposal-v1 JSON proposal with authoringProposal. " +
+                "This is proposal-only: do not include changedFiles and do not edit canonical game_session files directly. " +
+                $"Authoring domain: {authoringRequest.Domain}. Goal: {authoringRequest.Goal}{Environment.NewLine}" +
+                $"Entity hints:{Environment.NewLine}{hintsText}{Environment.NewLine}" +
+                $"Required links:{Environment.NewLine}{linksText}{Environment.NewLine}" +
+                $"Output notes:{Environment.NewLine}{notesText}"
+        };
+
+        var taskValidation = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+        if (!taskValidation.IsValid)
+            throw new InvalidOperationException(string.Join(Environment.NewLine, taskValidation.Errors));
+
+        return task;
+    }
 }

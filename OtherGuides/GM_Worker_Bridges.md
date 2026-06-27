@@ -144,6 +144,21 @@ Codex analysis example:
 }
 ```
 
+Codex inventory content-authoring example:
+
+```json
+{
+  "workerId": "inventory_content_codex",
+  "displayName": "Codex inventory content author",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "role": "inventory-content",
+  "enabled": false,
+  "launchVisibility": "hidden",
+  "timeoutSeconds": 150,
+  "maxConcurrentTasks": 1
+}
+```
+
 Use dry-run mode to inspect the generated prompt without launching an external
 agent:
 
@@ -181,6 +196,11 @@ Supported proposal-only dispatch task types:
   continuity notes, and optional read-only context paths.
 - `analysis`: requires analysis goal, optional questions, and optional
   read-only context paths.
+- content-authoring task types such as `inventory-content`: require
+  `authoringGoal`, optional `authoringDomain`, `entityHints`,
+  `requiredLinks`, `outputNotes`, and optional read-only context paths. The
+  worker returns a structured `authoringProposal`; it does not return
+  `changedFiles`.
 
 Dispatch uses existing worker routing and the hidden/background launch path.
 Context paths are sanitized, filtered through the worker profile read scope,
@@ -188,6 +208,21 @@ hashed, and sent as read-only references. Proposal-only workers must return
 findings and/or `draftText` without `changedFiles`; if they return changed
 files, the proposal is rejected by the worker proposal contract and canonical
 state is not modified.
+
+Content-authoring proposals use the same `worker-proposal-v1` envelope as
+other workers, but `authoringProposal` is mandatory. It must include:
+
+- `domain`: the content domain, such as `inventory`;
+- `goal`: the authoring goal copied or refined from the task packet;
+- `createdEntities` / `updatedEntities`: proposed entities with ids, display
+  names, summaries, required fields, and relationships;
+- `requiredLinks`: links the main GM must create or verify before accepting the
+  proposal;
+- `validatorRisks`: likely validation risks and how the main GM can avoid them;
+- `gmReviewNotes`: explicit notes for the main GM before using the proposal.
+
+These proposals are review-only. The main GM can rewrite them into normal game
+state updates, but the worker cannot apply them directly.
 
 ## Supported MVP Tasks
 
@@ -246,3 +281,4 @@ canonical files.
 
 - `Examples/E_CLI_GM_Worker_Validation_Repair.txt`
 - `Examples/E_CLI_GM_Worker_Narrative_Draft.txt`
+- `Examples/E_CLI_GM_Worker_Content_Authoring.txt`

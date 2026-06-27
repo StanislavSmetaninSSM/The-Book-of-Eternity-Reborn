@@ -1535,6 +1535,8 @@ public sealed class GmTurnHelperContractTests
                 """
                 {"schemaVersion":1,"eventId":"worker_audit_narrative_dispatch","eventType":"task-dispatched","workerId":"narrative_draft_codex","taskId":"worker_task_narrative_0001","timestampUtc":"2099-01-01T00:00:00Z","summary":"Dispatched NarrativeDraft worker task.","details":{"taskType":["narrative-draft"],"responseContract":["worker-proposal-v1"],"allowedProposalPaths":[]}}
                 {"schemaVersion":1,"eventId":"worker_audit_narrative_proposal","eventType":"proposal-received","workerId":"narrative_draft_codex","taskId":"worker_task_narrative_0001","proposalId":"worker_proposal_narrative_0001","timestampUtc":"2099-01-01T00:00:01Z","summary":"Drafted scene for main-GM review.","details":{"changedFiles":[]}}
+                {"schemaVersion":1,"eventId":"worker_audit_inventory_dispatch","eventType":"task-dispatched","workerId":"inventory_content_codex","taskId":"worker_task_inventory_content_0001","timestampUtc":"2099-01-01T00:00:02Z","summary":"Dispatched inventory-content worker task.","details":{"taskType":["inventory-content"],"responseContract":["worker-proposal-v1"],"allowedProposalPaths":[]}}
+                {"schemaVersion":1,"eventId":"worker_audit_inventory_proposal","eventType":"proposal-received","workerId":"inventory_content_codex","taskId":"worker_task_inventory_content_0001","proposalId":"worker_proposal_inventory_content_0001","timestampUtc":"2099-01-01T00:00:03Z","summary":"Prepared item proposals for main-GM review.","details":{"changedFiles":[]}}
                 """,
                 Encoding.UTF8);
 
@@ -1553,6 +1555,15 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains(workerEvents, workerEvent =>
                 workerEvent.GetProperty("eventType").GetString() == "proposal-received" &&
                 workerEvent.GetProperty("proposalId").GetString() == "worker_proposal_narrative_0001" &&
+                workerEvent.GetProperty("changedFileCount").GetInt32() == 0);
+            Assert.Contains(workerEvents, workerEvent =>
+                workerEvent.GetProperty("eventType").GetString() == "task-dispatched" &&
+                workerEvent.GetProperty("workerId").GetString() == "inventory_content_codex" &&
+                workerEvent.GetProperty("taskType").GetString() == "inventory-content" &&
+                workerEvent.GetProperty("proposalOnly").GetBoolean());
+            Assert.Contains(workerEvents, workerEvent =>
+                workerEvent.GetProperty("eventType").GetString() == "proposal-received" &&
+                workerEvent.GetProperty("proposalId").GetString() == "worker_proposal_inventory_content_0001" &&
                 workerEvent.GetProperty("changedFileCount").GetInt32() == 0);
             Assert.DoesNotContain("Raw WorkerTaskPacket JSON", record.GetRawText(), StringComparison.Ordinal);
         }

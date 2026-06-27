@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services.GmWorkers;
@@ -121,6 +122,27 @@ public sealed class GmWorkerAuditLog
             WorkerTaskType.LoreConsistency => "lore-consistency",
             WorkerTaskType.NpcAnalysis => "npc-analysis",
             WorkerTaskType.QteContent => "qte-content",
-            _ => taskType.ToString().ToLowerInvariant()
+            _ => ToKebabCase(taskType.ToString())
         };
+
+    private static string ToKebabCase(string value)
+    {
+        var result = new StringBuilder();
+        for (var i = 0; i < value.Length; i++)
+        {
+            var ch = value[i];
+            if (char.IsUpper(ch))
+            {
+                if (i > 0)
+                    result.Append('-');
+                result.Append(char.ToLowerInvariant(ch));
+            }
+            else
+            {
+                result.Append(ch);
+            }
+        }
+
+        return result.ToString();
+    }
 }

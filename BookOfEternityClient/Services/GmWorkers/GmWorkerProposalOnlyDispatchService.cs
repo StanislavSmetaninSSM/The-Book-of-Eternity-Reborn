@@ -24,6 +24,7 @@ public sealed record GmWorkerProposalOnlyDispatchRequest
     public string TargetLength { get; init; } = "";
     public string AnalysisGoal { get; init; } = "";
     public IReadOnlyList<string> Questions { get; init; } = [];
+    public WorkerContentAuthoringRequest? AuthoringRequest { get; init; }
     public IReadOnlyList<string> ContextPaths { get; init; } = [];
 
     public static GmWorkerProposalOnlyDispatchRequest NarrativeDraft(
@@ -55,6 +56,19 @@ public sealed record GmWorkerProposalOnlyDispatchRequest
             SourceTurn = sourceTurn,
             AnalysisGoal = analysisGoal,
             Questions = questions,
+            ContextPaths = contextPaths
+        };
+
+    public static GmWorkerProposalOnlyDispatchRequest ContentAuthoring(
+        WorkerTaskType taskType,
+        WorkerTurnReference sourceTurn,
+        WorkerContentAuthoringRequest authoringRequest,
+        IReadOnlyList<string> contextPaths) =>
+        new()
+        {
+            TaskType = taskType,
+            SourceTurn = sourceTurn,
+            AuthoringRequest = authoringRequest,
             ContextPaths = contextPaths
         };
 }
@@ -178,6 +192,15 @@ public sealed class GmWorkerProposalOnlyDispatchService
                 request.Questions,
                 contextFiles,
                 createdAtUtc),
+            _ when WorkerTaskTypes.IsContentAuthoring(request.TaskType) =>
+                GmWorkerTaskPacketBuilder.BuildContentAuthoringTask(
+                    profile,
+                    request.TaskType,
+                    taskId,
+                    request.SourceTurn,
+                    request.AuthoringRequest ?? new WorkerContentAuthoringRequest(),
+                    contextFiles,
+                    createdAtUtc),
             _ => throw new InvalidOperationException($"Unsupported proposal-only task type: {request.TaskType}.")
         };
     }
@@ -229,6 +252,11 @@ public sealed class GmWorkerProposalOnlyDispatchService
             WorkerTaskType.Analysis when string.IsNullOrWhiteSpace(request.AnalysisGoal) =>
                 "Analysis dispatch requires analysisGoal.",
             WorkerTaskType.NarrativeDraft or WorkerTaskType.Analysis => "",
+            _ when WorkerTaskTypes.IsContentAuthoring(request.TaskType) && request.AuthoringRequest == null =>
+                "Content authoring dispatch requires authoringRequest.",
+            _ when WorkerTaskTypes.IsContentAuthoring(request.TaskType) && string.IsNullOrWhiteSpace(request.AuthoringRequest?.Goal) =>
+                "Content authoring dispatch requires authoringRequest.goal.",
+            _ when WorkerTaskTypes.IsContentAuthoring(request.TaskType) => "",
             _ => $"Unsupported proposal-only task type: {request.TaskType}."
         };
     }

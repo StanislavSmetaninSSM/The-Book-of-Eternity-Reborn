@@ -12,7 +12,18 @@ public enum WorkerRole
     Analysis,
     LoreConsistency,
     NpcAnalysis,
-    QteContent
+    QteContent,
+    InventoryContent,
+    SkillContent,
+    NpcContent,
+    SocialDialogueContent,
+    FactionContent,
+    LocationContent,
+    QuestContent,
+    BookDocumentContent,
+    EconomyCraftingContent,
+    WorldStateContent,
+    EncounterContent
 }
 
 public enum WorkerTaskType
@@ -22,7 +33,58 @@ public enum WorkerTaskType
     Analysis,
     LoreConsistency,
     NpcAnalysis,
-    QteContent
+    QteContent,
+    InventoryContent,
+    SkillContent,
+    NpcContent,
+    SocialDialogueContent,
+    FactionContent,
+    LocationContent,
+    QuestContent,
+    BookDocumentContent,
+    EconomyCraftingContent,
+    WorldStateContent,
+    EncounterContent
+}
+
+public enum WorkerAuthoringDomain
+{
+    Inventory,
+    Skill,
+    Npc,
+    SocialDialogue,
+    Faction,
+    Location,
+    Quest,
+    BookDocument,
+    EconomyCrafting,
+    WorldState,
+    Encounter,
+    Qte
+}
+
+public static class WorkerTaskTypes
+{
+    public static bool IsContentAuthoring(WorkerTaskType taskType) =>
+        taskType is WorkerTaskType.InventoryContent or
+            WorkerTaskType.SkillContent or
+            WorkerTaskType.NpcContent or
+            WorkerTaskType.SocialDialogueContent or
+            WorkerTaskType.FactionContent or
+            WorkerTaskType.LocationContent or
+            WorkerTaskType.QuestContent or
+            WorkerTaskType.BookDocumentContent or
+            WorkerTaskType.EconomyCraftingContent or
+            WorkerTaskType.WorldStateContent or
+            WorkerTaskType.EncounterContent or
+            WorkerTaskType.QteContent;
+
+    public static bool IsProposalOnlyReview(WorkerTaskType taskType) =>
+        taskType is WorkerTaskType.NarrativeDraft or
+            WorkerTaskType.Analysis or
+            WorkerTaskType.LoreConsistency or
+            WorkerTaskType.NpcAnalysis ||
+            IsContentAuthoring(taskType);
 }
 
 public enum WorkerProposalStatus
@@ -92,6 +154,7 @@ public sealed record WorkerTaskPacket
     public WorkerTurnReference SourceTurn { get; init; } = new();
     public IReadOnlyList<WorkerValidationIssue> ValidationIssues { get; init; } = [];
     public WorkerDraftRequest? DraftRequest { get; init; }
+    public WorkerContentAuthoringRequest? AuthoringRequest { get; init; }
     public IReadOnlyList<WorkerFileReference> ContextFiles { get; init; } = [];
     public IReadOnlyList<string> AllowedProposalPaths { get; init; } = [];
     public string ResponseContract { get; init; } = "worker-proposal-v1";
@@ -128,6 +191,15 @@ public sealed record WorkerDraftRequest
     public string TargetLength { get; init; } = "";
 }
 
+public sealed record WorkerContentAuthoringRequest
+{
+    public WorkerAuthoringDomain Domain { get; init; }
+    public string Goal { get; init; } = "";
+    public IReadOnlyList<string> EntityHints { get; init; } = [];
+    public IReadOnlyList<string> RequiredLinks { get; init; } = [];
+    public IReadOnlyList<string> OutputNotes { get; init; } = [];
+}
+
 public sealed record WorkerProposal
 {
     public int SchemaVersion { get; init; } = 1;
@@ -139,8 +211,50 @@ public sealed record WorkerProposal
     public IReadOnlyList<WorkerChangedFile> ChangedFiles { get; init; } = [];
     public IReadOnlyList<WorkerFinding> Findings { get; init; } = [];
     public string? DraftText { get; init; }
+    public WorkerContentAuthoringProposal? AuthoringProposal { get; init; }
     public WorkerSelfCheck SelfCheck { get; init; } = new();
     public string CreatedAtUtc { get; init; } = "";
+}
+
+public sealed record WorkerContentAuthoringProposal
+{
+    public WorkerAuthoringDomain Domain { get; init; }
+    public string Goal { get; init; } = "";
+    public IReadOnlyList<WorkerAuthoredEntity> CreatedEntities { get; init; } = [];
+    public IReadOnlyList<WorkerAuthoredEntity> UpdatedEntities { get; init; } = [];
+    public IReadOnlyList<WorkerRequiredEntityLink> RequiredLinks { get; init; } = [];
+    public IReadOnlyList<WorkerValidatorRisk> ValidatorRisks { get; init; } = [];
+    public IReadOnlyList<string> GmReviewNotes { get; init; } = [];
+}
+
+public sealed record WorkerAuthoredEntity
+{
+    public string EntityType { get; init; } = "";
+    public string EntityId { get; init; } = "";
+    public string DisplayName { get; init; } = "";
+    public string Summary { get; init; } = "";
+    public IReadOnlyList<WorkerAuthoredField> RequiredFields { get; init; } = [];
+    public IReadOnlyList<string> Relationships { get; init; } = [];
+}
+
+public sealed record WorkerAuthoredField
+{
+    public string Name { get; init; } = "";
+    public string Value { get; init; } = "";
+}
+
+public sealed record WorkerRequiredEntityLink
+{
+    public string Source { get; init; } = "";
+    public string Target { get; init; } = "";
+    public string Reason { get; init; } = "";
+}
+
+public sealed record WorkerValidatorRisk
+{
+    public string Code { get; init; } = "";
+    public string Message { get; init; } = "";
+    public string Mitigation { get; init; } = "";
 }
 
 public sealed record WorkerChangedFile

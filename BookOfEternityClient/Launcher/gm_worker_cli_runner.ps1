@@ -150,6 +150,7 @@ Output contract:
 - Do not overwrite files under game_state, lore, ready, input, or other canonical session roots.
 - If the task allows changedFiles, write proposed content under worker_proposals/<proposalId>/... and reference it with contentRef.
 - If the task is proposal-only, keep changedFiles empty and return draftText and/or findings.
+- If the task contains authoringRequest, keep changedFiles empty and return authoringProposal with structured created/updated entities, requiredLinks, validatorRisks, and gmReviewNotes.
 - Leave schema validation, scope checks, and canonical application to the main GM apply gate.
 
 Required worker-proposal-v1 JSON shape:
@@ -163,6 +164,7 @@ Required worker-proposal-v1 JSON shape:
   "changedFiles": [],
   "findings": [],
   "draftText": null,
+  "authoringProposal": null,
   "selfCheck": {
     "scopeReviewed": true,
     "validationExpectedToPass": true,
@@ -177,6 +179,7 @@ Required-field rules:
 - For proposal-only tasks, changedFiles must be [].
 - For narrative-draft tasks, draftText must contain the proposed prose.
 - For analysis tasks, findings should contain compact objects with kind and message.
+- For content-authoring tasks, authoringProposal is required and must contain domain, goal, createdEntities or updatedEntities, requiredLinks, validatorRisks, and gmReviewNotes.
 - For validation-repair tasks that are allowed to propose files, every changedFiles item needs path, changeKind, and contentRef unless it is a delete.
 
 Raw WorkerTaskPacket JSON begins on the next line.
