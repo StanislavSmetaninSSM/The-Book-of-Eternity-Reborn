@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.AspNetCore.Builder;
 using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Core;
@@ -47,6 +48,29 @@ var startupOptions = ClientStartupOptions.Parse(args, ResolveDefaultBasePath());
 var basePath = startupOptions.BasePath;
 if (startupOptions.PlainOutput)
     Environment.SetEnvironmentVariable("NO_COLOR", "1");
+
+try
+{
+    if (LiveTurnPreparationCli.TryParse(args, out var liveTurnPreparationOptions, out var liveTurnPreparationError))
+    {
+        if (!string.IsNullOrWhiteSpace(liveTurnPreparationError))
+            throw new ArgumentException(liveTurnPreparationError);
+
+        var fs = new FileSystemManager(basePath, NullLogger<FileSystemManager>.Instance);
+        fs.EnsureDirectoryStructure();
+        var result = await new LiveTurnPreparationService(fs).PrepareAsync(liveTurnPreparationOptions);
+        Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(
+            result,
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        return;
+    }
+}
+catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or IOException or UnauthorizedAccessException)
+{
+    Console.Error.WriteLine($"prepare-live-turn failed: {ex.Message}");
+    Environment.ExitCode = 2;
+    return;
+}
 
 IConsoleInputSource inputSource;
 AgentConsoleStateStore? agentConsoleStateStore = null;

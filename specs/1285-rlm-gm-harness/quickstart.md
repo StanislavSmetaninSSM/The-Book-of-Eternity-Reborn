@@ -29,12 +29,21 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 codex --dangerously-bypass-approvals-and-sandbox
 ```
 
-2. Run one ordinary turn or repair-sensitive turn selected by current priority.
-3. Confirm the context pack includes compact templates and, after the relevant implementation slice, compact experience lessons.
-4. Confirm a GM trajectory ledger record is written.
-5. If a validation repair happens, confirm the ledger records issue kind, repair packet, attempt count, and final status.
-6. If a worker is used, confirm dispatch/proposal/apply decision appears in the ledger.
-7. Apply the live-test rubric:
+2. Prepare each live-test player turn with the repository-owned helper instead of hand-writing JSON:
+
+```powershell
+.\BookOfEternityClient\Launcher\bookofeternity.ps1 -SessionPath "C:\Temp\boe-live-test\game_session" prepare-turn --action "Надеть руническую перчатку и изучить письмо." --session-id live-session --request-id live-request-001 --turn-number 1 --dice "14,8,17"
+```
+
+The helper writes `input/turn_request.json`, `game_state/control/pending_turn_snapshot.json`, and `game_state/control/pending_turn_snapshot.authority.json`.
+It normalizes snapshot paths and excludes generated harness files such as bridge/daemon status, `gm_context_pack`, repair requests, prior pending snapshots, and the trajectory ledger.
+
+3. Run one ordinary turn or repair-sensitive turn selected by current priority.
+4. Confirm the context pack includes compact templates and, after the relevant implementation slice, compact experience lessons.
+5. Confirm a GM trajectory ledger record is written.
+6. If a validation repair happens, confirm the ledger records issue kind, repair packet, attempt count, and final status.
+7. If a worker is used, confirm dispatch/proposal/apply decision appears in the ledger.
+8. Apply the live-test rubric:
    - valid turn
    - player-facing output present
    - no implementation-source browsing as ordinary workflow
@@ -43,7 +52,7 @@ codex --dangerously-bypass-approvals-and-sandbox
    - missing harness tool moments
    - worker usefulness
    - experience lesson usefulness
-8. Convert repeated high-friction findings into GitHub issues or comments.
+9. Convert repeated high-friction findings into GitHub issues or comments.
 
 ## Expected result
 

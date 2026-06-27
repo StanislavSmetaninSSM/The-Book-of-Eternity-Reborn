@@ -70,6 +70,17 @@ cd "E:\Games\The Book of Eternity Reborn\BookOfEternityClient"
 dotnet run
 ```
 
+## Подготовка следующего live-test хода без ручного JSON
+
+Если нужно поставить следующий ход в очередь для живого теста, не собирайте `turn_request.json` и pending snapshot руками. Используйте launcher-команду:
+
+```powershell
+cd "E:\Games\The Book of Eternity Reborn"
+.\BookOfEternityClient\Launcher\bookofeternity.ps1 -SessionPath "E:\Games\The Book of Eternity Reborn\BookOfEternityClient\game_session" prepare-turn --action "Надеть руническую перчатку и изучить письмо." --dice "14,8,17"
+```
+
+Команда создаёт согласованные `input\turn_request.json`, `game_state\control\pending_turn_snapshot.json` и `game_state\control\pending_turn_snapshot.authority.json`, нормализуя пути и исключая служебные bridge/daemon/harness артефакты.
+
 ## Самая короткая версия
 
 Окно 1:

@@ -291,9 +291,44 @@ catch {{
     }
 }
 
+function Invoke-PrepareTurn {
+    param(
+        [string]$ResolvedSessionPath,
+        [string[]]$PrepareArguments
+    )
+
+    $repoRoot = Get-RepoRoot
+    $clientRoot = Get-ClientRoot
+    $clientProject = Join-Path $clientRoot "BookOfEternityClient.csproj"
+    if (!(Test-Path $clientProject)) {
+        throw "Client project not found: $clientProject"
+    }
+
+    $basePath = Split-Path $ResolvedSessionPath -Parent
+    $clientExe = Join-Path $clientRoot "bin\Debug\net8.0\BookOfEternityClient.exe"
+    $clientArguments = @($basePath, "--prepare-live-turn") + $PrepareArguments
+
+    if (Test-Path $clientExe) {
+        & $clientExe @clientArguments
+        if ($LASTEXITCODE -ne 0) {
+            throw "prepare-turn failed with exit code $LASTEXITCODE."
+        }
+        return
+    }
+
+    dotnet run --project $clientProject -- @clientArguments
+    if ($LASTEXITCODE -ne 0) {
+        throw "prepare-turn failed with exit code $LASTEXITCODE."
+    }
+}
+
 $resolvedSessionPath = Resolve-SessionPath $SessionPath
 
 switch ($Action.ToLowerInvariant()) {
+    "prepare-turn" {
+        Invoke-PrepareTurn -ResolvedSessionPath $resolvedSessionPath -PrepareArguments $Arguments
+        break
+    }
     "start-bridge" {
         $visibleBridge = @($Arguments | Where-Object {
             [string]::Equals($_, "visible", [System.StringComparison]::OrdinalIgnoreCase) -or
@@ -368,6 +403,7 @@ switch ($Action.ToLowerInvariant()) {
     }
     default {
         Write-Host "Usage:" -ForegroundColor Yellow
+        Write-Host "  .\bookofeternity.ps1 -SessionPath <game_session path> prepare-turn --action <text> [--session-id <id>] [--request-id <id>] [--turn-number <n>] [--dice `"1,2,3`"]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 start-bridge [visible] [-SessionPath <path>]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 status [-SessionPath <path>]" -ForegroundColor Yellow
         Write-Host "  .\bookofeternity.ps1 diagnostics [-SessionPath <path>]" -ForegroundColor Yellow
