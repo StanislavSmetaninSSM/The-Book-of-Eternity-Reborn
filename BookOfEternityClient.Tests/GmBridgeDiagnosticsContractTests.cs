@@ -172,6 +172,24 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
+    public void BridgeHost_MarksNotReadyWhileDispatchedCodexPromptIsRunning()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        var dispatchStart = source.IndexOf("case \"dispatchprompt\":", StringComparison.Ordinal);
+        var busyState = source.IndexOf("_status.State = \"Busy\";", dispatchStart, StringComparison.Ordinal);
+        var readyReset = source.IndexOf("_status.Ready = false;", dispatchStart, StringComparison.Ordinal);
+        var promptSubmitted = source.IndexOf("WaitForPromptSubmittedAfterEnterAsync", dispatchStart, StringComparison.Ordinal);
+
+        Assert.True(dispatchStart >= 0, "dispatchprompt handler must exist.");
+        Assert.True(readyReset > dispatchStart, "Dispatch must clear Ready before Codex starts processing.");
+        Assert.True(busyState > readyReset, "Ready must be cleared before the bridge enters Busy state.");
+        Assert.True(promptSubmitted > busyState, "Busy/not-ready state must be written before prompt submission.");
+        Assert.Contains("RefreshDispatchFailureRecoveryIfCliPromptReady", source, StringComparison.Ordinal);
+        Assert.Contains("AutoMarkReadyIfCliPromptReady", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BridgeHost_RecoversDispatchFailedStatusWhenCodexPromptReturns()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");

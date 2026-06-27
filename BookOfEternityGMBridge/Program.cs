@@ -270,6 +270,7 @@ internal sealed class BridgeHost : IDisposable
                     if (!_status.Ready)
                         return BridgeResponse.Failure("Bridge is not marked ready.", SnapshotStatus());
 
+                    _status.Ready = false;
                     _status.State = "Busy";
                     _status.LastPromptDispatchState = "Dispatching";
                     _status.LastPromptDispatchStartedAtUtc = dispatchStartedAt.ToString("O");
