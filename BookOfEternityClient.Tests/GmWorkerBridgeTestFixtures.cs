@@ -22,6 +22,9 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerBridgeProfile NpcContentCodexProfile() =>
         GmWorkerBridgeProfileTemplates.CreateNpcContentCodexTemplate() with { Enabled = true };
 
+    public static WorkerBridgeProfile GuardianAbodeContentCodexProfile() =>
+        GmWorkerBridgeProfileTemplates.CreateGuardianAbodeContentCodexTemplate() with { Enabled = true };
+
     public static WorkerTaskPacket ValidationRepairTask() => new()
     {
         TaskId = "worker_task_20260620_0001",
@@ -323,6 +326,123 @@ internal static class GmWorkerBridgeTestFixtures
             "Do not use worldStateFlags, worldEventsLog, Mortal NPC relationships, Mortal combat HP/status, Mortal factions, or Mortal map files as afterlife substitutes."
         ],
         Instructions = "Return afterlifeProposal only. Use Afterlife_Contract_Matrix.md to select exact afterlife state surfaces."
+    };
+
+    public static WorkerTaskPacket GuardianAbodeContentTask() => new()
+    {
+        TaskId = "worker_task_guardian_abode_content_0001",
+        WorkerId = "guardian_abode_content_codex",
+        Role = WorkerRole.GuardianAbodeContent,
+        TaskType = WorkerTaskType.GuardianAbodeContent,
+        CreatedAtUtc = "2026-06-20T03:15:00Z",
+        TimeoutSeconds = 150,
+        SourceTurn = new WorkerTurnReference
+        {
+            SessionId = "test-session",
+            RequestId = "test-request",
+            TurnNumber = 18
+        },
+        AuthoringRequest = new WorkerContentAuthoringRequest
+        {
+            Domain = WorkerAuthoringDomain.GuardianAbode,
+            Goal = "Prepare Guardian and Abode project suggestions for Azalia's Chaos Sea scene.",
+            EntityHints = ["guardian_azalia", "abode_azalia_memory_silk_001", "project_memory_silk"],
+            RequiredLinks = ["active Guardian", "current Abode", "guardian project tracker", "abode power journal"],
+            OutputNotes = ["Return GM-only hidden facts separately from player-visible summary."]
+        },
+        GuardianAbodeRequest = new WorkerGuardianAbodeRequest
+        {
+            Realm = "Chaos Sea",
+            GuardianIds = ["guardian_azalia"],
+            AbodeIds = ["abode_azalia_memory_silk_001"],
+            PendingControlFiles =
+            [
+                "game_state/control/system_guardian_attraction.json",
+                "game_state/control/afterlife_return_guard.json"
+            ],
+            FocusAreas =
+            [
+                "guardian dossier",
+                "abode project",
+                "abode power",
+                "trade favor",
+                "guardian politics"
+            ],
+            ReadScope =
+            [
+                "game_state/meta/guardians.json",
+                "game_state/meta/guardian_projects.json",
+                "game_state/meta/abode_power_journal.json",
+                "game_state/meta/chaos_sea_guardian_politics.json"
+            ]
+        },
+        ContextFiles =
+        [
+            new WorkerFileReference
+            {
+                Path = "game_state/meta/guardians.json",
+                Sha256 = "example"
+            },
+            new WorkerFileReference
+            {
+                Path = "game_state/meta/guardian_projects.json",
+                Sha256 = "example"
+            },
+            new WorkerFileReference
+            {
+                Path = "OtherGuides/Afterlife_Contract_Matrix.md",
+                Sha256 = "example"
+            }
+        ],
+        AfterlifeContract = new WorkerAfterlifeTaskContract
+        {
+            RealmGate = WorkerAfterlifeRealmGate.ChaosSea,
+            CurrentRealm = "Chaos Sea",
+            ProgressionControlPaths = ["game_state/control/progression_schedule.json"],
+            PendingControlFiles =
+            [
+                "game_state/control/system_guardian_attraction.json",
+                "game_state/control/afterlife_return_guard.json"
+            ],
+            AllowedAfterlifeSurfaces =
+            [
+                "game_state/meta/guardians.json",
+                "game_state/meta/guardian_projects.json",
+                "game_state/meta/abode_power_journal.json",
+                "game_state/meta/chaos_sea_guardian_politics.json",
+                "game_state/meta/afterlife_chronicles.json"
+            ],
+            RequiredReceipts =
+            [
+                "guardianProjectUpdates",
+                "guardianPowerEvents"
+            ],
+            RequiredReports =
+            [
+                "progressionProcessingReport"
+            ],
+            ForbiddenMortalSubstitutes =
+            [
+                "UpdateNPCs",
+                "NPCRelationshipChanges",
+                "Mortal factionDataChanges",
+                "worldMapUpdates"
+            ]
+        },
+        AllowedProposalPaths = [],
+        AcceptanceCriteria =
+        [
+            "Return a worker-proposal-v1 JSON proposal.",
+            "Include authoringProposal, guardianAbodeProposal, and afterlifeProposal.",
+            "Keep hidden guardian facts GM-only."
+        ],
+        ForbiddenActions =
+        [
+            "Do not edit canonical game_session files directly.",
+            "Do not include changedFiles.",
+            "Do not model Guardians as Mortal NPCs or Mortal factions."
+        ],
+        Instructions = "Return guardianAbodeProposal and afterlifeProposal only; use exact Guardian/Abode surfaces from Afterlife_Contract_Matrix.md."
     };
 
     public static WorkerProposal ValidationRepairProposal() => new()
@@ -735,5 +855,268 @@ internal static class GmWorkerBridgeTestFixtures
             Notes = ["Proposal-only afterlife contract task; no file changes included."]
         },
         CreatedAtUtc = "2026-06-20T02:15:20Z"
+    };
+
+    public static WorkerProposal GuardianAbodeContentProposal() => new()
+    {
+        ProposalId = "worker_proposal_guardian_abode_content_0001",
+        TaskId = "worker_task_guardian_abode_content_0001",
+        WorkerId = "guardian_abode_content_codex",
+        Status = WorkerProposalStatus.Completed,
+        Summary = "Prepared Guardian and Abode proposal for main-GM review.",
+        ChangedFiles = [],
+        Findings =
+        [
+            new WorkerFinding
+            {
+                Kind = "afterlife-guardian-risk",
+                Message = "Guardian project updates must stay on Guardian/Abode afterlife surfaces."
+            }
+        ],
+        AuthoringProposal = new WorkerContentAuthoringProposal
+        {
+            Domain = WorkerAuthoringDomain.GuardianAbode,
+            Goal = "Prepare Guardian and Abode project suggestions for Azalia's Chaos Sea scene.",
+            CreatedEntities =
+            [
+                new WorkerAuthoredEntity
+                {
+                    EntityType = "guardian-project",
+                    EntityId = "project_azalia_memory_silk",
+                    DisplayName = "Шёлковая память Азалии",
+                    Summary = "Проект Обители, который укрепляет память и долг перед Азалией.",
+                    RequiredFields =
+                    [
+                        new WorkerAuthoredField
+                        {
+                            Name = "playerFacingSummary",
+                            Value = "Азалия предлагает укрепить Обитель через нити памяти."
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "gmOnlyHiddenFacts",
+                            Value = "GM-only: проект также проверяет, доверяет ли душа древним долгам Азалии."
+                        },
+                        new WorkerAuthoredField
+                        {
+                            Name = "exactAfterlifeSurfaces",
+                            Value = "game_state/meta/guardian_projects.json; game_state/meta/abode_power_journal.json"
+                        }
+                    ],
+                    Relationships = ["guardian_azalia", "abode_azalia_memory_silk_001", "guardian project tracker"]
+                }
+            ],
+            UpdatedEntities = [],
+            RequiredLinks =
+            [
+                new WorkerRequiredEntityLink
+                {
+                    Source = "project_azalia_memory_silk",
+                    Target = "game_state/meta/guardian_projects.json",
+                    Reason = "The main GM must accept the proposal through Guardian project surfaces."
+                },
+                new WorkerRequiredEntityLink
+                {
+                    Source = "project_azalia_memory_silk",
+                    Target = "game_state/meta/abode_power_journal.json",
+                    Reason = "Power consequences must be audited through Abode Power state."
+                }
+            ],
+            ValidatorRisks =
+            [
+                new WorkerValidatorRisk
+                {
+                    Code = "guardian_abode_surface_required",
+                    Message = "Guardian/Abode proposals are invalid if rewritten as Mortal NPC or Mortal faction updates.",
+                    Mitigation = "Use guardianAbodeProposal plus exact afterlife surfaces."
+                }
+            ],
+            GmReviewNotes = ["Keep hidden Guardian motives GM-only."]
+        },
+        AfterlifeProposal = new WorkerAfterlifeProposalContract
+        {
+            RealmGate = WorkerAfterlifeRealmGate.ChaosSea,
+            TargetSurfaces =
+            [
+                "game_state/meta/guardians.json",
+                "game_state/meta/guardian_projects.json",
+                "game_state/meta/abode_power_journal.json",
+                "game_state/meta/chaos_sea_guardian_politics.json"
+            ],
+            RequiredReceipts =
+            [
+                "guardianProjectUpdates",
+                "guardianPowerEvents"
+            ],
+            RequiredReports =
+            [
+                "progressionProcessingReport"
+            ],
+            PlayerVisibleSummary = "Азалия предлагает укрепить Обитель через проект памяти и новую услугу.",
+            GmReviewNotes =
+            [
+                "Review guardian project and Abode Power contracts before accepting.",
+                "Do not reveal hidden dependency politics in player-facing output."
+            ],
+            ValidatorRisks =
+            [
+                new WorkerValidatorRisk
+                {
+                    Code = "guardian_project_receipt_required",
+                    Message = "Guardian project and Abode Power changes need matching receipts.",
+                    Mitigation = "Use guardianProjectUpdates and guardianPowerEvents only if accepted."
+                }
+            ]
+        },
+        GuardianAbodeProposal = new WorkerGuardianAbodeProposal
+        {
+            PlayerVisibleSummary = "Азалия предлагает укрепить Обитель через проект памяти и новую услугу.",
+            GuardianUpdates =
+            [
+                new WorkerGuardianAbodeProposalItem
+                {
+                    ItemId = "guardian_update_azalia_focus",
+                    TargetId = "guardian_azalia",
+                    Title = "Позиция Азалии",
+                    Summary = "Азалия открыто поддерживает укрепление Обители через память.",
+                    Visibility = "visible",
+                    TargetSurfaces = ["game_state/meta/guardians.json"],
+                    Fields =
+                    [
+                        new WorkerAuthoredField
+                        {
+                            Name = "relationshipCue",
+                            Value = "visible Guardian attitude on afterlife Guardian surfaces"
+                        }
+                    ]
+                }
+            ],
+            AbodeUpdates =
+            [
+                new WorkerGuardianAbodeProposalItem
+                {
+                    ItemId = "abode_update_memory_silk",
+                    TargetId = "abode_azalia_memory_silk_001",
+                    Title = "Нити памяти в Обители",
+                    Summary = "Обитель получает проект, связанный с памятью и долгом.",
+                    Visibility = "visible",
+                    TargetSurfaces = ["game_state/meta/guardians.json"],
+                    Fields =
+                    [
+                        new WorkerAuthoredField
+                        {
+                            Name = "abodeCue",
+                            Value = "current Abode project context"
+                        }
+                    ]
+                }
+            ],
+            ProjectSuggestions =
+            [
+                new WorkerGuardianAbodeProposalItem
+                {
+                    ItemId = "project_suggestion_memory_silk",
+                    TargetId = "project_azalia_memory_silk",
+                    Title = "Шёлковая память",
+                    Summary = "Проект можно начать как медленное укрепление Обители.",
+                    Visibility = "visible",
+                    TargetSurfaces = ["game_state/meta/guardian_projects.json"],
+                    Fields =
+                    [
+                        new WorkerAuthoredField
+                        {
+                            Name = "projectType",
+                            Value = "abode_memory_fortification"
+                        }
+                    ]
+                }
+            ],
+            PowerReputationConsequences =
+            [
+                new WorkerGuardianAbodeProposalItem
+                {
+                    ItemId = "power_consequence_memory_silk",
+                    TargetId = "abode_azalia_memory_silk_001",
+                    Title = "Резонанс Обители",
+                    Summary = "Принятие проекта может дать малый рост силы Обители и доверия Азалии.",
+                    Visibility = "visible",
+                    TargetSurfaces = ["game_state/meta/abode_power_journal.json", "game_state/meta/guardians.json"],
+                    Fields =
+                    [
+                        new WorkerAuthoredField
+                        {
+                            Name = "powerDelta",
+                            Value = "small positive if main GM accepts"
+                        }
+                    ]
+                }
+            ],
+            TradeFavorHooks =
+            [
+                new WorkerGuardianAbodeProposalItem
+                {
+                    ItemId = "trade_favor_azalia_thread",
+                    TargetId = "guardian_azalia",
+                    Title = "Услуга Азалии",
+                    Summary = "Азалия может предложить услугу обмена памятью, если проект принят.",
+                    Visibility = "visible",
+                    TargetSurfaces = ["game_state/meta/guardians.json"],
+                    Fields =
+                    [
+                        new WorkerAuthoredField
+                        {
+                            Name = "favorHook",
+                            Value = "trade/favor hook for Guardian review"
+                        }
+                    ]
+                }
+            ],
+            DossierNotes =
+            [
+                new WorkerGuardianAbodeProposalItem
+                {
+                    ItemId = "dossier_hidden_dependency",
+                    TargetId = "guardian_azalia",
+                    Title = "Скрытый долг Азалии",
+                    Summary = "GM-only: Азалия проверяет, готова ли душа принять долг памяти.",
+                    Visibility = "gm-only",
+                    TargetSurfaces = ["game_state/meta/chaos_sea_guardian_politics.json"],
+                    Fields =
+                    [
+                        new WorkerAuthoredField
+                        {
+                            Name = "hiddenFact",
+                            Value = "hidden_dependency politics; never show in player-visible summary"
+                        }
+                    ]
+                }
+            ],
+            RequiredReceipts =
+            [
+                "guardianProjectUpdates",
+                "guardianPowerEvents"
+            ],
+            RequiredReports =
+            [
+                "progressionProcessingReport"
+            ],
+            ValidatorRisks =
+            [
+                new WorkerValidatorRisk
+                {
+                    Code = "guardian_abode_hidden_leak",
+                    Message = "Hidden Guardian politics must stay GM-only.",
+                    Mitigation = "Keep hidden dossier notes out of playerVisibleSummary."
+                }
+            ],
+            GmReviewNotes = ["Use Afterlife_Contract_Matrix.md examples 16, 20, and 26E before accepting."]
+        },
+        SelfCheck = new WorkerSelfCheck
+        {
+            ScopeReviewed = true,
+            ValidationExpectedToPass = true,
+            Notes = ["Proposal-only Guardian/Abode task; no file changes included."]
+        },
+        CreatedAtUtc = "2026-06-20T03:15:20Z"
     };
 }

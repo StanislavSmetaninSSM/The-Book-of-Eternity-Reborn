@@ -112,11 +112,15 @@ public static class GmWorkerContractValidator
             if (task.AllowedProposalPaths.Count > 0)
                 errors.Add("content-authoring tasks must not include allowedProposalPaths.");
             ValidateAuthoringRequest(task.AuthoringRequest, task.TaskType, errors);
+            ValidateGuardianAbodeTaskPacket(task, errors);
         }
         else if (task.AuthoringRequest != null)
         {
             errors.Add("authoringRequest is only allowed for content-authoring tasks.");
         }
+
+        if (task.TaskType != WorkerTaskType.GuardianAbodeContent && task.GuardianAbodeRequest != null)
+            errors.Add("guardianAbodeRequest is only allowed for guardian-abode-content tasks.");
 
         return ToResult(errors);
     }
@@ -172,6 +176,7 @@ public static class GmWorkerContractValidator
         }
 
         ValidateAfterlifeProposal(proposal, task, errors);
+        ValidateGuardianAbodeProposal(proposal, task, errors);
 
         return ToResult(errors);
     }
@@ -325,6 +330,58 @@ public static class GmWorkerContractValidator
             RequireText(substitute, "afterlifeContract.forbiddenMortalSubstitutes", errors);
     }
 
+    private static void ValidateGuardianAbodeTaskPacket(WorkerTaskPacket task, List<string> errors)
+    {
+        if (task.TaskType != WorkerTaskType.GuardianAbodeContent)
+        {
+            return;
+        }
+
+        if (task.AfterlifeContract == null)
+            errors.Add("guardian-abode-content tasks must include afterlifeContract.");
+
+        if (task.AuthoringRequest?.Domain != WorkerAuthoringDomain.GuardianAbode)
+            errors.Add("guardian-abode-content tasks must use authoringRequest.domain GuardianAbode.");
+
+        if (task.GuardianAbodeRequest == null)
+        {
+            errors.Add("guardian-abode-content tasks must include guardianAbodeRequest.");
+            return;
+        }
+
+        var request = task.GuardianAbodeRequest;
+        RequireText(request.Realm, "guardianAbodeRequest.realm", errors);
+        if (request.GuardianIds.Count == 0 && request.AbodeIds.Count == 0)
+            errors.Add("guardianAbodeRequest must name at least one Guardian or Abode id.");
+        foreach (var guardianId in request.GuardianIds)
+            ValidateId(guardianId, "guardianAbodeRequest.guardianIds", errors);
+        foreach (var abodeId in request.AbodeIds)
+            ValidateId(abodeId, "guardianAbodeRequest.abodeIds", errors);
+
+        if (request.PendingControlFiles.Count == 0)
+            errors.Add("guardianAbodeRequest.pendingControlFiles must include relevant afterlife pending/control files.");
+        foreach (var path in request.PendingControlFiles)
+        {
+            ValidatePath(path, "guardianAbodeRequest.pendingControlFiles", errors);
+            if (IsMortalWorldSubstitutePath(path))
+                errors.Add($"guardianAbodeRequest.pendingControlFiles contains a Mortal World substitute path: {path}");
+        }
+
+        if (request.FocusAreas.Count == 0)
+            errors.Add("guardianAbodeRequest.focusAreas must describe Guardian/Abode focus areas.");
+        foreach (var focusArea in request.FocusAreas)
+            RequireText(focusArea, "guardianAbodeRequest.focusAreas", errors);
+
+        if (request.ReadScope.Count == 0)
+            errors.Add("guardianAbodeRequest.readScope must include exact Guardian/Abode afterlife surfaces.");
+        foreach (var path in request.ReadScope)
+        {
+            ValidatePath(path, "guardianAbodeRequest.readScope", errors);
+            if (IsMortalWorldSubstitutePath(path))
+                errors.Add($"guardianAbodeRequest.readScope contains a Mortal World substitute path: {path}");
+        }
+    }
+
     private static void ValidateAuthoringProposal(
         WorkerContentAuthoringProposal? proposal,
         WorkerTaskPacket task,
@@ -453,6 +510,163 @@ public static class GmWorkerContractValidator
         }
     }
 
+    private static void ValidateGuardianAbodeProposal(
+        WorkerProposal proposal,
+        WorkerTaskPacket task,
+        List<string> errors)
+    {
+        if (task.TaskType != WorkerTaskType.GuardianAbodeContent)
+        {
+            if (proposal.GuardianAbodeProposal != null)
+                errors.Add("guardianAbodeProposal is only allowed for guardian-abode-content proposals.");
+            return;
+        }
+
+        if (proposal.GuardianAbodeProposal == null)
+        {
+            errors.Add("guardian-abode-content proposals must include guardianAbodeProposal.");
+            return;
+        }
+
+        var guardian = proposal.GuardianAbodeProposal;
+        RequireText(guardian.PlayerVisibleSummary, "guardianAbodeProposal.playerVisibleSummary", errors);
+        if (ContainsMortalWorldSubstituteText(guardian.PlayerVisibleSummary))
+            errors.Add("guardianAbodeProposal.playerVisibleSummary contains a Mortal World substitute reference.");
+        if (ContainsHiddenFactMarker(guardian.PlayerVisibleSummary))
+            errors.Add("guardianAbodeProposal.playerVisibleSummary must not reveal hidden or GM-only Guardian facts.");
+
+        ValidateGuardianAbodeProposalItems(
+            guardian.GuardianUpdates,
+            "guardianAbodeProposal.guardianUpdates",
+            task.AfterlifeContract,
+            errors);
+        ValidateGuardianAbodeProposalItems(
+            guardian.AbodeUpdates,
+            "guardianAbodeProposal.abodeUpdates",
+            task.AfterlifeContract,
+            errors);
+        ValidateGuardianAbodeProposalItems(
+            guardian.ProjectSuggestions,
+            "guardianAbodeProposal.projectSuggestions",
+            task.AfterlifeContract,
+            errors);
+        ValidateGuardianAbodeProposalItems(
+            guardian.PowerReputationConsequences,
+            "guardianAbodeProposal.powerReputationConsequences",
+            task.AfterlifeContract,
+            errors);
+        ValidateGuardianAbodeProposalItems(
+            guardian.TradeFavorHooks,
+            "guardianAbodeProposal.tradeFavorHooks",
+            task.AfterlifeContract,
+            errors);
+        ValidateGuardianAbodeProposalItems(
+            guardian.DossierNotes,
+            "guardianAbodeProposal.dossierNotes",
+            task.AfterlifeContract,
+            errors);
+
+        ValidateAfterlifeRequiredNames(
+            task.AfterlifeContract?.RequiredReceipts ?? [],
+            guardian.RequiredReceipts,
+            "guardianAbodeProposal.requiredReceipts",
+            errors);
+        ValidateAfterlifeRequiredNames(
+            task.AfterlifeContract?.RequiredReports ?? [],
+            guardian.RequiredReports,
+            "guardianAbodeProposal.requiredReports",
+            errors);
+
+        if (guardian.ValidatorRisks.Count == 0)
+            errors.Add("guardianAbodeProposal.validatorRisks must contain at least one validator risk or no-risk note.");
+        foreach (var risk in guardian.ValidatorRisks)
+        {
+            ValidateId(risk.Code, "guardianAbodeProposal.validatorRisks.code", errors);
+            RequireText(risk.Message, "guardianAbodeProposal.validatorRisks.message", errors);
+            RequireText(risk.Mitigation, "guardianAbodeProposal.validatorRisks.mitigation", errors);
+            if (ContainsMortalWorldSubstituteText(risk.Message) ||
+                ContainsMortalWorldSubstituteText(risk.Mitigation))
+            {
+                errors.Add("guardianAbodeProposal.validatorRisks contains a Mortal World substitute reference.");
+            }
+        }
+
+        if (guardian.GmReviewNotes.Count == 0)
+            errors.Add("guardianAbodeProposal.gmReviewNotes must contain at least one main-GM review note.");
+        foreach (var note in guardian.GmReviewNotes)
+        {
+            RequireText(note, "guardianAbodeProposal.gmReviewNotes", errors);
+            if (ContainsMortalWorldSubstituteText(note))
+                errors.Add("guardianAbodeProposal.gmReviewNotes contains a Mortal World substitute reference.");
+        }
+    }
+
+    private static void ValidateGuardianAbodeProposalItems(
+        IReadOnlyList<WorkerGuardianAbodeProposalItem> items,
+        string fieldName,
+        WorkerAfterlifeTaskContract? afterlifeContract,
+        List<string> errors)
+    {
+        if (items.Count == 0)
+            errors.Add($"{fieldName} must contain at least one Guardian/Abode proposal item.");
+
+        foreach (var item in items)
+        {
+            ValidateId(item.ItemId, $"{fieldName}.itemId", errors);
+            ValidateId(item.TargetId, $"{fieldName}.targetId", errors);
+            RequireText(item.Title, $"{fieldName}.title", errors);
+            RequireText(item.Summary, $"{fieldName}.summary", errors);
+            RequireText(item.Visibility, $"{fieldName}.visibility", errors);
+
+            if (ContainsMortalWorldSubstituteText(item.Title) ||
+                ContainsMortalWorldSubstituteText(item.Summary) ||
+                ContainsMortalWorldSubstituteText(item.Visibility))
+            {
+                errors.Add($"{fieldName} contains a Mortal World substitute reference.");
+            }
+
+            if (ContainsHiddenFactMarker(item.Title) || ContainsHiddenFactMarker(item.Summary))
+            {
+                if (!IsHiddenVisibility(item.Visibility))
+                    errors.Add($"{fieldName} contains hidden or GM-only Guardian facts but visibility is not hidden/GM-only.");
+            }
+
+            if (item.TargetSurfaces.Count == 0)
+                errors.Add($"{fieldName}.targetSurfaces must contain at least one exact afterlife surface.");
+            foreach (var surface in item.TargetSurfaces)
+            {
+                ValidatePath(surface, $"{fieldName}.targetSurfaces", errors);
+                if (IsMortalWorldSubstitutePath(surface))
+                {
+                    errors.Add($"{fieldName}.targetSurfaces contains a Mortal World substitute path: {surface}");
+                    continue;
+                }
+
+                if (afterlifeContract != null &&
+                    !afterlifeContract.AllowedAfterlifeSurfaces.Any(pattern => PathMatches(pattern, surface)))
+                {
+                    errors.Add($"{fieldName}.targetSurfaces contains a surface outside task.afterlifeContract.allowedAfterlifeSurfaces: {surface}");
+                }
+            }
+
+            if (item.Fields.Count == 0)
+                errors.Add($"{fieldName}.fields must contain at least one field for main-GM review.");
+            foreach (var field in item.Fields)
+            {
+                RequireText(field.Name, $"{fieldName}.fields.name", errors);
+                RequireText(field.Value, $"{fieldName}.fields.value", errors);
+                if (ContainsMortalWorldSubstituteText(field.Name) ||
+                    ContainsMortalWorldSubstituteText(field.Value))
+                {
+                    errors.Add($"{fieldName}.fields contains a Mortal World substitute reference.");
+                }
+
+                if (ContainsHiddenFactMarker(field.Value) && !IsHiddenVisibility(item.Visibility))
+                    errors.Add($"{fieldName}.fields contains hidden or GM-only Guardian facts but visibility is not hidden/GM-only.");
+            }
+        }
+    }
+
     private static void ValidateAfterlifeRequiredNames(
         IReadOnlyList<string> requiredByTask,
         IReadOnlyList<string> providedByProposal,
@@ -504,6 +718,8 @@ public static class GmWorkerContractValidator
             ValidateSkillAuthoringProposal(proposal, errors);
         if (proposal.Domain == WorkerAuthoringDomain.Npc)
             ValidateNpcAuthoringProposal(proposal, errors);
+        if (proposal.Domain == WorkerAuthoringDomain.GuardianAbode)
+            ValidateGuardianAbodeAuthoringProposal(proposal, errors);
     }
 
     private static void ValidateInventoryAuthoringProposal(
@@ -663,12 +879,62 @@ public static class GmWorkerContractValidator
         }
     }
 
+    private static void ValidateGuardianAbodeAuthoringProposal(
+        WorkerContentAuthoringProposal proposal,
+        List<string> errors)
+    {
+        foreach (var entity in proposal.CreatedEntities.Concat(proposal.UpdatedEntities))
+        {
+            if (IsMortalGuardianSubstituteEntityType(entity.EntityType))
+            {
+                errors.Add($"guardian-abode authoring entity {entity.EntityId} must use Guardian/Abode afterlife entity types, not Mortal NPC/faction substitutes.");
+            }
+            else if (!IsGuardianAbodeEntityType(entity.EntityType))
+            {
+                errors.Add($"guardian-abode authoring entity {entity.EntityId} must use a Guardian/Abode entityType such as guardian, abode, guardian-project, guardian-politics, trade-favor, or dossier-note.");
+            }
+
+            if (!HasAnyField(entity, "playerFacingSummary", "player-facing-summary", "playerVisibleSummary", "player-visible-summary"))
+                errors.Add($"guardian-abode authoring entity {entity.EntityId} must include playerFacingSummary.");
+            if (!HasAnyField(entity, "gmOnlyHiddenFacts", "gm-only-hidden-facts", "hiddenFacts", "hidden-facts"))
+                errors.Add($"guardian-abode authoring entity {entity.EntityId} must include gmOnlyHiddenFacts for main-GM review.");
+            if (!HasAnyField(entity, "exactAfterlifeSurfaces", "exact-afterlife-surfaces", "targetSurfaces", "target-surfaces"))
+                errors.Add($"guardian-abode authoring entity {entity.EntityId} must include exactAfterlifeSurfaces.");
+
+            if (ContainsMortalWorldSubstituteText(entity.EntityType) ||
+                ContainsMortalWorldSubstituteText(entity.DisplayName) ||
+                ContainsMortalWorldSubstituteText(entity.Summary) ||
+                entity.Relationships.Any(ContainsMortalWorldSubstituteText) ||
+                entity.RequiredFields.Any(field =>
+                    ContainsMortalWorldSubstituteText(field.Name) ||
+                    ContainsMortalWorldSubstituteText(field.Value)))
+            {
+                errors.Add($"guardian-abode authoring entity {entity.EntityId} contains a Mortal World substitute reference.");
+            }
+        }
+    }
+
+    private static bool IsGuardianAbodeEntityType(string entityType) =>
+        string.Equals(entityType, "guardian", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "abode", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "guardian-project", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "guardian-politics", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "trade-favor", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "dossier-note", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsMortalGuardianSubstituteEntityType(string entityType) =>
+        string.Equals(entityType, "npc", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "mortal-npc", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "faction", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "mortal-faction", StringComparison.OrdinalIgnoreCase);
+
     private static WorkerAuthoringDomain? TaskTypeToDomain(WorkerTaskType taskType) =>
         taskType switch
         {
             WorkerTaskType.InventoryContent => WorkerAuthoringDomain.Inventory,
             WorkerTaskType.SkillContent => WorkerAuthoringDomain.Skill,
             WorkerTaskType.NpcContent => WorkerAuthoringDomain.Npc,
+            WorkerTaskType.GuardianAbodeContent => WorkerAuthoringDomain.GuardianAbode,
             WorkerTaskType.SocialDialogueContent => WorkerAuthoringDomain.SocialDialogue,
             WorkerTaskType.FactionContent => WorkerAuthoringDomain.Faction,
             WorkerTaskType.LocationContent => WorkerAuthoringDomain.Location,
@@ -726,6 +992,14 @@ public static class GmWorkerContractValidator
     {
         if (value.Contains("worldStateFlags", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("worldEventsLog", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("UpdateNPCs", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("NPCRelationshipChanges", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("factionDataChanges", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("factionProjectUpdates", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("completeFactionProjects", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("factionChronicleUpdates", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("worldMapUpdates", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("currentLocationData", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("game_state/world", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("game_state/npcs", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("game_state/factions", StringComparison.OrdinalIgnoreCase) ||
@@ -748,6 +1022,21 @@ public static class GmWorkerContractValidator
                ContainsAll(value, "смертн", "бой") ||
                ContainsAll(value, "смертн", "hp");
     }
+
+    private static bool ContainsHiddenFactMarker(string value) =>
+        value.Contains("GM-only", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("gm only", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("hidden", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("secret", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("скрыт", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("тайн", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsHiddenVisibility(string value) =>
+        string.Equals(value, "hidden", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(value, "gm-only", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(value, "gm_only", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(value, "private", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(value, "secret", StringComparison.OrdinalIgnoreCase);
 
     private static bool ContainsAll(string value, params string[] fragments) =>
         fragments.All(fragment => value.Contains(fragment, StringComparison.OrdinalIgnoreCase));

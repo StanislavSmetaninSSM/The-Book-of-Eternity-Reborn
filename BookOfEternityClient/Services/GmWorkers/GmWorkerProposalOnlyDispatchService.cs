@@ -25,6 +25,8 @@ public sealed record GmWorkerProposalOnlyDispatchRequest
     public string AnalysisGoal { get; init; } = "";
     public IReadOnlyList<string> Questions { get; init; } = [];
     public WorkerContentAuthoringRequest? AuthoringRequest { get; init; }
+    public WorkerAfterlifeTaskContract? AfterlifeContract { get; init; }
+    public WorkerGuardianAbodeRequest? GuardianAbodeRequest { get; init; }
     public IReadOnlyList<string> ContextPaths { get; init; } = [];
 
     public static GmWorkerProposalOnlyDispatchRequest NarrativeDraft(
@@ -69,6 +71,22 @@ public sealed record GmWorkerProposalOnlyDispatchRequest
             TaskType = taskType,
             SourceTurn = sourceTurn,
             AuthoringRequest = authoringRequest,
+            ContextPaths = contextPaths
+        };
+
+    public static GmWorkerProposalOnlyDispatchRequest GuardianAbodeContent(
+        WorkerTurnReference sourceTurn,
+        WorkerContentAuthoringRequest authoringRequest,
+        WorkerGuardianAbodeRequest guardianAbodeRequest,
+        WorkerAfterlifeTaskContract afterlifeContract,
+        IReadOnlyList<string> contextPaths) =>
+        new()
+        {
+            TaskType = WorkerTaskType.GuardianAbodeContent,
+            SourceTurn = sourceTurn,
+            AuthoringRequest = authoringRequest,
+            GuardianAbodeRequest = guardianAbodeRequest,
+            AfterlifeContract = afterlifeContract,
             ContextPaths = contextPaths
         };
 }
@@ -191,7 +209,8 @@ public sealed class GmWorkerProposalOnlyDispatchService
                 request.AnalysisGoal,
                 request.Questions,
                 contextFiles,
-                createdAtUtc),
+                createdAtUtc,
+                request.AfterlifeContract),
             _ when WorkerTaskTypes.IsContentAuthoring(request.TaskType) =>
                 GmWorkerTaskPacketBuilder.BuildContentAuthoringTask(
                     profile,
@@ -200,7 +219,9 @@ public sealed class GmWorkerProposalOnlyDispatchService
                     request.SourceTurn,
                     request.AuthoringRequest ?? new WorkerContentAuthoringRequest(),
                     contextFiles,
-                    createdAtUtc),
+                    createdAtUtc,
+                    request.AfterlifeContract,
+                    request.GuardianAbodeRequest),
             _ => throw new InvalidOperationException($"Unsupported proposal-only task type: {request.TaskType}.")
         };
     }
@@ -256,6 +277,10 @@ public sealed class GmWorkerProposalOnlyDispatchService
                 "Content authoring dispatch requires authoringRequest.",
             _ when WorkerTaskTypes.IsContentAuthoring(request.TaskType) && string.IsNullOrWhiteSpace(request.AuthoringRequest?.Goal) =>
                 "Content authoring dispatch requires authoringRequest.goal.",
+            WorkerTaskType.GuardianAbodeContent when request.AfterlifeContract == null =>
+                "Guardian/Abode content dispatch requires afterlifeContract.",
+            WorkerTaskType.GuardianAbodeContent when request.GuardianAbodeRequest == null =>
+                "Guardian/Abode content dispatch requires guardianAbodeRequest.",
             _ when WorkerTaskTypes.IsContentAuthoring(request.TaskType) => "",
             _ => $"Unsupported proposal-only task type: {request.TaskType}."
         };
@@ -278,6 +303,7 @@ public sealed class GmWorkerProposalOnlyDispatchService
         {
             WorkerTaskType.NarrativeDraft => "narrative_draft",
             WorkerTaskType.Analysis => "analysis",
+            WorkerTaskType.GuardianAbodeContent => "guardian_abode_content",
             _ => taskType.ToString().ToLowerInvariant()
         };
 

@@ -167,6 +167,7 @@ Required worker-proposal-v1 JSON shape:
   "draftText": null,
   "authoringProposal": null,
   "afterlifeProposal": null,
+  "guardianAbodeProposal": null,
   "selfCheck": {
     "scopeReviewed": true,
     "validationExpectedToPass": true,
@@ -183,6 +184,7 @@ Required-field rules:
 - For analysis tasks, findings should contain compact objects with kind and message.
 - For content-authoring tasks, authoringProposal is required and must contain domain, goal, createdEntities or updatedEntities, requiredLinks, validatorRisks, and gmReviewNotes.
 - For afterlifeContract tasks, afterlifeProposal is required and must match task.afterlifeContract.realmGate; targetSurfaces must be inside task.afterlifeContract.allowedAfterlifeSurfaces; requiredReceipts and requiredReports must include task.afterlifeContract values; playerVisibleSummary must not expose technical substitute warnings.
+- For guardianAbodeRequest tasks, guardianAbodeProposal is required and must include guardianUpdates, abodeUpdates, projectSuggestions, powerReputationConsequences, tradeFavorHooks, dossierNotes, requiredReceipts, requiredReports, validatorRisks, and gmReviewNotes. Use only Guardian/Abode/project/politics afterlife surfaces listed by afterlifeContract. Keep hidden Guardian facts GM-only and out of playerVisibleSummary. Do not model Guardians as Mortal NPCs or Abodes/Guardian politics as Mortal factions.
 - For inventory-content tasks, each item proposal must include player-facing description, owner/storage or inventory link, and balance details such as value, price, quality, rarity, or balanceNote. Book/document items must link to readable content or explicitly flag that gap for main-GM review.
 - For skill-content tasks, each skill/effect proposal must include a detailed player-facing description, localized scaling details or noScalingReason, bonusExplanation for bonuses, and links to effects/status/combat/characteristic-check surfaces.
 - For npc-content tasks, each NPC proposal must include separate publicKnowledge, privateKnowledge, thoughtJournal, relationshipHooks, personalQuests, dialogueSeeds, detailSurfaces, and links to location plus faction/quest/relationship/thought/dialogue surfaces.

@@ -16,6 +16,7 @@ public enum WorkerRole
     InventoryContent,
     SkillContent,
     NpcContent,
+    GuardianAbodeContent,
     SocialDialogueContent,
     FactionContent,
     LocationContent,
@@ -37,6 +38,7 @@ public enum WorkerTaskType
     InventoryContent,
     SkillContent,
     NpcContent,
+    GuardianAbodeContent,
     SocialDialogueContent,
     FactionContent,
     LocationContent,
@@ -52,6 +54,7 @@ public enum WorkerAuthoringDomain
     Inventory,
     Skill,
     Npc,
+    GuardianAbode,
     SocialDialogue,
     Faction,
     Location,
@@ -77,6 +80,7 @@ public static class WorkerTaskTypes
         taskType is WorkerTaskType.InventoryContent or
             WorkerTaskType.SkillContent or
             WorkerTaskType.NpcContent or
+            WorkerTaskType.GuardianAbodeContent or
             WorkerTaskType.SocialDialogueContent or
             WorkerTaskType.FactionContent or
             WorkerTaskType.LocationContent or
@@ -163,6 +167,7 @@ public sealed record WorkerTaskPacket
     public IReadOnlyList<WorkerValidationIssue> ValidationIssues { get; init; } = [];
     public WorkerDraftRequest? DraftRequest { get; init; }
     public WorkerContentAuthoringRequest? AuthoringRequest { get; init; }
+    public WorkerGuardianAbodeRequest? GuardianAbodeRequest { get; init; }
     public IReadOnlyList<WorkerFileReference> ContextFiles { get; init; } = [];
     public WorkerAfterlifeTaskContract? AfterlifeContract { get; init; }
     public IReadOnlyList<string> AllowedProposalPaths { get; init; } = [];
@@ -221,6 +226,16 @@ public sealed record WorkerAfterlifeTaskContract
     public IReadOnlyList<string> ForbiddenMortalSubstitutes { get; init; } = [];
 }
 
+public sealed record WorkerGuardianAbodeRequest
+{
+    public string Realm { get; init; } = "";
+    public IReadOnlyList<string> GuardianIds { get; init; } = [];
+    public IReadOnlyList<string> AbodeIds { get; init; } = [];
+    public IReadOnlyList<string> PendingControlFiles { get; init; } = [];
+    public IReadOnlyList<string> FocusAreas { get; init; } = [];
+    public IReadOnlyList<string> ReadScope { get; init; } = [];
+}
+
 public sealed record WorkerProposal
 {
     public int SchemaVersion { get; init; } = 1;
@@ -234,6 +249,7 @@ public sealed record WorkerProposal
     public string? DraftText { get; init; }
     public WorkerContentAuthoringProposal? AuthoringProposal { get; init; }
     public WorkerAfterlifeProposalContract? AfterlifeProposal { get; init; }
+    public WorkerGuardianAbodeProposal? GuardianAbodeProposal { get; init; }
     public WorkerSelfCheck SelfCheck { get; init; } = new();
     public string CreatedAtUtc { get; init; } = "";
 }
@@ -258,6 +274,32 @@ public sealed record WorkerAfterlifeProposalContract
     public string PlayerVisibleSummary { get; init; } = "";
     public IReadOnlyList<string> GmReviewNotes { get; init; } = [];
     public IReadOnlyList<WorkerValidatorRisk> ValidatorRisks { get; init; } = [];
+}
+
+public sealed record WorkerGuardianAbodeProposal
+{
+    public string PlayerVisibleSummary { get; init; } = "";
+    public IReadOnlyList<WorkerGuardianAbodeProposalItem> GuardianUpdates { get; init; } = [];
+    public IReadOnlyList<WorkerGuardianAbodeProposalItem> AbodeUpdates { get; init; } = [];
+    public IReadOnlyList<WorkerGuardianAbodeProposalItem> ProjectSuggestions { get; init; } = [];
+    public IReadOnlyList<WorkerGuardianAbodeProposalItem> PowerReputationConsequences { get; init; } = [];
+    public IReadOnlyList<WorkerGuardianAbodeProposalItem> TradeFavorHooks { get; init; } = [];
+    public IReadOnlyList<WorkerGuardianAbodeProposalItem> DossierNotes { get; init; } = [];
+    public IReadOnlyList<string> RequiredReceipts { get; init; } = [];
+    public IReadOnlyList<string> RequiredReports { get; init; } = [];
+    public IReadOnlyList<WorkerValidatorRisk> ValidatorRisks { get; init; } = [];
+    public IReadOnlyList<string> GmReviewNotes { get; init; } = [];
+}
+
+public sealed record WorkerGuardianAbodeProposalItem
+{
+    public string ItemId { get; init; } = "";
+    public string TargetId { get; init; } = "";
+    public string Title { get; init; } = "";
+    public string Summary { get; init; } = "";
+    public string Visibility { get; init; } = "";
+    public IReadOnlyList<string> TargetSurfaces { get; init; } = [];
+    public IReadOnlyList<WorkerAuthoredField> Fields { get; init; } = [];
 }
 
 public sealed record WorkerAuthoredEntity

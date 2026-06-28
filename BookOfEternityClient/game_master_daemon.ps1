@@ -1433,6 +1433,23 @@ function New-DefaultGmWorkerBridgeProfiles {
             }
         },
         [ordered]@{
+            workerId = "guardian_abode_content_codex"
+            displayName = "Codex Guardian/Abode content author"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codexWorker`" -TimeoutSeconds 120"
+            role = "guardian-abode-content"
+            enabled = $false
+            launchVisibility = "hidden"
+            timeoutSeconds = 150
+            maxConcurrentTasks = 1
+            permissions = [ordered]@{
+                taskTypes = @("guardian-abode-content")
+                readPaths = @("game_state/meta/guardians.json", "game_state/meta/guardian_projects.json", "game_state/meta/guardian_abode_residents.json", "game_state/meta/abode_power_journal.json", "game_state/meta/chaos_sea_guardian_politics.json", "game_state/meta/afterlife_chronicles.json", "game_state/control/system_guardian_attraction.json", "game_state/control/afterlife_return_guard.json", "game_state/control/progression_schedule.json", "OtherGuides/Afterlife_Contract_Matrix.md", "Examples/E_CLI_Afterlife_Turns.txt")
+                proposalWritePaths = @()
+                proposalOnly = $true
+                requiresValidation = $false
+            }
+        },
+        [ordered]@{
             workerId = "inventory_content_codex"
             displayName = "Codex inventory content author"
             launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codexWorker`" -TimeoutSeconds 120"
@@ -2280,6 +2297,7 @@ function ConvertTo-GmTrajectoryWorkerEvent {
         "inventory-content",
         "skill-content",
         "npc-content",
+        "guardian-abode-content",
         "social-dialogue-content",
         "faction-content",
         "location-content",

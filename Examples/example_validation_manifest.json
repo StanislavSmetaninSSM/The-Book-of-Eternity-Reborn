@@ -42,6 +42,13 @@
       "statePath": "worker_proposals/<proposalId>/proposal.json",
       "responseSurface": "worker-proposal-v1 afterlifeProposal",
       "description": "Hidden/background proposal-only afterlife worker task with afterlifeContract realm gate, allowed afterlife state surfaces, required receipts/reports, afterlifeProposal review fields, Mortal World substitute rejection, and Afterlife_Contract_Matrix.md review requirement."
+    },
+    {
+      "contractId": "gm_worker_guardian_abode_content_v1",
+      "file": "E_CLI_GM_Worker_Guardian_Abode_Content.txt",
+      "statePath": "worker_proposals/<proposalId>/proposal.json",
+      "responseSurface": "worker-proposal-v1 authoringProposal / afterlifeProposal / guardianAbodeProposal",
+      "description": "Hidden/background proposal-only guardian-abode-content worker profile, realm-aware afterlifeContract, guardianAbodeRequest scope, structured Guardian/Abode/project/politics proposal sections, hidden-dossier privacy checks, required receipts/reports, and Mortal NPC/faction substitute rejection."
     }
   ],
   "afterlifeEntityProfileCoverage": [

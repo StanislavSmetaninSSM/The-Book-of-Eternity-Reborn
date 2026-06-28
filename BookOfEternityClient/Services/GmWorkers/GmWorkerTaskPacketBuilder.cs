@@ -207,7 +207,8 @@ public static class GmWorkerTaskPacketBuilder
         WorkerContentAuthoringRequest authoringRequest,
         IReadOnlyList<WorkerFileReference> contextFiles,
         string createdAtUtc,
-        WorkerAfterlifeTaskContract? afterlifeContract = null)
+        WorkerAfterlifeTaskContract? afterlifeContract = null,
+        WorkerGuardianAbodeRequest? guardianAbodeRequest = null)
     {
         var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
         if (!profileValidation.IsValid)
@@ -241,10 +242,12 @@ public static class GmWorkerTaskPacketBuilder
             TimeoutSeconds = profile.TimeoutSeconds,
             SourceTurn = sourceTurn,
             AuthoringRequest = authoringRequest,
+            GuardianAbodeRequest = guardianAbodeRequest,
             ContextFiles = contextFiles,
             AfterlifeContract = afterlifeContract,
             AllowedProposalPaths = [],
-            AcceptanceCriteria = BuildAcceptanceCriteria(
+            AcceptanceCriteria = BuildGuardianAbodeAcceptanceCriteria(
+                BuildAcceptanceCriteria(
             [
                 "Return a worker-proposal-v1 JSON proposal.",
                 "Include a structured authoringProposal with createdEntities or updatedEntities.",
@@ -252,7 +255,9 @@ public static class GmWorkerTaskPacketBuilder
                 "Do not apply or persist any entity changes yourself."
             ],
             afterlifeContract),
-            ForbiddenActions = BuildForbiddenActions(
+                guardianAbodeRequest),
+            ForbiddenActions = BuildGuardianAbodeForbiddenActions(
+                BuildForbiddenActions(
             [
                 "Do not edit canonical game_session files directly.",
                 "Do not include changedFiles.",
@@ -260,6 +265,7 @@ public static class GmWorkerTaskPacketBuilder
                 "Do not invent hidden authority beyond supplied context references."
             ],
             afterlifeContract),
+                guardianAbodeRequest),
             Instructions =
                 "Return a worker-proposal-v1 JSON proposal with authoringProposal. " +
                 "This is proposal-only: do not include changedFiles and do not edit canonical game_session files directly. " +
@@ -267,7 +273,8 @@ public static class GmWorkerTaskPacketBuilder
                 $"Entity hints:{Environment.NewLine}{hintsText}{Environment.NewLine}" +
                 $"Required links:{Environment.NewLine}{linksText}{Environment.NewLine}" +
                 $"Output notes:{Environment.NewLine}{notesText}" +
-                BuildAfterlifeInstructions(afterlifeContract)
+                BuildAfterlifeInstructions(afterlifeContract) +
+                BuildGuardianAbodeInstructions(guardianAbodeRequest)
         };
 
         var taskValidation = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
@@ -326,6 +333,52 @@ public static class GmWorkerTaskPacketBuilder
             $"- requiredReports: {FormatList(afterlifeContract.RequiredReports)}" + Environment.NewLine +
             $"- forbiddenMortalSubstitutes: {FormatList(afterlifeContract.ForbiddenMortalSubstitutes)}" + Environment.NewLine +
             "Return afterlifeProposal when this contract is present. Use Afterlife_Contract_Matrix.md for exact state-surface meaning.";
+    }
+
+    private static IReadOnlyList<string> BuildGuardianAbodeAcceptanceCriteria(
+        IReadOnlyList<string> baseCriteria,
+        WorkerGuardianAbodeRequest? guardianAbodeRequest)
+    {
+        if (guardianAbodeRequest == null)
+            return baseCriteria;
+
+        return baseCriteria.Concat(
+        [
+            "Include guardianAbodeProposal with guardianUpdates, abodeUpdates, projectSuggestions, powerReputationConsequences, tradeFavorHooks, dossierNotes, requiredReceipts, requiredReports, validatorRisks, and gmReviewNotes.",
+            "Keep GM-only hidden Guardian facts out of playerVisibleSummary and visible proposal items.",
+            "Use exact Guardian/Abode/project/politics afterlife surfaces; do not rewrite the task as Mortal NPC or Mortal faction updates."
+        ]).ToArray();
+    }
+
+    private static IReadOnlyList<string> BuildGuardianAbodeForbiddenActions(
+        IReadOnlyList<string> baseActions,
+        WorkerGuardianAbodeRequest? guardianAbodeRequest)
+    {
+        if (guardianAbodeRequest == null)
+            return baseActions;
+
+        return baseActions.Concat(
+        [
+            "Do not model Guardians as Mortal NPCs.",
+            "Do not model Abodes or Guardian politics as Mortal factions.",
+            "Do not place hidden Guardian dossier facts in player-visible fields."
+        ]).ToArray();
+    }
+
+    private static string BuildGuardianAbodeInstructions(WorkerGuardianAbodeRequest? guardianAbodeRequest)
+    {
+        if (guardianAbodeRequest == null)
+            return "";
+
+        return Environment.NewLine +
+            "Guardian/Abode content request:" + Environment.NewLine +
+            $"- realm: {guardianAbodeRequest.Realm}" + Environment.NewLine +
+            $"- guardianIds: {FormatList(guardianAbodeRequest.GuardianIds)}" + Environment.NewLine +
+            $"- abodeIds: {FormatList(guardianAbodeRequest.AbodeIds)}" + Environment.NewLine +
+            $"- pendingControlFiles: {FormatList(guardianAbodeRequest.PendingControlFiles)}" + Environment.NewLine +
+            $"- focusAreas: {FormatList(guardianAbodeRequest.FocusAreas)}" + Environment.NewLine +
+            $"- readScope: {FormatList(guardianAbodeRequest.ReadScope)}" + Environment.NewLine +
+            "Return guardianAbodeProposal. Use Guardian/Abode/project/politics surfaces only. Keep hidden facts GM-only.";
     }
 
     private static string FormatList(IReadOnlyList<string> values) =>

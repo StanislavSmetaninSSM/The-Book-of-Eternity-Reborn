@@ -10,6 +10,7 @@ public static class GmWorkerBridgeProfileTemplates
         CreateValidationRepairCodexTemplate(),
         CreateNarrativeDraftCodexTemplate(),
         CreateAnalysisCodexTemplate(),
+        CreateGuardianAbodeContentCodexTemplate(),
         CreateInventoryContentCodexTemplate(),
         CreateSkillContentCodexTemplate(),
         CreateNpcContentCodexTemplate()
@@ -123,6 +124,26 @@ public static class GmWorkerBridgeProfileTemplates
                 "lore/**",
                 "Rules/**",
                 "TaskGuides/**"
+            ]);
+
+    public static WorkerBridgeProfile CreateGuardianAbodeContentCodexTemplate() =>
+        CreateContentAuthoringCodexTemplate(
+            "guardian_abode_content_codex",
+            "Codex Guardian/Abode content author",
+            WorkerRole.GuardianAbodeContent,
+            WorkerTaskType.GuardianAbodeContent,
+            [
+                "game_state/meta/guardians.json",
+                "game_state/meta/guardian_projects.json",
+                "game_state/meta/guardian_abode_residents.json",
+                "game_state/meta/abode_power_journal.json",
+                "game_state/meta/chaos_sea_guardian_politics.json",
+                "game_state/meta/afterlife_chronicles.json",
+                "game_state/control/system_guardian_attraction.json",
+                "game_state/control/afterlife_return_guard.json",
+                "game_state/control/progression_schedule.json",
+                "OtherGuides/Afterlife_Contract_Matrix.md",
+                "Examples/E_CLI_Afterlife_Turns.txt"
             ]);
 
     private static WorkerBridgeProfile CreateContentAuthoringCodexTemplate(

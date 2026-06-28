@@ -189,6 +189,21 @@ Codex NPC content-authoring example:
 }
 ```
 
+Codex Guardian/Abode content-authoring example:
+
+```json
+{
+  "workerId": "guardian_abode_content_codex",
+  "displayName": "Codex Guardian/Abode content author",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "role": "guardian-abode-content",
+  "enabled": false,
+  "launchVisibility": "hidden",
+  "timeoutSeconds": 150,
+  "maxConcurrentTasks": 1
+}
+```
+
 Use dry-run mode to inspect the generated prompt without launching an external
 agent:
 
@@ -325,6 +340,27 @@ Additional npc-content requirements:
 - the worker must not collapse thoughts, quests, relationships, and secrets
   into one summary paragraph.
 
+Additional guardian-abode-content requirements:
+
+- the task must include both `afterlifeContract` and `guardianAbodeRequest`;
+- `guardianAbodeRequest` must name the realm, Guardian/Abode ids, pending
+  afterlife control files, focus areas, and exact read scope;
+- the proposal must include `authoringProposal`, `afterlifeProposal`, and
+  `guardianAbodeProposal`;
+- `guardianAbodeProposal` must split `guardianUpdates`, `abodeUpdates`,
+  `projectSuggestions`, `powerReputationConsequences`, `tradeFavorHooks`,
+  `dossierNotes`, required receipts/reports, validator risks, and main-GM
+  review notes;
+- hidden Guardian facts stay in GM-only fields. The worker must not place
+  hidden dossier facts in `playerVisibleSummary` or visible items;
+- Guardians, Abodes, Guardian projects, Guardian politics, and trade/favor hooks
+  must use exact afterlife surfaces such as `game_state/meta/guardians.json`,
+  `game_state/meta/guardian_projects.json`,
+  `game_state/meta/abode_power_journal.json`, and
+  `game_state/meta/chaos_sea_guardian_politics.json`;
+- the worker must not model Guardians as Mortal NPCs and must not model Abodes
+  or Guardian politics as Mortal factions.
+
 ## Supported MVP Tasks
 
 ### validation-repair
@@ -385,3 +421,5 @@ canonical files.
 - `Examples/E_CLI_GM_Worker_Content_Authoring.txt`
 - `Examples/E_CLI_GM_Worker_Skill_Content.txt`
 - `Examples/E_CLI_GM_Worker_Npc_Content.txt`
+- `Examples/E_CLI_GM_Worker_Afterlife_Contract.txt`
+- `Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt`

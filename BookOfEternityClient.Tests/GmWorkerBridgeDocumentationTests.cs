@@ -19,6 +19,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("E_CLI_GM_Worker_Skill_Content.txt", manifest, StringComparison.Ordinal);
         Assert.Contains("E_CLI_GM_Worker_Npc_Content.txt", manifest, StringComparison.Ordinal);
         Assert.Contains("E_CLI_GM_Worker_Afterlife_Contract.txt", manifest, StringComparison.Ordinal);
+        Assert.Contains("E_CLI_GM_Worker_Guardian_Abode_Content.txt", manifest, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -88,6 +89,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         var skillContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Skill_Content.txt");
         var npcContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Npc_Content.txt");
         var afterlifeContract = ReadRepoFile("Examples/E_CLI_GM_Worker_Afterlife_Contract.txt");
+        var guardianAbodeContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt");
 
         Assert.Contains("hidden/background", guide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("apply gate", guide, StringComparison.OrdinalIgnoreCase);
@@ -115,6 +117,15 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("Mortal combat HP/status", afterlifeContract, StringComparison.Ordinal);
         Assert.Contains("Mortal factions or map files", afterlifeContract, StringComparison.Ordinal);
         Assert.Contains("realmGate", afterlifeContract, StringComparison.Ordinal);
+        Assert.Contains("guardian-abode-content", guardianAbodeContent, StringComparison.Ordinal);
+        Assert.Contains("guardianAbodeRequest", guardianAbodeContent, StringComparison.Ordinal);
+        Assert.Contains("guardianAbodeProposal", guardianAbodeContent, StringComparison.Ordinal);
+        Assert.Contains("system_guardian_attraction.json", guardianAbodeContent, StringComparison.Ordinal);
+        Assert.Contains("afterlife_return_guard.json", guardianAbodeContent, StringComparison.Ordinal);
+        Assert.Contains("guardian_projects.json", guardianAbodeContent, StringComparison.Ordinal);
+        Assert.Contains("abode_power_journal.json", guardianAbodeContent, StringComparison.Ordinal);
+        Assert.Contains("chaos_sea_guardian_politics.json", guardianAbodeContent, StringComparison.Ordinal);
+        Assert.Contains("Mortal NPCs", guardianAbodeContent, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -128,8 +139,9 @@ public sealed class GmWorkerBridgeDocumentationTests
         var skillContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Skill_Content.txt");
         var npcContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Npc_Content.txt");
         var afterlifeContract = ReadRepoFile("Examples/E_CLI_GM_Worker_Afterlife_Contract.txt");
+        var guardianAbodeContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt");
 
-        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent, npcContent, afterlifeContract })
+        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent, npcContent, afterlifeContract, guardianAbodeContent })
         {
             Assert.Contains("BOE_WORKER_TASK_PATH", source, StringComparison.Ordinal);
             Assert.Contains("BOE_WORKER_PROPOSAL_PATH", source, StringComparison.Ordinal);
@@ -148,9 +160,10 @@ public sealed class GmWorkerBridgeDocumentationTests
         var skillContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Skill_Content.txt");
         var npcContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Npc_Content.txt");
         var afterlifeContract = ReadRepoFile("Examples/E_CLI_GM_Worker_Afterlife_Contract.txt");
+        var guardianAbodeContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt");
         var runner = ReadRepoFile("BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1");
 
-        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent, npcContent, afterlifeContract })
+        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent, npcContent, afterlifeContract, guardianAbodeContent })
         {
             Assert.Contains("gm_worker_cli_runner.ps1", source, StringComparison.Ordinal);
             Assert.Contains("-AgentCommand", source, StringComparison.Ordinal);
@@ -164,6 +177,8 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("authoringProposal", runner, StringComparison.Ordinal);
         Assert.Contains("afterlifeProposal", runner, StringComparison.Ordinal);
         Assert.Contains("afterlifeContract", runner, StringComparison.Ordinal);
+        Assert.Contains("guardianAbodeProposal", runner, StringComparison.Ordinal);
+        Assert.Contains("guardianAbodeRequest", runner, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -178,6 +193,7 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("validation_repair_codex", source, StringComparison.Ordinal);
             Assert.Contains("narrative_draft_codex", source, StringComparison.Ordinal);
             Assert.Contains("analysis_codex", source, StringComparison.Ordinal);
+            Assert.Contains("guardian_abode_content_codex", source, StringComparison.Ordinal);
             Assert.Contains("inventory_content_codex", source, StringComparison.Ordinal);
             Assert.Contains("skill_content_codex", source, StringComparison.Ordinal);
             Assert.Contains("npc_content_codex", source, StringComparison.Ordinal);
@@ -197,6 +213,7 @@ public sealed class GmWorkerBridgeDocumentationTests
             "Examples/E_CLI_GM_Worker_Skill_Content.txt",
             "Examples/E_CLI_GM_Worker_Npc_Content.txt",
             "Examples/E_CLI_GM_Worker_Afterlife_Contract.txt",
+            "Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt",
             "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
             "BookOfEternityClient/Launcher/CLI_Daemon_Window_Help.md",
             "BookOfEternityClient/Launcher/GM_Daemon_ConPTY_Proposal.md",
@@ -224,6 +241,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("disabled worker profile templates", guide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("\"enabled\": false", guide, StringComparison.Ordinal);
         Assert.Contains("analysis_codex", guide, StringComparison.Ordinal);
+        Assert.Contains("guardian_abode_content_codex", guide, StringComparison.Ordinal);
         Assert.Contains("inventory_content_codex", guide, StringComparison.Ordinal);
         Assert.Contains("skill_content_codex", guide, StringComparison.Ordinal);
         Assert.Contains("npc_content_codex", guide, StringComparison.Ordinal);

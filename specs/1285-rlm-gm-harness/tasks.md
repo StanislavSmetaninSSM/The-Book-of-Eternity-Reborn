@@ -114,6 +114,7 @@
 - [X] T070 [Follow-up #1308] Repair the local working `BookOfEternityClient/game_session` afterlife archive source-life drift, add a local-session validation smoke test, and guard tracked fixtures against future `afterlifeArchive.stored[]` entries without numeric `sourceLife`.
 - [X] T071 [Follow-up #1309] Keep the GM daemon watcher alive after recoverable polling/status errors, persist explicit fatal diagnostics, document daemon repair-loop checks, and guard the lifecycle contract with tests.
 - [X] T072 [Follow-up #1231] Add shared realm-aware afterlife worker task/proposal contract, Mortal-substitute guards, builder support, runner prompt guidance, and GM-facing documentation/example coverage.
+- [X] T073 [Follow-up #1232] Add `guardian-abode-content` worker role, Guardian/Abode task/proposal contract, hidden-dossier and Mortal-substitute guards, disabled profile templates, runner guidance, and GM-facing documentation/example coverage.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.

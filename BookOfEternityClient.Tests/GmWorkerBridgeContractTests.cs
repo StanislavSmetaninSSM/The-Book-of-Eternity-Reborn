@@ -81,13 +81,17 @@ public sealed class GmWorkerBridgeContractTests
     public void WorkerContracts_SerializeEnumsAsKebabCaseCamelCaseJson()
     {
         var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var guardianProfile = GmWorkerBridgeTestFixtures.GuardianAbodeContentCodexProfile();
 
         var json = GmWorkerJson.Serialize(profile);
+        var guardianJson = GmWorkerJson.Serialize(guardianProfile);
         var roundTrip = GmWorkerJson.Deserialize<WorkerBridgeProfile>(json);
 
         Assert.Contains("\"launchVisibility\": \"hidden\"", json, StringComparison.Ordinal);
         Assert.Contains("\"role\": \"validation-repair\"", json, StringComparison.Ordinal);
         Assert.Contains("\"validation-repair\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"role\": \"guardian-abode-content\"", guardianJson, StringComparison.Ordinal);
+        Assert.Contains("\"guardian-abode-content\"", guardianJson, StringComparison.Ordinal);
         Assert.NotNull(roundTrip);
         Assert.Equal(profile.WorkerId, roundTrip!.WorkerId);
         Assert.Equal(WorkerRole.ValidationRepair, roundTrip.Role);
@@ -107,6 +111,100 @@ public sealed class GmWorkerBridgeContractTests
 
         Assert.True(taskResult.IsValid, string.Join(Environment.NewLine, taskResult.Errors));
         Assert.True(proposalResult.IsValid, string.Join(Environment.NewLine, proposalResult.Errors));
+    }
+
+    [Fact]
+    public void GuardianAbodeContentTaskAndProposal_RequireAfterlifeTypedProposal()
+    {
+        var profile = GmWorkerBridgeTestFixtures.GuardianAbodeContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.GuardianAbodeContentTask();
+        var proposal = GmWorkerBridgeTestFixtures.GuardianAbodeContentProposal();
+
+        var taskResult = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+        var proposalResult = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.True(taskResult.IsValid, string.Join(Environment.NewLine, taskResult.Errors));
+        Assert.True(proposalResult.IsValid, string.Join(Environment.NewLine, proposalResult.Errors));
+    }
+
+    [Fact]
+    public void GuardianAbodeContentTask_RejectsMissingAfterlifeContract()
+    {
+        var profile = GmWorkerBridgeTestFixtures.GuardianAbodeContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.GuardianAbodeContentTask() with
+        {
+            AfterlifeContract = null
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("afterlifeContract", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void GuardianAbodeContentProposal_RejectsMortalNpcAndFactionSubstitutes()
+    {
+        var profile = GmWorkerBridgeTestFixtures.GuardianAbodeContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.GuardianAbodeContentTask();
+        var proposal = GmWorkerBridgeTestFixtures.GuardianAbodeContentProposal() with
+        {
+            AuthoringProposal = GmWorkerBridgeTestFixtures.GuardianAbodeContentProposal().AuthoringProposal! with
+            {
+                CreatedEntities =
+                [
+                    GmWorkerBridgeTestFixtures.GuardianAbodeContentProposal().AuthoringProposal!.CreatedEntities[0] with
+                    {
+                        EntityType = "npc",
+                        RequiredFields =
+                        [
+                            new WorkerAuthoredField
+                            {
+                                Name = "substitute",
+                                Value = "Use NPCRelationshipChanges and factionDataChanges instead."
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("Guardian", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("Mortal", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void GuardianAbodeContentProposal_RejectsHiddenDossierLeak()
+    {
+        var profile = GmWorkerBridgeTestFixtures.GuardianAbodeContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.GuardianAbodeContentTask();
+        var valid = GmWorkerBridgeTestFixtures.GuardianAbodeContentProposal();
+        var proposal = valid with
+        {
+            GuardianAbodeProposal = valid.GuardianAbodeProposal! with
+            {
+                PlayerVisibleSummary = "Азалия тайно проверяет долг души.",
+                DossierNotes =
+                [
+                    valid.GuardianAbodeProposal!.DossierNotes[0] with
+                    {
+                        Visibility = "visible"
+                    }
+                ]
+            }
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("hidden", StringComparison.OrdinalIgnoreCase) ||
+            error.Contains("GM-only", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
