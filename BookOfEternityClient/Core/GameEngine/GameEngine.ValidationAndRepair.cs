@@ -183,6 +183,21 @@ public partial class GameEngine
         }
     }
 
+    private async Task<bool> ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(
+        RollbackSnapshot? rollbackSnapshot)
+    {
+        var accepted = await ValidateCurrentGameStateOrShowErrorsAsync(
+            PostAcceptedMaterializedStateValidationSource,
+            rollbackSnapshot,
+            progressionControl: null,
+            allowRepairLoop: true);
+
+        if (accepted)
+            await RefreshRuntimeStateAsync();
+
+        return accepted;
+    }
+
     private async Task<bool> RefreshAcceptedTurnCanonicalStateForValidationAsync(
         int expectedTurn,
         ValidatedPendingTurnSnapshotContext? activeSnapshotContext)
@@ -596,6 +611,9 @@ public partial class GameEngine
                 validation = new
                 {
                     status = "accepted",
+                    source,
+                    acceptanceScope = "correlated_repair_ready",
+                    fullCanonicalStateAccepted = false,
                     issueKinds = BuildValidationRepairTrajectoryIssueKinds(errors),
                     repairPacketRefs = Array.Empty<string>()
                 },

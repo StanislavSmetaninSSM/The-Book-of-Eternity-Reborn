@@ -319,7 +319,7 @@ public sealed class GameEngineSourceGuardTests
         Assert.True(acceptedTurnAnchor >= 0);
 
         var lifeTransitionIndex = source.IndexOf("await CheckLifeTransitions(activeSnapshotContext);", acceptedTurnAnchor, StringComparison.Ordinal);
-        var cleanupIndex = source.IndexOf("await CleanupPendingTurnSnapshotAsync();", acceptedTurnAnchor, StringComparison.Ordinal);
+        var cleanupIndex = source.IndexOf("await CleanupAcceptedTurnTerminalArtifactsAsync();", acceptedTurnAnchor, StringComparison.Ordinal);
 
         Assert.True(lifeTransitionIndex >= 0);
         Assert.True(cleanupIndex >= 0);
@@ -434,6 +434,38 @@ public sealed class GameEngineSourceGuardTests
         Assert.True(normalizeIndex >= 0);
         Assert.True(cleanupIndex >= 0);
         Assert.True(normalizeIndex < cleanupIndex, "resolved afterlife pending contracts must be cleaned while the accepted-turn snapshot is still available.");
+    }
+
+    [Fact]
+    public void AcceptedTurnFlows_MustValidateMaterializedStateAfterRuntimeNormalization()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+
+        Assert.Contains("PostAcceptedMaterializedStateValidationSource", source, StringComparison.Ordinal);
+
+        var anchors = new[]
+        {
+            "private async Task<bool> WaitForGmResponse()",
+            "var acceptedLateResponse = false;",
+            "// Read and validate the response before accepting the turn"
+        };
+
+        foreach (var anchor in anchors)
+        {
+            var anchorIndex = source.IndexOf(anchor, StringComparison.Ordinal);
+            Assert.True(anchorIndex >= 0, $"Accepted-turn flow anchor not found: {anchor}");
+
+            var normalizeIndex = source.IndexOf("await NormalizeRuntimeUiArtifactsAsync();", anchorIndex, StringComparison.Ordinal);
+            Assert.True(normalizeIndex >= 0, $"Accepted-turn flow must normalize runtime artifacts after anchor: {anchor}");
+
+            var postValidationIndex = source.IndexOf(
+                "await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(",
+                normalizeIndex,
+                StringComparison.Ordinal);
+            Assert.True(
+                postValidationIndex > normalizeIndex,
+                $"Accepted-turn flow must validate the fully materialized state after NormalizeRuntimeUiArtifactsAsync before returning control: {anchor}");
+        }
     }
 
     [Fact]

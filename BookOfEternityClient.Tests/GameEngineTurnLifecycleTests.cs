@@ -264,10 +264,14 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Equal(requestId, record.GetProperty("requestId").GetString());
         Assert.Equal(turnNumber, record.GetProperty("turnNumber").GetInt32());
         Assert.Equal("validation_repair", record.GetProperty("mode").GetString());
-        Assert.Equal("accepted", record.GetProperty("validation").GetProperty("status").GetString());
+        var validation = record.GetProperty("validation");
+        Assert.Equal("accepted", validation.GetProperty("status").GetString());
+        Assert.Equal("обработки хода", validation.GetProperty("source").GetString());
+        Assert.Equal("correlated_repair_ready", validation.GetProperty("acceptanceScope").GetString());
+        Assert.False(validation.GetProperty("fullCanonicalStateAccepted").GetBoolean());
         Assert.Contains(
             "location_last_events_timestamp_invalid",
-            record.GetProperty("validation").GetProperty("issueKinds")
+            validation.GetProperty("issueKinds")
                 .EnumerateArray()
                 .Select(item => item.GetString()));
         Assert.Equal(2, record.GetProperty("repair").GetProperty("attempts").GetInt32());

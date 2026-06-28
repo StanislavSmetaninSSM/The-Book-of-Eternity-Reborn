@@ -15,6 +15,8 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
+    private const string PostAcceptedMaterializedStateValidationSource = "пост-материализации принятого хода";
+
     private enum TerminalSignalWaitOutcome
     {
         Cancelled,
@@ -73,13 +75,23 @@ public partial class GameEngine
 
             _audioService.PlayCue(AudioCue.TurnReady);
             var response = await BuildGameResponseFromFiles();
+
+            CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction);
+            await _pendingTurnState.RotateAfterAcceptedTurnAsync();
+            await NormalizeRuntimeUiArtifactsAsync();
+            if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(rollbackSnapshot))
+            {
+                _pendingMemoryLegacyAwaitingConsumption = false;
+                _fs.DeleteFile("ready/turn_complete.json");
+                _fs.DeleteFile("ready/turn_error.json");
+                await CleanupPendingTurnSnapshotAsync();
+                return false;
+            }
+
             if (HasRollbackCapability(rollbackSnapshot))
                 CleanupBackup(rollbackSnapshot!);
 
             _gameLoop.IncrementTurn();
-            CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction);
-            await _pendingTurnState.RotateAfterAcceptedTurnAsync();
-            await NormalizeRuntimeUiArtifactsAsync();
 
             // Debug: log narrative length to help diagnose rendering issues
             if (string.IsNullOrEmpty(response?.Response))
@@ -414,14 +426,20 @@ public partial class GameEngine
                     var lateResponse = await BuildGameResponseFromFiles();
                     if (lateResponse == null || string.IsNullOrEmpty(lateResponse.Response))
                         AnsiConsole.MarkupLine("[yellow dim]⚠ Нарратив пуст в late response GM[/]");
-                    else
-                    _lastResponse = lateResponse;
                     _pendingImagePrompt = null;
-                    _gameLoop.IncrementTurn();
                     CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction);
                     var lateAction = snapshotContext?.PlayerAction ?? string.Empty;
                     await _pendingTurnState.RotateAfterAcceptedTurnAsync();
                     await NormalizeRuntimeUiArtifactsAsync();
+                    if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(rollbackSnapshot))
+                    {
+                        _fs.DeleteFile("ready/turn_complete.json");
+                        await CleanupPendingTurnSnapshotAsync();
+                        continue;
+                    }
+
+                    _lastResponse = lateResponse;
+                    _gameLoop.IncrementTurn();
 
                     var state = _stateManager.CurrentState;
                     await _storyService.AppendTurnAsync(
@@ -821,9 +839,20 @@ public partial class GameEngine
         // pending-turn detached authority still uses rollback backup files as tamper evidence.
         CleanupAfterAcceptedChaosSeaMarkerTurn(action);
 
-        _gameLoop.IncrementTurn();
         await _pendingTurnState.RotateAfterAcceptedTurnAsync();
         await NormalizeRuntimeUiArtifactsAsync();
+        if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(backedUpFiles))
+        {
+            _fs.DeleteFile("ready/turn_complete.json");
+            _fs.DeleteFile("ready/turn_error.json");
+            _fs.DeleteFile("output/ink_feather_action_result.json");
+            _qteSceneService.ClearOfferFile();
+            _fs.DeleteFile("input/turn_request.json");
+            await CleanupPendingTurnSnapshotAsync();
+            return;
+        }
+
+        _gameLoop.IncrementTurn();
         _lastResponse = response;
         _pendingImagePrompt = null;
 
