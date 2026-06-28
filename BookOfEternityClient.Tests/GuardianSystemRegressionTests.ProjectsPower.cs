@@ -7248,45 +7248,58 @@ public sealed partial class GuardianSystemRegressionTests
     [Fact]
     public async Task GuardianProcessGachaValidation_DoesNotUseSnapshotOnlyCompletedRelicForgingWhenCurrentTrackerLacksSourceProject()
     {
+        ResetValidatedPreTurnSnapshot();
         await _fs.WriteFileAtomicAsync("input/turn_request.json", """
-        { "sessionId": "test-session", "requestId": "gacha-current-tracker", "turnNumber": 21 }
-        """);
-        await WriteRawAsync("game_state/meta/guardians.json", """
         {
-          "guardians": [
+          "sessionId": "test-session",
+          "requestId": "gacha-current-tracker",
+          "turnNumber": 21,
+          "gachaBaseResult": { "baseRarity": "Rare" }
+        }
+        """);
+        await WritePreTurnGuardiansTrackedFileAsync(
+            "test_backups/preturn_guardians_gacha_current_tracker.json",
+            """
             {
-              "guardianId": "guardian_alpha",
-              "canonicalName": "Азалия",
-              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
-              "manifestation": {
-                "currentDisplayName": "Азалия",
-                "formFlexibility": "selective",
-                "currentPresentationStyle": "feminine",
-                "currentPronouns": "она/её",
-                "appearanceDescription": "Тестовая форма."
-              },
-              "manifestationHistory": [],
-              "relationshipData": { "currentReputation": 60, "reputationHistory": [], "lastInteraction": null },
-              "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
-              "gachaSystem": { "chargesPerReturn": 2, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+              "guardians": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "canonicalName": "Азалия",
+                  "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+                  "manifestation": {
+                    "currentDisplayName": "Азалия",
+                    "formFlexibility": "selective",
+                    "currentPresentationStyle": "feminine",
+                    "currentPronouns": "она/её",
+                    "appearanceDescription": "Тестовая форма."
+                  },
+                  "manifestationHistory": [],
+                  "relationshipData": { "currentReputation": 60, "reputationHistory": [], "lastInteraction": null },
+                  "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+                  "gachaSystem": { "chargesPerReturn": 2, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                }
+              ],
+              "activeGuardian": {
+                "guardianId": "guardian_alpha",
+                "canonicalName": "Азалия",
+                "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+                "manifestation": {
+                  "currentDisplayName": "Азалия",
+                  "formFlexibility": "selective",
+                  "currentPresentationStyle": "feminine",
+                  "currentPronouns": "она/её",
+                  "appearanceDescription": "Тестовая форма."
+                },
+                "manifestationHistory": [],
+                "relationshipData": { "currentReputation": 60, "reputationHistory": [], "lastInteraction": null },
+                "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+                "gachaSystem": { "chargesPerReturn": 2, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+              }
             }
-          ],
-          "activeGuardian": {
-            "guardianId": "guardian_alpha",
-            "canonicalName": "Азалия",
-            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
-            "manifestation": {
-              "currentDisplayName": "Азалия",
-              "formFlexibility": "selective",
-              "currentPresentationStyle": "feminine",
-              "currentPronouns": "она/её",
-              "appearanceDescription": "Тестовая форма."
-            },
-            "manifestationHistory": [],
-            "relationshipData": { "currentReputation": 60, "reputationHistory": [], "lastInteraction": null },
-            "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
-            "gachaSystem": { "chargesPerReturn": 2, "chargesUsedThisReturn": 0, "gachaHistory": [] }
-          },
+            """);
+
+        await WriteGuardianRawWithoutValidatedSnapshotAsync("""
+        {
           "UpdateGuardians": [
             {
               "command": "processGacha",
@@ -7306,7 +7319,18 @@ public sealed partial class GuardianSystemRegressionTests
                 "quality": "Epic"
               }
             }
-          ]
+          ],
+          "metaStateUpdates": {
+            "inkFeatherChanges": { "spend": 50 },
+            "soulRelicOperations": {
+              "addRelic": {
+                "relicId": "relic_alpha",
+                "name": "Тестовая реликвия",
+                "rarity": "Epic",
+                "quality": "Epic"
+              }
+            }
+          }
         }
         """);
 
@@ -7317,6 +7341,10 @@ public sealed partial class GuardianSystemRegressionTests
           "temporaryProjectModifiers": []
         }
         """);
+        await AddCurrentSoulStateToValidatedPreTurnSnapshotAsync(
+            "test_backups/preturn_soul_state_gacha_current_tracker.json");
+        await AddCurrentWorldLoreToValidatedPreTurnSnapshotAsync(
+            "test_backups/preturn_current_world_lore_gacha_current_tracker");
 
         await WritePreTurnTrackedFileAsync(
             GuardianProjectState.TrackerPath,
@@ -7352,7 +7380,7 @@ public sealed partial class GuardianSystemRegressionTests
         var issues = await validator.ValidateGameStateAsync();
 
         Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "guardian_project_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Code, "guardian_process_gacha_bonus_audit_forge_steps_exceeded", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_non_create_unknown_guardian", StringComparison.OrdinalIgnoreCase));
     }
@@ -8011,6 +8039,7 @@ public sealed partial class GuardianSystemRegressionTests
     [Fact]
     public async Task ValidateGameState_DuplicateValidatedPreTurnTemporaryProjectModifiersFailClosedBeforeCurrentTrackerAuthorityBuild()
     {
+        ResetValidatedPreTurnSnapshot();
         await WriteRawAsync("game_state/meta/guardians.json", """
         {
           "guardians": [
@@ -8047,12 +8076,23 @@ public sealed partial class GuardianSystemRegressionTests
         {
           "activeProjects": [],
           "completedProjects": [],
-          "temporaryProjectModifiers": []
+          "temporaryProjectModifiers": [
+            {
+              "modifierId": "tmp_guardian_alpha_current",
+              "guardianId": "guardian_alpha",
+              "modifierType": "next_internal_project_starting_pressure",
+              "value": 1,
+              "remainingApplications": 1
+            }
+          ]
         }
         """);
+        await AddCurrentSoulStateToValidatedPreTurnSnapshotAsync(
+            "test_backups/preturn_soul_state_duplicate_validated_modifier_authority_failure.json");
+        await AddCurrentWorldLoreToValidatedPreTurnSnapshotAsync(
+            "test_backups/preturn_current_world_lore_duplicate_validated_modifier_authority_failure");
 
-        await WritePreTurnTrackedFileAsync(
-            "game_state/meta/guardians.json",
+        await WritePreTurnGuardiansTrackedFileAsync(
             "test_backups/preturn_guardians_duplicate_validated_modifier_authority_failure.json",
             """
             {

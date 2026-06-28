@@ -1690,6 +1690,7 @@ Guardian-mediated gacha:
 - Requires remaining Guardian gacha charges for the current return.
 - Must also write matching `metaStateUpdates.inkFeatherChanges.spend` and `metaStateUpdates.soulRelicOperations.addRelic`.
 - Rarity may only rise through Abode Power rarity ceiling bonus and completed `relic_forging` project bonus.
+- If `gachaBonusAudit.relicForgingBonusSteps > 0`, its `sourceProjectId` must name a completed `relic_forging` project available in the current Guardian project tracker authority; do not use a stale project that exists only in the pre-turn snapshot.
 - Guardian reputation affects charges/trade pricing only; it does not add rarity upgrade chance.
 - Hard/Impossible mortal-world difficulty does not add afterlife Guardian gacha rarity steps.
 - If rarity is upgraded above the client base, include `gachaBonusAudit`. It is safe to include the audit with zero bonus steps even when rarity is unchanged.

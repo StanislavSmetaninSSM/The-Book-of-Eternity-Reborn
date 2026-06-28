@@ -397,13 +397,17 @@ public partial class ValidationService
                     "UpdateGuardians.processGacha",
                     $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед audit relic forging bonus steps.",
                     issues,
-                    out var trackerRoot))
+                    out var trackerRoot,
+                    out var trackerContext))
             {
                 return;
             }
 
+            var trackerSourceRoot = trackerContext.HasCurrentRoot
+                ? trackerContext.CurrentRoot
+                : trackerRoot;
             var trackerMatch = ResolveAvailableForgeGachaBonusStepsFromTrackerJson(
-                trackerRoot.GetRawText(),
+                trackerSourceRoot.GetRawText(),
                 guardianId,
                 sourceProjectId ?? string.Empty);
             var availableForgeSteps = trackerMatch.HasMatch

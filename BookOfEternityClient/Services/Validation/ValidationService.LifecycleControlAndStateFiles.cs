@@ -430,6 +430,7 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "UpdateGuardians", "guardianPowerEvents", "guardians", "activeGuardian", "chaosSeaNavigation", "pendingGuardianCreation",
+                "metaStateUpdates",
                 GuardianProjectState.QuestProgressUpdatesProperty,
                 GuardianTradeRequestState.UpdateReceiptsProperty,
                 PlayerGuardianFoundationState.HistoryProperty

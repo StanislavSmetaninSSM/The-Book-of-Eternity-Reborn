@@ -976,6 +976,39 @@ public sealed partial class GuardianSystemRegressionTests : IDisposable
     private async Task WriteGuardianRawWithoutValidatedSnapshotAsync(string json) =>
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", NormalizeGuardianStateJson(json));
 
+    private void ResetValidatedPreTurnSnapshot()
+    {
+        var manifestPath = _fs.ResolvePath("game_state/control/pending_turn_snapshot.json");
+        if (File.Exists(manifestPath))
+            File.Delete(manifestPath);
+
+        var snapshotDirectory = _fs.ResolvePath("game_state/control/pending_turn_snapshot");
+        if (Directory.Exists(snapshotDirectory))
+            Directory.Delete(snapshotDirectory, recursive: true);
+    }
+
+    private async Task AddCurrentSoulStateToValidatedPreTurnSnapshotAsync(string backupPath)
+    {
+        var soulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json")
+            ?? throw new InvalidOperationException("Expected current soul_state.json to exist in test fixture.");
+        await WritePreTurnTrackedFileAsync("game_state/meta/soul_state.json", backupPath, soulStateJson);
+    }
+
+    private async Task AddCurrentWorldLoreToValidatedPreTurnSnapshotAsync(string backupRoot)
+    {
+        var loreRoot = _fs.ResolvePath("lore/current_world");
+        if (!Directory.Exists(loreRoot))
+            return;
+
+        var gameSessionRoot = _fs.ResolvePath("");
+        foreach (var file in Directory.GetFiles(loreRoot, "*", SearchOption.AllDirectories))
+        {
+            var relativePath = Path.GetRelativePath(gameSessionRoot, file).Replace('\\', '/');
+            var content = await File.ReadAllTextAsync(file);
+            await WritePreTurnTrackedFileAsync(relativePath, $"{backupRoot}/{relativePath}", content);
+        }
+    }
+
     private async Task WritePreTurnTrackedFileAsync(string trackedPath, string backupPath, string json)
     {
         if (File.Exists(_fs.ResolvePath("game_state/control/pending_turn_snapshot.json")))
@@ -1009,6 +1042,9 @@ public sealed partial class GuardianSystemRegressionTests : IDisposable
             JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
+
+    private async Task WritePreTurnGuardiansTrackedFileAsync(string backupPath, string json) =>
+        await WritePreTurnTrackedFileAsync("game_state/meta/guardians.json", backupPath, NormalizeGuardianStateJson(json));
 
     private async Task AddTrackedFileToCurrentPendingTurnSnapshotAsync(string trackedPath, string backupPath, string json)
     {
