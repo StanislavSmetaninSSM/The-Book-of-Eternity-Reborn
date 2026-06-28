@@ -17,6 +17,7 @@ public enum WorkerRole
     SkillContent,
     NpcContent,
     GuardianAbodeContent,
+    SoulContent,
     SocialDialogueContent,
     FactionContent,
     LocationContent,
@@ -39,6 +40,7 @@ public enum WorkerTaskType
     SkillContent,
     NpcContent,
     GuardianAbodeContent,
+    SoulContent,
     SocialDialogueContent,
     FactionContent,
     LocationContent,
@@ -55,6 +57,7 @@ public enum WorkerAuthoringDomain
     Skill,
     Npc,
     GuardianAbode,
+    Soul,
     SocialDialogue,
     Faction,
     Location,
@@ -81,6 +84,7 @@ public static class WorkerTaskTypes
             WorkerTaskType.SkillContent or
             WorkerTaskType.NpcContent or
             WorkerTaskType.GuardianAbodeContent or
+            WorkerTaskType.SoulContent or
             WorkerTaskType.SocialDialogueContent or
             WorkerTaskType.FactionContent or
             WorkerTaskType.LocationContent or
@@ -168,6 +172,7 @@ public sealed record WorkerTaskPacket
     public WorkerDraftRequest? DraftRequest { get; init; }
     public WorkerContentAuthoringRequest? AuthoringRequest { get; init; }
     public WorkerGuardianAbodeRequest? GuardianAbodeRequest { get; init; }
+    public WorkerSoulContentRequest? SoulContentRequest { get; init; }
     public IReadOnlyList<WorkerFileReference> ContextFiles { get; init; } = [];
     public WorkerAfterlifeTaskContract? AfterlifeContract { get; init; }
     public IReadOnlyList<string> AllowedProposalPaths { get; init; } = [];
@@ -236,6 +241,16 @@ public sealed record WorkerGuardianAbodeRequest
     public IReadOnlyList<string> ReadScope { get; init; } = [];
 }
 
+public sealed record WorkerSoulContentRequest
+{
+    public string Realm { get; init; } = "";
+    public string SoulContext { get; init; } = "";
+    public IReadOnlyList<string> RequestedScope { get; init; } = [];
+    public IReadOnlyList<string> ProgressionConstraints { get; init; } = [];
+    public IReadOnlyList<string> ReadScope { get; init; } = [];
+    public IReadOnlyList<string> PlayerOwnedIdentityFields { get; init; } = [];
+}
+
 public sealed record WorkerProposal
 {
     public int SchemaVersion { get; init; } = 1;
@@ -250,6 +265,7 @@ public sealed record WorkerProposal
     public WorkerContentAuthoringProposal? AuthoringProposal { get; init; }
     public WorkerAfterlifeProposalContract? AfterlifeProposal { get; init; }
     public WorkerGuardianAbodeProposal? GuardianAbodeProposal { get; init; }
+    public WorkerSoulContentProposal? SoulContentProposal { get; init; }
     public WorkerSelfCheck SelfCheck { get; init; } = new();
     public string CreatedAtUtc { get; init; } = "";
 }
@@ -295,6 +311,30 @@ public sealed record WorkerGuardianAbodeProposalItem
 {
     public string ItemId { get; init; } = "";
     public string TargetId { get; init; } = "";
+    public string Title { get; init; } = "";
+    public string Summary { get; init; } = "";
+    public string Visibility { get; init; } = "";
+    public IReadOnlyList<string> TargetSurfaces { get; init; } = [];
+    public IReadOnlyList<WorkerAuthoredField> Fields { get; init; } = [];
+}
+
+public sealed record WorkerSoulContentProposal
+{
+    public string PlayerVisibleSummary { get; init; } = "";
+    public IReadOnlyList<WorkerSoulContentProposalItem> SafeSoulSummaries { get; init; } = [];
+    public IReadOnlyList<WorkerSoulContentProposalItem> ProgressionSuggestions { get; init; } = [];
+    public IReadOnlyList<WorkerSoulContentProposalItem> RewardNotes { get; init; } = [];
+    public IReadOnlyList<WorkerSoulContentProposalItem> NextLifePreparationHooks { get; init; } = [];
+    public IReadOnlyList<string> RequiredReceipts { get; init; } = [];
+    public IReadOnlyList<string> RequiredReports { get; init; } = [];
+    public IReadOnlyList<string> ForbiddenReadonlyFields { get; init; } = [];
+    public IReadOnlyList<WorkerValidatorRisk> ValidatorRisks { get; init; } = [];
+    public IReadOnlyList<string> GmReviewNotes { get; init; } = [];
+}
+
+public sealed record WorkerSoulContentProposalItem
+{
+    public string ItemId { get; init; } = "";
     public string Title { get; init; } = "";
     public string Summary { get; init; } = "";
     public string Visibility { get; init; } = "";

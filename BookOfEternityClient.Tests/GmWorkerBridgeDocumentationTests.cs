@@ -20,6 +20,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("E_CLI_GM_Worker_Npc_Content.txt", manifest, StringComparison.Ordinal);
         Assert.Contains("E_CLI_GM_Worker_Afterlife_Contract.txt", manifest, StringComparison.Ordinal);
         Assert.Contains("E_CLI_GM_Worker_Guardian_Abode_Content.txt", manifest, StringComparison.Ordinal);
+        Assert.Contains("E_CLI_GM_Worker_Soul_Content.txt", manifest, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -90,6 +91,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         var npcContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Npc_Content.txt");
         var afterlifeContract = ReadRepoFile("Examples/E_CLI_GM_Worker_Afterlife_Contract.txt");
         var guardianAbodeContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt");
+        var soulContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Soul_Content.txt");
 
         Assert.Contains("hidden/background", guide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("apply gate", guide, StringComparison.OrdinalIgnoreCase);
@@ -126,6 +128,14 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("abode_power_journal.json", guardianAbodeContent, StringComparison.Ordinal);
         Assert.Contains("chaos_sea_guardian_politics.json", guardianAbodeContent, StringComparison.Ordinal);
         Assert.Contains("Mortal NPCs", guardianAbodeContent, StringComparison.Ordinal);
+        Assert.Contains("soul-content", soulContent, StringComparison.Ordinal);
+        Assert.Contains("soulContentRequest", soulContent, StringComparison.Ordinal);
+        Assert.Contains("soulContentProposal", soulContent, StringComparison.Ordinal);
+        Assert.Contains("soulName", soulContent, StringComparison.Ordinal);
+        Assert.Contains("soulFormDescription", soulContent, StringComparison.Ordinal);
+        Assert.Contains("Chaos Sea", soulContent, StringComparison.Ordinal);
+        Assert.Contains("game_state/meta/soul_state.json", soulContent, StringComparison.Ordinal);
+        Assert.Contains("Mortal inventory", soulContent, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -140,8 +150,9 @@ public sealed class GmWorkerBridgeDocumentationTests
         var npcContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Npc_Content.txt");
         var afterlifeContract = ReadRepoFile("Examples/E_CLI_GM_Worker_Afterlife_Contract.txt");
         var guardianAbodeContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt");
+        var soulContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Soul_Content.txt");
 
-        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent, npcContent, afterlifeContract, guardianAbodeContent })
+        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent, npcContent, afterlifeContract, guardianAbodeContent, soulContent })
         {
             Assert.Contains("BOE_WORKER_TASK_PATH", source, StringComparison.Ordinal);
             Assert.Contains("BOE_WORKER_PROPOSAL_PATH", source, StringComparison.Ordinal);
@@ -161,9 +172,10 @@ public sealed class GmWorkerBridgeDocumentationTests
         var npcContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Npc_Content.txt");
         var afterlifeContract = ReadRepoFile("Examples/E_CLI_GM_Worker_Afterlife_Contract.txt");
         var guardianAbodeContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt");
+        var soulContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Soul_Content.txt");
         var runner = ReadRepoFile("BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1");
 
-        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent, npcContent, afterlifeContract, guardianAbodeContent })
+        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent, npcContent, afterlifeContract, guardianAbodeContent, soulContent })
         {
             Assert.Contains("gm_worker_cli_runner.ps1", source, StringComparison.Ordinal);
             Assert.Contains("-AgentCommand", source, StringComparison.Ordinal);
@@ -179,6 +191,8 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("afterlifeContract", runner, StringComparison.Ordinal);
         Assert.Contains("guardianAbodeProposal", runner, StringComparison.Ordinal);
         Assert.Contains("guardianAbodeRequest", runner, StringComparison.Ordinal);
+        Assert.Contains("soulContentProposal", runner, StringComparison.Ordinal);
+        Assert.Contains("soulContentRequest", runner, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -197,6 +211,7 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("inventory_content_codex", source, StringComparison.Ordinal);
             Assert.Contains("skill_content_codex", source, StringComparison.Ordinal);
             Assert.Contains("npc_content_codex", source, StringComparison.Ordinal);
+            Assert.Contains("soul_content_codex", source, StringComparison.Ordinal);
             Assert.Contains("gm_worker_cli_runner.ps1", source, StringComparison.Ordinal);
             Assert.Contains("enabled = $false", source, StringComparison.OrdinalIgnoreCase);
         }
@@ -214,6 +229,7 @@ public sealed class GmWorkerBridgeDocumentationTests
             "Examples/E_CLI_GM_Worker_Npc_Content.txt",
             "Examples/E_CLI_GM_Worker_Afterlife_Contract.txt",
             "Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt",
+            "Examples/E_CLI_GM_Worker_Soul_Content.txt",
             "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
             "BookOfEternityClient/Launcher/CLI_Daemon_Window_Help.md",
             "BookOfEternityClient/Launcher/GM_Daemon_ConPTY_Proposal.md",
@@ -245,6 +261,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("inventory_content_codex", guide, StringComparison.Ordinal);
         Assert.Contains("skill_content_codex", guide, StringComparison.Ordinal);
         Assert.Contains("npc_content_codex", guide, StringComparison.Ordinal);
+        Assert.Contains("soul_content_codex", guide, StringComparison.Ordinal);
         Assert.Contains("enable one template explicitly", guide, StringComparison.OrdinalIgnoreCase);
     }
 

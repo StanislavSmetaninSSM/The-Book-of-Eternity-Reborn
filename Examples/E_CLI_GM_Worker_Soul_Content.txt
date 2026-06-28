@@ -1,0 +1,378 @@
+GM worker Soul content example.
+
+This example is a worker-proposal-v1 contract example for a hidden/background
+proposal-only afterlife worker. The main GM remains responsible for the player
+turn, final narration, validation, and canonical state writes.
+
+Runtime entrypoint:
+
+```powershell
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1" -AgentCommand "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -" -TimeoutSeconds 120
+```
+
+The worker receives:
+
+- `BOE_WORKER_TASK_PATH`
+- `BOE_WORKER_PROPOSAL_PATH`
+- `BOE_WORKER_SESSION_PATH`
+
+Disabled worker profile template:
+
+```json
+{
+  "workerId": "soul_content_codex",
+  "displayName": "Codex soul content author",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "role": "soul-content",
+  "enabled": false,
+  "launchVisibility": "hidden",
+  "timeoutSeconds": 150,
+  "maxConcurrentTasks": 1,
+  "permissions": {
+    "taskTypes": [
+      "soul-content"
+    ],
+    "readPaths": [
+      "game_state/meta/soul_state.json",
+      "game_state/meta/afterlife_chronicles.json",
+      "game_state/meta/afterlife_global_flags.json",
+      "game_state/control/progression_schedule.json",
+      "game_state/control/pending_dice_state.json",
+      "OtherGuides/Afterlife_Contract_Matrix.md",
+      "Examples/E_CLI_Afterlife_Turns.txt"
+    ],
+    "proposalWritePaths": [],
+    "proposalOnly": true,
+    "requiresValidation": false
+  }
+}
+```
+
+Task packet:
+
+```json
+{
+  "schemaVersion": 1,
+  "taskId": "worker_task_soul_content_0001",
+  "workerId": "soul_content_codex",
+  "role": "soul-content",
+  "taskType": "soul-content",
+  "createdAtUtc": "2026-06-20T04:15:00Z",
+  "timeoutSeconds": 150,
+  "sourceTurn": {
+    "sessionId": "test-session",
+    "requestId": "test-request",
+    "turnNumber": 19
+  },
+  "authoringRequest": {
+    "domain": "soul",
+    "goal": "Prepare safe Chaos Sea soul progression and next-life preparation notes.",
+    "entityHints": [
+      "player_soul",
+      "ink feathers",
+      "next-life preparation"
+    ],
+    "requiredLinks": [
+      "soul_state",
+      "afterlife chronicles",
+      "progression receipts"
+    ],
+    "outputNotes": [
+      "Reference player-owned identity fields as readonly; do not overwrite them."
+    ]
+  },
+  "soulContentRequest": {
+    "realm": "Chaos Sea",
+    "soulContext": "The player soul has just finished a dangerous Chaos Sea exchange and may receive a small reward plus next-life preparation hooks.",
+    "requestedScope": [
+      "safe soul summary",
+      "progression suggestion",
+      "reward note",
+      "next-life preparation hook"
+    ],
+    "progressionConstraints": [
+      "Do not overwrite player-owned identity fields.",
+      "Ink Feather and Light Spark changes require explicit receipts.",
+      "Next-life preparation hooks must remain review-only until the main GM accepts them."
+    ],
+    "readScope": [
+      "game_state/meta/soul_state.json",
+      "game_state/meta/afterlife_chronicles.json",
+      "game_state/control/progression_schedule.json"
+    ],
+    "playerOwnedIdentityFields": [
+      "soulName",
+      "soulFormDescription"
+    ]
+  },
+  "contextFiles": [
+    {
+      "path": "game_state/meta/soul_state.json",
+      "sha256": "example"
+    },
+    {
+      "path": "game_state/meta/afterlife_chronicles.json",
+      "sha256": "example"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "sha256": "example"
+    }
+  ],
+  "afterlifeContract": {
+    "realmGate": "ChaosSea",
+    "currentRealm": "Chaos Sea",
+    "progressionControlPaths": [
+      "game_state/control/progression_schedule.json"
+    ],
+    "pendingControlFiles": [
+      "game_state/control/pending_dice_state.json"
+    ],
+    "allowedAfterlifeSurfaces": [
+      "game_state/meta/soul_state.json",
+      "game_state/meta/afterlife_chronicles.json",
+      "game_state/control/progression_schedule.json"
+    ],
+    "requiredReceipts": [
+      "metaStateUpdates.inkFeatherChanges",
+      "afterlifeChronicleUpdates"
+    ],
+    "requiredReports": [
+      "progressionProcessingReport"
+    ],
+    "forbiddenMortalSubstitutes": [
+      "UpdateCharacter",
+      "game_state/player",
+      "Mortal inventory",
+      "worldStateFlags"
+    ]
+  },
+  "allowedProposalPaths": [],
+  "responseContract": "worker-proposal-v1",
+  "acceptanceCriteria": [
+    "Return a worker-proposal-v1 JSON proposal.",
+    "Include authoringProposal, afterlifeProposal, and soulContentProposal.",
+    "Treat soulName and soulFormDescription as player-owned readonly identity."
+  ],
+  "forbiddenActions": [
+    "Do not edit canonical game_session files directly.",
+    "Do not include changedFiles.",
+    "Do not rewrite soul state as ordinary character, inventory, or Mortal World state."
+  ],
+  "instructions": "Return soulContentProposal and afterlifeProposal only; use exact soul_state and afterlife surfaces from Afterlife_Contract_Matrix.md."
+}
+```
+
+Valid proposal:
+
+```json
+{
+  "schemaVersion": 1,
+  "proposalId": "worker_proposal_soul_content_0001",
+  "taskId": "worker_task_soul_content_0001",
+  "workerId": "soul_content_codex",
+  "status": "completed",
+  "summary": "Prepared safe soul progression and next-life preparation notes for main-GM review.",
+  "changedFiles": [],
+  "findings": [
+    {
+      "kind": "afterlife-soul-boundary",
+      "message": "soulName and soulFormDescription are player-owned and must remain readonly."
+    }
+  ],
+  "draftText": null,
+  "authoringProposal": {
+    "domain": "soul",
+    "goal": "Prepare safe Chaos Sea soul progression and next-life preparation notes.",
+    "createdEntities": [
+      {
+        "entityType": "soul-progression",
+        "entityId": "soul_progression_echo_mercy_0001",
+        "displayName": "Отзвук милости",
+        "summary": "Душа может получить малую награду и осторожный след для следующей жизни без изменения имени или формы души.",
+        "requiredFields": [
+          {
+            "name": "playerFacingSummary",
+            "value": "Душа сохранила отзвук милости и может унести его как мягкий стартовый знак."
+          },
+          {
+            "name": "exactAfterlifeSurfaces",
+            "value": "game_state/meta/soul_state.json; game_state/meta/afterlife_chronicles.json"
+          },
+          {
+            "name": "readonlyIdentityFields",
+            "value": "soulName; soulFormDescription"
+          }
+        ],
+        "relationships": [
+          "player_soul",
+          "afterlife chronicles",
+          "next-life preparation"
+        ]
+      }
+    ],
+    "updatedEntities": [],
+    "requiredLinks": [
+      {
+        "source": "soul_progression_echo_mercy_0001",
+        "target": "game_state/meta/soul_state.json",
+        "reason": "The main GM must accept any reward through soul_state/metaStateUpdates receipts, not ordinary character state."
+      },
+      {
+        "source": "soul_progression_echo_mercy_0001",
+        "target": "game_state/meta/afterlife_chronicles.json",
+        "reason": "The soul-facing summary should be recorded as an afterlife chronicle if accepted."
+      }
+    ],
+    "validatorRisks": [
+      {
+        "code": "soul_identity_readonly",
+        "message": "Soul content must not overwrite player-owned identity fields.",
+        "mitigation": "Keep soulName and soulFormDescription only in forbiddenReadonlyFields or readonly notes."
+      }
+    ],
+    "gmReviewNotes": [
+      "Review rewards and next-life hooks before turning them into canonical receipts."
+    ]
+  },
+  "afterlifeProposal": {
+    "realmGate": "ChaosSea",
+    "targetSurfaces": [
+      "game_state/meta/soul_state.json",
+      "game_state/meta/afterlife_chronicles.json"
+    ],
+    "requiredReceipts": [
+      "metaStateUpdates.inkFeatherChanges",
+      "afterlifeChronicleUpdates"
+    ],
+    "requiredReports": [
+      "progressionProcessingReport"
+    ],
+    "playerVisibleSummary": "Душа сохраняет отзвук милости и получает осторожный крючок для будущей жизни.",
+    "gmReviewNotes": [
+      "Review soul_state reward surfaces before accepting.",
+      "Do not overwrite soulName or soulFormDescription."
+    ],
+    "validatorRisks": [
+      {
+        "code": "soul_reward_receipt_required",
+        "message": "Soul rewards require explicit afterlife receipts.",
+        "mitigation": "Use metaStateUpdates.inkFeatherChanges and afterlifeChronicleUpdates only if accepted."
+      }
+    ]
+  },
+  "guardianAbodeProposal": null,
+  "soulContentProposal": {
+    "playerVisibleSummary": "Душа сохраняет отзвук милости и получает осторожный крючок для будущей жизни.",
+    "safeSoulSummaries": [
+      {
+        "itemId": "summary_echo_mercy",
+        "title": "Отзвук милости",
+        "summary": "Публичное описание результата без изменения имени или формы души.",
+        "visibility": "visible",
+        "targetSurfaces": [
+          "game_state/meta/afterlife_chronicles.json"
+        ],
+        "fields": [
+          {
+            "name": "summaryUse",
+            "value": "player-facing chronicle note"
+          }
+        ]
+      }
+    ],
+    "progressionSuggestions": [
+      {
+        "itemId": "progression_small_spark",
+        "title": "Малый след света",
+        "summary": "Возможная малая progression-связка для души после сцены.",
+        "visibility": "visible",
+        "targetSurfaces": [
+          "game_state/meta/soul_state.json"
+        ],
+        "fields": [
+          {
+            "name": "progressionCue",
+            "value": "review-only Light Spark or resonance suggestion"
+          }
+        ]
+      }
+    ],
+    "rewardNotes": [
+      {
+        "itemId": "reward_ink_feather_note",
+        "title": "Награда пером",
+        "summary": "Если главный ГМ принимает награду, она должна пройти через явный receipt.",
+        "visibility": "visible",
+        "targetSurfaces": [
+          "game_state/meta/soul_state.json"
+        ],
+        "fields": [
+          {
+            "name": "receipt",
+            "value": "metaStateUpdates.inkFeatherChanges"
+          }
+        ]
+      }
+    ],
+    "nextLifePreparationHooks": [
+      {
+        "itemId": "next_life_hook_mercy",
+        "title": "След милости",
+        "summary": "Крючок для будущей жизни: встреча с похожим выбором, но без автоматического старта новой жизни.",
+        "visibility": "visible",
+        "targetSurfaces": [
+          "game_state/meta/afterlife_chronicles.json"
+        ],
+        "fields": [
+          {
+            "name": "nextLifePrep",
+            "value": "review-only hook for the main GM"
+          }
+        ]
+      }
+    ],
+    "requiredReceipts": [
+      "metaStateUpdates.inkFeatherChanges",
+      "afterlifeChronicleUpdates"
+    ],
+    "requiredReports": [
+      "progressionProcessingReport"
+    ],
+    "forbiddenReadonlyFields": [
+      "soulName",
+      "soulFormDescription"
+    ],
+    "validatorRisks": [
+      {
+        "code": "soul_identity_readonly",
+        "message": "Player-owned soul identity must stay readonly.",
+        "mitigation": "Reference identity fields only in forbiddenReadonlyFields or read-only summaries."
+      }
+    ],
+    "gmReviewNotes": [
+      "Main GM must rewrite accepted content through afterlife response surfaces."
+    ]
+  },
+  "selfCheck": {
+    "scopeReviewed": true,
+    "validationExpectedToPass": true,
+    "notes": [
+      "Proposal-only Soul content task; no file changes included."
+    ]
+  },
+  "createdAtUtc": "2026-06-20T04:15:20Z"
+}
+```
+
+Rejected patterns:
+
+- a `soul-content` task without `afterlifeContract`;
+- a `soul-content` task without `soulContentRequest`;
+- a proposal that assigns `soulName`, `soulFormDescription`, `newSoulName`,
+  `newSoulFormDescription`, `identityChange`, or `identityOverride`;
+- a proposal that models the player soul as `character`, `player-character`,
+  `mortal-character`, `inventory`, `item`, or generic `state`;
+- a proposal that uses `UpdateCharacter`, Mortal inventory, `worldStateFlags`,
+  `game_state/player`, `game_state/inventory`, or other Mortal World
+  substitutes for soul progression/rewards.

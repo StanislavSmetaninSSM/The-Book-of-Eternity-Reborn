@@ -82,9 +82,11 @@ public sealed class GmWorkerBridgeContractTests
     {
         var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
         var guardianProfile = GmWorkerBridgeTestFixtures.GuardianAbodeContentCodexProfile();
+        var soulProfile = GmWorkerBridgeTestFixtures.SoulContentCodexProfile();
 
         var json = GmWorkerJson.Serialize(profile);
         var guardianJson = GmWorkerJson.Serialize(guardianProfile);
+        var soulJson = GmWorkerJson.Serialize(soulProfile);
         var roundTrip = GmWorkerJson.Deserialize<WorkerBridgeProfile>(json);
 
         Assert.Contains("\"launchVisibility\": \"hidden\"", json, StringComparison.Ordinal);
@@ -92,6 +94,8 @@ public sealed class GmWorkerBridgeContractTests
         Assert.Contains("\"validation-repair\"", json, StringComparison.Ordinal);
         Assert.Contains("\"role\": \"guardian-abode-content\"", guardianJson, StringComparison.Ordinal);
         Assert.Contains("\"guardian-abode-content\"", guardianJson, StringComparison.Ordinal);
+        Assert.Contains("\"role\": \"soul-content\"", soulJson, StringComparison.Ordinal);
+        Assert.Contains("\"soul-content\"", soulJson, StringComparison.Ordinal);
         Assert.NotNull(roundTrip);
         Assert.Equal(profile.WorkerId, roundTrip!.WorkerId);
         Assert.Equal(WorkerRole.ValidationRepair, roundTrip.Role);
@@ -141,6 +145,128 @@ public sealed class GmWorkerBridgeContractTests
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, error =>
             error.Contains("afterlifeContract", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void SoulContentTaskAndProposal_RequireSoulTypedAfterlifeProposal()
+    {
+        var profile = GmWorkerBridgeTestFixtures.SoulContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.SoulContentTask();
+        var proposal = GmWorkerBridgeTestFixtures.SoulContentProposal();
+
+        var taskResult = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+        var proposalResult = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.True(taskResult.IsValid, string.Join(Environment.NewLine, taskResult.Errors));
+        Assert.True(proposalResult.IsValid, string.Join(Environment.NewLine, proposalResult.Errors));
+    }
+
+    [Fact]
+    public void SoulContentTask_RejectsMissingAfterlifeContract()
+    {
+        var profile = GmWorkerBridgeTestFixtures.SoulContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.SoulContentTask() with
+        {
+            AfterlifeContract = null
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("soul-content", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("afterlifeContract", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void SoulContentProposal_RejectsPlayerOwnedIdentityMutation()
+    {
+        var profile = GmWorkerBridgeTestFixtures.SoulContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.SoulContentTask();
+        var valid = GmWorkerBridgeTestFixtures.SoulContentProposal();
+        var proposal = valid with
+        {
+            AuthoringProposal = valid.AuthoringProposal! with
+            {
+                CreatedEntities =
+                [
+                    valid.AuthoringProposal!.CreatedEntities[0] with
+                    {
+                        RequiredFields =
+                        [
+                            new WorkerAuthoredField
+                            {
+                                Name = "soulName",
+                                Value = "Новое имя, выбранное воркером"
+                            },
+                            new WorkerAuthoredField
+                            {
+                                Name = "soulFormDescription",
+                                Value = "Новая форма души, выбранная воркером"
+                            }
+                        ]
+                    }
+                ]
+            },
+            SoulContentProposal = valid.SoulContentProposal! with
+            {
+                ForbiddenReadonlyFields = ["soulName"]
+            }
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("soulName", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("readonly", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(result.Errors, error =>
+            error.Contains("soulFormDescription", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("readonly", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void SoulContentProposal_RejectsOrdinaryCharacterInventoryAndMortalStateSubstitutes()
+    {
+        var profile = GmWorkerBridgeTestFixtures.SoulContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.SoulContentTask();
+        var valid = GmWorkerBridgeTestFixtures.SoulContentProposal();
+        var proposal = valid with
+        {
+            AuthoringProposal = valid.AuthoringProposal! with
+            {
+                CreatedEntities =
+                [
+                    valid.AuthoringProposal!.CreatedEntities[0] with
+                    {
+                        EntityType = "character",
+                        RequiredFields =
+                        [
+                            new WorkerAuthoredField
+                            {
+                                Name = "inventory",
+                                Value = "Use game_state/player/character.json and player inventory as a soul substitute."
+                            }
+                        ]
+                    }
+                ]
+            },
+            AfterlifeProposal = valid.AfterlifeProposal! with
+            {
+                TargetSurfaces =
+                [
+                    "game_state/meta/soul_state.json",
+                    "game_state/player/character.json"
+                ]
+            }
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("soul", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("substitute", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

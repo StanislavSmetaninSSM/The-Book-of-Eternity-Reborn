@@ -1450,6 +1450,23 @@ function New-DefaultGmWorkerBridgeProfiles {
             }
         },
         [ordered]@{
+            workerId = "soul_content_codex"
+            displayName = "Codex soul content author"
+            launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codexWorker`" -TimeoutSeconds 120"
+            role = "soul-content"
+            enabled = $false
+            launchVisibility = "hidden"
+            timeoutSeconds = 150
+            maxConcurrentTasks = 1
+            permissions = [ordered]@{
+                taskTypes = @("soul-content")
+                readPaths = @("game_state/meta/soul_state.json", "game_state/meta/afterlife_chronicles.json", "game_state/meta/afterlife_global_flags.json", "game_state/control/progression_schedule.json", "game_state/control/pending_dice_state.json", "OtherGuides/Afterlife_Contract_Matrix.md", "Examples/E_CLI_Afterlife_Turns.txt")
+                proposalWritePaths = @()
+                proposalOnly = $true
+                requiresValidation = $false
+            }
+        },
+        [ordered]@{
             workerId = "inventory_content_codex"
             displayName = "Codex inventory content author"
             launchCommand = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$codexWorker`" -TimeoutSeconds 120"

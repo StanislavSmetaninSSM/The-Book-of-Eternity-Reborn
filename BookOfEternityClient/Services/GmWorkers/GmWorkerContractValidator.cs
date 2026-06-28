@@ -113,6 +113,7 @@ public static class GmWorkerContractValidator
                 errors.Add("content-authoring tasks must not include allowedProposalPaths.");
             ValidateAuthoringRequest(task.AuthoringRequest, task.TaskType, errors);
             ValidateGuardianAbodeTaskPacket(task, errors);
+            ValidateSoulContentTaskPacket(task, errors);
         }
         else if (task.AuthoringRequest != null)
         {
@@ -121,6 +122,8 @@ public static class GmWorkerContractValidator
 
         if (task.TaskType != WorkerTaskType.GuardianAbodeContent && task.GuardianAbodeRequest != null)
             errors.Add("guardianAbodeRequest is only allowed for guardian-abode-content tasks.");
+        if (task.TaskType != WorkerTaskType.SoulContent && task.SoulContentRequest != null)
+            errors.Add("soulContentRequest is only allowed for soul-content tasks.");
 
         return ToResult(errors);
     }
@@ -177,6 +180,7 @@ public static class GmWorkerContractValidator
 
         ValidateAfterlifeProposal(proposal, task, errors);
         ValidateGuardianAbodeProposal(proposal, task, errors);
+        ValidateSoulContentProposal(proposal, task, errors);
 
         return ToResult(errors);
     }
@@ -380,6 +384,54 @@ public static class GmWorkerContractValidator
             if (IsMortalWorldSubstitutePath(path))
                 errors.Add($"guardianAbodeRequest.readScope contains a Mortal World substitute path: {path}");
         }
+    }
+
+    private static void ValidateSoulContentTaskPacket(WorkerTaskPacket task, List<string> errors)
+    {
+        if (task.TaskType != WorkerTaskType.SoulContent)
+        {
+            return;
+        }
+
+        if (task.AfterlifeContract == null)
+            errors.Add("soul-content tasks must include afterlifeContract.");
+
+        if (task.AuthoringRequest?.Domain != WorkerAuthoringDomain.Soul)
+            errors.Add("soul-content tasks must use authoringRequest.domain Soul.");
+
+        if (task.SoulContentRequest == null)
+        {
+            errors.Add("soul-content tasks must include soulContentRequest.");
+            return;
+        }
+
+        var request = task.SoulContentRequest;
+        RequireText(request.Realm, "soulContentRequest.realm", errors);
+        RequireText(request.SoulContext, "soulContentRequest.soulContext", errors);
+
+        if (request.RequestedScope.Count == 0)
+            errors.Add("soulContentRequest.requestedScope must describe the requested soul-content scope.");
+        foreach (var scope in request.RequestedScope)
+            RequireText(scope, "soulContentRequest.requestedScope", errors);
+
+        if (request.ProgressionConstraints.Count == 0)
+            errors.Add("soulContentRequest.progressionConstraints must include soul progression constraints.");
+        foreach (var constraint in request.ProgressionConstraints)
+            RequireText(constraint, "soulContentRequest.progressionConstraints", errors);
+
+        if (request.ReadScope.Count == 0)
+            errors.Add("soulContentRequest.readScope must include exact soul/afterlife surfaces.");
+        foreach (var path in request.ReadScope)
+        {
+            ValidatePath(path, "soulContentRequest.readScope", errors);
+            if (IsMortalWorldSubstitutePath(path))
+                errors.Add($"soulContentRequest.readScope contains a Mortal World substitute path: {path}");
+        }
+
+        ValidateReadonlyIdentityFields(
+            request.PlayerOwnedIdentityFields,
+            "soulContentRequest.playerOwnedIdentityFields",
+            errors);
     }
 
     private static void ValidateAuthoringProposal(
@@ -601,6 +653,150 @@ public static class GmWorkerContractValidator
         }
     }
 
+    private static void ValidateSoulContentProposal(
+        WorkerProposal proposal,
+        WorkerTaskPacket task,
+        List<string> errors)
+    {
+        if (task.TaskType != WorkerTaskType.SoulContent)
+        {
+            if (proposal.SoulContentProposal != null)
+                errors.Add("soulContentProposal is only allowed for soul-content proposals.");
+            return;
+        }
+
+        if (proposal.SoulContentProposal == null)
+        {
+            errors.Add("soul-content proposals must include soulContentProposal.");
+            return;
+        }
+
+        var soul = proposal.SoulContentProposal;
+        RequireText(soul.PlayerVisibleSummary, "soulContentProposal.playerVisibleSummary", errors);
+        if (ContainsMortalWorldSubstituteText(soul.PlayerVisibleSummary))
+            errors.Add("soulContentProposal.playerVisibleSummary contains a Mortal World substitute reference.");
+
+        ValidateSoulContentProposalItems(
+            soul.SafeSoulSummaries,
+            "soulContentProposal.safeSoulSummaries",
+            task.AfterlifeContract,
+            errors);
+        ValidateSoulContentProposalItems(
+            soul.ProgressionSuggestions,
+            "soulContentProposal.progressionSuggestions",
+            task.AfterlifeContract,
+            errors);
+        ValidateSoulContentProposalItems(
+            soul.RewardNotes,
+            "soulContentProposal.rewardNotes",
+            task.AfterlifeContract,
+            errors);
+        ValidateSoulContentProposalItems(
+            soul.NextLifePreparationHooks,
+            "soulContentProposal.nextLifePreparationHooks",
+            task.AfterlifeContract,
+            errors);
+
+        ValidateAfterlifeRequiredNames(
+            task.AfterlifeContract?.RequiredReceipts ?? [],
+            soul.RequiredReceipts,
+            "soulContentProposal.requiredReceipts",
+            errors);
+        ValidateAfterlifeRequiredNames(
+            task.AfterlifeContract?.RequiredReports ?? [],
+            soul.RequiredReports,
+            "soulContentProposal.requiredReports",
+            errors);
+
+        var requiredReadonlyFields = task.SoulContentRequest?.PlayerOwnedIdentityFields ?? [];
+        ValidateReadonlyIdentityFields(
+            soul.ForbiddenReadonlyFields,
+            "soulContentProposal.forbiddenReadonlyFields",
+            errors,
+            requiredReadonlyFields);
+
+        if (soul.ValidatorRisks.Count == 0)
+            errors.Add("soulContentProposal.validatorRisks must contain at least one validator risk or no-risk note.");
+        foreach (var risk in soul.ValidatorRisks)
+        {
+            ValidateId(risk.Code, "soulContentProposal.validatorRisks.code", errors);
+            RequireText(risk.Message, "soulContentProposal.validatorRisks.message", errors);
+            RequireText(risk.Mitigation, "soulContentProposal.validatorRisks.mitigation", errors);
+            if (ContainsMortalWorldSubstituteText(risk.Message) ||
+                ContainsMortalWorldSubstituteText(risk.Mitigation))
+            {
+                errors.Add("soulContentProposal.validatorRisks contains a Mortal World substitute reference.");
+            }
+        }
+
+        if (soul.GmReviewNotes.Count == 0)
+            errors.Add("soulContentProposal.gmReviewNotes must contain at least one main-GM review note.");
+        foreach (var note in soul.GmReviewNotes)
+        {
+            RequireText(note, "soulContentProposal.gmReviewNotes", errors);
+            if (ContainsMortalWorldSubstituteText(note))
+                errors.Add("soulContentProposal.gmReviewNotes contains a Mortal World substitute reference.");
+        }
+    }
+
+    private static void ValidateSoulContentProposalItems(
+        IReadOnlyList<WorkerSoulContentProposalItem> items,
+        string fieldName,
+        WorkerAfterlifeTaskContract? afterlifeContract,
+        List<string> errors)
+    {
+        if (items.Count == 0)
+            errors.Add($"{fieldName} must contain at least one soul proposal item.");
+
+        foreach (var item in items)
+        {
+            ValidateId(item.ItemId, $"{fieldName}.itemId", errors);
+            RequireText(item.Title, $"{fieldName}.title", errors);
+            RequireText(item.Summary, $"{fieldName}.summary", errors);
+            RequireText(item.Visibility, $"{fieldName}.visibility", errors);
+
+            if (ContainsMortalWorldSubstituteText(item.Title) ||
+                ContainsMortalWorldSubstituteText(item.Summary) ||
+                ContainsMortalWorldSubstituteText(item.Visibility))
+            {
+                errors.Add($"{fieldName} contains a Mortal World substitute reference.");
+            }
+
+            if (item.TargetSurfaces.Count == 0)
+                errors.Add($"{fieldName}.targetSurfaces must contain at least one exact soul/afterlife surface.");
+            foreach (var surface in item.TargetSurfaces)
+            {
+                ValidatePath(surface, $"{fieldName}.targetSurfaces", errors);
+                if (IsMortalWorldSubstitutePath(surface))
+                {
+                    errors.Add($"{fieldName}.targetSurfaces contains a Mortal World substitute path: {surface}");
+                    continue;
+                }
+
+                if (afterlifeContract != null &&
+                    !afterlifeContract.AllowedAfterlifeSurfaces.Any(pattern => PathMatches(pattern, surface)))
+                {
+                    errors.Add($"{fieldName}.targetSurfaces contains a surface outside task.afterlifeContract.allowedAfterlifeSurfaces: {surface}");
+                }
+            }
+
+            if (item.Fields.Count == 0)
+                errors.Add($"{fieldName}.fields must contain at least one field for main-GM review.");
+            foreach (var field in item.Fields)
+            {
+                RequireText(field.Name, $"{fieldName}.fields.name", errors);
+                RequireText(field.Value, $"{fieldName}.fields.value", errors);
+                if (IsPlayerOwnedIdentityMutationField(field.Name))
+                    errors.Add($"{fieldName}.fields cannot mutate readonly player-owned soul identity field {field.Name}.");
+                if (ContainsMortalWorldSubstituteText(field.Name) ||
+                    ContainsMortalWorldSubstituteText(field.Value))
+                {
+                    errors.Add($"{fieldName}.fields contains a Mortal World substitute reference.");
+                }
+            }
+        }
+    }
+
     private static void ValidateGuardianAbodeProposalItems(
         IReadOnlyList<WorkerGuardianAbodeProposalItem> items,
         string fieldName,
@@ -683,6 +879,39 @@ public static class GmWorkerContractValidator
         }
     }
 
+    private static void ValidateReadonlyIdentityFields(
+        IReadOnlyList<string> providedFields,
+        string fieldName,
+        List<string> errors,
+        IReadOnlyList<string>? requiredFields = null)
+    {
+        foreach (var field in providedFields)
+            RequireText(field, fieldName, errors);
+
+        var required = requiredFields is { Count: > 0 }
+            ? requiredFields
+            : ["soulName", "soulFormDescription"];
+
+        foreach (var requiredField in required)
+        {
+            if (!providedFields.Any(field => string.Equals(field, requiredField, StringComparison.OrdinalIgnoreCase)))
+                errors.Add($"{fieldName} must include readonly player-owned soul identity field {requiredField}.");
+        }
+
+        if (!providedFields.Any(field => string.Equals(field, "soulName", StringComparison.OrdinalIgnoreCase)))
+            errors.Add($"{fieldName} must include readonly player-owned soul identity field soulName.");
+        if (!providedFields.Any(field => string.Equals(field, "soulFormDescription", StringComparison.OrdinalIgnoreCase)))
+            errors.Add($"{fieldName} must include readonly player-owned soul identity field soulFormDescription.");
+    }
+
+    private static bool IsPlayerOwnedIdentityMutationField(string fieldName) =>
+        string.Equals(fieldName, "soulName", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(fieldName, "soulFormDescription", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(fieldName, "newSoulName", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(fieldName, "newSoulFormDescription", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(fieldName, "identityChange", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(fieldName, "identityOverride", StringComparison.OrdinalIgnoreCase);
+
     private static bool LooksLikeExplicitNone(string value) =>
         value.Contains("none", StringComparison.OrdinalIgnoreCase) ||
         value.Contains("no-", StringComparison.OrdinalIgnoreCase) ||
@@ -720,6 +949,8 @@ public static class GmWorkerContractValidator
             ValidateNpcAuthoringProposal(proposal, errors);
         if (proposal.Domain == WorkerAuthoringDomain.GuardianAbode)
             ValidateGuardianAbodeAuthoringProposal(proposal, errors);
+        if (proposal.Domain == WorkerAuthoringDomain.Soul)
+            ValidateSoulAuthoringProposal(proposal, errors);
     }
 
     private static void ValidateInventoryAuthoringProposal(
@@ -914,6 +1145,47 @@ public static class GmWorkerContractValidator
         }
     }
 
+    private static void ValidateSoulAuthoringProposal(
+        WorkerContentAuthoringProposal proposal,
+        List<string> errors)
+    {
+        foreach (var entity in proposal.CreatedEntities.Concat(proposal.UpdatedEntities))
+        {
+            if (IsMortalSoulSubstituteEntityType(entity.EntityType))
+            {
+                errors.Add($"soul authoring entity {entity.EntityId} must use soul/afterlife entity types, not ordinary character/inventory/state substitutes.");
+            }
+            else if (!IsSoulEntityType(entity.EntityType))
+            {
+                errors.Add($"soul authoring entity {entity.EntityId} must use a soul entityType such as soul-summary, soul-progression, soul-reward, next-life-prep, soul-facing-note, or soul-archive-hook.");
+            }
+
+            if (!HasAnyField(entity, "playerFacingSummary", "player-facing-summary", "playerVisibleSummary", "player-visible-summary"))
+                errors.Add($"soul authoring entity {entity.EntityId} must include playerFacingSummary.");
+            if (!HasAnyField(entity, "exactAfterlifeSurfaces", "exact-afterlife-surfaces", "targetSurfaces", "target-surfaces"))
+                errors.Add($"soul authoring entity {entity.EntityId} must include exactAfterlifeSurfaces.");
+            if (!HasAnyField(entity, "readonlyIdentityFields", "readonly-identity-fields", "forbiddenReadonlyFields", "forbidden-readonly-fields"))
+                errors.Add($"soul authoring entity {entity.EntityId} must include readonlyIdentityFields.");
+
+            foreach (var field in entity.RequiredFields)
+            {
+                if (IsPlayerOwnedIdentityMutationField(field.Name))
+                    errors.Add($"soul authoring entity {entity.EntityId} cannot mutate readonly player-owned soul identity field {field.Name}.");
+            }
+
+            if (ContainsMortalWorldSubstituteText(entity.EntityType) ||
+                ContainsMortalWorldSubstituteText(entity.DisplayName) ||
+                ContainsMortalWorldSubstituteText(entity.Summary) ||
+                entity.Relationships.Any(ContainsMortalWorldSubstituteText) ||
+                entity.RequiredFields.Any(field =>
+                    ContainsMortalWorldSubstituteText(field.Name) ||
+                    ContainsMortalWorldSubstituteText(field.Value)))
+            {
+                errors.Add($"soul authoring entity {entity.EntityId} contains a Mortal World substitute reference.");
+            }
+        }
+    }
+
     private static bool IsGuardianAbodeEntityType(string entityType) =>
         string.Equals(entityType, "guardian", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(entityType, "abode", StringComparison.OrdinalIgnoreCase) ||
@@ -928,6 +1200,24 @@ public static class GmWorkerContractValidator
         string.Equals(entityType, "faction", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(entityType, "mortal-faction", StringComparison.OrdinalIgnoreCase);
 
+    private static bool IsSoulEntityType(string entityType) =>
+        string.Equals(entityType, "soul-summary", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "soul-progression", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "soul-reward", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "next-life-prep", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "soul-facing-note", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "soul-archive-hook", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsMortalSoulSubstituteEntityType(string entityType) =>
+        string.Equals(entityType, "character", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "player-character", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "mortal-character", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "inventory", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "item", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "mortal-item", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "state", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(entityType, "mortal-state", StringComparison.OrdinalIgnoreCase);
+
     private static WorkerAuthoringDomain? TaskTypeToDomain(WorkerTaskType taskType) =>
         taskType switch
         {
@@ -935,6 +1225,7 @@ public static class GmWorkerContractValidator
             WorkerTaskType.SkillContent => WorkerAuthoringDomain.Skill,
             WorkerTaskType.NpcContent => WorkerAuthoringDomain.Npc,
             WorkerTaskType.GuardianAbodeContent => WorkerAuthoringDomain.GuardianAbode,
+            WorkerTaskType.SoulContent => WorkerAuthoringDomain.Soul,
             WorkerTaskType.SocialDialogueContent => WorkerAuthoringDomain.SocialDialogue,
             WorkerTaskType.FactionContent => WorkerAuthoringDomain.Faction,
             WorkerTaskType.LocationContent => WorkerAuthoringDomain.Location,
@@ -992,6 +1283,7 @@ public static class GmWorkerContractValidator
     {
         if (value.Contains("worldStateFlags", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("worldEventsLog", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("UpdateCharacter", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("UpdateNPCs", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("NPCRelationshipChanges", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("factionDataChanges", StringComparison.OrdinalIgnoreCase) ||
@@ -1003,8 +1295,12 @@ public static class GmWorkerContractValidator
             value.Contains("game_state/world", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("game_state/npcs", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("game_state/factions", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("game_state/player", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("game_state/inventory", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("game_state/combat", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("Mortal NPC", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("Mortal character", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("Mortal inventory", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("Mortal combat", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("Mortal faction", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("Mortal map", StringComparison.OrdinalIgnoreCase))

@@ -11,6 +11,7 @@ public static class GmWorkerBridgeProfileTemplates
         CreateNarrativeDraftCodexTemplate(),
         CreateAnalysisCodexTemplate(),
         CreateGuardianAbodeContentCodexTemplate(),
+        CreateSoulContentCodexTemplate(),
         CreateInventoryContentCodexTemplate(),
         CreateSkillContentCodexTemplate(),
         CreateNpcContentCodexTemplate()
@@ -142,6 +143,22 @@ public static class GmWorkerBridgeProfileTemplates
                 "game_state/control/system_guardian_attraction.json",
                 "game_state/control/afterlife_return_guard.json",
                 "game_state/control/progression_schedule.json",
+                "OtherGuides/Afterlife_Contract_Matrix.md",
+                "Examples/E_CLI_Afterlife_Turns.txt"
+            ]);
+
+    public static WorkerBridgeProfile CreateSoulContentCodexTemplate() =>
+        CreateContentAuthoringCodexTemplate(
+            "soul_content_codex",
+            "Codex soul content author",
+            WorkerRole.SoulContent,
+            WorkerTaskType.SoulContent,
+            [
+                "game_state/meta/soul_state.json",
+                "game_state/meta/afterlife_chronicles.json",
+                "game_state/meta/afterlife_global_flags.json",
+                "game_state/control/progression_schedule.json",
+                "game_state/control/pending_dice_state.json",
                 "OtherGuides/Afterlife_Contract_Matrix.md",
                 "Examples/E_CLI_Afterlife_Turns.txt"
             ]);

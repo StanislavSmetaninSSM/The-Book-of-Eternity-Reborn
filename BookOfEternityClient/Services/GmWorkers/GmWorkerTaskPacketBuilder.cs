@@ -208,7 +208,8 @@ public static class GmWorkerTaskPacketBuilder
         IReadOnlyList<WorkerFileReference> contextFiles,
         string createdAtUtc,
         WorkerAfterlifeTaskContract? afterlifeContract = null,
-        WorkerGuardianAbodeRequest? guardianAbodeRequest = null)
+        WorkerGuardianAbodeRequest? guardianAbodeRequest = null,
+        WorkerSoulContentRequest? soulContentRequest = null)
     {
         var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
         if (!profileValidation.IsValid)
@@ -243,11 +244,13 @@ public static class GmWorkerTaskPacketBuilder
             SourceTurn = sourceTurn,
             AuthoringRequest = authoringRequest,
             GuardianAbodeRequest = guardianAbodeRequest,
+            SoulContentRequest = soulContentRequest,
             ContextFiles = contextFiles,
             AfterlifeContract = afterlifeContract,
             AllowedProposalPaths = [],
-            AcceptanceCriteria = BuildGuardianAbodeAcceptanceCriteria(
-                BuildAcceptanceCriteria(
+            AcceptanceCriteria = BuildSoulContentAcceptanceCriteria(
+                BuildGuardianAbodeAcceptanceCriteria(
+                    BuildAcceptanceCriteria(
             [
                 "Return a worker-proposal-v1 JSON proposal.",
                 "Include a structured authoringProposal with createdEntities or updatedEntities.",
@@ -255,9 +258,11 @@ public static class GmWorkerTaskPacketBuilder
                 "Do not apply or persist any entity changes yourself."
             ],
             afterlifeContract),
-                guardianAbodeRequest),
-            ForbiddenActions = BuildGuardianAbodeForbiddenActions(
-                BuildForbiddenActions(
+                    guardianAbodeRequest),
+                soulContentRequest),
+            ForbiddenActions = BuildSoulContentForbiddenActions(
+                BuildGuardianAbodeForbiddenActions(
+                    BuildForbiddenActions(
             [
                 "Do not edit canonical game_session files directly.",
                 "Do not include changedFiles.",
@@ -265,7 +270,8 @@ public static class GmWorkerTaskPacketBuilder
                 "Do not invent hidden authority beyond supplied context references."
             ],
             afterlifeContract),
-                guardianAbodeRequest),
+                    guardianAbodeRequest),
+                soulContentRequest),
             Instructions =
                 "Return a worker-proposal-v1 JSON proposal with authoringProposal. " +
                 "This is proposal-only: do not include changedFiles and do not edit canonical game_session files directly. " +
@@ -274,7 +280,8 @@ public static class GmWorkerTaskPacketBuilder
                 $"Required links:{Environment.NewLine}{linksText}{Environment.NewLine}" +
                 $"Output notes:{Environment.NewLine}{notesText}" +
                 BuildAfterlifeInstructions(afterlifeContract) +
-                BuildGuardianAbodeInstructions(guardianAbodeRequest)
+                BuildGuardianAbodeInstructions(guardianAbodeRequest) +
+                BuildSoulContentInstructions(soulContentRequest)
         };
 
         var taskValidation = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
@@ -379,6 +386,52 @@ public static class GmWorkerTaskPacketBuilder
             $"- focusAreas: {FormatList(guardianAbodeRequest.FocusAreas)}" + Environment.NewLine +
             $"- readScope: {FormatList(guardianAbodeRequest.ReadScope)}" + Environment.NewLine +
             "Return guardianAbodeProposal. Use Guardian/Abode/project/politics surfaces only. Keep hidden facts GM-only.";
+    }
+
+    private static IReadOnlyList<string> BuildSoulContentAcceptanceCriteria(
+        IReadOnlyList<string> baseCriteria,
+        WorkerSoulContentRequest? soulContentRequest)
+    {
+        if (soulContentRequest == null)
+            return baseCriteria;
+
+        return baseCriteria.Concat(
+        [
+            "Include soulContentProposal with safeSoulSummaries, progressionSuggestions, rewardNotes, nextLifePreparationHooks, forbiddenReadonlyFields, requiredReceipts, requiredReports, validatorRisks, and gmReviewNotes.",
+            "Treat soulName and soulFormDescription as player-owned readonly identity fields.",
+            "Use exact soul_state/afterlife surfaces; do not rewrite soul progression as ordinary character, inventory, or Mortal World state."
+        ]).ToArray();
+    }
+
+    private static IReadOnlyList<string> BuildSoulContentForbiddenActions(
+        IReadOnlyList<string> baseActions,
+        WorkerSoulContentRequest? soulContentRequest)
+    {
+        if (soulContentRequest == null)
+            return baseActions;
+
+        return baseActions.Concat(
+        [
+            "Do not overwrite soulName or soulFormDescription.",
+            "Do not model the player soul as an ordinary Mortal character.",
+            "Do not model soul rewards as Mortal inventory or item state."
+        ]).ToArray();
+    }
+
+    private static string BuildSoulContentInstructions(WorkerSoulContentRequest? soulContentRequest)
+    {
+        if (soulContentRequest == null)
+            return "";
+
+        return Environment.NewLine +
+            "Soul content request:" + Environment.NewLine +
+            $"- realm: {soulContentRequest.Realm}" + Environment.NewLine +
+            $"- soulContext: {soulContentRequest.SoulContext}" + Environment.NewLine +
+            $"- requestedScope: {FormatList(soulContentRequest.RequestedScope)}" + Environment.NewLine +
+            $"- progressionConstraints: {FormatList(soulContentRequest.ProgressionConstraints)}" + Environment.NewLine +
+            $"- readScope: {FormatList(soulContentRequest.ReadScope)}" + Environment.NewLine +
+            $"- playerOwnedIdentityFields: {FormatList(soulContentRequest.PlayerOwnedIdentityFields)}" + Environment.NewLine +
+            "Return soulContentProposal. Reference player-owned identity only as readonly context; do not overwrite it.";
     }
 
     private static string FormatList(IReadOnlyList<string> values) =>

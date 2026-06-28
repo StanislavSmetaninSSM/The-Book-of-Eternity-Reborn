@@ -49,6 +49,13 @@
       "statePath": "worker_proposals/<proposalId>/proposal.json",
       "responseSurface": "worker-proposal-v1 authoringProposal / afterlifeProposal / guardianAbodeProposal",
       "description": "Hidden/background proposal-only guardian-abode-content worker profile, realm-aware afterlifeContract, guardianAbodeRequest scope, structured Guardian/Abode/project/politics proposal sections, hidden-dossier privacy checks, required receipts/reports, and Mortal NPC/faction substitute rejection."
+    },
+    {
+      "contractId": "gm_worker_soul_content_v1",
+      "file": "E_CLI_GM_Worker_Soul_Content.txt",
+      "statePath": "worker_proposals/<proposalId>/proposal.json",
+      "responseSurface": "worker-proposal-v1 authoringProposal / afterlifeProposal / soulContentProposal",
+      "description": "Hidden/background proposal-only soul-content worker profile, realm-aware afterlifeContract, soulContentRequest scope, safe soul summaries, progression suggestions, reward notes, next-life preparation hooks, forbiddenReadonlyFields for soulName/soulFormDescription, required receipts/reports, and ordinary character/inventory/Mortal state substitute rejection."
     }
   ],
   "afterlifeEntityProfileCoverage": [

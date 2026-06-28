@@ -49,6 +49,12 @@ public sealed class GmWorkerProfileTemplateTests
                 WorkerRole.SkillContent,
                 WorkerTaskType.SkillContent,
                 "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"),
+            soul => AssertTemplate(
+                soul,
+                "soul_content_codex",
+                WorkerRole.SoulContent,
+                WorkerTaskType.SoulContent,
+                "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"),
             repair => AssertTemplate(
                 repair,
                 "validation_repair_codex",
@@ -105,7 +111,7 @@ public sealed class GmWorkerProfileTemplateTests
         settings.ApplyLoadedValues(loaded);
 
         Assert.Equal(
-            ["analysis_codex", "guardian_abode_content_codex", "inventory_content_codex", "narrative_draft_codex", "npc_content_codex", "skill_content_codex", "validation_repair_codex"],
+            ["analysis_codex", "guardian_abode_content_codex", "inventory_content_codex", "narrative_draft_codex", "npc_content_codex", "skill_content_codex", "soul_content_codex", "validation_repair_codex"],
             settings.GmWorkerBridgeProfiles.Select(profile => profile.WorkerId).OrderBy(id => id).ToArray());
         Assert.All(settings.GmWorkerBridgeProfiles, profile => Assert.False(profile.Enabled));
     }

@@ -1,6 +1,6 @@
 # GM Worker Bridges
 
-Tracked issues: #1141, #1143, #1145, #1147, #1149, #1231.
+Tracked issues: #1141, #1143, #1145, #1147, #1149, #1231, #1232, #1233.
 
 GM worker bridges are subordinate helpers for the main GM. They can be Codex
 or another supported CLI profile configured by the user. The main GM remains the
@@ -204,6 +204,21 @@ Codex Guardian/Abode content-authoring example:
 }
 ```
 
+Codex soul content-authoring example:
+
+```json
+{
+  "workerId": "soul_content_codex",
+  "displayName": "Codex soul content author",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "role": "soul-content",
+  "enabled": false,
+  "launchVisibility": "hidden",
+  "timeoutSeconds": 150,
+  "maxConcurrentTasks": 1
+}
+```
+
 Use dry-run mode to inspect the generated prompt without launching an external
 agent:
 
@@ -241,7 +256,8 @@ Supported proposal-only dispatch task types:
   continuity notes, and optional read-only context paths.
 - `analysis`: requires analysis goal, optional questions, and optional
   read-only context paths.
-- content-authoring task types such as `inventory-content`: require
+- content-authoring task types such as `inventory-content`, `skill-content`,
+  `npc-content`, `guardian-abode-content`, and `soul-content`: require
   `authoringGoal`, optional `authoringDomain`, `entityHints`,
   `requiredLinks`, `outputNotes`, and optional read-only context paths. The
   worker returns a structured `authoringProposal`; it does not return
@@ -361,6 +377,28 @@ Additional guardian-abode-content requirements:
 - the worker must not model Guardians as Mortal NPCs and must not model Abodes
   or Guardian politics as Mortal factions.
 
+Additional soul-content requirements:
+
+- the task must include both `afterlifeContract` and `soulContentRequest`;
+- `soulContentRequest` must name the realm, current soul context, requested
+  scope, progression constraints, exact read scope, and player-owned identity
+  fields;
+- `soulName` and `soulFormDescription` are player-owned readonly identity. The
+  worker may reference them as context or list them in
+  `forbiddenReadonlyFields`, but it must not propose overwriting either field;
+- the proposal must include `authoringProposal`, `afterlifeProposal`, and
+  `soulContentProposal`;
+- `soulContentProposal` must split `safeSoulSummaries`,
+  `progressionSuggestions`, `rewardNotes`, `nextLifePreparationHooks`,
+  `forbiddenReadonlyFields`, required receipts/reports, validator risks, and
+  main-GM review notes;
+- soul progression, rewards, archive notes, and next-life preparation must use
+  exact afterlife surfaces such as `game_state/meta/soul_state.json`,
+  `game_state/meta/afterlife_chronicles.json`, and relevant
+  `game_state/control/` progression files;
+- the worker must not model the player soul as an ordinary Mortal character,
+  Mortal inventory, item, NPC, faction, world flag, or map state.
+
 ## Supported MVP Tasks
 
 ### validation-repair
@@ -423,3 +461,4 @@ canonical files.
 - `Examples/E_CLI_GM_Worker_Npc_Content.txt`
 - `Examples/E_CLI_GM_Worker_Afterlife_Contract.txt`
 - `Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt`
+- `Examples/E_CLI_GM_Worker_Soul_Content.txt`
