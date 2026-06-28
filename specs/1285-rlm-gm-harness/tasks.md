@@ -110,6 +110,7 @@
 - [X] T066 [Follow-up #1302] Add compact Mortal NPC validation repair packets for same-turn location, debug-log current-location, full-object shape, relationship tier, cultural stance, and orphan journal/reference errors, with template refs, expected shape, safe correction rules, and GM-facing example guidance.
 - [X] T067 [Follow-up #1304] Require accepted-turn flows to run full materialized-state validation after runtime normalization before returning to a playable prompt, and mark repair-ready ledger entries as correlated repair acceptance rather than full canonical acceptance.
 - [X] T068 [Follow-up #1305] Add compact Mortal faction validation repair packets, context-pack template, and experience-lesson routing for unknown faction ids and invalid faction sidecars.
+- [X] T069 [Follow-up #1306] Add compact Mortal location-transition repair packets, context-pack template, and experience-lesson routing for unknown current/NPC locations and duplicate same-turn map coordinates.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.

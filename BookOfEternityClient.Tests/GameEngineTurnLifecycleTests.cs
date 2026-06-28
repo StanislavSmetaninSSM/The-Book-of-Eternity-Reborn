@@ -707,6 +707,71 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalLocationTransitionErrors_AddsHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/world/current_location.json.locationId",
+                IssueSeverity.Error,
+                "Current location references an unknown location id.",
+                code: "current_location_unknown_location_id",
+                section: "WorldMap",
+                expected: "current location id must exist in world map",
+                actual: "loc_family_library"),
+            new(
+                "game_state/npcs/npc_core.json.NPCs[0].currentLocationId",
+                IssueSeverity.Error,
+                "NPC currentLocationId references an unknown location id.",
+                code: "npc_unknown_current_location_id",
+                actor: "Мариус де Гран",
+                section: "NPC",
+                expected: "known world map location id",
+                actual: "loc_family_library"),
+            new(
+                "game_state/world/world_map.json.newLocations[1].coordinates",
+                IssueSeverity.Error,
+                "Two same-turn new locations use duplicate coordinates.",
+                code: "world_map_new_location_coordinates_duplicate_same_turn",
+                section: "WorldMap",
+                expected: "unique coordinates for each same-turn new location",
+                actual: "x=2,y=1,z=0")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_location_transition_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/world/current_location.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/world/world_map.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Мариус де Гран", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("world_map", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("current_location", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("coordinates", StringComparison.OrdinalIgnoreCase));
+
+        var safeRules = packet.GetProperty("safeCorrectionRules").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(safeRules, item => item.Contains("register", StringComparison.OrdinalIgnoreCase) && item.Contains("world_map", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(safeRules, item => item.Contains("duplicate coordinates", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(safeRules, item => item.Contains("narrative color", StringComparison.OrdinalIgnoreCase) && item.Contains("unchanged", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_MortalNpcLocationErrors_AddsHarnessPacket()
     {
         var engine = CreateGameEngine();

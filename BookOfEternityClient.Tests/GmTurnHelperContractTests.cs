@@ -1852,6 +1852,113 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonContextPack_RoutesMortalLocationTransitionLessonsToLocationTemplate()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-location-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(control, "gm_trajectory_ledger.jsonl"),
+                """
+                {"recordId":"gmtraj_mortal_location_fix","kind":"repair","sessionId":"prior","turnId":"repair-location","requestId":"repair-location","turnNumber":6,"realm":"MortalWorld","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"accepted","issueKinds":["current_location_unknown_location_id","npc_unknown_current_location_id","world_map_new_location_coordinates_duplicate_same_turn"],"repairPacketRefs":["mortal_location_transition_repair"]},"repair":{"attempts":1,"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-06-28T10:02:00Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-repair",
+                  "turnNumber": 7,
+                  "currentRealm": "Mortal World",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "current_location_unknown_location_id",
+                      "category": "StateConsistency",
+                      "section": "WorldMap",
+                      "message": "Current location references an unknown location id."
+                    },
+                    {
+                      "code": "world_map_new_location_coordinates_duplicate_same_turn",
+                      "category": "StateConsistency",
+                      "section": "WorldMap",
+                      "message": "Two same-turn locations use duplicate coordinates."
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "current_location_unknown_location_id", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
+            Assert.Contains("MORTAL_LOCATION_TRANSITION_TEMPLATE.md", markdown, StringComparison.Ordinal);
+            Assert.Contains("world_map", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("duplicate coordinates", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("MORTAL_NPC_UPDATE_TEMPLATE.md", markdown, StringComparison.Ordinal);
+
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var lesson = document.RootElement.GetProperty("lessons")[0];
+            Assert.Equal("MORTAL_LOCATION_TRANSITION_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
+            Assert.Contains("register", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("current_location", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_RendersMortalLocationTransitionTemplate()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-location-template-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+
+        Process? process = null;
+        try
+        {
+            Directory.CreateDirectory(session);
+            WriteDaemonConfig(session);
+            process = StartDaemon(session, logPath);
+
+            var templatePath = Path.Combine(
+                session,
+                "game_state",
+                "control",
+                "gm_context_pack",
+                "Templates",
+                "MORTAL_LOCATION_TRANSITION_TEMPLATE.md");
+            Assert.True(WaitForFileContaining(templatePath, "Mortal location transition repair", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var template = File.ReadAllText(templatePath, Encoding.UTF8);
+            Assert.Contains("game_state/world/world_map.json", template, StringComparison.Ordinal);
+            Assert.Contains("game_state/world/current_location.json", template, StringComparison.Ordinal);
+            Assert.Contains("known ids", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("duplicate coordinates", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("narrative color", template, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonContextPack_RendersMortalNpcUpdateTemplate()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-npc-template-" + Guid.NewGuid().ToString("N"));

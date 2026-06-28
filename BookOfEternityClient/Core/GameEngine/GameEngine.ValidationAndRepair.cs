@@ -847,6 +847,7 @@ public partial class GameEngine
             .Where(issue => !guardianScopeActorNames.Contains(NormalizeRepairActorName(issue.Actor)))
             .ToList();
         var factionIdentityErrors = errors.Where(IsFactionIdentityRepairIssue).ToList();
+        var mortalLocationTransitionErrors = errors.Where(IsMortalLocationTransitionRepairIssue).ToList();
         var mortalNpcLocationErrors = errors.Where(IsMortalNpcLocationRepairIssue).ToList();
         var mortalNpcFullObjectErrors = errors.Where(IsMortalNpcFullObjectRepairIssue).ToList();
         var mortalNpcRelationshipEnumErrors = errors.Where(IsMortalNpcRelationshipEnumRepairIssue).ToList();
@@ -860,6 +861,9 @@ public partial class GameEngine
 
         if (factionIdentityErrors.Count > 0)
             packets.Add(BuildFactionIdentityRepairPacket(factionIdentityErrors));
+
+        if (mortalLocationTransitionErrors.Count > 0)
+            packets.Add(BuildMortalLocationTransitionRepairPacket(mortalLocationTransitionErrors));
 
         if (mortalNpcLocationErrors.Count > 0)
             packets.Add(BuildMortalNpcLocationRepairPacket(mortalNpcLocationErrors));
@@ -913,6 +917,16 @@ public partial class GameEngine
                  string.Equals(issue.Code, "missing_actor_current_location", StringComparison.OrdinalIgnoreCase) ||
                  string.Equals(issue.Code, "npc_initial_location_same_turn_target_unknown", StringComparison.OrdinalIgnoreCase) ||
                  string.Equals(issue.Code, "npc_same_turn_initial_location_requires_null_current_location", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    private static bool IsMortalLocationTransitionRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Code, "current_location_unknown_location_id", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "npc_unknown_current_location_id", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "world_map_new_location_coordinates_duplicate_same_turn", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "world_map_new_location_coordinates_conflict_existing", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "world_map_new_location_requires_null_location_id", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "world_map_new_location_missing_description", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsMortalNpcFullObjectRepairIssue(ValidationIssue issue)
@@ -1114,6 +1128,70 @@ public partial class GameEngine
                 "Do not leave faction sidecar entries pointing at missing faction ids.",
                 "Do not delete unrelated faction ranks, resources, projects, chronicles, or reputation details to silence identity validation.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this repair packet, the validation request, and session snapshot/control files."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildMortalLocationTransitionRepairPacket(
+        IReadOnlyList<ValidationIssue> locationTransitionErrors)
+    {
+        var actorNames = CollectRepairActorNames(locationTransitionErrors)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var targetFiles = locationTransitionErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("game_state/world/current_location.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/world/current_location.json");
+        if (!targetFiles.Contains("game_state/world/world_map.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/world/world_map.json");
+        if (locationTransitionErrors.Any(issue =>
+                string.Equals(issue.Code, "npc_unknown_current_location_id", StringComparison.OrdinalIgnoreCase)) &&
+            !targetFiles.Contains("game_state/npcs/npc_core.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/npcs/npc_core.json");
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_location_transition_repair",
+            Priority = "high",
+            Title = "Mortal location transition repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md" },
+            CanonicalActorNames = actorNames,
+            ExpectedShape = new List<string>
+            {
+                "Register any durable new location in game_state/world/world_map.json before current_location.json or NPC currentLocationId references it.",
+                "game_state/world/current_location.json must reference a known world_map location id, name, region, description, exits, and last-events summary.",
+                "NPC currentLocationId values must point only to known ids from world_map; same-turn scene color should not invent canonical ids.",
+                "Same-turn world_map new location coordinates must be unique and must not conflict with existing map coordinates."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Register the destination in world_map first, then update current_location.json and NPC currentLocationId/currentLocationName to that known id.",
+                "Use one stable location id for the destination across world_map, current_location, NPCs, exits, and debug reasoning; do not alternate ids for the same room.",
+                "Fix duplicate coordinates by moving one same-turn new location to unique adjacent coordinates or by merging duplicate entries that describe the same place.",
+                "If the new place is narrative color inside the current room rather than a durable location, keep current_location unchanged and phrase the action as happening within the existing location.",
+                "Do not repair an unknown location by deleting NPCs, quests, faction links, exits, or map history that should still reference the canonical destination."
+            },
+            Steps = new List<string>
+            {
+                "Open Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md before editing game_state/world/current_location.json, game_state/world/world_map.json, or NPC location ids.",
+                "Decide whether the destination is a durable location or only narrative color inside the current location.",
+                "For a durable destination, create or repair the world_map entry first, including stable id, visible name, description, region, exits, and unique coordinates.",
+                "After the map entry exists, update current_location.json and any moved NPC currentLocationId/currentLocationName to the known id/name.",
+                "For duplicate same-turn coordinates, assign unique coordinates before completing repair.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not point current_location.json to a location id that is absent from world_map.",
+                "Do not point NPC currentLocationId to an unknown location.",
+                "Do not create two same-turn locations with identical coordinates unless they are merged into one canonical location.",
+                "Do not turn a purely descriptive corner of the current room into a new canonical location just to satisfy a narrative sentence."
             }
         };
     }
