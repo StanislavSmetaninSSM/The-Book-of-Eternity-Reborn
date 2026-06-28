@@ -80,6 +80,19 @@ public partial class ExplorerMode
                 .Select(GuardianManifestation.GetDisplayName)
                 .FirstOrDefault(name => !string.IsNullOrWhiteSpace(name))
                 ?? string.Empty;
+            var currentAbodeName = guardians
+                .Select(g => g.TryGetProperty("abode", out var abode) && abode.ValueKind == JsonValueKind.Object
+                    ? new
+                    {
+                        AbodeId = GetStr(abode, "abodeId", ""),
+                        AbodeName = GetStr(abode, "name", "")
+                    }
+                    : null)
+                .Where(item => item != null)
+                .Where(item => string.Equals(item!.AbodeId, currentAbodeId, StringComparison.OrdinalIgnoreCase))
+                .Select(item => item!.AbodeName)
+                .FirstOrDefault(name => !string.IsNullOrWhiteSpace(name))
+                ?? string.Empty;
 
             var choices = guardians.Select(g =>
             {
@@ -87,7 +100,6 @@ public partial class ExplorerMode
                 if (string.IsNullOrWhiteSpace(name))
                     name = "?";
                 var isActiveGuardian = string.Equals(GetStr(g, "guardianId", ""), activeGuardianId, StringComparison.OrdinalIgnoreCase);
-                var guardianId = GetStr(g, "guardianId", "");
                 var domain = GetStr(g, "domain", "");
                 int rep = 0;
                 if (g.TryGetProperty("relationshipData", out var rd))
@@ -107,17 +119,7 @@ public partial class ExplorerMode
                 var isCurrent = !string.IsNullOrEmpty(abodeId) && abodeId == currentAbodeId;
                 var locTag = isCurrent ? "ТУТ" : "";
 
-                var domainRu = domain switch
-                {
-                    "Combat" => "Бой",
-                    "Magic" => "Магия",
-                    "Trade" => "Торговля",
-                    "Social" => "Общение",
-                    "Crafting" => "Ремесло",
-                    "Survival" => "Выживание",
-                    "Knowledge" => "Знания",
-                    _ => domain
-                };
+                var domainRu = DescribeGuardianDomainForPlayer(domain);
 
                 // Mood tag in list
                 var moodTag = "";
@@ -142,8 +144,6 @@ public partial class ExplorerMode
                     repTierTag,
                     string.IsNullOrEmpty(moodTag) ? "" : moodTag,
                     string.IsNullOrEmpty(abodeName) ? "" : $"🏛 {abodeName}",
-                    string.IsNullOrEmpty(guardianId) ? "" : $"guardianId={guardianId}",
-                    string.IsNullOrEmpty(abodeId) ? "" : $"abodeId={abodeId}",
                     locTag);
             }).ToList();
 
@@ -274,8 +274,8 @@ public partial class ExplorerMode
                     ? "[bold cyan]Море Хаоса: оперативный обзор[/]"
                     : "[bold cyan]Сияющая Обитель: обзор Хранителей только для чтения[/]",
                 "",
-                $"  • Активный Хранитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(activeGuardianDisplayName) ? activeGuardianId : activeGuardianDisplayName)}[/] [dim]({Markup.Escape(activeGuardianId)})[/]",
-                $"  • Текущая Обитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(currentAbodeId) ? "не выбрана" : currentAbodeId)}[/]",
+                $"  • Активный Хранитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(activeGuardianDisplayName) ? "не выбран" : activeGuardianDisplayName)}[/]",
+                $"  • Текущая Обитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(currentAbodeName) ? "не выбрана" : currentAbodeName)}[/]",
                 $"  • Известных Хранителей: [white]{guardians.Count}[/]",
                 "",
                 "[bold]Куда идти дальше:[/]",
@@ -811,6 +811,23 @@ public partial class ExplorerMode
             _ => HumanizeProjectToken(state)
         };
 
+    private static string DescribeGuardianDomainForPlayer(string? domain) =>
+        domain switch
+        {
+            "Combat" => "Бой",
+            "Magic" => "Магия",
+            "Trade" => "Торговля",
+            "Social" => "Общение",
+            "Crafting" => "Ремесло",
+            "Survival" => "Выживание",
+            "Knowledge" => "Знания",
+            "Memory" => "Память",
+            "Passage" => "Переходы",
+            "Protection" => "Защита",
+            "Archive" => "Архив",
+            _ => HumanizeProjectToken(domain)
+        };
+
     private static string FormatProjectPressureLabel(int pressure) =>
         $"Внешнее давление: {pressure}";
 
@@ -970,18 +987,11 @@ public partial class ExplorerMode
                 var isCurrent = !string.IsNullOrWhiteSpace(abId) &&
                                 string.Equals(abId, currentAbodeId, StringComparison.OrdinalIgnoreCase);
                 var domain = GetStr(g, "domain", "");
-                var domainRu = domain switch
-                {
-                    "Combat" => "Бой", "Magic" => "Магия", "Trade" => "Торговля",
-                    "Social" => "Общение", "Crafting" => "Ремесло",
-                    "Survival" => "Выживание", "Knowledge" => "Знания", _ => domain
-                };
+                var domainRu = DescribeGuardianDomainForPlayer(domain);
                 return ConsoleLayout.PlainChoiceLabel(
                     $"🏛️ {abName}",
                     $"{domainRu} — {gName}",
-                    string.IsNullOrWhiteSpace(GetStr(g, "guardianId", "")) ? "" : $"guardianId={GetStr(g, "guardianId", "")}",
-                    string.IsNullOrWhiteSpace(abId) ? "" : $"abodeId={abId}",
-                    isCurrent ? "ЗДЕСЬ" : "");
+                    isCurrent ? "Текущая обитель" : "Доступна для перехода");
             }).ToList();
             choices.Add("🔍 Искать новую обитель");
             choices.Add("← Назад");
@@ -1168,34 +1178,17 @@ public partial class ExplorerMode
         var manifestationReason = g.TryGetProperty("manifestation", out var manifestation) && manifestation.ValueKind == JsonValueKind.Object
             ? GetStr(manifestation, "presentationReason", "")
             : string.Empty;
-        var sourcePresetId = g.TryGetProperty("sourcePreset", out var sourcePreset) && sourcePreset.ValueKind == JsonValueKind.Object
-            ? GetStr(sourcePreset, "presetId", "")
-            : string.Empty;
         var domain = GetStr(g, "domain", "");
         var content = new Grid().AddColumn(new GridColumn());
         content.AddRow(new Markup($"[bold cyan]🛡️ {Markup.Escape(name)}[/]" +
             (isActiveGuardian ? " [green](активный хранитель)[/]" : "")));
 
         var summaryTable = ConsoleLayout.CreateInfoTable();
-        if (!string.IsNullOrWhiteSpace(guardianId))
-            summaryTable.AddRow(new Markup("[dim]guardianId[/]"), new Markup($"[dim]{Markup.Escape(guardianId)}[/]"));
-        if (!string.IsNullOrWhiteSpace(sourcePresetId))
-            summaryTable.AddRow(new Markup("[dim]sourcePreset.presetId[/]"), new Markup($"[dim]{Markup.Escape(sourcePresetId)}[/]"));
         if (isActiveGuardian)
             summaryTable.AddRow(new Markup("[green]Статус[/]"), new Markup("[green]Текущий активный Хранитель[/]"));
         if (!string.IsNullOrEmpty(domain))
         {
-            var domainRu = domain switch
-            {
-                "Combat" => "Бой",
-                "Magic" => "Магия",
-                "Trade" => "Торговля",
-                "Social" => "Общение",
-                "Crafting" => "Ремесло",
-                "Survival" => "Выживание",
-                "Knowledge" => "Знания",
-                _ => domain
-            };
+            var domainRu = DescribeGuardianDomainForPlayer(domain);
             summaryTable.AddRow(new Markup("[yellow]Домен[/]"), new Markup($"[yellow]{Markup.Escape(domainRu)}[/]"));
         }
 

@@ -75,10 +75,30 @@ Result:
 Harness finding:
 - The harness is now capable of completing this Chaos Sea travel flow without manual repair. The remaining concern is turn latency on `gpt-5.5 xhigh`, not validator livelock.
 
+### Run 6
+
+Run root: `C:\Temp\boe-chaos-console-1249-acceptance-20260628-184535`
+
+Scope:
+- Agent Console command sweep on `chaos_sea_command_display_fixture.zip`.
+- Commands checked: `/status`, `/душа`, `/перья`, `/хранители`, `/обители`, `/проекты_хранителей`, `/политика_хранителей`, `/обитатели_обители`, `/профили_загробья`, `/хроники_посмертия`, `/уведомления_загробья`, `/архив_души`, `/реликвии`, `/духовные_искусства`, `/духовный_конфликт`, `/журнал_духовного_боя`.
+- Snapshot evidence: `C:\Temp\boe-chaos-console-1249-acceptance-20260628-184535\command-smoke-results-after-fix2.json`.
+
+Result:
+- No hangs or dead-end menus.
+- All commands returned to the normal `Ваш ход` prompt through Agent Console.
+- Technical-pattern scan returned `technicalHits: []` for every command above.
+- Regression checks also confirmed no visible `guardian_azalia`, `abode_azalia`, `notificationId`, `requestId`, `type=`, `guardianId`, `abodeId`, `Memory`, `Passage`, `.json`, `currentRealm`, `conflictId`, `sideModel`, `resolutionState`, `exchangeLog`, `progressionControl`, or `payload` in the previously problematic player-facing snapshots.
+
+Harness/RLM finding:
+- The command sweep is now useful as a standing live-test harness: it catches player-facing engineering leaks in real Agent Console snapshots, not just unit-level rendered strings.
+- The next useful increment is to promote this ad-hoc pattern scan into a reusable checked runner so future live tests fail fast when a normal player screen leaks internal ids, JSON filenames, raw enum values, or repair-contract terminology.
+
 ## Player-Facing / UX Findings
 
-- `/обители` menu still leaks internal protocol terms: `guardianId`, `abodeId`, `Memory`, `Passage`.
-- Abode transition preview shows English boolean text: `Уже открыта игроком: true`.
+- Fixed during Run 6: `/обители` no longer leaks `guardianId`, `abodeId`, `Memory`, or `Passage`.
+- Fixed during Run 6: `/status`, `/душа`, and `/хранители` no longer leak common player-facing afterlife technical fields in the tested Chaos Sea fixture.
+- Remaining known polish item from earlier run: abode transition preview should avoid English boolean text such as `Уже открыта игроком: true` if it still appears in the travel confirmation flow.
 - Earlier live travel failed validation due afterlife guardian scope issues:
   - `guardian_materialized_state_outside_authority`
   - `guardian_scope_stale_active_guardian_alias`
@@ -93,9 +113,10 @@ Harness finding:
 - Live runbook now copies `system_guardians` next to disposable `game_session`.
 - Guardian policy authority now projects the authorized Chaos Sea travel target into the same-turn authority root.
 - The helper wrong-realm raw profile scanner ignores `.rollback.*` backup artifacts while preserving canonical Mortal World profile protections.
+- Afterlife player command output now hides common canonical field names and notification ids in normal screens; technical details remain available through explicit audit/debug surfaces.
 
 ## Follow-Up
 
 - Continue broader live testing from a clean runroot using the updated runbook.
-- Add or complete a player-facing output polish task for afterlife command leaks.
+- Add a reusable Agent Console output-leak scanner for live tests instead of keeping the pattern list as an ad-hoc script.
 - Investigate turn latency and whether the GM bridge needs a faster default reasoning mode or a smaller task packet.

@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
@@ -79,8 +80,8 @@ public partial class ExplorerMode
                 : "[bold cyan]Статус посмертия[/]",
             "",
             "[bold]Область и душа:[/]",
-            $"  • Область (currentRealm): [white]{Markup.Escape(_stateManager.CurrentState.CurrentRealm)}[/]",
-            $"  • Ход (turn): [white]{_stateManager.CurrentState.TurnNumber}[/]",
+            $"  • Область: [white]{Markup.Escape(FormatAfterlifeRealmForPlayer(_stateManager.CurrentState.CurrentRealm))}[/]",
+            $"  • Ход: [white]{_stateManager.CurrentState.TurnNumber}[/]",
             $"  • Душа: [white]{Markup.Escape(GetNodeString(soulRoot?["soulName"]) ?? _stateManager.CurrentState.CharacterName ?? "не указана")}[/]",
             $"  • Форма души: [white]{Markup.Escape(GetNodeString(soulRoot?["soulFormDescription"]) ?? "не описана")}[/]",
             $"  • Инкарнация: [white]{GetNodeInt(soulRoot?["currentIncarnation"])}[/]",
@@ -88,8 +89,8 @@ public partial class ExplorerMode
             "[bold]Ресурсы души:[/]",
             $"  • Чернильные Перья: [gold1]{CurrentInkFeathersForPreview(soulRoot)}[/]",
             $"  • Просветление: [white]{Markup.Escape(GetNodeString(soulRoot?["enlightenment"]?["currentTier"]) ?? GetNodeString(soulRoot?["enlightenmentTier"]) ?? "не указано")}[/]",
-            $"  • Реликвии души: в хранилище (stored) [white]{(soulRoot?["soulRelics"]?["stored"] as JsonArray)?.Count ?? 0}[/], экипировано (equipped) [white]{(soulRoot?["soulRelics"]?["equipped"] as JsonArray)?.Count ?? 0}[/]",
-            $"  • Архив души: в хранилище (stored) [white]{(soulRoot?["afterlifeArchive"]?["stored"] as JsonArray)?.Count ?? 0}[/], квитанции (actionReceipts) [white]{(soulRoot?["afterlifeArchive"]?["actionReceipts"] as JsonArray)?.Count ?? 0}[/]"
+            $"  • Реликвии души: в хранилище [white]{(soulRoot?["soulRelics"]?["stored"] as JsonArray)?.Count ?? 0}[/], экипировано [white]{(soulRoot?["soulRelics"]?["equipped"] as JsonArray)?.Count ?? 0}[/]",
+            $"  • Архив души: в хранилище [white]{(soulRoot?["afterlifeArchive"]?["stored"] as JsonArray)?.Count ?? 0}[/], записей о действиях [white]{(soulRoot?["afterlifeArchive"]?["actionReceipts"] as JsonArray)?.Count ?? 0}[/]"
         };
 
         AppendNextLifePayloadStatusLines(lines, soulRoot, includeAuditPayloads);
@@ -114,7 +115,7 @@ public partial class ExplorerMode
         if (includeAuditPayloads)
             lines.Add("  • Обычная игроковая сводка без JSON-аудита: /status или /статус.");
         else
-            lines.Add("  • Технический аудит и ремонтные payload доступны отдельно: /status audit или /статус аудит.");
+            lines.Add("  • Технический аудит и ремонтные сведения доступны отдельно: /status audit или /статус аудит.");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -161,7 +162,7 @@ public partial class ExplorerMode
     private static void AppendAfterlifeSpiritualConflictStatusLines(List<string> lines, JsonObject? conflictRoot)
     {
         lines.Add("");
-        lines.Add("[bold]Духовный конфликт посмертия[/] [dim](afterlife spiritual conflict)[/]:");
+        lines.Add("[bold]Духовный конфликт посмертия:[/]");
         var active = conflictRoot?["activeConflict"] as JsonObject;
         if (active == null)
         {
@@ -169,17 +170,17 @@ public partial class ExplorerMode
             return;
         }
 
-        lines.Add($"  • ID конфликта (conflictId): [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["conflictId"]) ?? "unknown")}[/]");
-        lines.Add($"  • Модель/позиция (sideModel/conflictPosition): [white]{Markup.Escape(FormatSideModelLabel(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"])))}[/] / [white]{Markup.Escape(FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"])))}[/]");
-        lines.Add($"  • Напряжение сторон (side strain): игрок=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/], противник=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
-        lines.Add($"  • Состояние завершения (resolutionState): [white]{Markup.Escape(FormatResolutionStateLabel(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"])))}[/]");
-        lines.Add($"  • Обмены действиями (exchangeLog): [white]{(active["exchangeLog"] as JsonArray)?.Count ?? 0}[/]");
+        lines.Add($"  • Формат столкновения: [white]{Markup.Escape(FormatSideModelLabel(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"])))}[/].");
+        lines.Add($"  • Позиция: [white]{Markup.Escape(FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"])))}[/].");
+        lines.Add($"  • Напряжение сторон: игрок — [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/], противник — [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/].");
+        lines.Add($"  • Состояние: [white]{Markup.Escape(FormatResolutionStateLabel(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"])))}[/].");
+        lines.Add($"  • Записано обменов действиями: [white]{(active["exchangeLog"] as JsonArray)?.Count ?? 0}[/].");
     }
 
     private static void AppendAfterlifeGlobalFlagStatusLines(List<string> lines, JsonObject? flagsRoot)
     {
         lines.Add("");
-        lines.Add("[bold]Глобальные флаги посмертия[/] [dim](afterlife global flags)[/]:");
+        lines.Add("[bold]Глобальные факты посмертия:[/]");
         if (flagsRoot?[AfterlifeGlobalFlagState.FlagsProperty] is not JsonArray flags)
         {
             lines.Add("  • Файл глобальных флагов не найден или пуст.");
@@ -193,11 +194,10 @@ public partial class ExplorerMode
         lines.Add($"  • Видимых глобальных фактов: [white]{visibleFlags.Count}[/]; скрытых/GM-only: [white]{hiddenCount}[/].");
         foreach (var flag in visibleFlags.Take(5))
         {
-            var flagId = AfterlifeGlobalFlagState.GetNodeString(flag["flagId"]) ?? "unknown";
-            var category = AfterlifeGlobalFlagState.GetNodeString(flag["category"]) ?? "unknown";
-            var state = AfterlifeGlobalFlagState.GetNodeString(flag["state"]) ?? "unknown";
+            var category = HumanizeAfterlifeStatusToken(AfterlifeGlobalFlagState.GetNodeString(flag["category"]));
+            var state = HumanizeAfterlifeStatusToken(AfterlifeGlobalFlagState.GetNodeString(flag["state"]));
             var reason = AfterlifeGlobalFlagState.GetNodeString(flag["reason"]) ?? "без описания";
-            lines.Add($"  • [white]{Markup.Escape(flagId)}[/] ({Markup.Escape(category)}, {Markup.Escape(state)}): {Markup.Escape(reason)}");
+            lines.Add($"  • [white]{Markup.Escape(reason)}[/] [dim]({Markup.Escape(category)}, {Markup.Escape(state)})[/]");
         }
     }
 
@@ -303,8 +303,8 @@ public partial class ExplorerMode
             .FirstOrDefault(guardian => string.Equals(GetNodeString(guardian["guardianId"]), activeGuardianId, StringComparison.OrdinalIgnoreCase));
         var guardianName = activeGuardian == null ? activeGuardianId : GuardianManifestation.GetDisplayName(activeGuardian);
         var currentAbodeName = GetNodeString(activeGuardian?["abode"]?["name"]) ?? currentAbodeId;
-        lines.Add($"  • Активный Хранитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(guardianName) ? "не выбран" : guardianName)}[/] [dim]({Markup.Escape(activeGuardianId)})[/]");
-        lines.Add($"  • Текущая Обитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(currentAbodeName) ? "не выбрана" : currentAbodeName)}[/] [dim]({Markup.Escape(currentAbodeId)})[/]");
+        lines.Add($"  • Активный Хранитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(guardianName) ? "не выбран" : guardianName)}[/]");
+        lines.Add($"  • Текущая Обитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(currentAbodeName) ? "не выбрана" : currentAbodeName)}[/]");
         lines.Add($"  • Известных Хранителей: [white]{(guardiansRoot["guardians"] as JsonArray)?.Count ?? 0}[/]");
         lines.Add($"  • Резидентов Обителей: [white]{(residentsRoot?["entries"] as JsonArray)?.Count ?? 0}[/]");
         if (activeGuardian?["gachaSystem"] is JsonObject gacha)
@@ -323,7 +323,7 @@ public partial class ExplorerMode
                 _ => "не защищено"
             };
             var risk = reputation <= -21 ? "[red]доступно[/]" : "[green]недоступно[/]";
-            lines.Add($"  • Риск принудительного воплощения Хранителем: {risk}; guardianId=[dim]{Markup.Escape(activeGuardianId)}[/], abodeId=[dim]{Markup.Escape(currentAbodeId)}[/], репутация=[white]{reputation}[/], порог=[white]<= -21[/], защита возвращения=[white]{Markup.Escape(guardLabel)}[/].");
+            lines.Add($"  • Риск принудительного воплощения Хранителем: {risk}; репутация=[white]{reputation}[/], порог=[white]<= -21[/], защита возвращения=[white]{Markup.Escape(guardLabel)}[/].");
         }
     }
 
@@ -335,34 +335,34 @@ public partial class ExplorerMode
         var scheduleRoot = await ReadJsonObjectForAfterlifeStatusAsync(ProgressionScheduleService.SchedulePath);
         if (scheduleRoot == null)
         {
-            lines.Add($"  • {ProgressionScheduleService.SchedulePath}: не найден или повреждён.");
+            lines.Add("  • План живого развития: не найден или повреждён.");
         }
         else
         {
-            AppendProgressionObjectSummaryLines(lines, scheduleRoot, "schedule");
+            AppendProgressionObjectSummaryLines(lines, scheduleRoot, "План живого развития");
         }
 
         var turnRoot = await ReadJsonObjectForAfterlifeStatusAsync("input/turn_request.json");
         if (turnRoot?["progressionControl"] is JsonObject control)
         {
-            AppendProgressionObjectSummaryLines(lines, control, "текущий progressionControl");
+            AppendProgressionObjectSummaryLines(lines, control, "Управление развитием текущего хода");
             if (control["afterlifeCatchupContours"] is JsonArray contours)
-                lines.Add($"  • контуры догоняющей симуляции (afterlifeCatchupContours): [white]{Markup.Escape(FormatPendingIdentityValue(contours) ?? "[]")}[/]");
+                lines.Add($"  • Контуры догоняющей симуляции: [white]{Markup.Escape(FormatPendingIdentityValue(contours) ?? "[]")}[/]");
         }
         else
         {
-            lines.Add("  • Текущий progressionControl: нет активного input/turn_request.json с progressionControl.");
+            lines.Add("  • Управление развитием текущего хода: активных указаний нет.");
         }
 
         var reportRoot = await ReadJsonObjectForAfterlifeStatusAsync(ProgressionScheduleService.ReportPath);
         if (reportRoot == null)
         {
-            lines.Add($"  • {ProgressionScheduleService.ReportPath}: нет текущего отчёта.");
+            lines.Add("  • Последний отчёт развития: нет текущего отчёта.");
         }
         else
         {
-            var reportForSummary = UnwrapProgressionReportForStatus(reportRoot, out var reportLabel);
-            AppendProgressionObjectSummaryLines(lines, reportForSummary, reportLabel);
+            var reportForSummary = UnwrapProgressionReportForStatus(reportRoot, out _);
+            AppendProgressionObjectSummaryLines(lines, reportForSummary, "Последний отчёт развития");
         }
     }
 
@@ -456,14 +456,132 @@ public partial class ExplorerMode
         };
 
         var parts = fields
-            .Select(field => (Field: field, Value: FormatPendingIdentityValue(root[field])))
+            .Where(field => !IsProgressionFieldInternalOnly(field))
+            .Select(field => (Label: FormatProgressionFieldLabel(field), Value: FormatProgressionFieldValue(field, root[field])))
             .Where(item => !string.IsNullOrWhiteSpace(item.Value))
-            .Select(item => $"{item.Field}={item.Value}")
+            .Select(item => $"{item.Label}: {item.Value}")
             .ToList();
 
         lines.Add(parts.Count == 0
-            ? $"  • {label}: нет кратких полей; см. JSON/файл состояния."
+            ? $"  • {label}: кратких сведений нет; подробности доступны в аудит-режиме."
             : $"  • {label}: [dim]{Markup.Escape(string.Join("; ", parts))}[/]");
+    }
+
+    private static bool IsProgressionFieldInternalOnly(string field) =>
+        field is "sessionId" or "requestId";
+
+    private static string FormatProgressionFieldLabel(string field) =>
+        field switch
+        {
+            "currentRealm" => "Область",
+            "currentWorldTimeInMinutes" => "Время мира, мин",
+            "lastWorldSimulationTimeInMinutes" => "Последняя симуляция мира, мин",
+            "lastFactionSimulationTimeInMinutes" => "Последняя симуляция фракций, мин",
+            "worldCyclesAlreadyPendingBeforeTurn" => "Ожидающих циклов мира до хода",
+            "factionCyclesAlreadyPendingBeforeTurn" => "Ожидающих циклов фракций до хода",
+            "currentChaosSeaTurnOrdinal" => "Текущий цикл Моря Хаоса",
+            "nextChaosSeaTurnOrdinal" => "Следующий цикл Моря Хаоса",
+            "lastChaosSeaSimulationOrdinal" => "Последняя симуляция Моря Хаоса",
+            "lastGuardianProjectCycleOrdinal" => "Последний цикл проектов Хранителей",
+            "nextGuardianProjectCycleOrdinal" => "Следующий цикл проектов Хранителей",
+            "lastResidentAgencyCycleOrdinal" => "Последний цикл резидентов",
+            "nextResidentAgencyCycleOrdinal" => "Следующий цикл резидентов",
+            "lastShiningAbodeCycleOrdinal" => "Последний цикл Сияющей Обители",
+            "nextShiningAbodeCycleOrdinal" => "Следующий цикл Сияющей Обители",
+            "lastShiningFactionCycleOrdinal" => "Последний цикл сияющих фракций",
+            "nextShiningFactionCycleOrdinal" => "Следующий цикл сияющих фракций",
+            "lastShiningTradeCycleOrdinal" => "Последний торговый цикл Сияющей Обители",
+            "nextShiningTradeCycleOrdinal" => "Следующий торговый цикл Сияющей Обители",
+            "chaosSeaCyclesExpectedThisTurn" => "Циклов Моря Хаоса на этом ходу",
+            "guardianProjectCyclesExpectedThisTurn" => "Циклов проектов Хранителей на этом ходу",
+            "residentAgencyCyclesExpectedThisTurn" => "Циклов резидентов на этом ходу",
+            "shiningAbodeCyclesExpectedThisTurn" => "Циклов Сияющей Обители на этом ходу",
+            "shiningFactionCyclesExpectedThisTurn" => "Циклов сияющих фракций на этом ходу",
+            "shiningTradeCyclesExpectedThisTurn" => "Торговых циклов Сияющей Обители на этом ходу",
+            "mustEvaluateChaosSeaProgression" => "Нужно обновить Море Хаоса",
+            "mustEvaluateGuardianProjectProgression" => "Нужно обновить проекты Хранителей",
+            "mustEvaluateResidentAgencyProgression" => "Нужно обновить резидентов",
+            "mustEvaluateShiningAbodeProgression" => "Нужно обновить Сияющую Обитель",
+            "mustEvaluateShiningFactionProgression" => "Нужно обновить сияющие фракции",
+            "mustEvaluateShiningTradeProgression" => "Нужно обновить торговлю Сияющей Обители",
+            "afterlifeCatchupRequired" => "Нужна догоняющая симуляция",
+            "afterlifeCatchupElapsedCycles" => "Пропущенных циклов",
+            "afterlifeCatchupPressureTier" => "Давление догоняющей симуляции",
+            "afterlifeCatchupSummaryEventsRequired" => "Нужно кратких событий",
+            "turnNumber" => "Ход",
+            "chaosSeaCyclesProcessed" => "Обработано циклов Моря Хаоса",
+            "guardianProjectCyclesProcessed" => "Обработано циклов проектов Хранителей",
+            "residentAgencyCyclesProcessed" => "Обработано циклов резидентов",
+            "shiningAbodeCyclesProcessed" => "Обработано циклов Сияющей Обители",
+            "shiningFactionCyclesProcessed" => "Обработано циклов сияющих фракций",
+            "shiningTradeCyclesProcessed" => "Обработано торговых циклов Сияющей Обители",
+            "newLastChaosSeaSimulationOrdinal" => "Новая отметка Моря Хаоса",
+            "newLastGuardianProjectCycleOrdinal" => "Новая отметка проектов Хранителей",
+            "newLastResidentAgencyCycleOrdinal" => "Новая отметка резидентов",
+            "newLastShiningAbodeCycleOrdinal" => "Новая отметка Сияющей Обители",
+            "newLastShiningFactionCycleOrdinal" => "Новая отметка сияющих фракций",
+            "newLastShiningTradeCycleOrdinal" => "Новая отметка торговли Сияющей Обители",
+            "afterlifeCatchupProcessed" => "Догоняющая симуляция обработана",
+            "afterlifeCatchupSummaryEventsProcessed" => "Создано кратких событий",
+            _ => HumanizeAfterlifeStatusToken(field)
+        };
+
+    private static string? FormatProgressionFieldValue(string field, JsonNode? value)
+    {
+        var formatted = FormatPendingIdentityValue(value);
+        if (string.IsNullOrWhiteSpace(formatted))
+            return null;
+
+        return field switch
+        {
+            "currentRealm" => FormatAfterlifeRealmForPlayer(formatted),
+            "mustEvaluateChaosSeaProgression" or
+            "mustEvaluateGuardianProjectProgression" or
+            "mustEvaluateResidentAgencyProgression" or
+            "mustEvaluateShiningAbodeProgression" or
+            "mustEvaluateShiningFactionProgression" or
+            "mustEvaluateShiningTradeProgression" or
+            "afterlifeCatchupRequired" or
+            "afterlifeCatchupProcessed" => FormatBooleanWord(formatted),
+            _ => formatted
+        };
+    }
+
+    private static string FormatBooleanWord(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "true" => "да",
+            "false" => "нет",
+            _ => value
+        };
+
+    private static string FormatAfterlifeRealmForPlayer(string? realm) =>
+        realm switch
+        {
+            "Chaos Sea" => "Море Хаоса",
+            "Shining Abode" => "Сияющая Обитель",
+            "Mortal World" => "Смертный мир",
+            "Mortal Realm" => "Смертный мир",
+            null or "" => "не указана",
+            _ => HumanizeAfterlifeStatusToken(realm)
+        };
+
+    private static string HumanizeAfterlifeStatusToken(string? token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+            return "не указано";
+
+        var raw = token.Trim().Replace('_', ' ');
+        var builder = new StringBuilder(raw.Length + 8);
+        for (var i = 0; i < raw.Length; i++)
+        {
+            var ch = raw[i];
+            if (i > 0 && char.IsUpper(ch) && char.IsLetter(raw[i - 1]) && !char.IsWhiteSpace(raw[i - 1]))
+                builder.Append(' ');
+            builder.Append(ch);
+        }
+
+        return builder.ToString();
     }
 
     private static void AppendShiningStatusLines(List<string> lines, ShiningContext? context)
@@ -472,7 +590,7 @@ public partial class ExplorerMode
         lines.Add("[bold gold1]Сияющая Обитель:[/]");
         if (context == null)
         {
-            lines.Add("  • shining_abode_state.json пока отсутствует или повреждён.");
+            lines.Add("  • Состояние Сияющей Обители пока отсутствует или повреждено.");
             return;
         }
 

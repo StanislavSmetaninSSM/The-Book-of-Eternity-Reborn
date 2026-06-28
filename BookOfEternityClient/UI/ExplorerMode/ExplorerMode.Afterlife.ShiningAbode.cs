@@ -2257,16 +2257,24 @@ public partial class ExplorerMode
 
     private static string FormatAfterlifeNotificationInline(AfterlifeNotificationState.NotificationEntry notification)
     {
-        var parts = new List<string>();
         if (!string.IsNullOrWhiteSpace(notification.Summary))
-            parts.Add(notification.Summary);
-        if (!string.IsNullOrWhiteSpace(notification.NotificationId))
-            parts.Add($"notificationId={notification.NotificationId}");
-        if (!string.IsNullOrWhiteSpace(notification.RequestId))
-            parts.Add($"requestId={notification.RequestId}");
-        if (!string.IsNullOrWhiteSpace(notification.NotificationType))
-            parts.Add($"type={notification.NotificationType}");
-        return string.Join("; ", parts);
+            return notification.Summary;
+
+        return notification.NotificationType switch
+        {
+            AfterlifeNotificationState.TypeGuardianTradeInventoryReady => "Готова торговая витрина Хранителя.",
+            AfterlifeNotificationState.TypeGuardianQuestAvailable => "Появился новый квест Хранителя.",
+            AfterlifeNotificationState.TypeAbodeResidentsReady => "Обитель обновила сведения о резидентах.",
+            AfterlifeNotificationState.TypeAbodeResidentQuestAvailable => "У резидента Обители появился личный квест.",
+            AfterlifeNotificationState.TypeAbodeResidentRelicGranted => "Резидент Обители передал реликвию связи.",
+            AfterlifeNotificationState.TypeAbodeResidentManifestationReady => "Резидент Обители готов проявиться в следующей жизни.",
+            AfterlifeNotificationState.TypeCompanionImprintManifestationReady => "Отпечаток спутника готов к проявлению.",
+            AfterlifeNotificationState.TypeShiningTradeInventoryReady => "Готова торговая витрина Сияющей Обители.",
+            AfterlifeNotificationState.TypeShiningFactionFoundingResolved => "Решение об основании сияющей фракции готово.",
+            AfterlifeNotificationState.TypeShiningFactionRealignmentResolved => "Решение о перестройке сияющей фракции готово.",
+            AfterlifeNotificationState.TypeShiningFactionLeadershipResolved => "Решение о смене власти сияющей фракции готово.",
+            _ => "Есть новый ответ посмертия."
+        };
     }
 
     private static void AppendShiningNamedIdList(
