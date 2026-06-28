@@ -1379,7 +1379,7 @@ $script:BridgeAutoStartAttempted = $false
 
 function New-DefaultGmWorkerBridgeProfiles {
     $runner = 'BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1'
-    $codexWorker = 'codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -'
+    $codexWorker = 'codex exec -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -'
 
     return @(
         [ordered]@{
@@ -1526,7 +1526,7 @@ function Get-GameConfig {
     $defaults = [ordered]@{
         GmBridgeEnabled = $true
         GmBridgeBackend = "ConPTYBridge"
-        GmCliLaunchCommand = "codex --dangerously-bypass-approvals-and-sandbox"
+        GmCliLaunchCommand = 'codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox'
         GmBridgeShellWorkingDirectory = ""
         GmBridgeAutoStart = $false
         GmBridgePipeNameOverride = ""

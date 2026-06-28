@@ -65,7 +65,7 @@
 **Independent Test**: Manual live run produces ledger records and rubric notes tied to follow-up issues/comments.
 
 - [X] T023 [US5] Add a live-test checklist or generated context-pack note for the rubric dimensions from #1290.
-- [X] T024 [US5] Run a short live GM bridge test with `codex --dangerously-bypass-approvals-and-sandbox`.
+- [X] T024 [US5] Run a short live GM bridge test with `codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox`.
 - [X] T025 [US5] Record findings as comments on #1285-#1290 or create follow-up issues for repeated harness gaps.
 
 ## Final Phase: Polish & Verification
@@ -115,6 +115,7 @@
 - [X] T071 [Follow-up #1309] Keep the GM daemon watcher alive after recoverable polling/status errors, persist explicit fatal diagnostics, document daemon repair-loop checks, and guard the lifecycle contract with tests.
 - [X] T072 [Follow-up #1231] Add shared realm-aware afterlife worker task/proposal contract, Mortal-substitute guards, builder support, runner prompt guidance, and GM-facing documentation/example coverage.
 - [X] T073 [Follow-up #1232] Add `guardian-abode-content` worker role, Guardian/Abode task/proposal contract, hidden-dossier and Mortal-substitute guards, disabled profile templates, runner guidance, and GM-facing documentation/example coverage.
+- [X] T074 [Follow-up #1249/#1285] Pin main GM and hidden worker Codex launch commands to explicit `gpt-5.5 high`, update GM-facing examples, and verify with a live Chaos Sea turn.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.

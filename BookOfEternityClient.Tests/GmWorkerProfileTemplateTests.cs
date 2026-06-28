@@ -6,6 +6,9 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class GmWorkerProfileTemplateTests
 {
+    private const string ExpectedCodexWorkerCommand =
+        "codex exec -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -";
+
     [Fact]
     public void DefaultTemplates_AreDisabledRunnerBasedAndValid()
     {
@@ -18,49 +21,49 @@ public sealed class GmWorkerProfileTemplateTests
                 "analysis_codex",
                 WorkerRole.Analysis,
                 WorkerTaskType.Analysis,
-                "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"),
+                ExpectedCodexWorkerCommand),
             guardianAbode => AssertTemplate(
                 guardianAbode,
                 "guardian_abode_content_codex",
                 WorkerRole.GuardianAbodeContent,
                 WorkerTaskType.GuardianAbodeContent,
-                "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"),
+                ExpectedCodexWorkerCommand),
             inventory => AssertTemplate(
                 inventory,
                 "inventory_content_codex",
                 WorkerRole.InventoryContent,
                 WorkerTaskType.InventoryContent,
-                "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"),
+                ExpectedCodexWorkerCommand),
             narrative => AssertTemplate(
                 narrative,
                 "narrative_draft_codex",
                 WorkerRole.NarrativeDraft,
                 WorkerTaskType.NarrativeDraft,
-                "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"),
+                ExpectedCodexWorkerCommand),
             npc => AssertTemplate(
                 npc,
                 "npc_content_codex",
                 WorkerRole.NpcContent,
                 WorkerTaskType.NpcContent,
-                "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"),
+                ExpectedCodexWorkerCommand),
             skill => AssertTemplate(
                 skill,
                 "skill_content_codex",
                 WorkerRole.SkillContent,
                 WorkerTaskType.SkillContent,
-                "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"),
+                ExpectedCodexWorkerCommand),
             soul => AssertTemplate(
                 soul,
                 "soul_content_codex",
                 WorkerRole.SoulContent,
                 WorkerTaskType.SoulContent,
-                "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"),
+                ExpectedCodexWorkerCommand),
             repair => AssertTemplate(
                 repair,
                 "validation_repair_codex",
                 WorkerRole.ValidationRepair,
                 WorkerTaskType.ValidationRepair,
-                "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"));
+                ExpectedCodexWorkerCommand));
     }
 
     [Fact]
@@ -96,7 +99,20 @@ public sealed class GmWorkerProfileTemplateTests
             "narrative_draft_codex",
             WorkerRole.NarrativeDraft,
             WorkerTaskType.NarrativeDraft,
-            "codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -");
+            ExpectedCodexWorkerCommand);
+    }
+
+    [Fact]
+    public void DefaultTemplates_PreserveQuotedCodexConfigInRunnerAgentCommand()
+    {
+        var template = GmWorkerBridgeProfileTemplates.CreateNarrativeDraftCodexTemplate();
+
+        var startInfo = GmWorkerBridgePool.CreateWorkerStartInfo(template, Environment.CurrentDirectory);
+        var agentCommandIndex = startInfo.ArgumentList.IndexOf("-AgentCommand");
+
+        Assert.True(agentCommandIndex >= 0);
+        Assert.True(agentCommandIndex + 1 < startInfo.ArgumentList.Count);
+        Assert.Equal(ExpectedCodexWorkerCommand, startInfo.ArgumentList[agentCommandIndex + 1]);
     }
 
     [Fact]
@@ -153,7 +169,7 @@ public sealed class GmWorkerProfileTemplateTests
         Assert.Contains(expectedTaskType, template.Permissions.TaskTypes);
         Assert.Contains("BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1", template.LaunchCommand, StringComparison.Ordinal);
         Assert.Contains("-AgentCommand", template.LaunchCommand, StringComparison.Ordinal);
-        Assert.Contains(expectedAgentCommand, template.LaunchCommand, StringComparison.Ordinal);
+        Assert.Contains(expectedAgentCommand.Replace("\"", "\\\"", StringComparison.Ordinal), template.LaunchCommand, StringComparison.Ordinal);
 
         var validation = GmWorkerContractValidator.ValidateProfile(template);
         Assert.True(validation.IsValid, string.Join(Environment.NewLine, validation.Errors));

@@ -46,6 +46,12 @@ function Split-CommandLine {
 
     for ($i = 0; $i -lt $CommandLine.Length; $i++) {
         $ch = $CommandLine[$i]
+        if ($ch -eq '\' -and $i + 1 -lt $CommandLine.Length -and $CommandLine[$i + 1] -eq '"') {
+            [void]$current.Append('"')
+            $i++
+            continue
+        }
+
         if ($ch -eq '"') {
             $inQuotes = -not $inQuotes
             continue

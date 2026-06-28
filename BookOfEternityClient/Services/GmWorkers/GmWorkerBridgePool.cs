@@ -354,6 +354,13 @@ public sealed class GmWorkerBridgePool
         for (var i = 0; i < commandLine.Length; i++)
         {
             var ch = commandLine[i];
+            if (ch == '\\' && i + 1 < commandLine.Length && commandLine[i + 1] == '"')
+            {
+                current.Append('"');
+                i++;
+                continue;
+            }
+
             if (ch == '"')
             {
                 inQuotes = !inQuotes;

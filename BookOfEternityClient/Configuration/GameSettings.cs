@@ -38,9 +38,9 @@ public class GameSettings
     /// </summary>
     public string GmBridgeBackend { get; set; } = "ConPTYBridge";
     /// <summary>
-    /// Arbitrary shell command line started inside the GM bridge shell session, for example "codex --dangerously-bypass-approvals-and-sandbox".
+    /// Arbitrary shell command line started inside the GM bridge shell session, for example "codex -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox".
     /// </summary>
-    public string GmCliLaunchCommand { get; set; } = "codex --dangerously-bypass-approvals-and-sandbox";
+    public string GmCliLaunchCommand { get; set; } = "codex -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox";
     /// <summary>
     /// Optional explicit working directory for the hidden GM bridge shell. Empty means the game_session directory.
     /// </summary>

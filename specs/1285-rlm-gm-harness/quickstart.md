@@ -26,7 +26,7 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 1. Start a short live GM bridge run using the normal hidden GM bridge command with:
 
 ```text
-codex --dangerously-bypass-approvals-and-sandbox
+codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox
 ```
 
 2. Prepare each live-test player turn with the repository-owned helper instead of hand-writing JSON:

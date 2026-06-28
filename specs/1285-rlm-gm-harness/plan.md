@@ -55,7 +55,7 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 Manual:
 
-- Run a short live GM bridge test with `codex --dangerously-bypass-approvals-and-sandbox`.
+- Run a short live GM bridge test with `codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox`.
 - Inspect the generated ledger, lesson artifact, context-pack references, worker/repair events, and rubric notes.
 
 ## Constitution Check

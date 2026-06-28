@@ -181,7 +181,10 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("-AgentCommand", source, StringComparison.Ordinal);
         }
 
-        Assert.Contains("codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -", guide, StringComparison.Ordinal);
+        var normalizedGuide = guide
+            .Replace("\\\\\\\"", "\"", StringComparison.Ordinal)
+            .Replace("\\\"", "\"", StringComparison.Ordinal);
+        Assert.Contains("codex exec -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -", normalizedGuide, StringComparison.Ordinal);
         Assert.Contains("worker-proposal-v1", runner, StringComparison.Ordinal);
         Assert.Contains("Required worker-proposal-v1 JSON shape", runner, StringComparison.Ordinal);
         Assert.Contains("Do not omit summary, status, changedFiles, findings, selfCheck, or createdAtUtc.", runner, StringComparison.Ordinal);

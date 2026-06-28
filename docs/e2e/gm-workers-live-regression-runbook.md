@@ -9,7 +9,7 @@ the player or letting workers write canonical state directly.
 ## Scope
 
 - Console client / Agent Console only.
-- Codex workers only, launched with `codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -`.
+- Codex workers only, launched with `codex exec -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -`.
 - Proposal-only `narrative-draft` or `analysis` dispatch through
   `dispatchworkertask`.
 - Validation-repair dispatch through the existing validation repair loop.
@@ -68,8 +68,8 @@ $Config = if (Test-Path $ConfigPath) {
 }
 
 $Runner = 'BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1'
-$CodexMain = 'codex --dangerously-bypass-approvals-and-sandbox'
-$CodexWorker = 'codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -'
+$CodexMain = 'codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox'
+$CodexWorker = 'codex exec -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -'
 function New-WorkerProfile($id, $name, $role, $taskType, $timeout, $proposalOnly, $requiresValidation, $readPaths, $writePaths) {
   [ordered]@{
     workerId = $id
