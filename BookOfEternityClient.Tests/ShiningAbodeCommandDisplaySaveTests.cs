@@ -61,6 +61,7 @@ public sealed class ShiningAbodeCommandDisplaySaveTests : IDisposable
                 entry.FullName.StartsWith("game_state/control/pending_turn_snapshot", StringComparison.OrdinalIgnoreCase) ||
                 entry.FullName.Equals("game_state/control/validation_repair_request.json", StringComparison.OrdinalIgnoreCase) ||
                 entry.FullName.StartsWith("input/", StringComparison.OrdinalIgnoreCase));
+            AssertAfterlifeArchiveStoredEntriesHaveSourceLife(archive);
         }
 
         var sourceHashBefore = await ComputeSha256Async(sourceArchive);
@@ -277,6 +278,30 @@ public sealed class ShiningAbodeCommandDisplaySaveTests : IDisposable
         await using var stream = File.OpenRead(path);
         var hash = await SHA256.HashDataAsync(stream);
         return Convert.ToHexString(hash);
+    }
+
+    private static void AssertAfterlifeArchiveStoredEntriesHaveSourceLife(ZipArchive archive)
+    {
+        var soulStateEntry = archive.GetEntry("game_state/meta/soul_state.json");
+        Assert.NotNull(soulStateEntry);
+        using var stream = soulStateEntry!.Open();
+        using var document = JsonDocument.Parse(stream);
+        if (!document.RootElement.TryGetProperty("afterlifeArchive", out var archiveElement) ||
+            !archiveElement.TryGetProperty("stored", out var storedElement))
+        {
+            return;
+        }
+
+        var index = 0;
+        foreach (var storedEntry in storedElement.EnumerateArray())
+        {
+            Assert.True(
+                storedEntry.TryGetProperty("sourceLife", out var sourceLife) &&
+                sourceLife.ValueKind == JsonValueKind.Number &&
+                sourceLife.TryGetInt32(out _),
+                $"Shining Abode display save archive entry #{index} must include numeric sourceLife.");
+            index++;
+        }
     }
 
     private static IEnumerable<(string Id, string Command)> PracticalUniversalShiningAbodePreviewCommands()
