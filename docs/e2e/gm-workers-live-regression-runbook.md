@@ -163,6 +163,14 @@ $Daemon.daemonPid
 The launcher action uses an encoded PowerShell host command internally so paths
 with spaces, such as the repository root, do not break daemon startup.
 
+During live play, check the daemon control status after every completed turn or
+repair. `game_state/control/gm_daemon_status.json` should remain
+`status=running`; if it contains `lastLoopError`, preserve the run root because
+the watcher recovered from a transient harness error. If the daemon exits with
+`status=failed`, inspect `game_state/control/gm_daemon_fatal_error.json` before
+restarting. A hidden daemon that silently stops after validation repair is a
+harness bug, not a GM/player failure.
+
 ## Dispatch proposal-only worker tasks
 
 Use the bridge pipe directly for `dispatchworkertask`. This avoids relying on

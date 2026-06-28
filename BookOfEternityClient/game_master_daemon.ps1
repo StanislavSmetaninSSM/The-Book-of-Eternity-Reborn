@@ -105,10 +105,13 @@ $TerminalProtocolFailureRequestFile = Join-Path $ControlDir "terminal_protocol_f
 $CliBindingFile = Join-Path $ControlDir "gm_cli_window_binding.json"
 $BridgeStatusFile = Join-Path $ControlDir "gm_bridge_status.json"
 $DaemonStatusFile = Join-Path $ControlDir "gm_daemon_status.json"
+$DaemonFatalErrorFile = Join-Path $ControlDir "gm_daemon_fatal_error.json"
 $BridgeControlScript = Join-Path $PSScriptRoot "Launcher\bookofeternity.ps1"
 $script:GmTrajectoryLedgerPath = Join-Path $ControlDir "gm_trajectory_ledger.jsonl"
 $script:DaemonCommandLine = [Environment]::CommandLine
 $script:DaemonLastHeartbeatUtc = [DateTime]::MinValue
+$script:DaemonFatalError = $null
+$script:DaemonLastLoopError = $null
 $script:CorrelatedRepairGraceMilliseconds = 5000
 $script:CorrelatedRepairPollMilliseconds = 200
 
@@ -1696,8 +1699,95 @@ function Read-DaemonStatus {
     }
 }
 
+function New-DaemonErrorPayload {
+    param(
+        [object]$ErrorRecord,
+        [string]$Phase = "unknown"
+    )
+
+    $exception = if ($null -ne $ErrorRecord.Exception) { $ErrorRecord.Exception } else { $null }
+    $invocation = if ($null -ne $ErrorRecord.InvocationInfo) { $ErrorRecord.InvocationInfo } else { $null }
+
+    $payload = [ordered]@{
+        phase = $Phase
+        occurredAtUtc = (Get-Date).ToUniversalTime().ToString("o")
+        message = if ($null -ne $exception) { [string]$exception.Message } else { [string]$ErrorRecord }
+        type = if ($null -ne $exception) { $exception.GetType().FullName } else { "" }
+        category = if ($null -ne $ErrorRecord.CategoryInfo) { [string]$ErrorRecord.CategoryInfo } else { "" }
+        scriptStackTrace = if ($null -ne $ErrorRecord.ScriptStackTrace) { [string]$ErrorRecord.ScriptStackTrace } else { "" }
+    }
+
+    if ($null -ne $invocation) {
+        $payload.invocation = [ordered]@{
+            scriptName = [string]$invocation.ScriptName
+            scriptLineNumber = $invocation.ScriptLineNumber
+            offsetInLine = $invocation.OffsetInLine
+            line = [string]$invocation.Line
+        }
+    }
+
+    return $payload
+}
+
+function Write-DaemonJsonFileBestEffort {
+    param(
+        [string]$Path,
+        [object]$Payload,
+        [int]$Depth = 8
+    )
+
+    $tmpPath = $null
+    try {
+        $directory = Split-Path $Path -Parent
+        if (!(Test-Path $directory)) {
+            New-Item -ItemType Directory -Path $directory -Force | Out-Null
+        }
+
+        $tmpName = "." + [IO.Path]::GetFileName($Path) + ".$PID.tmp"
+        $tmpPath = Join-Path $directory $tmpName
+        Set-Content -LiteralPath $tmpPath -Value ($Payload | ConvertTo-Json -Depth $Depth) -Encoding UTF8
+        Move-Item -LiteralPath $tmpPath -Destination $Path -Force
+        return $true
+    }
+    catch {
+        try {
+            if ($tmpPath -and (Test-Path $tmpPath)) {
+                Remove-Item -LiteralPath $tmpPath -Force
+            }
+        }
+        catch {
+            # Best-effort cleanup only.
+        }
+
+        return $false
+    }
+}
+
+function Write-DaemonFatalReport {
+    param(
+        [object]$ErrorRecord,
+        [string]$Phase = "fatal"
+    )
+
+    $payload = [ordered]@{
+        status = "failed"
+        pid = $PID
+        sessionPath = $GameSessionPath
+        command = $script:DaemonCommandLine
+        turnCount = $script:TurnCount
+        errorCount = $script:ErrorCount
+        error = (New-DaemonErrorPayload -ErrorRecord $ErrorRecord -Phase $Phase)
+    }
+
+    [void](Write-DaemonJsonFileBestEffort -Path $DaemonFatalErrorFile -Payload $payload -Depth 8)
+}
+
 function Write-DaemonStatus {
-    param([string]$Status = "running")
+    param(
+        [string]$Status = "running",
+        [object]$FatalError = $null,
+        [string]$Reason = ""
+    )
 
     $payload = [ordered]@{
         status = $Status
@@ -1710,7 +1800,19 @@ function Write-DaemonStatus {
         errorCount = $script:ErrorCount
     }
 
-    Set-Content -Path $DaemonStatusFile -Value ($payload | ConvertTo-Json -Depth 4) -Encoding UTF8
+    if (-not [string]::IsNullOrWhiteSpace($Reason)) {
+        $payload.reason = $Reason
+    }
+
+    if ($null -ne $script:DaemonLastLoopError) {
+        $payload.lastLoopError = $script:DaemonLastLoopError
+    }
+
+    if ($null -ne $FatalError) {
+        $payload.fatalError = New-DaemonErrorPayload -ErrorRecord $FatalError -Phase "fatal"
+    }
+
+    [void](Write-DaemonJsonFileBestEffort -Path $DaemonStatusFile -Payload $payload -Depth 8)
 }
 
 function Assert-SingleDaemonInstance {
@@ -3393,27 +3495,42 @@ try {
     # Main loop
     $statusTimer = 0
     while ($true) {
-        Start-Sleep -Milliseconds $PollingInterval
-        Update-DaemonHeartbeat
+        try {
+            Start-Sleep -Milliseconds $PollingInterval
+            Update-DaemonHeartbeat
 
-        if ((Test-Path $TurnRequestFile) -and !$script:IsProcessing) {
-            Process-Turn -RequestPath $TurnRequestFile
-        }
-        if (Test-Path $RepairRequestFile) {
-            Process-RepairRequest -RepairPath $RepairRequestFile
-        }
-        if (Test-Path $TerminalProtocolFailureRequestFile) {
-            Process-TerminalProtocolFailureRequest -FailurePath $TerminalProtocolFailureRequestFile
-        }
+            if ((Test-Path $TurnRequestFile) -and !$script:IsProcessing) {
+                Process-Turn -RequestPath $TurnRequestFile
+            }
+            if (Test-Path $RepairRequestFile) {
+                Process-RepairRequest -RepairPath $RepairRequestFile
+            }
+            if (Test-Path $TerminalProtocolFailureRequestFile) {
+                Process-TerminalProtocolFailureRequest -FailurePath $TerminalProtocolFailureRequestFile
+            }
 
-        # Status every 5 minutes
-        $statusTimer += $PollingInterval
-        if ($statusTimer -ge 300000) {
-            $uptime = ((Get-Date) - $script:StartTime)
-            Write-Log "Status: ${script:TurnCount} turns, ${script:ErrorCount} errors, uptime $([math]::Floor($uptime.TotalHours))h$($uptime.Minutes)m" -Color DarkGray
-            $statusTimer = 0
+            # Status every 5 minutes
+            $statusTimer += $PollingInterval
+            if ($statusTimer -ge 300000) {
+                $uptime = ((Get-Date) - $script:StartTime)
+                Write-Log "Status: ${script:TurnCount} turns, ${script:ErrorCount} errors, uptime $([math]::Floor($uptime.TotalHours))h$($uptime.Minutes)m" -Color DarkGray
+                $statusTimer = 0
+            }
+        }
+        catch {
+            $script:ErrorCount++
+            $script:DaemonLastLoopError = New-DaemonErrorPayload -ErrorRecord $_ -Phase "main_loop"
+            Write-Log "Main loop error recovered: $($_.Exception.Message)" -Level "ERROR" -Color Red
+            Write-DaemonStatus -Status "running" -Reason "main_loop_error_recovered"
+            Start-Sleep -Milliseconds ([Math]::Max(250, $PollingInterval))
         }
     }
+}
+catch {
+    $script:DaemonFatalError = $_
+    $script:ErrorCount++
+    Write-Log "Fatal daemon error: $($_.Exception.Message)" -Level "ERROR" -Color Red
+    Write-DaemonFatalReport -ErrorRecord $_ -Phase "fatal"
 }
 finally {
     $watcher.EnableRaisingEvents = $false
@@ -3422,7 +3539,12 @@ finally {
     $repairWatcher.Dispose()
     $terminalProtocolFailureWatcher.EnableRaisingEvents = $false
     $terminalProtocolFailureWatcher.Dispose()
-    Write-DaemonStatus -Status "stopped"
+    if ($null -ne $script:DaemonFatalError) {
+        Write-DaemonStatus -Status "failed" -FatalError $script:DaemonFatalError
+    }
+    else {
+        Write-DaemonStatus -Status "stopped"
+    }
     Write-Host ""
     Write-Log "Daemon stopped. Turns: $($script:TurnCount), Errors: $($script:ErrorCount)" -Level "SHUTDOWN" -Color Yellow
 }

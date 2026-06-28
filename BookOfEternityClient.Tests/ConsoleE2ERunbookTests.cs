@@ -89,7 +89,11 @@ public sealed class ConsoleE2ERunbookTests
             "bookofeternity.ps1 start-daemon",
             "--timeout 900",
             "daemon.start.json",
-            "daemonPid"
+            "daemonPid",
+            "gm_daemon_status.json",
+            "lastLoopError",
+            "gm_daemon_fatal_error.json",
+            "harness bug"
         })
         {
             Assert.Contains(requiredText, runbook, StringComparison.OrdinalIgnoreCase);

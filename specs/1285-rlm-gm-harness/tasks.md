@@ -112,6 +112,7 @@
 - [X] T068 [Follow-up #1305] Add compact Mortal faction validation repair packets, context-pack template, and experience-lesson routing for unknown faction ids and invalid faction sidecars.
 - [X] T069 [Follow-up #1306] Add compact Mortal location-transition repair packets, context-pack template, and experience-lesson routing for unknown current/NPC locations and duplicate same-turn map coordinates.
 - [X] T070 [Follow-up #1308] Repair the local working `BookOfEternityClient/game_session` afterlife archive source-life drift, add a local-session validation smoke test, and guard tracked fixtures against future `afterlifeArchive.stored[]` entries without numeric `sourceLife`.
+- [X] T071 [Follow-up #1309] Keep the GM daemon watcher alive after recoverable polling/status errors, persist explicit fatal diagnostics, document daemon repair-loop checks, and guard the lifecycle contract with tests.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.

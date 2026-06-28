@@ -2250,6 +2250,30 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonLifecycle_PreservesWatcherAndReportsFatalDiagnostics()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("gm_daemon_fatal_error.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("function New-DaemonErrorPayload", daemon, StringComparison.Ordinal);
+        Assert.Contains("function Write-DaemonJsonFileBestEffort", daemon, StringComparison.Ordinal);
+        Assert.Contains("function Write-DaemonFatalReport", daemon, StringComparison.Ordinal);
+        Assert.Contains("fatalError", daemon, StringComparison.Ordinal);
+        Assert.Contains("lastLoopError", daemon, StringComparison.Ordinal);
+        Assert.Contains("Main loop error recovered", daemon, StringComparison.Ordinal);
+        Assert.Contains("main_loop_error_recovered", daemon, StringComparison.Ordinal);
+        Assert.Contains("Fatal daemon error", daemon, StringComparison.Ordinal);
+        Assert.Contains("Write-DaemonStatus -Status \"failed\" -FatalError $script:DaemonFatalError", daemon, StringComparison.Ordinal);
+
+        var mainLoopIndex = daemon.IndexOf("while ($true)", StringComparison.Ordinal);
+        var recoveredErrorIndex = daemon.IndexOf("Main loop error recovered", StringComparison.Ordinal);
+        var fatalErrorIndex = daemon.IndexOf("Fatal daemon error", StringComparison.Ordinal);
+        Assert.True(mainLoopIndex >= 0, "Expected daemon main loop.");
+        Assert.True(recoveredErrorIndex > mainLoopIndex, "Expected recoverable loop error handling inside or after the daemon loop.");
+        Assert.True(fatalErrorIndex > recoveredErrorIndex, "Expected fatal diagnostics outside the recoverable polling loop.");
+    }
+
+    [Fact]
     public void DaemonTerminalSignalConflict_PrefersRealSuccessOverDaemonTimeoutArtifact()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
