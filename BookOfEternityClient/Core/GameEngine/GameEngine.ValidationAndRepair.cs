@@ -852,6 +852,7 @@ public partial class GameEngine
         var mortalNpcFullObjectErrors = errors.Where(IsMortalNpcFullObjectRepairIssue).ToList();
         var mortalNpcRelationshipEnumErrors = errors.Where(IsMortalNpcRelationshipEnumRepairIssue).ToList();
         var mortalNpcReferenceErrors = errors.Where(IsMortalNpcReferenceRepairIssue).ToList();
+        var afterlifeActionCostErrors = errors.Where(IsAfterlifeSpiritualConflictActionCostRepairIssue).ToList();
 
         if (guardianScopeErrors.Count > 0)
             packets.Add(BuildGuardianScopeRepairPacket(guardianScopeErrors, guardianActorNameHints));
@@ -876,6 +877,9 @@ public partial class GameEngine
 
         if (mortalNpcReferenceErrors.Count > 0)
             packets.Add(BuildMortalNpcReferenceRepairPacket(mortalNpcReferenceErrors));
+
+        if (afterlifeActionCostErrors.Count > 0)
+            packets.Add(BuildAfterlifeSpiritualConflictActionCostRepairPacket(afterlifeActionCostErrors));
 
         return packets;
     }
@@ -966,6 +970,18 @@ public partial class GameEngine
 
         var normalized = path.Replace('\\', '/');
         return normalized.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsAfterlifeSpiritualConflictActionCostRepairIssue(ValidationIssue issue)
+    {
+        var code = issue.Code ?? string.Empty;
+        if (!code.StartsWith("afterlife_conflict_", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        return code.Contains("action_cost", StringComparison.OrdinalIgnoreCase) ||
+               code.Contains("action_economy", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(code, "afterlife_conflict_dice_value_not_authorized", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(code, "afterlife_conflict_maneuver_changes_strain", StringComparison.OrdinalIgnoreCase);
     }
 
     private static ValidationRepairHarnessPacket BuildGuardianScopeRepairPacket(
@@ -1387,6 +1403,91 @@ public partial class GameEngine
         };
     }
 
+    private static ValidationRepairHarnessPacket BuildAfterlifeSpiritualConflictActionCostRepairPacket(
+        IReadOnlyList<ValidationIssue> actionCostErrors)
+    {
+        var targetFiles = actionCostErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("game_state/meta/afterlife_spiritual_conflict_state.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/meta/afterlife_spiritual_conflict_state.json");
+
+        var issueDetails = actionCostErrors
+            .Select(DescribeAfterlifeActionCostRepairIssue)
+            .Where(detail => !string.IsNullOrWhiteSpace(detail))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(detail => detail, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var issueSummary = issueDetails.Count == 0
+            ? "see validation_repair_request.json.errors for exact paths and expected/actual values"
+            : string.Join("; ", issueDetails);
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "afterlife_spiritual_conflict_action_cost_repair",
+            Priority = "high",
+            Title = "Afterlife spiritual conflict action-cost sequence repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string>
+            {
+                "OtherGuides/Afterlife_Contract_Matrix.md",
+                "Examples/E_CLI_Afterlife_Turns.txt"
+            },
+            ExpectedShape = new List<string>
+            {
+                "For every current exchange, actionCostAudit.<side>.before must equal the previous current exchange's actionCostAudit.<side>.after; for the first current exchange, before must equal pre-turn activeConflict.actionEconomy.<side>.current.",
+                "For paid actions, actionCostAudit.<side>.after must equal before - effectiveCost; for recovery, after must follow the documented recovery formula and stay within max.",
+                "activeConflict.actionEconomy.<side>.current must equal the last current exchange actionCostAudit.<side>.after, or remain at the pre-turn value when the side has no current audit.",
+                "Dice values, operationType/finalOperationType, incomingAction, maneuver outcome, specialArtAudit, and matchupAudit must remain authority-bound; repair arithmetic and audit fields without inventing a new exchange."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Use validation_repair_request.json.errors as the immediate repair checklist; its expected/actual values are authoritative for the listed fields.",
+                "Recompute actionCostAudit sequentially across activeConflict.exchangeLog from the pre-turn actionEconomy baseline and the previous exchange result; do not copy a later current value backward.",
+                "When fixing a before value, also recompute the same side's after and activeConflict.actionEconomy.<side>.current if they depend on that audit.",
+                "If the request includes dice authorization errors, replace only the unauthorized dice/audit value with a pre-generated value from pending-turn authority; do not roll new dice manually.",
+                "If the request includes maneuver strain errors, keep strain changes out of activeConflict unless the player action was the documented strain-conversion maneuver."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json first and repair only the listed validation errors in place.",
+                $"Patch these action-cost/audit fields exactly: {issueSummary}.",
+                "In game_state/meta/afterlife_spiritual_conflict_state.json, inspect activeConflict.exchangeLog in order and recompute actionCostAudit.player/actionCostAudit.opposition before/after values from the previous current exchange.",
+                "For every listed exchangeLog[n], patch actionCostAudit.<side>.before to the expected value, then recompute that side's after using effectiveCost or the recovery rule; update activeConflict.actionEconomy.<side>.current to the final audited after value.",
+                "Use pending_turn_snapshot and control authority only as read-only baselines for pre-turn action economy, dice, and authorized operations.",
+                "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not create a new turn or write ready/turn_complete.json during validation repair.",
+                "Do not edit game_state/control/pending_turn_snapshot or other authority snapshot files; use pending_turn_snapshot only as a read-only baseline.",
+                "Do not change player prose, operation choices, dice rolls, special art ids, or exchange outcomes just to silence arithmetic validation.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, validation_repair_request.json, afterlife docs/examples, and session control files."
+            }
+        };
+    }
+
+    private static string DescribeAfterlifeActionCostRepairIssue(ValidationIssue issue)
+    {
+        var normalizedPath = (issue.FilePath ?? string.Empty).Replace('\\', '/');
+        var match = Regex.Match(
+            normalizedPath,
+            @"exchangeLog\[(?<index>\d+)\]\.actionCostAudit\.(?<side>player|opposition)\.(?<field>[A-Za-z0-9_]+)",
+            RegexOptions.IgnoreCase);
+        var location = match.Success
+            ? $"exchangeLog[{match.Groups["index"].Value}] {match.Groups["side"].Value}.{match.Groups["field"].Value}"
+            : NormalizeRepairTargetPath(normalizedPath);
+        var expected = string.IsNullOrWhiteSpace(issue.Expected) ? "see error.expected" : issue.Expected.Trim();
+        var actual = string.IsNullOrWhiteSpace(issue.Actual) ? "see error.actual" : issue.Actual.Trim();
+        var code = string.IsNullOrWhiteSpace(issue.Code) ? "validation_error" : issue.Code.Trim();
+
+        return $"{location}: expected {expected}, actual {actual} ({code})";
+    }
+
     private static List<string> BuildMortalNpcTargetFiles(
         IReadOnlyList<ValidationIssue> errors,
         bool includeNpcCoreWhenMissing)
@@ -1497,6 +1598,8 @@ public partial class GameEngine
             return "game_state/meta/guardians.json";
         if (normalized.StartsWith("game_state/meta/guardian_projects.json", StringComparison.OrdinalIgnoreCase))
             return "game_state/meta/guardian_projects.json";
+        if (normalized.StartsWith("game_state/meta/afterlife_spiritual_conflict_state.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/meta/afterlife_spiritual_conflict_state.json";
         if (normalized.StartsWith("output/debug_logs.json", StringComparison.OrdinalIgnoreCase))
             return "output/debug_logs.json";
         foreach (var npcFile in new[]

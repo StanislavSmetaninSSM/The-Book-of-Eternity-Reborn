@@ -6629,6 +6629,8 @@ the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"re
 
 Action economy audit rule: if a side has no current `actionCostAudit.<side>`, keep that side's final `activeConflict.actionEconomy.<side>.current` unchanged from the validated pre-turn active conflict; do not change root ОД directly. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; fake terminal/free audits are invalid.
 
+Validation repair note: if `game_state/control/validation_repair_request.json.harnessRepairPackets[]` contains `kind = "afterlife_spiritual_conflict_action_cost_repair"`, treat it as the executable checklist for the already written conflict file. Patch the named `exchangeLog[n].actionCostAudit.<side>.<field>` values to the packet's expected sequence, recompute dependent `after` and final `activeConflict.actionEconomy.<side>.current`, then finish with `Complete-BoeValidationRepair`. Do not create a new turn, add a new exchange, reroll dice, or edit `game_state/control/pending_turn_snapshot*`; those files are read-only authority for repair.
+
 Correct contested exchange response:
 
 ```json

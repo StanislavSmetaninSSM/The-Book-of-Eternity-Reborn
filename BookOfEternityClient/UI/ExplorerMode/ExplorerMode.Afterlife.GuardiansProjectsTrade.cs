@@ -1899,7 +1899,6 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-        WriteJsonAuditPanel("Полный JSON Хранителя", g, Color.Cyan1);
 
         await ShowGuardianDetailActions(g, name, currentAbodeId, activeGuardianId, guardianThoughtEntries, guardianSocialEntries, guardianProjectTrackerRoot);
     }

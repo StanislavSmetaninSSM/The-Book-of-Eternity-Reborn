@@ -7180,6 +7180,27 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Guardians_PlayerDetailHidesRawJsonAndInternalIds()
+    {
+        await SeedSessionForCommandAsync("/хранители");
+        _console.QueueSelection("Действие", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хранители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("guardians_detail_hides_raw_json_and_internal_ids");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Азалия", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Локальная торговля", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полный JSON Хранителя", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guardianId", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("abodeId", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guardian_azalia", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("abode_azalia", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_Soul_PlayerNotificationSummaryHidesInternalKeys()
     {
         await SeedSessionForCommandAsync("/душа");

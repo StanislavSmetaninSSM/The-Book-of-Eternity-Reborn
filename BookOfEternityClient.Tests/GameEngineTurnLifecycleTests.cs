@@ -999,6 +999,69 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(steps, step => step.Contains("Dissident", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_AfterlifeActionCostSequenceErrors_AddsConcreteHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict.exchangeLog[2].actionCostAudit.opposition.before",
+                IssueSeverity.Error,
+                "Последовательные текущие обмены должны расходовать/восстанавливать ОД от результата предыдущего обмена.",
+                code: "afterlife_conflict_action_cost_sequence_mismatch",
+                section: "AfterlifeSpiritualConflict",
+                expected: "2",
+                actual: "4"),
+            new(
+                "game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict.exchangeLog[2].actionCostAudit.player.before",
+                IssueSeverity.Error,
+                "Последовательные текущие обмены должны расходовать/восстанавливать ОД от результата предыдущего обмена.",
+                code: "afterlife_conflict_action_cost_sequence_mismatch",
+                section: "AfterlifeSpiritualConflict",
+                expected: "0",
+                actual: "3")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "повторной проверки repair", issues, 4 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("afterlife_spiritual_conflict_action_cost_repair", packet.GetProperty("kind").GetString());
+        Assert.Equal("high", packet.GetProperty("priority").GetString());
+        Assert.Contains(
+            "game_state/meta/afterlife_spiritual_conflict_state.json",
+            packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("exchangeLog[2]", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("opposition.before", StringComparison.OrdinalIgnoreCase) &&
+                                      step.Contains("expected 2", StringComparison.OrdinalIgnoreCase) &&
+                                      step.Contains("actual 4", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("player.before", StringComparison.OrdinalIgnoreCase) &&
+                                      step.Contains("expected 0", StringComparison.OrdinalIgnoreCase) &&
+                                      step.Contains("actual 3", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("validation_repair_ready.json", StringComparison.OrdinalIgnoreCase));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("actionCostAudit.<side>.before", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("before - effectiveCost", StringComparison.OrdinalIgnoreCase));
+
+        var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(doNotDo, item => item.Contains("Do not create a new turn", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("pending_turn_snapshot", StringComparison.OrdinalIgnoreCase));
+    }
+
 
     [Theory]
     [InlineData("[ABODE_OFFERING] Игрок подносит Реликвию Души.", true)]

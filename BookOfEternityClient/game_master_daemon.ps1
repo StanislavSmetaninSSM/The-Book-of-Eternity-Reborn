@@ -977,6 +977,7 @@ Use this before opening large examples for repair mode.
 - If diagnostic-only sentinel metadata is present, restore the missing authority first.
 - If `harnessRepairPackets[]` names exact fields, fix those fields instead of searching source code.
 - If a wrong-realm auto-rollback report exists, treat it as diagnostic evidence, not permission to rewrite mortal files from afterlife.
+- If `harnessRepairPackets[].kind` is `afterlife_spiritual_conflict_action_cost_repair`, repair the listed `actionCostAudit` / `actionEconomy` fields sequentially in the already written spiritual conflict file; do not create a new exchange, reroll dice, or edit pending snapshots.
 
 ## Terminal rule
 

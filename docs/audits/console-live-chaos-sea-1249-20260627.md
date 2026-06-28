@@ -94,9 +94,29 @@ Harness/RLM finding:
 - The command sweep is now useful as a standing live-test harness: it catches player-facing engineering leaks in real Agent Console snapshots, not just unit-level rendered strings.
 - The next useful increment is to promote this ad-hoc pattern scan into a reusable checked runner so future live tests fail fast when a normal player screen leaks internal ids, JSON filenames, raw enum values, or repair-contract terminology.
 
+### Run 7
+
+Run root: `C:\Temp\boe-chaos-console-1249-live-20260628-193340`
+
+Scope:
+- Live Chaos Sea play with Codex GM bridge (`gpt-5.5 xhigh`) through Agent Console.
+- Player-facing check of `/хранители` detail.
+- Two ordinary roleplay turns inside an active afterlife spiritual conflict.
+
+Result:
+- `/хранители` detail initially leaked `Полный JSON Хранителя` plus raw `guardianId` / `abodeId` internals. This was fixed by removing the player-facing JSON audit panel and adding a regression test.
+- First roleplay turn completed after validation repair and returned to `Ваш ход`.
+- Second roleplay turn entered a repeated validation repair loop around `game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict.exchangeLog[2].actionCostAudit.*.before`.
+- The live `validation_repair_request.json` had `revalidationAttempt = 4`, `afterlife_conflict_action_cost_sequence_mismatch`, and `harnessRepairPackets: []`, so the GM had only generic repair prose and kept trying incompatible arithmetic fixes.
+
+Harness/RLM finding:
+- This is a harness feedback case, not a prompt-only issue. The validator knew the exact fields and expected/actual values, but the repair request did not expose them as an executable repair packet.
+- Added `afterlife_spiritual_conflict_action_cost_repair` packets for afterlife spiritual conflict action-cost/action-economy/dice/strain repair errors. The packet names the target conflict file, lists exact `exchangeLog[n].actionCostAudit.<side>.<field>` expected/actual values, tells the GM to recompute dependent `after` and final `activeConflict.actionEconomy.<side>.current`, and forbids new exchanges, rerolls, and pending snapshot edits.
+
 ## Player-Facing / UX Findings
 
 - Fixed during Run 6: `/обители` no longer leaks `guardianId`, `abodeId`, `Memory`, or `Passage`.
+- Fixed during Run 7: `/хранители` detail no longer shows `Полный JSON Хранителя` or raw Guardian/Abode ids in normal player output.
 - Fixed during Run 6: `/status`, `/душа`, and `/хранители` no longer leak common player-facing afterlife technical fields in the tested Chaos Sea fixture.
 - Remaining known polish item from earlier run: abode transition preview should avoid English boolean text such as `Уже открыта игроком: true` if it still appears in the travel confirmation flow.
 - Earlier live travel failed validation due afterlife guardian scope issues:
@@ -114,6 +134,7 @@ Harness/RLM finding:
 - Guardian policy authority now projects the authorized Chaos Sea travel target into the same-turn authority root.
 - The helper wrong-realm raw profile scanner ignores `.rollback.*` backup artifacts while preserving canonical Mortal World profile protections.
 - Afterlife player command output now hides common canonical field names and notification ids in normal screens; technical details remain available through explicit audit/debug surfaces.
+- Validation repair now emits an executable `afterlife_spiritual_conflict_action_cost_repair` harness packet for afterlife action-cost/action-economy repair loops.
 
 ## Follow-Up
 
