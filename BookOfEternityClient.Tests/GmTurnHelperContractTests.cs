@@ -1782,6 +1782,76 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonContextPack_RoutesMortalFactionIdentityLessonsToFactionTemplate()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-faction-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            var ledgerPath = Path.Combine(control, "gm_trajectory_ledger.jsonl");
+            File.WriteAllText(
+                ledgerPath,
+                """
+                {"recordId":"gmtraj_mortal_faction_fix","kind":"repair","sessionId":"prior","turnId":"repair-faction","requestId":"repair-faction","turnNumber":5,"realm":"MortalWorld","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"accepted","issueKinds":["faction_full_object_unknown_faction_id","canonical_faction_sidecar_unknown_faction_id"],"repairPacketRefs":["faction_identity_repair"]},"repair":{"attempts":1,"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-06-28T10:01:00Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-repair",
+                  "turnNumber": 6,
+                  "currentRealm": "Mortal World",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "faction_full_object_unknown_faction_id",
+                      "category": "StateConsistency",
+                      "section": "Factions",
+                      "message": "Full faction object references an unknown permanent factionId."
+                    },
+                    {
+                      "code": "canonical_faction_sidecar_unknown_faction_id",
+                      "category": "StateConsistency",
+                      "section": "Factions",
+                      "message": "Canonical sidecar references an unknown faction."
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "faction_full_object_unknown_faction_id", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
+            Assert.Contains("MORTAL_FACTION_UPDATE_TEMPLATE.md", markdown, StringComparison.Ordinal);
+            Assert.Contains("missing faction", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("sidecar", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("MORTAL_NPC_UPDATE_TEMPLATE.md", markdown, StringComparison.Ordinal);
+
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var lesson = document.RootElement.GetProperty("lessons")[0];
+            Assert.Equal("MORTAL_FACTION_UPDATE_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
+            Assert.Contains("existing canonical factionId", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonContextPack_RendersMortalNpcUpdateTemplate()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-npc-template-" + Guid.NewGuid().ToString("N"));
@@ -1818,6 +1888,43 @@ public sealed class GmTurnHelperContractTests
             Assert.True(WaitForFileContaining(readmePath, "Mortal World NPC updates", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
             var readme = File.ReadAllText(readmePath, Encoding.UTF8);
             Assert.Contains("Mortal World NPC updates", readme, StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_RendersMortalFactionUpdateTemplate()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-faction-template-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+
+        Process? process = null;
+        try
+        {
+            Directory.CreateDirectory(session);
+            WriteDaemonConfig(session);
+            process = StartDaemon(session, logPath);
+
+            var templatePath = Path.Combine(
+                session,
+                "game_state",
+                "control",
+                "gm_context_pack",
+                "Templates",
+                "MORTAL_FACTION_UPDATE_TEMPLATE.md");
+            Assert.True(WaitForFileContaining(templatePath, "Mortal faction identity repair", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var template = File.ReadAllText(templatePath, Encoding.UTF8);
+            Assert.Contains("game_state/factions/faction_core.json", template, StringComparison.Ordinal);
+            Assert.Contains("factions[]", template, StringComparison.Ordinal);
+            Assert.Contains("factionId", template, StringComparison.Ordinal);
+            Assert.Contains("sidecar", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("create the missing faction", template, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {

@@ -1081,13 +1081,29 @@ public partial class GameEngine
         {
             Kind = "faction_identity_repair",
             Priority = "high",
-            Title = "Faction identity repair",
+            Title = "Mortal faction identity repair",
             TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md" },
+            ExpectedShape = new List<string>
+            {
+                "game_state/factions/faction_core.json contains canonical factions[] with stable factionId, name/displayName, description, status, reputation/influence, ranks/rankBranches, relations, projects, chronicle, resources, and custom states preserved.",
+                "Every faction sidecar entry references an existing canonical factionId from factions[] unless the sidecar entry is removed as invalid speculative data.",
+                "Same-turn temporary faction identity remains factionId = null, initialId = <stable temporary id>, isNewFaction = true until the canonical promotion path creates a permanent faction."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "If the bad id was meant to update an existing faction, replace it with the exact existing canonical factionId from game_state/factions/faction_core.json.",
+                "If the story truly introduced a durable missing faction, create the missing faction as a complete factions[] object before any sidecar references it.",
+                "If the sidecar is speculative, duplicate, or belongs to a faction that should not exist, remove the invalid sidecar entry or retarget it to an existing canonical factionId.",
+                "Preserve unrelated faction ranks, rankBranches, chronicles, relations, projects, resources, reputation, and custom states while repairing identity."
+            },
             Steps = new List<string>
             {
+                "Open Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md before editing game_state/factions/*.",
                 "Use game_state/control/pending_turn_snapshot/game_state/factions/faction_core.json as the authority for whether the faction was already permanent before this turn or was still a same-turn temporary faction.",
                 "If the matching faction in pending_turn_snapshot has factionId = null plus a non-empty initialId, restore the current object to the same temporary identity shape: factionId = null, the exact initialId, and isNewFaction = true.",
                 "If the matching faction in pending_turn_snapshot has a non-empty factionId, use that exact permanent factionId and remove initialId/isNewFaction from the existing faction object.",
+                "For unknown faction ids, choose exactly one correction path: reference an existing canonical factionId, create the missing faction as a complete factions[] object, or remove/retarget the invalid sidecar entry.",
                 "After restoring the identity shape, preserve the intended turn content updates around the faction instead of replacing the whole file with a minimal skeleton.",
                 "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from the current validation_repair_request.json."
             },
@@ -1095,6 +1111,7 @@ public partial class GameEngine
             {
                 "Do not invent a permanent factionId from the faction name.",
                 "Do not convert a same-turn temporary faction into an existing permanent faction just because validation mentions existing faction wording.",
+                "Do not leave faction sidecar entries pointing at missing faction ids.",
                 "Do not delete unrelated faction ranks, resources, projects, chronicles, or reputation details to silence identity validation.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this repair packet, the validation request, and session snapshot/control files."
             }

@@ -686,6 +686,21 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(steps, step => step.Contains("factionId = null", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("initialId", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("isNewFaction = true", StringComparison.OrdinalIgnoreCase));
+
+        Assert.Contains(
+            "Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md",
+            packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("factions[]", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("factionId", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("sidecar", StringComparison.OrdinalIgnoreCase));
+
+        var safeRules = packet.GetProperty("safeCorrectionRules").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(safeRules, item => item.Contains("create", StringComparison.OrdinalIgnoreCase) && item.Contains("missing faction", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(safeRules, item => item.Contains("remove", StringComparison.OrdinalIgnoreCase) && item.Contains("sidecar", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(safeRules, item => item.Contains("existing canonical factionId", StringComparison.OrdinalIgnoreCase));
+
         Assert.Contains(
             packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
             item => item.Contains("invent a permanent factionId", StringComparison.OrdinalIgnoreCase));
