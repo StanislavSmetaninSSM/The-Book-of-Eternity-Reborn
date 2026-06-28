@@ -89,6 +89,8 @@ public static class GmWorkerContractValidator
             RequireText(file.Sha256, "contextFiles.sha256", errors);
         }
 
+        ValidateAfterlifeTaskPacket(task, errors);
+
         foreach (var path in task.AllowedProposalPaths)
         {
             ValidatePath(path, "allowedProposalPaths", errors);
@@ -168,6 +170,8 @@ public static class GmWorkerContractValidator
         {
             errors.Add("authoringProposal is only allowed for content-authoring proposals.");
         }
+
+        ValidateAfterlifeProposal(proposal, task, errors);
 
         return ToResult(errors);
     }
@@ -268,6 +272,59 @@ public static class GmWorkerContractValidator
             RequireText(note, "authoringRequest.outputNotes", errors);
     }
 
+    private static void ValidateAfterlifeTaskPacket(WorkerTaskPacket task, List<string> errors)
+    {
+        if (task.AfterlifeContract == null)
+        {
+            if (TaskLooksAfterlifeScoped(task))
+                errors.Add("afterlife worker tasks must include afterlifeContract realm-aware wrapper.");
+            return;
+        }
+
+        var contract = task.AfterlifeContract;
+        if (contract.RealmGate == WorkerAfterlifeRealmGate.None)
+            errors.Add("afterlifeContract.realmGate must be ChaosSea, ShiningAbode, or ShiningAbodePendingBootstrap.");
+        RequireText(contract.CurrentRealm, "afterlifeContract.currentRealm", errors);
+
+        if (contract.AllowedAfterlifeSurfaces.Count == 0)
+            errors.Add("afterlifeContract.allowedAfterlifeSurfaces must contain at least one exact afterlife state surface.");
+        foreach (var path in contract.AllowedAfterlifeSurfaces)
+        {
+            ValidatePathOrPattern(path, "afterlifeContract.allowedAfterlifeSurfaces", errors);
+            if (IsMortalWorldSubstitutePath(path))
+                errors.Add($"afterlifeContract.allowedAfterlifeSurfaces contains a Mortal World substitute path: {path}");
+        }
+
+        foreach (var path in contract.ProgressionControlPaths)
+        {
+            ValidatePath(path, "afterlifeContract.progressionControlPaths", errors);
+            if (IsMortalWorldSubstitutePath(path))
+                errors.Add($"afterlifeContract.progressionControlPaths contains a Mortal World substitute path: {path}");
+        }
+
+        foreach (var path in contract.PendingControlFiles)
+        {
+            ValidatePath(path, "afterlifeContract.pendingControlFiles", errors);
+            if (IsMortalWorldSubstitutePath(path))
+                errors.Add($"afterlifeContract.pendingControlFiles contains a Mortal World substitute path: {path}");
+        }
+
+        if (contract.RequiredReceipts.Count == 0)
+            errors.Add("afterlifeContract.requiredReceipts must contain at least one receipt or explicit no-receipt note.");
+        foreach (var receipt in contract.RequiredReceipts)
+            RequireText(receipt, "afterlifeContract.requiredReceipts", errors);
+
+        if (contract.RequiredReports.Count == 0)
+            errors.Add("afterlifeContract.requiredReports must contain at least one report or explicit no-report note.");
+        foreach (var report in contract.RequiredReports)
+            RequireText(report, "afterlifeContract.requiredReports", errors);
+
+        if (contract.ForbiddenMortalSubstitutes.Count == 0)
+            errors.Add("afterlifeContract.forbiddenMortalSubstitutes must explicitly name forbidden Mortal World substitutes.");
+        foreach (var substitute in contract.ForbiddenMortalSubstitutes)
+            RequireText(substitute, "afterlifeContract.forbiddenMortalSubstitutes", errors);
+    }
+
     private static void ValidateAuthoringProposal(
         WorkerContentAuthoringProposal? proposal,
         WorkerTaskPacket task,
@@ -318,6 +375,105 @@ public static class GmWorkerContractValidator
 
         ValidateDomainAuthoringProposal(proposal, errors);
     }
+
+    private static void ValidateAfterlifeProposal(
+        WorkerProposal proposal,
+        WorkerTaskPacket task,
+        List<string> errors)
+    {
+        if (task.AfterlifeContract == null)
+        {
+            if (proposal.AfterlifeProposal != null)
+                errors.Add("afterlifeProposal requires task.afterlifeContract realm-aware wrapper.");
+            return;
+        }
+
+        if (proposal.AfterlifeProposal == null)
+        {
+            errors.Add("afterlife worker proposals must include afterlifeProposal.");
+            return;
+        }
+
+        var contract = task.AfterlifeContract;
+        var afterlife = proposal.AfterlifeProposal;
+        if (afterlife.RealmGate != contract.RealmGate)
+            errors.Add("afterlifeProposal.realmGate must match task.afterlifeContract.realmGate.");
+
+        if (afterlife.TargetSurfaces.Count == 0)
+            errors.Add("afterlifeProposal.targetSurfaces must contain at least one afterlife state surface.");
+        foreach (var surface in afterlife.TargetSurfaces)
+        {
+            ValidatePath(surface, "afterlifeProposal.targetSurfaces", errors);
+            if (IsMortalWorldSubstitutePath(surface))
+            {
+                errors.Add($"afterlifeProposal.targetSurfaces contains a Mortal World substitute path: {surface}");
+                continue;
+            }
+
+            if (!contract.AllowedAfterlifeSurfaces.Any(pattern => PathMatches(pattern, surface)))
+                errors.Add($"afterlifeProposal.targetSurfaces contains a surface outside task.afterlifeContract.allowedAfterlifeSurfaces: {surface}");
+        }
+
+        ValidateAfterlifeRequiredNames(
+            contract.RequiredReceipts,
+            afterlife.RequiredReceipts,
+            "afterlifeProposal.requiredReceipts",
+            errors);
+        ValidateAfterlifeRequiredNames(
+            contract.RequiredReports,
+            afterlife.RequiredReports,
+            "afterlifeProposal.requiredReports",
+            errors);
+
+        RequireText(afterlife.PlayerVisibleSummary, "afterlifeProposal.playerVisibleSummary", errors);
+        if (ContainsMortalWorldSubstituteText(afterlife.PlayerVisibleSummary))
+            errors.Add("afterlifeProposal.playerVisibleSummary contains a Mortal World substitute reference.");
+
+        if (afterlife.GmReviewNotes.Count == 0)
+            errors.Add("afterlifeProposal.gmReviewNotes must contain at least one main-GM review note.");
+        foreach (var note in afterlife.GmReviewNotes)
+        {
+            RequireText(note, "afterlifeProposal.gmReviewNotes", errors);
+            if (ContainsMortalWorldSubstituteText(note))
+                errors.Add("afterlifeProposal.gmReviewNotes contains a Mortal World substitute reference.");
+        }
+
+        if (afterlife.ValidatorRisks.Count == 0)
+            errors.Add("afterlifeProposal.validatorRisks must contain at least one validator risk or no-risk note.");
+        foreach (var risk in afterlife.ValidatorRisks)
+        {
+            ValidateId(risk.Code, "afterlifeProposal.validatorRisks.code", errors);
+            RequireText(risk.Message, "afterlifeProposal.validatorRisks.message", errors);
+            RequireText(risk.Mitigation, "afterlifeProposal.validatorRisks.mitigation", errors);
+            if (ContainsMortalWorldSubstituteText(risk.Message) ||
+                ContainsMortalWorldSubstituteText(risk.Mitigation))
+            {
+                errors.Add("afterlifeProposal.validatorRisks contains a Mortal World substitute reference.");
+            }
+        }
+    }
+
+    private static void ValidateAfterlifeRequiredNames(
+        IReadOnlyList<string> requiredByTask,
+        IReadOnlyList<string> providedByProposal,
+        string fieldName,
+        List<string> errors)
+    {
+        foreach (var value in providedByProposal)
+            RequireText(value, fieldName, errors);
+
+        foreach (var required in requiredByTask.Where(value => !LooksLikeExplicitNone(value)))
+        {
+            if (!providedByProposal.Any(value => string.Equals(value, required, StringComparison.OrdinalIgnoreCase)))
+                errors.Add($"{fieldName} must include required task value: {required}");
+        }
+    }
+
+    private static bool LooksLikeExplicitNone(string value) =>
+        value.Contains("none", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("no-", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("not required", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("не требуется", StringComparison.OrdinalIgnoreCase);
 
     private static void ValidateAuthoredEntity(
         WorkerAuthoredEntity entity,
@@ -524,4 +680,75 @@ public static class GmWorkerContractValidator
             WorkerTaskType.QteContent => WorkerAuthoringDomain.Qte,
             _ => null
         };
+
+    private static bool TaskLooksAfterlifeScoped(WorkerTaskPacket task)
+    {
+        var values = new List<string> { task.Instructions };
+        values.AddRange(task.ContextFiles.Select(file => file.Path));
+        values.AddRange(task.AcceptanceCriteria);
+
+        if (task.AuthoringRequest != null)
+        {
+            values.Add(task.AuthoringRequest.Goal);
+            values.AddRange(task.AuthoringRequest.RequiredLinks);
+            values.AddRange(task.AuthoringRequest.OutputNotes);
+            values.AddRange(task.AuthoringRequest.EntityHints);
+        }
+
+        if (task.DraftRequest != null)
+        {
+            values.Add(task.DraftRequest.SceneGoal);
+            values.Add(task.DraftRequest.Tone);
+            values.Add(task.DraftRequest.TargetLength);
+            values.AddRange(task.DraftRequest.ContinuityNotes);
+        }
+
+        return values.Any(value =>
+            value.Contains("afterlife", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("Shining Abode", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("Afterlife_Contract_Matrix", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("game_state/meta/guardians", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("game_state/meta/afterlife", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("game_state/meta/soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsMortalWorldSubstitutePath(string path) =>
+        path.StartsWith("game_state/world/", StringComparison.OrdinalIgnoreCase) ||
+        path.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase) ||
+        path.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase) ||
+        path.StartsWith("game_state/player/", StringComparison.OrdinalIgnoreCase) ||
+        path.StartsWith("game_state/inventory/", StringComparison.OrdinalIgnoreCase) ||
+        path.StartsWith("game_state/combat/", StringComparison.OrdinalIgnoreCase) ||
+        path.StartsWith("game_state/quests/", StringComparison.OrdinalIgnoreCase);
+
+    private static bool ContainsMortalWorldSubstituteText(string value)
+    {
+        if (value.Contains("worldStateFlags", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("worldEventsLog", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("game_state/world", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("game_state/npcs", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("game_state/factions", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("game_state/combat", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("Mortal NPC", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("Mortal combat", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("Mortal faction", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("Mortal map", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return ContainsAll(value, "смертн", "журнал") ||
+               ContainsAll(value, "смертн", "флаг") ||
+               ContainsAll(value, "смертн", "фракц") ||
+               ContainsAll(value, "смертн", "npc") ||
+               ContainsAll(value, "смертн", "нпс") ||
+               ContainsAll(value, "смертн", "отношен") ||
+               ContainsAll(value, "смертн", "карта") ||
+               ContainsAll(value, "смертн", "бой") ||
+               ContainsAll(value, "смертн", "hp");
+    }
+
+    private static bool ContainsAll(string value, params string[] fragments) =>
+        fragments.All(fragment => value.Contains(fragment, StringComparison.OrdinalIgnoreCase));
 }

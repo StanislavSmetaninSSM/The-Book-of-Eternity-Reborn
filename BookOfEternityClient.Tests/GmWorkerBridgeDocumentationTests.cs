@@ -18,6 +18,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("E_CLI_GM_Worker_Content_Authoring.txt", manifest, StringComparison.Ordinal);
         Assert.Contains("E_CLI_GM_Worker_Skill_Content.txt", manifest, StringComparison.Ordinal);
         Assert.Contains("E_CLI_GM_Worker_Npc_Content.txt", manifest, StringComparison.Ordinal);
+        Assert.Contains("E_CLI_GM_Worker_Afterlife_Contract.txt", manifest, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -86,6 +87,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         var contentAuthoring = ReadRepoFile("Examples/E_CLI_GM_Worker_Content_Authoring.txt");
         var skillContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Skill_Content.txt");
         var npcContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Npc_Content.txt");
+        var afterlifeContract = ReadRepoFile("Examples/E_CLI_GM_Worker_Afterlife_Contract.txt");
 
         Assert.Contains("hidden/background", guide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("apply gate", guide, StringComparison.OrdinalIgnoreCase);
@@ -104,6 +106,15 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("npc-content", npcContent, StringComparison.Ordinal);
         Assert.Contains("thoughtJournal", npcContent, StringComparison.Ordinal);
         Assert.Contains("detailSurfaces", npcContent, StringComparison.Ordinal);
+        Assert.Contains("afterlifeContract", afterlifeContract, StringComparison.Ordinal);
+        Assert.Contains("afterlifeProposal", afterlifeContract, StringComparison.Ordinal);
+        Assert.Contains("Afterlife_Contract_Matrix.md", afterlifeContract, StringComparison.Ordinal);
+        Assert.Contains("worldStateFlags", afterlifeContract, StringComparison.Ordinal);
+        Assert.Contains("worldEventsLog", afterlifeContract, StringComparison.Ordinal);
+        Assert.Contains("Mortal NPC relationships", afterlifeContract, StringComparison.Ordinal);
+        Assert.Contains("Mortal combat HP/status", afterlifeContract, StringComparison.Ordinal);
+        Assert.Contains("Mortal factions or map files", afterlifeContract, StringComparison.Ordinal);
+        Assert.Contains("realmGate", afterlifeContract, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -116,8 +127,9 @@ public sealed class GmWorkerBridgeDocumentationTests
         var contentAuthoring = ReadRepoFile("Examples/E_CLI_GM_Worker_Content_Authoring.txt");
         var skillContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Skill_Content.txt");
         var npcContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Npc_Content.txt");
+        var afterlifeContract = ReadRepoFile("Examples/E_CLI_GM_Worker_Afterlife_Contract.txt");
 
-        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent, npcContent })
+        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent, npcContent, afterlifeContract })
         {
             Assert.Contains("BOE_WORKER_TASK_PATH", source, StringComparison.Ordinal);
             Assert.Contains("BOE_WORKER_PROPOSAL_PATH", source, StringComparison.Ordinal);
@@ -135,9 +147,10 @@ public sealed class GmWorkerBridgeDocumentationTests
         var contentAuthoring = ReadRepoFile("Examples/E_CLI_GM_Worker_Content_Authoring.txt");
         var skillContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Skill_Content.txt");
         var npcContent = ReadRepoFile("Examples/E_CLI_GM_Worker_Npc_Content.txt");
+        var afterlifeContract = ReadRepoFile("Examples/E_CLI_GM_Worker_Afterlife_Contract.txt");
         var runner = ReadRepoFile("BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1");
 
-        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent, npcContent })
+        foreach (var source in new[] { guide, contract, repair, narrative, contentAuthoring, skillContent, npcContent, afterlifeContract })
         {
             Assert.Contains("gm_worker_cli_runner.ps1", source, StringComparison.Ordinal);
             Assert.Contains("-AgentCommand", source, StringComparison.Ordinal);
@@ -149,6 +162,8 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("Do not omit summary, status, changedFiles, findings, selfCheck, or createdAtUtc.", runner, StringComparison.Ordinal);
         Assert.Contains("Do not edit canonical game_session files directly.", runner, StringComparison.Ordinal);
         Assert.Contains("authoringProposal", runner, StringComparison.Ordinal);
+        Assert.Contains("afterlifeProposal", runner, StringComparison.Ordinal);
+        Assert.Contains("afterlifeContract", runner, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -181,6 +196,7 @@ public sealed class GmWorkerBridgeDocumentationTests
             "Examples/E_CLI_GM_Worker_Content_Authoring.txt",
             "Examples/E_CLI_GM_Worker_Skill_Content.txt",
             "Examples/E_CLI_GM_Worker_Npc_Content.txt",
+            "Examples/E_CLI_GM_Worker_Afterlife_Contract.txt",
             "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
             "BookOfEternityClient/Launcher/CLI_Daemon_Window_Help.md",
             "BookOfEternityClient/Launcher/GM_Daemon_ConPTY_Proposal.md",

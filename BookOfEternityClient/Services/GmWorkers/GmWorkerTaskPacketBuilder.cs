@@ -141,7 +141,8 @@ public static class GmWorkerTaskPacketBuilder
         string analysisGoal,
         IReadOnlyList<string> questions,
         IReadOnlyList<WorkerFileReference> contextFiles,
-        string createdAtUtc)
+        string createdAtUtc,
+        WorkerAfterlifeTaskContract? afterlifeContract = null)
     {
         var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
         if (!profileValidation.IsValid)
@@ -167,24 +168,28 @@ public static class GmWorkerTaskPacketBuilder
             TimeoutSeconds = profile.TimeoutSeconds,
             SourceTurn = sourceTurn,
             ContextFiles = contextFiles,
+            AfterlifeContract = afterlifeContract,
             AllowedProposalPaths = [],
-            AcceptanceCriteria =
+            AcceptanceCriteria = BuildAcceptanceCriteria(
             [
                 "Return a worker-proposal-v1 JSON proposal.",
                 "Include findings that answer the requested questions.",
                 "Keep recommendations scoped to supplied read-only context references.",
                 "Mark uncertainty instead of broad source spelunking."
             ],
-            ForbiddenActions =
+            afterlifeContract),
+            ForbiddenActions = BuildForbiddenActions(
             [
                 "Do not edit canonical game_session files directly.",
                 "Do not include changedFiles.",
                 "Do not write player-facing output or terminal signals."
             ],
+            afterlifeContract),
             Instructions =
                 "Return a worker-proposal-v1 JSON proposal with findings only. " +
                 "This is proposal-only: do not include changedFiles and do not edit canonical game_session files directly. " +
-                $"Analysis goal: {analysisGoal}{Environment.NewLine}Questions:{Environment.NewLine}{questionText}"
+                $"Analysis goal: {analysisGoal}{Environment.NewLine}Questions:{Environment.NewLine}{questionText}" +
+                BuildAfterlifeInstructions(afterlifeContract)
         };
 
         var taskValidation = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
@@ -201,7 +206,8 @@ public static class GmWorkerTaskPacketBuilder
         WorkerTurnReference sourceTurn,
         WorkerContentAuthoringRequest authoringRequest,
         IReadOnlyList<WorkerFileReference> contextFiles,
-        string createdAtUtc)
+        string createdAtUtc,
+        WorkerAfterlifeTaskContract? afterlifeContract = null)
     {
         var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
         if (!profileValidation.IsValid)
@@ -236,28 +242,32 @@ public static class GmWorkerTaskPacketBuilder
             SourceTurn = sourceTurn,
             AuthoringRequest = authoringRequest,
             ContextFiles = contextFiles,
+            AfterlifeContract = afterlifeContract,
             AllowedProposalPaths = [],
-            AcceptanceCriteria =
+            AcceptanceCriteria = BuildAcceptanceCriteria(
             [
                 "Return a worker-proposal-v1 JSON proposal.",
                 "Include a structured authoringProposal with createdEntities or updatedEntities.",
                 "Include requiredLinks, validatorRisks, and gmReviewNotes for main-GM review.",
                 "Do not apply or persist any entity changes yourself."
             ],
-            ForbiddenActions =
+            afterlifeContract),
+            ForbiddenActions = BuildForbiddenActions(
             [
                 "Do not edit canonical game_session files directly.",
                 "Do not include changedFiles.",
                 "Do not write player-facing output or terminal signals.",
                 "Do not invent hidden authority beyond supplied context references."
             ],
+            afterlifeContract),
             Instructions =
                 "Return a worker-proposal-v1 JSON proposal with authoringProposal. " +
                 "This is proposal-only: do not include changedFiles and do not edit canonical game_session files directly. " +
                 $"Authoring domain: {authoringRequest.Domain}. Goal: {authoringRequest.Goal}{Environment.NewLine}" +
                 $"Entity hints:{Environment.NewLine}{hintsText}{Environment.NewLine}" +
                 $"Required links:{Environment.NewLine}{linksText}{Environment.NewLine}" +
-                $"Output notes:{Environment.NewLine}{notesText}"
+                $"Output notes:{Environment.NewLine}{notesText}" +
+                BuildAfterlifeInstructions(afterlifeContract)
         };
 
         var taskValidation = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
@@ -266,4 +276,60 @@ public static class GmWorkerTaskPacketBuilder
 
         return task;
     }
+
+    private static IReadOnlyList<string> BuildAcceptanceCriteria(
+        IReadOnlyList<string> baseCriteria,
+        WorkerAfterlifeTaskContract? afterlifeContract)
+    {
+        if (afterlifeContract == null)
+            return baseCriteria;
+
+        return baseCriteria.Concat(
+        [
+            "Include afterlifeProposal with realmGate, targetSurfaces, requiredReceipts, requiredReports, playerVisibleSummary, gmReviewNotes, and validatorRisks.",
+            "Use only afterlife state surfaces listed in afterlifeContract.allowedAfterlifeSurfaces.",
+            "Review OtherGuides/Afterlife_Contract_Matrix.md before recommending afterlife state changes."
+        ]).ToArray();
+    }
+
+    private static IReadOnlyList<string> BuildForbiddenActions(
+        IReadOnlyList<string> baseActions,
+        WorkerAfterlifeTaskContract? afterlifeContract)
+    {
+        if (afterlifeContract == null)
+            return baseActions;
+
+        var forbiddenSubstitutes = afterlifeContract.ForbiddenMortalSubstitutes.Count == 0
+            ? "worldStateFlags, worldEventsLog, Mortal NPC relationships, Mortal combat HP/status, Mortal factions, or Mortal map files"
+            : FormatList(afterlifeContract.ForbiddenMortalSubstitutes);
+
+        return baseActions.Concat(
+        [
+            $"Do not use Mortal World substitutes for afterlife state: {forbiddenSubstitutes}.",
+            "Do not propose afterlife changes outside the realm gate and allowed afterlife surfaces."
+        ]).ToArray();
+    }
+
+    private static string BuildAfterlifeInstructions(WorkerAfterlifeTaskContract? afterlifeContract)
+    {
+        if (afterlifeContract == null)
+            return "";
+
+        return Environment.NewLine +
+            "Afterlife realm-aware contract:" + Environment.NewLine +
+            $"- realmGate: {afterlifeContract.RealmGate}" + Environment.NewLine +
+            $"- currentRealm: {afterlifeContract.CurrentRealm}" + Environment.NewLine +
+            $"- progressionControlPaths: {FormatList(afterlifeContract.ProgressionControlPaths)}" + Environment.NewLine +
+            $"- pendingControlFiles: {FormatList(afterlifeContract.PendingControlFiles)}" + Environment.NewLine +
+            $"- allowedAfterlifeSurfaces: {FormatList(afterlifeContract.AllowedAfterlifeSurfaces)}" + Environment.NewLine +
+            $"- requiredReceipts: {FormatList(afterlifeContract.RequiredReceipts)}" + Environment.NewLine +
+            $"- requiredReports: {FormatList(afterlifeContract.RequiredReports)}" + Environment.NewLine +
+            $"- forbiddenMortalSubstitutes: {FormatList(afterlifeContract.ForbiddenMortalSubstitutes)}" + Environment.NewLine +
+            "Return afterlifeProposal when this contract is present. Use Afterlife_Contract_Matrix.md for exact state-surface meaning.";
+    }
+
+    private static string FormatList(IReadOnlyList<string> values) =>
+        values.Count == 0
+            ? "none specified"
+            : string.Join(", ", values);
 }

@@ -82,6 +82,53 @@ public sealed class GmWorkerProposalOnlyTests
     }
 
     [Fact]
+    public void BuildAnalysisTask_WithAfterlifeContract_ProducesRealmAwarePacket()
+    {
+        var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+        {
+            Permissions = GmWorkerBridgeTestFixtures.AnalysisCodexProfile().Permissions with
+            {
+                ReadPaths =
+                [
+                    "game_state/meta/**",
+                    "game_state/control/**",
+                    "OtherGuides/Afterlife_Contract_Matrix.md"
+                ]
+            }
+        };
+        var contract = GmWorkerBridgeTestFixtures.AfterlifeWorkerTask().AfterlifeContract!;
+
+        var task = GmWorkerTaskPacketBuilder.BuildAnalysisTask(
+            profile,
+            "worker_task_afterlife_analysis",
+            new WorkerTurnReference
+            {
+                SessionId = "test-session",
+                RequestId = "test-request",
+                TurnNumber = 15
+            },
+            "Review Chaos Sea guardian state without using Mortal World substitutes.",
+            ["Which afterlife surfaces need updates?"],
+            [
+                new WorkerFileReference { Path = "game_state/meta/soul_state.json", Sha256 = "sha-soul" },
+                new WorkerFileReference { Path = "OtherGuides/Afterlife_Contract_Matrix.md", Sha256 = "sha-matrix" }
+            ],
+            "2026-06-20T00:50:00Z",
+            contract);
+
+        Assert.Same(contract, task.AfterlifeContract);
+        Assert.Contains(task.AcceptanceCriteria, criterion =>
+            criterion.Contains("afterlifeProposal", StringComparison.Ordinal));
+        Assert.Contains(task.ForbiddenActions, action =>
+            action.Contains("worldStateFlags", StringComparison.Ordinal));
+        Assert.Contains("Afterlife_Contract_Matrix.md", task.Instructions, StringComparison.Ordinal);
+        Assert.Contains("game_state/meta/guardians.json", task.Instructions, StringComparison.Ordinal);
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Errors));
+    }
+
+    [Fact]
     public void BuildContentAuthoringTask_ProducesStructuredProposalOnlyPacket()
     {
         var profile = GmWorkerBridgeTestFixtures.InventoryContentCodexProfile();

@@ -247,6 +247,84 @@ internal static class GmWorkerBridgeTestFixtures
         Instructions = "Return authoringProposal only. Do not include changedFiles."
     };
 
+    public static WorkerTaskPacket AfterlifeWorkerTask() => new()
+    {
+        TaskId = "worker_task_afterlife_contract_0001",
+        WorkerId = "analysis_codex",
+        Role = WorkerRole.Analysis,
+        TaskType = WorkerTaskType.Analysis,
+        CreatedAtUtc = "2026-06-20T02:15:00Z",
+        TimeoutSeconds = 150,
+        SourceTurn = new WorkerTurnReference
+        {
+            SessionId = "test-session",
+            RequestId = "test-request",
+            TurnNumber = 17
+        },
+        ContextFiles =
+        [
+            new WorkerFileReference
+            {
+                Path = "game_state/meta/soul_state.json",
+                Sha256 = "example"
+            },
+            new WorkerFileReference
+            {
+                Path = "OtherGuides/Afterlife_Contract_Matrix.md",
+                Sha256 = "example"
+            }
+        ],
+        AfterlifeContract = new WorkerAfterlifeTaskContract
+        {
+            RealmGate = WorkerAfterlifeRealmGate.ChaosSea,
+            CurrentRealm = "Chaos Sea",
+            ProgressionControlPaths =
+            [
+                "game_state/control/progression_schedule.json"
+            ],
+            PendingControlFiles =
+            [
+                "game_state/control/pending_dice_state.json"
+            ],
+            AllowedAfterlifeSurfaces =
+            [
+                "game_state/meta/guardians.json",
+                "game_state/meta/afterlife_chronicles.json",
+                "game_state/meta/afterlife_global_flags.json"
+            ],
+            RequiredReceipts =
+            [
+                "afterlifeChronicleUpdates"
+            ],
+            RequiredReports =
+            [
+                "progressionProcessingReport"
+            ],
+            ForbiddenMortalSubstitutes =
+            [
+                "worldStateFlags",
+                "worldEventsLog",
+                "Mortal NPC relationships",
+                "Mortal combat HP/status",
+                "Mortal factions or map files"
+            ]
+        },
+        AllowedProposalPaths = [],
+        AcceptanceCriteria =
+        [
+            "Return a worker-proposal-v1 JSON proposal.",
+            "Include afterlifeProposal with realm gate, target surfaces, receipts, reports, validator risks, and GM review notes.",
+            "Do not use Mortal World substitutes for afterlife state."
+        ],
+        ForbiddenActions =
+        [
+            "Do not edit canonical game_session files directly.",
+            "Do not include changedFiles.",
+            "Do not use worldStateFlags, worldEventsLog, Mortal NPC relationships, Mortal combat HP/status, Mortal factions, or Mortal map files as afterlife substitutes."
+        ],
+        Instructions = "Return afterlifeProposal only. Use Afterlife_Contract_Matrix.md to select exact afterlife state surfaces."
+    };
+
     public static WorkerProposal ValidationRepairProposal() => new()
     {
         ProposalId = "worker_proposal_20260620_0001",
@@ -600,5 +678,62 @@ internal static class GmWorkerBridgeTestFixtures
             Notes = ["Proposal-only NPC authoring task; no file changes included."]
         },
         CreatedAtUtc = "2026-06-20T01:45:20Z"
+    };
+
+    public static WorkerProposal AfterlifeWorkerProposal() => new()
+    {
+        ProposalId = "worker_proposal_afterlife_contract_0001",
+        TaskId = "worker_task_afterlife_contract_0001",
+        WorkerId = "analysis_codex",
+        Status = WorkerProposalStatus.Completed,
+        Summary = "Prepared afterlife realm-aware proposal for main-GM review.",
+        ChangedFiles = [],
+        Findings =
+        [
+            new WorkerFinding
+            {
+                Kind = "afterlife-contract-note",
+                Message = "Use afterlife chronicles and guardian state, not Mortal World substitutes."
+            }
+        ],
+        AfterlifeProposal = new WorkerAfterlifeProposalContract
+        {
+            RealmGate = WorkerAfterlifeRealmGate.ChaosSea,
+            TargetSurfaces =
+            [
+                "game_state/meta/guardians.json",
+                "game_state/meta/afterlife_chronicles.json"
+            ],
+            RequiredReceipts =
+            [
+                "afterlifeChronicleUpdates"
+            ],
+            RequiredReports =
+            [
+                "progressionProcessingReport"
+            ],
+            PlayerVisibleSummary = "В Море Хаоса нужно обновить хронику и реакцию хранителя через поверхности посмертия.",
+            GmReviewNotes =
+            [
+                "Review Afterlife_Contract_Matrix.md before accepting.",
+                "Keep hidden guardian motives out of player-visible output."
+            ],
+            ValidatorRisks =
+            [
+                new WorkerValidatorRisk
+                {
+                    Code = "afterlife_surface_receipt_required",
+                    Message = "Afterlife updates need exact receipts/reports.",
+                    Mitigation = "Use afterlifeChronicleUpdates and progressionProcessingReport surfaces only."
+                }
+            ]
+        },
+        SelfCheck = new WorkerSelfCheck
+        {
+            ScopeReviewed = true,
+            ValidationExpectedToPass = true,
+            Notes = ["Proposal-only afterlife contract task; no file changes included."]
+        },
+        CreatedAtUtc = "2026-06-20T02:15:20Z"
     };
 }

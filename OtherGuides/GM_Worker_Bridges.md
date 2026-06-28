@@ -1,6 +1,6 @@
 # GM Worker Bridges
 
-Tracked issues: #1141, #1143, #1145, #1147, #1149.
+Tracked issues: #1141, #1143, #1145, #1147, #1149, #1231.
 
 GM worker bridges are subordinate helpers for the main GM. They can be Codex
 or another supported CLI profile configured by the user. The main GM remains the
@@ -253,6 +253,44 @@ other workers, but `authoringProposal` is mandatory. It must include:
 
 These proposals are review-only. The main GM can rewrite them into normal game
 state updates, but the worker cannot apply them directly.
+
+## Afterlife Realm-Aware Worker Contract
+
+Afterlife work is not allowed to reuse Mortal World state shortcuts. If a
+worker task touches Chaos Sea, Shining Abode, pending-bootstrap handoff,
+guardian state, soul state, afterlife chronicles, or afterlife control files,
+the `WorkerTaskPacket` must include `afterlifeContract`.
+
+`afterlifeContract` must tell the worker:
+
+- `realmGate`: `ChaosSea`, `ShiningAbode`, or `ShiningAbodePendingBootstrap`;
+- `currentRealm`: the player-visible realm context;
+- `progressionControlPaths`: relevant deterministic control files, usually
+  under `game_state/control/`;
+- `pendingControlFiles`: pending afterlife control files the main GM must
+  respect;
+- `allowedAfterlifeSurfaces`: exact afterlife state surfaces the worker may
+  discuss in the proposal;
+- `requiredReceipts` and `requiredReports`: receipts/reports the main GM must
+  preserve if it accepts the proposal;
+- `forbiddenMortalSubstitutes`: explicit forbidden shortcuts.
+
+When a task contains `afterlifeContract`, the worker proposal must include
+`afterlifeProposal`. The proposal must repeat the same `realmGate`, list only
+target surfaces allowed by `allowedAfterlifeSurfaces`, include required receipts
+and reports, provide a player-visible summary, and give `gmReviewNotes` plus
+`validatorRisks` for the main GM.
+
+The validator rejects afterlife proposals that try to use Mortal World
+substitutes such as `worldStateFlags`, `worldEventsLog`, Mortal NPC
+relationships, Mortal combat HP/status, Mortal factions, or Mortal map files.
+It also rejects realm mismatches between `afterlifeContract.realmGate` and
+`afterlifeProposal.realmGate`.
+
+Before accepting any afterlife worker proposal, the main GM must review
+`OtherGuides/Afterlife_Contract_Matrix.md`. Worker proposals are still
+review-only: the main GM must rewrite accepted ideas through the normal
+afterlife response surfaces and validation remains authoritative.
 
 Additional inventory-content requirements:
 

@@ -151,6 +151,7 @@ Output contract:
 - If the task allows changedFiles, write proposed content under worker_proposals/<proposalId>/... and reference it with contentRef.
 - If the task is proposal-only, keep changedFiles empty and return draftText and/or findings.
 - If the task contains authoringRequest, keep changedFiles empty and return authoringProposal with structured created/updated entities, requiredLinks, validatorRisks, and gmReviewNotes.
+- If the task contains afterlifeContract, keep changedFiles empty and return afterlifeProposal with realmGate, targetSurfaces, requiredReceipts, requiredReports, playerVisibleSummary, gmReviewNotes, and validatorRisks. Use only the listed afterlife surfaces; never substitute Mortal World state such as worldStateFlags, worldEventsLog, Mortal NPC relationships, Mortal combat HP/status, Mortal factions, or Mortal map files.
 - Leave schema validation, scope checks, and canonical application to the main GM apply gate.
 
 Required worker-proposal-v1 JSON shape:
@@ -165,6 +166,7 @@ Required worker-proposal-v1 JSON shape:
   "findings": [],
   "draftText": null,
   "authoringProposal": null,
+  "afterlifeProposal": null,
   "selfCheck": {
     "scopeReviewed": true,
     "validationExpectedToPass": true,
@@ -180,6 +182,7 @@ Required-field rules:
 - For narrative-draft tasks, draftText must contain the proposed prose.
 - For analysis tasks, findings should contain compact objects with kind and message.
 - For content-authoring tasks, authoringProposal is required and must contain domain, goal, createdEntities or updatedEntities, requiredLinks, validatorRisks, and gmReviewNotes.
+- For afterlifeContract tasks, afterlifeProposal is required and must match task.afterlifeContract.realmGate; targetSurfaces must be inside task.afterlifeContract.allowedAfterlifeSurfaces; requiredReceipts and requiredReports must include task.afterlifeContract values; playerVisibleSummary must not expose technical substitute warnings.
 - For inventory-content tasks, each item proposal must include player-facing description, owner/storage or inventory link, and balance details such as value, price, quality, rarity, or balanceNote. Book/document items must link to readable content or explicitly flag that gap for main-GM review.
 - For skill-content tasks, each skill/effect proposal must include a detailed player-facing description, localized scaling details or noScalingReason, bonusExplanation for bonuses, and links to effects/status/combat/characteristic-check surfaces.
 - For npc-content tasks, each NPC proposal must include separate publicKnowledge, privateKnowledge, thoughtJournal, relationshipHooks, personalQuests, dialogueSeeds, detailSurfaces, and links to location plus faction/quest/relationship/thought/dialogue surfaces.

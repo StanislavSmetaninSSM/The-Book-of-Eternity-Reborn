@@ -35,6 +35,13 @@
       "statePath": "worker_proposals/<proposalId>/proposal.json",
       "responseSurface": "worker-proposal-v1 authoringProposal",
       "description": "Hidden/background proposal-only npc-content worker profile, separate public/private knowledge, thought journal, relationship hooks, personal quest hooks, dialogue seeds, detail menu surfaces, and required location/faction/quest links."
+    },
+    {
+      "contractId": "gm_worker_afterlife_contract_v1",
+      "file": "E_CLI_GM_Worker_Afterlife_Contract.txt",
+      "statePath": "worker_proposals/<proposalId>/proposal.json",
+      "responseSurface": "worker-proposal-v1 afterlifeProposal",
+      "description": "Hidden/background proposal-only afterlife worker task with afterlifeContract realm gate, allowed afterlife state surfaces, required receipts/reports, afterlifeProposal review fields, Mortal World substitute rejection, and Afterlife_Contract_Matrix.md review requirement."
     }
   ],
   "afterlifeEntityProfileCoverage": [

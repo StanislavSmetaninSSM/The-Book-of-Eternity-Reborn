@@ -1,0 +1,165 @@
+# Example: GM worker afterlife realm-aware contract
+
+This example shows a proposal-only analysis worker reviewing afterlife state.
+The worker is hidden/background, uses `gm_worker_cli_runner.ps1`, receives
+`BOE_WORKER_TASK_PATH`, `BOE_WORKER_PROPOSAL_PATH`, and
+`BOE_WORKER_SESSION_PATH`, and writes exactly one proposal JSON. It does not
+write canonical `game_session` files and it does not decide the player turn.
+
+Afterlife worker tasks must include `afterlifeContract`. The contract prevents
+the worker from replacing afterlife surfaces with Mortal World substitutes such
+as `worldStateFlags`, `worldEventsLog`, Mortal NPC relationships, Mortal combat
+HP/status, Mortal factions, or Mortal map files. The main GM must review
+`OtherGuides/Afterlife_Contract_Matrix.md` before accepting any recommendation.
+
+Worker profile:
+
+```json
+{
+  "workerId": "analysis_codex",
+  "displayName": "Codex analysis worker",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "role": "analysis",
+  "enabled": true,
+  "launchVisibility": "hidden",
+  "timeoutSeconds": 150,
+  "maxConcurrentTasks": 1,
+  "permissions": {
+    "taskTypes": ["analysis"],
+    "readPaths": [
+      "game_state/meta/**",
+      "game_state/control/**",
+      "OtherGuides/Afterlife_Contract_Matrix.md"
+    ],
+    "proposalWritePaths": [],
+    "proposalOnly": true,
+    "requiresValidation": false
+  }
+}
+```
+
+Task packet:
+
+```json
+{
+  "schemaVersion": 1,
+  "taskId": "worker_task_afterlife_contract_0001",
+  "workerId": "analysis_codex",
+  "role": "analysis",
+  "taskType": "analysis",
+  "createdAtUtc": "2026-06-20T02:15:00Z",
+  "timeoutSeconds": 150,
+  "sourceTurn": {
+    "sessionId": "test-session",
+    "requestId": "test-request",
+    "turnNumber": 17
+  },
+  "validationIssues": [],
+  "contextFiles": [
+    {
+      "path": "game_state/meta/soul_state.json",
+      "sha256": "sha-soul"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "sha256": "sha-matrix"
+    }
+  ],
+  "afterlifeContract": {
+    "realmGate": "ChaosSea",
+    "currentRealm": "Chaos Sea",
+    "progressionControlPaths": ["game_state/control/progression_schedule.json"],
+    "pendingControlFiles": ["game_state/control/pending_dice_state.json"],
+    "allowedAfterlifeSurfaces": [
+      "game_state/meta/guardians.json",
+      "game_state/meta/afterlife_chronicles.json",
+      "game_state/meta/afterlife_global_flags.json"
+    ],
+    "requiredReceipts": ["afterlifeChronicleUpdates"],
+    "requiredReports": ["progressionProcessingReport"],
+    "forbiddenMortalSubstitutes": [
+      "worldStateFlags",
+      "worldEventsLog",
+      "Mortal NPC relationships",
+      "Mortal combat HP/status",
+      "Mortal factions or map files"
+    ]
+  },
+  "allowedProposalPaths": [],
+  "responseContract": "worker-proposal-v1",
+  "acceptanceCriteria": [
+    "Return a worker-proposal-v1 JSON proposal.",
+    "Include afterlifeProposal with realmGate, targetSurfaces, receipts, reports, playerVisibleSummary, gmReviewNotes, and validatorRisks.",
+    "Use only afterlife surfaces listed in afterlifeContract.allowedAfterlifeSurfaces."
+  ],
+  "forbiddenActions": [
+    "Do not edit canonical game_session files directly.",
+    "Do not include changedFiles.",
+    "Do not use worldStateFlags, worldEventsLog, Mortal NPC relationships, Mortal combat HP/status, Mortal factions, or Mortal map files as afterlife substitutes."
+  ],
+  "instructions": "Return findings and afterlifeProposal only. Use Afterlife_Contract_Matrix.md for exact afterlife state surfaces."
+}
+```
+
+Worker proposal:
+
+```json
+{
+  "schemaVersion": 1,
+  "proposalId": "worker_proposal_afterlife_contract_0001",
+  "taskId": "worker_task_afterlife_contract_0001",
+  "workerId": "analysis_codex",
+  "status": "completed",
+  "summary": "Prepared an afterlife realm-aware proposal for main-GM review.",
+  "changedFiles": [],
+  "findings": [
+    {
+      "kind": "afterlife-contract-note",
+      "message": "Use afterlife chronicles and guardian state surfaces named in the task packet."
+    }
+  ],
+  "draftText": null,
+  "authoringProposal": null,
+  "afterlifeProposal": {
+    "realmGate": "ChaosSea",
+    "targetSurfaces": [
+      "game_state/meta/guardians.json",
+      "game_state/meta/afterlife_chronicles.json"
+    ],
+    "requiredReceipts": ["afterlifeChronicleUpdates"],
+    "requiredReports": ["progressionProcessingReport"],
+    "playerVisibleSummary": "В Море Хаоса нужно обновить хронику и реакцию хранителя через поверхности посмертия.",
+    "gmReviewNotes": [
+      "Review Afterlife_Contract_Matrix.md before accepting.",
+      "Keep hidden guardian motives out of player-visible output."
+    ],
+    "validatorRisks": [
+      {
+        "code": "afterlife_surface_receipt_required",
+        "message": "Afterlife updates need exact receipts and reports.",
+        "mitigation": "Use afterlifeChronicleUpdates and progressionProcessingReport surfaces only."
+      }
+    ]
+  },
+  "selfCheck": {
+    "scopeReviewed": true,
+    "validationExpectedToPass": true,
+    "notes": ["Proposal-only afterlife contract task; no file changes included."]
+  },
+  "createdAtUtc": "2026-06-20T02:15:20Z"
+}
+```
+
+The validator rejects these cases:
+
+- an afterlife-scoped task without `afterlifeContract`;
+- a proposal for an afterlife task without `afterlifeProposal`;
+- a proposal whose `afterlifeProposal.realmGate` differs from
+  `afterlifeContract.realmGate`;
+- a proposal that targets `game_state/world/**`, `game_state/npcs/**`,
+  `game_state/factions/**`, `game_state/combat/**`, or other Mortal World
+  surfaces instead of allowed afterlife surfaces.
+
+The inbox entry is diagnostic/read-only. If the main GM likes the proposal, the
+main GM rewrites it into normal afterlife response surfaces and validation
+remains authoritative.

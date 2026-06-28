@@ -159,6 +159,56 @@ Narrative draft task:
 }
 ```
 
+Afterlife realm-aware analysis task:
+
+```json
+{
+  "schemaVersion": 1,
+  "taskId": "worker_task_afterlife_contract_0001",
+  "workerId": "analysis_codex",
+  "taskType": "analysis",
+  "createdAtUtc": "2026-06-20T02:15:00Z",
+  "sourceTurn": {
+    "sessionId": "test-session",
+    "requestId": "test-request",
+    "turnNumber": 17
+  },
+  "contextFiles": [
+    {
+      "path": "game_state/meta/soul_state.json",
+      "sha256": "example"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "sha256": "example"
+    }
+  ],
+  "afterlifeContract": {
+    "realmGate": "ChaosSea",
+    "currentRealm": "Chaos Sea",
+    "progressionControlPaths": ["game_state/control/progression_schedule.json"],
+    "pendingControlFiles": ["game_state/control/pending_dice_state.json"],
+    "allowedAfterlifeSurfaces": [
+      "game_state/meta/guardians.json",
+      "game_state/meta/afterlife_chronicles.json",
+      "game_state/meta/afterlife_global_flags.json"
+    ],
+    "requiredReceipts": ["afterlifeChronicleUpdates"],
+    "requiredReports": ["progressionProcessingReport"],
+    "forbiddenMortalSubstitutes": [
+      "worldStateFlags",
+      "worldEventsLog",
+      "Mortal NPC relationships",
+      "Mortal combat HP/status",
+      "Mortal factions or map files"
+    ]
+  },
+  "allowedProposalPaths": [],
+  "responseContract": "worker-proposal-v1",
+  "instructions": "Return findings and afterlifeProposal only. Use Afterlife_Contract_Matrix.md for exact afterlife state surfaces."
+}
+```
+
 ## Proposal Contract
 
 Validation repair proposal:
@@ -216,6 +266,57 @@ Narrative draft proposal:
     ]
   },
   "createdAtUtc": "2026-06-20T00:05:20Z"
+}
+```
+
+Afterlife realm-aware proposal:
+
+```json
+{
+  "schemaVersion": 1,
+  "proposalId": "worker_proposal_afterlife_contract_0001",
+  "taskId": "worker_task_afterlife_contract_0001",
+  "workerId": "analysis_codex",
+  "status": "completed",
+  "summary": "Prepared an afterlife realm-aware proposal for main-GM review.",
+  "changedFiles": [],
+  "findings": [
+    {
+      "kind": "afterlife-contract-note",
+      "message": "Use afterlife chronicles and guardian state surfaces named in the task packet."
+    }
+  ],
+  "draftText": null,
+  "authoringProposal": null,
+  "afterlifeProposal": {
+    "realmGate": "ChaosSea",
+    "targetSurfaces": [
+      "game_state/meta/guardians.json",
+      "game_state/meta/afterlife_chronicles.json"
+    ],
+    "requiredReceipts": ["afterlifeChronicleUpdates"],
+    "requiredReports": ["progressionProcessingReport"],
+    "playerVisibleSummary": "В Море Хаоса нужно обновить хронику и реакцию хранителя через поверхности посмертия.",
+    "gmReviewNotes": [
+      "Review Afterlife_Contract_Matrix.md before accepting.",
+      "Keep hidden guardian motives out of player-visible output."
+    ],
+    "validatorRisks": [
+      {
+        "code": "afterlife_surface_receipt_required",
+        "message": "Afterlife updates need exact receipts and reports.",
+        "mitigation": "Use afterlifeChronicleUpdates and progressionProcessingReport surfaces only."
+      }
+    ]
+  },
+  "selfCheck": {
+    "scopeReviewed": true,
+    "validationExpectedToPass": true,
+    "notes": [
+      "Proposal-only afterlife contract task; no file changes included."
+    ]
+  },
+  "createdAtUtc": "2026-06-20T02:15:20Z"
 }
 ```
 

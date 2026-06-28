@@ -132,4 +132,153 @@ public sealed class GmWorkerBridgeContractTests
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, error => error.Contains("proposal-only", StringComparison.OrdinalIgnoreCase));
     }
+
+    [Fact]
+    public void AfterlifeAuthoringTaskAndProposal_RequireRealmAwareWrapper()
+    {
+        var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+        {
+            Role = WorkerRole.Analysis,
+            Permissions = GmWorkerBridgeTestFixtures.AnalysisCodexProfile().Permissions with
+            {
+                TaskTypes = [WorkerTaskType.Analysis],
+                ReadPaths =
+                [
+                    "game_state/meta/**",
+                    "game_state/control/**",
+                    "OtherGuides/Afterlife_Contract_Matrix.md"
+                ]
+            }
+        };
+        var task = GmWorkerBridgeTestFixtures.AfterlifeWorkerTask();
+        var proposal = GmWorkerBridgeTestFixtures.AfterlifeWorkerProposal();
+
+        var taskResult = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+        var proposalResult = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.True(taskResult.IsValid, string.Join(Environment.NewLine, taskResult.Errors));
+        Assert.True(proposalResult.IsValid, string.Join(Environment.NewLine, proposalResult.Errors));
+    }
+
+    [Fact]
+    public void AfterlifeAuthoringProposal_RejectsMortalSubstituteSurfaces()
+    {
+        var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+        {
+            Permissions = GmWorkerBridgeTestFixtures.AnalysisCodexProfile().Permissions with
+            {
+                ReadPaths = ["game_state/meta/**", "game_state/control/**"]
+            }
+        };
+        var task = GmWorkerBridgeTestFixtures.AfterlifeWorkerTask();
+        var proposal = GmWorkerBridgeTestFixtures.AfterlifeWorkerProposal() with
+        {
+            AfterlifeProposal = GmWorkerBridgeTestFixtures.AfterlifeWorkerProposal().AfterlifeProposal! with
+            {
+                TargetSurfaces =
+                [
+                    "game_state/meta/guardians.json",
+                    "game_state/world/world_events.json"
+                ],
+                GmReviewNotes =
+                [
+                    "Use worldEventsLog as a quick substitute for afterlife chronicles."
+                ]
+            }
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error => error.Contains("Mortal World substitute", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void AfterlifeAuthoringTask_RejectsMissingWrapperFromAuthoringGoal()
+    {
+        var profile = GmWorkerBridgeTestFixtures.InventoryContentCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.InventoryContentTask() with
+        {
+            AuthoringRequest = GmWorkerBridgeTestFixtures.InventoryContentTask().AuthoringRequest! with
+            {
+                Goal = "Prepare an afterlife guardian relic proposal."
+            },
+            Instructions = "Return authoringProposal only."
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("afterlifeContract", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void AfterlifeDraftTask_RejectsMissingWrapperFromDraftRequest()
+    {
+        var profile = GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.NarrativeDraftTask() with
+        {
+            DraftRequest = GmWorkerBridgeTestFixtures.NarrativeDraftTask().DraftRequest! with
+            {
+                SceneGoal = "Draft a Chaos Sea guardian encounter."
+            },
+            Instructions = "Return draftText only."
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("afterlifeContract", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void AfterlifeAuthoringProposal_RejectsRealmMismatch()
+    {
+        var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+        {
+            Permissions = GmWorkerBridgeTestFixtures.AnalysisCodexProfile().Permissions with
+            {
+                ReadPaths = ["game_state/meta/**", "game_state/control/**"]
+            }
+        };
+        var task = GmWorkerBridgeTestFixtures.AfterlifeWorkerTask();
+        var proposal = GmWorkerBridgeTestFixtures.AfterlifeWorkerProposal() with
+        {
+            AfterlifeProposal = GmWorkerBridgeTestFixtures.AfterlifeWorkerProposal().AfterlifeProposal! with
+            {
+                RealmGate = WorkerAfterlifeRealmGate.ShiningAbode
+            }
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error => error.Contains("realm", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void AfterlifeAuthoringProposal_AllowsPlayerFacingMortalPastWithoutSubstituteSurface()
+    {
+        var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+        {
+            Permissions = GmWorkerBridgeTestFixtures.AnalysisCodexProfile().Permissions with
+            {
+                ReadPaths = ["game_state/meta/**", "game_state/control/**"]
+            }
+        };
+        var task = GmWorkerBridgeTestFixtures.AfterlifeWorkerTask();
+        var proposal = GmWorkerBridgeTestFixtures.AfterlifeWorkerProposal() with
+        {
+            AfterlifeProposal = GmWorkerBridgeTestFixtures.AfterlifeWorkerProposal().AfterlifeProposal! with
+            {
+                PlayerVisibleSummary = "Душа вспоминает смертную жизнь, но хроника обновляется через поверхности посмертия."
+            }
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Errors));
+    }
 }

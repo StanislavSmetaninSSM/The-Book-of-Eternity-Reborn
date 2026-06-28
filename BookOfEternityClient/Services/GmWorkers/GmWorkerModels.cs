@@ -63,6 +63,14 @@ public enum WorkerAuthoringDomain
     Qte
 }
 
+public enum WorkerAfterlifeRealmGate
+{
+    None,
+    ChaosSea,
+    ShiningAbode,
+    ShiningAbodePendingBootstrap
+}
+
 public static class WorkerTaskTypes
 {
     public static bool IsContentAuthoring(WorkerTaskType taskType) =>
@@ -156,6 +164,7 @@ public sealed record WorkerTaskPacket
     public WorkerDraftRequest? DraftRequest { get; init; }
     public WorkerContentAuthoringRequest? AuthoringRequest { get; init; }
     public IReadOnlyList<WorkerFileReference> ContextFiles { get; init; } = [];
+    public WorkerAfterlifeTaskContract? AfterlifeContract { get; init; }
     public IReadOnlyList<string> AllowedProposalPaths { get; init; } = [];
     public string ResponseContract { get; init; } = "worker-proposal-v1";
     public IReadOnlyList<string> AcceptanceCriteria { get; init; } = [];
@@ -200,6 +209,18 @@ public sealed record WorkerContentAuthoringRequest
     public IReadOnlyList<string> OutputNotes { get; init; } = [];
 }
 
+public sealed record WorkerAfterlifeTaskContract
+{
+    public WorkerAfterlifeRealmGate RealmGate { get; init; } = WorkerAfterlifeRealmGate.None;
+    public string CurrentRealm { get; init; } = "";
+    public IReadOnlyList<string> ProgressionControlPaths { get; init; } = [];
+    public IReadOnlyList<string> PendingControlFiles { get; init; } = [];
+    public IReadOnlyList<string> AllowedAfterlifeSurfaces { get; init; } = [];
+    public IReadOnlyList<string> RequiredReceipts { get; init; } = [];
+    public IReadOnlyList<string> RequiredReports { get; init; } = [];
+    public IReadOnlyList<string> ForbiddenMortalSubstitutes { get; init; } = [];
+}
+
 public sealed record WorkerProposal
 {
     public int SchemaVersion { get; init; } = 1;
@@ -212,6 +233,7 @@ public sealed record WorkerProposal
     public IReadOnlyList<WorkerFinding> Findings { get; init; } = [];
     public string? DraftText { get; init; }
     public WorkerContentAuthoringProposal? AuthoringProposal { get; init; }
+    public WorkerAfterlifeProposalContract? AfterlifeProposal { get; init; }
     public WorkerSelfCheck SelfCheck { get; init; } = new();
     public string CreatedAtUtc { get; init; } = "";
 }
@@ -225,6 +247,17 @@ public sealed record WorkerContentAuthoringProposal
     public IReadOnlyList<WorkerRequiredEntityLink> RequiredLinks { get; init; } = [];
     public IReadOnlyList<WorkerValidatorRisk> ValidatorRisks { get; init; } = [];
     public IReadOnlyList<string> GmReviewNotes { get; init; } = [];
+}
+
+public sealed record WorkerAfterlifeProposalContract
+{
+    public WorkerAfterlifeRealmGate RealmGate { get; init; } = WorkerAfterlifeRealmGate.None;
+    public IReadOnlyList<string> TargetSurfaces { get; init; } = [];
+    public IReadOnlyList<string> RequiredReceipts { get; init; } = [];
+    public IReadOnlyList<string> RequiredReports { get; init; } = [];
+    public string PlayerVisibleSummary { get; init; } = "";
+    public IReadOnlyList<string> GmReviewNotes { get; init; } = [];
+    public IReadOnlyList<WorkerValidatorRisk> ValidatorRisks { get; init; } = [];
 }
 
 public sealed record WorkerAuthoredEntity
