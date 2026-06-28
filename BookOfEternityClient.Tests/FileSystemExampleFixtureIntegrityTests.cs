@@ -98,6 +98,41 @@ public sealed class FileSystemExampleFixtureIntegrityTests
     }
 
     [Fact]
+    public void GameSessionFixture_AfterlifeArchiveEntriesDeclareSourceLife()
+    {
+        var soulStatePath = Path.Combine(TestRepoPaths.BaseSessionRoot, "game_state", "meta", "soul_state.json");
+        using var doc = JsonDocument.Parse(File.ReadAllText(soulStatePath));
+        if (!doc.RootElement.TryGetProperty("afterlifeArchive", out var archive) ||
+            !archive.TryGetProperty("stored", out var stored) ||
+            stored.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var invalidEntries = stored
+            .EnumerateArray()
+            .Select((entry, index) => new { Entry = entry, Index = index })
+            .Where(item =>
+                item.Entry.ValueKind != JsonValueKind.Object ||
+                !item.Entry.TryGetProperty("sourceLife", out var sourceLife) ||
+                sourceLife.ValueKind != JsonValueKind.Number ||
+                !sourceLife.TryGetInt32(out var parsedSourceLife) ||
+                parsedSourceLife < 0)
+            .Select(item =>
+                item.Entry.ValueKind == JsonValueKind.Object &&
+                item.Entry.TryGetProperty("archiveId", out var archiveId) &&
+                archiveId.ValueKind == JsonValueKind.String
+                    ? archiveId.GetString() ?? $"stored[{item.Index}]"
+                    : $"stored[{item.Index}]")
+            .ToArray();
+
+        Assert.True(
+            invalidEntries.Length == 0,
+            "FileSystemExample afterlifeArchive.stored entries must declare numeric sourceLife. Invalid entries:" +
+            Environment.NewLine + string.Join(Environment.NewLine, invalidEntries));
+    }
+
+    [Fact]
     public void GameSessionFixture_InventoryUsesCanonicalEquipmentSlots()
     {
         var inventoryPath = Path.Combine(TestRepoPaths.BaseSessionRoot, "game_state", "inventory", "items.json");
