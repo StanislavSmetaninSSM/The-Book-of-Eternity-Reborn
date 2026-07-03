@@ -291,6 +291,7 @@ public sealed class TrainingService
     {
         var npcRoot = await ReadObjectAsync(NpcCorePath);
         var teachers = new List<TrainingTeacherView>();
+        var satisfiedRequests = new List<(string SourceActorId, string RequestKind)>();
         var requestPending = false;
         var requestCreated = false;
         string? pendingGmAction = null;
@@ -346,6 +347,7 @@ public sealed class TrainingService
             var offers = ReadOfferObjects(showcase!)
                 .Select(offer => EvaluateMortalOffer(teacher, offer))
                 .ToArray();
+            satisfiedRequests.Add((sourceActorId, MortalRequestKind));
 
             teachers.Add(new TrainingTeacherView(
                 sourceActorId,
@@ -356,6 +358,8 @@ public sealed class TrainingService
                 BlockReason: null,
                 Offers: offers));
         }
+
+        await ClearSatisfiedTrainingShowcaseRequestsAsync(satisfiedRequests);
 
         return new TrainingView(
             RealmMortal,
@@ -374,6 +378,7 @@ public sealed class TrainingService
         var profile = EnsureAfterlifeCombatProfile(soulRoot, shiningRoot);
         var selfOffers = BuildAfterlifeSelfTrainingOffers(profile, soulRoot, shiningRoot).ToArray();
         var teachers = new List<TrainingTeacherView>();
+        var satisfiedRequests = new List<(string SourceActorId, string RequestKind)>();
         var requestPending = false;
         var requestCreated = false;
         string? pendingGmAction = null;
@@ -433,6 +438,7 @@ public sealed class TrainingService
             var offers = ReadOfferObjects(showcase!)
                 .Select(offer => EvaluateAfterlifeMentorOffer(mentor, offer, profile, shiningRoot))
                 .ToArray();
+            satisfiedRequests.Add((sourceActorId, AfterlifeRequestKind));
 
             teachers.Add(new TrainingTeacherView(
                 sourceActorId,
@@ -444,6 +450,8 @@ public sealed class TrainingService
                 Offers: offers));
         }
 
+        await ClearSatisfiedTrainingShowcaseRequestsAsync(satisfiedRequests);
+
         return new TrainingView(
             RealmAfterlife,
             teachers,
@@ -451,6 +459,26 @@ public sealed class TrainingService
             requestPending,
             requestCreated,
             pendingGmAction);
+    }
+
+    private async Task ClearSatisfiedTrainingShowcaseRequestsAsync(
+        IReadOnlyCollection<(string SourceActorId, string RequestKind)> satisfiedRequests)
+    {
+        if (satisfiedRequests.Count == 0)
+            return;
+
+        var existing = await TrainingRequestState.ReadRequestsAsync(_fs);
+        if (existing.Count == 0)
+            return;
+
+        var remaining = existing
+            .Where(request => !satisfiedRequests.Any(satisfied =>
+                string.Equals(request.SourceActorId, satisfied.SourceActorId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(request.RequestKind, satisfied.RequestKind, StringComparison.OrdinalIgnoreCase)))
+            .ToArray();
+
+        if (remaining.Length != existing.Count)
+            await TrainingRequestState.WriteRequestsAsync(_fs, remaining);
     }
 
     private TrainingOffer EvaluateMortalOffer(JsonObject teacher, JsonObject offer)

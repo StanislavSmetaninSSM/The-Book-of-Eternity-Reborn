@@ -195,6 +195,29 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureTrainingAsync_AfterlifeMentorFreshShowcase_ClearsSatisfiedPendingRequest()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        await SeedAfterlifeMentorAsync(includeShowcase: true);
+        await TrainingRequestState.WriteRequestAsync(
+            _fs,
+            "afterlife_teacher_showcase",
+            "guardian_liora",
+            "Лиора, Хранительница Тихого Света",
+            "afterlife_mentor",
+            "afterlife",
+            createdAtTurn: 12,
+            sourceActorSnapshotHash: "older-request-hash",
+            reason: "missing_showcase");
+
+        var service = CreateService();
+        var view = await service.EnsureTrainingAsync(currentTurn: 31);
+
+        Assert.False(view.RequestPending);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
     public async Task EnsureTrainingAsync_AfterlifeTeachableSpecialArtWithoutShowcase_CreatesPendingMentorRefreshRequest()
     {
         await SeedAfterlifeSoulStateAsync(inkFeathers: 0);
@@ -216,6 +239,29 @@ public sealed class TrainingServiceTests : IDisposable
         Assert.NotNull(pendingRaw);
         Assert.Contains("\"requestKind\": \"afterlife_teacher_showcase\"", pendingRaw, StringComparison.Ordinal);
         Assert.Contains("\"sourceActorId\": \"guard_system_myriel_001\"", pendingRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalTeacherFreshShowcase_ClearsSatisfiedPendingRequest()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        await TrainingRequestState.WriteRequestAsync(
+            _fs,
+            "mortal_teacher_showcase",
+            "npc_hunter_001",
+            "Старый охотник",
+            "npc_teacher",
+            "mortal",
+            createdAtTurn: 8,
+            sourceActorSnapshotHash: "older-request-hash",
+            reason: "missing_showcase");
+
+        var service = CreateService();
+        var view = await service.EnsureTrainingAsync(currentTurn: 12);
+
+        Assert.False(view.RequestPending);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
     }
 
     [Fact]

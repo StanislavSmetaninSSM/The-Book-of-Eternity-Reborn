@@ -16,6 +16,10 @@ Shared rules
 - Every showcase must copy the requested `sourceActorSnapshotHash` into
   `trainingShowcase.sourceActorSnapshotHash`. If the teacher changes, the
   client treats the showcase as stale and requests a refresh.
+- A fresh showcase for the requested teacher or mentor satisfies that pending
+  request. The client clears fulfilled entries from
+  `pending_training_showcase_requests.json`, and deletes the file when no
+  requests remain.
 - GM does not spend player currency.
 - GM does not raise player tiers directly.
 - GM does not grant mastery or standard spiritual-art progression through free
