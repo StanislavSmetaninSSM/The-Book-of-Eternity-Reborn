@@ -1619,6 +1619,45 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_FactionDrilldown_StringControlledTerritoriesRenderWithoutHiddenErrors()
+    {
+        await SeedMortalStateAsync();
+        await WriteRawJsonAsync("game_state/factions/faction_core.json", """
+        [
+          {
+            "factionId": "faction_scribe_house",
+            "name": "Дом переписчика Восковой улицы",
+            "description": "Малый дом-служба при переписчике.",
+            "reputation": 0,
+            "level": 1,
+            "developmentArchetype": "scribe_household",
+            "controlledTerritories": [
+              "loc_life_001_start",
+              {
+                "locationName": "Лавка переписчика",
+                "controlLevel": "strong",
+                "influence": 18,
+                "summary": "Семья держит рабочую лавку."
+              }
+            ]
+          }
+        ]
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/фракции"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("faction_drilldown_string_controlled_territories");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Дом переписчика Восковой улицы", renderedText, StringComparison.Ordinal);
+        Assert.Contains("дом переписчика", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("scribe_household", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Локация loc_life_001_start", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Лавка переписчика", renderedText, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_FactionDrilldown_SectionSelectionsRenderResourceProjectAndHierarchyDetails()
     {
         await SeedRichFactionDrilldownStateAsync();

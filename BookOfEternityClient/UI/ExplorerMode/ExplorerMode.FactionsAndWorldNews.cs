@@ -120,9 +120,10 @@ public partial class ExplorerMode
         // Level + XP bar
         if (lvl > 0)
         {
-            var archetypeTag = string.IsNullOrEmpty(archetype)
+            var translatedArchetype = TranslateFactionDevelopmentArchetypeForConsole(archetype);
+            var archetypeTag = string.IsNullOrEmpty(translatedArchetype)
                 ? string.Empty
-                : $"[dim]({Markup.Escape(archetype)})[/]";
+                : $"[dim]({Markup.Escape(translatedArchetype)})[/]";
             summaryTable.AddRow(
                 new Markup("[yellow]Уровень развития[/]"),
                 new Markup(string.Empty),
@@ -257,7 +258,10 @@ public partial class ExplorerMode
             lines.Add("  [bold]🗺 Территории:[/]");
             foreach (var t in terr.EnumerateArray())
             {
-                var locName = GetStr(t, "locationName", GetStr(t, "locationId", "?"));
+                var locName = GetFactionTerritoryDisplayName(t);
+                if (string.IsNullOrWhiteSpace(locName))
+                    continue;
+
                 lines.Add($"    📍 [cyan]{Markup.Escape(locName)}[/]");
             }
         }
@@ -552,15 +556,20 @@ public partial class ExplorerMode
                 if (!IsFactionKnowledgeEntryVisible(territory))
                     continue;
 
-                var name = GetStr(territory, "locationName", GetStr(territory, "name", GetStr(territory, "region", "")));
+                var name = GetFactionTerritoryDisplayName(territory);
                 if (string.IsNullOrWhiteSpace(name))
                     continue;
 
                 territoryCount++;
                 var details = new List<string>();
-                AddDetailPart(details, "влияние", GetStr(territory, "influence", ""));
-                AddDetailPart(details, "контроль", TranslateFactionTerritoryControl(GetStr(territory, "controlLevel", GetStr(territory, "status", ""))));
-                var summary = GetStr(territory, "summary", GetStr(territory, "description", ""));
+                var summary = string.Empty;
+                if (territory.ValueKind == JsonValueKind.Object)
+                {
+                    AddDetailPart(details, "влияние", GetStr(territory, "influence", ""));
+                    AddDetailPart(details, "контроль", TranslateFactionTerritoryControl(GetStr(territory, "controlLevel", GetStr(territory, "status", ""))));
+                    summary = GetStr(territory, "summary", GetStr(territory, "description", ""));
+                }
+
                 var line = $"  • [white]{Markup.Escape(name)}[/]";
                 if (details.Count > 0)
                     line += $" [dim]({Markup.Escape(string.Join(", ", details))})[/]";
@@ -589,6 +598,28 @@ public partial class ExplorerMode
             territoryCount > 0 ? FormatRussianCount(territoryCount, "территория", "территории", "территорий") : "нет данных",
             lines);
     }
+
+    private static string GetFactionTerritoryDisplayName(JsonElement territory)
+    {
+        if (territory.ValueKind == JsonValueKind.String)
+        {
+            var id = territory.GetString();
+            return string.IsNullOrWhiteSpace(id) ? string.Empty : $"Локация {id}";
+        }
+
+        if (territory.ValueKind != JsonValueKind.Object)
+            return string.Empty;
+
+        return FirstNonEmpty(
+            GetStr(territory, "locationName", ""),
+            GetStr(territory, "displayName", ""),
+            GetStr(territory, "name", ""),
+            GetStr(territory, "region", ""),
+            PrefixIfPresent("Локация ", GetStr(territory, "locationId", "")));
+    }
+
+    private static string PrefixIfPresent(string prefix, string value) =>
+        string.IsNullOrWhiteSpace(value) ? string.Empty : prefix + value;
 
     private static FactionDetailSection CreateFactionDetailSection(
         string id,
@@ -1096,6 +1127,7 @@ public partial class ExplorerMode
             "covert" => "скрытое влияние",
             "arcane" or "arcane_tech" => "магическое развитие",
             "exploration" => "исследования",
+            "scribe_household" => "дом переписчика",
             _ => value.Trim()
         };
 
