@@ -368,10 +368,28 @@ public static class AfterlifeSpiritualConflictState
             conflict["exchangeLog"] = new JsonArray();
         if (playerSpiritFocusTier.HasValue)
             ApplySpiritFocusActionEconomy(conflict, playerSpiritFocusTier.Value);
+        NormalizeSupporterRoles(conflict["playerSide"] as JsonObject);
+        NormalizeSupporterRoles(conflict["oppositionSide"] as JsonObject);
 
         root["activeConflict"] = conflict;
         ClearInvalidUpdateMarkers(root);
         return root;
+    }
+
+    private static void NormalizeSupporterRoles(JsonObject? side)
+    {
+        if (side?["supporters"] is not JsonArray supporters)
+            return;
+
+        foreach (var supporter in supporters.OfType<JsonObject>())
+        {
+            if (!string.IsNullOrWhiteSpace(GetNodeString(supporter["supportRole"])))
+                continue;
+
+            var role = GetNodeString(supporter["role"]);
+            if (!string.IsNullOrWhiteSpace(role))
+                supporter["supportRole"] = role;
+        }
     }
 
     private static void ApplySpiritFocusActionEconomy(JsonObject conflict, int spiritFocusTier)

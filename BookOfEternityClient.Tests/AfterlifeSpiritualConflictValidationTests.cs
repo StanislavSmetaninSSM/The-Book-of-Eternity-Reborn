@@ -9374,6 +9374,30 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_PlayerSoulLead_DoesNotRequireNonPlayerArtAuthority()
+    {
+        await WriteSoulStateAsync();
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        root.Remove("lastInvalidUpdate");
+        root.Remove("lastInvalidUpdateReason");
+        root.Remove("lastInvalidUpdateAtUtc");
+        var lead = (JsonObject)root["activeConflict"]!["playerSide"]!["leadContestant"]!;
+        lead["actorType"] = "player_soul";
+        lead.Remove("actorArtTierSnapshot");
+        lead.Remove("artAuthoritySource");
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_missing_actor_art_snapshot", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains(".playerSide.", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_missing_required_string", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.EndsWith(".playerSide.leadContestant.artAuthoritySource", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_SummaryOnlyExchangeUpdate_FailsResponseContract()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
@@ -9433,6 +9457,69 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         var issues = await _validator.ValidateGameStateAsync();
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_state_unprojected_update", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_StartConflict_CopiesSupporterRoleIntoSupportRole()
+    {
+        await WriteSoulStateAsync();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, """
+        {
+          "afterlifeSpiritualConflictUpdate": {
+            "mode": "start",
+            "conflictState": {
+              "conflictId": "afterlife_conflict_support_role_projection",
+              "realm": "Chaos Sea",
+              "sideModel": "direct_duel",
+              "status": "active",
+              "resolutionState": "active",
+              "conflictPosition": "contested",
+              "playerSide": {
+                "leadContestant": {
+                  "actorType": "player",
+                  "actorId": "player_soul",
+                  "displayName": "Асуран"
+                },
+                "supporters": []
+              },
+              "oppositionSide": {
+                "leadContestant": {
+                  "actorType": "guardian_manifestation",
+                  "actorId": "weak_vortex",
+                  "displayName": "Слабый вихрь",
+                  "actorArtTierSnapshot": { "pressure": 1 },
+                  "artAuthoritySource": "guardian_training_manifestation"
+                },
+                "supporters": [
+                  {
+                    "actorType": "guardian",
+                    "actorId": "guardian_myriel",
+                    "displayName": "Мириэль",
+                    "role": "safety_anchor"
+                  }
+                ]
+              },
+              "playerSideStrain": "clear",
+              "oppositionSideStrain": "clear",
+              "exchangeLog": []
+            }
+          }
+        }
+        """);
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var projectedJson = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath);
+        var projected = JsonNode.Parse(projectedJson!)!.AsObject();
+        Assert.True(projected["activeConflict"] is JsonObject, projectedJson);
+        var supporter = (JsonObject)projected["activeConflict"]!["oppositionSide"]!["supporters"]![0]!;
+        Assert.Equal("safety_anchor", supporter["supportRole"]!.GetValue<string>());
+
+        var issues = await _validator.ValidateGameStateAsync();
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_missing_required_string", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.EndsWith(".oppositionSide.supporters[0].supportRole", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

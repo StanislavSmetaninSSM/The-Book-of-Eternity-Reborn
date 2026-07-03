@@ -6616,14 +6616,9 @@ Correct accepted response:
       },
       "playerSide": {
         "leadContestant": {
-          "actorType": "player",
+          "actorType": "player_soul",
           "actorId": "player_soul",
-          "displayName": "Игрок",
-          "purchasedArtTierSnapshot": {
-            "guard": 1,
-            "counter": 1,
-            "incarnation_resistance": 1
-          }
+          "displayName": "Игрок"
         },
         "supporters": []
       },
@@ -6648,6 +6643,21 @@ Correct accepted response:
       "exchangeLog": []
     }
   }
+}
+```
+
+The player lead in this start example intentionally has no `actorArtTierSnapshot` and no `artAuthoritySource`: the player soul's authority comes from `soul_state.afterlifeCombatProfile`. Non-player leads still need their explicit snapshot/source. If a side has supporters, author their canonical role as `supportRole`, for example:
+
+```json
+{
+  "supporters": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_myriel",
+      "displayName": "Мириэль",
+      "supportRole": "safety_anchor"
+    }
+  ]
 }
 ```
 

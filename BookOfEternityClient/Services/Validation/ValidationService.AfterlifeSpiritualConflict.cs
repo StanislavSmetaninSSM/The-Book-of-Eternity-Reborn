@@ -1471,8 +1471,8 @@ public partial class ValidationService
         RequireNodeString(lead, $"{context}.leadContestant", issues, "actorId");
         RequireNodeString(lead, $"{context}.leadContestant", issues, "displayName");
 
-        var isPlayerLead = string.Equals(actorType, "player", StringComparison.OrdinalIgnoreCase) ||
-                           string.Equals(actorType, "soul", StringComparison.OrdinalIgnoreCase);
+        var actorId = AfterlifeSpiritualConflictState.GetNodeString(lead["actorId"]);
+        var isPlayerLead = IsPlayerSoulActor(actorType, actorId);
         if (isPlayerLead && !allowPlayerLead)
         {
             issues.Add(new ValidationIssue(
@@ -5263,7 +5263,7 @@ public partial class ValidationService
         roots.Any(root =>
             ConflictNodeStringEquals(root, "champion_duel", "sideModel", "conflictMode", "conflictModel", "duelType") ||
             root["playerSide"]?["leadContestant"] is JsonObject lead &&
-            !ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(lead["actorType"]), "player", "soul"));
+            !ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(lead["actorType"]), "player_soul", "player", "soul"));
 
     private static bool IsSuccessfulArtOutcome(string? outcome) =>
         ConflictTokenEquals(outcome, "success", "partial_success");
