@@ -1464,6 +1464,55 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_EmptyRelevantActorsScopeError_AddsExecutableHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                "Mode 'Mixed' requires at least one relevant actor.",
+                code: "empty_relevant_actors_for_mode",
+                section: "npc_scope",
+                expected: "At least one relevant actor",
+                actual: "empty relevant actor list")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("npc_scope_declaration_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("output/debug_logs.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("World-progression", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("Mixed", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("Scene-local", StringComparison.OrdinalIgnoreCase));
+
+        var template = packet.GetProperty("debugLogTemplate").GetString() ?? string.Empty;
+        Assert.Contains("## NPC Scope", template, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Relevant actors", template, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Why relevant", template, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Actors outside scope", template, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("### <actor name>", template, StringComparison.OrdinalIgnoreCase);
+
+        var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(doNotDo, item => item.Contains("new turn", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_MortalNpcKnownSceneLocationErrors_AddsExecutableHarnessPacket()
     {
         var engine = CreateGameEngine();

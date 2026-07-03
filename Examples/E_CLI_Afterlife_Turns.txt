@@ -107,6 +107,7 @@ GUARDIAN SCOPE REPAIR PACKET EXAMPLE
 
 When the client rejects a Chaos Sea or Shining Abode turn and writes `game_state/control/validation_repair_request.json`, this is not a new turn. If the request contains `harnessRepairPackets[]`, read those packets before individual `errors[]`.
 If the daemon prompt provides `game_state/control/gm_context_pack/context_pack_manifest.json`, start from that session-local context pack and its copied GM docs/examples. Do not open `BookOfEternityClient/**/*.cs` during live repair; the packet, manifest, session state/control files, and helper bootstrap are the intended harness.
+If `harnessRepairPackets[].kind = "npc_scope_declaration_repair"`, repair `output/debug_logs.json.gm_thoughts_markdown` with the packet's `debugLogTemplate`. In Chaos Sea / Shining Abode spiritual conflicts, `Mixed` normally needs the player soul, the active Guardian/teacher/anchor, and the current opponent or trial actor when those actors participate in the same exchange. Use `Scene-local + Relevant actors: нет` only for a truly actorless turn with no actor-specific state changes.
 
 Example fragment:
 

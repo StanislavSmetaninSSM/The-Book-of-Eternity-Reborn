@@ -1028,10 +1028,14 @@ public partial class GameEngine
         var afterlifeActionCostErrors = errors.Where(IsAfterlifeSpiritualConflictActionCostRepairIssue).ToList();
         var afterlifeConflictRewardErrors = errors.Where(IsAfterlifeSpiritualConflictRewardRepairIssue).ToList();
         var afterlifeEntityProfileScaffoldErrors = errors.Where(IsAfterlifeEntityProfileScaffoldRepairIssue).ToList();
+        var npcScopeDeclarationErrors = errors.Where(IsNpcScopeDeclarationRepairIssue).ToList();
         var acceptedTurnOutputArtifactErrors = errors.Where(IsAcceptedTurnOutputArtifactRepairIssue).ToList();
 
         if (guardianScopeErrors.Count > 0)
             packets.Add(BuildGuardianScopeRepairPacket(guardianScopeErrors, guardianActorNameHints));
+
+        if (npcScopeDeclarationErrors.Count > 0)
+            packets.Add(BuildNpcScopeDeclarationRepairPacket(npcScopeDeclarationErrors));
 
         if (acceptedTurnOutputArtifactErrors.Count > 0)
             packets.Add(BuildAcceptedTurnOutputArtifactRepairPacket(acceptedTurnOutputArtifactErrors));
@@ -1203,6 +1207,22 @@ public partial class GameEngine
     private static bool IsMortalNpcScopeRepairIssue(ValidationIssue issue)
     {
         return string.Equals(issue.Code, "structured_npc_update_out_of_scope", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsNpcScopeDeclarationRepairIssue(ValidationIssue issue)
+    {
+        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
+        {
+            "missing_scope_mode" => true,
+            "invalid_scope_mode" => true,
+            "missing_relevant_actors_field" => true,
+            "empty_relevant_actors_for_mode" => true,
+            "missing_scope_relevance_reason" => true,
+            "missing_out_of_scope_actors_field" => true,
+            "missing_scope_out_of_scope_reason" => true,
+            "missing_actor_reasoning_section" => true,
+            _ => false
+        };
     }
 
     private static bool IsMortalNpcInventoryUpdateRepairIssue(ValidationIssue issue)
@@ -1410,6 +1430,82 @@ public partial class GameEngine
                 "Do not create a new turn, reroll, advance time, or change player choice while repairing missing output artifacts.",
                 "Do not leave output/debug_logs.json empty just because no visible NPC changed; write an explicit empty-scope explanation.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, validation_repair_request.json, GM docs, and session files."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildNpcScopeDeclarationRepairPacket(
+        IReadOnlyList<ValidationIssue> npcScopeErrors)
+    {
+        var missingFields = npcScopeErrors
+            .Select(issue => issue.Code ?? "npc_scope_validation_error")
+            .Where(code => !string.IsNullOrWhiteSpace(code))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(code => code, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var targetFiles = npcScopeErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("output/debug_logs.json");
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "npc_scope_declaration_repair",
+            Priority = "high",
+            Title = "NPC Scope declaration repair",
+            TargetFiles = targetFiles,
+            MissingFields = missingFields,
+            ExpectedShape = new List<string>
+            {
+                "Repair only output/debug_logs.json.gm_thoughts_markdown unless validation_repair_request.json lists additional state errors.",
+                "The NPC Scope block must declare Mode, Relevant actors, Why relevant, Actors outside scope, and Why outside scope.",
+                "World-progression, Guardian-centric, and Mixed modes require at least one actor in Relevant actors.",
+                "Scene-local may use Relevant actors: нет / none only when no NPC, Guardian, faction, resident, opponent, or other actor-specific structured state changed.",
+                "If Relevant actors is not empty, add a reasoning section with a `### <actor name>` block for every listed actor."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Use actor names that are visible in the current turn, current state, pending snapshot, or listed validation errors.",
+                "For afterlife spiritual conflict turns, include the player soul, active Guardian or teacher, and current opponent/trial actor when they act, anchor, or receive structured state.",
+                "Use Scene-local with empty actors only for purely player/internal output with no structured actor mutations.",
+                "Keep the accepted player action and already written canonical state; repair the reasoning declaration instead of inventing a new event."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json and output/debug_logs.json.",
+                "Replace or patch only gm_thoughts_markdown so it starts with a complete `## NPC Scope` block.",
+                "Choose the narrowest correct mode: Scene-local, World-progression, Guardian-centric, or Mixed.",
+                "Fill Relevant actors as comma-separated canonical names, or `нет` only if Scene-local and no actor-specific state changed.",
+                "Add one reasoning block per relevant actor with current location when applicable, situation, thoughts, and actions.",
+                "After the markdown is repaired, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from validation_repair_request.json."
+            },
+            DebugLogTemplate = string.Join(
+                Environment.NewLine,
+                "## NPC Scope",
+                "- Mode: Scene-local | World-progression | Guardian-centric | Mixed",
+                "- Relevant actors: <actor name 1>, <actor name 2> OR нет",
+                "- Why relevant: <why these actors directly act, react, anchor the scene, or receive structured state>",
+                "- Actors outside scope: <names or нет>",
+                "- Why outside scope: <why other mentioned actors do not receive structured updates>",
+                "",
+                "## Reasoning",
+                "### <actor name>",
+                "- Current location: <where the actor is now, if applicable>",
+                "- Situation: <what changed or what the actor faces this turn>",
+                "- Thoughts: <short internal motive or reaction>",
+                "- Actions: <what the actor does or preserves this turn>"),
+            DoNotDo = new List<string>
+            {
+                "Do not create a new turn, reroll dice, advance time, or change the player choice while repairing NPC Scope.",
+                "Do not delete meaningful actor state just to make Scene-local with empty actors pass.",
+                "Do not list an actor in Relevant actors without a matching `### <actor name>` reasoning block.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, validation_repair_request.json, templates, and session files."
             }
         };
     }
