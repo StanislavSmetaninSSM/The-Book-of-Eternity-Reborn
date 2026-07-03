@@ -3,7 +3,10 @@ param(
     [string]$SessionPath,
 
     [switch]$RequireBridge,
-    [switch]$RequireReadyBridge
+    [switch]$RequireReadyBridge,
+
+    [ValidateRange(0, 600)]
+    [int]$WaitSeconds = 0
 )
 
 $ErrorActionPreference = "Stop"
@@ -113,48 +116,59 @@ $resolvedSessionPath = (Resolve-Path -LiteralPath $SessionPath -ErrorAction Stop
 $controlPath = Join-Path $resolvedSessionPath "game_state\control"
 $daemonStatusPath = Join-Path $controlPath "gm_daemon_status.json"
 $bridgeStatusPath = Join-Path $controlPath "gm_bridge_status.json"
+$deadline = (Get-Date).AddSeconds($WaitSeconds)
+$result = $null
 
-$daemonStatus = Read-StatusJson -Path $daemonStatusPath
-$daemon = Test-ComponentStatus `
-    -Component "daemon" `
-    -Path $daemonStatusPath `
-    -Status $daemonStatus `
-    -PidProperty "pid"
+do {
+    $daemonStatus = Read-StatusJson -Path $daemonStatusPath
+    $daemon = Test-ComponentStatus `
+        -Component "daemon" `
+        -Path $daemonStatusPath `
+        -Status $daemonStatus `
+        -PidProperty "pid"
 
-$bridge = [ordered]@{
-    ok = $true
-    issues = @()
-    status = $null
-}
-
-if ($RequireBridge -or $RequireReadyBridge) {
-    $bridgeStatus = Read-StatusJson -Path $bridgeStatusPath
-    $bridge = Test-ComponentStatus `
-        -Component "bridge" `
-        -Path $bridgeStatusPath `
-        -Status $bridgeStatus `
-        -PidProperty "helperPid"
-
-    if ($bridge.ok -and $RequireReadyBridge -and -not [bool]$bridge.status.ready) {
-        $bridge.ok = $false
-        $bridge.issues += New-PreflightIssue `
-            -Code "bridge-not-ready" `
-            -Message "GM bridge process is alive, but ready is not true." `
-            -Path $bridgeStatusPath
+    $bridge = [ordered]@{
+        ok = $true
+        issues = @()
+        status = $null
     }
-}
 
-$issues = @()
-$issues += @($daemon.issues)
-$issues += @($bridge.issues)
+    if ($RequireBridge -or $RequireReadyBridge) {
+        $bridgeStatus = Read-StatusJson -Path $bridgeStatusPath
+        $bridge = Test-ComponentStatus `
+            -Component "bridge" `
+            -Path $bridgeStatusPath `
+            -Status $bridgeStatus `
+            -PidProperty "helperPid"
 
-$result = [ordered]@{
-    ok = $issues.Count -eq 0
-    sessionPath = $resolvedSessionPath
-    daemon = $daemon
-    bridge = $bridge
-    issues = $issues
-}
+        if ($bridge.ok -and $RequireReadyBridge -and -not [bool]$bridge.status.ready) {
+            $bridge.ok = $false
+            $bridge.issues += New-PreflightIssue `
+                -Code "bridge-not-ready" `
+                -Message "GM bridge process is alive, but ready is not true." `
+                -Path $bridgeStatusPath
+        }
+    }
+
+    $issues = @()
+    $issues += @($daemon.issues)
+    $issues += @($bridge.issues)
+
+    $result = [ordered]@{
+        ok = $issues.Count -eq 0
+        sessionPath = $resolvedSessionPath
+        daemon = $daemon
+        bridge = $bridge
+        issues = $issues
+        waitedSeconds = $WaitSeconds
+    }
+
+    if ($result.ok -or (Get-Date) -ge $deadline) {
+        break
+    }
+
+    Start-Sleep -Milliseconds 500
+} while ($true)
 
 $result | ConvertTo-Json -Depth 12
 if (-not $result.ok) {

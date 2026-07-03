@@ -118,6 +118,7 @@ public sealed class ConsoleE2ERunbookTests
             "pid",
             "RequireBridge",
             "RequireReadyBridge",
+            "WaitSeconds",
             "exit 1"
         })
         {
@@ -179,6 +180,7 @@ public sealed class ConsoleE2ERunbookTests
             "gm_terminal_wait_timeout",
             "ready/turn_error.json",
             "harnessSource",
+            "WaitSeconds",
             "stale status"
         })
         {
