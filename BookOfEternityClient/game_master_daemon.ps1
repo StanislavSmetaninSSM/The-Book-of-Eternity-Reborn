@@ -2799,7 +2799,9 @@ function Write-DaemonStatus {
     param(
         [string]$Status = "running",
         [object]$FatalError = $null,
-        [string]$Reason = ""
+        [string]$Reason = "",
+        [Nullable[int]]$CurrentTurnNumber = $null,
+        [Nullable[int]]$TurnElapsedSeconds = $null
     )
 
     $payload = [ordered]@{
@@ -2815,6 +2817,14 @@ function Write-DaemonStatus {
 
     if (-not [string]::IsNullOrWhiteSpace($Reason)) {
         $payload.reason = $Reason
+    }
+
+    if ($null -ne $CurrentTurnNumber) {
+        $payload.currentTurnNumber = $CurrentTurnNumber
+    }
+
+    if ($null -ne $TurnElapsedSeconds) {
+        $payload.turnElapsedSeconds = $TurnElapsedSeconds
     }
 
     if ($null -ne $script:DaemonLastLoopError) {
@@ -2854,6 +2864,21 @@ function Update-DaemonHeartbeat {
 
     $script:DaemonLastHeartbeatUtc = $nowUtc
     Write-DaemonStatus -Status "running"
+}
+
+function Update-DaemonProcessingHeartbeat {
+    param(
+        [int]$TurnNumber,
+        [int]$ElapsedSeconds
+    )
+
+    $nowUtc = (Get-Date).ToUniversalTime()
+    if ((Test-Path $DaemonStatusFile) -and ($nowUtc - $script:DaemonLastHeartbeatUtc).TotalSeconds -lt 5) {
+        return
+    }
+
+    $script:DaemonLastHeartbeatUtc = $nowUtc
+    Write-DaemonStatus -Status "processing" -Reason "turn_processing_waiting" -CurrentTurnNumber $TurnNumber -TurnElapsedSeconds $ElapsedSeconds
 }
 
 function New-GmDispatchDiagnostics {
@@ -4570,6 +4595,7 @@ function Process-Turn {
 
             if ($elapsed % 60 -eq 0) {
                 Write-Log "  Waiting... (${elapsed}s)" -Color DarkGray
+                Update-DaemonProcessingHeartbeat -TurnNumber $turnNumber -ElapsedSeconds $elapsed
             }
         }
 

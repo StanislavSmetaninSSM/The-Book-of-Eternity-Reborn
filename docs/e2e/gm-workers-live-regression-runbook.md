@@ -183,11 +183,14 @@ bridge/daemon startup before sending player input.
 
 During live play, check the daemon control status after every completed turn or
 repair. `game_state/control/gm_daemon_status.json` should remain
-`status=running`; if it contains `lastLoopError`, preserve the run root because
-the watcher recovered from a transient harness error. If the daemon exits with
-`status=failed`, inspect `game_state/control/gm_daemon_fatal_error.json` before
-restarting. A hidden daemon that silently stops after validation repair is a
-harness bug, not a GM/player failure.
+`status=running` between turns. During long GM turns it may briefly publish
+`status=processing` with `currentTurnNumber` and `turnElapsedSeconds`; treat that
+as a healthy progress heartbeat, not as a failure. If it contains
+`lastLoopError`, preserve the run root because the watcher recovered from a
+transient harness error. If the daemon exits with `status=failed`, inspect
+`game_state/control/gm_daemon_fatal_error.json` before restarting. A hidden
+daemon that silently stops after validation repair is a harness bug, not a
+GM/player failure.
 
 The client also protects live tests from silent `gm-waiting` deadlocks. If a
 present `gm_daemon_status.json` / `gm_bridge_status.json` is a stale status file

@@ -3502,6 +3502,24 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonStatus_RefreshesWhileWaitingForGmTurnResponse()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var processingHeartbeatBlock = ExtractFunctionBlock(daemon, "function Update-DaemonProcessingHeartbeat");
+        var turnBlock = ExtractFunctionBlock(daemon, "function Process-Turn");
+
+        Assert.Contains("Write-DaemonStatus -Status \"processing\" -Reason \"turn_processing_waiting\"", processingHeartbeatBlock, StringComparison.Ordinal);
+        Assert.Contains("-CurrentTurnNumber $TurnNumber", processingHeartbeatBlock, StringComparison.Ordinal);
+        Assert.Contains("-TurnElapsedSeconds $ElapsedSeconds", processingHeartbeatBlock, StringComparison.Ordinal);
+
+        var waitLogIndex = turnBlock.IndexOf("Write-Log \"  Waiting... (${elapsed}s)\"", StringComparison.Ordinal);
+        var heartbeatIndex = turnBlock.IndexOf("Update-DaemonProcessingHeartbeat -TurnNumber $turnNumber -ElapsedSeconds $elapsed", StringComparison.Ordinal);
+
+        Assert.True(waitLogIndex >= 0, "Expected Process-Turn to log long GM waits.");
+        Assert.True(heartbeatIndex > waitLogIndex, "Expected Process-Turn to refresh daemon status whenever it reports a long GM wait.");
+    }
+
+    [Fact]
     public void DaemonTurnCounter_IncrementsOnlyForAcceptedTurnProcessing()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");

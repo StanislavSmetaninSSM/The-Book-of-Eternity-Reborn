@@ -180,6 +180,9 @@ public sealed class ConsoleE2ERunbookTests
             "daemon.start.json",
             "daemonPid",
             "gm_daemon_status.json",
+            "status=processing",
+            "currentTurnNumber",
+            "turnElapsedSeconds",
             "lastLoopError",
             "gm_daemon_fatal_error.json",
             "harness bug"
