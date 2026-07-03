@@ -2794,7 +2794,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 ["recentConflicts"] = new JsonArray()
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
-        soul["inkFeathers"] = new JsonObject { ["current"] = 200, ["total"] = 200 };
+        soul["inkFeathers"] = new JsonObject { ["current"] = 600, ["total"] = 600 };
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
             "/spiritual_arts",
@@ -2814,7 +2814,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(CommandExecutionState.Completed, completed.State);
         var updated = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         Assert.Equal(1, updated["afterlifeCombatProfile"]!["artTiers"]!["pressure"]!.GetValue<int>());
-        Assert.Equal(75, updated["inkFeathers"]!["current"]!.GetValue<int>());
+        Assert.Equal(100, updated["inkFeathers"]!["current"]!.GetValue<int>());
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
@@ -2831,7 +2831,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 ["recentConflicts"] = new JsonArray()
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
-        soul["inkFeathers"] = new JsonObject { ["current"] = 200, ["total"] = 200 };
+        soul["inkFeathers"] = new JsonObject { ["current"] = 500, ["total"] = 500 };
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var profiles = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var specialArt = profiles["profiles"]!.AsArray()[0]!["specialArts"]!.AsArray()[0]!.AsObject();
@@ -2858,7 +2858,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var updatedProfiles = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var updatedSpecialArt = updatedProfiles["profiles"]!.AsArray()[0]!["specialArts"]!.AsArray()[0]!.AsObject();
         Assert.Equal(2, updatedSpecialArt["tier"]!.GetValue<int>());
-        Assert.Equal(110, updatedSoul["inkFeathers"]!["current"]!.GetValue<int>());
+        Assert.Equal(50, updatedSoul["inkFeathers"]!["current"]!.GetValue<int>());
         Assert.Contains(updatedProfiles["profiles"]!.AsArray()[0]!["ledger"]!.AsArray().OfType<JsonObject>(), entry =>
             string.Equals(entry["reason"]?.GetValue<string>(), "special_art_local_upgrade", StringComparison.Ordinal));
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));

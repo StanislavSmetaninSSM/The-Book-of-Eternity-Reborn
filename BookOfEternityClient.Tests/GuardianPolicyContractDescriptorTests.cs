@@ -50,6 +50,7 @@ public class GuardianPolicyContractDescriptorTests
             "afterlifeArchive",
             "afterlifeArchiveUpdates",
             "afterlifeCombatProfile",
+            TrainingRequestState.AfterlifePurchaseReceiptsProperty,
             "archiveActionResolutions",
             "crossIncarnationData",
             "currentIncarnation",

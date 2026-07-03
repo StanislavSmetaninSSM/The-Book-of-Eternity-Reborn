@@ -35,6 +35,7 @@ public partial class ValidationService
         await ValidatePlayerStateFiles(issues);
         await ValidateNpcStateFiles(issues);
         await ValidateSkillContractConsistencyAsync(issues);
+        await ValidateTrainingShowcasesAsync(issues);
         await ValidateWorldQuestCombatFactionStateFiles(issues);
         await ValidateMetaMiscStateFiles(issues);
         await ValidateAfterlifeSpiritualConflictStateAsync(issues);

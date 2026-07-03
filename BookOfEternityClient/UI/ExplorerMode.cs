@@ -17,6 +17,7 @@ public partial class ExplorerMode
         PendingTurnStateService? pendingTurnState = null,
         GuardianTradeService? guardianTradeService = null,
         NpcTradeService? npcTradeService = null,
+        TrainingService? trainingService = null,
         SystemModService? systemModService = null,
         SystemGuardianLibraryService? systemGuardianLibraryService = null,
         WorldDirectiveService? worldDirectiveService = null,
@@ -52,6 +53,7 @@ public partial class ExplorerMode
         _pendingTurnState = pendingTurnState;
         _guardianTradeService = guardianTradeService;
         _npcTradeService = npcTradeService;
+        _trainingService = trainingService;
         _systemModService = systemModService;
         _systemGuardianLibraryService = systemGuardianLibraryService;
         _worldDirectiveService = worldDirectiveService;
@@ -91,6 +93,7 @@ public partial class ExplorerMode
             ("world_rules", ShowWorldRules),
             ("gallery", ShowGallery),
             ("status", ShowDetailedStatus),
+            ("training", ShowTrainingAsync),
             ("saref_story", ShowSarefStoryAsync));
 
         _chaosSeaOnlyCommands = BuildCommandMap(
@@ -339,6 +342,8 @@ public partial class ExplorerMode
         string.Equals(command, "/перья", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/soul_relics", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/реликвии", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/training", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/обучение", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/soul_relic_equip", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/экипировать_реликвию", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/soul_relic_unequip", StringComparison.OrdinalIgnoreCase) ||

@@ -112,5 +112,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 <!-- SPECKIT START -->
 Current Spec Kit plan for this branch:
-`specs/1285-rlm-gm-harness/plan.md`
+`specs/1378-training-vitrines/plan.md`
 <!-- SPECKIT END -->

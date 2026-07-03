@@ -9548,7 +9548,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Equal(1, artTiers["pressure"]?.GetValue<int>());
         Assert.Equal(5, profile["enlightenmentRank"]?.GetValue<int>());
         var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
-        Assert.Equal(375, inkFeathers["current"]?.GetValue<int>());
+        Assert.Equal(0, inkFeathers["current"]?.GetValue<int>());
         Assert.Equal(500, inkFeathers["total"]?.GetValue<int>());
     }
 
@@ -9560,7 +9560,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             soulName = "Тестовая Душа",
             currentRealm = "Chaos Sea",
             currentIncarnation = 1,
-            inkFeathers = new { current = 120, total = 120 },
+            inkFeathers = new { current = 200, total = 200 },
             enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
             soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 }
         });
@@ -9611,8 +9611,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         });
         await _stateManager.RefreshGameStateAsync();
         _console.QueueAnySelection("⬆ Прокачать духовное искусство");
-        _console.QueueSelection("Выберите духовное искусство", "Зеркальная Защита — уровень 1->2, 30 🪶");
-        _console.QueueSelection("Выберите валюту", "Чернильные Перья — 30 🪶");
+        _console.QueueSelection("Выберите духовное искусство", "Зеркальная Защита — уровень 1->2, 150 🪶");
+        _console.QueueSelection("Выберите валюту", "Чернильные Перья — 150 🪶");
         _console.QueueAnyConfirmResponse(true);
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
@@ -9630,7 +9630,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!)!.AsObject();
         var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
-        Assert.Equal(90, inkFeathers["current"]?.GetValue<int>());
+        Assert.Equal(50, inkFeathers["current"]?.GetValue<int>());
         var profile = soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty] as JsonObject;
         var artTiers = profile?["artTiers"] as JsonObject;
         Assert.True(artTiers == null || !artTiers.ContainsKey("mirror_guard"));
@@ -9661,7 +9661,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         {
             availability = "active",
             radiance = new { experience = 540, tier = 3 },
-            lightSparks = 5
+            lightSparks = 12
         });
         await WriteJsonAsync(AfterlifeEntityProfileState.StatePath, new
         {
@@ -9710,8 +9710,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         });
         await _stateManager.RefreshGameStateAsync();
         _console.QueueAnySelection("⬆ Прокачать духовное искусство");
-        _console.QueueSelection("Выберите духовное искусство", "Сияющая Защита — уровень 1->2, 2 ✨");
-        _console.QueueSelection("Выберите валюту", "Искры Света — 2 ✨");
+        _console.QueueSelection("Выберите духовное искусство", "Сияющая Защита — уровень 1->2, 10 ✨");
+        _console.QueueSelection("Выберите валюту", "Искры Света — 10 ✨");
         _console.QueueAnyConfirmResponse(true);
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
@@ -9719,7 +9719,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("spiritual_arts_upgrade_special_art_light_sparks");
         var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!)!.AsObject();
-        Assert.Equal(3, shiningRoot["lightSparks"]?.GetValue<int>());
+        Assert.Equal(2, shiningRoot["lightSparks"]?.GetValue<int>());
         var entityRoot = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath) ?? "{}")!)!.AsObject();
         var playerProfile = entityRoot["profiles"]!.AsArray().OfType<JsonObject>()
             .Single(profile => string.Equals(profile["actorType"]?.GetValue<string>(), "player_soul", StringComparison.OrdinalIgnoreCase));
@@ -9814,13 +9814,13 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             soulName = "Тестовая Душа",
             currentRealm = "Chaos Sea",
             currentIncarnation = 1,
-            inkFeathers = new { current = 500, total = 500 },
+            inkFeathers = new { current = 700, total = 700 },
             enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
             soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 }
         });
         await _stateManager.RefreshGameStateAsync();
         _console.QueueAnySelection("⬆ Прокачать духовное искусство");
-        _console.QueueSelection("Выберите духовное искусство", "Средоточие Души — уровень 0->1, макс ОД 6->7, 200 🪶");
+        _console.QueueSelection("Выберите духовное искусство", "Средоточие Души — уровень 0->1, макс ОД 6->7, 600 🪶");
         _console.QueueAnyConfirmResponse(true);
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
@@ -9833,8 +9833,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var artTiers = Assert.IsType<JsonObject>(profile["artTiers"]);
         Assert.False(artTiers.ContainsKey("pressure"));
         var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
-        Assert.Equal(300, inkFeathers["current"]?.GetValue<int>());
-        Assert.Equal(500, inkFeathers["total"]?.GetValue<int>());
+        Assert.Equal(100, inkFeathers["current"]?.GetValue<int>());
+        Assert.Equal(700, inkFeathers["total"]?.GetValue<int>());
     }
 
     [Fact]
@@ -9845,13 +9845,13 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             soulName = "Тестовая Душа",
             currentRealm = "Chaos Sea",
             currentIncarnation = 1,
-            inkFeathers = new { current = 500, total = 500 },
+            inkFeathers = new { current = 700, total = 700 },
             enlightenment = new { currentTier = "Tempered", experience = 45, level = 3 },
             soulProgression = new { totalExperience = 45, tier = 3, progressPercent = 45 }
         });
         await _stateManager.RefreshGameStateAsync();
         _console.QueueAnySelection("⬆ Прокачать духовное искусство");
-        _console.QueueSelection("Выберите духовное искусство", "Разрыв оков — уровень 0->1, 150 🪶");
+        _console.QueueSelection("Выберите духовное искусство", "Разрыв оков — уровень 0->1, 600 🪶");
         _console.QueueAnyConfirmResponse(true);
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
@@ -9863,7 +9863,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var artTiers = Assert.IsType<JsonObject>(profile["artTiers"]);
         Assert.Equal(1, artTiers["break_binding"]?.GetValue<int>());
         var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
-        Assert.Equal(350, inkFeathers["current"]?.GetValue<int>());
+        Assert.Equal(100, inkFeathers["current"]?.GetValue<int>());
     }
 
     [Fact]

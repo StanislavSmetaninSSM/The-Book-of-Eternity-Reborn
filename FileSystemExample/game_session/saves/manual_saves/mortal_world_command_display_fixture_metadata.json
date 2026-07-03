@@ -5,7 +5,8 @@
   "archiveFile": "mortal_world_command_display_fixture.zip",
   "sourceIssues": [
     "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1092",
-    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1095"
+    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1095",
+    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1378"
   ],
   "createdFor": "Reusable Mortal World console/browser command-display QA",
   "timestamp": "2026-06-18T00:00:00Z",

@@ -37,6 +37,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             SarefMainStoryState.StatePath,
             GuardianAbodeOfferingState.PendingRequestPath,
             GuardianTradeRequestState.PendingRequestPath,
+            TrainingRequestState.PendingRequestPath,
             PlayerGuardianFoundationState.PendingRequestPath,
             NpcTradeRequestState.PendingRequestPath,
             AfterlifeArchiveActionState.ConsultationRequestPath,
@@ -77,6 +78,35 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.False(string.IsNullOrWhiteSpace(surface.GetProperty("authority").GetString()));
             Assert.Equal(JsonValueKind.Array, surface.GetProperty("docAnchors").ValueKind);
         }
+    }
+
+    [Fact]
+    public void TrainingShowcaseContractsAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var example = ReadRepoFile("Examples", "E_CLI_Training_Showcases.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        foreach (var text in new[] { matrix, example, manifest })
+        {
+            Assert.Contains("pending_training_showcase_requests.json", text, StringComparison.Ordinal);
+            Assert.Contains("trainingShowcase", text, StringComparison.Ordinal);
+            Assert.Contains("sourceActorSnapshotHash", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("mortal_teacher_showcase", example + manifest, StringComparison.Ordinal);
+        Assert.Contains("afterlife_teacher_showcase", example + manifest, StringComparison.Ordinal);
+        Assert.Contains("SelfStandardArtMultiplierPercent = 400", example, StringComparison.Ordinal);
+        Assert.Contains("SelfSpiritFocusMultiplierPercent = 300", example, StringComparison.Ordinal);
+        Assert.Contains("SelfSpecialArtMultiplierPercent = 500", example, StringComparison.Ordinal);
+        Assert.Contains("MentorNeutralMultiplierPercent = 100", example, StringComparison.Ordinal);
+        Assert.Contains("MentorGoodMultiplierPercent = 80", example, StringComparison.Ordinal);
+        Assert.Contains("MentorExcellentMultiplierPercent = 60", example, StringComparison.Ordinal);
+        Assert.Contains("GM does not spend player currency", example, StringComparison.Ordinal);
+        Assert.Contains("GM does not raise player tiers directly", example, StringComparison.Ordinal);
+        Assert.Contains("afterlifeSpecialArtLearningReceipts", example + matrix, StringComparison.Ordinal);
+        Assert.Contains("/обучение", example + matrix, StringComparison.Ordinal);
+        Assert.Contains("/духовные_искусства", example + matrix, StringComparison.Ordinal);
     }
 
     [Fact]

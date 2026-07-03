@@ -14,14 +14,14 @@ Pixel-perfect console rendering is intentionally out of scope. The standard is s
 
 ## Coverage Snapshot
 
-- Descriptor count: 105
-- Alias count: 231
+- Descriptor count: 106
+- Alias count: 233
 - Subcommand count: 9
-- Browser-executable commands: 105
+- Browser-executable commands: 106
 - Browser-executable subcommands: 9
-- Player-default actions: 98
+- Player-default actions: 99
 - Advanced-only actions: 7
-- Mutating/local-turn commands: 49
+- Mutating/local-turn commands: 50
 - Commands needing follow-up in current coverage metadata: 0
 - Subcommands needing follow-up in current coverage metadata: 0
 
@@ -72,6 +72,7 @@ If a future audit row regresses to `tracked-follow-up`, implement in the same or
 | `feathers` | `/feathers`, `/перья` | Universal/meta | player-default / none | Console shared ExplorerCommandResult blocks. | Browser typed blocks: tables, lists, key-value grids, maps/images where supplied, actions, and advanced raw diagnostics only as secondary view. | None currently tracked in browser coverage. | No default raw JSON dependency; raw diagnostics are secondary/advanced. | Covered by shared detail actions or typed block rendering for the audited scope. | P3 adequate/no open gap | [#1126](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1126) - closed generic renderer / shared command-result rendering | covered; No tracked browser parity gap for the audited command scope. |
 | `world_rules` | `/world_rules`, `/правила_мира` | Universal/meta | player-default / none | Console shared ExplorerCommandResult blocks. | Browser typed blocks: tables, lists, key-value grids, maps/images where supplied, actions, and advanced raw diagnostics only as secondary view. | None currently tracked in browser coverage. | No default raw JSON dependency; raw diagnostics are secondary/advanced. | Covered by shared detail actions or typed block rendering for the audited scope. | P3 adequate/no open gap | [#1126](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1126) - closed generic renderer / shared command-result rendering | covered; No tracked browser parity gap for the audited command scope. |
 | `gallery` | `/gallery`, `/галерея` | Universal/meta | player-default / none | Console shared ExplorerCommandResult blocks. | Browser typed blocks: tables, lists, key-value grids, maps/images where supplied, actions, and advanced raw diagnostics only as secondary view. | None currently tracked in browser coverage. | No default raw JSON dependency; raw diagnostics are secondary/advanced. | Covered by shared detail actions or typed block rendering for the audited scope. | P3 adequate/no open gap | [#1126](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1126) - closed generic renderer / shared command-result rendering | covered; No tracked browser parity gap for the audited command scope. |
+| `training` | `/training`, `/обучение` | Universal/meta | player-default / guided-form | Console `/training` shows mortal teacher vitrines, afterlife mentor vitrines, expensive self-training fallback, pending refresh state, and purchase result blocks. | Browser uses the same C# LifecycleLocalTurn command result and prompt-session flow through typed blocks and guided local-write submission. | None currently tracked in browser coverage. | No default raw JSON dependency; raw diagnostics are secondary/advanced. | Guided action flow; detail context stays in training cards, offer detail blocks, pending-refresh status, and purchase receipts. | P3 adequate/no open gap | [#1377](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1377)-[#1385](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1385) - training vitrines and fallback self-training | covered; No tracked browser parity gap for the audited command scope. |
 | `status` | `/status`, `/статус` | Universal/meta | player-default / none | Console shared ExplorerCommandResult blocks. | Browser typed blocks: tables, lists, key-value grids, maps/images where supplied, actions, and advanced raw diagnostics only as secondary view. | None currently tracked in browser coverage. | No default raw JSON dependency; raw diagnostics are secondary/advanced. | Covered by shared detail actions or typed block rendering for the audited scope. | P3 adequate/no open gap | [#1122](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1122) - closed inventory/books/effects/status parity | covered; No tracked browser parity gap for the audited command scope. |
 | `audit`<br><small>parent: `status`</small> | `audit`, `аудит` | Universal/meta | player-default / none | Console shared ExplorerCommandResult blocks. | Browser typed blocks: tables, lists, key-value grids, maps/images where supplied, actions, and advanced raw diagnostics only as secondary view. | None currently tracked in browser coverage. | No default raw JSON dependency; raw diagnostics are secondary/advanced. | Covered by shared detail actions or typed block rendering for the audited scope. | P3 adequate/no open gap | [#1126](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1126) - closed generic renderer / shared command-result rendering | covered; No tracked browser parity gap for the audited command scope. |
 | `gm` | `/gm`, `/гм` | Universal/meta | advanced-only / none | Advanced diagnostic/help sections only; not a default player screen. | Hidden from default UI; available through explicit advanced diagnostics. | None for default player mode; command is intentionally advanced-only. | Advanced-only raw diagnostics may be used intentionally. | Not applicable. | P3 adequate/no open gap | No fix: explicit advanced diagnostics. | advanced-only; Advanced-only by design; hidden from the default player UI and available through explicit diagnostics. |
@@ -181,7 +182,7 @@ If a future audit row regresses to `tracked-follow-up`, implement in the same or
 | MortalWorld | 34 | #1121/#1122/#1123 closed |
 | SarefStory | 2 | Saref story parity work closed for current metadata |
 | ShiningAbode | 19 | #1125 closed |
-| UniversalMeta | 21 | #1122/#1126 plus advanced-only decisions |
+| UniversalMeta | 22 | #1122/#1126 plus training vitrines and advanced-only decisions |
 
 ## Raw JSON And Advanced Diagnostics Policy
 
