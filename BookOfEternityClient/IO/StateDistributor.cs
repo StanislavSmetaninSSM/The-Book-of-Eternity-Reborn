@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging;
@@ -273,7 +274,11 @@ public class StateDistributor
         // Narrative response
         if (response.Response != null)
         {
-            var narrative = new { response = response.Response, timestamp = DateTime.UtcNow.ToString("o") };
+            var narrative = new
+            {
+                response = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(response.Response),
+                timestamp = DateTime.UtcNow.ToString("o")
+            };
             await _fs.WriteFileAtomicAsync("output/narrative_response.json",
                 JsonSerializer.Serialize(narrative, JsonOpts));
         }
@@ -283,7 +288,7 @@ public class StateDistributor
         {
             var ui = new
             {
-                dialogueOptions = response.DialogueOptions,
+                dialogueOptions = NormalizeDialogueOptions(response.DialogueOptions),
                 image_prompt = response.ImagePrompt,
                 timestamp = DateTime.UtcNow.ToString("o")
             };
@@ -302,5 +307,21 @@ public class StateDistributor
             await _fs.WriteFileAtomicAsync("output/debug_logs.json",
                 JsonSerializer.Serialize(debug, JsonOpts));
         }
+    }
+
+    private static DialogueOption[]? NormalizeDialogueOptions(DialogueOption[]? options)
+    {
+        if (options == null)
+            return null;
+
+        return options
+            .Select(option => new DialogueOption
+            {
+                OptionId = option.OptionId,
+                Text = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.Text),
+                InputValue = option.InputValue,
+                Category = option.Category
+            })
+            .ToArray();
     }
 }

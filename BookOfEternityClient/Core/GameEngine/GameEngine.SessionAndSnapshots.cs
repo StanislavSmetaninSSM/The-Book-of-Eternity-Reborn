@@ -44,7 +44,7 @@ public partial class GameEngine
             {
                 using var doc = JsonDocument.Parse(narrativeJson);
                 if (doc.RootElement.TryGetProperty("response", out var r))
-                    response.Response = r.GetString();
+                    response.Response = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(r.GetString());
             }
             catch (Exception ex)
             {
@@ -67,6 +67,11 @@ public partial class GameEngine
                     opts.ValueKind == JsonValueKind.Array)
                 {
                     response.DialogueOptions = JsonSerializer.Deserialize<DialogueOption[]>(opts.GetRawText());
+                    if (response.DialogueOptions != null)
+                    {
+                        foreach (var option in response.DialogueOptions)
+                            option.Text = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.Text);
+                    }
                 }
                 if (doc.RootElement.TryGetProperty("image_prompt", out var img))
                     response.ImagePrompt = img.GetString();

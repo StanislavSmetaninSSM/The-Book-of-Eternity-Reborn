@@ -88,7 +88,8 @@ public class StateManager
         // Core: Narrative
         await TryLoadJson("output/narrative_response.json", (doc) =>
         {
-            state.Narrative = GetString(doc.RootElement, "response", "");
+            state.Narrative = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(
+                GetString(doc.RootElement, "response", "")) ?? "";
         });
 
         // Core: GM Debug

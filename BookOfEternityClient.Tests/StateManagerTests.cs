@@ -93,6 +93,33 @@ public sealed class StateManagerTests
         }
     }
 
+    [Fact]
+    public async Task RefreshGameStateAsync_NarrativeResponse_NormalizesEscapedLineBreakArtifacts()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await fs.WriteFileAtomicAsync("output/narrative_response.json", """
+            {
+              "response": "Первая строка\\n\\nВторая строка\\r\\nТретья строка"
+            }
+            """);
+            var manager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+
+            await manager.RefreshGameStateAsync();
+
+            Assert.Equal("Первая строка\n\nВторая строка\nТретья строка", manager.CurrentState.Narrative);
+            Assert.DoesNotContain("\\n", manager.CurrentState.Narrative, StringComparison.Ordinal);
+            Assert.DoesNotContain("\\r", manager.CurrentState.Narrative, StringComparison.Ordinal);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     [Theory]
     [InlineData(-1, 15)]
     [InlineData(0, 15)]
