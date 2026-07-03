@@ -1298,6 +1298,9 @@ public partial class GameEngine
                     Error = doc.RootElement.TryGetProperty("error", out var error) && error.ValueKind == JsonValueKind.String
                         ? error.GetString()
                         : null,
+                    HarnessSource = doc.RootElement.TryGetProperty("harnessSource", out var harnessSource) && harnessSource.ValueKind == JsonValueKind.String
+                        ? harnessSource.GetString()
+                        : null,
                     HasFilesModified = hasFilesModified,
                     FilesModifiedValid = filesModifiedValid
                 };

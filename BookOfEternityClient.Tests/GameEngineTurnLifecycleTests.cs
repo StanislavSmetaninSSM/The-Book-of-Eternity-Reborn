@@ -2336,6 +2336,160 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task ProcessPlayerTurn_IdleBridgeErrorWithFreshOutputArtifacts_RecoversAsAcceptedTurn()
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        var input = new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]);
+        var engine = CreateGameEngine(input);
+        var gmOutputTask = Task.Run(async () =>
+        {
+            var request = await WaitForTurnRequestAsync();
+            var outputTimestamp = DateTime.UtcNow.ToString("o");
+            await WriteJsonAsync("output/narrative_response.json", new
+            {
+                response = "Книга напоминает: первые Чернильные Перья обычно приходят после завершения первой смертной жизни.",
+                timestamp = outputTimestamp
+            });
+            await WriteJsonAsync("output/interface_updates.json", new
+            {
+                dialogueOptions = new[]
+                {
+                    new
+                    {
+                        text = "Перейти к выбору первой смертной жизни.",
+                        category = "neutral"
+                    }
+                },
+                timestamp = outputTimestamp
+            });
+            await WriteJsonAsync("output/debug_logs.json", new
+            {
+                timestamp = outputTimestamp,
+                gm_thoughts_markdown = string.Join(
+                    "\n",
+                    "## NPC Scope",
+                    "- Mode: Scene-local",
+                    "- Relevant actors: нет",
+                    "- Why relevant: Ход отвечает на системный вопрос игрока без действий NPC, Хранителей или фракций.",
+                    "- Actors outside scope: нет",
+                    "- Why outside scope: В сцене нет акторов, получающих структурное состояние.",
+                    "",
+                    "## Reasoning",
+                    "- Structured actor reasoning is not required for this actor-free explanatory turn.")
+            });
+            await WriteJsonAsync("ready/turn_error.json", new
+            {
+                sessionId = request.SessionId,
+                requestId = request.RequestId,
+                turnNumber = request.TurnNumber,
+                timestamp = DateTime.UtcNow.ToString("o"),
+                status = "error",
+                harnessSource = "gm_bridge_idle_without_terminal_signal",
+                error = "GM bridge returned to idle without a correlated terminal signal."
+            });
+        });
+
+        await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Спросить, как заработать первые Чернильные Перья.", null);
+        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(5));
+
+        var gameLoop = GetPrivateField<GameLoop>(engine, "_gameLoop");
+        Assert.Equal(1, gameLoop.TurnNumber);
+        var lastResponse = GetPrivateField<GameResponse>(engine, "_lastResponse");
+        Assert.Contains("Чернильные Перья", lastResponse.Response, StringComparison.Ordinal);
+        Assert.False(_fs.FileExists("input/turn_request.json"));
+        Assert.False(_fs.FileExists("ready/turn_error.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.authority.json"));
+    }
+
+    [Fact]
+    public async Task ProcessPlayerTurn_IdleBridgeErrorWithoutOutputArtifacts_RemainsFailClosed()
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        var input = new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]);
+        var engine = CreateGameEngine(input);
+        var gmErrorTask = Task.Run(async () =>
+        {
+            var request = await WaitForTurnRequestAsync();
+            await WriteJsonAsync("ready/turn_error.json", new
+            {
+                sessionId = request.SessionId,
+                requestId = request.RequestId,
+                turnNumber = request.TurnNumber,
+                timestamp = DateTime.UtcNow.ToString("o"),
+                status = "error",
+                harnessSource = "gm_bridge_idle_without_terminal_signal",
+                error = "GM bridge returned to idle without a correlated terminal signal."
+            });
+        });
+
+        await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Спросить, как заработать первые Чернильные Перья.", null);
+        await gmErrorTask.WaitAsync(TimeSpan.FromSeconds(5));
+
+        var gameLoop = GetPrivateField<GameLoop>(engine, "_gameLoop");
+        Assert.Equal(0, gameLoop.TurnNumber);
+        Assert.False(_fs.FileExists("input/turn_request.json"));
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+        Assert.False(_fs.FileExists("ready/turn_error.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.authority.json"));
+    }
+
+    [Fact]
+    public async Task ProcessPlayerTurn_IdleBridgeErrorWithStaleOutputTimestamps_RemainsFailClosed()
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        var input = new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]);
+        var engine = CreateGameEngine(input);
+        var gmOutputTask = Task.Run(async () =>
+        {
+            var request = await WaitForTurnRequestAsync();
+            var staleOutputTimestamp = DateTime.UtcNow.AddMinutes(-10).ToString("o");
+            await WriteJsonAsync("output/narrative_response.json", new
+            {
+                response = "Старый ответ ГМа не должен быть принят новым ходом.",
+                timestamp = staleOutputTimestamp
+            });
+            await WriteJsonAsync("output/debug_logs.json", new
+            {
+                timestamp = staleOutputTimestamp,
+                gm_thoughts_markdown = string.Join(
+                    "\n",
+                    "## NPC Scope",
+                    "- Mode: Scene-local",
+                    "- Relevant actors: нет",
+                    "- Why relevant: Старый артефакт не относится к текущему ходу.",
+                    "- Actors outside scope: нет",
+                    "- Why outside scope: Проверяется только свежесть GM output.",
+                    "",
+                    "## Reasoning",
+                    "- Recovery must reject output artifacts whose internal timestamp predates the active turn request.")
+            });
+            await WriteJsonAsync("ready/turn_error.json", new
+            {
+                sessionId = request.SessionId,
+                requestId = request.RequestId,
+                turnNumber = request.TurnNumber,
+                timestamp = DateTime.UtcNow.ToString("o"),
+                status = "error",
+                harnessSource = "gm_bridge_idle_without_terminal_signal",
+                error = "GM bridge returned to idle without a correlated terminal signal."
+            });
+        });
+
+        await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Спросить, как заработать первые Чернильные Перья.", null);
+        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(5));
+
+        var gameLoop = GetPrivateField<GameLoop>(engine, "_gameLoop");
+        Assert.Equal(0, gameLoop.TurnNumber);
+        Assert.False(_fs.FileExists("input/turn_request.json"));
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+        Assert.False(_fs.FileExists("ready/turn_error.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.authority.json"));
+    }
+
+    [Fact]
     public async Task HasCurrentSessionAsync_TerminalSoulDissipation_BlocksContinueSession()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new

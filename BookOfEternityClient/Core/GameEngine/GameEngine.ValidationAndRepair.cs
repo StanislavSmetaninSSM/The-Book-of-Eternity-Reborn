@@ -18,6 +18,14 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
+    private const string GmBridgeIdleWithoutTerminalSignalHarnessSource = "gm_bridge_idle_without_terminal_signal";
+    private const string ClientRecoveredMissingTerminalSignalHarnessSource = "client_recovered_gm_output_without_terminal_signal";
+    private static readonly string[] RecoverableGmOutputRequiredFiles =
+    [
+        "output/narrative_response.json",
+        "output/debug_logs.json"
+    ];
+
     private async Task EnsureClientOwnedSystemFilesHealthyAsync()
     {
         await _stateManager.RefreshGameStateAsync();
@@ -3543,6 +3551,168 @@ public partial class GameEngine
         return $"turn_complete_exists={turnCompleteExists}; turn_error_exists={turnErrorExists}; {manifestDescription}";
     }
 
+    private async Task<ReadySignalMetadata?> TryRecoverIdleBridgeOutputWithoutTerminalSignalAsync(
+        ReadySignalMetadata errorSignal,
+        ValidatedPendingTurnSnapshotContext snapshotContext)
+    {
+        if (!IsRecoverableIdleBridgeMissingTerminalSignal(errorSignal))
+            return null;
+
+        if (!IsMatchingReadySignal(errorSignal, snapshotContext))
+            return null;
+
+        if (!TryResolveTurnRequestTimestampUtc(snapshotContext, out var requestTimestampUtc))
+            return null;
+
+        foreach (var requiredFile in RecoverableGmOutputRequiredFiles)
+        {
+            if (!await HasFreshRecoverableGmOutputArtifactAsync(requiredFile, requestTimestampUtc))
+                return null;
+        }
+
+        var filesModified = EnumerateRecoverableGmModifiedFiles(requestTimestampUtc).ToArray();
+        if (filesModified.Length == 0)
+            return null;
+
+        var recoveredSignal = new
+        {
+            sessionId = snapshotContext.SessionId,
+            requestId = snapshotContext.RequestId,
+            turnNumber = snapshotContext.TurnNumber,
+            timestamp = DateTime.UtcNow.ToString("o"),
+            status = "success",
+            harnessSource = ClientRecoveredMissingTerminalSignalHarnessSource,
+            recoveredFrom = GmBridgeIdleWithoutTerminalSignalHarnessSource,
+            originalError = errorSignal.Error,
+            filesModified
+        };
+
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", JsonSerializer.Serialize(recoveredSignal, JsonOpts));
+        _fs.DeleteFile("ready/turn_error.json");
+        _logger.LogWarning(
+            "Recovered GM output for turn {TurnNumber} after daemon emitted {HarnessSource}; synthesized ready/turn_complete.json with {FileCount} modified files.",
+            snapshotContext.TurnNumber,
+            GmBridgeIdleWithoutTerminalSignalHarnessSource,
+            filesModified.Length);
+
+        return await ReadReadySignalMetadataAsync("ready/turn_complete.json");
+    }
+
+    private static bool IsRecoverableIdleBridgeMissingTerminalSignal(ReadySignalMetadata signal) =>
+        string.Equals(signal.HarnessSource, GmBridgeIdleWithoutTerminalSignalHarnessSource, StringComparison.OrdinalIgnoreCase);
+
+    private bool TryResolveTurnRequestTimestampUtc(
+        ValidatedPendingTurnSnapshotContext snapshotContext,
+        out DateTime requestTimestampUtc)
+    {
+        requestTimestampUtc = DateTime.MinValue;
+        var requestPath = _fs.ResolvePath("input/turn_request.json");
+        if (File.Exists(requestPath))
+        {
+            requestTimestampUtc = File.GetLastWriteTimeUtc(requestPath);
+            if (requestTimestampUtc > DateTime.MinValue)
+                return true;
+        }
+
+        if (DateTimeOffset.TryParse(snapshotContext.Manifest.RequestTimestamp, out var requestTimestamp))
+        {
+            requestTimestampUtc = requestTimestamp.UtcDateTime;
+            return true;
+        }
+
+        return false;
+    }
+
+    private async Task<bool> HasFreshRecoverableGmOutputArtifactAsync(string relativePath, DateTime requestTimestampUtc)
+    {
+        if (!_fs.FileExists(relativePath))
+            return false;
+
+        var json = await _fs.ReadFileAsync(relativePath);
+        if (string.IsNullOrWhiteSpace(json))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return false;
+
+            var requiredTextProperty = relativePath.EndsWith("narrative_response.json", StringComparison.OrdinalIgnoreCase)
+                ? "response"
+                : "gm_thoughts_markdown";
+            if (!doc.RootElement.TryGetProperty(requiredTextProperty, out var requiredText) ||
+                requiredText.ValueKind != JsonValueKind.String ||
+                string.IsNullOrWhiteSpace(requiredText.GetString()))
+            {
+                return false;
+            }
+
+            if (!doc.RootElement.TryGetProperty("timestamp", out var timestamp) ||
+                timestamp.ValueKind != JsonValueKind.String ||
+                !DateTimeOffset.TryParse(timestamp.GetString(), out var parsedTimestamp))
+            {
+                return false;
+            }
+
+            return parsedTimestamp.UtcDateTime >= requestTimestampUtc;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private IEnumerable<string> EnumerateRecoverableGmModifiedFiles(DateTime requestTimestampUtc)
+    {
+        var files = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var requiredFile in RecoverableGmOutputRequiredFiles)
+        {
+            if (_fs.FileExists(requiredFile))
+                files.Add(requiredFile);
+        }
+
+        if (_fs.FileExists("output/interface_updates.json"))
+            files.Add("output/interface_updates.json");
+
+        var sessionRoot = _fs.ResolvePath("");
+        foreach (var root in new[] { "output", "game_state", "lore" })
+        {
+            var absoluteRoot = _fs.ResolvePath(root);
+            if (!Directory.Exists(absoluteRoot))
+                continue;
+
+            foreach (var absolutePath in Directory.GetFiles(absoluteRoot, "*.json", SearchOption.AllDirectories))
+            {
+                var relativePath = Path.GetRelativePath(sessionRoot, absolutePath).Replace('\\', '/');
+                if (!IsRecoverableFilesModifiedPath(relativePath))
+                    continue;
+
+                if (File.GetLastWriteTimeUtc(absolutePath) >= requestTimestampUtc)
+                    files.Add(relativePath);
+            }
+        }
+
+        return files;
+    }
+
+    private static bool IsRecoverableFilesModifiedPath(string relativePath)
+    {
+        var normalized = relativePath.Replace('\\', '/');
+        if (normalized.Contains(".rollback.", StringComparison.OrdinalIgnoreCase) ||
+            normalized.EndsWith(".tmp", StringComparison.OrdinalIgnoreCase) ||
+            normalized.StartsWith("game_state/control/pending_turn_snapshot", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "game_state/control/validation_repair_request.json", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return PendingTurnSnapshotAuthority.IsSafeRelativePath(normalized);
+    }
+
     private async Task<ActiveTerminalOutcomeResolution> ResolveFinalActiveTerminalOutcomeAsync(
         ValidatedPendingTurnSnapshotContext? snapshotContext,
         RollbackSnapshot? rollbackSnapshot)
@@ -3577,6 +3747,17 @@ public partial class GameEngine
                 IsMatchingReadySignal(errorSignal, snapshotContext) &&
                 HasValidTerminalSignalContract("turn_error", errorSignal))
             {
+                var recoveredSignal = await TryRecoverIdleBridgeOutputWithoutTerminalSignalAsync(errorSignal, snapshotContext);
+                if (recoveredSignal != null &&
+                    HasValidTerminalSignalContract("turn_complete", recoveredSignal))
+                {
+                    return new ActiveTerminalOutcomeResolution
+                    {
+                        Kind = "success",
+                        Signal = recoveredSignal
+                    };
+                }
+
                 return new ActiveTerminalOutcomeResolution
                 {
                     Kind = "error",

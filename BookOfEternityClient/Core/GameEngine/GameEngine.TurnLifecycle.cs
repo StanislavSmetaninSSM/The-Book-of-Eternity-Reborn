@@ -398,6 +398,15 @@ public partial class GameEngine
                     continue;
                 }
 
+                if (signal != null &&
+                    snapshotContext != null &&
+                    HasValidTerminalSignalContract("turn_error", signal))
+                {
+                    var recoveredSignal = await TryRecoverIdleBridgeOutputWithoutTerminalSignalAsync(signal, snapshotContext);
+                    if (recoveredSignal != null)
+                        continue;
+                }
+
                 await ShowTurnErrorMessageAsync("ready/turn_error.json");
                 if (HasRollbackCapability(rollbackSnapshot))
                 {

@@ -149,6 +149,7 @@ public partial class GameEngine
         public string Status { get; set; } = "";
         public string Timestamp { get; set; } = "";
         public string? Error { get; set; }
+        public string? HarnessSource { get; set; }
         public bool HasFilesModified { get; set; }
         public bool FilesModifiedValid { get; set; }
     }
