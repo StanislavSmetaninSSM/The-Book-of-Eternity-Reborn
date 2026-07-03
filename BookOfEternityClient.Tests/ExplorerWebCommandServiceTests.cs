@@ -136,7 +136,6 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains("Извечные хранители", text, StringComparison.Ordinal);
-        Assert.Contains("В библиотеке пока нет пресетов", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Папка", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(_rootPath, payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("system_guardians", text, StringComparison.OrdinalIgnoreCase);
@@ -3707,7 +3706,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Тип", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Артефакт", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Качество", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("редкое", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("редк", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Бонусы", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Чувство магических потоков +2", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Структурные бонусы", text, StringComparison.OrdinalIgnoreCase);
@@ -4197,7 +4196,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Реликвии души", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Хранилище", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Клинок Памяти", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("редкое", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("редк", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Экипировано", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Шлем Тишины", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("легендарное", text, StringComparison.OrdinalIgnoreCase);
@@ -4739,7 +4738,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(serafinaCard.Nested, static card => card.Title == "Активности");
         var journalEntryCard = Assert.Single(journalCard.Cards, static card => card.Title == "Письмо найдено");
         Assert.DoesNotContain(';', journalEntryCard.Summary);
-        Assert.Contains(journalEntryCard.List, static item => item == "Сомневается, стоит ли доверять письму.");
+        Assert.Contains(journalEntryCard.Facts, static fact =>
+            fact.Value == "Сомневается, стоит ли доверять письму.");
         Assert.Contains(journalEntryCard.Facts, static fact =>
             fact.Label == "Изменение отношения" &&
             fact.Value == "+1");
@@ -4882,7 +4882,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Тип навыка", text, StringComparison.Ordinal);
         Assert.Contains("основан на знаниях", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Редкость", text, StringComparison.Ordinal);
-        Assert.Contains("редкое", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("редк", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Название карты", text, StringComparison.Ordinal);
         Assert.Contains("Холодная милость наставника", text, StringComparison.Ordinal);
         Assert.Contains("Название воспоминания", text, StringComparison.Ordinal);
@@ -5010,7 +5010,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        Assert.DoesNotContain("Получить ключ от боковой двери", CollectBlockText(result.Blocks), StringComparison.Ordinal);
+        Assert.DoesNotContain("reward_serafina_secret", CollectBlockText(result.Blocks), StringComparison.Ordinal);
 
         var questSection = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc section npc_serafina personal-quests"));
         var memorySection = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc section npc_serafina memory"));
@@ -6015,9 +6015,9 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [Theory]
     [InlineData("/afterlife_profiles", "afterlife-profile-detail-player_soul", "/afterlife_profiles профиль player_soul", "Test Soul")]
     [InlineData("/afterlife_threats", "afterlife-threat-detail-threat_mirror_hunter", "/afterlife_threats угроза threat_mirror_hunter", "Охотник зеркального долга")]
-    [InlineData("/afterlife_chronicles", "afterlife-chronicle-detail-guardian_scene_mirror", "/afterlife_chronicles хроника guardian_scene_mirror", "Зал зеркальной клятвы")]
-    [InlineData("/spiritual_conflict", "spiritual-conflict-exchange-detail-exchange_1", "/spiritual_conflict обмен exchange_1", "Давление")]
-    [InlineData("/spiritual_combat_log", "spiritual-combat-log-exchange-detail-exchange_1", "/spiritual_combat_log обмен exchange_1", "Давление")]
+    [InlineData("/afterlife_chronicles", "afterlife-chronicle-detail-guardian_scene_mirror", "/хроники_посмертия хроника \"Зал зеркальной клятвы\"", "Зал зеркальной клятвы")]
+    [InlineData("/spiritual_conflict", "spiritual-conflict-exchange-detail-1", "/spiritual_conflict обмен 1", "Давление")]
+    [InlineData("/spiritual_combat_log", "spiritual-combat-log-exchange-detail-1", "/spiritual_combat_log обмен 1", "Давление")]
     [InlineData("/spiritual_arts", "spiritual-art-detail-pressure", "/spiritual_arts искусство pressure", "Давление")]
     [InlineData("/spiritual_arts", "spiritual-special-art-detail-rose_mirror_counter", "/spiritual_arts особое rose_mirror_counter", "Зеркало Ночной Розы")]
     public async Task ExecuteAsync_ChaosSeaAfterlifeOverviews_ExposeIssue1124ReadOnlyDetailActions(

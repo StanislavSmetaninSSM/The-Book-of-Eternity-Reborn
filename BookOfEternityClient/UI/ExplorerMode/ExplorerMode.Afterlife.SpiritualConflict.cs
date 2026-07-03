@@ -425,7 +425,7 @@ public partial class ExplorerMode
             lines.Add($"  • {rank.Rank}: {Markup.Escape(FormatRankIdLabel(rank.RankId))}, требует {rank.RequiredProgress}, открывает уровень искусства {rank.UnlocksArtTier}. {Markup.Escape(FormatRankMechanicalEffect(rank.MechanicalEffect))}");
 
         lines.Add("");
-        lines.Add("[dim]Правило прокачки: ранги ограничивают максимальный уровень искусства; самостоятельная прокачка дороже наставника и служит fallback-режимом. Клиент локально пишет soul_state.afterlifeCombatProfile и тратит выбранную валюту. ГМ не пишет квитанцию/отчёт прокачки.[/]");
+        lines.Add("[dim]Правило прокачки: ранги ограничивают максимальный уровень искусства; самостоятельная прокачка дороже наставника и служит fallback-режимом. Клиент локально обновляет боевой профиль души и тратит выбранную валюту. ГМ не пишет квитанцию/отчёт прокачки.[/]");
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {

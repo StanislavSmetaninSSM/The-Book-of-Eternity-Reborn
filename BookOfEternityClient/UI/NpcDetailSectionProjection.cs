@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
@@ -451,7 +452,7 @@ internal static class NpcDetailSectionProjection
                 {
                     yield return new UiKeyValueItem
                     {
-                        Key = FormatNpcDetailKey(key),
+                        Key = FormatNpcDetailKey(key, sectionTitle, rowTitle),
                         Value = FormatNpcDetailValue(key, value)
                     };
                     continue;
@@ -459,7 +460,7 @@ internal static class NpcDetailSectionProjection
 
                 yield return new UiKeyValueItem
                 {
-                    Key = InferNpcDetailScalarKey(sectionTitle, rowTitle, scalarIndex++),
+                    Key = InferNpcDetailScalarKey(sectionTitle, rowTitle, scalarIndex++, part),
                     Value = FormatNpcDetailValue(columnLabel, part)
                 };
             }
@@ -494,15 +495,16 @@ internal static class NpcDetailSectionProjection
         return !string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(pairValue);
     }
 
-    private static string FormatNpcDetailKey(string key)
+    private static string FormatNpcDetailKey(string key, string sectionTitle, string rowTitle)
     {
         var clean = key.Trim();
+        var isSkillContext = IsNpcSkillContext(sectionTitle, rowTitle);
         return clean.ToLowerInvariant() switch
         {
             "status" or "active state" or "activestate" => "Состояние",
-            "type" or "skilltype" => "Тип",
+            "type" or "skilltype" => isSkillContext ? "Тип навыка" : "Тип",
             "rarity" or "quality" => "Редкость",
-            "rank" or "level" or "tier" => "Уровень",
+            "rank" or "level" or "tier" => isSkillContext ? "Ранг" : "Уровень",
             "summary" => "Кратко",
             "description" => "Описание",
             _ => clean
@@ -534,11 +536,18 @@ internal static class NpcDetailSectionProjection
         };
     }
 
-    private static string InferNpcDetailScalarKey(string sectionTitle, string rowTitle, int scalarIndex)
+    private static string InferNpcDetailScalarKey(string sectionTitle, string rowTitle, int scalarIndex, string rawValue)
     {
-        if (sectionTitle.Contains("Навык", StringComparison.OrdinalIgnoreCase) ||
-            rowTitle.Contains("Навык", StringComparison.OrdinalIgnoreCase))
+        var formattedValue = FormatNpcDetailValue(string.Empty, rawValue);
+        if (IsNpcSkillContext(sectionTitle, rowTitle))
         {
+            if (IsNpcSkillTypeValue(formattedValue))
+                return "Тип навыка";
+            if (IsNpcRarityValue(formattedValue))
+                return "Редкость";
+            if (IsIntegerText(formattedValue))
+                return "Ранг";
+
             return scalarIndex switch
             {
                 0 => "Название навыка",
@@ -547,8 +556,93 @@ internal static class NpcDetailSectionProjection
             };
         }
 
+        if (IsNpcFateCardContext(sectionTitle, rowTitle))
+        {
+            if (IsNpcRarityValue(formattedValue))
+                return "Редкость";
+
+            return scalarIndex switch
+            {
+                0 => "Название карты",
+                1 => "Описание",
+                _ => "Свойство карты"
+            };
+        }
+
+        if (IsNpcMemoryContext(sectionTitle, rowTitle))
+        {
+            if (IsNpcRarityValue(formattedValue))
+                return "Редкость";
+
+            return scalarIndex switch
+            {
+                0 => "Название воспоминания",
+                1 => "Описание",
+                _ => "Свойство воспоминания"
+            };
+        }
+
+        if (IsNpcStateContext(sectionTitle, rowTitle))
+        {
+            if (IsNpcRarityValue(formattedValue))
+                return "Редкость";
+
+            return scalarIndex switch
+            {
+                0 => "Название состояния",
+                1 => "Описание",
+                _ => "Свойство состояния"
+            };
+        }
+
         return scalarIndex == 0 ? "Сведения" : $"Сведения {scalarIndex + 1}";
     }
+
+    private static bool IsNpcSkillContext(string sectionTitle, string rowTitle)
+    {
+        var context = sectionTitle + " " + rowTitle;
+        return context.Contains("Навык", StringComparison.OrdinalIgnoreCase) ||
+               context.Contains("skills", StringComparison.OrdinalIgnoreCase) ||
+               context.Contains("skill", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsNpcFateCardContext(string sectionTitle, string rowTitle)
+    {
+        var context = sectionTitle + " " + rowTitle;
+        return context.Contains("карта судьбы", StringComparison.OrdinalIgnoreCase) ||
+               context.Contains("fate", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsNpcMemoryContext(string sectionTitle, string rowTitle)
+    {
+        var context = sectionTitle + " " + rowTitle;
+        return context.Contains("воспомин", StringComparison.OrdinalIgnoreCase) ||
+               context.Contains("memory", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsNpcStateContext(string sectionTitle, string rowTitle)
+    {
+        var context = sectionTitle + " " + rowTitle;
+        return context.Contains("особое состояние", StringComparison.OrdinalIgnoreCase) ||
+               context.Contains("состояние", StringComparison.OrdinalIgnoreCase) ||
+               context.Contains("state", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsNpcSkillTypeValue(string value)
+    {
+        var normalized = value.Trim().ToLowerInvariant();
+        return normalized is "основан на знаниях" or "утилитарный" or "боевой" or "социальный";
+    }
+
+    private static bool IsNpcRarityValue(string value)
+    {
+        var normalized = value.Trim().ToLowerInvariant();
+        return normalized is "обычный" or "обычное" or "необычный" or "необычное" or "редкий" or "редкое" or
+            "эпический" or "эпическое" or "легендарный" or "легендарное" or "уникальный" or "уникальное";
+    }
+
+    private static bool IsIntegerText(string value) =>
+        int.TryParse(value.Trim(), out _);
 
     private static IEnumerable<JsonObject> EnumerateNpcCoreObjects(JsonNode? root)
     {
@@ -1037,12 +1131,15 @@ internal static class NpcDetailSectionProjection
             ? unlocked ? "открыта" : "закрыта"
             : string.Empty;
 
+        var unlockConditions = DescribeUnlockConditions(card["unlockConditions"]);
         return JoinDetails(
             Prefix("Название карты", FirstNonEmpty(GetNodeString(card, "name"), GetNodeString(card, "title"))),
             Prefix("Описание", FirstNonEmpty(GetNodeString(card, "description"), GetNodeString(card, "summary"))),
             Prefix("Редкость", GetNodeString(card, "rarity")),
             Prefix("Состояние", state),
-            Prefix("Условия открытия", DescribeUnlockConditions(card["unlockConditions"])),
+            string.IsNullOrWhiteSpace(unlockConditions)
+                ? string.Empty
+                : JoinDetails(Prefix("Условия открытия", "указаны"), unlockConditions),
             Prefix("Награда", DescribeNodeValue(card["rewards"])));
     }
 
@@ -1256,7 +1353,25 @@ internal static class NpcDetailSectionProjection
     private static string? GetNodeString(JsonObject obj, string property)
     {
         var node = obj[property];
-        return node == null ? null : TryGetScalarString(node, out var value) ? value : null;
+        if (node == null)
+            return null;
+
+        if (TryGetScalarString(node, out var value))
+            return value;
+
+        if (node is JsonValue)
+        {
+            var raw = node.ToJsonString().Trim();
+            if (!string.IsNullOrWhiteSpace(raw) &&
+                !raw.Equals("null", StringComparison.OrdinalIgnoreCase) &&
+                !raw.StartsWith('{') &&
+                !raw.StartsWith('['))
+            {
+                return raw.Trim('"');
+            }
+        }
+
+        return null;
     }
 
     private static int GetNodeInt(JsonObject obj, string property)
@@ -1315,12 +1430,6 @@ internal static class NpcDetailSectionProjection
         if (node is not JsonValue jsonValue)
             return false;
 
-        if (jsonValue.TryGetValue<string>(out var text))
-        {
-            value = text ?? string.Empty;
-            return true;
-        }
-
         if (jsonValue.TryGetValue<int>(out var intValue))
         {
             value = intValue.ToString();
@@ -1333,9 +1442,55 @@ internal static class NpcDetailSectionProjection
             return true;
         }
 
+        if (jsonValue.TryGetValue<double>(out var doubleValue))
+        {
+            value = doubleValue.ToString("G", CultureInfo.InvariantCulture);
+            return true;
+        }
+
         if (jsonValue.TryGetValue<bool>(out var boolValue))
         {
             value = boolValue ? "да" : "нет";
+            return true;
+        }
+
+        if (jsonValue.TryGetValue<JsonElement>(out var element))
+        {
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.String:
+                    value = element.GetString() ?? string.Empty;
+                    return true;
+                case JsonValueKind.Number when element.TryGetInt64(out var elementLong):
+                    value = elementLong.ToString(CultureInfo.InvariantCulture);
+                    return true;
+                case JsonValueKind.Number when element.TryGetDouble(out var elementDouble):
+                    value = elementDouble.ToString("G", CultureInfo.InvariantCulture);
+                    return true;
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                    value = element.GetBoolean() ? "да" : "нет";
+                    return true;
+            }
+        }
+
+        if (jsonValue.TryGetValue<string>(out var text))
+        {
+            var raw = jsonValue.ToJsonString().Trim();
+            if (text != null && (!string.IsNullOrEmpty(text) || raw.StartsWith('"')))
+            {
+                value = text;
+                return true;
+            }
+        }
+
+        var rawScalar = jsonValue.ToJsonString().Trim();
+        if (!string.IsNullOrWhiteSpace(rawScalar) &&
+            !rawScalar.Equals("null", StringComparison.OrdinalIgnoreCase) &&
+            !rawScalar.StartsWith('{') &&
+            !rawScalar.StartsWith('['))
+        {
+            value = rawScalar.Trim('"');
             return true;
         }
 

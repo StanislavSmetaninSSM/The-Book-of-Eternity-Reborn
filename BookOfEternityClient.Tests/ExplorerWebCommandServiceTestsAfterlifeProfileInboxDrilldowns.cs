@@ -36,7 +36,7 @@ public sealed class ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldown
     [Theory]
     [InlineData("/afterlife_profiles", "afterlife-profile-detail-guardian_mirror", "/afterlife_profiles профиль guardian_mirror", "Хранитель Зеркал", "Сущности")]
     [InlineData("/afterlife_threats", "afterlife-threat-detail-threat_moth", "/afterlife_threats угроза threat_moth", "Моль Сомнений", "Видимые угрозы")]
-    [InlineData("/afterlife_chronicles", "afterlife-chronicle-detail-chronicle_mirror", "/afterlife_chronicles хроника chronicle_mirror", "Зал зеркальной клятвы", "Видимые хроники")]
+    [InlineData("/afterlife_chronicles", "afterlife-chronicle-detail-chronicle_mirror", "/хроники_посмертия хроника \"Зал зеркальной клятвы\"", "Зал зеркальной клятвы", "Видимые хроники")]
     public async Task ExecuteAsync_AfterlifeProfileThreatChronicleOverviews_ExposeIssue1066ReadOnlyDetailActions(
         string command,
         string expectedActionId,
@@ -126,7 +126,7 @@ public sealed class ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldown
         AssertIssue1066Action(
             result,
             "afterlife-inbox-chronicle-notif_guardian_profile-chronicle_mirror",
-            "/afterlife_chronicles хроника chronicle_mirror",
+            "/хроники_посмертия хроника chronicle_mirror",
             "Зал зеркальной клятвы");
         AssertIssue1066Action(
             result,

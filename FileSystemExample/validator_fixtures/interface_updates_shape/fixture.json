@@ -1,7 +1,7 @@
 {
   "id": "interface_updates_shape",
   "runner": "AcceptedTurn",
-  "description": "accepted-turn interface_updates must be a JSON object with payload and timestamp.",
+  "description": "accepted-turn interface_updates must be a JSON object with supported payload fields; missing timestamp is normalized for useful payload.",
   "broken": [
     {
       "source": "broken/interface_updates.json",
@@ -17,7 +17,6 @@
     }
   ],
   "expectedBrokenCodes": [
-    "interface_updates_missing_timestamp",
     "interface_updates_unknown_field"
   ],
   "forbiddenBrokenCodes": [],

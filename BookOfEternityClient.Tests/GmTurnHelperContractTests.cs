@@ -3483,21 +3483,37 @@ public sealed class GmTurnHelperContractTests
         var deadline = DateTime.UtcNow + timeout;
         while (DateTime.UtcNow < deadline)
         {
-            if (File.Exists(path) && File.ReadAllText(path, Encoding.UTF8).Contains(expectedText, StringComparison.Ordinal))
+            if (TryReadFileContaining(path, expectedText))
             {
                 return true;
             }
 
             if (process is { HasExited: true })
             {
-                return File.Exists(path) &&
-                    File.ReadAllText(path, Encoding.UTF8).Contains(expectedText, StringComparison.Ordinal);
+                return TryReadFileContaining(path, expectedText);
             }
 
             Thread.Sleep(100);
         }
 
         return false;
+    }
+
+    private static bool TryReadFileContaining(string path, string expectedText)
+    {
+        try
+        {
+            return File.Exists(path) &&
+                File.ReadAllText(path, Encoding.UTF8).Contains(expectedText, StringComparison.Ordinal);
+        }
+        catch (IOException)
+        {
+            return false;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return false;
+        }
     }
 
     private static string ReadProcessOutput(Process? process)

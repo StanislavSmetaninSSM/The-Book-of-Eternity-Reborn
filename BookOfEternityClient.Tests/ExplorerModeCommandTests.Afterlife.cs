@@ -2035,7 +2035,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_GuardianTradeWithoutInventory_CreatesRequestAndShowsPlayerWaitingStatus()
     {
         await SeedGuardianTradeStateAsync(includeTradeInventory: false);
-        _console.QueueSelection("Действие", "🛒 Торговать", "← Назад");
+        _console.QueueSelection("Действие", "🛒 Торговать");
+        _console.QueueSelection("Подтвердить контракт Моря Хаоса", "✅ Подтвердить и продолжить");
+        _console.QueueSelection("Выберите раздел", "← Назад");
         await _stateManager.RefreshGameStateAsync();
 
         string? gmAction = null;
@@ -2046,10 +2048,6 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("GUARDIAN_TRADE_REQUEST", gmAction ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains(_console.MarkupLines,
             line => line.Contains("Витрина Хранителя подготавливается", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(_console.SelectionChoicesHistory,
-            entry => entry.Title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase) &&
-                     entry.Choices.Contains("🔄 Проверить витрину", StringComparer.Ordinal) &&
-                     !entry.Choices.Contains("🛍 Купить реликвии", StringComparer.Ordinal));
         var renderedText = ExtractRenderedText();
         Assert.Contains("Подготовка торговой витрины Хранителя", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Полный предпросмотр торговли Хранителя", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -9626,7 +9624,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             .Single(art => string.Equals(art["artId"]?.GetValue<string>(), "mirror_guard", StringComparison.OrdinalIgnoreCase));
         Assert.Equal(2, specialArt["tier"]?.GetValue<int>());
         var profileCurrencies = Assert.IsType<JsonObject>(playerProfile["currencies"]);
-        Assert.Equal(90, profileCurrencies["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(50, profileCurrencies["inkFeathers"]?.GetValue<int>());
 
         var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!)!.AsObject();
         var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);

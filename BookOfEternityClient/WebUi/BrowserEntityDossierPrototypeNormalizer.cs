@@ -321,6 +321,7 @@ internal static class BrowserEntityDossierPrototypeNormalizer
     {
         var summary = SanitizePlayerFacingValue(dossier.Summary);
         var facts = CloneFacts(dossier.Facts);
+        var metrics = CloneMetrics(dossier.Metrics);
         var list = CloneList(dossier.List);
         var sections = dossier.Sections;
         var mergeGenericInfoSections = IsNpcSectionEntry(dossier);
@@ -331,7 +332,7 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             if (AddStructuredDetailValue(summaryParts, summary, contextTitle: dossier.Subtitle, rowTitle: dossier.Title))
             {
                 summary = string.Empty;
-                MergePartsIntoCardCollections(summaryParts, facts, list);
+                MergePartsIntoCardCollections(summaryParts, facts, metrics, list);
             }
         }
 
@@ -340,6 +341,7 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             foreach (var section in sections.Where(IsGenericInfoSection))
             {
                 MergeFacts(facts, section.Facts);
+                MergeMetrics(metrics, section.Metrics);
                 MergeList(list, CloneList(section.List));
             }
         }
@@ -355,7 +357,7 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             Badges = CloneBadges(dossier.Badges),
             Media = dossier.Media,
             Facts = facts,
-            Metrics = CloneMetrics(dossier.Metrics),
+            Metrics = metrics,
             Hints = CloneHints(dossier.Hints),
             List = list,
             Nested = sections
@@ -629,9 +631,11 @@ internal static class BrowserEntityDossierPrototypeNormalizer
     private static void MergePartsIntoCardCollections(
         PrototypeParts parts,
         List<UiEntityFact> facts,
+        List<UiEntityMetric> metrics,
         List<string> list)
     {
         MergeFacts(facts, parts.Facts);
+        MergeMetrics(metrics, parts.Metrics);
         MergeList(list, parts.List);
     }
 
@@ -639,6 +643,12 @@ internal static class BrowserEntityDossierPrototypeNormalizer
     {
         foreach (var fact in facts)
             AddFactUnique(target, fact);
+    }
+
+    private static void MergeMetrics(List<UiEntityMetric> target, IEnumerable<UiEntityMetric> metrics)
+    {
+        foreach (var metric in metrics)
+            AddMetricUnique(target, metric);
     }
 
     private static void MergeList(List<string> target, IEnumerable<string> items)
@@ -660,6 +670,29 @@ internal static class BrowserEntityDossierPrototypeNormalizer
         }
 
         target.Add(new UiEntityFact { Label = fact.Label, Value = fact.Value });
+    }
+
+    private static void AddMetricUnique(List<UiEntityMetric> target, UiEntityMetric metric)
+    {
+        if (string.IsNullOrWhiteSpace(metric.Label))
+            return;
+
+        if (target.Any(existing =>
+                string.Equals(existing.Label, metric.Label, StringComparison.OrdinalIgnoreCase) &&
+                Math.Abs(existing.Value - metric.Value) < 0.0001 &&
+                Math.Abs(existing.Max - metric.Max) < 0.0001))
+        {
+            return;
+        }
+
+        target.Add(new UiEntityMetric
+        {
+            Label = metric.Label,
+            Value = metric.Value,
+            Max = metric.Max,
+            Tone = metric.Tone,
+            Note = metric.Note
+        });
     }
 
     private static void AddListItemUnique(List<string> target, string item)
