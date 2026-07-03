@@ -824,6 +824,141 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_PlayerSoulProfileMirrorsSoulStateAndDoesNotAutoProgress()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            """
+            {
+              "currentRealm": "Chaos Sea",
+              "inkFeathers": { "current": 7, "total": 19 },
+              "enlightenment": { "experience": 18, "level": 2 },
+              "afterlifeCombatProfile": {
+                "enlightenmentRank": 2,
+                "radianceRank": 0,
+                "retainedRadianceRank": 0,
+                "spiritFocusTier": 1,
+                "artTiers": { "pressure": 2, "guard": 0 }
+              }
+            }
+            """);
+        await _fs.WriteFileAtomicAsync(
+            ProgressionScheduleService.ReportPath,
+            """
+            {
+              "progressionProcessingReport": {
+                "sessionId": "session_player_profile_guard",
+                "requestId": "request_player_profile_guard",
+                "turnNumber": 11,
+                "chaosSeaCyclesProcessed": 1,
+                "guardianProjectCyclesProcessed": 1,
+                "newLastChaosSeaSimulationOrdinal": 6,
+                "newLastGuardianProjectCycleOrdinal": 6
+              }
+            }
+            """);
+        await CorrelateAfterlifeProgressionReportWithTurnRequestAsync();
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "displayName": "Хранитель Зеркал",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 0, "tier": 0 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "guard": 0 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_guardian_mirror",
+                    "summary": "Качать защиту.",
+                    "priorityOrder": ["guard"]
+                  },
+                  "ledger": []
+                },
+                {
+                  "actorType": "player_soul",
+                  "actorId": "player_soul",
+                  "displayName": "Пепельная Искра",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 2, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 0, "tier": 0 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "guard": 1 },
+                  "specialArts": [
+                    {
+                      "artId": "ash_ward",
+                      "displayName": "Пепельный оберег",
+                      "ownerActorType": "player_soul",
+                      "ownerActorId": "player_soul",
+                      "baseOperation": "guard",
+                      "tier": 0,
+                      "costMultiplierPercent": 150,
+                      "upgradeCost": { "inkFeathers": 30, "lightSparks": 0 },
+                      "canTeachPlayer": false,
+                      "effectSummary": "Оберег гасит резкий духовный нажим."
+                    }
+                  ],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_player",
+                    "summary": "Старая ошибочная стратегия игрока.",
+                    "priorityOrder": ["guard"],
+                    "lastAutoProgressionCycleKey": "chaos:5"
+                  },
+                  "progressionLedger": [
+                    {
+                      "entryId": "player_soul_chaos_5_auto",
+                      "cycleKey": "chaos:5",
+                      "source": "client_auto_strategy",
+                      "summary": "Ошибочная автопрокачка игрока.",
+                      "income": { "inkFeathers": 12, "lightSparks": 0 },
+                      "spending": { "inkFeathers": 10, "lightSparks": 0 },
+                      "upgrades": ["guard:0->1"]
+                    }
+                  ],
+                  "ledger": []
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var profiles = root["profiles"]!.AsArray().OfType<JsonObject>().ToArray();
+        var guardian = profiles.Single(profile => profile["actorId"]?.GetValue<string>() == "guardian_mirror");
+        var player = profiles.Single(profile => profile["actorType"]?.GetValue<string>() == "player_soul");
+
+        Assert.Equal(1, guardian["standardArts"]?["guard"]?.GetValue<int>());
+        Assert.Equal(2, guardian["currencies"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal("chaos:6", guardian["progressionStrategy"]?["lastAutoProgressionCycleKey"]?.GetValue<string>());
+
+        Assert.Equal(7, player["currencies"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(0, player["currencies"]?["lightSparks"]?.GetValue<int>());
+        Assert.Equal(2, player["standardArts"]?["pressure"]?.GetValue<int>());
+        Assert.Equal(0, player["standardArts"]?["guard"]?.GetValue<int>());
+        Assert.Equal(18, player["progression"]?["enlightenment"]?["experience"]?.GetValue<int>());
+        Assert.Equal(2, player["progression"]?["enlightenment"]?["tier"]?.GetValue<int>());
+        Assert.Null(player["progressionStrategy"]?["lastAutoProgressionCycleKey"]);
+        Assert.Empty((player["progressionLedger"] as JsonArray)?.OfType<JsonObject>() ?? []);
+        Assert.Single(player["specialArts"]!.AsArray().OfType<JsonObject>());
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_RefreshesCommandAuthoredMentorShowcaseHashAfterAutoProgression()
     {
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);

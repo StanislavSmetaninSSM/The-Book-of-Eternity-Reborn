@@ -225,6 +225,27 @@ internal static class AfterlifeEntityProfileState
         return result;
     }
 
+    public static void ApplyPlayerSoulProfileClientAuthority(
+        JsonObject root,
+        JsonObject? soulRoot,
+        JsonObject? shiningRoot)
+    {
+        if (soulRoot == null || root[ProfilesProperty] is not JsonArray profiles)
+            return;
+
+        foreach (var profile in profiles.OfType<JsonObject>())
+        {
+            if (!IsPlayerSoulProfile(profile))
+                continue;
+
+            profile["currencies"] = BuildPlayerSoulCurrencies(soulRoot, shiningRoot);
+            profile["progression"] = BuildPlayerSoulProgression(soulRoot, shiningRoot);
+            profile["standardArts"] = BuildPlayerSoulStandardArts(soulRoot);
+            DisablePlayerSoulProfileAutoProgression(profile);
+            RemovePlayerSoulAutomaticProgressionLedgerEntries(profile);
+        }
+    }
+
     private static HashSet<string> CollectCommandAuthoredMentorShowcaseKeys(JsonObject? currentRoot, JsonObject? previousRoot)
     {
         var keys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -1818,6 +1839,9 @@ internal static class AfterlifeEntityProfileState
 
         foreach (var profile in profiles.OfType<JsonObject>())
         {
+            if (IsPlayerSoulProfile(profile))
+                continue;
+
             var cycle = ResolveProgressionCycleForProfile(profile, progressionReportRoot);
             if (cycle == null || !ApplyAutomaticProgression(profile, cycle.Value))
                 continue;
@@ -1832,6 +1856,128 @@ internal static class AfterlifeEntityProfileState
 
         return progressedProfileKeys;
     }
+
+    private static bool IsPlayerSoulProfile(JsonObject profile) =>
+        string.Equals(GetNodeString(profile["actorType"]), "player_soul", StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(GetNodeString(profile["actorId"]) ?? GetNodeString(profile["actorRef"]), "player_soul", StringComparison.OrdinalIgnoreCase);
+
+    private static JsonObject BuildPlayerSoulCurrencies(JsonObject soulRoot, JsonObject? shiningRoot) =>
+        new()
+        {
+            ["inkFeathers"] = ReadSoulInkFeathersCurrent(soulRoot),
+            ["lightSparks"] = IsShiningRealm(GetNodeString(soulRoot["currentRealm"]))
+                ? Math.Max(0, GetNodeInt(shiningRoot?["lightSparks"]))
+                : 0
+        };
+
+    private static JsonObject BuildPlayerSoulProgression(JsonObject soulRoot, JsonObject? shiningRoot)
+    {
+        var (enlightenmentExperience, enlightenmentTier) = ResolvePlayerSoulEnlightenmentProgression(soulRoot);
+        var (radianceExperience, radianceTier) = ResolvePlayerSoulRadianceProgression(shiningRoot);
+        return new JsonObject
+        {
+            ["enlightenment"] = new JsonObject
+            {
+                ["experience"] = enlightenmentExperience,
+                ["tier"] = enlightenmentTier
+            },
+            ["radiance"] = new JsonObject
+            {
+                ["experience"] = radianceExperience,
+                ["tier"] = radianceTier
+            }
+        };
+    }
+
+    private static JsonObject BuildPlayerSoulStandardArts(JsonObject soulRoot)
+    {
+        var result = new JsonObject();
+        if (soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty] is not JsonObject profile ||
+            profile["artTiers"] is not JsonObject artTiers)
+        {
+            return result;
+        }
+
+        foreach (var property in artTiers)
+        {
+            if (!StandardArtIds.Contains(property.Key))
+                continue;
+
+            result[property.Key] = Math.Clamp(GetNodeInt(property.Value), 0, MaxProfileTier);
+        }
+
+        return result;
+    }
+
+    private static void DisablePlayerSoulProfileAutoProgression(JsonObject profile)
+    {
+        var strategy = profile["progressionStrategy"] as JsonObject;
+        if (strategy == null)
+            return;
+
+        strategy["autoProgressionEnabled"] = false;
+        strategy.Remove("lastAutoProgressionCycleKey");
+    }
+
+    private static void RemovePlayerSoulAutomaticProgressionLedgerEntries(JsonObject profile)
+    {
+        if (profile[ProgressionLedgerProperty] is not JsonArray ledger)
+            return;
+
+        for (var index = ledger.Count - 1; index >= 0; index--)
+        {
+            if (ledger[index] is not JsonObject entry)
+                continue;
+
+            if (string.Equals(GetNodeString(entry["source"]), "client_auto_strategy", StringComparison.OrdinalIgnoreCase))
+                ledger.RemoveAt(index);
+        }
+    }
+
+    private static int ReadSoulInkFeathersCurrent(JsonObject soulRoot)
+    {
+        if (soulRoot["inkFeathers"] is JsonObject feathers)
+            return Math.Max(0, GetNodeInt(feathers["current"]));
+
+        return Math.Max(0, GetNodeInt(soulRoot["inkFeathers"]));
+    }
+
+    private static (int Experience, int Tier) ResolvePlayerSoulEnlightenmentProgression(JsonObject soulRoot)
+    {
+        var directProgress = GetNodeInt(soulRoot["enlightenment"]);
+        var enlightenment = soulRoot["enlightenment"] as JsonObject;
+        var soulProgression = soulRoot["soulProgression"] as JsonObject;
+        var experience = Math.Max(
+            Math.Max(directProgress, GetNodeInt(enlightenment?["experience"])),
+            Math.Max(GetNodeInt(soulProgression?["totalExperience"]), GetNodeInt(soulProgression?["progressPercent"])));
+        var tier = Math.Max(GetNodeInt(enlightenment?["level"]), GetNodeInt(soulProgression?["tier"]));
+        return (
+            Math.Max(0, experience),
+            Math.Clamp(Math.Max(tier, ResolveRankFromProgress(AfterlifeSpiritualConflictState.EnlightenmentRanks, experience)), 0, MaxProfileTier));
+    }
+
+    private static (int Experience, int Tier) ResolvePlayerSoulRadianceProgression(JsonObject? shiningRoot)
+    {
+        var radiance = shiningRoot?["radiance"] as JsonObject;
+        var experience = Math.Max(0, GetNodeInt(radiance?["experience"]));
+        var tier = GetNodeInt(radiance?["tier"]);
+        return (
+            experience,
+            Math.Clamp(Math.Max(tier, ResolveRankFromProgress(AfterlifeSpiritualConflictState.RadianceRanks, experience)), 0, MaxProfileTier));
+    }
+
+    private static int ResolveRankFromProgress(
+        IReadOnlyList<AfterlifeSpiritualConflictState.RankDefinition> ranks,
+        int progress) =>
+        ranks
+            .Where(rank => progress >= rank.RequiredProgress)
+            .Select(rank => rank.Rank)
+            .DefaultIfEmpty(0)
+            .Max();
+
+    private static bool IsShiningRealm(string? realm) =>
+        string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
 
     private static bool ApplyAutomaticProgression(JsonObject profile, ProgressionCycle cycle)
     {

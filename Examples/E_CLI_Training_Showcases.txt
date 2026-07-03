@@ -36,6 +36,54 @@ Shared rules
   `MentorNeutralMultiplierPercent = 100`,
   `MentorGoodMultiplierPercent = 80`,
   `MentorExcellentMultiplierPercent = 60`.
+- In afterlife, the player's current Ink Feathers, Light Sparks, ordinary
+  Spiritual Art tiers, Spirit Focus tier, enlightenment, and radiance are read
+  from client-owned `soul_state.json` / `shining_abode_state.json`. The
+  `player_soul` entry in `afterlife_entity_profiles.json` mirrors those fields
+  for display and mentor calculations; the GM must not use profile
+  `currencies`, `standardArts`, `progression`, or `progressionStrategy` to grant
+  the player a purchase.
+
+Player soul authority note
+--------------------------
+
+When the GM prepares an afterlife mentor showcase, it may reference the player
+profile only for identity, visible story state, Fate Cards, relationships, and
+learned `specialArts[]`. It should not patch a purchase into the player profile.
+The accepted response below is correct because Liora's profile advertises the
+lesson, while the client later handles the player's purchase:
+
+```json
+{
+  "afterlifeEntityProfileUpdates": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_liora",
+      "displayName": "Лиора, Хранительница Тихого Света",
+      "standardArts": { "guard": 4 },
+      "mentorTrainingShowcase": {
+        "schemaVersion": 1,
+        "requestId": "training_req_liora_001",
+        "sourceActorSnapshotHash": "sha256:requested-hash-from-client",
+        "offers": [
+          {
+            "offerId": "mentor_liora_guard_2",
+            "targetKind": "standard_spiritual_art",
+            "targetId": "guard",
+            "targetValue": 2,
+            "sourceCap": 4,
+            "description": "Лиора показывает, как принять удар поворотом света; покупку и списание выполнит клиент."
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+Do not add a parallel `afterlifeEntityProfileUpdates` entry for
+`actorType=player_soul` that spends feathers or raises `standardArts.guard`.
+That would fight the client-owned state and will be normalized away.
 
 Mortal World teacher request
 ----------------------------
