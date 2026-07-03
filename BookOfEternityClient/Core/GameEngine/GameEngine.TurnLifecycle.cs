@@ -17,6 +17,10 @@ public partial class GameEngine
 {
     private const string PostAcceptedMaterializedStateValidationSource = "пост-материализации принятого хода";
     private const string MortalBootstrapScaffoldPath = "game_state/control/mortal_bootstrap_scaffold.json";
+    private const string GmRuntimeUnavailableHarnessSource = "gm_runtime_unavailable";
+    private const string GmTerminalWaitTimeoutHarnessSource = "gm_terminal_wait_timeout";
+    private const string GmDaemonStatusPath = "game_state/control/gm_daemon_status.json";
+    private const string GmBridgeStatusPath = "game_state/control/gm_bridge_status.json";
 
     private enum TerminalSignalWaitOutcome
     {
@@ -291,6 +295,8 @@ public partial class GameEngine
     {
         using var cts = new CancellationTokenSource();
         var startTime = DateTime.UtcNow;
+        var terminalTimeoutSeconds = Math.Max(15, _stateManager.Settings.GmTimeoutSeconds);
+        var nextRuntimeHealthCheckAt = startTime.AddSeconds(15);
 
         var waitTask = Task.Run(async () =>
         {
@@ -298,6 +304,34 @@ public partial class GameEngine
             {
                 if (_fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json"))
                     return TerminalSignalWaitOutcome.Completed;
+
+                var now = DateTime.UtcNow;
+                var elapsedSeconds = (int)(now - startTime).TotalSeconds;
+                if (elapsedSeconds >= terminalTimeoutSeconds)
+                {
+                    var errorMessage =
+                        $"Мастер не ответил за {terminalTimeoutSeconds} секунд. Действие будет отменено; проверьте GM daemon/bridge и повторите ход.";
+                    if (await TryWriteHarnessTerminalErrorAsync(GmTerminalWaitTimeoutHarnessSource, errorMessage))
+                        return TerminalSignalWaitOutcome.Completed;
+
+                    return TerminalSignalWaitOutcome.Cancelled;
+                }
+
+                if (now >= nextRuntimeHealthCheckAt)
+                {
+                    nextRuntimeHealthCheckAt = now.AddSeconds(5);
+                    var unavailableReason = await DetectUnavailableGmRuntimeAsync();
+                    if (!string.IsNullOrWhiteSpace(unavailableReason))
+                    {
+                        var errorMessage =
+                            $"Мастер недоступен: {unavailableReason} Действие будет отменено; перезапустите GM daemon/bridge и повторите ход.";
+                        if (await TryWriteHarnessTerminalErrorAsync(GmRuntimeUnavailableHarnessSource, errorMessage))
+                            return TerminalSignalWaitOutcome.Completed;
+
+                        return TerminalSignalWaitOutcome.Cancelled;
+                    }
+                }
+
                 await Task.Delay(500, cts.Token);
             }
 
@@ -351,6 +385,186 @@ public partial class GameEngine
             });
 
         return cts.IsCancellationRequested ? TerminalSignalWaitOutcome.Cancelled : result;
+    }
+
+    private async Task<string?> DetectUnavailableGmRuntimeAsync()
+    {
+        var daemonProblem = await DetectUnavailableRuntimeProcessAsync(
+            GmDaemonStatusPath,
+            "pid",
+            "GM daemon");
+        if (!string.IsNullOrWhiteSpace(daemonProblem))
+            return daemonProblem;
+
+        if (!IsConPtyBridgeRuntimeExpected())
+            return null;
+
+        return await DetectUnavailableRuntimeProcessAsync(
+            GmBridgeStatusPath,
+            "helperPid",
+            "GM bridge");
+    }
+
+    private bool IsConPtyBridgeRuntimeExpected() =>
+        _stateManager.Settings.GmBridgeEnabled &&
+        string.Equals(_stateManager.Settings.GmBridgeBackend, "ConPTYBridge", StringComparison.OrdinalIgnoreCase);
+
+    private async Task<string?> DetectUnavailableRuntimeProcessAsync(
+        string statusPath,
+        string pidPropertyName,
+        string displayName)
+    {
+        if (!_fs.FileExists(statusPath))
+            return null;
+
+        var statusJson = await _fs.ReadFileAsync(statusPath);
+        if (string.IsNullOrWhiteSpace(statusJson))
+            return $"{displayName} status file is empty ({statusPath}).";
+
+        try
+        {
+            using var document = JsonDocument.Parse(statusJson);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+                return $"{displayName} status file is malformed ({statusPath}).";
+
+            if (TryGetHarnessJsonString(document.RootElement, "status", out var statusValue) ||
+                TryGetHarnessJsonString(document.RootElement, "state", out statusValue))
+            {
+                if (IsTerminalRuntimeStatus(statusValue))
+                    return $"{displayName} reports {statusValue} in {statusPath}.";
+            }
+
+            if (!TryGetHarnessJsonInt(document.RootElement, pidPropertyName, out var processId))
+                return null;
+
+            if (processId <= 0 || !IsProcessAlive(processId))
+                return $"{displayName} status in {statusPath} points to a dead pid {processId}.";
+
+            return null;
+        }
+        catch (Exception ex)
+        {
+            return $"{displayName} status file is unreadable ({statusPath}): {ex.Message}";
+        }
+    }
+
+    private static bool IsTerminalRuntimeStatus(string? statusValue)
+    {
+        if (string.IsNullOrWhiteSpace(statusValue))
+            return false;
+
+        return statusValue.Equals("failed", StringComparison.OrdinalIgnoreCase) ||
+               statusValue.Equals("fatal", StringComparison.OrdinalIgnoreCase) ||
+               statusValue.Equals("stopped", StringComparison.OrdinalIgnoreCase) ||
+               statusValue.Equals("exited", StringComparison.OrdinalIgnoreCase) ||
+               statusValue.Equals("crashed", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsProcessAlive(int processId)
+    {
+        try
+        {
+            using var process = Process.GetProcessById(processId);
+            return !process.HasExited;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private async Task<bool> TryWriteHarnessTerminalErrorAsync(string harnessSource, string errorMessage)
+    {
+        if (_fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json"))
+            return true;
+
+        var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
+        if (string.IsNullOrWhiteSpace(requestJson))
+            return false;
+
+        try
+        {
+            using var requestDocument = JsonDocument.Parse(requestJson);
+            if (requestDocument.RootElement.ValueKind != JsonValueKind.Object ||
+                !TryGetHarnessJsonString(requestDocument.RootElement, "sessionId", out var sessionId) ||
+                !TryGetHarnessJsonString(requestDocument.RootElement, "requestId", out var requestId) ||
+                !TryGetHarnessJsonInt(requestDocument.RootElement, "turnNumber", out var turnNumber) ||
+                string.IsNullOrWhiteSpace(sessionId) ||
+                string.IsNullOrWhiteSpace(requestId))
+            {
+                return false;
+            }
+
+            var signal = new
+            {
+                sessionId,
+                requestId,
+                turnNumber,
+                timestamp = DateTimeOffset.UtcNow.ToString("O"),
+                status = "error",
+                harnessSource,
+                error = errorMessage
+            };
+            await _fs.WriteFileAtomicAsync("ready/turn_error.json", JsonSerializer.Serialize(signal, JsonOpts));
+            _logger.LogWarning(
+                "Published harness terminal error for turn {TurnNumber}: {HarnessSource}. {ErrorMessage}",
+                turnNumber,
+                harnessSource,
+                errorMessage);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to publish harness terminal error {HarnessSource}.", harnessSource);
+            return false;
+        }
+    }
+
+    private static bool TryGetHarnessJsonString(JsonElement root, string propertyName, out string value)
+    {
+        value = string.Empty;
+        if (!TryGetHarnessJsonProperty(root, propertyName, out var property) ||
+            property.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+
+        value = property.GetString() ?? string.Empty;
+        return true;
+    }
+
+    private static bool TryGetHarnessJsonInt(JsonElement root, string propertyName, out int value)
+    {
+        value = 0;
+        if (!TryGetHarnessJsonProperty(root, propertyName, out var property))
+            return false;
+
+        if (property.ValueKind == JsonValueKind.Number && property.TryGetInt32(out value))
+            return true;
+
+        if (property.ValueKind == JsonValueKind.String &&
+            int.TryParse(property.GetString(), out value))
+        {
+            return true;
+        }
+
+        value = 0;
+        return false;
+    }
+
+    private static bool TryGetHarnessJsonProperty(JsonElement root, string propertyName, out JsonElement value)
+    {
+        foreach (var property in root.EnumerateObject())
+        {
+            if (string.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase))
+            {
+                value = property.Value;
+                return true;
+            }
+        }
+
+        value = default;
+        return false;
     }
 
     // ═══════════════════════════════════════════════

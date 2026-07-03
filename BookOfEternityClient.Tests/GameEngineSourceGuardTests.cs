@@ -314,6 +314,28 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void GmResponseWaits_MustFailFastThroughHarnessTerminalErrorWhenRuntimeIsDead()
+    {
+        var turnLifecycleSource = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var waitMethod = ExtractMethodSource(turnLifecycleSource, "private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync()");
+
+        Assert.Contains("_stateManager.Settings.GmTimeoutSeconds", waitMethod, StringComparison.Ordinal);
+        Assert.Contains("DetectUnavailableGmRuntimeAsync()", waitMethod, StringComparison.Ordinal);
+        Assert.Contains("TryWriteHarnessTerminalErrorAsync(", waitMethod, StringComparison.Ordinal);
+        Assert.Contains("TerminalSignalWaitOutcome.Completed", waitMethod, StringComparison.Ordinal);
+
+        Assert.Contains("private async Task<string?> DetectUnavailableGmRuntimeAsync()", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("\"game_state/control/gm_daemon_status.json\"", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("\"game_state/control/gm_bridge_status.json\"", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("Process.GetProcessById", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("private async Task<bool> TryWriteHarnessTerminalErrorAsync(", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("\"ready/turn_error.json\"", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("harnessSource", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("gm_runtime_unavailable", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("gm_terminal_wait_timeout", turnLifecycleSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void OrdinaryPlayerTurnWait_MustPublishAgentConsoleLoadingSnapshotBeforeTerminalWait()
     {
         var turnLifecycleSource = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");

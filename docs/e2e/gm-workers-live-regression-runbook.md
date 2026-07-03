@@ -163,6 +163,21 @@ $Daemon.daemonPid
 The launcher action uses an encoded PowerShell host command internally so paths
 with spaces, such as the repository root, do not break daemon startup.
 
+Before submitting a live player turn, run the read-only runtime preflight:
+
+```powershell
+.\scripts\agent-console-gm-runtime-preflight.ps1 `
+  -SessionPath $SessionPath `
+  -RequireBridge `
+  -RequireReadyBridge |
+  Tee-Object -FilePath (Join-Path $RunRoot "gm-runtime-preflight.json")
+```
+
+Script path: `scripts/agent-console-gm-runtime-preflight.ps1`. The script checks
+`gm_daemon_status.json`, `gm_bridge_status.json`, `pid`, `helperPid`, and
+`Get-Process` liveness. A non-zero exit means the live test must stop and fix
+bridge/daemon startup before sending player input.
+
 During live play, check the daemon control status after every completed turn or
 repair. `game_state/control/gm_daemon_status.json` should remain
 `status=running`; if it contains `lastLoopError`, preserve the run root because
@@ -170,6 +185,18 @@ the watcher recovered from a transient harness error. If the daemon exits with
 `status=failed`, inspect `game_state/control/gm_daemon_fatal_error.json` before
 restarting. A hidden daemon that silently stops after validation repair is a
 harness bug, not a GM/player failure.
+
+The client also protects live tests from silent `gm-waiting` deadlocks. If a
+present `gm_daemon_status.json` / `gm_bridge_status.json` is a stale status file
+with a dead pid, the wait loop writes a correlated `ready/turn_error.json` with
+`harnessSource = "gm_runtime_unavailable"` and rolls the player action back
+through the normal terminal-error path. If no terminal response arrives within
+`GmTimeoutSeconds`, the same path uses
+`harnessSource = "gm_terminal_wait_timeout"`. Treat both as harness/RLM feedback:
+preserve the run root, inspect the status files and daemon/bridge logs, then
+restart through `bookofeternity.ps1 start-bridge` and
+`bookofeternity.ps1 start-daemon` instead of editing game data or changing GM
+prompts first.
 
 ## Dispatch proposal-only worker tasks
 

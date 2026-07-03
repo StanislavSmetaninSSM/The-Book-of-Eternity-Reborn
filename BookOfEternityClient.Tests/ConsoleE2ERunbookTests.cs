@@ -105,6 +105,27 @@ public sealed class ConsoleE2ERunbookTests
     }
 
     [Fact]
+    public void AgentConsoleGmRuntimePreflightScriptChecksDaemonAndBridgeLiveness()
+    {
+        var script = ReadRepoFile("scripts", "agent-console-gm-runtime-preflight.ps1");
+
+        foreach (var requiredText in new[]
+        {
+            "gm_daemon_status.json",
+            "gm_bridge_status.json",
+            "Get-Process",
+            "helperPid",
+            "pid",
+            "RequireBridge",
+            "RequireReadyBridge",
+            "exit 1"
+        })
+        {
+            Assert.Contains(requiredText, script, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void LauncherScriptExposesSafeDaemonStartAction()
     {
         var launcher = ReadRepoFile("BookOfEternityClient", "Launcher", "bookofeternity.ps1");
@@ -138,6 +159,27 @@ public sealed class ConsoleE2ERunbookTests
             "lastLoopError",
             "gm_daemon_fatal_error.json",
             "harness bug"
+        })
+        {
+            Assert.Contains(requiredText, runbook, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void GmWorkersLiveRunbookDocumentsRuntimeDeadlockHarnessSignals()
+    {
+        var runbook = ReadRepoFile("docs", "e2e", "gm-workers-live-regression-runbook.md");
+
+        foreach (var requiredText in new[]
+        {
+            "scripts/agent-console-gm-runtime-preflight.ps1",
+            "GmTimeoutSeconds",
+            "dead pid",
+            "gm_runtime_unavailable",
+            "gm_terminal_wait_timeout",
+            "ready/turn_error.json",
+            "harnessSource",
+            "stale status"
         })
         {
             Assert.Contains(requiredText, runbook, StringComparison.OrdinalIgnoreCase);

@@ -3684,6 +3684,268 @@ function Get-TurnRequestKey {
     return "$sessionId|$requestId|$turnNumber"
 }
 
+function Get-Sha256HexFromBytes {
+    param([byte[]]$Bytes)
+
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        $hashBytes = $sha.ComputeHash($Bytes)
+        return [System.BitConverter]::ToString($hashBytes).Replace("-", "")
+    }
+    finally {
+        $sha.Dispose()
+    }
+}
+
+function Get-Sha256HexFromText {
+    param([string]$Text)
+
+    return Get-Sha256HexFromBytes -Bytes ([System.Text.Encoding]::UTF8.GetBytes($Text))
+}
+
+function Get-JsonPropertyValue {
+    param(
+        [object]$Object,
+        [string[]]$Names
+    )
+
+    if ($null -eq $Object) {
+        return $null
+    }
+
+    foreach ($name in $Names) {
+        foreach ($property in @($Object.PSObject.Properties)) {
+            if ([string]::Equals($property.Name, $name, [System.StringComparison]::OrdinalIgnoreCase)) {
+                return $property.Value
+            }
+        }
+    }
+
+    return $null
+}
+
+function Get-JsonStringValue {
+    param(
+        [object]$Object,
+        [string[]]$Names
+    )
+
+    $value = Get-JsonPropertyValue -Object $Object -Names $Names
+    if ($null -eq $value) {
+        return ""
+    }
+
+    return ([string]$value).Trim()
+}
+
+function Get-JsonIntValue {
+    param(
+        [object]$Object,
+        [string[]]$Names
+    )
+
+    $value = Get-JsonPropertyValue -Object $Object -Names $Names
+    if ($null -eq $value) {
+        return 0
+    }
+
+    return [int]$value
+}
+
+function Get-JsonObjectProperties {
+    param([object]$Object)
+
+    if ($null -eq $Object) {
+        return @()
+    }
+
+    return @($Object.PSObject.Properties | Where-Object { $null -ne $_.Value })
+}
+
+function Test-JsonObjectPropertiesEqual {
+    param(
+        [object]$Expected,
+        [object]$Actual,
+        [bool]$CompareValuesIgnoreCase = $true
+    )
+
+    $expectedProperties = @(Get-JsonObjectProperties -Object $Expected)
+    $actualProperties = @(Get-JsonObjectProperties -Object $Actual)
+    if ($expectedProperties.Count -ne $actualProperties.Count) {
+        return $false
+    }
+
+    foreach ($expectedProperty in $expectedProperties) {
+        $actualValue = Get-JsonPropertyValue -Object $Actual -Names @($expectedProperty.Name)
+        if ($null -eq $actualValue) {
+            return $false
+        }
+
+        $comparison = if ($CompareValuesIgnoreCase) {
+            [System.StringComparison]::OrdinalIgnoreCase
+        }
+        else {
+            [System.StringComparison]::Ordinal
+        }
+
+        if (-not [string]::Equals([string]$expectedProperty.Value, [string]$actualValue, $comparison)) {
+            return $false
+        }
+    }
+
+    return $true
+}
+
+function Test-JsonStringListEqual {
+    param(
+        [object]$Expected,
+        [object]$Actual
+    )
+
+    $expectedItems = @($Expected | ForEach-Object { ([string]$_).Replace("\", "/").Trim() } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Sort-Object)
+    $actualItems = @($Actual | ForEach-Object { ([string]$_).Replace("\", "/").Trim() } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Sort-Object)
+    if ($expectedItems.Count -ne $actualItems.Count) {
+        return $false
+    }
+
+    for ($index = 0; $index -lt $expectedItems.Count; $index++) {
+        if (-not [string]::Equals($expectedItems[$index], $actualItems[$index], [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $false
+        }
+    }
+
+    return $true
+}
+
+function Test-PendingTurnSnapshotRollbackBackupHashes {
+    param(
+        [object]$Payload
+    )
+
+    $rollbackBackups = Get-JsonPropertyValue -Object $Payload -Names @("rollbackBackups")
+    $rollbackBackupHashes = Get-JsonPropertyValue -Object $Payload -Names @("rollbackBackupHashes")
+    $hashProperties = @(Get-JsonObjectProperties -Object $rollbackBackupHashes)
+    if ($hashProperties.Count -eq 0) {
+        return $true
+    }
+
+    foreach ($hashProperty in $hashProperties) {
+        $backupRelativePath = Get-JsonStringValue -Object $rollbackBackups -Names @($hashProperty.Name)
+        if ([string]::IsNullOrWhiteSpace($backupRelativePath)) {
+            return $false
+        }
+
+        $backupPath = Join-Path $GameSessionPath ($backupRelativePath.Replace("/", "\"))
+        if (!(Test-Path -LiteralPath $backupPath)) {
+            return $false
+        }
+
+        $content = Get-Content -LiteralPath $backupPath -Raw -Encoding UTF8
+        $actualHash = Get-Sha256HexFromText -Text $content
+        if (-not [string]::Equals($actualHash, [string]$hashProperty.Value, [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $false
+        }
+    }
+
+    return $true
+}
+
+function Test-PendingTurnSnapshotAuthorityEnvelope {
+    param(
+        [psobject]$Manifest,
+        [psobject]$TurnRequest
+    )
+
+    try {
+        $authority = Get-Content -Path $PendingTurnSnapshotAuthorityFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ([int](Get-JsonIntValue -Object $authority -Names @("formatVersion")) -ne 2) {
+            Write-Log "  Pending turn snapshot authority has unsupported formatVersion." -Level "WARN" -Color Yellow
+            return $false
+        }
+
+        if (-not [string]::Equals(
+                (Get-JsonStringValue -Object $authority -Names @("integrityAlgorithm")),
+                "SHA256-PAYLOAD-JSON",
+                [System.StringComparison]::Ordinal)) {
+            Write-Log "  Pending turn snapshot authority has unsupported integrityAlgorithm." -Level "WARN" -Color Yellow
+            return $false
+        }
+
+        $payloadBase64 = Get-JsonStringValue -Object $authority -Names @("payloadJsonBase64")
+        $expectedPayloadHash = Get-JsonStringValue -Object $authority -Names @("payloadSha256")
+        if ([string]::IsNullOrWhiteSpace($payloadBase64) -or [string]::IsNullOrWhiteSpace($expectedPayloadHash)) {
+            Write-Log "  Pending turn snapshot authority is missing payloadJsonBase64/payloadSha256." -Level "WARN" -Color Yellow
+            return $false
+        }
+
+        $payloadBytes = [System.Convert]::FromBase64String($payloadBase64)
+        $actualPayloadHash = Get-Sha256HexFromBytes -Bytes $payloadBytes
+        if (-not [string]::Equals($actualPayloadHash, $expectedPayloadHash, [System.StringComparison]::OrdinalIgnoreCase)) {
+            Write-Log "  Pending turn snapshot authority payloadSha256 mismatch." -Level "WARN" -Color Yellow
+            return $false
+        }
+
+        $payloadJson = [System.Text.Encoding]::UTF8.GetString($payloadBytes)
+        $payload = $payloadJson | ConvertFrom-Json
+        $requestSessionId = [string]$TurnRequest.sessionId
+        $requestId = [string]$TurnRequest.requestId
+        $turnNumber = [int]$TurnRequest.turnNumber
+        $manifestHash = Get-JsonStringValue -Object $Manifest -Names @("manifestPayloadHash")
+
+        if (-not [string]::Equals((Get-JsonStringValue -Object $payload -Names @("sessionId")), $requestSessionId, [System.StringComparison]::OrdinalIgnoreCase) -or
+            -not [string]::Equals((Get-JsonStringValue -Object $payload -Names @("requestId")), $requestId, [System.StringComparison]::OrdinalIgnoreCase) -or
+            (Get-JsonIntValue -Object $payload -Names @("turnNumber")) -ne $turnNumber -or
+            -not [string]::Equals((Get-JsonStringValue -Object $payload -Names @("manifestPayloadHash")), $manifestHash, [System.StringComparison]::OrdinalIgnoreCase)) {
+            Write-Log "  Pending turn snapshot authority does not match current turn metadata." -Level "WARN" -Color Yellow
+            return $false
+        }
+
+        if (-not (Test-JsonObjectPropertiesEqual -Expected (Get-JsonPropertyValue -Object $Manifest -Names @("files")) -Actual (Get-JsonPropertyValue -Object $payload -Names @("files")) -CompareValuesIgnoreCase $true) -or
+            -not (Test-JsonObjectPropertiesEqual -Expected (Get-JsonPropertyValue -Object $Manifest -Names @("snapshotFileHashes")) -Actual (Get-JsonPropertyValue -Object $payload -Names @("snapshotFileHashes")) -CompareValuesIgnoreCase $true) -or
+            -not (Test-JsonObjectPropertiesEqual -Expected (Get-JsonPropertyValue -Object $Manifest -Names @("clientOwnedValidationHashes")) -Actual (Get-JsonPropertyValue -Object $payload -Names @("clientOwnedValidationHashes")) -CompareValuesIgnoreCase $true) -or
+            -not (Test-JsonObjectPropertiesEqual -Expected (Get-JsonPropertyValue -Object $Manifest -Names @("rollbackBackups")) -Actual (Get-JsonPropertyValue -Object $payload -Names @("rollbackBackups")) -CompareValuesIgnoreCase $true) -or
+            -not (Test-JsonStringListEqual -Expected (Get-JsonPropertyValue -Object $Manifest -Names @("rollbackBaselineFiles")) -Actual (Get-JsonPropertyValue -Object $payload -Names @("rollbackBaselineFiles"))) -or
+            -not [string]::Equals((Get-JsonStringValue -Object $Manifest -Names @("sourceLabel")), (Get-JsonStringValue -Object $payload -Names @("sourceLabel")), [System.StringComparison]::Ordinal)) {
+            Write-Log "  Pending turn snapshot authority payload does not match manifest." -Level "WARN" -Color Yellow
+            return $false
+        }
+
+        if (-not (Test-PendingTurnSnapshotRollbackBackupHashes -Payload $payload)) {
+            Write-Log "  Pending turn snapshot authority rollback backup hashes are not usable." -Level "WARN" -Color Yellow
+            return $false
+        }
+
+        return $true
+    }
+    catch {
+        Write-Log "  Pending turn snapshot authority is unreadable: $_" -Level "WARN" -Color Yellow
+        return $false
+    }
+}
+
+function Get-MissingHarnessToolFromTerminalError {
+    param([object]$TerminalSignal)
+
+    if ($null -eq $TerminalSignal -or
+        $TerminalSignal.Kind -ne "error" -or
+        $null -eq $TerminalSignal.Signal) {
+        return $null
+    }
+
+    $signal = $TerminalSignal.Signal
+    $harnessSource = Get-JsonStringValue -Object $signal -Names @("harnessSource")
+    if (-not [string]::IsNullOrWhiteSpace($harnessSource)) {
+        return $harnessSource
+    }
+
+    $errorMessage = Get-JsonStringValue -Object $signal -Names @("error")
+    if ($errorMessage.IndexOf("Pending turn snapshot authority", [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
+        return "pending_turn_snapshot_authority_recovery_gap"
+    }
+
+    return $null
+}
+
 function Test-TurnRequestHasPendingSnapshotContext {
     param([psobject]$TurnRequest)
 
@@ -3706,7 +3968,8 @@ function Test-TurnRequestHasPendingSnapshotContext {
 
         return [string]::Equals($manifestSessionId, $requestSessionId, [System.StringComparison]::OrdinalIgnoreCase) -and
             [string]::Equals($manifestRequestId, $requestId, [System.StringComparison]::OrdinalIgnoreCase) -and
-            $manifestTurnNumber -eq $turnNumber
+            $manifestTurnNumber -eq $turnNumber -and
+            (Test-PendingTurnSnapshotAuthorityEnvelope -Manifest $manifest -TurnRequest $TurnRequest)
     }
     catch {
         Write-Log "  Pending turn snapshot context is unreadable: $_" -Level "WARN" -Color Yellow
@@ -4387,6 +4650,9 @@ function Process-Turn {
             }
             catch {
                 Write-Log "  Terminal error ($([math]::Round($duration, 1))s): unreadable turn_error.json" -Level "TURN" -Color Yellow
+            }
+            if ([string]::IsNullOrWhiteSpace($missingHarnessTool)) {
+                $missingHarnessTool = Get-MissingHarnessToolFromTerminalError -TerminalSignal $terminalSignal
             }
             Write-GmTrajectoryRecord `
                 -Kind "turn" `

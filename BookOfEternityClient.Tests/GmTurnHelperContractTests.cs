@@ -1,6 +1,9 @@
 using System.Diagnostics;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using BookOfEternityClient.Services;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -1462,17 +1465,7 @@ public sealed class GmTurnHelperContractTests
                 }
                 """,
                 Encoding.UTF8);
-            File.WriteAllText(
-                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.json"),
-                """
-                {
-                  "sessionId": "trajectory-session",
-                  "requestId": "request-success",
-                  "turnNumber": 77
-                }
-                """,
-                Encoding.UTF8);
-            File.WriteAllText(Path.Combine(session, "game_state", "control", "pending_turn_snapshot.authority.json"), "{}", Encoding.UTF8);
+            WriteDaemonPendingTurnSnapshot(session, "trajectory-session", "request-success", 77);
             File.WriteAllText(
                 Path.Combine(session, "ready", "turn_complete.json"),
                 """
@@ -1558,17 +1551,7 @@ public sealed class GmTurnHelperContractTests
                 }
                 """,
                 Encoding.UTF8);
-            File.WriteAllText(
-                Path.Combine(control, "pending_turn_snapshot.json"),
-                """
-                {
-                  "sessionId": "trajectory-session",
-                  "requestId": "request-note-link",
-                  "turnNumber": 81
-                }
-                """,
-                Encoding.UTF8);
-            File.WriteAllText(Path.Combine(control, "pending_turn_snapshot.authority.json"), "{}", Encoding.UTF8);
+            WriteDaemonPendingTurnSnapshot(session, "trajectory-session", "request-note-link", 81);
             File.WriteAllText(
                 Path.Combine(session, "ready", "turn_complete.json"),
                 """
@@ -1656,17 +1639,7 @@ public sealed class GmTurnHelperContractTests
                 }
                 """,
                 Encoding.UTF8);
-            File.WriteAllText(
-                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.json"),
-                """
-                {
-                  "sessionId": "trajectory-session",
-                  "requestId": "request-soul-realm",
-                  "turnNumber": 79
-                }
-                """,
-                Encoding.UTF8);
-            File.WriteAllText(Path.Combine(session, "game_state", "control", "pending_turn_snapshot.authority.json"), "{}", Encoding.UTF8);
+            WriteDaemonPendingTurnSnapshot(session, "trajectory-session", "request-soul-realm", 79);
             File.WriteAllText(
                 Path.Combine(session, "ready", "turn_complete.json"),
                 """
@@ -1738,17 +1711,7 @@ public sealed class GmTurnHelperContractTests
                 }
                 """,
                 Encoding.UTF8);
-            File.WriteAllText(
-                Path.Combine(control, "pending_turn_snapshot.json"),
-                """
-                {
-                  "sessionId": "trajectory-session",
-                  "requestId": "request-needs-repair",
-                  "turnNumber": 81
-                }
-                """,
-                Encoding.UTF8);
-            File.WriteAllText(Path.Combine(control, "pending_turn_snapshot.authority.json"), "{}", Encoding.UTF8);
+            WriteDaemonPendingTurnSnapshot(session, "trajectory-session", "request-needs-repair", 81);
             File.WriteAllText(
                 Path.Combine(session, "ready", "turn_complete.json"),
                 """
@@ -1961,17 +1924,7 @@ public sealed class GmTurnHelperContractTests
                 }
                 """,
                 Encoding.UTF8);
-            File.WriteAllText(
-                Path.Combine(control, "pending_turn_snapshot.json"),
-                """
-                {
-                  "sessionId": "trajectory-session",
-                  "requestId": "request-worker-proposal",
-                  "turnNumber": 79
-                }
-                """,
-                Encoding.UTF8);
-            File.WriteAllText(Path.Combine(control, "pending_turn_snapshot.authority.json"), "{}", Encoding.UTF8);
+            WriteDaemonPendingTurnSnapshot(session, "trajectory-session", "request-worker-proposal", 79);
             File.WriteAllText(
                 Path.Combine(session, "ready", "turn_complete.json"),
                 """
@@ -3303,6 +3256,22 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonTurnDispatch_ValidatesDetachedPendingSnapshotAuthorityBeforeDispatch()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("function Test-PendingTurnSnapshotAuthorityEnvelope", daemon, StringComparison.Ordinal);
+        Assert.Contains("payloadJsonBase64", daemon, StringComparison.Ordinal);
+        Assert.Contains("payloadSha256", daemon, StringComparison.Ordinal);
+        Assert.Contains("SHA256", daemon, StringComparison.Ordinal);
+
+        var contextGuard = ExtractFunctionBlock(daemon, "function Test-TurnRequestHasPendingSnapshotContext");
+        Assert.Contains("Test-PendingTurnSnapshotAuthorityEnvelope", contextGuard, StringComparison.Ordinal);
+        Assert.Contains("$manifest", contextGuard, StringComparison.Ordinal);
+        Assert.Contains("$TurnRequest", contextGuard, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void DaemonRepairDispatch_RetriesWhenGmBridgeIsBusy()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -3366,6 +3335,24 @@ public sealed class GmTurnHelperContractTests
         var guardBlock = daemon[waitGuardIndex..guardBlockEnd];
         Assert.Contains("Add-ObservedTerminalRequestKey -Key $turnRequestKey", guardBlock, StringComparison.Ordinal);
         Assert.Contains("break", guardBlock, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DaemonTurnWait_ClassifiesPendingSnapshotAuthorityTerminalErrorsAsHarnessFriction()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("function Get-MissingHarnessToolFromTerminalError", daemon, StringComparison.Ordinal);
+        Assert.Contains("pending_turn_snapshot_authority_recovery_gap", daemon, StringComparison.Ordinal);
+        Assert.Contains("Pending turn snapshot authority", daemon, StringComparison.Ordinal);
+
+        var errorBranchIndex = daemon.IndexOf("elseif ($null -ne $terminalSignal -and $terminalSignal.Kind -eq \"error\")", StringComparison.Ordinal);
+        var classifyIndex = daemon.IndexOf("Get-MissingHarnessToolFromTerminalError -TerminalSignal $terminalSignal", errorBranchIndex, StringComparison.Ordinal);
+        var recordIndex = daemon.IndexOf("Write-GmTrajectoryRecord", errorBranchIndex, StringComparison.Ordinal);
+
+        Assert.True(errorBranchIndex >= 0, "Expected terminal error branch.");
+        Assert.True(classifyIndex > errorBranchIndex, "Expected terminal error branch to classify harness friction.");
+        Assert.True(recordIndex > classifyIndex, "Expected harness friction classification before ledger write.");
     }
 
     [Fact]
@@ -3682,6 +3669,86 @@ public sealed class GmTurnHelperContractTests
             }
             """,
             Encoding.UTF8);
+    }
+
+    private static void WriteDaemonPendingTurnSnapshot(
+        string session,
+        string sessionId,
+        string requestId,
+        int turnNumber)
+    {
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        var manifest = new DaemonPendingTurnSnapshotManifest
+        {
+            SessionId = sessionId,
+            RequestId = requestId,
+            TurnNumber = turnNumber
+        };
+
+        manifest.ManifestPayloadHash = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(
+            manifest,
+            PendingTurnSnapshotManifestJsonOptions,
+            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
+            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash);
+
+        File.WriteAllText(
+            Path.Combine(control, "pending_turn_snapshot.json"),
+            JsonSerializer.Serialize(manifest, PendingTurnSnapshotManifestJsonOptions),
+            Encoding.UTF8);
+
+        var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
+            manifest,
+            PendingTurnSnapshotManifestJsonOptions,
+            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
+            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
+            static snapshotManifest => snapshotManifest.SessionId,
+            static snapshotManifest => snapshotManifest.RequestId,
+            static snapshotManifest => snapshotManifest.TurnNumber,
+            static snapshotManifest => snapshotManifest.Files,
+            static snapshotManifest => snapshotManifest.SnapshotFileHashes,
+            static snapshotManifest => snapshotManifest.ClientOwnedValidationHashes,
+            static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
+            static snapshotManifest => snapshotManifest.SourceLabel,
+            static snapshotManifest => snapshotManifest.RollbackBackups,
+            relativePath => ReadSessionRelativeFile(session, relativePath));
+
+        File.WriteAllText(
+            Path.Combine(control, "pending_turn_snapshot.authority.json"),
+            authorityJson,
+            Encoding.UTF8);
+    }
+
+    private static string? ReadSessionRelativeFile(string session, string relativePath)
+    {
+        if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
+            return null;
+
+        var fullPath = Path.Combine(session, relativePath.Replace('/', Path.DirectorySeparatorChar));
+        return File.Exists(fullPath) ? File.ReadAllText(fullPath, Encoding.UTF8) : null;
+    }
+
+    private static readonly JsonSerializerOptions PendingTurnSnapshotManifestJsonOptions = new()
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        WriteIndented = true
+    };
+
+    private sealed class DaemonPendingTurnSnapshotManifest
+    {
+        public string SessionId { get; set; } = string.Empty;
+        public string RequestId { get; set; } = string.Empty;
+        public int TurnNumber { get; set; }
+        public string ManifestPayloadHash { get; set; } = string.Empty;
+        public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> RollbackBackups { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public List<string> RollbackBaselineFiles { get; set; } = new();
+        public string SourceLabel { get; set; } = "daemon-test";
     }
 
     private static string QuotePowerShell(string value) =>
