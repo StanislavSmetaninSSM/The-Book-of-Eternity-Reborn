@@ -34,6 +34,7 @@ public partial class ExplorerMode
     private readonly Services.PendingTurnStateService? _pendingTurnState;
     private readonly Services.GuardianTradeService? _guardianTradeService;
     private readonly Services.NpcTradeService? _npcTradeService;
+    private readonly Services.TrainingService? _trainingService;
     private readonly Services.SystemModService? _systemModService;
     private readonly Services.SystemGuardianLibraryService? _systemGuardianLibraryService;
     private readonly Services.WorldDirectiveService? _worldDirectiveService;
@@ -254,7 +255,9 @@ public partial class ExplorerMode
         "/source_of_light",
         "/источник_света",
         "/spiritual_action",
-        "/духовное_действие"
+        "/духовное_действие",
+        "/training",
+        "/обучение"
     };
 
     private async Task<bool> TryAcquireLocalUiSessionMutationLockAsync(string commandName)

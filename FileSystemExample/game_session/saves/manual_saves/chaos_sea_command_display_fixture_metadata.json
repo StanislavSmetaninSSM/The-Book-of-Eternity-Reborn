@@ -5,7 +5,8 @@
   "archiveFile": "chaos_sea_command_display_fixture.zip",
   "sourceIssues": [
     "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1096",
-    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1249"
+    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1249",
+    "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1378"
   ],
   "createdFor": "Reusable Chaos Sea afterlife console/browser command-display QA",
   "timestamp": "2026-06-18T00:00:00Z",

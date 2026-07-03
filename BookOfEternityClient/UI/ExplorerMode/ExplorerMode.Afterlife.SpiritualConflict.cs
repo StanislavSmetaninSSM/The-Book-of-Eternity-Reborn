@@ -392,6 +392,8 @@ public partial class ExplorerMode
             $"  • Доступные Чернильные Перья: [white]{ShiningAbodeState.GetSoulSpendableInkFeathers(soulRoot)}[/]",
             $"  • Искры Света: [gold1]{AfterlifeSpiritualConflictState.GetNodeInt(shiningRoot?["lightSparks"])}[/] [dim](тратятся только в обычной активной Сияющей Обители)[/]",
             "",
+            "[yellow]Самостоятельная прокачка здесь намеренно дорогая.[/] Если доступен наставник, обычно выгоднее открыть /обучение и учиться через его витрину.",
+            "",
             "[bold]Средоточие Души:[/]",
             $"  • Уровень [white]{spiritFocusQuote.CurrentTier}[/] -> [white]{spiritFocusQuote.NextTier}[/], макс ОД [white]{spiritFocusQuote.CurrentMaxActionPoints}[/] -> [white]{spiritFocusQuote.NextMaxActionPoints}[/], {Markup.Escape(spiritFocusQuote.BlockReason == null ? $"цена {spiritFocusQuote.InkFeatherCost} 🪶" : $"заблокировано: {spiritFocusQuote.BlockReason}")}{Markup.Escape(_stateManager.CurrentState.IsInShiningAbode ? $" / {spiritFocusQuote.LightSparkCost} ✨" : "")}",
             $"    Смысл: {Markup.Escape(DescribeSpiritFocusTier(spiritFocusQuote.CurrentTier))}. Это увеличивает максимум ОД; уровни духовных искусств отдельно уменьшают стоимость действий.",
@@ -425,7 +427,7 @@ public partial class ExplorerMode
             lines.Add($"  • {rank.Rank}: {Markup.Escape(FormatRankIdLabel(rank.RankId))}, требует {rank.RequiredProgress}, открывает уровень искусства {rank.UnlocksArtTier}. {Markup.Escape(FormatRankMechanicalEffect(rank.MechanicalEffect))}");
 
         lines.Add("");
-        lines.Add("[dim]Правило прокачки: ранги ограничивают максимальный уровень искусства; клиент локально пишет soul_state.afterlifeCombatProfile и тратит выбранную валюту. ГМ не пишет квитанцию/отчёт прокачки.[/]");
+        lines.Add("[dim]Правило прокачки: ранги ограничивают максимальный уровень искусства; самостоятельная прокачка дороже наставника и служит fallback-режимом. Клиент локально пишет soul_state.afterlifeCombatProfile и тратит выбранную валюту. ГМ не пишет квитанцию/отчёт прокачки.[/]");
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
@@ -1031,8 +1033,8 @@ public partial class ExplorerMode
                 currentTier,
                 nextTier,
                 maxUnlockedTier,
-                ComputeSpiritualArtInkFeatherCost(art, nextTier),
-                ComputeSpiritualArtLightSparkCost(art, nextTier),
+                AfterlifeTrainingCostPolicy.ComputeSelfStandardArtInkFeatherCost(art, nextTier),
+                AfterlifeTrainingCostPolicy.ComputeSelfStandardArtLightSparkCost(art, nextTier),
                 requiredRankLabel,
                 blockReason));
         }
@@ -1054,8 +1056,10 @@ public partial class ExplorerMode
             var nextTier = Math.Min(SpiritualArtMaxTier, currentTier + 1);
             var requiredRankLabel = DescribeRequiredRankForArtTier(Math.Max(baseArt.MinUnlockTier, nextTier));
             var upgradeCost = specialArt["upgradeCost"] as JsonObject;
-            var inkCost = Math.Max(0, AfterlifeEntityProfileState.GetNodeInt(upgradeCost?["inkFeathers"]));
-            var sparkCost = Math.Max(0, AfterlifeEntityProfileState.GetNodeInt(upgradeCost?["lightSparks"]));
+            var baseInkCost = Math.Max(0, AfterlifeEntityProfileState.GetNodeInt(upgradeCost?["inkFeathers"]));
+            var baseSparkCost = Math.Max(0, AfterlifeEntityProfileState.GetNodeInt(upgradeCost?["lightSparks"]));
+            var inkCost = AfterlifeTrainingCostPolicy.ComputeSelfSpecialArtInkFeatherCost(baseInkCost);
+            var sparkCost = AfterlifeTrainingCostPolicy.ComputeSelfSpecialArtLightSparkCost(baseSparkCost);
             string? blockReason = null;
             if (currentTier >= SpiritualArtMaxTier)
                 blockReason = "уже достигнут максимальный уровень особого искусства 5";
@@ -1063,9 +1067,9 @@ public partial class ExplorerMode
                 blockReason = $"нужен ранг, открывающий базовое действие уровня {baseArt.MinUnlockTier}: {DescribeRequiredRankForArtTier(baseArt.MinUnlockTier)}";
             else if (nextTier > maxUnlockedTier)
                 blockReason = $"нужен ранг, открывающий уровень искусства {nextTier}: {requiredRankLabel}";
-            else if (inkCost <= 0 && sparkCost <= 0)
+            else if (baseInkCost <= 0 && baseSparkCost <= 0)
                 blockReason = "у особого искусства должна быть положительная цена прокачки в Чернильных Перьях или Искрах Света";
-            else if (inkCost <= 0 && sparkCost > 0 && !isInShiningAbode)
+            else if (baseInkCost <= 0 && baseSparkCost > 0 && !isInShiningAbode)
                 blockReason = "цена указана только в Искрах Света; такая прокачка доступна только в обычной активной Сияющей Обители";
 
             result.Add(new SpiritualArtUpgradeQuote(
@@ -1107,8 +1111,8 @@ public partial class ExplorerMode
             AfterlifeSpiritualConflictState.GetSpiritFocusMaxActionPoints(currentTier),
             AfterlifeSpiritualConflictState.GetSpiritFocusMaxActionPoints(nextTier),
             maxUnlockedTier,
-            ComputeSpiritFocusInkFeatherCost(nextTier),
-            ComputeSpiritFocusLightSparkCost(nextTier),
+            AfterlifeTrainingCostPolicy.ComputeSelfSpiritFocusInkFeatherCost(nextTier),
+            AfterlifeTrainingCostPolicy.ComputeSelfSpiritFocusLightSparkCost(nextTier),
             requiredRankLabel,
             blockReason);
     }
@@ -1195,22 +1199,6 @@ public partial class ExplorerMode
 
         return parts.Count == 0 ? "не открывается текущими шкалами" : string.Join(" или ", parts);
     }
-
-    private static int ComputeSpiritualArtInkFeatherCost(
-        AfterlifeSpiritualConflictState.SpiritualArtDefinition art,
-        int nextTier) =>
-        checked(50 + nextTier * 50 + art.MinUnlockTier * 25);
-
-    private static int ComputeSpiritualArtLightSparkCost(
-        AfterlifeSpiritualConflictState.SpiritualArtDefinition art,
-        int nextTier) =>
-        checked(4 + nextTier * 3 + art.MinUnlockTier);
-
-    private static int ComputeSpiritFocusInkFeatherCost(int nextTier) =>
-        checked(100 + nextTier * 100);
-
-    private static int ComputeSpiritFocusLightSparkCost(int nextTier) =>
-        checked(8 + nextTier * 4);
 
     private static string BuildSpiritualArtUpgradeChoiceLabel(SpiritualArtUpgradeQuote quote, bool includeLightSparks)
     {

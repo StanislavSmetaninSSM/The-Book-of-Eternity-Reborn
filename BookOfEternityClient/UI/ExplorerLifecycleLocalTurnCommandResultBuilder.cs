@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.UI;
 
-public static class ExplorerLifecycleLocalTurnCommandResultBuilder
+public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
 {
     private const string TurnRequestPath = "input/turn_request.json";
     private const string TurnCompletePath = "ready/turn_complete.json";
@@ -26,6 +26,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
     public static bool CanBuild(string command) => NormalizeCommand(command) switch
     {
         "/validate" or "/валидация" or
+        "/training" or "/обучение" or
         "/world_setup" or "/настройка_мира" or
         "/distribute" or "/распределить" or
         "/companion_directive" or "/директива_компаньону" or
@@ -70,6 +71,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         return normalized switch
         {
             "/validate" or "/валидация" => await BuildValidationAsync(command, fs, validationService),
+            "/training" or "/обучение" => await BuildTrainingAsync(command, fs, stateManager),
             "/world_setup" or "/настройка_мира" => await BuildWorldSetupAsync(command, fs, stateManager),
             "/distribute" or "/распределить" => await BuildStatDistributionAsync(command, fs),
             "/companion_directive" or "/директива_компаньону" => await BuildCompanionDirectiveAsync(command, fs),

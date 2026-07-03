@@ -20,6 +20,7 @@ public static class ExplorerCommandCatalog
         D("feathers", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/feathers", "/перья"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
         D("world_rules", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/world_rules", "/правила_мира"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
         D("gallery", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/gallery", "/галерея"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
+        D("training", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/training", "/обучение"], browserStatus: ExplorerCommandMigrationStatus.MutatingParity, acceptsArguments: true),
         D("status", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/status", "/статус"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity, acceptsArguments: true, subcommands:
         [
             new("audit", ["audit", "аудит"], "/status audit", BrowserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity)

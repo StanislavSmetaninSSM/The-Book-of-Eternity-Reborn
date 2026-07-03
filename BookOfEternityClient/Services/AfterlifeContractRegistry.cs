@@ -43,6 +43,7 @@ public static class AfterlifeContractRegistry
         new(ShiningFactionRequestState.PendingRealignmentsRequestPath, "shining_faction_realignments", "Shining Abode", "client-owned request", true),
         new(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, "shining_faction_leadership", "Shining Abode", "client-owned request", true),
         new(SourceOfLightCapstoneState.PendingRequestPath, "source_of_light_capstone", "Shining Abode", "client-owned capstone request", true),
+        new(TrainingRequestState.PendingRequestPath, "training_showcases", "Mortal World|Chaos Sea|Shining Abode", "client-owned teacher/mentor showcase refresh request", true),
         new("game_state/control/incarnation_trigger.json", "incarnation_trigger", "Chaos Sea|Shining Abode pending-bootstrap handoff", "GM-authored TriggerIncarnation", false),
         new("game_state/control/ascension.json", "ascension_trigger", "Mortal World to Chaos Sea/afterlife transition", "GM-authored AscensionTrigger/playerChoice", false),
         new("game_state/control/life_transitions.json", "life_transition", "Mortal World / Life Evaluation / afterlife return setup", "GM-authored TriggerLifeEnd", false),

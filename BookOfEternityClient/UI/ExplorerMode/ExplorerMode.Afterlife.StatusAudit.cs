@@ -47,6 +47,7 @@ public partial class ExplorerMode
         new(ActorSocialInteractionRequestState.PendingNpcRequestPath, "Социальный запрос NPC из смертного мира", "только ремонт в неверной области посмертия; сохранить полные данные и не закрывать через посмертие"),
         new(NpcTradeRequestState.PendingRequestPath, "Торговый запрос NPC из смертного мира", "только ремонт в неверной области посмертия; сохранить полные данные и не создавать посмертные торговые квитанции"),
         new(CraftRequestState.PendingRequestPath, "Ремесленный запрос из смертного мира", "только ремонт в неверной области посмертия; сохранить intent/recipeId и не закрывать через посмертие"),
+        new(TrainingRequestState.PendingRequestPath, "Витрина обучения", "GM обновляет trainingShowcase/mentorTrainingShowcase с точным sourceActorSnapshotHash; покупку и квитанции пишет клиент"),
         new(ShiningCoreActionRequestState.PendingActionsRequestPath, "Основное действие Сияющей Обители", "shining_abode_state.coreActionReceipts[] + точная каноническая проекция состояния", ShiningOnly: true),
         new(ShiningTradeRequestState.PendingRequestsPath, "Торговая витрина Сияющей фракции", "factions[].tradeInventory + tradeInventoryReceipts[]", ShiningOnly: true),
         new(ShiningFactionRequestState.PendingFoundingsRequestPath, "Основание сияющей фракции", "halls[]/factions[] + factionFoundingReceipts[]", ShiningOnly: true),

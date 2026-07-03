@@ -253,6 +253,10 @@ var host = Host.CreateDefaultBuilder(args)
                 sp.GetRequiredService<FileSystemManager>(),
                 sp.GetRequiredService<ILogger<NpcTradeService>>()));
         services.AddSingleton(sp =>
+            new TrainingService(
+                sp.GetRequiredService<FileSystemManager>(),
+                sp.GetRequiredService<ILogger<TrainingService>>()));
+        services.AddSingleton(sp =>
             new QteSceneService(
                 sp.GetRequiredService<FileSystemManager>(),
                 sp.GetRequiredService<GameSettings>(),
@@ -277,6 +281,7 @@ var host = Host.CreateDefaultBuilder(args)
                 sp.GetRequiredService<PendingTurnStateService>(),
                 sp.GetRequiredService<GuardianTradeService>(),
                 sp.GetRequiredService<NpcTradeService>(),
+                sp.GetRequiredService<TrainingService>(),
                 sp.GetRequiredService<SystemModService>(),
                 sp.GetRequiredService<SystemGuardianLibraryService>(),
                 sp.GetRequiredService<WorldDirectiveService>(),

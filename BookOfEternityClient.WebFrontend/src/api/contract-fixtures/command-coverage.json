@@ -1,15 +1,15 @@
 {
   "schemaVersion": 2,
   "summary": {
-    "descriptorCount": 105,
-    "aliasCount": 231,
+    "descriptorCount": 106,
+    "aliasCount": 233,
     "subcommandCount": 9,
-    "browserExecutableCount": 105,
+    "browserExecutableCount": 106,
     "browserExecutableSubcommandCount": 9,
-    "playerDefaultActionCount": 98,
+    "playerDefaultActionCount": 99,
     "playerDefaultExecutableSubcommandCount": 9,
     "advancedOnlyActionCount": 7,
-    "mutatingCommandCount": 49,
+    "mutatingCommandCount": 50,
     "commandsNeedingFollowUpCount": 0,
     "subcommandsNeedingFollowUpCount": 0
   },
@@ -429,6 +429,32 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
+    },
+    {
+      "id": "training",
+      "aliases": [
+        "/training",
+        "/\u043E\u0431\u0443\u0447\u0435\u043D\u0438\u0435"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435",
+      "primaryCommand": "/training",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# LifecycleLocalTurn handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
       "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {

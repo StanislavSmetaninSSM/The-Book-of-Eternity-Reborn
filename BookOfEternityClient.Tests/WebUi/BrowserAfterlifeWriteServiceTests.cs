@@ -339,6 +339,40 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
+    [Fact]
+    public async Task TryApplyAsync_SpiritualArtsSelfUpgrade_UsesExpensiveStandardArtFallbackCost()
+    {
+        await SeedSoulStateAsync(stored: Array.Empty<(string, string)>(), equipped: Array.Empty<(string, string, string)>(), inkFeathers: 499);
+        await SeedAfterlifeCombatProfileAsync();
+        var beforeSoul = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await _service.TryApplyAsync(
+            "/spiritual_arts",
+            Answers(("upgrade_target", "pressure"), ("upgrade_currency", "ink_feathers")),
+            Owner("browser-test"));
+
+        Assert.False(result.Success);
+        Assert.Contains("нужно 500", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeSoul, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public async Task TryApplyAsync_SpiritualArtsSelfUpgrade_UsesExpensiveSpiritFocusFallbackCost()
+    {
+        await SeedSoulStateAsync(stored: Array.Empty<(string, string)>(), equipped: Array.Empty<(string, string, string)>(), inkFeathers: 599);
+        await SeedAfterlifeCombatProfileAsync();
+        var beforeSoul = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await _service.TryApplyAsync(
+            "/spiritual_arts",
+            Answers(("upgrade_target", "spirit_focus"), ("upgrade_currency", "ink_feathers")),
+            Owner("browser-test"));
+
+        Assert.False(result.Success);
+        Assert.Contains("нужно 600", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeSoul, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
     public void Dispose()
     {
         try
@@ -398,6 +432,29 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
                 ["stored"] = storedArray,
                 ["equipped"] = equippedArray
             }
+        };
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            soul.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+    }
+
+    private async Task SeedAfterlifeCombatProfileAsync()
+    {
+        var soul = await ReadSoulAsync();
+        soul["enlightenment"] = new JsonObject
+        {
+            ["level"] = 1,
+            ["experience"] = 100
+        };
+        soul[AfterlifeSpiritualConflictState.SoulStateProfileProperty] = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["enlightenmentRank"] = 1,
+            ["radianceRank"] = 0,
+            ["retainedRadianceRank"] = 0,
+            ["artTiers"] = new JsonObject(),
+            [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0,
+            ["lastRecoveryTurn"] = 0
         };
         await _fs.WriteFileAtomicAsync(
             "game_state/meta/soul_state.json",

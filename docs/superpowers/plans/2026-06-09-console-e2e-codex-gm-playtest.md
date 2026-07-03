@@ -227,9 +227,12 @@ Invoke-RestMethod -Method Get -Uri "$AgentUrl/api/agent-console/events" | Conver
 - [ ] Open all visible afterlife command surfaces that exist in the current build:
   - `/статус`
   - `/квесты`
+  - `/обучение`
   - afterlife archive/books/relics/feathers/soul commands shown by the UI
   - any visible help command
 - [ ] Verify each visible afterlife command either works or clearly explains why it is unavailable.
+- [ ] For `/обучение` in afterlife, verify the screen distinguishes mentor vitrines from expensive self-training fallback. If a mentor profile exists without a fresh `mentorTrainingShowcase`, record whether a pending GM refresh request is created and whether the next GM turn can materialize it without manual JSON editing.
+- [ ] If an afterlife mentor offer is available, buy one low-risk Spiritual Art upgrade and verify the client, not the GM, spends currency, writes a receipt, and raises only a legal tier. If no mentor offer exists, inspect self-training costs and confirm they are clearly presented as expensive fallback.
 - [ ] Fail as P2 or worse if a command mentions the wrong lifecycle area, for example a mortal map command returning a guardian-only explanation.
 - [ ] Fail as P1 if progress requires knowing an internal file name, pending control file, or schema field.
 
@@ -245,8 +248,12 @@ Invoke-RestMethod -Method Get -Uri "$AgentUrl/api/agent-console/events" | Conver
   - `/эффекты`
   - `/книги`
   - `/навыки`
+  - `/обучение`
   - `/help`
 - [ ] For every command, capture whether the response is complete, useful, and free of malformed markup.
+- [ ] For `/обучение` in a mortal life, verify NPC teachers are selected through a player-readable menu, each offer shows target skill, current/next mastery, teacher cap, money cost, current-level XP cost, availability reason, and a back action.
+- [ ] If a teacher exists without a fresh `trainingShowcase`, record whether a pending GM refresh request is created and whether the next GM turn can fill it through normal response surfaces without manually editing files.
+- [ ] If a training offer is available, buy one cheap offer and verify the client does not delevel the player, spends only current-level XP progress plus money, and writes a visible/resulting mastery increase.
 - [ ] Check short-detail linking:
   - status active effects must have a discoverable detailed view in `/эффекты` or equivalent
   - inventory documents must have a discoverable readable view in `/книги` or equivalent
@@ -374,7 +381,7 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 ## Completion Criteria
 
 - [ ] One short adventure has been attempted end to end with a live Codex GM through the bridge.
-- [ ] The route covered afterlife, guardian interaction, mortal life start, baseline commands, inventory, effects, books/documents, map, quests, exploration, combat, life ending, and afterlife rewards.
+- [ ] The route covered afterlife, guardian interaction, afterlife training, mortal life start, baseline commands, inventory, effects, books/documents, map, quests, mortal training, exploration, combat, life ending, and afterlife rewards.
 - [ ] All P0/P1 issues found during the run have GitHub issues.
 - [ ] Repeated P2 patterns have GitHub issues or are linked to an existing broader issue.
 - [ ] GitHub issue #909 has a final comment with result, artifacts, blocking issues, and recommendation for the next run.

@@ -1,0 +1,213 @@
+Examples For CLI Training Showcases
+===================================
+
+Purpose
+-------
+
+This file documents the GM-authored side of the `/training` / `/обучение`
+feature. The client owns purchases and currency/experience spending. The GM
+prepares fresh, readable trainingShowcase data when the client creates
+`game_state/control/pending_training_showcase_requests.json`.
+
+Shared rules
+------------
+
+- `pending_training_showcase_requests.json` is a client-authored request file.
+- Every showcase must copy the requested `sourceActorSnapshotHash` into
+  `trainingShowcase.sourceActorSnapshotHash`. If the teacher changes, the
+  client treats the showcase as stale and requests a refresh.
+- GM does not spend player currency.
+- GM does not raise player tiers directly.
+- GM does not grant mastery or standard spiritual-art progression through free
+  prose when the player used the showcase. Purchases are applied by the client.
+- Free roleplay training remains valid. In afterlife, learning a new teachable
+  special art through roleplay still uses `afterlifeSpecialArtLearningReceipts`;
+  that receipt starts the learned art at tier 0 and never substitutes for a
+  purchased tier upgrade.
+- Self fallback economics are intentionally expensive:
+  `SelfStandardArtMultiplierPercent = 400`,
+  `SelfSpiritFocusMultiplierPercent = 300`,
+  `SelfSpecialArtMultiplierPercent = 500`.
+- Mentor economics are client-owned discounts from the base training price:
+  `MentorNeutralMultiplierPercent = 100`,
+  `MentorGoodMultiplierPercent = 80`,
+  `MentorExcellentMultiplierPercent = 60`.
+
+Mortal World teacher request
+----------------------------
+
+The client writes a pending request like this when a Mortal NPC has teacher
+profile data but no fresh trainingShowcase:
+
+```json
+{
+  "requests": [
+    {
+      "requestId": "training_req_hunter_roden_001",
+      "requestKind": "mortal_teacher_showcase",
+      "sourceActorId": "npc_hunter_roden",
+      "sourceActorName": "Роден, охотник у северных ворот",
+      "sourceActorKind": "mortal_npc",
+      "realm": "mortal",
+      "sourceActorSnapshotHash": "sha256:requested-hash-from-client",
+      "createdAtTurn": 12,
+      "status": "pending",
+      "reason": "Игрок открыл /обучение рядом с NPC-учителем."
+    }
+  ]
+}
+```
+
+Valid Mortal NPC trainingShowcase patch
+---------------------------------------
+
+The GM answers by updating the same NPC in `game_state/npcs/npc_core.json`.
+The showcase is not a purchase receipt; it is the list of available lessons.
+
+```json
+{
+  "UpdateNPCs": [
+    {
+      "npcId": "npc_hunter_roden",
+      "name": "Роден, охотник у северных ворот",
+      "teacherProfile": {
+        "canTeach": true,
+        "relationshipLevel": 35,
+        "summary": "Роден учит практичным охотничьим навыкам только тех, кому доверяет.",
+        "teachableSkills": [
+          {
+            "skillId": "knife_handling",
+            "displayName": "Обращение с ножом",
+            "mastery": 3
+          },
+          {
+            "skillId": "tracking",
+            "displayName": "Выслеживание",
+            "mastery": 4
+          }
+        ]
+      },
+      "trainingShowcase": {
+        "schemaVersion": 1,
+        "requestId": "training_req_hunter_roden_001",
+        "requestKind": "mortal_teacher_showcase",
+        "sourceActorSnapshotHash": "sha256:requested-hash-from-client",
+        "preparedAtTurn": 12,
+        "summary": "Роден готов провести короткое практическое занятие за оплату и часть опыта текущего уровня.",
+        "offers": [
+          {
+            "offerId": "train_roden_knife_handling_2",
+            "targetKind": "skill_mastery",
+            "targetId": "knife_handling",
+            "targetName": "Обращение с ножом",
+            "currentValue": 1,
+            "targetValue": 2,
+            "sourceCap": 3,
+            "cost": {
+              "money": 65,
+              "currentLevelExperiencePercent": 18
+            },
+            "requirements": {
+              "minimumRelationship": 20,
+              "lessonScene": "Короткая тренировка с настоящими ножами у старой стены."
+            },
+            "description": "Роден учит держать клинок ниже взгляда противника и не тратить движение на красивость."
+          },
+          {
+            "offerId": "train_roden_tracking_2",
+            "targetKind": "skill_mastery",
+            "targetId": "tracking",
+            "targetName": "Выслеживание",
+            "currentValue": 1,
+            "targetValue": 2,
+            "sourceCap": 4,
+            "cost": {
+              "money": 80,
+              "currentLevelExperiencePercent": 22
+            },
+            "requirements": {
+              "minimumRelationship": 30,
+              "lessonScene": "Разбор следов в грязи за конюшней."
+            },
+            "description": "Игрок учится отличать торопливый шаг от хромоты и свежий след от старого."
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+Afterlife mentor trainingShowcase
+---------------------------------
+
+Afterlife mentors, Guardians, residents, or Shining representatives may expose
+discounted spiritual-art lessons. They never bypass the player's progression
+cap and cannot teach above their own tier/sourceCap.
+
+```json
+{
+  "afterlifeEntityProfileUpdates": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_liora",
+      "displayName": "Лиора, Хранительница Тихого Света",
+      "standardArts": {
+        "guard": 4,
+        "pressure": 2
+      },
+      "relationships": [
+        {
+          "axis": "trust",
+          "value": 62,
+          "summary": "Лиора доверяет душе после защиты обители."
+        }
+      ],
+      "mentorTrainingShowcase": {
+        "schemaVersion": 1,
+        "requestId": "training_req_liora_001",
+        "requestKind": "afterlife_teacher_showcase",
+        "sourceActorSnapshotHash": "sha256:requested-hash-from-client",
+        "preparedAtTurn": 44,
+        "discountPolicy": "excellent relationship or personal quest proof gives 60% mentor price; good relationship gives 80%; neutral gives 100%",
+        "summary": "Лиора может удешевить обучение защите, но не поднимает искусство выше собственного уровня.",
+        "offers": [
+          {
+            "offerId": "mentor_liora_guard_2",
+            "targetKind": "standard_spiritual_art",
+            "targetId": "guard",
+            "targetName": "Защита",
+            "currentValue": 1,
+            "targetValue": 2,
+            "sourceCap": 4,
+            "cost": {
+              "inkFeathers": 105,
+              "lightSparks": 0
+            },
+            "costAuditHint": {
+              "baseInkFeatherCost": 175,
+              "mentorPriceMultiplierPercent": 60,
+              "note": "Клиент пересчитает цену по отношению и базовой стоимости; GM не списывает валюту."
+            },
+            "requirements": {
+              "minimumRelationship": 50,
+              "maxPlayerUnlockedTier": 2,
+              "lessonScene": "Лиора учит принимать удар не стеной, а поворотом света."
+            },
+            "description": "Наставник снижает цену, но покупку и списание выполняет клиент через /обучение."
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+Afterlife self fallback
+-----------------------
+
+If no mentor showcase exists, `/обучение` may show expensive self-training.
+The GM should not author a receipt for self-training. The client computes price
+from the base spiritual-art cost and the multipliers documented above.
+`/духовные_искусства` remains a direct self-upgrade surface with the same
+expensive fallback prices. Use mentors when the story offers a teacher.

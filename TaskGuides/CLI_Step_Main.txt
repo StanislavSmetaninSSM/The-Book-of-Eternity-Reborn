@@ -17,6 +17,7 @@
                - Examples/E_CLI_Ink_Feather_Actions.txt (MUST-read whenever the turn uses any GM-side INK_FEATHER_ACTION)
                - OtherGuides/Afterlife_Contract_Matrix.md (MUST-read whenever currentRealm is `Chaos Sea` or `Shining Abode`; use it to select the exact canonical state surfaces, receipts, reports, and forbidden substitutions before writing files)
                - Examples/E_CLI_Afterlife_Turns.txt (MUST-read after the matrix whenever currentRealm is `Chaos Sea` or `Shining Abode`; use examples 14-28 for Shining core actions, freeform Guardian commands, combined scheduler + pending-contract turns, ordinary living-world turns without pending files, system Guardian attraction, protected return guard, direct resident/pending-backed tags, freeform Abode search, afterlife spiritual conflicts, Source of Light, Профили сущностей посмертия, Chaos Sea Guardian politics, and the hidden Saref / `Крылья над Бездной` main-story contract)
+               - Examples/E_CLI_Training_Showcases.txt (MUST-read whenever `game_state/control/pending_training_showcase_requests.json` exists or the turn prepares teacher/mentor training data)
                - When writing JSON/state files from PowerShell, use explicit UTF-8 and data objects only (`[ordered]@{}` / `@()`), never script blocks (`{}`)
                
             2. **Read Realm Gate State Before Other Game State:**
@@ -71,6 +72,7 @@
                - If `pending_guardian_trade_request.json` exists, answer it with explicit `guardian.tradeInventory` **and** close it through `UpdateGuardianTradeInventoryReceipts`; matching stock without receipt is invalid on accepted turn
                - If the player asks the current active Guardian about a relic bought from Guardian local stock, the Guardian should know that relic as part of their own trade assortment
                - If `pending_npc_trade_inventory_requests.json` or `[NPC_TRADE_REQUEST]` exists while AfterlifeProfile is active, treat it as stale or realm-wrong; do NOT author NPC trade from an afterlife turn
+               - If `pending_training_showcase_requests.json` exists while AfterlifeProfile is active, answer only after selecting the matching row in `OtherGuides/Afterlife_Contract_Matrix.md`: fill `mentorTrainingShowcase` through `afterlifeEntityProfileUpdates`, echo `sourceActorSnapshotHash`, and do not spend player currency or raise player tiers directly
                - If a turn materializes the current active Guardian, you MUST also materialize the abode navigation state in `guardians.json`: `chaosSeaNavigation.currentAbodeId`, `chaosSeaNavigation.discoveredAbodes` containing that abodeId, and `abode.isDiscovered = true`
                - If `guardians.json.pendingGuardianCreation.mode = system_preset`, the client has selected a named Eternal Guardian preset; materialize THAT exact guardian, not a nearby substitute
                - If a guardian is materialized from an Eternal Guardian preset, write `sourcePreset` into the guardian object with `presetId`, `displayName`, `version`, `library`
@@ -118,6 +120,7 @@
                - If a hostile rival arc directly targets the player, it MUST leave at least two player-visible clues before direct collision or terminal harm
                - Every `publicSignals[]` item must include explicit boolean `visibleToPlayer`
                - If a rival arc becomes personal for the player, surface that through an ordinary player-facing soul quest in `UpdateSoulQuests` linked by `relatedRivalArcId`
+               - If `pending_training_showcase_requests.json` exists in MortalWorldProfile, fill requested NPC teacher `trainingShowcase` through `UpdateNPCs`, echo `sourceActorSnapshotHash`, and do not spend player money/experience or raise mastery directly; the client applies purchases through `/обучение`
                - If a world news item is one of those clues, mark that `worldEventsLog` entry with `relatedRivalArcId` too, so the player can recognize it as part of a parallel destiny line
                - Linked `worldEventsLog` entries count as player-visible rival clues only if `visibility` is `Public`, `Regional`, or `player_known`
                - If the underlying event is `Secret` or `Faction-Internal` but the player learned it through play, materialize the linked player-facing world event as `visibility = player_known`

@@ -2507,8 +2507,8 @@ public sealed class BrowserAfterlifeWriteService
             return (false, $"Недостаточный ранг Просветления/Сияния для уровня {nextTier}.");
 
         var cost = currency == "light_sparks"
-            ? ComputeSpiritualArtLightSparkCost(art, nextTier)
-            : ComputeSpiritualArtInkFeatherCost(art, nextTier);
+            ? AfterlifeTrainingCostPolicy.ComputeSelfStandardArtLightSparkCost(art, nextTier)
+            : AfterlifeTrainingCostPolicy.ComputeSelfStandardArtInkFeatherCost(art, nextTier);
         if (!SpendCurrency(soulRoot, shiningRoot, currency, cost, isShining, out var reason))
             return (false, reason);
 
@@ -2532,8 +2532,8 @@ public sealed class BrowserAfterlifeWriteService
         if (nextTier > ResolveMaxUnlockedSpiritualArtTier(profile))
             return (false, $"Недостаточный ранг Просветления/Сияния для Средоточия Души {nextTier}.");
         var cost = currency == "light_sparks"
-            ? ComputeSpiritFocusLightSparkCost(nextTier)
-            : ComputeSpiritFocusInkFeatherCost(nextTier);
+            ? AfterlifeTrainingCostPolicy.ComputeSelfSpiritFocusLightSparkCost(nextTier)
+            : AfterlifeTrainingCostPolicy.ComputeSelfSpiritFocusInkFeatherCost(nextTier);
         if (!SpendCurrency(soulRoot, shiningRoot, currency, cost, isShining, out var reason))
             return (false, reason);
 
@@ -2579,7 +2579,9 @@ public sealed class BrowserAfterlifeWriteService
         if (inkCost <= 0 && sparkCost <= 0)
             return (false, "У особого духовного искусства должна быть положительная цена прокачки.");
 
-        var cost = currency == "light_sparks" ? sparkCost : inkCost;
+        var cost = currency == "light_sparks"
+            ? AfterlifeTrainingCostPolicy.ComputeSelfSpecialArtLightSparkCost(sparkCost)
+            : AfterlifeTrainingCostPolicy.ComputeSelfSpecialArtInkFeatherCost(inkCost);
         if (cost <= 0)
             return (false, $"Особое духовное искусство {artId} нельзя прокачать за {DescribeCurrency(currency)}.");
         if (!SpendCurrency(soulRoot, shiningRoot, currency, cost, isShining, out var reason))
@@ -2704,16 +2706,6 @@ public sealed class BrowserAfterlifeWriteService
 
     private static int ResolveRankFromProgress(IReadOnlyList<AfterlifeSpiritualConflictState.RankDefinition> ranks, int progress) =>
         ranks.Where(item => progress >= item.RequiredProgress).Select(item => item.Rank).DefaultIfEmpty(0).Max();
-
-    private static int ComputeSpiritualArtInkFeatherCost(AfterlifeSpiritualConflictState.SpiritualArtDefinition art, int nextTier) =>
-        checked(50 + nextTier * 50 + art.MinUnlockTier * 25);
-
-    private static int ComputeSpiritualArtLightSparkCost(AfterlifeSpiritualConflictState.SpiritualArtDefinition art, int nextTier) =>
-        checked(4 + nextTier * 3 + art.MinUnlockTier);
-
-    private static int ComputeSpiritFocusInkFeatherCost(int nextTier) => checked(100 + nextTier * 100);
-
-    private static int ComputeSpiritFocusLightSparkCost(int nextTier) => checked(8 + nextTier * 4);
 
     private static JsonArray BuildSpiritualArtBrowserAffectedFiles(string currency, bool isSpecialArt)
     {

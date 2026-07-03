@@ -1,5 +1,28 @@
 {
   "version": 1,
+  "trainingShowcaseCoverage": [
+    {
+      "contractId": "training_showcases_v1",
+      "file": "E_CLI_Training_Showcases.txt",
+      "statePath": "game_state/control/pending_training_showcase_requests.json",
+      "responseSurface": "trainingShowcase / mentorTrainingShowcase",
+      "description": "Mortal teacher and afterlife mentor training vitrines, requested sourceActorSnapshotHash freshness, client-owned purchases, expensive self fallback multipliers, and afterlifeSpecialArtLearningReceipts limited to roleplay learning of new special arts."
+    },
+    {
+      "contractId": "mortal_teacher_showcase",
+      "file": "E_CLI_Training_Showcases.txt",
+      "statePath": "game_state/npcs/npc_core.json",
+      "responseSurface": "UpdateNPCs[].trainingShowcase",
+      "description": "Mortal teacher showcase with skill_mastery offers, sourceCap, money cost, and current-level experience percent cost."
+    },
+    {
+      "contractId": "afterlife_teacher_showcase",
+      "file": "E_CLI_Training_Showcases.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "afterlifeEntityProfileUpdates[].mentorTrainingShowcase",
+      "description": "Afterlife mentor showcase with discounted standard spiritual-art training, sourceCap, relationship gates, and no direct GM tier upgrades."
+    }
+  ],
   "gmWorkerBridgeCoverage": [
     {
       "contractId": "gm_worker_validation_repair_v1",

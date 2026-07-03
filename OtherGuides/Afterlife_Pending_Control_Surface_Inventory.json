@@ -178,6 +178,22 @@
       "notes": "Return-cycle sensitive Guardian inventory contract."
     },
     {
+      "path": "game_state/control/pending_training_showcase_requests.json",
+      "surfaceType": "pending_contract",
+      "owner": "training_showcases",
+      "realm": "Mortal World / Chaos Sea / Shining Abode",
+      "authority": "client-owned pending request; GM materializes teacher/mentor showcase only",
+      "emptyWrapperSemantics": "Missing or empty requests[] means no pending training showcase. Malformed present file is preserved.",
+      "malformedBehavior": "Fail closed until repaired or resolved by valid turn output.",
+      "blockerBehavior": "Blocks stale training purchases; should be resolved before relying on teacher/mentor lessons.",
+      "closureSurface": "Mortal: UpdateNPCs[].trainingShowcase. Afterlife: afterlifeEntityProfileUpdates[].mentorTrainingShowcase.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules",
+        "Examples/E_CLI_Training_Showcases.txt"
+      ],
+      "notes": "Freshness-sensitive showcase request; GM echoes sourceActorSnapshotHash and never spends player resources."
+    },
+    {
       "path": "game_state/control/pending_player_guardian_foundation.json",
       "surfaceType": "pending_contract",
       "owner": "player_guardian_foundation",
