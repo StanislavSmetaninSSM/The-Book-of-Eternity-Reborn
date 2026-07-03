@@ -1888,6 +1888,15 @@ public partial class ValidationService
 
         if (!HasResolvedGenericSharedStrictPreTurnGuardianAuthority(guardianPolicyContext))
         {
+            if (TryResolveIdleStableGuardianProjectTrackerValidationRoot(
+                    guardianPolicyContext,
+                    trackerContext,
+                    out trackerRoot,
+                    out failureDescription))
+            {
+                return true;
+            }
+
             failureDescription = DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext);
             return false;
         }
@@ -1944,6 +1953,100 @@ public partial class ValidationService
             currentTrackerRoot,
             preTurnGuardiansRoot,
             currentGuardiansRoot,
+            currentTurn,
+            currentIncarnation,
+            currentRealm);
+        trackerRoot = CloneJsonObjectToElement(projectedAuthorityRoot);
+        return true;
+    }
+
+    private bool TryResolveIdleStableGuardianProjectTrackerValidationRoot(
+        GuardianPolicyContext guardianPolicyContext,
+        GuardianProjectTrackerPolicyContext trackerContext,
+        out JsonElement trackerRoot,
+        out string failureDescription)
+    {
+        trackerRoot = default;
+        failureDescription = "idle stable guardian project tracker authority unavailable";
+
+        var guardianBaselineFailureKind = ResolveGuardianBaselineFailureKind(guardianPolicyContext);
+        if (!IsIdleStateWithoutActiveTurn(guardianBaselineFailureKind))
+            return false;
+
+        if (trackerContext.PreTurnTrackerSnapshot.FileStatus != GuardianTrackedSnapshotFileStatus.MissingManifest)
+        {
+            failureDescription = DescribeGuardianTrackedSnapshotFileStatus(
+                GuardianProjectState.TrackerPath,
+                trackerContext.PreTurnTrackerSnapshot.FileStatus);
+            return false;
+        }
+
+        if (!guardianPolicyContext.CurrentStateReadable || !guardianPolicyContext.HasCurrentRoot)
+        {
+            failureDescription = "current guardians.json unreadable or missing";
+            return false;
+        }
+
+        if (!trackerContext.HasCurrentRoot || trackerContext.CurrentStateFailureKind != GuardianCurrentStateFailureKind.None)
+        {
+            failureDescription = DescribeGuardianProjectTrackerAuthorityFailure(trackerContext);
+            return false;
+        }
+
+        var currentGuardiansRoot = TryParseJsonObject(guardianPolicyContext.CurrentRoot);
+        var currentTrackerRoot = TryParseJsonObject(trackerContext.CurrentRoot);
+        if (currentGuardiansRoot == null || currentTrackerRoot == null)
+        {
+            failureDescription = "idle stable guardians or tracker root unreadable";
+            return false;
+        }
+
+        var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
+        var stableGuardianAuthorityRoot = CanonicalStateNormalizer.BuildGuardianAuthorityRootForValidation(
+            currentGuardiansRoot.DeepClone().AsObject(),
+            currentRoot: null,
+            authorizedCommands: null,
+            authorizedCreateGuardiansById: null,
+            authorizedPowerEvents: null,
+            currentTurn);
+        var stableGuardianAuthorityElement = CloneJsonObjectToElement(stableGuardianAuthorityRoot);
+
+        if (!TryBuildGuardianProjectTrackerPreTurnAuthorityRoot(
+                currentTrackerRoot.DeepClone().AsObject(),
+                stableGuardianAuthorityElement,
+                out var stableTrackerAuthorityRoot,
+                out failureDescription))
+        {
+            return false;
+        }
+
+        if (!TryValidateGuardianProjectCurrentTrackerAuthorityInput(
+                trackerContext.CurrentRoot,
+                stableTrackerAuthorityRoot,
+                stableGuardianAuthorityElement,
+                stableGuardianAuthorityElement,
+                out failureDescription))
+        {
+            return false;
+        }
+
+        if (!TryResolveCurrentSoulStateForProjectAuthority(
+                currentTrackerRoot,
+                stableTrackerAuthorityRoot,
+                manifest: null,
+                currentTurn,
+                out var currentIncarnation,
+                out var currentRealm,
+                out failureDescription))
+        {
+            return false;
+        }
+
+        var projectedAuthorityRoot = CanonicalStateNormalizer.BuildGuardianProjectAuthorityRootForValidation(
+            stableTrackerAuthorityRoot,
+            currentTrackerRoot,
+            stableGuardianAuthorityRoot.DeepClone().AsObject(),
+            stableGuardianAuthorityRoot.DeepClone().AsObject(),
             currentTurn,
             currentIncarnation,
             currentRealm);
