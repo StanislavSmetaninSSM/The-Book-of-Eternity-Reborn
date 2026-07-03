@@ -413,8 +413,8 @@ public partial class ValidationService
 
         var money = GetTrainingInt(cost, "money");
         var currentLevelExperiencePercent = GetTrainingInt(cost, "currentLevelExperiencePercent");
-        var inkFeathers = GetTrainingInt(cost, "inkFeathers");
-        var lightSparks = GetTrainingInt(cost, "lightSparks");
+        var inkFeathers = ResolveTrainingCostCurrencyAmount(cost, "inkFeathers");
+        var lightSparks = ResolveTrainingCostCurrencyAmount(cost, "lightSparks");
         if (money < 0 || currentLevelExperiencePercent < 0 || inkFeathers < 0 || lightSparks < 0)
         {
             AddTrainingIssue(
@@ -438,6 +438,37 @@ public partial class ValidationService
                 "Укажи деньги/процент опыта/Чернильные Перья/Искры Света.",
                 issues);
         }
+    }
+
+    private static int ResolveTrainingCostCurrencyAmount(JsonElement cost, string canonicalCurrency)
+    {
+        var direct = GetTrainingInt(cost, canonicalCurrency);
+        if (direct != 0)
+            return direct;
+
+        var currency = GetTrainingString(cost, "currency");
+        if (string.IsNullOrWhiteSpace(currency) ||
+            !CurrencyMatches(currency, canonicalCurrency))
+        {
+            return direct;
+        }
+
+        return GetTrainingInt(cost, "amount");
+    }
+
+    private static bool CurrencyMatches(string currency, string canonicalCurrency)
+    {
+        var normalized = currency.Trim().Replace(" ", "", StringComparison.OrdinalIgnoreCase);
+        return canonicalCurrency switch
+        {
+            "inkFeathers" => string.Equals(normalized, "inkFeathers", StringComparison.OrdinalIgnoreCase) ||
+                             string.Equals(normalized, "InkFeathers", StringComparison.OrdinalIgnoreCase) ||
+                             string.Equals(normalized, "ЧернильныеПерья", StringComparison.OrdinalIgnoreCase),
+            "lightSparks" => string.Equals(normalized, "lightSparks", StringComparison.OrdinalIgnoreCase) ||
+                              string.Equals(normalized, "LightSparks", StringComparison.OrdinalIgnoreCase) ||
+                              string.Equals(normalized, "ИскрыСвета", StringComparison.OrdinalIgnoreCase),
+            _ => false
+        };
     }
 
     private static void ValidateMortalTrainingReceipts(JsonElement root, List<ValidationIssue> issues)

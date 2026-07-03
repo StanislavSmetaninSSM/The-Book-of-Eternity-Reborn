@@ -103,6 +103,24 @@ public sealed class TrainingValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_AfterlifeMentorShowcaseCurrencyAmountCost_IsPositiveCost()
+    {
+        var mentor = BuildAfterlifeMentorProfile(sourceActorSnapshotHash: null, sourceCap: 4, includeShowcase: true);
+        var offer = mentor["mentorTrainingShowcase"]!.AsObject()["offers"]!.AsArray()[0]!.AsObject();
+        offer["cost"] = new JsonObject
+        {
+            ["currency"] = "inkFeathers",
+            ["amount"] = 8
+        };
+        await WriteAfterlifeMentorProfileObjectAsync(mentor);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "training_showcase_zero_cost", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_DuplicateTrainingOfferId_ReportsTrainingIssue()
     {
         var mentor = BuildAfterlifeMentorProfile(sourceActorSnapshotHash: null, sourceCap: 4, includeShowcase: true);
