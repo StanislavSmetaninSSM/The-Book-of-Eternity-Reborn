@@ -10418,6 +10418,15 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 "finalAmount": 4
               },
               "summary": "Игрок выиграл духовный спор."
+            },
+            {
+              "mode": "resolve",
+              "conflictId": "afterlife_conflict_log_negotiated_001",
+              "resolutionState": "resolved",
+              "resolvedAtTurn": 13,
+              "operationType": "negotiate",
+              "playerOutcome": "negotiated",
+              "summary": "Игрок договорился о прекращении учебного вихря."
             }
           ]
         }
@@ -10454,6 +10463,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("противник: защита", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("ОД 6->5", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Недавние завершённые конфликты", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("договорённость", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("negotiated", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Чернильные Перья", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("afterlife_spiritual_conflict_state.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Полный JSON", renderedText, StringComparison.OrdinalIgnoreCase);

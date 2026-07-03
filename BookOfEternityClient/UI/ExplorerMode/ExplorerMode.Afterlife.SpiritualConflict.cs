@@ -2247,6 +2247,8 @@ public partial class ExplorerMode
             "surrendered" or "surrender" => "сдача",
             "conceded" or "concession" => "уступка",
             "withdraw" or "withdrew" => "отступление",
+            "negotiated" or "negotiate" or "agreement" or "settled" => "договорённость",
+            "draw" or "stalemate" => "ничья",
             "no_effect" => "без эффекта",
             "" => "?",
             _ => value ?? "?"
