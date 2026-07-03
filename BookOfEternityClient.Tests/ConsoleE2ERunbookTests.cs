@@ -105,6 +105,29 @@ public sealed class ConsoleE2ERunbookTests
     }
 
     [Fact]
+    public void AgentConsoleReadOnlySweepChecksForbiddenMarkersOnlyInPlayerVisibleText()
+    {
+        var script = ReadRepoFile("scripts", "agent-console-readonly-sweep.ps1");
+
+        foreach (var requiredText in new[]
+        {
+            "function Get-PlayerVisibleSnapshotText",
+            "plainText",
+            "prompt",
+            "actions",
+            "diagnostics",
+            "Find-ForbiddenMarkers -VisibleText",
+            "Return-ToGameLoop -Trace $trace | Out-Null",
+            "forbidden-marker-found"
+        })
+        {
+            Assert.Contains(requiredText, script, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain("Find-ForbiddenMarkers $resultSnapshot", script, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void AgentConsoleGmRuntimePreflightScriptChecksDaemonAndBridgeLiveness()
     {
         var script = ReadRepoFile("scripts", "agent-console-gm-runtime-preflight.ps1");

@@ -196,17 +196,62 @@ function Wait-CommandResultSnapshot {
     throw "Timed out waiting for command '$Command' to publish a local command screen."
 }
 
-function Find-ForbiddenMarkers {
+function Add-VisibleTextPart {
+    param(
+        [System.Collections.ArrayList]$Parts,
+
+        $Value
+    )
+
+    if ($null -eq $Value) {
+        return
+    }
+
+    $text = [string]$Value
+    if (-not [string]::IsNullOrWhiteSpace($text)) {
+        [void]$Parts.Add($text)
+    }
+}
+
+function Get-PlayerVisibleSnapshotText {
     param($Snapshot)
 
-    $snapshotJson = $Snapshot | ConvertTo-Json -Depth 80 -Compress
+    $parts = [System.Collections.ArrayList]::new()
+
+    Add-VisibleTextPart -Parts $parts -Value (Get-JsonProperty $Snapshot "title")
+    Add-VisibleTextPart -Parts $parts -Value (Get-JsonProperty $Snapshot "plainText")
+
+    $prompt = Get-JsonProperty $Snapshot "prompt"
+    if ($null -ne $prompt) {
+        Add-VisibleTextPart -Parts $parts -Value (Get-JsonProperty $prompt "text")
+        foreach ($choice in @((Get-JsonProperty $prompt "choices"))) {
+            Add-VisibleTextPart -Parts $parts -Value $choice
+        }
+    }
+
+    foreach ($action in @((Get-JsonProperty $Snapshot "actions"))) {
+        Add-VisibleTextPart -Parts $parts -Value (Get-JsonProperty $action "label")
+        Add-VisibleTextPart -Parts $parts -Value (Get-JsonProperty $action "description")
+        Add-VisibleTextPart -Parts $parts -Value (Get-JsonProperty $action "inputValue")
+    }
+
+    foreach ($diagnostic in @((Get-JsonProperty $Snapshot "diagnostics"))) {
+        Add-VisibleTextPart -Parts $parts -Value (Get-JsonProperty $diagnostic "message")
+    }
+
+    return ($parts -join "`n")
+}
+
+function Find-ForbiddenMarkers {
+    param([string]$VisibleText)
+
     $matches = @()
     foreach ($pattern in $ForbiddenPattern) {
         if ([string]::IsNullOrWhiteSpace($pattern)) {
             continue
         }
 
-        if ($snapshotJson.IndexOf($pattern, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
+        if ($VisibleText.IndexOf($pattern, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
             $matches += [pscustomobject]@{
                 pattern = $pattern
             }
@@ -263,6 +308,7 @@ try {
             before = $null
             result = $null
             resultSnapshot = $null
+            playerVisibleText = ""
             returnTrace = $trace
             forbiddenMatches = @()
         }
@@ -276,10 +322,17 @@ try {
         $resultSnapshot = Wait-CommandResultSnapshot -Command $command
         $entry["result"] = New-SnapshotSummary $resultSnapshot
         $entry["resultSnapshot"] = $resultSnapshot
-        $entry["forbiddenMatches"] = @(Find-ForbiddenMarkers $resultSnapshot)
+        $entry["playerVisibleText"] = Get-PlayerVisibleSnapshotText -Snapshot $resultSnapshot
+        $entry["forbiddenMatches"] = @(Find-ForbiddenMarkers -VisibleText $entry["playerVisibleText"])
 
         if (@($entry["forbiddenMatches"]).Count -gt 0) {
             $entry["status"] = "forbidden-marker-found"
+            try {
+                Return-ToGameLoop -Trace $trace | Out-Null
+            }
+            catch {
+                $entry["returnFailure"] = $_.Exception.Message
+            }
             $artifactCommands += [pscustomobject]$entry
             throw "Command '$command' output contained forbidden markers: $(@($entry["forbiddenMatches"]).pattern -join ', ')"
         }
