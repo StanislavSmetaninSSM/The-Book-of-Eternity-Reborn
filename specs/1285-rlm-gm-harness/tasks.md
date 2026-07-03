@@ -220,6 +220,7 @@
 - [X] T178 [Harness/RLM live-test blocker #1360/#1350/#1285/#1290] Keep `player_soul.currencies` synchronized with authoritative local currency state after client-owned special spiritual art upgrades.
 - [X] T179 [Harness/RLM live-test blocker #1362/#1350/#1285/#1290] Publish Explorer freeform `Ask` prompts as Agent Console text snapshots so commands such as `/духовное_действие` can accept autonomous text input without stale snapshots.
 - [X] T180 [Harness/RLM live-test follow-up #1361/#1350/#1285/#1290] Add compact afterlife repair packets and RLM lessons for spiritual-conflict reward eligibility and entity-profile special-art scaffold failures.
+- [X] T181 [Harness/RLM live-test follow-up #1396/#1285/#1290] Add a reusable Agent Console read-only command sweep helper that submits commands only from `game-loop` text prompts, unwinds through `return-to-game-loop-step`, records forbidden-marker artifacts, and fails closed on `turn-preparing` or unsafe text prompts.
 - [X] T168 [Live-test coverage #1349/#1285/#1290] Run and record Mortal World combat, skill mastery/progression, level-up, and stat-allocation coverage through Agent Console with Codex GM bridge.
 - [X] T169 [Live-test coverage #1350/#1340/#1285/#1290] Run and record afterlife spiritual combat, spiritual art learning, and spiritual art mastery/progression coverage through Agent Console with Codex GM bridge.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.

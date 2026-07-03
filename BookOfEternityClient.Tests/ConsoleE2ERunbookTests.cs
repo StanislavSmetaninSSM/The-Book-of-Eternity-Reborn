@@ -62,6 +62,48 @@ public sealed class ConsoleE2ERunbookTests
     }
 
     [Fact]
+    public void AgentConsoleLiveRunbookDocumentsSafeReadOnlyCommandSweepHelper()
+    {
+        var runbook = ReadRepoFile("docs", "e2e", "agent-console-runbook.md");
+
+        foreach (var requiredText in new[]
+        {
+            "scripts/agent-console-readonly-sweep.ps1",
+            "read-only command sweep",
+            "return-to-game-loop-step",
+            "do not use `/default-action`",
+            "turn-preparing",
+            "forbidden markers"
+        })
+        {
+            Assert.Contains(requiredText, runbook, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void AgentConsoleReadOnlySweepScriptUsesOnlySafeReadOnlyControlEndpoints()
+    {
+        var script = ReadRepoFile("scripts", "agent-console-readonly-sweep.ps1");
+
+        foreach (var requiredText in new[]
+        {
+            "/api/agent-console/snapshot",
+            "/api/agent-console/text",
+            "/api/agent-console/return-to-game-loop-step",
+            "screenId",
+            "inputKind",
+            "game-loop",
+            "turn-preparing",
+            "forbiddenMarkers"
+        })
+        {
+            Assert.Contains(requiredText, script, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain("/api/agent-console/default-action", script, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void LauncherScriptExposesSafeDaemonStartAction()
     {
         var launcher = ReadRepoFile("BookOfEternityClient", "Launcher", "bookofeternity.ps1");

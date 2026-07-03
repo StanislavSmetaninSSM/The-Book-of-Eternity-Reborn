@@ -46,7 +46,8 @@ It also removes stale `game_state/control/pending_dice_state.json` from the prep
 7. If a worker is used, confirm dispatch/proposal/apply decision appears in the ledger.
 8. For afterlife turns, confirm `Complete-BoeTurn` / `Complete-BoeValidationRepair` block raw Mortal World profile mutations before terminal completion.
 9. For Chaos Sea spiritual conflict turns, confirm the compact `AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json` prevents missing `advantageId` / `sourceId` repairs when a guard-created tempo window is used.
-10. Apply the live-test rubric:
+10. For read-only command output sweeps, use `scripts/agent-console-readonly-sweep.ps1` from `docs/e2e/agent-console-runbook.md` instead of ad-hoc `default-action` loops.
+11. Apply the live-test rubric:
    - valid turn
    - player-facing output present
    - no implementation-source browsing as ordinary workflow
@@ -55,7 +56,7 @@ It also removes stale `game_state/control/pending_dice_state.json` from the prep
    - missing harness tool moments
    - worker usefulness
    - experience lesson usefulness
-11. Convert repeated high-friction findings into GitHub issues or comments.
+12. Convert repeated high-friction findings into GitHub issues or comments.
 
 ## Expected result
 

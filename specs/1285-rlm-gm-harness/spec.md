@@ -35,6 +35,7 @@
   - #1353 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1353
   - #1354 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1354
   - #1356 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1356
+  - #1396 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1396
 - **Issue type**: epic plus implementation tasks.
 - **Spec Kit justification**: This work changes GM harness runtime behavior, worker orchestration, validation repair feedback, GM-facing prompts/docs, and live-test evidence across multiple sessions.
 - **Contract scope**: GM-facing prompts, runtime-state, validation, docs, examples, agent-console, e2e.

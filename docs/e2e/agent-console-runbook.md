@@ -203,6 +203,33 @@ curl.exe -sS -X POST "$Base/api/agent-console/default-action" -H "Authorization:
 curl.exe -sS -X POST "$Base/api/agent-console/return-to-game-loop-step" -H "Authorization: Bearer $Token"
 ```
 
+## Safe read-only command sweep
+
+Use `scripts/agent-console-readonly-sweep.ps1` for any read-only command sweep where the goal is to inspect command output and return to the player prompt without submitting a turn. This is the harness-owned path for command audits; avoid ad-hoc loops that sleep blindly or guess which menu label means "back".
+
+Example:
+
+```powershell
+$Commands = @(
+  "/перья",
+  "/хроники_посмертия",
+  "/архив_души",
+  "/spiritual_arts",
+  "/spiritual_combat_log"
+)
+
+.\scripts\agent-console-readonly-sweep.ps1 `
+  -Base $Base `
+  -Token $Token `
+  -Commands $Commands `
+  -ForbiddenPattern @("specialArtAudit", "baseOperation", "#[turn]") `
+  -OutputPath (Join-Path $RunRoot "readonly-command-sweep.json")
+```
+
+The helper waits for `screenId: game-loop` with `inputKind: text`, submits each command through `/api/agent-console/text`, records the resulting command snapshot, scans for forbidden markers, and returns through `/api/agent-console/return-to-game-loop-step`. It fails closed if a read-only command reaches `turn-preparing`, if the screen is not awaiting input, or if returning from a command screen would require typing into another text prompt.
+
+For read-only command sweeps, do not use `/default-action`. That endpoint is useful only when the explicit test intent is to accept the current player-visible default action. It is not a safe unwind primitive for command-output audits because a stale or unexpected screen can turn a data inspection into a player turn.
+
 ## Safe smoke path
 
 1. Launch with a copied `FileSystemExample/game_session` under a disposable run root.
