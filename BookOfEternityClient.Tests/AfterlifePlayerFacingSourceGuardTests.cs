@@ -130,7 +130,10 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("statusAfter", trade, StringComparison.Ordinal);
         Assert.Contains("stateTransition", trade, StringComparison.Ordinal);
         Assert.Contains("generatedBuybackEntryFields", trade, StringComparison.Ordinal);
-        Assert.Contains("Ход ГМ не отправляется: это согласованная локальная запись клиента с полным JSON-аудитом", trade, StringComparison.Ordinal);
+        Assert.DoesNotContain("Полный JSON покупки у Хранителя", trade, StringComparison.Ordinal);
+        Assert.DoesNotContain("Полный JSON продаваемой Реликвии Души", trade, StringComparison.Ordinal);
+        Assert.DoesNotContain("Полный JSON обратного выкупа у Хранителя", trade, StringComparison.Ordinal);
+        Assert.DoesNotContain("Ход ГМ не отправляется: это согласованная локальная запись клиента с полным JSON-аудитом", trade, StringComparison.Ordinal);
         Assert.DoesNotContain(".Take(3)", trade, StringComparison.Ordinal);
 
         Assert.Contains("relicId=", inkFeathers, StringComparison.Ordinal);

@@ -4131,6 +4131,20 @@ public partial class ExplorerMode
         };
     }
 
+    private async Task ShowGuardianTradeCommand()
+    {
+        var guardianId = (_currentCommandRemainder ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(guardianId))
+        {
+            MarkupLine("[yellow]Укажите Хранителя: /торговля_хранителя <id хранителя>.[/]");
+            MarkupLine("[dim]Если ID неизвестен, откройте /хранители и выберите действие «Торговать» у нужного Хранителя.[/]");
+            WaitForKey();
+            return;
+        }
+
+        await ShowGuardianTradePanel(guardianId);
+    }
+
     private async Task ShowGuardianTradePanel(string guardianId)
     {
         if (_guardianTradeService == null)
@@ -4214,10 +4228,11 @@ public partial class ExplorerMode
 
             var feathers = await ReadInkFeathersBalance();
             var guardianTradeRep = ReputationDisplay.BuildValueLabelMarkup(view.CurrentReputation, ReputationScaleKind.Guardian);
+            var domainDisplay = GuardianTradeDisplayDomain(view.DomainDisplay);
             var headerLines = new List<string>
             {
                 $"[bold cyan]🛒 Торговля с Хранителем {Markup.Escape(view.GuardianName)}[/]",
-                $"[dim]Домен: {Markup.Escape(view.DomainDisplay)} • Репутация: {guardianTradeRep}[/]",
+                $"[dim]Домен: {Markup.Escape(domainDisplay)} • Репутация: {guardianTradeRep}[/]",
                 $"[dim]Чернильные Перья: {feathers} • Выкуп обратно: {view.BuybackOffers.Count}[/]",
                 "[dim]Витрина обновляется после нового возвращения из смертной жизни.[/]"
             };
@@ -4317,18 +4332,16 @@ public partial class ExplorerMode
             }
 
             var feathers = await ReadInkFeathersBalance();
-            var choices = refreshedView.Offers.Select(offer =>
+            var offerChoices = BuildUniqueChoiceOptions(refreshedView.Offers, offer =>
             {
                 var soldTag = offer.SoldOut ? "РАСПРОДАНО" : "";
-                var relicId = GetNodeString(offer.RelicData["relicId"]) ?? GetNodeString(offer.RelicData["id"]) ?? string.Empty;
                 return ConsoleLayout.PlainChoiceLabel(
                     $"💎 {offer.Name}",
-                    offer.Rarity,
+                    DescribeRarityLabel(offer.Rarity),
                     $"🪶 {offer.PriceInFeathers}",
-                    string.IsNullOrWhiteSpace(offer.SlotId) ? "" : $"slotId={offer.SlotId}",
-                    string.IsNullOrWhiteSpace(relicId) ? "" : $"relicId={relicId}",
                     soldTag);
-            }).ToList();
+            });
+            var choices = offerChoices.Select(item => item.Label).ToList();
             choices.Add("← Назад");
 
             var selected = Prompt(new SelectionPrompt<string>()
@@ -4340,11 +4353,11 @@ public partial class ExplorerMode
             if (selected.Contains("Назад"))
                 return;
 
-            var selectedIndex = choices.IndexOf(selected);
-            if (selectedIndex < 0 || selectedIndex >= refreshedView.Offers.Count)
+            var selectedOffer = offerChoices.FirstOrDefault(item => string.Equals(item.Label, selected, StringComparison.Ordinal)).Value;
+            if (selectedOffer == null)
                 return;
 
-            var offer = refreshedView.Offers[selectedIndex];
+            var offer = selectedOffer;
             var canBuy = !offer.SoldOut && feathers >= offer.PriceInFeathers;
             var decision = ShowGuardianTradeBuyPreview(refreshedView, offer, feathers, canBuy);
             if (decision != GuardianTradeBuyDecision.Buy)
@@ -4375,26 +4388,16 @@ public partial class ExplorerMode
         lines.Insert(2, $"  🛍️ Источник витрины: [cyan]{Markup.Escape(GuardianTradeDisplayDomain(offer.DomainTag))}[/]");
         lines.Insert(3, $"  🪶 У вас сейчас: [gold1]{currentFeathers}[/]");
         lines.Insert(4, $"  🪶 После покупки: [gold1]{Math.Max(0, currentFeathers - offer.PriceInFeathers)}[/]");
-        lines.Insert(5, $"  guardianId: [dim]{Markup.Escape(view.GuardianId)}[/]");
-        lines.Insert(6, $"  guardianName: [white]{Markup.Escape(view.GuardianName)}[/]");
-        lines.Insert(7, $"  tradeCycleId: [dim]{Markup.Escape(view.TradeCycleId)}[/]");
-        lines.Insert(8, $"  slotId: [dim]{Markup.Escape(offer.SlotId)}[/]");
+        lines.Insert(5, $"  🛡️ Хранитель: [white]{Markup.Escape(view.GuardianName)}[/]");
 
         if (offer.SoldOut)
         {
-            lines.Insert(9, "  [red]Статус витрины: слот уже распродан в текущем возвращении.[/]");
+            lines.Insert(6, "  [red]Статус витрины: реликвия уже распродана в текущем возвращении.[/]");
         }
         else if (currentFeathers < offer.PriceInFeathers)
         {
-            lines.Insert(9, "  [yellow]Статус покупки: пока не хватает Чернильных Перьев для покупки.[/]");
+            lines.Insert(6, "  [yellow]Статус покупки: пока не хватает Чернильных Перьев для покупки.[/]");
         }
-        lines.Add("");
-        lines.Add("[bold]Каноническая локальная операция:[/]");
-        lines.Add("  • game_state/meta/soul_state.json: Ink Feathers уменьшаются на priceInFeathers.");
-        lines.Add("  • game_state/meta/soul_state.json: relicData клонируется в soulRelics.stored.");
-        lines.Add("  • game_state/meta/guardians.json: выбранный tradeInventory.items[].soldOut=true.");
-        lines.Add("  • Guardian buyback/sell history не создаётся при покупке; это именно покупка из готовой витрины.");
-        lines.Add("  • Ход ГМ не отправляется: это согласованная локальная запись клиента.");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -4405,10 +4408,6 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-        WriteJsonAuditPanel(
-            "Полный JSON покупки у Хранителя",
-            BuildGuardianBuyAuditNode(view, offer, currentFeathers),
-            Color.Gold1);
 
         var actions = new List<string>();
         if (canBuy)
@@ -4502,16 +4501,8 @@ public partial class ExplorerMode
         lines.Insert(2, $"  🪶 У вас сейчас: [gold1]{currentFeathers}[/]");
         lines.Insert(3, $"  🪶 После продажи: [gold1]{currentFeathers + offer.PriceInFeathers}[/]");
         lines.Insert(4, $"  🛡️ Покупатель: [cyan]{Markup.Escape(view.GuardianName)}[/]");
-        lines.Insert(5, $"  guardianId: [dim]{Markup.Escape(view.GuardianId)}[/]");
-        lines.Insert(6, $"  tradeCycleId: [dim]{Markup.Escape(view.TradeCycleId)}[/]");
-        lines.Insert(7, "  🔁 После продажи реликвия будет удалена из хранилища души и появится у этого Хранителя в обратном выкупе.");
-        lines.Insert(8, "  [yellow]Продажу нельзя откатить без будущего обратного выкупа у того же Хранителя.[/]");
-        lines.Add("");
-        lines.Add("[bold]Каноническая локальная операция:[/]");
-        lines.Add("  • game_state/meta/soul_state.json: Ink Feathers увеличиваются на sellPrice.");
-        lines.Add("  • game_state/meta/soul_state.json: relicId удаляется из soulRelics.stored.");
-        lines.Add("  • game_state/meta/guardians.json: buybackRelics[] получает новую available запись с relicData, soldForPrice, buybackPrice, soldAtTurn и guardianId.");
-        lines.Add("  • Ход ГМ не отправляется: это согласованная локальная запись клиента с полным JSON-аудитом.");
+        lines.Insert(5, "  🔁 После продажи реликвия будет удалена из хранилища души и появится у этого Хранителя в обратном выкупе.");
+        lines.Insert(6, "  [yellow]Продажу нельзя откатить без будущего обратного выкупа у того же Хранителя.[/]");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -4522,7 +4513,6 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-        WriteJsonAuditPanel("Полный JSON продаваемой Реликвии Души", BuildGuardianSellAuditNode(view, offer, currentFeathers), Color.Gold1);
 
         return Confirm(
             $"Продать «{offer.Name}» за {offer.PriceInFeathers} 🪶? Реликвия перейдёт в обратный выкуп у Хранителя.",
@@ -4627,10 +4617,8 @@ public partial class ExplorerMode
             var offerChoices = BuildUniqueChoiceOptions(tradeView.BuybackOffers, offer =>
                 ConsoleLayout.PlainChoiceLabel(
                     $"🔁 {offer.Name}",
-                    offer.Rarity,
-                    $"🪶 {offer.PriceInFeathers}",
-                    string.IsNullOrWhiteSpace(offer.BuybackEntryId) ? "" : $"buybackEntryId={offer.BuybackEntryId}",
-                    string.IsNullOrWhiteSpace(offer.RelicId) ? "" : $"relicId={offer.RelicId}"));
+                    DescribeRarityLabel(offer.Rarity),
+                    $"🪶 {offer.PriceInFeathers}"));
             var choices = offerChoices.Select(item => item.Label).ToList();
             choices.Add("← Назад");
 
@@ -4669,21 +4657,12 @@ public partial class ExplorerMode
         lines.Insert(1, $"  🔁 Цена обратного выкупа: [yellow]{offer.PriceInFeathers} 🪶[/]");
         lines.Insert(2, $"  🪶 У вас сейчас: [gold1]{currentFeathers}[/]");
         lines.Insert(3, $"  🪶 После выкупа: [gold1]{Math.Max(0, currentFeathers - offer.PriceInFeathers)}[/]");
-        lines.Insert(4, $"  guardianId: [dim]{Markup.Escape(view.GuardianId)}[/]");
-        lines.Insert(5, $"  guardianName: [white]{Markup.Escape(view.GuardianName)}[/]");
-        lines.Insert(6, $"  tradeCycleId: [dim]{Markup.Escape(view.TradeCycleId)}[/]");
-        lines.Insert(7, $"  buybackEntryId: [dim]{Markup.Escape(offer.BuybackEntryId)}[/]");
-        lines.Insert(8, $"  💸 Продана ранее за: [grey]{offer.SoldForPrice} 🪶[/]");
-        lines.Insert(9, $"  🕰 Продана на ходу: [grey]{offer.SoldAtTurn}[/]");
+        lines.Insert(4, $"  🛡️ Хранитель: [white]{Markup.Escape(view.GuardianName)}[/]");
+        lines.Insert(5, $"  💸 Продана ранее за: [grey]{offer.SoldForPrice} 🪶[/]");
+        lines.Insert(6, $"  🕰 Продана на ходу: [grey]{offer.SoldAtTurn}[/]");
 
         if (currentFeathers < offer.PriceInFeathers)
-            lines.Insert(10, "  [yellow]Статус выкупа: пока не хватает Чернильных Перьев.[/]");
-        lines.Add("");
-        lines.Add("[bold]Каноническая локальная операция:[/]");
-        lines.Add("  • game_state/meta/soul_state.json: Ink Feathers уменьшаются на priceInFeathers.");
-        lines.Add("  • game_state/meta/soul_state.json: relicData возвращается в soulRelics.stored.");
-        lines.Add("  • game_state/meta/guardians.json: buybackRelics[].status меняется с available на rebought for matching buybackEntryId.");
-        lines.Add("  • Ход ГМ не отправляется: это согласованная локальная запись клиента с полным JSON-аудитом.");
+            lines.Insert(7, "  [yellow]Статус выкупа: пока не хватает Чернильных Перьев.[/]");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -4694,10 +4673,6 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-        WriteJsonAuditPanel(
-            "Полный JSON обратного выкупа у Хранителя",
-            BuildGuardianBuybackAuditNode(view, offer, currentFeathers),
-            Color.Gold1);
 
         var actions = new List<string>();
         if (canBuyBack)

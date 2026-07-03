@@ -1982,6 +1982,77 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_GuardianTradeBuyPreview_IsPlayerFacingAndHidesTechnicalReceipt()
+    {
+        await SeedGuardianTradeStateAsync();
+        var guardiansRaw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        await WriteRawJsonAsync(
+            "game_state/meta/guardians.json",
+            (guardiansRaw ?? string.Empty).Replace("\"domainTag\": \"Двор Зеркал\"", "\"domainTag\": \"runes\"", StringComparison.Ordinal));
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 0 },
+            soulRelics = new
+            {
+                equipped = Array.Empty<object>(),
+                stored = Array.Empty<object>()
+            }
+        });
+        _console.QueueSelection("Действие", "🛒 Торговать");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хранители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("guardian_trade_buy_preview_player_facing");
+        var renderedText = ExtractRenderedText();
+        var visibleChoiceText = string.Join("\n", _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices));
+        var visibleText = renderedText + "\n" + visibleChoiceText;
+        Assert.Contains("Печать Зеркального Двора", visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Цена", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("У вас сейчас", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("пока не хватает", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Руны", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("runes", visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("повреждённая UI-разметка", visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полный JSON покупки у Хранителя", visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Каноническая локальная операция", visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guardianId", visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("tradeCycleId", visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("slotId", visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("relicId", visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("transactionKind", visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("localTransaction", visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/meta", visibleText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Common", visibleText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_GuardianTradeDirectCommand_OpensTradePanelForRequestedGuardian()
+    {
+        await SeedGuardianTradeStateAsync();
+        var guardiansRaw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        await WriteRawJsonAsync(
+            "game_state/meta/guardians.json",
+            (guardiansRaw ?? string.Empty).Replace("\"domain\": \"Двор Зеркал\"", "\"domain\": \"Magic\"", StringComparison.Ordinal));
+        _console.QueueSelection("Выберите раздел", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/торговля_хранителя guardian_trade_001"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("guardian_trade_direct_command");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Торговля с Хранителем Азалия", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Магический домен", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Домен: Magic", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Азалия · активный", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_GuardianTradeSell_SucceedsAndRemovesRelic()
     {
@@ -2005,8 +2076,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("\"buybackRelics\"", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains("\"status\": \"available\"", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Полный JSON продаваемой Реликвии Души", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Реликвия для продажи", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("обратном выкупе", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Полный JSON продаваемой Реликвии Души", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Каноническая локальная операция", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guardianId", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("tradeCycleId", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

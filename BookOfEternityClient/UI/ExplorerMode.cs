@@ -107,7 +107,7 @@ public partial class ExplorerMode
             ("guardian_projects", ShowGuardianProjects),
             ("guardian_politics", ShowGuardianPoliticsAsync),
             ("abodes", ShowAbodesNavigation),
-            ("guardian_trade", ShowGuardians),
+            ("guardian_trade", ShowGuardianTradeCommand),
             ("guardian_social", ShowGuardians),
             ("abode_residents", ShowGuardians),
             ("resident_interaction", ShowGuardians),

@@ -2803,7 +2803,7 @@ public partial class ExplorerMode
             .ToList();
     }
 
-    private static string GuardianTradeDisplayDomain(string domainTag) => domainTag switch
+    private static string GuardianTradeDisplayDomain(string domainTag) => domainTag.Trim() switch
     {
         "Combat" => "Боевой домен",
         "Magic" => "Магический домен",
@@ -2812,6 +2812,20 @@ public partial class ExplorerMode
         "Survival" => "Домен выживания",
         "Knowledge" => "Домен знания",
         "Trade" => "Торговый домен",
+        "combat" => "Боевой домен",
+        "magic" => "Магический домен",
+        "social" => "Социальный домен",
+        "crafting" => "Ремесленный домен",
+        "survival" => "Домен выживания",
+        "knowledge" => "Домен знания",
+        "trade" => "Торговый домен",
+        "runes" => "Руны",
+        "stardust" => "Звёздная пыль",
+        "ward" => "Обереги",
+        "wards" => "Обереги",
+        "mirror" => "Зеркала",
+        "mirrors" => "Зеркала",
+        "focus" => "Средоточие",
         _ => domainTag
     };
 
