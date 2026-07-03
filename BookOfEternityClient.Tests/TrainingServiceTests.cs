@@ -235,6 +235,23 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureTrainingAsync_AfterlifeMentorShowcase_NormalizesNaturalGmOfferShape()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        await SeedAfterlifeMentorWithNaturalShowcaseShapeAsync();
+
+        var service = CreateService();
+        var view = await service.EnsureTrainingAsync(currentTurn: 33);
+
+        var teacher = Assert.Single(view.Teachers);
+        var offer = Assert.Single(teacher.Offers);
+        Assert.Equal("Защита", offer.TargetName);
+        Assert.Equal("standard_spiritual_art", offer.TargetKind);
+        Assert.Equal(75, offer.Cost.InkFeathers);
+        Assert.True(offer.Available);
+    }
+
+    [Fact]
     public async Task BuyTrainingAsync_AfterlifeMentorOffer_SpendsCurrencyAndRaisesArtTier()
     {
         await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
@@ -497,6 +514,64 @@ public sealed class TrainingServiceTests : IDisposable
                 }
             };
         }
+
+        var root = new JsonObject
+        {
+            ["profiles"] = new JsonArray(mentor)
+        };
+        await _fs.WriteFileAtomicAsync("game_state/meta/afterlife_entity_profiles.json", root.ToJsonString());
+    }
+
+    private async Task SeedAfterlifeMentorWithNaturalShowcaseShapeAsync()
+    {
+        var mentor = new JsonObject
+        {
+            ["actorType"] = "guardian",
+            ["actorId"] = "guardian_myriel",
+            ["displayName"] = "Мириэль Пепельная Звезда",
+            ["mentorProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 62
+            },
+            ["standardArts"] = new JsonObject
+            {
+                ["guard"] = 3
+            }
+        };
+
+        var snapshotHash = TrainingService.ComputeSourceSnapshotHash(mentor);
+        mentor["mentorTrainingShowcase"] = new JsonObject
+        {
+            ["showcaseId"] = "mentor_showcase_myriel_natural_shape",
+            ["requestKind"] = "afterlife_teacher_showcase",
+            ["sourceActorId"] = "guardian_myriel",
+            ["sourceActorName"] = "Мириэль Пепельная Звезда",
+            ["sourceActorSnapshotHash"] = snapshotHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "myriel_guard_tier_1",
+                    ["targetKind"] = "standard_art",
+                    ["targetId"] = "guard",
+                    ["displayName"] = "Защита",
+                    ["targetValue"] = 1,
+                    ["sourceCap"] = 3,
+                    ["cost"] = new JsonObject
+                    {
+                        ["currency"] = "inkFeathers",
+                        ["amount"] = 8
+                    },
+                    ["requirements"] = new JsonObject
+                    {
+                        ["minimumRelationship"] = 50,
+                        ["maxPlayerUnlockedTier"] = 1
+                    },
+                    ["summary"] = "Базовая защитная стойка для удержания давления."
+                }
+            }
+        };
 
         var root = new JsonObject
         {

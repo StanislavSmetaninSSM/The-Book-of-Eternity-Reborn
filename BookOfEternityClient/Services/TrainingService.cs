@@ -514,8 +514,10 @@ public sealed class TrainingService
         JsonObject? shiningRoot)
     {
         var targetId = GetNodeString(offer["targetId"]) ?? "";
-        var targetName = GetNodeString(offer["targetName"]) ?? targetId;
-        var targetKind = GetNodeString(offer["targetKind"]) ?? "standard_spiritual_art";
+        var targetKind = NormalizeAfterlifeTrainingTargetKind(
+            GetNodeString(offer["targetKind"]) ?? GetNodeString(offer["targetType"]),
+            targetId);
+        var targetName = ResolveAfterlifeTrainingTargetName(offer, targetKind, targetId);
         var currentValue = ResolveAfterlifePlayerTargetValue(playerProfile, targetKind, targetId);
         var targetValue = Math.Max(0, GetNodeInt(offer["targetValue"]));
         var offeredSourceCap = Math.Max(0, GetNodeInt(offer["sourceCap"]));
@@ -529,14 +531,19 @@ public sealed class TrainingService
         var baseLightSparkCost = ResolveAfterlifeMentorBaseLightSparkCost(playerProfile, targetKind, targetId, targetValue);
 
         var cost = offer["cost"] as JsonObject;
-        var authoredLightSparkCost = Math.Max(0, GetNodeInt(cost?["lightSparks"]));
+        var authoredInkFeatherCost = Math.Max(
+            0,
+            GetTrainingCostAmount(cost, "inkFeathers", "inkFeatherCost", "inkFeathersCost", "costInFeathers"));
+        var authoredLightSparkCost = Math.Max(
+            0,
+            GetTrainingCostAmount(cost, "lightSparks", "lightSparkCost", "lightSparksCost", "costInLightSparks"));
         var trainingCost = new TrainingCost(
             Money: 0,
             CurrentLevelExperiencePercent: 0,
             CurrentLevelExperiencePoints: 0,
             InkFeathers: baseInkFeatherCost > 0
                 ? AfterlifeTrainingCostPolicy.ComputeMentorCost(baseInkFeatherCost, relationshipLevel)
-                : Math.Max(0, GetNodeInt(cost?["inkFeathers"])),
+                : authoredInkFeatherCost,
             LightSparks: authoredLightSparkCost > 0 && baseLightSparkCost > 0
                 ? AfterlifeTrainingCostPolicy.ComputeMentorCost(baseLightSparkCost, relationshipLevel)
                 : authoredLightSparkCost);
@@ -1039,6 +1046,59 @@ public sealed class TrainingService
         return 0;
     }
 
+    private static string ResolveAfterlifeTrainingTargetName(JsonObject offer, string targetKind, string targetId)
+    {
+        var explicitName =
+            GetNodeString(offer["targetName"]) ??
+            GetNodeString(offer["displayName"]) ??
+            GetNodeString(offer["skillName"]);
+        if (!string.IsNullOrWhiteSpace(explicitName))
+            return explicitName;
+
+        if (IsAfterlifeStandardArtTarget(targetKind))
+            return FormatStandardSpiritualArtName(targetId);
+
+        if (IsAfterlifeSpiritFocusTarget(targetKind))
+            return "Средоточие Души";
+
+        return targetId;
+    }
+
+    private static string NormalizeAfterlifeTrainingTargetKind(string? targetKind, string targetId)
+    {
+        var normalized = targetKind?.Trim();
+        if (string.IsNullOrWhiteSpace(normalized))
+        {
+            return string.Equals(targetId, "spirit_focus", StringComparison.OrdinalIgnoreCase)
+                ? "spirit_focus"
+                : "standard_spiritual_art";
+        }
+
+        return normalized.ToLowerInvariant() switch
+        {
+            "standard_art" or "standardarts" or "standard_art_training" => "standard_spiritual_art",
+            "special_art" or "specialarts" or "special_art_training" => "special_spiritual_art",
+            "spiritfocus" or "spirit_focus_training" => "spirit_focus",
+            _ => normalized
+        };
+    }
+
+    private static string FormatStandardSpiritualArtName(string targetId) =>
+        targetId.Trim().ToLowerInvariant() switch
+        {
+            "pressure" => "Давление",
+            "counter" => "Контрприём",
+            "guard" => "Защита",
+            "maneuver" => "Манёвр",
+            "binding" => "Оковы",
+            "force_binding" => "Силовые оковы",
+            "break_binding" => "Разрыв оков",
+            "incarnation_resistance" => "Сопротивление воплощению",
+            "champion_coordination" => "Согласование чемпиона",
+            "recover_spiritual_power" => "Собрать Средоточие",
+            _ => targetId
+        };
+
     private static int ResolveAfterlifeMentorSourceCap(JsonObject mentor, string targetKind, string targetId)
     {
         if (IsAfterlifeStandardArtTarget(targetKind))
@@ -1149,6 +1209,9 @@ public sealed class TrainingService
 
     private static bool IsAfterlifeStandardArtTarget(string targetKind) =>
         string.Equals(targetKind, "standard_spiritual_art", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(targetKind, "standard_art", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(targetKind, "standardArts", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(targetKind, "standard_art_training", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(targetKind, "spiritual_art", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(targetKind, "spiritual_art_training", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(targetKind, "spiritual_art_self_training", StringComparison.OrdinalIgnoreCase);
@@ -1393,6 +1456,45 @@ public sealed class TrainingService
         if (node is JsonValue value && value.TryGetValue<string>(out var text))
             return string.IsNullOrWhiteSpace(text) ? null : text.Trim();
         return null;
+    }
+
+    private static int GetTrainingCostAmount(JsonObject? cost, string canonicalCurrency, params string[] aliases)
+    {
+        if (cost == null)
+            return 0;
+
+        var direct = GetNodeInt(cost[canonicalCurrency]);
+        if (direct != 0)
+            return direct;
+
+        foreach (var alias in aliases)
+        {
+            direct = GetNodeInt(cost[alias]);
+            if (direct != 0)
+                return direct;
+        }
+
+        var currency = GetNodeString(cost["currency"]) ?? GetNodeString(cost["costCurrency"]);
+        if (!CurrencyMatches(currency, canonicalCurrency))
+            return 0;
+
+        return GetNodeInt(cost["amount"]);
+    }
+
+    private static bool CurrencyMatches(string? currency, string canonicalCurrency)
+    {
+        if (string.IsNullOrWhiteSpace(currency))
+            return false;
+
+        var normalized = currency.Trim().Replace(" ", "", StringComparison.OrdinalIgnoreCase);
+        return canonicalCurrency switch
+        {
+            "inkFeathers" => string.Equals(normalized, "inkFeathers", StringComparison.OrdinalIgnoreCase) ||
+                             string.Equals(normalized, "ЧернильныеПерья", StringComparison.OrdinalIgnoreCase),
+            "lightSparks" => string.Equals(normalized, "lightSparks", StringComparison.OrdinalIgnoreCase) ||
+                              string.Equals(normalized, "ИскрыСвета", StringComparison.OrdinalIgnoreCase),
+            _ => false
+        };
     }
 
     private static int GetNodeInt(JsonNode? node, int defaultValue = 0)
