@@ -1231,7 +1231,7 @@ For EVERY relevant NPC block, the current-location line is mandatory. If the act
 
 Canonical authoring rule: write each `dialogueOptions` entry as an object with at least player-facing `text`.
 If the option needs a hidden machine marker or exact submitted command, keep `text` clean for the player and put the full value in optional `inputValue`.
-Do not show control tags such as `[AFTERLIFE_SPIRITUAL_ACTION: ...]` in player-facing `text`.
+Do not show control tags such as `[AFTERLIFE_SPIRITUAL_ACTION: ...]`, `[INK_FEATHER_ACTION: ...]`, or other `*_ACTION` / `*_CONTROL` markers in player-facing `text`.
 The client may normalize a legacy string-only list into objects as a repair-prevention fallback,
 but the GM must not rely on that fallback when authoring normal turns.
 

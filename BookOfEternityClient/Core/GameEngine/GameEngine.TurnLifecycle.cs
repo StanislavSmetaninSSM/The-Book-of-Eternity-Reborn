@@ -3247,9 +3247,8 @@ public partial class GameEngine
             if (_lastResponse?.DialogueOptions != null && optNum >= 1 && optNum <= _lastResponse.DialogueOptions.Length)
             {
                 var option = _lastResponse.DialogueOptions[optNum - 1];
-                var optionText = !string.IsNullOrWhiteSpace(option.InputValue)
-                    ? option.InputValue
-                    : option.Text;
+                var optionText = DialogueOptionControlTagNormalizer.ResolveInputValue(option.Text, option.InputValue)
+                    ?? DialogueOptionControlTagNormalizer.NormalizeVisibleText(option.Text);
                 if (!string.IsNullOrEmpty(optionText))
                     return optionText;
             }

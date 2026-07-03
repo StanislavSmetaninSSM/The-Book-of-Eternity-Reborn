@@ -318,8 +318,11 @@ public class StateDistributor
             .Select(option => new DialogueOption
             {
                 OptionId = option.OptionId,
-                Text = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.Text),
-                InputValue = option.InputValue,
+                Text = DialogueOptionControlTagNormalizer.NormalizeVisibleText(
+                    PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.Text)),
+                InputValue = DialogueOptionControlTagNormalizer.ResolveInputValue(
+                    PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.Text),
+                    PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.InputValue)),
                 Category = option.Category
             })
             .ToArray();

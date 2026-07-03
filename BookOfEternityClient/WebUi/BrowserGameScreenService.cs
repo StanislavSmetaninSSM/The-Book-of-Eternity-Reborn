@@ -162,10 +162,12 @@ public sealed class BrowserGameScreenService
                 if (string.IsNullOrWhiteSpace(text))
                     continue;
 
+                var inputValue = ReadString(item, "inputValue", "value", "command");
+                var visibleText = DialogueOptionControlTagNormalizer.NormalizeVisibleText(text) ?? string.Empty;
                 result.Add(new BrowserGameScreenDialogueOptionDto(
                     Id: ReadString(item, "id", "optionId") is { Length: > 0 } id ? id : $"choice-{index}",
-                    Text: text,
-                    InputValue: ReadString(item, "inputValue", "value", "command"),
+                    Text: visibleText,
+                    InputValue: DialogueOptionControlTagNormalizer.ResolveInputValue(text, inputValue) ?? string.Empty,
                     Category: ReadString(item, "category", "type", "kind")));
             }
             else if (node is JsonValue value)
@@ -175,10 +177,11 @@ public sealed class BrowserGameScreenService
                     var text = value.GetValue<string>();
                     if (!string.IsNullOrWhiteSpace(text))
                     {
+                        var visibleText = DialogueOptionControlTagNormalizer.NormalizeVisibleText(text) ?? string.Empty;
                         result.Add(new BrowserGameScreenDialogueOptionDto(
                             Id: $"choice-{index}",
-                            Text: text,
-                            InputValue: string.Empty,
+                            Text: visibleText,
+                            InputValue: DialogueOptionControlTagNormalizer.ResolveInputValue(text, existingInputValue: null) ?? string.Empty,
                             Category: string.Empty));
                     }
                 }

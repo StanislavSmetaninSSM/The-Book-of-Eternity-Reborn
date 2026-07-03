@@ -305,7 +305,7 @@ public partial class ValidationService
                         {
                             ["text"] = text
                         };
-                        if (TrySplitLeadingDialogueControlTag(text, out var visibleText, out var inputValue))
+                        if (DialogueOptionControlTagNormalizer.TrySplitLeadingHiddenControlTag(text, out var visibleText, out var inputValue))
                         {
                             normalizedOption["text"] = visibleText;
                             normalizedOption["inputValue"] = inputValue;
@@ -374,7 +374,7 @@ public partial class ValidationService
     private static bool TryNormalizeDialogueOptionControlTag(JsonObject option)
     {
         if (!TryGetString(option, "text", out var text) ||
-            !TrySplitLeadingDialogueControlTag(text, out var visibleText, out var inputValue))
+            !DialogueOptionControlTagNormalizer.TrySplitLeadingHiddenControlTag(text, out var visibleText, out var inputValue))
         {
             return false;
         }
@@ -387,39 +387,6 @@ public partial class ValidationService
         }
 
         return true;
-    }
-
-    private static bool TrySplitLeadingDialogueControlTag(string text, out string visibleText, out string inputValue)
-    {
-        visibleText = text;
-        inputValue = text;
-
-        var trimmed = text.TrimStart();
-        if (!trimmed.StartsWith('['))
-            return false;
-
-        var closeIndex = trimmed.IndexOf(']');
-        if (closeIndex <= 1)
-            return false;
-
-        var tag = trimmed[1..closeIndex].Trim();
-        if (!IsPlayerHiddenDialogueControlTag(tag))
-            return false;
-
-        var remaining = trimmed[(closeIndex + 1)..].TrimStart();
-        if (string.IsNullOrWhiteSpace(remaining))
-            return false;
-
-        visibleText = remaining;
-        inputValue = trimmed;
-        return true;
-    }
-
-    private static bool IsPlayerHiddenDialogueControlTag(string tag)
-    {
-        var separatorIndex = tag.IndexOf(':');
-        var tagName = (separatorIndex >= 0 ? tag[..separatorIndex] : tag).Trim();
-        return string.Equals(tagName, "AFTERLIFE_SPIRITUAL_ACTION", StringComparison.Ordinal);
     }
 
     private static bool MissingOrBlankTimestamp(JsonObject root)

@@ -58,13 +58,12 @@ public partial class GameEngine
         var actionInputValues = new List<string>();
         foreach (var option in dialogueOptions)
         {
-            if (string.IsNullOrWhiteSpace(option.Text))
+            var visibleText = DialogueOptionControlTagNormalizer.NormalizeVisibleText(option.Text);
+            if (string.IsNullOrWhiteSpace(visibleText))
                 continue;
 
-            visibleOptions.Add(option.Text);
-            actionInputValues.Add(!string.IsNullOrWhiteSpace(option.InputValue)
-                ? option.InputValue!
-                : option.Text);
+            visibleOptions.Add(visibleText);
+            actionInputValues.Add(DialogueOptionControlTagNormalizer.ResolveInputValue(option.Text, option.InputValue) ?? visibleText);
         }
 
         RecordConsoleObservation(
@@ -418,8 +417,9 @@ public partial class GameEngine
             lines.Add("Варианты:");
             foreach (var (option, index) in dialogueOptions.Select((option, index) => (option, index)))
             {
-                if (!string.IsNullOrWhiteSpace(option.Text))
-                    lines.Add($"{index + 1}. {option.Text}");
+                var visibleText = DialogueOptionControlTagNormalizer.NormalizeVisibleText(option.Text);
+                if (!string.IsNullOrWhiteSpace(visibleText))
+                    lines.Add($"{index + 1}. {visibleText}");
             }
         }
 

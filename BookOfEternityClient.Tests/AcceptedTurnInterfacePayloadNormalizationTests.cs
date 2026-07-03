@@ -107,4 +107,34 @@ public sealed class AcceptedTurnInterfacePayloadNormalizationTests : IDisposable
             option["inputValue"]!.GetValue<string>());
         Assert.Equal("action", option["category"]!.GetValue<string>());
     }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnInterfacePayloadAsync_MovesSimilarActionControlTagToInputValue()
+    {
+        await _fs.WriteFileAtomicAsync("output/interface_updates.json", """
+        {
+          "timestamp": "2026-07-03T06:59:22Z",
+          "dialogueOptions": [
+            {
+              "text": "[INK_FEATHER_ACTION: LEARN_SKILL] Изучить духовный приём.",
+              "category": "action"
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateAcceptedTurnInterfacePayloadAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "expected_object", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "expected_object_in_array", StringComparison.OrdinalIgnoreCase));
+
+        var normalized = JsonNode.Parse(await _fs.ReadFileAsync("output/interface_updates.json") ?? "{}")!.AsObject();
+        var option = Assert.IsType<JsonObject>(Assert.Single(normalized["dialogueOptions"]!.AsArray()));
+
+        Assert.Equal("Изучить духовный приём.", option["text"]!.GetValue<string>());
+        Assert.Equal(
+            "[INK_FEATHER_ACTION: LEARN_SKILL] Изучить духовный приём.",
+            option["inputValue"]!.GetValue<string>());
+    }
 }

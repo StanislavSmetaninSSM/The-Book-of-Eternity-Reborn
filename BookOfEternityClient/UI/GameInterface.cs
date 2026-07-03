@@ -474,17 +474,18 @@ public class GameInterface
             .AddColumn(new TableColumn("").RightAligned().NoWrap().Width(4))
             .AddColumn(new TableColumn(""));
 
-	        foreach (var (opt, index) in options.Select((opt, index) => (opt, index)))
-	        {
-	            var label = EscapeMarkup(opt.Text ?? "");
-	            var category = EscapeMarkup(opt.Category ?? "");
-	            if (!string.IsNullOrWhiteSpace(category))
-	                label = $"[dim]({category})[/] {label}";
+        foreach (var (opt, index) in options.Select((opt, index) => (opt, index)))
+        {
+            var visibleText = DialogueOptionControlTagNormalizer.NormalizeVisibleText(opt.Text);
+            var label = EscapeMarkup(visibleText ?? "");
+            var category = EscapeMarkup(opt.Category ?? "");
+            if (!string.IsNullOrWhiteSpace(category))
+                label = $"[dim]({category})[/] {label}";
 
-	            table.AddRow(
-	                new Markup($"[bold cyan]{index + 1}[/]"),
-	                new Markup(label));
-	        }
+            table.AddRow(
+                new Markup($"[bold cyan]{index + 1}[/]"),
+                new Markup(label));
+        }
 
         var panel = new Panel(table)
         {

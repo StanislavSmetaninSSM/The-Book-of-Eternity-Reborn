@@ -70,7 +70,12 @@ public partial class GameEngine
                     if (response.DialogueOptions != null)
                     {
                         foreach (var option in response.DialogueOptions)
-                            option.Text = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.Text);
+                        {
+                            var normalizedText = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.Text);
+                            var normalizedInputValue = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.InputValue);
+                            option.InputValue = DialogueOptionControlTagNormalizer.ResolveInputValue(normalizedText, normalizedInputValue);
+                            option.Text = DialogueOptionControlTagNormalizer.NormalizeVisibleText(normalizedText);
+                        }
                     }
                 }
                 if (doc.RootElement.TryGetProperty("image_prompt", out var img))

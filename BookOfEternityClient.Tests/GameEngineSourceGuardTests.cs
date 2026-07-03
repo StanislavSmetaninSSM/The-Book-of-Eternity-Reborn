@@ -462,6 +462,25 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void PlayerFacingDialogueOptionSurfaces_MustUseControlTagNormalizer()
+    {
+        var files = new[]
+        {
+            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine", "GameEngine.SessionAndSnapshots.cs"),
+            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine", "GameEngine.AgentConsole.cs"),
+            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs"),
+            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "UI", "GameInterface.cs"),
+            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "WebUi", "BrowserGameScreenService.cs")
+        };
+
+        foreach (var file in files)
+        {
+            var source = File.ReadAllText(file);
+            Assert.Contains("DialogueOptionControlTagNormalizer", source, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void GameInterfaceTransitions_MustUseHeadlessSafeConsoleClear()
     {
         var source = File.ReadAllText(Path.Combine(
