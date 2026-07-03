@@ -171,6 +171,15 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
     }
 
     [Fact]
+    public void DirectChaosGachaIntroDoesNotDumpRawStateAudits()
+    {
+        var inkFeathers = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.InkFeathersAndOfferings.cs");
+
+        Assert.DoesNotContain("Полный JSON состояния души перед direct gacha", inkFeathers, StringComparison.Ordinal);
+        Assert.DoesNotContain("Полный JSON guardians gacha systems", inkFeathers, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ShiningPlayerFacingSurfacesDoNotDumpRawBlessingPayloads()
     {
         var lifecycle = ReadSource("Core", "GameEngine", "GameEngine.TurnLifecycle.cs");

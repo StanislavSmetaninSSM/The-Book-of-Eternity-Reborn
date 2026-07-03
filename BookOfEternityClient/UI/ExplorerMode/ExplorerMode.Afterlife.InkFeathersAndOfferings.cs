@@ -2537,14 +2537,6 @@ public partial class ExplorerMode
         Write(panel);
         WriteLine();
 
-        var soulDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
-        if (soulDoc != null)
-            WriteJsonAuditPanel("Полный JSON состояния души перед direct gacha", soulDoc.RootElement, Color.Gold1);
-
-        var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
-        if (guardiansDoc != null)
-            WriteJsonAuditPanel("Полный JSON guardians gacha systems", guardiansDoc.RootElement, Color.Gold1);
-
         var choice = Prompt(new SelectionPrompt<string>()
             .Title("[bold yellow]Выберите действие:[/]")
             .HighlightStyle(new Style(Color.Gold1))
