@@ -202,7 +202,7 @@ internal static class AfterlifeEntityProfileState
         ApplyMaskRemovals(result, currentRoot?[MaskRemovalsProperty]);
         ApplySpecialArtLearningReceipts(result, currentRoot?[SpecialArtLearningReceiptsProperty]);
         ApplyProgressionOverrides(result, currentRoot?[ProgressionOverridesProperty]);
-        ApplyAutomaticProgression(result, progressionReportRoot);
+        commandAuthoredMentorShowcaseKeys.UnionWith(ApplyAutomaticProgression(result, progressionReportRoot));
         RefreshCommandAuthoredMentorShowcaseHashes(result, commandAuthoredMentorShowcaseKeys);
 
         result.Remove(UpdateProperty);
@@ -1806,37 +1806,48 @@ internal static class AfterlifeEntityProfileState
         }
     }
 
-    private static void ApplyAutomaticProgression(JsonObject result, JsonObject? progressionReportRoot)
+    private static HashSet<string> ApplyAutomaticProgression(JsonObject result, JsonObject? progressionReportRoot)
     {
+        var progressedProfileKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
         if (progressionReportRoot == null)
-            return;
+            return progressedProfileKeys;
 
         if (result[ProfilesProperty] is not JsonArray profiles)
-            return;
+            return progressedProfileKeys;
 
         foreach (var profile in profiles.OfType<JsonObject>())
         {
             var cycle = ResolveProgressionCycleForProfile(profile, progressionReportRoot);
-            if (cycle != null)
-                ApplyAutomaticProgression(profile, cycle.Value);
+            if (cycle == null || !ApplyAutomaticProgression(profile, cycle.Value))
+                continue;
+
+            if (profile["mentorTrainingShowcase"] is not JsonObject)
+                continue;
+
+            var key = BuildIdentityKey(profile);
+            if (!string.IsNullOrWhiteSpace(key))
+                progressedProfileKeys.Add(key);
         }
+
+        return progressedProfileKeys;
     }
 
-    private static void ApplyAutomaticProgression(JsonObject profile, ProgressionCycle cycle)
+    private static bool ApplyAutomaticProgression(JsonObject profile, ProgressionCycle cycle)
     {
         var strategy = profile["progressionStrategy"] as JsonObject;
         if (strategy == null)
-            return;
+            return false;
 
         if (strategy["autoProgressionEnabled"] is JsonValue enabledValue &&
             enabledValue.TryGetValue<bool>(out var enabled) &&
             !enabled)
         {
-            return;
+            return false;
         }
 
         if (string.Equals(GetNodeString(strategy["lastAutoProgressionCycleKey"]), cycle.CycleKey, StringComparison.OrdinalIgnoreCase))
-            return;
+            return false;
 
         var currencies = EnsureObject(profile, "currencies");
         var income = ResolveIncome(cycle);
@@ -1868,6 +1879,8 @@ internal static class AfterlifeEntityProfileState
             },
             ["upgrades"] = upgrades
         });
+
+        return true;
     }
 
     private static void ApplyStrategyUpgrade(

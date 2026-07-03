@@ -1015,6 +1015,133 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_RefreshesUnchangedMentorShowcaseHashWhenClientAutoProgressionMutatesSourceProfile()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            ProgressionScheduleService.ReportPath,
+            """
+            {
+              "progressionProcessingReport": {
+                "sessionId": "session_training_showcase_auto_mutation",
+                "requestId": "request_training_showcase_auto_mutation",
+                "turnNumber": 11,
+                "chaosSeaCyclesProcessed": 1,
+                "newLastChaosSeaSimulationOrdinal": 11
+              }
+            }
+            """);
+        await CorrelateAfterlifeProgressionReportWithTurnRequestAsync();
+
+        var profileWithoutShowcaseJson =
+            """
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_training_auto_mutation",
+              "displayName": "Хранитель Автопрогрессии",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 0, "tier": 0 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "guard": 0 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "mentorProfile": {
+                "canTeach": true,
+                "relationshipLevel": 5
+              },
+              "progressionStrategy": {
+                "strategyId": "strategy_training_auto_mutation",
+                "summary": "Сначала укрепляет защиту.",
+                "priorityOrder": ["guard"]
+              },
+              "ledger": []
+            }
+            """;
+        var profileForHash = JsonNode.Parse(profileWithoutShowcaseJson)!.AsObject();
+        var requestedHash = TrainingService.ComputeSourceSnapshotHash(profileForHash);
+        var profileWithShowcaseJson =
+            $$"""
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_training_auto_mutation",
+              "displayName": "Хранитель Автопрогрессии",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 0, "tier": 0 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "guard": 0 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "mentorProfile": {
+                "canTeach": true,
+                "relationshipLevel": 5
+              },
+              "progressionStrategy": {
+                "strategyId": "strategy_training_auto_mutation",
+                "summary": "Сначала укрепляет защиту.",
+                "priorityOrder": ["guard"]
+              },
+              "ledger": [],
+              "mentorTrainingShowcase": {
+                "requestKind": "afterlife_teacher_showcase",
+                "sourceActorId": "guardian_training_auto_mutation",
+                "sourceActorSnapshotHash": "{{requestedHash}}",
+                "offers": [
+                  {
+                    "offerId": "mentor_training_auto_mutation_guard_1",
+                    "targetKind": "standard_spiritual_art",
+                    "targetId": "guard",
+                    "targetName": "Защита",
+                    "currentValue": 0,
+                    "targetValue": 1,
+                    "sourceCap": 1,
+                    "cost": { "inkFeathers": 4 }
+                  }
+                ]
+              }
+            }
+            """;
+
+        var backupPath = "game_state/control/test_backups/afterlife_entity_profiles.training_showcase.auto_mutation.previous.json";
+        await _fs.WriteFileAtomicAsync(
+            backupPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["profiles"] = new JsonArray(JsonNode.Parse(profileWithShowcaseJson)!.AsObject())
+            }.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["profiles"] = new JsonArray(JsonNode.Parse(profileWithShowcaseJson)!.AsObject())
+            }.ToJsonString());
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [AfterlifeEntityProfileState.StatePath] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(1, profile["standardArts"]?["guard"]?.GetValue<int>());
+        Assert.NotEqual(requestedHash, TrainingService.ComputeSourceSnapshotHash(profile));
+
+        var showcase = Assert.IsType<JsonObject>(profile["mentorTrainingShowcase"]);
+        Assert.Equal(
+            TrainingService.ComputeSourceSnapshotHash(profile),
+            showcase["sourceActorSnapshotHash"]?.GetValue<string>());
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_DoesNotAutoProgressProfilesFromStaleAfterlifeReport()
     {
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
