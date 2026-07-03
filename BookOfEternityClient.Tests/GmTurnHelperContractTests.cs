@@ -2697,6 +2697,71 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonContextPack_GenericOutputArtifactLessonsNameTurnOutputTemplateForOrdinaryTurns()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-generic-output-artifact-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        var input = Path.Combine(session, "input");
+        Directory.CreateDirectory(control);
+        Directory.CreateDirectory(input);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(control, "gm_trajectory_ledger.jsonl"),
+                """
+                {"recordId":"gmtraj_mortal_generic_output_envelope","kind":"repair","sessionId":"prior","turnId":"repair-output-envelope","requestId":"repair-output-envelope","turnNumber":25,"realm":"MortalWorld","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"sent"},"validation":{"status":"accepted","issueKinds":["narrative_response_unknown_field","narrative_response_missing_timestamp","missing_gm_thoughts","debug_logs_unknown_field","debug_logs_missing_timestamp","interface_updates_missing_payload","interface_updates_unknown_field","interface_updates_missing_timestamp"],"diagnostics":[{"code":"narrative_response_unknown_field","category":"OutputArtifact","path":"output/narrative_response.json.checks","message":"output/narrative_response.json contains unsupported field checks","expected":"response | timestamp","actual":"checks"},{"code":"missing_gm_thoughts","category":"OutputArtifact","path":"output/debug_logs.json.gm_thoughts_markdown","message":"output/debug_logs.json missing gm_thoughts_markdown","expected":"gm_thoughts_markdown | timestamp","actual":"missing"},{"code":"interface_updates_missing_payload","category":"OutputArtifact","path":"output/interface_updates.json.payload","message":"output/interface_updates.json missing payload","expected":"payload | timestamp","actual":"missing"}],"repairPacketRefs":["accepted_turn_output_artifact_repair"]},"repair":{"attempts":1,"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-07-03T18:10:00Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(input, "turn_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-turn",
+                  "turnNumber": 26,
+                  "currentRealm": "Mortal World",
+                  "playerAction": "Continue the mortal scene.",
+                  "progressionControl": {
+                    "currentRealm": "Mortal World"
+                  }
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "narrative_response_unknown_field", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
+            Assert.Contains("TURN_OUTPUT_TEMPLATE.md", markdown, StringComparison.Ordinal);
+            Assert.Contains("output/narrative_response.json", markdown, StringComparison.Ordinal);
+            Assert.Contains("response", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("timestamp", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("gm_thoughts_markdown", markdown, StringComparison.Ordinal);
+            Assert.Contains("interface_updates.json", markdown, StringComparison.Ordinal);
+
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var lesson = document.RootElement.GetProperty("lessons")[0];
+            Assert.Equal("TURN_OUTPUT_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
+            var acceptedFix = lesson.GetProperty("acceptedFix").GetString() ?? string.Empty;
+            Assert.Contains("output/narrative_response.json", acceptedFix, StringComparison.Ordinal);
+            Assert.Contains("gm_thoughts_markdown", acceptedFix, StringComparison.Ordinal);
+            Assert.Contains("interface_updates.json", acceptedFix, StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonContextPack_AfterlifeConflictRewardLessonsNameRewardRepair()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-afterlife-reward-lessons-" + Guid.NewGuid().ToString("N"));

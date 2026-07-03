@@ -597,6 +597,17 @@ function Get-GmExperiencePreferredSurface {
         return "AFTERLIFE_CHRONICLE_TEMPLATE.md"
     }
 
+    if ($joined.Contains("narrative_response_unknown_field") -or
+        $joined.Contains("narrative_response_missing_timestamp") -or
+        $joined.Contains("missing_gm_thoughts") -or
+        $joined.Contains("debug_logs_unknown_field") -or
+        $joined.Contains("debug_logs_missing_timestamp") -or
+        $joined.Contains("interface_updates_missing_payload") -or
+        $joined.Contains("interface_updates_unknown_field") -or
+        $joined.Contains("interface_updates_missing_timestamp")) {
+        return "TURN_OUTPUT_TEMPLATE.md"
+    }
+
     if ($joined.Contains("terminal")) {
         return "VALIDATION_REPAIR_TEMPLATE.md"
     }
@@ -630,6 +641,16 @@ function New-GmExperienceLesson {
     $hasMortalCombatIssue = $preferredSurface -eq "MORTAL_COMBAT_STATE_TEMPLATE.md"
     $hasIdleWithoutTerminalSignal = $joinedIssues.Contains("gm_bridge_idle_without_terminal_signal")
     $repairPacketText = (($repairPacketRefs | ForEach-Object { [string]$_ }) -join " ").ToLowerInvariant()
+    $hasGenericTurnOutputArtifactIssue = -not $hasNarrativeResponseAfterlifeChronicleWrongSurface -and (
+        $repairPacketText.Contains("accepted_turn_output_artifact_repair") -or
+        $joinedIssues.Contains("narrative_response_unknown_field") -or
+        $joinedIssues.Contains("narrative_response_missing_timestamp") -or
+        $joinedIssues.Contains("missing_gm_thoughts") -or
+        $joinedIssues.Contains("debug_logs_unknown_field") -or
+        $joinedIssues.Contains("debug_logs_missing_timestamp") -or
+        $joinedIssues.Contains("interface_updates_missing_payload") -or
+        $joinedIssues.Contains("interface_updates_unknown_field") -or
+        $joinedIssues.Contains("interface_updates_missing_timestamp"))
     $hasAfterlifeConflictRewardIssue = $joinedIssues.Contains("afterlife_conflict_reward") -or
         $repairPacketText.Contains("afterlife_spiritual_conflict_reward_repair")
     $hasAfterlifeEntityProfileScaffoldIssue = $joinedIssues.Contains("afterlife_entity_profile") -or
@@ -671,6 +692,9 @@ function New-GmExperienceLesson {
     elseif ($hasNarrativeResponseAfterlifeChronicleWrongSurface) {
         "Use TURN_OUTPUT_TEMPLATE.md for output/narrative_response.json: only response and timestamp are allowed there. Never put afterlifeChronicleUpdates into output/narrative_response.json. Use AFTERLIFE_CHRONICLE_TEMPLATE.md and the afterlifeChronicleUpdates surface for game_state/meta/afterlife_chronicles.json external memory, then include game_state/meta/afterlife_chronicles.json in Complete-BoeTurn -FilesModified when that state was changed."
     }
+    elseif ($hasGenericTurnOutputArtifactIssue) {
+        "Use TURN_OUTPUT_TEMPLATE.md before writing ordinary turn output artifacts. Write output/narrative_response.json with only response and timestamp. Write output/debug_logs.json with gm_thoughts_markdown and timestamp. Write output/interface_updates.json with payload and timestamp. Do not write generic checks/mode/outcome/requestId/rewards/sessionId/turnNumber envelopes into output artifacts. Finish with Complete-BoeTurn -FilesModified only after canonical state changes are written."
+    }
     elseif ($repairPacketRefs.Count -gt 0) {
         "Open validation_repair_request.json.harnessRepairPackets first, patch only named files, then use the compact repair/template surface."
     }
@@ -703,6 +727,9 @@ function New-GmExperienceLesson {
         }
         elseif ($preferredSurface -eq "MORTAL_NPC_UPDATE_TEMPLATE.md") {
             $templateVersion = if ($null -ne $Record.templateVersions.mortalNpc) { [string]$Record.templateVersions.mortalNpc } else { "v1" }
+        }
+        elseif ($preferredSurface -eq "TURN_OUTPUT_TEMPLATE.md") {
+            $templateVersion = if ($null -ne $Record.templateVersions.turnOutput) { [string]$Record.templateVersions.turnOutput } else { "v1" }
         }
         elseif ($null -ne $Record.templateVersions.progressionReport -and $preferredSurface -eq "PROGRESSION_REPORT_TEMPLATE.json") {
             $templateVersion = [string]$Record.templateVersions.progressionReport
