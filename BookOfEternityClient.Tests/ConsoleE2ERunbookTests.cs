@@ -138,6 +138,7 @@ public sealed class ConsoleE2ERunbookTests
             "gm_bridge_status.json",
             "Get-Process",
             "helperPid",
+            "shellPid",
             "pid",
             "RequireBridge",
             "RequireReadyBridge",

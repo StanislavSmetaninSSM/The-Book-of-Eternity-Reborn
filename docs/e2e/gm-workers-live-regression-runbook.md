@@ -175,8 +175,8 @@ Before submitting a live player turn, run the read-only runtime preflight:
 ```
 
 Script path: `scripts/agent-console-gm-runtime-preflight.ps1`. The script checks
-`gm_daemon_status.json`, `gm_bridge_status.json`, `pid`, `helperPid`, and
-`Get-Process` liveness. `-WaitSeconds` makes the check poll briefly while a
+`gm_daemon_status.json`, `gm_bridge_status.json`, `pid`, `helperPid`,
+`shellPid`, and `Get-Process` liveness. `-WaitSeconds` makes the check poll briefly while a
 freshly started daemon or bridge is still writing its first status file. A
 non-zero exit after that wait means the live test must stop and fix
 bridge/daemon startup before sending player input.

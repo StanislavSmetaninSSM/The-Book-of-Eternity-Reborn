@@ -148,6 +148,24 @@ do {
                 -Message "GM bridge process is alive, but ready is not true." `
                 -Path $bridgeStatusPath
         }
+
+        if ($bridge.ok) {
+            $shellPidValue = $bridge.status.shellPid
+            if ($null -eq $shellPidValue) {
+                $bridge.ok = $false
+                $bridge.issues += New-PreflightIssue `
+                    -Code "bridge-shell-pid-missing" `
+                    -Message "GM bridge status file does not contain shellPid." `
+                    -Path $bridgeStatusPath
+            }
+            elseif (-not (Test-ProcessAlive -ProcessId $shellPidValue)) {
+                $bridge.ok = $false
+                $bridge.issues += New-PreflightIssue `
+                    -Code "bridge-dead-shell-pid" `
+                    -Message "GM bridge status file points to dead shellPid $shellPidValue." `
+                    -Path $bridgeStatusPath
+            }
+        }
     }
 
     $issues = @()
