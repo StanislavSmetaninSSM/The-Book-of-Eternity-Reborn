@@ -181,6 +181,11 @@ function Wait-CommandResultSnapshot {
         $screenId = [string](Get-JsonProperty $snapshot "screenId")
         $inputKind = [string](Get-JsonProperty $snapshot "inputKind")
 
+        if ($screenId -eq "command-processing") {
+            Start-Sleep -Milliseconds $PollMilliseconds
+            continue
+        }
+
         if ($screenId -ne "game-loop" -or $inputKind -ne "text") {
             return $snapshot
         }

@@ -226,7 +226,7 @@ $Commands = @(
   -OutputPath (Join-Path $RunRoot "readonly-command-sweep.json")
 ```
 
-The helper waits for `screenId: game-loop` with `inputKind: text`, submits each command through `/api/agent-console/text`, records the resulting command snapshot, scans for forbidden markers, and returns through `/api/agent-console/return-to-game-loop-step`. It fails closed if a read-only command reaches `turn-preparing`, if the screen is not awaiting input, or if returning from a command screen would require typing into another text prompt.
+The helper waits for `screenId: game-loop` with `inputKind: text`, submits each command through `/api/agent-console/text`, tolerates the short `command-processing` loading snapshot used for local slash commands, records the resulting command snapshot, scans for forbidden markers, and returns through `/api/agent-console/return-to-game-loop-step`. It fails closed if a read-only command reaches `turn-preparing`, if the screen is not awaiting input, or if returning from a command screen would require typing into another text prompt.
 
 For read-only command sweeps, do not use `/default-action`. That endpoint is useful only when the explicit test intent is to accept the current player-visible default action. It is not a safe unwind primitive for command-output audits because a stale or unexpected screen can turn a data inspection into a player turn.
 

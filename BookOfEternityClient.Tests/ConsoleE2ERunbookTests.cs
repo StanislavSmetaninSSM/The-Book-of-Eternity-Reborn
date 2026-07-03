@@ -93,6 +93,7 @@ public sealed class ConsoleE2ERunbookTests
             "screenId",
             "inputKind",
             "game-loop",
+            "command-processing",
             "turn-preparing",
             "forbiddenMarkers"
         })

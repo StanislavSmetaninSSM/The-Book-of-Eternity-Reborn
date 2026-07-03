@@ -429,7 +429,7 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
                         }
 
                         var dequeued = _queue.Dequeue();
-                        MarkCurrentSnapshotInputConsumed();
+                        MarkCurrentSnapshotInputConsumed(dequeued);
                         return dequeued;
                     }
 
@@ -497,7 +497,7 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
             _ => false
         };
 
-    private void MarkCurrentSnapshotInputConsumed()
+    private void MarkCurrentSnapshotInputConsumed(QueuedInput consumedInput)
     {
         var snapshot = _stateStore.GetSnapshot();
         if (snapshot is not { AwaitingInput: true })
@@ -506,6 +506,22 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
         if (string.Equals(snapshot.ScreenId, "game-loop", StringComparison.Ordinal))
         {
             var now = DateTimeOffset.UtcNow;
+            if (consumedInput.Kind == QueuedInputKind.Line && IsLocalCommandLine(consumedInput.Line))
+            {
+                _stateStore.UpdateSnapshot(new AgentConsoleSnapshot
+                {
+                    ScreenId = "command-processing",
+                    Mode = AgentConsoleMode.Loading,
+                    Title = "Команда выполняется",
+                    PlainText = "Локальная команда выполняется. Клиент готовит экран результата без отправки хода GM.",
+                    AwaitingInput = false,
+                    InputKind = AgentConsoleInputKind.None,
+                    RenderedAtUtc = now,
+                    UpdatedAtUtc = now
+                }, "Input consumed for game-loop; processing local command.");
+                return;
+            }
+
             _stateStore.UpdateSnapshot(new AgentConsoleSnapshot
             {
                 ScreenId = "turn-preparing",
@@ -661,6 +677,10 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
     private static bool ContainsReturnToken(string? label, string token)
         => !string.IsNullOrWhiteSpace(label) &&
            label.Contains(token, StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsLocalCommandLine(string? line)
+        => !string.IsNullOrWhiteSpace(line) &&
+           line.TrimStart().StartsWith("/", StringComparison.Ordinal);
 
     private static bool TryResolveActionInput(
         AgentConsoleSnapshot snapshot,

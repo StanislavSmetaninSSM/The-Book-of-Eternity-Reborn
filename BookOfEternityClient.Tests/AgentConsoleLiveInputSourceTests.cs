@@ -641,6 +641,30 @@ public sealed class AgentConsoleLiveInputSourceTests
         Assert.Null(consumedSnapshot.Prompt);
     }
 
+    [Fact]
+    public void ReadLine_WhenGameLoopSlashCommandIsConsumed_PublishesLocalCommandProcessingSnapshot()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildTextSnapshot("game-loop"));
+
+        var accepted = input.EnqueueLine("/хроники_посмертия");
+        Assert.True(accepted.Accepted);
+
+        Assert.Equal("/хроники_посмертия", input.ReadLine());
+
+        var consumedSnapshot = store.GetSnapshot();
+        Assert.NotNull(consumedSnapshot);
+        Assert.Equal("command-processing", consumedSnapshot.ScreenId);
+        Assert.Equal(AgentConsoleMode.Loading, consumedSnapshot.Mode);
+        Assert.Equal("Команда выполняется", consumedSnapshot.Title);
+        Assert.Contains("локальная команда", consumedSnapshot.PlainText, StringComparison.OrdinalIgnoreCase);
+        Assert.False(consumedSnapshot.AwaitingInput);
+        Assert.Equal(AgentConsoleInputKind.None, consumedSnapshot.InputKind);
+        Assert.Empty(consumedSnapshot.Actions);
+        Assert.Null(consumedSnapshot.Prompt);
+    }
+
     private static AgentConsoleSnapshot BuildMenuSnapshot(string screenId, int selectedIndex)
     {
         var renderedAt = new DateTimeOffset(2026, 5, 31, 10, 0, 0, TimeSpan.Zero);
