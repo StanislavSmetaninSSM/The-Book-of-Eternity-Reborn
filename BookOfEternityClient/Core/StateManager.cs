@@ -68,6 +68,7 @@ public class StateManager
     /// </summary>
     public async Task RefreshGameStateAsync()
     {
+        await RepairClientOwnedProfileMirrorsAsync();
         var state = new AggregatedGameState();
 
         // Core: Player status
@@ -374,6 +375,18 @@ public class StateManager
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Ошибка чтения {Path}", path);
+        }
+    }
+
+    private async Task RepairClientOwnedProfileMirrorsAsync()
+    {
+        try
+        {
+            await AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthorityAsync(_fs);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Не удалось синхронизировать клиентские зеркала профилей перед refresh.");
         }
     }
 

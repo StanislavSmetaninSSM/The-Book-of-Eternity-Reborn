@@ -1,4 +1,6 @@
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
@@ -244,6 +246,29 @@ internal static class AfterlifeEntityProfileState
             DisablePlayerSoulProfileAutoProgression(profile);
             RemovePlayerSoulAutomaticProgressionLedgerEntries(profile);
         }
+    }
+
+    public static async Task<bool> ApplyPlayerSoulProfileClientAuthorityAsync(FileSystemManager fs)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+
+        var currentRoot = await ReadObjectAsync(fs, StatePath);
+        if (currentRoot == null)
+            return false;
+
+        var soulRoot = await ReadObjectAsync(fs, "game_state/meta/soul_state.json");
+        if (soulRoot == null)
+            return false;
+
+        var projectedRoot = currentRoot.DeepClone().AsObject();
+        var shiningRoot = await ReadObjectAsync(fs, ShiningAbodeState.StatePath);
+        ApplyPlayerSoulProfileClientAuthority(projectedRoot, soulRoot, shiningRoot);
+
+        if (JsonNode.DeepEquals(currentRoot, projectedRoot))
+            return false;
+
+        await fs.WriteFileAtomicAsync(StatePath, projectedRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        return true;
     }
 
     private static HashSet<string> CollectCommandAuthoredMentorShowcaseKeys(JsonObject? currentRoot, JsonObject? previousRoot)
@@ -1978,6 +2003,22 @@ internal static class AfterlifeEntityProfileState
     private static bool IsShiningRealm(string? realm) =>
         string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
+
+    private static async Task<JsonObject?> ReadObjectAsync(FileSystemManager fs, string relativePath)
+    {
+        var raw = await fs.ReadFileAsync(relativePath);
+        if (string.IsNullOrWhiteSpace(raw))
+            return null;
+
+        try
+        {
+            return JsonNode.Parse(raw) as JsonObject;
+        }
+        catch
+        {
+            return null;
+        }
+    }
 
     private static bool ApplyAutomaticProgression(JsonObject profile, ProgressionCycle cycle)
     {

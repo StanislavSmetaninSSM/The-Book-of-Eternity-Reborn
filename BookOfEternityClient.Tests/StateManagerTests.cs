@@ -289,6 +289,96 @@ public sealed class StateManagerTests
     }
 
     [Fact]
+    public async Task RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var manager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+            {
+              "soulName": "Пепельная Искра",
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 7,
+              "inkFeathers": { "current": 0, "total": 0 },
+              "enlightenment": { "experience": 0, "level": 0 },
+              "afterlifeCombatProfile": {
+                "spiritFocusTier": 0,
+                "artTiers": { "guard": 0, "recover_spiritual_power": 0 }
+              }
+            }
+            """);
+            await fs.WriteFileAtomicAsync("game_state/meta/afterlife_entity_profiles.json", """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "player_soul",
+                  "actorId": "player_soul",
+                  "displayName": "Пепельная Искра",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 4, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 0, "tier": 0 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "guard": 1, "recover_spiritual_power": 1 },
+                  "specialArts": [
+                    {
+                      "artId": "myriel_ash_star_ward",
+                      "displayName": "Оберег Пепельной Звезды",
+                      "ownerActorType": "player_soul",
+                      "ownerActorId": "player_soul",
+                      "baseOperation": "guard",
+                      "tier": 0,
+                      "costMultiplierPercent": 150,
+                      "upgradeCost": { "inkFeathers": 35, "lightSparks": 0 },
+                      "effectSummary": "Изученное особое духовное искусство."
+                    }
+                  ],
+                  "progressionStrategy": {
+                    "strategyId": "strategy_player",
+                    "priorityOrder": [ "guard" ],
+                    "lastAutoProgressionCycleKey": "chaos:14"
+                  },
+                  "progressionLedger": [
+                    {
+                      "entryId": "entity_progression_auto_player_soul_player_soul_chaos_14",
+                      "cycleKey": "chaos:14",
+                      "source": "client_auto_strategy",
+                      "summary": "Ошибочная автопрокачка игрока.",
+                      "income": { "inkFeathers": 12, "lightSparks": 0 },
+                      "spending": { "inkFeathers": 10, "lightSparks": 0 },
+                      "upgrades": [ "guard:0->1" ]
+                    }
+                  ],
+                  "ledger": []
+                }
+              ]
+            }
+            """);
+
+            await manager.RefreshGameStateAsync();
+
+            using var doc = JsonDocument.Parse(await fs.ReadFileAsync("game_state/meta/afterlife_entity_profiles.json") ?? "{}");
+            var player = doc.RootElement.GetProperty("profiles").EnumerateArray().Single();
+            Assert.Equal(0, player.GetProperty("currencies").GetProperty("inkFeathers").GetInt32());
+            Assert.Equal(0, player.GetProperty("standardArts").GetProperty("guard").GetInt32());
+            Assert.Equal(0, player.GetProperty("standardArts").GetProperty("recover_spiritual_power").GetInt32());
+            Assert.False(player.GetProperty("progressionStrategy").TryGetProperty("lastAutoProgressionCycleKey", out _));
+            Assert.Empty(player.GetProperty("progressionLedger").EnumerateArray());
+            Assert.Single(player.GetProperty("specialArts").EnumerateArray());
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task RefreshGameStateAsync_MalformedPreparedPackage_FailsClosedInsteadOfOrdinaryShining()
     {
         var root = CreateTempRoot();
