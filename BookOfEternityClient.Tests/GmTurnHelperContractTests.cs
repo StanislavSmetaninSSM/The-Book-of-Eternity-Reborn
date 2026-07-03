@@ -3119,6 +3119,16 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonContextPack_CopiesTrainingShowcaseExample()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var contextPackBlock = ExtractFunctionBlock(daemon, "function Write-GmContextPack {");
+
+        Assert.Contains(@"Examples\E_CLI_Training_Showcases.txt", contextPackBlock, StringComparison.Ordinal);
+        Assert.Contains("training_showcase_example", contextPackBlock, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void DaemonTerminalObservation_DoesNotDeleteClientOwnedTurnRequest()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");

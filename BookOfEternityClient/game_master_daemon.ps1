@@ -1146,6 +1146,7 @@ function Write-GmContextPack {
         @("TaskGuides\CLI_Step_Main.txt", "main_turn_guide"),
         @("Examples\E_CLI_Step_Main.txt", "main_turn_example"),
         @("Examples\E_CLI_Afterlife_Turns.txt", "afterlife_turn_examples"),
+        @("Examples\E_CLI_Training_Showcases.txt", "training_showcase_example"),
         @("OtherGuides\Afterlife_Contract_Matrix.md", "afterlife_contract_matrix"),
         @("OtherGuides\Afterlife_Combat_Terminology_Glossary.md", "afterlife_combat_glossary"),
         @("Examples\E_CLI_Ink_Feather_Actions.txt", "ink_feather_action_example")
