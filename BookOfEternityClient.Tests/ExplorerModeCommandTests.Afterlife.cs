@@ -207,9 +207,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Зал отражений запомнил голос игрока", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Понять, почему зеркала зовут игрока", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Хранитель Зеркал", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guardian_scene_mirror", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_chronicle_marker", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("secret_participant_marker", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("lastInvalidChronicleUpdate", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/afterlife_chronicles", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/хроники_посмертия", text, StringComparison.OrdinalIgnoreCase);
         AssertNoHiddenExplorerErrors("afterlife_chronicles");
     }
 
@@ -1884,6 +1887,68 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Guardians_DefaultOverviewUsesRussianPlayerHints()
+    {
+        await SeedGuardianTradeStateAsync(includeTradeInventory: false);
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500 }
+        });
+        _console.QueueAnySelection("← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хранители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("guardians_russian_player_hints");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("/статус", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/уведомления_загробья", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/перья", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/архив_души", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/проекты_хранителей", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/политика_хранителей", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/status", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/afterlife_inbox", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/feathers", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/afterlife_archive", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/guardian_projects", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/guardian_politics", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("аудит", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("GM-only", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_GuardianPolitics_WhenStateMissing_ShowsPlayerFacingEmptyState()
+    {
+        await SeedGuardianTradeStateAsync(includeTradeInventory: false);
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 0 }
+        });
+        _fs.DeleteFile(ChaosSeaGuardianPoliticsState.StatePath);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/политика_хранителей"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("guardian_politics_missing_player_empty_state");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Политика Хранителей", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("пока нет открытых политических записей", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/хранители", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Файл отсутствует", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/meta/chaos_sea_guardian_politics.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(".json", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_Guardians_UsesSharedGuardianReputationLabelsInChoices()
     {
@@ -1999,6 +2064,22 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("\"guardianId\": \"guardian_trade_001\"", pendingRequestRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains("\"derivedTradeSlotCount\":", pendingRequestRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains("\"projectBonusSignature\":", pendingRequestRaw ?? string.Empty, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_GuardianTradeWithoutInventory_ReturnsGmActionImmediatelyAfterRequest()
+    {
+        await SeedGuardianTradeStateAsync(includeTradeInventory: false);
+        _console.QueueSelection("Действие", "🛒 Торговать");
+        await _stateManager.RefreshGameStateAsync();
+
+        var gmAction = await _explorer.TryProcessCommand("/хранители");
+
+        Assert.Contains("GUARDIAN_TRADE_REQUEST", gmAction ?? string.Empty, StringComparison.Ordinal);
+        Assert.DoesNotContain(_console.SelectionChoicesHistory,
+            entry => entry.Choices.Contains("🔄 Проверить витрину", StringComparer.Ordinal));
+        var pendingRequestRaw = await _fs.ReadFileAsync("game_state/control/pending_guardian_trade_request.json");
+        Assert.Contains("\"guardianId\": \"guardian_trade_001\"", pendingRequestRaw ?? string.Empty, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -2885,6 +2966,29 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             entry => entry.Title.Contains("Выберите действие", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(actionPrompt.Choices, choice => choice.Contains("Пожертвовать Хранителю", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(actionPrompt.Choices, choice => choice.Contains("Открыть Судьбу", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_InkFeathers_ChaosSea_LocalizesAfterlifePhase()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 0 }
+        });
+        _console.QueueSelection("Выберите действие", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/перья"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("ink_feathers_chaos_phase_localized");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Фаза: Море Хаоса", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Фаза: Chaos Sea", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -6753,6 +6857,90 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_AfterlifeArchive_MenuLocalizesRarityLabels()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 3 },
+            afterlifeArchive = new
+            {
+                stored = new object[]
+                {
+                    new
+                    {
+                        archiveId = "archive_menu_rare",
+                        entryType = "lore_fragment",
+                        title = "Пепельная хроника",
+                        summary = "Редкая запись для проверки меню.",
+                        rarity = "rare",
+                        sourceLife = 1,
+                        sourceKind = "codex",
+                        acquiredAtUtc = "2026-03-26T00:00:00Z"
+                    },
+                    new
+                    {
+                        archiveId = "archive_menu_common",
+                        entryType = "memory_fragment",
+                        title = "Тихая память",
+                        summary = "Обычная запись для проверки меню.",
+                        rarity = "common",
+                        sourceLife = 1,
+                        sourceKind = "codex",
+                        acquiredAtUtc = "2026-03-26T00:01:00Z"
+                    }
+                }
+            }
+        });
+        _console.QueueSelection("📚 Архив души", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/архив_души"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_archive_menu_localized_rarity");
+        var archiveChoices = _console.SelectionChoicesHistory
+            .First(entry => entry.Title.Contains("Архив души", StringComparison.OrdinalIgnoreCase))
+            .Choices;
+        var rareChoice = Assert.Single(archiveChoices, choice => choice.Contains("Пепельная хроника", StringComparison.OrdinalIgnoreCase));
+        var commonChoice = Assert.Single(archiveChoices, choice => choice.Contains("Тихая память", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("редкая", rareChoice, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("обычная", commonChoice, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("rare", rareChoice, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("common", commonChoice, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_AfterlifeArchive_WhenEmpty_PointsToAfterlifeChronicles()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 3 },
+            afterlifeArchive = new
+            {
+                stored = Array.Empty<object>()
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/архив_души"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_archive_empty_chronicles_hint");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Архив души пока пуст", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/хроники_посмертия", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("события посмертия", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_AfterlifeArchive_Consultation_ShowsPlayerPreviewBeforeWritingRequest()
     {
         await SeedAfterlifeStateAsync();
@@ -9317,9 +9505,19 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("особое искусство на основе действия «Защита»", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Отражает часть чужого давления", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Отражённая грань превращает успешную защиту в темповое окно", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("полностью блокирует прямое pressure", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("давление", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Преимущество для следующего духовного действия", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Один раз за конфликт", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("pressure", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Enlightenment", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Radiance", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("controlState", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("soul_state", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("afterlifeCombatProfile", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("strain", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("; срабатывает:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("; выигрыш:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("; предел:", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("combatEffect", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("auditRequirement", renderedText, StringComparison.OrdinalIgnoreCase);
     }
@@ -9377,7 +9575,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                     actorId = "player_soul",
                     displayName = "Тестовая Душа",
                     realm = "Chaos Sea",
-                    currencies = new { inkFeathers = 0, lightSparks = 0 },
+                    currencies = new { inkFeathers = 120, lightSparks = 0 },
                     progression = new
                     {
                         enlightenment = new { experience = 100, tier = 5 },
@@ -9427,6 +9625,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var specialArt = playerProfile["specialArts"]!.AsArray().OfType<JsonObject>()
             .Single(art => string.Equals(art["artId"]?.GetValue<string>(), "mirror_guard", StringComparison.OrdinalIgnoreCase));
         Assert.Equal(2, specialArt["tier"]?.GetValue<int>());
+        var profileCurrencies = Assert.IsType<JsonObject>(playerProfile["currencies"]);
+        Assert.Equal(90, profileCurrencies["inkFeathers"]?.GetValue<int>());
 
         var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!)!.AsObject();
         var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
@@ -10078,8 +10278,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("spiritual_combat_log_audit");
         var renderedText = ExtractRenderedText();
         Assert.Contains("Журнал духовного боя", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("afterlife_conflict_log_active_001", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("exchange_log_pressure_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("#1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("afterlife_conflict_log_active_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("afterlife_conflict_log_resolved_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("exchange_log_pressure_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("d20 игрока=14", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Преимущество", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("отброшено: 5", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -10436,7 +10638,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Ожидающие решения посмертия", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Азалия", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Торговая Обитель", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("/status audit", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/status audit", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/статус аудит", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Полный JSON", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("pending_abode_offering.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("offering_status_001", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -10475,6 +10678,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Статус посмертия", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Тестовая Душа", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сияющая Обитель ещё не открыта", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("поврежден", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("currentRealm", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("turnNumber", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("guardianId=", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -10488,6 +10693,54 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("progressionControl", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("payload", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(".json", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Status_ChaosSeaPlayerSummaryUsesRussianPlayerHints()
+    {
+        await SeedGuardianTradeStateAsync(includeTradeInventory: false);
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500 },
+            soulRelics = new
+            {
+                equipped = Array.Empty<object>(),
+                stored = Array.Empty<object>()
+            },
+            afterlifeArchive = new
+            {
+                stored = Array.Empty<object>(),
+                actionReceipts = Array.Empty<object>()
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/статус"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_chaos_russian_player_hints");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("/море_хаоса", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/перья", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/архив_души", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/уведомления_загробья", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/проекты_хранителей", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/политика_хранителей", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/chaos_sea", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/feathers", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/afterlife_archive", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/afterlife_inbox", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/guardian_projects", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/guardian_politics", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/shining_abode", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/shining_politics", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/status audit", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("GM-only", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("технический аудит", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("ремонтные сведения", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -11118,6 +11371,46 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         Assert.IsType<JsonArray>(soulRoot["soulRelics"]);
         Assert.Contains(_console.MarkupLines, line => line.Contains("currentRealm не определён", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SoulRelics_MenuLocalizesAfterlifeEquipSlot()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new JsonObject
+        {
+            ["soulName"] = "Тестовая Душа",
+            ["currentRealm"] = "Chaos Sea",
+            ["currentIncarnation"] = 2,
+            ["inkFeathers"] = new JsonObject { ["current"] = 3 },
+            ["soulRelics"] = new JsonObject
+            {
+                ["equipped"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["relicId"] = "relic_menu_slot_001",
+                        ["name"] = "Зеркало Пепельной Искры",
+                        ["description"] = "Реликвия для проверки меню.",
+                        ["slot"] = "talisman",
+                        ["quality"] = "rare",
+                        ["formTag"] = "mirror"
+                    }
+                },
+                ["stored"] = new JsonArray()
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/реликвии"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("soul_relics_menu_localized_slot");
+        var relicChoices = _console.SelectionChoicesHistory
+            .First(entry => entry.Title.Contains("Реликвии", StringComparison.OrdinalIgnoreCase))
+            .Choices;
+        var relicChoice = Assert.Single(relicChoices, choice => choice.Contains("Зеркало Пепельной Искры", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("талисман", relicChoice, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("talisman", relicChoice, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

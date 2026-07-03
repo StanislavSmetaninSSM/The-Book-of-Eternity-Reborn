@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -509,8 +510,6 @@ public partial class GameEngine
         }
 
         await NormalizeRuntimeUiArtifactsAsync();
-        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
-        var hasPendingTerminalSignal = _fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json");
 
         await RefreshRuntimeStateAsync();
         var state = _stateManager.CurrentState;
@@ -520,13 +519,8 @@ public partial class GameEngine
         var turnNumber = await DetectCurrentSessionTurnNumberAsync();
         _gameLoop.SetSession(sessionId, turnNumber);
 
-        if (string.IsNullOrWhiteSpace(_lastResponse?.Response) &&
-            (pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable || hasPendingTerminalSignal))
-        {
-            var response = await BuildGameResponseFromFiles();
-            if (response != null)
-                _lastResponse = response;
-        }
+        var restoredResponse = await BuildGameResponseFromFiles();
+        _lastResponse = MergeWithLastResponse(restoredResponse);
 
         await EnterGameLoop();
     }
@@ -706,6 +700,72 @@ public partial class GameEngine
         return true;
     }
 
+    private static bool TryAppendMenuNumberSelection(
+        ConsoleKeyInfo key,
+        int optionsCount,
+        ref string numberBuffer,
+        out int index)
+    {
+        index = -1;
+        if (!TryGetMenuDigit(key, out var digit))
+        {
+            numberBuffer = string.Empty;
+            return false;
+        }
+
+        var candidate = numberBuffer + digit.ToString(CultureInfo.InvariantCulture);
+        if (TryMapBufferedMenuNumberSelection(candidate, optionsCount, out index))
+        {
+            numberBuffer = candidate;
+            return true;
+        }
+
+        if (digit > 0 && digit <= optionsCount)
+        {
+            numberBuffer = digit.ToString(CultureInfo.InvariantCulture);
+            index = digit - 1;
+            return true;
+        }
+
+        numberBuffer = string.Empty;
+        return false;
+    }
+
+    private static bool TryMapBufferedMenuNumberSelection(string? numberBuffer, int optionsCount, out int index)
+    {
+        index = -1;
+        if (string.IsNullOrWhiteSpace(numberBuffer) ||
+            !int.TryParse(numberBuffer, NumberStyles.None, CultureInfo.InvariantCulture, out var numeric) ||
+            numeric < 1 ||
+            numeric > optionsCount)
+        {
+            return false;
+        }
+
+        index = numeric - 1;
+        return true;
+    }
+
+    private static bool TryGetMenuDigit(ConsoleKeyInfo key, out int digit)
+    {
+        digit = key.Key switch
+        {
+            ConsoleKey.D0 or ConsoleKey.NumPad0 => 0,
+            ConsoleKey.D1 or ConsoleKey.NumPad1 => 1,
+            ConsoleKey.D2 or ConsoleKey.NumPad2 => 2,
+            ConsoleKey.D3 or ConsoleKey.NumPad3 => 3,
+            ConsoleKey.D4 or ConsoleKey.NumPad4 => 4,
+            ConsoleKey.D5 or ConsoleKey.NumPad5 => 5,
+            ConsoleKey.D6 or ConsoleKey.NumPad6 => 6,
+            ConsoleKey.D7 or ConsoleKey.NumPad7 => 7,
+            ConsoleKey.D8 or ConsoleKey.NumPad8 => 8,
+            ConsoleKey.D9 or ConsoleKey.NumPad9 => 9,
+            _ => -1
+        };
+
+        return digit >= 0;
+    }
+
     private string GetDifficultyLabel() => _stateManager.Settings.Difficulty switch
     {
         "hard" => _loc.T("difficulty_hard"),
@@ -733,6 +793,103 @@ public partial class GameEngine
             });
     }
 
+    private string PromptGuardianCreationMode()
+    {
+        var createGuardian = _loc.T("create_guardian");
+        var chooseGuardian = _loc.T("choose_guardian");
+
+        while (true)
+        {
+            AnsiConsole.MarkupLine("[cyan]Выберите способ создания Хранителя:[/]");
+            AnsiConsole.MarkupLine($"[cyan]1[/]. {Markup.Escape(createGuardian)}");
+            AnsiConsole.MarkupLine($"[cyan]2[/]. {Markup.Escape(chooseGuardian)}");
+
+            var input = PromptAgentConsoleMenuSelection(
+                "[cyan]>[/]",
+                "Новая игра: способ Хранителя",
+                $"Выберите, создать нового Хранителя по описанию или выбрать готового системного Хранителя.\n\n1. {createGuardian}\n2. {chooseGuardian}",
+                "new-game-guardian-mode",
+                [createGuardian, chooseGuardian],
+                optionInputValues: ["1", "2"]).Trim();
+            if (input == "1" || input.Equals(createGuardian, StringComparison.OrdinalIgnoreCase))
+                return createGuardian;
+            if (input == "2" || input.Equals(chooseGuardian, StringComparison.OrdinalIgnoreCase))
+                return chooseGuardian;
+
+            AnsiConsole.MarkupLine("[red]Введите 1 или 2.[/]");
+        }
+    }
+
+    private int PromptGuardianPresetChoice(
+        IReadOnlyList<SystemGuardianLibraryService.SystemGuardianPresetDescriptor> presets,
+        string userDir)
+    {
+        var openFolderIndex = presets.Count + 1;
+        var backIndex = presets.Count + 2;
+
+        while (true)
+        {
+            AnsiConsole.MarkupLine("[cyan]Выберите извечного Хранителя:[/]");
+            for (var index = 0; index < presets.Count; index++)
+            {
+                var preset = presets[index];
+                var details = string.Join(" • ", new[]
+                    {
+                        preset.Domain,
+                        preset.Archetype,
+                        preset.Tone
+                    }
+                    .Where(value => !string.IsNullOrWhiteSpace(value)));
+                var suffix = string.IsNullOrWhiteSpace(details)
+                    ? ""
+                    : $" [dim]({Markup.Escape(details)})[/]";
+                AnsiConsole.MarkupLine($"[cyan]{index + 1}[/]. {Markup.Escape(preset.DisplayName)}{suffix}");
+            }
+
+            AnsiConsole.MarkupLine($"[cyan]{openFolderIndex}[/]. Открыть папку пользовательских извечных хранителей");
+            AnsiConsole.MarkupLine($"[cyan]{backIndex}[/]. {Markup.Escape(_loc.T("back"))}");
+            AnsiConsole.MarkupLine($"[dim]{Markup.Escape(userDir)}[/]");
+
+            var choiceOptions = Enumerable.Range(1, presets.Count)
+                .Select(index => index.ToString(CultureInfo.InvariantCulture))
+                .Concat(new[]
+                {
+                    openFolderIndex.ToString(CultureInfo.InvariantCulture),
+                    backIndex.ToString(CultureInfo.InvariantCulture)
+                })
+                .ToArray();
+            var choiceLabels = presets
+                .Select(preset => preset.DisplayName)
+                .Concat(new[]
+                {
+                    "Открыть папку пользовательских извечных хранителей",
+                    _loc.T("back")
+                })
+                .ToArray();
+            var input = PromptAgentConsoleMenuSelection(
+                "[cyan]>[/]",
+                "Выбор системного хранителя",
+                $"Выберите номер системного Хранителя, откройте папку пресетов или вернитесь назад.\n\n{string.Join("\n", presets.Select((preset, index) => $"{index + 1}. {preset.DisplayName} — {preset.Summary}"))}\n{openFolderIndex}. Открыть папку пользовательских извечных хранителей\n{backIndex}. Назад",
+                "new-game-system-guardian-preset",
+                choiceLabels,
+                optionInputValues: choiceOptions).Trim();
+            if (!int.TryParse(input, out var choice))
+            {
+                AnsiConsole.MarkupLine("[red]Введите номер пункта.[/]");
+                continue;
+            }
+
+            if (choice >= 1 && choice <= presets.Count)
+                return choice - 1;
+            if (choice == openFolderIndex)
+                return -2;
+            if (choice == backIndex)
+                return -1;
+
+            AnsiConsole.MarkupLine("[red]Такого пункта нет.[/]");
+        }
+    }
+
     // ═══════════════════════════════════════════════
     // NEW GAME FLOW
     // ═══════════════════════════════════════════════
@@ -744,10 +901,19 @@ public partial class GameEngine
         AnsiConsole.WriteLine();
 
         // Step 1: Soul name
-        var soulName = PromptTextInput($"[cyan]{_loc.T("enter_soul_name")}[/]", allowEmpty: false, emptyError: "Имя не может быть пустым");
+        var soulName = PromptAgentConsoleTextInput(
+            $"[cyan]{_loc.T("enter_soul_name")}[/]",
+            "Новая игра: имя души",
+            "Введите имя души. Это постоянное имя сущности в посмертии, которое будет использоваться в общении с Хранителями.",
+            "new-game-soul-name",
+            allowEmpty: false,
+            emptyError: "Имя не может быть пустым");
         var soulFormDescription = SoulIdentityService.NormalizeSoulFormDescription(
-            PromptTextInput(
+            PromptAgentConsoleTextInput(
                 $"[cyan]{_loc.T("enter_soul_form_description")}[/]",
+                "Новая игра: форма души",
+                "Опишите форму души: человеческий силуэт, пол, образ, особенности света или иные черты. Это ролеплейное описание можно будет менять позже.",
+                "new-game-soul-form",
                 allowEmpty: false,
                 emptyError: "Описание формы души не может быть пустым",
                 preserveNewlines: true));
@@ -755,19 +921,17 @@ public partial class GameEngine
         AnsiConsole.WriteLine();
 
         // Step 2: Guardian
-        var guardianChoice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("[cyan]Выберите способ создания Хранителя:[/]")
-                .HighlightStyle(new Style(Color.Cyan1))
-                .AddChoices(
-                    _loc.T("create_guardian"),
-                    _loc.T("choose_guardian")
-                ));
+        var guardianChoice = PromptGuardianCreationMode();
 
         JsonObject pendingGuardianCreation;
+        SystemGuardianLibraryService.SystemGuardianPresetDescriptor? selectedSystemGuardianPreset = null;
         if (guardianChoice == _loc.T("create_guardian"))
         {
-            var guardianDescription = PromptTextInput($"[cyan]{_loc.T("guardian_prompt")}[/]",
+            var guardianDescription = PromptAgentConsoleTextInput(
+                $"[cyan]{_loc.T("guardian_prompt")}[/]",
+                "Новая игра: свой Хранитель",
+                "Опишите Хранителя, с которым душа начнёт путь: домен, характер, обитель, отношение к душе и тон будущих сцен.",
+                "new-game-freeform-guardian",
                 allowEmpty: false,
                 emptyError: "Описание не может быть пустым",
                 preserveNewlines: true);
@@ -779,12 +943,13 @@ public partial class GameEngine
             if (selectedPreset == null)
                 return;
 
+            selectedSystemGuardianPreset = selectedPreset;
             pendingGuardianCreation = _systemGuardianLibraryService.BuildPendingGuardianCreationNode(selectedPreset, soulName);
         }
 
         // Step 3: Enter the Chaos Sea — NO character/world description at this point
         // The mortal world is NOT described at the start. Player enters it later through incarnation.
-        await InitializeChaosSea(soulName, soulFormDescription, pendingGuardianCreation);
+        await InitializeChaosSea(soulName, soulFormDescription, pendingGuardianCreation, selectedSystemGuardianPreset);
 
         // CRITICAL: Wait for the GM to describe the Guardian's abode before entering the loop
         // Without this, the player sees a blank screen after starting a new game
@@ -799,11 +964,21 @@ public partial class GameEngine
     /// Initialize a new game in the Chaos Sea (afterlife hub).
     /// No mortal character or world is created yet — that happens when the player incarnates.
     /// </summary>
-    private async Task InitializeChaosSea(string soulName, string soulFormDescription, JsonObject pendingGuardianCreation)
+    private async Task InitializeChaosSea(
+        string soulName,
+        string soulFormDescription,
+        JsonObject pendingGuardianCreation,
+        SystemGuardianLibraryService.SystemGuardianPresetDescriptor? selectedSystemGuardianPreset = null)
     {
         // Generate session ID once — used for both chat_log.json and GameLoop
         var sessionId = Guid.NewGuid().ToString();
         DarenRewardGrantResult? darenNewGameGrant = null;
+        var bootstrapGuardianName =
+            selectedSystemGuardianPreset?.DisplayName ??
+            pendingGuardianCreation["presetDisplayName"]?.GetValue<string>() ??
+            pendingGuardianCreation["description"]?.GetValue<string>() ??
+            "будущий Хранитель";
+        var bootstrapAbodeName = selectedSystemGuardianPreset?.AbodeName ?? "первая Обитель Хранителя";
 
         AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots12)
@@ -852,19 +1027,27 @@ public partial class GameEngine
                     .GetResult();
                 WriteCanonicalSoulStateAsync(soulState).Wait();
 
-                // Initialize guardian
-                var guardian = new
-                {
-                    guardians = Array.Empty<object>(),
-                    activeGuardian = (object?)null,
-                    chaosSeaNavigation = new
+                // Initialize guardian. System presets are client-owned canonical seeds;
+                // freeform guardians stay GM-authored pending creation contracts.
+                var guardian = selectedSystemGuardianPreset != null
+                    ? _systemGuardianLibraryService.BuildCanonicalGuardianRootForFreshNewGame(
+                        selectedSystemGuardianPreset,
+                        soulName,
+                        turnNumber: 1,
+                        createdAtUtc: DateTimeOffset.UtcNow)
+                    : new JsonObject
                     {
-                        currentAbodeId = (object?)null
-                    },
-                    pendingGuardianCreation
-                };
+                        ["guardians"] = new JsonArray(),
+                        ["activeGuardian"] = null,
+                        ["chaosSeaNavigation"] = new JsonObject
+                        {
+                            ["currentAbodeId"] = null
+                        },
+                        ["pendingGuardianCreation"] = pendingGuardianCreation.DeepClone()
+                    };
                 _fs.WriteFileAtomicAsync("game_state/meta/guardians.json",
                     JsonSerializer.Serialize(guardian, JsonOpts)).Wait();
+                WriteInitialGuardianProjectTrackerStateAsync().Wait();
 
                 // Initialize session
                 var chatLog = new
@@ -907,26 +1090,15 @@ public partial class GameEngine
                 _fs.WriteFileAtomicAsync("game_state/meta/achievements.json",
                     JsonSerializer.Serialize(achievementsState, JsonOpts)).Wait();
 
-                var codexState = new
+                foreach (var bootstrapFile in ChaosSeaBootstrapStateBuilder.BuildFreshNewGameFiles(
+                             soulName,
+                             soulFormDescription,
+                             bootstrapGuardianName,
+                             bootstrapAbodeName,
+                             DateTimeOffset.UtcNow))
                 {
-                    entries = Array.Empty<object>(),
-                    totalEntries = 0,
-                    categories = new
-                    {
-                        cosmology = 0,
-                        geography = 0,
-                        history = 0,
-                        cultures = 0,
-                        creatures = 0,
-                        characters = 0,
-                        artifacts = 0,
-                        factions = 0,
-                        magic = 0,
-                        other = 0
-                    }
-                };
-                _fs.WriteFileAtomicAsync("lore/codex_entries.json",
-                    JsonSerializer.Serialize(codexState, JsonOpts)).Wait();
+                    _fs.WriteFileAtomicAsync(bootstrapFile.Key, bootstrapFile.Value.ToJsonString(JsonOpts)).Wait();
+                }
 
                 var playerChronicle = new
                 {
@@ -968,7 +1140,8 @@ public partial class GameEngine
         };
         AttachFreshDiceAndGacha(request);
         request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
-        await CreateCanonicalBaselineSnapshotAsync(request, sourceLabel: "первого описания Моря Хаоса");
+        var rollbackBackups = await CreatePreTurnBackup(request.RequestId);
+        await CreateCanonicalBaselineSnapshotAsync(request, rollbackBackups, sourceLabel: "первого описания Моря Хаоса");
 
         ClearTransientOutputFiles();
         await _fs.WriteFileAtomicAsync("input/turn_request.json",
@@ -977,6 +1150,18 @@ public partial class GameEngine
         AnsiConsole.MarkupLine($"[green]🌊 {_loc.T("soul_awakens")}[/]");
         if (darenNewGameGrant?.Granted == true)
             AnsiConsole.MarkupLine($"[green]{Markup.Escape(darenNewGameGrant.PlayerMessage)}[/]");
+    }
+
+    private async Task WriteInitialGuardianProjectTrackerStateAsync()
+    {
+        var root = new JsonObject
+        {
+            ["activeProjects"] = new JsonArray(),
+            ["completedProjects"] = new JsonArray(),
+            ["temporaryProjectModifiers"] = new JsonArray()
+        };
+
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, root.ToJsonString(JsonOpts));
     }
 
     /// <summary>
@@ -1023,21 +1208,39 @@ public partial class GameEngine
         // Character description
         AnsiConsole.MarkupLine("[cyan]Опишите персонажа в смертной жизни:[/]");
         AnsiConsole.MarkupLine("[dim](Раса, класс, внешность, предыстория... или оставьте пустым)[/]");
-        var charDesc = PromptTextInput("[cyan]Персонаж:[/]", allowEmpty: true, preserveNewlines: true);
+        var charDesc = PromptAgentConsoleTextInput(
+            "[cyan]Персонаж:[/]",
+            "Врата Души: персонаж",
+            "Опишите будущего смертного персонажа: расу, занятие, внешность, предысторию. Можно оставить пустым, тогда Хранитель выберет сам.",
+            "incarnation-character-description",
+            allowEmpty: true,
+            preserveNewlines: true);
 
         AnsiConsole.WriteLine();
 
         // World description
         AnsiConsole.MarkupLine("[cyan]Опишите мир, в который хотите воплотиться:[/]");
         AnsiConsole.MarkupLine("[dim](Жанр, сеттинг, особенности... или оставьте пустым — Хранитель выберет)[/]");
-        var worldDesc = PromptTextInput("[cyan]Мир:[/]", allowEmpty: true, preserveNewlines: true);
+        var worldDesc = PromptAgentConsoleTextInput(
+            "[cyan]Мир:[/]",
+            "Врата Души: мир",
+            "Опишите мир для новой жизни: жанр, эпоху, тон, важные ограничения или желаемые особенности. Можно оставить пустым.",
+            "incarnation-world-description",
+            allowEmpty: true,
+            preserveNewlines: true);
 
         AnsiConsole.WriteLine();
 
         // Starting circumstances
         AnsiConsole.MarkupLine("[cyan]Обстоятельства начала (необязательно):[/]");
         AnsiConsole.MarkupLine("[dim](Где вы появляетесь? Что происходит вокруг?)[/]");
-        var circumstances = PromptTextInput("[cyan]Обстоятельства:[/]", allowEmpty: true, preserveNewlines: true);
+        var circumstances = PromptAgentConsoleTextInput(
+            "[cyan]Обстоятельства:[/]",
+            "Врата Души: начало",
+            "Опишите стартовую сцену новой жизни: где персонаж появляется и что происходит вокруг. Можно оставить пустым.",
+            "incarnation-starting-circumstances",
+            allowEmpty: true,
+            preserveNewlines: true);
 
         var pendingSetupBeforeRaw = await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath);
         if (TryDescribeMalformedPendingWorldSetup(pendingSetupBeforeRaw, out var malformedPendingSetup))
@@ -1356,30 +1559,17 @@ public partial class GameEngine
 
         while (true)
         {
-            var choices = presets
-                .Select(preset =>
-                    $"{preset.DisplayName} [dim]({Markup.Escape(preset.Domain)} • {Markup.Escape(preset.LibraryKind)} • v{Markup.Escape(preset.Version)})[/]")
-                .ToList();
-            choices.Add("📂 Открыть папку пользовательских извечных хранителей");
-            choices.Add(_loc.T("back"));
+            var presetIndex = PromptGuardianPresetChoice(presets, userDir);
 
-            var selected = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("[cyan]Выберите извечного Хранителя:[/]\n[dim]Это библиотека именованных хранителей, всегда доступных душе. Для игрока это ролевой термин; в файлах и валидаторе они технически называются system guardian presets.[/]")
-                    .HighlightStyle(new Style(Color.Cyan1))
-                    .PageSize(12)
-                    .AddChoices(choices));
-
-            if (selected == _loc.T("back"))
+            if (presetIndex == -1)
                 return null;
 
-            if (selected.StartsWith("📂", StringComparison.Ordinal))
+            if (presetIndex == -2)
             {
                 OpenFolderOrPrintPath(userDir, _inputSource);
                 continue;
             }
 
-            var presetIndex = choices.IndexOf(selected);
             if (presetIndex < 0 || presetIndex >= presets.Count)
                 continue;
 
@@ -1592,92 +1782,60 @@ public partial class GameEngine
         string? pendingSetupBeforeRaw,
         JsonNode? pendingSetupAfterPreview)
     {
+        var setupState = string.IsNullOrWhiteSpace(pendingSetupBeforeRaw)
+            ? "Отдельной настройки мира ещё нет."
+            : "Существующая настройка следующего мира будет учтена.";
+        var setupAfter = pendingSetupAfterPreview == null
+            ? "Новая настройка мира не будет создана из пустого описания."
+            : "Настройка следующего мира будет сохранена для Хранителя перед отправкой.";
+
         var lines = new List<string>
         {
             "[bold yellow]⚔️ Предпросмотр воплощения через Врата Души[/]",
             "",
-            "Это GM-authored lifecycle contract, а не локальный переход в смертный мир.",
-            "GM должен записать только canonical TriggerIncarnation в game_state/control/incarnation_trigger.json.",
-            $"Pending setup перед отправкой будет записан в [dim]{WorldDirectiveService.PendingSetupPath}[/].",
+            "Вы просите Хранителя открыть путь в новую смертную жизнь. Игра отправит ему описание будущего персонажа, мира и обстоятельств старта.",
             "",
-            "[bold]Accepted outcome:[/]",
-            "  • game_state/control/incarnation_trigger.json содержит TriggerIncarnation для следующего mortal bootstrap.",
-            "  • currentRealm остаётся Chaos Sea до клиентского bootstrap handoff.",
-            "  • клиент сам создаёт первый Mortal World turn после принятого trigger.",
+            "[bold]Что увидит Хранитель:[/]",
+            $"  • Душа и роль: {Markup.Escape(ShortPlayerFacingPreview(characterDescription))}",
+            $"  • Мир: {Markup.Escape(ShortPlayerFacingPreview(worldDescription))}",
+            $"  • Первые обстоятельства: {Markup.Escape(ShortPlayerFacingPreview(circumstances))}",
             "",
-            "[bold]Rejected/repair outcome:[/]",
-            "  • если GM не может закрыть trigger строго, он не должен переключать мир вручную.",
-            "  • pending setup сохраняется как client-owned входной контракт для ремонта.",
+            "[bold]Настройка мира:[/]",
+            $"  • {Markup.Escape(setupState)}",
+            $"  • {Markup.Escape(setupAfter)}",
             "",
-            "[bold]Pending world setup before/after:[/]",
-            $"  • before: {(string.IsNullOrWhiteSpace(pendingSetupBeforeRaw) ? "none" : WorldDirectiveService.PendingSetupPath)}",
-            $"  • after: {(pendingSetupAfterPreview == null ? "none/new file not written by blank prompt" : "see full JSON audit below")}",
+            "[bold]Что произойдёт после подтверждения:[/]",
+            "  • Хранитель подготовит Врата Души и точку входа в будущую жизнь.",
+            "  • До принятого ответа вы остаётесь в Море Хаоса.",
+            "  • После принятого ответа клиент сам начнёт первый ход смертного мира.",
             "",
-            "[bold]Запрещено в accepted turn:[/]",
-            "  • TriggerLifeEnd, Life Evaluation rewards, Mortal World currentLocationData/worldEventsLog/UpdateNPCs.",
-            "  • Создание первого mortal bootstrap в том же ответе.",
-            "  • Ручная смена soul_state.currentRealm на Mortal World."
-        };
-
-        var audit = new JsonObject
-        {
-            ["playerAction"] = playerAction,
-            ["requiredOutputFile"] = "game_state/control/incarnation_trigger.json",
-            ["pendingSetupFile"] = WorldDirectiveService.PendingSetupPath,
-            ["expectedResponseSurface"] = "TriggerIncarnation",
-            ["characterDescription"] = characterDescription,
-            ["worldDescription"] = worldDescription,
-            ["circumstances"] = circumstances,
-            ["pendingSetupBefore"] = TryParseJsonAuditNode(pendingSetupBeforeRaw) ?? JsonValue.Create(string.IsNullOrWhiteSpace(pendingSetupBeforeRaw) ? "absent" : pendingSetupBeforeRaw),
-            ["pendingSetupAfterPreview"] = pendingSetupAfterPreview?.DeepClone(),
-            ["affectedFiles"] = new JsonArray
-            {
-                "game_state/control/incarnation_trigger.json",
-                WorldDirectiveService.PendingSetupPath,
-                "game_state/meta/soul_state.json"
-            },
-            ["forbiddenSameTurnSurfaces"] = new JsonArray
-            {
-                "TriggerLifeEnd",
-                "Life Evaluation rewards",
-                "currentLocationData",
-                "worldEventsLog",
-                "UpdateNPCs",
-                "Mortal World bootstrap state"
-            }
+            "[dim]Технические детали контракта скрыты: если Хранитель не сможет подготовить воплощение, игра вернёт вас к безопасному состоянию и попросит повторить или исправить запрос.[/]"
         };
 
         AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
-            Header = new PanelHeader(" ⚔️ Полный контракт /incarnate ", Justify.Center),
+            Header = new PanelHeader(" ⚔️ Воплощение через Врата Души ", Justify.Center),
             Border = BoxBorder.Double,
             BorderStyle = new Style(Color.Yellow),
             Padding = new Padding(2, 1),
             Expand = true
         });
-        WriteMainMenuJsonAuditPanel("Полный JSON-аудит /incarnate contract", audit, Color.Yellow);
 
         return ConfirmWithConsoleObservation(
-            "[yellow]Отправить этот контракт GM?[/]",
-            "Отправить этот контракт GM?",
+            "[yellow]Отправить запрос Хранителю?[/]",
+            "Отправить запрос Хранителю?",
             defaultValue: true,
             slug: "incarnation-contract-confirmation",
-            title: "Контракт воплощения");
+            title: "Воплощение через Врата Души");
     }
 
-    private static JsonNode? TryParseJsonAuditNode(string? raw)
+    private static string ShortPlayerFacingPreview(string value)
     {
-        if (string.IsNullOrWhiteSpace(raw))
-            return null;
+        value = string.IsNullOrWhiteSpace(value) ? "не указано; Хранитель выберет сам" : value.Trim();
+        value = value.Replace('\r', ' ').Replace('\n', ' ');
 
-        try
-        {
-            return JsonNode.Parse(raw);
-        }
-        catch
-        {
-            return null;
-        }
+        const int maxLength = 240;
+        return value.Length <= maxLength ? value : value[..maxLength] + "...";
     }
 
     private async Task<string> BuildPendingFileBlockerAsync(string path, string title, string closure)

@@ -99,6 +99,15 @@ internal static class ExplorerHelpCommandResultBuilder
 
         FlushSection();
 
+        if (!string.IsNullOrWhiteSpace(context.SectionFilter))
+        {
+            var filteredSections = sections
+                .Where(section => string.Equals(section.Title, context.SectionFilter, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            if (filteredSections.Count > 0)
+                sections = filteredSections;
+        }
+
         var commandCount = sections.Sum(static section => section.Cards.Count);
         return new UiEntityDossierBlock
         {
@@ -398,4 +407,5 @@ internal sealed class ExplorerHelpCommandContext
     public bool IsShiningAbode { get; init; }
     public bool IsPendingShiningAbodeBootstrap { get; init; }
     public bool CanReenterShiningAbode { get; init; }
+    public string? SectionFilter { get; init; }
 }

@@ -244,6 +244,154 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_InventoryQuestItemDetail_HidesRawBookkeepingAndLocalizesEnums()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/inventory/items.json", new
+        {
+            items = new[]
+            {
+                new
+                {
+                    itemId = "seal_bandage_001",
+                    name = "Запятнанная повязка с чёрной печатью",
+                    description = "Срезанная с раненого льняная повязка.",
+                    type = "QuestItem",
+                    quality = "Common",
+                    count = 1,
+                    value = 0,
+                    weight = 0.1,
+                    durability = 100,
+                    equipmentSlot = "Accessory1",
+                    group = "Стартовые зацепки",
+                    textContent = new[] { "Чёрная печать похожа на знак запрещённого братства." },
+                    currentLocationId = "loc_life_001_start",
+                    currentLocationName = "Дом лекаря Вирента: задняя лечебница",
+                    isCarried = false,
+                    isEquipped = false,
+                    visibility = "known"
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("inventory_quest_item_player_facing_detail");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("сюжетный предмет", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("обычное", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("аксессуар", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Прочность", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("100%/", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("100/", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("QuestItem", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Common", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Accessory1", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("currentLocationId", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("isCarried", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("isEquipped", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("visibility", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("value:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("В текущей локации", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("В рюкзаке", renderedText, StringComparison.OrdinalIgnoreCase);
+
+        var actionChoices = _console.SelectionChoicesHistory
+            .Where(entry => entry.Title.Contains("Действие", StringComparison.OrdinalIgnoreCase))
+            .SelectMany(entry => entry.Choices)
+            .ToArray();
+        Assert.DoesNotContain(actionChoices,
+            choice => choice.Contains("Сложить с другим предметом", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(actionChoices,
+            choice => choice.Contains("Выбросить", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_InventoryDetail_StripsTechnicalTurnAnchorsFromJournalEntries()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/inventory/items.json", new
+        {
+            items = new[]
+            {
+                new
+                {
+                    itemId = "glove_journal_anchor_001",
+                    name = "Руническая перчатка",
+                    description = "Кожа перчатки хранит слабый золотой отблеск.",
+                    type = "Артефакт",
+                    count = 1,
+                    equipmentSlot = (string?)null,
+                    journalEntries = new[]
+                    {
+                        "#[4]. Предмет найден на столе у окна."
+                    }
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("inventory_journal_anchor_player_facing");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Предмет найден на столе у окна.", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("#[4]", renderedText, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_NpcPersonalityDetail_SplitsFactsAndLocalizesRelationshipValues()
+    {
+        await SeedMortalStateAsync();
+        await WriteRawJsonAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_virent",
+              "name": "Лекарь Вирент",
+              "currentLocation": "Дом лекаря Вирента",
+              "relationshipLevel": 0,
+              "race": "Человек",
+              "class": "Лекарь",
+              "role": "наставник и городской лекарь",
+              "rarity": "Common",
+              "worldview": "Лучше нарушить правило, чем дать человеку умереть на столе.",
+              "attitude": "Neutral",
+              "culturalLayer": "Нижний Порт Арвельмара",
+              "culturalStance": "Прагматик",
+              "plans": "Закончить перевязку и выяснить, почему на пациенте чёрная печать.",
+              "personalityTraits": [
+                {
+                  "traitName": "Милосердие с ценой",
+                  "description": "Рискует ради пациента, если окружающие выдержат его правила.",
+                  "valueDescription": "Может стать защитником или строгим судьёй первых ошибок ученицы."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+        _console.QueueSelection("Разделы НПС", "Личность / маски");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("npc_personality_player_facing_details");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Мировоззрение", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Нейтралитет", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Культурный слой", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Милосердие с ценой", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Отношение: Neutral", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("; Отношение", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Подробности Мировоззрение", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Название черты:", renderedText, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_NpcPromptChoices_EscapeBracketBearingDynamicLabels()
     {
         await SeedMortalStateAsync();

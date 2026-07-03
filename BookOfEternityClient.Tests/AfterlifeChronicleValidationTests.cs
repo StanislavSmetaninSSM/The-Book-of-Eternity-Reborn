@@ -84,6 +84,22 @@ public sealed class AfterlifeChronicleValidationTests : IDisposable
             string.Equals(issue.Code, "afterlife_chronicle_missing_last_events_description", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_ChroniclePlayerTextWithInternalEnglishRealmTerm_ReportsPlayerFacingIssue()
+    {
+        await WriteChronicleStateAsync(BuildValidChronicleJson()
+            .Replace(
+                "Зал отражений запомнил голос игрока.",
+                "Свод остается первой afterlife-точкой игрока.",
+                StringComparison.Ordinal));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_chronicle_player_text_internal_term", StringComparison.OrdinalIgnoreCase) &&
+            (issue.FilePath ?? string.Empty).Contains("persistentConsequences[0]", StringComparison.OrdinalIgnoreCase));
+    }
+
     private Task WriteChronicleStateAsync(string json) =>
         _fs.WriteFileAtomicAsync(AfterlifeChronicleState.StatePath, json);
 

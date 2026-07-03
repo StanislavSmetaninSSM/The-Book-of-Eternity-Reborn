@@ -246,11 +246,11 @@ internal static class GuardianTradeRequestState
         if (string.IsNullOrWhiteSpace(GetNodeString(tradeInventory["generatedAtUtc"])))
             return false;
 
-        var expectedTier = ResolveTradeTierCode(request.CurrentReputation);
-        if (!string.Equals(GetNodeString(tradeInventory["generationReputationTier"]), expectedTier, StringComparison.OrdinalIgnoreCase))
+        var expectedTier = ResolveExpectedTradeTierCode(request.CurrentReputation);
+        if (!TradeTierMatchesExpected(tradeInventory["generationReputationTier"], expectedTier))
             return false;
 
-        if (!string.Equals(GetNodeString(tradeInventory["pricingReputationTier"]), expectedTier, StringComparison.OrdinalIgnoreCase))
+        if (!TradeTierMatchesExpected(tradeInventory["pricingReputationTier"], expectedTier))
             return false;
 
         if (GetNodeInt(tradeInventory["effectiveRarityCeilingBonusSteps"], int.MinValue) != request.EffectiveRarityCeilingBonusSteps)
@@ -415,7 +415,7 @@ internal static class GuardianTradeRequestState
         string.Equals(currentRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(currentRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
 
-    private static string ResolveTradeTierCode(int reputation) => reputation switch
+    internal static string ResolveExpectedTradeTierCode(int reputation) => reputation switch
     {
         <= -51 => "Hostile",
         <= 49 => "Neutral",
@@ -423,6 +423,59 @@ internal static class GuardianTradeRequestState
         <= 229 => "Devoted",
         _ => "Legendary"
     };
+
+    internal static bool TryNormalizeTradeTierCode(string? tierCode, out string normalizedTierCode)
+    {
+        normalizedTierCode = string.Empty;
+        if (string.IsNullOrWhiteSpace(tierCode))
+            return false;
+
+        var trimmed = tierCode.Trim();
+        if (IsCanonicalTradeTierCode(trimmed))
+        {
+            normalizedTierCode = NormalizeCanonicalTradeTierCasing(trimmed);
+            return true;
+        }
+
+        var slashIndex = trimmed.LastIndexOf('/');
+        if (slashIndex >= 0 && slashIndex < trimmed.Length - 1)
+        {
+            var suffix = trimmed[(slashIndex + 1)..].Trim();
+            if (IsCanonicalTradeTierCode(suffix))
+            {
+                normalizedTierCode = NormalizeCanonicalTradeTierCasing(suffix);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool TradeTierMatchesExpected(JsonNode? tierNode, string expectedTier)
+    {
+        if (!TryNormalizeTradeTierCode(GetNodeString(tierNode), out var normalizedTier))
+            return false;
+
+        return string.Equals(normalizedTier, expectedTier, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsCanonicalTradeTierCode(string tierCode) =>
+        tierCode.Equals("Hostile", StringComparison.OrdinalIgnoreCase) ||
+        tierCode.Equals("Neutral", StringComparison.OrdinalIgnoreCase) ||
+        tierCode.Equals("Friendly", StringComparison.OrdinalIgnoreCase) ||
+        tierCode.Equals("Devoted", StringComparison.OrdinalIgnoreCase) ||
+        tierCode.Equals("Legendary", StringComparison.OrdinalIgnoreCase);
+
+    private static string NormalizeCanonicalTradeTierCasing(string tierCode) =>
+        tierCode.ToLowerInvariant() switch
+        {
+            "hostile" => "Hostile",
+            "neutral" => "Neutral",
+            "friendly" => "Friendly",
+            "devoted" => "Devoted",
+            "legendary" => "Legendary",
+            _ => tierCode
+        };
 
     private static int GetNodeInt(JsonNode? node, int fallback)
     {

@@ -4439,9 +4439,15 @@ public partial class ValidationService
         ValidateOptionalNullableNonNegativeNumericField(item, itemContext, issues, "weightReduction");
 
         if (item.TryGetProperty("textContent", out var textContent) && textContent.ValueKind != JsonValueKind.Null)
+        {
             RequireArrayOfStrings(textContent, $"{itemContext}.textContent", issues);
+            ValidatePlayerFacingInventoryTextContent(textContent, $"{itemContext}.textContent", issues);
+        }
         if (item.TryGetProperty("journalEntries", out var journalEntries) && journalEntries.ValueKind != JsonValueKind.Null)
+        {
             RequireArrayOfStrings(journalEntries, $"{itemContext}.journalEntries", issues);
+            ValidatePlayerFacingItemJournalEntries(journalEntries, $"{itemContext}.journalEntries", issues);
+        }
         if (item.TryGetProperty("bonuses", out var bonuses))
             RequireArrayOfStrings(bonuses, $"{itemContext}.bonuses", issues);
         if (item.TryGetProperty("structuredBonuses", out var structuredBonuses))
@@ -6484,7 +6490,146 @@ public partial class ValidationService
                     repairHint: "Для updateItemTextContents передай itemId, itemName и textToAppend. Не полагайся на общий name/id shorthand для этого append-only command."));
                 continue;
             }
+
+            var textToAppend = item.GetProperty("textToAppend").GetString() ?? string.Empty;
+            ValidatePlayerFacingInventoryTextEntry(textToAppend, $"{itemContext}.textToAppend", issues);
         }
+    }
+
+    private static void ValidatePlayerFacingInventoryTextContent(
+        JsonElement textContent,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        if (textContent.ValueKind != JsonValueKind.Array)
+            return;
+
+        var index = 0;
+        foreach (var entry in textContent.EnumerateArray())
+        {
+            if (entry.ValueKind == JsonValueKind.String)
+                ValidatePlayerFacingInventoryTextEntry(entry.GetString() ?? string.Empty, $"{contextPrefix}[{index}]", issues);
+
+            index++;
+        }
+    }
+
+    private static void ValidatePlayerFacingItemJournalEntries(
+        JsonElement journalEntries,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        if (journalEntries.ValueKind != JsonValueKind.Array)
+            return;
+
+        var index = 0;
+        foreach (var entry in journalEntries.EnumerateArray())
+        {
+            if (entry.ValueKind == JsonValueKind.String)
+            {
+                ValidatePlayerFacingItemJournalEntry(entry.GetString() ?? string.Empty, $"{contextPrefix}[{index}]", issues);
+            }
+            else if (entry.ValueKind == JsonValueKind.Object)
+            {
+                ValidatePlayerFacingItemJournalObject(entry, $"{contextPrefix}[{index}]", issues);
+            }
+
+            index++;
+        }
+    }
+
+    private static void ValidatePlayerFacingItemJournalObject(
+        JsonElement journalEntry,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        foreach (var fieldName in new[] { "event", "description", "text", "content", "entry", "spiritVoice", "magicalResonance" })
+        {
+            if (journalEntry.TryGetProperty(fieldName, out var field) && field.ValueKind == JsonValueKind.String)
+                ValidatePlayerFacingItemJournalEntry(field.GetString() ?? string.Empty, $"{contextPrefix}.{fieldName}", issues);
+        }
+    }
+
+    private static void ValidatePlayerFacingInventoryTextEntry(
+        string text,
+        string fieldPath,
+        List<ValidationIssue> issues)
+    {
+        ValidatePlayerFacingTextDoesNotStartWithTurnAnchor(
+            text,
+            fieldPath,
+            issues,
+            code: "inventory_text_content_turn_anchor_player_facing",
+            section: "Inventory",
+            message: "Игроковое содержимое предмета не должно начинаться с технического turn anchor",
+            expected: "Текст предмета без префикса #[turn]",
+            repairHint: "Убери технический префикс вида '#[5].' или '#[5] -' из textContent/textToAppend. Если нужна история хода, запиши её в подходящий журнал/хронику, а в предмет оставь только игроковый текст.");
+    }
+
+    private static void ValidatePlayerFacingItemJournalEntry(
+        string text,
+        string fieldPath,
+        List<ValidationIssue> issues)
+    {
+        ValidatePlayerFacingTextDoesNotStartWithTurnAnchor(
+            text,
+            fieldPath,
+            issues,
+            code: "item_journal_entry_turn_anchor_player_facing",
+            section: "ItemJournals",
+            message: "Игроковая запись журнала предмета не должна начинаться с технического turn anchor",
+            expected: "Запись журнала предмета без префикса #[turn]",
+            repairHint: "Убери технический префикс вида '#[5].' или '#[5] -' из journalEntries/entryToAppend. Игрок видит этот журнал в инвентаре, поэтому запись должна быть готовым игровым текстом.");
+    }
+
+    private static void ValidatePlayerFacingTextDoesNotStartWithTurnAnchor(
+        string text,
+        string fieldPath,
+        List<ValidationIssue> issues,
+        string code,
+        string section,
+        string message,
+        string expected,
+        string repairHint)
+    {
+        if (!StartsWithTechnicalTurnAnchor(text))
+            return;
+
+        issues.Add(new ValidationIssue(
+            fieldPath,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: section,
+            expected: expected,
+            actual: text.Length > 120 ? text[..120] + "..." : text,
+            repairHint: repairHint));
+    }
+
+    private static bool StartsWithTechnicalTurnAnchor(string text)
+    {
+        var value = text.TrimStart();
+        if (!value.StartsWith("#[", StringComparison.Ordinal))
+            return false;
+
+        var closeIndex = value.IndexOf(']');
+        if (closeIndex <= 2)
+            return false;
+
+        var anchor = value[2..closeIndex].Trim();
+        if (anchor.Length == 0)
+            return false;
+
+        var looksLikeTurnAnchor =
+            anchor.All(char.IsDigit) ||
+            anchor.Contains("turn", StringComparison.OrdinalIgnoreCase);
+        if (!looksLikeTurnAnchor)
+            return false;
+
+        var rest = value[(closeIndex + 1)..].TrimStart();
+        return rest.StartsWith(".", StringComparison.Ordinal) ||
+               rest.StartsWith("-", StringComparison.Ordinal) ||
+               rest.StartsWith(":", StringComparison.Ordinal);
     }
 
     private void ValidateOptionalObject(JsonElement root, string contextPrefix, List<ValidationIssue> issues,

@@ -52,6 +52,7 @@ internal sealed class LiveTurnPreparationService
             throw new ArgumentException("Player action is required for prepare-turn.", nameof(options));
 
         CleanupPreparedTurnArtifacts();
+        ClearStalePendingDiceState();
 
         var currentRealm = string.IsNullOrWhiteSpace(options.CurrentRealm)
             ? await ResolveCurrentRealmAsync()
@@ -85,6 +86,8 @@ internal sealed class LiveTurnPreparationService
             },
             SystemReminder = "Prepared by the live-test prepare-turn helper. Use this request as an ordinary player turn and keep all writes inside the game session contract."
         };
+        request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
+            .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, currentRealm);
 
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -205,6 +208,7 @@ internal sealed class LiveTurnPreparationService
         string.Equals(relative, PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
         relative.StartsWith($"{PendingTurnSnapshotDirectory}/", StringComparison.OrdinalIgnoreCase) ||
         relative.StartsWith("game_state/control/gm_context_pack/", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(relative, PendingTurnStateService.PendingDiceStatePath, StringComparison.OrdinalIgnoreCase) ||
         string.Equals(relative, "game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(relative, "game_state/control/gm_daemon_status.json", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(relative, "game_state/control/gm_trajectory_ledger.jsonl", StringComparison.OrdinalIgnoreCase) ||
@@ -354,6 +358,8 @@ internal sealed class LiveTurnPreparationService
         _fs.DeleteFile(PendingTurnSnapshotAuthority.AuthorityPath);
         DeleteDirectoryIfInsideSession(PendingTurnSnapshotDirectory);
     }
+
+    private void ClearStalePendingDiceState() => _fs.DeleteFile(PendingTurnStateService.PendingDiceStatePath);
 
     private void DeleteDirectoryIfInsideSession(string relativeDirectory)
     {

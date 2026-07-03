@@ -102,6 +102,39 @@ public partial class ValidationService
                 }
             }
 
+            if (HasPendingGuardianCreation(guardianPolicyContext.CurrentRoot) &&
+                TryFindGuardianBesidePendingCreation(
+                    guardianPolicyContext,
+                    guardianStateById,
+                    out var materializedGuardianPath))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.pendingGuardianCreation",
+                    IssueSeverity.Error,
+                    "pendingGuardianCreation должен быть очищен после materialization Хранителя.",
+                    code: "stale_pending_guardian_creation_after_materialization",
+                    section: "Guardians",
+                    expected: "pendingGuardianCreation absent/null after active/canonical guardian is present",
+                    actual: materializedGuardianPath,
+                        repairHint: "После создания Хранителя из pendingGuardianCreation удали pendingGuardianCreation из guardians.json. Не оставляй startup-запрос рядом с уже созданным activeGuardian/guardians[]."));
+            }
+
+            if (HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) &&
+                HasPendingGuardianCreation(guardianPolicyContext.PreTurnRoot) &&
+                !HasPendingGuardianCreation(guardianPolicyContext.CurrentRoot) &&
+                (!guardianPolicyContext.HasCurrentActiveGuardian || guardianStateById.Count == 0))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.pendingGuardianCreation",
+                    IssueSeverity.Error,
+                    "pendingGuardianCreation нельзя закрыть простым удалением без materialization Хранителя.",
+                    code: "pending_guardian_creation_missing_materialized_guardian",
+                    section: "Guardians",
+                    expected: "pendingGuardianCreation removed only together with activeGuardian and matching canonical guardians[] entry",
+                    actual: DescribeMissingMaterializedGuardianAfterPendingCreation(guardianPolicyContext, guardianStateById),
+                    repairHint: "Не удаляй startup-запрос pendingGuardianCreation сам по себе. Создай Хранителя через valid UpdateGuardians.create, синхронизируй activeGuardian и guardians[], затем удали pendingGuardianCreation."));
+            }
+
             var currentPendingPresetId = TryReadPendingSystemGuardianPresetId(guardianPolicyContext.CurrentRoot);
             if (!string.IsNullOrWhiteSpace(currentPendingPresetId) &&
                 TryGetGuardianBaselineFailureKind(guardianPolicyContext, out var guardianBaselineFailureKind))
@@ -159,6 +192,46 @@ public partial class ValidationService
         {
             // ignored
         }
+    }
+
+    private static bool HasPendingGuardianCreation(JsonElement root) =>
+        root.ValueKind == JsonValueKind.Object &&
+        root.TryGetProperty("pendingGuardianCreation", out var pending) &&
+        pending.ValueKind == JsonValueKind.Object;
+
+    private static bool TryFindGuardianBesidePendingCreation(
+        GuardianPolicyContext guardianPolicyContext,
+        IReadOnlyDictionary<string, JsonElement> guardianStateById,
+        out string materializedGuardianPath)
+    {
+        materializedGuardianPath = "";
+
+        if (guardianPolicyContext.HasCurrentActiveGuardian)
+        {
+            materializedGuardianPath = "activeGuardian present while pendingGuardianCreation is still present";
+            return true;
+        }
+
+        if (guardianStateById.Count > 0)
+        {
+            materializedGuardianPath = $"guardians[] contains {guardianStateById.Count} canonical guardian(s) while pendingGuardianCreation is still present";
+            return true;
+        }
+
+        return false;
+    }
+
+    private static string DescribeMissingMaterializedGuardianAfterPendingCreation(
+        GuardianPolicyContext guardianPolicyContext,
+        IReadOnlyDictionary<string, JsonElement> guardianStateById)
+    {
+        if (!guardianPolicyContext.HasCurrentActiveGuardian && guardianStateById.Count == 0)
+            return "pendingGuardianCreation removed, activeGuardian missing/null, guardians[] empty";
+
+        if (!guardianPolicyContext.HasCurrentActiveGuardian)
+            return $"pendingGuardianCreation removed, activeGuardian missing/null, guardians[] contains {guardianStateById.Count} canonical guardian(s)";
+
+        return "pendingGuardianCreation removed, activeGuardian present, guardians[] has no canonical guardian entries";
     }
 
     private async Task ValidatePlayerFoundedGuardianContinuityAsync(

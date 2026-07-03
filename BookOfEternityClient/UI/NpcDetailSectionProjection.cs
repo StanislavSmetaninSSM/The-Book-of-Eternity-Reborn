@@ -377,11 +377,8 @@ internal static class NpcDetailSectionProjection
                 if (string.IsNullOrWhiteSpace(value))
                     continue;
 
-                facts.Add(new UiKeyValueItem
-                {
-                    Key = column < columns.Count ? columns[column] : $"Поле {column + 1}",
-                    Value = value
-                });
+                var columnLabel = column < columns.Count ? columns[column] : $"Поле {column + 1}";
+                facts.AddRange(BuildNpcDetailFacts(columnLabel, sectionTitle, title, value));
             }
 
             cards.Add(new UiEntityDossierBlock
@@ -436,6 +433,121 @@ internal static class NpcDetailSectionProjection
                 }
             ]
         };
+    }
+
+    private static IEnumerable<UiKeyValueItem> BuildNpcDetailFacts(
+        string columnLabel,
+        string sectionTitle,
+        string rowTitle,
+        string rawValue)
+    {
+        var parts = SplitNpcDetailParts(rawValue).ToList();
+        if (parts.Count > 1 || parts.Any(TrySplitNpcDetailPair))
+        {
+            var scalarIndex = 0;
+            foreach (var part in parts)
+            {
+                if (TrySplitNpcDetailPair(part, out var key, out var value))
+                {
+                    yield return new UiKeyValueItem
+                    {
+                        Key = FormatNpcDetailKey(key),
+                        Value = FormatNpcDetailValue(key, value)
+                    };
+                    continue;
+                }
+
+                yield return new UiKeyValueItem
+                {
+                    Key = InferNpcDetailScalarKey(sectionTitle, rowTitle, scalarIndex++),
+                    Value = FormatNpcDetailValue(columnLabel, part)
+                };
+            }
+
+            yield break;
+        }
+
+        yield return new UiKeyValueItem
+        {
+            Key = columnLabel,
+            Value = FormatNpcDetailValue(columnLabel, rawValue)
+        };
+    }
+
+    private static IEnumerable<string> SplitNpcDetailParts(string value) =>
+        value.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(static part => !string.IsNullOrWhiteSpace(part));
+
+    private static bool TrySplitNpcDetailPair(string value) =>
+        TrySplitNpcDetailPair(value, out _, out _);
+
+    private static bool TrySplitNpcDetailPair(string value, out string key, out string pairValue)
+    {
+        key = string.Empty;
+        pairValue = string.Empty;
+        var separator = value.IndexOf(':', StringComparison.Ordinal);
+        if (separator <= 0 || separator > 48)
+            return false;
+
+        key = value[..separator].Trim();
+        pairValue = value[(separator + 1)..].Trim();
+        return !string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(pairValue);
+    }
+
+    private static string FormatNpcDetailKey(string key)
+    {
+        var clean = key.Trim();
+        return clean.ToLowerInvariant() switch
+        {
+            "status" or "active state" or "activestate" => "Состояние",
+            "type" or "skilltype" => "Тип",
+            "rarity" or "quality" => "Редкость",
+            "rank" or "level" or "tier" => "Уровень",
+            "summary" => "Кратко",
+            "description" => "Описание",
+            _ => clean
+        };
+    }
+
+    private static string FormatNpcDetailValue(string key, string value)
+    {
+        var clean = value.Trim();
+        return clean.ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "active" => "Активно",
+            "pending" => "Ожидает",
+            "completed" or "complete" => "Завершено",
+            "failed" => "Провалено",
+            "neutral" when key.Contains("отнош", StringComparison.OrdinalIgnoreCase) => "Нейтралитет",
+            "neutral" => "нейтрально",
+            "knowledgebased" => "основан на знаниях",
+            "utility" => "утилитарный",
+            "combat" => "боевой",
+            "social" => "социальный",
+            "common" => "обычный",
+            "uncommon" => "необычный",
+            "rare" => "редкий",
+            "epic" => "эпический",
+            "legendary" => "легендарный",
+            _ => clean
+        };
+    }
+
+    private static string InferNpcDetailScalarKey(string sectionTitle, string rowTitle, int scalarIndex)
+    {
+        if (sectionTitle.Contains("Навык", StringComparison.OrdinalIgnoreCase) ||
+            rowTitle.Contains("Навык", StringComparison.OrdinalIgnoreCase))
+        {
+            return scalarIndex switch
+            {
+                0 => "Название навыка",
+                1 => "Описание",
+                _ => "Свойство навыка"
+            };
+        }
+
+        return scalarIndex == 0 ? "Сведения" : $"Сведения {scalarIndex + 1}";
     }
 
     private static IEnumerable<JsonObject> EnumerateNpcCoreObjects(JsonNode? root)
@@ -733,7 +845,7 @@ internal static class NpcDetailSectionProjection
     private static void AddPersonalityProfileRow(List<UiTableRow> rows, JsonObject npc)
     {
         var details = JoinDetails(
-            Prefix("Архетип", GetNodeString(npc, "personalityArchetype")),
+            Prefix("Архетип", FormatPlayerFacingFreeText(GetNodeString(npc, "personalityArchetype"))),
             Prefix("Мировоззрение", DescribeAlignment(GetNodeString(npc, "worldview"))),
             Prefix("Отношение", GetNodeString(npc, "attitude")),
             Prefix("Культурный слой", GetNodeString(npc, "culturalLayer")),
@@ -796,7 +908,7 @@ internal static class NpcDetailSectionProjection
                     Prefix("Описание", FirstNonEmpty(GetNodeString(mask, "description"), nestedMask == null ? null : GetNodeString(nestedMask, "description"))),
                     Prefix("Поведение", FirstNonEmpty(GetNodeString(mask, "behavior"), nestedMask == null ? null : GetNodeString(nestedMask, "behavioralDirectives"))),
                     Prefix("Триггер", FirstNonEmpty(GetNodeString(mask, "trigger"), GetNodeString(mask, "condition"))),
-                    Prefix("Архетип", FirstNonEmpty(GetNodeString(mask, "personalityArchetype"), nestedMask == null ? null : GetNodeString(nestedMask, "personalityArchetype"))),
+                    Prefix("Архетип", FormatPlayerFacingFreeText(FirstNonEmpty(GetNodeString(mask, "personalityArchetype"), nestedMask == null ? null : GetNodeString(nestedMask, "personalityArchetype")))),
                     Prefix("Отношение", FirstNonEmpty(GetNodeString(mask, "attitude"), nestedMask == null ? null : GetNodeString(nestedMask, "attitude"))));
 
                 if (!string.IsNullOrWhiteSpace(name) || !string.IsNullOrWhiteSpace(details))
@@ -1235,6 +1347,25 @@ internal static class NpcDetailSectionProjection
 
     private static string Prefix(string label, string? value) =>
         string.IsNullOrWhiteSpace(value) ? string.Empty : $"{label}: {value.Trim()}";
+
+    private static string? FormatPlayerFacingFreeText(string? value)
+    {
+        var text = value?.Trim();
+        if (string.IsNullOrWhiteSpace(text))
+            return null;
+
+        return LooksLikeTechnicalToken(text) ? null : text;
+    }
+
+    private static bool LooksLikeTechnicalToken(string value)
+    {
+        var hasSeparator = value.Contains('_', StringComparison.Ordinal) ||
+                           value.Contains('-', StringComparison.Ordinal);
+        if (!hasSeparator)
+            return false;
+
+        return value.All(static ch => ch is '_' or '-' || char.IsAsciiLetterOrDigit(ch));
+    }
 
     private static string EmptyFallback(string? value) =>
         string.IsNullOrWhiteSpace(value) ? "не указано" : value.Trim();

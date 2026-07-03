@@ -103,6 +103,8 @@ internal sealed class ValidatorFixtureHarness : IDisposable
         issues.AddRange(await _validator.ValidateAcceptedTurnReasoningAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnQteOfferAsync());
+        issues.AddRange(await _validator.ValidateAcceptedTurnMortalCombatMaterializationAsync());
+        issues.AddRange(await _validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());
         issues.AddRange(await _validator.ValidatePendingMemoryLegacyApplicationAsync());
         return issues;
     }
@@ -337,6 +339,14 @@ internal static class TestRepoPaths
 
     private static string ResolveRepoRoot()
     {
+        var explicitRoot = Environment.GetEnvironmentVariable("BOE_REPO_ROOT");
+        if (!string.IsNullOrWhiteSpace(explicitRoot) &&
+            Directory.Exists(Path.Combine(explicitRoot, "FileSystemExample")) &&
+            Directory.Exists(Path.Combine(explicitRoot, "BookOfEternityClient")))
+        {
+            return explicitRoot;
+        }
+
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
         while (dir != null)
         {

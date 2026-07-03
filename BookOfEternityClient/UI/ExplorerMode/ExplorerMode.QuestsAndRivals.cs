@@ -241,13 +241,14 @@ public partial class ExplorerMode
         }
 
         var status = GetStr(q, "status", "Active");
-        var statusColor = status.ToLower() switch
+        var statusLabel = FormatQuestStatusForPlayer(status);
+        var statusColor = status.ToLowerInvariant() switch
         {
             "completed" or "завершён" => "green",
             "failed" or "провален" => "red",
             _ => "yellow"
         };
-        lines.Add($"  📌 Статус: [{statusColor}]{Markup.Escape(status)}[/]");
+        lines.Add($"  📌 Статус: [{statusColor}]{Markup.Escape(statusLabel)}[/]");
 
         var relatedRivalArcId = GetStr(q, "relatedRivalArcId", "");
         var counterToRivalArc = q.TryGetProperty("counterToRivalArc", out var counterNode) &&
@@ -357,7 +358,7 @@ public partial class ExplorerMode
             {
                 if (entry.ValueKind == JsonValueKind.String)
                 {
-                    var logLine = entry.GetString() ?? "";
+                    var logLine = ExplorerPlayerFacingLabels.HistoricalEntry(entry.GetString() ?? "");
                     if (!string.IsNullOrEmpty(logLine))
                         logEntries.Add(logLine);
                     continue;
@@ -1121,6 +1122,22 @@ public partial class ExplorerMode
         "failed" => "❌",
         _ => "•"
     };
+
+    private static string FormatQuestStatusForPlayer(string? status)
+    {
+        var value = status?.Trim() ?? string.Empty;
+        return value.ToLowerInvariant() switch
+        {
+            "" => "не указано",
+            "active" or "open" or "current" => "Активен",
+            "pending" or "waiting" => "Ожидает",
+            "completed" or "complete" or "closed" => "Завершён",
+            "failed" => "Провален",
+            "paused" => "Приостановлен",
+            "blocked" => "Заблокирован",
+            _ => value
+        };
+    }
 
     private static int GetRivalThreadDangerScore(VisibleRivalSoulThread thread)
     {

@@ -12,7 +12,463 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 public sealed partial class GuardianSystemRegressionTests
-{    [Fact]
+{
+    [Fact]
+    public async Task GuardianTradeResolution_AllowsExactMaterializedInventoryAndReceiptInStrictAuthority()
+    {
+        const string preTurnGuardiansJson = """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Authority guardian before trade resolution."
+              },
+              "manifestationHistory": [],
+              "mood": { "current": "focused", "intensity": 40, "reason": "Authority baseline before trade.", "since": 10 },
+              "abode": { "abodeId": "abode_alpha", "title": "Обитель Азалии" },
+              "relationshipData": { "currentReputation": 30, "reputationHistory": [], "lastInteraction": "2026-03-24T00:00:00Z" },
+              "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "guardianRelationships": [],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ]
+        }
+        """;
+
+        const string currentGuardiansJson = """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Authority guardian before trade resolution."
+              },
+              "manifestationHistory": [],
+              "mood": { "current": "focused", "intensity": 40, "reason": "Authority baseline before trade.", "since": 10 },
+              "abode": { "abodeId": "abode_alpha", "title": "Обитель Азалии" },
+              "relationshipData": { "currentReputation": 30, "reputationHistory": [], "lastInteraction": "2026-03-24T00:00:00Z" },
+              "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "guardianRelationships": [],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] },
+              "tradeInventory": {
+                "tradeCycleId": "cycle_12",
+                "generatedAtUtc": "2026-03-28T00:00:00Z",
+                "generationReputationTier": "neutral",
+                "pricingReputationTier": "neutral",
+                "effectiveRarityCeilingBonusSteps": 0,
+                "projectBonusSignature": "0|0|0",
+                "items": [
+                  { "slotId": "slot_1", "priceInFeathers": 35, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_1", "name": "Реликвия 1", "quality": "Common" } },
+                  { "slotId": "slot_2", "priceInFeathers": 35, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_2", "name": "Реликвия 2", "quality": "Common" } },
+                  { "slotId": "slot_3", "priceInFeathers": 35, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_3", "name": "Реликвия 3", "quality": "Common" } },
+                  { "slotId": "slot_4", "priceInFeathers": 35, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_4", "name": "Реликвия 4", "quality": "Common" } },
+                  { "slotId": "slot_5", "priceInFeathers": 35, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_5", "name": "Реликвия 5", "quality": "Common" } },
+                  { "slotId": "slot_6", "priceInFeathers": 35, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_6", "name": "Реликвия 6", "quality": "Common" } }
+                ]
+              },
+              "tradeInventoryReceipts": [
+                {
+                  "requestId": "trade_req_exact_resolution",
+                  "guardianId": "guardian_alpha",
+                  "guardianName": "Азалия",
+                  "abodeId": "abode_alpha",
+                  "tradeCycleId": "cycle_12",
+                  "status": "ready",
+                  "itemCount": 6,
+                  "resolvedAtTurn": 12,
+                  "resolvedAtUtc": "2026-03-28T00:00:00Z"
+                }
+              ]
+            }
+          ]
+        }
+        """;
+
+        var preTurnGuardiansWithActiveJson = WithActiveGuardian(preTurnGuardiansJson);
+        var currentGuardiansWithActiveJson = WithActiveGuardian(currentGuardiansJson);
+
+        const string requestJson = """
+        {
+          "requestId": "trade_req_exact_resolution",
+          "guardianId": "guardian_alpha",
+          "guardianName": "Азалия",
+          "abodeId": "abode_alpha",
+          "returnCycleId": "cycle_12",
+          "currentReputation": 30,
+          "derivedTradeSlotCount": 6,
+          "effectiveRarityCeilingBonusSteps": 0,
+          "projectBonusSignature": "0|0|0",
+          "createdAtTurn": 12,
+          "createdAtUtc": "2026-03-28T00:00:00Z"
+        }
+        """;
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea"
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/guardians.json", NormalizeGuardianStateJson(currentGuardiansWithActiveJson));
+        await WriteRawAsync(GuardianTradeRequestState.PendingRequestPath, requestJson);
+        await WriteRawAsync("ready/turn_complete.json", """
+        {
+          "accepted": true
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            GuardianTradeRequestState.PendingRequestPath,
+            "test_backups/preturn_guardian_trade_exact_resolution_request.json",
+            requestJson);
+
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_guardian_trade_exact_resolution.json",
+            """
+            {
+              "currentRealm": "Chaos Sea"
+            }
+            """);
+
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/preturn_guardians_guardian_trade_exact_resolution.json",
+            NormalizeGuardianStateJson(preTurnGuardiansWithActiveJson));
+        await AddCurrentWorldLoreToValidatedPreTurnSnapshotAsync("test_backups/preturn_world_lore_guardian_trade_exact_resolution");
+        await EnsureEmptyCurrentGuardianProjectTrackerAndPowerJournalAsync();
+        await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_trade_request_missing_inventory_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_trade_request_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
+
+        static string WithActiveGuardian(string json)
+        {
+            var root = JsonNode.Parse(json)!.AsObject();
+            root["activeGuardian"] = root["guardians"]!.AsArray()[0]!.DeepClone();
+            return root.ToJsonString();
+        }
+    }
+
+    [Fact]
+    public async Task GuardianTradeResolution_PendingTradePriceMismatchesAreRepairVisibleErrors()
+    {
+        const string preTurnGuardiansJson = """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Authority guardian before trade resolution."
+              },
+              "manifestationHistory": [],
+              "mood": { "current": "focused", "intensity": 40, "reason": "Authority baseline before trade.", "since": 10 },
+              "abode": { "abodeId": "abode_alpha", "title": "Обитель Азалии" },
+              "relationshipData": { "currentReputation": 30, "reputationHistory": [], "lastInteraction": "2026-03-24T00:00:00Z" },
+              "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "guardianRelationships": [],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ]
+        }
+        """;
+
+        const string currentGuardiansJson = """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Authority guardian before trade resolution."
+              },
+              "manifestationHistory": [],
+              "mood": { "current": "focused", "intensity": 40, "reason": "Authority baseline before trade.", "since": 10 },
+              "abode": { "abodeId": "abode_alpha", "title": "Обитель Азалии" },
+              "relationshipData": { "currentReputation": 30, "reputationHistory": [], "lastInteraction": "2026-03-24T10:00:00+10:00" },
+              "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T10:00:00+10:00", "history": [] },
+              "guardianRelationships": [],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] },
+              "tradeInventory": {
+                "tradeCycleId": "cycle_12",
+                "generatedAtUtc": "2026-03-28T00:00:00Z",
+                "generationReputationTier": "neutral",
+                "pricingReputationTier": "neutral",
+                "effectiveRarityCeilingBonusSteps": 0,
+                "projectBonusSignature": "0|0|0",
+                "items": [
+                  { "slotId": "slot_1", "priceInFeathers": 999, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_1", "name": "Реликвия 1", "quality": "Common" } },
+                  { "slotId": "slot_2", "priceInFeathers": 999, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_2", "name": "Реликвия 2", "quality": "Common" } }
+                ]
+              },
+              "tradeInventoryReceipts": [
+                {
+                  "requestId": "trade_req_price_mismatch",
+                  "guardianId": "guardian_alpha",
+                  "guardianName": "Азалия",
+                  "abodeId": "abode_alpha",
+                  "tradeCycleId": "cycle_12",
+                  "status": "ready",
+                  "itemCount": 2,
+                  "resolvedAtTurn": 12,
+                  "resolvedAtUtc": "2026-03-28T00:00:00Z"
+                }
+              ]
+            }
+          ]
+        }
+        """;
+
+        const string requestJson = """
+        {
+          "requestId": "trade_req_price_mismatch",
+          "guardianId": "guardian_alpha",
+          "guardianName": "Азалия",
+          "abodeId": "abode_alpha",
+          "returnCycleId": "cycle_12",
+          "currentReputation": 30,
+          "derivedTradeSlotCount": 2,
+          "effectiveRarityCeilingBonusSteps": 0,
+          "projectBonusSignature": "0|0|0",
+          "createdAtTurn": 12,
+          "createdAtUtc": "2026-03-28T00:00:00Z"
+        }
+        """;
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea"
+        }
+        """);
+
+        var preTurnGuardiansWithActiveJson = WithActiveGuardian(preTurnGuardiansJson);
+        var currentGuardiansWithActiveJson = WithActiveGuardian(currentGuardiansJson);
+
+        await WriteRawAsync("game_state/meta/guardians.json", currentGuardiansWithActiveJson);
+        await WriteRawAsync(GuardianTradeRequestState.PendingRequestPath, requestJson);
+        await WriteRawAsync("ready/turn_complete.json", """
+        {
+          "accepted": true
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            GuardianTradeRequestState.PendingRequestPath,
+            "test_backups/preturn_guardian_trade_price_mismatch_request.json",
+            requestJson);
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_guardian_trade_price_mismatch.json",
+            """
+            {
+              "currentRealm": "Chaos Sea"
+            }
+            """);
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/preturn_guardians_guardian_trade_price_mismatch.json",
+            NormalizeGuardianStateJson(preTurnGuardiansWithActiveJson));
+        await EnsureEmptyCurrentGuardianProjectTrackerAndPowerJournalAsync();
+        await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        var priceIssues = issues
+            .Where(issue => string.Equals(issue.Code, "guardian_trade_inventory_price_mismatch", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        Assert.NotEmpty(priceIssues);
+        Assert.All(priceIssues, issue => Assert.Equal(IssueSeverity.Error, issue.Severity));
+
+        static string WithActiveGuardian(string json)
+        {
+            var root = JsonNode.Parse(json)!.AsObject();
+            root["activeGuardian"] = root["guardians"]!.AsArray()[0]!.DeepClone();
+            return root.ToJsonString();
+        }
+    }
+
+    [Fact]
+    public async Task GuardianTradeResolution_PendingTradeActiveGuardianMirrorMismatchesAreRepairVisibleErrors()
+    {
+        const string preTurnGuardiansJson = """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Authority guardian before trade resolution."
+              },
+              "manifestationHistory": [],
+              "mood": { "current": "focused", "intensity": 40, "reason": "Authority baseline before trade.", "since": 10 },
+              "abode": { "abodeId": "abode_alpha", "title": "Обитель Азалии" },
+              "relationshipData": { "currentReputation": 30, "reputationHistory": [], "lastInteraction": "2026-03-24T00:00:00Z" },
+              "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "guardianRelationships": [],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ]
+        }
+        """;
+
+        const string currentGuardiansJson = """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Authority guardian before trade resolution."
+              },
+              "manifestationHistory": [],
+              "mood": { "current": "focused", "intensity": 40, "reason": "Authority baseline before trade.", "since": 10 },
+              "abode": { "abodeId": "abode_alpha", "title": "Обитель Азалии" },
+              "relationshipData": { "currentReputation": 30, "reputationHistory": [], "lastInteraction": "2026-03-24T10:00:00+10:00" },
+              "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T10:00:00+10:00", "history": [] },
+              "guardianRelationships": [],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] },
+              "tradeInventory": {
+                "tradeCycleId": "cycle_12",
+                "generatedAtUtc": "2026-03-28T00:00:00Z",
+                "generationReputationTier": "neutral",
+                "pricingReputationTier": "neutral",
+                "effectiveRarityCeilingBonusSteps": 0,
+                "projectBonusSignature": "0|0|0",
+                "items": [
+                  { "slotId": "slot_1", "priceInFeathers": 30, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_1", "name": "Реликвия 1", "quality": "Common" } },
+                  { "slotId": "slot_2", "priceInFeathers": 30, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_2", "name": "Реликвия 2", "quality": "Common" } }
+                ]
+              },
+              "tradeInventoryReceipts": [
+                {
+                  "requestId": "trade_req_active_mirror_mismatch",
+                  "guardianId": "guardian_alpha",
+                  "guardianName": "Азалия",
+                  "abodeId": "abode_alpha",
+                  "tradeCycleId": "cycle_12",
+                  "status": "ready",
+                  "itemCount": 2,
+                  "resolvedAtTurn": 12,
+                  "resolvedAtUtc": "2026-03-28T00:00:00Z"
+                }
+              ]
+            }
+          ]
+        }
+        """;
+
+        const string requestJson = """
+        {
+          "requestId": "trade_req_active_mirror_mismatch",
+          "guardianId": "guardian_alpha",
+          "guardianName": "Азалия",
+          "abodeId": "abode_alpha",
+          "returnCycleId": "cycle_12",
+          "currentReputation": 30,
+          "derivedTradeSlotCount": 2,
+          "effectiveRarityCeilingBonusSteps": 0,
+          "projectBonusSignature": "0|0|0",
+          "createdAtTurn": 12,
+          "createdAtUtc": "2026-03-28T00:00:00Z"
+        }
+        """;
+
+        var preTurnGuardiansWithActiveJson = WithActiveGuardian(preTurnGuardiansJson);
+        var currentGuardiansWithStaleActiveJson = WithActiveGuardian(currentGuardiansJson, preTurnGuardiansJson);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea"
+        }
+        """);
+        await WriteRawAsync("game_state/meta/guardians.json", currentGuardiansWithStaleActiveJson);
+        await WriteRawAsync(GuardianTradeRequestState.PendingRequestPath, requestJson);
+        await WriteRawAsync("ready/turn_complete.json", """
+        {
+          "accepted": true
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            GuardianTradeRequestState.PendingRequestPath,
+            "test_backups/preturn_guardian_trade_active_mirror_mismatch_request.json",
+            requestJson);
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_guardian_trade_active_mirror_mismatch.json",
+            """
+            {
+              "currentRealm": "Chaos Sea"
+            }
+            """);
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/preturn_guardians_guardian_trade_active_mirror_mismatch.json",
+            NormalizeGuardianStateJson(preTurnGuardiansWithActiveJson));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        var mirrorIssue = Assert.Single(
+            issues,
+            issue => string.Equals(issue.Code, "guardian_trade_inventory_presence_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(IssueSeverity.Error, mirrorIssue.Severity);
+
+        static string WithActiveGuardian(string json, string? activeSourceJson = null)
+        {
+            var root = JsonNode.Parse(json)!.AsObject();
+            var activeRoot = JsonNode.Parse(activeSourceJson ?? json)!.AsObject();
+            root["activeGuardian"] = activeRoot["guardians"]!.AsArray()[0]!.DeepClone();
+            return root.ToJsonString();
+        }
+    }
+
+    [Fact]
     public async Task GuardianTradeResolution_StaleManifestDoesNotReusePreTurnRequest()
     {
         await _fs.WriteFileAtomicAsync("input/turn_request.json", """

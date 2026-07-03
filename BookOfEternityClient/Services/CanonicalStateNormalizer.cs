@@ -64,6 +64,7 @@ public partial class CanonicalStateNormalizer
         "game_state/factions/faction_core.json",
         "game_state/npcs/npc_core.json",
         NpcInteractionJournalState.StatePath,
+        "game_state/inventory/items.json",
         "game_state/inventory/item_resources.json",
         "game_state/inventory/item_bonds.json",
         "game_state/inventory/item_text_updates.json",
@@ -173,6 +174,7 @@ public partial class CanonicalStateNormalizer
         await NormalizeFactionCoreAsync(backups);
         await NormalizeNpcTradeCoreAsync(backups);
         await NormalizeNpcInteractionJournalAsync(backups);
+        await NormalizeInventoryItemsAsync(backups);
         await NormalizeInventoryItemResourcesAsync(backups);
         await NormalizeInventoryItemBondsAsync(backups);
         await NormalizeInventoryItemTextsAsync(backups);

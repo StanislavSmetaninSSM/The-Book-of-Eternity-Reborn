@@ -552,6 +552,8 @@ MATH ASSISTANT / МАТЕМАТИК:
 - это НЕ то же самое, что repair loop после post-validation rejection following `turn_complete.json`
 - client determines the final success/error/failure branch only after re-reading and reconciling the current ready files on disk; the first file noticed by the wait loop is not authoritative by itself
 - `terminal_protocol_failure_request.json` survives restart by default and must not be auto-deleted only because a pending snapshot manifest still exists
+- if the daemon cannot dispatch a turn because the ConPTY bridge named pipe is unreachable or never accepts the prompt before the dispatch deadline, daemon emits a correlated `ready/turn_error.json` with `harnessSource = "gm_bridge_dispatch_unavailable"` and records the rejected trajectory; treat this as harness/bridge failure evidence, not as a player choice or validation repair
+- if the Codex bridge returns to its idle prompt after the GM wrote turn outputs but no correlated `ready/turn_complete.json` or `ready/turn_error.json` exists, daemon emits a correlated `ready/turn_error.json` with `harnessSource = "gm_bridge_idle_without_terminal_signal"`; treat this as terminal protocol failure evidence for the next request, not as a player choice or validation repair
 
 ---
 

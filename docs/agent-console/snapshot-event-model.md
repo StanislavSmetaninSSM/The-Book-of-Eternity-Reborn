@@ -2,7 +2,7 @@
 
 Issue: #750
 
-The Agent Console model describes what the main console client is showing without scraping the Windows console buffer. It is a reusable in-memory contract for tests and future loopback API hosting; it does not expose HTTP endpoints and does not write observation files.
+The Agent Console model describes what the main console client is showing without scraping the Windows console buffer. It is a reusable in-memory contract for tests and loopback API hosting; the model itself is file-independent and does not write observation files.
 
 ## Snapshot DTO
 
@@ -34,7 +34,11 @@ Issue: #751
 
 `AgentConsoleActionRequest` is the semantic action request shape. A request names an `actionId` and may include the caller's expected `screenId` and `inputKind`. The live input source accepts the request only when the current `AgentConsoleStateStore` snapshot exists, is awaiting input, exposes a matching enabled action, and can resolve that action to safe existing console input. Resolution prefers the action shortcut; when there is no shortcut, the selected/default action resolves to Enter, and menu actions with a safe one-digit index may resolve to that menu digit.
 
+`TryQueueDefaultAction()` is a race-safe live-test helper for the current screen's default action. Unlike `AgentConsoleActionRequest`, it does not accept a caller-provided `screenId`; it reads the current snapshot at call time and queues only an enabled action marked `isDefault`. It rejects snapshots with no enabled default action, which keeps the helper deterministic and prevents accidental selection of arbitrary visible actions.
+
 Accepted key, text line, and action requests append `InputAccepted` events. Missing, disabled, stale-screen, mismatched-input-kind, unsupported, closed-queue, and full-queue requests append `InputRejected` events and do not consume unrelated queued input. Shutdown or cancellation unblocks waiting synchronous reads with a typed live-input exception instead of deadlocking the console flow.
+
+`TryQueueReturnToGameLoopStep()` is a live-test driver helper for local command screens only. It rejects `game-loop`, non-local screens, and non-awaiting snapshots. On `explorer-command-*` key-continuation screens it queues the safe continuation action; on `explorer-selection-*` menu screens it queues an exposed back/close/return action. It performs one step at a time so callers can poll the next snapshot and stop as soon as `screenId` becomes `game-loop`.
 
 ## Loopback API host
 
@@ -60,8 +64,10 @@ The control endpoints require a Bearer token in the Authorization header (for ex
 - `POST /api/agent-console/key`
 - `POST /api/agent-console/text`
 - `POST /api/agent-console/action`
+- `POST /api/agent-console/default-action`
+- `POST /api/agent-console/return-to-game-loop-step`
 
-The key endpoint accepts a small key-name request, the text endpoint accepts a bounded text line, and the action endpoint uses `AgentConsoleActionRequest`. The API does not accept filesystem paths, shell commands, or gameplay authority changes.
+The key endpoint accepts a small key-name request, the text endpoint accepts a bounded text line, the action endpoint uses `AgentConsoleActionRequest`, `default-action` queues the latest enabled default action without a caller-provided screen id, and `return-to-game-loop-step` exposes the local-command unwind helper for autonomous live tests. The API does not accept filesystem paths, shell commands, or gameplay authority changes.
 
 ## E2E compatibility mapping
 

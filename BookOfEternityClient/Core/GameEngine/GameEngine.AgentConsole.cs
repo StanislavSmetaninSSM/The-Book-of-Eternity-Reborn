@@ -14,7 +14,8 @@ public partial class GameEngine
         IReadOnlyList<string> options,
         string? selectedOption,
         string slug,
-        string? logPath = null)
+        string? logPath = null,
+        IReadOnlyList<string>? actionInputValues = null)
     {
         if (_inputSource is ConsoleE2EScriptedInputSource scriptedInput)
         {
@@ -42,7 +43,10 @@ public partial class GameEngine
             SelectedOption: selectedOption,
             ArtifactRoot: string.Empty,
             LogPath: null);
-        var snapshot = AgentConsoleE2EObservationMapper.ToAgentConsoleSnapshot(observation, screenId: slug);
+        var snapshot = AgentConsoleE2EObservationMapper.ToAgentConsoleSnapshot(
+            observation,
+            screenId: slug,
+            actionInputValues: actionInputValues);
         liveInput.PublishSnapshot(snapshot, $"Rendered {slug}.");
     }
 
@@ -73,6 +77,27 @@ public partial class GameEngine
             [],
             selectedOption: null,
             slug: "game-loop-error");
+    }
+
+    private void PublishAgentConsoleGmWaitingSnapshot(
+        string title,
+        string plainText)
+    {
+        if (_inputSource is not AgentConsoleLiveInputSource liveInput)
+            return;
+
+        var now = DateTimeOffset.UtcNow;
+        liveInput.PublishSnapshot(new AgentConsoleSnapshot
+        {
+            ScreenId = "gm-waiting",
+            Mode = AgentConsoleMode.Loading,
+            Title = title,
+            PlainText = plainText,
+            AwaitingInput = false,
+            InputKind = AgentConsoleInputKind.None,
+            RenderedAtUtc = now,
+            UpdatedAtUtc = now
+        }, "Waiting for GM response.");
     }
 
     private bool ConfirmWithConsoleObservation(
@@ -106,6 +131,217 @@ public partial class GameEngine
             if (resolved.HasValue)
                 return resolved.Value;
         }
+    }
+
+    private string PromptAgentConsoleTextInput(
+        string promptMarkup,
+        string title,
+        string playerFacingText,
+        string slug,
+        string? defaultValue = null,
+        bool allowEmpty = true,
+        string? emptyError = null,
+        bool preserveNewlines = false,
+        IReadOnlyList<string>? options = null,
+        IReadOnlyList<string>? optionInputValues = null)
+    {
+        if (_inputSource is AgentConsoleLiveInputSource or ConsoleE2EScriptedInputSource)
+        {
+            RecordConsoleObservation(
+                ConsoleE2EInputMode.TextPrompt,
+                title,
+                playerFacingText,
+                options ?? [],
+                selectedOption: null,
+                slug,
+                actionInputValues: optionInputValues);
+        }
+
+        return PromptTextInput(
+            promptMarkup,
+            defaultValue,
+            allowEmpty,
+            emptyError,
+            preserveNewlines);
+    }
+
+    private string PromptAgentConsoleMenuSelection(
+        string promptMarkup,
+        string title,
+        string playerFacingText,
+        string slug,
+        IReadOnlyList<string> options,
+        IReadOnlyList<string>? optionInputValues = null,
+        int selectedIndex = 0)
+    {
+        if (options.Count == 0)
+            throw new ArgumentException("Menu prompt must contain at least one option.", nameof(options));
+
+        selectedIndex = Math.Clamp(selectedIndex, 0, options.Count - 1);
+        var numberBuffer = string.Empty;
+
+        while (true)
+        {
+            if (_inputSource is AgentConsoleLiveInputSource or ConsoleE2EScriptedInputSource)
+            {
+                RecordConsoleObservation(
+                    ConsoleE2EInputMode.Menu,
+                    title,
+                    playerFacingText,
+                    options,
+                    selectedOption: options[selectedIndex],
+                    slug,
+                    actionInputValues: optionInputValues);
+            }
+            else
+            {
+                AnsiConsole.Markup($"{promptMarkup} ");
+            }
+
+            var key = _inputSource.ReadKey(intercept: true);
+            if (key.Key == ConsoleKey.Enter)
+            {
+                if (TryMapBufferedMenuNumberSelection(numberBuffer, options.Count, out var bufferedIndex))
+                    return ResolveMenuSelectionValue(bufferedIndex, options, optionInputValues);
+                return ResolveMenuSelectionValue(selectedIndex, options, optionInputValues);
+            }
+
+            if (key.Key is ConsoleKey.UpArrow or ConsoleKey.LeftArrow)
+            {
+                numberBuffer = string.Empty;
+                selectedIndex = selectedIndex <= 0 ? options.Count - 1 : selectedIndex - 1;
+                continue;
+            }
+
+            if (key.Key is ConsoleKey.DownArrow or ConsoleKey.RightArrow)
+            {
+                numberBuffer = string.Empty;
+                selectedIndex = selectedIndex >= options.Count - 1 ? 0 : selectedIndex + 1;
+                continue;
+            }
+
+            if (TryAppendMenuNumberSelection(key, options.Count, ref numberBuffer, out var numberIndex))
+                selectedIndex = numberIndex;
+        }
+    }
+
+    private static string ResolveMenuSelectionValue(
+        int selectedIndex,
+        IReadOnlyList<string> options,
+        IReadOnlyList<string>? optionInputValues)
+    {
+        if (optionInputValues is not null &&
+            selectedIndex >= 0 &&
+            selectedIndex < optionInputValues.Count &&
+            !string.IsNullOrWhiteSpace(optionInputValues[selectedIndex]))
+        {
+            return optionInputValues[selectedIndex];
+        }
+
+        return options[selectedIndex];
+    }
+
+    private ConsoleKeyInfo ReadAgentConsoleKeyContinuation(
+        string title,
+        string playerFacingText,
+        string slug,
+        string actionLabel = "Продолжить")
+    {
+        if (_inputSource is AgentConsoleLiveInputSource liveInput)
+        {
+            liveInput.PublishSnapshot(new AgentConsoleSnapshot
+            {
+                ScreenId = slug,
+                Mode = AgentConsoleMode.TextPrompt,
+                Title = title,
+                PlainText = playerFacingText,
+                AwaitingInput = true,
+                InputKind = AgentConsoleInputKind.Key,
+                Actions =
+                [
+                    new AgentConsoleAction
+                    {
+                        Id = "continue",
+                        Label = actionLabel,
+                        Shortcut = "Enter",
+                        IsDefault = true
+                    }
+                ],
+                Prompt = new AgentConsolePrompt
+                {
+                    PromptId = $"{slug}:key",
+                    Text = playerFacingText,
+                    InputKind = AgentConsoleInputKind.Key,
+                    DefaultValue = "Enter"
+                },
+                RenderedAtUtc = DateTimeOffset.UtcNow,
+                UpdatedAtUtc = DateTimeOffset.UtcNow
+            }, $"Rendered {slug}.");
+        }
+
+        return _inputSource.ReadKey(intercept: true);
+    }
+
+    private void PublishAgentConsoleStatAllocationSnapshot(
+        string title,
+        int remaining,
+        IReadOnlyDictionary<string, int> baseStats,
+        IReadOnlyDictionary<string, int> allocations,
+        IReadOnlyList<string> statList,
+        int selectedIndex)
+    {
+        if (_inputSource is not AgentConsoleLiveInputSource liveInput)
+            return;
+
+        var lines = new List<string>
+        {
+            title,
+            $"Доступно очков: {remaining}",
+            string.Empty,
+            "Характеристики:"
+        };
+
+        for (var index = 0; index < statList.Count; index++)
+        {
+            var key = statList[index];
+            var name = Characteristics.RussianNames.GetValueOrDefault(key, key);
+            var baseValue = baseStats.TryGetValue(key, out var resolvedBase) ? resolvedBase : 1;
+            var allocated = allocations.TryGetValue(key, out var resolvedAllocated) ? resolvedAllocated : 0;
+            var cursor = index == selectedIndex ? ">" : " ";
+            lines.Add($"{cursor} {name}: {baseValue} + {allocated} = {baseValue + allocated}");
+        }
+
+        lines.Add(string.Empty);
+        lines.Add("Используйте действия: выбрать характеристику, добавить/убрать очко, подтвердить распределение.");
+
+        var now = DateTimeOffset.UtcNow;
+        liveInput.PublishSnapshot(new AgentConsoleSnapshot
+        {
+            ScreenId = "stat-allocation",
+            Mode = AgentConsoleMode.TextPrompt,
+            Title = title,
+            PlainText = string.Join(Environment.NewLine, lines),
+            AwaitingInput = true,
+            InputKind = AgentConsoleInputKind.Key,
+            SelectedIndex = selectedIndex,
+            Actions =
+            [
+                new AgentConsoleAction { Id = "stat-up", Label = "Вверх", Shortcut = "Up" },
+                new AgentConsoleAction { Id = "stat-down", Label = "Вниз", Shortcut = "Down" },
+                new AgentConsoleAction { Id = "stat-add", Label = "Добавить очко", Shortcut = "Right" },
+                new AgentConsoleAction { Id = "stat-remove", Label = "Убрать очко", Shortcut = "Left" },
+                new AgentConsoleAction { Id = "stat-confirm", Label = "Подтвердить", Shortcut = "Enter", IsDefault = true }
+            ],
+            Prompt = new AgentConsolePrompt
+            {
+                PromptId = "stat-allocation:key",
+                Text = "Распределите начальные очки характеристик.",
+                InputKind = AgentConsoleInputKind.Key,
+                DefaultValue = "Enter"
+            },
+            RenderedAtUtc = now,
+            UpdatedAtUtc = now
+        }, "Rendered stat-allocation.");
     }
 
     private static bool? ResolveConfirmationKey(ConsoleKeyInfo key, bool defaultValue)
@@ -204,13 +440,13 @@ public partial class GameEngine
             return "Подготовка следующей жизни уже передана в bootstrap; обычные действия Обители и Моря Хаоса здесь недоступны.";
 
         if (state.IsInShiningAbode)
-            return "/статус /status | /сияющая_обитель /shining_abode | /сияющая_политика /shining_politics | /перья /архив_души /уведомления_загробья | /реликвии /хранители /душа | /вернуться_в_море_хаоса /новая_игра+ | /help";
+            return "/статус /status | /сияющая_обитель /shining_abode | /сияющая_политика /shining_politics | /перья /архив_души /хроники_посмертия /уведомления_загробья | /реликвии /хранители /душа | /вернуться_в_море_хаоса /новая_игра+ | /help";
 
         if (state.IsInChaosSea)
         {
             return state.CanReenterShiningAbode
-                ? "/статус /реликвии /хранители /обители /гача /перья /архив_души | /воплотиться /вернуться_в_обитель | /help"
-                : "/статус /реликвии /хранители /обители /гача /перья /архив_души | /воплотиться | /help";
+                ? "/статус /реликвии /хранители /обители /гача /перья /архив_души /хроники_посмертия | /воплотиться /вернуться_в_обитель | /help"
+                : "/статус /реликвии /хранители /обители /гача /перья /архив_души /хроники_посмертия | /воплотиться | /help";
         }
 
         return "/инв /квесты /карта /статус | /конец_жизни | /help";

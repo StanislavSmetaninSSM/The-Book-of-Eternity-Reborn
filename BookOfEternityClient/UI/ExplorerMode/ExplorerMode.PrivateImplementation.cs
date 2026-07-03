@@ -1226,6 +1226,7 @@ public partial class ExplorerMode
             {
                 JsonValueKind.String => val.GetString() ?? def,
                 JsonValueKind.Number => val.ToString(),
+                JsonValueKind.Null or JsonValueKind.Undefined => def,
                 _ => val.GetRawText()
             };
         }

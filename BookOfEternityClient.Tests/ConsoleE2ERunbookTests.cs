@@ -26,6 +26,7 @@ public sealed class ConsoleE2ERunbookTests
             "POST /api/agent-console/key",
             "POST /api/agent-console/text",
             "POST /api/agent-console/action",
+            "POST /api/agent-console/return-to-game-loop-step",
             "curl",
             "does not store secrets",
             "shutdown",

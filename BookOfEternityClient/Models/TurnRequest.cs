@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 namespace BookOfEternityClient.Models;
@@ -39,6 +40,9 @@ public class TurnRequest
 
     [JsonPropertyName("progressionControl")]
     public ProgressionControl? ProgressionControl { get; set; }
+
+    [JsonPropertyName("afterlifeSpiritualConflictPreview")]
+    public JsonObject? AfterlifeSpiritualConflictPreview { get; set; }
 }
 
 public class AdditionalContext

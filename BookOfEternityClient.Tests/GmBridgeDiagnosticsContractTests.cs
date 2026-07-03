@@ -299,6 +299,19 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
+    public void BridgeHost_TreatsLowerCodexPromptAsIdleWhenStaleWorkingTextRemainsAbove()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("HasCodexIdlePromptAfterLastWorkingMarker", source, StringComparison.Ordinal);
+        Assert.Contains("if (HasCodexIdlePromptAfterLastWorkingMarker(normalized))", source, StringComparison.Ordinal);
+        Assert.Contains("return false;", source[source.IndexOf("if (HasCodexIdlePromptAfterLastWorkingMarker(normalized))", StringComparison.Ordinal)..], StringComparison.Ordinal);
+        Assert.Contains("return HasCodexIdlePromptAfterLastWorkingMarker(normalized) ||", source, StringComparison.Ordinal);
+        Assert.Contains("normalized.LastIndexOf(\"›\", StringComparison.Ordinal)", source, StringComparison.Ordinal);
+        Assert.Contains("normalized.LastIndexOf(\"Working\", StringComparison.OrdinalIgnoreCase)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BridgeHost_TreatsCodexBootAndModelLoadingScreensAsNotReady()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
@@ -306,7 +319,30 @@ public sealed class GmBridgeDiagnosticsContractTests
         Assert.Contains("Booting MCP server", source, StringComparison.Ordinal);
         Assert.Contains("model:", source, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("loading", source, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("IsWorkspaceTrustPrompt(normalized) || IsCodexCliUpdatePrompt(normalized) || IsCodexCliWorkingScreen(normalized)", source, StringComparison.Ordinal);
+        Assert.Contains("if (IsCodexCliWorkingScreen(normalized))", source, StringComparison.Ordinal);
+        Assert.Contains("if (IsWorkspaceTrustPrompt(normalized) || IsCodexCliUpdatePrompt(normalized))", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BridgeHost_BootAndModelLoadingScreensOutrankStaleIdlePromptHeuristics()
+    {
+        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
+
+        Assert.Contains("IsCodexCliBootOrModelLoadingScreen", source, StringComparison.Ordinal);
+
+        var workingMethod = source.IndexOf("private static bool IsCodexCliWorkingScreen", StringComparison.Ordinal);
+        Assert.True(workingMethod >= 0, "Bridge host must keep a Codex working-screen detector.");
+        var bootProbe = source.IndexOf("IsCodexCliBootOrModelLoadingScreen(normalized)", workingMethod, StringComparison.Ordinal);
+        var staleIdleOverride = source.IndexOf("HasCodexIdlePromptAfterLastWorkingMarker(normalized)", workingMethod, StringComparison.Ordinal);
+        Assert.True(bootProbe > workingMethod, "Working-screen detection must inspect Codex boot/model-loading markers.");
+        Assert.True(staleIdleOverride > bootProbe, "Codex boot/model-loading markers must block ready before stale idle-prompt heuristics run.");
+
+        var idleMethod = source.IndexOf("private static bool IsCodexCliIdlePrompt", StringComparison.Ordinal);
+        Assert.True(idleMethod >= 0, "Bridge host must keep a Codex idle-prompt detector.");
+        var idleBootGuard = source.IndexOf("IsCodexCliBootOrModelLoadingScreen(normalized)", idleMethod, StringComparison.Ordinal);
+        var idlePromptProbe = source.IndexOf("HasCodexIdlePromptAfterLastWorkingMarker(normalized)", idleMethod, StringComparison.Ordinal);
+        Assert.True(idleBootGuard > idleMethod, "Idle-prompt detection must reject Codex boot/model-loading screens.");
+        Assert.True(idlePromptProbe > idleBootGuard, "Idle-prompt heuristics must run only after the boot/model-loading guard.");
     }
 
     [Fact]
@@ -461,22 +497,6 @@ public sealed class GmBridgeDiagnosticsContractTests
 
     private static string LocateRepoRoot()
     {
-        var current = AppContext.BaseDirectory;
-        while (!string.IsNullOrWhiteSpace(current))
-        {
-            if (File.Exists(Path.Combine(current, "TheBookOfEternityReborn.sln")) ||
-                File.Exists(Path.Combine(current, ".git")) ||
-                Directory.Exists(Path.Combine(current, ".git")))
-            {
-                return current;
-            }
-
-            var parent = Directory.GetParent(current);
-            if (parent == null)
-                break;
-            current = parent.FullName;
-        }
-
-        throw new DirectoryNotFoundException("Could not locate repository root.");
+        return TestRepoPaths.RepoRoot;
     }
 }

@@ -199,6 +199,9 @@ public class FileSystemManager
         {
             foreach (var file in Directory.GetFiles(gameStatePath, "*.json", SearchOption.AllDirectories))
             {
+                if (ShouldPreserveAcrossGameStateClear(gameStatePath, file))
+                    continue;
+
                 File.Delete(file);
             }
         }
@@ -234,6 +237,17 @@ public class FileSystemManager
 
         // Re-create structure
         EnsureDirectoryStructure();
+    }
+
+    private static bool ShouldPreserveAcrossGameStateClear(string gameStatePath, string filePath)
+    {
+        var relative = Path.GetRelativePath(gameStatePath, filePath)
+            .Replace(Path.DirectorySeparatorChar, '/')
+            .Replace(Path.AltDirectorySeparatorChar, '/');
+
+        return relative.Equals("control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
+               relative.Equals("control/gm_cli_window_binding.json", StringComparison.OrdinalIgnoreCase) ||
+               relative.StartsWith("control/gm_context_pack/", StringComparison.OrdinalIgnoreCase);
     }
 
     public void ClearCurrentWorldLore()

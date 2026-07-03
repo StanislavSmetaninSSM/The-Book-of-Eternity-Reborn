@@ -35,4 +35,15 @@ public sealed class StructuredBonusDisplayTests
         Assert.DoesNotContain("Аксессуар для", formatted, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Значение: 2", formatted, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Fact]
+    public void FormatValue_LocalizesSkillNameField()
+    {
+        using var document = JsonDocument.Parse("""{"skillName":"Архивное дело"}""");
+
+        var formatted = StructuredBonusDisplay.FormatValue(document.RootElement);
+
+        Assert.Contains("Навык: Архивное дело", formatted, StringComparison.Ordinal);
+        Assert.DoesNotContain("skill Name", formatted, StringComparison.OrdinalIgnoreCase);
+    }
 }

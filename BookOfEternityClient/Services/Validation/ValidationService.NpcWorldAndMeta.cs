@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -1200,7 +1201,86 @@ public partial class ValidationService
     {
         var leftNode = JsonNode.Parse(left.GetRawText());
         var rightNode = JsonNode.Parse(right.GetRawText());
-        return JsonNode.DeepEquals(leftNode, rightNode);
+        return JsonNodesSemanticallyEqual(leftNode, rightNode);
+    }
+
+    private static bool JsonNodesSemanticallyEqual(JsonNode? left, JsonNode? right)
+    {
+        if (ReferenceEquals(left, right))
+            return true;
+
+        if (left == null || right == null)
+            return left == null && right == null;
+
+        if (left is JsonObject leftObject && right is JsonObject rightObject)
+        {
+            if (leftObject.Count != rightObject.Count)
+                return false;
+
+            foreach (var pair in leftObject)
+            {
+                if (!rightObject.TryGetPropertyValue(pair.Key, out var rightValue))
+                    return false;
+
+                if (!JsonNodesSemanticallyEqual(pair.Value, rightValue))
+                    return false;
+            }
+
+            return true;
+        }
+
+        if (left is JsonArray leftArray && right is JsonArray rightArray)
+        {
+            if (leftArray.Count != rightArray.Count)
+                return false;
+
+            for (var index = 0; index < leftArray.Count; index++)
+            {
+                if (!JsonNodesSemanticallyEqual(leftArray[index], rightArray[index]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        if (TryGetJsonString(left, out var leftString) &&
+            TryGetJsonString(right, out var rightString) &&
+            TryParseComparableIsoTimestamp(leftString, out var leftTimestamp) &&
+            TryParseComparableIsoTimestamp(rightString, out var rightTimestamp))
+        {
+            return leftTimestamp.ToUniversalTime().Ticks == rightTimestamp.ToUniversalTime().Ticks;
+        }
+
+        return JsonNode.DeepEquals(left, right);
+    }
+
+    private static bool TryGetJsonString(JsonNode node, out string value)
+    {
+        if (node is JsonValue jsonValue && jsonValue.TryGetValue<string>(out var stringValue))
+        {
+            value = stringValue;
+            return true;
+        }
+
+        value = string.Empty;
+        return false;
+    }
+
+    private static bool TryParseComparableIsoTimestamp(string value, out DateTimeOffset timestamp)
+    {
+        if (!string.IsNullOrWhiteSpace(value) &&
+            value.Contains('T', StringComparison.Ordinal) &&
+            DateTimeOffset.TryParse(
+                value,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.RoundtripKind,
+                out timestamp))
+        {
+            return true;
+        }
+
+        timestamp = default;
+        return false;
     }
 
     private static Dictionary<string, JsonElement> ReadGuardianStateMap(JsonElement root)
@@ -1944,6 +2024,8 @@ public partial class ValidationService
         ReasoningScopeManifest scope,
         GuardianReasoningIdentityContext guardianIdentityContext,
         IReadOnlyCollection<StructuredActorUpdate> structuredActorUpdates,
+        IReadOnlyCollection<string> mortalPlayerScopeAliases,
+        IReadOnlyCollection<string> mortalPersistentActorAliases,
         List<ValidationIssue> issues)
     {
         if (scopeMode == ReasoningScopeMode.Unknown ||
@@ -1954,7 +2036,7 @@ public partial class ValidationService
             return;
         }
 
-        var persistedNpcActors = structuredActorUpdates
+        var persistedStructuredActors = structuredActorUpdates
             .Where(update => string.Equals(update.ActorType, "NPC", StringComparison.OrdinalIgnoreCase))
             .ToList();
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -1962,9 +2044,9 @@ public partial class ValidationService
         foreach (var actor in scope.RelevantActors)
         {
             if (string.IsNullOrWhiteSpace(actor) ||
-                IsPlayerScopeActor(actor) ||
+                IsPlayerScopeActor(actor, mortalPlayerScopeAliases) ||
                 IsGuardianScopeActor(actor, guardianIdentityContext) ||
-                ActorHasStructuredNpcPersistence(actor, persistedNpcActors))
+                ActorHasPersistentMortalSurface(actor, persistedStructuredActors, mortalPersistentActorAliases))
             {
                 continue;
             }
@@ -1975,34 +2057,189 @@ public partial class ValidationService
             issues.Add(new ValidationIssue(
                 "output/debug_logs.json",
                 IssueSeverity.Error,
-                $"Mortal World relevant actor '{actor}' declared in NPC scope but has no persistent NPC surface",
+                $"Mortal World relevant actor '{actor}' declared in NPC scope but has no persistent Mortal surface",
                 code: "mortal_relevant_actor_missing_persistence",
                 actor: actor,
                 section: "npc_scope",
-                expected: "matching NPC persistence in UpdateNPCs, NPCsInScene, NPCJournals, NPCQuestUpdates, relationship/activity/effect updates, or another NPC structured surface",
+                expected: "matching NPC/faction/quest/inventory persistence in canonical state or structured same-turn updates",
                 actual: "actor appears only in gm_thoughts_markdown / narrative reasoning",
-                repairHint: $"Если '{actor}' реально присутствует, говорит, даёт улику или меняет сцену Mortal World, materialize его через UpdateNPCs/NPCsInScene и добавь нужный NPC journal/quest/relationship/activity update. Если это фоновое упоминание, убери его из Relevant actors и перенеси в Actors outside scope."));
+                repairHint: $"Если '{actor}' реально присутствует, говорит, даёт улику или меняет сцену Mortal World, materialize его через NPC, фракцию, квест или предмет. Если это фоновое упоминание, убери его из Relevant actors и перенеси в Actors outside scope."));
         }
     }
 
-    private static bool ActorHasStructuredNpcPersistence(
+    private static bool ActorHasPersistentMortalSurface(
         string actor,
-        IEnumerable<StructuredActorUpdate> persistedNpcActors)
+        IEnumerable<StructuredActorUpdate> persistedStructuredActors,
+        IReadOnlyCollection<string> mortalPersistentActorAliases)
     {
-        return persistedNpcActors.Any(update =>
-            string.Equals(update.DisplayName, actor, StringComparison.OrdinalIgnoreCase) ||
-            update.Aliases.Contains(actor));
+        return ActorAliasSetContains(mortalPersistentActorAliases, actor) ||
+               persistedStructuredActors.Any(update =>
+                   ActorNamesMatch(update.DisplayName, actor) ||
+                   update.Aliases.Any(alias => ActorNamesMatch(alias, actor)));
     }
 
-    private static bool IsPlayerScopeActor(string actor)
+    private async Task<IReadOnlyCollection<string>> ReadMortalPlayerScopeActorAliasesAsync()
     {
-        return string.Equals(actor, "игрок", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(actor, "player", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(actor, "pc", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(actor, "персонаж", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(actor, "главный герой", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(actor, "душа", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(actor, "soul", StringComparison.OrdinalIgnoreCase);
+        var aliases = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "игрок",
+            "player",
+            "pc",
+            "персонаж",
+            "главный герой",
+            "герой",
+            "героиня",
+            "душа",
+            "soul"
+        };
+
+        try
+        {
+            var json = await _fs.ReadFileAsync(ScenarioCoreService.ManifestPath);
+            if (string.IsNullOrWhiteSpace(json))
+                return aliases;
+
+            using var doc = JsonDocument.Parse(json);
+            foreach (var characterDescription in EnumerateMortalPlayerDescriptionTexts(doc.RootElement))
+                AddMortalPlayerAliasCandidates(characterDescription, aliases);
+        }
+        catch
+        {
+            // Best-effort alias enrichment; generic player aliases remain enough for normal play.
+        }
+
+        return aliases;
+    }
+
+    private static IEnumerable<string> EnumerateMortalPlayerDescriptionTexts(JsonElement root)
+    {
+        var characterDescription = GetFirstNonEmptyString(root, "characterDescription");
+        if (!string.IsNullOrWhiteSpace(characterDescription))
+            yield return characterDescription!;
+
+        if (root.TryGetProperty("playerAuthoredStart", out var playerAuthoredStart) &&
+            playerAuthoredStart.ValueKind == JsonValueKind.Object)
+        {
+            var nestedDescription = GetFirstNonEmptyString(playerAuthoredStart, "characterDescription");
+            if (!string.IsNullOrWhiteSpace(nestedDescription))
+                yield return nestedDescription!;
+        }
+
+        if (!root.TryGetProperty("scenarioCoreAssertions", out var assertions) ||
+            assertions.ValueKind != JsonValueKind.Array)
+        {
+            yield break;
+        }
+
+        foreach (var assertion in assertions.EnumerateArray())
+        {
+            if (assertion.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var category = GetFirstNonEmptyString(assertion, "category", "type");
+            if (!string.Equals(category, "identity_anchor", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var value = GetFirstNonEmptyString(assertion, "value", "text", "description");
+            if (!string.IsNullOrWhiteSpace(value))
+                yield return value!;
+        }
+    }
+
+    private static void AddMortalPlayerAliasCandidates(string text, HashSet<string> aliases)
+    {
+        foreach (Match match in Regex.Matches(
+                     text,
+                     @"\b(?:по\s+имени|имя\s*[:—-]?|зовут)\s+(?<name>[А-ЯЁ][а-яё]+(?:\s+(?:де|да|фон|ван|[А-ЯЁ][а-яё]+)){0,3})\b",
+                     RegexOptions.CultureInvariant))
+        {
+            var candidate = Regex.Replace(match.Groups["name"].Value.Trim(), @"\s+", " ");
+            if (candidate.Length >= 3)
+                aliases.Add(candidate);
+        }
+
+        foreach (Match match in Regex.Matches(
+                     text,
+                     @"\b[А-ЯЁ][а-яё]+(?:\s+(?:де|да|фон|ван|[А-ЯЁ][а-яё]+)){1,3}\b",
+                     RegexOptions.CultureInvariant))
+        {
+            var candidate = Regex.Replace(match.Value.Trim(), @"\s+", " ");
+            if (candidate.Length >= 5)
+                aliases.Add(candidate);
+        }
+    }
+
+    private async Task<IReadOnlyCollection<string>> ReadMortalPersistentActorAliasesAsync()
+    {
+        var aliases = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        await AddMortalPersistentActorAliasesFromFileAsync(
+            aliases,
+            "game_state/factions/faction_core.json",
+            new[] { "factions", "entries" },
+            new[] { "factionId", "id", "name", "displayName", "factionName" });
+        await AddMortalPersistentActorAliasesFromFileAsync(
+            aliases,
+            "game_state/quests/regular_quests.json",
+            new[] { "quests", "entries" },
+            new[] { "questId", "id", "title", "name", "displayName" });
+        await AddMortalPersistentActorAliasesFromFileAsync(
+            aliases,
+            "game_state/inventory/items.json",
+            new[] { "items", "entries" },
+            new[] { "itemId", "existedId", "id", "name", "displayName" });
+
+        return aliases;
+    }
+
+    private async Task AddMortalPersistentActorAliasesFromFileAsync(
+        HashSet<string> aliases,
+        string path,
+        IReadOnlyCollection<string> collectionNames,
+        IReadOnlyCollection<string> fieldNames)
+    {
+        try
+        {
+            var json = await _fs.ReadFileAsync(path);
+            if (string.IsNullOrWhiteSpace(json))
+                return;
+
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return;
+
+            foreach (var collectionName in collectionNames)
+            {
+                if (!doc.RootElement.TryGetProperty(collectionName, out var collection) ||
+                    collection.ValueKind != JsonValueKind.Array)
+                {
+                    continue;
+                }
+
+                foreach (var item in collection.EnumerateArray())
+                {
+                    if (item.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    foreach (var fieldName in fieldNames)
+                    {
+                        var value = GetFirstNonEmptyString(item, fieldName);
+                        if (!string.IsNullOrWhiteSpace(value))
+                            aliases.Add(value!);
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Best-effort persistence alias enrichment; malformed files are reported by dedicated validators.
+        }
+    }
+
+    private static bool IsPlayerScopeActor(string actor, IReadOnlyCollection<string> mortalPlayerScopeAliases)
+    {
+        return HasPlayerCharacterRoleAnnotation(actor) ||
+               ActorAliasSetContains(mortalPlayerScopeAliases, actor);
     }
 
     private static bool IsGuardianScopeActor(string actor, GuardianReasoningIdentityContext guardianIdentityContext)
@@ -2015,7 +2252,7 @@ public partial class ValidationService
 
     private static bool ScopeContainsRelevantActor(ReasoningScopeManifest scope, string alias)
     {
-        return scope.RelevantActors.Any(actor => string.Equals(actor, alias, StringComparison.OrdinalIgnoreCase));
+        return scope.RelevantActors.Any(actor => ActorNamesMatch(actor, alias));
     }
     private void ValidateActorReasoningBlock(string thoughts, string actorName, string actorType, bool requiresNpcLocationAudit, List<ValidationIssue> issues)
     {
@@ -2034,7 +2271,7 @@ public partial class ValidationService
         }
 
         var lower = block.ToLowerInvariant();
-        if (!ContainsAny(lower, "ситуац", "current situation"))
+        if (!ContainsAny(lower, "ситуац", "situation", "current situation"))
         {
             issues.Add(new ValidationIssue(
                 "output/debug_logs.json", IssueSeverity.Error,
@@ -2047,7 +2284,7 @@ public partial class ValidationService
                 repairHint: $"Добавь подпункт ситуации для актора '{actorName}'."));
         }
 
-        if (!ContainsAny(lower, "мысл", "internal thoughts", "внутрен"))
+        if (!ContainsAny(lower, "мысл", "thoughts", "internal thoughts", "внутрен"))
         {
             issues.Add(new ValidationIssue(
                 "output/debug_logs.json", IssueSeverity.Error,
@@ -2060,7 +2297,7 @@ public partial class ValidationService
                 repairHint: $"Добавь подпункт мыслей для актора '{actorName}'."));
         }
 
-        if (!ContainsAny(lower, "действ", "intended actions", "planned actions"))
+        if (!ContainsAny(lower, "действ", "actions", "intended actions", "planned actions"))
         {
             issues.Add(new ValidationIssue(
                 "output/debug_logs.json", IssueSeverity.Error,
@@ -2122,11 +2359,82 @@ public partial class ValidationService
             return true;
 
         var normalizedHeading = NormalizeReasoningActorHeading(heading);
-        var normalizedActor = NormalizeReasoningActorHeading(actorName);
-        if (string.IsNullOrWhiteSpace(normalizedActor))
-            return false;
+        foreach (var actorVariant in EnumerateActorNameVariants(actorName))
+        {
+            var normalizedActor = NormalizeReasoningActorHeading(actorVariant);
+            if (!string.IsNullOrWhiteSpace(normalizedActor) &&
+                normalizedHeading.Contains(normalizedActor, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
 
-        return normalizedHeading.Contains(normalizedActor, StringComparison.OrdinalIgnoreCase);
+        return false;
+    }
+
+    private static bool ActorAliasSetContains(IReadOnlyCollection<string> aliases, string actor)
+    {
+        return EnumerateActorNameVariants(actor).Any(aliases.Contains);
+    }
+
+    private static bool ActorNamesMatch(string left, string right)
+    {
+        foreach (var leftVariant in EnumerateActorNameVariants(left))
+        {
+            foreach (var rightVariant in EnumerateActorNameVariants(right))
+            {
+                if (string.Equals(leftVariant, rightVariant, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static IEnumerable<string> EnumerateActorNameVariants(string actorName)
+    {
+        var normalized = NormalizeActorNameForMatching(actorName);
+        if (!string.IsNullOrWhiteSpace(normalized))
+            yield return normalized;
+
+        var withoutRoleAnnotation = StripPlayerCharacterRoleAnnotation(normalized);
+        if (!string.IsNullOrWhiteSpace(withoutRoleAnnotation) &&
+            !string.Equals(withoutRoleAnnotation, normalized, StringComparison.OrdinalIgnoreCase))
+        {
+            yield return withoutRoleAnnotation;
+        }
+    }
+
+    private static string NormalizeActorNameForMatching(string actorName)
+    {
+        var normalized = actorName.Trim();
+        normalized = normalized.TrimEnd('.', '。', '!', '?', '！', '？', ',', ';', ':', '…').TrimEnd();
+        while (normalized.Contains("  ", StringComparison.Ordinal))
+            normalized = normalized.Replace("  ", " ", StringComparison.Ordinal);
+
+        return normalized;
+    }
+
+    private static string StripPlayerCharacterRoleAnnotation(string actorName)
+    {
+        return Regex.Replace(
+                actorName,
+                @"\s*\((?:player\s*character|player|pc|игрок|персонаж(?:\s+игрока)?|главн(?:ый|ая)\s+геро(?:й|иня)|геро(?:й|иня))\)\s*$",
+                "",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)
+            .Trim();
+    }
+
+    private static bool HasPlayerCharacterRoleAnnotation(string actorName)
+    {
+        return Regex.IsMatch(
+            actorName,
+            @"^\s*(?:player\s*character|player|pc|игрок|персонаж(?:\s+игрока)?|главн(?:ый|ая)\s+геро(?:й|иня)|геро(?:й|иня))\s*$",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant) ||
+            Regex.IsMatch(
+            actorName,
+            @"\((?:player\s*character|player|pc|игрок|персонаж(?:\s+игрока)?|главн(?:ый|ая)\s+геро(?:й|иня)|геро(?:й|иня))\)",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     }
 
     private static string NormalizeReasoningActorHeading(string value)
@@ -2444,6 +2752,13 @@ public partial class ValidationService
                             actual: hasLegacyJournalEntries ? "journalEntries provided instead" : "missing or empty",
                             repairHint: "Передавай append-only delta через entryToAppend. Полный canonical journalEntries массив допустим только в itemJournals/entries."));
                     }
+                    else
+                    {
+                        ValidatePlayerFacingItemJournalEntry(
+                            entryToAppend.GetString() ?? string.Empty,
+                            $"{itemContext}.entryToAppend",
+                            issues);
+                    }
                 }
             }
         }
@@ -2495,6 +2810,10 @@ public partial class ValidationService
                 {
                     if (journalEntry.ValueKind is JsonValueKind.String)
                     {
+                        ValidatePlayerFacingItemJournalEntry(
+                            journalEntry.GetString() ?? string.Empty,
+                            $"{itemContext}.journalEntries[{journalIndex}]",
+                            issues);
                         journalIndex++;
                         continue;
                     }
@@ -2519,6 +2838,10 @@ public partial class ValidationService
                     ValidateOptionalString(journalEntry, $"{itemContext}.journalEntries[{journalIndex}]", issues, "description");
                     ValidateOptionalString(journalEntry, $"{itemContext}.journalEntries[{journalIndex}]", issues, "text");
                     ValidateOptionalString(journalEntry, $"{itemContext}.journalEntries[{journalIndex}]", issues, "spiritVoice");
+                    ValidatePlayerFacingItemJournalObject(
+                        journalEntry,
+                        $"{itemContext}.journalEntries[{journalIndex}]",
+                        issues);
                     journalIndex++;
                 }
             }

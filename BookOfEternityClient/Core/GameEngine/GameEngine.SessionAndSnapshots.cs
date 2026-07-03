@@ -320,7 +320,7 @@ public partial class GameEngine
 
         foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
         {
-            await SnapshotFileIfPresentAsync(file, files, snapshotHashes);
+            await SnapshotFileOrRollbackBackupIfPresentAsync(file, rollbackSnapshot, files, snapshotHashes);
         }
 
         var manifest = new PendingTurnSnapshotManifest
@@ -762,6 +762,28 @@ public partial class GameEngine
         IDictionary<string, string> snapshotHashes)
     {
         var content = await _fs.ReadFileAsync(relativePath);
+        if (content == null)
+            return;
+
+        var snapshotPath = $"{PendingTurnSnapshotDirectory}/{relativePath}";
+        await _fs.WriteFileAtomicAsync(snapshotPath, content);
+        files[relativePath] = snapshotPath;
+        snapshotHashes[relativePath] = ComputeSha256(content);
+    }
+
+    private async Task SnapshotFileOrRollbackBackupIfPresentAsync(
+        string relativePath,
+        RollbackSnapshot? rollbackSnapshot,
+        IDictionary<string, string> files,
+        IDictionary<string, string> snapshotHashes)
+    {
+        var content = await _fs.ReadFileAsync(relativePath);
+        if (content == null &&
+            rollbackSnapshot?.BackupFiles.TryGetValue(relativePath, out var backupPath) == true)
+        {
+            content = await _fs.ReadFileAsync(backupPath);
+        }
+
         if (content == null)
             return;
 

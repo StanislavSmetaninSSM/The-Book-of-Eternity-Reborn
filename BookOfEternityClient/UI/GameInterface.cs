@@ -1,4 +1,5 @@
 using Spectre.Console;
+using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models.GameState;
 using BookOfEternityClient.Models;
@@ -139,6 +140,43 @@ public class GameInterface
 
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[grey dim]  Нажмите любую клавишу...[/]");
+        if (consoleInput is AgentConsoleLiveInputSource liveInput)
+        {
+            var title = enteringChaosSea ? "Возвращение в Море Хаоса" : "Воплощение в мир смертных";
+            var text = enteringChaosSea
+                ? "Смертная оболочка рассыпается, душа возвращается в Море Хаоса. Продолжите, чтобы открыть посмертный экран."
+                : "Врата Души распахиваются, начинается новая смертная жизнь. Продолжите, чтобы увидеть первый смертный ход.";
+            var now = DateTimeOffset.UtcNow;
+            liveInput.PublishSnapshot(new AgentConsoleSnapshot
+            {
+                ScreenId = enteringChaosSea ? "realm-transition-chaos-sea" : "realm-transition-mortal-life",
+                Mode = AgentConsoleMode.TextPrompt,
+                Title = title,
+                PlainText = text,
+                AwaitingInput = true,
+                InputKind = AgentConsoleInputKind.Key,
+                Actions =
+                [
+                    new AgentConsoleAction
+                    {
+                        Id = "continue",
+                        Label = "Продолжить",
+                        Shortcut = "Enter",
+                        IsDefault = true
+                    }
+                ],
+                Prompt = new AgentConsolePrompt
+                {
+                    PromptId = enteringChaosSea ? "realm-transition-chaos-sea:key" : "realm-transition-mortal-life:key",
+                    Text = text,
+                    InputKind = AgentConsoleInputKind.Key,
+                    DefaultValue = "Enter"
+                },
+                RenderedAtUtc = now,
+                UpdatedAtUtc = now
+            }, $"Rendered {(enteringChaosSea ? "realm-transition-chaos-sea" : "realm-transition-mortal-life")}.");
+        }
+
         consoleInput.ReadKey(intercept: true);
     }
 

@@ -114,7 +114,8 @@ public partial class ExplorerMode
             {
                 var qty = GetStr(data, "count", GetStr(data, "quantity", "1"));
                 var qtyStr = qty != "1" ? $" x{Markup.Escape(qty)}" : "";
-                var typeStr = !string.IsNullOrEmpty(type) ? $" {Markup.Escape($"[{type}]")}" : "";
+                    var typeLabel = FormatInventoryProtocolValueForPlayer(type);
+                    var typeStr = !string.IsNullOrEmpty(typeLabel) ? $" {Markup.Escape($"[{typeLabel}]")}" : "";
 
                 // Status flags
                 var flags = "";
@@ -309,12 +310,13 @@ public partial class ExplorerMode
             if (!string.IsNullOrEmpty(desc)) { lines.Add($"[white]{Markup.Escape(desc)}[/]"); lines.Add(""); }
 
             itemType = GetStr(item, "type", "");
-            if (!string.IsNullOrEmpty(itemType))
-                lines.Add($"  📋 Тип: [cyan]{Markup.Escape(itemType)}[/]");
+            var itemTypeLabel = FormatInventoryProtocolValueForPlayer(itemType);
+            if (!string.IsNullOrEmpty(itemTypeLabel))
+                lines.Add($"  📋 Тип: [cyan]{Markup.Escape(itemTypeLabel)}[/]");
 
             var rarity = GetStr(item, "quality", GetStr(item, "rarity", ""));
             if (!string.IsNullOrEmpty(rarity))
-                lines.Add($"  ⭐ Качество: [{GetRarityColor(rarity)}]{Markup.Escape(rarity)}[/]");
+                lines.Add($"  ⭐ Качество: [{GetRarityColor(rarity)}]{Markup.Escape(FormatInventoryProtocolValueForPlayer(rarity))}[/]");
 
             var weight = GetStr(item, "weight", "");
             if (!string.IsNullOrEmpty(weight))
@@ -328,17 +330,27 @@ public partial class ExplorerMode
             var maxDurability = GetStr(item, "maxDurability", "");
             if (!string.IsNullOrEmpty(durability))
             {
+                var hasMaxDurability = !string.IsNullOrWhiteSpace(maxDurability);
                 var durNum = int.TryParse(durability.Replace("%", "").Trim(), out var dv) ? dv : -1;
-                var maxDurNum = int.TryParse(maxDurability.Replace("%", "").Trim(), out var mdv) ? mdv : durNum;
+                var maxDurNum = hasMaxDurability && int.TryParse(maxDurability.Replace("%", "").Trim(), out var mdv) ? mdv : -1;
                 if (durNum == 0)
                 {
-                    lines.Add($"  🔧 Прочность: [bold red]СЛОМАН (0/{Markup.Escape(maxDurability)})[/]");
+                    var brokenValue = hasMaxDurability
+                        ? $"0/{Markup.Escape(maxDurability)}"
+                        : FormatInventoryDurabilitySingleValue(durability);
+                    lines.Add($"  🔧 Прочность: [bold red]СЛОМАН ({brokenValue})[/]");
                 }
-                else if (durNum > 0 && maxDurNum > 0)
+                else if (durNum > 0 && hasMaxDurability && maxDurNum > 0)
                 {
                     var durPct = Math.Clamp(durNum * 100 / maxDurNum, 0, 100);
                     var durColor = durPct > 60 ? "green" : durPct > 25 ? "yellow" : "red";
                     lines.Add($"  🔧 Прочность: {ConsoleLayout.CreateBarFromPercent(durPct, 10, durColor)}  [{durColor}]{Markup.Escape(durability)}/{Markup.Escape(maxDurability)}[/]");
+                }
+                else if (durNum > 0)
+                {
+                    var durPct = Math.Clamp(durNum, 0, 100);
+                    var durColor = durPct > 60 ? "green" : durPct > 25 ? "yellow" : "red";
+                    lines.Add($"  🔧 Прочность: {ConsoleLayout.CreateBarFromPercent(durPct, 10, durColor)}  [{durColor}]{Markup.Escape(FormatInventoryDurabilitySingleValue(durability))}[/]");
                 }
                 else
                 {
@@ -352,10 +364,10 @@ public partial class ExplorerMode
 
             itemSlot = GetStr(item, "equipmentSlot", GetStr(item, "slot", GetStr(item, "equipSlot", "")));
             if (!string.IsNullOrEmpty(itemSlot))
-                lines.Add($"  📌 Слот: [cyan]{Markup.Escape(itemSlot)}[/]");
+                lines.Add($"  📌 Слот: [cyan]{Markup.Escape(FormatInventorySlotLabel(itemSlot))}[/]");
             var accessorySlot = GetStr(item, "accessoryForSlot", "");
             if (!string.IsNullOrEmpty(accessorySlot))
-                lines.Add($"  📎 Аксессуар для: [cyan]{Markup.Escape(accessorySlot)}[/]");
+                lines.Add($"  📎 Аксессуар для: [cyan]{Markup.Escape(FormatInventorySlotLabel(accessorySlot))}[/]");
 
             var twoHanded = item.TryGetProperty("requiresTwoHands", out var th) && th.ValueKind == JsonValueKind.True;
             if (twoHanded)
@@ -677,18 +689,18 @@ public partial class ExplorerMode
                 {
                     if (entry.ValueKind == JsonValueKind.String)
                     {
-                        var textValue = entry.GetString() ?? "";
+                        var textValue = ExplorerPlayerFacingLabels.HistoricalEntry(entry.GetString() ?? "");
                         if (renderedEntries.Add(textValue))
                             lines.Add($"    • [dim]{Markup.Escape(textValue)}[/]");
                         return;
                     }
 
                     var timestamp = GetStr(entry, "timestamp", "");
-                    var eventName = GetStr(entry, "event", "");
-                    var description = GetStr(entry, "description", "");
-                    var textValueObject = GetStr(entry, "text", GetStr(entry, "content", GetStr(entry, "entry", entry.GetRawText())));
-                    var spiritVoice = GetStr(entry, "spiritVoice", "");
-                    var resonance = GetStr(entry, "magicalResonance", "");
+                    var eventName = ExplorerPlayerFacingLabels.HistoricalEntry(GetStr(entry, "event", ""));
+                    var description = ExplorerPlayerFacingLabels.HistoricalEntry(GetStr(entry, "description", ""));
+                    var textValueObject = ExplorerPlayerFacingLabels.HistoricalEntry(GetStr(entry, "text", GetStr(entry, "content", GetStr(entry, "entry", entry.GetRawText()))));
+                    var spiritVoice = ExplorerPlayerFacingLabels.HistoricalEntry(GetStr(entry, "spiritVoice", ""));
+                    var resonance = ExplorerPlayerFacingLabels.HistoricalEntry(GetStr(entry, "magicalResonance", ""));
 
                     var signature = $"{timestamp}|{eventName}|{description}|{textValueObject}|{spiritVoice}|{resonance}";
                     if (!renderedEntries.Add(signature))
@@ -832,7 +844,8 @@ public partial class ExplorerMode
                 "resource", "maximumResource", "resourceType", "ownerBondLevelCurrent",
                 "fateCards", "itemJournalUpdates", "isBroken", "isEmpty", "mechanicalSummaryAuthority",
                 "mechanicalSummaryUnresolvedReason", "unresolvedMechanicsReason", "unidentifiedMechanicsReason",
-                "unknownMechanicsReason", "sealedReason", "unreadableReason", "lockedReason" };
+                "unknownMechanicsReason", "sealedReason", "unreadableReason", "lockedReason",
+                "value", "currentLocationId", "currentLocationName", "isCarried", "isEquipped", "visibility" };
             foreach (var prop in item.EnumerateObject())
             {
                 if (knownProps.Contains(prop.Name)) continue;
@@ -856,6 +869,7 @@ public partial class ExplorerMode
         var isEmpty = itemData.HasValue && (
             (itemData.Value.TryGetProperty("isEmpty", out var emp) && emp.ValueKind == JsonValueKind.True) ||
             (int.TryParse(preferredResource.Replace("%", "").Trim(), out var resCheck) && resCheck == 0));
+        var isCarriedByPlayer = !itemData.HasValue || IsInventoryItemCarriedByPlayer(itemData.Value);
 
         lines.Add("");
         if (isBroken)
@@ -870,6 +884,14 @@ public partial class ExplorerMode
         {
             var slotLabel = SlotLabels.GetValueOrDefault(equippedSlot!, equippedSlot!);
             lines.Add($"  Статус: [green]⚔ Экипировано ({slotLabel})[/]");
+        }
+        else if (!isCarriedByPlayer && itemData.HasValue)
+        {
+            var locationName = GetStr(itemData.Value, "currentLocationName", "");
+            var locationSuffix = !string.IsNullOrWhiteSpace(locationName)
+                ? $": {Markup.Escape(locationName)}"
+                : "";
+            lines.Add($"  Статус: [dim]📍 В текущей локации{locationSuffix}[/]");
         }
         else
             lines.Add("  Статус: [dim]📦 В рюкзаке[/]");
@@ -894,7 +916,8 @@ public partial class ExplorerMode
 
         // Action menu
         var actions = new List<string>();
-        if (!readOnly)
+        var allowBackpackActions = !readOnly && (isCarriedByPlayer || !string.IsNullOrEmpty(equippedSlot));
+        if (allowBackpackActions)
         {
             if (!string.IsNullOrEmpty(equippedSlot))
             {
@@ -902,8 +925,8 @@ public partial class ExplorerMode
             }
             else
             {
-                var isEquippable = !string.IsNullOrEmpty(itemSlot) ||
-                    TypeToSlot.ContainsKey(itemType);
+                var isEquippable = !IsQuestInventoryItemType(itemType) &&
+                    (!string.IsNullOrEmpty(itemSlot) || TypeToSlot.ContainsKey(itemType));
                 if (isEquippable && !isBroken)
                     actions.Add("⚔ Экипировать");
             }
@@ -924,7 +947,7 @@ public partial class ExplorerMode
             if (hasItemImage && hasItemImagePrompt)
                 actions.Add("♻ Пересоздать изображение");
         }
-        if (!readOnly)
+        if (allowBackpackActions)
             actions.Add("[red]🗑 Выбросить[/]");
         actions.Add(readOnly ? "← Назад" : "← Назад к списку");
 
@@ -1043,6 +1066,8 @@ public partial class ExplorerMode
         // Try direct slot name match (case-insensitive)
         if (!string.IsNullOrEmpty(itemSlot))
         {
+            var normalized = NormalizeInventorySlotKey(itemSlot);
+            if (!string.IsNullOrEmpty(normalized) && SlotLabels.ContainsKey(normalized)) return normalized;
             var lower = itemSlot.ToLower();
             if (SlotLabels.ContainsKey(lower)) return lower;
             // Try matching Russian slot names
@@ -1064,6 +1089,79 @@ public partial class ExplorerMode
         if (!string.IsNullOrEmpty(itemType) && TypeToSlot.TryGetValue(itemType, out var slotFromType))
             return slotFromType;
         return null;
+    }
+
+    private static string FormatInventoryProtocolValueForPlayer(string value) =>
+        StructuredBonusDisplay.FormatScalar(value);
+
+    private static string FormatInventoryDurabilitySingleValue(string durability)
+    {
+        var clean = durability.Trim();
+        if (clean.EndsWith("%", StringComparison.Ordinal))
+            return clean;
+
+        return int.TryParse(clean, out var value) && value is >= 0 and <= 100
+            ? $"{value}%"
+            : clean;
+    }
+
+    private static string FormatInventorySlotLabel(string slot)
+    {
+        var clean = slot.Trim();
+        if (clean.Equals("Accessory1", StringComparison.OrdinalIgnoreCase))
+            return "Аксессуар 1";
+        if (clean.Equals("Accessory2", StringComparison.OrdinalIgnoreCase))
+            return "Аксессуар 2";
+
+        var normalized = NormalizeInventorySlotKey(slot);
+        if (!string.IsNullOrWhiteSpace(normalized) && SlotLabels.TryGetValue(normalized, out var label))
+            return label;
+
+        return FormatInventoryProtocolValueForPlayer(slot);
+    }
+
+    private static string NormalizeInventorySlotKey(string slot)
+    {
+        var clean = slot.Trim();
+        return clean switch
+        {
+            "Accessory1" => "ring1",
+            "Accessory2" => "ring2",
+            "Hands" => "hands",
+            "Head" => "head",
+            "Chest" => "body",
+            "Body" => "body",
+            "Feet" => "feet",
+            "MainHand" => "mainHand",
+            "OffHand" => "offHand",
+            _ => clean
+        };
+    }
+
+    private static bool IsQuestInventoryItemType(string itemType)
+    {
+        var clean = itemType.Trim();
+        return clean.Equals("QuestItem", StringComparison.OrdinalIgnoreCase) ||
+               clean.Equals("quest_item", StringComparison.OrdinalIgnoreCase) ||
+               clean.Equals("Квестовый предмет", StringComparison.OrdinalIgnoreCase) ||
+               clean.Equals("Сюжетный предмет", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsInventoryItemCarriedByPlayer(JsonElement item)
+    {
+        if (!item.TryGetProperty("isCarried", out var isCarried))
+            return true;
+
+        return isCarried.ValueKind switch
+        {
+            JsonValueKind.False => false,
+            JsonValueKind.True => true,
+            JsonValueKind.Number => isCarried.TryGetInt32(out var value) ? value != 0 : true,
+            JsonValueKind.String => !StringEqualsAnyInventoryAuthority(
+                isCarried.GetString() ?? "",
+                "false", "no", "нет", "0", "not_carried", "location"),
+            _ => true
+        };
     }
 
     private static string GetInventoryMechanicalSummaryAuthority(JsonElement item)

@@ -84,6 +84,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             locationId = "loc_market_square",
             name = "Рыночная площадь",
             description = "Открытая смертная локация для проверки карты.",
+            lastEventsDescription = "#[9] - Дозор проверил площадь после полуночи.",
             coordinates = new { x = 1, y = 2, z = 0 },
             adjacencyMap = new[]
             {
@@ -109,12 +110,46 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.True(File.Exists(_fs.ResolvePath("output/map_viewer.html")));
         Assert.Contains(_console.MarkupLines,
             line => line.Contains("локальная карта", StringComparison.OrdinalIgnoreCase));
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Рыночная площадь", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Текущая созданная локация", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Восточные ворота", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Намеченный выход", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Дозор проверил площадь после полуночи.", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("#[9]", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(_console.MarkupLines,
             line => line.Contains("output/map_viewer.html", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(_console.SelectionTitles,
             title => title.Contains("Карта", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
             choice => choice.Contains("Рыночная площадь", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Help_MortalLetsPlayerChooseSectionInsteadOfDumpingAllCommands()
+    {
+        await SeedMortalStateAsync();
+        _console.QueueSelection("Раздел справки", "Общие команды");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/help"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("help_mortal_section_choice");
+        Assert.Contains(_console.SelectionTitles,
+            title => title.Contains("Раздел справки", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(_console.SelectionChoicesHistory,
+            history => history.Title.Contains("Раздел справки", StringComparison.OrdinalIgnoreCase) &&
+                       history.Choices.Contains("СМЕРТНАЯ ЖИЗНЬ") &&
+                       history.Choices.Contains("Общие команды") &&
+                       history.Choices.Contains("Показать все разделы") &&
+                       history.Choices.Contains("Закрыть"));
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("/codex", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/refresh", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/npc_talk", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/инв", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -384,6 +419,17 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("guardian_corrections");
         Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0, BuildConsoleDiagnostics("guardian_corrections"));
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Намерение: дружественное", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Роль и статус", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Состояние мира", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тип слота", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сила коррективы", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("friendly", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("role_status", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("world_condition", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Slot:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Severity:", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -667,6 +713,39 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var choices = string.Join("\n", _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices));
         Assert.Contains("Восточная служебная лестница", choices, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Unknown", choices, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Locations_LocalizesLocationTypeInChooser()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/world/world_map.json", new
+        {
+            worldMapUpdates = new
+            {
+                newLocations = new[]
+                {
+                    new
+                    {
+                        locationId = "loc_archive_corridor",
+                        name = "Коридор закрытого архива",
+                        locationType = "indoor",
+                        shortDescription = "Узкий коридор с опечатанными дверями."
+                    }
+                }
+            }
+        });
+        _console.QueueAnySelection("← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/локации"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("locations_type_localization");
+        var choices = string.Join("\n", _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices));
+        Assert.Contains("Коридор закрытого архива", choices, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("помещение", choices, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("indoor", choices, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -1075,6 +1154,28 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_CurrentLocation_HidesCanonicalTurnAnchorInLastEvents()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/world/current_location.json", new
+        {
+            name = "Кабинет наставника",
+            description = "Комната с мокрыми реестрами и сломанной печатью.",
+            locationType = "indoor",
+            lastEventsDescription = "#[9]. Марена нашла след воска у замка и отметила знак разомкнутой звезды."
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/где_я"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("current_location_turn_anchor_projection");
+        var output = ExtractRenderedText();
+        Assert.Contains("Марена нашла след воска у замка", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("#[9]", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_Status_RendersWithoutHiddenErrors()
     {
@@ -1114,6 +1215,47 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("status");
         Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Status_UsesSoulFallbackAndHidesEmptyIdentityRows()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Серебряная Тень",
+            soulFormDescription = "Женская душа в виде тонкого серебристого силуэта.",
+            currentRealm = "Mortal World",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 0 },
+            enlightenment = new { currentTier = "Новичок" }
+        });
+        await WriteJsonAsync("game_state/core/player_status.json", new
+        {
+            healthPercentage = "100%",
+            energyPercentage = "100%",
+            poisePercentage = "100%",
+            currentCondition = "Здоров",
+            money = 0
+        });
+        await WriteJsonAsync("game_state/player/computed_characteristics.json", new
+        {
+            characteristics = new { strength = 1, dexterity = 3, constitution = 1, intelligence = 3, wisdom = 1, faith = 1, attractiveness = 1, trade = 1, persuasion = 3, perception = 2, luck = 2, speed = 1 },
+            modifiedCharacteristics = new { strength = 1, dexterity = 3, constitution = 1, intelligence = 3, wisdom = 1, faith = 1, attractiveness = 1, trade = 1, persuasion = 3, perception = 2, luck = 2, speed = 1 },
+            permanentlyModifiedCharacteristics = new { strength = 1, dexterity = 3, constitution = 1, intelligence = 3, wisdom = 1, faith = 1, attractiveness = 1, trade = 1, persuasion = 3, perception = 2, luck = 2, speed = 1 }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/статус"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("status_soul_fallback");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Серебряная Тень", renderedText);
+        Assert.Contains("Форма души", renderedText);
+        Assert.Contains("Женская душа", renderedText);
+        Assert.DoesNotContain("Раса", renderedText);
+        Assert.DoesNotContain("Класс", renderedText);
     }
 
     [Fact]
@@ -1168,6 +1310,96 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("skills");
         Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Skills_UsesCanonicalMasteryAndLocalizesStableValues()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/misc/characteristics.json", new
+        {
+            strength = 2,
+            dexterity = 4,
+            constitution = 2,
+            intelligence = 4,
+            wisdom = 1,
+            faith = 1,
+            attractiveness = 1,
+            trade = 1,
+            persuasion = 2,
+            perception = 4,
+            luck = 2,
+            speed = 1
+        });
+        await WriteJsonAsync("game_state/player/experience.json", new
+        {
+            playerLevel = 2,
+            level = 2,
+            currentExperience = 49,
+            totalExperience = 149,
+            experienceForNextLevel = 150
+        });
+        await WriteJsonAsync("game_state/player/stat_points.json", new
+        {
+            unspentStatPoints = 0,
+            levelUpStatPointsAwardedThroughLevel = 2
+        });
+        await WriteJsonAsync("game_state/player/skills_active.json", new
+        {
+            activeSkillChanges = new[]
+            {
+                new
+                {
+                    skillName = "Быстрый выпад",
+                    skillDescription = "Короткая атака тонким клинком по открывшейся цели.",
+                    rarity = "Common",
+                    actionCost = "Fast",
+                    scalingCharacteristic = "dexterity",
+                    scalesValue = true,
+                    combatEffect = new
+                    {
+                        isActivatedEffect = true,
+                        actionName = "Быстрый выпад",
+                        actionDescription = "Колючий удар стилетом.",
+                        damageType = "piercing",
+                        baseDamage = 8,
+                        range = "melee",
+                        actionCost = "Fast",
+                        actionPointCost = 1,
+                        cooldown = 0
+                    }
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/player/skill_mastery.json", new
+        {
+            skillMasteryChanges = new[]
+            {
+                new
+                {
+                    skillName = "Быстрый выпад",
+                    newMasteryLevel = 3,
+                    newCurrentMasteryProgress = 2,
+                    newMasteryProgressNeeded = 8,
+                    masteryLeveledUp = false
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/навыки"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("skills_mastery");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Мастерство: 3", renderedText);
+        Assert.Contains("2/8", renderedText);
+        Assert.Contains("+12%", renderedText);
+        Assert.Contains("×1,12", renderedText);
+        Assert.DoesNotContain("Common", renderedText);
+        Assert.DoesNotContain("Fast", renderedText);
+        var choices = string.Join("\n", _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices));
+        Assert.DoesNotContain("Common", choices);
     }
 
     [Fact]
@@ -1827,6 +2059,82 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("game_state/", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("DTO", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("validation", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Quests_DetailLocalizesStableStatusValues()
+    {
+        await SeedMortalStateAsync();
+        await WriteRawJsonAsync("game_state/quests/regular_quests.json", """
+        {
+          "quests": [
+            {
+              "questId": "quest_black_seal",
+              "questName": "Чёрная печать",
+              "status": "Active",
+              "description": "Разобраться, почему раненый принёс в лечебницу запретный знак.",
+              "objectives": [
+                {
+                  "description": "Спросить Вирента о печати",
+                  "status": "Active"
+                }
+              ]
+            }
+          ]
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/квесты"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("quest_detail_localized_status");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Чёрная печать", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Статус", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Активен", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Active", renderedText, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Quests_DetailHidesCanonicalTurnAnchorsInJournal()
+    {
+        await SeedMortalStateAsync();
+        await WriteRawJsonAsync("game_state/quests/regular_quests.json", """
+        {
+          "quests": [
+            {
+              "questId": "quest_anchor_leak",
+              "questName": "След наставника",
+              "questGiver": "Исчезновение наставника",
+              "status": "Active",
+              "questBackground": "Наставник исчез после ночного визита.",
+              "description": "Собрать улики и понять, кто оставил печать.",
+              "objectives": [
+                {
+                  "description": "Сравнить воск на перчатке со сломанной печатью.",
+                  "status": "Completed"
+                }
+              ],
+              "detailsLog": [
+                "#[7]. Марена сравнила воск на перчатке и сломанной печати.",
+                "#[8] - В реестре нужно найти знак разомкнутой звезды."
+              ]
+            }
+          ]
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/квесты"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("quest_detail_turn_anchor_projection");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Марена сравнила воск на перчатке и сломанной печати.", renderedText, StringComparison.Ordinal);
+        Assert.Contains("В реестре нужно найти знак разомкнутой звезды.", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("#[7]", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("#[8]", renderedText, StringComparison.Ordinal);
     }
 
     [Fact]

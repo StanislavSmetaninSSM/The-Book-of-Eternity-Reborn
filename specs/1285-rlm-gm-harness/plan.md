@@ -43,13 +43,27 @@ Implement an RLM-inspired GM harness layer without adding unsafe arbitrary REPL 
 - #1288 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1288
 - #1289 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1289
 - #1290 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1290
+- #1316 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1316
+- #1340 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1340
+- #1341 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1341
+- #1342 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1342
+- #1343 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1343
+- #1344 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1344
+- #1345 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1345
+- #1349 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1349
+- #1350 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1350
+- #1351 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1351
+- #1352 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1352
+- #1353 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1353
+- #1354 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1354
+- #1356 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1356
 
 **Contract Scope**: GM-facing prompts, runtime-state, validation, docs, examples, agent-console, e2e.
 
 **Verification Commands**:
 
 ```powershell
-dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests|LiveTurnPreparationServiceTests"
 dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"
 ```
 

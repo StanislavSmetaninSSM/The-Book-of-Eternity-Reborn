@@ -44,12 +44,288 @@ public sealed class GameEngineSourceGuardTests
         return source[start..nextMethod];
     }
 
+    private static string ExtractMethodSourceToEnd(string source, string methodHeader)
+    {
+        var start = source.IndexOf(methodHeader, StringComparison.Ordinal);
+        Assert.True(start >= 0, $"Expected method header {methodHeader}.");
+        return source[start..];
+    }
+
     [Fact]
     public void NewGameFlow_MustCheckInitialWaitResultBeforeEnteringGameLoop()
     {
         var source = ReadGameEngineSource();
 
         Assert.Contains("if (!await WaitForGmResponse())", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void NewGameBootstrap_MustCreateGuardianProjectRollbackBaselineBeforeInitialDispatch()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+        var method = ExtractMethodSource(
+            source,
+            "private async Task InitializeChaosSea(");
+
+        Assert.Contains("ChaosSeaBootstrapStateBuilder.BuildFreshNewGameFiles", method, StringComparison.Ordinal);
+        Assert.Contains("\"lore/chaos_sea/player_chronicle.json\"", method, StringComparison.Ordinal);
+        Assert.Contains("WriteInitialGuardianProjectTrackerStateAsync", method, StringComparison.Ordinal);
+        Assert.Contains("var rollbackBackups = await CreatePreTurnBackup(request.RequestId);", method, StringComparison.Ordinal);
+        Assert.Contains("await CreateCanonicalBaselineSnapshotAsync(request, rollbackBackups, sourceLabel: \"первого описания Моря Хаоса\");", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("await CreateCanonicalBaselineSnapshotAsync(request, sourceLabel: \"первого описания Моря Хаоса\");", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MortalBootstrap_MustWriteScaffoldBeforeInitialMortalDispatch()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(
+            source,
+            "private async Task<bool> CheckGmIncarnationTrigger(");
+
+        var snapshotIndex = method.IndexOf("await CreateCanonicalBaselineSnapshotAsync(request, rollbackBackups, \"GM-инициированного воплощения\");", StringComparison.Ordinal);
+        var baselineIndex = method.IndexOf("await WriteMortalBootstrapBaselineAsync(", StringComparison.Ordinal);
+        var scaffoldIndex = method.IndexOf("await WriteMortalBootstrapScaffoldAsync(", StringComparison.Ordinal);
+        var requestWriteIndex = method.IndexOf("await _fs.WriteFileAtomicAsync(\"input/turn_request.json\"", StringComparison.Ordinal);
+
+        Assert.True(baselineIndex >= 0, "Fresh Mortal bootstrap must materialize client-owned baseline files before the GM sees the first Mortal turn.");
+        Assert.True(snapshotIndex >= 0, "Fresh Mortal bootstrap must create a rollback baseline before dispatch.");
+        Assert.True(baselineIndex < snapshotIndex, "Fresh Mortal bootstrap baseline files must exist before pending-turn snapshot authority is captured.");
+        Assert.True(scaffoldIndex > snapshotIndex, "Fresh Mortal bootstrap scaffold must be written after baseline authority exists.");
+        Assert.True(scaffoldIndex < requestWriteIndex, "Fresh Mortal bootstrap scaffold must be available before GM sees input/turn_request.json.");
+        Assert.Contains("MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles", source, StringComparison.Ordinal);
+        Assert.Contains("game_state/control/mortal_bootstrap_scaffold.json", source, StringComparison.Ordinal);
+        Assert.Contains("MORTAL BOOTSTRAP BASELINE", source, StringComparison.Ordinal);
+        Assert.Contains("baselineMaterializedBeforeDispatch", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MortalBootstrapScaffold_MustContainCanonicalShapeRepairPreventionHints()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
+
+        Assert.Contains("\"canonicalShapeHints\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"factionCoreMinimum\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"factionCustomStateMinimum\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"npcCoreMinimum\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"currentLocationMinimum\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"worldMapMinimum\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"activeThreatObjectMinimum\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"inventoryItemMinimum\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"codexEntryMinimum\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"sourceFilePrefixRequired\"", method, StringComparison.Ordinal);
+        Assert.Contains("current_world/", method, StringComparison.Ordinal);
+        Assert.Contains("\"canonicalFactionCustomStateRequiredFields\"", method, StringComparison.Ordinal);
+        Assert.Contains("currentValue", method, StringComparison.Ordinal);
+        Assert.Contains("progressionRule", method, StringComparison.Ordinal);
+        Assert.Contains("thresholds", method, StringComparison.Ordinal);
+        Assert.Contains("\"allowedThreatMotivations\"", method, StringComparison.Ordinal);
+        Assert.Contains("Domination", method, StringComparison.Ordinal);
+        Assert.Contains("Preservation", method, StringComparison.Ordinal);
+        Assert.Contains("\"allowedThreatMethods\"", method, StringComparison.Ordinal);
+        Assert.Contains("Systemic", method, StringComparison.Ordinal);
+        Assert.Contains("\"allowedThreatPrimaryTargetTypes\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"allowedThreatPrimaryImpacts\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"game_state/inventory/items.json\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"allowedQualityValues\"", method, StringComparison.Ordinal);
+        Assert.Contains("Trash", method, StringComparison.Ordinal);
+        Assert.Contains("Uncommon", method, StringComparison.Ordinal);
+        Assert.Contains("\"allowedEquipmentSlots\"", method, StringComparison.Ordinal);
+        Assert.Contains("MainHand", method, StringComparison.Ordinal);
+        Assert.Contains("Accessory1", method, StringComparison.Ordinal);
+        Assert.Contains("\"allowedFactionControlTypes\"", method, StringComparison.Ordinal);
+        Assert.Contains("Military", method, StringComparison.Ordinal);
+        Assert.Contains("Covert", method, StringComparison.Ordinal);
+        Assert.Contains("\"repairPreventionChecklist\"", method, StringComparison.Ordinal);
+        Assert.Contains("bootstrap_codex_missing_current_world_entries", method, StringComparison.Ordinal);
+        Assert.Contains("npc_contract_unknown_top_level_key", method, StringComparison.Ordinal);
+        Assert.Contains("player character", method, StringComparison.Ordinal);
+        Assert.Contains("world_map_link_preview_missing_difficulty_profile", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MortalBootstrapScaffold_NpcCoreTopLevelCollectionsMustMatchValidatorFileContract()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
+        var allowListStart = method.IndexOf("[\"allowedTopLevelCollections\"]", StringComparison.Ordinal);
+        Assert.True(allowListStart >= 0, "Expected npc_core allowedTopLevelCollections guidance.");
+
+        var allowListEnd = method.IndexOf("[\"forbiddenTopLevelKeysInNpcCore\"]", allowListStart, StringComparison.Ordinal);
+        Assert.True(allowListEnd > allowListStart, "Expected forbiddenTopLevelKeysInNpcCore after allowedTopLevelCollections.");
+
+        var allowList = method[allowListStart..allowListEnd];
+        Assert.Contains("\"NPCsInScene\"", allowList, StringComparison.Ordinal);
+        Assert.Contains("\"NPCsRenameData\"", allowList, StringComparison.Ordinal);
+        Assert.Contains("\"UpdateNPCs\"", allowList, StringComparison.Ordinal);
+        Assert.Contains("\"UpdateNpcTradeInventoryReceipts\"", allowList, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"NPCJournals\"", allowList, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"NPCQuestUpdates\"", allowList, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"NPCRelationshipUpdates\"", allowList, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MortalBootstrapScaffold_MustWarnAgainstPuttingOffscreenExitActorsIntoNpcScene()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
+
+        Assert.Contains("\"offscreenSceneActorRule\"", method, StringComparison.Ordinal);
+        Assert.Contains("NPCsInScene is only for actors physically present in currentLocationData", method, StringComparison.Ordinal);
+        Assert.Contains("voices behind a door", method, StringComparison.Ordinal);
+        Assert.Contains("nearbyExitLocationId", method, StringComparison.Ordinal);
+        Assert.Contains("Prevent npc_scene_location_mismatch", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MortalBootstrapScaffold_ItemDurabilityRuleMustUsePercentageString()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
+
+        Assert.Contains("\"durabilityRule\"", method, StringComparison.Ordinal);
+        Assert.Contains("percentage string", method, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("100%", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("use 100 for intact", method, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void MortalBootstrapScaffold_MustPublishCanonicalCoordinateAuthority()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
+
+        Assert.Contains("\"canonicalCoordinateAuthority\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"currentLocationCoordinates\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"nearbyExitCoordinates\"", method, StringComparison.Ordinal);
+        Assert.Contains("current_location_coordinates_mismatch", method, StringComparison.Ordinal);
+        Assert.Contains("Copy these exact coordinates", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void NewGameFlow_MustUseAgentConsoleCompatibleGuardianChoicePrompt()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+        var method = ExtractMethodSource(source, "private async Task NewGameFlow()");
+
+        Assert.Contains("PromptGuardianCreationMode", method, StringComparison.Ordinal);
+        Assert.Contains("PromptAgentConsoleTextInput", method, StringComparison.Ordinal);
+        Assert.Contains("PromptAgentConsoleMenuSelection", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("new SelectionPrompt<string>()", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("var soulName = PromptTextInput(", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("var guardianDescription = PromptTextInput(", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void SystemGuardianPresetSelection_MustUseAgentConsoleCompatibleChoicePrompt()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+        var method = ExtractMethodSource(source, "private async Task<SystemGuardianLibraryService.SystemGuardianPresetDescriptor?> PromptSystemGuardianPresetSelectionAsync()");
+
+        Assert.Contains("PromptGuardianPresetChoice", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("new SelectionPrompt<string>()", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void GuardianSetupChoicePrompts_MustPublishAgentConsoleSnapshots()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+        var modeMethod = ExtractMethodSource(source, "private string PromptGuardianCreationMode()");
+        var presetMethod = ExtractMethodSource(source, "private int PromptGuardianPresetChoice(");
+
+        Assert.Contains("PromptAgentConsoleMenuSelection", modeMethod, StringComparison.Ordinal);
+        Assert.Contains("PromptAgentConsoleMenuSelection", presetMethod, StringComparison.Ordinal);
+        Assert.DoesNotContain("PromptAgentConsoleTextInput", modeMethod, StringComparison.Ordinal);
+        Assert.DoesNotContain("PromptAgentConsoleTextInput", presetMethod, StringComparison.Ordinal);
+        Assert.DoesNotContain("var input = PromptTextInput(", modeMethod, StringComparison.Ordinal);
+        Assert.DoesNotContain("var input = PromptTextInput(", presetMethod, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void IncarnationSetupTextPrompts_MustPublishAgentConsoleSnapshots()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+        var method = ExtractMethodSource(source, "private async Task HandleIncarnation()");
+
+        Assert.Contains("PromptAgentConsoleTextInput", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("var charDesc = PromptTextInput(", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("var worldDesc = PromptTextInput(", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("var circumstances = PromptTextInput(", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void IncarnationTriggerTransition_MustPublishAgentConsoleKeyAndStatSnapshots()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var triggerMethod = ExtractMethodSource(source, "private async Task<bool> CheckGmIncarnationTrigger(");
+        var statsMethod = ExtractMethodSourceToEnd(source, "private async Task ShowStatDistribution(");
+
+        Assert.Contains("ReadAgentConsoleKeyContinuation(", triggerMethod, StringComparison.Ordinal);
+        Assert.DoesNotContain("_inputSource.ReadKey(intercept: true);", triggerMethod, StringComparison.Ordinal);
+        Assert.Contains("PublishAgentConsoleStatAllocationSnapshot(", statsMethod, StringComparison.Ordinal);
+        Assert.Contains("ReadAgentConsoleKeyContinuation(", statsMethod, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RealmTransitionBanner_MustPublishAgentConsoleKeySnapshot()
+    {
+        var path = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
+            "GameInterface.cs");
+        var source = File.ReadAllText(path);
+        var method = ExtractMethodSource(source, "public static void RenderRealmTransition(");
+
+        Assert.Contains("AgentConsoleLiveInputSource", method, StringComparison.Ordinal);
+        Assert.Contains("PublishSnapshot", method, StringComparison.Ordinal);
+        Assert.Contains("InputKind = AgentConsoleInputKind.Key", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void GmResponseWaits_MustPublishAgentConsoleLoadingSnapshotBeforeTerminalWait()
+    {
+        var turnLifecycleSource = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var agentConsoleSource = ReadGameEnginePartialSource("GameEngine.AgentConsole.cs");
+
+        var waitMethod = ExtractMethodSource(turnLifecycleSource, "private async Task<bool> WaitForGmResponse()");
+        var rawWaitMethod = ExtractMethodSource(turnLifecycleSource, "private async Task<bool> WaitForGmResponseRaw()");
+
+        var waitPublish = waitMethod.IndexOf("PublishAgentConsoleGmWaitingSnapshot(", StringComparison.Ordinal);
+        var waitTerminal = waitMethod.IndexOf("WaitForTerminalSignalAsync()", StringComparison.Ordinal);
+        var rawWaitPublish = rawWaitMethod.IndexOf("PublishAgentConsoleGmWaitingSnapshot(", StringComparison.Ordinal);
+        var rawWaitTerminal = rawWaitMethod.IndexOf("WaitForTerminalSignalAsync()", StringComparison.Ordinal);
+
+        Assert.True(waitPublish >= 0, "Ordinary GM waits must publish an Agent Console loading snapshot.");
+        Assert.True(waitTerminal >= 0, "Ordinary GM waits must wait for terminal files.");
+        Assert.True(waitPublish < waitTerminal,
+            "Ordinary GM waits must publish an Agent Console loading snapshot before waiting for terminal files.");
+        Assert.True(rawWaitPublish >= 0, "Raw transition GM waits must publish an Agent Console loading snapshot.");
+        Assert.True(rawWaitTerminal >= 0, "Raw transition GM waits must wait for terminal files.");
+        Assert.True(rawWaitPublish < rawWaitTerminal,
+            "Raw transition GM waits must publish an Agent Console loading snapshot before waiting for terminal files.");
+
+        var helper = ExtractMethodSource(agentConsoleSource, "private void PublishAgentConsoleGmWaitingSnapshot(");
+        Assert.Contains("AgentConsoleMode.Loading", helper, StringComparison.Ordinal);
+        Assert.Contains("AwaitingInput = false", helper, StringComparison.Ordinal);
+        Assert.Contains("InputKind = AgentConsoleInputKind.None", helper, StringComparison.Ordinal);
+        Assert.Contains("ScreenId = \"gm-waiting\"", helper, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void OrdinaryPlayerTurnWait_MustPublishAgentConsoleLoadingSnapshotBeforeTerminalWait()
+    {
+        var turnLifecycleSource = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(turnLifecycleSource, "private async Task ProcessPlayerTurn(");
+
+        var publishIndex = method.IndexOf("PublishAgentConsoleGmWaitingSnapshot(", StringComparison.Ordinal);
+        var waitIndex = method.IndexOf("WaitForTerminalSignalAsync()", StringComparison.Ordinal);
+
+        Assert.True(publishIndex >= 0, "Ordinary player turns must publish an Agent Console GM-waiting snapshot.");
+        Assert.True(waitIndex >= 0, "Ordinary player turns must wait for terminal files.");
+        Assert.True(publishIndex < waitIndex,
+            "Ordinary player turns must publish an Agent Console GM-waiting snapshot before waiting for terminal files.");
     }
 
     [Fact]
@@ -318,7 +594,7 @@ public sealed class GameEngineSourceGuardTests
         var acceptedTurnAnchor = source.IndexOf("// Turn accepted — backup no longer needed", StringComparison.Ordinal);
         Assert.True(acceptedTurnAnchor >= 0);
 
-        var lifeTransitionIndex = source.IndexOf("await CheckLifeTransitions(activeSnapshotContext);", acceptedTurnAnchor, StringComparison.Ordinal);
+        var lifeTransitionIndex = source.IndexOf("CheckLifeTransitions(activeSnapshotContext)", acceptedTurnAnchor, StringComparison.Ordinal);
         var cleanupIndex = source.IndexOf("await CleanupAcceptedTurnTerminalArtifactsAsync();", acceptedTurnAnchor, StringComparison.Ordinal);
 
         Assert.True(lifeTransitionIndex >= 0);
@@ -333,7 +609,7 @@ public sealed class GameEngineSourceGuardTests
         var acceptedTurnAnchor = source.IndexOf("// Turn accepted — backup no longer needed", StringComparison.Ordinal);
         Assert.True(acceptedTurnAnchor >= 0);
 
-        var lifeTransitionIndex = source.IndexOf("await CheckLifeTransitions(activeSnapshotContext);", acceptedTurnAnchor, StringComparison.Ordinal);
+        var lifeTransitionIndex = source.IndexOf("CheckLifeTransitions(activeSnapshotContext)", acceptedTurnAnchor, StringComparison.Ordinal);
         var cleanupBackupIndex = source.IndexOf("CleanupBackup(backedUpFiles);", acceptedTurnAnchor, StringComparison.Ordinal);
 
         Assert.True(lifeTransitionIndex >= 0);
@@ -348,7 +624,7 @@ public sealed class GameEngineSourceGuardTests
         var acceptedTurnAnchor = source.IndexOf("// Turn accepted — backup no longer needed", StringComparison.Ordinal);
         Assert.True(acceptedTurnAnchor >= 0);
 
-        var lifeTransitionIndex = source.IndexOf("await CheckLifeTransitions(activeSnapshotContext);", acceptedTurnAnchor, StringComparison.Ordinal);
+        var lifeTransitionIndex = source.IndexOf("CheckLifeTransitions(activeSnapshotContext)", acceptedTurnAnchor, StringComparison.Ordinal);
 
         Assert.True(lifeTransitionIndex >= 0, "accepted-turn TriggerLifeEnd checks must use the already validated pending snapshot context because repair cleanup can remove active request marker files before lifecycle processing.");
     }
@@ -406,7 +682,7 @@ public sealed class GameEngineSourceGuardTests
     public void CheckLifeTransitions_MustClearAcceptedTurnReadySignalBeforeDispatchingLifeEvaluation()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
-        var transitionAnchor = source.IndexOf("private async Task CheckLifeTransitions", StringComparison.Ordinal);
+        var transitionAnchor = source.IndexOf("private async Task<bool> CheckLifeTransitions", StringComparison.Ordinal);
         Assert.True(transitionAnchor >= 0, "CheckLifeTransitions must exist.");
 
         var deleteLifeTransitionIndex = source.IndexOf("_fs.DeleteFile(\"game_state/control/life_transitions.json\");", transitionAnchor, StringComparison.Ordinal);
@@ -419,6 +695,48 @@ public sealed class GameEngineSourceGuardTests
         Assert.True(
             deleteLifeTransitionIndex < clearReadyIndex && clearReadyIndex < writeEvaluationRequestIndex,
             "Life Evaluation dispatch must remove stale ready/turn_complete.json from the accepted TriggerLifeEnd turn before writing the new input/turn_request.json.");
+    }
+
+    [Fact]
+    public void CheckLifeTransitions_DeathScreen_MustPublishAgentConsoleKeySnapshot()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var transitionAnchor = source.IndexOf("private async Task<bool> CheckLifeTransitions", StringComparison.Ordinal);
+        Assert.True(transitionAnchor >= 0, "CheckLifeTransitions must exist.");
+
+        var preDeathCaptureIndex = source.IndexOf("var preDeathInkFeathers", transitionAnchor, StringComparison.Ordinal);
+        Assert.True(preDeathCaptureIndex > transitionAnchor, "CheckLifeTransitions must capture pre-death reward state after the death screen.");
+
+        var deathScreenSource = source[transitionAnchor..preDeathCaptureIndex];
+
+        Assert.Contains("ReadAgentConsoleKeyContinuation(", deathScreenSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("_inputSource.ReadKey(intercept: true);", deathScreenSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ShowLifeEvaluationRewards_MustPublishAgentConsoleKeySnapshot()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(source, "private async Task ShowLifeEvaluationRewards(");
+
+        Assert.Contains("ReadAgentConsoleKeyContinuation(", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("_inputSource.ReadKey(intercept: true);", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void WaitForGmResponse_MustReturnAfterHandledLifeTransitionBeforeOldResponsePipelineContinues()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var waitMethod = ExtractMethodSource(source, "private async Task<bool> WaitForGmResponse()");
+
+        var lifeTransitionIndex = waitMethod.IndexOf("if (await CheckLifeTransitions(snapshotContext))", StringComparison.Ordinal);
+        var qteHandlingIndex = waitMethod.IndexOf("var qteHandling = await HandleAcceptedQteOfferAsync(response, snapshotContext);", StringComparison.Ordinal);
+        var oldResponseRewriteIndex = waitMethod.IndexOf("_lastResponse = qteHandling.Response;", StringComparison.Ordinal);
+
+        Assert.True(lifeTransitionIndex >= 0, "WaitForGmResponse must branch on handled life transitions.");
+        Assert.True(qteHandlingIndex > lifeTransitionIndex, "Handled life transition must be checked before QTE handling of the old Mortal response.");
+        Assert.True(oldResponseRewriteIndex > lifeTransitionIndex, "Handled life transition must be checked before _lastResponse can be overwritten by the old Mortal response.");
+        Assert.Contains("return true;", waitMethod[lifeTransitionIndex..qteHandlingIndex], StringComparison.Ordinal);
     }
 
     [Fact]
@@ -691,8 +1009,11 @@ public sealed class GameEngineSourceGuardTests
     {
         var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
 
-        Assert.Contains("var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();", source, StringComparison.Ordinal);
-        Assert.Contains("pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable || hasPendingTerminalSignal", source, StringComparison.Ordinal);
+        var method = ExtractMethodSource(source, "private async Task ContinueCurrentSessionFlow()");
+
+        Assert.Contains("var restoredResponse = await BuildGameResponseFromFiles();", method, StringComparison.Ordinal);
+        Assert.Contains("_lastResponse = MergeWithLastResponse(restoredResponse);", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable || hasPendingTerminalSignal", method, StringComparison.Ordinal);
         Assert.DoesNotContain("pendingManifest != null || _fs.FileExists(\"ready/turn_complete.json\")", source, StringComparison.Ordinal);
     }
 

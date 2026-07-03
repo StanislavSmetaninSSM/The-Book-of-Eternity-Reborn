@@ -148,7 +148,9 @@ public partial class ExplorerMode
             var entries = await ReadStoredAfterlifeArchiveEntriesAsync();
             if (entries.Count == 0)
             {
-                ShowEmptyPanel("📚 Архив души", "Архив души пока пуст.");
+                ShowEmptyPanel(
+                    "📚 Архив души",
+                    "Архив души пока пуст.\n\nСобытия посмертия и важные встречи записываются отдельно: откройте /хроники_посмертия.");
                 return;
             }
 
@@ -179,10 +181,11 @@ public partial class ExplorerMode
             {
                 var typeLabel = AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType);
                 var rarityColor = GetRarityColor(entry.Rarity);
+                var rarityLabel = DescribeRarityLabel(entry.Rarity);
                 var reservationLabel = entry.IsReserved
                     ? $" [yellow][ожидает: {Markup.Escape(AfterlifeArchiveState.GetReservationLabel(entry.ReservationKind))}][/]"
                     : string.Empty;
-                return ($"📚 {Markup.Escape(entry.Title)} [dim]({Markup.Escape(typeLabel)})[/] [{rarityColor}]{Markup.Escape(entry.Rarity)}[/]{reservationLabel}", entry.ArchiveId);
+                return ($"📚 {Markup.Escape(entry.Title)} [dim]({Markup.Escape(typeLabel)})[/] [{rarityColor}]{Markup.Escape(rarityLabel)}[/]{reservationLabel}", entry.ArchiveId);
             }).ToList());
             choices.Add("[grey]← Назад[/]");
 
@@ -1389,8 +1392,9 @@ public partial class ExplorerMode
             {
                 var (statusLabel, statusColor) = GetArchiveCandidateStatusLabel(candidate.Status);
                 var rarityColor = GetRarityColor(candidate.Rarity);
+                var rarityLabel = DescribeRarityLabel(candidate.Rarity);
                 var typeLabel = AfterlifeArchiveState.GetEntryTypeLabel(candidate.ProposedEntryType);
-                return ($"{GetArchiveCandidateStatusIcon(candidate.Status)} {Markup.Escape(candidate.Title)} [dim]({Markup.Escape(typeLabel)})[/] [{rarityColor}]{Markup.Escape(candidate.Rarity)}[/] [{statusColor}]{statusLabel}[/]", candidate.CandidateId);
+                return ($"{GetArchiveCandidateStatusIcon(candidate.Status)} {Markup.Escape(candidate.Title)} [dim]({Markup.Escape(typeLabel)})[/] [{rarityColor}]{Markup.Escape(rarityLabel)}[/] [{statusColor}]{statusLabel}[/]", candidate.CandidateId);
             }).ToList());
             choices.Add("[grey]← Назад[/]");
 
@@ -2234,6 +2238,12 @@ public partial class ExplorerMode
 
         if (string.Equals(slot, "Default", StringComparison.OrdinalIgnoreCase))
             return "По умолчанию";
+
+        if (string.Equals(slot, "talisman", StringComparison.OrdinalIgnoreCase))
+            return "Талисман";
+
+        if (string.Equals(slot, "relic", StringComparison.OrdinalIgnoreCase))
+            return "Реликвия";
 
         return SlotLabels.TryGetValue(slot, out var label)
             ? label

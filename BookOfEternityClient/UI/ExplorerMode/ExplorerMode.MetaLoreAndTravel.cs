@@ -554,7 +554,7 @@ public partial class ExplorerMode
                 if (string.Equals(n, curName, StringComparison.OrdinalIgnoreCase) || !seen.Add(StableLocationKey(loc)))
                     continue;
 
-                var lt = GetStr(loc, "locationType", "");
+                var lt = FormatLocationTypeForPlayer(GetStr(loc, "locationType", ""));
                 menuItems.Add(($"  🗺 [dim]{Markup.Escape(n)}[/]" +
                     (!string.IsNullOrEmpty(lt) ? $" [dim]({Markup.Escape(lt)})[/]" : ""), "discovered", loc));
             }
@@ -565,7 +565,7 @@ public partial class ExplorerMode
                 if (string.Equals(n, curName, StringComparison.OrdinalIgnoreCase) || !seen.Add(StableLocationKey(loc)))
                     continue;
 
-                var lt = GetStr(loc, "locationType", "");
+                var lt = FormatLocationTypeForPlayer(GetStr(loc, "locationType", ""));
                 menuItems.Add(($"  🗺 [dim]{Markup.Escape(n)}[/] [dim](обновлено)[/]" +
                     (!string.IsNullOrEmpty(lt) ? $" [dim]({Markup.Escape(lt)})[/]" : ""), "discovered", loc));
             }

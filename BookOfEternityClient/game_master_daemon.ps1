@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Game Master Daemon — мост между C# клиентом и CLI-агентом геймастера.
 
@@ -106,8 +106,14 @@ $CliBindingFile = Join-Path $ControlDir "gm_cli_window_binding.json"
 $BridgeStatusFile = Join-Path $ControlDir "gm_bridge_status.json"
 $DaemonStatusFile = Join-Path $ControlDir "gm_daemon_status.json"
 $DaemonFatalErrorFile = Join-Path $ControlDir "gm_daemon_fatal_error.json"
+$ObservedTerminalRequestKeysFile = Join-Path $ControlDir "gm_observed_terminal_requests.json"
+$TimeoutBridgeCleanupFile = Join-Path $ControlDir "gm_timeout_bridge_cleanup.json"
+$ArtifactWriteStallReportFile = Join-Path $ControlDir "gm_artifact_write_stall_report.json"
 $BridgeControlScript = Join-Path $PSScriptRoot "Launcher\bookofeternity.ps1"
 $script:GmTrajectoryLedgerPath = Join-Path $ControlDir "gm_trajectory_ledger.jsonl"
+$script:BridgeDispatchMaxWaitSeconds = 60
+$script:ArtifactWritingStallMinimumSeconds = 120
+$script:ArtifactWritingStallNoProgressSeconds = 180
 $script:DaemonCommandLine = [Environment]::CommandLine
 $script:DaemonLastHeartbeatUtc = [DateTime]::MinValue
 $script:DaemonFatalError = $null
@@ -120,7 +126,7 @@ foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
 }
 
 $script:GmTurnHelperBootstrapPath = Join-Path $ControlDir "gm_turn_helper.bootstrap.ps1"
-$script:GmTurnHelperDirective = " GM turn helper: dot-source '$script:GmTurnHelperBootstrapPath' before writing output/state files. Use Read-BoeJson -RelativePath '<file>' for JSON reads, Write-BoeJson -RelativePath '<file>' -Data <object> for JSON writes, Get-BoeJsonValue -Object <jsonObject> -Names @('NPCId','npcId','id') for optional or differently cased JSON fields, Set-BoeJsonProperty -Object <jsonObject> -Name '<field>' -Value <value> to add or update optional object properties, and Add-BoeJsonArrayItem -Object <jsonObject> -PropertyName '<arrayProperty>' -Item <object> -UniqueBy '<idField>' when adding/upserting JSON array entries. PowerShell collapses single JSON array items into scalars, so prefer Add-BoeJsonArrayItem over manual `$array += ...` for fields such as customProperties, entries, objectives, contents, journalEntries, and similar collections. Use Complete-BoeTurn -FilesModified @('<file>') as the LAST action for successful turns, Fail-BoeTurn -ErrorMessage '<reason>' as the LAST action for terminal errors, and Complete-BoeValidationRepair as the LAST action after validation repairs. Fail-BoeTurn writes ready/turn_error.json and then fails the shell command deliberately, so do not report success after calling it. These helpers copy exact sessionId/requestId/turnNumber from the current client-authored request and refuse stale missing context. Complete-BoeTurn and Fail-BoeTurn also require current game_state/control/pending_turn_snapshot.json plus game_state/control/pending_turn_snapshot.authority.json with matching sessionId/requestId/turnNumber; if that pending authority is missing, stop and do not write a terminal signal. Helper writes and filesModified reject client-owned runtime state such as input/turn_request.json, game_state/history/chat_log.json, pending_turn_snapshot files, validation_repair_request.json, validation_diagnostic_failure_report.json, terminal_protocol_failure_request.json, gm_bridge_status.json, and stories/*.jsonl; let the client maintain those surfaces. When currentRealm is Chaos Sea or Shining Abode, helper writes and filesModified reject wrong-realm Mortal World profile paths under game_state/world, game_state/npcs, game_state/factions, game_state/player, game_state/inventory, game_state/combat, and game_state/quests; Complete-BoeTurn and Complete-BoeValidationRepair also compare these paths with game_state/control/pending_turn_snapshot and block raw wrong-realm mutations before writing completion signals. Never delete or rewrite input/turn_request.json or pending_turn_snapshot files; they are client-owned authority until the client closes the wait cycle."
+$script:GmTurnHelperDirective = " GM turn helper: dot-source '$script:GmTurnHelperBootstrapPath' before writing output/state files. Use Read-BoeJson -RelativePath '<file>' for JSON reads, Write-BoeJson -RelativePath '<file>' -Data <object> for JSON writes, Get-BoeJsonValue -Object <jsonObject> -Names @('NPCId','npcId','id') for optional or differently cased JSON fields, Set-BoeJsonProperty -Object <jsonObject> -Name '<field>' -Value <value> to add or update optional object properties, and Add-BoeJsonArrayItem -Object <jsonObject> -PropertyName '<arrayProperty>' -Item <value> -UniqueBy '<idField>' when adding/upserting JSON array entries. PowerShell collapses single JSON array items into scalars, so prefer Add-BoeJsonArrayItem over manual `$array += ...` for fields such as customProperties, entries, objectives, contents, journalEntries, and similar collections. For item journalEntries specifically, pass plain non-empty player-facing strings as -Item values without technical turn anchors such as '#[3].'; journalEntries is a string array, not an array of objects. Use Complete-BoeTurn -FilesModified @('<file>') as the LAST action for successful turns, Fail-BoeTurn -ErrorMessage '<reason>' as the LAST action for terminal errors, and Complete-BoeValidationRepair as the LAST action after validation repairs. Fail-BoeTurn writes ready/turn_error.json and then fails the shell command deliberately, so do not report success after calling it. These helpers copy exact sessionId/requestId/turnNumber from the current client-authored request and refuse stale missing context. Complete-BoeTurn and Fail-BoeTurn also require current game_state/control/pending_turn_snapshot.json plus game_state/control/pending_turn_snapshot.authority.json with matching sessionId/requestId/turnNumber; if that pending authority is missing, stop and do not write a terminal signal. Helper writes and filesModified reject client-owned runtime state such as input/turn_request.json, game_state/history/chat_log.json, pending_turn_snapshot files, validation_repair_request.json, validation_diagnostic_failure_report.json, terminal_protocol_failure_request.json, gm_bridge_status.json, and stories/*.jsonl; let the client maintain those surfaces. When currentRealm is Chaos Sea or Shining Abode, helper writes and filesModified reject wrong-realm Mortal World profile paths under game_state/world, game_state/npcs, game_state/factions, game_state/player, game_state/inventory, game_state/combat, and game_state/quests; Complete-BoeTurn and Complete-BoeValidationRepair also compare these paths with game_state/control/pending_turn_snapshot and block raw wrong-realm mutations before writing completion signals. Never delete or rewrite input/turn_request.json or pending_turn_snapshot files; they are client-owned authority until the client closes the wait cycle."
 $script:GmContextPackRoot = Join-Path $ControlDir "gm_context_pack"
 $script:GmContextPackManifestPath = Join-Path $script:GmContextPackRoot "context_pack_manifest.json"
 $script:GmContextPackDirective = ""
@@ -131,6 +137,10 @@ $script:CompactActorReasoningTemplatePath = Join-Path $script:GmContextPackRoot 
 $script:CompactMortalNpcTemplatePath = Join-Path $script:GmContextPackRoot "Templates\MORTAL_NPC_UPDATE_TEMPLATE.md"
 $script:CompactMortalFactionTemplatePath = Join-Path $script:GmContextPackRoot "Templates\MORTAL_FACTION_UPDATE_TEMPLATE.md"
 $script:CompactMortalLocationTemplatePath = Join-Path $script:GmContextPackRoot "Templates\MORTAL_LOCATION_TRANSITION_TEMPLATE.md"
+$script:CompactMortalSkillTemplatePath = Join-Path $script:GmContextPackRoot "Templates\MORTAL_SKILL_PROGRESSION_TEMPLATE.md"
+$script:CompactMortalExperienceTemplatePath = Join-Path $script:GmContextPackRoot "Templates\MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md"
+$script:CompactMortalCombatTemplatePath = Join-Path $script:GmContextPackRoot "Templates\MORTAL_COMBAT_STATE_TEMPLATE.md"
+$script:CompactAfterlifeChronicleTemplatePath = Join-Path $script:GmContextPackRoot "Templates\AFTERLIFE_CHRONICLE_TEMPLATE.md"
 $script:CompactTempoAdvantageTemplatePath = Join-Path $script:GmContextPackRoot "Templates\AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json"
 $script:GmExperienceLessonJsonPath = Join-Path $script:GmContextPackRoot "Lessons\GM_EXPERIENCE_LESSONS.json"
 $script:GmExperienceLessonMarkdownPath = Join-Path $script:GmContextPackRoot "Lessons\GM_EXPERIENCE_LESSONS.md"
@@ -158,6 +168,7 @@ function New-StringFromCodePoints {
 $script:ActorSituationLabel = New-StringFromCodePoints @(0x0421, 0x0438, 0x0442, 0x0443, 0x0430, 0x0446, 0x0438, 0x044F)
 $script:ActorThoughtsLabel = New-StringFromCodePoints @(0x041C, 0x044B, 0x0441, 0x043B, 0x0438)
 $script:ActorActionsLabel = New-StringFromCodePoints @(0x0414, 0x0435, 0x0439, 0x0441, 0x0442, 0x0432, 0x0438, 0x044F)
+$script:ActorLocationLabel = (New-StringFromCodePoints @(0x0422, 0x0435, 0x043A, 0x0443, 0x0449, 0x0430, 0x044F, 0x20, 0x043B, 0x043E, 0x043A, 0x0430, 0x0446, 0x0438, 0x044F)) + " / Current location"
 
 function Write-GmTurnHelperBootstrap {
     $helperPath = Join-Path $PSScriptRoot "Launcher\GM_Turn_Helper.ps1"
@@ -264,6 +275,98 @@ function Get-GmExperienceObjectRealm {
     return "Unknown"
 }
 
+function Test-GmExperienceIssueDescribesItemDurabilityPercentage {
+    param([object]$Issue)
+
+    if ($null -eq $Issue) {
+        return $false
+    }
+
+    $pathParts = @()
+    foreach ($name in @("path", "filePath", "Path", "FilePath")) {
+        $prop = $Issue.PSObject.Properties[$name]
+        if ($null -ne $prop -and $null -ne $prop.Value -and -not [string]::IsNullOrWhiteSpace([string]$prop.Value)) {
+            $pathParts += [string]$prop.Value
+        }
+    }
+
+    $messageParts = @()
+    foreach ($name in @("message", "repairHint", "expected", "Message", "RepairHint", "Expected")) {
+        $prop = $Issue.PSObject.Properties[$name]
+        if ($null -ne $prop -and $null -ne $prop.Value -and -not [string]::IsNullOrWhiteSpace([string]$prop.Value)) {
+            $messageParts += [string]$prop.Value
+        }
+    }
+
+    $pathText = ($pathParts -join " ").ToLowerInvariant()
+    $messageText = ($messageParts -join " ").ToLowerInvariant()
+    return $pathText.Contains("game_state/inventory/items.json") -and
+        $pathText.Contains("durability") -and
+        $messageText.Contains("percentage string")
+}
+
+function Test-GmExperienceIssueDescribesItemJournalEntriesStringArray {
+    param([object]$Issue)
+
+    if ($null -eq $Issue) {
+        return $false
+    }
+
+    $pathParts = @()
+    foreach ($name in @("path", "filePath", "Path", "FilePath")) {
+        $prop = $Issue.PSObject.Properties[$name]
+        if ($null -ne $prop -and $null -ne $prop.Value -and -not [string]::IsNullOrWhiteSpace([string]$prop.Value)) {
+            $pathParts += [string]$prop.Value
+        }
+    }
+
+    $messageParts = @()
+    foreach ($name in @("code", "message", "repairHint", "expected", "actual", "Code", "Message", "RepairHint", "Expected", "Actual")) {
+        $prop = $Issue.PSObject.Properties[$name]
+        if ($null -ne $prop -and $null -ne $prop.Value -and -not [string]::IsNullOrWhiteSpace([string]$prop.Value)) {
+            $messageParts += [string]$prop.Value
+        }
+    }
+
+    $pathText = ($pathParts -join " ").ToLowerInvariant()
+    $messageText = ($messageParts -join " ").ToLowerInvariant()
+    return $pathText.Contains("game_state/inventory/items.json") -and
+        $pathText.Contains("journalentries") -and
+        ($messageText.Contains("invalid_string_array_item") -or
+            $messageText.Contains("non-empty string") -or
+            $messageText.Contains("непустой строк"))
+}
+
+function Test-GmExperienceIssueDescribesNarrativeResponseAfterlifeChronicleWrongSurface {
+    param([object]$Issue)
+
+    if ($null -eq $Issue) {
+        return $false
+    }
+
+    $pathParts = @()
+    foreach ($name in @("path", "filePath", "Path", "FilePath")) {
+        $prop = $Issue.PSObject.Properties[$name]
+        if ($null -ne $prop -and $null -ne $prop.Value -and -not [string]::IsNullOrWhiteSpace([string]$prop.Value)) {
+            $pathParts += [string]$prop.Value
+        }
+    }
+
+    $messageParts = @()
+    foreach ($name in @("code", "message", "repairHint", "expected", "actual", "Code", "Message", "RepairHint", "Expected", "Actual")) {
+        $prop = $Issue.PSObject.Properties[$name]
+        if ($null -ne $prop -and $null -ne $prop.Value -and -not [string]::IsNullOrWhiteSpace([string]$prop.Value)) {
+            $messageParts += [string]$prop.Value
+        }
+    }
+
+    $pathText = ($pathParts -join " ").ToLowerInvariant()
+    $messageText = ($messageParts -join " ").ToLowerInvariant()
+    return $pathText.Contains("output/narrative_response.json") -and
+        ($pathText.Contains("afterlifechronicleupdates") -or $messageText.Contains("afterlifechronicleupdates")) -and
+        ($messageText.Contains("narrative_response_unknown_field") -or $messageText.Contains("unsupported field") -or $messageText.Contains("response | timestamp"))
+}
+
 function Get-GmExperienceIssueKinds {
     param([object]$Object)
 
@@ -276,6 +379,15 @@ function Get-GmExperienceIssueKinds {
             elseif ($null -ne $err.category -and -not [string]::IsNullOrWhiteSpace([string]$err.category)) {
                 $issueKinds += [string]$err.category
             }
+            if (Test-GmExperienceIssueDescribesItemDurabilityPercentage -Issue $err) {
+                $issueKinds += "item_durability_percentage_string"
+            }
+            if (Test-GmExperienceIssueDescribesItemJournalEntriesStringArray -Issue $err) {
+                $issueKinds += "item_journal_entries_string_array"
+            }
+            if (Test-GmExperienceIssueDescribesNarrativeResponseAfterlifeChronicleWrongSurface -Issue $err) {
+                $issueKinds += "narrative_response_afterlife_chronicle_wrong_surface"
+            }
         }
     }
 
@@ -283,6 +395,26 @@ function Get-GmExperienceIssueKinds {
         foreach ($issueKind in @($Object.validation.issueKinds)) {
             if ($null -ne $issueKind -and -not [string]::IsNullOrWhiteSpace([string]$issueKind)) {
                 $issueKinds += [string]$issueKind
+            }
+        }
+    }
+
+    if ($null -ne $Object.validation -and $null -ne $Object.validation.diagnostics) {
+        foreach ($diag in @($Object.validation.diagnostics)) {
+            if ($null -ne $diag.code -and -not [string]::IsNullOrWhiteSpace([string]$diag.code)) {
+                $issueKinds += [string]$diag.code
+            }
+            elseif ($null -ne $diag.category -and -not [string]::IsNullOrWhiteSpace([string]$diag.category)) {
+                $issueKinds += [string]$diag.category
+            }
+            if (Test-GmExperienceIssueDescribesItemDurabilityPercentage -Issue $diag) {
+                $issueKinds += "item_durability_percentage_string"
+            }
+            if (Test-GmExperienceIssueDescribesItemJournalEntriesStringArray -Issue $diag) {
+                $issueKinds += "item_journal_entries_string_array"
+            }
+            if (Test-GmExperienceIssueDescribesNarrativeResponseAfterlifeChronicleWrongSurface -Issue $diag) {
+                $issueKinds += "narrative_response_afterlife_chronicle_wrong_surface"
             }
         }
     }
@@ -390,6 +522,10 @@ function Get-GmExperiencePreferredSurface {
     if ($joined.Contains("current_location_unknown_location_id") -or
         $joined.Contains("npc_unknown_current_location_id") -or
         $joined.Contains("world_map_new_location") -or
+        $joined.Contains("world_map_adjacency") -or
+        $joined.Contains("world_map_link") -or
+        $joined.Contains("world_map_storage") -or
+        $joined.Contains("world_map_threat") -or
         $joined.Contains("mortal_location_transition")) {
         return "MORTAL_LOCATION_TRANSITION_TEMPLATE.md"
     }
@@ -406,8 +542,42 @@ function Get-GmExperiencePreferredSurface {
         return "ACTOR_REASONING_TEMPLATE.md"
     }
 
+    if ($joined.Contains("skill") -or $joined.Contains("mastery")) {
+        return "MORTAL_SKILL_PROGRESSION_TEMPLATE.md"
+    }
+
+    if ($joined.Contains("game_state/player/experience") -or
+        $joined.Contains("experiencegained") -or
+        $joined.Contains("currentexperience") -or
+        $joined.Contains("experiencefornextlevel") -or
+        $joined.Contains("playerlevel") -or
+        $joined.Contains("level-up") -or
+        $joined.Contains("level_up") -or
+        $joined.Contains("stat_points") -or
+        $joined.Contains("stat points") -or
+        $joined.Contains("statsincreased")) {
+        return "MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md"
+    }
+
+    if ($joined.Contains("mortal_combat_state_missing") -or
+        $joined.Contains("mortal_combat") -or
+        $joined.Contains("combat_state") -or
+        $joined.Contains("combat_log")) {
+        return "MORTAL_COMBAT_STATE_TEMPLATE.md"
+    }
+
+    if ($joined.Contains("afterlife_conflict_reward") -or
+        $joined.Contains("afterlife_entity_profile") -or
+        $joined.Contains("special_art_learning")) {
+        return "VALIDATION_REPAIR_TEMPLATE.md"
+    }
+
     if ($joined.Contains("progression")) {
         return "PROGRESSION_REPORT_TEMPLATE.json"
+    }
+
+    if ($joined.Contains("narrative_response_afterlife_chronicle_wrong_surface")) {
+        return "AFTERLIFE_CHRONICLE_TEMPLATE.md"
     }
 
     if ($joined.Contains("terminal")) {
@@ -433,14 +603,52 @@ function New-GmExperienceLesson {
     $hasMortalNpcIssue = $preferredSurface -eq "MORTAL_NPC_UPDATE_TEMPLATE.md"
     $hasMortalFactionIssue = $preferredSurface -eq "MORTAL_FACTION_UPDATE_TEMPLATE.md"
     $hasMortalLocationIssue = $preferredSurface -eq "MORTAL_LOCATION_TRANSITION_TEMPLATE.md"
+    $joinedIssues = ($issueKinds -join " ").ToLowerInvariant()
+    $hasMortalItemDurabilityIssue = $joinedIssues.Contains("item_durability_percentage_string") -or
+        $joinedIssues.Contains("item_missing_durability")
+    $hasMortalItemJournalEntriesIssue = $joinedIssues.Contains("item_journal_entries_string_array")
+    $hasNarrativeResponseAfterlifeChronicleWrongSurface = $joinedIssues.Contains("narrative_response_afterlife_chronicle_wrong_surface")
+    $hasMortalSkillIssue = $preferredSurface -eq "MORTAL_SKILL_PROGRESSION_TEMPLATE.md"
+    $hasMortalExperienceIssue = $preferredSurface -eq "MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md"
+    $hasMortalCombatIssue = $preferredSurface -eq "MORTAL_COMBAT_STATE_TEMPLATE.md"
+    $repairPacketText = (($repairPacketRefs | ForEach-Object { [string]$_ }) -join " ").ToLowerInvariant()
+    $hasAfterlifeConflictRewardIssue = $joinedIssues.Contains("afterlife_conflict_reward") -or
+        $repairPacketText.Contains("afterlife_spiritual_conflict_reward_repair")
+    $hasAfterlifeEntityProfileScaffoldIssue = $joinedIssues.Contains("afterlife_entity_profile") -or
+        $joinedIssues.Contains("special_art_learning") -or
+        $repairPacketText.Contains("afterlife_entity_profile_scaffold_repair")
     $fix = if ($hasMortalLocationIssue) {
-        "Use MORTAL_LOCATION_TRANSITION_TEMPLATE.md before editing game_state/world/current_location.json, game_state/world/world_map.json, or NPC location ids. Register durable destination locations in world_map first, then update current_location and NPC currentLocationId/currentLocationName only to known ids. Resolve duplicate coordinates in same-turn map updates. If the place is narrative color inside the current room, keep current_location unchanged and describe it as part of the existing location."
+        "Use MORTAL_LOCATION_TRANSITION_TEMPLATE.md before editing game_state/world/current_location.json, game_state/world/world_map.json, or NPC location ids. Register durable destination locations in world_map first, then update current_location and NPC currentLocationId/currentLocationName only to known ids. Every world_map adjacency/link/storage/threat target must point to an existing locationId or a same-turn newLocations.initialId that is fully materialized in the same response; do not leave unknown target/source ids. Resolve duplicate coordinates in same-turn map updates. If the place is narrative color inside the current room, keep current_location unchanged and describe it as part of the existing location."
     }
     elseif ($hasMortalFactionIssue) {
         "Use MORTAL_FACTION_UPDATE_TEMPLATE.md before editing game_state/factions/*. For unknown faction ids, choose one explicit path: reference an existing canonical factionId from faction_core.json, create the missing faction as a complete factions[] object when the story truly introduced it, or remove/retarget sidecar entries that point to a faction that should not exist. Preserve ranks, branches, chronicles, relations, projects, resources, and reputation details; do not silence validation by deleting unrelated faction data."
     }
     elseif ($hasMortalNpcIssue) {
-        "Use MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json. Materialize meaningful Mortal World NPCs through UpdateNPCs/NPCsInScene. For same-turn scene NPCs set initialLocationId to the current location id, currentLocationId to JSON null, currentLocationName to the visible location, and keep NPCsInScene/NPCs full objects, relationshipLock, goals, personalityTraits, attitude, and culturalStance in canonical shapes. If an NPC is only background-only color, move the name from Relevant actors to Actors outside scope instead of creating a partial NPC object."
+        "Use MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json. Materialize meaningful Mortal World NPCs through UpdateNPCs/NPCsInScene as full objects with relationshipLock, goals, personalityTraits, attitude, and culturalStance in canonical shapes. Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; use a stable role-based visible name until the real name is learned. NPCsInScene is only for actors physically present in currentLocationData: voices behind a door, people near nearbyExitLocationId, nearby corridors, and route pressure stay in narrative/location/quest/faction memory or Actors outside scope until they are actually in the current scene. For NPCsInScene in a known current location, set currentLocationId to currentLocationData.locationId and initialLocationId to JSON null. For NPCsInScene in a same-turn new location, set initialLocationId to currentLocationData.initialId/newLocations.initialId and currentLocationId to JSON null. If an NPC is only background-only color, move the name from Relevant actors to Actors outside scope instead of creating a partial NPC object."
+    }
+    elseif ($hasMortalSkillIssue) {
+        "Use MORTAL_SKILL_PROGRESSION_TEMPLATE.md before writing Mortal World training, skill unlocks, active skill use, or mastery updates. Attribute-only checks may stay prose/math only, but prose-only learning must be avoided when the fiction says the player learned or practiced a concrete skill: create/update passiveSkillChanges or activeSkillChanges, and initialize/update skillMasteryChanges for active skills."
+    }
+    elseif ($hasMortalExperienceIssue) {
+        "Use MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md before awarding Mortal World XP, resolving combat rewards, or crossing a level threshold. Update game_state/player/experience.json through experienceGained/currentExperience/totalExperience/playerLevel metadata, include the changed file in Complete-BoeTurn, and let the client-owned level-up/stat allocation screen handle unspent stat points after the accepted turn."
+    }
+    elseif ($hasMortalCombatIssue) {
+        "Use MORTAL_COMBAT_STATE_TEMPLATE.md when a Mortal World turn resolves open combat. If the narrative has an enemy exchange plus XP, active-skill mastery, or resource changes, leave /бой useful by writing game_state/combat/combat_log.json and, when relevant, enemies.json/allies.json."
+    }
+    elseif ($hasAfterlifeConflictRewardIssue) {
+        "Use validation_repair_request.json.harnessRepairPackets[] kind afterlife_spiritual_conflict_reward_repair before editing game_state/meta/afterlife_spiritual_conflict_state.json. Currency rewardAudit is allowed only for resolved contested player victory with diceAudit.outcomeBand player_success or decisive_player_success. For negotiated, training-only, withdrawn, failed, or non-contested outcomes, remove rewardAudit and matching currency reward deltas while preserving learning, chronicle, relationship, and narrative consequences."
+    }
+    elseif ($hasAfterlifeEntityProfileScaffoldIssue) {
+        "Use validation_repair_request.json.harnessRepairPackets[] kind afterlife_entity_profile_scaffold_repair before editing game_state/meta/afterlife_entity_profiles.json. Patch the minimum profile scaffold in place: goals as object with goalId/shortTermGoal/longTermGoal/plan/gmThoughtsSummary/updatedAtTurn, progressionStrategy with strategyId/summary/priorityOrder/resourceReserve/allowedSpends/forbiddenSpends, ledger as array, and profileCommands.specialArtLearningReceipts with receiptId/artId/teacherActorType/teacherActorId/playerActorId/trainingConditionSatisfied/learnedAtTurn/roleplayEvidence/summary plus initialTier absent or 0."
+    }
+    elseif ($hasMortalItemDurabilityIssue) {
+        "Use VALIDATION_REPAIR_TEMPLATE.md and the current harnessRepairPackets before editing game_state/inventory/items.json. For item durability, write a percentage string such as 100% for intact items, never a bare number such as 100. Preserve the item and patch only the malformed durability/shape fields named by validation."
+    }
+    elseif ($hasMortalItemJournalEntriesIssue) {
+        "Use VALIDATION_REPAIR_TEMPLATE.md and the current harnessRepairPackets before editing game_state/inventory/items.json. For item journalEntries, write an array of non-empty strings, not objects; each entry should be a single player-facing note string without technical turn anchors, for example 'The seal matched the wax mark.' Preserve the item and patch only the malformed journalEntries fields named by validation."
+    }
+    elseif ($hasNarrativeResponseAfterlifeChronicleWrongSurface) {
+        "Use TURN_OUTPUT_TEMPLATE.md for output/narrative_response.json: only response and timestamp are allowed there. Never put afterlifeChronicleUpdates into output/narrative_response.json. Use AFTERLIFE_CHRONICLE_TEMPLATE.md and the afterlifeChronicleUpdates surface for game_state/meta/afterlife_chronicles.json external memory, then include game_state/meta/afterlife_chronicles.json in Complete-BoeTurn -FilesModified when that state was changed."
     }
     elseif ($repairPacketRefs.Count -gt 0) {
         "Open validation_repair_request.json.harnessRepairPackets first, patch only named files, then use the compact repair/template surface."
@@ -459,6 +667,15 @@ function New-GmExperienceLesson {
         }
         elseif ($preferredSurface -eq "MORTAL_LOCATION_TRANSITION_TEMPLATE.md") {
             $templateVersion = if ($null -ne $Record.templateVersions.mortalLocation) { [string]$Record.templateVersions.mortalLocation } else { "v1" }
+        }
+        elseif ($preferredSurface -eq "MORTAL_SKILL_PROGRESSION_TEMPLATE.md") {
+            $templateVersion = if ($null -ne $Record.templateVersions.mortalSkill) { [string]$Record.templateVersions.mortalSkill } else { "v1" }
+        }
+        elseif ($preferredSurface -eq "MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md") {
+            $templateVersion = if ($null -ne $Record.templateVersions.mortalExperience) { [string]$Record.templateVersions.mortalExperience } else { "v1" }
+        }
+        elseif ($preferredSurface -eq "MORTAL_COMBAT_STATE_TEMPLATE.md") {
+            $templateVersion = if ($null -ne $Record.templateVersions.mortalCombat) { [string]$Record.templateVersions.mortalCombat } else { "v1" }
         }
         elseif ($preferredSurface -eq "MORTAL_FACTION_UPDATE_TEMPLATE.md") {
             $templateVersion = if ($null -ne $Record.templateVersions.mortalFaction) { [string]$Record.templateVersions.mortalFaction } else { "v1" }
@@ -620,6 +837,64 @@ function Write-GmExperienceLessons {
     }
 }
 
+function Get-GmExperiencePromptDigest {
+    param(
+        [int]$MaxLessons = 3,
+        [int]$MaxFixChars = 520
+    )
+
+    if (!(Test-Path $script:GmExperienceLessonJsonPath)) {
+        return ""
+    }
+
+    try {
+        $payload = Get-Content -LiteralPath $script:GmExperienceLessonJsonPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    }
+    catch {
+        return ""
+    }
+
+    $lessons = @()
+    if ($null -ne $payload -and $null -ne $payload.lessons) {
+        $lessons = @($payload.lessons)
+    }
+
+    if ($lessons.Count -eq 0) {
+        return ""
+    }
+
+    $lines = @(
+        "",
+        "RLM PRE-TURN LESSONS: compact hints from accepted prior repairs. Use them before writing this turn; validators, current compact templates, and repair packets remain authoritative."
+    )
+
+    foreach ($lesson in @($lessons | Select-Object -First $MaxLessons)) {
+        $issues = "unclassified"
+        if ($null -ne $lesson.match -and $null -ne $lesson.match.issueKinds) {
+            $issueArray = @($lesson.match.issueKinds) | ForEach-Object { [string]$_ } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+            if ($issueArray.Count -gt 0) {
+                $issues = $issueArray -join ", "
+            }
+        }
+
+        $surface = if ($null -ne $lesson.preferredHarnessSurface -and -not [string]::IsNullOrWhiteSpace([string]$lesson.preferredHarnessSurface)) {
+            [string]$lesson.preferredHarnessSurface
+        } else {
+            "current compact template"
+        }
+
+        $fix = if ($null -ne $lesson.acceptedFix) { [string]$lesson.acceptedFix } else { "" }
+        $fix = ($fix -replace "\s+", " ").Trim()
+        if ($fix.Length -gt $MaxFixChars) {
+            $fix = $fix.Substring(0, $MaxFixChars - 1) + "…"
+        }
+
+        $lines += "- issues=$issues; preferredHarnessSurface=$surface; acceptedFix=$fix"
+    }
+
+    return (($lines -join "`n") + "`n")
+}
+
 function Write-GmSafeProbes {
     $probeDir = Split-Path $script:GmSafeProbeJsonPath -Parent
     if (!(Test-Path $probeDir)) {
@@ -670,7 +945,7 @@ function Write-GmSafeProbes {
             probeId = "allowed_output_templates"
             purpose = "Point to compact executable templates for common output shapes."
             readOnly = $true
-            sourceAuthority = @("Templates/TURN_OUTPUT_TEMPLATE.md", "Templates/VALIDATION_REPAIR_TEMPLATE.md", "Templates/PROGRESSION_REPORT_TEMPLATE.json", "Templates/ACTOR_REASONING_TEMPLATE.md", "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md", "Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md", "Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md", "Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json")
+            sourceAuthority = @("Templates/TURN_OUTPUT_TEMPLATE.md", "Templates/VALIDATION_REPAIR_TEMPLATE.md", "Templates/PROGRESSION_REPORT_TEMPLATE.json", "Templates/ACTOR_REASONING_TEMPLATE.md", "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md", "Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md", "Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md", "Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md", "Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md", "Templates/MORTAL_COMBAT_STATE_TEMPLATE.md", "Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md", "Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json")
             outputShape = [ordered]@{
                 templateRefs = @()
                 version = "v1"
@@ -894,6 +1169,7 @@ Use this before opening large examples for ordinary live turns.
 
 1. Dot-source `game_state/control/gm_turn_helper.bootstrap.ps1`.
 2. Read `input/turn_request.json`, `game_state/meta/soul_state.json`, and the minimal state files needed for the current realm.
+   - If `input/turn_request.json.afterlifeSpiritualConflictPreview` exists, read it before writing an afterlife spiritual conflict exchange; copy its authoritative action-cost tiers/costs and dice outcome preview instead of guessing deterministic math.
 3. Write player-facing output first, then structured state/output files.
 4. Finish with `Complete-BoeTurn -FilesModified @(...)` as the last command.
 
@@ -903,6 +1179,14 @@ Use this before opening large examples for ordinary live turns.
 - `output/debug_logs.json`: short GM audit with scope declaration and actor reasoning.
 - `output/interface_updates.json`: UI hints only when useful.
 - `game_state/control/progression_report.json`: only when `progressionControl` says scheduler work is due.
+
+## Pre-turn validation guard
+
+- Always include timestamp in both output/narrative_response.json and output/debug_logs.json.
+- Do not skip NPC Scope during incarnation bootstrap, even if the scene looks like a simple transition; write relevant actors or explicitly state that no actor is relevant.
+- Copy exact sessionId/requestId/turnNumber and include every processed-count field even when value is 0 when `progressionControl` requires a progression report.
+- If afterlife memory mentions a mortal destination, use localized player-facing realm terms in visible prose; do not write internal labels such as `MortalWorld`, `Mortal World`, `ChaosSea`, or `ShiningAbode`.
+- For fresh Mortal bootstrap, copy canonical coordinates from game_state/control/mortal_bootstrap_scaffold.json `canonicalCoordinateAuthority`. This prevents `current_location_coordinates_mismatch`: the same locationId must have the same coordinates in `current_location`, `world_map.newLocations`, `adjacencyMap`, and `newLinks`.
 
 ## Output file skeletons
 
@@ -915,14 +1199,19 @@ Use this before opening large examples for ordinary live turns.
 }
 ```
 
+Only `response` and `timestamp` belong in `output/narrative_response.json`.
+Never put `afterlifeChronicleUpdates` into `output/narrative_response.json`; afterlife memory uses the afterlife chronicle surface and `game_state/meta/afterlife_chronicles.json`.
+
 `output/debug_logs.json`:
 
 ```json
 {
-  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local | World-progression | Guardian-centric | Mixed\n- Relevant actors: <actors or none>\n- Why relevant: <why these actors matter>\n- Actors outside scope: <actors or none>\n- Why outside scope: <why excluded actors do not matter>\n\n## Reasoning\n### <actor if any>\n- __ACTOR_SITUATION_LABEL__: ...\n- __ACTOR_THOUGHTS_LABEL__: ...\n- __ACTOR_ACTIONS_LABEL__: ...",
+  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local | World-progression | Guardian-centric | Mixed\n- Relevant actors: <actors or none>\n- Why relevant: <why these actors matter>\n- Actors outside scope: <actors or none>\n- Why outside scope: <why excluded actors do not matter>\n\n## Reasoning\n### <actor if any>\n- __ACTOR_LOCATION_LABEL__: where this actor is now and whether they stay there or relocate this turn.\n- __ACTOR_SITUATION_LABEL__: ...\n- __ACTOR_THOUGHTS_LABEL__: ...\n- __ACTOR_ACTIONS_LABEL__: ...",
   "timestamp": "<ISO 8601 UTC timestamp>"
 }
 ```
+
+For EVERY relevant NPC block, the current-location line is mandatory. If the actor is a player character or non-spatial afterlife locus, state that explicitly instead of deleting the line.
 
 `output/interface_updates.json`:
 
@@ -937,6 +1226,20 @@ Use this before opening large examples for ordinary live turns.
   "timestamp": "<ISO 8601 UTC timestamp>"
 }
 ```
+
+Canonical authoring rule: write each `dialogueOptions` entry as an object with at least `text`.
+The client may normalize a legacy string-only list into objects as a repair-prevention fallback,
+but the GM must not rely on that fallback when authoring normal turns.
+
+## Guardian bootstrap guard
+
+Fresh New Game system Guardian seed is client-owned. If turn #1 in the Chaos Sea already has a
+materialized system Guardian in `game_state/meta/guardians.json` and no pending Guardian contract,
+narrate the first meeting and use `afterlifeChronicleUpdates[]` for durable memory. Do not write
+`game_state/meta/guardians.json`, do not emit `UpdateGuardians.create`, and do not include
+`game_state/meta/guardians.json` in `Complete-BoeTurn -FilesModified @(...)` unless the current
+turn_request/player action has an explicit Guardian mutation contract such as system attraction,
+player-founded Guardian, Guardian trade, Chaos Sea travel, Guardian project, or Guardian gacha.
 
 ## Terminal rule
 
@@ -955,8 +1258,64 @@ Add every state/output file you changed. Do not include client-owned files:
 `validation_diagnostic_failure_report.json`, `terminal_protocol_failure_request.json`,
 `gm_bridge_status.json`, or `stories/*.jsonl`.
 '@
-    $turnOutputTemplate = $turnOutputTemplate.Replace("__ACTOR_SITUATION_LABEL__", $script:ActorSituationLabel).Replace("__ACTOR_THOUGHTS_LABEL__", $script:ActorThoughtsLabel).Replace("__ACTOR_ACTIONS_LABEL__", $script:ActorActionsLabel)
+    $turnOutputTemplate = $turnOutputTemplate.Replace("__ACTOR_LOCATION_LABEL__", $script:ActorLocationLabel).Replace("__ACTOR_SITUATION_LABEL__", $script:ActorSituationLabel).Replace("__ACTOR_THOUGHTS_LABEL__", $script:ActorThoughtsLabel).Replace("__ACTOR_ACTIONS_LABEL__", $script:ActorActionsLabel)
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\TURN_OUTPUT_TEMPLATE.md" -Role "compact_turn_output_template" -Content $turnOutputTemplate
+    $templates += Write-GmContextPackTemplate -RelativePath "Templates\AFTERLIFE_CHRONICLE_TEMPLATE.md" -Role "compact_afterlife_chronicle_template" -Content @'
+# Compact Afterlife Chronicle Template
+
+Use this on ordinary `Chaos Sea` / `Shining Abode` turns before deciding that no durable afterlife memory is needed.
+
+## When to write `afterlifeChronicleUpdates[]`
+
+Write an afterlife chronicle update when the turn includes any of these:
+
+- first meeting with a Guardian, resident, Shining faction, playable memory, Source of Light scene, or Saref story scene;
+- significant Guardian dialogue, resident dialogue, faction negotiation, or values/teaching answer that future scenes should remember;
+- a new promise, debt, unresolved hook, warning, clue, oath, injury, mercy, betrayal, or political consequence;
+- a discovered or materially changed Guardian Abode, Chaos Sea region, Shining district, memory scene, threat scene, or hidden story thread.
+
+It is acceptable to skip a chronicle only for purely mechanical/status commands, repeated clarification with no new fact or hook, or a scene that intentionally leaves no future-facing memory. If you skip it, say why in `debug_logs.json`.
+
+## Valid update fragment
+
+Never write `afterlifeChronicleUpdates` into `output/narrative_response.json`.
+That file is only for player-facing prose (`response`) and `timestamp`.
+Write the chronicle update through the accepted afterlife update surface for
+`game_state/meta/afterlife_chronicles.json`:
+
+```json
+{
+  "afterlifeChronicleUpdates": [
+    {
+      "chronicleId": "chronicle_guardian_elyara_first_mercy",
+      "scopeType": "guardian_scene",
+      "scopeId": "guardian_system_elyara_001",
+      "displayName": "Первая беседа с Элиарой",
+      "lastEventsDescription": "Северная Искра узнала, что милость Элиары требует правды, согласия, последствий и памяти.",
+      "persistentConsequences": [
+        "Элиара будет оценивать будущие просьбы души через честность к собственной ране."
+      ],
+      "openThreads": [
+        "Понять, какую рану Северная Искра готова назвать правдиво."
+      ],
+      "lastUpdatedTurn": 2
+    }
+  ]
+}
+```
+
+## Field rules
+
+- Use stable `chronicleId`; reuse it for the same region, Abode, Guardian scene, memory scene, Source of Light event, or Saref story thread.
+- Valid `scopeType` values: `chaos_sea_region`, `shining_abode_district`, `guardian_abode`, `guardian_scene`, `resident_scene`, `faction_zone`, `memory_scene`, `source_of_light`, `saref_story`.
+- `lastEventsDescription` is the current turn summary that future GM reasoning can read.
+- `persistentConsequences[]` is an array of non-empty strings for durable facts/consequences.
+- `openThreads[]` is an array of non-empty strings for unresolved hooks.
+- Use Russian in-world terms: посмертие, Море Хаоса, Сияющая Обитель, смертный мир. Do not expose internal English labels such as `afterlife`, `ChaosSea`, `ShiningAbode`, `MortalWorld`, or `Mortal World` in visible chronicle prose.
+- Never include `eventDescriptions[]` inside `afterlifeChronicleUpdates[]`; that archive is read-only.
+- Do not use Mortal `worldEventsLog`, `currentLocationData`, `worldMapUpdates`, NPC journals, faction chronicles, or lore files as substitutes for afterlife memory.
+- Include `game_state/meta/afterlife_chronicles.json` in `Complete-BoeTurn -FilesModified @(...)` when you write chronicle updates.
+'@
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\VALIDATION_REPAIR_TEMPLATE.md" -Role "compact_validation_repair_template" -Content @'
 # Compact Validation Repair Template
 
@@ -976,8 +1335,15 @@ Use this before opening large examples for repair mode.
 - Keep `sessionId`, `requestId`, and `turnNumber` from the current repair request.
 - If diagnostic-only sentinel metadata is present, restore the missing authority first.
 - If `harnessRepairPackets[]` names exact fields, fix those fields instead of searching source code.
+- If an inventory item `durability` field is named, write a percentage string such as `100%`; never write a bare number such as `100`.
+- If an inventory item `journalEntries[]` field is named, write an array of non-empty strings, not objects; each entry is one player-facing note string without technical turn anchors such as `#[3].`.
 - If a wrong-realm auto-rollback report exists, treat it as diagnostic evidence, not permission to rewrite mortal files from afterlife.
+- If `harnessRepairPackets[].kind` is `accepted_turn_output_artifact_repair`, repair only the listed `output/narrative_response.json` and `output/debug_logs.json.gm_thoughts_markdown` fields for the same turn; do not create a new turn.
+- If validation reports `narrative_response_unknown_field`, remove the unsupported field from `output/narrative_response.json`; keep only `response` and `timestamp`. If the field is `afterlifeChronicleUpdates`, move/keep that data only on the afterlife chronicle surface described by `AFTERLIFE_CHRONICLE_TEMPLATE.md` and `game_state/meta/afterlife_chronicles.json`.
+- If `harnessRepairPackets[].kind` is `afterlife_chronicle_string_array_repair`, repair the listed `persistentConsequences[]` / `openThreads[]` fields into arrays of non-empty strings; do not add `eventDescriptions[]`, do not substitute Mortal memory files, and do not create a new turn.
 - If `harnessRepairPackets[].kind` is `afterlife_spiritual_conflict_action_cost_repair`, repair the listed `actionCostAudit` / `actionEconomy` fields sequentially in the already written spiritual conflict file; do not create a new exchange, reroll dice, or edit pending snapshots.
+- If `harnessRepairPackets[].kind` is `afterlife_spiritual_conflict_reward_repair`, repair only the listed `rewardAudit` / currency reward fields in `game_state/meta/afterlife_spiritual_conflict_state.json`. Currency rewards require a contested player victory with `diceAudit.outcomeBand = player_success|decisive_player_success`; for negotiated, training-only, withdrawn, failed, or non-contested outcomes, remove `rewardAudit` and matching currency deltas while preserving valid learning/chronicle consequences.
+- If `harnessRepairPackets[].kind` is `afterlife_entity_profile_scaffold_repair`, repair `game_state/meta/afterlife_entity_profiles.json` in place. Keep `goals` as an object with goal fields and `updatedAtTurn`, add/repair `progressionStrategy`, keep `ledger` as an array, and complete `profileCommands.specialArtLearningReceipts[]` with required teacher/player fields and `initialTier` absent or `0`.
 
 ## Terminal rule
 
@@ -1032,19 +1398,24 @@ Do not invent any other scope mode.
 
 ## Reasoning
 ### <exact actor display name from state or packet>
+- __ACTOR_LOCATION_LABEL__: where this actor is now and whether they stay there or relocate this turn.
 - __ACTOR_SITUATION_LABEL__: what situation/current position makes this actor relevant.
 - __ACTOR_THOUGHTS_LABEL__: what the actor wants, fears, evaluates, or decides internally.
 - __ACTOR_ACTIONS_LABEL__: what changed, what the actor did, or why no state change was needed.
 
 ### <next exact actor display name>
+- __ACTOR_LOCATION_LABEL__: ...
 - __ACTOR_SITUATION_LABEL__: ...
 - __ACTOR_THOUGHTS_LABEL__: ...
 - __ACTOR_ACTIONS_LABEL__: ...
 ```
 
+For EVERY relevant NPC block, the current-location line is mandatory. If the actor is a player character or non-spatial afterlife locus, state that explicitly instead of deleting the line.
+
 Use exact actor names from state/validation packets. Keep punctuation stable; do not add punctuation that is not present in the canonical actor name.
+Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; if they are visible, acting, clue-giving, or receiving a player action, treat them as role-identifiable NPC candidates and use `MORTAL_NPC_UPDATE_TEMPLATE.md`.
 '@
-    $actorReasoningTemplate = $actorReasoningTemplate.Replace("__ACTOR_SITUATION_LABEL__", $script:ActorSituationLabel).Replace("__ACTOR_THOUGHTS_LABEL__", $script:ActorThoughtsLabel).Replace("__ACTOR_ACTIONS_LABEL__", $script:ActorActionsLabel)
+    $actorReasoningTemplate = $actorReasoningTemplate.Replace("__ACTOR_LOCATION_LABEL__", $script:ActorLocationLabel).Replace("__ACTOR_SITUATION_LABEL__", $script:ActorSituationLabel).Replace("__ACTOR_THOUGHTS_LABEL__", $script:ActorThoughtsLabel).Replace("__ACTOR_ACTIONS_LABEL__", $script:ActorActionsLabel)
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\ACTOR_REASONING_TEMPLATE.md" -Role "compact_actor_reasoning_template" -Content $actorReasoningTemplate
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_NPC_UPDATE_TEMPLATE.md" -Role "compact_mortal_npc_update_template" -Content @'
 # Compact Mortal World NPC Update Template
@@ -1054,13 +1425,18 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
 ## When to use
 
 - A Mortal World turn introduces a named NPC who is present, speaks, gives a clue, changes state, or changes relationship.
+- Role-identifiable visible, speaking, acting, clue-giving, or directly addressed scene actors are NPC candidates even when their personal name is unknown. Use a stable role-based visible name such as `Агент дома Виренто`, then update/rename later when the player learns the real name.
 - Validation reports `mortal_relevant_actor_missing_persistence`, `npc_full_object_missing_required_fields`, `npc_attitude_relationship_tier_mismatch`, `npc_invalid_cultural_stance`, `npc_same_turn_initial_location_requires_null_current_location`, `npc_journal_unknown_npc_reference`, `missing_actor_current_location`, or object/nullability errors under `game_state/npcs/npc_core.json`.
 
-## Same-turn scene NPC rules
+## Scene NPC location rules
 
 - Put scene-local present NPCs in `NPCsInScene`.
-- For an NPC first introduced in the same turn, set `initialLocationId` to the current location id and set `currentLocationId` to `null`.
+- NPCsInScene is only for actors physically present in currentLocationData. voices behind a door, guards in a nearby corridor, people near nearbyExitLocationId, route pressure, and exit pressure are not scene NPCs for the current room; keep them in narrative, current location memory, quest/faction/location memory, Actors outside scope, or materialize them through UpdateNPCs at their own location only if they are durable known actors.
+- If `currentLocationData.locationId` is a known permanent id, set `currentLocationId` to that id and set `initialLocationId` to `null`.
+- If the current scene is a same-turn new location (`currentLocationData.locationId = null` with `currentLocationData.initialId`), set `initialLocationId` to that exact initial id and set `currentLocationId` to `null`.
 - Keep `currentLocationName` as the visible current location name.
+- For a genuinely new NPC, use `NPCId: null` plus non-empty `initialId`; do not invent a permanent NPCId before the client materializes it.
+- `inventory` inside the full NPC object is allowed for a genuinely new NPC's initial carried inventory. For an existing NPC, do not resend `inventory` inside `UpdateNPCs`; use NPC inventory command surfaces for deltas.
 - Use canonical `culturalStance`: `Conformist`, `Pragmatist`, or `Dissident`.
 - Keep `relationshipLevel` numeric. For neutral/unknown NPCs use `0` and `attitude: "Neutral"`.
 - Nullable string fields must be either a real string or JSON `null`, not `{}` and not missing when validator names them.
@@ -1070,7 +1446,8 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
 
 ```json
 {
-  "npcId": "npc_<stable_slug>",
+  "NPCId": null,
+  "initialId": "npc_<stable_slug>",
   "npcName": "<visible Russian name>",
   "name": "<same visible Russian name>",
   "role": "<short role in this scene>",
@@ -1084,8 +1461,8 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
   "appearanceDescription": "<visible appearance>",
   "history": "<relevant known background>",
   "progressionType": "static_social_npc",
-  "initialLocationId": "<current location id>",
-  "currentLocationId": null,
+  "initialLocationId": null,
+  "currentLocationId": "<currentLocationData.locationId for known current location>",
   "currentLocationName": "<current location name>",
   "age": 30,
   "level": 1,
@@ -1156,7 +1533,7 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
 }
 ```
 
-If the NPC is only background color and does not act, speak, give clues, or change state, do not put them in `Relevant actors`; move them to `Actors outside scope` instead of creating a partial NPC object.
+If the NPC is only background color and does not act, speak, give clues, receive a player action, or change state, do not put them in `Relevant actors`; move them to `Actors outside scope` instead of creating a partial NPC object.
 '@
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_FACTION_UPDATE_TEMPLATE.md" -Role "compact_mortal_faction_update_template" -Content @'
 # Compact Mortal World Faction Update Template
@@ -1232,7 +1609,7 @@ When validation reports `current_location_unknown_location_id`, `npc_unknown_cur
 
 2. If durable, register the destination in `game_state/world/world_map.json` first.
    - Use one stable `locationId`.
-   - Add visible name, region, description, exits/adjacency, and unique coordinates.
+   - Add visible name, region, description, exits/adjacency, required arrays, difficulty profiles, and unique coordinates.
    - Avoid duplicate coordinates with existing locations and same-turn new locations.
 
 3. Only after registration, update `game_state/world/current_location.json`.
@@ -1265,11 +1642,274 @@ When validation reports `current_location_unknown_location_id`, `npc_unknown_cur
       "isKnown": true
     }
   ],
+  "knownExits": [],
+  "adjacencyMap": [],
+  "factionControl": [],
+  "locationStorages": [],
+  "activeThreats": [],
+  "internalDifficultyProfile": {
+    "combat": 1,
+    "environment": 1,
+    "social": 1,
+    "exploration": 1
+  },
+  "externalDifficultyProfile": {
+    "combat": 1,
+    "environment": 1,
+    "social": 1,
+    "exploration": 1
+  },
   "lastEventsDescription": "<what just happened here>"
 }
 ```
 
+## Minimal world-map link preview
+
+Every new map link preview must include the target name, target coordinates, and both estimated difficulty profiles.
+
+```json
+{
+  "sourceLocationId": "<known source location id>",
+  "targetLocationId": "<known target location id or same-turn newLocations.initialId>",
+  "targetName": "<visible Russian target name>",
+  "targetCoordinates": { "x": 1, "y": 0, "z": 0 },
+  "estimatedInternalDifficultyProfile": {
+    "combat": 1,
+    "environment": 1,
+    "social": 1,
+    "exploration": 1
+  },
+  "estimatedExternalDifficultyProfile": {
+    "combat": 1,
+    "environment": 1,
+    "social": 1,
+    "exploration": 1
+  }
+}
+```
+
 Do not fix unknown locations by deleting NPCs, quests, faction links, storage links, or exits that should still point to the destination. Repair the map identity instead.
+'@
+    $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_SKILL_PROGRESSION_TEMPLATE.md" -Role "compact_mortal_skill_progression_template" -Content @'
+# Compact Mortal Skill Progression Template
+
+Use this before Mortal World turns that teach, unlock, practice, use, or improve player skills.
+
+## Mortal skill progression rule
+
+- An attribute-only check is allowed when the fiction is just "try with Strength/Intelligence/Perception/etc." and no durable technique, craft, combat move, or knowledge skill is learned.
+- Prose-only learning is not enough when the fiction says the player learned, trained, practiced, unlocked, or repeatedly applied a concrete skill.
+- If the player learns durable knowledge, perception, craft, social, or utility expertise, write `passiveSkillChanges` with a complete passive skill object.
+- If the player learns a usable combat move or activated technique, write `activeSkillChanges` with a complete active skill object and initialize/update its mastery through `skillMasteryChanges`.
+- If the player uses an already-known active skill, update `skillMasteryChanges`; do not write mastery for a skill that is not already present in `game_state/player/skills_active.json` or added in the same turn.
+- Do not imply a mechanical skill in player-facing prose unless the corresponding state is updated or the prose clearly says this is only early practice, not a learned skill yet.
+
+## Files and response fields
+
+- Player active skills: `game_state/player/skills_active.json` from `activeSkillChanges` / `removeActiveSkills`.
+- Player passive skills: `game_state/player/skills_passive.json` from `passiveSkillChanges` / `removePassiveSkills`.
+- Active skill mastery: `game_state/player/skill_mastery.json` from `skillMasteryChanges`.
+- Level/stat progression is separate; use the progression and stat-point surfaces only when the player actually gains level/points.
+
+## Passive training example
+
+Use this for durable expertise that helps checks but is not a button-like combat action.
+
+```json
+{
+  "passiveSkillChanges": [
+    {
+      "skillName": "Чтение свидетельских меток",
+      "skillDescription": "Искра учится различать домовые печати, свидетельские метки и порядок подписей в архивных лентах.",
+      "rarity": "Common",
+      "type": "KnowledgeBased",
+      "group": "Архивное дело",
+      "masteryLevel": 1,
+      "maxMasteryLevel": 5,
+      "playerStatBonus": "Помогает проверкам Интеллекта и Восприятия при чтении архивных печатей.",
+      "structuredBonuses": [
+        {
+          "targetType": "skill",
+          "skillName": "Архивное дело",
+          "valueType": "flat",
+          "value": 1,
+          "condition": "чтение печатей, свидетельских меток и порядка подписей",
+          "source": "Чтение свидетельских меток",
+          "summary": "Архивное дело +1 при разборе печатей и свидетельских меток"
+        }
+      ],
+      "knowledgeDomain": "архивные печати и свидетельские метки",
+      "effectDetails": "Не заменяет взрослого доступа к нижнему хранилищу, но делает вопросы точнее."
+    }
+  ]
+}
+```
+
+## Active skill plus mastery example
+
+Use this for a named action the player can deliberately perform in combat or a contest.
+
+```json
+{
+  "activeSkillChanges": [
+    {
+      "skillName": "Быстрый выпад",
+      "skillDescription": "Короткая атака тонким клинком по открывшейся цели.",
+      "rarity": "Common",
+      "actionCost": "Fast",
+      "scalingCharacteristic": "dexterity",
+      "scalesValue": true,
+      "scalesDuration": false,
+      "scalesChance": false,
+      "combatEffect": {
+        "isActivatedEffect": true,
+        "actionName": "Быстрый выпад",
+        "actionDescription": "Колючий удар стилетом в уязвимое место.",
+        "damageType": "piercing",
+        "baseDamage": 8,
+        "range": "melee",
+        "actionCost": "Fast",
+        "actionPointCost": 1,
+        "cooldown": 0,
+        "duration": 0,
+        "scalesValue": true,
+        "scalesDuration": false,
+        "scalesChance": false
+      }
+    }
+  ],
+  "skillMasteryChanges": [
+    {
+      "skillName": "Быстрый выпад",
+      "newMasteryLevel": 1,
+      "newCurrentMasteryProgress": 0,
+      "newMasteryProgressNeeded": 5,
+      "masteryLeveledUp": true
+    }
+  ]
+}
+```
+
+## Output discipline
+
+- Mention the new or improved skill in the narrative response in player-facing Russian.
+- Include the changed skill files in `Complete-BoeTurn -FilesModified`.
+- If this was only a single lesson toward future learning, say that explicitly and do not create a skill yet.
+- If a later turn repeats the same training and the character now crosses the learning threshold, create/update the skill then.
+'@
+    $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md" -Role "compact_mortal_experience_level_template" -Content @'
+# Compact Mortal experience and level template
+
+Use this before Mortal World turns that award ordinary XP, resolve combat rewards, cross a level threshold, or need a controlled level-up test.
+
+## Mortal experience rule
+
+- Mortal XP lives in `game_state/player/experience.json`.
+- Fresh Mortal bootstrap creates the baseline file with `playerLevel`, `level`, `currentExperience`, `experience`, `totalExperience`, `experienceForNextLevel`, and `experienceGained`.
+- If a Mortal World scene grants XP, update the XP file in the same turn and include `game_state/player/experience.json` in `Complete-BoeTurn -FilesModified`.
+- If updated `totalExperience >= experienceForNextLevel`, the level-up is not materialized yet. Advance `playerLevel` and `level`, then set `experienceForNextLevel` to the next threshold above `totalExperience`; otherwise validation will request repair.
+- Do not leave a meaningful victory, completed objective, or combat reward prose-only when the scene clearly grants mechanical progress.
+- Do not directly award stat points for ordinary level-up. The client-owned level-up/stat allocation flow grants stat points after it detects a higher `playerLevel`/`level`.
+- Do not edit or remove `game_state/player/stat_points.json.levelUpStatPointsAwardedThroughLevel`; it is the client-owned restart-safe marker that prevents duplicate level-up stat-point awards.
+- `statsIncreased` is for training a characteristic under Training Cap, not for distributing level-up points.
+
+## Level-up metadata
+
+The client detects level-up by comparing the new `playerLevel` or `level` in `experience.json` against the previous known level.
+
+Keep both `playerLevel` and `level` synchronized when possible:
+
+```json
+{
+  "playerLevel": 2,
+  "level": 2,
+  "currentExperience": 10,
+  "experience": 10,
+  "totalExperience": 110,
+  "experienceForNextLevel": 150,
+  "experienceGained": 25
+}
+```
+
+If the turn does not cross a threshold, keep `playerLevel`/`level` unchanged and only advance counters:
+
+```json
+{
+  "playerLevel": 1,
+  "level": 1,
+  "currentExperience": 35,
+  "experience": 35,
+  "totalExperience": 35,
+  "experienceForNextLevel": 100,
+  "experienceGained": 15
+}
+```
+
+## Combat reward discipline
+
+- Ordinary Mortal World combat may use `activeSkillChanges`, `skillMasteryChanges`, and `experienceGained` together when the scene used a known active skill and awarded XP.
+- Skill mastery is separate from XP: update `skillMasteryChanges` for used active skills, and update `experience.json` for character-level progress.
+- Explain the reward in player-facing Russian, but keep mechanical counters in `experience.json`.
+- If the player should level now during a live test, ensure the final `totalExperience` crosses the old `experienceForNextLevel`, set the resulting `playerLevel`/`level` to the next level, and move `experienceForNextLevel` beyond the final `totalExperience`.
+
+## Output checklist
+
+- Read the current `game_state/player/experience.json` first.
+- Write the updated `experience.json` atomically through the GM turn helper.
+- Include `game_state/player/experience.json` in `Complete-BoeTurn -FilesModified`.
+- Do not edit `game_state/player/stat_points.json` for ordinary level-up; the client handles stat points after turn acceptance.
+- If `stat_points.json` exists, preserve its client-owned `levelUpStatPointsAwardedThroughLevel` marker.
+'@
+    $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_COMBAT_STATE_TEMPLATE.md" -Role "compact_mortal_combat_state_template" -Content @'
+# Compact Mortal combat state template
+
+Use this before Mortal World turns that resolve open combat, create an enemy exchange, award combat XP, update active-skill mastery from a combat action, or change health/energy/poise because of a fight.
+
+## Player-facing rule
+
+- `/бой` must remain useful after a player-facing combat scene.
+- If the fight is still active, write enemies/allies plus a combat log.
+- If the fight ended in the same turn, still write `game_state/combat/combat_log.json` with the recent exchange and outcome so `/бой` can explain what just happened.
+- Do not leave a visible enemy, duel, ambush, monster, guard, or protective shadow only in prose when XP, active-skill mastery, or combat resources changed.
+
+## Canonical files
+
+- `game_state/combat/combat_log.json`: recent combat summary for `/бой`; always write this for explicit combat.
+- `game_state/combat/enemies.json`: active, defeated, fled, or suppressed opponents when the enemy remains tactically relevant.
+- `game_state/combat/allies.json`: allies who participated tactically or whose state matters.
+- `game_state/player/skill_mastery.json`: active skill practice/progress when a known active skill was used.
+- `game_state/player/experience.json`: ordinary Mortal combat XP.
+- `game_state/core/player_status.json`: health/energy/poise/status changes.
+
+## Minimal ended-in-one-turn combat log
+
+If the fight is over and no enemy remains active, it is valid to write only a combat log. Keep it player-facing and specific:
+
+```json
+{
+  "combat_log_markdown": "Открытый бой с клятвенной тенью завершён: «Быстрый выпад» пробил ядро защитного узла. Тень рассеялась, но удар стоил энергии и оставил усталость."
+}
+```
+
+## Active enemy shape guidance
+
+When the opponent remains relevant, keep enough structure for `/бой`:
+
+- id/name/displayName
+- type/archetype or short role
+- currentHealth/currentPoise as readable percentages or canonical values accepted by validation
+- status: active, defeated, fled, suppressed, restrained, or comparable canonical/readable state
+- actions[] with at least one useful combat action if it can still act
+- resistances/activeBuffs/activeDebuffs only when meaningful
+- player-facing description of what the enemy is doing
+
+## Output checklist
+
+- If the narrative says "открытый бой", "вступает в бой", "бой с ...", or shows a concrete enemy exchange, write `combat_log.json`.
+- If XP is awarded, update `experience.json` using `MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md`.
+- If an active skill was used, update `skill_mastery.json` using `MORTAL_SKILL_PROGRESSION_TEMPLATE.md` and keep the accepted-turn evidence aligned with `skillMasteryChanges`.
+- Include every touched combat/player file in `Complete-BoeTurn -FilesModified`.
+- If validation repair is requested with `mortal_combat_state_repair`, repair the existing combat scene; do not delete XP/mastery/status changes to avoid the combat state.
 '@
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json" -Role "compact_tempo_advantage_template" -Content @'
 {
@@ -1315,8 +1955,9 @@ Start here instead of browsing repository implementation code.
 - Bootstrap scope: read only context_pack_manifest.json and README.md.
 - Do not open copied guides/examples during bootstrap; they are large and route-specific.
 - Use Probes/GM_SAFE_PROBES.md for bounded read-only context questions before implementation source.
-- Use Templates/* before opening large copied examples for common turn, repair, progression, Mortal World NPC updates, Mortal World faction updates, Mortal World location transitions, actor reasoning, and tempoAdvantage shapes.
+- Use Templates/* before opening large copied examples for common turn, repair, progression, Mortal World NPC updates, Mortal World faction updates, Mortal World location transitions, Mortal World skill progression, Mortal World experience and level progression, Mortal World combat state, actor reasoning, and tempoAdvantage shapes.
 - Use Lessons/GM_EXPERIENCE_LESSONS.md as short hints only; validators and current templates remain authoritative.
+- Ordinary turn prompts may include an inline RLM PRE-TURN LESSONS digest when relevant; use that compact digest before writing state.
 - Use Rubrics/GM_LIVE_TEST_RUBRIC.md during live tests to record harness friction and follow-up notes in game_state/control/gm_live_test_notes.jsonl.
 - Open large copied docs only when a per-turn, repair, or terminal-failure prompt explicitly names them.
 - Use '$($script:GmTurnHelperBootstrapPath)' for safe JSON writes and terminal signals.
@@ -1343,8 +1984,9 @@ Start here instead of browsing repository implementation code.
             "Bootstrap scope: read only context_pack_manifest.json and README.md.",
             "Do not open copied guides/examples during bootstrap; open them only when a per-turn, repair, or terminal-failure prompt explicitly names them.",
             "Use Probes/GM_SAFE_PROBES.md for bounded read-only context probes before considering implementation source.",
-            "Use compact Templates/* before opening large copied examples for common turn, repair, progression, Mortal World NPC/faction update, Mortal World location transitions, actor reasoning, and tempoAdvantage field names.",
+            "Use compact Templates/* before opening large copied examples for common turn, repair, progression, Mortal World NPC/faction update, Mortal World location transitions, Mortal World skill progression, Mortal World experience and level progression, Mortal World combat state, afterlife chronicle memory, actor reasoning, and tempoAdvantage field names.",
             "Use Lessons/GM_EXPERIENCE_LESSONS.md as hints only; validators and current compact templates remain authoritative.",
+            "Use inline RLM PRE-TURN LESSONS in ordinary prompts before writing state; they are compact reminders, not validator replacements.",
             "Use Rubrics/GM_LIVE_TEST_RUBRIC.md during live tests to connect observations to gm_trajectory_ledger.jsonl record ids and follow-up issues.",
             "Use session-local copied GM docs/examples before repository files when a turn/repair prompt names those docs.",
             "Do not read implementation code such as BookOfEternityClient/**/*.cs during normal play or validation repair.",
@@ -1363,7 +2005,7 @@ Start here instead of browsing repository implementation code.
     $script:AfterlifeExamplesDirective = $script:AfterlifeExamplesDirective.Replace($script:RepoRootPath, $script:GmContextPackRoot)
     $script:GmContextPackDirective = " GM session context pack is the first authority: Manifest='$($script:GmContextPackManifestPath)', Root='$($script:GmContextPackRoot)', README='$readmePath'. Bootstrap scope: read only context_pack_manifest.json and README.md. Do not open copied guides/examples during bootstrap; open large copied docs only when a per-turn, repair, or terminal-failure prompt explicitly names them."
     $script:GmDocPathDirective = " GM documentation paths are session-local and authoritative: TaskGuide='$($script:TaskGuideMainPath)', MainExample='$($script:ExampleMainPath)', AfterlifeMatrix='$($script:AfterlifeMatrixPath)', AfterlifeTurns='$($script:AfterlifeTurnsExamplePath)'. Do not search repository source or other worktrees for GM docs; use these context-pack paths first."
-    $script:GmCompactTemplateDirective = " Compact GM templates are first for executable shapes: Turn='$($script:CompactTurnOutputTemplatePath)', Repair='$($script:CompactValidationRepairTemplatePath)', ProgressionReport='$($script:CompactProgressionReportTemplatePath)', ActorReasoning='$($script:CompactActorReasoningTemplatePath)', MortalNpc='$($script:CompactMortalNpcTemplatePath)', MortalFaction='$($script:CompactMortalFactionTemplatePath)', MortalLocation='$($script:CompactMortalLocationTemplatePath)', TempoAdvantage='$($script:CompactTempoAdvantageTemplatePath)'. Use these before opening large copied examples; open long examples only for route-specific contracts not covered by compact templates."
+    $script:GmCompactTemplateDirective = " Compact GM templates are first for executable shapes: Turn='$($script:CompactTurnOutputTemplatePath)', Repair='$($script:CompactValidationRepairTemplatePath)', ProgressionReport='$($script:CompactProgressionReportTemplatePath)', ActorReasoning='$($script:CompactActorReasoningTemplatePath)', MortalNpc='$($script:CompactMortalNpcTemplatePath)', MortalFaction='$($script:CompactMortalFactionTemplatePath)', MortalLocation='$($script:CompactMortalLocationTemplatePath)', MortalSkill='$($script:CompactMortalSkillTemplatePath)', MortalExperience='$($script:CompactMortalExperienceTemplatePath)', MortalCombat='$($script:CompactMortalCombatTemplatePath)', AfterlifeChronicle='$($script:CompactAfterlifeChronicleTemplatePath)', TempoAdvantage='$($script:CompactTempoAdvantageTemplatePath)'. Use these before opening large copied examples; open long examples only for route-specific contracts not covered by compact templates. Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; use MortalNpc template and a stable role-based visible name when a visible actor speaks, acts, gives clues, receives a player action, or blocks/opens a route. For Mortal World training, skill unlocks, active skill use, or mastery updates, use MortalSkill template and avoid prose-only learning unless this turn is explicitly only early practice. For Mortal World XP rewards, combat rewards, level-up thresholds, or stat-allocation tests, use MortalExperience template and update game_state/player/experience.json rather than leaving rewards prose-only. For Mortal World open combat, enemy exchanges, combat XP, active-skill combat mastery, or combat resource changes, use MortalCombat template and leave /бой useful through game_state/combat/combat_log.json plus enemies/allies when relevant."
     $script:GmExperienceLessonsDirective = " Experience lessons are hints only: '$($script:GmExperienceLessonMarkdownPath)'. Use them to avoid repeated mistakes, but current validators, repair packets, and compact templates remain authoritative."
     $script:GmSafeProbeDirective = " Safe GM probes are first for bounded context questions: '$($script:GmSafeProbeMarkdownPath)'. They are read-only; if a needed fact is missing, record a missing harness surface instead of treating implementation source as normal workflow."
     $script:GmSourceFallbackDirective = " Do not read implementation code such as BookOfEternityClient/**/*.cs during normal play or validation repair; use safe GM probes, validation_repair_request.json.harnessRepairPackets, session state/control files, helper commands, and named copied GM docs instead."
@@ -1633,6 +2275,255 @@ function Refresh-GmBridgeReadiness {
         Write-Log "  -> GM bridge readiness refresh via diagnostics failed after $($stopwatch.ElapsedMilliseconds)ms: $_" -Level "WARN" -Color Yellow
         return $null
     }
+}
+
+function Get-GmBridgeDiagnosticsSnapshot {
+    $config = Get-GameConfig
+    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -ne "ConPTYBridge") {
+        return $null
+    }
+
+    if (!(Test-Path $BridgeControlScript)) {
+        return $null
+    }
+
+    try {
+        $responseJson = (& $BridgeControlScript diagnostics -SessionPath $GameSessionPath) -join "`n"
+        if ([string]::IsNullOrWhiteSpace($responseJson)) {
+            return $null
+        }
+
+        return $responseJson | ConvertFrom-Json
+    }
+    catch {
+        Write-Log "  -> GM bridge idle-terminal diagnostics failed: $_" -Level "WARN" -Color Yellow
+        return $null
+    }
+}
+
+function Test-GmBridgeDiagnosticsIndicatesActiveCodexWork {
+    param([string]$Text)
+
+    if ([string]::IsNullOrWhiteSpace($Text)) {
+        return $false
+    }
+
+    $normalized = $Text.Replace([char]0x00A0, ' ')
+    return $normalized.IndexOf("Working", [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -and
+        $normalized.IndexOf("esc to interrupt", [System.StringComparison]::OrdinalIgnoreCase) -ge 0
+}
+
+function Test-GmBridgeReturnedIdleWithoutTerminalSignal {
+    param(
+        [int]$ElapsedSeconds,
+        [int]$MinimumElapsedSeconds = 30
+    )
+
+    if ($ElapsedSeconds -lt $MinimumElapsedSeconds) {
+        return $false
+    }
+
+    $snapshot = Get-GmBridgeDiagnosticsSnapshot
+    if ($null -eq $snapshot) {
+        return $false
+    }
+
+    $ready = $false
+    if ($null -ne $snapshot.status -and $null -ne $snapshot.status.ready) {
+        $ready = [bool]$snapshot.status.ready
+    }
+
+    $visibleScreenText = if ($null -ne $snapshot.diagnostics -and $null -ne $snapshot.diagnostics.visibleScreenText) {
+        [string]$snapshot.diagnostics.visibleScreenText
+    } else {
+        ""
+    }
+
+    $recentOutputTail = if ($null -ne $snapshot.diagnostics -and $null -ne $snapshot.diagnostics.recentOutputTail) {
+        [string]$snapshot.diagnostics.recentOutputTail
+    } else {
+        ""
+    }
+
+    $combinedOutput = $visibleScreenText + "`n" + $recentOutputTail
+    if (Test-GmBridgeDiagnosticsIndicatesActiveCodexWork -Text $visibleScreenText) {
+        return $false
+    }
+
+    $hasCodexIdlePrompt =
+        $combinedOutput.IndexOf("› Implement {feature}", [System.StringComparison]::Ordinal) -ge 0 -or
+        $combinedOutput.IndexOf("> Implement {feature}", [System.StringComparison]::Ordinal) -ge 0 -or
+        $combinedOutput.IndexOf("› Write tests for @filename", [System.StringComparison]::Ordinal) -ge 0 -or
+        $combinedOutput.IndexOf("> Write tests for @filename", [System.StringComparison]::Ordinal) -ge 0
+
+    return ($ready -and $hasCodexIdlePrompt)
+}
+
+function Test-GmBridgeArtifactWritingIntent {
+    param([string]$Text)
+
+    if ([string]::IsNullOrWhiteSpace($Text)) {
+        return $false
+    }
+
+    return $Text.IndexOf("Complete-BoeTurn", [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -or
+        $Text.IndexOf("ready/turn_complete.json", [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -or
+        $Text.IndexOf("turn artifacts", [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -or
+        $Text.IndexOf("accepted-turn artifacts", [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -or
+        $Text.IndexOf("writing the", [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -or
+        $Text.IndexOf("write the", [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -or
+        $Text.IndexOf("emit Complete-BoeTurn", [System.StringComparison]::OrdinalIgnoreCase) -ge 0
+}
+
+function Test-GmBridgeArtifactWritingStall {
+    param(
+        [int]$ElapsedSeconds,
+        [hashtable]$WatchState,
+        [int]$MinimumElapsedSeconds = $script:ArtifactWritingStallMinimumSeconds,
+        [int]$NoProgressSeconds = $script:ArtifactWritingStallNoProgressSeconds
+    )
+
+    if ($null -eq $WatchState) {
+        $WatchState = @{}
+    }
+
+    $snapshot = Get-GmBridgeDiagnosticsSnapshot
+    if ($null -eq $snapshot) {
+        return $null
+    }
+
+    $ready = $false
+    $state = "<unknown>"
+    if ($null -ne $snapshot.status) {
+        if ($null -ne $snapshot.status.ready) {
+            $ready = [bool]$snapshot.status.ready
+        }
+        if ($snapshot.status.state) {
+            $state = [string]$snapshot.status.state
+        }
+    }
+
+    $outputVersion = -1
+    if ($null -ne $snapshot.diagnostics -and $null -ne $snapshot.diagnostics.outputVersion) {
+        $outputVersion = [int]$snapshot.diagnostics.outputVersion
+    }
+
+    if (-not $WatchState.ContainsKey("lastOutputVersion") -or [int]$WatchState.lastOutputVersion -ne $outputVersion) {
+        $WatchState.lastOutputVersion = $outputVersion
+        $WatchState.lastProgressElapsed = $ElapsedSeconds
+    }
+
+    $visibleScreenText = if ($null -ne $snapshot.diagnostics -and $null -ne $snapshot.diagnostics.visibleScreenText) {
+        [string]$snapshot.diagnostics.visibleScreenText
+    } else {
+        ""
+    }
+
+    $recentOutputTail = if ($null -ne $snapshot.diagnostics -and $null -ne $snapshot.diagnostics.recentOutputTail) {
+        [string]$snapshot.diagnostics.recentOutputTail
+    } else {
+        ""
+    }
+
+    $combinedOutput = $visibleScreenText + "`n" + $recentOutputTail
+    $hasArtifactIntent = Test-GmBridgeArtifactWritingIntent -Text $combinedOutput
+
+    if ($hasArtifactIntent -and -not $WatchState.ContainsKey("firstArtifactIntentElapsed")) {
+        $WatchState.firstArtifactIntentElapsed = $ElapsedSeconds
+    }
+
+    $lastProgressElapsed = if ($WatchState.ContainsKey("lastProgressElapsed")) { [int]$WatchState.lastProgressElapsed } else { $ElapsedSeconds }
+    $firstArtifactIntentElapsed = if ($WatchState.ContainsKey("firstArtifactIntentElapsed")) { [int]$WatchState.firstArtifactIntentElapsed } else { -1 }
+    $noProgressElapsed = [Math]::Max(0, $ElapsedSeconds - $lastProgressElapsed)
+    $artifactIntentAgeSeconds = if ($firstArtifactIntentElapsed -ge 0) { [Math]::Max(0, $ElapsedSeconds - $firstArtifactIntentElapsed) } else { 0 }
+    $isStalled = (
+        -not $ready -and
+        $hasArtifactIntent -and
+        $ElapsedSeconds -ge $MinimumElapsedSeconds -and
+        $noProgressElapsed -ge $NoProgressSeconds -and
+        $artifactIntentAgeSeconds -ge $NoProgressSeconds
+    )
+
+    return [pscustomobject]([ordered]@{
+        isStalled = $isStalled
+        harnessSource = "gm_bridge_artifact_write_stall"
+        state = $state
+        ready = $ready
+        elapsedSeconds = $ElapsedSeconds
+        minimumElapsedSeconds = $MinimumElapsedSeconds
+        noProgressSeconds = $NoProgressSeconds
+        noProgressElapsedSeconds = $noProgressElapsed
+        artifactIntentAgeSeconds = $artifactIntentAgeSeconds
+        outputVersion = $outputVersion
+        visibleScreenText = $visibleScreenText
+        recentOutputTail = $recentOutputTail
+    })
+}
+
+function Stop-GmBridgeAfterTurnTimeout {
+    param(
+        [psobject]$TurnRequest,
+        [int]$ElapsedSeconds,
+        [string]$Reason = "gm_turn_timeout"
+    )
+
+    $cleanup = [ordered]@{
+        status = "not_attempted"
+        reason = $Reason
+        sessionId = if ($TurnRequest.sessionId) { [string]$TurnRequest.sessionId } else { "" }
+        requestId = if ($TurnRequest.requestId) { [string]$TurnRequest.requestId } else { "" }
+        turnNumber = if ($null -ne $TurnRequest.turnNumber) { [int]$TurnRequest.turnNumber } else { -1 }
+        elapsedSeconds = $ElapsedSeconds
+        timestamp = (Get-Date).ToUniversalTime().ToString("o")
+        bridgeCommand = "shutdown-bridge"
+        ok = $false
+        fallbackUsed = $false
+        processIds = @()
+        stoppedProcessIds = @()
+        remainingProcessIds = @()
+        error = ""
+    }
+
+    if (!(Test-Path $BridgeControlScript)) {
+        $cleanup.status = "bridge-control-missing"
+        $cleanup.error = "GM bridge control script not found."
+        [void](Write-DaemonJsonFileBestEffort -Path $TimeoutBridgeCleanupFile -Payload $cleanup -Depth 8)
+        Write-Log "  -> GM bridge timeout cleanup skipped: control script missing." -Level "WARN" -Color Yellow
+        return [pscustomobject]$cleanup
+    }
+
+    try {
+        $responseJson = (& $BridgeControlScript shutdown-bridge -SessionPath $GameSessionPath) -join "`n"
+        if ([string]::IsNullOrWhiteSpace($responseJson)) {
+            $cleanup.status = "empty-response"
+            $cleanup.error = "shutdown-bridge returned an empty response."
+        }
+        else {
+            $response = $responseJson | ConvertFrom-Json
+            $cleanup.status = if ($response.status) { [string]$response.status } else { "shutdown-response" }
+            $cleanup.ok = if ($null -ne $response.ok) { [bool]$response.ok } else { $false }
+            $cleanup.fallbackUsed = if ($null -ne $response.fallbackUsed) { [bool]$response.fallbackUsed } else { $false }
+            $cleanup.processIds = if ($null -ne $response.processIds) { @($response.processIds) } else { @() }
+            $cleanup.stoppedProcessIds = if ($null -ne $response.stoppedProcessIds) { @($response.stoppedProcessIds) } else { @() }
+            $cleanup.remainingProcessIds = if ($null -ne $response.remainingProcessIds) { @($response.remainingProcessIds) } else { @() }
+            if ($response.error) {
+                $cleanup.error = [string]$response.error
+            }
+        }
+    }
+    catch {
+        $cleanup.status = "shutdown-failed"
+        $cleanup.error = $_.Exception.Message
+    }
+    finally {
+        $script:BridgeAutoStartAttempted = $false
+        [void](Write-DaemonJsonFileBestEffort -Path $TimeoutBridgeCleanupFile -Payload $cleanup -Depth 8)
+    }
+
+    $remainingCount = @($cleanup.remainingProcessIds).Count
+    $stoppedCount = @($cleanup.stoppedProcessIds).Count
+    Write-Log "  -> GM bridge timeout cleanup: status=$($cleanup.status) ok=$($cleanup.ok) stopped=$stoppedCount remaining=$remainingCount" -Color DarkGray
+    return [pscustomobject]$cleanup
 }
 
 function Send-ToGmBridge {
@@ -2056,10 +2947,134 @@ function Get-GmTrajectoryRepairPacketRefs {
             elseif ($null -ne $packet.id -and -not [string]::IsNullOrWhiteSpace([string]$packet.id)) {
                 $refs += [string]$packet.id
             }
+            elseif ($null -ne $packet.kind -and -not [string]::IsNullOrWhiteSpace([string]$packet.kind)) {
+                $refs += [string]$packet.kind
+            }
         }
     }
 
     return @($refs | Select-Object -Unique)
+}
+
+function ConvertTo-GmTrajectoryCompactString {
+    param(
+        [object]$Value,
+        [int]$MaxLength = 240
+    )
+
+    if ($null -eq $Value) {
+        return ""
+    }
+
+    $text = ([string]$Value).Trim()
+    if ($text.Length -le $MaxLength) {
+        return $text
+    }
+
+    return $text.Substring(0, [Math]::Max(0, $MaxLength - 3)) + "..."
+}
+
+function Get-GmTrajectoryCompactStringProperty {
+    param(
+        [object]$Object,
+        [string[]]$Names,
+        [int]$MaxLength = 240
+    )
+
+    if ($null -eq $Object -or $null -eq $Object.PSObject) {
+        return ""
+    }
+
+    foreach ($name in $Names) {
+        $property = $Object.PSObject.Properties[$name]
+        if ($null -ne $property -and $null -ne $property.Value -and -not [string]::IsNullOrWhiteSpace([string]$property.Value)) {
+            return ConvertTo-GmTrajectoryCompactString -Value $property.Value -MaxLength $MaxLength
+        }
+    }
+
+    return ""
+}
+
+function Get-GmTrajectoryCompactStringArrayProperty {
+    param(
+        [object]$Object,
+        [string[]]$Names,
+        [int]$MaxItems = 6,
+        [int]$MaxLength = 180
+    )
+
+    if ($null -eq $Object -or $null -eq $Object.PSObject) {
+        return @()
+    }
+
+    $values = @()
+    foreach ($name in $Names) {
+        $property = $Object.PSObject.Properties[$name]
+        if ($null -eq $property -or $null -eq $property.Value) {
+            continue
+        }
+
+        foreach ($value in @($property.Value)) {
+            if ($null -ne $value -and -not [string]::IsNullOrWhiteSpace([string]$value)) {
+                $values += (ConvertTo-GmTrajectoryCompactString -Value $value -MaxLength $MaxLength)
+            }
+        }
+
+        if ($values.Count -gt 0) {
+            break
+        }
+    }
+
+    return @($values | Select-Object -First $MaxItems)
+}
+
+function Get-GmTrajectoryValidationDiagnostics {
+    param([object]$RequestObject)
+
+    $diagnostics = @()
+    if ($null -eq $RequestObject -or $null -eq $RequestObject.errors) {
+        return @()
+    }
+
+    foreach ($err in @($RequestObject.errors | Select-Object -First 8)) {
+        if ($null -eq $err) { continue }
+
+        $diagnostics += [ordered]@{
+            code = Get-GmTrajectoryCompactStringProperty -Object $err -Names @("code") -MaxLength 120
+            category = Get-GmTrajectoryCompactStringProperty -Object $err -Names @("category") -MaxLength 120
+            section = Get-GmTrajectoryCompactStringProperty -Object $err -Names @("section") -MaxLength 120
+            path = Get-GmTrajectoryCompactStringProperty -Object $err -Names @("path", "file", "filePath", "relativePath") -MaxLength 180
+            jsonPath = Get-GmTrajectoryCompactStringProperty -Object $err -Names @("jsonPath", "jsonPointer", "fieldPath", "propertyPath") -MaxLength 180
+            message = Get-GmTrajectoryCompactStringProperty -Object $err -Names @("message") -MaxLength 240
+            expected = Get-GmTrajectoryCompactStringProperty -Object $err -Names @("expected") -MaxLength 180
+            actual = Get-GmTrajectoryCompactStringProperty -Object $err -Names @("actual") -MaxLength 180
+            repairHint = Get-GmTrajectoryCompactStringProperty -Object $err -Names @("repairHint") -MaxLength 240
+        }
+    }
+
+    return @($diagnostics)
+}
+
+function Get-GmTrajectoryRepairPacketDiagnostics {
+    param([object]$RequestObject)
+
+    $diagnostics = @()
+    if ($null -eq $RequestObject -or $null -eq $RequestObject.harnessRepairPackets) {
+        return @()
+    }
+
+    foreach ($packet in @($RequestObject.harnessRepairPackets | Select-Object -First 8)) {
+        if ($null -eq $packet) { continue }
+
+        $diagnostics += [ordered]@{
+            packetId = Get-GmTrajectoryCompactStringProperty -Object $packet -Names @("packetId", "id") -MaxLength 120
+            kind = Get-GmTrajectoryCompactStringProperty -Object $packet -Names @("kind") -MaxLength 120
+            targetFiles = @(Get-GmTrajectoryCompactStringArrayProperty -Object $packet -Names @("targetFiles", "targetFile", "files") -MaxItems 6 -MaxLength 180)
+            targetFields = @(Get-GmTrajectoryCompactStringArrayProperty -Object $packet -Names @("targetFields", "targetField", "fields", "jsonPaths") -MaxItems 6 -MaxLength 180)
+        }
+    }
+
+    return @($diagnostics)
 }
 
 function Get-GmObjectPropertyValue {
@@ -2409,6 +3424,8 @@ function Write-GmTrajectoryRecord {
         [string]$ValidationStatus,
         [string[]]$IssueKinds = @(),
         [string[]]$RepairPacketRefs = @(),
+        [object[]]$ValidationDiagnostics = @(),
+        [object[]]$RepairPacketDiagnostics = @(),
         [int]$RepairAttempts = 0,
         [string]$RepairStatus = "none",
         [object]$TerminalSignal = $null,
@@ -2464,6 +3481,8 @@ function Write-GmTrajectoryRecord {
                 progressionReport = "v1"
                 actorReasoning = "v1"
                 tempoAdvantage = "v1"
+                mortalExperience = "v1"
+                mortalCombat = "v1"
             }
             outputFiles = @(Get-GmTrajectoryOutputFiles -TerminalSignal $TerminalSignal)
             dispatch = [ordered]@{
@@ -2476,6 +3495,8 @@ function Write-GmTrajectoryRecord {
                 status = $ValidationStatus
                 issueKinds = @($IssueKinds)
                 repairPacketRefs = @($RepairPacketRefs)
+                diagnostics = @($ValidationDiagnostics)
+                repairPacketDiagnostics = @($RepairPacketDiagnostics)
             }
             repair = [ordered]@{
                 attempts = $RepairAttempts
@@ -2505,9 +3526,65 @@ function Write-GmTrajectoryRecord {
         }
 
         Add-Content -Path $script:GmTrajectoryLedgerPath -Value ($record | ConvertTo-Json -Depth 8 -Compress) -Encoding UTF8
+        Update-GmLiveTestNoteRecordLinks -RequestId $requestId -RecordId ([string]$record.recordId)
     }
     catch {
         Write-Log "  Failed to write GM trajectory ledger: $_" -Level "WARN" -Color Yellow
+    }
+}
+
+function Update-GmLiveTestNoteRecordLinks {
+    param(
+        [string]$RequestId,
+        [string]$RecordId
+    )
+
+    if ([string]::IsNullOrWhiteSpace($RequestId) -or [string]::IsNullOrWhiteSpace($RecordId)) {
+        return
+    }
+
+    $notesPath = Join-Path $ControlDir "gm_live_test_notes.jsonl"
+    if (!(Test-Path $notesPath)) {
+        return
+    }
+
+    try {
+        $changed = $false
+        $updatedLines = @()
+        foreach ($line in @(Get-Content -Path $notesPath -Encoding UTF8 -ErrorAction SilentlyContinue)) {
+            if ([string]::IsNullOrWhiteSpace($line)) {
+                $updatedLines += $line
+                continue
+            }
+
+            try {
+                $note = $line | ConvertFrom-Json
+                $noteRequestId = if ($note.requestId) { [string]$note.requestId } else { "" }
+                $noteRecordId = if ($note.recordId) { [string]$note.recordId } else { "" }
+                $needsBackfill = [string]::Equals($noteRequestId, $RequestId, [System.StringComparison]::OrdinalIgnoreCase) -and
+                    ([string]::IsNullOrWhiteSpace($noteRecordId) -or
+                     [string]::Equals($noteRecordId, "unknown", [System.StringComparison]::OrdinalIgnoreCase) -or
+                     [string]::Equals($noteRecordId, "gmtraj_unknown", [System.StringComparison]::OrdinalIgnoreCase))
+
+                if ($needsBackfill) {
+                    $note.recordId = $RecordId
+                    $line = $note | ConvertTo-Json -Depth 8 -Compress
+                    $changed = $true
+                }
+            }
+            catch {
+                # Preserve malformed manual notes; validation/audit can report them separately.
+            }
+
+            $updatedLines += $line
+        }
+
+        if ($changed) {
+            Set-Content -Path $notesPath -Value $updatedLines -Encoding UTF8
+        }
+    }
+    catch {
+        Write-Log "  Failed to backfill GM live-test note record links: $_" -Level "WARN" -Color Yellow
     }
 }
 
@@ -2560,13 +3637,64 @@ function Test-ObservedTerminalRequestKey {
     return $script:ObservedTerminalRequestKeys.Contains($Key)
 }
 
+function Load-ObservedTerminalRequestKeys {
+    if (!(Test-Path $ObservedTerminalRequestKeysFile)) {
+        return
+    }
+
+    try {
+        $root = Get-Content -Path $ObservedTerminalRequestKeysFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $keys = @()
+        if ($root -is [System.Array]) {
+            $keys = @($root)
+        }
+        elseif ($null -ne $root.keys) {
+            $keys = @($root.keys)
+        }
+
+        foreach ($key in $keys) {
+            $normalized = [string]$key
+            if (![string]::IsNullOrWhiteSpace($normalized)) {
+                [void]$script:ObservedTerminalRequestKeys.Add($normalized)
+            }
+        }
+    }
+    catch {
+        Write-Log "  Failed to load observed terminal request keys: $_" -Level "WARN" -Color Yellow
+    }
+}
+
+function Save-ObservedTerminalRequestKeys {
+    try {
+        $controlDir = Split-Path $ObservedTerminalRequestKeysFile -Parent
+        if (!(Test-Path $controlDir)) {
+            New-Item -ItemType Directory -Path $controlDir -Force | Out-Null
+        }
+
+        $payload = [ordered]@{
+            schemaVersion = 1
+            updatedAtUtc = (Get-Date).ToUniversalTime().ToString("o")
+            keys = @($script:ObservedTerminalRequestKeys | Sort-Object)
+        }
+
+        Set-Content -Path $ObservedTerminalRequestKeysFile -Value ($payload | ConvertTo-Json -Depth 4) -Encoding UTF8
+    }
+    catch {
+        Write-Log "  Failed to save observed terminal request keys: $_" -Level "WARN" -Color Yellow
+    }
+}
+
 function Add-ObservedTerminalRequestKey {
     param([string]$Key)
 
     if (![string]::IsNullOrWhiteSpace($Key)) {
-        [void]$script:ObservedTerminalRequestKeys.Add($Key)
+        if ($script:ObservedTerminalRequestKeys.Add($Key)) {
+            Save-ObservedTerminalRequestKeys
+        }
     }
 }
+
+Load-ObservedTerminalRequestKeys
 
 # Banner
 Write-Host ""
@@ -2852,11 +3980,13 @@ function Dispatch-WithRetry {
     param(
         [string]$Message,
         [string]$PendingPath = "",
-        [switch]$ReturnDetails
+        [switch]$ReturnDetails,
+        [int]$MaxWaitSeconds = 0
     )
 
     $attempts = 0
     $busyRetries = 0
+    $startedAt = Get-Date
 
     while ($true) {
         if ($PendingPath -and !(Test-Path $PendingPath)) {
@@ -2877,6 +4007,15 @@ function Dispatch-WithRetry {
 
         if ($dispatch -like "bridge-*") {
             $busyRetries++
+            $elapsedSeconds = ((Get-Date) - $startedAt).TotalSeconds
+            if ($MaxWaitSeconds -gt 0 -and $elapsedSeconds -ge $MaxWaitSeconds) {
+                Write-Log "  -> GM bridge dispatch timeout after $([math]::Round($elapsedSeconds, 1))s; bridge did not accept the prompt." -Level "ERROR" -Color Red
+                if ($ReturnDetails) {
+                    return (New-GmDispatchDiagnostics -Status "bridge-dispatch-timeout" -Attempts $attempts -BusyRetries $busyRetries -Timeout $true)
+                }
+                return "bridge-dispatch-timeout"
+            }
+
             Write-Log "  -> Waiting for GM bridge to become available/ready..." -Level "WARN" -Color Yellow
             Start-Sleep -Seconds 1
             continue
@@ -2898,8 +4037,6 @@ function Process-Turn {
 
     if ($script:IsProcessing) { return }
     $script:IsProcessing = $true
-    $script:TurnCount++
-    $turnStart = Get-Date
 
     Start-Sleep -Milliseconds 300
     if (!(Test-Path $RequestPath)) {
@@ -2921,6 +4058,9 @@ function Process-Turn {
             return
         }
 
+        $script:TurnCount++
+        $turnStart = Get-Date
+
         $playerAction = if ($turnRequest.playerAction.Length -gt 80) {
             $turnRequest.playerAction.Substring(0, 77) + "..."
         } else { $turnRequest.playerAction }
@@ -2929,11 +4069,13 @@ function Process-Turn {
         Write-Log "Turn #${turnNumber}: $playerAction" -Level "TURN" -Color Green
 
         $null = Write-GmExperienceLessons
+        $experiencePrompt = Get-GmExperiencePromptDigest
 
         # Send processing command to CLI window
         $requestId = if ($turnRequest.requestId) { $turnRequest.requestId } else { "<missing-requestId>" }
-        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', '$($script:CompactMortalNpcTemplatePath)', '$($script:CompactMortalFactionTemplatePath)', '$($script:CompactMortalLocationTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. If a Mortal World turn creates or updates NPCs, use '$($script:CompactMortalNpcTemplatePath)' before editing game_state/npcs/npc_core.json. If a Mortal World turn creates or updates factions, ranks, branches, chronicles, projects, faction relations, or faction sidecars, use '$($script:CompactMortalFactionTemplatePath)' before editing game_state/factions/*. If a Mortal World turn creates a durable location, changes current_location, edits world_map, or moves NPCs between map locations, use '$($script:CompactMortalLocationTemplatePath)' before editing game_state/world/* or NPC location ids. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
+        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($experiencePrompt)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', '$($script:CompactMortalNpcTemplatePath)', '$($script:CompactMortalFactionTemplatePath)', '$($script:CompactMortalLocationTemplatePath)', '$($script:CompactMortalSkillTemplatePath)', '$($script:CompactMortalExperienceTemplatePath)', '$($script:CompactAfterlifeChronicleTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. If a Mortal World turn creates or updates NPCs, use '$($script:CompactMortalNpcTemplatePath)' before editing game_state/npcs/npc_core.json. If a Mortal World turn creates or updates factions, ranks, branches, chronicles, projects, faction relations, or faction sidecars, use '$($script:CompactMortalFactionTemplatePath)' before editing game_state/factions/*. If a Mortal World turn creates a durable location, changes current_location, edits world_map, or moves NPCs between map locations, use '$($script:CompactMortalLocationTemplatePath)' before editing game_state/world/* or NPC location ids. If a Mortal World turn teaches, practices, unlocks, or uses a concrete player skill, use '$($script:CompactMortalSkillTemplatePath)' before writing output/state; do not leave learned skills or active-skill mastery as prose-only text. If a Mortal World turn grants XP, resolves combat rewards, or crosses a level-up threshold, use '$($script:CompactMortalExperienceTemplatePath)' before editing game_state/player/experience.json; do not leave level progress prose-only. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
 
+        $message += " If a Mortal World turn resolves open combat, enemy exchange, combat XP, active-skill combat mastery, or combat resource changes, you MUST read '$($script:CompactMortalCombatTemplatePath)' before writing output/state and leave /бой useful through game_state/combat/combat_log.json plus enemies/allies when relevant."
         $completionPath = Join-Path $ReadyDir "turn_complete.json"
         $errorPath = Join-Path $ReadyDir "turn_error.json"
         $terminalSignal = Get-CorrelatedTerminalSignal -TurnRequest $turnRequest -CompletionPath $completionPath -ErrorPath $errorPath
@@ -2941,7 +4083,8 @@ function Process-Turn {
         $missingHarnessTool = $null
 
         if ($null -eq $terminalSignal) {
-            $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RequestPath -ReturnDetails
+            $dispatchMaxWaitSeconds = if ($TurnTimeout -gt 0 -and $TurnTimeout -lt $script:BridgeDispatchMaxWaitSeconds) { $TurnTimeout } else { $script:BridgeDispatchMaxWaitSeconds }
+            $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RequestPath -ReturnDetails -MaxWaitSeconds $dispatchMaxWaitSeconds
             if ($dispatchDiagnostics.Status -eq "cancelled") {
                 Write-Log "  Turn cancelled while waiting for bridge turn dispatch" -Level "WARN" -Color Yellow
                 Write-GmTrajectoryRecord `
@@ -2956,6 +4099,38 @@ function Process-Turn {
                     -MissingHarnessTool "turn_cancelled_before_dispatch"
                 return
             }
+
+            if ($dispatchDiagnostics.Status -eq "bridge-dispatch-timeout") {
+                $script:ErrorCount++
+                Write-Log "  GM bridge did not accept dispatch before the dispatch timeout; emitting daemon terminal error." -Level "ERROR" -Color Red
+                $missingHarnessTool = "gm_bridge_dispatch_unavailable"
+                $dispatchTerminalSignal = @{
+                    sessionId = $turnRequest.sessionId
+                    requestId = $turnRequest.requestId
+                    turnNumber = $turnNumber
+                    status = "error"
+                    harnessSource = "gm_bridge_dispatch_unavailable"
+                    timestamp = (Get-Date).ToUniversalTime().ToString("o")
+                    error = "GM bridge did not accept dispatch before the dispatch timeout."
+                }
+                Set-Content -Path $errorPath -Value ($dispatchTerminalSignal | ConvertTo-Json -Depth 4) -Encoding UTF8
+                Write-GmTrajectoryRecord `
+                    -Kind "turn" `
+                    -Mode "ordinary" `
+                    -RequestObject $turnRequest `
+                    -Dispatch $dispatchDiagnostics `
+                    -ValidationStatus "rejected" `
+                    -TerminalSignal ([pscustomobject]@{
+                        Path = $errorPath
+                        Kind = "error"
+                        Signal = [pscustomobject]$dispatchTerminalSignal
+                    }) `
+                    -StartedAtUtc $turnStart.ToUniversalTime() `
+                    -DurationSeconds ((Get-Date) - $turnStart).TotalSeconds `
+                    -MissingHarnessTool $missingHarnessTool
+                Add-ObservedTerminalRequestKey -Key $turnRequestKey
+                return
+            }
         }
         elseif ($terminalSignal.Kind -eq "conflict") {
             Write-Log "  Detected conflicting correlated terminal signals for the same turn. Waiting stops as protocol failure; client should emit terminal_protocol_failure_request.json." -Level "ERROR" -Color Red
@@ -2966,6 +4141,7 @@ function Process-Turn {
 
         # Wait for terminal signal
         $elapsed = 0
+        $artifactWriteStallWatchState = @{}
 
         while ($null -eq $terminalSignal -and ($TurnTimeout -le 0 -or $elapsed -lt $TurnTimeout)) {
             Start-Sleep -Seconds 1
@@ -2984,6 +4160,57 @@ function Process-Turn {
 
             $terminalSignal = Get-CorrelatedTerminalSignal -TurnRequest $turnRequest -CompletionPath $completionPath -ErrorPath $errorPath
 
+            if ($null -eq $terminalSignal -and $elapsed % 15 -eq 0 -and (Test-GmBridgeReturnedIdleWithoutTerminalSignal -ElapsedSeconds $elapsed)) {
+                $script:ErrorCount++
+                Write-Log "  GM bridge returned to idle without a correlated terminal signal; emitting daemon terminal error instead of waiting for full timeout." -Level "ERROR" -Color Red
+                $missingHarnessTool = "gm_bridge_idle_without_terminal_signal"
+                $idleTerminalSignal = @{
+                    sessionId = $turnRequest.sessionId
+                    requestId = $turnRequest.requestId
+                    turnNumber = $turnNumber
+                    status = "error"
+                    harnessSource = "gm_bridge_idle_without_terminal_signal"
+                    timestamp = (Get-Date).ToUniversalTime().ToString("o")
+                    error = "GM bridge returned to idle without a correlated terminal signal."
+                }
+                Set-Content -Path $errorPath -Value ($idleTerminalSignal | ConvertTo-Json -Depth 4) -Encoding UTF8
+                $terminalSignal = [pscustomobject]@{
+                    Path = $errorPath
+                    Kind = "error"
+                    Signal = [pscustomobject]$idleTerminalSignal
+                }
+                break
+            }
+
+            if ($null -eq $terminalSignal -and $elapsed % 15 -eq 0) {
+                $artifactStall = Test-GmBridgeArtifactWritingStall -ElapsedSeconds $elapsed -WatchState $artifactWriteStallWatchState
+                if ($null -ne $artifactStall -and $artifactStall.isStalled) {
+                    $script:ErrorCount++
+                    Write-Log "  GM bridge appears stalled while preparing turn artifacts; emitting daemon terminal error before full timeout." -Level "ERROR" -Color Red
+                    $missingHarnessTool = "gm_bridge_artifact_write_stall"
+                    $artifactCleanup = Stop-GmBridgeAfterTurnTimeout -TurnRequest $turnRequest -ElapsedSeconds $elapsed -Reason "gm_bridge_artifact_write_stall"
+                    $artifactStall | Add-Member -NotePropertyName timeoutBridgeCleanup -NotePropertyValue $artifactCleanup -Force
+                    [void](Write-DaemonJsonFileBestEffort -Path $ArtifactWriteStallReportFile -Payload $artifactStall -Depth 10)
+                    $artifactTerminalSignal = @{
+                        sessionId = $turnRequest.sessionId
+                        requestId = $turnRequest.requestId
+                        turnNumber = $turnNumber
+                        status = "error"
+                        harnessSource = "gm_bridge_artifact_write_stall"
+                        timestamp = (Get-Date).ToUniversalTime().ToString("o")
+                        error = "GM bridge appears stalled while preparing turn artifacts."
+                        artifactWriteStall = $artifactStall
+                    }
+                    Set-Content -Path $errorPath -Value ($artifactTerminalSignal | ConvertTo-Json -Depth 12) -Encoding UTF8
+                    $terminalSignal = [pscustomobject]@{
+                        Path = $errorPath
+                        Kind = "error"
+                        Signal = [pscustomobject]$artifactTerminalSignal
+                    }
+                    break
+                }
+            }
+
             if ($elapsed % 60 -eq 0) {
                 Write-Log "  Waiting... (${elapsed}s)" -Color DarkGray
             }
@@ -2994,6 +4221,7 @@ function Process-Turn {
             Write-Log "  Timeout after ${elapsed}s" -Level "ERROR" -Color Red
             $dispatchDiagnostics.Timeout = $true
             $missingHarnessTool = "gm_turn_timeout"
+            $timeoutBridgeCleanup = Stop-GmBridgeAfterTurnTimeout -TurnRequest $turnRequest -ElapsedSeconds $elapsed
             $timeoutSignal = @{
                 sessionId = $turnRequest.sessionId
                 requestId = $turnRequest.requestId
@@ -3002,8 +4230,9 @@ function Process-Turn {
                 harnessSource = "gm_daemon_timeout"
                 timestamp = (Get-Date).ToUniversalTime().ToString("o")
                 error = "Timeout after ${elapsed}s"
+                timeoutBridgeCleanup = $timeoutBridgeCleanup
             }
-            Set-Content -Path $errorPath -Value ($timeoutSignal | ConvertTo-Json -Depth 3) -Encoding UTF8
+            Set-Content -Path $errorPath -Value ($timeoutSignal | ConvertTo-Json -Depth 8) -Encoding UTF8
             $terminalSignal = [pscustomobject]@{
                 Path = $errorPath
                 Kind = "error"
@@ -3040,6 +4269,8 @@ function Process-Turn {
                     -ValidationStatus "rejected" `
                     -IssueKinds (Get-GmTrajectoryIssueKinds -RequestObject $correlatedRepair) `
                     -RepairPacketRefs (Get-GmTrajectoryRepairPacketRefs -RequestObject $correlatedRepair) `
+                    -ValidationDiagnostics (Get-GmTrajectoryValidationDiagnostics -RequestObject $correlatedRepair) `
+                    -RepairPacketDiagnostics (Get-GmTrajectoryRepairPacketDiagnostics -RequestObject $correlatedRepair) `
                     -RepairAttempts (Get-GmValidationRepairAttempt -RepairRequest $correlatedRepair) `
                     -RepairStatus "requested" `
                     -TerminalSignal $terminalSignal `
@@ -3132,7 +4363,7 @@ function Process-RepairRequest {
         }
 
         $readyPath = "$GameSessionPath\game_state\control\validation_repair_ready.json"
-        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples. Also use '$($script:CompactActorReasoningTemplatePath)' for actor coverage repairs; use '$($script:CompactMortalNpcTemplatePath)' for any repair touching game_state/npcs/npc_core.json or NPC validation errors; use '$($script:CompactMortalFactionTemplatePath)' for any repair touching game_state/factions/* or faction validation errors; use '$($script:CompactMortalLocationTemplatePath)' for any repair touching game_state/world/current_location.json, game_state/world/world_map.json, or unknown location ids; and prefer validation_repair_request.json.harnessRepairPackets over source-code archaeology. Read '$($script:TaskGuideMainPath)' for repair phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) Fix only the listed validation errors in the already written files IN PLACE. Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
+        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples. Also use '$($script:CompactActorReasoningTemplatePath)' for actor coverage repairs; use '$($script:CompactMortalNpcTemplatePath)' for any repair touching game_state/npcs/npc_core.json or NPC validation errors; use '$($script:CompactMortalFactionTemplatePath)' for any repair touching game_state/factions/* or faction validation errors; use '$($script:CompactMortalLocationTemplatePath)' for any repair touching game_state/world/current_location.json, game_state/world/world_map.json, or unknown location ids; use '$($script:CompactMortalSkillTemplatePath)' for any repair touching activeSkillChanges, passiveSkillChanges, skillMasteryChanges, or player skill files; use '$($script:CompactMortalExperienceTemplatePath)' for any repair touching game_state/player/experience.json, experienceGained, level-up, or stat-point level progression; and prefer validation_repair_request.json.harnessRepairPackets over source-code archaeology. Read '$($script:TaskGuideMainPath)' for repair phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) Fix only the listed validation errors in the already written files IN PLACE. Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
         if ($hasDiagnosticOnlyMetadata) {
             $message += " The current repair request marks sessionId/requestId/turnNumber as diagnostic-only sentinel values because validated pending snapshot context is unavailable or invalid. Do NOT copy those sentinel metadata into $readyPath. First restore pending snapshot context/authority and then use the freshest client-authored repair request with valid metadata before writing validation_repair_ready.json."
         }
@@ -3152,6 +4383,7 @@ function Process-RepairRequest {
 
         $null = Write-GmExperienceLessons
 
+        $message += " If validation_repair_request.json includes mortal_combat_state_repair or mortal_combat_state_missing, you MUST read '$($script:CompactMortalCombatTemplatePath)' and repair the existing combat scene by writing combat_log.json and relevant enemies/allies; do not delete XP/mastery/status changes."
         if ($hasDiagnosticOnlyMetadata) {
             Write-Log "  -> Skipping diagnostic-only validation repair request (metadataDiagnosticOnly=true); waiting for client-owned snapshot/metadata resolution." -Level "WARN" -Color Yellow
             $dispatchDiagnostics = [pscustomobject]@{
@@ -3168,6 +4400,8 @@ function Process-RepairRequest {
                 -ValidationStatus "rejected" `
                 -IssueKinds (Get-GmTrajectoryIssueKinds -RequestObject $repair) `
                 -RepairPacketRefs (Get-GmTrajectoryRepairPacketRefs -RequestObject $repair) `
+                -ValidationDiagnostics (Get-GmTrajectoryValidationDiagnostics -RequestObject $repair) `
+                -RepairPacketDiagnostics (Get-GmTrajectoryRepairPacketDiagnostics -RequestObject $repair) `
                 -RepairAttempts $attempt `
                 -RepairStatus "diagnostic-only-skipped" `
                 -MissingHarnessTool "client_owned_diagnostic_repair_resolution" `
@@ -3184,6 +4418,8 @@ function Process-RepairRequest {
             -ValidationStatus "rejected" `
             -IssueKinds (Get-GmTrajectoryIssueKinds -RequestObject $repair) `
             -RepairPacketRefs (Get-GmTrajectoryRepairPacketRefs -RequestObject $repair) `
+            -ValidationDiagnostics (Get-GmTrajectoryValidationDiagnostics -RequestObject $repair) `
+            -RepairPacketDiagnostics (Get-GmTrajectoryRepairPacketDiagnostics -RequestObject $repair) `
             -RepairAttempts $attempt `
             -RepairStatus "requested" `
             -StartedAtUtc $fileInfo.LastWriteTimeUtc

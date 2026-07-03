@@ -739,11 +739,13 @@ internal sealed class BridgeHost : IDisposable
     private static bool IsCodexCliWorkingScreen(string visibleText)
     {
         var normalized = NormalizeVisibleConsoleText(visibleText);
-        return normalized.Contains("Starting MCP server", StringComparison.OrdinalIgnoreCase) ||
-            normalized.Contains("Booting MCP server", StringComparison.OrdinalIgnoreCase) ||
-            normalized.Contains("model:", StringComparison.OrdinalIgnoreCase) &&
-            normalized.Contains("loading", StringComparison.OrdinalIgnoreCase) ||
-            normalized.Contains("esc to interrupt", StringComparison.OrdinalIgnoreCase) &&
+        if (IsCodexCliBootOrModelLoadingScreen(normalized))
+            return true;
+
+        if (HasCodexIdlePromptAfterLastWorkingMarker(normalized))
+            return false;
+
+        return normalized.Contains("esc to interrupt", StringComparison.OrdinalIgnoreCase) &&
             normalized.Contains("Working", StringComparison.OrdinalIgnoreCase);
     }
 
@@ -753,12 +755,45 @@ internal sealed class BridgeHost : IDisposable
             return false;
 
         var normalized = NormalizeVisibleConsoleText(visibleText);
-        if (IsWorkspaceTrustPrompt(normalized) || IsCodexCliUpdatePrompt(normalized) || IsCodexCliWorkingScreen(normalized))
+        if (IsWorkspaceTrustPrompt(normalized) || IsCodexCliUpdatePrompt(normalized))
             return false;
 
-        return normalized.Contains("OpenAI Codex", StringComparison.OrdinalIgnoreCase) &&
+        if (IsCodexCliBootOrModelLoadingScreen(normalized))
+            return false;
+
+        return HasCodexIdlePromptAfterLastWorkingMarker(normalized) ||
+            normalized.Contains("OpenAI Codex", StringComparison.OrdinalIgnoreCase) &&
             normalized.Contains("›", StringComparison.Ordinal) ||
             IsCodexCliCompletedTurnIdlePrompt(normalized);
+    }
+
+    private static bool IsCodexCliBootOrModelLoadingScreen(string visibleText)
+    {
+        var normalized = NormalizeVisibleConsoleText(visibleText);
+        return normalized.Contains("Starting MCP server", StringComparison.OrdinalIgnoreCase) ||
+            normalized.Contains("Booting MCP server", StringComparison.OrdinalIgnoreCase) ||
+            normalized.Contains("model:", StringComparison.OrdinalIgnoreCase) &&
+            normalized.Contains("loading", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool HasCodexIdlePromptAfterLastWorkingMarker(string visibleText)
+    {
+        if (string.IsNullOrWhiteSpace(visibleText))
+            return false;
+
+        var normalized = NormalizeVisibleConsoleText(visibleText);
+        var promptIndex = normalized.LastIndexOf("›", StringComparison.Ordinal);
+        if (promptIndex < 0)
+            return false;
+
+        var workingIndex = normalized.LastIndexOf("Working", StringComparison.OrdinalIgnoreCase);
+        var interruptIndex = normalized.LastIndexOf("esc to interrupt", StringComparison.OrdinalIgnoreCase);
+        var latestBusyMarker = Math.Max(workingIndex, interruptIndex);
+        if (promptIndex <= latestBusyMarker)
+            return false;
+
+        var promptTail = normalized[promptIndex..];
+        return IsCodexCliModelFooter(promptTail);
     }
 
     private static bool IsCodexCliCompletedTurnIdlePrompt(string visibleText)

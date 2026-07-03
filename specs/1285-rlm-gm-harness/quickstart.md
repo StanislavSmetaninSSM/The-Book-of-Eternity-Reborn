@@ -37,6 +37,7 @@ codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals
 
 The helper writes `input/turn_request.json`, `game_state/control/pending_turn_snapshot.json`, and `game_state/control/pending_turn_snapshot.authority.json`.
 It normalizes snapshot paths and excludes generated harness files such as bridge/daemon status, `gm_context_pack`, repair requests, prior pending snapshots, and the trajectory ledger.
+It also removes stale `game_state/control/pending_dice_state.json` from the prepared live-test surface so the current-turn dice authority is only `input/turn_request.json.preGeneratedDices1d20`.
 
 3. Run one ordinary turn or repair-sensitive turn selected by current priority.
 4. Confirm the context pack includes compact templates and, after the relevant implementation slice, compact experience lessons.

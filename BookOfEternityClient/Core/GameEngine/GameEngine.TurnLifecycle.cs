@@ -16,6 +16,7 @@ namespace BookOfEternityClient.Core;
 public partial class GameEngine
 {
     private const string PostAcceptedMaterializedStateValidationSource = "пост-материализации принятого хода";
+    private const string MortalBootstrapScaffoldPath = "game_state/control/mortal_bootstrap_scaffold.json";
 
     private enum TerminalSignalWaitOutcome
     {
@@ -28,6 +29,9 @@ public partial class GameEngine
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
         var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
         var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
+        PublishAgentConsoleGmWaitingSnapshot(
+            "Ожидание мастера",
+            "GM обрабатывает ход. Агент-консоль ждёт готовый ответ или запрос на ремонт данных.");
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
@@ -113,7 +117,11 @@ public partial class GameEngine
 
             await ProcessMortalProgressionAfterAcceptedTurnAsync();
 
-            await CheckLifeTransitions(snapshotContext);
+            if (await CheckLifeTransitions(snapshotContext))
+            {
+                _pendingMemoryLegacyAwaitingConsumption = false;
+                return true;
+            }
             await CheckAscensionTrigger();
 
             await ConsumeAfterlifeReturnProtectionIfNeededAsync(snapshotContext);
@@ -155,6 +163,7 @@ public partial class GameEngine
 
         _pendingMemoryLegacyAwaitingConsumption = false;
         await ShowTurnErrorMessageAsync("ready/turn_error.json");
+        _fs.DeleteFile("input/turn_request.json");
         _fs.DeleteFile("ready/turn_error.json");
 
         if (HasRollbackCapability(rollbackSnapshot))
@@ -178,6 +187,9 @@ public partial class GameEngine
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
         var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
         var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
+        PublishAgentConsoleGmWaitingSnapshot(
+            "Ожидание мастера",
+            "GM обрабатывает переход. Агент-консоль ждёт готовый ответ или запрос на ремонт данных.");
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
@@ -204,6 +216,7 @@ public partial class GameEngine
         if (terminalOutcome.Kind == "error")
         {
             await ShowTurnErrorMessageAsync("ready/turn_error.json");
+            _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_error.json");
 
             if (HasRollbackCapability(rollbackSnapshot))
@@ -452,7 +465,13 @@ public partial class GameEngine
                         await ExtractStoryEntityRefsAsync(lateAction));
 
                     await ProcessMortalProgressionAfterAcceptedTurnAsync();
-                    await CheckLifeTransitions(snapshotContext);
+                    if (await CheckLifeTransitions(snapshotContext))
+                    {
+                        acceptedLateResponse = true;
+                        if (HasRollbackCapability(rollbackSnapshot))
+                            CleanupBackup(rollbackSnapshot!);
+                        continue;
+                    }
                     await CheckAscensionTrigger();
                     if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
                         await FinalizePendingMemoryLegacyConsumptionAsync();
@@ -702,6 +721,8 @@ public partial class GameEngine
             };
             request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
             await AttachPendingDiceAndGachaAsync(request);
+            request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
+                .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, _stateManager.CurrentState.CurrentRealm);
             RegisterOrdinaryTurnStagingValidationSnapshotFiles(backedUpFiles);
             var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel);
 
@@ -785,6 +806,9 @@ public partial class GameEngine
         if (backedUpFiles == null || request == null || activeSnapshotContext == null)
             throw new InvalidOperationException("Turn staging failed before rollback snapshot and request were created.");
 
+        PublishAgentConsoleGmWaitingSnapshot(
+            "Ожидание мастера",
+            "GM обрабатывает ход. Агент-консоль ждёт готовый ответ или запрос на ремонт данных.");
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
@@ -808,6 +832,7 @@ public partial class GameEngine
         if (terminalOutcome.Kind == "error")
         {
             await ShowTurnErrorMessageAsync("ready/turn_error.json");
+            _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_error.json");
             _fs.DeleteFile("output/ink_feather_action_result.json");
             _qteSceneService.ClearOfferFile();
@@ -870,7 +895,11 @@ public partial class GameEngine
         await ProcessMortalProgressionAfterAcceptedTurnAsync();
 
         // Check for GM-triggered life transitions
-        await CheckLifeTransitions(activeSnapshotContext);
+        if (await CheckLifeTransitions(activeSnapshotContext))
+        {
+            CleanupBackup(backedUpFiles);
+            return;
+        }
         await CheckAscensionTrigger();
 
         await ConsumeAfterlifeReturnProtectionIfNeededAsync(activeSnapshotContext);
@@ -1411,18 +1440,32 @@ public partial class GameEngine
                 }
             }
 
-            if (currentLevel > _lastKnownLevel)
+            var awardedThroughLevel = await _charService.GetLevelUpStatPointsAwardedThroughLevelAsync();
+            if (awardedThroughLevel <= 0)
             {
-                var levelsGained = currentLevel - _lastKnownLevel;
+                var computedLevel = await ReadComputedCharacteristicsPlayerLevelAsync();
+                var unspentStatPoints = await _charService.GetUnspentStatPoints();
+                if (computedLevel >= currentLevel || (currentLevel > 1 && unspentStatPoints > 0))
+                {
+                    await _charService.MarkLevelUpStatPointsAwardedThroughLevelAsync(currentLevel);
+                    awardedThroughLevel = currentLevel;
+                }
+            }
+
+            var knownProcessedLevel = Math.Max(_lastKnownLevel, Math.Max(1, awardedThroughLevel));
+            if (currentLevel > knownProcessedLevel)
+            {
+                var levelsGained = currentLevel - knownProcessedLevel;
                 var totalPoints = levelsGained * 5;
 
                 AnsiConsole.WriteLine();
                 AnsiConsole.Write(new Rule("[gold1]⭐ ПОВЫШЕНИЕ УРОВНЯ![/]").RuleStyle("gold1"));
-                AnsiConsole.MarkupLine($"  [bold yellow]Уровень {_lastKnownLevel} → {currentLevel}[/]");
+                AnsiConsole.MarkupLine($"  [bold yellow]Уровень {knownProcessedLevel} → {currentLevel}[/]");
                 AnsiConsole.MarkupLine($"  [green]+{totalPoints} очков характеристик![/]");
                 AnsiConsole.WriteLine();
 
                 await _charService.AddStatPoints(totalPoints);
+                await _charService.MarkLevelUpStatPointsAwardedThroughLevelAsync(currentLevel);
                 _lastKnownLevel = currentLevel;
 
                 // Offer stat distribution
@@ -1430,7 +1473,7 @@ public partial class GameEngine
             }
             else
             {
-                _lastKnownLevel = currentLevel;
+                _lastKnownLevel = Math.Max(_lastKnownLevel, currentLevel);
             }
         }
         catch (Exception ex)
@@ -1439,14 +1482,35 @@ public partial class GameEngine
         }
     }
 
+    private async Task<int> ReadComputedCharacteristicsPlayerLevelAsync()
+    {
+        var json = await _fs.ReadFileAsync("game_state/player/computed_characteristics.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return 0;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("playerLevel", out var level) &&
+                level.ValueKind == JsonValueKind.Number)
+                return level.GetInt32();
+        }
+        catch
+        {
+            return 0;
+        }
+
+        return 0;
+    }
+
     /// <summary>
     /// Checks for GM-triggered life transitions (death in mortal world → Chaos Sea).
     /// Sends life evaluation request to GM, waits for response with rewards, shows reward screen.
     /// </summary>
-    private async Task CheckLifeTransitions(ValidatedPendingTurnSnapshotContext? acceptedTurnSnapshotContext = null)
+    private async Task<bool> CheckLifeTransitions(ValidatedPendingTurnSnapshotContext? acceptedTurnSnapshotContext = null)
     {
         var transJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
-        if (transJson == null) return;
+        if (transJson == null) return false;
 
         RollbackSnapshot? rollbackBackups = null;
         var localStateMutated = false;
@@ -1460,7 +1524,7 @@ public partial class GameEngine
 
             // If TriggerLifeEnd is present, transition back to Chaos Sea
             if (!CanonicalStateNormalizer.TryReadCanonicalTriggerLifeEnd(root, out var reason, out var summary))
-                return;
+                return false;
 
             JsonObject? currentSoulStateRoot = null;
             var currentSoulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
@@ -1504,7 +1568,20 @@ public partial class GameEngine
                 AnsiConsole.MarkupLine($"[dim]{GameInterface.EscapeMarkup(summary)}[/]");
 
             AnsiConsole.MarkupLine($"\n[grey]{_loc.T("press_any_key")}[/]");
-            _inputSource.ReadKey(intercept: true);
+            var deathPromptLines = new List<string>
+            {
+                "Смертная жизнь завершена."
+            };
+            if (!string.IsNullOrWhiteSpace(reason))
+                deathPromptLines.Add($"Причина: {reason}");
+            if (!string.IsNullOrWhiteSpace(summary))
+                deathPromptLines.Add(summary);
+            deathPromptLines.Add("Продолжите, чтобы перейти к Оценке Жизни.");
+            ReadAgentConsoleKeyContinuation(
+                "Конец смертной жизни",
+                string.Join(Environment.NewLine, deathPromptLines),
+                "life-transition-death",
+                "Продолжить");
 
             // === PHASE 2: Capture pre-death state for reward comparison ===
             var preDeathInkFeathers = _stateManager.CurrentState.InkFeathers;
@@ -1577,7 +1654,7 @@ public partial class GameEngine
                 {
                     _fs.DeleteFile("ready/turn_complete.json");
                     await CleanupPendingTurnSnapshotAsync();
-                    return;
+                    return true;
                 }
 
                 var evalResponse = await BuildGameResponseFromFiles();
@@ -1609,8 +1686,9 @@ public partial class GameEngine
                     _gameLoop.TurnNumber);
 
                 if (await CheckGmIncarnationTrigger(snapshotContext))
-                    return;
+                    return true;
                 await CleanupAcceptedTurnTerminalArtifactsAsync();
+                return true;
             }
         }
         catch (TriggerLifeEndRuntimeContextException ex)
@@ -1630,6 +1708,8 @@ public partial class GameEngine
             _logger.LogWarning(ex, "Ошибка обработки перехода жизни");
             AnsiConsole.MarkupLine("[red]⚠ Ошибка обработки перехода жизни записана в error_log.txt.[/]");
         }
+
+        return requestDispatched || localStateMutated;
     }
 
     internal static bool TryDescribeInvalidTriggerLifeEndRuntimeContext(
@@ -1809,7 +1889,25 @@ public partial class GameEngine
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[dim]Вы вернулись в Море Хаоса. Ваш путь продолжается...[/]");
         AnsiConsole.MarkupLine($"\n[grey]{_loc.T("press_any_key")}[/]");
-        _inputSource.ReadKey(intercept: true);
+        var rewardPromptLines = new List<string>
+        {
+            "Оценка прожитой жизни завершена.",
+            $"Чернильные Перья: {preDeathInkFeathers} -> {newInkFeathers} ({featherSign}{feathersEarned})",
+            enlChanged
+                ? $"Просветление: {preDeathEnlightenment} -> {newEnlightenment}"
+                : $"Просветление: {newEnlightenment}",
+            relicCount > 0
+                ? $"Новые Реликвии Души: {relicCount}"
+                : "Новых Реликвий Души нет",
+            "Вы вернулись в Море Хаоса. Продолжите путь."
+        };
+        if (newRelics.Count > 0)
+            rewardPromptLines.AddRange(newRelics.Select(relic => $"Реликвия: {relic}"));
+        ReadAgentConsoleKeyContinuation(
+            "Оценка прожитой жизни",
+            string.Join(Environment.NewLine, rewardPromptLines),
+            "life-evaluation-rewards",
+            "Продолжить");
     }
 
     /// <summary>
@@ -1916,7 +2014,23 @@ public partial class GameEngine
 
             AnsiConsole.WriteLine();
             AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
-            _inputSource.ReadKey(intercept: true);
+            var continuationLines = new List<string>
+            {
+                payload.IsGuardianForced
+                    ? "Враждебный Хранитель навязывает душе новое смертное воплощение."
+                    : "Хранитель направляет вас через Врата Души в мир смертных."
+            };
+            if (!string.IsNullOrWhiteSpace(worldDesc))
+                continuationLines.Add($"Мир: {worldDesc}");
+            if (!string.IsNullOrWhiteSpace(charDesc))
+                continuationLines.Add($"Персонаж: {charDesc}");
+            if (!string.IsNullOrWhiteSpace(circumstances))
+                continuationLines.Add($"Обстоятельства: {circumstances}");
+            continuationLines.Add("Нажмите продолжить, чтобы перейти к подготовке новой жизни.");
+            ReadAgentConsoleKeyContinuation(
+                "Врата Души открываются",
+                string.Join(Environment.NewLine, continuationLines),
+                "incarnation-trigger-gate-opened");
 
             // Build incarnation action from GM-provided data
             var parts = new List<string>
@@ -2068,11 +2182,20 @@ public partial class GameEngine
                 PlayerAction = string.Join(" ", parts),
                 Timestamp = DateTime.UtcNow.ToString("o"),
                 GameMode = "normal",
-                SystemReminder = await BuildTurnSystemReminderAsync()
+                SystemReminder = await BuildTurnSystemReminderAsync(
+                    "MORTAL BOOTSTRAP BASELINE: this is the first Mortal World turn of a new incarnation. The client already materialized valid baseline location/map/faction/quest/current-world codex files before this request and captured them in pending_turn_snapshot. Read game_state/control/mortal_bootstrap_scaffold.json, then develop the existing stable ids instead of recreating the world from scratch. Use canonical turn anchors exactly like #[3]. text for location/quest logs, do not write #3 - date, and do not edit client-owned game_state/world/guardian_corrections.json.")
             };
             AttachFreshDiceAndGacha(request);
             request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync("Mortal World");
+            await WriteMortalBootstrapBaselineAsync(
+                rollbackBackups,
+                newIncarnationNumber,
+                request.TurnNumber,
+                charDesc,
+                worldDesc,
+                circumstances);
             await CreateCanonicalBaselineSnapshotAsync(request, rollbackBackups, "GM-инициированного воплощения");
+            await WriteMortalBootstrapScaffoldAsync(request, newIncarnationNumber, charDesc, worldDesc, circumstances);
             manifestCreated = true;
             ClearTransientOutputFiles();
             await _fs.WriteFileAtomicAsync("input/turn_request.json",
@@ -2109,6 +2232,604 @@ public partial class GameEngine
                 _fs.DeleteFile("game_state/control/incarnation_trigger.json");
             return requestDispatched;
         }
+    }
+
+    private async Task WriteMortalBootstrapBaselineAsync(
+        RollbackSnapshot? rollbackSnapshot,
+        int incarnationNumber,
+        int turnNumber,
+        string? characterDescription,
+        string? worldDescription,
+        string? startingCircumstances)
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber,
+            turnNumber,
+            characterDescription,
+            worldDescription,
+            startingCircumstances,
+            DateTimeOffset.UtcNow);
+
+        foreach (var (path, json) in files)
+        {
+            if (string.Equals(path, "lore/codex_entries.json", StringComparison.OrdinalIgnoreCase))
+                await MergeMortalBootstrapCodexEntriesAsync(json);
+            else
+                await _fs.WriteFileAtomicAsync(path, json.ToJsonString(JsonOpts));
+
+            RegisterMortalBootstrapSnapshotFile(rollbackSnapshot, path);
+        }
+
+        foreach (var localClientOwnedFile in new[]
+                 {
+                     "game_state/core/player_status.json",
+                     "game_state/inventory/items.json",
+                     "game_state/world/guardian_corrections.json"
+                 })
+        {
+            if (_fs.FileExists(localClientOwnedFile))
+                RegisterMortalBootstrapSnapshotFile(rollbackSnapshot, localClientOwnedFile);
+        }
+    }
+
+    private async Task MergeMortalBootstrapCodexEntriesAsync(JsonObject bootstrapCodex)
+    {
+        var mergedEntries = new JsonArray();
+        var seenEntryIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        void AddEntries(JsonObject? root)
+        {
+            if (root?["entries"] is not JsonArray entries)
+                return;
+
+            foreach (var entry in entries.OfType<JsonObject>())
+            {
+                var entryId = GetNodeString(entry["entryId"]);
+                if (!string.IsNullOrWhiteSpace(entryId) && !seenEntryIds.Add(entryId))
+                    continue;
+
+                mergedEntries.Add(entry.DeepClone());
+            }
+        }
+
+        if (await _fs.ReadFileAsync("lore/codex_entries.json") is { } existingJson)
+        {
+            try
+            {
+                AddEntries(JsonNode.Parse(existingJson) as JsonObject);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Не удалось прочитать существующий lore/codex_entries.json при Mortal bootstrap merge.");
+            }
+        }
+
+        AddEntries(bootstrapCodex);
+
+        var mergedRoot = new JsonObject
+        {
+            ["entries"] = mergedEntries,
+            ["totalEntries"] = mergedEntries.Count,
+            ["categories"] = BuildCodexCategoryCountsForEntries(mergedEntries)
+        };
+        await _fs.WriteFileAtomicAsync("lore/codex_entries.json", mergedRoot.ToJsonString(JsonOpts));
+    }
+
+    private static JsonObject BuildCodexCategoryCountsForEntries(JsonArray entries)
+    {
+        var order = new[]
+        {
+            "cosmology",
+            "geography",
+            "history",
+            "cultures",
+            "creatures",
+            "characters",
+            "artifacts",
+            "factions",
+            "magic",
+            "other"
+        };
+        var counts = order.ToDictionary(category => category, _ => 0, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var entry in entries.OfType<JsonObject>())
+        {
+            var category = GetNodeString(entry["category"]);
+            if (string.IsNullOrWhiteSpace(category))
+                continue;
+
+            if (counts.ContainsKey(category))
+                counts[category]++;
+            else
+                counts["other"]++;
+        }
+
+        var root = new JsonObject();
+        foreach (var category in order)
+            root[category] = counts[category];
+        return root;
+    }
+
+    private static void RegisterMortalBootstrapSnapshotFile(RollbackSnapshot? rollbackSnapshot, string path)
+    {
+        if (rollbackSnapshot == null || string.IsNullOrWhiteSpace(path))
+            return;
+
+        rollbackSnapshot.ValidationSnapshotFiles.Add(path);
+    }
+
+    private async Task WriteMortalBootstrapScaffoldAsync(
+        TurnRequest request,
+        int incarnationNumber,
+        string? characterDescription,
+        string? worldDescription,
+        string? startingCircumstances)
+    {
+        var idSuffix = $"life_{Math.Max(incarnationNumber, 1):D3}";
+        var root = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["purpose"] = "fresh_mortal_world_bootstrap",
+            ["authority"] = "client-authored harness scaffold for the first Mortal World turn",
+            ["baselineMaterializedBeforeDispatch"] = true,
+            ["gmWorkflow"] = "The client already wrote valid baseline files and saved them into pending_turn_snapshot. Treat those files as existing canonical state, update or enrich them carefully, and do not rebuild the bootstrap from an empty world.",
+            ["sessionId"] = request.SessionId,
+            ["requestId"] = request.RequestId,
+            ["turnNumber"] = request.TurnNumber,
+            ["incarnationNumber"] = incarnationNumber,
+            ["createdAtUtc"] = DateTime.UtcNow.ToString("o"),
+            ["playerAuthoredStart"] = new JsonObject
+            {
+                ["characterDescription"] = characterDescription ?? string.Empty,
+                ["worldDescription"] = worldDescription ?? string.Empty,
+                ["startingCircumstances"] = startingCircumstances ?? string.Empty
+            },
+            ["suggestedStableIds"] = new JsonObject
+            {
+                ["currentLocationId"] = $"loc_{idSuffix}_start",
+                ["nearbyExitLocationId"] = $"loc_{idSuffix}_nearby_exit",
+                ["primaryFactionId"] = $"faction_{idSuffix}_initial_context",
+                ["startingObjectiveId"] = $"quest_{idSuffix}_opening_hook",
+                ["startingAnchorItemId"] = $"item_{idSuffix}_opening_anchor"
+            },
+            ["requiredMortalBootstrapFiles"] = new JsonArray
+            {
+                "lore/current_world/world_setting.json",
+                "lore/current_world/geography.json",
+                "lore/current_world/history.json",
+                "lore/current_world/cultures.json",
+                "lore/current_world/threats.json",
+                "lore/codex_entries.json",
+                "game_state/world/current_location.json",
+                "game_state/world/world_map.json",
+                "game_state/inventory/items.json",
+                "game_state/player/experience.json",
+                "game_state/factions/faction_core.json"
+            },
+            ["preMaterializedBaselineFiles"] = new JsonArray
+            {
+                "lore/current_world/world_setting.json",
+                "lore/current_world/geography.json",
+                "lore/current_world/history.json",
+                "lore/current_world/cultures.json",
+                "lore/current_world/threats.json",
+                "lore/codex_entries.json",
+                "game_state/world/current_location.json",
+                "game_state/world/world_map.json",
+                "game_state/inventory/items.json",
+                "game_state/player/experience.json",
+                "game_state/factions/faction_core.json",
+                "game_state/factions/faction_resources.json",
+                "game_state/quests/regular_quests.json"
+            },
+            ["locationRequirements"] = new JsonObject
+            {
+                ["currentLocationMustUseStableLocationId"] = true,
+                ["knownExitsMinimum"] = 1,
+                ["worldMapLinksMinimum"] = 1,
+                ["requiredArrayProperties"] = new JsonArray
+                {
+                    "activeThreats",
+                    "adjacencyMap",
+                    "factionControl",
+                    "locationStorages",
+                    "knownExits"
+                },
+                ["noNullForRequiredCollectionsOnBootstrap"] = true,
+                ["coordinatesRequired"] = true,
+                ["difficultyProfilesRequired"] = true
+            },
+            ["canonicalCoordinateAuthority"] = new JsonObject
+            {
+                ["prevents"] = "current_location_coordinates_mismatch",
+                ["rule"] = "Copy these exact coordinates for these locationId values. Do not invent a different z-level or map coordinate for the same stable id.",
+                ["currentLocationId"] = $"loc_{idSuffix}_start",
+                ["currentLocationCoordinates"] = new JsonObject
+                {
+                    ["x"] = 0,
+                    ["y"] = 0,
+                    ["z"] = 0
+                },
+                ["nearbyExitLocationId"] = $"loc_{idSuffix}_nearby_exit",
+                ["nearbyExitCoordinates"] = new JsonObject
+                {
+                    ["x"] = 1,
+                    ["y"] = 0,
+                    ["z"] = 0
+                },
+                ["mustMatchAcrossSurfaces"] = new JsonArray
+                {
+                    "game_state/world/current_location.json.coordinates for currentLocationId",
+                    "game_state/world/world_map.json newLocations[].coordinates for the same locationId",
+                    "current_location adjacencyMap[].targetCoordinates and world_map newLinks[].targetCoordinates for the targetLocationId"
+                }
+            },
+            ["factionRequirements"] = new JsonObject
+            {
+                ["persistentFactionIdRequired"] = true,
+                ["noNullFactionIdInCanonicalFactionCore"] = true,
+                ["sameTurnInitialIdAllowedOnlyInGmDelta"] = true,
+                ["canonicalFactionCoreMustUsePermanentId"] = true,
+                ["resourcesMustIncludeMetaResourcesAndStrategicGoodsArrays"] = true
+            },
+            ["sceneAnchorRequirements"] = new JsonObject
+            {
+                ["materializeActionableStartingProps"] = true,
+                ["startingItemOrPropIfNarrated"] = "If narration gives the player an inspectable object, sealed container, letter, weapon, clue, or tool, create or reference a matching canonical inventory/storage/location object.",
+                ["startingQuestIfNarrated"] = "If the opening scene creates an obvious investigation, escape, delivery, social, or survival hook, create a readable starting quest/objective instead of relying on narrative only.",
+                ["mapExitIfNarrated"] = "If the scene implies a door, corridor, road, gate, or route, create at least one known exit and map link.",
+                ["factionHookIfNarrated"] = "If the scene names an organization, house, guild, cult, guard, or authority, materialize it with a permanent factionId."
+            },
+            ["canonicalShapeHints"] = new JsonObject
+            {
+                ["factionCoreMinimum"] = new JsonObject
+                {
+                    ["targetFile"] = "game_state/factions/faction_core.json",
+                    ["collection"] = "factions",
+                    ["requiredIdentityFields"] = new JsonArray
+                    {
+                        "factionId",
+                        "name",
+                        "displayName",
+                        "description",
+                        "status",
+                        "visibility",
+                        "developmentArchetype"
+                    },
+                    ["requiredProgressionFields"] = new JsonArray
+                    {
+                        "level",
+                        "experience",
+                        "experienceForNextLevel",
+                        "isPlayerFaction",
+                        "isPlayerMember"
+                    },
+                    ["requiredObjects"] = new JsonArray
+                    {
+                        "powerProfile",
+                        "ranks",
+                        "resources"
+                    },
+                    ["requiredArraysOrCollections"] = new JsonArray
+                    {
+                        "rankBranches",
+                        "relations",
+                        "projects",
+                        "chronicle",
+                        "customStates",
+                        "resources.metaResources",
+                        "resources.strategicGoods"
+                    },
+                    ["liveRepairNote"] = "Do not create a partial full faction object. If the faction is durable, create the complete canonical factions[] object with a permanent factionId before sidecars reference it."
+                },
+                ["factionCustomStateMinimum"] = new JsonObject
+                {
+                    ["targetFile"] = "game_state/factions/faction_custom.json",
+                    ["canonicalFactionCustomStateRequiredFields"] = new JsonArray
+                    {
+                        "stateId",
+                        "name",
+                        "currentValue",
+                        "minValue",
+                        "maxValue",
+                        "description",
+                        "progressionRule",
+                        "thresholds"
+                    },
+                    ["progressionRuleRequiredFields"] = new JsonArray
+                    {
+                        "changePerTurn",
+                        "description"
+                    },
+                    ["thresholdsRule"] = "thresholds must be an array; use [] when no threshold is needed.",
+                    ["minimalExample"] = new JsonObject
+                    {
+                        ["stateId"] = "state_life_001_social_pressure",
+                        ["name"] = "Социальное давление",
+                        ["currentValue"] = 1,
+                        ["minValue"] = 0,
+                        ["maxValue"] = 10,
+                        ["description"] = "Дом или организация начинает реагировать на событие первой сцены.",
+                        ["progressionRule"] = new JsonObject
+                        {
+                            ["changePerTurn"] = 0,
+                            ["description"] = "Не меняется автоматически; обновляется только после значимых сцен."
+                        },
+                        ["thresholds"] = new JsonArray()
+                    },
+                    ["avoidPartialSidecarRule"] = "If you only need a narrative note, put it in faction_core chronicle/description. Create faction_custom.json only when you can write the full Custom State Object above."
+                },
+                ["npcCoreMinimum"] = new JsonObject
+                {
+                    ["targetFile"] = "game_state/npcs/npc_core.json",
+                    ["allowedTopLevelCollections"] = new JsonArray
+                    {
+                        "NPCsInScene",
+                        "NPCsRenameData",
+                        "UpdateNPCs",
+                        "UpdateNpcTradeInventoryReceipts"
+                    },
+                    ["forbiddenTopLevelKeysInNpcCore"] = new JsonArray
+                    {
+                        "schemaVersion",
+                        "npcs",
+                        "npcInteractionJournalUpdates",
+                        "NPCJournals",
+                        "NPCQuestUpdates",
+                        "NPCRelationshipUpdates"
+                    },
+                    ["requiredSceneNpcFields"] = new JsonArray
+                    {
+                        "npcId",
+                        "npcName",
+                        "name",
+                        "role",
+                        "race",
+                        "class",
+                        "appearanceDescription",
+                        "history",
+                        "worldview",
+                        "personalityArchetype",
+                        "culturalStance",
+                        "level",
+                        "experience",
+                        "experienceForNextLevel",
+                        "relationshipLevel",
+                        "attitude",
+                        "initialLocationId",
+                        "currentLocationId",
+                        "currentLocationName",
+                        "goals",
+                        "relationshipLock",
+                        "personalityTraits",
+                        "progressionTrackers"
+                    },
+                    ["sceneNpcLocationRule"] = "For NPCsInScene in a known current location, set currentLocationId to currentLocationData.locationId and initialLocationId to JSON null. For NPCsInScene in a same-turn new location, set initialLocationId to currentLocationData.initialId/newLocations.initialId and currentLocationId to JSON null. Always keep currentLocationName as the visible current location name.",
+                    ["offscreenSceneActorRule"] = "NPCsInScene is only for actors physically present in currentLocationData. Offscreen voices, voices behind a door, guards in a nearby corridor, people near nearbyExitLocationId, and route or exit pressure are not NPCsInScene for the current room; keep them in narrative, currentLocationData, quest/faction/location memory, Actors outside scope, or UpdateNPCs at their own location only if they are durable known actors.",
+                    ["actorScopeRule"] = "Every non-player Mortal World actor named as relevant in gm_thoughts_markdown must have a persistent NPC/faction/quest/inventory surface or be moved to actors outside scope. Do not use Relevant actors for offscreen pressure that does not receive a structured update.",
+                    ["playerCharacterRule"] = "The player character from characterDescription is not an NPC and does not need game_state/npcs persistence. If you name the player character in Relevant actors, make clear they are the player character, not an NPC; never materialize the player character through NPCsInScene or UpdateNPCs."
+                },
+                ["currentLocationMinimum"] = new JsonObject
+                {
+                    ["targetFile"] = "game_state/world/current_location.json",
+                    ["requiredFields"] = new JsonArray
+                    {
+                        "locationId",
+                        "name",
+                        "displayName",
+                        "description",
+                        "region",
+                        "type",
+                        "coordinates",
+                        "knownExits",
+                        "adjacencyMap",
+                        "factionControl",
+                        "locationStorages",
+                        "activeThreats",
+                        "internalDifficultyProfile",
+                        "externalDifficultyProfile",
+                        "lastEventsDescription"
+                    },
+                    ["difficultyProfileFacets"] = new JsonArray
+                    {
+                        "combat",
+                        "environment",
+                        "social",
+                        "exploration"
+                    },
+                    ["allowedFactionControlTypes"] = new JsonArray
+                    {
+                        "Military",
+                        "Economic",
+                        "Social",
+                        "Covert"
+                    },
+                    ["lastEventsTimestampRule"] = "Use canonical historical-entry timestamp format when lastEventsDescription carries a timestamp; otherwise keep a readable event summary without a fake timestamp."
+                },
+                ["worldMapMinimum"] = new JsonObject
+                {
+                    ["targetFile"] = "game_state/world/world_map.json",
+                    ["requiredLocationFields"] = new JsonArray
+                    {
+                        "locationId",
+                        "name",
+                        "displayName",
+                        "region",
+                        "type",
+                        "description",
+                        "coordinates"
+                    },
+                    ["requiredLinkPreviewFields"] = new JsonArray
+                    {
+                        "targetLocationId",
+                        "targetName",
+                        "targetCoordinates",
+                        "estimatedInternalDifficultyProfile",
+                        "estimatedExternalDifficultyProfile"
+                    },
+                    ["requiredActiveThreatFields"] = new JsonArray
+                    {
+                        "threatId",
+                        "name",
+                        "longTermGoal",
+                        "threatArchetype",
+                        "currentActivity",
+                        "impactProfile"
+                    },
+                    ["activeThreatObjectMinimum"] = new JsonObject
+                    {
+                        ["threatIdRule"] = "Use null only for a same-turn new threat before system normalization; otherwise keep a stable threatId.",
+                        ["requiredRootFields"] = new JsonArray
+                        {
+                            "threatId",
+                            "name",
+                            "longTermGoal",
+                            "threatArchetype",
+                            "currentActivity",
+                            "impactProfile"
+                        },
+                        ["threatArchetypeRequiredFields"] = new JsonArray
+                        {
+                            "motivation",
+                            "method"
+                        },
+                        ["allowedThreatMotivations"] = new JsonArray
+                        {
+                            "Domination",
+                            "Consumption",
+                            "Preservation",
+                            "Corruption",
+                            "Accumulation",
+                            "Execution",
+                            "Custom"
+                        },
+                        ["allowedThreatMethods"] = new JsonArray
+                        {
+                            "Overt",
+                            "Covert",
+                            "Deceptive",
+                            "Opportunistic",
+                            "Systemic",
+                            "Custom"
+                        },
+                        ["impactProfileRequiredFields"] = new JsonArray
+                        {
+                            "primaryTargetType",
+                            "primaryTargetId",
+                            "primaryTargetName",
+                            "primaryImpact",
+                            "baseImpactValue"
+                        },
+                        ["allowedThreatPrimaryTargetTypes"] = new JsonArray
+                        {
+                            "Faction",
+                            "Location",
+                            "Resource"
+                        },
+                        ["allowedThreatPrimaryImpacts"] = new JsonArray
+                        {
+                            "Military",
+                            "Economic",
+                            "Social",
+                            "Covert",
+                            "Stability",
+                            "Environment"
+                        },
+                        ["narrativePressureRule"] = "If a scene has only vague pressure or tension, keep activeThreats empty and describe it in faction chronicle or current location events. Do not create string-only activeThreat stubs."
+                    },
+                    ["linkRule"] = "If the opening scene names a route, create a map location/link pair with targetCoordinates and both estimated difficulty profiles."
+                },
+                ["inventoryItemMinimum"] = new JsonObject
+                {
+                    ["targetFile"] = "game_state/inventory/items.json",
+                    ["requiredFieldsForStartingItem"] = new JsonArray
+                    {
+                        "itemId",
+                        "name",
+                        "description",
+                        "type",
+                        "quality",
+                        "rarity",
+                        "weight",
+                        "value",
+                        "durability",
+                        "slot",
+                        "group"
+                    },
+                    ["allowedQualityValues"] = new JsonArray
+                    {
+                        "Trash",
+                        "Common",
+                        "Uncommon",
+                        "Good",
+                        "Rare",
+                        "Epic",
+                        "Legendary",
+                        "Unique"
+                    },
+                    ["allowedEquipmentSlots"] = new JsonArray
+                    {
+                        "Head",
+                        "Chest",
+                        "Legs",
+                        "Feet",
+                        "Hands",
+                        "Wrists",
+                        "Neck",
+                        "Waist",
+                        "Back",
+                        "Finger1",
+                        "Finger2",
+                        "MainHand",
+                        "OffHand",
+                        "Underwear_Top",
+                        "Underwear_Bottom",
+                        "Accessory1",
+                        "Accessory2",
+                        "Accessory3",
+                        "Accessory4"
+                    },
+                    ["slotRule"] = "If an item is accessory-like, set slot to a valid accessory slot instead of leaving it missing or incompatible.",
+                    ["durabilityRule"] = "Starting inspectable props still need durability when represented as inventory items; write durability as a percentage string such as 100% for intact ordinary items, never as bare number 100.",
+                    ["journalEntriesRule"] = "If a starting item needs journalEntries, write journalEntries as an array of non-empty strings, not objects. Each entry should be one player-facing note string without technical turn anchors such as '#[3].'."
+                },
+                ["codexEntryMinimum"] = new JsonObject
+                {
+                    ["targetFile"] = "lore/codex_entries.json",
+                    ["sourceFilePrefixRequired"] = "current_world/",
+                    ["requiredBootstrap"] = "At least one codex entry must be tied to the current world-lore bootstrap, not only generic afterlife or stale-world lore.",
+                    ["recommendedEntries"] = new JsonArray
+                    {
+                        "current world premise",
+                        "starting region",
+                        "opening social/faction context"
+                    }
+                }
+            },
+            ["repairPreventionChecklist"] = new JsonArray
+            {
+                "Prevent bootstrap_codex_missing_current_world_entries: write at least one current-world codex entry during first Mortal bootstrap.",
+                "Prevent npc_contract_unknown_top_level_key: keep npc_core.json top-level collections in the documented NPC surfaces; do not write schemaVersion, npcs, or npcInteractionJournalUpdates there.",
+                "Prevent npc_contract_unknown_top_level_key: do not write NPCJournals, NPCQuestUpdates, or NPCRelationshipUpdates as top-level keys in game_state/npcs/npc_core.json.",
+                "Prevent npc_full_object_missing_required_fields: NPCsInScene/UpdateNPCs entries must be full canonical NPC objects, not name-only rows.",
+                "Prevent npc_scene_location_mismatch: NPCsInScene is only for actors physically present in currentLocationData; offscreen voices, nearbyExitLocationId actors, and corridor/door pressure must stay outside NPCsInScene until the player reaches or directly interacts with them.",
+                "Prevent mortal_relevant_actor_missing_persistence: every Mortal relevant actor in gm_thoughts_markdown needs a matching persistent surface or must be moved outside scope.",
+                "Prevent player character NPC false positives: the player character is controlled by player state, not game_state/npcs, and should not be materialized as an NPC.",
+                "Prevent world_map_link_preview_missing_difficulty_profile: every opening map link preview needs estimatedInternalDifficultyProfile and estimatedExternalDifficultyProfile.",
+                "Prevent current_location_coordinates_mismatch: copy canonicalCoordinateAuthority coordinates exactly for suggested stable location ids across current_location, world_map newLocations, adjacencyMap, and newLinks.",
+                "Prevent faction_full_object_partial_optional_extension_data: if you create a durable faction, create complete faction core plus sidecars; do not mix partial optional arrays into a full faction object.",
+                "Prevent item_missing_equipment_slot/item_missing_durability: every starting item needs a valid slot when equipment-like and durability as a percentage string such as 100% when player-visible.",
+                "Prevent invalid_string_array_item and player-facing turn anchors in item journalEntries: journalEntries[] entries must be non-empty strings, not objects, and must not start with technical prefixes such as '#[3].'."
+            },
+            ["playerFacingQualityRules"] = new JsonArray
+            {
+                "The first playable Mortal prompt should have useful /инв, /квесты, /карта, /локации, and /фракции data when the scene text makes those entities actionable.",
+                "Do not leave player-facing hooks only in prose when a command surface exists for that entity.",
+                "Do not persist raw temp ids, null persistent ids, or empty placeholder objects after accepted bootstrap."
+            }
+        };
+
+        await _fs.WriteFileAtomicAsync(MortalBootstrapScaffoldPath, root.ToJsonString(JsonOpts));
     }
 
     private async Task<bool> HasAcceptedTurnAuthorityForIncarnationTriggerAsync(
@@ -2471,16 +3192,16 @@ public partial class GameEngine
         {
             AnsiConsole.MarkupLine("[dim]  Свободный ролеплей с Хранителями в Сияющей Обители[/]");
             AnsiConsole.MarkupLine("[dim]  /статус /status │ /сияющая_обитель /shining_abode │ /сияющая_политика /shining_politics[/]");
-            AnsiConsole.MarkupLine("[dim]  /перья /архив_души /уведомления_загробья │ /реликвии /хранители /душа[/]");
+            AnsiConsole.MarkupLine("[dim]  /перья /архив_души /хроники_посмертия /уведомления_загробья │ /реликвии /хранители /душа[/]");
             AnsiConsole.MarkupLine("[dim]  /вернуться_в_море_хаоса /новая_игра+ │ /help[/]");
         }
         else if (isChaosSea)
         {
             AnsiConsole.MarkupLine("[dim]  Говорите с Хранителем: торговать, квесты, реликвии души, вытягивание реликвий, сменить хранителя[/]");
             if (_stateManager.CurrentState.CanReenterShiningAbode)
-                AnsiConsole.MarkupLine("[dim]  /статус /реликвии /хранители /обители /гача /перья /архив_души │ /воплотиться /вернуться_в_обитель │ /help[/]");
+                AnsiConsole.MarkupLine("[dim]  /статус /реликвии /хранители /обители /гача /перья /архив_души /хроники_посмертия │ /воплотиться /вернуться_в_обитель │ /help[/]");
             else
-                AnsiConsole.MarkupLine("[dim]  /статус /реликвии /хранители /обители /гача /перья /архив_души │ /воплотиться │ /help[/]");
+                AnsiConsole.MarkupLine("[dim]  /статус /реликвии /хранители /обители /гача /перья /архив_души /хроники_посмертия │ /воплотиться │ /help[/]");
         }
         else
         {
@@ -3153,6 +3874,7 @@ Shining relic gacha consumes the quoted Ink Feather cost from the request and do
                 ? $"\n  [dim]Осталось распределить: [yellow]{remaining}[/] очков[/]"
                 : "\n  [green]✅ Все очки распределены![/]");
 
+            PublishAgentConsoleStatAllocationSnapshot(title, remaining, baseStats, allocations, statList, selectedIdx);
             var key = _inputSource.ReadKey(intercept: true);
             switch (key.Key)
             {
@@ -3210,6 +3932,9 @@ Shining relic gacha consumes the quoted Ink Feather cost from the request and do
         }
 
         AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
-        _inputSource.ReadKey(intercept: true);
+        ReadAgentConsoleKeyContinuation(
+            "Распределение характеристик завершено",
+            "Очки характеристик распределены. Продолжите переход к смертной жизни.",
+            "stat-allocation-finished");
     }
 }

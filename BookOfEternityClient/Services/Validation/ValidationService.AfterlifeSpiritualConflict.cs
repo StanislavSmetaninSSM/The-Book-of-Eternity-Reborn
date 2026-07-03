@@ -148,7 +148,8 @@ public partial class ValidationService
         bool HasValidatedTurnBaseline = false,
         int SpiritFocusTier = 0,
         int SpiritFocusMaxActionPoints = 6,
-        AfterlifeDifficultyDefinition? Difficulty = null)
+        AfterlifeDifficultyDefinition? Difficulty = null,
+        int? CurrentTurn = null)
     {
         public bool HasAuthoritativeDice => AuthoritativeDice is { Length: > 0 };
         public bool HasLightIncarnate => LightIncarnateGrantTurn is > 0;
@@ -271,7 +272,8 @@ public partial class ValidationService
                 HasValidatedTurnBaseline: true,
                 SpiritFocusTier: spiritFocusTier,
                 SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints,
-                Difficulty: difficulty);
+                Difficulty: difficulty,
+                CurrentTurn: manifest.TurnNumber);
         }
 
         var liveRequestJson = await _fs.ReadFileAsync("input/turn_request.json");
@@ -289,7 +291,8 @@ public partial class ValidationService
                 HasValidatedTurnBaseline: manifest != null,
                 SpiritFocusTier: spiritFocusTier,
                 SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints,
-                Difficulty: difficulty);
+                Difficulty: difficulty,
+                CurrentTurn: manifest?.TurnNumber);
         }
 
         try
@@ -318,7 +321,8 @@ public partial class ValidationService
                         HasValidatedTurnBaseline: manifest != null,
                         SpiritFocusTier: spiritFocusTier,
                         SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints,
-                        Difficulty: difficulty);
+                        Difficulty: difficulty,
+                        CurrentTurn: manifest?.TurnNumber ?? AfterlifeSpiritualConflictState.GetNodeInt(root["turnNumber"]));
                 }
             }
         }
@@ -339,7 +343,8 @@ public partial class ValidationService
             HasValidatedTurnBaseline: manifest != null,
             SpiritFocusTier: spiritFocusTier,
             SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints,
-            Difficulty: difficulty);
+            Difficulty: difficulty,
+            CurrentTurn: manifest?.TurnNumber);
     }
 
     private async Task<int> ResolveAfterlifeConflictSpiritFocusTierAsync(ValidationPendingTurnSnapshotManifest? manifest)
@@ -1313,7 +1318,9 @@ public partial class ValidationService
             {
                 if (exchangeLog[index] is JsonObject exchange)
                 {
-                    var isPreTurnExchange = preTurnExchangePayloads.TryConsume(exchange);
+                    var isPreTurnExchange =
+                        preTurnExchangePayloads.TryConsume(exchange) ||
+                        IsExchangeFromPriorTurn(exchange, diceContext);
                     var isCurrentExchange = diceContext.HasValidatedTurnBaseline && !isPreTurnExchange;
                     hasCurrentExchange = hasCurrentExchange || isCurrentExchange;
                     ValidateConflictExchange(
@@ -2840,12 +2847,32 @@ public partial class ValidationService
 
         if (exchange["diceAudit"] is JsonObject diceAudit)
         {
-            ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext, effectiveCombatConditionIds);
+            var exchangeDiceContext = isCurrentExchange
+                ? diceContext
+                : WithoutCurrentTurnDiceAuthority(diceContext);
+            ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, exchangeDiceContext, effectiveCombatConditionIds);
             if (before != null)
                 ValidateConflictPositionDiceModifier(diceAudit, before, context, issues);
             ValidateLightIncarnateDiceAuditModifier(exchange, diceAudit, $"{context}.diceAudit", issues, diceContext);
         }
     }
+
+    private static bool IsExchangeFromPriorTurn(JsonObject exchange, AfterlifeConflictDiceContext diceContext)
+    {
+        if (!diceContext.HasValidatedTurnBaseline ||
+            diceContext.CurrentTurn is not int currentTurn ||
+            !TryGetJsonNodeInt(exchange["exchangeAtTurn"], out var exchangeTurn))
+        {
+            return false;
+        }
+
+        return exchangeTurn < currentTurn;
+    }
+
+    private static AfterlifeConflictDiceContext WithoutCurrentTurnDiceAuthority(AfterlifeConflictDiceContext diceContext) =>
+        diceContext.AuthoritativeDice is { Length: > 0 }
+            ? diceContext with { AuthoritativeDice = null }
+            : diceContext;
 
     private static void ValidateActionEconomyShape(
         JsonNode? actionEconomy,

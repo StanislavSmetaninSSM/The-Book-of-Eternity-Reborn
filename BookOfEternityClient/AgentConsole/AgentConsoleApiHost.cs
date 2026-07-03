@@ -104,6 +104,24 @@ public static class AgentConsoleApiHost
             return ToControlResult(result);
         });
 
+        app.MapPost("/api/agent-console/default-action", (HttpContext context) =>
+        {
+            if (!IsAuthorized(context.Request, options.Token))
+                return Unauthorized(context);
+
+            var result = options.InputSource.TryQueueDefaultAction();
+            return ToControlResult(result);
+        });
+
+        app.MapPost("/api/agent-console/return-to-game-loop-step", (HttpContext context) =>
+        {
+            if (!IsAuthorized(context.Request, options.Token))
+                return Unauthorized(context);
+
+            var result = options.InputSource.TryQueueReturnToGameLoopStep();
+            return ToControlResult(result);
+        });
+
         return app;
     }
 
@@ -133,7 +151,9 @@ public static class AgentConsoleApiHost
         var path = request.Path.Value;
         return string.Equals(path, "/api/agent-console/key", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(path, "/api/agent-console/text", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(path, "/api/agent-console/action", StringComparison.OrdinalIgnoreCase);
+               string.Equals(path, "/api/agent-console/action", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(path, "/api/agent-console/default-action", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(path, "/api/agent-console/return-to-game-loop-step", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsAuthorized(HttpRequest request, string expectedToken)

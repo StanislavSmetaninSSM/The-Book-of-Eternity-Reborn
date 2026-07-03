@@ -92,6 +92,133 @@ public sealed class ActorSocialInteractionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_LocalPendingGuardianSocialRequestBeforeTurnSnapshot_DoesNotRequireValidatedSnapshotContext()
+    {
+        var request = new
+        {
+            requestId = "guardian_social_req_pre_send",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            interactionType = "talk",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-27T00:00:00Z"
+        };
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1
+        });
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    domain = "Порог Сна",
+                    nameVariants = new
+                    {
+                        @default = "Азалия",
+                        feminine = "Азалия",
+                        masculine = (string?)null,
+                        neutral = (string?)null
+                    },
+                    manifestation = new
+                    {
+                        currentDisplayName = "Азалия",
+                        formFlexibility = "selective",
+                        currentPresentationStyle = "feminine",
+                        currentPronouns = "она/её",
+                        appearanceDescription = "Тестовая форма."
+                    },
+                    manifestationHistory = Array.Empty<object>(),
+                    relationshipData = new { currentReputation = 110, reputationHistory = Array.Empty<object>(), lastInteraction = (string?)null },
+                    abodePower = new { currentPower = 10, tier = "Хрупкая", lastUpdatedAt = "2026-03-24T00:00:00Z", history = Array.Empty<object>() },
+                    abode = new { abodeId = "abode_alpha", name = "Тестовая обитель" },
+                    gachaSystem = new { chargesPerReturn = 0, chargesUsedThisReturn = 0, gachaHistory = Array.Empty<object>() }
+                }
+            }
+        });
+        await WriteJsonAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, new { requests = new[] { request } });
+
+        var issues = await InvokeValidationAsync("ValidatePendingGuardianSocialInteractionRequestContextAsync");
+
+        Assert.DoesNotContain(
+            issues,
+            issue => string.Equals(issue.Code, "guardian_social_interaction_invalid_validated_snapshot_context", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ActiveGuardianSocialTurnWithoutValidatedSnapshotContext_Fails()
+    {
+        var request = new
+        {
+            requestId = "guardian_social_req_active_turn",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            interactionType = "talk",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-27T00:00:00Z"
+        };
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1
+        });
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    domain = "Порог Сна",
+                    nameVariants = new
+                    {
+                        @default = "Азалия",
+                        feminine = "Азалия",
+                        masculine = (string?)null,
+                        neutral = (string?)null
+                    },
+                    manifestation = new
+                    {
+                        currentDisplayName = "Азалия",
+                        formFlexibility = "selective",
+                        currentPresentationStyle = "feminine",
+                        currentPronouns = "она/её",
+                        appearanceDescription = "Тестовая форма."
+                    },
+                    manifestationHistory = Array.Empty<object>(),
+                    relationshipData = new { currentReputation = 110, reputationHistory = Array.Empty<object>(), lastInteraction = (string?)null },
+                    abodePower = new { currentPower = 10, tier = "Хрупкая", lastUpdatedAt = "2026-03-24T00:00:00Z", history = Array.Empty<object>() },
+                    abode = new { abodeId = "abode_alpha", name = "Тестовая обитель" },
+                    gachaSystem = new { chargesPerReturn = 0, chargesUsedThisReturn = 0, gachaHistory = Array.Empty<object>() }
+                }
+            }
+        });
+        await WriteJsonAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, new { requests = new[] { request } });
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = "session",
+            requestId = "request",
+            turnNumber = 13,
+            playerAction = "test"
+        });
+
+        var issues = await InvokeValidationAsync("ValidatePendingGuardianSocialInteractionRequestContextAsync");
+
+        Assert.Contains(
+            issues,
+            issue => string.Equals(issue.Code, "guardian_social_interaction_invalid_validated_snapshot_context", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_PendingGuardianSocialRequestWithJournalClosure_Passes()
     {
         var request = new

@@ -1,5 +1,6 @@
 using System.Text;
 using System.Collections;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Reflection;
 using BookOfEternityClient.AgentConsole;
@@ -61,19 +62,37 @@ public sealed class AgentConsoleRecordingExplorerConsole : IExplorerConsole
     public string Ask(string prompt, string defaultValue = "")
     {
         AppendCaptured(StripMarkup(prompt));
+        if (_liveInput is not null)
+            return RunLiveTextPrompt(prompt, defaultValue);
+
         return _inner.Ask(prompt, defaultValue);
     }
 
     public bool Confirm(string prompt, bool defaultValue = false)
     {
         AppendCaptured(StripMarkup(prompt));
+        if (_liveInput is not null)
+            return RunLiveConfirmationPrompt(prompt, defaultValue);
+
         return _inner.Confirm(prompt, defaultValue);
     }
 
     public T Prompt<T>(IPrompt<T> prompt)
     {
+        if (_liveInput is not null &&
+            prompt is ConfirmationPrompt confirmationPrompt &&
+            typeof(T) == typeof(bool))
+        {
+            var promptMarkup = ReadConfirmationPromptText(confirmationPrompt);
+            var confirmed = RunLiveConfirmationPrompt(promptMarkup, confirmationPrompt.DefaultValue, confirmationPrompt.Yes, confirmationPrompt.No);
+            return (T)(object)confirmed;
+        }
+
         if (_liveInput is not null && TryRunLiveSelectionPrompt(prompt, out var selected))
             return selected;
+
+        if (_liveInput is not null && TryRunLiveScalarTextPrompt(prompt, out var scalarValue))
+            return scalarValue;
 
         try
         {
@@ -234,6 +253,55 @@ public sealed class AgentConsoleRecordingExplorerConsole : IExplorerConsole
         }
     }
 
+    private bool TryRunLiveScalarTextPrompt<T>(
+        IPrompt<T> prompt,
+        out T selected)
+    {
+        selected = default!;
+
+        if (!prompt.GetType().IsGenericType ||
+            prompt.GetType().GetGenericTypeDefinition() != typeof(TextPrompt<>))
+        {
+            return false;
+        }
+
+        var targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+        if (targetType != typeof(string) &&
+            targetType != typeof(int) &&
+            targetType != typeof(long) &&
+            targetType != typeof(decimal) &&
+            targetType != typeof(double) &&
+            targetType != typeof(float))
+        {
+            return false;
+        }
+
+        var promptMarkup = ReadTextPromptText(prompt);
+        var defaultValueText = ReadTextPromptDefaultValueText(prompt);
+
+        while (true)
+        {
+            var line = RunLiveTextPrompt(promptMarkup, defaultValueText);
+            if (!TryConvertScalarPromptValue(line, targetType, out var converted))
+            {
+                promptMarkup = $"{ReadTextPromptText(prompt)}\n[red]Введите корректное значение.[/]";
+                continue;
+            }
+
+            if (!ValidateTextPromptValue(prompt, converted, out var validationMessage))
+            {
+                var safeMessage = string.IsNullOrWhiteSpace(validationMessage)
+                    ? "Введите корректное значение."
+                    : validationMessage;
+                promptMarkup = $"{ReadTextPromptText(prompt)}\n[red]{Spectre.Console.Markup.Escape(StripMarkup(safeMessage))}[/]";
+                continue;
+            }
+
+            selected = (T)converted!;
+            return true;
+        }
+    }
+
     private void PublishSelectionPromptSnapshot(
         string screenId,
         string title,
@@ -261,6 +329,261 @@ public sealed class AgentConsoleRecordingExplorerConsole : IExplorerConsole
         };
 
         _liveInput?.PublishSnapshot(snapshot, $"Rendered explorer selection prompt {screenId}.");
+    }
+
+    private bool RunLiveConfirmationPrompt(
+        string promptMarkup,
+        bool defaultValue,
+        char yesKey = 'y',
+        char noKey = 'n')
+    {
+        var promptText = StripMarkup(promptMarkup);
+        var screenId = $"explorer-confirmation-{++_selectionPromptScreenIndex}";
+        PublishConfirmationPromptSnapshot(screenId, promptText, defaultValue, yesKey, noKey);
+
+        while (true)
+        {
+            var key = _inner.ReadKey();
+            var resolved = ResolveConfirmationKey(key, defaultValue, yesKey, noKey);
+            if (resolved.HasValue)
+                return resolved.Value;
+        }
+    }
+
+    private void PublishConfirmationPromptSnapshot(
+        string screenId,
+        string promptText,
+        bool defaultValue,
+        char yesKey,
+        char noKey)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var plainText = BuildConfirmationPromptPlainText(promptText, defaultValue);
+        var snapshot = new AgentConsoleSnapshot
+        {
+            ScreenId = screenId,
+            Mode = AgentConsoleMode.Confirmation,
+            Title = "Подтверждение",
+            PlainText = plainText,
+            AwaitingInput = true,
+            InputKind = AgentConsoleInputKind.Confirmation,
+            SelectedIndex = defaultValue ? 0 : 1,
+            Actions =
+            [
+                new AgentConsoleAction
+                {
+                    Id = "yes",
+                    Label = "Да",
+                    Shortcut = yesKey.ToString(),
+                    IsDefault = defaultValue
+                },
+                new AgentConsoleAction
+                {
+                    Id = "no",
+                    Label = "Нет",
+                    Shortcut = noKey.ToString(),
+                    IsDefault = !defaultValue
+                }
+            ],
+            Prompt = new AgentConsolePrompt
+            {
+                PromptId = screenId,
+                Text = promptText,
+                InputKind = AgentConsoleInputKind.Confirmation,
+                DefaultValue = defaultValue ? "Да" : "Нет",
+                Choices = ["Да", "Нет"]
+            },
+            RenderedAtUtc = now,
+            UpdatedAtUtc = now
+        };
+
+        _liveInput?.PublishSnapshot(snapshot, $"Rendered explorer confirmation prompt {screenId}.");
+    }
+
+    private string RunLiveTextPrompt(string promptMarkup, string defaultValue)
+    {
+        var promptText = StripMarkup(promptMarkup);
+        var screenId = $"explorer-text-{++_selectionPromptScreenIndex}";
+        PublishTextPromptSnapshot(screenId, promptText, defaultValue);
+
+        _inner.Markup(promptMarkup);
+        var line = _inner.ReadLine();
+        if (string.IsNullOrEmpty(line))
+            return defaultValue;
+
+        return line;
+    }
+
+    private void PublishTextPromptSnapshot(
+        string screenId,
+        string promptText,
+        string defaultValue)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var snapshot = new AgentConsoleSnapshot
+        {
+            ScreenId = screenId,
+            Mode = AgentConsoleMode.TextPrompt,
+            Title = "Ввод текста",
+            PlainText = BuildTextPromptPlainText(promptText, defaultValue),
+            AwaitingInput = true,
+            InputKind = AgentConsoleInputKind.Text,
+            Prompt = new AgentConsolePrompt
+            {
+                PromptId = screenId,
+                Text = promptText,
+                InputKind = AgentConsoleInputKind.Text,
+                DefaultValue = defaultValue
+            },
+            RenderedAtUtc = now,
+            UpdatedAtUtc = now
+        };
+
+        _liveInput?.PublishSnapshot(snapshot, $"Rendered explorer text prompt {screenId}.");
+    }
+
+    private string BuildTextPromptPlainText(string promptText, string defaultValue)
+    {
+        var builder = new StringBuilder();
+        var context = ReadCapturedText();
+        if (!string.IsNullOrWhiteSpace(context))
+        {
+            builder.AppendLine(context);
+            builder.AppendLine();
+        }
+
+        builder.AppendLine(promptText);
+        if (!string.IsNullOrWhiteSpace(defaultValue))
+            builder.AppendLine($"По умолчанию: {defaultValue}");
+        return NormalizeText(builder.ToString());
+    }
+
+    private string BuildConfirmationPromptPlainText(string promptText, bool defaultValue)
+    {
+        var builder = new StringBuilder();
+        var context = ReadCapturedText();
+        if (!string.IsNullOrWhiteSpace(context))
+        {
+            builder.AppendLine(context);
+            builder.AppendLine();
+        }
+
+        builder.AppendLine(promptText);
+        builder.AppendLine(defaultValue ? "[Y/n]" : "[y/N]");
+        return NormalizeText(builder.ToString());
+    }
+
+    private static bool? ResolveConfirmationKey(
+        ConsoleKeyInfo key,
+        bool defaultValue,
+        char yesKey,
+        char noKey)
+    {
+        if (key.Key == ConsoleKey.Enter)
+            return defaultValue;
+
+        if (char.ToLowerInvariant(key.KeyChar) == char.ToLowerInvariant(yesKey))
+            return true;
+
+        if (char.ToLowerInvariant(key.KeyChar) == char.ToLowerInvariant(noKey))
+            return false;
+
+        return null;
+    }
+
+    private static string ReadConfirmationPromptText(ConfirmationPrompt prompt)
+    {
+        var raw = prompt.GetType()
+            .GetField("_prompt", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?.GetValue(prompt) as string;
+        return string.IsNullOrWhiteSpace(raw) ? "Подтвердить?" : raw;
+    }
+
+    private static string ReadTextPromptText<T>(IPrompt<T> prompt)
+    {
+        var raw = prompt.GetType()
+            .GetField("_prompt", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?.GetValue(prompt) as string;
+        return string.IsNullOrWhiteSpace(raw) ? "Введите значение:" : raw;
+    }
+
+    private static string ReadTextPromptDefaultValueText<T>(IPrompt<T> prompt)
+    {
+        var defaultValue = prompt.GetType()
+            .GetProperty("DefaultValue", BindingFlags.Instance | BindingFlags.Public)
+            ?.GetValue(prompt);
+        var value = defaultValue?.GetType()
+            .GetProperty("Value", BindingFlags.Instance | BindingFlags.Public)
+            ?.GetValue(defaultValue);
+        return value == null
+            ? string.Empty
+            : Convert.ToString(value, CultureInfo.CurrentCulture) ?? string.Empty;
+    }
+
+    private static bool TryConvertScalarPromptValue(string? line, Type targetType, out object? value)
+    {
+        value = null;
+        var text = line?.Trim() ?? string.Empty;
+
+        if (targetType == typeof(string))
+        {
+            value = text;
+            return true;
+        }
+
+        if (targetType == typeof(int) &&
+            int.TryParse(text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var intValue))
+        {
+            value = intValue;
+            return true;
+        }
+
+        if (targetType == typeof(long) &&
+            long.TryParse(text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var longValue))
+        {
+            value = longValue;
+            return true;
+        }
+
+        if (targetType == typeof(decimal) &&
+            decimal.TryParse(text, NumberStyles.Number, CultureInfo.CurrentCulture, out var decimalValue))
+        {
+            value = decimalValue;
+            return true;
+        }
+
+        if (targetType == typeof(double) &&
+            double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out var doubleValue))
+        {
+            value = doubleValue;
+            return true;
+        }
+
+        if (targetType == typeof(float) &&
+            float.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out var floatValue))
+        {
+            value = floatValue;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool ValidateTextPromptValue<T>(
+        IPrompt<T> prompt,
+        object? converted,
+        out string? validationMessage)
+    {
+        validationMessage = null;
+        var validateResult = prompt.GetType()
+            .GetMethod("ValidateResult", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        if (validateResult == null)
+            return true;
+
+        var parameters = new[] { converted, validationMessage };
+        var valid = validateResult.Invoke(prompt, parameters) as bool?;
+        validationMessage = parameters[1] as string;
+        return valid != false;
     }
 
     private string BuildSelectionPromptPlainText(

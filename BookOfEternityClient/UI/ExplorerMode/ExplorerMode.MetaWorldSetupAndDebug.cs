@@ -429,7 +429,7 @@ public partial class ExplorerMode
         {
             text.Add("");
             text.Add("[yellow]Последние события:[/]");
-            text.Add(Markup.Escape(events));
+            text.Add(Markup.Escape(ExplorerPlayerFacingLabels.HistoricalEntry(events)));
         }
 
         // World time
@@ -784,7 +784,7 @@ public partial class ExplorerMode
             $"[bold magenta]Коррективы текущей жизни[/]",
             "",
             $"[bold]Хранитель:[/] {Markup.Escape(state.GuardianName)}",
-            $"[bold]Намерение:[/] {Markup.Escape(state.Intent)}",
+            $"[bold]Намерение:[/] {Markup.Escape(FormatGuardianCorrectionIntentForPlayer(state.Intent))}",
             $"[bold]Репутация при применении:[/] {state.ReputationAtApplication}",
             $"[bold]Сила Обители:[/] {state.PowerBefore} → {state.PowerAfter}",
             $"[bold]Бюджет:[/] {state.BaseBudgetPoints} очк. • Осталось: {state.RemainingBudgetPoints}",
@@ -801,7 +801,7 @@ public partial class ExplorerMode
         else
         {
             foreach (var assertion in state.ScenarioCoreSnapshot.ScenarioCoreAssertions.Take(12))
-                lines.Add($"  • [magenta]{Markup.Escape(assertion.Category)}[/]: {Markup.Escape(assertion.Value)}");
+                lines.Add($"  • [magenta]{Markup.Escape(FormatScenarioCoreCategoryForPlayer(assertion.Category))}[/]: {Markup.Escape(assertion.Value)}");
             if (state.ScenarioCoreSnapshot.ScenarioCoreAssertions.Count > 12)
                 lines.Add($"  [dim]… и ещё {state.ScenarioCoreSnapshot.ScenarioCoreAssertions.Count - 12}[/]");
         }
@@ -818,7 +818,7 @@ public partial class ExplorerMode
             {
                 lines.Add($"  • [bold]{Markup.Escape(correction.Title)}[/]");
                 lines.Add($"    [dim]{Markup.Escape(correction.Summary)}[/]");
-                lines.Add($"    [dim]Slot: {Markup.Escape(correction.SlotType)} • Severity: {Markup.Escape(correction.Severity)} • Budget: {correction.BudgetCostPoints} • Power cost: {correction.AbodePowerCost}[/]");
+                lines.Add($"    [dim]Тип слота: {Markup.Escape(FormatGuardianCorrectionSlotForPlayer(correction.SlotType))} • Сила коррективы: {Markup.Escape(FormatGuardianCorrectionSeverityForPlayer(correction.Severity))} • Бюджет: {correction.BudgetCostPoints} • Сила Обители: {correction.AbodePowerCost}[/]");
                 lines.Add($"    [dim]Причина: {Markup.Escape(correction.Reason)}[/]");
             }
         }
@@ -826,11 +826,11 @@ public partial class ExplorerMode
         if (state.Claimants.Count > 0)
         {
             lines.Add("");
-            lines.Add("[bold]Claimants:[/]");
+            lines.Add("[bold]Претенденты на коррективы:[/]");
             foreach (var claimant in state.Claimants)
             {
-                lines.Add($"  • [white]{Markup.Escape(claimant.GuardianName)}[/] [dim]({Markup.Escape(claimant.Intent)})[/]");
-                lines.Add($"    [dim]Power {claimant.CurrentPower} → {claimant.PowerAfter} • Budget {claimant.BaseBudgetPoints}+{claimant.PreparationBudgetPoints} → {claimant.RemainingBudgetPoints} • Claim base {claimant.ClaimStrengthBase}[/]");
+                lines.Add($"  • [white]{Markup.Escape(claimant.GuardianName)}[/] [dim]({Markup.Escape(FormatGuardianCorrectionIntentForPlayer(claimant.Intent))})[/]");
+                lines.Add($"    [dim]Сила Обители {claimant.CurrentPower} → {claimant.PowerAfter} • Бюджет {claimant.BaseBudgetPoints}+{claimant.PreparationBudgetPoints} → {claimant.RemainingBudgetPoints} • Основа притязания {claimant.ClaimStrengthBase}[/]");
                 if (!string.IsNullOrWhiteSpace(claimant.SourceSummary))
                     lines.Add($"    [dim]{Markup.Escape(claimant.SourceSummary)}[/]");
             }
@@ -839,12 +839,12 @@ public partial class ExplorerMode
         if (state.ContestedSlots.Count > 0)
         {
             lines.Add("");
-            lines.Add("[bold]Contested slots:[/]");
+            lines.Add("[bold]Спорные слоты:[/]");
             foreach (var contest in state.ContestedSlots.Where(item => item.Candidates.Count > 1))
             {
-                lines.Add($"  • [white]{Markup.Escape(contest.SlotType)}[/] → [magenta]{Markup.Escape(contest.WinnerGuardianName)}[/]");
+                lines.Add($"  • [white]{Markup.Escape(FormatGuardianCorrectionSlotForPlayer(contest.SlotType))}[/] → [magenta]{Markup.Escape(contest.WinnerGuardianName)}[/]");
                 foreach (var candidate in contest.Candidates.Take(4))
-                    lines.Add($"    [dim]{Markup.Escape(candidate.SourceGuardianName)} • {Markup.Escape(candidate.Severity)} • claim {candidate.ClaimStrength}[/]");
+                    lines.Add($"    [dim]{Markup.Escape(candidate.SourceGuardianName)} • {Markup.Escape(FormatGuardianCorrectionSeverityForPlayer(candidate.Severity))} • притязание {candidate.ClaimStrength}[/]");
             }
         }
 
@@ -866,6 +866,64 @@ public partial class ExplorerMode
         });
         WaitForKey();
     }
+
+    private static string FormatGuardianCorrectionIntentForPlayer(string? value) =>
+        (value ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "" or "none" => "нет явного намерения",
+            "friendly" or "ally" or "benevolent" => "дружественное",
+            "hostile" or "rival" or "enemy" => "враждебное",
+            "neutral" => "нейтральное",
+            "protective" or "protection" => "защитное",
+            "guidance" or "mentor" => "наставническое",
+            _ => StructuredBonusDisplay.FormatScalar(value!)
+        };
+
+    private static string FormatScenarioCoreCategoryForPlayer(string? value) =>
+        (value ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "" => "Без категории",
+            "identity_anchor" => "Опора личности",
+            "role_status" => "Роль и статус",
+            "world_condition" => "Состояние мира",
+            "start_location" => "Стартовая локация",
+            "world_premise" => "Предпосылка мира",
+            "starting_relationship" => "Стартовая связь",
+            "protection_or_omen" => "Защита или предзнаменование",
+            "rival_thread" => "Враждебная нить",
+            "ally_thread" => "Союзная нить",
+            "resource_or_tool" => "Ресурс или инструмент",
+            "constraint_or_vow" => "Ограничение или клятва",
+            _ => StructuredBonusDisplay.FormatScalar(value!)
+        };
+
+    private static string FormatGuardianCorrectionSlotForPlayer(string? value) =>
+        (value ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "" => "не указан",
+            "identity_anchor" => "опора личности",
+            "role_status" => "роль и статус",
+            "world_condition" => "состояние мира",
+            "start_location" => "стартовая локация",
+            "world_premise" => "предпосылка мира",
+            "starting_relationship" => "стартовая связь",
+            "protection_or_omen" => "защита или предзнаменование",
+            "rival_thread" => "враждебная нить",
+            "ally_thread" => "союзная нить",
+            "resource_or_tool" => "ресурс или инструмент",
+            "constraint_or_vow" => "ограничение или клятва",
+            _ => StructuredBonusDisplay.FormatScalar(value!)
+        };
+
+    private static string FormatGuardianCorrectionSeverityForPlayer(string? value) =>
+        (value ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "" => "не указана",
+            "small" or "minor" or "weak" => "малая",
+            "medium" or "moderate" => "средняя",
+            "strong" or "major" => "сильная",
+            _ => StructuredBonusDisplay.FormatScalar(value!)
+        };
 
     private async Task ShowWorldProfiles(List<WorldDirectiveService.WorldProfileDescriptor> profiles)
     {

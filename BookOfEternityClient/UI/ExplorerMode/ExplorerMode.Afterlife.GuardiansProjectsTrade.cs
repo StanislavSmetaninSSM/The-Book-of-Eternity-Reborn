@@ -279,9 +279,9 @@ public partial class ExplorerMode
                 $"  • Известных Хранителей: [white]{guardians.Count}[/]",
                 "",
                 "[bold]Куда идти дальше:[/]",
-                "  • /status — единый статус ресурсов посмертия, блокеров, контрактов и сигналов Сияющей Обители.",
-                "  • /afterlife_inbox — все ответы ГМ по торговле, архиву, резидентам и политике.",
-                "  • /feathers, /afterlife_archive, /guardian_projects, /guardian_politics, /abode_offering — детальные ресурсы и изменения состояния."
+                "  • /статус — ресурсы души, блокеры, ожидающие решения и сигналы Сияющей Обители.",
+                "  • /уведомления_загробья — ответы ГМ по торговле, Архиву, резидентам и политике.",
+                "  • /перья, /архив_души, /проекты_хранителей, /политика_хранителей, /подношение_обители — ресурсы и изменения состояния."
             };
             if (!isChaosSea)
             {
@@ -2864,7 +2864,7 @@ public partial class ExplorerMode
                     pendingLines.Add("");
                     pendingLines.Add("[bold]Ожидает ответа GM:[/]");
                     pendingLines.Add("  • Состав обитателей уже запрошен и пока не материализован.");
-                    pendingLines.Add("  • Подробный технический контракт доступен через /status audit.");
+                    pendingLines.Add("  • Подробности ожидания доступны через /статус аудит.");
                 }
                 pendingLines.Add("");
                 pendingLines.Add("[dim]Откройте панель позже, когда явное состояние обитателей будет материализовано.[/]");
@@ -4196,7 +4196,7 @@ public partial class ExplorerMode
                 if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
                     _pendingGmAction = view.PendingGmAction;
                 MarkupLine("[cyan]Витрина Хранителя подготавливается. Запрос на формирование ассортимента отправлен GM.[/]");
-                continue;
+                return;
             }
 
             if (!string.IsNullOrWhiteSpace(view.PendingGmAction))

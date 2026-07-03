@@ -104,6 +104,47 @@ public sealed class AgentConsoleLiveInputSourceTests
     }
 
     [Fact]
+    public void TryQueueAction_WhenMenuActionIsNotSelected_QueuesSelectionDigitOnly()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildMenuSnapshot("main-menu", selectedIndex: 0));
+
+        var result = input.TryQueueAction(new AgentConsoleActionRequest
+        {
+            ActionId = "exit",
+            ScreenId = "main-menu",
+            InputKind = AgentConsoleInputKind.MenuSelection
+        });
+
+        Assert.True(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
+        Assert.Equal(ConsoleKey.D2, input.ReadKey(intercept: true).Key);
+        Assert.False(input.KeyAvailable);
+    }
+
+    [Fact]
+    public void TryQueueAction_WhenMenuActionIsAfterNine_QueuesInputValueDigitsOnly()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildLongMenuSnapshot("guardian-presets", selectedIndex: 0, count: 12));
+
+        var result = input.TryQueueAction(new AgentConsoleActionRequest
+        {
+            ActionId = "option-11",
+            ScreenId = "guardian-presets",
+            InputKind = AgentConsoleInputKind.MenuSelection
+        });
+
+        Assert.True(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
+        Assert.Equal(ConsoleKey.D1, input.ReadKey(intercept: true).Key);
+        Assert.Equal(ConsoleKey.D2, input.ReadKey(intercept: true).Key);
+        Assert.False(input.KeyAvailable);
+    }
+
+    [Fact]
     public void TryQueueAction_WhenTextPromptChoiceIsSelected_QueuesChoiceTextLine()
     {
         var store = new AgentConsoleStateStore();
@@ -148,6 +189,242 @@ public sealed class AgentConsoleLiveInputSourceTests
         Assert.Equal(AgentConsoleEventKind.InputAccepted, result.Event.Kind);
         Assert.Equal(AgentConsoleInputKind.Text, result.Event.InputKind);
         Assert.Equal("Call the trusted servant.", input.ReadLine());
+    }
+
+    [Fact]
+    public void TryQueueAction_WhenTextPromptActionHasInputValue_QueuesValueInsteadOfLabel()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildTextSnapshot("new-game-guardian-mode") with
+        {
+            Actions =
+            [
+                new AgentConsoleAction
+                {
+                    Id = "option-0",
+                    Label = "Создать хранителя (описать текстом)",
+                    InputValue = "1"
+                },
+                new AgentConsoleAction
+                {
+                    Id = "option-1",
+                    Label = "Выбрать извечного хранителя",
+                    InputValue = "2"
+                }
+            ],
+            Prompt = new AgentConsolePrompt
+            {
+                PromptId = "prompt",
+                Text = "Выберите способ создания Хранителя.",
+                InputKind = AgentConsoleInputKind.Text,
+                Choices =
+                [
+                    "Создать хранителя (описать текстом)",
+                    "Выбрать извечного хранителя"
+                ]
+            }
+        });
+
+        var result = input.TryQueueAction(new AgentConsoleActionRequest
+        {
+            ActionId = "option-1",
+            ScreenId = "new-game-guardian-mode",
+            InputKind = AgentConsoleInputKind.Text
+        });
+
+        Assert.True(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
+        Assert.Equal(AgentConsoleInputKind.Text, result.Event.InputKind);
+        Assert.Equal("2", input.ReadLine());
+    }
+
+    [Fact]
+    public void TryQueueDefaultAction_QueuesCurrentSnapshotDefaultWithoutCallerScreenId()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildKeySnapshot("stat-allocation-finished") with
+        {
+            Actions =
+            [
+                new AgentConsoleAction
+                {
+                    Id = "continue",
+                    Label = "Продолжить",
+                    Shortcut = "Enter",
+                    IsDefault = true
+                }
+            ]
+        });
+
+        var result = input.TryQueueDefaultAction();
+
+        Assert.True(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
+        Assert.Equal(AgentConsoleInputKind.Key, result.Event.InputKind);
+        Assert.Equal("stat-allocation-finished", result.Event.ScreenId);
+        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
+    }
+
+    [Fact]
+    public void TryQueueDefaultAction_WhenNoEnabledDefaultAction_RejectsWithDiagnostic()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildMenuSnapshot("main-menu", selectedIndex: 0) with
+        {
+            Actions =
+            [
+                new AgentConsoleAction { Id = "continue", Label = "Continue" },
+                new AgentConsoleAction { Id = "exit", Label = "Exit" }
+            ]
+        });
+
+        var result = input.TryQueueDefaultAction();
+
+        Assert.False(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.ActionMissing, result.RejectionCode);
+        Assert.Equal(AgentConsoleEventKind.InputRejected, result.Event.Kind);
+        Assert.Equal("main-menu", result.Event.ScreenId);
+        Assert.Contains("default", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.False(input.KeyAvailable);
+    }
+
+    [Fact]
+    public void TryQueueReturnToGameLoopStep_WhenLocalCommandWaitsForKey_QueuesContinuation()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildKeySnapshot("explorer-command-6") with
+        {
+            Actions =
+            [
+                new AgentConsoleAction
+                {
+                    Id = "continue",
+                    Label = "Продолжить",
+                    Shortcut = "Enter",
+                    IsDefault = true
+                }
+            ]
+        });
+
+        var result = input.TryQueueReturnToGameLoopStep();
+
+        Assert.True(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
+        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
+    }
+
+    [Fact]
+    public void TryQueueReturnToGameLoopStep_WhenLocalCommandMenuHasBackAction_QueuesBackSelection()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildMenuSnapshot("explorer-selection-11", selectedIndex: 0) with
+        {
+            Title = "Действие:",
+            PlainText = "Выберите действие.",
+            Actions =
+            [
+                new AgentConsoleAction { Id = "option-0", Label = "Открыть раздел", InputValue = "1", IsDefault = true },
+                new AgentConsoleAction { Id = "option-1", Label = "← Назад", InputValue = "2" }
+            ]
+        });
+
+        var result = input.TryQueueReturnToGameLoopStep();
+
+        Assert.True(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
+        Assert.Equal(ConsoleKey.D2, input.ReadKey(intercept: true).Key);
+        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
+    }
+
+    [Fact]
+    public void TryQueueReturnToGameLoopStep_WhenNpcSectionMenuHasCloseAction_QueuesCloseSelection()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildMenuSnapshot("explorer-selection-12", selectedIndex: 0) with
+        {
+            Title = "Разделы НПС: Ночной сторож архива",
+            PlainText = "Разделы НПС: Ночной сторож архива",
+            Actions =
+            [
+                new AgentConsoleAction { Id = "option-0", Label = "Личность / маски — 2 записи", InputValue = "1" },
+                new AgentConsoleAction { Id = "option-1", Label = "← Закрыть разделы НПС", InputValue = "2", IsDefault = true }
+            ]
+        });
+
+        var result = input.TryQueueReturnToGameLoopStep();
+
+        Assert.True(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
+        Assert.Equal(ConsoleKey.D2, input.ReadKey(intercept: true).Key);
+        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
+    }
+
+    [Fact]
+    public void TryQueueReturnToGameLoopStep_WhenDefaultBackActionHasNoInputValue_QueuesExplicitMenuIndex()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildMenuSnapshot("explorer-selection-13", selectedIndex: 1) with
+        {
+            Title = "Персонажи",
+            PlainText = "Персонажи",
+            Actions =
+            [
+                new AgentConsoleAction { Id = "option-0", Label = "Ночной сторож архива" },
+                new AgentConsoleAction { Id = "option-1", Label = "← Назад", IsDefault = true }
+            ]
+        });
+
+        var result = input.TryQueueReturnToGameLoopStep();
+
+        Assert.True(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
+        Assert.Equal(ConsoleKey.D2, input.ReadKey(intercept: true).Key);
+        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
+    }
+
+    [Fact]
+    public void TryQueueReturnToGameLoopStep_WhenEntityLabelContainsClosedWord_ChoosesActualBackAction()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildMenuSnapshot("explorer-selection-14", selectedIndex: 1) with
+        {
+            Title = "Персонажи",
+            PlainText = "Персонажи",
+            Actions =
+            [
+                new AgentConsoleAction { Id = "option-0", Label = "Ночной сторож закрытого городского архива" },
+                new AgentConsoleAction { Id = "option-1", Label = "← Назад", IsDefault = true }
+            ]
+        });
+
+        var result = input.TryQueueReturnToGameLoopStep();
+
+        Assert.True(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
+        Assert.Equal(ConsoleKey.D2, input.ReadKey(intercept: true).Key);
+        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
+    }
+
+    [Fact]
+    public void TryQueueReturnToGameLoopStep_WhenAlreadyAtGameLoop_RejectsWithoutQueuedInput()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildTextSnapshot("game-loop"));
+
+        var result = input.TryQueueReturnToGameLoopStep();
+
+        Assert.False(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.InvalidRequest, result.RejectionCode);
+        Assert.False(input.KeyAvailable);
     }
 
     [Fact]
@@ -316,6 +593,30 @@ public sealed class AgentConsoleLiveInputSourceTests
         Assert.Equal(AgentConsoleInputRejectionCode.NotAwaitingInput, rejected.RejectionCode);
     }
 
+    [Fact]
+    public void ReadLine_WhenGameLoopPromptIsConsumed_PublishesTurnPreparationSnapshot()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildTextSnapshot("game-loop"));
+
+        var accepted = input.EnqueueLine("Спросить Азалию о правилах Моря Хаоса");
+        Assert.True(accepted.Accepted);
+
+        Assert.Equal("Спросить Азалию о правилах Моря Хаоса", input.ReadLine());
+
+        var consumedSnapshot = store.GetSnapshot();
+        Assert.NotNull(consumedSnapshot);
+        Assert.Equal("turn-preparing", consumedSnapshot.ScreenId);
+        Assert.Equal(AgentConsoleMode.Loading, consumedSnapshot.Mode);
+        Assert.Equal("Ход принят", consumedSnapshot.Title);
+        Assert.Contains("готовит запрос для GM", consumedSnapshot.PlainText, StringComparison.OrdinalIgnoreCase);
+        Assert.False(consumedSnapshot.AwaitingInput);
+        Assert.Equal(AgentConsoleInputKind.None, consumedSnapshot.InputKind);
+        Assert.Empty(consumedSnapshot.Actions);
+        Assert.Null(consumedSnapshot.Prompt);
+    }
+
     private static AgentConsoleSnapshot BuildMenuSnapshot(string screenId, int selectedIndex)
     {
         var renderedAt = new DateTimeOffset(2026, 5, 31, 10, 0, 0, TimeSpan.Zero);
@@ -333,6 +634,48 @@ public sealed class AgentConsoleLiveInputSourceTests
                 new AgentConsoleAction { Id = "continue", Label = "Continue", IsDefault = selectedIndex == 0 },
                 new AgentConsoleAction { Id = "exit", Label = "Exit", IsDefault = selectedIndex == 1 }
             ],
+            RenderedAtUtc = renderedAt,
+            UpdatedAtUtc = renderedAt
+        };
+    }
+
+    private static AgentConsoleSnapshot BuildLongMenuSnapshot(string screenId, int selectedIndex, int count)
+    {
+        var renderedAt = new DateTimeOffset(2026, 5, 31, 10, 0, 0, TimeSpan.Zero);
+        return new AgentConsoleSnapshot
+        {
+            ScreenId = screenId,
+            Mode = AgentConsoleMode.Menu,
+            Title = "Guardian presets",
+            PlainText = "Choose a guardian.",
+            AwaitingInput = true,
+            InputKind = AgentConsoleInputKind.MenuSelection,
+            SelectedIndex = selectedIndex,
+            Actions = Enumerable.Range(0, count)
+                .Select(index => new AgentConsoleAction
+                {
+                    Id = $"option-{index}",
+                    Label = $"Option {index + 1}",
+                    InputValue = (index + 1).ToString(),
+                    IsDefault = selectedIndex == index
+                })
+                .ToArray(),
+            RenderedAtUtc = renderedAt,
+            UpdatedAtUtc = renderedAt
+        };
+    }
+
+    private static AgentConsoleSnapshot BuildKeySnapshot(string screenId)
+    {
+        var renderedAt = new DateTimeOffset(2026, 5, 31, 10, 0, 0, TimeSpan.Zero);
+        return new AgentConsoleSnapshot
+        {
+            ScreenId = screenId,
+            Mode = AgentConsoleMode.TextPrompt,
+            Title = "Command Output",
+            PlainText = "Press any key.",
+            AwaitingInput = true,
+            InputKind = AgentConsoleInputKind.Key,
             RenderedAtUtc = renderedAt,
             UpdatedAtUtc = renderedAt
         };

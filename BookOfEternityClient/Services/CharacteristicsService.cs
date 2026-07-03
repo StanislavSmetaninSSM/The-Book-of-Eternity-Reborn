@@ -185,6 +185,7 @@ public class CharacteristicsService
 
         await SaveBaseStats(stats);
         await SaveUnspentStatPoints(8);
+        await MarkLevelUpStatPointsAwardedThroughLevelAsync(1);
         _logger.LogInformation("Характеристики инициализированы для новой инкарнации (все=1, 8 очков)");
     }
 
@@ -195,6 +196,7 @@ public class CharacteristicsService
     {
         var current = await GetUnspentStatPoints();
         await SaveUnspentStatPoints(current + points);
+        await ComputeAndWriteAsync();
     }
 
     /// <summary>
@@ -215,6 +217,7 @@ public class CharacteristicsService
 
         await SaveBaseStats(baseStats);
         await SaveUnspentStatPoints(available - totalToSpend);
+        await ComputeAndWriteAsync();
         return true;
     }
 
@@ -313,26 +316,69 @@ public class CharacteristicsService
 
     public async Task<int> GetUnspentStatPoints()
     {
-        var json = await _fs.ReadFileAsync("game_state/player/stat_points.json");
-        if (json == null) return 0;
+        var root = await LoadStatPointsRootAsync();
+        return TryReadInt(root, "unspentStatPoints", 0);
+    }
 
-        try
-        {
-            using var doc = JsonDocument.Parse(json);
-            if (doc.RootElement.TryGetProperty("unspentStatPoints", out var pts) &&
-                pts.ValueKind == JsonValueKind.Number)
-                return pts.GetInt32();
-        }
-        catch { /* fallthrough */ }
+    public async Task<int> GetLevelUpStatPointsAwardedThroughLevelAsync()
+    {
+        var root = await LoadStatPointsRootAsync();
+        return TryReadInt(root, "levelUpStatPointsAwardedThroughLevel", 0);
+    }
 
-        return 0;
+    public async Task MarkLevelUpStatPointsAwardedThroughLevelAsync(int level)
+    {
+        var normalizedLevel = Math.Max(1, level);
+        var root = await LoadStatPointsRootAsync();
+        var current = TryReadInt(root, "levelUpStatPointsAwardedThroughLevel", 0);
+        if (current >= normalizedLevel)
+            return;
+
+        root["levelUpStatPointsAwardedThroughLevel"] = normalizedLevel;
+        await SaveStatPointsRootAsync(root);
     }
 
     private async Task SaveUnspentStatPoints(int points)
     {
-        var obj = new { unspentStatPoints = points };
+        var root = await LoadStatPointsRootAsync();
+        root["unspentStatPoints"] = Math.Max(0, points);
+        await SaveStatPointsRootAsync(root);
+    }
+
+    private async Task<JsonObject> LoadStatPointsRootAsync()
+    {
+        var json = await _fs.ReadFileAsync("game_state/player/stat_points.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return new JsonObject();
+
+        try
+        {
+            return JsonNode.Parse(json) as JsonObject ?? new JsonObject();
+        }
+        catch
+        {
+            return new JsonObject();
+        }
+    }
+
+    private async Task SaveStatPointsRootAsync(JsonObject root)
+    {
         await _fs.WriteFileAtomicAsync("game_state/player/stat_points.json",
-            JsonSerializer.Serialize(obj, JsonOpts));
+            root.ToJsonString(JsonOpts));
+    }
+
+    private static int TryReadInt(JsonObject root, string propertyName, int fallback)
+    {
+        if (root[propertyName] is JsonValue value)
+        {
+            if (value.TryGetValue<int>(out var intValue))
+                return intValue;
+            if (value.TryGetValue<string>(out var text) &&
+                int.TryParse(text, out var parsed))
+                return parsed;
+        }
+
+        return fallback;
     }
 
     // ═══════════════════════════════════════════

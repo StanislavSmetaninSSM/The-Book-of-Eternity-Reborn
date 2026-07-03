@@ -10,8 +10,9 @@ namespace BookOfEternityClient.Services;
 
 /// <summary>
 /// Loads built-in and user-authored global system guardian presets.
-/// These presets are not canonical guardians themselves; they are generation dossiers
-/// used to materialize real guardians in a session on demand.
+/// These presets are reusable generation dossiers. Fresh New Game can also
+/// derive a client-owned canonical seed from them so the GM does not have to
+/// repair the same technical guardian skeleton before narrating the first scene.
 /// </summary>
 public sealed class SystemGuardianLibraryService
 {
@@ -242,6 +243,14 @@ public sealed class SystemGuardianLibraryService
 
         var result = new Dictionary<string, SystemGuardianPresetDescriptor>(StringComparer.OrdinalIgnoreCase);
 
+        var packagedBuiltInPath = GetPackagedBuiltInDirectoryPath();
+        if (Directory.Exists(packagedBuiltInPath) &&
+            !string.Equals(Path.GetFullPath(packagedBuiltInPath), Path.GetFullPath(GetBuiltInDirectoryPath()), StringComparison.OrdinalIgnoreCase))
+        {
+            foreach (var descriptor in await LoadDirectoryLayerAsync(packagedBuiltInPath, "built_in", includeDossier))
+                result[descriptor.PresetId] = descriptor;
+        }
+
         foreach (var descriptor in await LoadDirectoryLayerAsync(GetBuiltInDirectoryPath(), "built_in", includeDossier))
             result[descriptor.PresetId] = descriptor;
 
@@ -260,6 +269,9 @@ public sealed class SystemGuardianLibraryService
             .OrderBy(p => p.DisplayName, StringComparer.CurrentCultureIgnoreCase)
             .ToList();
     }
+
+    private static string GetPackagedBuiltInDirectoryPath() =>
+        Path.Combine(AppContext.BaseDirectory, RootDirectoryName, BuiltInDirectoryName);
 
     public async Task<SystemGuardianPresetDescriptor?> FindPresetAsync(string presetId, bool includeDossier = true)
     {
@@ -286,6 +298,30 @@ public sealed class SystemGuardianLibraryService
         };
     }
 
+    public JsonObject BuildCanonicalGuardianRootForFreshNewGame(
+        SystemGuardianPresetDescriptor preset,
+        string soulName,
+        int turnNumber,
+        DateTimeOffset createdAtUtc)
+    {
+        var guardian = BuildCanonicalGuardianForFreshNewGame(preset, soulName, turnNumber, createdAtUtc);
+        var guardianId = GetRequiredString(guardian, "guardianId");
+        var abode = guardian["abode"] as JsonObject ?? new JsonObject();
+        var abodeId = GetNodeString(abode["abodeId"]) ?? BuildSystemGuardianAbodeId(preset.PresetId);
+
+        return new JsonObject
+        {
+            ["guardians"] = new JsonArray(guardian.DeepClone()),
+            ["activeGuardian"] = guardian.DeepClone(),
+            ["chaosSeaNavigation"] = new JsonObject
+            {
+                ["currentAbodeId"] = abodeId,
+                ["currentGuardianId"] = guardianId,
+                ["discoveredAbodes"] = new JsonArray(abodeId)
+            }
+        };
+    }
+
     public JsonObject BuildFreeformPendingGuardianCreationNode(string description, string soulName)
     {
         return new JsonObject
@@ -295,6 +331,223 @@ public sealed class SystemGuardianLibraryService
             ["soulName"] = soulName,
             ["_lastUpdated"] = DateTime.UtcNow.ToString("o")
         };
+    }
+
+    private static JsonObject BuildCanonicalGuardianForFreshNewGame(
+        SystemGuardianPresetDescriptor preset,
+        string soulName,
+        int turnNumber,
+        DateTimeOffset createdAtUtc)
+    {
+        var timestamp = createdAtUtc.ToUniversalTime().ToString("o");
+        var guardianId = BuildSystemGuardianId(preset.PresetId);
+        var abodeId = BuildSystemGuardianAbodeId(preset.PresetId);
+        var defaultName = FirstNonEmpty(preset.DefaultNameVariant, preset.DisplayName, preset.PresetId);
+        var currentPower = AbodePowerRules.DefaultCurrentPower;
+
+        var guardian = new JsonObject
+        {
+            ["guardianId"] = guardianId,
+            ["canonicalName"] = defaultName,
+            ["domain"] = FirstNonEmpty(preset.Domain, "Knowledge"),
+            ["originType"] = "system_preset",
+            ["sourcePreset"] = new JsonObject
+            {
+                ["presetId"] = preset.PresetId,
+                ["displayName"] = preset.DisplayName,
+                ["version"] = preset.Version,
+                ["library"] = preset.LibraryKind
+            },
+            ["nameVariants"] = new JsonObject
+            {
+                ["default"] = defaultName,
+                ["feminine"] = FirstNonEmpty(preset.FeminineNameVariant, defaultName),
+                ["masculine"] = FirstNonEmpty(preset.MasculineNameVariant, defaultName),
+                ["neutral"] = FirstNonEmpty(preset.NeutralNameVariant, defaultName)
+            },
+            ["manifestation"] = new JsonObject
+            {
+                ["formFlexibility"] = GuardianManifestation.IsValidFormFlexibility(preset.FormFlexibility)
+                    ? preset.FormFlexibility
+                    : GuardianManifestation.FixedFlexibility,
+                ["currentDisplayName"] = defaultName,
+                ["currentPresentationStyle"] = FirstNonEmpty(preset.DefaultPresentationStyle, "neutral"),
+                ["currentPronouns"] = FirstNonEmpty(preset.DefaultPronouns, "они/их"),
+                ["appearanceDescription"] = FirstNonEmpty(
+                    preset.DefaultAppearanceDescription,
+                    $"Хранитель {defaultName} проявляется в форме, заданной системным досье.")
+            },
+            ["manifestationHistory"] = new JsonArray(),
+            ["abode"] = new JsonObject
+            {
+                ["abodeId"] = abodeId,
+                ["name"] = FirstNonEmpty(preset.AbodeName, $"{defaultName} — Обитель"),
+                ["description"] = BuildInitialAbodeDescription(preset),
+                ["image_prompt"] = BuildInitialAbodeImagePrompt(preset),
+                ["isDiscovered"] = true
+            },
+            ["personalityProfile"] = new JsonObject
+            {
+                ["archetype"] = FirstNonEmpty(preset.Archetype, "Guardian"),
+                ["speechPattern"] = FirstNonEmpty(preset.Tone, "спокойная и внимательная речь"),
+                ["coreValues"] = ToJsonStringArray(preset.CoreValues)
+            },
+            ["mood"] = new JsonObject
+            {
+                ["current"] = "welcoming",
+                ["intensity"] = 35,
+                ["reason"] = $"Первая встреча с душой «{soulName}» после выбора системного Хранителя.",
+                ["since"] = Math.Max(0, turnNumber)
+            },
+            ["relationshipData"] = new JsonObject
+            {
+                ["currentReputation"] = 0,
+                ["reputationHistory"] = new JsonArray(),
+                ["lastInteraction"] = timestamp
+            },
+            ["abodePower"] = new JsonObject
+            {
+                ["currentPower"] = currentPower,
+                ["tier"] = AbodePowerRules.GetTierLabel(currentPower),
+                ["lastUpdatedAt"] = timestamp,
+                ["history"] = new JsonArray()
+            },
+            ["guardianRelationships"] = new JsonArray(),
+            ["questManagement"] = new JsonObject
+            {
+                ["availableQuests"] = new JsonArray(),
+                ["activeQuests"] = new JsonArray(),
+                ["completedQuests"] = new JsonArray()
+            },
+            ["gachaSystem"] = new JsonObject
+            {
+                ["chargesPerReturn"] = GuardianGachaChargeRules.GetChargesPerReturnForReputation(0, currentPower),
+                ["chargesUsedThisReturn"] = 0,
+                ["gachaHistory"] = new JsonArray()
+            },
+            ["loreFragments"] = BuildInitialLoreFragments(preset),
+            ["musings"] = new JsonArray(),
+            ["tradeInventoryReceipts"] = new JsonArray(),
+            ["displayName"] = defaultName
+        };
+
+        return guardian;
+    }
+
+    private static JsonArray BuildInitialLoreFragments(SystemGuardianPresetDescriptor preset)
+    {
+        var presetId = FirstNonEmpty(preset.PresetId, "system_guardian");
+        var displayName = FirstNonEmpty(preset.DisplayName, presetId);
+        var domain = FirstNonEmpty(preset.Domain, "Knowledge");
+        var abodeName = FirstNonEmpty(preset.AbodeName, "Обитель Хранителя");
+        var values = preset.CoreValues.Count > 0
+            ? string.Join(", ", preset.CoreValues.Take(3))
+            : "личный закон Хранителя";
+
+        var fragments = new[]
+        {
+            ("identity", "Личность Хранителя", $"{displayName} хранит устойчивую личность и не должен подменяться другим архетипом.", "personal_history", 0),
+            ("domain", "Домен влияния", $"Домен Хранителя: {domain}. Он задаёт тон помощи, испытаний и будущих просьб.", "domain_mastery", 0),
+            ("abode", "Обитель", $"{abodeName} уже найдена душой и становится первой безопасной точкой в Море Хаоса.", "lost_world", 0),
+            ("values", "Ценности", $"Ключевые ценности: {values}. Через них Хранитель оценивает выбор души.", "soul_mechanics", 50),
+            ("limits", "Границы помощи", "Хранитель помогает душе, но не проживает жизнь вместо неё и не отменяет цену выбора.", "soul_mechanics", 50),
+            ("quest_seed", "Будущий личный квест", "Личный квест Хранителя должен раскрыться через отношения, репутацию и события будущих жизней.", "personal_history", 130),
+            ("secret", "Скрытая причина", "У Хранителя есть тайная причина внимательно следить за этой душой; её нельзя раскрывать на старте.", "cosmic_secret", 230)
+        };
+
+        var result = new JsonArray();
+        foreach (var (suffix, title, summary, category, requiredReputation) in fragments)
+        {
+            result.Add(new JsonObject
+            {
+                ["fragmentId"] = $"lore_{SanitizeIdSegment(presetId)}_{suffix}",
+                ["title"] = title,
+                ["summary"] = summary,
+                ["discoveryState"] = "planned",
+                ["visibility"] = "hidden",
+                ["sourcePresetId"] = presetId,
+                ["tags"] = new JsonArray(SanitizeIdSegment(suffix), SanitizeIdSegment(domain)),
+                ["category"] = category,
+                ["content"] = summary,
+                ["requiredReputation"] = requiredReputation
+            });
+        }
+
+        return result;
+    }
+
+    private static string BuildInitialAbodeDescription(SystemGuardianPresetDescriptor preset)
+    {
+        var abodeName = FirstNonEmpty(preset.AbodeName, "Обитель Хранителя");
+        var theme = FirstNonEmpty(preset.AbodeTheme, preset.Summary, "личное пространство Хранителя в Море Хаоса");
+        return $"{abodeName}: {theme}. Это стартовая обитель, уже открытая душе при выборе системного Хранителя.";
+    }
+
+    private static string BuildInitialAbodeImagePrompt(SystemGuardianPresetDescriptor preset) =>
+        $"dark fantasy afterlife guardian abode, {FirstNonEmpty(preset.AbodeName, "guardian abode")}, " +
+        $"{FirstNonEmpty(preset.AbodeTheme, preset.Summary, preset.Domain, "mystic sanctuary")}, cinematic, readable composition";
+
+    private static JsonArray ToJsonStringArray(IEnumerable<string> values)
+    {
+        var result = new JsonArray();
+        foreach (var value in values.Where(value => !string.IsNullOrWhiteSpace(value)))
+            result.Add(value.Trim());
+
+        if (result.Count == 0)
+            result.Add("сопровождение души");
+
+        return result;
+    }
+
+    private static string BuildSystemGuardianId(string presetId) =>
+        $"guard_system_{SanitizeIdSegment(presetId)}_001";
+
+    private static string BuildSystemGuardianAbodeId(string presetId) =>
+        $"abode_system_{SanitizeIdSegment(presetId)}_001";
+
+    private static string SanitizeIdSegment(string? value)
+    {
+        var source = string.IsNullOrWhiteSpace(value) ? "guardian" : value.Trim().ToLowerInvariant();
+        var builder = new StringBuilder(source.Length);
+        var previousWasSeparator = false;
+
+        foreach (var ch in source)
+        {
+            if (char.IsAsciiLetterOrDigit(ch))
+            {
+                builder.Append(ch);
+                previousWasSeparator = false;
+            }
+            else if (!previousWasSeparator)
+            {
+                builder.Append('_');
+                previousWasSeparator = true;
+            }
+        }
+
+        var result = builder.ToString().Trim('_');
+        return string.IsNullOrWhiteSpace(result) ? "guardian" : result;
+    }
+
+    private static string FirstNonEmpty(params string?[] values) =>
+        values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value))?.Trim() ?? string.Empty;
+
+    private static string GetRequiredString(JsonObject obj, string propertyName) =>
+        GetNodeString(obj[propertyName]) ?? throw new InvalidOperationException($"{propertyName} is required.");
+
+    private static string? GetNodeString(JsonNode? node)
+    {
+        if (node is null)
+            return null;
+
+        try
+        {
+            return node.GetValue<string>();
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public SystemGuardianAttractionRequest BuildAttractionRequest(SystemGuardianPresetDescriptor preset)

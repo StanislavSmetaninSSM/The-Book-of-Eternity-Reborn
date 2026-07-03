@@ -347,7 +347,19 @@ public static class ExplorerChaosSeaCommandResultBuilder
     {
         var politics = await ReadJson(fs, ChaosSeaGuardianPoliticsState.StatePath);
         if (politics.Node == null)
-            return MissingOrMalformed(command, "Политика Хранителей", politics);
+        {
+            var message = politics.FileExists
+                ? "Состояние политики Хранителей сейчас не читается. Откройте раздел позже, когда Хранители прояснят свои связи и решения."
+                : "Пока нет открытых политических записей Хранителей. Политика появится здесь после сцен, проектов или решений, которые раскроют связи между Хранителями.";
+            return Completed(command,
+                [
+                    Message(
+                    politics.FileExists ? UiNotificationSeverity.Warning : UiNotificationSeverity.Info,
+                    "Политика Хранителей",
+                    message)
+                ],
+                BuildOverviewAction("guardian-politics-to-guardians", "К Хранителям", "/хранители"));
+        }
 
         var guardians = await ReadJson(fs, GuardiansPath);
         var labels = BuildGuardianPoliticsLabels(guardians.Node);

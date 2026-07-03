@@ -1070,7 +1070,10 @@ public static class LocalMapViewService
         if (TryGetBool(location, out var discovered, "discovered", "isDiscovered", "known"))
             AddDetail(draft, "Открыта", discovered ? "да" : "нет");
         AddDetail(draft, "Описание", GetString(location, "description", "shortDescription"));
-        AddDetail(draft, "Последние события", GetString(location, "lastEventsDescription", "recentEvents", "currentStateSummary"));
+        AddDetail(
+            draft,
+            "Последние события",
+            StripMapHistoricalTurnAnchor(GetString(location, "lastEventsDescription", "recentEvents", "currentStateSummary")));
         AddDetail(draft, "Выходы", DescribeAdjacency(location));
         AddDetail(draft, "Хранилища", DescribeArrayCount(location, "locationStorages"));
         AddDetail(draft, "Угрозы", DescribeArrayCount(location, "activeThreats"));
@@ -1433,6 +1436,29 @@ public static class LocalMapViewService
         }
 
         draft.Details.Add(new MapDetailItemDto { Key = key, Value = value.Trim() });
+    }
+
+    private static string StripMapHistoricalTurnAnchor(string value)
+    {
+        var text = value.Trim();
+        if (!text.StartsWith("#[", StringComparison.Ordinal))
+            return text;
+
+        var closeIndex = text.IndexOf(']');
+        if (closeIndex <= 2)
+            return text;
+
+        var turnAnchor = text[2..closeIndex].Trim();
+        if (turnAnchor.Length == 0 || !turnAnchor.All(char.IsDigit))
+            return text;
+
+        var rest = text[(closeIndex + 1)..].TrimStart();
+        if (rest.StartsWith(".", StringComparison.Ordinal))
+            return rest[1..].TrimStart();
+
+        return rest.StartsWith("-", StringComparison.Ordinal)
+            ? rest[1..].TrimStart()
+            : text;
     }
 
     private static string DescribeMapNodeType(string value) =>

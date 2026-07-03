@@ -21,6 +21,20 @@
   - #1288 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1288
   - #1289 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1289
   - #1290 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1290
+  - #1316 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1316
+  - #1340 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1340
+  - #1341 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1341
+  - #1342 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1342
+  - #1343 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1343
+  - #1344 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1344
+  - #1345 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1345
+  - #1349 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1349
+  - #1350 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1350
+  - #1351 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1351
+  - #1352 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1352
+  - #1353 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1353
+  - #1354 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1354
+  - #1356 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1356
 - **Issue type**: epic plus implementation tasks.
 - **Spec Kit justification**: This work changes GM harness runtime behavior, worker orchestration, validation repair feedback, GM-facing prompts/docs, and live-test evidence across multiple sessions.
 - **Contract scope**: GM-facing prompts, runtime-state, validation, docs, examples, agent-console, e2e.
@@ -143,6 +157,9 @@ As the developer, I need the next live GM test to measure harness quality, not j
 - **FR-018**: Afterlife wrong-realm mutation guards MUST ignore helper/rollback backup artifacts such as `*.rollback.*` while continuing to reject real Mortal World profile file creations, deletions, or semantic mutations.
 - **FR-019**: Worker dispatch MUST preserve and validate a proposal already written to the proposal inbox even if the worker CLI later times out or exits nonzero, because the proposal remains proposal-only and still has to pass the existing schema and apply gate before any canonical state changes.
 - **FR-020**: Worker runner prompts MUST include a self-contained `worker-proposal-v1` JSON skeleton and required-field rules, so hidden workers can produce validator-compatible proposals without reading implementation source or guessing contract fields.
+- **FR-021**: Mortal World turns that explicitly resolve open combat and also change XP, active-skill mastery, or combat resources MUST be validated as incomplete unless they materialize a player-inspectable `game_state/combat/combat_log.json` surface for `/бой`; repair guidance MUST route the GM to the compact Mortal combat state template and preserve the existing XP/mastery/status changes unless separately invalid.
+- **FR-022**: Mortal World level-up stat-point awards MUST be idempotent across client restarts and validation repair loops; the client MUST persist a restart-safe awarded-through-level marker and MUST refresh computed characteristics after local stat allocation.
+- **FR-023**: Mortal World accepted turns MUST NOT leave `game_state/player/experience.json.totalExperience` equal to or above `experienceForNextLevel` for the persisted `playerLevel`/`level`; validation MUST request repair that advances the level and next threshold while preserving client-owned stat-point marker authority.
 
 ### Key Entities
 

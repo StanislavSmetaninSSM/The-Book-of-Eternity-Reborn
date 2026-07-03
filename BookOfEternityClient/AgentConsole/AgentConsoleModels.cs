@@ -76,6 +76,9 @@ public sealed record AgentConsoleAction
     [JsonPropertyName("shortcut")]
     public string? Shortcut { get; init; }
 
+    [JsonPropertyName("inputValue")]
+    public string? InputValue { get; init; }
+
     [JsonPropertyName("isEnabled")]
     public bool IsEnabled { get; init; } = true;
 

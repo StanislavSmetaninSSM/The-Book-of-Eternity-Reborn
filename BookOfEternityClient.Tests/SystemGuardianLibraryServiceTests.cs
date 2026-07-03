@@ -23,6 +23,21 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task GetAvailablePresetsAsync_WithCleanSession_LoadsRepoShippedBuiltInPresets()
+    {
+        var builtInDir = _service.GetBuiltInDirectoryPath();
+        Assert.False(Directory.Exists(builtInDir) && Directory.EnumerateDirectories(builtInDir).Any());
+
+        var presets = await _service.GetAvailablePresetsAsync(includeDossier: true);
+
+        Assert.NotEmpty(presets);
+        Assert.Contains(presets, preset =>
+            string.Equals(preset.PresetId, "azalia", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(preset.LibraryKind, "built_in", StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrWhiteSpace(preset.DossierMarkdown));
+    }
+
+    [Fact]
     public async Task GetAvailablePresetsAsync_BuiltInWinsIdConflict_AndUserPresetStillLoadsForUniqueId()
     {
         await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "Азалия", "Social", "built_in");
@@ -31,7 +46,6 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
 
         var presets = await _service.GetAvailablePresetsAsync(includeDossier: true);
 
-        Assert.Equal(2, presets.Count);
         var azalia = Assert.Single(presets, p => p.PresetId == "azalia");
         Assert.Equal("Азалия", azalia.DisplayName);
         Assert.Equal("built_in", azalia.LibraryKind);
@@ -43,6 +57,9 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         var userGuardian = Assert.Single(presets, p => p.PresetId == "my_user_guardian");
         Assert.Equal("user", userGuardian.LibraryKind);
         Assert.Contains("Guardian dossier:", userGuardian.PromptPackage, StringComparison.Ordinal);
+        Assert.DoesNotContain(presets, p =>
+            p.PresetId == "azalia" &&
+            string.Equals(p.LibraryKind, "user", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -71,6 +88,77 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.Contains("ETERNAL GUARDIAN ATTRACTION:", reminder, StringComparison.Ordinal);
         Assert.Contains("Азалия", reminder, StringComparison.Ordinal);
         Assert.Contains("guardian.sourcePreset", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuildCanonicalGuardianRootForFreshNewGame_SystemPreset_UsesCompleteCanonicalShapeWithoutPendingCreation()
+    {
+        await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "Азалия", "Social", "built_in");
+        var preset = await _service.FindPresetAsync("azalia", includeDossier: true);
+        Assert.NotNull(preset);
+
+        var root = _service.BuildCanonicalGuardianRootForFreshNewGame(
+            preset!,
+            "Тестовая Душа",
+            turnNumber: 1,
+            createdAtUtc: DateTimeOffset.Parse("2026-06-29T00:00:00Z"));
+
+        Assert.Null(root["pendingGuardianCreation"]);
+
+        var guardians = Assert.IsType<JsonArray>(root["guardians"]);
+        var guardian = Assert.IsType<JsonObject>(Assert.Single(guardians));
+        var activeGuardian = Assert.IsType<JsonObject>(root["activeGuardian"]);
+
+        Assert.Equal("guard_system_azalia_001", guardian["guardianId"]?.GetValue<string>());
+        Assert.Equal("guard_system_azalia_001", activeGuardian["guardianId"]?.GetValue<string>());
+        Assert.Equal("Азалия", guardian["canonicalName"]?.GetValue<string>());
+        Assert.Equal("system_preset", guardian["originType"]?.GetValue<string>());
+        Assert.Equal("azalia", guardian["sourcePreset"]?["presetId"]?.GetValue<string>());
+        Assert.Equal("built_in", guardian["sourcePreset"]?["library"]?.GetValue<string>());
+        var nameVariants = Assert.IsType<JsonObject>(guardian["nameVariants"]);
+        Assert.Equal("Азалия", nameVariants["default"]?.GetValue<string>());
+        Assert.Equal("Азалия", nameVariants["feminine"]?.GetValue<string>());
+        Assert.Equal("Азалия", nameVariants["masculine"]?.GetValue<string>());
+        Assert.Equal("Азалия", nameVariants["neutral"]?.GetValue<string>());
+
+        var manifestation = Assert.IsType<JsonObject>(guardian["manifestation"]);
+        Assert.Equal("selective", manifestation["formFlexibility"]?.GetValue<string>());
+        Assert.Equal("Азалия", manifestation["currentDisplayName"]?.GetValue<string>());
+        Assert.Equal("она/её", manifestation["currentPronouns"]?.GetValue<string>());
+        Assert.IsType<JsonArray>(guardian["manifestationHistory"]);
+
+        var abode = Assert.IsType<JsonObject>(guardian["abode"]);
+        Assert.Equal("abode_system_azalia_001", abode["abodeId"]?.GetValue<string>());
+        Assert.Equal("Тестовая Обитель", abode["name"]?.GetValue<string>());
+        Assert.True(abode["isDiscovered"]?.GetValue<bool>());
+
+        Assert.IsType<JsonObject>(guardian["personalityProfile"]);
+        Assert.IsType<JsonObject>(guardian["mood"]);
+        Assert.IsType<JsonObject>(guardian["relationshipData"]);
+        Assert.IsType<JsonObject>(guardian["abodePower"]);
+        Assert.IsType<JsonArray>(guardian["guardianRelationships"]);
+        Assert.IsType<JsonObject>(guardian["questManagement"]);
+        Assert.IsType<JsonObject>(guardian["gachaSystem"]);
+
+        var loreFragments = Assert.IsType<JsonArray>(guardian["loreFragments"]);
+        Assert.True(loreFragments.Count >= 7);
+        foreach (var fragmentNode in loreFragments)
+        {
+            var fragment = Assert.IsType<JsonObject>(fragmentNode);
+            Assert.False(string.IsNullOrWhiteSpace(fragment["fragmentId"]?.GetValue<string>()));
+            Assert.False(string.IsNullOrWhiteSpace(fragment["title"]?.GetValue<string>()));
+            Assert.False(string.IsNullOrWhiteSpace(fragment["summary"]?.GetValue<string>()));
+            Assert.False(string.IsNullOrWhiteSpace(fragment["category"]?.GetValue<string>()));
+            Assert.Equal("planned", fragment["discoveryState"]?.GetValue<string>());
+            Assert.Equal("hidden", fragment["visibility"]?.GetValue<string>());
+            Assert.Equal("azalia", fragment["sourcePresetId"]?.GetValue<string>());
+        }
+
+        var navigation = Assert.IsType<JsonObject>(root["chaosSeaNavigation"]);
+        Assert.Equal("abode_system_azalia_001", navigation["currentAbodeId"]?.GetValue<string>());
+        Assert.Equal("guard_system_azalia_001", navigation["currentGuardianId"]?.GetValue<string>());
+        var discoveredAbodes = Assert.IsType<JsonArray>(navigation["discoveredAbodes"]);
+        Assert.Equal("abode_system_azalia_001", Assert.Single(discoveredAbodes)?.GetValue<string>());
     }
 
     [Fact]

@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 
 namespace BookOfEternityClient.Services;
 
@@ -24,6 +25,14 @@ internal static class AfterlifeChronicleState
         "saref_story"
     };
 
+    private static readonly (Regex Pattern, string Replacement)[] PlayerFacingRealmTermReplacements =
+    {
+        (new Regex(@"\bMortal\s*World\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "смертный мир"),
+        (new Regex(@"\bChaos\s*Sea\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "Море Хаоса"),
+        (new Regex(@"\bShining\s*Abode\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "Сияющая Обитель"),
+        (new Regex(@"\bafterlife\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "посмертие")
+    };
+
     public static JsonObject CreateDefaultRoot() =>
         new()
         {
@@ -38,6 +47,73 @@ internal static class AfterlifeChronicleState
         UpsertChronicles(result, currentRoot?[ChroniclesProperty]);
         ApplyChronicleUpdates(result, currentRoot?[UpdateProperty]);
         result.Remove(UpdateProperty);
+        NormalizePlayerFacingChronicleText(result);
+        return result;
+    }
+
+    private static void NormalizePlayerFacingChronicleText(JsonObject root)
+    {
+        if (root[ChroniclesProperty] is not JsonArray chronicles)
+            return;
+
+        foreach (var chronicle in chronicles.OfType<JsonObject>())
+            NormalizeChroniclePlayerFacingText(chronicle);
+    }
+
+    private static void NormalizeChroniclePlayerFacingText(JsonObject chronicle)
+    {
+        NormalizeStringProperty(chronicle, "displayName");
+        NormalizeStringProperty(chronicle, "lastEventsDescription");
+        NormalizeStringArrayProperty(chronicle, "eventDescriptions");
+        NormalizeStringArrayProperty(chronicle, "persistentConsequences");
+        NormalizeStringArrayProperty(chronicle, "openThreads");
+
+        if (chronicle["participants"] is not JsonArray participants)
+            return;
+
+        foreach (var participant in participants.OfType<JsonObject>())
+            NormalizeStringProperty(participant, "displayName");
+    }
+
+    private static void NormalizeStringProperty(JsonObject root, string propertyName)
+    {
+        if (!root.TryGetPropertyValue(propertyName, out var node) ||
+            node is not JsonValue value ||
+            !value.TryGetValue<string>(out var text))
+        {
+            return;
+        }
+
+        var normalized = NormalizePlayerFacingRealmTerms(text);
+        if (!string.Equals(normalized, text, StringComparison.Ordinal))
+            root[propertyName] = normalized;
+    }
+
+    private static void NormalizeStringArrayProperty(JsonObject root, string propertyName)
+    {
+        if (root[propertyName] is not JsonArray values)
+            return;
+
+        for (var index = 0; index < values.Count; index++)
+        {
+            if (values[index] is not JsonValue value ||
+                !value.TryGetValue<string>(out var text))
+            {
+                continue;
+            }
+
+            var normalized = NormalizePlayerFacingRealmTerms(text);
+            if (!string.Equals(normalized, text, StringComparison.Ordinal))
+                values[index] = normalized;
+        }
+    }
+
+    private static string NormalizePlayerFacingRealmTerms(string text)
+    {
+        var result = text;
+        foreach (var (pattern, replacement) in PlayerFacingRealmTermReplacements)
+            result = pattern.Replace(result, replacement);
+
         return result;
     }
 
@@ -128,10 +204,13 @@ internal static class AfterlifeChronicleState
 
     private static void UpsertChronicle(JsonArray chronicles, JsonObject chronicle)
     {
+        var replacement = chronicle.DeepClone().AsObject();
+        EnsureCanonicalEventArchive(replacement);
+
         var chronicleId = GetNodeString(chronicle["chronicleId"]);
         if (string.IsNullOrWhiteSpace(chronicleId))
         {
-            chronicles.Add(chronicle.DeepClone());
+            chronicles.Add(replacement);
             return;
         }
 
@@ -140,12 +219,58 @@ internal static class AfterlifeChronicleState
             if (chronicles[index] is JsonObject existing &&
                 string.Equals(GetNodeString(existing["chronicleId"]), chronicleId, StringComparison.OrdinalIgnoreCase))
             {
-                chronicles[index] = chronicle.DeepClone();
+                MergeCanonicalEventArchive(replacement, existing);
+                chronicles[index] = replacement;
                 return;
             }
         }
 
-        chronicles.Add(chronicle.DeepClone());
+        chronicles.Add(replacement);
+    }
+
+    private static void EnsureCanonicalEventArchive(JsonObject chronicle)
+    {
+        if (!chronicle.ContainsKey("eventDescriptions"))
+            chronicle["eventDescriptions"] = new JsonArray();
+    }
+
+    private static void MergeCanonicalEventArchive(JsonObject replacement, JsonObject existing)
+    {
+        if (!replacement.ContainsKey("eventDescriptions"))
+            replacement["eventDescriptions"] = new JsonArray();
+
+        if (replacement["eventDescriptions"] is not JsonArray replacementEvents)
+            return;
+
+        if (existing["eventDescriptions"] is JsonArray existingEvents)
+        {
+            foreach (var existingEvent in existingEvents.OfType<JsonValue>())
+            {
+                if (existingEvent.TryGetValue<string>(out var eventText))
+                    AddUniqueEventDescription(replacementEvents, eventText);
+            }
+        }
+
+        var previousLastEvents = GetNodeString(existing["lastEventsDescription"]);
+        var newLastEvents = GetNodeString(replacement["lastEventsDescription"]);
+        if (!string.Equals(previousLastEvents, newLastEvents, StringComparison.Ordinal))
+            AddUniqueEventDescription(replacementEvents, previousLastEvents);
+    }
+
+    private static void AddUniqueEventDescription(JsonArray events, string? eventText)
+    {
+        if (string.IsNullOrWhiteSpace(eventText))
+            return;
+
+        var normalized = eventText.Trim();
+        if (events.OfType<JsonValue>().Any(value =>
+                value.TryGetValue<string>(out var existing) &&
+                string.Equals(existing, normalized, StringComparison.Ordinal)))
+        {
+            return;
+        }
+
+        events.Add(normalized);
     }
 
     private static JsonObject? FindChronicle(JsonArray chronicles, string chronicleId)

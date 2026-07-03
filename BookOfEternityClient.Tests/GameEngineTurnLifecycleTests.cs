@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Reflection;
+using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
@@ -94,6 +95,67 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CheckLevelUpAsync_DoesNotAwardAlreadyProcessedLevelAfterEngineRestart()
+    {
+        await WriteJsonAsync("game_state/player/experience.json", new
+        {
+            playerLevel = 2,
+            level = 2,
+            currentExperience = 49,
+            experience = 49,
+            totalExperience = 149,
+            experienceForNextLevel = 150
+        });
+        await WriteJsonAsync("game_state/player/stat_points.json", new
+        {
+            unspentStatPoints = 0
+        });
+        await WriteJsonAsync("game_state/misc/characteristics.json", new
+        {
+            strength = 2,
+            dexterity = 4,
+            constitution = 2,
+            intelligence = 4,
+            wisdom = 1,
+            faith = 1,
+            attractiveness = 1,
+            trade = 1,
+            persuasion = 2,
+            perception = 4,
+            luck = 2,
+            speed = 1
+        });
+        await WriteJsonAsync("game_state/player/computed_characteristics.json", new
+        {
+            playerLevel = 1,
+            unspentStatPoints = 0,
+            characteristics = new { strength = 2 }
+        });
+
+        var firstLevelUpInput = new QueuedConsoleInputSource(
+            Enumerable.Repeat(Key(ConsoleKey.RightArrow), 5).Append(Key(ConsoleKey.Enter)));
+        var firstEngine = CreateGameEngine(firstLevelUpInput);
+        await InvokePrivateTaskAsync(firstEngine, "CheckLevelUpAsync");
+
+        var afterFirstBaseStats = JsonNode.Parse((await _fs.ReadFileAsync("game_state/misc/characteristics.json"))!)!.AsObject();
+        Assert.Equal(7, afterFirstBaseStats["strength"]!.GetValue<int>());
+        var afterFirstComputed = JsonNode.Parse((await _fs.ReadFileAsync("game_state/player/computed_characteristics.json"))!)!.AsObject();
+        Assert.Equal(7, afterFirstComputed["characteristics"]!["strength"]!.GetValue<int>());
+
+        var restartedInput = new QueuedConsoleInputSource(
+            Enumerable.Repeat(Key(ConsoleKey.RightArrow), 5).Append(Key(ConsoleKey.Enter)));
+        var restartedEngine = CreateGameEngine(restartedInput);
+        await InvokePrivateTaskAsync(restartedEngine, "CheckLevelUpAsync");
+
+        var afterRestartBaseStats = JsonNode.Parse((await _fs.ReadFileAsync("game_state/misc/characteristics.json"))!)!.AsObject();
+        Assert.Equal(7, afterRestartBaseStats["strength"]!.GetValue<int>());
+        var statPoints = JsonNode.Parse((await _fs.ReadFileAsync("game_state/player/stat_points.json"))!)!.AsObject();
+        Assert.Equal(0, statPoints["unspentStatPoints"]!.GetValue<int>());
+        var afterRestartComputed = JsonNode.Parse((await _fs.ReadFileAsync("game_state/player/computed_characteristics.json"))!)!.AsObject();
+        Assert.Equal(7, afterRestartComputed["characteristics"]!["strength"]!.GetValue<int>());
+    }
+
+    [Fact]
     public async Task HandleInvalidTriggerLifeEndRuntimeFailure_DeletesSignalAndWritesErrorLog()
     {
         await _fs.WriteFileAtomicAsync("game_state/control/life_transitions.json", """
@@ -115,6 +177,43 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var log = File.ReadAllText(logPath, Encoding.UTF8);
         Assert.Contains("TriggerLifeEndRuntimeContextException", log, StringComparison.Ordinal);
         Assert.Contains("mortal pre-turn realm authority", log, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ShowTurnErrorMessageAsync_PublishesAgentConsoleTimeoutRecoveryScreen()
+    {
+        var store = new AgentConsoleStateStore();
+        using var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromSeconds(5));
+        var engine = CreateGameEngine(input);
+        await _fs.WriteFileAtomicAsync("ready/turn_error.json", """
+        {
+          "sessionId": "session-timeout",
+          "requestId": "request-timeout",
+          "turnNumber": 15,
+          "timestamp": "2026-06-30T23:43:36Z",
+          "status": "error",
+          "error": "Timeout after 900s"
+        }
+        """);
+
+        var method = typeof(GameEngine).GetMethod(
+            "ShowTurnErrorMessageAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(engine, new object[] { "ready/turn_error.json" })!);
+
+        var snapshot = await WaitForAgentConsoleSnapshotAsync(store, "gm-turn-error");
+
+        Assert.Equal(AgentConsoleMode.Error, snapshot.Mode);
+        Assert.True(snapshot.AwaitingInput);
+        Assert.Equal(AgentConsoleInputKind.Key, snapshot.InputKind);
+        Assert.Contains("Timeout after 900s", snapshot.PlainText, StringComparison.Ordinal);
+        Assert.Contains("Действие не было применено", snapshot.PlainText, StringComparison.Ordinal);
+        Assert.Contains(snapshot.Diagnostics, diagnostic =>
+            string.Equals(diagnostic.Code, "gm-turn-error", StringComparison.OrdinalIgnoreCase));
+
+        input.EnqueueKey(Key(ConsoleKey.Enter));
+        await task.WaitAsync(TimeSpan.FromSeconds(5));
     }
 
     [Fact]
@@ -179,7 +278,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     [Fact]
     public async Task WriteValidationRepairRequestAsync_WithoutWorkerProfiles_PreservesSingleGmRepairFlow()
     {
-        var engine = CreateGameEngine();
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
         var issue = new ValidationIssue(
             "game_state/world/weather.json",
             IssueSeverity.Error,
@@ -237,12 +336,12 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             note = "Repair accepted by test."
         });
 
-        var engine = CreateGameEngine();
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
         var issue = new ValidationIssue(
-            "game_state/world/current_location.json.lastEventsDescription",
+            "game_state/world/current_location.json.locationId",
             IssueSeverity.Error,
-            "Location last-events timestamp must match the canonical turn timestamp.",
-            code: "location_last_events_timestamp_invalid");
+            "Current location references an unknown location id.",
+            code: "current_location_unknown_location_id");
 
         var accepted = await InvokePrivateAsync<bool>(
             engine,
@@ -270,8 +369,13 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Equal("correlated_repair_ready", validation.GetProperty("acceptanceScope").GetString());
         Assert.False(validation.GetProperty("fullCanonicalStateAccepted").GetBoolean());
         Assert.Contains(
-            "location_last_events_timestamp_invalid",
+            "current_location_unknown_location_id",
             validation.GetProperty("issueKinds")
+                .EnumerateArray()
+                .Select(item => item.GetString()));
+        Assert.Contains(
+            "mortal_location_transition_repair",
+            validation.GetProperty("repairPacketRefs")
                 .EnumerateArray()
                 .Select(item => item.GetString()));
         Assert.Equal(2, record.GetProperty("repair").GetProperty("attempts").GetInt32());
@@ -281,6 +385,214 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             "game_state/control/validation_repair_ready.json",
             record.GetProperty("terminal").GetProperty("signalPath").GetString());
         Assert.True(record.GetProperty("rubric").GetProperty("validTurn").GetBoolean());
+    }
+
+    [Fact]
+    public async Task WaitForContractRepairAsync_RejectedRepairReadyWithLostSnapshot_FailsClosedInsteadOfWaitingForever()
+    {
+        const string sessionId = "session-repair-lost-snapshot";
+        const string requestId = "request-repair-lost-snapshot";
+        const int turnNumber = 11;
+        const string trackedPath = "game_state/meta/soul_state.json";
+
+        await WriteJsonAsync(trackedPath, new
+        {
+            currentRealm = "Mortal World",
+            currentIncarnation = 2
+        });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{trackedPath}", new
+        {
+            currentRealm = "Mortal World",
+            currentIncarnation = 2
+        });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+
+        var gmRepair = Task.Run(async () =>
+        {
+            var deadline = DateTime.UtcNow.AddSeconds(5);
+            while (!_fs.FileExists("game_state/control/validation_repair_request.json") &&
+                   DateTime.UtcNow < deadline)
+            {
+                await Task.Delay(50);
+            }
+
+            Assert.True(_fs.FileExists("game_state/control/validation_repair_request.json"));
+            await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.authority.json", "{}");
+            await WriteJsonAsync("game_state/control/validation_repair_ready.json", new
+            {
+                sessionId,
+                requestId,
+                turnNumber,
+                updatedAtUtc = "2026-06-27T00:00:00Z",
+                note = "Repair ready becomes unusable because snapshot authority was lost."
+            });
+        });
+
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var issue = new ValidationIssue(
+            "game_state/world/current_location.json.locationId",
+            IssueSeverity.Error,
+            "Current location references an unknown location id.",
+            code: "current_location_unknown_location_id");
+
+        var repairTask = InvokePrivateAsync<bool>(
+            engine,
+            "WaitForContractRepairAsync",
+            "обработки хода",
+            new List<ValidationIssue> { issue },
+            2,
+            null);
+
+        var completed = await Task.WhenAny(repairTask, Task.Delay(TimeSpan.FromSeconds(8)));
+
+        await gmRepair;
+        Assert.Same(repairTask, completed);
+        Assert.False(await repairTask);
+        Assert.False(_fs.FileExists("game_state/control/validation_repair_request.json"));
+        Assert.False(_fs.FileExists("game_state/control/validation_repair_ready.json"));
+        Assert.True(_fs.FileExists("game_state/control/validation_diagnostic_failure_report.json"));
+
+        var reportJson = await _fs.ReadFileAsync("game_state/control/validation_diagnostic_failure_report.json");
+        Assert.Contains("Diagnostic-only validation repair request cannot be completed by GM", reportJson);
+        Assert.Contains("mismatched_repair_ready_context", reportJson);
+    }
+
+    [Fact]
+    public async Task ValidateCurrentGameStateOrShowErrorsAsync_AfterRepairClearsValidation_WritesTerminalAcceptedTrajectoryRecord()
+    {
+        const string sessionId = "session-repair-cleared-ledger";
+        const string requestId = "request-repair-cleared-ledger";
+        const int turnNumber = 8;
+        const string trackedPath = "game_state/meta/soul_state.json";
+
+        await WriteJsonAsync(trackedPath, new
+        {
+            soulName = "Тихая Искра",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 0,
+            soulFormDescription = new { invalid = true }
+        });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{trackedPath}", new
+        {
+            soulName = "Тихая Искра",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 0,
+            soulFormDescription = new { invalid = true }
+        });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+
+        var gmRepair = Task.Run(async () =>
+        {
+            var deadline = DateTime.UtcNow.AddSeconds(5);
+            while (!_fs.FileExists("game_state/control/validation_repair_request.json") &&
+                   DateTime.UtcNow < deadline)
+            {
+                await Task.Delay(50);
+            }
+
+            Assert.True(_fs.FileExists("game_state/control/validation_repair_request.json"));
+            var repairRequestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+            var repairRequestNode = JsonNode.Parse(repairRequestJson!)!.AsObject();
+            repairRequestNode["harnessRepairPackets"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["kind"] = "soul_form_shape_repair"
+                }
+            };
+            await _fs.WriteFileAtomicAsync(
+                "game_state/control/validation_repair_request.json",
+                repairRequestNode.ToJsonString(SnapshotHashJsonOpts));
+
+            await WriteJsonAsync(trackedPath, new
+            {
+                soulName = "Тихая Искра",
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 0,
+                soulFormDescription = "Женский силуэт из серебристого пепла."
+            });
+            await WriteJsonAsync("game_state/control/validation_repair_ready.json", new
+            {
+                sessionId,
+                requestId,
+                turnNumber,
+                updatedAtUtc = "2026-06-27T00:00:00Z",
+                note = "Repair cleared by test."
+            });
+        });
+
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var accepted = await InvokePrivateAsync<bool>(
+            engine,
+            "ValidateCurrentGameStateOrShowErrorsAsync",
+            "state validation",
+            null,
+            null,
+            true);
+
+        await gmRepair;
+
+        Assert.True(accepted);
+        Assert.False(_fs.FileExists("game_state/control/validation_repair_request.json"));
+        Assert.False(_fs.FileExists("game_state/control/validation_repair_ready.json"));
+
+        var ledgerJson = await _fs.ReadFileAsync("game_state/control/gm_trajectory_ledger.jsonl");
+        Assert.False(string.IsNullOrWhiteSpace(ledgerJson));
+        var records = ledgerJson!
+            .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(line => JsonDocument.Parse(line))
+            .ToList();
+
+        Assert.Equal(2, records.Count);
+        var repairReady = records[0].RootElement;
+        Assert.Equal("correlated_repair_ready", repairReady.GetProperty("validation").GetProperty("acceptanceScope").GetString());
+        Assert.False(repairReady.GetProperty("validation").GetProperty("fullCanonicalStateAccepted").GetBoolean());
+        Assert.Contains(
+            "soul_form_shape_repair",
+            repairReady.GetProperty("validation").GetProperty("repairPacketRefs")
+                .EnumerateArray()
+                .Select(item => item.GetString()));
+
+        var cleared = records[1].RootElement;
+        Assert.Equal("repair", cleared.GetProperty("kind").GetString());
+        Assert.Equal(sessionId, cleared.GetProperty("sessionId").GetString());
+        Assert.Equal(requestId, cleared.GetProperty("requestId").GetString());
+        Assert.Equal(turnNumber, cleared.GetProperty("turnNumber").GetInt32());
+        Assert.Equal("validation_repair", cleared.GetProperty("mode").GetString());
+        var validation = cleared.GetProperty("validation");
+        Assert.Equal("accepted", validation.GetProperty("status").GetString());
+        Assert.Equal("state validation", validation.GetProperty("source").GetString());
+        Assert.Equal("full_canonical_state_after_repair", validation.GetProperty("acceptanceScope").GetString());
+        Assert.True(validation.GetProperty("fullCanonicalStateAccepted").GetBoolean());
+        Assert.Contains(
+            "soul_form_description_invalid_shape",
+            validation.GetProperty("issueKinds")
+                .EnumerateArray()
+                .Select(item => item.GetString()));
+        Assert.Contains(
+            "soul_form_shape_repair",
+            validation.GetProperty("repairPacketRefs")
+                .EnumerateArray()
+                .Select(item => item.GetString()));
+        Assert.Equal(1, cleared.GetProperty("repair").GetProperty("attempts").GetInt32());
+        Assert.Equal("cleared", cleared.GetProperty("repair").GetProperty("status").GetString());
+        Assert.Equal("validation_repair_cleared", cleared.GetProperty("terminal").GetProperty("kind").GetString());
+        Assert.True(cleared.GetProperty("rubric").GetProperty("validTurn").GetBoolean());
+
+        foreach (var record in records)
+            record.Dispose();
     }
 
     [Fact]
@@ -531,6 +843,104 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_AcceptedTurnOutputArtifactErrors_AddsHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "output/narrative_response.json",
+                IssueSeverity.Error,
+                "Accepted GM turn должен содержать свежий output/narrative_response.json с непустым response",
+                code: "accepted_turn_missing_narrative_response",
+                section: "Narrative",
+                expected: "output/narrative_response.json with non-empty response",
+                actual: "missing or empty",
+                repairHint: "Запиши output/narrative_response.json с полем response для текущего accepted turn."),
+            new(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                "Отсутствует gm_thoughts_markdown при обязательной проверке actor reasoning scope",
+                code: "missing_gm_thoughts",
+                section: "gm_thoughts_markdown",
+                expected: "gm_thoughts_markdown with NPC scope declaration",
+                actual: "missing or empty",
+                repairHint: "Добавь debug_logs.json.gm_thoughts_markdown с секцией 'Охват NPC-анализа' и reasoning blocks.")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("accepted_turn_output_artifact_repair", packet.GetProperty("kind").GetString());
+        Assert.Equal("high", packet.GetProperty("priority").GetString());
+        Assert.Contains("output/narrative_response.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("output/debug_logs.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("\"response\"", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("gm_thoughts_markdown", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("## Охват NPC-анализа", StringComparison.Ordinal));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("output/narrative_response.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("output/debug_logs.json.gm_thoughts_markdown", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("validation_repair_ready.json", StringComparison.OrdinalIgnoreCase));
+
+        Assert.Contains(
+            packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
+            item => item.Contains("new turn", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_NarrativeTimestampError_AddsAcceptedTurnOutputPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "output/narrative_response.json.timestamp",
+                IssueSeverity.Error,
+                "output/narrative_response.json must include timestamp",
+                code: "narrative_response_missing_timestamp",
+                section: "Narrative",
+                expected: "ISO-8601 UTC timestamp",
+                actual: "missing")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("accepted_turn_output_artifact_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("output/narrative_response.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("output/debug_logs.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains(
+            packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
+            item => item.Contains("\"timestamp\"", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_MissingNpcActorBlock_AddsActorReasoningPacketNotGuardianPacket()
     {
         var engine = CreateGameEngine();
@@ -567,9 +977,11 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(steps, step => step.Contains("create a missing reasoning block", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("current location", StringComparison.OrdinalIgnoreCase) || step.Contains("Текущ", StringComparison.OrdinalIgnoreCase));
 
         var template = packet.GetProperty("debugLogTemplate").GetString() ?? string.Empty;
         Assert.Contains("### Ирен Соль", template, StringComparison.Ordinal);
+        Assert.Contains("- Текущая локация:", template, StringComparison.Ordinal);
         Assert.Contains("- Ситуация:", template, StringComparison.Ordinal);
         Assert.Contains("- Мысли:", template, StringComparison.Ordinal);
         Assert.Contains("- Действия:", template, StringComparison.Ordinal);
@@ -707,6 +1119,51 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_FactionResourceEntryShapeErrors_AddsHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/factions/faction_resources.json.entries[0]",
+                IssueSeverity.Error,
+                "Canonical faction resource entries require full object shape.",
+                code: "canonical_faction_resource_entry_missing_required_fields",
+                section: "Factions",
+                expected: "resourceId/name/displayName/type/value/source/visibility and upkeep fields for metaResources",
+                actual: "missing value, source, visibility, upkeep")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 2 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_faction_resource_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/factions/faction_resources.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("canonical_faction_resource_entry_missing_required_fields", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("metaResources", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("strategicGoods", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("MORTAL_FACTION_UPDATE_TEMPLATE", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("full resource object", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("Complete-BoeValidationRepair", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_MortalLocationTransitionErrors_AddsHarnessPacket()
     {
         var engine = CreateGameEngine();
@@ -772,6 +1229,144 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalLocationShapeErrors_AddsExecutableHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/world/world_map.json.newLocations[0].activeThreats",
+                IssueSeverity.Error,
+                "Location is missing activeThreats array.",
+                code: "location_missing_active_threat_array",
+                section: "WorldMap",
+                expected: "activeThreats as array",
+                actual: "missing"),
+            new(
+                "game_state/world/world_map.json.newLocations[0].adjacencyMap",
+                IssueSeverity.Error,
+                "Location is missing adjacencyMap array.",
+                code: "location_missing_adjacency_array",
+                section: "WorldMap",
+                expected: "adjacencyMap as array",
+                actual: "missing"),
+            new(
+                "game_state/world/world_map.json.newLocations[0].internalDifficultyProfile",
+                IssueSeverity.Error,
+                "Location is missing internal difficulty profile.",
+                code: "location_missing_difficulty_profile",
+                section: "WorldMap",
+                expected: "internalDifficultyProfile and externalDifficultyProfile",
+                actual: "missing"),
+            new(
+                "game_state/world/world_map.json.newLocations[0].locationStorages",
+                IssueSeverity.Error,
+                "Location is missing locationStorages array.",
+                code: "location_missing_storage_array",
+                section: "WorldMap",
+                expected: "locationStorages as array",
+                actual: "missing"),
+            new(
+                "game_state/world/world_map.json.newLinks[0]",
+                IssueSeverity.Error,
+                "World-map new link is missing preview fields.",
+                code: "world_map_new_link_missing_required_fields",
+                section: "WorldMap",
+                expected: "targetName, targetCoordinates, estimatedInternalDifficultyProfile, estimatedExternalDifficultyProfile",
+                actual: "missing estimated profiles")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_location_transition_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/world/world_map.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("location_missing_active_threat_array", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("location_missing_adjacency_array", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("location_missing_difficulty_profile", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("location_missing_storage_array", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("world_map_new_link_missing_required_fields", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("activeThreats", StringComparison.Ordinal) && item.Contains("locationStorages", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("internalDifficultyProfile", StringComparison.Ordinal) && item.Contains("externalDifficultyProfile", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("estimatedInternalDifficultyProfile", StringComparison.Ordinal) && item.Contains("estimatedExternalDifficultyProfile", StringComparison.Ordinal));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("required arrays", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("difficulty profile", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("link preview", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalWorldMapAdjacencyErrors_AddsHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/world/world_map.json.adjacency[1].targetLocationId",
+                IssueSeverity.Error,
+                "World map adjacency points to an unknown target location.",
+                code: "world_map_adjacency_unknown_target",
+                section: "WorldMap",
+                expected: "targetLocationId must reference an existing locationId or a same-turn newLocations.initialId",
+                actual: "loc_salt_awning"),
+            new(
+                "game_state/world/world_map.json.linkUpdates[0].sourceLocationId",
+                IssueSeverity.Error,
+                "World map link update source is unknown.",
+                code: "world_map_link_update_unknown_source",
+                section: "WorldMap",
+                expected: "sourceLocationId must reference an existing locationId",
+                actual: "loc_hidden_panel")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_world_map_adjacency_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/world/world_map.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/world/current_location.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("world_map_adjacency_unknown_target", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("existing locationId", StringComparison.OrdinalIgnoreCase));
+
+        var safeRules = packet.GetProperty("safeCorrectionRules").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(safeRules, item => item.Contains("materialize", StringComparison.OrdinalIgnoreCase) && item.Contains("location", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(safeRules, item => item.Contains("remove", StringComparison.OrdinalIgnoreCase) && item.Contains("link", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("unknown target", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("Complete-BoeValidationRepair", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_MortalNpcLocationErrors_AddsHarnessPacket()
     {
         var engine = CreateGameEngine();
@@ -820,6 +1415,136 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(steps, step => step.Contains("initialLocationId", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("currentLocationId", StringComparison.OrdinalIgnoreCase) && step.Contains("null", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("NPCsInScene", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalNpcScopeErrors_AddsHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/npcs/npc_core.json.UpdateNPCs[1]",
+                IssueSeverity.Error,
+                "Structured NPC update is outside declared relevant actors.",
+                code: "structured_npc_update_out_of_scope",
+                actor: "Мальчишка-посыльный дома Виренто",
+                section: "UpdateNPCs",
+                expected: "'Мальчишка-посыльный дома Виренто' declared in Relevant actors",
+                actual: "UpdateNPCs changed actor outside declared scope")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_npc_scope_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("output/debug_logs.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Templates/MORTAL_NPC_UPDATE_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Мальчишка-посыльный дома Виренто", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("Relevant actors", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("reasoning", StringComparison.OrdinalIgnoreCase));
+
+        var safeRules = packet.GetProperty("safeCorrectionRules").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(safeRules, item => item.Contains("add", StringComparison.OrdinalIgnoreCase) && item.Contains("Relevant actors", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(safeRules, item => item.Contains("remove", StringComparison.OrdinalIgnoreCase) && item.Contains("structured", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalNpcKnownSceneLocationErrors_AddsExecutableHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/npcs/npc_core.json.NPCsInScene[0].currentLocationId",
+                IssueSeverity.Error,
+                "NPCsInScene entry for a known current scene location must carry currentLocationId.",
+                code: "npc_scene_missing_current_location_id",
+                actor: "Лира Нериль",
+                section: "NPCsInScene",
+                expected: "currentLocationId = loc_life_001_start",
+                actual: "missing")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_npc_location_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("Лира Нериль", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("known current scene location", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("currentLocationId = loc_life_001_start", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(steps, step => step.Contains("currentLocationId to JSON null", StringComparison.OrdinalIgnoreCase));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("known current location", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("same-turn new location", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalNpcExistingInventoryResend_AddsInventoryHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/npcs/npc_core.json.UpdateNPCs[0].inventory",
+                IssueSeverity.Error,
+                "UpdateNPCs must not resend inventory for existing NPC.",
+                code: "npc_existing_inventory_resend_forbidden",
+                actor: "Миртан Велор",
+                section: "NPCInventory",
+                expected: "Use NPCInventoryAdds/Updates/Removals for existing NPC inventory changes",
+                actual: "inventory: []")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_npc_inventory_update_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Миртан Велор", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("Remove inventory from UpdateNPCs", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("NPCInventoryAdds", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -918,7 +1643,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 actor: "Ирен Соль",
                 section: "UpdateNPCs",
                 expected: "full NPC object with profile, social, location, relationshipLock, goals, personalityTraits, attitude, culturalStance",
-                actual: "missing worldview, race, class, appearanceDescription")
+                actual: "missing worldview, race, class, appearanceDescription, inventory")
         };
 
         var method = typeof(GameEngine).GetMethod(
@@ -939,12 +1664,215 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
         Assert.Contains("Templates/MORTAL_NPC_UPDATE_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
         Assert.Contains("Ирен Соль", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("inventory", packet.GetProperty("missingFields").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("worldview", packet.GetProperty("missingFields").EnumerateArray().Select(item => item.GetString()));
 
         var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(steps, step => step.Contains("full NPC object", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("relationshipLock", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("goals", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("personalityTraits", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("inventory", StringComparison.OrdinalIgnoreCase) && step.Contains("[]", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalBootstrapMaterializationErrors_AddsHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "lore/codex_entries.json",
+                IssueSeverity.Error,
+                "Opening Mortal bootstrap must include current-world codex entries.",
+                code: "bootstrap_codex_missing_current_world_entries",
+                section: "MortalBootstrap"),
+            new(
+                "game_state/inventory/items.json.items[0]",
+                IssueSeverity.Error,
+                "Readable document item has no detail authority.",
+                code: "readable_document_missing_detail_authority",
+                section: "Inventory",
+                actual: "item_letter_black_seal"),
+            new(
+                "game_state/inventory/items.json.items[1].quality",
+                IssueSeverity.Error,
+                "Item quality is not canonical.",
+                code: "item_invalid_quality",
+                section: "Inventory",
+                actual: "обычное"),
+            new(
+                "game_state/factions/faction_core.json.factions[0]",
+                IssueSeverity.Error,
+                "Faction sidecar is missing required fields.",
+                code: "canonical_faction_custom_state_missing_required_fields",
+                section: "Faction"),
+            new(
+                "game_state/world/current_location.json.coordinates",
+                IssueSeverity.Error,
+                "Current location coordinates differ from world map.",
+                code: "current_location_coordinates_mismatch",
+                section: "Location"),
+            new(
+                "game_state/world/current_location.json.factionControl",
+                IssueSeverity.Error,
+                "Location faction control must be object-shaped.",
+                code: "location_faction_control_invalid_type",
+                section: "Location"),
+            new(
+                "lore/current_world/history.json",
+                IssueSeverity.Error,
+                "Mortal bootstrap reused previous world lore.",
+                code: "mortal_bootstrap_reused_previous_world_lore",
+                section: "MortalBootstrap")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_bootstrap_materialization_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/control/mortal_bootstrap_scaffold.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("lore/codex_entries.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/inventory/items.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/factions/faction_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/world/current_location.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("bootstrap_codex_missing_current_world_entries", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("readable_document_missing_detail_authority", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("canonical_faction_custom_state_missing_required_fields", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("mortal_bootstrap_scaffold.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("current-world", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("readable", StringComparison.OrdinalIgnoreCase) && step.Contains("document", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalBootstrapItemShapeAndActorPersistenceErrors_AddsHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/inventory/items.json.items[0].image_prompt",
+                IssueSeverity.Error,
+                "Отсутствует обязательное строковое поле: image_prompt",
+                code: "missing_required_string",
+                expected: "image_prompt as non-empty string",
+                actual: "missing"),
+            new(
+                "game_state/inventory/items.json.items[0].isContainer",
+                IssueSeverity.Error,
+                "Отсутствует обязательное boolean поле: isContainer",
+                code: "missing_required_boolean_field",
+                expected: "boolean",
+                actual: "missing"),
+            new(
+                "game_state/inventory/items.json.items[0].durability",
+                IssueSeverity.Error,
+                "durability должен быть percentage string",
+                code: "validation_error"),
+            new(
+                "game_state/inventory/items.json.items[0].journalEntries[0]",
+                IssueSeverity.Error,
+                "Элемент должен быть непустой строкой",
+                code: "invalid_string_array_item",
+                section: "Inventory",
+                expected: "non-empty string",
+                actual: "Object"),
+            new(
+                "game_state/inventory/items.json.items[0].equipmentSlot",
+                IssueSeverity.Error,
+                "equipmentSlot содержит неизвестный слот.",
+                code: "item_invalid_equipment_slot",
+                section: "Inventory",
+                expected: "valid equipment slot",
+                actual: "Pocket"),
+            new(
+                "game_state/inventory/items.json.items[0].accessoryForSlot",
+                IssueSeverity.Error,
+                "accessoryForSlot содержит неизвестный слот.",
+                code: "item_invalid_accessory_slot",
+                section: "Inventory",
+                expected: "valid accessory slot",
+                actual: "Hands"),
+            new(
+                "lore/codex_entries.json.entries[0].tags",
+                IssueSeverity.Error,
+                "tags должен быть массивом строк.",
+                code: "expected_string_array",
+                section: "Codex",
+                expected: "string[]",
+                actual: "String"),
+            new(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                "Mortal World relevant actor 'Дом Вальмонт' declared in NPC scope but has no persistent NPC surface",
+                code: "mortal_relevant_actor_missing_persistence",
+                actor: "Дом Вальмонт",
+                section: "npc_scope",
+                expected: "matching NPC persistence",
+                actual: "actor appears only in gm_thoughts_markdown / narrative reasoning")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "ответа GM", issues, 2 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_bootstrap_materialization_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/inventory/items.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("lore/codex_entries.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("output/debug_logs.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("missing_required_string", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("missing_required_boolean_field", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("item_invalid_accessory_slot", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("mortal_relevant_actor_missing_persistence", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item =>
+            item.Contains("durability", StringComparison.OrdinalIgnoreCase) &&
+            item.Contains("percentage string", StringComparison.OrdinalIgnoreCase) &&
+            item.Contains("100%", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item =>
+            item.Contains("journalEntries", StringComparison.Ordinal) &&
+            item.Contains("non-empty string", StringComparison.OrdinalIgnoreCase) &&
+            item.Contains("not objects", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("image_prompt", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("isContainer", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("existedId", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step =>
+            step.Contains("durability", StringComparison.OrdinalIgnoreCase) &&
+            step.Contains("100%", StringComparison.Ordinal));
+        Assert.Contains(steps, step =>
+            step.Contains("journalEntries", StringComparison.Ordinal) &&
+            step.Contains("array", StringComparison.OrdinalIgnoreCase) &&
+            step.Contains("strings", StringComparison.OrdinalIgnoreCase) &&
+            step.Contains("not objects", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("Relevant actors", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -1062,6 +1990,208 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(doNotDo, item => item.Contains("pending_turn_snapshot", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_AfterlifeChronicleStringArrayErrors_AddsConcreteHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/afterlife_chronicles.json.chronicles[0].persistentConsequences[0]",
+                IssueSeverity.Error,
+                "persistentConsequences entries должны быть непустыми строками.",
+                code: "afterlife_chronicle_persistent_consequences_entry_invalid",
+                section: "AfterlifeChronicles",
+                expected: "non-empty string",
+                actual: "Object"),
+            new(
+                "game_state/meta/afterlife_chronicles.json.chronicles[0].openThreads[0]",
+                IssueSeverity.Error,
+                "openThreads entries должны быть непустыми строками.",
+                code: "afterlife_chronicle_open_threads_entry_invalid",
+                section: "AfterlifeChronicles",
+                expected: "non-empty string",
+                actual: "Object")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "ответа GM", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("afterlife_chronicle_string_array_repair", packet.GetProperty("kind").GetString());
+        Assert.Equal("high", packet.GetProperty("priority").GetString());
+        Assert.Contains(
+            "game_state/meta/afterlife_chronicles.json",
+            packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains(
+            "Examples/E_CLI_Afterlife_Turns.txt",
+            packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("afterlifeChronicleUpdates[]", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("persistentConsequences[]", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("openThreads[]", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("array of non-empty strings", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("persistentConsequences[0]", StringComparison.OrdinalIgnoreCase) &&
+                                      step.Contains("Object", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("openThreads[0]", StringComparison.OrdinalIgnoreCase) &&
+                                      step.Contains("Object", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("Remove afterlifeChronicleUpdates from output/narrative_response.json", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(steps, step => step.Contains("keep the same shape there too", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("validation_repair_ready.json", StringComparison.OrdinalIgnoreCase));
+
+        var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(doNotDo, item => item.Contains("Do not create a new turn", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("eventDescriptions", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("afterlifeChronicleUpdates", StringComparison.OrdinalIgnoreCase) &&
+                                         item.Contains("narrative_response.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_AfterlifeConflictRewardNotAllowed_AddsConcreteHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/afterlife_spiritual_conflict_state.json.recentConflicts[0].rewardAudit",
+                IssueSeverity.Error,
+                "Этот terminal afterlife conflict outcome не может выдавать currency reward.",
+                code: "afterlife_conflict_reward_not_allowed",
+                section: "AfterlifeSpiritualConflict",
+                expected: "resolved contested player victory with diceAudit.outcomeBand=player_success|decisive_player_success",
+                actual: "terminalOutcome=negotiated_training; diceAudit.outcomeBand=negotiated")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "повторной проверки repair", issues, 2 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("afterlife_spiritual_conflict_reward_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains(
+            "game_state/meta/afterlife_spiritual_conflict_state.json",
+            packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("player_success", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("decisive_player_success", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("negotiated", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("rewardAudit", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("remove", StringComparison.OrdinalIgnoreCase) &&
+                                      step.Contains("currency reward", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("Complete-BoeValidationRepair", StringComparison.OrdinalIgnoreCase));
+
+        var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(doNotDo, item => item.Contains("upgrade", StringComparison.OrdinalIgnoreCase) &&
+                                         item.Contains("negotiated", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("new turn", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_AfterlifeEntityProfileScaffoldErrors_AddsConcreteHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/afterlife_entity_profiles.json.profiles[0].goals",
+                IssueSeverity.Error,
+                "goals профиля духовной сущности должен быть object.",
+                code: "afterlife_entity_profile_agency_goals_not_object",
+                actor: "Душа игрока",
+                section: "AfterlifeEntityProfiles",
+                expected: "object",
+                actual: "Array"),
+            new(
+                "game_state/meta/afterlife_entity_profiles.json.profiles[0].progressionStrategy",
+                IssueSeverity.Error,
+                "Профиль должен явно хранить progressionStrategy.",
+                code: "afterlife_entity_profile_missing_progression_strategy",
+                actor: "Душа игрока",
+                section: "AfterlifeEntityProfiles",
+                expected: "object with strategyId/summary/priorityOrder/resourceReserve/allowedSpends/forbiddenSpends"),
+            new(
+                "game_state/meta/afterlife_entity_profiles.json.profiles[0].ledger",
+                IssueSeverity.Error,
+                "Профиль должен явно хранить ledger.",
+                code: "afterlife_entity_profile_missing_ledger",
+                actor: "Душа игрока",
+                section: "AfterlifeEntityProfiles",
+                expected: "array"),
+            new(
+                "game_state/meta/afterlife_entity_profiles.json.profileCommands.specialArtLearningReceipts[0]",
+                IssueSeverity.Error,
+                "specialArtLearningReceipts entry incomplete.",
+                code: "incomplete_special_art_learning_receipt",
+                actor: "Душа игрока",
+                section: "AfterlifeEntityProfiles",
+                expected: "receiptId/artId/teacherActorType/teacherActorId/playerActorId/trainingConditionSatisfied/learnedAtTurn/roleplayEvidence/summary")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "повторной проверки repair", issues, 2 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("afterlife_entity_profile_scaffold_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains(
+            "game_state/meta/afterlife_entity_profiles.json",
+            packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Душа игрока", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("goals", StringComparison.OrdinalIgnoreCase) &&
+                                              item.Contains("goalId", StringComparison.OrdinalIgnoreCase) &&
+                                              item.Contains("updatedAtTurn", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("progressionStrategy", StringComparison.OrdinalIgnoreCase) &&
+                                              item.Contains("priorityOrder", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("ledger", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("specialArtLearningReceipts", StringComparison.OrdinalIgnoreCase) &&
+                                              item.Contains("initialTier", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("minimum profile scaffold", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("profileCommands.specialArtLearningReceipts", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("Complete-BoeValidationRepair", StringComparison.OrdinalIgnoreCase));
+
+        var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(doNotDo, item => item.Contains("Mortal", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("initialTier", StringComparison.OrdinalIgnoreCase));
+    }
+
 
     [Theory]
     [InlineData("[ABODE_OFFERING] Игрок подносит Реликвию Души.", true)]
@@ -1125,6 +2255,35 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         Assert.False(_fs.FileExists("input/turn_request.json"));
         Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+    }
+
+    [Fact]
+    public async Task ProcessPlayerTurn_TerminalError_CleansTurnRequestAndPendingSnapshot()
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        var input = new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]);
+        var engine = CreateGameEngine(input);
+        var gmErrorTask = Task.Run(async () =>
+        {
+            var request = await WaitForTurnRequestAsync();
+            await _fs.WriteFileAtomicAsync("ready/turn_error.json", JsonSerializer.Serialize(new
+            {
+                sessionId = request.SessionId,
+                requestId = request.RequestId,
+                turnNumber = request.TurnNumber,
+                timestamp = DateTime.UtcNow.ToString("o"),
+                status = "error",
+                error = "GM bridge did not accept dispatch before the dispatch timeout."
+            }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        });
+
+        await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Тестовый ход, который завершится terminal error", null);
+        await gmErrorTask.WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.False(_fs.FileExists("input/turn_request.json"));
+        Assert.False(_fs.FileExists("ready/turn_error.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.authority.json"));
     }
 
     [Fact]
@@ -3187,6 +4346,134 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task LifeEvaluationSnapshot_ClientOwnedCurrentWorldDirectivesUseRollbackBaselineWhenCurrentFileIsCleared()
+    {
+        const string directivesPath = WorldDirectiveService.ActiveDirectivesPath;
+        const string directivesJson = """
+        {
+          "settingSummary": "Предыдущий смертный мир должен остаться проверяемым baseline.",
+          "lastUpdated": "2026-07-02T04:20:00Z"
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Искра Странствий",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(directivesPath, directivesJson);
+
+        var engine = CreateGameEngine();
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "life_eval_current_world_directives");
+
+        _fs.DeleteFile(directivesPath);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Искра Странствий",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1
+        }
+        """);
+
+        var request = new TurnRequest
+        {
+            SessionId = "session_life_eval_current_world_directives",
+            RequestId = "request_life_eval_current_world_directives",
+            TurnNumber = 22,
+            PlayerAction = "life evaluation",
+            Timestamp = "2026-07-02T04:22:32Z",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Chaos Sea" }
+        };
+
+        await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollbackSnapshot, "автоматической оценки жизни");
+
+        var manifestJson = await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        Assert.NotNull(manifestJson);
+        var manifest = Assert.IsType<JsonObject>(JsonNode.Parse(manifestJson!)!);
+        var files = Assert.IsType<JsonObject>(manifest["files"]);
+        var snapshotFileHashes = Assert.IsType<JsonObject>(manifest["snapshotFileHashes"]);
+        var rollbackBaselineFiles = Assert.IsType<JsonArray>(manifest["rollbackBaselineFiles"]);
+        var rollbackBaselineSet = rollbackBaselineFiles
+            .Select(node => node?.GetValue<string>() ?? string.Empty)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        Assert.Contains(directivesPath, rollbackBaselineSet);
+        Assert.True(files.ContainsKey(directivesPath));
+        Assert.True(snapshotFileHashes.ContainsKey(directivesPath));
+    }
+
+    [Fact]
+    public async Task MortalBootstrapBaselineFiles_AreValidationSnapshottedButRollbackDeletedWhenTurnFails()
+    {
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        const string soulStateJson = """{ "soulName": "Тестовая Душа", "currentRealm": "Mortal World", "currentIncarnation": 1 }""";
+
+        var engine = CreateGameEngine();
+        await _fs.WriteFileAtomicAsync(soulStatePath, soulStateJson);
+
+        var bootstrapPaths = new[]
+        {
+            "game_state/world/current_location.json",
+            "game_state/world/world_map.json",
+            "game_state/factions/faction_core.json",
+            "game_state/factions/faction_resources.json",
+            "game_state/quests/regular_quests.json",
+            "lore/codex_entries.json"
+        };
+
+        foreach (var path in bootstrapPaths)
+            Assert.False(_fs.FileExists(path));
+
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "mortal_bootstrap_timeout");
+
+        await InvokePrivateTaskAsync(
+            engine,
+            "WriteMortalBootstrapBaselineAsync",
+            rollbackSnapshot,
+            1,
+            4,
+            "Мирон, архивариус",
+            "Город у болот",
+            "Башня архива ночью");
+
+        var request = new TurnRequest
+        {
+            SessionId = "session_mortal_bootstrap_timeout",
+            RequestId = "request_mortal_bootstrap_timeout",
+            TurnNumber = 4,
+            PlayerAction = "first mortal bootstrap",
+            Timestamp = "2026-06-29T08:26:03Z",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Mortal World" }
+        };
+
+        await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollbackSnapshot, "test");
+
+        var manifestJson = await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        Assert.NotNull(manifestJson);
+        var manifest = Assert.IsType<JsonObject>(JsonNode.Parse(manifestJson!)!);
+        var files = Assert.IsType<JsonObject>(manifest["files"]);
+        var rollbackBaselineFiles = Assert.IsType<JsonArray>(manifest["rollbackBaselineFiles"]);
+        var rollbackBaselineSet = rollbackBaselineFiles
+            .Select(node => node?.GetValue<string>() ?? string.Empty)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var path in bootstrapPaths)
+        {
+            Assert.True(files.ContainsKey(path), path);
+            Assert.DoesNotContain(path, rollbackBaselineSet);
+        }
+
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """{ "locationId": "gm_mutated_before_timeout" }""");
+
+        await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", rollbackSnapshot);
+
+        foreach (var path in bootstrapPaths)
+            Assert.False(_fs.FileExists(path), path);
+    }
+
+    [Fact]
     public async Task CreateCanonicalBaselineSnapshotAsync_AbsentSourceOfLightPending_IsNotRollbackBaseline()
     {
         var engine = CreateGameEngine();
@@ -3787,6 +5074,39 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 ? ' '
                 : char.ToLowerInvariant(key.ToString()[0]);
         return new ConsoleKeyInfo(keyChar, key, shift: false, alt: false, control: false);
+    }
+
+    private static async Task<AgentConsoleSnapshot> WaitForAgentConsoleSnapshotAsync(
+        AgentConsoleStateStore store,
+        string screenId)
+    {
+        var deadline = DateTime.UtcNow.AddSeconds(2);
+        while (DateTime.UtcNow < deadline)
+        {
+            var snapshot = store.GetSnapshot();
+            if (snapshot != null && string.Equals(snapshot.ScreenId, screenId, StringComparison.OrdinalIgnoreCase))
+                return snapshot;
+
+            await Task.Delay(25);
+        }
+
+        throw new TimeoutException($"Agent Console snapshot '{screenId}' was not published.");
+    }
+
+    private async Task<TurnRequest> WaitForTurnRequestAsync()
+    {
+        var deadline = DateTime.UtcNow.AddSeconds(5);
+        while (DateTime.UtcNow < deadline)
+        {
+            var json = await _fs.ReadFileAsync("input/turn_request.json");
+            if (!string.IsNullOrWhiteSpace(json))
+                return JsonSerializer.Deserialize<TurnRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
+                       ?? throw new InvalidOperationException("turn_request.json could not be deserialized.");
+
+            await Task.Delay(25);
+        }
+
+        throw new TimeoutException("input/turn_request.json was not created.");
     }
 
     private sealed class QueuedConsoleInputSource : IConsoleInputSource

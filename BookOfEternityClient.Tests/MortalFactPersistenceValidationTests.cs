@@ -79,6 +79,276 @@ public sealed partial class GuardianSystemRegressionTests
     }
 
     [Fact]
+    public async Task AcceptedTurnReasoning_MortalPlayerCharacterFromScenarioCoreDoesNotRequireNpcPersistence()
+    {
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await WriteRawAsync("game_state/control/next_life_scenario_core.json", """
+        {
+          "characterDescription": "Молодая дворянка-маг Лира Вальмонт: осторожная, образованная, с талантом к руническим следам.",
+          "worldDescription": "Тёмное фэнтези позднего средневековья.",
+          "circumstances": "Лира просыпается в семейных покоях."
+        }
+        """);
+        _fs.DeleteFile("game_state/npcs/npc_core.json");
+        await WriteRawAsync("output/debug_logs.json", """
+        {
+          "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Scene-local\n- Релевантные акторы: Лира Вальмонт\n- Почему они релевантны: Это текущий герой игрока, чьи решения определяют сцену.\n- Акторы вне охвата: слуги дома Вальмонт\n- Почему они вне охвата: Они пока не появляются в сцене.\n\n## Размышления акторов\n### Лира Вальмонт\n- Ситуация: Лира просыпается и видит перчатку и письмо.\n- Мысли: Она осторожна и пытается скрыть страх.\n- Действия: Она ещё не выбрала, что исследовать первым.\n",
+          "timestamp": "2026-06-29T12:00:00Z"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_relevant_actor_missing_persistence", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actor, "Лира Вальмонт", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task AcceptedTurnReasoning_MortalPlayerCharacterFromScenarioCoreAssertionsDoesNotRequireNpcPersistence()
+    {
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await WriteRawAsync("game_state/control/next_life_scenario_core.json", """
+        {
+          "scenarioCoreAssertions": [
+            {
+              "category": "identity_anchor",
+              "value": "Молодая дворянка-маг Лира Вальмонт: осторожная, образованная, с талантом к руническим следам."
+            },
+            {
+              "category": "world_anchor",
+              "value": "Тёмное фэнтези позднего средневековья."
+            }
+          ]
+        }
+        """);
+        _fs.DeleteFile("game_state/npcs/npc_core.json");
+        await WriteRawAsync("output/debug_logs.json", """
+        {
+          "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Scene-local\n- Релевантные акторы: Лира Вальмонт\n- Почему они релевантны: Это текущий герой игрока, чьи решения определяют сцену.\n- Акторы вне охвата: слуги дома Вальмонт\n- Почему они вне охвата: Они пока не появляются в сцене.\n\n## Размышления акторов\n### Лира Вальмонт\n- Ситуация: Лира просыпается и видит перчатку и письмо.\n- Мысли: Она осторожна и пытается скрыть страх.\n- Действия: Она ещё не выбрала, что исследовать первым.\n",
+          "timestamp": "2026-06-29T12:00:00Z"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_relevant_actor_missing_persistence", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actor, "Лира Вальмонт", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task AcceptedTurnReasoning_MortalPlayerCharacterIntroducedBySingleNamePhraseDoesNotRequireNpcPersistence()
+    {
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await WriteRawAsync("game_state/control/next_life_scenario_core.json", """
+        {
+          "scenarioCoreAssertions": [
+            {
+              "category": "identity_anchor",
+              "value": "Молодая архивистка по имени Марена, выпускница портовой семинарии, привыкшая работать с запретными печатями."
+            },
+            {
+              "category": "world_anchor",
+              "value": "Позднесредневековый город-государство у холодного моря."
+            }
+          ]
+        }
+        """);
+        _fs.DeleteFile("game_state/npcs/npc_core.json");
+        await WriteRawAsync("output/debug_logs.json", """
+        {
+          "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Scene-local\n- Релевантные акторы: Марена\n- Почему они релевантны: Марена является текущей героиней игрока, через чьи действия открывается сцена.\n- Акторы вне охвата: голоса за дверью\n- Почему они вне охвата: Они пока не присутствуют в комнате и не получают структурированных обновлений.\n\n## Размышления акторов\n### Марена\n- Ситуация: Марена приходит в себя за архивным столом и видит тёмную печать.\n- Мысли: Она пытается понять, кто оставил записку.\n- Действия: Она ещё не выбрала, что исследовать первым.\n",
+          "timestamp": "2026-06-29T12:00:00Z"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_relevant_actor_missing_persistence", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actor, "Марена", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task AcceptedTurnReasoning_MortalPlayerCharacterParentheticalAnnotationMatchesPlayerAliasAndBlock()
+    {
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await WriteRawAsync("game_state/control/next_life_scenario_core.json", """
+        {
+          "scenarioCoreAssertions": [
+            {
+              "category": "identity_anchor",
+              "value": "Молодая дворянка-маг Лира Вальмонт: осторожная, образованная, с талантом к руническим следам."
+            }
+          ]
+        }
+        """);
+        _fs.DeleteFile("game_state/npcs/npc_core.json");
+        await WriteRawAsync("output/debug_logs.json", """
+        {
+          "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Scene-local\n- Релевантные акторы: Лира Вальмонт (player character), Дом Вальмонт\n- Почему они релевантны: Лира является текущим героем игрока, а Дом Вальмонт задаёт социальный риск сцены.\n- Акторы вне охвата: слуги дома Вальмонт\n- Почему они вне охвата: Они пока не появляются в сцене.\n\n## Размышления акторов\n### Лира Вальмонт\n- Ситуация: Лира просыпается и видит перчатку и письмо.\n- Мысли: Она осторожна и пытается скрыть страх.\n- Действия: Она ещё не выбрала, что исследовать первым.\n\n### Дом Вальмонт\n- Ситуация: Дом Вальмонт остаётся фоном сцены.\n- Мысли: Фракция не мыслит как персонаж, но её давление ощущается.\n- Действия: Дом пока не предпринимает прямого действия.\n",
+          "timestamp": "2026-06-29T12:00:00Z"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "missing_actor_block", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actor, "Лира Вальмонт (player character)", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_relevant_actor_missing_persistence", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actor, "Лира Вальмонт (player character)", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task AcceptedTurnReasoning_MortalPlayerCharacterRussianParentheticalDoesNotRequireNpcPersistence()
+    {
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        _fs.DeleteFile("game_state/npcs/npc_core.json");
+        await WriteRawAsync("output/debug_logs.json", """
+        {
+          "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Scene-local\n- Релевантные акторы: Юная дворянка-мага (персонаж игрока)\n- Почему они релевантны: Это текущая героиня игрока, через чьи решения открывается стартовая сцена.\n- Акторы вне охвата: слуги поместья\n- Почему они вне охвата: Они пока не появляются в комнате и не получают структурированных обновлений.\n\n## Размышления акторов\n### Юная дворянка-мага\n- Ситуация: Героиня просыпается в родовой спальне и видит письмо и перчатку.\n- Мысли: Она пытается сохранить самообладание.\n- Действия: Она ещё выбирает, что исследовать первым.\n",
+          "timestamp": "2026-07-02T12:00:00Z"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_relevant_actor_missing_persistence", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actor, "Юная дворянка-мага (персонаж игрока)", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task AcceptedTurnReasoning_MortalGenericPlayerCharacterMarkerDoesNotRequireNpcPersistence()
+    {
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        _fs.DeleteFile("game_state/npcs/npc_core.json");
+        await WriteRawAsync("output/debug_logs.json", """
+        {
+          "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: player character, Пристав церковного суда\n- Why relevant: The player character is the current protagonist, while the bailiff speaks behind the door.\n- Actors outside scope: archive staff\n- Why outside scope: They are background only.\n\n## Reasoning\n### player character\n- Situation: The protagonist wakes at the archive table.\n- Thoughts: She tries to understand who left the seal.\n- Actions: She has not chosen a response yet.\n\n### Пристав церковного суда\n- Текущая локация: Коридор Дома Печатей.\n- Ситуация: Пристав требует документы до полудня.\n- Мысли: Он хочет получить бумаги первым.\n- Действия: Он давит на дверь и спорит с гильдейцем.\n",
+          "timestamp": "2026-07-02T12:00:00Z"
+        }
+        """);
+        await WriteRawAsync("game_state/npcs/npc_core.json", """
+        {
+          "NPCsInScene": [
+            {
+              "npcId": "npc_church_bailiff",
+              "name": "Пристав церковного суда",
+              "role": "Пристав",
+              "currentLocationId": "seal_house_corridor"
+            }
+          ]
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_relevant_actor_missing_persistence", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actor, "player character", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task AcceptedTurnReasoning_MortalRelevantFactionWithPersistenceDoesNotRequireNpcPersistence()
+    {
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await WriteRawAsync("game_state/factions/faction_core.json", """
+        {
+          "factions": [
+            {
+              "factionId": "faction_house_valmont",
+              "name": "Дом Вальмонт",
+              "displayName": "Дом Вальмонт",
+              "description": "Дворянский дом с архивной властью и руническими тайнами.",
+              "status": "active",
+              "visibility": "known",
+              "developmentArchetype": "noble_house",
+              "level": 1,
+              "experience": 0,
+              "experienceForNextLevel": 100,
+              "isPlayerFaction": false,
+              "isPlayerMember": true,
+              "powerProfile": {},
+              "resources": { "metaResources": [], "strategicGoods": [] },
+              "ranks": {},
+              "rankBranches": [],
+              "relations": [],
+              "projects": [],
+              "chronicle": [],
+              "customStates": []
+            }
+          ]
+        }
+        """);
+        _fs.DeleteFile("game_state/npcs/npc_core.json");
+        await WriteRawAsync("output/debug_logs.json", """
+        {
+          "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Mixed\n- Релевантные акторы: Дом Вальмонт\n- Почему они релевантны: Дом Вальмонт задаёт социальный риск сцены, доступ к архиву и последствия письма.\n- Акторы вне охвата: нет\n- Почему они вне охвата: Других действующих сил нет.\n\n## Размышления акторов\n### Дом Вальмонт\n- Ситуация: Дом пытается удержать тайну письма внутри семьи.\n- Мысли: Фракция не мыслит как человек, но её интересы давят на сцену.\n- Действия: Давление дома проявляется через охрану архива и семейные запреты.\n",
+          "timestamp": "2026-06-29T12:00:00Z"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_relevant_actor_missing_persistence", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actor, "Дом Вальмонт", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task AcceptedTurnReasoning_ActorBlockMatchesHarmlessTrailingPunctuation()
     {
         await WriteRawAsync("game_state/meta/soul_state.json", """

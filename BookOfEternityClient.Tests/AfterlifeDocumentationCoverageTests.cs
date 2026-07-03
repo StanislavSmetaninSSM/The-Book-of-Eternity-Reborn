@@ -1038,6 +1038,10 @@ public sealed class AfterlifeDocumentationCoverageTests
         foreach (var requiredTerm in new[]
         {
             "pendingGuardianCreation",
+            "remove `pendingGuardianCreation`",
+            "do not delete `pendingGuardianCreation` without materializing",
+            "Fresh New Game system Guardian seed",
+            "GM narrates the first meeting instead of materializing",
             "system_preset",
             "sourcePreset",
             "guardian_forced",

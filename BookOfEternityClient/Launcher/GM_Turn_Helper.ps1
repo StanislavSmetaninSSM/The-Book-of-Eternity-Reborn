@@ -626,6 +626,168 @@ function Assert-BoeNoRawMortalWorldProfileMutations {
     throw "$Operation blocked: raw wrong-realm Mortal World profile mutations detected while currentRealm is '$realm'. Restore or remove these changes before completing the turn: $details"
 }
 
+function Test-BoeFilesModifiedContainsPath {
+    param(
+        [AllowNull()]
+        [string[]]$FilesModified,
+
+        [Parameter(Mandatory = $true)]
+        [string]$RelativePath
+    )
+
+    $target = Normalize-BoeRelativePath -RelativePath $RelativePath
+    foreach ($entry in @($FilesModified)) {
+        $policyPath = Get-BoePolicyRelativePath -Path $entry
+        if ([string]::Equals($policyPath, $target, [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $true
+        }
+    }
+
+    return $false
+}
+
+function Test-BoeGuardianLooksLikeSystemPreset {
+    param(
+        [AllowNull()]
+        [object]$Guardian
+    )
+
+    if ($null -eq $Guardian) {
+        return $false
+    }
+
+    $originType = Get-BoeJsonValue -Object $Guardian -Names @("originType")
+    if ($null -ne $originType -and [string]::Equals([string]$originType, "system_preset", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $true
+    }
+
+    $sourcePreset = Get-BoeJsonValue -Object $Guardian -Names @("sourcePreset")
+    if ($null -eq $sourcePreset) {
+        return $false
+    }
+
+    $presetId = Get-BoeJsonValue -Object $sourcePreset -Names @("presetId")
+    return ![string]::IsNullOrWhiteSpace([string]$presetId)
+}
+
+function Test-BoeGuardianRootLooksLikeClientOwnedSystemSeed {
+    param(
+        [AllowNull()]
+        [object]$Root
+    )
+
+    if ($null -eq $Root) {
+        return $false
+    }
+
+    $pending = Get-BoeJsonValue -Object $Root -Names @("pendingGuardianCreation")
+    if ($null -ne $pending) {
+        return $false
+    }
+
+    $activeGuardian = Get-BoeJsonValue -Object $Root -Names @("activeGuardian")
+    if (Test-BoeGuardianLooksLikeSystemPreset -Guardian $activeGuardian) {
+        return $true
+    }
+
+    foreach ($guardian in @(Get-BoeJsonArrayItems -Value (Get-BoeJsonValue -Object $Root -Names @("guardians")))) {
+        if (Test-BoeGuardianLooksLikeSystemPreset -Guardian $guardian) {
+            return $true
+        }
+    }
+
+    return $false
+}
+
+function Test-BoeTurnHasAuthorizedGuardianMutation {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$TurnRequest
+    )
+
+    $playerAction = [string](Get-BoeJsonValue -Object $TurnRequest -Names @("playerAction") -Default "")
+    foreach ($marker in @(
+        "[SYSTEM_GUARDIAN_ATTRACTION]",
+        "[PLAYER_GUARDIAN_FOUNDATION]",
+        "[GUARDIAN_TRADE_REQUEST]",
+        "[CHAOS_SEA_TRAVEL]",
+        "[GUARDIAN_PROVOCATION]",
+        "UpdateGuardians",
+        "processGacha",
+        "startGuardianProjects",
+        "completeGuardianProjects",
+        "guardianThoughtJournalUpdates",
+        "guardianSocialJournalUpdates",
+        "guardianPowerEvents"
+    )) {
+        if ($playerAction.IndexOf($marker, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
+            return $true
+        }
+    }
+
+    foreach ($controlPath in @(
+        "game_state/control/system_guardian_attraction.json",
+        "game_state/control/pending_player_guardian_foundation.json",
+        "game_state/control/pending_guardian_trade_request.json"
+    )) {
+        $fullPath = Resolve-BoeSessionPath -RelativePath $controlPath
+        if (Test-Path -LiteralPath $fullPath) {
+            return $true
+        }
+    }
+
+    return $false
+}
+
+function Assert-BoeNoUnauthorizedSystemGuardianBootstrapMutation {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$TurnRequest,
+
+        [AllowNull()]
+        [string[]]$FilesModified
+    )
+
+    $turnNumber = [int](Get-BoeJsonValue -Object $TurnRequest -Names @("turnNumber") -Default 0)
+    if ($turnNumber -ne 1 -or !(Test-BoeAfterlifeRealm)) {
+        return
+    }
+
+    $snapshotPath = Resolve-BoeSessionPath -RelativePath "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json"
+    if (!(Test-Path -LiteralPath $snapshotPath)) {
+        return
+    }
+
+    try {
+        $snapshotRoot = Get-Content -LiteralPath $snapshotPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        if (!(Test-BoeGuardianRootLooksLikeClientOwnedSystemSeed -Root $snapshotRoot)) {
+            return
+        }
+    }
+    catch {
+        return
+    }
+
+    if (Test-BoeTurnHasAuthorizedGuardianMutation -TurnRequest $TurnRequest) {
+        return
+    }
+
+    if (Test-BoeFilesModifiedContainsPath -FilesModified $FilesModified -RelativePath "game_state/meta/guardians.json") {
+        throw "Complete-BoeTurn blocked: first Chaos Sea system Guardian bootstrap treats game_state/meta/guardians.json as a client-owned Guardian mirror. Do not list guardians.json in FilesModified unless the turn has an authorized Guardian mutation contract."
+    }
+
+    $currentPath = Resolve-BoeSessionPath -RelativePath "game_state/meta/guardians.json"
+    if (!(Test-Path -LiteralPath $currentPath)) {
+        throw "Complete-BoeTurn blocked: first Chaos Sea system Guardian bootstrap deleted game_state/meta/guardians.json. Restore the client-owned system Guardian mirror from pending_turn_snapshot before completing the turn."
+    }
+
+    $currentSignature = Get-BoeComparableFileSignature -Path $currentPath
+    $snapshotSignature = Get-BoeComparableFileSignature -Path $snapshotPath
+    if (![string]::Equals($currentSignature, $snapshotSignature, [System.StringComparison]::Ordinal)) {
+        throw "Complete-BoeTurn blocked: first Chaos Sea system Guardian bootstrap changed game_state/meta/guardians.json without an authorized Guardian mutation contract. Restore the client-owned system Guardian mirror from pending_turn_snapshot and persist first-meeting memory through afterlife_chronicles instead."
+    }
+}
+
 function Write-BoeJson {
     param(
         [Parameter(Mandatory = $true)]
@@ -699,9 +861,9 @@ function Complete-BoeTurn {
 
     Assert-BoeGmFilesModifiedEntries -FilesModified $FilesModified
     Assert-BoeNoRawMortalWorldProfileMutations -Operation "Complete-BoeTurn"
-
     $turn = Get-BoeCurrentTurnRequest
     Assert-BoeCurrentPendingSnapshotContext -TurnRequest $turn
+    Assert-BoeNoUnauthorizedSystemGuardianBootstrapMutation -TurnRequest $turn -FilesModified $FilesModified
     $signal = [ordered]@{
         sessionId = [string]$turn.sessionId
         requestId = [string]$turn.requestId

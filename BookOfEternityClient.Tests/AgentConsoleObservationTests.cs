@@ -358,6 +358,7 @@ public sealed class AgentConsoleObservationTests
             "POST /api/agent-console/key",
             "POST /api/agent-console/text",
             "POST /api/agent-console/action",
+            "POST /api/agent-console/return-to-game-loop-step",
             "Bearer token"
         })
         {

@@ -194,21 +194,6 @@
       "reason": "Legacy educational block contains multiple standalone JSON objects in one snippet."
     },
     {
-      "file": "E_Block_10.txt",
-      "line": 461,
-      "reason": "Legacy educational block lists alternative property fragments, not one JSON document."
-    },
-    {
-      "file": "E_Block_10.txt",
-      "line": 578,
-      "reason": "Legacy educational block contains several separate examples in one snippet."
-    },
-    {
-      "file": "E_Block_10.txt",
-      "line": 1002,
-      "reason": "Legacy educational block lists alternative item slot fragments, not one JSON document."
-    },
-    {
       "file": "E_Block_19.A.txt",
       "line": 100,
       "reason": "Legacy invalid-pattern block uses ellipsis and partial fragments."

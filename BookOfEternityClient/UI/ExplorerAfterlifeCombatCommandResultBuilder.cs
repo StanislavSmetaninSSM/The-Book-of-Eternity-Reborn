@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -9,6 +10,28 @@ namespace BookOfEternityClient.UI;
 public static class ExplorerAfterlifeCombatCommandResultBuilder
 {
     private const string SoulStatePath = "game_state/meta/soul_state.json";
+
+    private static readonly (string Token, string Replacement)[] SpiritualPlayerTextTokenReplacements =
+    [
+        ("pressure", "давление"),
+        ("guard", "защита"),
+        ("counter", "контрприём"),
+        ("maneuver", "манёвр"),
+        ("binding", "оковы"),
+        ("force_binding", "силовые оковы"),
+        ("break_binding", "разрыв оков"),
+        ("recover_spiritual_power", "сбор Средоточия"),
+        ("incarnation_resistance", "сопротивление воплощению"),
+        ("champion_coordination", "координация чемпиона"),
+        ("tempoAdvantage", "темповое преимущество"),
+        ("Enlightenment", "Просветление"),
+        ("Radiance", "Сияние"),
+        ("spiritFocus", "Средоточие Души"),
+        ("strain", "напряжение"),
+        ("controlState", "контроль / оковы"),
+        ("afterlifeCombatProfile", "духовный боевой профиль"),
+        ("soul_state", "состояние души")
+    ];
 
     private enum CommandKind
     {
@@ -1061,7 +1084,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 : DetailAction(
                     "afterlife-chronicle-detail-" + ToActionIdPart(selector),
                     "Открыть хронику",
-                    BuildChronicleDetailCommand(selector))
+                    BuildChronicleDetailCommand(ChroniclePlayerSelector(chronicle, selector)))
         };
     }
 
@@ -1501,16 +1524,23 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             CollectionLabel = $"{exchangeLog.Count} обменов",
             Collapsible = exchangeLog.Count > 4,
             InitiallyExpanded = true,
-            Cards = exchangeLog.Select(exchange => BuildSpiritualExchangeCard(exchange, detailCommandBuilder)).ToList()
+            Cards = exchangeLog
+                .Select((exchange, index) => BuildSpiritualExchangeCard(
+                    exchange,
+                    detailCommandBuilder,
+                    publicSelector: (index + 1).ToString()))
+                .ToList()
         };
 
     private static UiEntityCard BuildSpiritualExchangeCard(
         JsonObject exchange,
         Func<string, string> detailCommandBuilder,
         string actionIdPrefix = "spiritual-conflict-exchange-detail-",
-        string actionLabel = "Открыть обмен")
+        string actionLabel = "Открыть обмен",
+        string? publicSelector = null)
     {
         var selector = SpiritualExchangeSelector(exchange);
+        var actionSelector = string.IsNullOrWhiteSpace(publicSelector) ? selector : publicSelector;
         var title = SpiritualExchangeDisplayName(exchange, selector);
         var summary = SafePlayerText(
             FirstNonEmpty(GetString(exchange, "resultSummary", ""), GetString(exchange, "summary", ""), DescribeOutcome(GetString(exchange, "outcome", "?"))),
@@ -1531,12 +1561,12 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 new UiEntityFact { Label = "Кубики", Value = DescribeDice(exchange["diceAudit"] as JsonObject) },
                 new UiEntityFact { Label = "Награда", Value = DescribeReward(exchange["rewardAudit"] as JsonObject) }
             ],
-            PrimaryAction = string.IsNullOrWhiteSpace(selector)
+            PrimaryAction = string.IsNullOrWhiteSpace(actionSelector)
                 ? null
                 : DetailAction(
-                    actionIdPrefix + ToActionIdPart(selector),
+                    actionIdPrefix + ToActionIdPart(actionSelector),
                     actionLabel,
-                    detailCommandBuilder(selector))
+                    detailCommandBuilder(actionSelector))
         };
     }
 
@@ -1739,11 +1769,12 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             Collapsible = exchangeLog.Count > 4,
             InitiallyExpanded = true,
             Cards = exchangeLog
-                .Select(exchange => BuildSpiritualExchangeCard(
+                .Select((exchange, index) => BuildSpiritualExchangeCard(
                     exchange,
                     BuildCombatLogExchangeDetailCommand,
                     "spiritual-combat-log-exchange-detail-",
-                    "Открыть запись боя"))
+                    "Открыть запись боя",
+                    (index + 1).ToString()))
                 .ToList()
         };
 
@@ -1758,12 +1789,13 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             CollectionLabel = $"{recent.Count} итогов",
             Collapsible = recent.Count > 4,
             InitiallyExpanded = true,
-            Cards = recent.Select(BuildRecentConflictCard).ToList()
+            Cards = recent.Select((conflict, index) => BuildRecentConflictCard(conflict, (index + 1).ToString())).ToList()
         };
 
-    private static UiEntityCard BuildRecentConflictCard(JsonObject conflict)
+    private static UiEntityCard BuildRecentConflictCard(JsonObject conflict, string? publicSelector = null)
     {
         var selector = RecentConflictSelector(conflict);
+        var actionSelector = string.IsNullOrWhiteSpace(publicSelector) ? selector : publicSelector;
         var title = RecentConflictDisplayName(conflict, selector);
         var summary = SafePlayerText(
             FirstNonEmpty(GetString(conflict, "resolutionSummary", ""), DescribePlayerOutcome(GetString(conflict, "playerOutcome", GetString(conflict, "outcome", "?")))),
@@ -1783,12 +1815,12 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 new UiEntityFact { Label = "Ход", Value = GetNumberOrString(conflict, "resolvedAtTurn", "?") },
                 new UiEntityFact { Label = "Награда", Value = DescribeReward(conflict["rewardAudit"] as JsonObject) }
             ],
-            PrimaryAction = string.IsNullOrWhiteSpace(selector)
+            PrimaryAction = string.IsNullOrWhiteSpace(actionSelector)
                 ? null
                 : DetailAction(
-                    "spiritual-combat-log-recent-detail-" + ToActionIdPart(selector),
+                    "spiritual-combat-log-recent-detail-" + ToActionIdPart(actionSelector),
                     "Открыть итог",
-                    BuildCombatLogRecentDetailCommand(selector))
+                    BuildCombatLogRecentDetailCommand(actionSelector))
         };
     }
 
@@ -1941,7 +1973,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 {
                     Id = "upgrade_target",
                     Prompt = "Что прокачать",
-                    Placeholder = "pressure / guard / counter / maneuver / binding / spirit_focus"
+                    Placeholder = "Давление / Защита / Контрприём / Манёвр / Оковы / Средоточие Души"
                 },
                 new UiSelectionPrompt
                 {
@@ -2061,7 +2093,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         if (combatEffect != null)
         {
-            AddSpecialArtCombatFact(facts, "Триггер", DescribeArt(GetString(combatEffect, "trigger", "")));
+            AddSpecialArtCombatFact(facts, "Триггер", DescribeSpecialArtTrigger(GetString(combatEffect, "trigger", "")));
             AddSpecialArtCombatFact(facts, "Выигрыш", DescribeSpecialArtPayoff(GetString(combatEffect, "allowedPayoff", "")));
             AddSpecialArtCombatFact(facts, "Предел", DescribeSpecialArtLimit(GetString(combatEffect, "limit", "")));
         }
@@ -2171,6 +2203,17 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             _ => SafePlayerText(value, string.Empty)
         };
 
+    private static string DescribeSpecialArtTrigger(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var describedArt = DescribeArt(value);
+        return string.Equals(describedArt, value, StringComparison.OrdinalIgnoreCase)
+            ? SafePlayerText(value, string.Empty)
+            : describedArt;
+    }
+
     private static string DescribeSpecialArtTitle(JsonObject art)
     {
         var title = GetString(art, "displayName", "");
@@ -2246,7 +2289,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             BuildAfterlifeChronicleDetailDossier(chronicle, name)
         };
 
-        return Completed(command, blocks, BuildOverviewAction("afterlife-chronicles-overview", "К обзору хроник", "/afterlife_chronicles"));
+        return Completed(command, blocks, BuildOverviewAction("afterlife-chronicles-overview", "К обзору хроник", "/хроники_посмертия"));
     }
 
     private static ExplorerCommandResult BuildInboxNotificationDetail(
@@ -2410,7 +2453,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             yield return DetailAction(
                 "afterlife-chronicle-detail-" + ToActionIdPart(selector),
                 $"Подробно: {ChronicleDisplayName(chronicle, selector)}",
-                BuildChronicleDetailCommand(selector));
+                BuildChronicleDetailCommand(ChroniclePlayerSelector(chronicle, selector)));
         }
     }
 
@@ -2561,16 +2604,18 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
     private static IEnumerable<UiAction> BuildConflictExchangeActions(IReadOnlyList<JsonObject> exchanges)
     {
-        foreach (var exchange in exchanges)
+        for (var index = 0; index < exchanges.Count; index++)
         {
+            var exchange = exchanges[index];
             var selector = SpiritualExchangeSelector(exchange);
             if (string.IsNullOrWhiteSpace(selector))
                 continue;
 
+            var actionSelector = (index + 1).ToString();
             yield return DetailAction(
-                "spiritual-conflict-exchange-detail-" + ToActionIdPart(selector),
+                "spiritual-conflict-exchange-detail-" + ToActionIdPart(actionSelector),
                 $"Осмотреть обмен: {SpiritualExchangeDisplayName(exchange, selector)}",
-                BuildConflictExchangeDetailCommand(selector));
+                BuildConflictExchangeDetailCommand(actionSelector));
         }
     }
 
@@ -2578,28 +2623,32 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         IReadOnlyList<JsonObject> exchanges,
         IReadOnlyList<JsonObject> recentConflicts)
     {
-        foreach (var exchange in exchanges)
+        for (var index = 0; index < exchanges.Count; index++)
         {
+            var exchange = exchanges[index];
             var selector = SpiritualExchangeSelector(exchange);
             if (string.IsNullOrWhiteSpace(selector))
                 continue;
 
+            var actionSelector = (index + 1).ToString();
             yield return DetailAction(
-                "spiritual-combat-log-exchange-detail-" + ToActionIdPart(selector),
+                "spiritual-combat-log-exchange-detail-" + ToActionIdPart(actionSelector),
                 $"Разобрать запись боя: {SpiritualExchangeDisplayName(exchange, selector)}",
-                BuildCombatLogExchangeDetailCommand(selector));
+                BuildCombatLogExchangeDetailCommand(actionSelector));
         }
 
-        foreach (var conflict in recentConflicts)
+        for (var index = 0; index < recentConflicts.Count; index++)
         {
+            var conflict = recentConflicts[index];
             var selector = RecentConflictSelector(conflict);
             if (string.IsNullOrWhiteSpace(selector))
                 continue;
 
+            var actionSelector = (index + 1).ToString();
             yield return DetailAction(
-                "spiritual-combat-log-recent-detail-" + ToActionIdPart(selector),
+                "spiritual-combat-log-recent-detail-" + ToActionIdPart(actionSelector),
                 $"Разобрать итог: {RecentConflictDisplayName(conflict, selector)}",
-                BuildCombatLogRecentDetailCommand(selector));
+                BuildCombatLogRecentDetailCommand(actionSelector));
         }
     }
 
@@ -2960,11 +3009,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
     private static string DescribeSpecialArtEffect(JsonObject art)
     {
-        var summary = GetString(art, "effectSummary", "эффект не описан");
+        var summary = SafePlayerText(GetString(art, "effectSummary", ""), "эффект не описан");
         var combatEffect = FormatSpecialArtCombatEffect(art["combatEffect"] as JsonObject);
         return string.IsNullOrWhiteSpace(combatEffect)
             ? summary
-            : $"{summary}; {combatEffect}";
+            : $"{summary}. {combatEffect}";
     }
 
     private static string? FormatSpecialArtCombatEffect(JsonObject? combatEffect)
@@ -2973,10 +3022,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             return null;
 
         var parts = new List<string>();
-        var summary = GetString(combatEffect, "summary", "");
-        var trigger = GetString(combatEffect, "trigger", "");
-        var payoff = GetString(combatEffect, "allowedPayoff", "");
-        var limit = GetString(combatEffect, "limit", "");
+        var summary = SafePlayerText(GetString(combatEffect, "summary", ""), string.Empty);
+        var trigger = DescribeSpecialArtTrigger(GetString(combatEffect, "trigger", ""));
+        var payoff = DescribeSpecialArtPayoff(GetString(combatEffect, "allowedPayoff", ""));
+        var limit = DescribeSpecialArtLimit(GetString(combatEffect, "limit", ""));
 
         if (!string.IsNullOrWhiteSpace(summary))
             parts.Add($"Боевой эффект: {summary}");
@@ -2987,7 +3036,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         if (!string.IsNullOrWhiteSpace(limit))
             parts.Add($"предел: {limit}");
 
-        return parts.Count == 0 ? null : string.Join("; ", parts);
+        return parts.Count == 0 ? null : string.Join(". ", parts);
     }
 
     private static string DescribeFateCards(JsonArray? fateCards, bool includeHiddenDiagnostics)
@@ -3807,7 +3856,24 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             return fallback;
 
         var trimmed = value.Trim();
-        return IsPlayerSafeSpiritualText(trimmed) ? trimmed : fallback;
+        return IsPlayerSafeSpiritualText(trimmed)
+            ? NormalizeSpiritualPlayerText(trimmed)
+            : fallback;
+    }
+
+    private static string NormalizeSpiritualPlayerText(string value)
+    {
+        var result = value;
+        foreach (var (token, replacement) in SpiritualPlayerTextTokenReplacements)
+        {
+            result = Regex.Replace(
+                result,
+                $@"(?<![\p{{L}}\p{{N}}_]){Regex.Escape(token)}(?![\p{{L}}\p{{N}}_])",
+                replacement,
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        }
+
+        return result;
     }
 
     private static bool IsPlayerSafeSpiritualText(string? value)
@@ -4598,11 +4664,14 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             fallback,
             "обмен");
 
-    private static JsonObject? FindSpiritualExchange(IEnumerable<JsonObject> exchanges, string selector)
+    private static JsonObject? FindSpiritualExchange(IReadOnlyList<JsonObject> exchanges, string selector)
     {
         var normalized = NormalizeSelector(selector);
         if (string.IsNullOrWhiteSpace(normalized) || !IsPlayerSafeSpiritualText(normalized))
             return null;
+
+        if (int.TryParse(normalized, out var ordinal) && ordinal >= 1 && ordinal <= exchanges.Count)
+            return exchanges[ordinal - 1];
 
         return exchanges.FirstOrDefault(exchange =>
             SelectorMatches(
@@ -4673,11 +4742,14 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             char.IsAsciiDigit(ch));
     }
 
-    private static JsonObject? FindRecentConflict(IEnumerable<JsonObject> conflicts, string selector)
+    private static JsonObject? FindRecentConflict(IReadOnlyList<JsonObject> conflicts, string selector)
     {
         var normalized = NormalizeSelector(selector);
         if (string.IsNullOrWhiteSpace(normalized) || !IsPlayerSafeSpiritualText(normalized))
             return null;
+
+        if (int.TryParse(normalized, out var ordinal) && ordinal >= 1 && ordinal <= conflicts.Count)
+            return conflicts[ordinal - 1];
 
         return conflicts.FirstOrDefault(conflict =>
             SelectorMatches(
@@ -4809,6 +4881,9 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     private static string ChronicleDisplayName(JsonObject chronicle, string fallback) =>
         FirstNonEmpty(SafeChronicleText(GetString(chronicle, "displayName", "")), ChronicleSelector(chronicle), fallback, "хроника");
 
+    private static string ChroniclePlayerSelector(JsonObject chronicle, string fallback) =>
+        FirstNonEmpty(SafeChronicleText(GetString(chronicle, "displayName", "")), fallback);
+
     private static JsonObject? FindChronicle(IEnumerable<JsonObject> chronicles, string selector)
     {
         var normalized = NormalizeSelector(selector);
@@ -4860,7 +4935,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         "/afterlife_threats угроза " + FormatCommandArgument(selector);
 
     private static string BuildChronicleDetailCommand(string selector) =>
-        "/afterlife_chronicles хроника " + FormatCommandArgument(selector);
+        "/хроники_посмертия хроника " + FormatCommandArgument(selector);
 
     private static string BuildInboxNotificationDetailCommand(string notificationId) =>
         "/afterlife_inbox уведомление " + FormatCommandArgument(notificationId);

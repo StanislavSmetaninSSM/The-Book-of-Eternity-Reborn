@@ -195,5 +195,124 @@ public partial class CanonicalStateNormalizer
 
         return false;
     }
+
+    private static bool NormalizeInventoryItemJournalEntries(JsonNode node)
+    {
+        var changed = false;
+
+        if (node is JsonArray array)
+        {
+            foreach (var item in array.OfType<JsonObject>())
+                changed |= NormalizeInventoryItemJournalEntries(item);
+            return changed;
+        }
+
+        if (node is not JsonObject obj)
+            return false;
+
+        changed |= NormalizeInventoryItemJournalEntriesObject(obj);
+
+        foreach (var collectionName in new[] { "items", "entries", "itemJournals", "UpdateInventory" })
+        {
+            if (obj[collectionName] is not JsonArray collection)
+                continue;
+
+            foreach (var item in collection.OfType<JsonObject>())
+                changed |= NormalizeInventoryItemJournalEntriesObject(item);
+        }
+
+        return changed;
+    }
+
+    private static bool NormalizeInventoryItemJournalEntriesObject(JsonObject obj)
+    {
+        var changed = false;
+
+        if (obj["journalEntries"] is JsonArray journalEntries)
+            changed |= NormalizePlayerFacingTurnAnchorsInArray(journalEntries);
+
+        foreach (var fieldName in PlayerFacingItemJournalObjectFields)
+        {
+            if (obj[fieldName] is JsonValue value &&
+                value.TryGetValue<string>(out var text))
+            {
+                var normalized = StripPlayerFacingTurnAnchor(text);
+                if (!string.Equals(text, normalized, StringComparison.Ordinal))
+                {
+                    obj[fieldName] = normalized;
+                    changed = true;
+                }
+            }
+        }
+
+        return changed;
+    }
+
+    private static bool NormalizePlayerFacingTurnAnchorsInArray(JsonArray array)
+    {
+        var changed = false;
+        for (var index = 0; index < array.Count; index++)
+        {
+            if (array[index] is JsonValue value &&
+                value.TryGetValue<string>(out var text))
+            {
+                var normalized = StripPlayerFacingTurnAnchor(text);
+                if (!string.Equals(text, normalized, StringComparison.Ordinal))
+                {
+                    array[index] = normalized;
+                    changed = true;
+                }
+            }
+            else if (array[index] is JsonObject obj)
+            {
+                changed |= NormalizeInventoryItemJournalEntriesObject(obj);
+            }
+        }
+
+        return changed;
+    }
+
+    private static readonly string[] PlayerFacingItemJournalObjectFields =
+    {
+        "event",
+        "description",
+        "text",
+        "content",
+        "entry",
+        "spiritVoice",
+        "magicalResonance",
+        "entryToAppend"
+    };
+
+    private static string StripPlayerFacingTurnAnchor(string text)
+    {
+        var trimmedStart = text.TrimStart();
+        if (!trimmedStart.StartsWith("#[", StringComparison.Ordinal))
+            return text;
+
+        var closeIndex = trimmedStart.IndexOf(']');
+        if (closeIndex <= 2)
+            return text;
+
+        var anchor = trimmedStart[2..closeIndex].Trim();
+        if (anchor.Length == 0)
+            return text;
+
+        var looksLikeTurnAnchor =
+            anchor.All(char.IsDigit) ||
+            anchor.Contains("turn", StringComparison.OrdinalIgnoreCase);
+        if (!looksLikeTurnAnchor)
+            return text;
+
+        var rest = trimmedStart[(closeIndex + 1)..].TrimStart();
+        if (rest.StartsWith(".", StringComparison.Ordinal) ||
+            rest.StartsWith("-", StringComparison.Ordinal) ||
+            rest.StartsWith(":", StringComparison.Ordinal))
+        {
+            return rest[1..].TrimStart();
+        }
+
+        return text;
+    }
 }
 

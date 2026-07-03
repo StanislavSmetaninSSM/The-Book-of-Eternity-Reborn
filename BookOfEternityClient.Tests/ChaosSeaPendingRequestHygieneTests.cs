@@ -3,6 +3,7 @@ using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -450,6 +451,110 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
             issue.Severity == IssueSeverity.Error);
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_MaterializedPendingGuardianKeepsPendingCreation_Fails()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 0,
+          "inkFeathers": { "current": 0, "total": 0 },
+          "soulRelics": { "equipped": [], "stored": [] }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "activeGuardian": {
+            "guardianId": "guardian_selene",
+            "name": "Селена"
+          },
+          "pendingGuardianCreation": {
+            "mode": "freeform",
+            "description": "Селена",
+            "soulName": "Сумрачная Искра"
+          },
+          "guardians": [
+            {
+              "guardianId": "guardian_selene",
+              "name": "Селена"
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "stale_pending_guardian_creation_after_materialization", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PreTurnPendingGuardianCreationRemovedWithoutGuardian_Fails()
+    {
+        const string sessionId = "fresh-bootstrap-session";
+        const string requestId = "fresh-bootstrap-turn";
+        const int turnNumber = 1;
+
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", $$"""
+        {
+          "sessionId": "{{sessionId}}",
+          "requestId": "{{requestId}}",
+          "turnNumber": {{turnNumber}}
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 0,
+          "soulName": "Сумрачная Искра",
+          "inkFeathers": { "current": 0, "total": 0 },
+          "soulRelics": { "equipped": [], "stored": [] }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "activeGuardian": null,
+          "guardians": [],
+          "chaosSeaNavigation": {
+            "currentAbodeId": null,
+            "discoveredAbodes": []
+          }
+        }
+        """);
+
+        await WritePendingTurnSnapshotFileAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 0,
+          "soulName": "Сумрачная Искра",
+          "inkFeathers": { "current": 0, "total": 0 },
+          "soulRelics": { "equipped": [], "stored": [] }
+        }
+        """);
+        await WritePendingTurnSnapshotFileAsync("game_state/meta/guardians.json", """
+        {
+          "activeGuardian": null,
+          "guardians": [],
+          "pendingGuardianCreation": {
+            "mode": "freeform",
+            "description": "Селена",
+            "soulName": "Сумрачная Искра"
+          },
+          "chaosSeaNavigation": {
+            "currentAbodeId": null,
+            "discoveredAbodes": []
+          }
+        }
+        """);
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber,
+            "Душа пробуждается в Море Хаоса и ожидает первого Хранителя.");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "pending_guardian_creation_missing_materialized_guardian", StringComparison.OrdinalIgnoreCase));
+    }
+
     [Theory]
     [InlineData("Chaos Sea")]
     [InlineData("Shining Abode")]
@@ -469,6 +574,54 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "pending_resident_companion_manifestation_afterlife_malformed", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private async Task WritePendingTurnSnapshotFileAsync(string logicalPath, string json)
+    {
+        await _fs.WriteFileAtomicAsync($"game_state/control/pending_turn_snapshot/{logicalPath}", json);
+    }
+
+    private async Task WritePendingTurnSnapshotManifestAsync(
+        string sessionId,
+        string requestId,
+        int turnNumber,
+        string playerAction)
+    {
+        var files = new JsonObject();
+        var snapshotFileHashes = new JsonObject();
+
+        foreach (var logicalPath in new[]
+        {
+            "game_state/meta/soul_state.json",
+            "game_state/meta/guardians.json"
+        })
+        {
+            var snapshotPath = $"game_state/control/pending_turn_snapshot/{logicalPath}";
+            var snapshotJson = await _fs.ReadFileAsync(snapshotPath);
+            Assert.False(string.IsNullOrWhiteSpace(snapshotJson), $"Missing snapshot file for {logicalPath}");
+            files[logicalPath] = snapshotPath;
+            snapshotFileHashes[logicalPath] = PendingTurnSnapshotAuthority.ComputeSha256(snapshotJson);
+        }
+
+        var manifest = new JsonObject
+        {
+            ["sessionId"] = sessionId,
+            ["requestId"] = requestId,
+            ["turnNumber"] = turnNumber,
+            ["requestTimestamp"] = DateTimeOffset.Parse("2026-06-28T00:00:00Z").ToString("O"),
+            ["playerAction"] = playerAction,
+            ["files"] = files,
+            ["snapshotFileHashes"] = snapshotFileHashes,
+            ["clientOwnedValidationHashes"] = new JsonObject(),
+            ["rollbackBackups"] = new JsonObject(),
+            ["rollbackBaselineFiles"] = new JsonArray(),
+            ["sourceLabel"] = "chaos-sea-pending-request-hygiene-tests",
+            ["manifestPayloadHash"] = string.Empty
+        };
+        manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+
+        await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
     private async Task<List<ValidationIssue>> InvokeValidationAsync(string methodName)

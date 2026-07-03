@@ -144,13 +144,134 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
                 $"Action '{request.ActionId}' is disabled on the current screen.");
         }
 
-        if (!TryResolveActionInput(snapshot, action, actionIndex, out var queuedInput, out var resolvedInputKind, out var rejectionCode, out var rejectionMessage))
+        if (!TryResolveActionInput(snapshot, action, actionIndex, out var queuedInputs, out var resolvedInputKind, out var rejectionCode, out var rejectionMessage))
             return Reject(rejectionCode, snapshot.InputKind, snapshot.ScreenId, rejectionMessage);
 
         return TryEnqueue(
-            queuedInput,
+            queuedInputs,
             resolvedInputKind,
             $"Queued action '{request.ActionId}'.",
+            snapshot.ScreenId);
+    }
+
+    public AgentConsoleInputResult TryQueueDefaultAction()
+    {
+        var snapshot = _stateStore.GetSnapshot();
+        if (snapshot is null)
+        {
+            return Reject(
+                AgentConsoleInputRejectionCode.NoSnapshot,
+                null,
+                null,
+                "Cannot queue the current default action because there is no current console snapshot.");
+        }
+
+        if (!snapshot.AwaitingInput)
+        {
+            return Reject(
+                AgentConsoleInputRejectionCode.NotAwaitingInput,
+                snapshot.InputKind,
+                snapshot.ScreenId,
+                $"Cannot queue the current default action because screen '{snapshot.ScreenId}' is not awaiting input.");
+        }
+
+        var actionIndex = FindDefaultActionIndex(snapshot.Actions);
+        if (actionIndex < 0)
+        {
+            return Reject(
+                AgentConsoleInputRejectionCode.ActionMissing,
+                snapshot.InputKind,
+                snapshot.ScreenId,
+                $"Screen '{snapshot.ScreenId}' does not expose an enabled default action.");
+        }
+
+        var action = snapshot.Actions[actionIndex];
+        if (!TryResolveActionInput(
+                snapshot,
+                action,
+                actionIndex,
+                out var queuedInputs,
+                out var resolvedInputKind,
+                out var rejectionCode,
+                out var rejectionMessage))
+        {
+            return Reject(rejectionCode, snapshot.InputKind, snapshot.ScreenId, rejectionMessage);
+        }
+
+        return TryEnqueue(
+            queuedInputs,
+            resolvedInputKind,
+            $"Queued current default action '{action.Id}'.",
+            snapshot.ScreenId);
+    }
+
+    public AgentConsoleInputResult TryQueueReturnToGameLoopStep()
+    {
+        var snapshot = _stateStore.GetSnapshot();
+        if (snapshot is null)
+        {
+            return Reject(
+                AgentConsoleInputRejectionCode.NoSnapshot,
+                null,
+                null,
+                "Cannot queue a return-to-game-loop step because there is no current console snapshot.");
+        }
+
+        if (IsGameLoopSnapshot(snapshot))
+        {
+            return Reject(
+                AgentConsoleInputRejectionCode.InvalidRequest,
+                snapshot.InputKind,
+                snapshot.ScreenId,
+                "Agent Console is already at the game-loop prompt.");
+        }
+
+        if (!IsLocalCommandSnapshot(snapshot))
+        {
+            return Reject(
+                AgentConsoleInputRejectionCode.InvalidRequest,
+                snapshot.InputKind,
+                snapshot.ScreenId,
+                $"Screen '{snapshot.ScreenId}' is not a local command screen that can be safely unwound automatically.");
+        }
+
+        if (!snapshot.AwaitingInput)
+        {
+            return Reject(
+                AgentConsoleInputRejectionCode.NotAwaitingInput,
+                snapshot.InputKind,
+                snapshot.ScreenId,
+                $"Screen '{snapshot.ScreenId}' is not awaiting input.");
+        }
+
+        var action = FindReturnToGameLoopAction(snapshot);
+        if (action is null)
+        {
+            return Reject(
+                AgentConsoleInputRejectionCode.ActionMissing,
+                snapshot.InputKind,
+                snapshot.ScreenId,
+                $"Screen '{snapshot.ScreenId}' does not expose a safe back/close/continue action.");
+        }
+
+        var actionIndex = FindActionIndex(snapshot.Actions, action.Id);
+        if (!TryResolveActionInput(
+                snapshot,
+                action,
+                actionIndex,
+                out var queuedInputs,
+                out var resolvedInputKind,
+                out var rejectionCode,
+                out var rejectionMessage,
+                preferMenuIndexInput: true))
+        {
+            return Reject(rejectionCode, snapshot.InputKind, snapshot.ScreenId, rejectionMessage);
+        }
+
+        return TryEnqueue(
+            queuedInputs,
+            resolvedInputKind,
+            $"Queued return-to-game-loop action '{action.Id}'.",
             snapshot.ScreenId);
     }
 
@@ -210,9 +331,21 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
         AgentConsoleInputKind inputKind,
         string acceptedMessage,
         string? screenId)
+        => TryEnqueue(
+            [queuedInput],
+            inputKind,
+            acceptedMessage,
+            screenId);
+
+    private AgentConsoleInputResult TryEnqueue(
+        IReadOnlyList<QueuedInput> queuedInputs,
+        AgentConsoleInputKind inputKind,
+        string acceptedMessage,
+        string? screenId)
     {
         AgentConsoleInputRejectionCode rejectionCode = AgentConsoleInputRejectionCode.None;
         string? rejectionMessage = null;
+        var queuedInputKind = queuedInputs.Count > 0 ? queuedInputs[0].Kind : QueuedInputKind.Key;
 
         lock (_sync)
         {
@@ -223,12 +356,22 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
                     ? "Agent Console live input source is shut down."
                     : $"Agent Console live input source is shut down: {_shutdownReason}";
             }
-            else if (_queue.Count >= _maxQueueLength)
+            else if (queuedInputs.Count == 0)
+            {
+                rejectionCode = AgentConsoleInputRejectionCode.InvalidRequest;
+                rejectionMessage = "Agent Console action resolved to no input.";
+            }
+            else if (_queue.Count + queuedInputs.Count > _maxQueueLength)
             {
                 rejectionCode = AgentConsoleInputRejectionCode.QueueFull;
                 rejectionMessage = $"Agent Console live input queue is full at {_maxQueueLength} item(s).";
             }
-            else if (_activeReadKind.HasValue && _activeReadKind.Value != queuedInput.Kind)
+            else if (queuedInputs.Any(input => input.Kind != queuedInputKind))
+            {
+                rejectionCode = AgentConsoleInputRejectionCode.InvalidRequest;
+                rejectionMessage = "Agent Console cannot queue mixed input kinds for one action.";
+            }
+            else if (_activeReadKind.HasValue && _activeReadKind.Value != queuedInputKind)
             {
                 rejectionCode = AgentConsoleInputRejectionCode.InputKindMismatch;
                 var expected = _activeReadInputKind ?? AgentConsoleInputKind.None;
@@ -236,13 +379,14 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
                     $"Agent Console is waiting for {expected.ToString().ToLowerInvariant()} input; " +
                     $"{inputKind.ToString().ToLowerInvariant()} input cannot be queued until that read completes.";
             }
-            else if (!CanQueueForCurrentSnapshot(queuedInput.Kind, inputKind, out rejectionCode, out rejectionMessage))
+            else if (!CanQueueForCurrentSnapshot(queuedInputKind, inputKind, out rejectionCode, out rejectionMessage))
             {
                 // Rejection details are provided by the helper.
             }
             else
             {
-                _queue.Enqueue(queuedInput);
+                foreach (var queuedInput in queuedInputs)
+                    _queue.Enqueue(queuedInput);
                 Monitor.PulseAll(_sync);
             }
         }
@@ -359,6 +503,23 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
         if (snapshot is not { AwaitingInput: true })
             return;
 
+        if (string.Equals(snapshot.ScreenId, "game-loop", StringComparison.Ordinal))
+        {
+            var now = DateTimeOffset.UtcNow;
+            _stateStore.UpdateSnapshot(new AgentConsoleSnapshot
+            {
+                ScreenId = "turn-preparing",
+                Mode = AgentConsoleMode.Loading,
+                Title = "Ход принят",
+                PlainText = "Игровое действие принято. Клиент готовит запрос для GM и собирает контекст хода.",
+                AwaitingInput = false,
+                InputKind = AgentConsoleInputKind.None,
+                RenderedAtUtc = now,
+                UpdatedAtUtc = now
+            }, "Input consumed for game-loop; preparing turn.");
+            return;
+        }
+
         _stateStore.UpdateSnapshot(snapshot with
         {
             AwaitingInput = false,
@@ -445,27 +606,84 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
         return -1;
     }
 
+    private static int FindDefaultActionIndex(IReadOnlyList<AgentConsoleAction> actions)
+    {
+        for (var index = 0; index < actions.Count; index++)
+        {
+            if (actions[index].IsEnabled && actions[index].IsDefault)
+                return index;
+        }
+
+        return -1;
+    }
+
+    private static bool IsGameLoopSnapshot(AgentConsoleSnapshot snapshot)
+        => string.Equals(snapshot.ScreenId, "game-loop", StringComparison.Ordinal);
+
+    private static bool IsLocalCommandSnapshot(AgentConsoleSnapshot snapshot)
+        => snapshot.ScreenId.StartsWith("explorer-command-", StringComparison.Ordinal) ||
+           snapshot.ScreenId.StartsWith("explorer-selection-", StringComparison.Ordinal);
+
+    private static AgentConsoleAction? FindReturnToGameLoopAction(AgentConsoleSnapshot snapshot)
+    {
+        if (snapshot.InputKind == AgentConsoleInputKind.Key)
+        {
+            return snapshot.Actions.FirstOrDefault(action =>
+                       action.IsEnabled &&
+                       (IsContinueAction(action) || action.IsDefault)) ??
+                   snapshot.Actions.FirstOrDefault(action => action.IsEnabled);
+        }
+
+        if (snapshot.InputKind is not (AgentConsoleInputKind.MenuSelection or AgentConsoleInputKind.Confirmation))
+            return null;
+
+        return snapshot.Actions.FirstOrDefault(action => action.IsEnabled && IsBackOrCloseAction(action)) ??
+               snapshot.Actions.FirstOrDefault(action => action.IsEnabled && IsContinueAction(action));
+    }
+
+    private static bool IsContinueAction(AgentConsoleAction action)
+        => string.Equals(action.Id, "continue", StringComparison.OrdinalIgnoreCase) ||
+           ContainsReturnToken(action.Label, "продолж") ||
+           ContainsReturnToken(action.Label, "continue");
+
+    private static bool IsBackOrCloseAction(AgentConsoleAction action)
+        => ContainsReturnToken(action.Label, "назад") ||
+           ContainsReturnToken(action.Label, "закрыть") ||
+           ContainsReturnToken(action.Label, "вернуться") ||
+           ContainsReturnToken(action.Label, "к списку") ||
+           ContainsReturnToken(action.Label, "к игре") ||
+           ContainsReturnToken(action.Label, "back") ||
+           ContainsReturnToken(action.Label, "close") ||
+           ContainsReturnToken(action.Label, "return");
+
+    private static bool ContainsReturnToken(string? label, string token)
+        => !string.IsNullOrWhiteSpace(label) &&
+           label.Contains(token, StringComparison.OrdinalIgnoreCase);
+
     private static bool TryResolveActionInput(
         AgentConsoleSnapshot snapshot,
         AgentConsoleAction action,
         int actionIndex,
-        out QueuedInput queuedInput,
+        out IReadOnlyList<QueuedInput> queuedInputs,
         out AgentConsoleInputKind inputKind,
         out AgentConsoleInputRejectionCode rejectionCode,
-        out string rejectionMessage)
+        out string rejectionMessage,
+        bool preferMenuIndexInput = false)
     {
-        queuedInput = default;
+        queuedInputs = [];
         inputKind = AgentConsoleInputKind.Key;
         rejectionCode = AgentConsoleInputRejectionCode.None;
         rejectionMessage = string.Empty;
 
         if (snapshot.InputKind == AgentConsoleInputKind.Text)
         {
-            var text = actionIndex >= 0 &&
+            var text = !string.IsNullOrWhiteSpace(action.InputValue)
+                ? action.InputValue
+                : actionIndex >= 0 &&
                        actionIndex < (snapshot.Prompt?.Choices.Count ?? 0) &&
                        !string.IsNullOrWhiteSpace(snapshot.Prompt?.Choices[actionIndex])
-                ? snapshot.Prompt!.Choices[actionIndex]
-                : action.Label;
+                    ? snapshot.Prompt!.Choices[actionIndex]
+                    : action.Label;
 
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -474,7 +692,7 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
                 return false;
             }
 
-            queuedInput = QueuedInput.ForLine(text);
+            queuedInputs = [QueuedInput.ForLine(text)];
             inputKind = AgentConsoleInputKind.Text;
             return true;
         }
@@ -488,6 +706,34 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
             return false;
         }
 
+        inputKind = snapshot.InputKind;
+
+        if (preferMenuIndexInput && snapshot.InputKind == AgentConsoleInputKind.MenuSelection)
+        {
+            if (TryBuildMenuInputValueKeys(action.InputValue, appendEnter: true, out var preferredInputValueKeys))
+            {
+                queuedInputs = preferredInputValueKeys;
+                return true;
+            }
+
+            if (actionIndex >= 0 && actionIndex < 9)
+            {
+                var digit = (char)('1' + actionIndex);
+                queuedInputs =
+                [
+                    QueuedInput.ForKey(new ConsoleKeyInfo(digit, (ConsoleKey)((int)ConsoleKey.D1 + actionIndex), shift: false, alt: false, control: false)),
+                    QueuedInput.ForKey(new ConsoleKeyInfo('\0', ConsoleKey.Enter, shift: false, alt: false, control: false))
+                ];
+                return true;
+            }
+
+            if (actionIndex >= 0 && actionIndex < snapshot.Actions.Count)
+            {
+                queuedInputs = BuildMenuNavigationInputs(snapshot, actionIndex, appendEnter: true);
+                return true;
+            }
+        }
+
         if (!string.IsNullOrWhiteSpace(action.Shortcut))
         {
             if (!TryParseConsoleKey(action.Shortcut, out var key))
@@ -497,13 +743,20 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
                 return false;
             }
 
-            queuedInput = QueuedInput.ForKey(key);
+            queuedInputs = [QueuedInput.ForKey(key)];
             return true;
         }
 
         if ((snapshot.SelectedIndex.HasValue && snapshot.SelectedIndex.Value == actionIndex) || action.IsDefault)
         {
-            queuedInput = QueuedInput.ForKey(new ConsoleKeyInfo('\0', ConsoleKey.Enter, shift: false, alt: false, control: false));
+            queuedInputs = [QueuedInput.ForKey(new ConsoleKeyInfo('\0', ConsoleKey.Enter, shift: false, alt: false, control: false))];
+            return true;
+        }
+
+        if (snapshot.InputKind == AgentConsoleInputKind.MenuSelection &&
+            TryBuildMenuInputValueKeys(action.InputValue, appendEnter: false, out var inputValueKeys))
+        {
+            queuedInputs = inputValueKeys;
             return true;
         }
 
@@ -512,7 +765,15 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
             actionIndex < 9)
         {
             var digit = (char)('1' + actionIndex);
-            queuedInput = QueuedInput.ForKey(new ConsoleKeyInfo(digit, (ConsoleKey)((int)ConsoleKey.D1 + actionIndex), shift: false, alt: false, control: false));
+            queuedInputs = [QueuedInput.ForKey(new ConsoleKeyInfo(digit, (ConsoleKey)((int)ConsoleKey.D1 + actionIndex), shift: false, alt: false, control: false))];
+            return true;
+        }
+
+        if (snapshot.InputKind == AgentConsoleInputKind.MenuSelection &&
+            actionIndex >= 0 &&
+            actionIndex < snapshot.Actions.Count)
+        {
+            queuedInputs = BuildMenuNavigationInputs(snapshot, actionIndex, appendEnter: false);
             return true;
         }
 
@@ -520,6 +781,68 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
         rejectionMessage = $"Action '{action.Id}' cannot be resolved to a safe console input.";
         return false;
     }
+
+    private static IReadOnlyList<QueuedInput> BuildMenuNavigationInputs(
+        AgentConsoleSnapshot snapshot,
+        int targetIndex,
+        bool appendEnter)
+    {
+        var currentIndex = snapshot.SelectedIndex.GetValueOrDefault(0);
+        if (currentIndex < 0 || currentIndex >= snapshot.Actions.Count)
+            currentIndex = 0;
+
+        var queuedInputs = new List<QueuedInput>();
+        var movementKey = targetIndex >= currentIndex ? ConsoleKey.DownArrow : ConsoleKey.UpArrow;
+        var movementCount = Math.Abs(targetIndex - currentIndex);
+        for (var i = 0; i < movementCount; i++)
+            queuedInputs.Add(QueuedInput.ForKey(CreateNavigationKey(movementKey)));
+
+        if (appendEnter)
+            queuedInputs.Add(QueuedInput.ForKey(new ConsoleKeyInfo('\0', ConsoleKey.Enter, shift: false, alt: false, control: false)));
+        return queuedInputs;
+    }
+
+    private static bool TryBuildMenuInputValueKeys(
+        string? inputValue,
+        bool appendEnter,
+        out IReadOnlyList<QueuedInput> queuedInputs)
+    {
+        queuedInputs = [];
+        if (string.IsNullOrWhiteSpace(inputValue))
+            return false;
+
+        var value = inputValue.Trim();
+        if (value.Any(ch => !char.IsDigit(ch)))
+            return false;
+
+        var keys = new List<QueuedInput>(value.Length + (appendEnter ? 1 : 0));
+        foreach (var ch in value)
+            keys.Add(QueuedInput.ForKey(CreateDigitKey(ch)));
+
+        if (appendEnter)
+            keys.Add(QueuedInput.ForKey(new ConsoleKeyInfo('\0', ConsoleKey.Enter, shift: false, alt: false, control: false)));
+        queuedInputs = keys;
+        return true;
+    }
+
+    private static ConsoleKeyInfo CreateDigitKey(char digit)
+    {
+        if (digit < '0' || digit > '9')
+            throw new ArgumentOutOfRangeException(nameof(digit), digit, "Only decimal digit keys are supported.");
+
+        var key = digit == '0'
+            ? ConsoleKey.D0
+            : (ConsoleKey)((int)ConsoleKey.D1 + (digit - '1'));
+        return new ConsoleKeyInfo(digit, key, shift: false, alt: false, control: false);
+    }
+
+    private static ConsoleKeyInfo CreateNavigationKey(ConsoleKey key) =>
+        key switch
+        {
+            ConsoleKey.UpArrow => new ConsoleKeyInfo('\0', ConsoleKey.UpArrow, shift: false, alt: false, control: false),
+            ConsoleKey.DownArrow => new ConsoleKeyInfo('\0', ConsoleKey.DownArrow, shift: false, alt: false, control: false),
+            _ => throw new ArgumentOutOfRangeException(nameof(key), key, "Only menu navigation keys are supported.")
+        };
 
     private static bool TryParseConsoleKey(string shortcut, out ConsoleKeyInfo keyInfo)
     {

@@ -132,7 +132,7 @@ public partial class ValidationService
             try
             {
                 using var doc = JsonDocument.Parse(currentJson);
-                CollectCodexEntryIdsFromRoot(doc.RootElement, ids, includeStoredEntries: false);
+                CollectCodexEntryIdsFromRoot(doc.RootElement, ids, includeStoredEntries: true);
             }
             catch
             {

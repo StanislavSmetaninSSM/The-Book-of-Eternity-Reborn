@@ -7,6 +7,20 @@ namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
+    private async Task NormalizeInventoryItemsAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        const string path = "game_state/inventory/items.json";
+        var currentNode = await ReadNodeAsync(path);
+        if (currentNode == null)
+            return;
+
+        var result = currentNode.DeepClone();
+        if (result == null || !NormalizeInventoryItemJournalEntries(result))
+            return;
+
+        await _fs.WriteFileAtomicAsync(path, result.ToJsonString(JsonOpts));
+    }
+
     private async Task NormalizeInventoryItemResourcesAsync(IReadOnlyDictionary<string, string>? backups)
     {
         const string path = "game_state/inventory/item_resources.json";
@@ -136,6 +150,7 @@ public partial class CanonicalStateNormalizer
         result["entries"] = entries;
         result.Remove("itemJournals");
         result.Remove("itemJournalUpdates");
+        NormalizeInventoryItemJournalEntries(result);
         await WriteIfChangedAsync(path, currentNode, result);
     }
 

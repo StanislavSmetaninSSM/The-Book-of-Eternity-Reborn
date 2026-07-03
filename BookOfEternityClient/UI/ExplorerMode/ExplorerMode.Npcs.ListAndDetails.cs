@@ -61,19 +61,7 @@ private async Task ShowNPCs()
             var choices = npcs.Select(n =>
             {
                 var name = ResolveNpcDisplayName(n, renameMap);
-                var rel = GetStr(n, "relationshipLevel", "");
-                // Guardians store reputation inside relationshipData
-                if (string.IsNullOrEmpty(rel) && n.TryGetProperty("relationshipData", out var rdSel) && rdSel.ValueKind == JsonValueKind.Object)
-                    rel = GetStr(rdSel, "currentReputation", "0");
-                if (string.IsNullOrEmpty(rel)) rel = "0";
-                var loc = GetStr(n, "currentLocation", GetStr(n, "currentLocationId", ""));
-                var domain = GetStr(n, "domain", "");
-                var locStr = !string.IsNullOrEmpty(loc) ? $"@ {loc}"
-                           : !string.IsNullOrEmpty(domain) ? $"🔮 {domain}" : "";
-                var relLabel = int.TryParse(rel, out var relNum)
-                    ? $"♥ {ReputationDisplay.BuildPlainValueLabel(relNum, ReputationScaleKind.NpcRelationship)}"
-                    : $"♥ {rel}";
-                return ConsoleLayout.PlainChoiceLabel($"👤 {name}", relLabel, locStr);
+                return BuildNpcChoiceLabel(n, name);
             }).ToList();
             choices.Add("← Назад");
 
@@ -191,7 +179,7 @@ private async Task ShowNPCs()
                 "legendary" => "gold1",
                 _ => "white"
             };
-            summaryTable.AddRow(new Markup($"[{rarColor}]Редкость[/]"), new Markup($"[{rarColor}]{Markup.Escape(npcRarity)}[/]"));
+            summaryTable.AddRow(new Markup($"[{rarColor}]Редкость[/]"), new Markup($"[{rarColor}]{Markup.Escape(TranslateNpcRarity(npcRarity))}[/]"));
         }
 
         var npcAge = GetStr(npc, "age", "");
@@ -210,8 +198,11 @@ private async Task ShowNPCs()
             {
                 "companion" => ("Компаньон", "green"),
                 "plotdriven" => ("Сюжетный", "yellow"),
+                "plot_driven" => ("Сюжетный", "yellow"),
                 "static" => ("Статичный", "grey"),
-                _ => (progType, "white")
+                "static_social_npc" => ("Статичный социальный персонаж", "grey"),
+                "static_social" => ("Статичный социальный персонаж", "grey"),
+                _ => (HumanizeNpcStableToken(progType), "white")
             };
             summaryTable.AddRow(new Markup($"[{ptColor}]Тип развития[/]"), new Markup($"[{ptColor}]{Markup.Escape(ptLabel)}[/]"));
         }
@@ -230,9 +221,9 @@ private async Task ShowNPCs()
 
         // Companion directive
         var compDirective = GetStr(npc, "playerCompanionDirective", "");
-        if (!string.IsNullOrEmpty(compDirective))
+        if (!string.IsNullOrEmpty(compDirective) && !IsDefaultNonCompanionDirective(compDirective))
         {
-            summaryTable.AddRow(new Markup("[cyan]Директива игрока[/]"), new Markup($"[italic cyan]{Markup.Escape(compDirective)}[/]"));
+            summaryTable.AddRow(new Markup("[cyan]Директива игрока[/]"), new Markup($"[italic cyan]{Markup.Escape(TranslateNpcCompanionDirective(compDirective))}[/]"));
         }
         else if (progType.Equals("Companion", StringComparison.OrdinalIgnoreCase))
         {
@@ -300,7 +291,7 @@ private async Task ShowNPCs()
         // ── Attitude (derived from relationship tier) ──
         var attitude = GetStr(npc, "attitude", "");
         if (!string.IsNullOrEmpty(attitude))
-            lines.Add($"  🗣️ Отношение: [yellow]{Markup.Escape(attitude)}[/]");
+            lines.Add($"  🗣️ Отношение: [yellow]{Markup.Escape(FormatNpcAttitudeLabel(attitude))}[/]");
 
         // ── Cultural layer ──
         var cultural = GetStr(npc, "culturalLayer", "");
@@ -321,8 +312,9 @@ private async Task ShowNPCs()
 
         // ── Personality archetype & traits (embedded in npc_core) ──
         var persArchetype = GetStr(npc, "personalityArchetype", "");
-        if (!string.IsNullOrEmpty(persArchetype))
-            lines.Add($"  🧠 Архетип личности: [magenta1]{Markup.Escape(persArchetype)}[/]");
+        var playerFacingArchetype = FormatNpcPlayerFacingFreeText(persArchetype);
+        if (!string.IsNullOrEmpty(playerFacingArchetype))
+            lines.Add($"  🧠 Архетип личности: [magenta1]{Markup.Escape(playerFacingArchetype)}[/]");
 
         if (npc.TryGetProperty("personalityTraits", out var pTraits) && pTraits.ValueKind == JsonValueKind.Array && pTraits.GetArrayLength() > 0)
         {
@@ -698,7 +690,7 @@ private async Task ShowNPCs()
                 if (!string.IsNullOrEmpty(mArch))
                     lines.Add($"      [dim]Архетип: {Markup.Escape(mArch)}[/]");
                 if (!string.IsNullOrEmpty(mAtt))
-                    lines.Add($"      [dim]Отношение: {Markup.Escape(mAtt)}[/]");
+                    lines.Add($"      [dim]Отношение: {Markup.Escape(FormatNpcAttitudeLabel(mAtt))}[/]");
             }
         }
 
@@ -807,7 +799,7 @@ private async Task ShowNPCs()
         }
 
         // Show remaining non-core string/number/bool properties (catch-all for unknown fields)
-        var coreProps = new HashSet<string> { "name", "npcId", "id", "shortDescription", "description",
+        var coreProps = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "name", "NPCName", "npcName", "NPCId", "npcId", "id", "initialId", "shortDescription", "description",
             "appearance", "currentLocation", "relationshipLevel", "race", "role", "occupation", "status",
             "lastInteraction", "progressionType", "level", "experience", "experienceForNextLevel",
             "playerCompanionDirective", "image_prompt", "currentHealthPercentage", "maxHealthPercentage",
@@ -818,7 +810,8 @@ private async Task ShowNPCs()
             "activeSkills", "passiveSkills", "inventory", "equippedItems", "masks", "activeMaskId",
             "customStates", "maxWeight", "totalWeight", "isOverloaded", "progressionTrackers",
             "personalityProfile", "guardianId", "domain", "relationshipData", "questManagement",
-            "gachaSystem", "rarity", "age", "class" };
+            "gachaSystem", "rarity", "age", "class", "currentLocationId", "currentLocationName",
+            "initialLocationId", "initialLocationName", "sceneStatus", "lastSeenAtUtc", "turn" };
         foreach (var prop in npc.EnumerateObject())
         {
             if (coreProps.Contains(prop.Name)) continue;
@@ -1227,6 +1220,89 @@ private async Task ShowNPCs()
     {
         var name = GetStr(npc, "name", "???");
         return renameMap.TryGetValue(name, out var renamed) ? renamed : name;
+    }
+
+    private static string TranslateNpcRarity(string rarity) =>
+        rarity.Trim().ToLowerInvariant() switch
+        {
+            "common" => "обычный",
+            "uncommon" => "необычный",
+            "rare" => "редкий",
+            "epic" => "эпический",
+            "legendary" => "легендарный",
+            "unique" => "уникальный",
+            _ => HumanizeNpcStableToken(rarity)
+        };
+
+    private static bool IsDefaultNonCompanionDirective(string directive)
+    {
+        var normalized = directive.Trim();
+        return normalized.Equals("not_companion", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals("none", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals("no_companion", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string TranslateNpcCompanionDirective(string directive) =>
+        directive.Trim().ToLowerInvariant() switch
+        {
+            "companion" => "компаньон",
+            "active_companion" => "активный компаньон",
+            "potential_companion" => "потенциальный компаньон",
+            "not_companion" => "не компаньон",
+            _ => HumanizeNpcStableToken(directive)
+        };
+
+    private static string HumanizeNpcStableToken(string value)
+    {
+        var text = value.Trim();
+        if (string.IsNullOrWhiteSpace(text))
+            return text;
+
+        return text
+            .Replace('_', ' ')
+            .Replace('-', ' ');
+    }
+
+    private static string FormatNpcPlayerFacingFreeText(string value)
+    {
+        var text = value.Trim();
+        if (string.IsNullOrWhiteSpace(text))
+            return string.Empty;
+
+        return LooksLikeNpcTechnicalToken(text) ? string.Empty : text;
+    }
+
+    private static string BuildNpcChoiceLabel(JsonElement npc, string displayName)
+    {
+        var rel = GetStr(npc, "relationshipLevel", "");
+        if (string.IsNullOrEmpty(rel) && npc.TryGetProperty("relationshipData", out var relationshipData) && relationshipData.ValueKind == JsonValueKind.Object)
+            rel = GetStr(relationshipData, "currentReputation", "0");
+        if (string.IsNullOrEmpty(rel)) rel = "0";
+
+        var readableLocation = FirstNonEmptyString(
+            FormatNpcPlayerFacingFreeText(GetStr(npc, "currentLocationName", "")),
+            FormatNpcPlayerFacingFreeText(GetStr(npc, "currentLocation", "")));
+        var domain = FormatNpcPlayerFacingFreeText(GetStr(npc, "domain", ""));
+        var locStr = !string.IsNullOrWhiteSpace(readableLocation) ? $"@ {readableLocation}"
+            : !string.IsNullOrWhiteSpace(domain) ? $"🔮 {domain}" : "";
+        var relLabel = int.TryParse(rel, out var relNum)
+            ? $"♥ {ReputationDisplay.BuildPlainValueLabel(relNum, ReputationScaleKind.NpcRelationship)}"
+            : $"♥ {rel}";
+
+        return ConsoleLayout.PlainChoiceLabel($"👤 {displayName}", relLabel, locStr);
+    }
+
+    private static string FirstNonEmptyString(params string[] values) =>
+        values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+
+    private static bool LooksLikeNpcTechnicalToken(string value)
+    {
+        var hasSeparator = value.Contains('_', StringComparison.Ordinal) ||
+                           value.Contains('-', StringComparison.Ordinal);
+        if (!hasSeparator)
+            return false;
+
+        return value.All(ch => ch is '_' or '-' || char.IsAsciiLetterOrDigit(ch));
     }
 
     /// <summary>
@@ -1665,6 +1741,26 @@ private async Task ShowNPCs()
         }
 
         return node.ToJsonString();
+    }
+
+    private static string FormatNpcAttitudeLabel(string value)
+    {
+        var clean = value.Trim();
+        return clean.ToLowerInvariant() switch
+        {
+            "" => string.Empty,
+            "neutral" => "Нейтралитет",
+            "friendly" => "Дружелюбие",
+            "friend" => "Дружелюбие",
+            "ally" => "Союзник",
+            "hostile" => "Враждебность",
+            "enemy" => "Враг",
+            "suspicious" => "Настороженность",
+            "trusting" => "Доверие",
+            "loyal" => "Верность",
+            "rival" => "Соперничество",
+            _ => clean
+        };
     }
 
 

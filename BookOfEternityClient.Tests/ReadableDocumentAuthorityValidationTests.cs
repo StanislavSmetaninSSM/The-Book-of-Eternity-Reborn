@@ -36,6 +36,95 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_InventoryTextContentWithTurnAnchor_ReportsPlayerFacingAnchorIssue()
+    {
+        await WriteInventoryAsync(CreateDocumentItem(
+            "doc_anchor_inline_1",
+            "Письмо с техническим якорем",
+            "\"textContent\": [\"#[5]. Осмотр: на бумаге видны следы соли.\"],"));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "inventory_text_content_turn_anchor_player_facing", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("textContent[0]", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ItemTextSidecarWithTurnAnchor_ReportsPlayerFacingAnchorIssue()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", BuildUpdateInventoryJson(CreateNewDocumentItem(
+            "doc_anchor_sidecar_1",
+            "Записка с якорем",
+            "\"textContent\": null,")));
+        await _fs.WriteFileAtomicAsync("game_state/inventory/item_text_updates.json", """
+        {
+          "entries": [
+            {
+              "itemId": "doc_anchor_sidecar_1",
+              "itemName": "Записка с якорем",
+              "textContent": [
+                "#[5] - Осмотр: на полях появился новый знак."
+              ]
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "inventory_text_content_turn_anchor_player_facing", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("item_text_updates.json", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("textContent[0]", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ItemJournalEntriesWithTurnAnchor_ReportsPlayerFacingAnchorIssue()
+    {
+        await WriteInventoryAsync(CreateDocumentItem(
+            "doc_journal_anchor_inline_1",
+            "Дневник с техническим якорем",
+            "\"textContent\": [\"На первой странице виден знак старого владельца.\"],",
+            "\"journalEntries\": [\"#[4]. Предмет найден на столе у окна.\"],"));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "item_journal_entry_turn_anchor_player_facing", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("journalEntries[0]", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ItemJournalSidecarWithTurnAnchor_ReportsPlayerFacingAnchorIssue()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", BuildUpdateInventoryJson(CreateNewDocumentItem(
+            "doc_journal_anchor_update_1",
+            "Журнал с якорем",
+            "\"textContent\": [\"На обложке выбит тусклый знак.\"],")));
+        await _fs.WriteFileAtomicAsync("game_state/npcs/item_journals.json", """
+        {
+          "entries": [
+            {
+              "itemId": "doc_journal_anchor_update_1",
+              "itemName": "Журнал с якорем",
+              "journalEntries": [
+                "#[5] - На полях появилась новая отметка."
+              ]
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "item_journal_entry_turn_anchor_player_facing", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("item_journals.json", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("journalEntries[0]", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ReadableDocumentWithoutDetailAuthority_ReportsReadableDocumentIssue()
     {
         await WriteInventoryAsync(CreateDocumentItem(
@@ -198,7 +287,11 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
         """;
     }
 
-    private static string CreateDocumentItem(string id, string name, string readableFields)
+    private static string CreateDocumentItem(
+        string id,
+        string name,
+        string readableFields,
+        string journalEntriesField = "\"journalEntries\": null,")
     {
         return $$"""
             {
@@ -220,7 +313,7 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
               "type": "Документ",
               "group": "Документы и медиа",
               {{readableFields}}
-              "journalEntries": null,
+              {{journalEntriesField}}
               "equipmentSlot": null,
               "accessoryForSlot": null
             }

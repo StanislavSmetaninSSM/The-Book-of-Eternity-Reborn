@@ -109,13 +109,19 @@ public partial class ExplorerMode
         lines.AddRange(pendingLines);
         lines.Add("");
         lines.Add("[bold]Куда смотреть дальше:[/]");
-        lines.Add("  • /chaos_sea — Хранители, Обители, ожидающие/контрольные контракты и действия Моря Хаоса.");
-        lines.Add("  • /feathers, /afterlife_archive, /afterlife_inbox, /guardian_projects, /guardian_politics — детальные аудит-панели ресурсов, архива, ответов ГМ, проектов и политики Хранителей.");
-        lines.Add("  • /shining_abode, /shining_politics — Сияющая Обитель, Врата, торговля/ковка, фракции, резиденты, проекты и политические квитанции.");
         if (includeAuditPayloads)
-            lines.Add("  • Обычная игроковая сводка без JSON-аудита: /status или /статус.");
+        {
+            lines.Add("  • /chaos_sea — Хранители, Обители, ожидающие/контрольные контракты и действия Моря Хаоса.");
+            lines.Add("  • /feathers, /afterlife_archive, /afterlife_inbox, /guardian_projects, /guardian_politics — детальные аудит-панели ресурсов, архива, ответов ГМ, проектов и политики Хранителей.");
+            lines.Add("  • /shining_abode, /shining_politics — Сияющая Обитель, Врата, торговля/ковка, фракции, резиденты, проекты и политические квитанции.");
+            lines.Add("  • Обычная игроковая сводка без служебных данных: /статус.");
+        }
         else
-            lines.Add("  • Технический аудит и ремонтные сведения доступны отдельно: /status audit или /статус аудит.");
+        {
+            lines.Add("  • /море_хаоса — Хранители, Обители, ожидающие решения и действия Моря Хаоса.");
+            lines.Add("  • /перья, /архив_души, /уведомления_загробья, /проекты_хранителей, /политика_хранителей — ресурсы души, Архив, ответы ГМ, проекты и политика Хранителей.");
+            lines.Add("  • /сияющая_обитель, /сияющая_политика — Сияющая Обитель, Врата, торговля, ковка, фракции, резиденты и политические решения.");
+        }
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -191,7 +197,7 @@ public partial class ExplorerMode
             .Where(flag => string.Equals(AfterlifeGlobalFlagState.GetNodeString(flag["visibility"]), "visible", StringComparison.OrdinalIgnoreCase))
             .ToList();
         var hiddenCount = flags.Count - visibleFlags.Count;
-        lines.Add($"  • Видимых глобальных фактов: [white]{visibleFlags.Count}[/]; скрытых/GM-only: [white]{hiddenCount}[/].");
+        lines.Add($"  • Видимых глобальных фактов: [white]{visibleFlags.Count}[/]; скрытых: [white]{hiddenCount}[/].");
         foreach (var flag in visibleFlags.Take(5))
         {
             var category = HumanizeAfterlifeStatusToken(AfterlifeGlobalFlagState.GetNodeString(flag["category"]));
@@ -590,7 +596,7 @@ public partial class ExplorerMode
         lines.Add("[bold gold1]Сияющая Обитель:[/]");
         if (context == null)
         {
-            lines.Add("  • Состояние Сияющей Обители пока отсутствует или повреждено.");
+            lines.Add("  • Сияющая Обитель ещё не открыта для этой души.");
             return;
         }
 
@@ -674,7 +680,7 @@ public partial class ExplorerMode
         lines.Add("[bold]Данные следующей жизни:[/]");
         lines.Add(includeAuditPayloads
             ? "  • Эти данные будут применяться в следующей смертной жизни; ниже показаны ремонтные идентификаторы и снимки."
-            : "  • Эти данные будут применяться в следующей смертной жизни; технические поля доступны через /status audit или /soul.");
+            : "  • Эти данные будут применяться в следующей смертной жизни; состояние души можно проверить через /душа.");
 
         if (soulRoot["pendingMemoryLegacy"] is JsonObject legacy)
         {
@@ -769,7 +775,7 @@ public partial class ExplorerMode
             var card = FindShiningBlessingCardForAudit(context.Root, cardId);
             if (card == null)
             {
-                lines.Add($"    - {Markup.Escape(cardId)} [dim](карта не найдена в available/candidate/package snapshot; проверьте /shining_abode)[/]");
+                lines.Add($"    - {Markup.Escape(cardId)} [dim](карта не найдена в открытых или подготовленных вариантах; проверьте /сияющая_обитель)[/]");
                 continue;
             }
 
@@ -816,7 +822,7 @@ public partial class ExplorerMode
             var card = FindShiningBlessingCardForAudit(shiningRoot, cardId);
             if (card == null)
             {
-                lines.Add($"    - {Markup.Escape(cardId)} [dim](замороженный snapshot карты недоступен; проверьте /shining_abode)[/]");
+                lines.Add($"    - {Markup.Escape(cardId)} [dim](сохранённые данные карты недоступны; проверьте /сияющая_обитель)[/]");
                 continue;
             }
 

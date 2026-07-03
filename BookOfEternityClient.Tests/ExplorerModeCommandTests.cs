@@ -30,6 +30,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     private readonly GuardianCorrectionService _guardianCorrectionService;
     private readonly SystemModService _systemModService;
     private readonly SystemGuardianLibraryService _systemGuardianLibraryService;
+    private readonly CharacteristicsService _characteristicsService;
     private readonly NpcTradeService _npcTradeService;
     private readonly GuardianTradeService _guardianTradeService;
     private readonly PendingTurnStateService _pendingTurnStateService;
@@ -57,11 +58,13 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         _guardianCorrectionService = new GuardianCorrectionService(_fs, _scenarioCoreService, NullLogger<GuardianCorrectionService>.Instance);
         _systemModService = new SystemModService(_fs, _settings, NullLogger<SystemModService>.Instance);
         _systemGuardianLibraryService = new SystemGuardianLibraryService(_fs, NullLogger<SystemGuardianLibraryService>.Instance);
+        _characteristicsService = new CharacteristicsService(_fs, _stateManager, NullLogger<CharacteristicsService>.Instance);
         _npcTradeService = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
         _guardianTradeService = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
         _pendingTurnStateService = new PendingTurnStateService(_fs, NullLogger<PendingTurnStateService>.Instance);
         _soulIdentityService = new SoulIdentityService(_fs, NullLogger<SoulIdentityService>.Instance);
         _explorer = new ExplorerMode(_stateManager, _fs, _loc,
+            charService: _characteristicsService,
             npcTradeService: _npcTradeService,
             guardianTradeService: _guardianTradeService,
             storyService: _storyService,
@@ -77,6 +80,146 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             soulIdentityService: _soulIdentityService,
             clipboardService: _clipboard,
             console: _console);
+    }
+
+    [Fact]
+    public void CollectNpcListEntries_TreatsNullNpcIdAsMissingIdentity()
+    {
+        using var doc = JsonDocument.Parse("""
+        {
+          "UpdateNPCs": [
+            {
+              "NPCId": null,
+              "initialId": "npc_clerk",
+              "npcName": "Старший приказчик",
+              "name": "Старший приказчик"
+            },
+            {
+              "NPCId": null,
+              "initialId": "npc_mother",
+              "npcName": "Мать девочки",
+              "name": "Мать девочки"
+            },
+            {
+              "NPCId": null,
+              "initialId": "npc_broker",
+              "npcName": "Посредник Виренто",
+              "name": "Посредник Виренто"
+            }
+          ]
+        }
+        """);
+
+        var method = typeof(ExplorerMode).GetMethod(
+            "CollectNpcListEntries",
+            BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new MissingMethodException(nameof(ExplorerMode), "CollectNpcListEntries");
+
+        var entries = Assert.IsAssignableFrom<IList>(method.Invoke(_explorer, [doc]));
+        var names = entries
+            .Cast<JsonElement>()
+            .Select(static entry => entry.GetProperty("name").GetString() ?? string.Empty)
+            .ToArray();
+
+        Assert.Equal(["Старший приказчик", "Мать девочки", "Посредник Виренто"], names);
+    }
+
+    [Fact]
+    public void BuildNpcChoiceLabel_UsesReadableLocationAndHidesTechnicalLocationIds()
+    {
+        using var readableLocation = JsonDocument.Parse("""
+        {
+          "name": "Свидетель долговой записи",
+          "relationshipLevel": 10,
+          "currentLocationId": "loc_life_001_counting_room",
+          "currentLocationName": "Передняя счётная комната"
+        }
+        """);
+        using var idOnlyLocation = JsonDocument.Parse("""
+        {
+          "name": "Посредник Виренто",
+          "relationshipLevel": -25,
+          "currentLocationId": "loc_life_001_counting_room"
+        }
+        """);
+
+        var method = typeof(ExplorerMode).GetMethod(
+            "BuildNpcChoiceLabel",
+            BindingFlags.Static | BindingFlags.NonPublic)
+            ?? throw new MissingMethodException(nameof(ExplorerMode), "BuildNpcChoiceLabel");
+
+        var readableLabel = (string)method.Invoke(null, [readableLocation.RootElement, "Свидетель долговой записи"])!;
+        var idOnlyLabel = (string)method.Invoke(null, [idOnlyLocation.RootElement, "Посредник Виренто"])!;
+
+        Assert.Contains("Передняя счётная комната", readableLabel);
+        Assert.DoesNotContain("loc_life_001_counting_room", readableLabel);
+        Assert.DoesNotContain("loc_life_001_counting_room", idOnlyLabel);
+        Assert.DoesNotContain("@", idOnlyLabel);
+    }
+
+    [Fact]
+    public async Task ShowNpcDetailPanel_NormalMode_HidesTechnicalNpcFieldsAndLocalizesStableValues()
+    {
+        using var doc = JsonDocument.Parse("""
+        {
+          "NPCId": null,
+          "initialId": "npc_witness",
+          "npcName": "Свидетель",
+          "name": "Свидетель",
+          "race": "Человек",
+          "class": "Свидетель записи",
+          "role": "Процедурный свидетель",
+          "rarity": "Common",
+          "progressionType": "static_social_npc",
+          "personalityArchetype": "cautious_procedural_witness",
+          "playerCompanionDirective": "not_companion",
+          "currentLocationId": "loc_room",
+          "currentLocationName": "Счётная комната",
+          "sceneStatus": "present_note_written_partial",
+          "lastSeenAtUtc": "2026-06-30T02:26:04Z",
+          "turn": 25
+        }
+        """);
+
+        var method = typeof(ExplorerMode).GetMethod(
+            "ShowNpcDetailPanel",
+            BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new MissingMethodException(nameof(ExplorerMode), "ShowNpcDetailPanel");
+
+        var task = (Task)method.Invoke(_explorer,
+        [
+            doc.RootElement,
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ])!;
+        await task;
+
+        var rendered = ExtractRenderedText();
+        Assert.Contains("Редкость", rendered);
+        Assert.Contains("обычный", rendered, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тип развития", rendered);
+        Assert.Contains("статичный", rendered, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Common", rendered);
+        Assert.DoesNotContain("static_social_npc", rendered);
+        Assert.DoesNotContain("cautious_procedural_witness", rendered);
+        Assert.DoesNotContain("not_companion", rendered);
+        Assert.DoesNotContain("initialId", rendered);
+        Assert.DoesNotContain("currentLocationId", rendered);
+        Assert.DoesNotContain("sceneStatus", rendered);
+        Assert.DoesNotContain("lastSeenAtUtc", rendered);
     }
 
     private async Task SeedSessionForCommandAsync(string command)

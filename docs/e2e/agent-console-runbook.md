@@ -119,6 +119,8 @@ Endpoint summary:
 - `POST /api/agent-console/key`
 - `POST /api/agent-console/text`
 - `POST /api/agent-console/action`
+- `POST /api/agent-console/default-action`
+- `POST /api/agent-console/return-to-game-loop-step`
 
 ```bash
 curl -sS "$BASE/api/agent-console/snapshot"
@@ -172,6 +174,24 @@ curl -sS -X POST "$BASE/api/agent-console/action" \
 
 For menu actions without shortcuts, the API resolves the action to a safe existing console input: a digit selection when possible, or Enter when the action is already selected/default. If the first action call only changes selection, read the next snapshot and submit the selected action again to activate it.
 
+When an autonomous live-test driver only needs to accept the current default action, prefer the race-safe default endpoint. It reads the latest server-side snapshot at the moment of the call and does not require the caller to pass a `screenId`:
+
+```bash
+curl -sS -X POST "$BASE/api/agent-console/default-action" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+This endpoint is intentionally narrow: it queues only an enabled action marked `isDefault`. It rejects screens that are not awaiting input or do not expose an enabled default action.
+
+When an autonomous live test drills into a local command screen (`explorer-command-*` or `explorer-selection-*`), prefer the harness step endpoint instead of guessing Russian labels for “continue”, “back”, or “close”:
+
+```bash
+curl -sS -X POST "$BASE/api/agent-console/return-to-game-loop-step" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+This endpoint queues exactly one safe step toward `game-loop`: Enter for local command key-continuations, or the exposed back/close/return action for local command menus. Poll the next snapshot and call it again until the current `screenId` is `game-loop`. It rejects non-local screens and does nothing when already at `game-loop`.
+
 PowerShell uses the same endpoint shapes with `curl.exe`:
 
 ```powershell
@@ -179,6 +199,8 @@ curl.exe -sS "$Base/api/agent-console/snapshot"
 curl.exe -sS -X POST "$Base/api/agent-console/key" -H "Authorization: Bearer $Token" -H "Content-Type: application/json" --data-raw '{"key":"Down"}'
 curl.exe -sS -X POST "$Base/api/agent-console/text" -H "Authorization: Bearer $Token" -H "Content-Type: application/json" --data-raw '{"text":"look north"}'
 curl.exe -sS -X POST "$Base/api/agent-console/action" -H "Authorization: Bearer $Token" -H "Content-Type: application/json" --data-raw '{"actionId":"option-0","screenId":"main-menu","inputKind":"menuSelection"}'
+curl.exe -sS -X POST "$Base/api/agent-console/default-action" -H "Authorization: Bearer $Token"
+curl.exe -sS -X POST "$Base/api/agent-console/return-to-game-loop-step" -H "Authorization: Bearer $Token"
 ```
 
 ## Safe smoke path
@@ -273,7 +295,8 @@ Actions:
 2. Use `/key` for `menuSelection`, `key`, or confirmation-style navigation.
 3. Use `/text` only for `text` prompts, and send a complete line.
 4. Use `/action` with the current `screenId` and matching `inputKind`; stale screen ids are rejected by design.
-5. If an action only selects a menu item, read the next snapshot and submit the now-selected action again.
+5. Use `/default-action` when the next intended input is simply the current enabled default action and a screen transition may have happened between polls.
+6. If an action only selects a menu item, read the next snapshot and submit the now-selected action again.
 
 ### bounded artifacts
 

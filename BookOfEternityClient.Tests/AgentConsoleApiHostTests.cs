@@ -172,8 +172,87 @@ public sealed class AgentConsoleApiHostTests
         });
 
         Assert.Equal(HttpStatusCode.OK, actionResponse.StatusCode);
+        var actionRoot = JsonNode.Parse(await actionResponse.Content.ReadAsStringAsync())!.AsObject();
+        Assert.Equal("menuSelection", actionRoot["event"]!["inputKind"]!.GetValue<string>());
         Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
         Assert.Contains(store.GetEvents(), agentEvent => agentEvent.Kind == AgentConsoleEventKind.InputAccepted);
+    }
+
+    [Fact]
+    public async Task ReturnToGameLoopStepEndpoint_RequiresTokenAndQueuesSafeLocalCommandStep()
+    {
+        var store = new AgentConsoleStateStore();
+        using var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = AgentConsoleApiHost.Build(
+            Array.Empty<string>(),
+            new AgentConsoleApiHostOptions(url, "secret-token", store, input));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        store.UpdateSnapshot(BuildKeySnapshot("explorer-command-6") with
+        {
+            Actions =
+            [
+                new AgentConsoleAction
+                {
+                    Id = "continue",
+                    Label = "Продолжить",
+                    Shortcut = "Enter",
+                    IsDefault = true
+                }
+            ]
+        });
+
+        using var missingToken = await client.PostAsync("/api/agent-console/return-to-game-loop-step", null);
+        Assert.Equal(HttpStatusCode.Unauthorized, missingToken.StatusCode);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "secret-token");
+        using var response = await client.PostAsync("/api/agent-console/return-to-game-loop-step", null);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var root = JsonNode.Parse(await response.Content.ReadAsStringAsync())!.AsObject();
+        Assert.True(root["accepted"]!.GetValue<bool>());
+        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
+    }
+
+    [Fact]
+    public async Task DefaultActionEndpoint_RequiresTokenAndQueuesCurrentDefaultAction()
+    {
+        var store = new AgentConsoleStateStore();
+        using var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = AgentConsoleApiHost.Build(
+            Array.Empty<string>(),
+            new AgentConsoleApiHostOptions(url, "secret-token", store, input));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        store.UpdateSnapshot(BuildKeySnapshot("stat-allocation-finished") with
+        {
+            Actions =
+            [
+                new AgentConsoleAction
+                {
+                    Id = "continue",
+                    Label = "Продолжить",
+                    Shortcut = "Enter",
+                    IsDefault = true
+                }
+            ]
+        });
+
+        using var missingToken = await client.PostAsync("/api/agent-console/default-action", null);
+        Assert.Equal(HttpStatusCode.Unauthorized, missingToken.StatusCode);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "secret-token");
+        using var response = await client.PostAsync("/api/agent-console/default-action", null);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var root = JsonNode.Parse(await response.Content.ReadAsStringAsync())!.AsObject();
+        Assert.True(root["accepted"]!.GetValue<bool>());
+        Assert.Equal("stat-allocation-finished", root["event"]!["screenId"]!.GetValue<string>());
+        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
     }
 
     private static AgentConsoleSnapshot BuildMenuSnapshot(string screenId, int selectedIndex)

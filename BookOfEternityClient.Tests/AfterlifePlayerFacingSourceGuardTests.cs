@@ -11,7 +11,11 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         var inkFeathers = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.InkFeathersAndOfferings.cs");
         var foundation = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.PlayerGuardianFoundation.cs");
 
-        Assert.Contains("Полный контракт /incarnate", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("Предпросмотр воплощения через Врата Души", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("Что увидит Хранитель", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("Что произойдёт после подтверждения", mainMenu, StringComparison.Ordinal);
+        Assert.DoesNotContain("Полный контракт /incarnate", mainMenu, StringComparison.Ordinal);
+        Assert.DoesNotContain("Полный JSON-аудит /incarnate contract", mainMenu, StringComparison.Ordinal);
         Assert.Contains("game_state/control/incarnation_trigger.json", mainMenu, StringComparison.Ordinal);
         Assert.Contains("ConfirmIncarnationContractPreview", mainMenu, StringComparison.Ordinal);
         Assert.Contains("BuildPendingWorldSetupActionSummary", mainMenu, StringComparison.Ordinal);
@@ -56,6 +60,7 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         var mainMenu = ReadSource("Core", "GameEngine", "GameEngine.MainMenu.cs");
         var help = ReadSource("UI", "ExplorerMode", "ExplorerMode.MetaStoryAndStatus.cs");
         var lifecycle = ReadSource("Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
+        var agentConsole = ReadSource("Core", "GameEngine", "GameEngine.AgentConsole.cs");
         var explorerPrivate = ReadSource("UI", "ExplorerMode", "ExplorerMode.PrivateImplementation.cs");
         var trade = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.GuardiansProjectsTrade.cs");
         var inkFeathers = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.InkFeathersAndOfferings.cs");
@@ -84,7 +89,8 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.DoesNotContain("Capstone полного Сияния", help, StringComparison.Ordinal);
         Assert.DoesNotContain("Legacy alias", help, StringComparison.Ordinal);
         Assert.DoesNotContain("/реликвии /хранители /обители /душа", lifecycle, StringComparison.Ordinal);
-        Assert.Contains("/статус /реликвии /хранители /обители /гача /перья /архив_души", lifecycle, StringComparison.Ordinal);
+        Assert.Contains("/архив_души /хроники_посмертия", lifecycle, StringComparison.Ordinal);
+        Assert.Contains("/архив_души /хроники_посмертия", agentConsole, StringComparison.Ordinal);
         Assert.Contains("CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction)", lifecycle, StringComparison.Ordinal);
         Assert.Contains("CleanupAfterCancelledChaosSeaMarkerTurn(action)", lifecycle, StringComparison.Ordinal);
         Assert.Contains("D(\"chaos_sea\"", commandCatalog, StringComparison.Ordinal);

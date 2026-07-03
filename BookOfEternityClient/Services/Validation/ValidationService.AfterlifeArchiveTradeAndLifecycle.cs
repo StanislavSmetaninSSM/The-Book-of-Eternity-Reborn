@@ -2369,12 +2369,13 @@ public partial class ValidationService
                 {
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.priceInFeathers",
-                        IssueSeverity.Warning,
+                        IssueSeverity.Error,
                         "tradeInventory item.priceInFeathers должен совпадать с канонической ценой для pricingReputationTier",
                         code: "guardian_trade_inventory_price_mismatch",
                         section: "tradeInventory",
                         expected: expectedPrice.ToString(),
-                        actual: actualPrice.ToString()));
+                        actual: actualPrice.ToString(),
+                        repairHint: "Пересчитай priceInFeathers по quality/rarity и pricingReputationTier текущей витрины; не оставляй авторские цены, которые расходятся с canonical GuardianTradeService pricing."));
                 }
             }
         }
@@ -2884,12 +2885,13 @@ public partial class ValidationService
         {
             issues.Add(new ValidationIssue(
                 $"{activeGuardianContext}.tradeInventory",
-                IssueSeverity.Warning,
+                IssueSeverity.Error,
                 $"activeGuardian расходится с {guardianArrayContext}.tradeInventory",
                 code: "guardian_trade_inventory_presence_mismatch",
                 section: "tradeInventory",
                 expected: "same tradeInventory presence in activeGuardian and guardians[]",
-                actual: activeHasTrade ? "present only in activeGuardian" : "present only in guardians[]"));
+                actual: activeHasTrade ? "present only in activeGuardian" : "present only in guardians[]",
+                repairHint: "Синхронизируй activeGuardian.tradeInventory с tradeInventory того же guardianId в guardians[]; это зеркало, а не отдельный источник правды."));
             return;
         }
 
@@ -2899,12 +2901,13 @@ public partial class ValidationService
         {
             issues.Add(new ValidationIssue(
                 $"{activeGuardianContext}.tradeInventory.tradeCycleId",
-                IssueSeverity.Warning,
+                IssueSeverity.Error,
                 $"activeGuardian расходится с {guardianArrayContext}.tradeInventory.tradeCycleId",
                 code: "guardian_trade_inventory_cycle_mismatch",
                 section: "tradeInventory",
                 expected: arrayCycle ?? "null",
-                actual: activeCycle ?? "null"));
+                actual: activeCycle ?? "null",
+                repairHint: "Скопируй tradeInventory.tradeCycleId между activeGuardian и matching guardians[] entry."));
         }
 
         var activeGenerated = GetFirstNonEmptyString(activeTradeInventory, "generatedAtUtc");
@@ -2913,12 +2916,13 @@ public partial class ValidationService
         {
             issues.Add(new ValidationIssue(
                 $"{activeGuardianContext}.tradeInventory.generatedAtUtc",
-                IssueSeverity.Warning,
+                IssueSeverity.Error,
                 $"activeGuardian расходится с {guardianArrayContext}.tradeInventory.generatedAtUtc",
                 code: "guardian_trade_inventory_generated_at_mismatch",
                 section: "tradeInventory",
                 expected: arrayGenerated ?? "null",
-                actual: activeGenerated ?? "null"));
+                actual: activeGenerated ?? "null",
+                repairHint: "Скопируй tradeInventory.generatedAtUtc между activeGuardian и matching guardians[] entry."));
         }
 
         var activeGenerationTier = GetFirstNonEmptyString(activeTradeInventory, "generationReputationTier");
@@ -2927,12 +2931,13 @@ public partial class ValidationService
         {
             issues.Add(new ValidationIssue(
                 $"{activeGuardianContext}.tradeInventory.generationReputationTier",
-                IssueSeverity.Warning,
+                IssueSeverity.Error,
                 $"activeGuardian расходится с {guardianArrayContext}.tradeInventory.generationReputationTier",
                 code: "guardian_trade_inventory_generation_tier_mismatch",
                 section: "tradeInventory",
                 expected: arrayGenerationTier ?? "null",
-                actual: activeGenerationTier ?? "null"));
+                actual: activeGenerationTier ?? "null",
+                repairHint: "Скопируй tradeInventory.generationReputationTier между activeGuardian и matching guardians[] entry."));
         }
 
         var activePricingTier = GetFirstNonEmptyString(activeTradeInventory, "pricingReputationTier");
@@ -2941,12 +2946,13 @@ public partial class ValidationService
         {
             issues.Add(new ValidationIssue(
                 $"{activeGuardianContext}.tradeInventory.pricingReputationTier",
-                IssueSeverity.Warning,
+                IssueSeverity.Error,
                 $"activeGuardian расходится с {guardianArrayContext}.tradeInventory.pricingReputationTier",
                 code: "guardian_trade_inventory_pricing_tier_mismatch",
                 section: "tradeInventory",
                 expected: arrayPricingTier ?? "null",
-                actual: activePricingTier ?? "null"));
+                actual: activePricingTier ?? "null",
+                repairHint: "Скопируй tradeInventory.pricingReputationTier между activeGuardian и matching guardians[] entry."));
         }
 
         if (!activeTradeInventory.TryGetProperty("items", out var activeItems) || activeItems.ValueKind != JsonValueKind.Array ||
@@ -2997,12 +3003,13 @@ public partial class ValidationService
         {
             issues.Add(new ValidationIssue(
                 $"{activeGuardianContext}.tradeInventory.items",
-                IssueSeverity.Warning,
+                IssueSeverity.Error,
                 $"activeGuardian расходится с {guardianArrayContext}.tradeInventory.items по числу слотов",
                 code: "guardian_trade_inventory_slot_count_mismatch",
                 section: "tradeInventory",
                 expected: arrayBySlot.Count.ToString(),
-                actual: activeBySlot.Count.ToString()));
+                actual: activeBySlot.Count.ToString(),
+                repairHint: "Синхронизируй полный tradeInventory.items между activeGuardian и matching guardians[] entry."));
             return;
         }
 
@@ -3012,12 +3019,13 @@ public partial class ValidationService
             {
                 issues.Add(new ValidationIssue(
                     $"{activeGuardianContext}.tradeInventory.items",
-                    IssueSeverity.Warning,
+                    IssueSeverity.Error,
                     $"activeGuardian расходится с {guardianArrayContext}.tradeInventory.items[{slotId}]",
                     code: "guardian_trade_inventory_slot_mismatch",
                     section: "tradeInventory",
                     expected: expectedSignature,
-                    actual: actualSignature ?? "missing slot"));
+                    actual: actualSignature ?? "missing slot",
+                    repairHint: "Синхронизируй matching slotId в activeGuardian.tradeInventory.items и guardians[].tradeInventory.items."));
             }
         }
     }

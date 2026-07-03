@@ -284,9 +284,18 @@
                                         ]
 
                                         ]]>
-    </updateitemtextcontents>
-    <response>
-     <![CDATA[
+     </updateitemtextcontents>
+     <note>
+      <![CDATA[
+
+                                        Correct: the appended entry contains only the text written in the journal.
+                                        Incorrect: prefixing it with technical bookkeeping such as "#[5]. День 15:" or "#[turn_5] - ..."
+                                        Those anchors belong in GM audit/chronicle surfaces, not in player-facing readable item content.
+
+                                        ]]>
+     </note>
+     <response>
+      <![CDATA[
                                         
                                         При свете тусклого костра вы достаете свой дневник и быстро записываете события дня, уделяя особое внимание странному поведению Каэлена.
                                         
@@ -461,11 +470,11 @@
    <content type="json">
     <![CDATA[
 
-                                    "contentsPath": null
-
-                                    "contentsPath": ["First Aid Kit"]
-
-                                    "contentsPath": ["Main Backpack", "Coin Purse"]
+                                    [
+                                        { "contentsPath": null },
+                                        { "contentsPath": ["First Aid Kit"] },
+                                        { "contentsPath": ["Main Backpack", "Coin Purse"] }
+                                    ]
 
                                     ]]>
    </content>
@@ -578,29 +587,32 @@
    <content type="json">
     <![CDATA[
 
-                                            {
-                                                "name": "Wand of Minor Healing",
-                                                "isConsumption": false, 
-                                                "combatEffect": {
-                                                    "actionName": "Channel Minor Heal", 
-                                                    "isActivatedEffect": true,
-                                                    "effects": [{ 
-                                                        "effectType": "Heal", 
-                                                        "value": "20%", 
-                                                        "targetType": "health", 
-                                                        "effectDescription": "Restores 20% health to one target." 
-                                                    }],
-                                                    "targetPriority": "lowest_health_ally" 
+                                            [
+                                                {
+                                                    "name": "Wand of Minor Healing",
+                                                    "isConsumption": false,
+                                                    "combatEffect": {
+                                                        "actionName": "Channel Minor Heal",
+                                                        "isActivatedEffect": true,
+                                                        "effects": [
+                                                            {
+                                                                "effectType": "Heal",
+                                                                "value": "20%",
+                                                                "targetType": "health",
+                                                                "effectDescription": "Restores 20% health to one target."
+                                                            }
+                                                        ],
+                                                        "targetPriority": "lowest_health_ally"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "Wand of Minor Healing",
+                                                    "resource": 3,
+                                                    "maximumResource": 3,
+                                                    "resourceType": "charges",
+                                                    "existedId": "wand-heal-001"
                                                 }
-                                            }
-
-                                            {
-                                                "name": "Wand of Minor Healing", 
-                                                "resource": 3,
-                                                "maximumResource": 3,
-                                                "resourceType": "charges",
-                                                "existedId": "wand-heal-001"
-                                            }
+                                            ]
 
                                             ]]>
    </content>
@@ -1002,11 +1014,13 @@
    <content type="json">
     <![CDATA[
 
-                        { "equipmentSlot": "Head", "requiresTwoHands": false }
-                        { "equipmentSlot": ["MainHand", "OffHand"], "requiresTwoHands": false }
-                        { "equipmentSlot": ["MainHand", "OffHand"], "requiresTwoHands": true }
-                        { "equipmentSlot": ["Finger1", "Finger2"], "requiresTwoHands": false }
-                        { "equipmentSlot": null, "requiresTwoHands": false }
+                        [
+                            { "equipmentSlot": "Head", "requiresTwoHands": false },
+                            { "equipmentSlot": ["MainHand", "OffHand"], "requiresTwoHands": false },
+                            { "equipmentSlot": ["MainHand", "OffHand"], "requiresTwoHands": true },
+                            { "equipmentSlot": ["Finger1", "Finger2"], "requiresTwoHands": false },
+                            { "equipmentSlot": null, "requiresTwoHands": false }
+                        ]
 
                         ]]>
    </content>

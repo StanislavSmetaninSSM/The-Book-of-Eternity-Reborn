@@ -439,7 +439,7 @@ public sealed class GuardianTradeServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
           "currentRealm": "Chaos Sea",
-          "inkFeathers": { "current": 100 },
+          "inkFeathers": { "current": 100, "total": 100 },
           "soulRelics": {
             "equipped": [],
             "stored": [
@@ -466,6 +466,8 @@ public sealed class GuardianTradeServiceTests : IDisposable
         Assert.Contains("\"status\": \"available\"", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains("\"soldByPlayerAtTurn\": 14", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.DoesNotContain("\"current\": 100", soulRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"current\": 160", soulRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"total\": 160", soulRaw ?? string.Empty, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -738,6 +740,65 @@ public sealed class GuardianTradeServiceTests : IDisposable
             GuardianId = "guardian_alpha",
             ReturnCycleId = "return_1",
             CurrentReputation = 120,
+            DerivedTradeSlotCount = 2,
+            EffectiveRarityCeilingBonusSteps = 0,
+            ProjectBonusSignature = "0|0|0"
+        };
+
+        Assert.False(GuardianTradeRequestState.InventoryMatchesRequestContract(inventory, request));
+    }
+
+    [Fact]
+    public void InventoryMatchesRequestContract_AcceptsDisplayTierAliasForExpectedTier()
+    {
+        var inventory = new JsonObject
+        {
+            ["tradeCycleId"] = "return_1",
+            ["generatedAtUtc"] = "2026-03-26T00:00:00Z",
+            ["generationReputationTier"] = "Wary/Neutral",
+            ["pricingReputationTier"] = "Wary/Neutral",
+            ["projectBonusSignature"] = "0|0|0",
+            ["upgradedTradeSlots"] = 0,
+            ["elevatedTradeSlots"] = 0,
+            ["effectiveRarityCeilingBonusSteps"] = 0,
+            ["items"] = new JsonArray(
+                CreateGuardianTradeSlot("trade_1", "relic_1"),
+                CreateGuardianTradeSlot("trade_2", "relic_2"))
+        };
+        var request = new GuardianTradeRequestState.PendingGuardianTradeRequest
+        {
+            GuardianId = "guardian_alpha",
+            ReturnCycleId = "return_1",
+            CurrentReputation = 0,
+            DerivedTradeSlotCount = 2,
+            EffectiveRarityCeilingBonusSteps = 0,
+            ProjectBonusSignature = "0|0|0"
+        };
+
+        Assert.True(GuardianTradeRequestState.InventoryMatchesRequestContract(inventory, request));
+        Assert.True(GuardianTradeService.IsValidTradeTierCode("Wary/Neutral"));
+    }
+
+    [Fact]
+    public void InventoryMatchesRequestContract_RejectsDisplayTierAliasForWrongExpectedTier()
+    {
+        var inventory = new JsonObject
+        {
+            ["tradeCycleId"] = "return_1",
+            ["generatedAtUtc"] = "2026-03-26T00:00:00Z",
+            ["generationReputationTier"] = "Wary/Neutral",
+            ["pricingReputationTier"] = "Wary/Neutral",
+            ["projectBonusSignature"] = "0|0|0",
+            ["effectiveRarityCeilingBonusSteps"] = 0,
+            ["items"] = new JsonArray(
+                CreateGuardianTradeSlot("trade_1", "relic_1"),
+                CreateGuardianTradeSlot("trade_2", "relic_2"))
+        };
+        var request = new GuardianTradeRequestState.PendingGuardianTradeRequest
+        {
+            GuardianId = "guardian_alpha",
+            ReturnCycleId = "return_1",
+            CurrentReputation = 65,
             DerivedTradeSlotCount = 2,
             EffectiveRarityCeilingBonusSteps = 0,
             ProjectBonusSignature = "0|0|0"

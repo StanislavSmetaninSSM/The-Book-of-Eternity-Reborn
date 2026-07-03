@@ -448,6 +448,116 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void Helper_CompleteBoeTurnRejectsFirstChaosSeaSystemGuardianBootstrapMirrorMutation()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-system-guardian-mirror-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "meta"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control", "pending_turn_snapshot", "game_state", "meta"));
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "meta", "soul_state.json"),
+                """
+                {
+                  "currentRealm": "Chaos Sea"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-system-guardian-mirror",
+                  "turnNumber": 1,
+                  "playerAction": "Душа по имени «Искра Странствий» пробуждается в Море Хаоса. Хранитель: Азалия. Опиши обитель Хранителя и первую встречу с ним."
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-system-guardian-mirror",
+                  "turnNumber": 1
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.authority.json"),
+                "{}",
+                Encoding.UTF8);
+
+            const string snapshotGuardianJson = """
+                {
+                  "guardians": [
+                    {
+                      "guardianId": "guard_system_azalia_001",
+                      "canonicalName": "Азалия",
+                      "originType": "system_preset",
+                      "sourcePreset": {
+                        "presetId": "azalia",
+                        "displayName": "Азалия",
+                        "version": "1.0",
+                        "library": "built_in"
+                      }
+                    }
+                  ],
+                  "activeGuardian": {
+                    "guardianId": "guard_system_azalia_001",
+                    "canonicalName": "Азалия",
+                    "originType": "system_preset",
+                    "sourcePreset": {
+                      "presetId": "azalia",
+                      "displayName": "Азалия",
+                      "version": "1.0",
+                      "library": "built_in"
+                    }
+                  },
+                  "chaosSeaNavigation": {
+                    "currentAbodeId": "abode_system_azalia_001",
+                    "currentGuardianId": "guard_system_azalia_001"
+                  }
+                }
+                """;
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot", "game_state", "meta", "guardians.json"),
+                snapshotGuardianJson,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "meta", "guardians.json"),
+                snapshotGuardianJson.Replace(
+                    "\"library\": \"built_in\"",
+                    "\"library\": \"built_in\", \"gmAddedNarrationState\": \"should not be here\""),
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "Complete-BoeTurn -FilesModified @('output/narrative_response.json')"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("system Guardian", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("guardians.json", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(Path.Combine(session, "ready", "turn_complete.json")));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void Helper_CompleteBoeTurnRejectsRawMortalWorldProfileMutationInAfterlifeRealm()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-wrong-realm-raw-mutation-" + Guid.NewGuid().ToString("N"));
@@ -884,6 +994,29 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonTurnPrompt_InlinesCompactExperienceLessons()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var turnBlock = ExtractFunctionBlock(daemon, "function Process-Turn");
+
+        Assert.Contains("function Get-GmExperiencePromptDigest", daemon, StringComparison.Ordinal);
+        Assert.Contains("$experiencePrompt = Get-GmExperiencePromptDigest", turnBlock, StringComparison.Ordinal);
+
+        var refreshIndex = turnBlock.IndexOf("$null = Write-GmExperienceLessons", StringComparison.Ordinal);
+        var digestIndex = turnBlock.IndexOf("$experiencePrompt = Get-GmExperiencePromptDigest", StringComparison.Ordinal);
+        var messageIndex = turnBlock.IndexOf("$message = \"Process turn", StringComparison.Ordinal);
+
+        Assert.True(refreshIndex >= 0, "Expected ordinary turn to refresh experience lessons.");
+        Assert.True(digestIndex > refreshIndex, "Expected digest to be built after refreshed lessons.");
+        Assert.True(messageIndex > digestIndex, "Expected dispatch prompt to include the refreshed digest.");
+
+        Assert.Contains("$($experiencePrompt)", turnBlock, StringComparison.Ordinal);
+        Assert.Contains("RLM PRE-TURN LESSONS", daemon, StringComparison.Ordinal);
+        Assert.Contains("acceptedFix", daemon, StringComparison.Ordinal);
+        Assert.Contains("preferredHarnessSurface", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void DaemonBootstrap_DoesNotAskGmToReadLargeContextPackDocs()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -934,18 +1067,23 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("Templates\\VALIDATION_REPAIR_TEMPLATE.md", daemon, StringComparison.Ordinal);
         Assert.Contains("Templates\\PROGRESSION_REPORT_TEMPLATE.json", daemon, StringComparison.Ordinal);
         Assert.Contains("Templates\\ACTOR_REASONING_TEMPLATE.md", daemon, StringComparison.Ordinal);
+        Assert.Contains("Templates\\MORTAL_SKILL_PROGRESSION_TEMPLATE.md", daemon, StringComparison.Ordinal);
+        Assert.Contains("Templates\\MORTAL_COMBAT_STATE_TEMPLATE.md", daemon, StringComparison.Ordinal);
         Assert.Contains("Templates\\AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json", daemon, StringComparison.Ordinal);
 
         Assert.Contains("compact_turn_output_template", daemon, StringComparison.Ordinal);
         Assert.Contains("compact_validation_repair_template", daemon, StringComparison.Ordinal);
         Assert.Contains("compact_progression_report_template", daemon, StringComparison.Ordinal);
         Assert.Contains("compact_actor_reasoning_template", daemon, StringComparison.Ordinal);
+        Assert.Contains("compact_mortal_skill_progression_template", daemon, StringComparison.Ordinal);
+        Assert.Contains("compact_mortal_combat_state_template", daemon, StringComparison.Ordinal);
         Assert.Contains("compact_tempo_advantage_template", daemon, StringComparison.Ordinal);
 
         Assert.Contains("$script:CompactTurnOutputTemplatePath", daemon, StringComparison.Ordinal);
         Assert.Contains("$script:CompactValidationRepairTemplatePath", daemon, StringComparison.Ordinal);
         Assert.Contains("$script:CompactProgressionReportTemplatePath", daemon, StringComparison.Ordinal);
         Assert.Contains("$script:CompactActorReasoningTemplatePath", daemon, StringComparison.Ordinal);
+        Assert.Contains("$script:CompactMortalCombatTemplatePath", daemon, StringComparison.Ordinal);
         Assert.Contains("$script:CompactTempoAdvantageTemplatePath", daemon, StringComparison.Ordinal);
         Assert.Contains("$script:GmCompactTemplateDirective", daemon, StringComparison.Ordinal);
     }
@@ -996,11 +1134,61 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("Scene-local | World-progression | Guardian-centric | Mixed", daemon, StringComparison.Ordinal);
         Assert.Contains("Why relevant", daemon, StringComparison.Ordinal);
         Assert.Contains("Why outside scope", daemon, StringComparison.Ordinal);
+        Assert.Contains("Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown", daemon, StringComparison.Ordinal);
         Assert.Contains("## Reasoning", daemon, StringComparison.Ordinal);
         Assert.Contains("New-StringFromCodePoints", daemon, StringComparison.Ordinal);
         Assert.DoesNotContain("## Scope\n", daemon, StringComparison.Ordinal);
         Assert.DoesNotContain("## Actor reasoning", daemon, StringComparison.Ordinal);
         Assert.DoesNotContain("AfterlifeProfile", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DaemonCompactTemplates_PreventFirstIncarnationBootstrapRepairPatterns()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var turnTemplate = ExtractHereStringBodyByNeedle(daemon, "# Compact Turn Output Template");
+        var progressionTemplate = ExtractTemplateBlock(daemon, "Templates\\PROGRESSION_REPORT_TEMPLATE.json");
+        var afterlifeChronicleTemplate = ExtractTemplateBlock(daemon, "Templates\\AFTERLIFE_CHRONICLE_TEMPLATE.md");
+        var locationTemplate = ExtractTemplateBlock(daemon, "Templates\\MORTAL_LOCATION_TRANSITION_TEMPLATE.md");
+
+        Assert.Contains(
+            "Always include timestamp in both output/narrative_response.json and output/debug_logs.json",
+            turnTemplate,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Do not skip NPC Scope during incarnation bootstrap",
+            turnTemplate,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Copy exact sessionId/requestId/turnNumber and include every processed-count field even when value is 0",
+            turnTemplate,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Fresh New Game system Guardian seed is client-owned",
+            turnTemplate,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "For fresh Mortal bootstrap, copy canonical coordinates from game_state/control/mortal_bootstrap_scaffold.json",
+            turnTemplate,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "current_location_coordinates_mismatch",
+            turnTemplate,
+            StringComparison.Ordinal);
+        Assert.Contains("\"chaosSeaCyclesProcessed\": 0", progressionTemplate, StringComparison.Ordinal);
+        Assert.Contains("\"guardianProjectCyclesProcessed\": 0", progressionTemplate, StringComparison.Ordinal);
+        Assert.Contains("\"residentAgencyCyclesProcessed\": 0", progressionTemplate, StringComparison.Ordinal);
+        Assert.Contains(
+            "Use Russian in-world terms: посмертие, Море Хаоса, Сияющая Обитель, смертный мир",
+            afterlifeChronicleTemplate,
+            StringComparison.Ordinal);
+        Assert.Contains("activeThreats", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("adjacencyMap", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("locationStorages", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("internalDifficultyProfile", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("externalDifficultyProfile", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("estimatedInternalDifficultyProfile", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("estimatedExternalDifficultyProfile", locationTemplate, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1080,6 +1268,136 @@ public sealed class GmTurnHelperContractTests
             Assert.DoesNotContain("РЎРё", actorTemplate, StringComparison.Ordinal);
             Assert.DoesNotContain("РњС‹", actorTemplate, StringComparison.Ordinal);
             Assert.DoesNotContain("Р”Рµ", actorTemplate, StringComparison.Ordinal);
+        }
+        finally
+        {
+            if (process is { HasExited: false })
+            {
+                try { process.Kill(entireProcessTree: true); } catch { /* ignored */ }
+            }
+
+            process?.Dispose();
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_RuntimeGeneratesEveryAdvertisedBootstrapArtifact()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-context-pack-advertised-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        Directory.CreateDirectory(session);
+
+        Process? process = null;
+        try
+        {
+            var daemonPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "game_master_daemon.ps1");
+            process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = string.Join(
+                    " ",
+                    "-NoLogo",
+                    "-NoProfile",
+                    "-ExecutionPolicy Bypass",
+                    "-File " + QuoteProcessArgument(daemonPath),
+                    "-GameSessionPath " + QuoteProcessArgument(session),
+                    "-PollingInterval 5000",
+                    "-LogFile " + QuoteProcessArgument(logPath)),
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                StandardOutputEncoding = Encoding.UTF8,
+                StandardErrorEncoding = Encoding.UTF8
+            });
+            Assert.NotNull(process);
+
+            var contextPack = Path.Combine(session, "game_state", "control", "gm_context_pack");
+            var advertised = new[]
+            {
+                Path.Combine(contextPack, "context_pack_manifest.json"),
+                Path.Combine(contextPack, "README.md"),
+                Path.Combine(contextPack, "Templates", "TURN_OUTPUT_TEMPLATE.md"),
+                Path.Combine(contextPack, "Templates", "VALIDATION_REPAIR_TEMPLATE.md"),
+                Path.Combine(contextPack, "Templates", "PROGRESSION_REPORT_TEMPLATE.json"),
+                Path.Combine(contextPack, "Templates", "ACTOR_REASONING_TEMPLATE.md"),
+                Path.Combine(contextPack, "Templates", "MORTAL_NPC_UPDATE_TEMPLATE.md"),
+                Path.Combine(contextPack, "Templates", "MORTAL_FACTION_UPDATE_TEMPLATE.md"),
+                Path.Combine(contextPack, "Templates", "MORTAL_LOCATION_TRANSITION_TEMPLATE.md"),
+                Path.Combine(contextPack, "Templates", "MORTAL_SKILL_PROGRESSION_TEMPLATE.md"),
+                Path.Combine(contextPack, "Templates", "MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md"),
+                Path.Combine(contextPack, "Templates", "MORTAL_COMBAT_STATE_TEMPLATE.md"),
+                Path.Combine(contextPack, "Templates", "AFTERLIFE_CHRONICLE_TEMPLATE.md"),
+                Path.Combine(contextPack, "Templates", "AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json"),
+                Path.Combine(contextPack, "Lessons", "GM_EXPERIENCE_LESSONS.md"),
+                Path.Combine(contextPack, "Lessons", "GM_EXPERIENCE_LESSONS.json"),
+                Path.Combine(contextPack, "Probes", "GM_SAFE_PROBES.md"),
+                Path.Combine(contextPack, "Rubrics", "GM_LIVE_TEST_RUBRIC.md"),
+                Path.Combine(contextPack, "Rubrics", "GM_LIVE_TEST_RUBRIC.json")
+            };
+
+            var deadline = DateTime.UtcNow.AddSeconds(20);
+            while (DateTime.UtcNow < deadline && advertised.Any(path => !File.Exists(path)))
+            {
+                if (process.HasExited)
+                    break;
+
+                Thread.Sleep(100);
+            }
+
+            var stdOut = process.HasExited ? process.StandardOutput.ReadToEnd() : string.Empty;
+            var stdErr = process.HasExited ? process.StandardError.ReadToEnd() : string.Empty;
+            var missing = advertised.Where(path => !File.Exists(path)).ToArray();
+            Assert.True(missing.Length == 0, "Missing advertised context-pack files:" + Environment.NewLine + string.Join(Environment.NewLine, missing) + Environment.NewLine + stdErr + stdOut);
+
+            var manifestText = File.ReadAllText(Path.Combine(contextPack, "context_pack_manifest.json"), Encoding.UTF8);
+            Assert.Contains("PROGRESSION_REPORT_TEMPLATE.json", manifestText, StringComparison.Ordinal);
+            Assert.Contains("MORTAL_SKILL_PROGRESSION_TEMPLATE.md", manifestText, StringComparison.Ordinal);
+            Assert.Contains("MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md", manifestText, StringComparison.Ordinal);
+            Assert.Contains("MORTAL_COMBAT_STATE_TEMPLATE.md", manifestText, StringComparison.Ordinal);
+            Assert.Contains("AFTERLIFE_CHRONICLE_TEMPLATE.md", manifestText, StringComparison.Ordinal);
+            Assert.Contains("AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json", manifestText, StringComparison.Ordinal);
+            Assert.Contains("GM_LIVE_TEST_RUBRIC.json", manifestText, StringComparison.Ordinal);
+
+            var turnTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "TURN_OUTPUT_TEMPLATE.md"), Encoding.UTF8);
+            Assert.Contains("- Текущая локация / Current location:", turnTemplate, StringComparison.Ordinal);
+            Assert.Contains("For EVERY relevant NPC block, the current-location line is mandatory", turnTemplate, StringComparison.Ordinal);
+            Assert.Contains("Only `response` and `timestamp` belong in `output/narrative_response.json`", turnTemplate, StringComparison.Ordinal);
+            Assert.Contains("Never put `afterlifeChronicleUpdates` into `output/narrative_response.json`", turnTemplate, StringComparison.Ordinal);
+
+            var actorTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "ACTOR_REASONING_TEMPLATE.md"), Encoding.UTF8);
+            Assert.Contains("- Текущая локация / Current location:", actorTemplate, StringComparison.Ordinal);
+            Assert.Contains("For EVERY relevant NPC block, the current-location line is mandatory", actorTemplate, StringComparison.Ordinal);
+
+            var mortalNpcTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "MORTAL_NPC_UPDATE_TEMPLATE.md"), Encoding.UTF8);
+            Assert.Contains("NPCsInScene is only for actors physically present in currentLocationData", mortalNpcTemplate, StringComparison.Ordinal);
+            Assert.Contains("voices behind a door", mortalNpcTemplate, StringComparison.Ordinal);
+            Assert.Contains("nearbyExitLocationId", mortalNpcTemplate, StringComparison.Ordinal);
+
+            var repairTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "VALIDATION_REPAIR_TEMPLATE.md"), Encoding.UTF8);
+            Assert.Contains("accepted_turn_output_artifact_repair", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("output/narrative_response.json", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("output/debug_logs.json.gm_thoughts_markdown", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("afterlife_chronicle_string_array_repair", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("persistentConsequences[]", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("openThreads[]", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("do not add `eventDescriptions[]`", repairTemplate, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("afterlife_spiritual_conflict_reward_repair", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("afterlife_entity_profile_scaffold_repair", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("specialArtLearningReceipts", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("narrative_response_unknown_field", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("remove the unsupported field from `output/narrative_response.json`", repairTemplate, StringComparison.OrdinalIgnoreCase);
+
+            var afterlifeChronicleTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "AFTERLIFE_CHRONICLE_TEMPLATE.md"), Encoding.UTF8);
+            Assert.Contains("afterlifeChronicleUpdates[]", afterlifeChronicleTemplate, StringComparison.Ordinal);
+            Assert.Contains("Never write `afterlifeChronicleUpdates` into `output/narrative_response.json`", afterlifeChronicleTemplate, StringComparison.Ordinal);
+            Assert.Contains("first meeting", afterlifeChronicleTemplate, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("significant Guardian dialogue", afterlifeChronicleTemplate, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("persistentConsequences[]", afterlifeChronicleTemplate, StringComparison.Ordinal);
+            Assert.Contains("openThreads[]", afterlifeChronicleTemplate, StringComparison.Ordinal);
+            Assert.Contains("never include `eventDescriptions[]`", afterlifeChronicleTemplate, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {
@@ -1180,6 +1498,100 @@ public sealed class GmTurnHelperContractTests
             Assert.True(record.GetProperty("rubric").GetProperty("playerFacingOutputPresent").GetBoolean());
             Assert.False(record.GetProperty("rubric").GetProperty("rawWrongRealmWrite").GetBoolean());
             Assert.DoesNotContain("Process turn #77", record.GetRawText(), StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonTrajectoryLedger_BackfillsLiveTestNoteRecordIdsForSameRequest()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-note-link-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+        Directory.CreateDirectory(Path.Combine(session, "output"));
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-note-link",
+                  "turnNumber": 81,
+                  "currentRealm": "Chaos Sea",
+                  "playerAction": "I test live-test note correlation.",
+                  "progressionControl": {
+                    "currentRealm": "Chaos Sea"
+                  }
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "pending_turn_snapshot.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-note-link",
+                  "turnNumber": 81
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(Path.Combine(control, "pending_turn_snapshot.authority.json"), "{}", Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "ready", "turn_complete.json"),
+                """
+                {
+                  "sessionId": "trajectory-session",
+                  "requestId": "request-note-link",
+                  "turnNumber": 81,
+                  "status": "success",
+                  "filesModified": [
+                    "output/narrative_response.json",
+                    "game_state/control/gm_live_test_notes.jsonl"
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "output", "narrative_response.json"),
+                """
+                {
+                  "response": "The turn produced player-facing text."
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "gm_live_test_notes.jsonl"),
+                """
+                {"noteId":"note_1","recordId":"unknown","requestId":"request-note-link","turnNumber":81,"realm":"ChaosSea","dimension":"harness_containment","severity":"info","observation":"The GM wrote this before ledger emission.","harnessFollowUp":"Link this note after the trajectory record exists.","issueRef":"#1290","createdAtUtc":"2026-06-29T17:37:20Z"}
+
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var ledgerPath = Path.Combine(control, "gm_trajectory_ledger.jsonl");
+            Assert.True(WaitForFileContaining(ledgerPath, "request-note-link", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            using var ledgerDocument = JsonDocument.Parse(File.ReadLines(ledgerPath, Encoding.UTF8).Last());
+            var recordId = ledgerDocument.RootElement.GetProperty("recordId").GetString();
+            Assert.StartsWith("gmtraj_", recordId);
+
+            var notesPath = Path.Combine(control, "gm_live_test_notes.jsonl");
+            Assert.True(WaitForFileContaining(notesPath, recordId!, process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+            var noteLine = File.ReadLines(notesPath, Encoding.UTF8).Single(line => line.Contains("note_1", StringComparison.Ordinal));
+            using var noteDocument = JsonDocument.Parse(noteLine);
+            Assert.Equal(recordId, noteDocument.RootElement.GetProperty("recordId").GetString());
         }
         finally
         {
@@ -1426,12 +1838,27 @@ public sealed class GmTurnHelperContractTests
                       "code": "inventory_item_missing",
                       "category": "StateConsistency",
                       "section": "Inventory",
-                      "message": "Referenced item is missing."
+                      "path": "game_state/inventory/items.json",
+                      "jsonPath": "$.items[0].itemId",
+                      "message": "Referenced item is missing.",
+                      "expected": "Known item id",
+                      "actual": "item_missing",
+                      "repairHint": "Materialize the item or remove the reference."
                     }
                   ],
                   "harnessRepairPackets": [
                     {
-                      "packetId": "repair-packet-1"
+                      "packetId": "repair-packet-1",
+                      "targetFiles": [
+                        "game_state/inventory/items.json"
+                      ]
+                    },
+                    {
+                      "kind": "mortal_bootstrap_materialization_repair",
+                      "targetFiles": [
+                        "game_state/world/current_location.json",
+                        "game_state/world/world_map.json"
+                      ]
                     }
                   ]
                 }
@@ -1453,6 +1880,22 @@ public sealed class GmTurnHelperContractTests
             Assert.Equal("rejected", record.GetProperty("validation").GetProperty("status").GetString());
             Assert.Equal("inventory_item_missing", record.GetProperty("validation").GetProperty("issueKinds")[0].GetString());
             Assert.Equal("repair-packet-1", record.GetProperty("validation").GetProperty("repairPacketRefs")[0].GetString());
+            Assert.Equal("mortal_bootstrap_materialization_repair", record.GetProperty("validation").GetProperty("repairPacketRefs")[1].GetString());
+            var diagnostics = record.GetProperty("validation").GetProperty("diagnostics");
+            Assert.Equal("inventory_item_missing", diagnostics[0].GetProperty("code").GetString());
+            Assert.Equal("StateConsistency", diagnostics[0].GetProperty("category").GetString());
+            Assert.Equal("Inventory", diagnostics[0].GetProperty("section").GetString());
+            Assert.Equal("game_state/inventory/items.json", diagnostics[0].GetProperty("path").GetString());
+            Assert.Equal("$.items[0].itemId", diagnostics[0].GetProperty("jsonPath").GetString());
+            Assert.Equal("Referenced item is missing.", diagnostics[0].GetProperty("message").GetString());
+            Assert.Equal("Known item id", diagnostics[0].GetProperty("expected").GetString());
+            Assert.Equal("item_missing", diagnostics[0].GetProperty("actual").GetString());
+            Assert.Equal("Materialize the item or remove the reference.", diagnostics[0].GetProperty("repairHint").GetString());
+            var packetDiagnostics = record.GetProperty("validation").GetProperty("repairPacketDiagnostics");
+            Assert.Equal("repair-packet-1", packetDiagnostics[0].GetProperty("packetId").GetString());
+            Assert.Equal("game_state/inventory/items.json", packetDiagnostics[0].GetProperty("targetFiles")[0].GetString());
+            Assert.Equal("mortal_bootstrap_materialization_repair", packetDiagnostics[1].GetProperty("kind").GetString());
+            Assert.Equal("game_state/world/current_location.json", packetDiagnostics[1].GetProperty("targetFiles")[0].GetString());
             Assert.Equal(2, record.GetProperty("repair").GetProperty("attempts").GetInt32());
             Assert.Equal("requested", record.GetProperty("repair").GetProperty("status").GetString());
             Assert.False(record.GetProperty("rubric").GetProperty("validTurn").GetBoolean());
@@ -1632,7 +2075,11 @@ public sealed class GmTurnHelperContractTests
                 workerEvent.GetProperty("eventType").GetString() == "proposal-applied" &&
                 workerEvent.GetProperty("proposalId").GetString() == "worker_proposal_validation_repair_0001" &&
                 workerEvent.GetProperty("appliedFileCount").GetInt32() == 1);
-            Assert.DoesNotContain("weather description is missing", record.GetRawText(), StringComparison.OrdinalIgnoreCase);
+            var diagnostics = record.GetProperty("validation").GetProperty("diagnostics");
+            Assert.Equal("normalized_weather_missing_description", diagnostics[0].GetProperty("code").GetString());
+            Assert.Equal("game_state/world/weather.json", diagnostics[0].GetProperty("path").GetString());
+            Assert.Equal("Weather description is missing.", diagnostics[0].GetProperty("message").GetString());
+            Assert.DoesNotContain("validation_repair_request.json", record.GetRawText(), StringComparison.OrdinalIgnoreCase);
         }
         finally
         {
@@ -1922,6 +2369,403 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonContextPack_RoutesMortalWorldMapAdjacencyLessonsToLocationTemplate()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-map-adjacency-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(control, "gm_trajectory_ledger.jsonl"),
+                """
+                {"recordId":"gmtraj_mortal_map_adjacency_fix","kind":"repair","sessionId":"prior","turnId":"repair-map-adjacency","requestId":"repair-map-adjacency","turnNumber":6,"realm":"MortalWorld","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"accepted","issueKinds":["world_map_adjacency_unknown_target"],"repairPacketRefs":["mortal_world_map_adjacency_repair"]},"repair":{"attempts":1,"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-07-02T08:12:00Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-repair",
+                  "turnNumber": 7,
+                  "currentRealm": "Mortal World",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "world_map_adjacency_unknown_target",
+                      "category": "StateConsistency",
+                      "section": "WorldMap",
+                      "message": "World map adjacency points to an unknown target location."
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "world_map_adjacency_unknown_target", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
+            Assert.Contains("MORTAL_LOCATION_TRANSITION_TEMPLATE.md", markdown, StringComparison.Ordinal);
+            Assert.Contains("unknown target", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("fully materialized", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("VALIDATION_REPAIR_TEMPLATE.md", markdown, StringComparison.Ordinal);
+
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var lesson = document.RootElement.GetProperty("lessons")[0];
+            Assert.Equal("MORTAL_LOCATION_TRANSITION_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
+            Assert.Contains("unknown target", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("fully materialized", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_MortalItemDurabilityLessonsNamePercentageString()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-item-durability-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(control, "gm_trajectory_ledger.jsonl"),
+                """
+                {"recordId":"gmtraj_mortal_item_durability_fix","kind":"repair","sessionId":"prior","turnId":"repair-durability","requestId":"repair-durability","turnNumber":3,"realm":"MortalWorld","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"accepted","issueKinds":["validation_error"],"diagnostics":[{"code":"validation_error","category":"StateConsistency","path":"game_state/inventory/items.json.items[0].durability","message":"durability должен быть percentage string"}],"repairPacketRefs":["mortal_bootstrap_materialization_repair"]},"repair":{"attempts":1,"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-07-01T04:58:21Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-repair",
+                  "turnNumber": 4,
+                  "currentRealm": "Mortal World",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "validation_error",
+                      "category": "StateConsistency",
+                      "path": "game_state/inventory/items.json.items[0].durability",
+                      "message": "durability должен быть percentage string"
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "validation_error", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
+            Assert.Contains("durability", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("percentage string", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("100%", markdown, StringComparison.Ordinal);
+            Assert.Contains("VALIDATION_REPAIR_TEMPLATE.md", markdown, StringComparison.Ordinal);
+
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var lesson = document.RootElement.GetProperty("lessons")[0];
+            Assert.Equal("VALIDATION_REPAIR_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
+            Assert.Contains("durability", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("100%", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_MortalItemJournalEntriesLessonsNameStringArray()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-item-journal-entries-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(control, "gm_trajectory_ledger.jsonl"),
+                """
+                {"recordId":"gmtraj_mortal_item_journal_fix","kind":"repair","sessionId":"prior","turnId":"repair-journal","requestId":"repair-journal","turnNumber":3,"realm":"MortalWorld","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"accepted","issueKinds":["invalid_string_array_item"],"diagnostics":[{"code":"invalid_string_array_item","category":"StateConsistency","path":"game_state/inventory/items.json.items[0].journalEntries[0]","message":"Элемент должен быть непустой строкой","expected":"non-empty string","actual":"Object","repairHint":"Исправь элемент массива до непустой строки."}],"repairPacketRefs":["mortal_bootstrap_materialization_repair"]},"repair":{"attempts":1,"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-07-01T06:43:56Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-repair",
+                  "turnNumber": 4,
+                  "currentRealm": "Mortal World",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "invalid_string_array_item",
+                      "category": "StateConsistency",
+                      "path": "game_state/inventory/items.json.items[0].journalEntries[0]",
+                      "message": "Элемент должен быть непустой строкой",
+                      "expected": "non-empty string",
+                      "actual": "Object",
+                      "repairHint": "Исправь элемент массива до непустой строки."
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "invalid_string_array_item", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
+            Assert.Contains("journalEntries", markdown, StringComparison.Ordinal);
+            Assert.Contains("array of non-empty strings", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("not objects", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("VALIDATION_REPAIR_TEMPLATE.md", markdown, StringComparison.Ordinal);
+
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var lesson = document.RootElement.GetProperty("lessons")[0];
+            Assert.Equal("VALIDATION_REPAIR_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
+            Assert.Contains("journalEntries", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
+            Assert.Contains("non-empty strings", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("not objects", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_NarrativeResponseUnknownFieldLessonsNameAfterlifeChronicleSurface()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-narrative-response-unknown-field-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(control, "gm_trajectory_ledger.jsonl"),
+                """
+                {"recordId":"gmtraj_afterlife_chronicle_wrong_output_file","kind":"repair","sessionId":"prior","turnId":"repair-narrative-response","requestId":"repair-narrative-response","turnNumber":6,"realm":"ChaosSea","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"accepted","issueKinds":["narrative_response_unknown_field"],"diagnostics":[{"code":"narrative_response_unknown_field","category":"OutputArtifact","path":"output/narrative_response.json.afterlifeChronicleUpdates","message":"output/narrative_response.json contains unsupported field afterlifeChronicleUpdates","expected":"response | timestamp","actual":"afterlifeChronicleUpdates"}],"repairPacketRefs":["accepted_turn_output_artifact_repair"]},"repair":{"attempts":1,"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-07-01T08:21:00Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-repair",
+                  "turnNumber": 7,
+                  "currentRealm": "Chaos Sea",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "narrative_response_unknown_field",
+                      "category": "OutputArtifact",
+                      "path": "output/narrative_response.json.afterlifeChronicleUpdates",
+                      "message": "output/narrative_response.json contains unsupported field afterlifeChronicleUpdates",
+                      "expected": "response | timestamp",
+                      "actual": "afterlifeChronicleUpdates"
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "narrative_response_unknown_field", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
+            Assert.Contains("output/narrative_response.json", markdown, StringComparison.Ordinal);
+            Assert.Contains("response", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("timestamp", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("afterlifeChronicleUpdates", markdown, StringComparison.Ordinal);
+            Assert.Contains("AFTERLIFE_CHRONICLE_TEMPLATE.md", markdown, StringComparison.Ordinal);
+
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var lesson = document.RootElement.GetProperty("lessons")[0];
+            Assert.Equal("AFTERLIFE_CHRONICLE_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
+            Assert.Contains("output/narrative_response.json", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
+            Assert.Contains("afterlifeChronicleUpdates", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_AfterlifeConflictRewardLessonsNameRewardRepair()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-afterlife-reward-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(control, "gm_trajectory_ledger.jsonl"),
+                """
+                {"recordId":"gmtraj_afterlife_reward_not_allowed","kind":"repair","sessionId":"prior","turnId":"repair-afterlife-reward","requestId":"repair-afterlife-reward","turnNumber":9,"realm":"ChaosSea","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"accepted","issueKinds":["afterlife_conflict_reward_not_allowed"],"diagnostics":[{"code":"afterlife_conflict_reward_not_allowed","category":"StateConsistency","path":"game_state/meta/afterlife_spiritual_conflict_state.json.recentConflicts[0].rewardAudit","message":"Этот terminal afterlife conflict outcome не может выдавать currency reward.","expected":"resolved contested player victory with diceAudit.outcomeBand=player_success|decisive_player_success","actual":"terminalOutcome=negotiated_training"}],"repairPacketRefs":["afterlife_spiritual_conflict_reward_repair"]},"repair":{"attempts":1,"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-07-02T11:12:00Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-repair",
+                  "turnNumber": 10,
+                  "currentRealm": "Chaos Sea",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "afterlife_conflict_reward_not_allowed",
+                      "category": "StateConsistency",
+                      "path": "game_state/meta/afterlife_spiritual_conflict_state.json.recentConflicts[0].rewardAudit",
+                      "message": "Этот terminal afterlife conflict outcome не может выдавать currency reward.",
+                      "expected": "resolved contested player victory with diceAudit.outcomeBand=player_success|decisive_player_success",
+                      "actual": "terminalOutcome=negotiated_training"
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "afterlife_conflict_reward_not_allowed", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
+            Assert.Contains("afterlife_spiritual_conflict_reward_repair", markdown, StringComparison.Ordinal);
+            Assert.Contains("rewardAudit", markdown, StringComparison.Ordinal);
+            Assert.Contains("player_success", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("negotiated", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("remove", markdown, StringComparison.OrdinalIgnoreCase);
+
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var lesson = document.RootElement.GetProperty("lessons")[0];
+            Assert.Equal("VALIDATION_REPAIR_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
+            Assert.Contains("afterlife_spiritual_conflict_reward_repair", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
+            Assert.Contains("remove rewardAudit", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_AfterlifeEntityProfileScaffoldLessonsNameProfileRepair()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-afterlife-profile-scaffold-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(control, "gm_trajectory_ledger.jsonl"),
+                """
+                {"recordId":"gmtraj_afterlife_profile_scaffold","kind":"repair","sessionId":"prior","turnId":"repair-afterlife-profile","requestId":"repair-afterlife-profile","turnNumber":9,"realm":"ChaosSea","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"clipboard"},"validation":{"status":"accepted","issueKinds":["afterlife_entity_profile_agency_goals_not_object","afterlife_entity_profile_missing_progression_strategy","afterlife_entity_profile_missing_ledger","incomplete_special_art_learning_receipt"],"diagnostics":[{"code":"afterlife_entity_profile_agency_goals_not_object","category":"StateConsistency","path":"game_state/meta/afterlife_entity_profiles.json.profiles[0].goals","message":"goals профиля духовной сущности должен быть object.","expected":"object","actual":"Array"}],"repairPacketRefs":["afterlife_entity_profile_scaffold_repair"]},"repair":{"attempts":1,"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":null},"createdAt":"2026-07-02T11:22:00Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-repair",
+                  "turnNumber": 10,
+                  "currentRealm": "Chaos Sea",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "afterlife_entity_profile_missing_progression_strategy",
+                      "category": "StateConsistency",
+                      "path": "game_state/meta/afterlife_entity_profiles.json.profiles[0].progressionStrategy",
+                      "message": "Профиль должен явно хранить progressionStrategy.",
+                      "expected": "object",
+                      "actual": "missing"
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "afterlife_entity_profile_scaffold_repair", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
+            Assert.Contains("goals", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("progressionStrategy", markdown, StringComparison.Ordinal);
+            Assert.Contains("ledger", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("specialArtLearningReceipts", markdown, StringComparison.Ordinal);
+            Assert.Contains("initialTier", markdown, StringComparison.Ordinal);
+
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var lesson = document.RootElement.GetProperty("lessons")[0];
+            Assert.Equal("VALIDATION_REPAIR_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
+            Assert.Contains("minimum profile scaffold", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("specialArtLearningReceipts", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonContextPack_RendersMortalLocationTransitionTemplate()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-location-template-" + Guid.NewGuid().ToString("N"));
@@ -1983,13 +2827,18 @@ public sealed class GmTurnHelperContractTests
 
             var template = File.ReadAllText(templatePath, Encoding.UTF8);
             Assert.Contains("NPCsInScene", template, StringComparison.Ordinal);
-            Assert.Contains("\"currentLocationId\": null", template, StringComparison.Ordinal);
+            Assert.Contains("known current location", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("same-turn new location", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("\"currentLocationId\": \"<currentLocationData.locationId for known current location>\"", template, StringComparison.Ordinal);
+            Assert.Contains("currentLocationId` to `null", template, StringComparison.Ordinal);
             Assert.Contains("\"attitude\": \"Neutral\"", template, StringComparison.Ordinal);
             Assert.Contains("Conformist", template, StringComparison.Ordinal);
             Assert.Contains("Pragmatist", template, StringComparison.Ordinal);
             Assert.Contains("Dissident", template, StringComparison.Ordinal);
             Assert.Contains("relationshipLock", template, StringComparison.Ordinal);
             Assert.Contains("Actors outside scope", template, StringComparison.Ordinal);
+            Assert.Contains("Role-identifiable visible, speaking, acting, clue-giving, or directly addressed scene actors are NPC candidates even when their personal name is unknown", template, StringComparison.Ordinal);
+            Assert.Contains("Use a stable role-based visible name", template, StringComparison.Ordinal);
 
             var readmePath = Path.Combine(session, "game_state", "control", "gm_context_pack", "README.md");
             Assert.True(WaitForFileContaining(readmePath, "Mortal World NPC updates", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
@@ -2032,6 +2881,137 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("factionId", template, StringComparison.Ordinal);
             Assert.Contains("sidecar", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("create the missing faction", template, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_RendersMortalExperienceLevelTemplate()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-experience-template-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+
+        Process? process = null;
+        try
+        {
+            Directory.CreateDirectory(session);
+            WriteDaemonConfig(session);
+            process = StartDaemon(session, logPath);
+
+            var templatePath = Path.Combine(
+                session,
+                "game_state",
+                "control",
+                "gm_context_pack",
+                "Templates",
+                "MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md");
+            Assert.True(WaitForFileContaining(templatePath, "Mortal experience and level template", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var template = File.ReadAllText(templatePath, Encoding.UTF8);
+            Assert.Contains("game_state/player/experience.json", template, StringComparison.Ordinal);
+            Assert.Contains("experienceGained", template, StringComparison.Ordinal);
+            Assert.Contains("currentExperience", template, StringComparison.Ordinal);
+            Assert.Contains("experienceForNextLevel", template, StringComparison.Ordinal);
+            Assert.Contains("playerLevel", template, StringComparison.Ordinal);
+            Assert.Contains("stat points", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("level-up", template, StringComparison.OrdinalIgnoreCase);
+
+            var readmePath = Path.Combine(session, "game_state", "control", "gm_context_pack", "README.md");
+            Assert.True(WaitForFileContaining(readmePath, "Mortal World experience and level progression", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+            var readme = File.ReadAllText(readmePath, Encoding.UTF8);
+            Assert.Contains("Mortal World experience and level progression", readme, StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_RendersMortalCombatStateTemplate()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-combat-template-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+
+        Process? process = null;
+        try
+        {
+            Directory.CreateDirectory(session);
+            WriteDaemonConfig(session);
+            process = StartDaemon(session, logPath);
+
+            var templatePath = Path.Combine(
+                session,
+                "game_state",
+                "control",
+                "gm_context_pack",
+                "Templates",
+                "MORTAL_COMBAT_STATE_TEMPLATE.md");
+            Assert.True(WaitForFileContaining(templatePath, "Mortal combat state template", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var template = File.ReadAllText(templatePath, Encoding.UTF8);
+            Assert.Contains("game_state/combat/enemies.json", template, StringComparison.Ordinal);
+            Assert.Contains("game_state/combat/allies.json", template, StringComparison.Ordinal);
+            Assert.Contains("game_state/combat/combat_log.json", template, StringComparison.Ordinal);
+            Assert.Contains("/бой", template, StringComparison.Ordinal);
+            Assert.Contains("skillMasteryChanges", template, StringComparison.Ordinal);
+            Assert.Contains("experience.json", template, StringComparison.Ordinal);
+
+            var readmePath = Path.Combine(session, "game_state", "control", "gm_context_pack", "README.md");
+            Assert.True(WaitForFileContaining(readmePath, "Mortal World combat state", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+            var readme = File.ReadAllText(readmePath, Encoding.UTF8);
+            Assert.Contains("Mortal World combat state", readme, StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_RendersMortalSkillProgressionTemplate()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-skill-template-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+
+        Process? process = null;
+        try
+        {
+            Directory.CreateDirectory(session);
+            WriteDaemonConfig(session);
+            process = StartDaemon(session, logPath);
+
+            var templatePath = Path.Combine(
+                session,
+                "game_state",
+                "control",
+                "gm_context_pack",
+                "Templates",
+                "MORTAL_SKILL_PROGRESSION_TEMPLATE.md");
+            Assert.True(WaitForFileContaining(templatePath, "Mortal skill progression", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var template = File.ReadAllText(templatePath, Encoding.UTF8);
+            Assert.Contains("passiveSkillChanges", template, StringComparison.Ordinal);
+            Assert.Contains("activeSkillChanges", template, StringComparison.Ordinal);
+            Assert.Contains("skillMasteryChanges", template, StringComparison.Ordinal);
+            Assert.Contains("attribute-only check", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("prose-only learning", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Чтение свидетельских меток", template, StringComparison.Ordinal);
+            Assert.DoesNotContain("Р§С‚РµРЅРёРµ", template, StringComparison.Ordinal);
+
+            var readmePath = Path.Combine(session, "game_state", "control", "gm_context_pack", "README.md");
+            Assert.True(WaitForFileContaining(readmePath, "Mortal World skill progression", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+            var readme = File.ReadAllText(readmePath, Encoding.UTF8);
+            Assert.Contains("Mortal World skill progression", readme, StringComparison.Ordinal);
         }
         finally
         {
@@ -2114,12 +3094,14 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("'$($script:CompactProgressionReportTemplatePath)'", turnBlock, StringComparison.Ordinal);
         Assert.Contains("'$($script:CompactActorReasoningTemplatePath)'", turnBlock, StringComparison.Ordinal);
         Assert.Contains("'$($script:CompactMortalNpcTemplatePath)'", turnBlock, StringComparison.Ordinal);
+        Assert.Contains("'$($script:CompactMortalCombatTemplatePath)'", turnBlock, StringComparison.Ordinal);
         Assert.Contains("'$($script:CompactTempoAdvantageTemplatePath)'", turnBlock, StringComparison.Ordinal);
         Assert.Contains("before opening large copied examples", turnBlock, StringComparison.Ordinal);
 
         Assert.Contains("'$($script:CompactValidationRepairTemplatePath)'", repairBlock, StringComparison.Ordinal);
         Assert.Contains("'$($script:CompactActorReasoningTemplatePath)'", repairBlock, StringComparison.Ordinal);
         Assert.Contains("'$($script:CompactMortalNpcTemplatePath)'", repairBlock, StringComparison.Ordinal);
+        Assert.Contains("'$($script:CompactMortalCombatTemplatePath)'", repairBlock, StringComparison.Ordinal);
         Assert.Contains("harnessRepairPackets", repairBlock, StringComparison.Ordinal);
         Assert.Contains("before opening large copied examples", repairBlock, StringComparison.Ordinal);
 
@@ -2138,10 +3120,21 @@ public sealed class GmTurnHelperContractTests
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
 
         Assert.Contains("$script:ObservedTerminalRequestKeys", daemon, StringComparison.Ordinal);
+        Assert.Contains("$ObservedTerminalRequestKeysFile", daemon, StringComparison.Ordinal);
+        Assert.Contains("gm_observed_terminal_requests.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("function Load-ObservedTerminalRequestKeys", daemon, StringComparison.Ordinal);
+        Assert.Contains("function Save-ObservedTerminalRequestKeys", daemon, StringComparison.Ordinal);
         Assert.Contains("Add-ObservedTerminalRequestKey", daemon, StringComparison.Ordinal);
         Assert.DoesNotContain("Remove-Item $RequestPath", daemon, StringComparison.Ordinal);
         Assert.DoesNotContain("Remove-Item -Path $RequestPath", daemon, StringComparison.Ordinal);
         Assert.DoesNotContain("_fs.DeleteFile(\"input/turn_request.json\")", daemon, StringComparison.Ordinal);
+
+        var addFunction = ExtractFunctionBlock(daemon, "function Add-ObservedTerminalRequestKey");
+        Assert.Contains("Save-ObservedTerminalRequestKeys", addFunction, StringComparison.Ordinal);
+
+        var loadIndex = daemon.IndexOf("Load-ObservedTerminalRequestKeys", StringComparison.Ordinal);
+        var bannerIndex = daemon.IndexOf("# Banner", StringComparison.Ordinal);
+        Assert.True(loadIndex >= 0 && bannerIndex > loadIndex, "Daemon must load persisted observed request keys before watcher startup.");
     }
 
     [Fact]
@@ -2236,6 +3229,119 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonTurnWait_EmitsTerminalErrorWhenBridgeReturnsIdleWithoutTerminalSignal()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("function Test-GmBridgeReturnedIdleWithoutTerminalSignal", daemon, StringComparison.Ordinal);
+        Assert.Contains("gm_bridge_idle_without_terminal_signal", daemon, StringComparison.Ordinal);
+        Assert.Contains("GM bridge returned to idle without a correlated terminal signal", daemon, StringComparison.Ordinal);
+        Assert.Contains("Write tests for @filename", daemon, StringComparison.Ordinal);
+        Assert.Contains(".IndexOf(\"› Implement {feature}\", [System.StringComparison]::Ordinal) -ge 0", daemon, StringComparison.Ordinal);
+        Assert.DoesNotContain(".Contains(\"› Implement {feature}\", [System.StringComparison]::Ordinal)", daemon, StringComparison.Ordinal);
+
+        var waitLoopIndex = daemon.IndexOf("while ($null -eq $terminalSignal", StringComparison.Ordinal);
+        var idleProbeIndex = daemon.IndexOf("Test-GmBridgeReturnedIdleWithoutTerminalSignal", waitLoopIndex, StringComparison.Ordinal);
+        var timeoutIndex = daemon.IndexOf("Timeout after ${elapsed}s", waitLoopIndex, StringComparison.Ordinal);
+        Assert.True(waitLoopIndex >= 0, "Expected a terminal wait loop.");
+        Assert.True(idleProbeIndex > waitLoopIndex, "Expected idle-without-terminal detection inside the wait loop.");
+        Assert.True(timeoutIndex > idleProbeIndex, "Expected idle-without-terminal detection before full timeout fallback.");
+    }
+
+    [Fact]
+    public void DaemonTurnWait_DoesNotTreatCodexWorkingScreenAsIdle()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("function Test-GmBridgeDiagnosticsIndicatesActiveCodexWork", daemon, StringComparison.Ordinal);
+
+        var functionBlock = ExtractFunctionBlock(daemon, "function Test-GmBridgeReturnedIdleWithoutTerminalSignal");
+        var activeWorkGuardIndex = functionBlock.IndexOf("Test-GmBridgeDiagnosticsIndicatesActiveCodexWork -Text $visibleScreenText", StringComparison.Ordinal);
+        var idlePromptIndex = functionBlock.IndexOf("$hasCodexIdlePrompt", StringComparison.Ordinal);
+        var returnIndex = functionBlock.IndexOf("return ($ready -and $hasCodexIdlePrompt)", StringComparison.Ordinal);
+
+        Assert.True(activeWorkGuardIndex >= 0, "Expected idle-terminal detection to inspect the visible Codex working state.");
+        Assert.True(idlePromptIndex > activeWorkGuardIndex, "Expected active-work guard before idle-prompt classification.");
+        Assert.True(returnIndex > activeWorkGuardIndex, "Expected active-work guard before the idle terminal shortcut can return true.");
+    }
+
+    [Fact]
+    public void DaemonTurnWait_EmitsEarlyTerminalErrorWhenBridgeStallsWhilePreparingArtifacts()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("function Test-GmBridgeArtifactWritingStall", daemon, StringComparison.Ordinal);
+        Assert.Contains("gm_bridge_artifact_write_stall", daemon, StringComparison.Ordinal);
+        Assert.Contains("gm_artifact_write_stall_report.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("GM bridge appears stalled while preparing turn artifacts", daemon, StringComparison.Ordinal);
+        Assert.Contains("Complete-BoeTurn", daemon, StringComparison.Ordinal);
+        Assert.Contains("outputVersion", daemon, StringComparison.Ordinal);
+        Assert.Contains("recentOutputTail", daemon, StringComparison.Ordinal);
+        Assert.Contains("visibleScreenText", daemon, StringComparison.Ordinal);
+
+        var waitLoopIndex = daemon.IndexOf("while ($null -eq $terminalSignal", StringComparison.Ordinal);
+        var idleProbeIndex = daemon.IndexOf("Test-GmBridgeReturnedIdleWithoutTerminalSignal", waitLoopIndex, StringComparison.Ordinal);
+        var artifactProbeIndex = daemon.IndexOf("Test-GmBridgeArtifactWritingStall", waitLoopIndex, StringComparison.Ordinal);
+        var timeoutIndex = daemon.IndexOf("Timeout after ${elapsed}s", waitLoopIndex, StringComparison.Ordinal);
+        Assert.True(waitLoopIndex >= 0, "Expected a terminal wait loop.");
+        Assert.True(artifactProbeIndex > waitLoopIndex, "Expected artifact-writing stall detection inside the wait loop.");
+        Assert.True(timeoutIndex > artifactProbeIndex, "Expected artifact-writing stall detection before full timeout fallback.");
+        Assert.True(artifactProbeIndex > idleProbeIndex, "Expected artifact-writing stall detection to run after the cheaper idle probe.");
+
+        var artifactBranch = daemon[artifactProbeIndex..timeoutIndex];
+        Assert.Contains("Stop-GmBridgeAfterTurnTimeout -TurnRequest $turnRequest -ElapsedSeconds $elapsed -Reason \"gm_bridge_artifact_write_stall\"", artifactBranch, StringComparison.Ordinal);
+        Assert.Contains("artifactWriteStall = $artifactStall", artifactBranch, StringComparison.Ordinal);
+        Assert.Contains("Set-Content -Path $errorPath", artifactBranch, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DaemonTurnTimeout_ShutsDownBridgeBeforeWritingTimeoutTerminalError()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("function Stop-GmBridgeAfterTurnTimeout", daemon, StringComparison.Ordinal);
+        Assert.Contains("shutdown-bridge", daemon, StringComparison.Ordinal);
+        Assert.Contains("gm_timeout_bridge_cleanup.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("timeoutBridgeCleanup = $timeoutBridgeCleanup", daemon, StringComparison.Ordinal);
+
+        var waitLoopIndex = daemon.IndexOf("while ($null -eq $terminalSignal", StringComparison.Ordinal);
+        var timeoutBranchIndex = daemon.IndexOf("if ($TurnTimeout -gt 0 -and $elapsed -ge $TurnTimeout -and $null -eq $terminalSignal)", waitLoopIndex, StringComparison.Ordinal);
+        var cleanupIndex = daemon.IndexOf("$timeoutBridgeCleanup = Stop-GmBridgeAfterTurnTimeout", timeoutBranchIndex, StringComparison.Ordinal);
+        var setErrorIndex = daemon.IndexOf("Set-Content -Path $errorPath", timeoutBranchIndex, StringComparison.Ordinal);
+
+        Assert.True(waitLoopIndex >= 0, "Expected a terminal wait loop.");
+        Assert.True(timeoutBranchIndex > waitLoopIndex, "Expected full turn timeout branch after the wait loop.");
+        Assert.True(cleanupIndex > timeoutBranchIndex, "Expected timeout branch to isolate the GM bridge.");
+        Assert.True(setErrorIndex > cleanupIndex, "Daemon must stop/quarantine the stale bridge before publishing turn_error.json.");
+    }
+
+    [Fact]
+    public void DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("$script:BridgeDispatchMaxWaitSeconds", daemon, StringComparison.Ordinal);
+        Assert.Contains("[int]$MaxWaitSeconds = 0", daemon, StringComparison.Ordinal);
+        Assert.Contains("bridge-dispatch-timeout", daemon, StringComparison.Ordinal);
+        Assert.Contains("gm_bridge_dispatch_unavailable", daemon, StringComparison.Ordinal);
+        Assert.Contains("GM bridge did not accept dispatch before the dispatch timeout.", daemon, StringComparison.Ordinal);
+
+        var dispatchFunction = ExtractFunctionBlock(daemon, "function Dispatch-WithRetry");
+        Assert.Contains("New-GmDispatchDiagnostics -Status \"bridge-dispatch-timeout\"", dispatchFunction, StringComparison.Ordinal);
+        Assert.Contains("-Timeout $true", dispatchFunction, StringComparison.Ordinal);
+
+        var dispatchIndex = daemon.IndexOf("$dispatchDiagnostics = Dispatch-WithRetry -Message $message", StringComparison.Ordinal);
+        var timeoutBranchIndex = daemon.IndexOf("$dispatchDiagnostics.Status -eq \"bridge-dispatch-timeout\"", dispatchIndex, StringComparison.Ordinal);
+        var waitLoopIndex = daemon.IndexOf("while ($null -eq $terminalSignal", dispatchIndex, StringComparison.Ordinal);
+        Assert.True(dispatchIndex >= 0, "Expected turn dispatch call.");
+        Assert.True(timeoutBranchIndex > dispatchIndex, "Expected bridge-dispatch timeout handling after dispatch returns.");
+        Assert.True(waitLoopIndex > timeoutBranchIndex, "Expected bridge-dispatch timeout handling before terminal wait loop.");
+
+        var timeoutBranch = daemon[timeoutBranchIndex..waitLoopIndex];
+        Assert.Contains("Add-ObservedTerminalRequestKey -Key $turnRequestKey", timeoutBranch, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void DaemonStartup_UsesSessionLocalStatusAndRefusesActivePeer()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -2247,6 +3353,28 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("GM daemon already running for this game_session", daemon, StringComparison.Ordinal);
         Assert.Contains("Write-DaemonStatus", daemon, StringComparison.Ordinal);
         Assert.Contains("heartbeatAtUtc", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DaemonTurnCounter_IncrementsOnlyForAcceptedTurnProcessing()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var turnBlock = ExtractFunctionBlock(daemon, "function Process-Turn");
+
+        var counterIndex = turnBlock.IndexOf("$script:TurnCount++", StringComparison.Ordinal);
+        var duplicateGuardIndex = turnBlock.IndexOf("if (Test-ObservedTerminalRequestKey -Key $turnRequestKey)", StringComparison.Ordinal);
+        var staleSnapshotGuardIndex = turnBlock.IndexOf("if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest))", StringComparison.Ordinal);
+        var turnLogIndex = turnBlock.IndexOf("Write-Log \"Turn #${turnNumber}:", StringComparison.Ordinal);
+
+        Assert.True(counterIndex >= 0, "Expected Process-Turn to increment the daemon turn counter.");
+        Assert.True(duplicateGuardIndex >= 0, "Expected Process-Turn to ignore already observed terminal request keys.");
+        Assert.True(staleSnapshotGuardIndex > duplicateGuardIndex, "Expected stale snapshot guard after duplicate request guard.");
+        Assert.True(
+            counterIndex > staleSnapshotGuardIndex,
+            "Daemon turn counter must not count duplicate or stale watcher hits as processed GM turns.");
+        Assert.True(
+            counterIndex < turnLogIndex,
+            "Daemon turn counter should increment immediately before the accepted turn is logged and processed.");
     }
 
     [Fact]
@@ -2438,24 +3566,18 @@ public sealed class GmTurnHelperContractTests
         return text[bodyStart..end];
     }
 
+    private static string ExtractHereStringBodyByNeedle(string text, string bodyNeedle)
+    {
+        var start = text.IndexOf(bodyNeedle, StringComparison.Ordinal);
+        Assert.True(start >= 0, $"Expected here-string body containing {bodyNeedle}.");
+
+        var end = text.IndexOf("\n'@", start, StringComparison.Ordinal);
+        Assert.True(end > start, $"Expected here-string terminator after {bodyNeedle}.");
+        return text[start..end];
+    }
+
     private static string LocateRepoRoot()
     {
-        var current = AppContext.BaseDirectory;
-        while (!string.IsNullOrWhiteSpace(current))
-        {
-            if (File.Exists(Path.Combine(current, "TheBookOfEternityReborn.sln")) ||
-                File.Exists(Path.Combine(current, ".git")) ||
-                Directory.Exists(Path.Combine(current, ".git")))
-            {
-                return current;
-            }
-
-            var parent = Directory.GetParent(current);
-            if (parent == null)
-                break;
-            current = parent.FullName;
-        }
-
-        throw new DirectoryNotFoundException("Could not locate repository root.");
+        return TestRepoPaths.RepoRoot;
     }
 }

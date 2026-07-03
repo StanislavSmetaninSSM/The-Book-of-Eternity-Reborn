@@ -628,7 +628,7 @@ public partial class ExplorerMode
             }
 
             var phaseLabel = isAfterlifeRealm
-                ? $"[blue]{Markup.Escape(_stateManager.CurrentState.CurrentRealm)}[/]"
+                ? $"[blue]{Markup.Escape(FormatAfterlifeRealmForPlayer(_stateManager.CurrentState.CurrentRealm))}[/]"
                 : "[green]Смертная жизнь[/]";
             var pendingLegacySummary = isAfterlifeRealm ? await ReadPendingMemoryLegacySummaryAsync() : null;
             Write(new Panel(new Markup(

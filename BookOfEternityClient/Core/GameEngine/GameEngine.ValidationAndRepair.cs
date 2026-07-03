@@ -44,6 +44,8 @@ public partial class GameEngine
         bool allowRepairLoop = false)
     {
         var repairAttempt = 0;
+        List<ValidationIssue>? lastRepairErrors = null;
+        var lastRepairAttempt = 0;
 
         while (true)
         {
@@ -57,6 +59,8 @@ public partial class GameEngine
                 issues.AddRange(await _validator.ValidateAcceptedTurnReasoningAsync());
                 issues.AddRange(await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync());
                 issues.AddRange(await _validator.ValidateAcceptedTurnQteOfferAsync());
+                issues.AddRange(await _validator.ValidateAcceptedTurnMortalCombatMaterializationAsync());
+                issues.AddRange(await _validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());
             }
             issues.AddRange(await _validator.ValidatePendingMemoryLegacyApplicationAsync());
             if (progressionControl != null)
@@ -68,6 +72,8 @@ public partial class GameEngine
 
             if (errors.Count == 0)
             {
+                if (allowRepairLoop && lastRepairErrors is { Count: > 0 })
+                    await AppendClearedValidationRepairTrajectoryAsync(source, lastRepairErrors, lastRepairAttempt);
                 await DeleteValidationRepairFilesAsync();
                 if (progressionControl != null)
                     await _progressionSchedule.ApplyAcceptedTurnOutcomeAsync(progressionControl);
@@ -96,6 +102,8 @@ public partial class GameEngine
             }
 
             repairAttempt++;
+            lastRepairErrors = errors;
+            lastRepairAttempt = repairAttempt;
             if (!await WaitForContractRepairAsync(source, errors, repairAttempt, rollbackSnapshot))
                 return false;
         }
@@ -109,6 +117,8 @@ public partial class GameEngine
         ProgressionControl? progressionControl)
     {
         var criticalRepairAttempt = 0;
+        List<ValidationIssue>? lastCriticalRepairErrors = null;
+        var lastCriticalRepairAttempt = 0;
         using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);
 
         while (true)
@@ -124,6 +134,8 @@ public partial class GameEngine
                     source,
                     rawErrors.Count);
 
+                lastCriticalRepairErrors = rawErrors;
+                lastCriticalRepairAttempt = criticalRepairAttempt;
                 if (!await WaitForContractRepairAsync(source, rawErrors, criticalRepairAttempt, rollbackSnapshot))
                     return false;
 
@@ -151,6 +163,8 @@ public partial class GameEngine
                     source,
                     baselineErrors.Count);
 
+                lastCriticalRepairErrors = baselineErrors;
+                lastCriticalRepairAttempt = criticalRepairAttempt;
                 if (!await WaitForContractRepairAsync(source, baselineErrors, criticalRepairAttempt, rollbackSnapshot))
                     return false;
 
@@ -168,6 +182,8 @@ public partial class GameEngine
                     source,
                     canonicalErrors.Count);
 
+                lastCriticalRepairErrors = canonicalErrors;
+                lastCriticalRepairAttempt = criticalRepairAttempt;
                 if (!await WaitForContractRepairAsync(source, canonicalErrors, criticalRepairAttempt, rollbackSnapshot))
                     return false;
 
@@ -177,6 +193,8 @@ public partial class GameEngine
             if (!await ValidateCurrentGameStateOrShowErrorsAsync(source, rollbackSnapshot, progressionControl, allowRepairLoop: true))
                 return false;
 
+            if (lastCriticalRepairErrors is { Count: > 0 })
+                await AppendClearedValidationRepairTrajectoryAsync(source, lastCriticalRepairErrors, lastCriticalRepairAttempt);
             await CleanupAcceptedTurnCommandSurfacesAsync();
             await RefreshRuntimeStateAsync();
             return true;
@@ -519,7 +537,7 @@ public partial class GameEngine
             if (ready == null)
             {
                 _logger.LogWarning("Отклонён validation_repair_ready: файл не читается как валидный JSON");
-                await ReportRejectedRepairReadyAsync(
+                var rejectedReadyRepair = await ReportRejectedRepairReadyAsync(
                     source,
                     errors,
                     attempt,
@@ -528,6 +546,9 @@ public partial class GameEngine
                     "Valid JSON object with matching sessionId/requestId/turnNumber for the active repair cycle",
                     string.IsNullOrWhiteSpace(readyJson) ? "missing or empty file" : TruncateDiagnosticValue(readyJson),
                     BuildInvalidRepairReadyRepairHint(pendingSnapshot));
+                if (rejectedReadyRepair.MetadataDiagnosticOnly)
+                    return await FailClosedDiagnosticOnlyValidationRepairAsync(source, rejectedReadyRepair.ReportErrors, attempt, rollbackSnapshot);
+
                 await DeleteValidationRepairReadyAsync();
                 AnsiConsole.MarkupLine("[yellow]⚠ Клиент запросил новую попытку исправления. GM продолжает корректировать данные.[/]");
                 await Task.Delay(500);
@@ -545,7 +566,7 @@ public partial class GameEngine
                     pendingSnapshot.Context?.RequestId,
                     pendingSnapshot.Context?.TurnNumber);
 
-                await ReportRejectedRepairReadyAsync(
+                var rejectedReadyRepair = await ReportRejectedRepairReadyAsync(
                     source,
                     errors,
                     attempt,
@@ -554,6 +575,9 @@ public partial class GameEngine
                     BuildExpectedRepairContext(pendingSnapshot),
                     BuildActualRepairContext(ready, pendingSnapshot),
                     BuildMismatchedRepairReadyRepairHint(pendingSnapshot));
+                if (rejectedReadyRepair.MetadataDiagnosticOnly)
+                    return await FailClosedDiagnosticOnlyValidationRepairAsync(source, rejectedReadyRepair.ReportErrors, attempt, rollbackSnapshot);
+
                 await DeleteValidationRepairReadyAsync();
                 AnsiConsole.MarkupLine("[yellow]⚠ Клиент запросил новую попытку исправления. GM продолжает корректировать данные.[/]");
                 await Task.Delay(500);
@@ -579,6 +603,7 @@ public partial class GameEngine
         {
             var context = pendingSnapshot.Context;
             var realmResolution = BuildValidationRepairTrajectoryRealmResolution(context);
+            var repairPacketRefs = await BuildValidationRepairTrajectoryRepairPacketRefsAsync(errors);
             var record = new
             {
                 recordId = "gmtraj_" + Guid.NewGuid().ToString("N"),
@@ -615,7 +640,7 @@ public partial class GameEngine
                     acceptanceScope = "correlated_repair_ready",
                     fullCanonicalStateAccepted = false,
                     issueKinds = BuildValidationRepairTrajectoryIssueKinds(errors),
-                    repairPacketRefs = Array.Empty<string>()
+                    repairPacketRefs
                 },
                 repair = new
                 {
@@ -663,6 +688,104 @@ public partial class GameEngine
         }
     }
 
+    private async Task AppendClearedValidationRepairTrajectoryAsync(
+        string source,
+        IReadOnlyCollection<ValidationIssue> errors,
+        int attempt)
+    {
+        const string ledgerPath = "game_state/control/gm_trajectory_ledger.jsonl";
+
+        try
+        {
+            var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+            var context = pendingSnapshot.Context;
+            var requestMetadata = BuildProtocolRequestMetadata(pendingSnapshot);
+            var realmResolution = BuildValidationRepairTrajectoryRealmResolution(context);
+            var repairPacketRefs = await BuildValidationRepairTrajectoryRepairPacketRefsAsync(errors);
+            var record = new
+            {
+                recordId = "gmtraj_" + Guid.NewGuid().ToString("N"),
+                kind = "repair",
+                sessionId = requestMetadata.SessionId,
+                turnId = requestMetadata.RequestId,
+                requestId = requestMetadata.RequestId,
+                turnNumber = requestMetadata.TurnNumber,
+                realm = realmResolution.Realm,
+                realmResolution,
+                mode = "validation_repair",
+                actionSummary = BuildValidationRepairTrajectoryActionSummary(context),
+                contextPackPath = "game_state/control/gm_context_pack",
+                templateVersions = new
+                {
+                    turnOutput = "v1",
+                    validationRepair = "v1",
+                    progressionReport = "v1",
+                    actorReasoning = "v1",
+                    tempoAdvantage = "v1"
+                },
+                outputFiles = Array.Empty<string>(),
+                dispatch = new
+                {
+                    attempts = 0,
+                    busyRetries = 0,
+                    timeout = false,
+                    status = "client_revalidated_terminal"
+                },
+                validation = new
+                {
+                    status = "accepted",
+                    source,
+                    acceptanceScope = "full_canonical_state_after_repair",
+                    fullCanonicalStateAccepted = true,
+                    issueKinds = BuildValidationRepairTrajectoryIssueKinds(errors),
+                    repairPacketRefs
+                },
+                repair = new
+                {
+                    attempts = attempt,
+                    status = "cleared"
+                },
+                workerEvents = Array.Empty<object>(),
+                rollbackEvents = Array.Empty<object>(),
+                terminal = new
+                {
+                    kind = "validation_repair_cleared",
+                    signalPath = (string?)null
+                },
+                durationSeconds = (double?)null,
+                rubric = new
+                {
+                    validTurn = true,
+                    playerFacingOutputPresent = _fs.FileExists("output/narrative_response.json"),
+                    implementationSourceRead = false,
+                    rawWrongRealmWrite = false,
+                    manualReasoningNeeded = false,
+                    missingHarnessTool = (string?)null
+                },
+                createdAt = DateTime.UtcNow.ToString("o"),
+                observedBy = "client"
+            };
+
+            var fullPath = _fs.ResolvePath(ledgerPath);
+            var directory = Path.GetDirectoryName(fullPath);
+            if (!string.IsNullOrWhiteSpace(directory))
+                Directory.CreateDirectory(directory);
+
+            var json = JsonSerializer.Serialize(record, new JsonSerializerOptions(JsonOpts)
+            {
+                WriteIndented = false
+            });
+            await File.AppendAllTextAsync(fullPath, json + Environment.NewLine, Encoding.UTF8);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(
+                ex,
+                "Failed to append cleared validation repair trajectory after {Source}. Gameplay continues without ledger entry.",
+                source);
+        }
+    }
+
     private static string[] BuildValidationRepairTrajectoryIssueKinds(IEnumerable<ValidationIssue> errors)
     {
         return errors
@@ -672,6 +795,49 @@ public partial class GameEngine
             .Where(kind => !string.IsNullOrWhiteSpace(kind))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(kind => kind, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
+    private async Task<string[]> BuildValidationRepairTrajectoryRepairPacketRefsAsync(IEnumerable<ValidationIssue> errors)
+    {
+        var refs = new List<string>();
+
+        if (_fs.FileExists(ValidationRepairRequestPath))
+        {
+            try
+            {
+                var json = await _fs.ReadFileAsync(ValidationRepairRequestPath);
+                var request = string.IsNullOrWhiteSpace(json)
+                    ? null
+                    : JsonSerializer.Deserialize<ValidationRepairRequest>(json, JsonOpts);
+
+                if (request?.HarnessRepairPackets is { Count: > 0 })
+                {
+                    refs.AddRange(request.HarnessRepairPackets
+                        .Select(packet => packet.Kind)
+                        .Where(kind => !string.IsNullOrWhiteSpace(kind))!);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Failed to read validation repair packet refs from active repair request for trajectory ledger.");
+            }
+        }
+
+        if (refs.Count == 0)
+        {
+            refs.AddRange(BuildValidationRepairHarnessPackets(
+                    PrioritizeValidationErrors(errors).ToList(),
+                    await ReadCurrentGuardianRepairActorNameHintsAsync())
+                .Select(packet => packet.Kind)
+                .Where(kind => !string.IsNullOrWhiteSpace(kind))!);
+        }
+
+        return refs
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(reference => reference, StringComparer.OrdinalIgnoreCase)
             .ToArray();
     }
 
@@ -847,15 +1013,28 @@ public partial class GameEngine
             .Where(issue => !guardianScopeActorNames.Contains(NormalizeRepairActorName(issue.Actor)))
             .ToList();
         var factionIdentityErrors = errors.Where(IsFactionIdentityRepairIssue).ToList();
+        var mortalFactionResourceErrors = errors.Where(IsMortalFactionResourceRepairIssue).ToList();
+        var mortalBootstrapMaterializationErrors = errors.Where(IsMortalBootstrapMaterializationRepairIssue).ToList();
+        var mortalWorldMapAdjacencyErrors = errors.Where(IsMortalWorldMapAdjacencyRepairIssue).ToList();
         var mortalLocationTransitionErrors = errors.Where(IsMortalLocationTransitionRepairIssue).ToList();
+        var mortalNpcScopeErrors = errors.Where(IsMortalNpcScopeRepairIssue).ToList();
         var mortalNpcLocationErrors = errors.Where(IsMortalNpcLocationRepairIssue).ToList();
+        var mortalNpcInventoryUpdateErrors = errors.Where(IsMortalNpcInventoryUpdateRepairIssue).ToList();
         var mortalNpcFullObjectErrors = errors.Where(IsMortalNpcFullObjectRepairIssue).ToList();
         var mortalNpcRelationshipEnumErrors = errors.Where(IsMortalNpcRelationshipEnumRepairIssue).ToList();
         var mortalNpcReferenceErrors = errors.Where(IsMortalNpcReferenceRepairIssue).ToList();
+        var mortalCombatStateErrors = errors.Where(IsMortalCombatStateRepairIssue).ToList();
+        var afterlifeChronicleStringArrayErrors = errors.Where(IsAfterlifeChronicleStringArrayRepairIssue).ToList();
         var afterlifeActionCostErrors = errors.Where(IsAfterlifeSpiritualConflictActionCostRepairIssue).ToList();
+        var afterlifeConflictRewardErrors = errors.Where(IsAfterlifeSpiritualConflictRewardRepairIssue).ToList();
+        var afterlifeEntityProfileScaffoldErrors = errors.Where(IsAfterlifeEntityProfileScaffoldRepairIssue).ToList();
+        var acceptedTurnOutputArtifactErrors = errors.Where(IsAcceptedTurnOutputArtifactRepairIssue).ToList();
 
         if (guardianScopeErrors.Count > 0)
             packets.Add(BuildGuardianScopeRepairPacket(guardianScopeErrors, guardianActorNameHints));
+
+        if (acceptedTurnOutputArtifactErrors.Count > 0)
+            packets.Add(BuildAcceptedTurnOutputArtifactRepairPacket(acceptedTurnOutputArtifactErrors));
 
         if (actorReasoningSubpointErrors.Count > 0)
             packets.Add(BuildActorReasoningSubpointRepairPacket(actorReasoningSubpointErrors));
@@ -863,11 +1042,26 @@ public partial class GameEngine
         if (factionIdentityErrors.Count > 0)
             packets.Add(BuildFactionIdentityRepairPacket(factionIdentityErrors));
 
+        if (mortalFactionResourceErrors.Count > 0)
+            packets.Add(BuildMortalFactionResourceRepairPacket(mortalFactionResourceErrors));
+
+        if (mortalBootstrapMaterializationErrors.Count > 0)
+            packets.Add(BuildMortalBootstrapMaterializationRepairPacket(mortalBootstrapMaterializationErrors));
+
+        if (mortalWorldMapAdjacencyErrors.Count > 0)
+            packets.Add(BuildMortalWorldMapAdjacencyRepairPacket(mortalWorldMapAdjacencyErrors));
+
         if (mortalLocationTransitionErrors.Count > 0)
             packets.Add(BuildMortalLocationTransitionRepairPacket(mortalLocationTransitionErrors));
 
+        if (mortalNpcScopeErrors.Count > 0)
+            packets.Add(BuildMortalNpcScopeRepairPacket(mortalNpcScopeErrors));
+
         if (mortalNpcLocationErrors.Count > 0)
             packets.Add(BuildMortalNpcLocationRepairPacket(mortalNpcLocationErrors));
+
+        if (mortalNpcInventoryUpdateErrors.Count > 0)
+            packets.Add(BuildMortalNpcInventoryUpdateRepairPacket(mortalNpcInventoryUpdateErrors));
 
         if (mortalNpcFullObjectErrors.Count > 0)
             packets.Add(BuildMortalNpcFullObjectRepairPacket(mortalNpcFullObjectErrors));
@@ -878,8 +1072,20 @@ public partial class GameEngine
         if (mortalNpcReferenceErrors.Count > 0)
             packets.Add(BuildMortalNpcReferenceRepairPacket(mortalNpcReferenceErrors));
 
+        if (mortalCombatStateErrors.Count > 0)
+            packets.Add(BuildMortalCombatStateRepairPacket(mortalCombatStateErrors));
+
+        if (afterlifeChronicleStringArrayErrors.Count > 0)
+            packets.Add(BuildAfterlifeChronicleStringArrayRepairPacket(afterlifeChronicleStringArrayErrors));
+
         if (afterlifeActionCostErrors.Count > 0)
             packets.Add(BuildAfterlifeSpiritualConflictActionCostRepairPacket(afterlifeActionCostErrors));
+
+        if (afterlifeConflictRewardErrors.Count > 0)
+            packets.Add(BuildAfterlifeSpiritualConflictRewardRepairPacket(afterlifeConflictRewardErrors));
+
+        if (afterlifeEntityProfileScaffoldErrors.Count > 0)
+            packets.Add(BuildAfterlifeEntityProfileScaffoldRepairPacket(afterlifeEntityProfileScaffoldErrors));
 
         return packets;
     }
@@ -901,6 +1107,15 @@ public partial class GameEngine
                 string.Equals(issue.Code, "missing_actor_actions", StringComparison.OrdinalIgnoreCase));
     }
 
+    private static bool IsAfterlifeChronicleStringArrayRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Section, "AfterlifeChronicles", StringComparison.OrdinalIgnoreCase) &&
+               (string.Equals(issue.Code, "afterlife_chronicle_persistent_consequences_entry_invalid", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "afterlife_chronicle_open_threads_entry_invalid", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "afterlife_chronicle_persistent_consequences_not_array", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "afterlife_chronicle_open_threads_not_array", StringComparison.OrdinalIgnoreCase));
+    }
+
     private static bool IsFactionIdentityRepairIssue(ValidationIssue issue)
     {
         return string.Equals(issue.Code, "faction_full_object_existing_requires_faction_id", StringComparison.OrdinalIgnoreCase) ||
@@ -919,18 +1134,52 @@ public partial class GameEngine
                (IsMortalNpcRepairPath(issue.FilePath) &&
                 (string.Equals(issue.Code, "current_location_new_scene_missing_initial_id_for_npc_scene", StringComparison.OrdinalIgnoreCase) ||
                  string.Equals(issue.Code, "missing_actor_current_location", StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(issue.Code, "npc_scene_missing_current_location_id", StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(issue.Code, "npc_scene_location_mismatch", StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(issue.Code, "npc_scene_missing_initial_location_id", StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(issue.Code, "npc_scene_initial_location_mismatch", StringComparison.OrdinalIgnoreCase) ||
                  string.Equals(issue.Code, "npc_initial_location_same_turn_target_unknown", StringComparison.OrdinalIgnoreCase) ||
                  string.Equals(issue.Code, "npc_same_turn_initial_location_requires_null_current_location", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    private static bool IsMortalFactionResourceRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Code, "canonical_faction_resource_entry_missing_required_fields", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "faction_full_object_missing_meta_resources", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "faction_full_object_missing_strategic_goods", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsMortalLocationTransitionRepairIssue(ValidationIssue issue)
     {
         return string.Equals(issue.Code, "current_location_unknown_location_id", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "npc_unknown_current_location_id", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "location_missing_active_threat_array", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "location_missing_adjacency_array", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "location_missing_difficulty_profile", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "location_missing_storage_array", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "world_map_new_link_missing_required_fields", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "world_map_new_location_coordinates_duplicate_same_turn", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "world_map_new_location_coordinates_conflict_existing", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "world_map_new_location_requires_null_location_id", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "world_map_new_location_missing_description", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMortalWorldMapAdjacencyRepairIssue(ValidationIssue issue)
+    {
+        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
+        {
+            "world_map_adjacency_unknown_target" => true,
+            "world_map_link_update_unknown_source" => true,
+            "world_map_link_remove_unknown_source" => true,
+            "world_map_storage_update_unknown_target" => true,
+            "world_map_storage_remove_unknown_target" => true,
+            "world_map_threat_add_unknown_target" => true,
+            "world_map_threat_add_unknown_same_turn_initial_id" => true,
+            "world_map_threat_update_unknown_target" => true,
+            "world_map_threat_remove_unknown_target" => true,
+            "world_map_threat_complete_unknown_target" => true,
+            _ => false
+        };
     }
 
     private static bool IsMortalNpcFullObjectRepairIssue(ValidationIssue issue)
@@ -938,7 +1187,7 @@ public partial class GameEngine
         if (!IsMortalNpcRepairPath(issue.FilePath))
             return false;
 
-        if (IsMortalNpcLocationRepairIssue(issue) || IsMortalNpcRelationshipEnumRepairIssue(issue))
+        if (IsMortalNpcLocationRepairIssue(issue) || IsMortalNpcInventoryUpdateRepairIssue(issue) || IsMortalNpcRelationshipEnumRepairIssue(issue))
             return false;
 
         if (string.Equals(issue.Code, "npc_full_object_missing_required_fields", StringComparison.OrdinalIgnoreCase))
@@ -951,6 +1200,78 @@ public partial class GameEngine
                 code.Contains("shape", StringComparison.OrdinalIgnoreCase));
     }
 
+    private static bool IsMortalNpcScopeRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Code, "structured_npc_update_out_of_scope", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMortalNpcInventoryUpdateRepairIssue(ValidationIssue issue)
+    {
+        return IsMortalNpcRepairPath(issue.FilePath) &&
+               string.Equals(issue.Code, "npc_existing_inventory_resend_forbidden", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMortalBootstrapMaterializationRepairIssue(ValidationIssue issue)
+    {
+        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
+        {
+            "bootstrap_codex_missing_current_world_entries" => true,
+            "mortal_bootstrap_reused_previous_world_lore" => true,
+            "canonical_faction_custom_state_missing_required_fields" => true,
+            "canonical_faction_custom_state_missing_progression_rule" => true,
+            "readable_document_missing_detail_authority" => true,
+            "item_invalid_quality" => true,
+            "item_missing_accessory_for_slot" => true,
+            "item_missing_equipment_slot" => true,
+            "current_location_coordinates_mismatch" => true,
+            "location_faction_control_invalid_type" => true,
+            "world_map_active_threat_missing_archetype" => true,
+            "codex_related_entry_unknown_target" => true,
+            "npc_contract_unknown_top_level_key" => true,
+            "flexible_state_unknown_top_level_key" => true,
+            "mortal_relevant_actor_missing_persistence" => true,
+            "missing_required_string" => IsMortalBootstrapGenericShapeRepairIssue(issue),
+            "missing_required_boolean_field" => IsMortalBootstrapGenericShapeRepairIssue(issue),
+            "expected_string_array" => IsMortalBootstrapGenericShapeRepairIssue(issue),
+            "missing_required_string_array_field" => IsMortalBootstrapGenericShapeRepairIssue(issue),
+            "item_invalid_accessory_slot" => IsMortalBootstrapItemRepairPath(issue.FilePath),
+            "item_invalid_equipment_slot" => IsMortalBootstrapItemRepairPath(issue.FilePath),
+            "validation_error" => IsMortalBootstrapGenericShapeRepairIssue(issue),
+            _ => false
+        };
+    }
+
+    private static bool IsMortalBootstrapGenericShapeRepairIssue(ValidationIssue issue)
+    {
+        return IsMortalBootstrapItemRepairPath(issue.FilePath) ||
+               IsMortalBootstrapCodexRepairPath(issue.FilePath) ||
+               IsMortalBootstrapCurrentWorldRepairPath(issue.FilePath);
+    }
+
+    private static bool IsMortalBootstrapItemRepairPath(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        return path.Replace('\\', '/').StartsWith("game_state/inventory/items.json", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMortalBootstrapCodexRepairPath(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        return path.Replace('\\', '/').StartsWith("lore/codex_entries.json", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMortalBootstrapCurrentWorldRepairPath(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        return path.Replace('\\', '/').StartsWith("lore/current_world/", StringComparison.OrdinalIgnoreCase);
+    }
+
     private static bool IsMortalNpcRelationshipEnumRepairIssue(ValidationIssue issue)
     {
         return IsMortalNpcRepairPath(issue.FilePath) &&
@@ -961,6 +1282,11 @@ public partial class GameEngine
     private static bool IsMortalNpcReferenceRepairIssue(ValidationIssue issue)
     {
         return string.Equals(issue.Code, "npc_journal_unknown_npc_reference", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMortalCombatStateRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Code, "mortal_combat_state_missing", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsMortalNpcRepairPath(string? path)
@@ -982,6 +1308,110 @@ public partial class GameEngine
                code.Contains("action_economy", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(code, "afterlife_conflict_dice_value_not_authorized", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(code, "afterlife_conflict_maneuver_changes_strain", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsAfterlifeSpiritualConflictRewardRepairIssue(ValidationIssue issue)
+    {
+        var code = issue.Code ?? string.Empty;
+        return code.StartsWith("afterlife_conflict_reward_", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsAfterlifeEntityProfileScaffoldRepairIssue(ValidationIssue issue)
+    {
+        var code = issue.Code ?? string.Empty;
+        return string.Equals(code, "afterlife_entity_profile_agency_goals_not_object", StringComparison.OrdinalIgnoreCase) ||
+               code.StartsWith("afterlife_entity_profile_agency_goal_", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(code, "afterlife_entity_profile_missing_progression_strategy", StringComparison.OrdinalIgnoreCase) ||
+               code.StartsWith("afterlife_entity_profile_strategy_", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(code, "afterlife_entity_profile_missing_ledger", StringComparison.OrdinalIgnoreCase) ||
+               code.StartsWith("afterlife_entity_profile_ledger_", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(code, "special_art_learning_receipts_not_array", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(code, "special_art_learning_receipt_not_object", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(code, "incomplete_special_art_learning_receipt", StringComparison.OrdinalIgnoreCase) ||
+               code.StartsWith("invalid_special_art_learning_", StringComparison.OrdinalIgnoreCase) ||
+               code.StartsWith("special_art_learning_", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsAcceptedTurnOutputArtifactRepairIssue(ValidationIssue issue)
+    {
+        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
+        {
+            "accepted_turn_missing_narrative_response" => true,
+            "accepted_turn_empty_narrative_response" => true,
+            "accepted_turn_stale_narrative_response" => true,
+            "accepted_turn_invalid_narrative_json_root" => true,
+            "accepted_turn_invalid_narrative_json" => true,
+            "narrative_response_missing_timestamp" => true,
+            "narrative_response_invalid_timestamp" => true,
+            "missing_gm_thoughts" => true,
+            "accepted_turn_stale_debug_logs" => true,
+            "invalid_debug_logs_json_root" => true,
+            "invalid_debug_logs_json" => true,
+            "debug_logs_missing_timestamp" => true,
+            "debug_logs_invalid_timestamp" => true,
+            _ => false
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildAcceptedTurnOutputArtifactRepairPacket(
+        IReadOnlyList<ValidationIssue> outputArtifactErrors)
+    {
+        var targetFiles = outputArtifactErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("output/narrative_response.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("output/narrative_response.json");
+        if (!targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("output/debug_logs.json");
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "accepted_turn_output_artifact_repair",
+            Priority = "high",
+            Title = "Accepted turn output artifact repair",
+            TargetFiles = targetFiles,
+            ExpectedShape = new List<string>
+            {
+                "output/narrative_response.json must be a fresh JSON object for the current accepted turn: { \"response\": \"player-facing narrative text\", \"timestamp\": \"ISO-8601 UTC timestamp\" }.",
+                "output/debug_logs.json must be a fresh JSON object for the current accepted turn: { \"gm_thoughts_markdown\": \"## Охват NPC-анализа\\n...\", \"timestamp\": \"ISO-8601 UTC timestamp\" }.",
+                "gm_thoughts_markdown must contain a separate `## Охват NPC-анализа` / `## NPC Scope` section before detailed actor reasoning blocks.",
+                "If no NPC, Guardian, faction, or other actor meaningfully acts or changes, explicitly say that the relevant-actor list is empty and why; do not omit gm_thoughts_markdown."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json first and repair only the listed accepted-turn output artifact errors.",
+                "Rewrite output/narrative_response.json with a fresh non-empty response for this same player action; preserve the already accepted narrative meaning instead of inventing a new turn.",
+                "Rewrite output/debug_logs.json.gm_thoughts_markdown with timestamp in output/debug_logs.json. Include `## Охват NPC-анализа`, scope mode, relevant actors, actors outside scope, and short reasoning for every relevant actor when any actor is involved.",
+                "Do not touch canonical game_state files unless validation_repair_request.json lists a canonical state error as well.",
+                "After both output artifacts are repaired, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from validation_repair_request.json."
+            },
+            DebugLogTemplate = string.Join(
+                Environment.NewLine,
+                "## Охват NPC-анализа",
+                "Режим: None | Mortal-centric | Guardian-centric | Mixed",
+                "Релевантные акторы: <имена через запятую или нет>",
+                "Почему они релевантны: <коротко>",
+                "Акторы вне охвата: <имена или нет>",
+                "Почему они вне охвата: <коротко>",
+                "",
+                "## Размышления акторов",
+                "### <имя актора>",
+                "- Текущая локация: <если применимо>",
+                "- Ситуация: <кратко>",
+                "- Мысли: <кратко>",
+                "- Действия: <кратко>"),
+            DoNotDo = new List<string>
+            {
+                "Do not write ready/turn_complete.json for validation repair.",
+                "Do not create a new turn, reroll, advance time, or change player choice while repairing missing output artifacts.",
+                "Do not leave output/debug_logs.json empty just because no visible NPC changed; write an explicit empty-scope explanation.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, validation_repair_request.json, GM docs, and session files."
+            }
+        };
     }
 
     private static ValidationRepairHarnessPacket BuildGuardianScopeRepairPacket(
@@ -1077,8 +1507,9 @@ public partial class GameEngine
             Steps = new List<string>
             {
                 $"In output/debug_logs.json.gm_thoughts_markdown, repair or create a missing reasoning block for exactly these actors: {actorList}.",
-                "Inside every listed actor block, include separate bullet subpoints with these exact client-recognized labels: - Ситуация:, - Мысли:, and - Действия:.",
-                "Keep the actor heading shape as ### <actor name>. Do not merge the three subpoints into one paragraph or one bullet.",
+                "Inside every listed actor block, include separate bullet subpoints with these exact client-recognized labels: - Текущая локация:, - Ситуация:, - Мысли:, and - Действия:.",
+                "Use - Текущая локация: to state where the NPC is now, whether it remains there, or whether it moves to a known current/same-turn location.",
+                "Keep the actor heading shape as ### <actor name>. Do not merge the required subpoints into one paragraph or one bullet.",
                 "Preserve unrelated accepted debug log content and do not create a new turn.",
                 "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from the current validation_repair_request.json."
             },
@@ -1148,9 +1579,78 @@ public partial class GameEngine
         };
     }
 
+    private static ValidationRepairHarnessPacket BuildMortalFactionResourceRepairPacket(
+        IReadOnlyList<ValidationIssue> factionResourceErrors)
+    {
+        var targetFiles = factionResourceErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("game_state/factions/faction_resources.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/factions/faction_resources.json");
+        if (!targetFiles.Contains("game_state/factions/faction_core.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/factions/faction_core.json");
+
+        var missingFields = CollectRepairMissingFields(factionResourceErrors);
+        var expectedShape = new List<string>
+        {
+            "canonical_faction_resource_entry_missing_required_fields means a canonical faction resource entry was written as a partial delta; repair it into a full resource object.",
+            "metaResources entries require resourceName, currentStockpile, incomePerCycle, and upkeepPerCycle.",
+            "strategicGoods entries require resourceName, currentStockpile, and incomePerCycle.",
+            "Keep faction resources linked to the existing canonical faction and preserve unrelated ranks, branches, projects, chronicles, relations, and custom states."
+        };
+
+        if (missingFields.Count > 0)
+            expectedShape.Add($"Validator reported these exact missing fields: {string.Join(", ", missingFields)}.");
+
+        var steps = new List<string>
+        {
+            "Open Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md before editing game_state/factions/*.",
+            "Find the resource entry named by validation_repair_request.json.errors[].filePath and expand it to a full resource object instead of deleting the faction or replacing the file with a minimal skeleton.",
+            "If the entry belongs to metaResources, include resourceName, currentStockpile, incomePerCycle, and upkeepPerCycle; if it belongs to strategicGoods, include resourceName, currentStockpile, and incomePerCycle.",
+            "Use numeric values for currentStockpile/incomePerCycle/upkeepPerCycle and keep player-facing resource names meaningful in the current Mortal World scene.",
+            "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+        };
+
+        if (missingFields.Count > 0)
+            steps.Insert(2, $"Patch the exact missing fields first: {string.Join(", ", missingFields)}.");
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_faction_resource_repair",
+            Priority = "high",
+            Title = "Mortal faction resource entry repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md" },
+            MissingFields = missingFields.Count == 0 ? null : missingFields,
+            ExpectedShape = expectedShape,
+            SafeCorrectionRules = new List<string>
+            {
+                "Complete the resource entry in place whenever it represents a real faction resource introduced or updated by the turn.",
+                "Remove the entry only if it is speculative, duplicate, or not supported by the accepted scene.",
+                "Preserve all unrelated faction state while repairing resource shape."
+            },
+            Steps = steps,
+            DoNotDo = new List<string>
+            {
+                "Do not delete the whole faction to silence a resource-entry validation error.",
+                "Do not leave resource entries as identity-only stubs or partial deltas.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer resource rules; use this packet, the validation request, GM docs, and session files."
+            }
+        };
+    }
+
     private static ValidationRepairHarnessPacket BuildMortalLocationTransitionRepairPacket(
         IReadOnlyList<ValidationIssue> locationTransitionErrors)
     {
+        var issueCodes = locationTransitionErrors
+            .Select(issue => issue.Code ?? "validation_error")
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(code => code, StringComparer.OrdinalIgnoreCase)
+            .ToList();
         var actorNames = CollectRepairActorNames(locationTransitionErrors)
             .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
             .ToList();
@@ -1180,8 +1680,12 @@ public partial class GameEngine
             CanonicalActorNames = actorNames,
             ExpectedShape = new List<string>
             {
+                $"Observed location/map issue codes: {string.Join(", ", issueCodes)}.",
                 "Register any durable new location in game_state/world/world_map.json before current_location.json or NPC currentLocationId references it.",
                 "game_state/world/current_location.json must reference a known world_map location id, name, region, description, exits, and last-events summary.",
+                "Durable location objects must carry required arrays/collections: knownExits, adjacencyMap, factionControl, locationStorages, and activeThreats. Use [] for empty locationStorages/activeThreats/adjacencyMap when no entries exist.",
+                "Durable location objects must carry both internalDifficultyProfile and externalDifficultyProfile with combat/environment/social/exploration facets.",
+                "World-map link previews must include targetName, targetCoordinates, estimatedInternalDifficultyProfile, and estimatedExternalDifficultyProfile.",
                 "NPC currentLocationId values must point only to known ids from world_map; same-turn scene color should not invent canonical ids.",
                 "Same-turn world_map new location coordinates must be unique and must not conflict with existing map coordinates."
             },
@@ -1198,6 +1702,9 @@ public partial class GameEngine
                 "Open Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md before editing game_state/world/current_location.json, game_state/world/world_map.json, or NPC location ids.",
                 "Decide whether the destination is a durable location or only narrative color inside the current location.",
                 "For a durable destination, create or repair the world_map entry first, including stable id, visible name, description, region, exits, and unique coordinates.",
+                "Patch required arrays on every durable/current location object: knownExits, adjacencyMap, factionControl, locationStorages, and activeThreats.",
+                "Patch difficulty profile objects on every durable/current location object before completing repair.",
+                "Patch each world-map link preview with targetName, targetCoordinates, and both estimated difficulty profiles.",
                 "After the map entry exists, update current_location.json and any moved NPC currentLocationId/currentLocationName to the known id/name.",
                 "For duplicate same-turn coordinates, assign unique coordinates before completing repair.",
                 "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
@@ -1212,6 +1719,147 @@ public partial class GameEngine
         };
     }
 
+    private static ValidationRepairHarnessPacket BuildMortalWorldMapAdjacencyRepairPacket(
+        IReadOnlyList<ValidationIssue> worldMapAdjacencyErrors)
+    {
+        var issueCodes = worldMapAdjacencyErrors
+            .Select(issue => issue.Code ?? "validation_error")
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(code => code, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var targetFiles = worldMapAdjacencyErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("game_state/world/world_map.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/world/world_map.json");
+        if (!targetFiles.Contains("game_state/world/current_location.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/world/current_location.json");
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_world_map_adjacency_repair",
+            Priority = "high",
+            Title = "Mortal world-map adjacency/link repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md" },
+            ExpectedShape = new List<string>
+            {
+                $"Observed world-map reference codes: {string.Join(", ", issueCodes)}.",
+                "world_map adjacency/link/storage/threat references must point to an existing locationId in world_map or to a same-turn newLocations.initialId that is fully materialized in the same repair.",
+                "If the target is a durable place the player or NPC can later reach, materialize it as a full world_map location with stable id, visible name, description, region, exits, and coordinates before linking to it.",
+                "If the target is only a clue, direction, route hint, or descriptive corner inside the current location, do not create an adjacency/link; keep it in current_location summary/knownExits/point text until it becomes reachable."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Materialize the missing location only when the accepted narrative made it a real reachable place or a moved actor's durable destination.",
+                "Remove or downgrade a speculative link when the prose only mentioned a route clue, hidden panel, service passage, storage hint, or offscreen direction.",
+                "Preserve existing valid locations, coordinates, exits, storages, threats, and current_location text while fixing only the unknown target/source references.",
+                "When creating a new location for a link, keep one stable id across world_map, current_location exits, NPC locations, debug reasoning, quests, and map history."
+            },
+            Steps = new List<string>
+            {
+                "Open Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md and game_state/world/world_map.json before repairing unknown target/source world-map links.",
+                "For each validation error, inspect the exact path and actual unknown target/source id from validation_repair_request.json.",
+                "Decide whether the unknown target is a durable reachable location or only a narrative hint inside the current scene.",
+                "For a durable location, add/repair the full world_map location first, then add or correct the adjacency/link/storage/threat reference to that known id.",
+                "For a narrative hint, remove the invalid adjacency/link/storage/threat command and preserve the clue in current_location narrative fields or quest log instead.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not leave adjacency, linkUpdates, storageUpdates, or threat updates pointing to unknown target/source ids.",
+                "Do not create a bare id-only location just to satisfy a link; a durable location must be a full location object.",
+                "Do not delete unrelated map history or valid exits to silence one unknown target.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer map rules; use this packet, the template, validation request, and session state."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildMortalBootstrapMaterializationRepairPacket(
+        IReadOnlyList<ValidationIssue> mortalBootstrapErrors)
+    {
+        var issueCodes = mortalBootstrapErrors
+            .Select(issue => issue.Code ?? "validation_error")
+            .Where(code => !string.IsNullOrWhiteSpace(code))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(code => code, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var targetFiles = mortalBootstrapErrors
+            .Select(issue => NormalizeMortalBootstrapRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("game_state/control/mortal_bootstrap_scaffold.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Insert(0, "game_state/control/mortal_bootstrap_scaffold.json");
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_bootstrap_materialization_repair",
+            Priority = "high",
+            Title = "Mortal bootstrap materialization repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string>
+            {
+                "Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md",
+                "Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md",
+                "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md"
+            },
+            ExpectedShape = new List<string>
+            {
+                $"Repair these bootstrap issue codes first: {string.Join(", ", issueCodes)}.",
+                "The first Mortal World turn must materialize the player-facing anchors from game_state/control/mortal_bootstrap_scaffold.json into canonical current-world files.",
+                "Current-world codex entries must describe this Mortal World, not afterlife lore or a previous world; sourceFile must start with current_world/ (for example current_world/world_setting.json), not lore/current_world/.",
+                "Readable document/book inventory items need matching detail authority so /книги or document-reading surfaces can show contents.",
+                "Starting items need canonical quality/rarity, durability when inspectable, and a valid equipment/accessory slot when item type implies one.",
+                "Starting inventory items need the full canonical item shape: itemId/existedId, image_prompt, isConsumption, isContainer, requiresTwoHands, contentsPath, durability as a percentage string such as 100% (never bare number 100), and array-shaped text/bonus fields when present.",
+                "Item journalEntries must be an array of non-empty string notes, not objects; do not write { text, turn, summary } objects into journalEntries[].",
+                "equipmentSlot and accessoryForSlot must use canonical slot names, arrays of canonical slot names, or null; do not invent slots such as Pocket/Hands when the contract expects a fixed enum.",
+                "Mortal World Relevant actors must be backed by a persistent NPC/faction/quest/inventory surface, or moved to Actors outside scope when they are only background scenery.",
+                "The player character is not an NPC persistence target. If the current protagonist is named in Relevant actors, mark them as player character and do not create NPCsInScene/UpdateNPCs for them.",
+                "NPCsInScene is only for actors physically present in currentLocationData. Offscreen voices, people behind a door, nearbyExitLocationId actors, and route pressure do not belong in NPCsInScene for the current room.",
+                "Faction custom sidecars must carry full Custom State Objects: stateId/name, currentValue, minValue, maxValue, description, progressionRule { changePerTurn, description }, and thresholds[]; if you only need a narrative note, use faction_core chronicle instead.",
+                "Active threats must be full objects, not strings: threatId/name/longTermGoal plus threatArchetype { motivation, method } and impactProfile { primaryTargetType, primaryTargetId, primaryTargetName, primaryImpact, baseImpactValue }. Use canonical enum values or keep activeThreats empty for vague pressure.",
+                "current_location coordinates/factionControl must match world_map and use object-shaped faction-control data."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Use mortal_bootstrap_scaffold.json as the checklist and patch only targetFiles unless validation errors explicitly name another file.",
+                "Preserve the accepted narrative and player-facing hooks; repair their canonical backing data instead of deleting the hooks.",
+                "Prefer adding missing detail records, sidecar fields, codex links, and canonical enum values over replacing whole files with minimal skeletons."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/mortal_bootstrap_scaffold.json first and compare it with the listed targetFiles.",
+                "Patch current-world lore/codex first: add at least one current-world codex entry with sourceFile starting current_world/ and remove stale reused-world references if validation names them.",
+                "Patch readable document authority: every readable book/document item needs a concrete text/detail surface linked to that item.",
+                "Patch inventory items: canonicalize quality/rarity, write durability as a percentage string such as 100% for intact inspectable items, and use valid equipment/accessory slots for wearable items.",
+                "Patch complete item shape fields exactly where validation names them: image_prompt, existedId, isConsumption, isContainer, requiresTwoHands, contentsPath, durability, equipmentSlot, and accessoryForSlot.",
+                "Patch item journalEntries as a JSON array of non-empty strings, not objects; preserve useful text by flattening each malformed object into one player-facing note string.",
+                "Patch string-array fields as JSON arrays of strings, not scalar text or semicolon-delimited strings.",
+                "Patch output/debug_logs.json Relevant actors: keep the current protagonist as player character, materialize real non-player Mortal actors through NPC/faction/quest/inventory surfaces, or move background objects to Actors outside scope with a clear reason.",
+                "Patch NPCsInScene location scope: if an actor is behind a door, near nearbyExitLocationId, in another corridor, or only heard offscreen, remove them from NPCsInScene and represent them through narrative/location/quest/faction memory or UpdateNPCs at their actual location only when they are durable known actors.",
+                "Patch factions: complete faction custom/progression sidecar fields with full Custom State Objects, or move narrative-only pressure into faction_core chronicle and leave faction_custom customStates empty.",
+                "Patch active threats: either write complete Active Threat Objects with canonical enum values, or remove vague string-only threats and represent pressure through location events/faction chronicle.",
+                "Patch location/map data: synchronize current_location coordinates with world_map and make factionControl an object-shaped authority.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not delete the opening book, letter, NPC, faction, map exit, or codex hook just to silence validation.",
+                "Do not copy afterlife lore or previous-world lore into current-world bootstrap files.",
+                "Do not write item durability as bare numbers such as 100; use percentage strings such as 100%.",
+                "Do not write item journalEntries as objects; journalEntries[] entries must be non-empty strings.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer bootstrap rules; use this packet, the scaffold, templates, and validation errors."
+            }
+        };
+    }
+
     private static ValidationRepairHarnessPacket BuildMortalNpcLocationRepairPacket(
         IReadOnlyList<ValidationIssue> mortalNpcLocationErrors)
     {
@@ -1221,13 +1869,38 @@ public partial class GameEngine
         var targetFiles = BuildMortalNpcTargetFiles(mortalNpcLocationErrors, includeNpcCoreWhenMissing: false);
         var touchesNpcCore = targetFiles.Contains("game_state/npcs/npc_core.json", StringComparer.OrdinalIgnoreCase);
         var touchesDebugLog = targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase);
+        var knownSceneLocationErrors = mortalNpcLocationErrors
+            .Where(issue =>
+                string.Equals(issue.Code, "npc_scene_missing_current_location_id", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "npc_scene_location_mismatch", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var sameTurnNewLocationErrors = mortalNpcLocationErrors
+            .Where(issue =>
+                string.Equals(issue.Code, "current_location_new_scene_missing_initial_id_for_npc_scene", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "npc_scene_missing_initial_location_id", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "npc_scene_initial_location_mismatch", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "npc_initial_location_same_turn_target_unknown", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "npc_same_turn_initial_location_requires_null_current_location", StringComparison.OrdinalIgnoreCase))
+            .ToList();
         var steps = new List<string>
         {
             "Open Templates/MORTAL_NPC_UPDATE_TEMPLATE.md before repairing NPC location validation errors."
         };
         if (touchesNpcCore)
         {
-            steps.Add("For NPCsInScene entries created this same turn, set initialLocationId to the current location id, currentLocationId to JSON null, and currentLocationName to the visible current location name.");
+            if (knownSceneLocationErrors.Count > 0)
+            {
+                var expectedRules = knownSceneLocationErrors
+                    .Select(issue => string.IsNullOrWhiteSpace(issue.Expected) ? "currentLocationId = currentLocationData.locationId" : issue.Expected.Trim())
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(rule => rule, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                steps.Add($"For NPCsInScene entries in a known current scene location, set {string.Join("; ", expectedRules)} and keep initialLocationId as JSON null unless validation separately reports a same-turn new-location initialId for that entry.");
+            }
+            if (sameTurnNewLocationErrors.Count > 0)
+            {
+                steps.Add("For NPCsInScene entries in a same-turn new location, set initialLocationId to currentLocationData.initialId or the matching newLocations.initialId, set currentLocationId to JSON null, and keep currentLocationName as the visible location name.");
+            }
             steps.Add("If a persistent NPC location is missing in game_state/npcs/npc_core.json, set currentLocationId/currentLocationName from the intended scene or move command; do not leave both location ids empty.");
             steps.Add("Keep NPCsInScene and NPCs entries as full canonical objects; do not replace them with short display-only rows.");
         }
@@ -1249,7 +1922,9 @@ public partial class GameEngine
             ExpectedShape = new List<string>
             {
                 "Same-turn scene NPCs live in game_state/npcs/npc_core.json under NPCsInScene and/or NPCs as full objects, not as partial name-only stubs.",
-                "For an NPC introduced in the current scene: initialLocationId = current location id, currentLocationId = JSON null, currentLocationName = visible current location name.",
+                "NPCsInScene is only for actors physically present in currentLocationData; actors heard behind a door, placed near a nearbyExitLocationId, or waiting in another corridor are offscreen for the current scene.",
+                "For a known current location: NPCsInScene.currentLocationId = currentLocationData.locationId, initialLocationId = JSON null, currentLocationName = visible current location name.",
+                "For a same-turn new location: NPCsInScene.initialLocationId = currentLocationData.initialId or matching newLocations.initialId, currentLocationId = JSON null, currentLocationName = visible current location name.",
                 "For an already persistent NPC moved by the turn: keep permanent npcId, set currentLocationId/currentLocationName to the destination, and do not invent a same-turn initialId."
             },
             SafeCorrectionRules = new List<string>
@@ -1263,7 +1938,104 @@ public partial class GameEngine
             {
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer NPC location rules.",
                 "Do not silence the issue by deleting a meaningful NPC from Relevant actors or NPCsInScene.",
-                "Do not set currentLocationId to a non-null value for a same-turn scene NPC that validator says must use initialLocationId."
+                "Do not keep an offscreen voice, nearbyExitLocationId actor, or corridor/door pressure in NPCsInScene for the current room.",
+                "Do not set currentLocationId to JSON null for NPCsInScene when validation expects currentLocationId for a known current location.",
+                "Do not set currentLocationId to a non-null value for a same-turn new location NPC that validator says must use initialLocationId."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildMortalNpcScopeRepairPacket(
+        IReadOnlyList<ValidationIssue> mortalNpcScopeErrors)
+    {
+        var actorNames = CollectRepairActorNames(mortalNpcScopeErrors)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var targetFiles = BuildMortalNpcTargetFiles(mortalNpcScopeErrors, includeNpcCoreWhenMissing: true);
+        if (!targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("output/debug_logs.json");
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_npc_scope_repair",
+            Priority = "high",
+            Title = "Mortal NPC relevant-actor scope repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md" },
+            CanonicalActorNames = actorNames,
+            ExpectedShape = new List<string>
+            {
+                "Every structured Mortal NPC update must be covered by output/debug_logs.json NPC scope: the actor name appears in Relevant actors and has a reasoning block.",
+                "The reasoning block must include current location, situation, thoughts, and actions for that actor in the accepted turn.",
+                "If the NPC is only offscreen continuity, route color, background pressure, or unchanged existing state, do not emit UpdateNPCs/NPCsInScene/other structured NPC updates for that actor this turn.",
+                "Actors outside scope is for named actors not structurally changed this turn; it is not enough when UpdateNPCs changes that actor."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Add the actor to Relevant actors and a full reasoning block only when the accepted player action truly changes, addresses, observes, or depends on that actor this turn.",
+                "Remove the structured NPC update when the actor is merely offscreen, unchanged, or mentioned only as context; preserve the information in narrative, quest log, location summary, or Actors outside scope instead.",
+                "Keep canonical NPC names identical across Relevant actors, reasoning headings, and game_state/npcs/npc_core.json.",
+                "Preserve unrelated NPC state while repairing only the out-of-scope update or its missing reasoning coverage."
+            },
+            Steps = new List<string>
+            {
+                "Open output/debug_logs.json and game_state/npcs/npc_core.json before repairing structured_npc_update_out_of_scope.",
+                "For each named actor, decide whether the accepted turn really changed or directly used that NPC.",
+                "If yes, add the exact canonical name to Relevant actors and add a matching reasoning block with current location, situation, thoughts, and actions.",
+                "If no, remove that actor's structured NPC update from this turn and keep any useful clue in non-NPC structured surfaces such as quest log or current_location summary.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not silence the error by deleting the NPC permanently when only the current turn update is out of scope.",
+                "Do not add an actor to Relevant actors without a matching reasoning block.",
+                "Do not keep a structured NPC update for an offscreen unchanged actor just because the actor exists in npc_core.json.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer scope rules; use this packet, the validation request, and GM docs."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildMortalNpcInventoryUpdateRepairPacket(
+        IReadOnlyList<ValidationIssue> mortalNpcInventoryUpdateErrors)
+    {
+        var actorNames = CollectRepairActorNames(mortalNpcInventoryUpdateErrors)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var targetFiles = BuildMortalNpcTargetFiles(mortalNpcInventoryUpdateErrors, includeNpcCoreWhenMissing: true);
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_npc_inventory_update_repair",
+            Priority = "high",
+            Title = "Mortal NPC existing-inventory update repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md" },
+            CanonicalActorNames = actorNames,
+            ExpectedShape = new List<string>
+            {
+                "UpdateNPCs for an existing NPC must not resend an inventory array/object.",
+                "Existing NPC inventory changes must use NPCInventoryAdds, NPCInventoryUpdates, NPCInventoryRemovals, equipment/resource commands, or no inventory command when nothing changed.",
+                "Only a genuinely new NPC with NPCId = JSON null and a non-empty initialId may carry initial inventory inside the full UpdateNPCs/NPCsInScene object."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Patch only the listed NPC entries and inventory command surfaces.",
+                "If the NPC is existing, remove inventory from UpdateNPCs and keep unrelated profile/location/relationship fields intact.",
+                "If the NPC is genuinely new, change identity to NPCId = JSON null plus initialId and keep inventory only as that new NPC's initial carried inventory."
+            },
+            Steps = new List<string>
+            {
+                "Open Templates/MORTAL_NPC_UPDATE_TEMPLATE.md before repairing NPC inventory update validation errors.",
+                "Remove inventory from UpdateNPCs for every existing NPC named by validation_repair_request.json.",
+                "If an existing NPC's inventory really changed this turn, express the delta through NPCInventoryAdds, NPCInventoryUpdates, NPCInventoryRemovals, equipment/resource commands, or another documented inventory command surface.",
+                "If there was no inventory change, delete only the forbidden inventory field and preserve the rest of the NPC object.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not delete a meaningful NPC to silence an inventory resend error.",
+                "Do not keep inventory: [] inside UpdateNPCs for an existing NPC.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer NPC inventory rules."
             }
         };
     }
@@ -1275,6 +2047,31 @@ public partial class GameEngine
             .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
             .ToList();
         var targetFiles = BuildMortalNpcTargetFiles(mortalNpcFullObjectErrors, includeNpcCoreWhenMissing: true);
+        var missingFields = CollectRepairMissingFields(mortalNpcFullObjectErrors);
+        var expectedShape = new List<string>
+        {
+            "Every meaningful Mortal World NPC update must materialize a full NPC object in game_state/npcs/npc_core.json.",
+            "Required profile/social fields include display identity, rarity, worldview, personalityArchetype, culturalStance, race, class, appearanceDescription, history, progressionType, relationshipLevel, attitude, relationshipLock, goals, inventory, and personalityTraits.",
+            "Collections such as relationshipLock, goals, inventory, personalityTraits, customProperties, journalEntries, and related arrays stay JSON arrays/objects even when they contain one item."
+        };
+        var steps = new List<string>
+        {
+            "Open Templates/MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json.",
+            "Find each NPC named by the validation errors and expand it to the canonical full NPC object shape instead of leaving a partial row.",
+            "Ensure relationshipLock is an object/array in the expected canonical shape, goals is a collection of concrete goals, and personalityTraits is a collection of concrete traits.",
+            "Ensure attitude is synchronized with relationshipLevel and culturalStance uses Conformist, Pragmatist, or Dissident."
+        };
+
+        if (missingFields.Count > 0)
+        {
+            expectedShape.Add($"Validator reported these exact missing fields: {string.Join(", ", missingFields)}.");
+            steps.Add($"Patch the exact missing fields first: {string.Join(", ", missingFields)}.");
+        }
+
+        if (missingFields.Contains("inventory", StringComparer.OrdinalIgnoreCase))
+            steps.Add("For a newly created NPC without carried items, add inventory: [] rather than omitting the inventory field.");
+
+        steps.Add("After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json.");
 
         return new ValidationRepairHarnessPacket
         {
@@ -1284,26 +2081,15 @@ public partial class GameEngine
             TargetFiles = targetFiles,
             TemplateRefs = new List<string> { "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md" },
             CanonicalActorNames = actorNames,
-            ExpectedShape = new List<string>
-            {
-                "Every meaningful Mortal World NPC update must materialize a full NPC object in game_state/npcs/npc_core.json.",
-                "Required profile/social fields include display identity, rarity, worldview, personalityArchetype, culturalStance, race, class, appearanceDescription, history, progressionType, relationshipLevel, attitude, relationshipLock, goals, and personalityTraits.",
-                "Collections such as relationshipLock, goals, personalityTraits, customProperties, journalEntries, and related arrays stay JSON arrays/objects even when they contain one item."
-            },
+            MissingFields = missingFields.Count == 0 ? null : missingFields,
+            ExpectedShape = expectedShape,
             SafeCorrectionRules = new List<string>
             {
                 "Complete the existing NPC object instead of replacing the file with a minimal skeleton.",
                 "For background-only names that should not persist, remove them from structured actor/NPC updates instead of creating a partial NPC.",
                 "Keep all user-visible NPC prose meaningful; required fields should not be filled with placeholders like unknown/TBD unless the story explicitly supports uncertainty."
             },
-            Steps = new List<string>
-            {
-                "Open Templates/MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json.",
-                "Find each NPC named by the validation errors and expand it to the canonical full NPC object shape instead of leaving a partial row.",
-                "Ensure relationshipLock is an object/array in the expected canonical shape, goals is a collection of concrete goals, and personalityTraits is a collection of concrete traits.",
-                "Ensure attitude is synchronized with relationshipLevel and culturalStance uses Conformist, Pragmatist, or Dissident.",
-                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
-            },
+            Steps = steps,
             DoNotDo = new List<string>
             {
                 "Do not delete meaningful NPCs or story hooks to avoid filling required fields.",
@@ -1311,6 +2097,25 @@ public partial class GameEngine
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer NPC object rules."
             }
         };
+    }
+
+    private static List<string> CollectRepairMissingFields(IReadOnlyList<ValidationIssue> issues)
+    {
+        var fields = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var issue in issues)
+        {
+            foreach (var part in (issue.Actual ?? string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            {
+                var field = part;
+                const string MissingPrefix = "missing ";
+                if (field.StartsWith(MissingPrefix, StringComparison.OrdinalIgnoreCase))
+                    field = field[MissingPrefix.Length..].Trim();
+                if (!string.IsNullOrWhiteSpace(field))
+                    fields.Add(field);
+            }
+        }
+
+        return fields.ToList();
     }
 
     private static ValidationRepairHarnessPacket BuildMortalNpcRelationshipEnumRepairPacket(
@@ -1403,6 +2208,66 @@ public partial class GameEngine
         };
     }
 
+    private static ValidationRepairHarnessPacket BuildMortalCombatStateRepairPacket(
+        IReadOnlyList<ValidationIssue> mortalCombatStateErrors)
+    {
+        var targetFiles = mortalCombatStateErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        foreach (var path in new[]
+                 {
+                     "game_state/combat/enemies.json",
+                     "game_state/combat/allies.json",
+                     "game_state/combat/combat_log.json"
+                 })
+        {
+            if (!targetFiles.Contains(path, StringComparer.OrdinalIgnoreCase))
+                targetFiles.Add(path);
+        }
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_combat_state_repair",
+            Priority = "high",
+            Title = "Mortal combat state materialization repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Templates/MORTAL_COMBAT_STATE_TEMPLATE.md" },
+            ExpectedShape = new List<string>
+            {
+                "A Mortal World turn that explicitly resolves open combat and updates XP, active skill mastery, or combat resources must leave a player-inspectable combat surface.",
+                "At minimum, write game_state/combat/combat_log.json with a recent combat summary that /бой can show.",
+                "If enemies or allies remain tactically relevant after the turn, also write game_state/combat/enemies.json and game_state/combat/allies.json.",
+                "If the fight fully ended in the same turn, enemies may be absent or marked defeated, but combat_log.json must still explain what happened."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Repair the already accepted combat scene; do not invent a different enemy, reroll dice, or rewrite the player action.",
+                "Preserve the XP, skill mastery, and resource changes already written unless validation explicitly rejects them.",
+                "Use player-facing Russian summaries in combat_log.json, while keeping canonical JSON keys and enum values valid.",
+                "If there is no ongoing combat after the exchange, make that explicit in the combat log instead of leaving /бой empty."
+            },
+            Steps = new List<string>
+            {
+                "Open Templates/MORTAL_COMBAT_STATE_TEMPLATE.md and validation_repair_request.json first.",
+                "Write or patch game_state/combat/combat_log.json so it summarizes the same combat exchange described in output/narrative_response.json.",
+                "If the enemy still exists or its defeated state matters, write game_state/combat/enemies.json with the opponent, health/poise state, actions, and defeated/retreated status.",
+                "If named allies participated tactically, write game_state/combat/allies.json with their roles and current state.",
+                "Include every touched combat file in the repair completion evidence.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not delete XP, skill mastery, or player_status changes just to silence this repair.",
+                "Do not leave /бой empty after a player-facing open combat scene.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer combat shape; use this packet, the compact template, and session files."
+            }
+        };
+    }
+
     private static ValidationRepairHarnessPacket BuildAfterlifeSpiritualConflictActionCostRepairPacket(
         IReadOnlyList<ValidationIssue> actionCostErrors)
     {
@@ -1469,6 +2334,288 @@ public partial class GameEngine
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, validation_repair_request.json, afterlife docs/examples, and session control files."
             }
         };
+    }
+
+    private static ValidationRepairHarnessPacket BuildAfterlifeSpiritualConflictRewardRepairPacket(
+        IReadOnlyList<ValidationIssue> rewardErrors)
+    {
+        var targetFiles = rewardErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("game_state/meta/afterlife_spiritual_conflict_state.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/meta/afterlife_spiritual_conflict_state.json");
+
+        var issueDetails = rewardErrors
+            .Select(DescribeAfterlifeRewardRepairIssue)
+            .Where(detail => !string.IsNullOrWhiteSpace(detail))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(detail => detail, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var issueSummary = issueDetails.Count == 0
+            ? "see validation_repair_request.json.errors for exact rewardAudit paths and expected/actual values"
+            : string.Join("; ", issueDetails);
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "afterlife_spiritual_conflict_reward_repair",
+            Priority = "high",
+            Title = "Afterlife spiritual conflict reward eligibility repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string>
+            {
+                "OtherGuides/Afterlife_Contract_Matrix.md",
+                "Examples/E_CLI_Afterlife_Turns.txt"
+            },
+            ExpectedShape = new List<string>
+            {
+                "Currency rewardAudit is allowed only for a resolved contested player victory with diceAudit.outcomeBand = player_success or decisive_player_success.",
+                "Negotiated, withdrawn, failed, training-only, stalemate, teaching, or non-contested spiritual conflict outcomes must not grant currency rewards.",
+                "If the conflict did not qualify for a reward, preserve the narrative/training outcome and remove rewardAudit/currency deltas instead of upgrading the outcome.",
+                "If a reward is legitimately allowed, rewardAudit.realm, currency, conflictId, anti-farm uniqueness, and authority realm must match the resolved conflict proof."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Use validation_repair_request.json.errors as the immediate checklist; expected/actual values are authoritative for reward fields.",
+                "For afterlife_conflict_reward_not_allowed, remove the currency reward path and any matching currency delta; keep non-currency learning, chronicle, relationship, or narrative consequences if they are otherwise valid.",
+                "For reward realm/currency/conflictId errors on a valid victory, patch only rewardAudit identity/currency fields and preserve the resolved exchange outcome.",
+                "Do not convert negotiated training into a victory just to keep feathers or light-spark rewards."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json first and repair only the listed afterlife conflict reward errors in place.",
+                $"Patch these rewardAudit fields exactly: {issueSummary}.",
+                "In game_state/meta/afterlife_spiritual_conflict_state.json, inspect the listed recentConflicts[] or activeConflict terminal proof and decide whether diceAudit.outcomeBand is player_success/decisive_player_success.",
+                "If the outcome is negotiated/training/withdrawn/non-victory, remove rewardAudit and matching currency reward deltas; keep the conflict resolution, learning evidence, chronicle, and prose unchanged.",
+                "If the outcome is a valid reward-bearing victory, patch rewardAudit.realm/currency/conflictId to match the conflict proof and realm authority without changing dice or outcome.",
+                "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not create a new turn or write ready/turn_complete.json during validation repair.",
+                "Do not upgrade a negotiated, training-only, withdrawn, or failed conflict into a victory to preserve a reward.",
+                "Do not reroll dice, change exchangeLog outcomes, or invent a new conflictId just to satisfy reward validation.",
+                "Do not delete valid non-reward consequences such as special-art learning evidence, relationship changes, or afterlife chronicles unless validation explicitly rejects them.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer reward rules; use this packet, validation_repair_request.json, afterlife docs/examples, and session state."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildAfterlifeEntityProfileScaffoldRepairPacket(
+        IReadOnlyList<ValidationIssue> profileErrors)
+    {
+        var targetFiles = profileErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("game_state/meta/afterlife_entity_profiles.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/meta/afterlife_entity_profiles.json");
+
+        var actorNames = CollectRepairActorNames(profileErrors)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        if (actorNames.Count == 0)
+            actorNames.Add("afterlife entity profile from validation_repair_request.json");
+
+        var issueDetails = profileErrors
+            .Select(DescribeAfterlifeEntityProfileScaffoldRepairIssue)
+            .Where(detail => !string.IsNullOrWhiteSpace(detail))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(detail => detail, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var issueSummary = issueDetails.Count == 0
+            ? "see validation_repair_request.json.errors for exact profile fields and expected/actual values"
+            : string.Join("; ", issueDetails);
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "afterlife_entity_profile_scaffold_repair",
+            Priority = "high",
+            Title = "Afterlife entity profile scaffold and special-art learning repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string>
+            {
+                "OtherGuides/Afterlife_Contract_Matrix.md",
+                "Examples/E_CLI_Afterlife_Turns.txt"
+            },
+            CanonicalActorNames = actorNames,
+            ExpectedShape = new List<string>
+            {
+                "Every significant afterlife entity profile must keep goals as an object with goalId, shortTermGoal, longTermGoal, plan, gmThoughtsSummary, and updatedAtTurn.",
+                "progressionStrategy is a required object with strategyId, summary, priorityOrder[], resourceReserve, allowedSpends[], forbiddenSpends[], and optional lastUpdatedAtTurn.",
+                "ledger is a required array; use [] when no visible profile events exist yet. progressionLedger is optional but must be an array of complete entries if present.",
+                "profileCommands.specialArtLearningReceipts[] entries require receiptId, artId, teacherActorType, teacherActorId, playerActorId, trainingConditionSatisfied=true, learnedAtTurn, roleplayEvidence, summary, and initialTier absent or 0.",
+                "A special-art learning receipt must not grant a higher tier; make sure the source teacher art canTeachPlayer=true."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Use validation_repair_request.json.errors as the immediate checklist; patch only the listed profile/receipt fields unless adjacent minimal scaffold is required to validate.",
+                "Repair missing profile scaffold in place; do not delete the profile, teacher, learned art, or relationship evidence to silence shape errors.",
+                "Use player-facing Russian prose in summaries/goals while keeping canonical JSON keys and enum-like values valid.",
+                "If special-art learning happened, preserve the learning proof and complete the receipt shape instead of converting it into unrelated narrative only."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json and game_state/meta/afterlife_entity_profiles.json first.",
+                $"Patch this minimum profile scaffold and receipt checklist: {issueSummary}.",
+                "For every listed profile, make goals an object with goalId, shortTermGoal, longTermGoal, plan, gmThoughtsSummary, and updatedAtTurn; do not use an array for goals.",
+                "Add or repair progressionStrategy with strategyId, summary, priorityOrder[], resourceReserve, allowedSpends[], forbiddenSpends[], and lastUpdatedAtTurn when known.",
+                "Add ledger: [] when missing, or repair each ledger[] entry to an object with entryId, summary, and optional valid turnNumber.",
+                "For profileCommands.specialArtLearningReceipts[], complete receiptId/artId/teacherActorType/teacherActorId/playerActorId/trainingConditionSatisfied/learnedAtTurn/roleplayEvidence/summary and keep initialTier absent or 0.",
+                "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not move afterlife profile state into Mortal World NPC/player files.",
+                "Do not delete learned special art data, teacher proof, goals, or relationship hooks just to avoid completing the scaffold.",
+                "Do not grant initialTier > 0 through specialArtLearningReceipts; upgrades must happen through the documented progression/upgrade path.",
+                "Do not collapse arrays such as priorityOrder, allowedSpends, forbiddenSpends, ledger, or progressionLedger into scalar strings.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer profile scaffold rules; use this packet, validation_repair_request.json, afterlife docs/examples, and session state."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildAfterlifeChronicleStringArrayRepairPacket(
+        IReadOnlyList<ValidationIssue> chronicleErrors)
+    {
+        var targetFiles = chronicleErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("game_state/meta/afterlife_chronicles.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/meta/afterlife_chronicles.json");
+
+        var issueDetails = chronicleErrors
+            .Select(DescribeAfterlifeChronicleStringArrayRepairIssue)
+            .Where(detail => !string.IsNullOrWhiteSpace(detail))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(detail => detail, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var issueSummary = issueDetails.Count == 0
+            ? "see validation_repair_request.json.errors for exact paths and expected/actual values"
+            : string.Join("; ", issueDetails);
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "afterlife_chronicle_string_array_repair",
+            Priority = "high",
+            Title = "Afterlife chronicle string-array shape repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string>
+            {
+                "OtherGuides/Afterlife_Contract_Matrix.md",
+                "Examples/E_CLI_Afterlife_Turns.txt"
+            },
+            ExpectedShape = new List<string>
+            {
+                "GM-authored changes use afterlifeChronicleUpdates[]; canonical game_state/meta/afterlife_chronicles.json stores chronicles[].",
+                "persistentConsequences[] must be an array of non-empty strings. Each string is one durable consequence; do not use objects, bullets with nested fields, nulls, or empty strings.",
+                "openThreads[] must be an array of non-empty strings. Each string is one unresolved hook; do not use objects, bullets with nested fields, nulls, or empty strings.",
+                "eventDescriptions[] is canonical archive memory and must not be added to afterlifeChronicleUpdates[]. Keep lastEventsDescription as the current readable summary."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Use validation_repair_request.json.errors as the immediate checklist; its file paths and expected/actual values are authoritative.",
+                "Convert each invalid persistentConsequences/openThreads element into one concise player-meaningful string, preserving the same narrative meaning.",
+                "If the invalid value is an object, summarize its meaning into a single sentence string instead of keeping nested keys.",
+                "Patch only afterlife chronicle fields named by the errors unless the same chronicle entry needs a minimal adjacent string-array correction to validate."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json first and repair only the listed validation errors in place.",
+                $"Patch these afterlife chronicle string-array fields exactly: {issueSummary}.",
+                "In game_state/meta/afterlife_chronicles.json, inspect each listed chronicles[n].persistentConsequences/openThreads path and replace every invalid element with a non-empty string.",
+                "Remove afterlifeChronicleUpdates from output/narrative_response.json if it is present there; output/narrative_response.json may contain only response and timestamp.",
+                "Keep afterlifeChronicleUpdates only on the accepted afterlife chronicle update surface for game_state/meta/afterlife_chronicles.json, then repair the listed canonical chronicle fields.",
+                "Preserve chronicleId, scopeType, scopeId, displayName, lastEventsDescription, and lastUpdatedTurn unless those exact fields are listed as validation errors.",
+                "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not create a new turn or write ready/turn_complete.json during validation repair.",
+                "Do not put afterlifeChronicleUpdates inside output/narrative_response.json; use the afterlife chronicle surface for game_state/meta/afterlife_chronicles.json.",
+                "Do not put eventDescriptions[] inside afterlifeChronicleUpdates[]; archive eventDescriptions are read-only canonical memory.",
+                "Do not replace the afterlife chronicle with Mortal worldEventsLog, NPC journals, faction chronicles, or location news.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, validation_repair_request.json, afterlife docs/examples, and session control files."
+            }
+        };
+    }
+
+    private static string DescribeAfterlifeChronicleStringArrayRepairIssue(ValidationIssue issue)
+    {
+        var normalizedPath = (issue.FilePath ?? string.Empty).Replace('\\', '/');
+        var match = Regex.Match(
+            normalizedPath,
+            @"chronicles\[(?<index>\d+)\]\.(?<field>persistentConsequences|openThreads)(?:\[(?<entry>\d+)\])?",
+            RegexOptions.IgnoreCase);
+        var location = match.Success
+            ? string.IsNullOrWhiteSpace(match.Groups["entry"].Value)
+                ? $"chronicles[{match.Groups["index"].Value}].{match.Groups["field"].Value}"
+                : $"chronicles[{match.Groups["index"].Value}].{match.Groups["field"].Value}[{match.Groups["entry"].Value}]"
+            : NormalizeRepairTargetPath(normalizedPath);
+        var expected = string.IsNullOrWhiteSpace(issue.Expected) ? "see error.expected" : issue.Expected.Trim();
+        var actual = string.IsNullOrWhiteSpace(issue.Actual) ? "see error.actual" : issue.Actual.Trim();
+        var code = string.IsNullOrWhiteSpace(issue.Code) ? "validation_error" : issue.Code.Trim();
+
+        return $"{location}: expected {expected}, actual {actual} ({code})";
+    }
+
+    private static string DescribeAfterlifeRewardRepairIssue(ValidationIssue issue)
+    {
+        var normalizedPath = (issue.FilePath ?? string.Empty).Replace('\\', '/');
+        var match = Regex.Match(
+            normalizedPath,
+            @"(?:recentConflicts|resolvedConflicts)\[(?<index>\d+)\](?:\.(?<field>rewardAudit(?:\.[A-Za-z0-9_]+)?|conflictId|diceAudit(?:\.[A-Za-z0-9_]+)?))?",
+            RegexOptions.IgnoreCase);
+        var location = match.Success
+            ? string.IsNullOrWhiteSpace(match.Groups["field"].Value)
+                ? $"recentConflicts[{match.Groups["index"].Value}]"
+                : $"recentConflicts[{match.Groups["index"].Value}].{match.Groups["field"].Value}"
+            : NormalizeRepairTargetPath(normalizedPath);
+        var expected = string.IsNullOrWhiteSpace(issue.Expected) ? "see error.expected" : issue.Expected.Trim();
+        var actual = string.IsNullOrWhiteSpace(issue.Actual) ? "see error.actual" : issue.Actual.Trim();
+        var code = string.IsNullOrWhiteSpace(issue.Code) ? "validation_error" : issue.Code.Trim();
+
+        return $"{location}: expected {expected}, actual {actual} ({code})";
+    }
+
+    private static string DescribeAfterlifeEntityProfileScaffoldRepairIssue(ValidationIssue issue)
+    {
+        var normalizedPath = (issue.FilePath ?? string.Empty).Replace('\\', '/');
+        var match = Regex.Match(
+            normalizedPath,
+            @"(?:profiles\[(?<profileIndex>\d+)\]\.(?<profileField>[A-Za-z0-9_.\[\]]+)|profileCommands\.specialArtLearningReceipts\[(?<receiptIndex>\d+)\](?:\.(?<receiptField>[A-Za-z0-9_]+))?)",
+            RegexOptions.IgnoreCase);
+        string location;
+        if (match.Success && !string.IsNullOrWhiteSpace(match.Groups["profileIndex"].Value))
+        {
+            location = $"profiles[{match.Groups["profileIndex"].Value}].{match.Groups["profileField"].Value}";
+        }
+        else if (match.Success && !string.IsNullOrWhiteSpace(match.Groups["receiptIndex"].Value))
+        {
+            location = string.IsNullOrWhiteSpace(match.Groups["receiptField"].Value)
+                ? $"profileCommands.specialArtLearningReceipts[{match.Groups["receiptIndex"].Value}]"
+                : $"profileCommands.specialArtLearningReceipts[{match.Groups["receiptIndex"].Value}].{match.Groups["receiptField"].Value}";
+        }
+        else
+        {
+            location = NormalizeRepairTargetPath(normalizedPath);
+        }
+
+        var expected = string.IsNullOrWhiteSpace(issue.Expected) ? "see error.expected" : issue.Expected.Trim();
+        var actual = string.IsNullOrWhiteSpace(issue.Actual) ? "see error.actual" : issue.Actual.Trim();
+        var code = string.IsNullOrWhiteSpace(issue.Code) ? "validation_error" : issue.Code.Trim();
+
+        return $"{location}: expected {expected}, actual {actual} ({code})";
     }
 
     private static string DescribeAfterlifeActionCostRepairIssue(ValidationIssue issue)
@@ -1591,6 +2738,31 @@ public partial class GameEngine
         return actor.Trim().TrimEnd('.', ',', ';', ':', '!', '?').Trim();
     }
 
+    private static string NormalizeMortalBootstrapRepairTargetPath(string path)
+    {
+        var normalized = path.Replace('\\', '/');
+        foreach (var bootstrapFile in new[]
+                 {
+                     "game_state/control/mortal_bootstrap_scaffold.json",
+                     "lore/codex_entries.json",
+                     "game_state/inventory/items.json",
+                     "game_state/world/current_location.json",
+                     "game_state/world/world_map.json"
+                 })
+        {
+            if (normalized.StartsWith(bootstrapFile, StringComparison.OrdinalIgnoreCase))
+                return bootstrapFile;
+        }
+
+        if (normalized.StartsWith("lore/current_world/", StringComparison.OrdinalIgnoreCase))
+        {
+            var jsonIndex = normalized.IndexOf(".json", StringComparison.OrdinalIgnoreCase);
+            return jsonIndex >= 0 ? normalized[..(jsonIndex + ".json".Length)] : normalized;
+        }
+
+        return NormalizeRepairTargetPath(path);
+    }
+
     private static string NormalizeRepairTargetPath(string path)
     {
         var normalized = path.Replace('\\', '/');
@@ -1598,8 +2770,16 @@ public partial class GameEngine
             return "game_state/meta/guardians.json";
         if (normalized.StartsWith("game_state/meta/guardian_projects.json", StringComparison.OrdinalIgnoreCase))
             return "game_state/meta/guardian_projects.json";
+        if (normalized.StartsWith("game_state/meta/afterlife_chronicles.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/meta/afterlife_chronicles.json";
         if (normalized.StartsWith("game_state/meta/afterlife_spiritual_conflict_state.json", StringComparison.OrdinalIgnoreCase))
             return "game_state/meta/afterlife_spiritual_conflict_state.json";
+        if (normalized.StartsWith("game_state/world/current_location.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/world/current_location.json";
+        if (normalized.StartsWith("game_state/world/world_map.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/world/world_map.json";
+        if (normalized.StartsWith("output/narrative_response.json", StringComparison.OrdinalIgnoreCase))
+            return "output/narrative_response.json";
         if (normalized.StartsWith("output/debug_logs.json", StringComparison.OrdinalIgnoreCase))
             return "output/debug_logs.json";
         foreach (var npcFile in new[]
@@ -1659,6 +2839,7 @@ public partial class GameEngine
         foreach (var actor in actorNames)
         {
             builder.AppendLine($"### {actor}");
+            builder.AppendLine("- Текущая локация: кратко укажи, где NPC находится сейчас и остаётся ли он там или перемещается.");
             builder.AppendLine("- Ситуация: кратко опиши, в каком положении актор находится в этом ходе.");
             builder.AppendLine("- Мысли: кратко опиши мотивы, оценку или внутреннюю реакцию актора.");
             builder.AppendLine("- Действия: кратко опиши, что актор делает, решает или меняет в состоянии.");
@@ -1910,7 +3091,8 @@ public partial class GameEngine
         _ => "State"
     };
 
-    private async Task ReportRejectedRepairReadyAsync(string source, List<ValidationIssue> baseErrors, int attempt,
+    private async Task<(bool MetadataDiagnosticOnly, List<ValidationIssue> ReportErrors)> ReportRejectedRepairReadyAsync(
+        string source, List<ValidationIssue> baseErrors, int attempt,
         string code, string message, string expected, string actual, string repairHint)
     {
         var reportErrors = new List<ValidationIssue>
@@ -1926,7 +3108,8 @@ public partial class GameEngine
                 repairHint: repairHint)
         };
 
-        await WriteValidationRepairRequestAsync(source, reportErrors, attempt);
+        var metadataDiagnosticOnly = await WriteValidationRepairRequestAsync(source, reportErrors, attempt);
+        return (metadataDiagnosticOnly, reportErrors);
     }
 
     private async Task<ValidationRepairReady?> ReadValidationRepairReadyAsync()
@@ -2018,22 +3201,76 @@ public partial class GameEngine
     private async Task ShowTurnErrorMessageAsync(string readyErrorPath)
     {
         var errorJson = await _fs.ReadFileAsync(readyErrorPath);
+        string errorMsg;
         if (errorJson == null)
         {
-            AnsiConsole.MarkupLine("[red]❌ Ошибка ожидания ответа GM[/]");
-            return;
+            errorMsg = "Ошибка ожидания ответа GM";
+        }
+        else
+        {
+            try
+            {
+                using var errorDoc = JsonDocument.Parse(errorJson);
+                errorMsg = errorDoc.RootElement.TryGetProperty("error", out var e)
+                    ? e.GetString() ?? errorJson
+                    : errorJson;
+            }
+            catch
+            {
+                errorMsg = errorJson;
+            }
         }
 
-        try
+        var recoveryText = "Действие не было применено. Состояние возвращается к последней стабильной версии; после возврата к ходу можно повторить действие или выбрать другой путь.";
+        var pressAnyKey = _loc.T("press_any_key");
+        AnsiConsole.MarkupLine($"[red]❌ Ошибка GM: {GameInterface.EscapeMarkup(errorMsg)}[/]");
+        AnsiConsole.MarkupLine($"[yellow]{GameInterface.EscapeMarkup(recoveryText)}[/]");
+        AnsiConsole.MarkupLine($"[grey]{GameInterface.EscapeMarkup(pressAnyKey)}[/]");
+
+        if (_inputSource is AgentConsoleLiveInputSource liveInput)
         {
-            using var errorDoc = JsonDocument.Parse(errorJson);
-            var errorMsg = errorDoc.RootElement.TryGetProperty("error", out var e) ? e.GetString() : errorJson;
-            AnsiConsole.MarkupLine($"[red]❌ Ошибка GM: {GameInterface.EscapeMarkup(errorMsg ?? errorJson)}[/]");
+            var plainText = string.Join(Environment.NewLine, new[]
+            {
+                "Ошибка GM",
+                errorMsg,
+                "",
+                recoveryText,
+                pressAnyKey
+            });
+            liveInput.PublishSnapshot(new AgentConsoleSnapshot
+            {
+                ScreenId = "gm-turn-error",
+                Mode = AgentConsoleMode.Error,
+                Title = "Ошибка GM",
+                PlainText = plainText,
+                AwaitingInput = true,
+                InputKind = AgentConsoleInputKind.Key,
+                Actions =
+                [
+                    new AgentConsoleAction
+                    {
+                        Id = "continue",
+                        Label = "Продолжить",
+                        Shortcut = "Enter",
+                        IsDefault = true
+                    }
+                ],
+                RenderedAtUtc = DateTimeOffset.UtcNow,
+                UpdatedAtUtc = DateTimeOffset.UtcNow,
+                Diagnostics =
+                [
+                    new AgentConsoleDiagnostic
+                    {
+                        Severity = AgentConsoleDiagnosticSeverity.Error,
+                        Code = "gm-turn-error",
+                        Message = "GM turn ended with a terminal error.",
+                        Detail = errorMsg
+                    }
+                ]
+            }, "Rendered GM turn error.");
         }
-        catch
-        {
-            AnsiConsole.MarkupLine($"[red]❌ Ошибка GM: {GameInterface.EscapeMarkup(errorJson)}[/]");
-        }
+
+        _inputSource.ReadKey(intercept: true);
     }
 
     private async Task CleanupUndispatchedTransitionPrepAsync(RollbackSnapshot? rollbackSnapshot,

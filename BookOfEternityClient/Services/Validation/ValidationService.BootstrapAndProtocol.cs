@@ -278,6 +278,9 @@ public partial class ValidationService
                                 continue;
                         }
 
+                        if (IsClientOwnedFreshMortalCurrentWorldBootstrapFile(manifest, bootstrapFile))
+                            continue;
+
                         issues.Add(new ValidationIssue(
                             bootstrapFile,
                             IssueSeverity.Error,
@@ -298,6 +301,26 @@ public partial class ValidationService
                 code: "lore_bootstrap_state_unreadable",
                 section: "LoreBootstrap"));
         }
+    }
+
+    private static bool IsClientOwnedFreshMortalCurrentWorldBootstrapFile(
+        ValidationPendingTurnSnapshotManifest manifest,
+        string relativePath)
+    {
+        var normalizedPath = relativePath.Replace('\\', '/');
+        if (!normalizedPath.StartsWith("lore/current_world/", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (!IsLoreBootstrapPendingTransitionSource(manifest.SourceLabel))
+            return false;
+
+        var hadPreTurnRollbackBaseline =
+            (manifest.RollbackBaselineFiles ?? new List<string>())
+            .Contains(normalizedPath, StringComparer.OrdinalIgnoreCase) ||
+            (manifest.RollbackBackups ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase))
+            .ContainsKey(normalizedPath);
+
+        return !hadPreTurnRollbackBaseline;
     }
 
 

@@ -1076,6 +1076,8 @@ public sealed class ExampleDocumentationValidationTests
         issues.AddRange(await validator.ValidateAcceptedTurnReasoningAsync());
         issues.AddRange(await validator.ValidateAcceptedTurnSpecialActionOutcomesAsync());
         issues.AddRange(await validator.ValidateAcceptedTurnQteOfferAsync());
+        issues.AddRange(await validator.ValidateAcceptedTurnMortalCombatMaterializationAsync());
+        issues.AddRange(await validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());
         issues.AddRange(await validator.ValidatePendingMemoryLegacyApplicationAsync());
         issues.AddRange(await RunProgressionReportScenarioValidationAsync(fs));
 

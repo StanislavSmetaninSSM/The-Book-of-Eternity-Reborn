@@ -37,4 +37,10 @@ public partial class ValidationService
 
     public Task<List<ValidationIssue>> ValidateAcceptedTurnQteOfferAsync()
         => ValidateAcceptedTurnQteOfferInternalAsync();
+
+    public Task<List<ValidationIssue>> ValidateAcceptedTurnMortalCombatMaterializationAsync()
+        => ValidateAcceptedTurnMortalCombatMaterializationInternalAsync();
+
+    public Task<List<ValidationIssue>> ValidateAcceptedTurnMortalLevelUpMaterializationAsync()
+        => ValidateAcceptedTurnMortalLevelUpMaterializationInternalAsync();
 }

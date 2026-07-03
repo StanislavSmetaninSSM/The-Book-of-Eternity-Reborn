@@ -26,10 +26,43 @@ internal static class ExplorerPlayerFacingLabels
         return result;
     }
 
+    public static string HistoricalEntry(string entry)
+    {
+        var value = entry.Trim();
+        if (!value.StartsWith("#[", StringComparison.Ordinal))
+            return value;
+
+        var closeIndex = value.IndexOf(']');
+        if (closeIndex <= 2)
+            return value;
+
+        var turnAnchor = value[2..closeIndex].Trim();
+        if (turnAnchor.Length == 0 || !turnAnchor.All(char.IsDigit))
+            return value;
+
+        var rest = value[(closeIndex + 1)..].TrimStart();
+        if (rest.StartsWith(".", StringComparison.Ordinal))
+            return rest[1..].TrimStart();
+
+        if (!rest.StartsWith("-", StringComparison.Ordinal))
+            return value;
+
+        var afterDash = rest[1..].TrimStart();
+        var timestampSeparator = afterDash.IndexOf(": ", StringComparison.Ordinal);
+        return timestampSeparator >= 0 && LooksLikeHistoricalTimestampPrefix(afterDash[..timestampSeparator])
+            ? afterDash[(timestampSeparator + 2)..].TrimStart()
+            : afterDash;
+    }
+
     private static readonly IReadOnlyList<(string Source, string Label)> WorldTimeTerms =
     [
         ("Month of Beginnings", "Месяц Начал")
     ];
+
+    private static bool LooksLikeHistoricalTimestampPrefix(string prefix) =>
+        prefix.IndexOf("г.", StringComparison.OrdinalIgnoreCase) >= 0 ||
+        prefix.IndexOf("Month", StringComparison.OrdinalIgnoreCase) >= 0 ||
+        prefix.IndexOf("месяц", StringComparison.OrdinalIgnoreCase) >= 0;
 
     public static string CurrentMapNode(MapViewDto map)
     {

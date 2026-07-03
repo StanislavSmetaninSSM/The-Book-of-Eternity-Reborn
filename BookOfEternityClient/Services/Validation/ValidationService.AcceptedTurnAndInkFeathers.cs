@@ -197,6 +197,8 @@ public partial class ValidationService
             return issues;
         }
 
+        json = await NormalizeAcceptedTurnInterfaceDialogueOptionsAsync(interfacePath, json);
+
         try
         {
             using var doc = JsonDocument.Parse(json);
@@ -279,6 +281,356 @@ public partial class ValidationService
         }
 
         return issues;
+    }
+
+    private async Task<string> NormalizeAcceptedTurnInterfaceDialogueOptionsAsync(string interfacePath, string json)
+    {
+        try
+        {
+            if (JsonNode.Parse(json) is not JsonObject root)
+                return json;
+
+            var changed = false;
+            var hasDialogueOptions = root.TryGetPropertyValue("dialogueOptions", out var dialogueOptionsNode);
+            var hasImagePrompt = root.TryGetPropertyValue("image_prompt", out _);
+
+            if (dialogueOptionsNode is JsonArray dialogueOptions)
+            {
+                var normalizedOptions = new JsonArray();
+                foreach (var option in dialogueOptions)
+                {
+                    if (option is JsonValue value && value.TryGetValue<string>(out var text))
+                    {
+                        normalizedOptions.Add(new JsonObject
+                        {
+                            ["text"] = text
+                        });
+                        changed = true;
+                        continue;
+                    }
+
+                    normalizedOptions.Add(option?.DeepClone());
+                }
+
+                if (changed)
+                    root["dialogueOptions"] = normalizedOptions;
+            }
+
+            if ((hasDialogueOptions || hasImagePrompt) && MissingOrBlankTimestamp(root))
+            {
+                root["timestamp"] = DateTimeOffset.UtcNow.ToString("O");
+                changed = true;
+            }
+
+            if (!changed)
+                return json;
+
+            var normalizedJson = root.ToJsonString(new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
+            await _fs.WriteFileAtomicAsync(interfacePath, normalizedJson);
+            return normalizedJson;
+        }
+        catch (JsonException)
+        {
+            return json;
+        }
+    }
+
+    private static bool MissingOrBlankTimestamp(JsonObject root)
+    {
+        if (!root.TryGetPropertyValue("timestamp", out var timestampNode) || timestampNode == null)
+            return true;
+
+        return timestampNode is JsonValue value &&
+               value.TryGetValue<string>(out var timestamp) &&
+               string.IsNullOrWhiteSpace(timestamp);
+    }
+
+    private async Task<List<ValidationIssue>> ValidateAcceptedTurnMortalCombatMaterializationInternalAsync()
+    {
+        var issues = new List<ValidationIssue>();
+
+        if (!await IsAcceptedTurnMortalRealmAsync())
+            return issues;
+
+        var playerAction = await TryReadStringPropertyFromJsonFileAsync("input/turn_request.json", "playerAction");
+        var narrativeResponse = await TryReadStringPropertyFromJsonFileAsync("output/narrative_response.json", "response");
+        if (!ContainsExplicitMortalCombatSignal(playerAction) &&
+            !ContainsExplicitMortalCombatSignal(narrativeResponse))
+        {
+            return issues;
+        }
+
+        var filesModified = await ReadAcceptedTurnFilesModifiedAsync();
+        var hasMechanicalCombatSignal =
+            HasPositiveExperienceGain(await _fs.ReadFileAsync("game_state/player/experience.json")) &&
+            HasSkillMasteryChanges(await _fs.ReadFileAsync("game_state/player/skill_mastery.json")) &&
+            (ContainsPath(filesModified, "game_state/core/player_status.json") ||
+             _fs.FileExists("game_state/core/player_status.json"));
+
+        if (!hasMechanicalCombatSignal)
+            return issues;
+
+        if (HasMortalCombatState(filesModified))
+            return issues;
+
+        issues.Add(new ValidationIssue(
+            "game_state/combat/combat_log.json",
+            IssueSeverity.Error,
+            "Mortal World turn resolved explicit combat with XP/mastery/resource changes but left /бой without combat state",
+            code: "mortal_combat_state_missing",
+            section: "MortalCombat",
+            expected: "game_state/combat/combat_log.json and, when tactically relevant, game_state/combat/enemies.json / game_state/combat/allies.json",
+            actual: "explicit combat narrative plus experience/mastery/status updates, but no game_state/combat/* surface",
+            repairHint: "Use Templates/MORTAL_COMBAT_STATE_TEMPLATE.md. Write combat_log.json for the same combat exchange; add enemies.json/allies.json when the enemy or allies remain relevant. Do not delete XP, mastery, or status changes just to silence the repair."));
+
+        return issues;
+    }
+
+    private async Task<List<ValidationIssue>> ValidateAcceptedTurnMortalLevelUpMaterializationInternalAsync()
+    {
+        var issues = new List<ValidationIssue>();
+
+        if (!await IsAcceptedTurnMortalRealmAsync())
+            return issues;
+
+        var json = await _fs.ReadFileAsync("game_state/player/experience.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return issues;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return issues;
+
+            if (!TryReadNumberLike(doc.RootElement, "totalExperience", out var totalExperience) ||
+                !TryReadNumberLike(doc.RootElement, "experienceForNextLevel", out var experienceForNextLevel) ||
+                experienceForNextLevel <= 0)
+            {
+                return issues;
+            }
+
+            if (!TryReadNumberLike(doc.RootElement, "playerLevel", out var playerLevel) &&
+                !TryReadNumberLike(doc.RootElement, "level", out playerLevel))
+            {
+                return issues;
+            }
+
+            if (playerLevel < 1 || totalExperience < experienceForNextLevel)
+                return issues;
+
+            issues.Add(new ValidationIssue(
+                "game_state/player/experience.json",
+                IssueSeverity.Error,
+                "Mortal World XP crossed the next-level threshold but level-up state was not materialized",
+                code: "mortal_level_up_materialization_missing",
+                section: "MortalLevelUp",
+                expected: "playerLevel/level advanced and experienceForNextLevel moved to the next threshold above totalExperience",
+                actual: $"playerLevel={playerLevel}, totalExperience={totalExperience}, experienceForNextLevel={experienceForNextLevel}",
+                repairHint: "Advance playerLevel and level to the level reached by totalExperience, then set experienceForNextLevel to the next threshold above totalExperience. Do not manually add stat points and do not edit stat_points.json.levelUpStatPointsAwardedThroughLevel; the client awards level-up stat points exactly once after the level field advances."));
+        }
+        catch (JsonException)
+        {
+            return issues;
+        }
+
+        return issues;
+    }
+
+    private async Task<bool> IsAcceptedTurnMortalRealmAsync()
+    {
+        var requestRealm = await TryReadNestedStringPropertyFromJsonFileAsync(
+            "input/turn_request.json",
+            "progressionControl",
+            "currentRealm");
+        if (IsMortalRealmName(requestRealm))
+            return true;
+
+        var soulRealm = await TryReadStringPropertyFromJsonFileAsync("game_state/meta/soul_state.json", "currentRealm");
+        return IsMortalRealmName(soulRealm);
+    }
+
+    private static bool IsMortalRealmName(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        return value.Contains("Mortal", StringComparison.OrdinalIgnoreCase) ||
+               value.Contains("Смерт", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool ContainsExplicitMortalCombatSignal(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return false;
+
+        return text.Contains("открытый бой", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("вступаю в бой", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("вступаешь в бой", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("вступает в бой", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("в бой с", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("бой с", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("сражение", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("сража", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("combat", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task<List<string>> ReadAcceptedTurnFilesModifiedAsync()
+    {
+        var result = new List<string>();
+        var json = await _fs.ReadFileAsync("ready/turn_complete.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("filesModified", out var files) ||
+                files.ValueKind != JsonValueKind.Array)
+            {
+                return result;
+            }
+
+            foreach (var item in files.EnumerateArray())
+            {
+                if (item.ValueKind == JsonValueKind.String &&
+                    !string.IsNullOrWhiteSpace(item.GetString()))
+                {
+                    result.Add(NormalizeValidationPath(item.GetString()!));
+                }
+            }
+        }
+        catch (JsonException)
+        {
+            return result;
+        }
+
+        return result;
+    }
+
+    private bool HasMortalCombatState(IReadOnlyCollection<string> filesModified)
+    {
+        return ContainsPath(filesModified, "game_state/combat/combat_log.json") ||
+               ContainsPath(filesModified, "game_state/combat/enemies.json") ||
+               ContainsPath(filesModified, "game_state/combat/allies.json") ||
+               _fs.FileExists("game_state/combat/combat_log.json") ||
+               _fs.FileExists("game_state/combat/enemies.json") ||
+               _fs.FileExists("game_state/combat/allies.json");
+    }
+
+    private static bool ContainsPath(IEnumerable<string> paths, string expectedPath)
+    {
+        var normalizedExpected = NormalizeValidationPath(expectedPath);
+        return paths.Any(path => string.Equals(NormalizeValidationPath(path), normalizedExpected, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string NormalizeValidationPath(string path)
+    {
+        return path.Replace('\\', '/').Trim();
+    }
+
+    private static bool HasPositiveExperienceGain(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            return TryReadNumberLike(doc.RootElement, "experienceGained", out var gained) && gained > 0;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private static bool HasSkillMasteryChanges(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            return doc.RootElement.TryGetProperty("skillMasteryChanges", out var changes) &&
+                   changes.ValueKind == JsonValueKind.Array &&
+                   changes.GetArrayLength() > 0;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private static bool TryReadNumberLike(JsonElement root, string propertyName, out decimal value)
+    {
+        value = 0;
+        if (!root.TryGetProperty(propertyName, out var property))
+            return false;
+
+        if (property.ValueKind == JsonValueKind.Number && property.TryGetDecimal(out value))
+            return true;
+
+        return property.ValueKind == JsonValueKind.String &&
+               decimal.TryParse(property.GetString(), System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value);
+    }
+
+    private async Task<string> TryReadStringPropertyFromJsonFileAsync(string relativePath, string propertyName)
+    {
+        var json = await _fs.ReadFileAsync(relativePath);
+        if (string.IsNullOrWhiteSpace(json))
+            return string.Empty;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                doc.RootElement.TryGetProperty(propertyName, out var property) &&
+                property.ValueKind == JsonValueKind.String)
+            {
+                return property.GetString() ?? string.Empty;
+            }
+        }
+        catch (JsonException)
+        {
+            return string.Empty;
+        }
+
+        return string.Empty;
+    }
+
+    private async Task<string> TryReadNestedStringPropertyFromJsonFileAsync(
+        string relativePath,
+        string objectPropertyName,
+        string propertyName)
+    {
+        var json = await _fs.ReadFileAsync(relativePath);
+        if (string.IsNullOrWhiteSpace(json))
+            return string.Empty;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                doc.RootElement.TryGetProperty(objectPropertyName, out var parent) &&
+                parent.ValueKind == JsonValueKind.Object &&
+                parent.TryGetProperty(propertyName, out var property) &&
+                property.ValueKind == JsonValueKind.String)
+            {
+                return property.GetString() ?? string.Empty;
+            }
+        }
+        catch (JsonException)
+        {
+            return string.Empty;
+        }
+
+        return string.Empty;
     }
 
     private InkFeatherActionContext? ParseInkFeatherActionContext(JsonElement requestRoot, string playerAction)
@@ -6929,12 +7281,16 @@ public partial class ValidationService
         var structuredActorExtraction = await CollectStructuredActorUpdatesAsync(guardianPolicyContext);
         var structuredActorUpdates = structuredActorExtraction.Updates;
         ValidateStructuredActorUpdatesAgainstScope(scope, structuredActorUpdates, issues);
+        var mortalPlayerScopeAliases = await ReadMortalPlayerScopeActorAliasesAsync();
+        var mortalPersistentActorAliases = await ReadMortalPersistentActorAliasesAsync();
         ValidateMortalRelevantActorsHavePersistence(
             await TryResolveCurrentRealmAsync(),
             scopeMode,
             scope,
             guardianIdentityContext,
             structuredActorUpdates,
+            mortalPlayerScopeAliases,
+            mortalPersistentActorAliases,
             issues);
 
         var requiresGuardianScopeValidation = RequiresGuardianReasoningScopeValidation(

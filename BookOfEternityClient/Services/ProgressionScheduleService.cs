@@ -96,6 +96,9 @@ public class ProgressionScheduleService
         var realm = await ResolveCurrentRealmAsync(string.Empty);
         if (!HasResolvedRealm(realm))
         {
+            if (!scheduleSnapshot.FilePresent && !_fs.FileExists("game_state/meta/soul_state.json"))
+                return CreateUninitializedSchedule();
+
             throw new InvalidOperationException(
                 "game_state/meta/soul_state.json не содержит безопасно читаемый currentRealm. " +
                 "Progression ledger сохраняется fail-closed и не может быть создан с пустым realm contract.");
@@ -137,6 +140,14 @@ public class ProgressionScheduleService
         await WriteScheduleAsync(schedule);
         return schedule;
     }
+
+    private static ProgressionScheduleState CreateUninitializedSchedule() => new()
+    {
+        WorldCycleMinutes = DefaultWorldCycleMinutes,
+        FactionCycleMinutes = DefaultFactionCycleMinutes,
+        ChaosSeaCycleEquivalentHours = DefaultChaosSeaCycleEquivalentHours,
+        AfterlifeCatchupCycleEquivalentMinutes = DefaultAfterlifeCatchupCycleEquivalentMinutes
+    };
 
     public async Task<ProgressionControl> BuildControlForNextTurnAsync(string? activeTurnRealm = null)
     {

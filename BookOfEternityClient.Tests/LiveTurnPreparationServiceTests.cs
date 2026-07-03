@@ -91,6 +91,97 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task PrepareAsync_AfterlifeActiveConflict_AddsCombatPreviewWithAuthorityAndDiceOutcome()
+    {
+        await WriteAfterlifeActiveConflictStateAsync();
+
+        await new LiveTurnPreparationService(_fs).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "live-session",
+            RequestId = "live-request-conflict",
+            TurnNumber = 7,
+            CurrentRealm = "Chaos Sea",
+            PlayerAction = "Использовать давление Зеркала Пепельной Искры против следа охотников.",
+            PreGeneratedDices1d20 = new[] { 17, 9, 4, 12 }
+        });
+
+        var turnRequest = await ReadJsonObjectAsync("input/turn_request.json");
+        var preview = Assert.IsType<JsonObject>(turnRequest["afterlifeSpiritualConflictPreview"]);
+        Assert.Equal("client_pre_turn_afterlife_spiritual_conflict_preview_v1", preview["source"]?.GetValue<string>());
+        Assert.Equal(7, preview["turnNumber"]?.GetValue<int>());
+        Assert.Equal("afterlife_conflict_live_001", preview["conflictId"]?.GetValue<string>());
+        Assert.Equal("player_advantaged", preview["conflictPosition"]?.GetValue<string>());
+
+        var playerPressure = Assert.IsType<JsonObject>(preview["playerActionCosts"]?["pressure"]);
+        Assert.Equal(1, playerPressure["artTier"]?.GetValue<int>());
+        Assert.Equal(3, playerPressure["baseCost"]?.GetValue<int>());
+        Assert.Equal(1, playerPressure["minCost"]?.GetValue<int>());
+        Assert.Equal(2, playerPressure["effectiveCost"]?.GetValue<int>());
+
+        var opposition = Assert.IsType<JsonObject>(preview["opposition"]);
+        Assert.Equal("guardian", opposition["actorType"]?.GetValue<string>());
+        Assert.Equal("guardian_liora", opposition["actorId"]?.GetValue<string>());
+        var oppositionPressure = Assert.IsType<JsonObject>(opposition["actionCosts"]?["pressure"]);
+        Assert.Equal(4, oppositionPressure["artTier"]?.GetValue<int>());
+        Assert.Equal(1, oppositionPressure["effectiveCost"]?.GetValue<int>());
+
+        var firstPair = Assert.IsType<JsonObject>(preview["dicePreview"]?["firstOpposedPair"]);
+        Assert.Equal(0, firstPair["player"]?["sourceIndex"]?.GetValue<int>());
+        Assert.Equal(17, firstPair["player"]?["value"]?.GetValue<int>());
+        Assert.Equal(1, firstPair["opposition"]?["sourceIndex"]?.GetValue<int>());
+        Assert.Equal(9, firstPair["opposition"]?["value"]?.GetValue<int>());
+
+        var mandatory = Assert.IsType<JsonObject>(firstPair["withMandatoryModifiers"]);
+        Assert.Equal(19, mandatory["playerTotal"]?.GetValue<int>());
+        Assert.Equal(10, mandatory["oppositionTotal"]?.GetValue<int>());
+        Assert.Equal(9, mandatory["margin"]?.GetValue<int>());
+        Assert.Equal("decisive_player_success", mandatory["outcomeBand"]?.GetValue<string>());
+
+        var reminders = Assert.IsType<JsonArray>(preview["authoringReminders"]);
+        Assert.Contains(reminders.Select(node => node?.GetValue<string>() ?? ""), reminder =>
+            reminder.Contains("actionCostAudit", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(reminders.Select(node => node?.GetValue<string>() ?? ""), reminder =>
+            reminder.Contains("outcomeBand", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority()
+    {
+        await WriteCanonicalAndGeneratedHarnessFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/control/pending_dice_state.json", """
+        {
+          "preGeneratedDices1d20": [3, 18, 12, 7, 20, 5, 14, 9, 16, 2, 11, 19, 6, 13, 8, 17, 4, 15, 10, 1],
+          "gachaBaseResult": {
+            "diceUsed": [],
+            "baseScore": 68,
+            "baseRarity": "Rare",
+            "formula": "client-computed gacha base (range 4-80)"
+          },
+          "isFateLocked": true
+        }
+        """);
+
+        await new LiveTurnPreparationService(_fs).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "live-session",
+            RequestId = "live-request-dice",
+            TurnNumber = 3,
+            PlayerAction = "Проверить текущий набор кубиков.",
+            PreGeneratedDices1d20 = new[] { 17, 9, 4, 12 }
+        });
+
+        var turnRequest = await ReadJsonObjectAsync("input/turn_request.json");
+        Assert.Equal(new[] { 17, 9, 4, 12 }, turnRequest["preGeneratedDices1d20"]?.AsArray().Select(node => node!.GetValue<int>()).ToArray());
+        Assert.False(_fs.FileExists("game_state/control/pending_dice_state.json"));
+
+        var manifestJson = await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(manifestJson!, LiveTurnPreparationService.ManifestJsonOptions);
+        Assert.NotNull(manifest);
+        Assert.DoesNotContain("game_state/control/pending_dice_state.json", manifest.Files.Keys);
+        Assert.DoesNotContain("game_state/control/pending_dice_state.json", manifest.RollbackBaselineFiles);
+    }
+
+    [Fact]
     public void LauncherAndQuickstartDocumentPrepareTurnCommand()
     {
         var launcher = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");
@@ -135,6 +226,94 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/control/validation_repair_request.json", """{"issues":[]}""");
         await _fs.WriteFileAtomicAsync("game_state/control/terminal_protocol_failure_request.json", """{"failure":true}""");
         await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot/game_state/./meta/soul_state.json", """{"stale":true}""");
+    }
+
+    private async Task WriteAfterlifeActiveConflictStateAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "turnNumber": 6,
+          "afterlifeCombatProfile": {
+            "spiritFocusTier": 1,
+            "artTiers": {
+              "pressure": 1,
+              "guard": 2
+            }
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/afterlife_spiritual_conflict_state.json", """
+        {
+          "schemaVersion": 1,
+          "activeConflict": {
+            "conflictId": "afterlife_conflict_live_001",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "playerSide": {
+              "leadContestant": {
+                "actorType": "player_soul",
+                "actorId": "player_soul",
+                "displayName": "Асуран"
+              },
+              "supporters": []
+            },
+            "oppositionSide": {
+              "leadContestant": {
+                "actorType": "guardian",
+                "actorId": "guardian_liora",
+                "displayName": "Лиора",
+                "actorArtTierSnapshot": {
+                  "pressure": 3,
+                  "guard": 1
+                }
+              },
+              "supporters": []
+            },
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "player_advantaged",
+            "resolutionState": "active",
+            "actionEconomy": {
+              "player": {
+                "current": 6,
+                "max": 7,
+                "source": "Средоточие Души tier 1"
+              },
+              "opposition": {
+                "current": 5,
+                "max": 6,
+                "source": "guardian profile"
+              }
+            },
+            "exchangeLog": []
+          },
+          "recentConflicts": []
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/afterlife_entity_profiles.json", """
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_liora",
+              "displayName": "Лиора",
+              "realm": "Chaos Sea",
+              "standardArts": {
+                "pressure": 4,
+                "guard": 2
+              },
+              "specialArts": []
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", """
+        {
+          "difficulty": "hard"
+        }
+        """);
     }
 
     private async Task<JsonObject> ReadJsonObjectAsync(string relativePath)
@@ -197,23 +376,7 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
 
     private static string LocateRepoRoot()
     {
-        var current = AppContext.BaseDirectory;
-        while (!string.IsNullOrWhiteSpace(current))
-        {
-            if (File.Exists(Path.Combine(current, "TheBookOfEternityReborn.sln")) ||
-                File.Exists(Path.Combine(current, ".git")) ||
-                Directory.Exists(Path.Combine(current, ".git")))
-            {
-                return current;
-            }
-
-            var parent = Directory.GetParent(current);
-            if (parent == null)
-                break;
-            current = parent.FullName;
-        }
-
-        throw new DirectoryNotFoundException("Could not locate repository root.");
+        return TestRepoPaths.RepoRoot;
     }
 
     public void Dispose()

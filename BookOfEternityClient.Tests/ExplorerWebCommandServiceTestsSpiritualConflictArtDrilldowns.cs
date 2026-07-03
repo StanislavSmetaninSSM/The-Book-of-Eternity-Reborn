@@ -49,10 +49,11 @@ public sealed class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns
         Assert.DoesNotContain("hidden_exchange_marker", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
         AssertIssue1067Action(
             result,
-            "spiritual-conflict-exchange-detail-exchange_sun_001",
-            "/spiritual_conflict обмен exchange_sun_001",
+            "spiritual-conflict-exchange-detail-1",
+            "/spiritual_conflict обмен 1",
             "Осмотреть обмен",
             "Рассветный нажим");
+        Assert.DoesNotContain("exchange_sun_001", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -70,16 +71,18 @@ public sealed class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns
         Assert.Contains("Победа у рассветной кромки", text, StringComparison.OrdinalIgnoreCase);
         AssertIssue1067Action(
             result,
-            "spiritual-combat-log-exchange-detail-exchange_sun_001",
-            "/spiritual_combat_log обмен exchange_sun_001",
+            "spiritual-combat-log-exchange-detail-1",
+            "/spiritual_combat_log обмен 1",
             "Разобрать запись боя",
             "Рассветный нажим");
         AssertIssue1067Action(
             result,
-            "spiritual-combat-log-recent-detail-conflict_completed_001",
-            "/spiritual_combat_log итог conflict_completed_001",
+            "spiritual-combat-log-recent-detail-1",
+            "/spiritual_combat_log итог 1",
             "Разобрать итог",
             "Победа у рассветной кромки");
+        Assert.DoesNotContain("exchange_sun_001", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("conflict_completed_001", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

@@ -670,6 +670,9 @@ public partial class ValidationService
         if (!TryGetArray(root, propName, $"{contextPrefix}.{propName}", issues, out var arr))
             return;
 
+        var canonicalFactionCoreFactions =
+            string.Equals(contextPrefix, "game_state/factions/faction_core.json", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(propName, "factions", StringComparison.OrdinalIgnoreCase);
         var sameTurnFactionInitialIds = CollectSameTurnFactionInitialIds(root);
         var knownPermanentFactionIds = CollectKnownPermanentFactionIds(root);
         var knownCanonicalFactionNames = CollectKnownPermanentFactionNames(root);
@@ -696,7 +699,25 @@ public partial class ValidationService
                 string.Equals(propName, "factionDataChanges", StringComparison.OrdinalIgnoreCase) ||
                 IsLikelyFullFactionObject(item))
             {
-                ValidateFullFactionObject(item, itemContext, issues, knownPermanentFactionIds, knownCanonicalFactionNames, sameTurnFactionInitialIds);
+                if (canonicalFactionCoreFactions && string.IsNullOrWhiteSpace(GetFirstNonEmptyString(item, "factionId")))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.factionId",
+                        IssueSeverity.Error,
+                        "Каноническая faction_core.json.factions[] запись должна содержать permanent factionId; temporary initialId допустим только в same-turn GM delta, а не в сохранённом состоянии",
+                        code: "canonical_faction_core_requires_permanent_faction_id",
+                        section: "Factions",
+                        expected: "non-empty permanent factionId in game_state/factions/faction_core.json.factions[]",
+                        actual: item.TryGetProperty("factionId", out var factionIdNode)
+                            ? factionIdNode.ValueKind.ToString()
+                            : "missing",
+                        repairHint: "Материализуй новую фракцию в canonical state с постоянным factionId вроде faction_<stable_slug>. Удали initialId/isNewFaction из сохранённой canonical записи или оставь их только в same-turn factionDataChanges."));
+                }
+
+                var fullObjectKnownPermanentFactionIds = canonicalFactionCoreFactions
+                    ? null
+                    : knownPermanentFactionIds;
+                ValidateFullFactionObject(item, itemContext, issues, fullObjectKnownPermanentFactionIds, knownCanonicalFactionNames, sameTurnFactionInitialIds);
                 continue;
             }
 

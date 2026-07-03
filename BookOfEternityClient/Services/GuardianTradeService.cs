@@ -990,22 +990,24 @@ public sealed class GuardianTradeService
 
     private static string GetTradeTierCode(TradeReputationTier tier) => tier.ToString();
 
-    private static TradeReputationTier ParseTradeTierCode(string? tierCode) => tierCode switch
+    private static TradeReputationTier ParseTradeTierCode(string? tierCode)
     {
-        nameof(TradeReputationTier.Hostile) => TradeReputationTier.Hostile,
-        nameof(TradeReputationTier.Neutral) => TradeReputationTier.Neutral,
-        nameof(TradeReputationTier.Friendly) => TradeReputationTier.Friendly,
-        nameof(TradeReputationTier.Devoted) => TradeReputationTier.Devoted,
-        nameof(TradeReputationTier.Legendary) => TradeReputationTier.Legendary,
-        _ => TradeReputationTier.Hostile
-    };
+        if (GuardianTradeRequestState.TryNormalizeTradeTierCode(tierCode, out var normalizedTierCode))
+            tierCode = normalizedTierCode;
+
+        return tierCode switch
+        {
+            nameof(TradeReputationTier.Hostile) => TradeReputationTier.Hostile,
+            nameof(TradeReputationTier.Neutral) => TradeReputationTier.Neutral,
+            nameof(TradeReputationTier.Friendly) => TradeReputationTier.Friendly,
+            nameof(TradeReputationTier.Devoted) => TradeReputationTier.Devoted,
+            nameof(TradeReputationTier.Legendary) => TradeReputationTier.Legendary,
+            _ => TradeReputationTier.Hostile
+        };
+    }
 
     internal static bool IsValidTradeTierCode(string? tierCode) =>
-        tierCode is nameof(TradeReputationTier.Hostile)
-            or nameof(TradeReputationTier.Neutral)
-            or nameof(TradeReputationTier.Friendly)
-            or nameof(TradeReputationTier.Devoted)
-            or nameof(TradeReputationTier.Legendary);
+        GuardianTradeRequestState.TryNormalizeTradeTierCode(tierCode, out _);
 
     internal static bool IsValidBuybackStatusCode(string? statusCode) =>
         statusCode is BuybackStatusAvailable or BuybackStatusRebought or BuybackStatusRemoved;
@@ -1106,6 +1108,8 @@ public sealed class GuardianTradeService
                 return false;
 
             obj["current"] = next;
+            if (delta > 0 && obj["total"] is JsonValue totalValue && totalValue.TryGetValue<int>(out var total) && next > total)
+                obj["total"] = next;
             return true;
         }
 

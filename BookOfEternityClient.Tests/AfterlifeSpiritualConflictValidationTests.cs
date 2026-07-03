@@ -8745,6 +8745,121 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_PreTurnExchangeWithOlderTurnMarker_DoesNotUseCurrentTurnDiceAuthority()
+    {
+        await WriteSoulStateAsync();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "activeConflict": {
+            "conflictId": "afterlife_conflict_test_001",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "playerSide": {
+              "leadContestant": {
+                "actorType": "player",
+                "actorId": "player_soul",
+                "displayName": "Асуран"
+              },
+              "supporters": []
+            },
+            "oppositionSide": {
+              "leadContestant": {
+                "actorType": "guardian",
+                "actorId": "guardian_liora",
+                "displayName": "Лиора"
+              },
+              "supporters": []
+            },
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "resolutionState": "active",
+            "exchangeLog": [
+              {
+                "exchangeId": "exchange_prior_turn_006",
+                "exchangeAtTurn": 6,
+                "operationType": "guard",
+                "outcome": "success",
+                "before": { "conflictPosition": "contested" },
+                "after": { "conflictPosition": "player_advantaged" },
+                "diceAudit": {{BuildPriorTurnDiceAuditJson()}}
+              }
+            ]
+          },
+          "recentConflicts": []
+        }
+        """);
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я продолжаю духовный бой после старого обмена.");
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "activeConflict": {
+            "conflictId": "afterlife_conflict_test_001",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "playerSide": {
+              "leadContestant": {
+                "actorType": "player",
+                "actorId": "player_soul",
+                "displayName": "Асуран"
+              },
+              "supporters": []
+            },
+            "oppositionSide": {
+              "leadContestant": {
+                "actorType": "guardian",
+                "actorId": "guardian_liora",
+                "displayName": "Лиора"
+              },
+              "supporters": []
+            },
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested",
+            "resolutionState": "active",
+            "exchangeLog": [
+              {
+                "exchangeId": "exchange_prior_turn_006",
+                "exchangeAtTurn": 6,
+                "operationType": "guard",
+                "outcome": "success",
+                "summary": "GM drifted a historical summary, but the dice still belong to the prior accepted turn.",
+                "before": { "conflictPosition": "contested" },
+                "after": { "conflictPosition": "player_advantaged" },
+                "diceAudit": {{BuildPriorTurnDiceAuditJson()}}
+              },
+              {
+                "exchangeId": "exchange_current_turn_007",
+                "exchangeAtTurn": 7,
+                "operationType": "pressure",
+                "outcome": "success",
+                "before": {
+                  "playerSideStrain": "clear",
+                  "oppositionSideStrain": "clear",
+                  "conflictPosition": "contested"
+                },
+                "after": {
+                  "playerSideStrain": "clear",
+                  "oppositionSideStrain": "strained",
+                  "conflictPosition": "contested"
+                },
+                "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+              }
+            ]
+          },
+          "recentConflicts": []
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_value_not_authorized", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("exchangeLog[0]", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ChangedNoTurnConflictWithCurrentDice_StillRequiresTurnMarker()
     {
         await WriteSoulStateWithLightIncarnateAsync();
@@ -12898,6 +13013,49 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
           {
             "source": "opposition stabilizing pressure",
             "value": 4
+          }
+        ]
+      }
+    }
+    """)!.AsObject().ToJsonString();
+
+    private static string BuildPriorTurnDiceAuditJson() => JsonNode.Parse("""
+    {
+      "formulaVersion": "afterlife_spiritual_conflict_v1",
+      "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+      "diceUsed": [
+        {
+          "side": "player",
+          "sourceIndex": 0,
+          "sides": 20,
+          "value": 9
+        },
+        {
+          "side": "opposition",
+          "sourceIndex": 1,
+          "sides": 20,
+          "value": 7
+        }
+      ],
+      "playerTotal": 13,
+      "oppositionTotal": 12,
+      "margin": 1,
+      "outcomeBand": "mixed_or_no_effect",
+      "modifierBreakdown": {
+        "player": [
+          {
+            "source": "guard art tier",
+            "value": 2
+          },
+          {
+            "source": "current Enlightenment rank",
+            "value": 2
+          }
+        ],
+        "opposition": [
+          {
+            "source": "guardian pressure art tier",
+            "value": 5
           }
         ]
       }

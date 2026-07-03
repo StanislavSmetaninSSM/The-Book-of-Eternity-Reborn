@@ -27,7 +27,8 @@ public partial class ExplorerMode
                     {
                         Title = "Карта",
                         Map = map
-                    }
+                    },
+                    ExplorerMortalWorldCommandResultBuilder.BuildMapSummaryDossier(map)
                 ]
             });
 
@@ -57,7 +58,7 @@ public partial class ExplorerMode
         var lastEvents = GetStr(loc, "lastEventsDescription", "");
         if (!string.IsNullOrEmpty(lastEvents))
         {
-            lines.Add($"[dim italic]📋 {Markup.Escape(lastEvents)}[/]");
+            lines.Add($"[dim italic]📋 {Markup.Escape(ExplorerPlayerFacingLabels.HistoricalEntry(lastEvents))}[/]");
             lines.Add("");
         }
 
@@ -293,6 +294,7 @@ public partial class ExplorerMode
             {
                 if (++evCount > 10) { lines.Add($"    [dim]...и ещё {events.GetArrayLength() - 10}[/]"); break; }
                 var evStr = ev.ValueKind == JsonValueKind.String ? ev.GetString() ?? "" : GetStr(ev, "description", ev.GetRawText());
+                evStr = ExplorerPlayerFacingLabels.HistoricalEntry(evStr);
                 lines.Add($"    [dim]• {Markup.Escape(evStr)}[/]");
             }
         }
@@ -972,15 +974,27 @@ public partial class ExplorerMode
         var content = new Grid().AddColumn(new GridColumn());
 
         var leftContent = new Grid().AddColumn(new GridColumn());
-        leftContent.AddRow(new Markup($"[bold white]👤 {Markup.Escape(state.CharacterName)}[/]"));
+        var identityName = !string.IsNullOrWhiteSpace(state.CharacterName)
+            ? state.CharacterName
+            : state.SoulName;
+        if (!string.IsNullOrWhiteSpace(identityName))
+            leftContent.AddRow(new Markup($"[bold white]👤 {Markup.Escape(identityName)}[/]"));
 
         var identityTable = new Table()
             .Border(TableBorder.None)
             .HideHeaders()
             .AddColumn(new TableColumn("").NoWrap().Width(18))
             .AddColumn(new TableColumn(""));
-        identityTable.AddRow(new Markup("[dim]Раса[/]"), new Markup($"[white]{Markup.Escape(state.CharacterRace)}[/]"));
-        identityTable.AddRow(new Markup("[dim]Класс[/]"), new Markup($"[white]{Markup.Escape(state.CharacterClass)}[/]"));
+        if (!string.IsNullOrWhiteSpace(state.CharacterRace))
+            identityTable.AddRow(new Markup("[dim]Раса[/]"), new Markup($"[white]{Markup.Escape(state.CharacterRace)}[/]"));
+        if (!string.IsNullOrWhiteSpace(state.CharacterClass))
+            identityTable.AddRow(new Markup("[dim]Класс[/]"), new Markup($"[white]{Markup.Escape(state.CharacterClass)}[/]"));
+        if (string.IsNullOrWhiteSpace(state.CharacterRace) &&
+            string.IsNullOrWhiteSpace(state.CharacterClass) &&
+            !string.IsNullOrWhiteSpace(state.SoulFormDescription))
+        {
+            identityTable.AddRow(new Markup("[dim]Форма души[/]"), new Markup($"[white]{Markup.Escape(state.SoulFormDescription)}[/]"));
+        }
         identityTable.AddRow(new Markup("[dim]Уровень[/]"), new Markup($"[cyan]{level}[/]"));
         leftContent.AddRow(identityTable);
 
@@ -1369,7 +1383,7 @@ public partial class ExplorerMode
                 };
                 skills.Add((ConsoleLayout.PlainChoiceLabel(
                     $"⚡ {name}",
-                    string.IsNullOrEmpty(rarity) ? "" : rarity,
+                    string.IsNullOrEmpty(rarity) ? "" : FormatSkillRarityLabel(rarity),
                     string.IsNullOrEmpty(sLvl) ? "" : $"Уровень {sLvl}",
                     catTag), item, true));
             }
@@ -1404,7 +1418,7 @@ public partial class ExplorerMode
                 };
                 skills.Add((ConsoleLayout.PlainChoiceLabel(
                     $"🔮 {name}",
-                    string.IsNullOrEmpty(rarity) ? "" : rarity,
+                    string.IsNullOrEmpty(rarity) ? "" : FormatSkillRarityLabel(rarity),
                     typeTag), item, false));
             }
 
@@ -1461,7 +1475,7 @@ public partial class ExplorerMode
 
         var rarity = GetStr(s, "rarity", "");
         if (!string.IsNullOrEmpty(rarity))
-            lines.Add($"  ⭐ Качество: [{GetRarityColor(rarity)}]{Markup.Escape(rarity)}[/]");
+            lines.Add($"  ⭐ Качество: [{GetRarityColor(rarity)}]{Markup.Escape(FormatSkillRarityLabel(rarity))}[/]");
 
         var category = GetStr(s, "category", "");
         if (!string.IsNullOrEmpty(category))
@@ -1498,7 +1512,7 @@ public partial class ExplorerMode
                 "free" or "свободное" => "green",
                 _ => "white"
             };
-            lines.Add($"  ⏱ Действие: [{costColor}]{Markup.Escape(actionCost)}[/]");
+            lines.Add($"  ⏱ Действие: [{costColor}]{Markup.Escape(FormatSkillActionCostLabel(actionCost))}[/]");
         }
 
         var energyCost = GetStr(s, "energyCost", "");
@@ -1579,7 +1593,8 @@ public partial class ExplorerMode
                 {
                     var charVal = scaleStat.PermanentlyModified + scaleStat.TemporaryBonus;
                     var lvl = computed.PlayerLevel;
-                    var mastLvl = int.TryParse(GetStr(s, "currentMasteryLevel", GetStr(s, "masteryLevel", "1")), out var ml) ? ml : 1;
+                    var mastery = GetSkillMasterySnapshot(name, s, masteryLookup);
+                    var mastLvl = mastery.Level > 0 ? mastery.Level : 1;
 
                     // CharBonusPercent = floor(charVal / 10) * 5
                     var charBonusPct = charVal / 10 * 5;
@@ -1653,7 +1668,7 @@ public partial class ExplorerMode
 
         var rarity = GetStr(s, "rarity", "");
         if (!string.IsNullOrEmpty(rarity))
-            lines.Add($"  ⭐ Качество: [{GetRarityColor(rarity)}]{Markup.Escape(rarity)}[/]");
+            lines.Add($"  ⭐ Качество: [{GetRarityColor(rarity)}]{Markup.Escape(FormatSkillRarityLabel(rarity))}[/]");
 
         var type = GetStr(s, "type", "");
         if (!string.IsNullOrEmpty(type))
@@ -1791,39 +1806,87 @@ public partial class ExplorerMode
 
     private void AppendMasteryInfo(List<string> lines, string skillName, JsonElement s, Dictionary<string, JsonElement> masteryLookup)
     {
-        // Try mastery from lookup first, then from skill element itself
-        var masteryLevel = GetStr(s, "currentMasteryLevel", GetStr(s, "masteryLevel", ""));
-        var masteryProgress = GetInt(s, "currentMasteryProgress", 0);
-        var masteryNeeded = GetInt(s, "masteryProgressNeeded", 0);
-        var maxMastery = GetStr(s, "maxMasteryLevel", "");
+        var mastery = GetSkillMasterySnapshot(skillName, s, masteryLookup);
 
-        if (masteryLookup.TryGetValue(skillName, out var mEl))
-        {
-            if (string.IsNullOrEmpty(masteryLevel))
-                masteryLevel = GetStr(mEl, "currentMasteryLevel", GetStr(mEl, "currentMastery", GetStr(mEl, "level", "")));
-            if (masteryProgress == 0)
-                masteryProgress = GetInt(mEl, "currentMasteryProgress", GetInt(mEl, "progress", 0));
-            if (masteryNeeded == 0)
-                masteryNeeded = GetInt(mEl, "masteryProgressNeeded", GetInt(mEl, "progressNeeded", 0));
-            if (string.IsNullOrEmpty(maxMastery))
-                maxMastery = GetStr(mEl, "maxMasteryLevel", "");
-        }
-
-        if (!string.IsNullOrEmpty(masteryLevel) || masteryNeeded > 0)
+        if (mastery.Level > 0 || mastery.Needed > 0)
         {
             lines.Add("");
-            var masteryLine = $"  📈 Мастерство: [bold cyan]{Markup.Escape(masteryLevel.Length > 0 ? masteryLevel : "1")}[/]";
-            if (!string.IsNullOrEmpty(maxMastery))
-                masteryLine += $" / {Markup.Escape(maxMastery)}";
+            var masteryLine = $"  📈 Мастерство: [bold cyan]{mastery.Level}[/]";
+            if (mastery.MaxLevel > 0)
+                masteryLine += $" / {mastery.MaxLevel}";
             lines.Add(masteryLine);
 
-            if (masteryNeeded > 0)
+            if (mastery.Needed > 0)
             {
-                var pct = Math.Min(100, masteryProgress * 100 / Math.Max(1, masteryNeeded));
-                lines.Add($"  Прогресс мастерства: {ConsoleLayout.CreateBarFromPercent(pct, 10, "cyan")} {masteryProgress}/{masteryNeeded} ({pct}%)");
+                var pct = Math.Min(100, mastery.Progress * 100 / Math.Max(1, mastery.Needed));
+                lines.Add($"  Прогресс мастерства: {ConsoleLayout.CreateBarFromPercent(pct, 10, "cyan")} {mastery.Progress}/{mastery.Needed} ({pct}%)");
             }
         }
     }
+
+    private static SkillMasterySnapshot GetSkillMasterySnapshot(
+        string skillName,
+        JsonElement skill,
+        Dictionary<string, JsonElement> masteryLookup)
+    {
+        var level = GetFirstInt(skill, 0, "currentMasteryLevel", "masteryLevel");
+        var progress = GetFirstInt(skill, 0, "currentMasteryProgress", "masteryProgress", "progress");
+        var needed = GetFirstInt(skill, 0, "masteryProgressNeeded", "progressNeeded");
+        var maxLevel = GetFirstInt(skill, 0, "maxMasteryLevel");
+
+        if (masteryLookup.TryGetValue(skillName, out var mastery))
+        {
+            if (level <= 0)
+                level = GetFirstInt(mastery, 0, "newMasteryLevel", "currentMasteryLevel", "currentMastery", "level");
+            if (progress <= 0)
+                progress = GetFirstInt(mastery, 0, "newCurrentMasteryProgress", "currentMasteryProgress", "masteryProgress", "progress");
+            if (needed <= 0)
+                needed = GetFirstInt(mastery, 0, "newMasteryProgressNeeded", "masteryProgressNeeded", "progressNeeded");
+            if (maxLevel <= 0)
+                maxLevel = GetFirstInt(mastery, 0, "newMaxMasteryLevel", "maxMasteryLevel");
+        }
+
+        if (level <= 0 && (progress > 0 || needed > 0))
+            level = 1;
+
+        return new SkillMasterySnapshot(level, progress, needed, maxLevel);
+    }
+
+    private static int GetFirstInt(JsonElement source, int fallback, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            var value = GetInt(source, propertyName, int.MinValue);
+            if (value != int.MinValue)
+                return value;
+        }
+
+        return fallback;
+    }
+
+    private static string FormatSkillRarityLabel(string rarity) =>
+        (rarity ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "common" or "обычный" or "обычная" or "обычное" => "обычное",
+            "good" or "хороший" or "хорошая" or "хорошее" => "хорошее",
+            "uncommon" or "необычный" or "необычная" or "необычное" => "необычное",
+            "rare" or "редкий" or "редкая" or "редкое" => "редкое",
+            "epic" or "эпический" or "эпическая" or "эпическое" => "эпическое",
+            "legendary" or "легендарный" or "легендарная" or "легендарное" => "легендарное",
+            "unique" or "уникальный" or "уникальная" or "уникальное" => "уникальное",
+            _ => rarity ?? string.Empty
+        };
+
+    private static string FormatSkillActionCostLabel(string actionCost) =>
+        (actionCost ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "main" or "основное" => "основное",
+            "fast" or "быстрое" => "быстрое",
+            "free" or "свободное" => "свободное",
+            _ => actionCost ?? string.Empty
+        };
+
+    private readonly record struct SkillMasterySnapshot(int Level, int Progress, int Needed, int MaxLevel);
 
     private async Task ShowPlayerStats()
     {

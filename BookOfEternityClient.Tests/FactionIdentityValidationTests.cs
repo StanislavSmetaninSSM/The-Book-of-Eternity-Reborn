@@ -65,11 +65,62 @@ public sealed class FactionIdentityValidationTests : IDisposable
             issue.FilePath.Contains("game_state/factions/faction_custom.json.entries[0]", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_CanonicalPermanentFactionCore_DoesNotReportUnknownFullObjectFactionId()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", CreatePermanentFactionCoreJson());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "faction_full_object_unknown_faction_id", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("game_state/factions/faction_core.json.factions[0].factionId", StringComparison.OrdinalIgnoreCase));
+    }
+
     private static string CreateTemporaryFactionCoreJson()
     {
         var root = new JsonObject
         {
             ["factions"] = new JsonArray(CreateTemporaryFactionObject())
+        };
+
+        return root.ToJsonString(new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
+    }
+
+    private static string CreatePermanentFactionCoreJson()
+    {
+        var faction = CreateTemporaryFactionObject();
+        faction["factionId"] = "faction_life_001_initial_context";
+        faction.Remove("initialId");
+        faction.Remove("isNewFaction");
+        faction["resources"] = new JsonObject
+        {
+            ["wealth"] = 1,
+            ["manpower"] = 1,
+            ["information"] = 2,
+            ["magic"] = 0,
+            ["metaResources"] = new JsonArray(),
+            ["strategicGoods"] = new JsonArray()
+        };
+        faction["ranks"] = new JsonObject
+        {
+            ["entries"] = new JsonArray(),
+            ["branches"] = new JsonArray(),
+            ["hierarchySummary"] = "Во главе стоит мелкий посредник; ниже - писцы, слуги и зависимые семьи."
+        };
+        faction["rankBranches"] = new JsonArray();
+        faction["controlledTerritories"] = new JsonArray("loc_life_001_start");
+        faction["projects"] = new JsonArray();
+        faction["chronicle"] = new JsonArray();
+        faction["customStates"] = new JsonArray();
+
+        var root = new JsonObject
+        {
+            ["factions"] = new JsonArray(faction)
         };
 
         return root.ToJsonString(new JsonSerializerOptions

@@ -24,6 +24,15 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureInitializedAsync_MissingScheduleAndSoulState_DefersLedgerUntilRealmExists()
+    {
+        var schedule = await _service.EnsureInitializedAsync();
+
+        Assert.Equal(string.Empty, schedule.CurrentRealm);
+        Assert.False(_fs.FileExists(ProgressionScheduleService.SchedulePath));
+    }
+
+    [Fact]
     public async Task BuildControlForNextTurnAsync_DoesNotTreatChaosSubstringRealmAsChaosSea()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """

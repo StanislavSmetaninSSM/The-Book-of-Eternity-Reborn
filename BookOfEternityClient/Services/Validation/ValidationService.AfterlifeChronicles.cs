@@ -124,8 +124,14 @@ public partial class ValidationService
         var chronicleId = RequireAfterlifeChronicleString(entry, context, "chronicleId", "afterlife_chronicle_missing_id", issues);
         var scopeType = RequireAfterlifeChronicleString(entry, context, "scopeType", "afterlife_chronicle_missing_scope_type", issues);
         RequireAfterlifeChronicleString(entry, context, "scopeId", "afterlife_chronicle_missing_scope_id", issues);
-        RequireAfterlifeChronicleString(entry, context, "displayName", "afterlife_chronicle_missing_display_name", issues);
-        RequireAfterlifeChronicleString(entry, context, "lastEventsDescription", "afterlife_chronicle_missing_last_events_description", issues);
+        ValidateAfterlifeChroniclePlayerText(
+            RequireAfterlifeChronicleString(entry, context, "displayName", "afterlife_chronicle_missing_display_name", issues),
+            $"{context}.displayName",
+            issues);
+        ValidateAfterlifeChroniclePlayerText(
+            RequireAfterlifeChronicleString(entry, context, "lastEventsDescription", "afterlife_chronicle_missing_last_events_description", issues),
+            $"{context}.lastEventsDescription",
+            issues);
 
         if (!string.IsNullOrWhiteSpace(scopeType) && !AfterlifeChronicleState.ScopeTypes.Contains(scopeType))
         {
@@ -168,6 +174,7 @@ public partial class ValidationService
 
         ValidateAfterlifeChronicleStringArray(entry, context, "persistentConsequences", required: false, issues);
         ValidateAfterlifeChronicleStringArray(entry, context, "openThreads", required: false, issues);
+        ValidateAfterlifeChronicleParticipantsPlayerText(entry, context, issues);
         ValidateNonNegativeIntegerField(entry, context, issues, "lastUpdatedTurn", "AfterlifeChronicles");
     }
 
@@ -244,9 +251,76 @@ public partial class ValidationService
                     expected: "non-empty string",
                     actual: item.ValueKind.ToString()));
             }
+            else
+            {
+                ValidateAfterlifeChroniclePlayerText(
+                    item.GetString(),
+                    $"{context}.{propertyName}[{index}]",
+                    issues);
+            }
 
             index++;
         }
+    }
+
+    private static void ValidateAfterlifeChronicleParticipantsPlayerText(
+        JsonElement entry,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!entry.TryGetProperty("participants", out var participants) ||
+            participants.ValueKind != JsonValueKind.Array)
+            return;
+
+        var index = 0;
+        foreach (var participant in participants.EnumerateArray())
+        {
+            if (participant.ValueKind == JsonValueKind.Object &&
+                participant.TryGetProperty("displayName", out var displayName) &&
+                displayName.ValueKind == JsonValueKind.String)
+            {
+                ValidateAfterlifeChroniclePlayerText(
+                    displayName.GetString(),
+                    $"{context}.participants[{index}].displayName",
+                    issues);
+            }
+
+            index++;
+        }
+    }
+
+    private static void ValidateAfterlifeChroniclePlayerText(
+        string? value,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        var term = FindInternalAfterlifeChronicleTerm(value);
+        if (term == null)
+            return;
+
+        issues.Add(new ValidationIssue(
+            context,
+            IssueSeverity.Error,
+            "Игроковый текст afterlife-хроники содержит внутренний английский термин.",
+            code: "afterlife_chronicle_player_text_internal_term",
+            section: "AfterlifeChronicles",
+            expected: "русский внутриигровой текст: Море Хаоса, Сияющая Обитель, посмертие, смертный мир",
+            actual: term,
+            repairHint: "Замени внутренние английские термины в видимой прозе хроники: afterlife -> посмертие/посмертный, Chaos Sea -> Море Хаоса, Shining Abode -> Сияющая Обитель, Mortal World -> смертный мир."));
+    }
+
+    private static string? FindInternalAfterlifeChronicleTerm(string value)
+    {
+        foreach (var term in new[] { "afterlife", "ChaosSea", "Chaos Sea", "ShiningAbode", "Shining Abode", "MortalWorld", "Mortal World" })
+        {
+            if (value.Contains(term, StringComparison.OrdinalIgnoreCase))
+                return term;
+        }
+
+        return null;
     }
 
     private static string ToSnakeCase(string value)

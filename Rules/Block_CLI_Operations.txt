@@ -465,6 +465,10 @@
                       "timestamp": "ISO_datetime"
                     }
 
+                    `dialogueOptions` entries must be objects with at least `text`.
+                    The client has a safety fallback that can normalize legacy string-only choices into objects,
+                    but normal GM output must not depend on that fallback.
+
                     **output/debug_logs.json** - GM thoughts for debugging
                     {
                       "gm_thoughts_markdown": "structured NPC-scope + reasoning markdown string",

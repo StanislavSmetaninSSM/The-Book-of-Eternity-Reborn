@@ -3328,6 +3328,9 @@ public partial class ValidationService
         var resolution = await ResolveValidatedCurrentPreTurnRealmAsync();
         if (resolution.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable)
         {
+            if (!HasActivePendingTurnSnapshotLifecycleArtifacts())
+                return await TryResolveCurrentRealmAsync();
+
             issues.Add(new ValidationIssue(
                 requestPath,
                 IssueSeverity.Error,
@@ -3340,6 +3343,30 @@ public partial class ValidationService
         }
 
         return resolution.Realm;
+    }
+
+    private bool HasActivePendingTurnSnapshotLifecycleArtifacts()
+    {
+        if (_fs.FileExists("input/turn_request.json") ||
+            _fs.FileExists("ready/turn_complete.json") ||
+            _fs.FileExists("ready/turn_error.json") ||
+            _fs.FileExists("game_state/control/pending_turn_snapshot.json"))
+        {
+            return true;
+        }
+
+        var snapshotRoot = _fs.ResolvePath("game_state/control/pending_turn_snapshot");
+        if (!Directory.Exists(snapshotRoot))
+            return false;
+
+        try
+        {
+            return Directory.EnumerateFiles(snapshotRoot, "*", SearchOption.AllDirectories).Any();
+        }
+        catch
+        {
+            return true;
+        }
     }
 
     private async Task ValidatePendingAbodeOfferingContextAsync(List<ValidationIssue> issues)
@@ -4655,7 +4682,7 @@ public partial class ValidationService
         authorityComparable.Remove(GuardianTradeRequestState.ReceiptsProperty);
         materializedComparable.Remove("tradeInventory");
         materializedComparable.Remove(GuardianTradeRequestState.ReceiptsProperty);
-        return JsonNode.DeepEquals(authorityComparable, materializedComparable);
+        return JsonNodesSemanticallyEqual(authorityComparable, materializedComparable);
     }
 
     private async Task ValidatePendingNpcTradeInventoryRequestContextAsync(List<ValidationIssue> issues)
@@ -7612,6 +7639,13 @@ public partial class ValidationService
                         $"{itemContext}.textContent[{textIndex}]",
                         IssueSeverity.Error,
                         "textContent entries must be non-empty strings"));
+                }
+                else
+                {
+                    ValidatePlayerFacingInventoryTextEntry(
+                        entry.GetString() ?? string.Empty,
+                        $"{itemContext}.textContent[{textIndex}]",
+                        issues);
                 }
 
                 textIndex++;

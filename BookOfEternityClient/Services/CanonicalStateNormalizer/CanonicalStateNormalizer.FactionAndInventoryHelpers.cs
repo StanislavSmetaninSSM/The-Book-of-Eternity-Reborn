@@ -125,7 +125,7 @@ public partial class CanonicalStateNormalizer
 
             var entry = GetOrCreateInventoryItemEntry(entries, command);
             var journalEntries = EnsureArray(entry, "journalEntries");
-            AddUniqueNode(journalEntries, JsonValue.Create(appendedEntry)!);
+            AddUniqueNode(journalEntries, JsonValue.Create(StripPlayerFacingTurnAnchor(appendedEntry))!);
         }
     }
 

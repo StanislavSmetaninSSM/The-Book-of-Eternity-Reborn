@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using BookOfEternityClient.Services;
 using Spectre.Console;
 
@@ -187,10 +188,10 @@ public partial class ExplorerMode
             return null;
 
         var parts = new List<string>();
-        var summary = AfterlifeEntityProfileState.GetNodeString(combatEffect["summary"]);
-        var trigger = AfterlifeEntityProfileState.GetNodeString(combatEffect["trigger"]);
-        var payoff = AfterlifeEntityProfileState.GetNodeString(combatEffect["allowedPayoff"]);
-        var limit = AfterlifeEntityProfileState.GetNodeString(combatEffect["limit"]);
+        var summary = NormalizeAfterlifeCombatPlayerText(AfterlifeEntityProfileState.GetNodeString(combatEffect["summary"]));
+        var trigger = NormalizeAfterlifeCombatPlayerText(AfterlifeEntityProfileState.GetNodeString(combatEffect["trigger"]));
+        var payoff = NormalizeAfterlifeCombatPlayerText(AfterlifeEntityProfileState.GetNodeString(combatEffect["allowedPayoff"]));
+        var limit = NormalizeAfterlifeCombatPlayerText(AfterlifeEntityProfileState.GetNodeString(combatEffect["limit"]));
 
         if (!string.IsNullOrWhiteSpace(summary))
             parts.Add($"Боевой эффект: {summary}");
@@ -201,7 +202,7 @@ public partial class ExplorerMode
         if (!string.IsNullOrWhiteSpace(limit))
             parts.Add($"предел: {limit}");
 
-        return parts.Count == 0 ? null : string.Join("; ", parts);
+        return parts.Count == 0 ? null : string.Join(". ", parts);
     }
 
     private static void AppendAfterlifeEntityCustomStates(List<string> lines, JsonArray? states)
@@ -566,4 +567,43 @@ public partial class ExplorerMode
             "recover_spiritual_power" => "Собрать Средоточие",
             _ => artId ?? "?"
         };
+
+    private static string? NormalizeAfterlifeCombatPlayerText(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return value;
+
+        var result = value.Trim();
+        foreach (var (token, replacement) in AfterlifeCombatPlayerTextTokenReplacements)
+        {
+            result = Regex.Replace(
+                result,
+                $@"(?<![\p{{L}}\p{{N}}_]){Regex.Escape(token)}(?![\p{{L}}\p{{N}}_])",
+                replacement,
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        }
+
+        return result;
+    }
+
+    private static readonly (string Token, string Replacement)[] AfterlifeCombatPlayerTextTokenReplacements =
+    [
+        ("pressure", "давление"),
+        ("guard", "защита"),
+        ("counter", "контрприём"),
+        ("maneuver", "манёвр"),
+        ("binding", "оковы"),
+        ("force_binding", "силовые оковы"),
+        ("break_binding", "разрыв оков"),
+        ("recover_spiritual_power", "сбор Средоточия"),
+        ("incarnation_resistance", "сопротивление воплощению"),
+        ("champion_coordination", "координация чемпиона"),
+        ("tempoAdvantage", "темповое преимущество"),
+        ("strain", "напряжение"),
+        ("controlState", "контроль / оковы"),
+        ("incomingAction", "входящее действие"),
+        ("conflictPosition", "позиция конфликта"),
+        ("oppositionSideStrain", "напряжение противника"),
+        ("playerSideStrain", "напряжение души")
+    ];
 }

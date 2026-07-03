@@ -609,7 +609,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks);
     }
 
-    private static UiEntityDossierBlock BuildMapSummaryDossier(MapViewDto map)
+    internal static UiEntityDossierBlock BuildMapSummaryDossier(MapViewDto map)
     {
         var currentNode = map.Nodes.FirstOrDefault(node => node.IsCurrent)
             ?? map.Nodes.FirstOrDefault(node => string.Equals(node.Id, map.CurrentNodeId, StringComparison.OrdinalIgnoreCase));
@@ -660,9 +660,101 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     Collapsible = true,
                     InitiallyExpanded = true,
                     Blocks = [new UiKeyValueGridBlock { Items = facts }]
-                }
+                },
+                BuildMapNodesSection(map)
             ]
         };
+    }
+
+    private static UiEntityDossierSection BuildMapNodesSection(MapViewDto map)
+    {
+        var cards = map.Nodes
+            .Take(12)
+            .Select(node => BuildMapNodeCard(map, node))
+            .ToList();
+        var hiddenCount = Math.Max(0, map.Nodes.Count - cards.Count);
+        var hints = hiddenCount == 0
+            ? new List<UiEntityHint>()
+            : new List<UiEntityHint>
+            {
+                new()
+                {
+                    Title = "Не все точки показаны",
+                    Text = $"В сводке показаны первые {cards.Count} точек. Остальные видны на открытой визуальной карте.",
+                    Tone = UiTone.Muted
+                }
+            };
+
+        return new UiEntityDossierSection
+        {
+            Id = "map-nodes",
+            Title = "Точки карты",
+            Summary = "Сводка для проверки карты в консоли и Agent Console: созданные места отделены от намеченных выходов.",
+            Icon = "map-pin",
+            CollectionLabel = "точки",
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Cards = cards,
+            Hints = hints
+        };
+    }
+
+    private static UiEntityCard BuildMapNodeCard(MapViewDto map, MapNodeDto node)
+    {
+        var stateLabel = node.IsPlaceholder
+            ? "Намеченный выход"
+            : node.IsCurrent
+                ? "Текущая созданная локация"
+                : "Созданная локация";
+        var connectedLinks = map.Links.Count(link =>
+            string.Equals(link.SourceNodeId, node.Id, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(link.TargetNodeId, node.Id, StringComparison.OrdinalIgnoreCase));
+        var details = node.Details
+            .Where(static detail => !string.IsNullOrWhiteSpace(detail.Key) && !string.IsNullOrWhiteSpace(detail.Value))
+            .Take(4)
+            .Select(static detail => $"{detail.Key}: {detail.Value}")
+            .ToList();
+
+        var summary = details.FirstOrDefault(detail => detail.StartsWith("Описание:", StringComparison.OrdinalIgnoreCase));
+        if (!string.IsNullOrWhiteSpace(summary))
+            summary = summary["Описание:".Length..].Trim();
+        if (string.IsNullOrWhiteSpace(summary))
+            summary = node.IsPlaceholder
+                ? "Выход уже известен сцене, но отдельная локация ещё не создана."
+                : "Созданная точка карты с отдельными данными локации.";
+
+        return new UiEntityCard
+        {
+            Title = FirstNonEmpty(node.Label, node.Id, "Точка карты"),
+            Subtitle = stateLabel,
+            Summary = summary,
+            Icon = node.IsPlaceholder ? "route" : "map-pin",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = stateLabel,
+                    Tone = node.IsPlaceholder ? UiTone.Warning : node.IsCurrent ? UiTone.Success : UiTone.Accent,
+                    Icon = node.IsPlaceholder ? "route" : "map-pin"
+                }
+            ],
+            Facts =
+            [
+                new UiEntityFact { Label = "Статус", Value = stateLabel },
+                new UiEntityFact { Label = "Уровень", Value = FindMapZLevelLabel(map, node.Z) },
+                new UiEntityFact { Label = "Координаты", Value = $"{node.X:0.##}, {node.Y:0.##}" },
+                new UiEntityFact { Label = "Связи", Value = connectedLinks.ToString() }
+            ],
+            List = details
+        };
+    }
+
+    private static string FindMapZLevelLabel(MapViewDto map, int z)
+    {
+        var label = map.ZLevels.FirstOrDefault(level => level.Z == z)?.Label;
+        return string.IsNullOrWhiteSpace(label)
+            ? $"уровень {z:+#;-#;0}"
+            : label;
     }
 
     private static async Task<ExplorerCommandResult> BuildEffects(
@@ -3144,7 +3236,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         blocks.Add(Panel("Последние события", new UiTextBlock
         {
-            Text = ExplorerPlayerFacingLabels.WorldTime(events),
+            Text = ExplorerPlayerFacingLabels.WorldTime(ExplorerPlayerFacingLabels.HistoricalEntry(events)),
             Tone = UiTone.Default
         }));
     }
@@ -5774,7 +5866,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             TranslateLocationType(GetLocationNodeString(location, "locationType")),
             TranslateIndoorLocationType(GetLocationNodeString(location, "indoorType")),
             GetLocationNodeString(location, "shortDescription", "description"),
-            GetLocationNodeString(location, "lastEventsDescription"));
+            ExplorerPlayerFacingLabels.HistoricalEntry(GetLocationNodeString(location, "lastEventsDescription")));
 
     private static string DescribeLinkState(string linkState)
     {
@@ -10022,7 +10114,24 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (string.IsNullOrWhiteSpace(slot))
             return string.Empty;
 
-        return FormatSlotName(slot);
+        if (slot.Trim().Equals("Accessory1", StringComparison.OrdinalIgnoreCase))
+            return "Аксессуар 1";
+        if (slot.Trim().Equals("Accessory2", StringComparison.OrdinalIgnoreCase))
+            return "Аксессуар 2";
+
+        return FormatSlotName(slot.Trim() switch
+        {
+            "Accessory1" => "ring1",
+            "Accessory2" => "ring2",
+            "Hands" => "hands",
+            "Head" => "head",
+            "Chest" => "body",
+            "Body" => "body",
+            "Feet" => "feet",
+            "MainHand" => "mainHand",
+            "OffHand" => "offHand",
+            _ => slot
+        });
     }
 
     private static string FormatInventoryNodeValue(JsonNode? node, string? fieldName = null)

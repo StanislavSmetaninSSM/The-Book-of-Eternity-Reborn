@@ -5561,6 +5561,53 @@ public sealed partial class GuardianSystemRegressionTests
     }
 
     [Fact]
+    public async Task ValidateGameState_IdleChaosSeaGuardiansWithoutPendingSnapshot_DoesNotRequirePreTurnGuardiansSnapshot()
+    {
+        _fs.DeleteFile("input/turn_request.json");
+        _fs.DeleteFile("ready/turn_complete.json");
+        _fs.DeleteFile("ready/turn_error.json");
+        _fs.DeleteFile("game_state/control/pending_turn_snapshot.json");
+
+        await WriteGuardianRawWithoutValidatedSnapshotAsync("""
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Idle Chaos Sea state before the next turn is dispatched."
+              },
+              "manifestationHistory": [],
+              "domain": "Tide",
+              "abode": { "abodeId": "abode_alpha", "title": "Тихий прилив" },
+              "personalityProfile": {
+                "archetype": "Tide Keeper",
+                "speechPattern": "Measured and tidal",
+                "coreValues": [ "balance", "memory", "patience" ]
+              },
+              "relationshipData": { "currentReputation": 18, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "guardianRelationships": [],
+              "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ]
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameState_UsableManifestWithoutGuardiansSnapshotEntryRaisesExplicitSnapshotError()
     {
         await WriteGuardianRawWithoutValidatedSnapshotAsync("""

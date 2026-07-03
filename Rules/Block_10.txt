@@ -1102,6 +1102,8 @@
                             CRITICAL DISTINCTION:
                             - The 'description' field (Rule #10.2.1) MUST describe the PHYSICAL OBJECT.
                             - The 'textContent' array MUST contain WHAT IS WRITTEN ON the object, with each logical block of text as a separate string element in the array.
+                            - The 'textContent' array is player-facing. Do NOT prefix entries with technical turn anchors or audit markers such as "#[5].", "#[5] -", "#[turn_5]:", "Turn 5:", or similar bookkeeping labels.
+                            - If you need to preserve turn history or investigation provenance, write that history to the appropriate journal, quest, chronicle, NPC memory, faction chronicle, or GM-facing audit surface. The readable item must contain only the text the player can plausibly read on or inside the object.
 
                             READABLE AUTHORITY REQUIREMENT:
                             - If an inventory item looks text-bearing by type, group, name, or metadata (book, letter, scroll, note, document, inscription, книга, письмо, свиток, записка, документ, надпись), the player must be able to understand it through /книги.
@@ -1178,6 +1180,7 @@
                                     3.  "textToAppend": (string, MANDATORY) 
                                         The new string entry that should be appended (pushed) as a new element to the end of the existing 'textContent' array. 
                                         This text MUST be translated and can contain any necessary formatting (like newlines '\n' or separators) within the string itself.
+                                        This text is player-facing readable content. Do NOT begin it with technical turn anchors or audit markers such as "#[5].", "#[5] -", "#[turn_5]:", or "Turn 5:".
 
                                     ]]>
          </content>

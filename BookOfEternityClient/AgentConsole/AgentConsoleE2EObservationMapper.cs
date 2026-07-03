@@ -7,7 +7,8 @@ public static class AgentConsoleE2EObservationMapper
     public static AgentConsoleSnapshot ToAgentConsoleSnapshot(
         ConsoleE2EObservationSnapshot observation,
         string? screenId = null,
-        string? ansiText = null)
+        string? ansiText = null,
+        IReadOnlyList<string>? actionInputValues = null)
     {
         ArgumentNullException.ThrowIfNull(observation);
 
@@ -29,7 +30,7 @@ public static class AgentConsoleE2EObservationMapper
                 or AgentConsoleInputKind.Confirmation,
             InputKind = inputKind,
             SelectedIndex = selectedIndex,
-            Actions = BuildActions(observation.Options, selectedIndex, inputKind),
+            Actions = BuildActions(observation.Options, selectedIndex, inputKind, actionInputValues),
             Prompt = BuildPrompt(observation, inputKind),
             RenderedAtUtc = observation.CapturedAtUtc,
             UpdatedAtUtc = observation.CapturedAtUtc,
@@ -93,7 +94,8 @@ public static class AgentConsoleE2EObservationMapper
     private static IReadOnlyList<AgentConsoleAction> BuildActions(
         IReadOnlyList<string> options,
         int? selectedIndex,
-        AgentConsoleInputKind inputKind)
+        AgentConsoleInputKind inputKind,
+        IReadOnlyList<string>? actionInputValues)
     {
         return options
             .Select((label, index) => new AgentConsoleAction
@@ -101,6 +103,9 @@ public static class AgentConsoleE2EObservationMapper
                 Id = $"option-{index}",
                 Label = label,
                 Shortcut = inputKind == AgentConsoleInputKind.Confirmation ? ResolveConfirmationShortcut(index) : null,
+                InputValue = actionInputValues is not null && index < actionInputValues.Count
+                    ? actionInputValues[index]
+                    : null,
                 IsDefault = selectedIndex == index
             })
             .ToArray();

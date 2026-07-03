@@ -322,6 +322,89 @@ Skill-based applied state example:
 Equivalent reordering of fields or bonus entries is acceptable as long as the canonical semantic bonus content remains the same.
 
 ==================================================
+4.5B MORTAL WORLD TRAINING MUST MATERIALIZE SKILLS
+==================================================
+
+If a Mortal World scene says the player learned, trained, practiced, unlocked, or repeatedly applied a concrete skill, the result must not remain prose-only. Attribute-only checks are allowed when the character has not learned a durable skill yet, but the narrative should make that clear.
+
+Example: a child in an archive spends repeated turns learning the difference between house seals and witness marks. Once the lesson crosses from early practice into a learned technique, the GM should add a passive skill:
+
+```json
+{
+  "response": "Лейра кладёт рядом две учебные ленты, и Искра наконец перестаёт смотреть только на форму знака. Теперь она видит порядок: главная печать принимает документ, а свидетельская метка отвечает за того, кто видел принятие. Это ещё не даёт права идти в нижнее хранилище одной, но превращает страх перед второй строкой в навык задавать правильные вопросы.",
+  "passiveSkillChanges": [
+    {
+      "skillName": "Чтение свидетельских меток",
+      "skillDescription": "Искра умеет отличать домовые печати, свидетельские метки и порядок подписей в архивных лентах.",
+      "rarity": "Common",
+      "type": "KnowledgeBased",
+      "group": "Архивное дело",
+      "masteryLevel": 1,
+      "maxMasteryLevel": 5,
+      "playerStatBonus": "Помогает проверкам Интеллекта и Восприятия при чтении архивных печатей.",
+      "structuredBonuses": [
+        {
+          "targetType": "skill",
+          "skillName": "Архивное дело",
+          "valueType": "flat",
+          "value": 1,
+          "condition": "чтение печатей, свидетельских меток и порядка подписей",
+          "source": "Чтение свидетельских меток",
+          "summary": "Архивное дело +1 при разборе печатей и свидетельских меток"
+        }
+      ],
+      "knowledgeDomain": "архивные печати и свидетельские метки",
+      "effectDetails": "Помогает задавать точные вопросы о свидетельских строках, но не заменяет доступ к закрытым архивам."
+    }
+  ]
+}
+```
+
+If the scene instead teaches a deliberate combat or contest action, add the full active skill object via `activeSkillChanges` and initialize/update `skillMasteryChanges` for that exact `skillName`. Do not write `skillMasteryChanges` for a skill that is neither already in `game_state/player/skills_active.json` nor created in the same response.
+
+==================================================
+4.5C MORTAL WORLD XP AND LEVEL-UP USE EXPERIENCE.JSON
+==================================================
+
+Ordinary Mortal World XP is stored in `game_state/player/experience.json`. If combat, a completed objective, or a meaningful victory grants mechanical progress, do not leave the reward as prose-only.
+
+When an active skill was used, update mastery separately from character XP. The player-level reward belongs in `experience.json`; skill practice belongs in `skillMasteryChanges`.
+
+Example: the player wins a dangerous archive duel using an existing active skill and crosses the next level threshold:
+
+```json
+{
+  "response": "Тень отступает в щель между шкафами, оставляя на полу только холодную пыль. Искра не чувствует победного восторга, но рука уже запомнила короткий выпад: не широкий удар, а один точный толчок в момент, когда противник раскрывается. После этой схватки тело и память делают шаг дальше.",
+  "experienceGained": 20,
+  "skillMasteryChanges": [
+    {
+      "skillName": "Быстрый выпад",
+      "newMasteryLevel": 1,
+      "newCurrentMasteryProgress": 2,
+      "newMasteryProgressNeeded": 5,
+      "masteryLeveledUp": false
+    }
+  ]
+}
+```
+
+Then write these values into `game_state/player/experience.json`, not into the top-level GameResponse:
+
+- `playerLevel`: 2
+- `level`: 2
+- `currentExperience`: 10
+- `experience`: 10
+- `totalExperience`: 110
+- `experienceForNextLevel`: 150
+- `experienceGained`: 20
+
+Include `game_state/player/experience.json` in `Complete-BoeTurn -FilesModified`. Do not edit `game_state/player/stat_points.json` for this ordinary level-up: after the accepted turn, the client detects the higher level, preserves its `levelUpStatPointsAwardedThroughLevel` marker, and opens the stat allocation flow.
+
+Important invariant: after an XP reward, `totalExperience` must be lower than the current `experienceForNextLevel` for the persisted `playerLevel`. If the reward leaves `totalExperience >= experienceForNextLevel`, the level-up is not materialized yet. Repair it by advancing `playerLevel`/`level` and setting `experienceForNextLevel` to the next threshold above the new `totalExperience`; do not compensate by editing `stat_points.json`.
+
+Because the example is a duel, it also needs Mortal combat state. Write `game_state/combat/combat_log.json` with a player-facing summary of the same exchange so `/бой` is useful after the turn. If the opponent remains active, defeated-but-important, or likely to act again, also write `game_state/combat/enemies.json`; if allies took part tactically, write `game_state/combat/allies.json`. Use `MORTAL_COMBAT_STATE_TEMPLATE.md` before writing these files, and include every touched combat file in `Complete-BoeTurn -FilesModified`.
+
+==================================================
 4.6 LOCAL GUARDIAN TRADE AWARENESS
 ==================================================
 
@@ -492,6 +575,7 @@ IMPORTANT:
 - `Scene-local + Relevant actors: нет` is valid only when no such structured actor updates are emitted
 - unresolved ID-only structured updates should not be hard-rejected solely because the client could not recover a reliable name alias from current state
 - if `validation_repair_request.json.harnessRepairPackets[]` is present, follow those packets before free-form interpretation of `errors[]`
+- if a packet has `kind = "accepted_turn_output_artifact_repair"`, repair the same turn's `output/narrative_response.json.response` and/or `output/debug_logs.json.gm_thoughts_markdown`; do not create a new turn and do not write `ready/turn_complete.json`
 
 Faction identity repair packet example:
 {
@@ -518,6 +602,44 @@ Faction identity repair packet example:
 
 For example, if the snapshot has `factionId: null`, `initialId: "temp-faction-merchant-guild-eternia"`, and `isNewFaction: true`, the GM must restore that temporary identity shape instead of trying names such as `faction_merchant_guild` or `faction_capital_merchants`.
 
+Mortal bootstrap materialization repair packet:
+{
+  "kind": "mortal_bootstrap_materialization_repair",
+  "priority": "high",
+  "title": "Mortal bootstrap materialization repair",
+  "targetFiles": [
+    "game_state/control/mortal_bootstrap_scaffold.json",
+    "lore/codex_entries.json",
+    "game_state/inventory/items.json",
+    "game_state/factions/faction_core.json",
+    "game_state/world/current_location.json"
+  ],
+  "expectedShape": [
+    "bootstrap_codex_missing_current_world_entries: lore/codex_entries.json must contain current-world entries created for this life.",
+    "readable_document_missing_detail_authority: every readable document item must have a readable detail authority that the player can open.",
+    "item durability: starting inventory items must write durability as a percentage string such as 100%, never a bare number such as 100.",
+    "item journalEntries: journalEntries[] entries must be non-empty strings, not objects.",
+    "current_location_coordinates_mismatch: if currentLocationData uses a known locationId from the bootstrap scaffold, copy that locationId coordinates exactly from canonicalCoordinateAuthority.",
+    "location shape: current_location and durable world_map locations must include knownExits, adjacencyMap, factionControl, locationStorages, activeThreats, internalDifficultyProfile, and externalDifficultyProfile.",
+    "world_map_new_link_missing_required_fields: every map link preview must include targetName, targetCoordinates, estimatedInternalDifficultyProfile, and estimatedExternalDifficultyProfile.",
+    "canonical_faction_custom_state_missing_required_fields: faction state must keep required identity, rank/reputation/progression, and sidecar-compatible fields."
+  ],
+  "steps": [
+    "Read game_state/control/mortal_bootstrap_scaffold.json first and use it as the client-authored checklist for this first Mortal World materialization.",
+    "When editing current_location.json or world_map.json, use mortal_bootstrap_scaffold.json canonicalCoordinateAuthority: the same locationId must have identical coordinates in current_location, world_map newLocations, adjacencyMap targetCoordinates, and newLinks targetCoordinates.",
+    "Patch current_location.json and every durable world_map location object with required arrays/collections and internal/external difficulty profiles before completing repair.",
+    "Patch every new map link preview with targetName, targetCoordinates, estimatedInternalDifficultyProfile, and estimatedExternalDifficultyProfile.",
+    "Patch the current-world bootstrap files in place: current location/map, current-world codex/lore, starting inventory/readable document details, factions, and NPC bootstrap surfaces listed in targetFiles.",
+    "Do not reuse previous-life lore/current_world files; every current-world codex or lore entry must describe the life being created now.",
+    "Fix readable document items by adding an actual player-openable document/detail authority, not by changing the item type to avoid validation.",
+    "Fix inventory item durability by writing percentage strings such as 100%, not bare numbers.",
+    "Fix inventory item journalEntries by flattening malformed objects into one player-facing note string per array entry.",
+    "Call Complete-BoeValidationRepair as the last action."
+  ]
+}
+
+This packet means the first Mortal World prompt was created, but its supporting canonical files were incomplete or reused stale world data. Treat it as one bootstrap checklist, not as unrelated independent errors.
+
 Mortal NPC repair packets:
 {
   "kind": "mortal_npc_location_repair",
@@ -530,8 +652,13 @@ Mortal NPC repair packets:
     "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md"
   ],
   "expectedShape": [
-    "Same-turn scene NPCs use initialLocationId = current location id, currentLocationId = null, and currentLocationName = visible current location name.",
+    "NPCsInScene is only for actors physically present in currentLocationData; voices behind a door, nearbyExitLocationId actors, and corridor/exit pressure are offscreen for the current scene.",
+    "NPCsInScene in a known current location use currentLocationId = currentLocationData.locationId, initialLocationId = null, and currentLocationName = visible current location name.",
+    "NPCsInScene in a same-turn new location use initialLocationId = currentLocationData.initialId/newLocations.initialId, currentLocationId = null, and currentLocationName = visible current location name.",
     "Existing persistent NPCs keep permanent npcId and use currentLocationId/currentLocationName for a move."
+  ],
+  "missingFields": [
+    "inventory"
   ],
   "safeCorrectionRules": [
     "Patch only targetFiles unless the repair request lists another file.",
@@ -539,12 +666,13 @@ Mortal NPC repair packets:
   ],
   "steps": [
     "Read templateRefs before editing game_state/npcs/npc_core.json.",
+    "If missingFields[] is present, patch those exact fields first. For a newly created NPC without carried items, use inventory: [].",
     "Repair the listed NPC entries in place, preserving personality, goals, relationshipLock, journals, and unrelated NPCs.",
     "Call Complete-BoeValidationRepair as the last action."
   ]
 }
 
-The same NPC packet family can appear as `mortal_npc_full_object_repair` for missing required profile/social fields, `mortal_npc_relationship_enum_repair` for `attitude`/`relationshipLevel` and `culturalStance`, or `mortal_npc_reference_repair` for orphan `NPCJournals`/sidecar references. For those packets, follow `expectedShape[]` and `safeCorrectionRules[]` first; do not search implementation code to rediscover canonical fields.
+The same NPC packet family can appear as `mortal_npc_full_object_repair` for missing required profile/social fields, `mortal_npc_relationship_enum_repair` for `attitude`/`relationshipLevel` and `culturalStance`, or `mortal_npc_reference_repair` for orphan `NPCJournals`/sidecar references. For those packets, follow `missingFields[]`, `expectedShape[]`, and `safeCorrectionRules[]` first; do not search implementation code to rediscover canonical fields.
 
 VALIDATION CONTRACT SUMMARY:
 - client checks correlated `sessionId/requestId/turnNumber`

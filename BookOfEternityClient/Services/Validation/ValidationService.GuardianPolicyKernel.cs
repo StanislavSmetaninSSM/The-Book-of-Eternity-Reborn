@@ -533,6 +533,7 @@ public partial class ValidationService
                     currentTurn,
                     context.AuthorizedSameTurnGuardianQuestProgressUpdates);
                 ApplyChaosSeaTravelAuthorityProjection(currentAuthorityRoot, chaosSeaTravelProjection);
+                ApplyPendingGuardianTradeResolutionAuthorityProjection(context, currentAuthorityRoot);
                 context.CurrentAuthorityRoot = CloneJsonObjectToElement(currentAuthorityRoot);
                 context.HasCurrentAuthorityRoot = true;
             }
@@ -554,6 +555,7 @@ public partial class ValidationService
             currentTurn,
             context.AuthorizedSameTurnGuardianQuestProgressUpdates);
         ApplyChaosSeaTravelAuthorityProjection(strictCurrentAuthorityRoot, chaosSeaTravelProjection);
+        ApplyPendingGuardianTradeResolutionAuthorityProjection(context, strictCurrentAuthorityRoot);
         context.StrictCurrentAuthorityRoot = CloneJsonObjectToElement(strictCurrentAuthorityRoot);
         context.HasStrictCurrentAuthorityRoot = true;
         }
@@ -686,6 +688,63 @@ public partial class ValidationService
 
         if (!ContainsString(discoveredAbodes, projection.TargetAbodeId))
             discoveredAbodes.Add(projection.TargetAbodeId);
+    }
+
+    private void ApplyPendingGuardianTradeResolutionAuthorityProjection(
+        GuardianPolicyContext context,
+        JsonObject authorityRoot)
+    {
+        var requestJson = ReadValidatedCurrentPreTurnTrackedFileSync(GuardianTradeRequestState.PendingRequestPath);
+        if (string.IsNullOrWhiteSpace(requestJson))
+            return;
+
+        GuardianTradeRequestState.PendingGuardianTradeRequest? request;
+        try
+        {
+            request = JsonSerializer.Deserialize<GuardianTradeRequestState.PendingGuardianTradeRequest>(requestJson);
+        }
+        catch
+        {
+            return;
+        }
+
+        if (request == null || string.IsNullOrWhiteSpace(request.GuardianId))
+            return;
+
+        var authorityGuardian = FindGuardianNode(authorityRoot["guardians"], request.GuardianId);
+        if (authorityGuardian == null)
+            return;
+
+        if (!TryGetCurrentMaterializedGuardian(context, request.GuardianId, out var materializedGuardianElement) ||
+            JsonNode.Parse(materializedGuardianElement.GetRawText()) is not JsonObject materializedGuardian)
+        {
+            return;
+        }
+
+        GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(materializedGuardian);
+        if (!MaterializedGuardianMatchesAuthorityOutsideTradeResolutionSurface(authorityGuardian, materializedGuardian))
+            return;
+
+        var tradeInventory = materializedGuardian["tradeInventory"] as JsonObject;
+        if (!GuardianTradeRequestState.InventoryMatchesRequestContract(tradeInventory, request))
+            return;
+
+        var matchingReceipt = GuardianTradeRequestState.FindMatchingReceipt(materializedGuardian, request);
+        if (!GuardianTradeRequestState.ReceiptMatchesRequestContract(matchingReceipt, request, tradeInventory))
+            return;
+
+        authorityGuardian.Remove("tradeInventory");
+        authorityGuardian.Remove(GuardianTradeRequestState.ReceiptsProperty);
+        authorityGuardian["tradeInventory"] = tradeInventory!.DeepClone();
+        authorityGuardian[GuardianTradeRequestState.ReceiptsProperty] =
+            materializedGuardian[GuardianTradeRequestState.ReceiptsProperty]?.DeepClone() ??
+            new JsonArray(matchingReceipt!.DeepClone());
+
+        if (authorityRoot["activeGuardian"] is JsonObject authorityActiveGuardian &&
+            string.Equals(GetNodeString(authorityActiveGuardian["guardianId"]), request.GuardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            authorityRoot["activeGuardian"] = authorityGuardian.DeepClone();
+        }
     }
 
     private bool TryBuildGenericSharedStrictValidatedPreTurnGuardianAuthorityRoot(
