@@ -301,11 +301,28 @@ public partial class ValidationService
                 {
                     if (option is JsonValue value && value.TryGetValue<string>(out var text))
                     {
-                        normalizedOptions.Add(new JsonObject
+                        var normalizedOption = new JsonObject
                         {
                             ["text"] = text
-                        });
+                        };
+                        if (TrySplitLeadingDialogueControlTag(text, out var visibleText, out var inputValue))
+                        {
+                            normalizedOption["text"] = visibleText;
+                            normalizedOption["inputValue"] = inputValue;
+                        }
+
+                        normalizedOptions.Add(normalizedOption);
                         changed = true;
+                        continue;
+                    }
+
+                    if (option is JsonObject optionObject)
+                    {
+                        var normalizedOption = optionObject.DeepClone().AsObject();
+                        if (TryNormalizeDialogueOptionControlTag(normalizedOption))
+                            changed = true;
+
+                        normalizedOptions.Add(normalizedOption);
                         continue;
                     }
 
@@ -337,6 +354,72 @@ public partial class ValidationService
         {
             return json;
         }
+    }
+
+    private static bool TryGetString(JsonObject option, string propertyName, out string value)
+    {
+        value = string.Empty;
+        if (!option.TryGetPropertyValue(propertyName, out var node) ||
+            node is not JsonValue jsonValue ||
+            !jsonValue.TryGetValue<string>(out var text) ||
+            string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        value = text;
+        return true;
+    }
+
+    private static bool TryNormalizeDialogueOptionControlTag(JsonObject option)
+    {
+        if (!TryGetString(option, "text", out var text) ||
+            !TrySplitLeadingDialogueControlTag(text, out var visibleText, out var inputValue))
+        {
+            return false;
+        }
+
+        option["text"] = visibleText;
+        if (!TryGetString(option, "inputValue", out var existingInputValue) ||
+            string.IsNullOrWhiteSpace(existingInputValue))
+        {
+            option["inputValue"] = inputValue;
+        }
+
+        return true;
+    }
+
+    private static bool TrySplitLeadingDialogueControlTag(string text, out string visibleText, out string inputValue)
+    {
+        visibleText = text;
+        inputValue = text;
+
+        var trimmed = text.TrimStart();
+        if (!trimmed.StartsWith('['))
+            return false;
+
+        var closeIndex = trimmed.IndexOf(']');
+        if (closeIndex <= 1)
+            return false;
+
+        var tag = trimmed[1..closeIndex].Trim();
+        if (!IsPlayerHiddenDialogueControlTag(tag))
+            return false;
+
+        var remaining = trimmed[(closeIndex + 1)..].TrimStart();
+        if (string.IsNullOrWhiteSpace(remaining))
+            return false;
+
+        visibleText = remaining;
+        inputValue = trimmed;
+        return true;
+    }
+
+    private static bool IsPlayerHiddenDialogueControlTag(string tag)
+    {
+        var separatorIndex = tag.IndexOf(':');
+        var tagName = (separatorIndex >= 0 ? tag[..separatorIndex] : tag).Trim();
+        return string.Equals(tagName, "AFTERLIFE_SPIRITUAL_ACTION", StringComparison.Ordinal);
     }
 
     private static bool MissingOrBlankTimestamp(JsonObject root)

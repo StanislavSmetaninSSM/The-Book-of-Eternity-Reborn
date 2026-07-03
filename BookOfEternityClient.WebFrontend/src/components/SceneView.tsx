@@ -97,7 +97,7 @@ function SceneContent({ game, onCommand }: {
                 key={opt.id}
                 type="button"
                 className="scene-dialogue-chip"
-                onClick={() => void onCommand(`/player_action ${opt.text}`)}
+                onClick={() => void onCommand(`/player_action ${opt.inputValue || opt.text}`)}
               >
                 {toPlayerFacingText(opt.text, 'вариант')}
               </button>

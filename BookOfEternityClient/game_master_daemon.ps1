@@ -1220,6 +1220,7 @@ For EVERY relevant NPC block, the current-location line is mandatory. If the act
   "dialogueOptions": [
     {
       "text": "<player-facing option text>",
+      "inputValue": "<optional exact submitted value when it must differ from visible text>",
       "category": "neutral"
     }
   ],
@@ -1227,7 +1228,9 @@ For EVERY relevant NPC block, the current-location line is mandatory. If the act
 }
 ```
 
-Canonical authoring rule: write each `dialogueOptions` entry as an object with at least `text`.
+Canonical authoring rule: write each `dialogueOptions` entry as an object with at least player-facing `text`.
+If the option needs a hidden machine marker or exact submitted command, keep `text` clean for the player and put the full value in optional `inputValue`.
+Do not show control tags such as `[AFTERLIFE_SPIRITUAL_ACTION: ...]` in player-facing `text`.
 The client may normalize a legacy string-only list into objects as a repair-prevention fallback,
 but the GM must not rely on that fallback when authoring normal turns.
 

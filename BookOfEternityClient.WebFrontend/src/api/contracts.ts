@@ -349,6 +349,7 @@ export interface BrowserGameScreenNarrativeDto {
 export interface BrowserGameScreenDialogueOptionDto {
   id: string;
   text: string;
+  inputValue: string;
   category: string;
 }
 

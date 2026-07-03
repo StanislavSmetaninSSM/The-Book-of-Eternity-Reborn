@@ -582,6 +582,9 @@ public class DialogueOption
     [JsonPropertyName("text")]
     public string? Text { get; set; }
 
+    [JsonPropertyName("inputValue")]
+    public string? InputValue { get; set; }
+
     [JsonPropertyName("category")]
     public string? Category { get; set; }
 }

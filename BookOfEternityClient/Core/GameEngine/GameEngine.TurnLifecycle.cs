@@ -3246,7 +3246,10 @@ public partial class GameEngine
             // Try to resolve to actual dialogue option text
             if (_lastResponse?.DialogueOptions != null && optNum >= 1 && optNum <= _lastResponse.DialogueOptions.Length)
             {
-                var optionText = _lastResponse.DialogueOptions[optNum - 1].Text;
+                var option = _lastResponse.DialogueOptions[optNum - 1];
+                var optionText = !string.IsNullOrWhiteSpace(option.InputValue)
+                    ? option.InputValue
+                    : option.Text;
                 if (!string.IsNullOrEmpty(optionText))
                     return optionText;
             }

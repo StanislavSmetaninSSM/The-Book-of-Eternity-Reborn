@@ -53,19 +53,28 @@ public partial class GameEngine
     private void RecordGameLoopPromptObservation()
     {
         var state = _stateManager.CurrentState;
-        var options = _lastResponse?.DialogueOptions?
-            .Select(option => option.Text)
-            .Where(text => !string.IsNullOrWhiteSpace(text))
-            .Select(text => text!)
-            .ToArray() ?? [];
+        var dialogueOptions = _lastResponse?.DialogueOptions ?? [];
+        var visibleOptions = new List<string>();
+        var actionInputValues = new List<string>();
+        foreach (var option in dialogueOptions)
+        {
+            if (string.IsNullOrWhiteSpace(option.Text))
+                continue;
+
+            visibleOptions.Add(option.Text);
+            actionInputValues.Add(!string.IsNullOrWhiteSpace(option.InputValue)
+                ? option.InputValue!
+                : option.Text);
+        }
 
         RecordConsoleObservation(
             ConsoleE2EInputMode.TextPrompt,
             "Ваш ход",
             BuildGameLoopPromptObservationText(state),
-            options,
+            visibleOptions,
             selectedOption: null,
-            slug: "game-loop");
+            slug: "game-loop",
+            actionInputValues: actionInputValues);
     }
 
     private void RecordGameLoopErrorObservation(Exception ex)

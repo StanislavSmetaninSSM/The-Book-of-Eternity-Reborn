@@ -1117,7 +1117,10 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("\"timestamp\"", daemon, StringComparison.Ordinal);
         Assert.Contains("\"dialogueOptions\": [", daemon, StringComparison.Ordinal);
         Assert.Contains("\"text\":", daemon, StringComparison.Ordinal);
+        Assert.Contains("\"inputValue\":", daemon, StringComparison.Ordinal);
         Assert.Contains("\"category\":", daemon, StringComparison.Ordinal);
+        Assert.Contains("keep `text` clean for the player", daemon, StringComparison.Ordinal);
+        Assert.Contains("Do not show control tags", daemon, StringComparison.Ordinal);
         Assert.Contains("__ACTOR_SITUATION_LABEL__", daemon, StringComparison.Ordinal);
         Assert.Contains("__ACTOR_THOUGHTS_LABEL__", daemon, StringComparison.Ordinal);
         Assert.Contains("__ACTOR_ACTIONS_LABEL__", daemon, StringComparison.Ordinal);
@@ -1263,6 +1266,7 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("- Ситуация:", turnTemplate, StringComparison.Ordinal);
             Assert.Contains("\"dialogueOptions\": [", turnTemplate, StringComparison.Ordinal);
             Assert.Contains("\"text\":", turnTemplate, StringComparison.Ordinal);
+            Assert.Contains("\"inputValue\":", turnTemplate, StringComparison.Ordinal);
             Assert.Contains("\"category\":", turnTemplate, StringComparison.Ordinal);
             Assert.Contains("\"timestamp\"", turnTemplate, StringComparison.Ordinal);
             Assert.DoesNotContain("РЎРё", actorTemplate, StringComparison.Ordinal);

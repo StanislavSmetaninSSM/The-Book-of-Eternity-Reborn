@@ -896,7 +896,7 @@ public sealed class BrowserApiContractTests
                 SessionId: "session-contract"),
             Narrative: new BrowserGameScreenNarrativeDto(
                 Text: "Перед героем открывается тихая дорога.",
-                DialogueOptions: [new BrowserGameScreenDialogueOptionDto("choice-1", "Осмотреть врата", "exploration")],
+                DialogueOptions: [new BrowserGameScreenDialogueOptionDto("choice-1", "Осмотреть врата", string.Empty, "exploration")],
                 CombatLog: "Боевых событий нет.",
                 ImagePrompt: "mystic road at dusk"),
             Media: BuildMedia(),

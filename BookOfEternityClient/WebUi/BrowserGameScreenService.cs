@@ -165,6 +165,7 @@ public sealed class BrowserGameScreenService
                 result.Add(new BrowserGameScreenDialogueOptionDto(
                     Id: ReadString(item, "id", "optionId") is { Length: > 0 } id ? id : $"choice-{index}",
                     Text: text,
+                    InputValue: ReadString(item, "inputValue", "value", "command"),
                     Category: ReadString(item, "category", "type", "kind")));
             }
             else if (node is JsonValue value)
@@ -177,6 +178,7 @@ public sealed class BrowserGameScreenService
                         result.Add(new BrowserGameScreenDialogueOptionDto(
                             Id: $"choice-{index}",
                             Text: text,
+                            InputValue: string.Empty,
                             Category: string.Empty));
                     }
                 }
@@ -296,7 +298,7 @@ public sealed record BrowserGameScreenNarrativeDto(
     string CombatLog,
     string ImagePrompt);
 
-public sealed record BrowserGameScreenDialogueOptionDto(string Id, string Text, string Category);
+public sealed record BrowserGameScreenDialogueOptionDto(string Id, string Text, string InputValue, string Category);
 
 public sealed record BrowserGameScreenMediaDto(
     int SchemaVersion,

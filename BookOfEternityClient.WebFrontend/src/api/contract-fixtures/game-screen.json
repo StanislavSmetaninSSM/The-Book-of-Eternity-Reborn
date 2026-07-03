@@ -39,6 +39,7 @@
       {
         "id": "choice-1",
         "text": "\u041E\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C \u0432\u0440\u0430\u0442\u0430",
+        "inputValue": "",
         "category": "exploration"
       }
     ],

@@ -6096,6 +6096,7 @@ public partial class ValidationService
                 continue;
 
             RequireString(option, itemContext, issues, "text");
+            ValidateOptionalNullableStringField(option, itemContext, issues, "inputValue");
             ValidateOptionalNullableStringField(option, itemContext, issues, "category");
         }
     }

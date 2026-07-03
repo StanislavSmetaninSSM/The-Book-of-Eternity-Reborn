@@ -76,4 +76,35 @@ public sealed class AcceptedTurnInterfacePayloadNormalizationTests : IDisposable
         var timestamp = normalized["timestamp"]!.GetValue<string>();
         Assert.True(DateTimeOffset.TryParse(timestamp, out _), $"Expected ISO timestamp, got '{timestamp}'.");
     }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnInterfacePayloadAsync_MovesAfterlifeSpiritualActionTagToInputValue()
+    {
+        await _fs.WriteFileAtomicAsync("output/interface_updates.json", """
+        {
+          "timestamp": "2026-07-03T06:59:22Z",
+          "dialogueOptions": [
+            {
+              "text": "[AFTERLIFE_SPIRITUAL_ACTION: afterlife_conflict_myriel_ash_ward_trial_turn_7] Держу первый круг Оберега и защищаюсь от слабого вихря.",
+              "category": "action"
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateAcceptedTurnInterfacePayloadAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "expected_object", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "expected_object_in_array", StringComparison.OrdinalIgnoreCase));
+
+        var normalized = JsonNode.Parse(await _fs.ReadFileAsync("output/interface_updates.json") ?? "{}")!.AsObject();
+        var option = Assert.IsType<JsonObject>(Assert.Single(normalized["dialogueOptions"]!.AsArray()));
+
+        Assert.Equal("Держу первый круг Оберега и защищаюсь от слабого вихря.", option["text"]!.GetValue<string>());
+        Assert.Equal(
+            "[AFTERLIFE_SPIRITUAL_ACTION: afterlife_conflict_myriel_ash_ward_trial_turn_7] Держу первый круг Оберега и защищаюсь от слабого вихря.",
+            option["inputValue"]!.GetValue<string>());
+        Assert.Equal("action", option["category"]!.GetValue<string>());
+    }
 }
