@@ -419,6 +419,19 @@ function Get-GmExperienceIssueKinds {
         }
     }
 
+    if ($null -ne $Object.rubric -and
+        $null -ne $Object.rubric.missingHarnessTool -and
+        -not [string]::IsNullOrWhiteSpace([string]$Object.rubric.missingHarnessTool)) {
+        $issueKinds += [string]$Object.rubric.missingHarnessTool
+    }
+
+    if ($null -ne $Object.terminal -and
+        $null -ne $Object.terminal.signal -and
+        $null -ne $Object.terminal.signal.harnessSource -and
+        -not [string]::IsNullOrWhiteSpace([string]$Object.terminal.signal.harnessSource)) {
+        $issueKinds += [string]$Object.terminal.signal.harnessSource
+    }
+
     return @($issueKinds | Select-Object -Unique)
 }
 
@@ -511,6 +524,10 @@ function Get-GmExperiencePreferredSurface {
     param([string[]]$IssueKinds)
 
     $joined = (($IssueKinds | ForEach-Object { [string]$_ }) -join " ").ToLowerInvariant()
+    if ($joined.Contains("gm_bridge_idle_without_terminal_signal")) {
+        return "TURN_OUTPUT_TEMPLATE.md"
+    }
+
     if ($joined.Contains("faction_full_object") -or
         $joined.Contains("canonical_faction_sidecar") -or
         $joined.Contains("faction_command_unknown_faction_id") -or
@@ -611,13 +628,17 @@ function New-GmExperienceLesson {
     $hasMortalSkillIssue = $preferredSurface -eq "MORTAL_SKILL_PROGRESSION_TEMPLATE.md"
     $hasMortalExperienceIssue = $preferredSurface -eq "MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md"
     $hasMortalCombatIssue = $preferredSurface -eq "MORTAL_COMBAT_STATE_TEMPLATE.md"
+    $hasIdleWithoutTerminalSignal = $joinedIssues.Contains("gm_bridge_idle_without_terminal_signal")
     $repairPacketText = (($repairPacketRefs | ForEach-Object { [string]$_ }) -join " ").ToLowerInvariant()
     $hasAfterlifeConflictRewardIssue = $joinedIssues.Contains("afterlife_conflict_reward") -or
         $repairPacketText.Contains("afterlife_spiritual_conflict_reward_repair")
     $hasAfterlifeEntityProfileScaffoldIssue = $joinedIssues.Contains("afterlife_entity_profile") -or
         $joinedIssues.Contains("special_art_learning") -or
         $repairPacketText.Contains("afterlife_entity_profile_scaffold_repair")
-    $fix = if ($hasMortalLocationIssue) {
+    $fix = if ($hasIdleWithoutTerminalSignal) {
+        "Use FIRST MORTAL BOOTSTRAP OUTPUT CHECKLIST and TURN_OUTPUT_TEMPLATE.md before broad docs. For first Mortal bootstrap, open game_state/control/mortal_bootstrap_scaffold.json and write the minimum complete output set: output/narrative_response.json, output/debug_logs.json with NPC Scope, output/interface_updates.json with clear choices, game_state/control/progression_report.json if progression counts are required, then finish with Complete-BoeTurn -FilesModified. Do not open large examples first and do not leave the player with no scene."
+    }
+    elseif ($hasMortalLocationIssue) {
         "Use MORTAL_LOCATION_TRANSITION_TEMPLATE.md before editing game_state/world/current_location.json, game_state/world/world_map.json, or NPC location ids. Register durable destination locations in world_map first, then update current_location and NPC currentLocationId/currentLocationName only to known ids. Every world_map adjacency/link/storage/threat target must point to an existing locationId or a same-turn newLocations.initialId that is fully materialized in the same response; do not leave unknown target/source ids. Resolve duplicate coordinates in same-turn map updates. If the place is narrative color inside the current room, keep current_location unchanged and describe it as part of the existing location."
     }
     elseif ($hasMortalFactionIssue) {
@@ -694,6 +715,8 @@ function New-GmExperienceLesson {
         }
     }
 
+    $confidence = if ($hasIdleWithoutTerminalSignal -or $repairPacketRefs.Count -gt 0) { "high" } else { "medium" }
+
     return [ordered]@{
         lessonId = ("gmlesson_" + $recordId.Replace("gmtraj_", ""))
         sourceRecordIds = $sourceRecordIds
@@ -710,7 +733,7 @@ function New-GmExperienceLesson {
         badPattern = "Prior GM trajectory hit validation/friction pattern: $issueSummary."
         acceptedFix = $fix
         preferredHarnessSurface = $preferredSurface
-        confidence = if ($repairPacketRefs.Count -gt 0) { "high" } else { "medium" }
+        confidence = $confidence
         lastSeenAt = if ($Record.createdAt) { [string]$Record.createdAt } else { (Get-Date).ToUniversalTime().ToString("o") }
     }
 }
@@ -725,7 +748,20 @@ function Test-GmExperienceRecordIsSuccessfulLessonSource {
 
     if ($null -eq $Record.validation -or
         -not [string]::Equals([string]$Record.validation.status, "accepted", [System.StringComparison]::OrdinalIgnoreCase)) {
-        return $false
+        $terminalKind = if ($null -ne $Record.terminal -and $null -ne $Record.terminal.kind) {
+            [string]$Record.terminal.kind
+        } else {
+            ""
+        }
+        $playerFacingOutputPresent = if ($null -ne $Record.rubric -and $null -ne $Record.rubric.playerFacingOutputPresent) {
+            [bool]$Record.rubric.playerFacingOutputPresent
+        } else {
+            $true
+        }
+
+        return ($issueKinds -contains "gm_bridge_idle_without_terminal_signal") -and
+            [string]::Equals($terminalKind, "error", [System.StringComparison]::OrdinalIgnoreCase) -and
+            -not $playerFacingOutputPresent
     }
 
     $repairStatus = if ($null -ne $Record.repair -and $null -ne $Record.repair.status) {
@@ -793,7 +829,7 @@ function Write-GmExperienceLessons {
 
     $query = Get-GmExperienceQuery
     $lessons = @(Get-GmExperienceLessons -Query $query)
-    $guidance = "Experience lessons are selected only from accepted prior repair outcomes. They are hints only; validators and current templates remain authoritative."
+    $guidance = "Experience lessons are selected from accepted prior repair outcomes and actionable prior harness failures. They are hints only; validators and current templates remain authoritative."
     $payload = [ordered]@{
         schemaVersion = 1
         generatedAtUtc = (Get-Date).ToUniversalTime().ToString("o")
@@ -865,7 +901,7 @@ function Get-GmExperiencePromptDigest {
 
     $lines = @(
         "",
-        "RLM PRE-TURN LESSONS: compact hints from accepted prior repairs. Use them before writing this turn; validators, current compact templates, and repair packets remain authoritative."
+        "RLM PRE-TURN LESSONS: compact hints from accepted prior repairs and actionable prior harness failures. Use them before writing this turn; validators, current compact templates, and repair packets remain authoritative."
     )
 
     foreach ($lesson in @($lessons | Select-Object -First $MaxLessons)) {
@@ -893,6 +929,26 @@ function Get-GmExperiencePromptDigest {
     }
 
     return (($lines -join "`n") + "`n")
+}
+
+function Get-FirstMortalBootstrapPrompt {
+    param([object]$TurnRequest)
+
+    if ($null -eq $TurnRequest) {
+        return ""
+    }
+
+    $realm = Get-GmExperienceObjectRealm -Object $TurnRequest
+    if ($realm -ne "MortalWorld") {
+        return ""
+    }
+
+    $systemReminder = if ($null -ne $TurnRequest.systemReminder) { [string]$TurnRequest.systemReminder } else { "" }
+    if (-not $systemReminder.Contains("MORTAL BOOTSTRAP BASELINE")) {
+        return ""
+    }
+
+    return " FIRST MORTAL BOOTSTRAP OUTPUT CHECKLIST: do not open large examples first. Open game_state/control/mortal_bootstrap_scaffold.json and '$script:CompactTurnOutputTemplatePath'. Produce the minimum complete first mortal scene: output/narrative_response.json, output/debug_logs.json with NPC Scope, output/interface_updates.json with clear choices, and game_state/control/progression_report.json when progression counts are required. If you add or update player-facing Mortal anchors, use the compact Mortal templates for that exact surface. Finish with Complete-BoeTurn -FilesModified as the LAST action; never return idle with no player-facing output."
 }
 
 function Write-GmSafeProbes {
@@ -4074,10 +4130,11 @@ function Process-Turn {
 
         $null = Write-GmExperienceLessons
         $experiencePrompt = Get-GmExperiencePromptDigest
+        $firstMortalBootstrapPrompt = Get-FirstMortalBootstrapPrompt -TurnRequest $turnRequest
 
         # Send processing command to CLI window
         $requestId = if ($turnRequest.requestId) { $turnRequest.requestId } else { "<missing-requestId>" }
-        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($experiencePrompt)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', '$($script:CompactMortalNpcTemplatePath)', '$($script:CompactMortalFactionTemplatePath)', '$($script:CompactMortalLocationTemplatePath)', '$($script:CompactMortalSkillTemplatePath)', '$($script:CompactMortalExperienceTemplatePath)', '$($script:CompactAfterlifeChronicleTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. If a Mortal World turn creates or updates NPCs, use '$($script:CompactMortalNpcTemplatePath)' before editing game_state/npcs/npc_core.json. If a Mortal World turn creates or updates factions, ranks, branches, chronicles, projects, faction relations, or faction sidecars, use '$($script:CompactMortalFactionTemplatePath)' before editing game_state/factions/*. If a Mortal World turn creates a durable location, changes current_location, edits world_map, or moves NPCs between map locations, use '$($script:CompactMortalLocationTemplatePath)' before editing game_state/world/* or NPC location ids. If a Mortal World turn teaches, practices, unlocks, or uses a concrete player skill, use '$($script:CompactMortalSkillTemplatePath)' before writing output/state; do not leave learned skills or active-skill mastery as prose-only text. If a Mortal World turn grants XP, resolves combat rewards, or crosses a level-up threshold, use '$($script:CompactMortalExperienceTemplatePath)' before editing game_state/player/experience.json; do not leave level progress prose-only. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
+        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($experiencePrompt)$($firstMortalBootstrapPrompt)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', '$($script:CompactMortalNpcTemplatePath)', '$($script:CompactMortalFactionTemplatePath)', '$($script:CompactMortalLocationTemplatePath)', '$($script:CompactMortalSkillTemplatePath)', '$($script:CompactMortalExperienceTemplatePath)', '$($script:CompactAfterlifeChronicleTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. If a Mortal World turn creates or updates NPCs, use '$($script:CompactMortalNpcTemplatePath)' before editing game_state/npcs/npc_core.json. If a Mortal World turn creates or updates factions, ranks, branches, chronicles, projects, faction relations, or faction sidecars, use '$($script:CompactMortalFactionTemplatePath)' before editing game_state/factions/*. If a Mortal World turn creates a durable location, changes current_location, edits world_map, or moves NPCs between map locations, use '$($script:CompactMortalLocationTemplatePath)' before editing game_state/world/* or NPC location ids. If a Mortal World turn teaches, practices, unlocks, or uses a concrete player skill, use '$($script:CompactMortalSkillTemplatePath)' before writing output/state; do not leave learned skills or active-skill mastery as prose-only text. If a Mortal World turn grants XP, resolves combat rewards, or crosses a level-up threshold, use '$($script:CompactMortalExperienceTemplatePath)' before editing game_state/player/experience.json; do not leave level progress prose-only. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
 
         $message += " If a Mortal World turn resolves open combat, enemy exchange, combat XP, active-skill combat mastery, or combat resource changes, you MUST read '$($script:CompactMortalCombatTemplatePath)' before writing output/state and leave /бой useful through game_state/combat/combat_log.json plus enemies/allies when relevant."
         $completionPath = Join-Path $ReadyDir "turn_complete.json"

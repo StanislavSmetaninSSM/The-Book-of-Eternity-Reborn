@@ -641,6 +641,29 @@ Mortal bootstrap materialization repair packet:
 
 This packet means the first Mortal World prompt was created, but its supporting canonical files were incomplete or reused stale world data. Treat it as one bootstrap checklist, not as unrelated independent errors.
 
+First Mortal bootstrap ordinary-turn checklist:
+
+If the turn request says `MORTAL BOOTSTRAP BASELINE`, do not start from large examples or broad source search. Open these first:
+- `game_state/control/mortal_bootstrap_scaffold.json`
+- `game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md`
+- `game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json`
+
+Minimum successful output for the first Mortal scene:
+- `output/narrative_response.json`: the first playable Mortal scene text with a timestamp.
+- `output/debug_logs.json`: NPC Scope and reasoning, even if the scene is local and only the player is acting.
+- `output/interface_updates.json`: clear player choices for the next action.
+- `game_state/control/progression_report.json`: exact sessionId/requestId/turnNumber and zero processed counts when no progression cycle is due.
+- `ready/turn_complete.json` through `Complete-BoeTurn -FilesModified ...` as the last action.
+
+If you add or update durable Mortal anchors, use only the compact template for that exact surface before broad examples:
+- locations/map: `MORTAL_LOCATION_TRANSITION_TEMPLATE.md`
+- NPCs: `MORTAL_NPC_UPDATE_TEMPLATE.md`
+- factions: `MORTAL_FACTION_UPDATE_TEMPLATE.md`
+- skills: `MORTAL_SKILL_PROGRESSION_TEMPLATE.md`
+- XP/level: `MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md`
+
+Never return to idle without writing at least the player-facing output files and one terminal signal. A prior `gm_bridge_idle_without_terminal_signal` trajectory with no player-facing output means the retry must use this checklist before any broad reading.
+
 Mortal NPC repair packets:
 {
   "kind": "mortal_npc_location_repair",

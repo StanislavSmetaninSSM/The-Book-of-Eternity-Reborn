@@ -1017,6 +1017,23 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonTurnPrompt_AddsFirstMortalBootstrapOutputChecklist()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var turnBlock = ExtractFunctionBlock(daemon, "function Process-Turn");
+
+        Assert.Contains("function Get-FirstMortalBootstrapPrompt", daemon, StringComparison.Ordinal);
+        Assert.Contains("$firstMortalBootstrapPrompt = Get-FirstMortalBootstrapPrompt -TurnRequest $turnRequest", turnBlock, StringComparison.Ordinal);
+        Assert.Contains("$($firstMortalBootstrapPrompt)", turnBlock, StringComparison.Ordinal);
+        Assert.Contains("FIRST MORTAL BOOTSTRAP OUTPUT CHECKLIST", daemon, StringComparison.Ordinal);
+        Assert.Contains("game_state/control/mortal_bootstrap_scaffold.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("output/narrative_response.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("output/debug_logs.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("Complete-BoeTurn", daemon, StringComparison.Ordinal);
+        Assert.Contains("do not open large examples", daemon, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void DaemonBootstrap_DoesNotAskGmToReadLargeContextPackDocs()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -2166,6 +2183,50 @@ public sealed class GmTurnHelperContractTests
             var readme = File.ReadAllText(readmePath, Encoding.UTF8);
             Assert.Contains("GM_EXPERIENCE_LESSONS", readme, StringComparison.Ordinal);
             Assert.Contains("hints", readme, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_RendersIdleNoOutputHarnessLesson()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-idle-no-output-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(control, "gm_trajectory_ledger.jsonl"),
+                """
+                {"recordId":"gmtraj_first_mortal_idle_no_output","kind":"turn","sessionId":"prior","turnId":"idle-no-output","requestId":"idle-no-output","turnNumber":24,"realm":"MortalWorld","mode":"ordinary","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","mortalLocation":"v1","mortalNpc":"v1"},"outputFiles":[],"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"sent"},"validation":{"status":"rejected","issueKinds":[],"diagnostics":[]},"repair":{"attempts":0,"status":"none"},"workerEvents":[],"rollbackEvents":[],"terminal":{"kind":"error","signalPath":"ready/turn_error.json"},"rubric":{"validTurn":false,"playerFacingOutputPresent":false,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":false,"missingHarnessTool":"gm_bridge_idle_without_terminal_signal"},"createdAt":"2026-07-03T17:37:55Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "gm_bridge_idle_without_terminal_signal", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
+            Assert.Contains("actionable prior harness failures", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("FIRST MORTAL BOOTSTRAP OUTPUT CHECKLIST", markdown, StringComparison.Ordinal);
+            Assert.Contains("mortal_bootstrap_scaffold.json", markdown, StringComparison.Ordinal);
+            Assert.Contains("Complete-BoeTurn", markdown, StringComparison.Ordinal);
+
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var lesson = document.RootElement.GetProperty("lessons")[0];
+            Assert.Equal("TURN_OUTPUT_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
+            Assert.Contains("gm_bridge_idle_without_terminal_signal", lesson.GetProperty("match").GetProperty("issueKinds")[0].GetString(), StringComparison.Ordinal);
+            Assert.Contains("FIRST MORTAL BOOTSTRAP OUTPUT CHECKLIST", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
         }
         finally
         {
