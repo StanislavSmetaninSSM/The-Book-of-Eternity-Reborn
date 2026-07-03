@@ -3483,6 +3483,25 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonStatus_RecoversAfterSessionResetAndTurnCompletion()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var heartbeatBlock = ExtractFunctionBlock(daemon, "function Update-DaemonHeartbeat");
+        var turnBlock = ExtractFunctionBlock(daemon, "function Process-Turn");
+
+        Assert.Contains("Test-Path $DaemonStatusFile", heartbeatBlock, StringComparison.Ordinal);
+        Assert.Contains("Write-DaemonStatus -Status \"running\" -Reason \"status_file_missing\"", heartbeatBlock, StringComparison.Ordinal);
+
+        var finallyIndex = turnBlock.IndexOf("finally {", StringComparison.Ordinal);
+        var statusIndex = turnBlock.IndexOf("Write-DaemonStatus -Status \"running\" -Reason \"turn_processing_finished\"", StringComparison.Ordinal);
+        var releaseIndex = turnBlock.IndexOf("$script:IsProcessing = $false", finallyIndex, StringComparison.Ordinal);
+
+        Assert.True(finallyIndex >= 0, "Expected Process-Turn finally block.");
+        Assert.True(statusIndex > finallyIndex, "Expected Process-Turn to republish daemon status in finally.");
+        Assert.True(releaseIndex > statusIndex, "Expected status publication before Process-Turn releases processing state.");
+    }
+
+    [Fact]
     public void DaemonTurnCounter_IncrementsOnlyForAcceptedTurnProcessing()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");

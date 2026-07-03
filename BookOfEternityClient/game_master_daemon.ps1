@@ -2842,6 +2842,12 @@ function Assert-SingleDaemonInstance {
 
 function Update-DaemonHeartbeat {
     $nowUtc = (Get-Date).ToUniversalTime()
+    if (!(Test-Path $DaemonStatusFile)) {
+        $script:DaemonLastHeartbeatUtc = $nowUtc
+        Write-DaemonStatus -Status "running" -Reason "status_file_missing"
+        return
+    }
+
     if (($nowUtc - $script:DaemonLastHeartbeatUtc).TotalSeconds -lt 5) {
         return
     }
@@ -4675,6 +4681,7 @@ function Process-Turn {
         Write-Log "  Error: $_" -Level "ERROR" -Color Red
     }
     finally {
+        Write-DaemonStatus -Status "running" -Reason "turn_processing_finished"
         $script:IsProcessing = $false
     }
 }
