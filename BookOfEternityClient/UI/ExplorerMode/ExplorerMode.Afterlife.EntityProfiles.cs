@@ -174,8 +174,9 @@ public partial class ExplorerMode
             var trainingConditions = ReadProfileStringArray(art["trainingConditions"] as JsonArray).ToList();
             if (trainingConditions.Count > 0)
                 lines.Add($"      [dim]Условия обучения: {Markup.Escape(string.Join("; ", trainingConditions))}[/]");
-            if (!string.IsNullOrWhiteSpace(effect))
-                lines.Add($"      [dim]{Markup.Escape(effect)}[/]");
+            var playerEffect = NormalizeAfterlifeCombatPlayerText(effect);
+            if (!string.IsNullOrWhiteSpace(playerEffect))
+                lines.Add($"      [dim]{Markup.Escape(playerEffect)}[/]");
             var combatEffect = FormatAfterlifeSpecialArtCombatEffect(art);
             if (!string.IsNullOrWhiteSpace(combatEffect))
                 lines.Add($"      [dim]{Markup.Escape(combatEffect)}[/]");
@@ -583,7 +584,49 @@ public partial class ExplorerMode
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         }
 
-        return result;
+        return IsAfterlifeCombatPlayerTextSafe(result) ? result : null;
+    }
+
+    private static bool IsAfterlifeCombatPlayerTextSafe(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return true;
+
+        var lower = value.Trim().ToLowerInvariant();
+        if (lower.Contains("baseoperation", StringComparison.Ordinal) ||
+            lower.Contains("specialartaudit", StringComparison.Ordinal) ||
+            lower.Contains("auditrequirement", StringComparison.Ordinal) ||
+            lower.Contains("sourceoperation", StringComparison.Ordinal) ||
+            lower.Contains("costmultiplier", StringComparison.Ordinal) ||
+            lower.Contains("game_state/", StringComparison.Ordinal) ||
+            lower.Contains(".json", StringComparison.Ordinal) ||
+            lower.Contains("after.", StringComparison.Ordinal) ||
+            lower.Contains("before.", StringComparison.Ordinal) ||
+            lower.Contains("pre-turn", StringComparison.Ordinal) ||
+            lower.Contains("learning receipt", StringComparison.Ordinal) ||
+            lower.Contains("authority", StringComparison.Ordinal) ||
+            lower.Contains("exchange payoff", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        if (lower.StartsWith("use ", StringComparison.Ordinal) ||
+            lower.StartsWith("add ", StringComparison.Ordinal) ||
+            lower.StartsWith("set ", StringComparison.Ordinal) ||
+            lower.StartsWith("write ", StringComparison.Ordinal) ||
+            lower.StartsWith("record ", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        if (Regex.IsMatch(value, @"\b[a-z]+(?:_[a-z0-9]+){1,}\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+            return false;
+
+        var latinLetters = value.Count(static ch => (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'));
+        var cyrillicLetters = value.Count(static ch => ch >= '\u0400' && ch <= '\u04FF');
+        return latinLetters <= 0 ||
+               cyrillicLetters > 0 ||
+               latinLetters <= 18;
     }
 
     private static readonly (string Token, string Replacement)[] AfterlifeCombatPlayerTextTokenReplacements =

@@ -1254,9 +1254,10 @@ public partial class ExplorerMode
         if (!quote.IsSpecialArt)
             return FormatSpiritualArtUse(quote.Art);
 
-        var effect = string.IsNullOrWhiteSpace(quote.SpecialArtEffectSummary)
+        var normalizedEffect = NormalizeAfterlifeCombatPlayerText(quote.SpecialArtEffectSummary);
+        var effect = string.IsNullOrWhiteSpace(normalizedEffect)
             ? "особый эффект должен быть описан ГМ при применении искусства"
-            : NormalizeAfterlifeCombatPlayerText(quote.SpecialArtEffectSummary) ?? quote.SpecialArtEffectSummary;
+            : normalizedEffect;
         return string.IsNullOrWhiteSpace(quote.SpecialArtCombatEffect)
             ? $"особое искусство на основе действия «{FormatSpiritualArtLabel(quote.Art)}». {effect}"
             : $"особое искусство на основе действия «{FormatSpiritualArtLabel(quote.Art)}». {effect}. {quote.SpecialArtCombatEffect}";

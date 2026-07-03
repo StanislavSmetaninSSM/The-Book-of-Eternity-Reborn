@@ -9596,6 +9596,85 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SpiritualArts_HidesTechnicalSpecialArtCombatContractText()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Пепельная Искра",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 0, total = 0 },
+            enlightenment = new { currentTier = "Novice", experience = 0, level = 0 },
+            soulProgression = new { totalExperience = 0, tier = 0, progressPercent = 0 }
+        });
+        await WriteJsonAsync(AfterlifeEntityProfileState.StatePath, new
+        {
+            schemaVersion = 1,
+            profiles = new[]
+            {
+                new
+                {
+                    actorType = "player_soul",
+                    actorId = "player_soul",
+                    displayName = "Пепельная Искра",
+                    realm = "Chaos Sea",
+                    currencies = new { inkFeathers = 0, lightSparks = 0 },
+                    progression = new
+                    {
+                        enlightenment = new { experience = 0, tier = 0 },
+                        radiance = new { experience = 0, tier = 0 }
+                    },
+                    standardArts = new { guard = 0 },
+                    specialArts = new[]
+                    {
+                        new
+                        {
+                            artId = "myriel_ash_star_ward",
+                            displayName = "Оберег Пепельной Звезды",
+                            ownerActorType = "player_soul",
+                            ownerActorId = "player_soul",
+                            baseOperation = "guard",
+                            tier = 0,
+                            costMultiplierPercent = 150,
+                            upgradeCost = new { inkFeathers = 30, lightSparks = 0 },
+                            effectSummary = "Пепельная Искра удерживает давление как границу выбора.",
+                            combatEffect = new
+                            {
+                                summary = "Оберег помогает успешной Защите против прямого Давления создать короткое темповое окно.",
+                                trigger = "Use myriel_ash_star_ward as guard against pressure, force_incarnation, or another direct strain threat after the learning receipt is in pre-turn authority.",
+                                mechanicalAxis = "tempoAdvantage",
+                                allowedPayoff = "Add after.tempoAdvantage for the protected side or prevent soul strain from worsening by more than one rank.",
+                                limit = "One exchange payoff only; baseOperation stays guard and cannot become pressure, binding, or force_binding.",
+                                auditRequirement = "specialArtAudit.effectNote names the blocked pressure and created tempoAdvantage."
+                            }
+                        }
+                    },
+                    soulDissipationTier = 0,
+                    warnings = Array.Empty<object>(),
+                    ledger = Array.Empty<object>()
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_arts_hides_technical_special_art_contract_text");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Оберег Пепельной Звезды", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Пепельная Искра удерживает давление как границу выбора", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Оберег помогает успешной Защите против прямого Давления", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Use myriel_ash_star_ward", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("force_incarnation", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("pre-turn authority", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Add after.", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("baseOperation", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("One exchange payoff", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("specialArtAudit", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_SpiritualArts_UpgradesArtAndSpendsInkFeathers()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
