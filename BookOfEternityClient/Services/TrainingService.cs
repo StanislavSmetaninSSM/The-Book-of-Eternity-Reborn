@@ -993,6 +993,9 @@ public sealed class TrainingService
         if (profile["mentorProfile"] is JsonObject mentorProfile && GetNodeBool(mentorProfile["canTeach"]))
             return true;
 
+        if (EnumerateSpecialArts(profile).Any(specialArt => GetNodeBool(specialArt["canTeachPlayer"])))
+            return true;
+
         return GetNodeBool(profile["canTeachPlayer"]);
     }
 

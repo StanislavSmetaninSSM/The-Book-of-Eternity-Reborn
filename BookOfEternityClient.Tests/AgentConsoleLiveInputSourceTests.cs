@@ -342,6 +342,30 @@ public sealed class AgentConsoleLiveInputSourceTests
     }
 
     [Fact]
+    public void TryQueueReturnToGameLoopStep_WhenTrainingMenuReturnsToTeachers_QueuesBackSelection()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        store.UpdateSnapshot(BuildMenuSnapshot("explorer-selection-15", selectedIndex: 0) with
+        {
+            Title = "🎓 Мириэль Пепельная Звезда: предложения",
+            PlainText = "🎓 Мириэль Пепельная Звезда: предложения",
+            Actions =
+            [
+                new AgentConsoleAction { Id = "option-0", Label = "• Защита | духовное искусство" },
+                new AgentConsoleAction { Id = "option-1", Label = "← К учителям" }
+            ]
+        });
+
+        var result = input.TryQueueReturnToGameLoopStep();
+
+        Assert.True(result.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
+        Assert.Equal(ConsoleKey.D2, input.ReadKey(intercept: true).Key);
+        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
+    }
+
+    [Fact]
     public void TryQueueReturnToGameLoopStep_WhenNpcSectionMenuHasCloseAction_QueuesCloseSelection()
     {
         var store = new AgentConsoleStateStore();

@@ -68,6 +68,41 @@ public sealed class TrainingValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_AfterlifeMentorShowcaseWithTeachableSpecialArt_IsTeachingSource()
+    {
+        var mentor = BuildAfterlifeTeachableSpecialArtMentorProfile();
+        var snapshotHash = TrainingService.ComputeSourceSnapshotHash(mentor);
+        mentor["mentorTrainingShowcase"] = new JsonObject
+        {
+            ["requestKind"] = "afterlife_teacher_showcase",
+            ["sourceActorId"] = "guard_system_myriel_001",
+            ["sourceActorSnapshotHash"] = snapshotHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "mentor_myriel_ash_star_ward_1",
+                    ["targetKind"] = "special_spiritual_art",
+                    ["targetId"] = "myriel_ash_star_ward",
+                    ["targetName"] = "Оберег Пепельной Звезды",
+                    ["currentValue"] = 0,
+                    ["targetValue"] = 1,
+                    ["sourceCap"] = 1,
+                    ["cost"] = new JsonObject { ["inkFeathers"] = 35 }
+                }
+            }
+        };
+        await WriteAfterlifeMentorProfileObjectAsync(mentor);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "training_showcase_source_cannot_teach", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "training_showcase_stale_source_actor_snapshot", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_DuplicateTrainingOfferId_ReportsTrainingIssue()
     {
         var mentor = BuildAfterlifeMentorProfile(sourceActorSnapshotHash: null, sourceCap: 4, includeShowcase: true);
@@ -251,6 +286,73 @@ public sealed class TrainingValidationTests : IDisposable
         }
 
         return mentor;
+    }
+
+    private static JsonObject BuildAfterlifeTeachableSpecialArtMentorProfile()
+    {
+        return new JsonObject
+        {
+            ["actorType"] = "guardian",
+            ["actorId"] = "guard_system_myriel_001",
+            ["displayName"] = "Мириэль Пепельная Звезда",
+            ["realm"] = "Chaos Sea",
+            ["locationName"] = "Свод Пепельных Созвездий",
+            ["currencies"] = new JsonObject
+            {
+                ["inkFeathers"] = 60,
+                ["lightSparks"] = 0
+            },
+            ["progression"] = new JsonObject
+            {
+                ["enlightenment"] = new JsonObject
+                {
+                    ["experience"] = 24,
+                    ["tier"] = 2
+                },
+                ["radiance"] = new JsonObject
+                {
+                    ["experience"] = 0,
+                    ["tier"] = 0
+                }
+            },
+            ["standardArts"] = new JsonObject
+            {
+                ["guard"] = 2,
+                ["maneuver"] = 1
+            },
+            ["specialArts"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["artId"] = "myriel_ash_star_ward",
+                    ["displayName"] = "Оберег Пепельной Звезды",
+                    ["ownerActorType"] = "guardian",
+                    ["ownerActorId"] = "guard_system_myriel_001",
+                    ["baseOperation"] = "guard",
+                    ["tier"] = 1,
+                    ["costMultiplierPercent"] = 150,
+                    ["upgradeCost"] = new JsonObject
+                    {
+                        ["inkFeathers"] = 35,
+                        ["lightSparks"] = 0
+                    },
+                    ["effectSummary"] = "Особая защита Мириэль: пепельные звезды удерживают давление.",
+                    ["canTeachPlayer"] = true,
+                    ["trainingConditions"] = new JsonArray
+                    {
+                        "Провести отдельную сцену обучения с Мириэль."
+                    }
+                }
+            },
+            ["soulDissipationTier"] = 0,
+            ["progressionStrategy"] = new JsonObject
+            {
+                ["strategyId"] = "strategy_guard_system_myriel_001",
+                ["summary"] = "Мириэль развивает защитные и точные духовные искусства.",
+                ["priorityOrder"] = new JsonArray("guard", "myriel_ash_star_ward")
+            },
+            ["ledger"] = new JsonArray()
+        };
     }
 
     private async Task WriteMortalTeacherWithReceiptAsync(int moneySpent, int experiencePercent)

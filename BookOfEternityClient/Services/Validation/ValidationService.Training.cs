@@ -187,13 +187,40 @@ public partial class ValidationService
             return;
         }
 
+        if (string.Equals(profileProperty, "mentorProfile", StringComparison.OrdinalIgnoreCase))
+        {
+            if (sourceActor.TryGetProperty("canTeachPlayer", out var canTeachPlayer) &&
+                TryGetTrainingBool(canTeachPlayer, out var canTeachPlayerValue) &&
+                canTeachPlayerValue)
+            {
+                return;
+            }
+
+            foreach (var specialArt in EnumerateTrainingSpecialArts(sourceActor))
+            {
+                if (specialArt.TryGetProperty("canTeachPlayer", out var specialArtCanTeachPlayer) &&
+                    TryGetTrainingBool(specialArtCanTeachPlayer, out var specialArtCanTeachPlayerValue) &&
+                    specialArtCanTeachPlayerValue)
+                {
+                    return;
+                }
+            }
+        }
+
+        var expected = string.Equals(profileProperty, "mentorProfile", StringComparison.OrdinalIgnoreCase)
+            ? $"{profileProperty}.canTeach = true or canTeachPlayer = true or specialArts[].canTeachPlayer = true"
+            : $"{profileProperty}.canTeach = true";
+        var repairHint = string.Equals(profileProperty, "mentorProfile", StringComparison.OrdinalIgnoreCase)
+            ? $"Добавь {profileProperty}.canTeach = true, canTeachPlayer=true или teachable specialArts[].canTeachPlayer=true, если источник действительно обучает, или убери витрину обучения."
+            : $"Добавь {profileProperty}.canTeach = true, если источник действительно обучает, или убери витрину обучения.";
+
         AddTrainingIssue(
             $"{sourceContext}.{showcaseProperty}",
             "training_showcase_source_cannot_teach",
             "Витрина обучения есть у источника, который не помечен как учитель/наставник.",
-            $"{profileProperty}.canTeach = true",
+            expected,
             "missing or false",
-            $"Добавь {profileProperty}.canTeach = true, если источник действительно обучает, или убери витрину обучения.",
+            repairHint,
             issues);
     }
 

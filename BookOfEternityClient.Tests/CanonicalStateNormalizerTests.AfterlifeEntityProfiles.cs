@@ -824,6 +824,197 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_RefreshesCommandAuthoredMentorShowcaseHashAfterAutoProgression()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            ProgressionScheduleService.ReportPath,
+            """
+            {
+              "progressionProcessingReport": {
+                "sessionId": "session_training_showcase",
+                "requestId": "request_training_showcase",
+                "turnNumber": 9,
+                "chaosSeaCyclesProcessed": 1,
+                "newLastChaosSeaSimulationOrdinal": 9
+              }
+            }
+            """);
+        await CorrelateAfterlifeProgressionReportWithTurnRequestAsync();
+
+        var mentorProfile = JsonNode.Parse(
+            """
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_training",
+              "displayName": "Хранитель Наставник",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 0, "tier": 0 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "guard": 0 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "mentorProfile": {
+                "canTeach": true,
+                "relationshipLevel": 5
+              },
+              "progressionStrategy": {
+                "strategyId": "strategy_training",
+                "summary": "Сначала укрепляет защиту.",
+                "priorityOrder": ["guard"]
+              },
+              "ledger": []
+            }
+            """)!.AsObject();
+        var requestedHash = TrainingService.ComputeSourceSnapshotHash(mentorProfile);
+        mentorProfile["mentorTrainingShowcase"] = new JsonObject
+        {
+            ["requestKind"] = "afterlife_teacher_showcase",
+            ["sourceActorId"] = "guardian_training",
+            ["sourceActorSnapshotHash"] = requestedHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "mentor_training_guard_1",
+                    ["targetKind"] = "standard_spiritual_art",
+                    ["targetId"] = "guard",
+                    ["targetName"] = "Защита",
+                    ["currentValue"] = 0,
+                    ["targetValue"] = 1,
+                    ["sourceCap"] = 1,
+                    ["cost"] = new JsonObject { ["inkFeathers"] = 4 }
+                }
+            }
+        };
+
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                [AfterlifeEntityProfileState.UpdateProperty] = new JsonArray(mentorProfile)
+            }.ToJsonString());
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(1, profile["standardArts"]?["guard"]?.GetValue<int>());
+        Assert.NotEqual(requestedHash, TrainingService.ComputeSourceSnapshotHash(profile));
+
+        var showcase = Assert.IsType<JsonObject>(profile["mentorTrainingShowcase"]);
+        Assert.Equal(
+            TrainingService.ComputeSourceSnapshotHash(profile),
+            showcase["sourceActorSnapshotHash"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_RefreshesChangedProfileMentorShowcaseHashAfterAutoProgression()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            ProgressionScheduleService.ReportPath,
+            """
+            {
+              "progressionProcessingReport": {
+                "sessionId": "session_training_showcase_profile",
+                "requestId": "request_training_showcase_profile",
+                "turnNumber": 10,
+                "chaosSeaCyclesProcessed": 1,
+                "newLastChaosSeaSimulationOrdinal": 10
+              }
+            }
+            """);
+        await CorrelateAfterlifeProgressionReportWithTurnRequestAsync();
+
+        var previousProfileJson =
+            """
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_training_profile",
+              "displayName": "Хранитель Профиля",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 0, "tier": 0 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "guard": 0 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "mentorProfile": {
+                "canTeach": true,
+                "relationshipLevel": 5
+              },
+              "progressionStrategy": {
+                "strategyId": "strategy_training_profile",
+                "summary": "Сначала укрепляет защиту.",
+                "priorityOrder": ["guard"]
+              },
+              "ledger": []
+            }
+            """;
+        var currentProfile = JsonNode.Parse(previousProfileJson)!.AsObject();
+        var requestedHash = TrainingService.ComputeSourceSnapshotHash(currentProfile);
+        currentProfile["mentorTrainingShowcase"] = new JsonObject
+        {
+            ["requestKind"] = "afterlife_teacher_showcase",
+            ["sourceActorId"] = "guardian_training_profile",
+            ["sourceActorSnapshotHash"] = requestedHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "mentor_training_profile_guard_1",
+                    ["targetKind"] = "standard_spiritual_art",
+                    ["targetId"] = "guard",
+                    ["targetName"] = "Защита",
+                    ["currentValue"] = 0,
+                    ["targetValue"] = 1,
+                    ["sourceCap"] = 1,
+                    ["cost"] = new JsonObject { ["inkFeathers"] = 4 }
+                }
+            }
+        };
+
+        var backupPath = "game_state/control/test_backups/afterlife_entity_profiles.training_showcase.previous.json";
+        await _fs.WriteFileAtomicAsync(
+            backupPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["profiles"] = new JsonArray(JsonNode.Parse(previousProfileJson)!.AsObject())
+            }.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["profiles"] = new JsonArray(currentProfile)
+            }.ToJsonString());
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [AfterlifeEntityProfileState.StatePath] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(1, profile["standardArts"]?["guard"]?.GetValue<int>());
+        Assert.NotEqual(requestedHash, TrainingService.ComputeSourceSnapshotHash(profile));
+
+        var showcase = Assert.IsType<JsonObject>(profile["mentorTrainingShowcase"]);
+        Assert.Equal(
+            TrainingService.ComputeSourceSnapshotHash(profile),
+            showcase["sourceActorSnapshotHash"]?.GetValue<string>());
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_DoesNotAutoProgressProfilesFromStaleAfterlifeReport()
     {
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);

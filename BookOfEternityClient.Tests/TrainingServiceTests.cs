@@ -195,6 +195,30 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureTrainingAsync_AfterlifeTeachableSpecialArtWithoutShowcase_CreatesPendingMentorRefreshRequest()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 0);
+        await SeedAfterlifeMentorWithTeachableSpecialArtOnlyAsync();
+
+        var service = CreateService();
+        var view = await service.EnsureTrainingAsync(currentTurn: 41);
+
+        var teacher = Assert.Single(view.Teachers);
+        Assert.Equal("guard_system_myriel_001", teacher.SourceActorId);
+        Assert.Equal("Мириэль Пепельная Звезда", teacher.SourceActorName);
+        Assert.False(teacher.ShowcaseReady);
+        Assert.Equal("ГМ ещё не подготовил витрину наставника.", teacher.BlockReason);
+        Assert.True(view.RequestCreatedThisCall);
+        Assert.True(view.RequestPending);
+        Assert.Contains("витрину обучения для наставника посмертия", view.PendingGmAction, StringComparison.OrdinalIgnoreCase);
+
+        var pendingRaw = await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("\"requestKind\": \"afterlife_teacher_showcase\"", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains("\"sourceActorId\": \"guard_system_myriel_001\"", pendingRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task EnsureTrainingAsync_AfterlifeMentorShowcase_AppliesGoodRelationshipDiscount()
     {
         await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
@@ -473,6 +497,52 @@ public sealed class TrainingServiceTests : IDisposable
                 }
             };
         }
+
+        var root = new JsonObject
+        {
+            ["profiles"] = new JsonArray(mentor)
+        };
+        await _fs.WriteFileAtomicAsync("game_state/meta/afterlife_entity_profiles.json", root.ToJsonString());
+    }
+
+    private async Task SeedAfterlifeMentorWithTeachableSpecialArtOnlyAsync()
+    {
+        var mentor = new JsonObject
+        {
+            ["actorType"] = "guardian",
+            ["actorId"] = "guard_system_myriel_001",
+            ["displayName"] = "Мириэль Пепельная Звезда",
+            ["realm"] = "Chaos Sea",
+            ["standardArts"] = new JsonObject
+            {
+                ["guard"] = 2,
+                ["maneuver"] = 1
+            },
+            ["specialArts"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["artId"] = "myriel_ash_star_ward",
+                    ["displayName"] = "Оберег Пепельной Звезды",
+                    ["ownerActorType"] = "guardian",
+                    ["ownerActorId"] = "guard_system_myriel_001",
+                    ["baseOperation"] = "guard",
+                    ["tier"] = 1,
+                    ["costMultiplierPercent"] = 150,
+                    ["upgradeCost"] = new JsonObject
+                    {
+                        ["inkFeathers"] = 35,
+                        ["lightSparks"] = 0
+                    },
+                    ["effectSummary"] = "Особая защита Мириэль: пепельные звезды удерживают давление.",
+                    ["canTeachPlayer"] = true,
+                    ["trainingConditions"] = new JsonArray
+                    {
+                        "Провести отдельную сцену обучения с Мириэль."
+                    }
+                }
+            }
+        };
 
         var root = new JsonObject
         {

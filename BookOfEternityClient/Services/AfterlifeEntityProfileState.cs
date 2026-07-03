@@ -181,6 +181,7 @@ internal static class AfterlifeEntityProfileState
         JsonObject? progressionReportRoot = null)
     {
         var result = CreateDefaultRoot();
+        var commandAuthoredMentorShowcaseKeys = CollectCommandAuthoredMentorShowcaseKeys(currentRoot, previousRoot);
 
         UpsertProfiles(result, previousRoot?[ProfilesProperty]);
         UpsertProfiles(result, currentRoot?[ProfilesProperty]);
@@ -202,6 +203,7 @@ internal static class AfterlifeEntityProfileState
         ApplySpecialArtLearningReceipts(result, currentRoot?[SpecialArtLearningReceiptsProperty]);
         ApplyProgressionOverrides(result, currentRoot?[ProgressionOverridesProperty]);
         ApplyAutomaticProgression(result, progressionReportRoot);
+        RefreshCommandAuthoredMentorShowcaseHashes(result, commandAuthoredMentorShowcaseKeys);
 
         result.Remove(UpdateProperty);
         result.Remove(ResponseProfilesProperty);
@@ -221,6 +223,107 @@ internal static class AfterlifeEntityProfileState
         result.Remove(ProgressionOverridesProperty);
         result.Remove(SpecialArtLearningReceiptsProperty);
         return result;
+    }
+
+    private static HashSet<string> CollectCommandAuthoredMentorShowcaseKeys(JsonObject? currentRoot, JsonObject? previousRoot)
+    {
+        var keys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (currentRoot == null)
+            return keys;
+
+        CollectCommandAuthoredMentorShowcaseKeys(currentRoot[ResponseProfilesProperty], keys);
+        CollectCommandAuthoredMentorShowcaseKeys(currentRoot[UpdateProperty], keys);
+        CollectChangedProfileMentorShowcaseKeys(currentRoot[ProfilesProperty], previousRoot?[ProfilesProperty], keys);
+        return keys;
+    }
+
+    private static void CollectCommandAuthoredMentorShowcaseKeys(JsonNode? node, HashSet<string> keys)
+    {
+        switch (node)
+        {
+            case JsonObject profile:
+                AddCommandAuthoredMentorShowcaseKey(profile, keys);
+                break;
+            case JsonArray profiles:
+                foreach (var item in profiles.OfType<JsonObject>())
+                    AddCommandAuthoredMentorShowcaseKey(item, keys);
+                break;
+        }
+    }
+
+    private static void AddCommandAuthoredMentorShowcaseKey(JsonObject profile, HashSet<string> keys)
+    {
+        if (profile["mentorTrainingShowcase"] is not JsonObject)
+            return;
+
+        var key = BuildIdentityKey(profile);
+        if (!string.IsNullOrWhiteSpace(key))
+            keys.Add(key);
+    }
+
+    private static void CollectChangedProfileMentorShowcaseKeys(
+        JsonNode? currentNode,
+        JsonNode? previousNode,
+        HashSet<string> keys)
+    {
+        if (currentNode is not JsonArray currentProfiles || previousNode is not JsonArray previousProfiles)
+            return;
+
+        var previousByIdentity = previousProfiles
+            .OfType<JsonObject>()
+            .Select(profile => new { Key = BuildIdentityKey(profile), Profile = profile })
+            .Where(entry => !string.IsNullOrWhiteSpace(entry.Key))
+            .ToDictionary(entry => entry.Key!, entry => entry.Profile, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var currentProfile in currentProfiles.OfType<JsonObject>())
+        {
+            if (currentProfile["mentorTrainingShowcase"] is not JsonObject currentShowcase)
+                continue;
+
+            var key = BuildIdentityKey(currentProfile);
+            if (string.IsNullOrWhiteSpace(key))
+                continue;
+
+            if (!previousByIdentity.TryGetValue(key, out var previousProfile) ||
+                previousProfile["mentorTrainingShowcase"] is not JsonObject previousShowcase ||
+                !JsonNode.DeepEquals(currentShowcase, previousShowcase))
+            {
+                keys.Add(key);
+            }
+        }
+    }
+
+    private static void RefreshCommandAuthoredMentorShowcaseHashes(
+        JsonObject result,
+        IReadOnlySet<string> commandAuthoredMentorShowcaseKeys)
+    {
+        if (commandAuthoredMentorShowcaseKeys.Count == 0 ||
+            result[ProfilesProperty] is not JsonArray profiles)
+        {
+            return;
+        }
+
+        foreach (var profile in profiles.OfType<JsonObject>())
+        {
+            var key = BuildIdentityKey(profile);
+            if (string.IsNullOrWhiteSpace(key) ||
+                !commandAuthoredMentorShowcaseKeys.Contains(key) ||
+                profile["mentorTrainingShowcase"] is not JsonObject showcase)
+            {
+                continue;
+            }
+
+            var expectedActorId = GetNodeString(profile["actorId"]) ?? GetNodeString(profile["actorRef"]);
+            var actualActorId = GetNodeString(showcase["sourceActorId"]);
+            if (!string.IsNullOrWhiteSpace(actualActorId) &&
+                !string.IsNullOrWhiteSpace(expectedActorId) &&
+                !string.Equals(actualActorId, expectedActorId, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            showcase["sourceActorSnapshotHash"] = TrainingService.ComputeSourceSnapshotHash(profile);
+        }
     }
 
     public static void UpsertProfile(JsonArray profiles, JsonObject profile)
