@@ -24,6 +24,7 @@ public sealed class TrainingService
     private const string RealmMortal = "mortal";
     private const string RealmAfterlife = "afterlife";
     private const string MortalRequestKind = "mortal_teacher_showcase";
+    private const string MortalSkillEvolutionRequestKind = "mortal_training_skill_evolution";
     private const string AfterlifeRequestKind = "afterlife_teacher_showcase";
     private const int SpiritualArtMaxTier = 5;
 
@@ -76,6 +77,18 @@ public sealed class TrainingService
         int LightSparks);
 
     public sealed record TrainingOperationResult(bool Success, bool StateChanged, string Message);
+
+    private sealed record MortalTrainingApplicationPlan(
+        bool RequiresGmEvolution,
+        string Reason,
+        string DedupeKey,
+        bool IsPassive,
+        JsonObject? ExistingSkill,
+        JsonObject? ExistingMastery,
+        int CurrentMasteryLevel,
+        int CurrentMasteryProgress,
+        int MasteryProgressNeeded,
+        int MasteryProgressGain);
 
     public async Task<TrainingView> EnsureTrainingAsync(int currentTurn, bool createPendingRequests = true)
     {
@@ -143,23 +156,71 @@ public sealed class TrainingService
         var activeRoot = await ReadObjectAsync(ActiveSkillsPath) ?? new JsonObject { ["activeSkillChanges"] = new JsonArray() };
         var passiveRoot = await ReadObjectAsync(PassiveSkillsPath) ?? new JsonObject { ["passiveSkillChanges"] = new JsonArray() };
         var masteryRoot = await ReadObjectAsync(SkillMasteryPath) ?? new JsonObject { ["skillMasteryChanges"] = new JsonArray() };
+        var applicationPlan = BuildMortalTrainingApplicationPlan(evaluatedOffer, activeRoot, passiveRoot, masteryRoot);
+        var sourceActorIdForPlan = ResolveMortalTeacherActorId(teacher);
+
+        if (applicationPlan.RequiresGmEvolution)
+        {
+            var existingPending = await TrainingRequestState.FindPendingRequestAsync(
+                _fs,
+                sourceActorIdForPlan,
+                MortalSkillEvolutionRequestKind,
+                applicationPlan.DedupeKey);
+            if (existingPending != null)
+            {
+                return new TrainingOperationResult(
+                    false,
+                    false,
+                    "Это обучение уже оплачено и ожидает ГМ: мастер должен завершить изменение навыка перед повторной покупкой.");
+            }
+        }
 
         statusRoot["money"] = currentMoney - evaluatedOffer.Cost.Money;
         experienceRoot["currentLevelExperience"] = currentLevelExperience - evaluatedOffer.Cost.CurrentLevelExperiencePoints;
         if (!experienceRoot.ContainsKey("experienceForNextLevel"))
             experienceRoot["experienceForNextLevel"] = InferExperienceForNextLevel(experienceRoot);
 
-        ApplyMortalSkillTraining(activeRoot, passiveRoot, masteryRoot, evaluatedOffer);
-        AppendMortalTrainingReceipt(npcRoot, teacher, evaluatedOffer, currentTurn);
+        if (applicationPlan.RequiresGmEvolution)
+        {
+            var request = await WriteMortalSkillEvolutionRequestAsync(
+                teacher,
+                evaluatedOffer,
+                applicationPlan,
+                currentTurn);
+            AppendMortalTrainingReceipt(
+                npcRoot,
+                teacher,
+                evaluatedOffer,
+                currentTurn,
+                resolutionState: "pending_gm_skill_evolution",
+                pendingRequestId: request.RequestId,
+                pendingRequestKind: MortalSkillEvolutionRequestKind,
+                pendingReason: applicationPlan.Reason);
+
+            await _fs.WriteFileAtomicAsync(PlayerStatusPath, statusRoot.ToJsonString(JsonOpts));
+            await _fs.WriteFileAtomicAsync(PlayerExperiencePath, experienceRoot.ToJsonString(JsonOpts));
+            await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
+
+            return new TrainingOperationResult(
+                true,
+                true,
+                "Занятие оплачено и ожидает ГМ: мастер завершит изменение навыка и обновит его эффекты.");
+        }
+
+        ApplyMortalActiveSkillPractice(masteryRoot, evaluatedOffer, applicationPlan);
+        AppendMortalTrainingReceipt(
+            npcRoot,
+            teacher,
+            evaluatedOffer,
+            currentTurn,
+            resolutionState: "completed_local_practice");
 
         await _fs.WriteFileAtomicAsync(PlayerStatusPath, statusRoot.ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(PlayerExperiencePath, experienceRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(ActiveSkillsPath, activeRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(PassiveSkillsPath, passiveRoot.ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(SkillMasteryPath, masteryRoot.ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
 
-        return new TrainingOperationResult(true, true, "Обучение завершено.");
+        return new TrainingOperationResult(true, true, "Практика завершена: мастерство навыка выросло без изменения эффектов.");
     }
 
     private async Task<TrainingOperationResult> BuyAfterlifeSelfTrainingAsync(string sourceActorId, string offerId, int currentTurn)
@@ -359,6 +420,7 @@ public sealed class TrainingService
                 Offers: offers));
         }
 
+        await ClearSatisfiedMortalSkillEvolutionRequestsAsync();
         await ClearSatisfiedTrainingShowcaseRequestsAsync(satisfiedRequests);
 
         return new TrainingView(
@@ -481,6 +543,64 @@ public sealed class TrainingService
             await TrainingRequestState.WriteRequestsAsync(_fs, remaining);
     }
 
+    private async Task ClearSatisfiedMortalSkillEvolutionRequestsAsync()
+    {
+        var existing = await TrainingRequestState.ReadRequestsAsync(_fs);
+        if (existing.Count == 0)
+            return;
+
+        var activeRoot = await ReadObjectAsync(ActiveSkillsPath) ?? new JsonObject();
+        var passiveRoot = await ReadObjectAsync(PassiveSkillsPath) ?? new JsonObject();
+        var masteryRoot = await ReadObjectAsync(SkillMasteryPath) ?? new JsonObject();
+
+        var remaining = existing
+            .Where(request => !string.Equals(request.RequestKind, MortalSkillEvolutionRequestKind, StringComparison.OrdinalIgnoreCase) ||
+                              !IsMortalSkillEvolutionRequestSatisfied(request, activeRoot, passiveRoot, masteryRoot))
+            .ToArray();
+
+        if (remaining.Length != existing.Count)
+            await TrainingRequestState.WriteRequestsAsync(_fs, remaining);
+    }
+
+    private static bool IsMortalSkillEvolutionRequestSatisfied(
+        TrainingRequestState.PendingTrainingShowcaseRequest request,
+        JsonObject activeRoot,
+        JsonObject passiveRoot,
+        JsonObject masteryRoot)
+    {
+        var details = request.Details;
+        if (details == null)
+            return false;
+
+        var targetId = GetNodeString(details["targetId"]);
+        var targetName = GetNodeString(details["targetName"]);
+        if (string.IsNullOrWhiteSpace(targetId) && string.IsNullOrWhiteSpace(targetName))
+            return false;
+
+        var targetValue = GetNodeInt(details["targetValue"]);
+        if (targetValue <= 0)
+            return false;
+
+        var targetKind = GetNodeString(details["targetKind"]) ?? "";
+        var skillRoot = targetKind.Contains("passive", StringComparison.OrdinalIgnoreCase) ? passiveRoot : activeRoot;
+        var skillArrayName = targetKind.Contains("passive", StringComparison.OrdinalIgnoreCase)
+            ? "passiveSkillChanges"
+            : "activeSkillChanges";
+        var skill = FindMortalSkillObject(skillRoot, skillArrayName, targetId, targetName);
+        if (skill == null)
+            return false;
+
+        var mastery = FindMortalSkillObject(masteryRoot, "skillMasteryChanges", targetId, targetName);
+        var resolvedLevel = FirstPositive(
+            GetNodeInt(mastery?["newMasteryLevel"]),
+            GetNodeInt(mastery?["masteryLevel"]),
+            GetNodeInt(skill["currentMasteryLevel"]),
+            GetNodeInt(skill["masteryLevel"]),
+            GetNodeInt(skill["level"]));
+
+        return resolvedLevel >= targetValue;
+    }
+
     private TrainingOffer EvaluateMortalOffer(JsonObject teacher, JsonObject offer)
     {
         var targetId = GetNodeString(offer["targetId"]) ?? "";
@@ -501,11 +621,13 @@ public sealed class TrainingService
             LightSparks: 0);
 
         string? blockReason = null;
+        var masteryProgressGain = ResolveMortalMasteryProgressGain(offer);
+
         if (string.IsNullOrWhiteSpace(targetId))
             blockReason = "В предложении нет цели обучения.";
-        else if (targetValue <= currentValue)
+        else if (targetValue <= currentValue && masteryProgressGain <= 0)
             blockReason = "Предложение не повышает текущий уровень навыка.";
-        else if (sourceCap <= 0 || targetValue > sourceCap)
+        else if (sourceCap <= 0 || Math.Max(targetValue, currentValue) > sourceCap)
             blockReason = "Предложение превышает уровень, которым владеет учитель.";
         else if (trainingCost.Money <= 0 && trainingCost.CurrentLevelExperiencePoints <= 0)
             blockReason = "У обучения должна быть положительная цена.";
@@ -774,49 +896,161 @@ public sealed class TrainingService
             .FirstOrDefault(offer => string.Equals(GetNodeString(offer["offerId"]), offerId, StringComparison.OrdinalIgnoreCase));
     }
 
-    private void ApplyMortalSkillTraining(
+    private MortalTrainingApplicationPlan BuildMortalTrainingApplicationPlan(
+        TrainingOffer offer,
         JsonObject activeRoot,
         JsonObject passiveRoot,
-        JsonObject masteryRoot,
-        TrainingOffer offer)
+        JsonObject masteryRoot)
     {
-        var isPassive = offer.TargetKind.Contains("passive", StringComparison.OrdinalIgnoreCase);
-        var targetArrayName = isPassive ? "passiveSkillChanges" : "activeSkillChanges";
-        var targetRoot = isPassive ? passiveRoot : activeRoot;
-        var targetArray = EnsureArray(targetRoot, targetArrayName);
-        var existingSkill = targetArray.OfType<JsonObject>().FirstOrDefault(skill =>
-            string.Equals(GetNodeString(skill["skillName"]), offer.TargetName, StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(GetNodeString(skill["skillId"]), offer.TargetId, StringComparison.OrdinalIgnoreCase));
+        var isPassive = IsPassiveMortalTrainingTarget(offer);
+        var existingSkill = FindMortalSkillObject(isPassive ? passiveRoot : activeRoot, isPassive ? "passiveSkillChanges" : "activeSkillChanges", offer);
+        var existingMastery = FindMortalSkillObject(masteryRoot, "skillMasteryChanges", offer);
+        var currentMasteryLevel = Math.Max(
+            1,
+            FirstPositive(
+                GetNodeInt(existingMastery?["newMasteryLevel"]),
+                GetNodeInt(existingSkill?["currentMasteryLevel"]),
+                GetNodeInt(existingSkill?["masteryLevel"]),
+                offer.CurrentValue));
+        var currentProgress = Math.Max(
+            0,
+            FirstPositiveOrZero(
+                GetNodeInt(existingMastery?["newCurrentMasteryProgress"], int.MinValue),
+                GetNodeInt(existingSkill?["currentMasteryProgress"], int.MinValue),
+                GetNodeInt(existingSkill?["masteryProgress"], int.MinValue)));
+        var progressNeeded = Math.Max(
+            1,
+            FirstPositive(
+                GetNodeInt(existingMastery?["newMasteryProgressNeeded"]),
+                GetNodeInt(existingSkill?["masteryProgressNeeded"]),
+                GetNodeInt(existingSkill?["progressNeeded"]),
+                ComputeMasteryProgressNeeded(currentMasteryLevel)));
+        var progressGain = ResolveMortalMasteryProgressGain(offer.Details);
+        var dedupeKey = $"{offer.OfferId}:{offer.TargetId}:{offer.TargetValue}";
 
         if (existingSkill == null)
         {
-            existingSkill = new JsonObject
-            {
-                ["skillId"] = offer.TargetId,
-                ["skillName"] = offer.TargetName,
-                ["skillDescription"] = GetNodeString(offer.Details["summary"]) ?? "Навык получен через обучение.",
-                ["rarity"] = "Common",
-                ["currentMasteryLevel"] = offer.TargetValue,
-                ["maxMasteryLevel"] = Math.Max(offer.SourceCap, offer.TargetValue)
-            };
-            if (isPassive)
-                existingSkill["masteryLevel"] = offer.TargetValue;
-            else
-                existingSkill["category"] = "Utility";
-            targetArray.Add(existingSkill);
-        }
-        else
-        {
-            existingSkill["currentMasteryLevel"] = offer.TargetValue;
-            existingSkill["maxMasteryLevel"] = Math.Max(offer.SourceCap, GetNodeInt(existingSkill["maxMasteryLevel"]));
-            if (isPassive)
-                existingSkill["masteryLevel"] = offer.TargetValue;
+            return new MortalTrainingApplicationPlan(
+                RequiresGmEvolution: true,
+                Reason: "unknown_skill_unlock",
+                DedupeKey: dedupeKey,
+                IsPassive: isPassive,
+                ExistingSkill: null,
+                ExistingMastery: existingMastery,
+                CurrentMasteryLevel: currentMasteryLevel,
+                CurrentMasteryProgress: currentProgress,
+                MasteryProgressNeeded: progressNeeded,
+                MasteryProgressGain: progressGain);
         }
 
+        if (!isPassive && IsMortalPracticeOffer(offer) && progressGain > 0)
+        {
+            var newProgress = currentProgress + progressGain;
+            if (newProgress < progressNeeded)
+            {
+                return new MortalTrainingApplicationPlan(
+                    RequiresGmEvolution: false,
+                    Reason: "local_mastery_practice",
+                    DedupeKey: dedupeKey,
+                    IsPassive: false,
+                    ExistingSkill: existingSkill,
+                    ExistingMastery: existingMastery,
+                    CurrentMasteryLevel: currentMasteryLevel,
+                    CurrentMasteryProgress: currentProgress,
+                    MasteryProgressNeeded: progressNeeded,
+                    MasteryProgressGain: progressGain);
+            }
+        }
+
+        return new MortalTrainingApplicationPlan(
+            RequiresGmEvolution: true,
+            Reason: "mastery_threshold_crossed",
+            DedupeKey: dedupeKey,
+            IsPassive: isPassive,
+            ExistingSkill: existingSkill,
+            ExistingMastery: existingMastery,
+            CurrentMasteryLevel: currentMasteryLevel,
+            CurrentMasteryProgress: currentProgress,
+            MasteryProgressNeeded: progressNeeded,
+            MasteryProgressGain: progressGain);
+    }
+
+    private async Task<TrainingRequestState.PendingTrainingShowcaseRequest> WriteMortalSkillEvolutionRequestAsync(
+        JsonObject teacher,
+        TrainingOffer offer,
+        MortalTrainingApplicationPlan plan,
+        int currentTurn)
+    {
+        var sourceActorId = ResolveMortalTeacherActorId(teacher);
+        var sourceActorName = GetNodeString(teacher["name"]) ?? sourceActorId;
+        var details = BuildMortalSkillEvolutionRequestDetails(teacher, offer, plan);
+        return await TrainingRequestState.WriteRequestAsync(
+            _fs,
+            MortalSkillEvolutionRequestKind,
+            sourceActorId,
+            sourceActorName,
+            "npc_teacher",
+            RealmMortal,
+            currentTurn,
+            ComputeSourceSnapshotHash(teacher),
+            plan.Reason,
+            details);
+    }
+
+    private static JsonObject BuildMortalSkillEvolutionRequestDetails(
+        JsonObject teacher,
+        TrainingOffer offer,
+        MortalTrainingApplicationPlan plan)
+    {
+        var sourceActorId = ResolveMortalTeacherActorId(teacher);
+        var details = new JsonObject
+        {
+            ["dedupeKey"] = plan.DedupeKey,
+            ["offerId"] = offer.OfferId,
+            ["targetId"] = offer.TargetId,
+            ["targetName"] = offer.TargetName,
+            ["targetKind"] = offer.TargetKind,
+            ["currentValue"] = offer.CurrentValue,
+            ["targetValue"] = offer.TargetValue,
+            ["sourceCap"] = offer.SourceCap,
+            ["sourceActorId"] = sourceActorId,
+            ["sourceActorName"] = GetNodeString(teacher["name"]) ?? sourceActorId,
+            ["sourceActorSnapshotHash"] = ComputeSourceSnapshotHash(teacher),
+            ["moneySpent"] = offer.Cost.Money,
+            ["currentLevelExperiencePercent"] = offer.Cost.CurrentLevelExperiencePercent,
+            ["currentLevelExperienceSpent"] = offer.Cost.CurrentLevelExperiencePoints,
+            ["masteryProgressGain"] = plan.MasteryProgressGain,
+            ["gmInstruction"] = plan.IsPassive
+                ? "Создай или обнови полный passiveSkillChanges объект и matching skillMasteryChanges/уровень, не теряя structuredBonuses."
+                : "Создай или обнови полный activeSkillChanges объект с combatEffect и matching skillMasteryChanges для нового уровня."
+        };
+
+        var summary = GetNodeString(offer.Details["summary"]);
+        if (!string.IsNullOrWhiteSpace(summary))
+            details["summary"] = summary;
+
+        var skillState = new JsonObject
+        {
+            ["currentMasteryLevel"] = plan.CurrentMasteryLevel,
+            ["currentMasteryProgress"] = plan.CurrentMasteryProgress,
+            ["masteryProgressNeeded"] = plan.MasteryProgressNeeded
+        };
+        if (plan.ExistingSkill != null)
+            skillState["skill"] = CloneObject(plan.ExistingSkill);
+        if (plan.ExistingMastery != null)
+            skillState["mastery"] = CloneObject(plan.ExistingMastery);
+        details["skillStateBefore"] = skillState;
+
+        return details;
+    }
+
+    private static void ApplyMortalActiveSkillPractice(
+        JsonObject masteryRoot,
+        TrainingOffer offer,
+        MortalTrainingApplicationPlan plan)
+    {
         var masteryArray = EnsureArray(masteryRoot, "skillMasteryChanges");
-        var existingMastery = masteryArray.OfType<JsonObject>().FirstOrDefault(skill =>
-            string.Equals(GetNodeString(skill["skillName"]), offer.TargetName, StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(GetNodeString(skill["skillId"]), offer.TargetId, StringComparison.OrdinalIgnoreCase));
+        var existingMastery = masteryArray.OfType<JsonObject>().FirstOrDefault(skill => MatchesMortalTrainingTarget(skill, offer));
         if (existingMastery == null)
         {
             existingMastery = new JsonObject
@@ -827,16 +1061,24 @@ public sealed class TrainingService
             masteryArray.Add(existingMastery);
         }
 
-        existingMastery["newMasteryLevel"] = offer.TargetValue;
-        existingMastery["newCurrentMasteryProgress"] = 0;
-        existingMastery["newMasteryProgressNeeded"] = ComputeMasteryProgressNeeded(offer.TargetValue);
-        existingMastery["masteryLeveledUp"] = true;
+        existingMastery["newMasteryLevel"] = plan.CurrentMasteryLevel;
+        existingMastery["newCurrentMasteryProgress"] = plan.CurrentMasteryProgress + plan.MasteryProgressGain;
+        existingMastery["newMasteryProgressNeeded"] = plan.MasteryProgressNeeded;
+        existingMastery["masteryLeveledUp"] = false;
     }
 
-    private static void AppendMortalTrainingReceipt(JsonObject npcRoot, JsonObject teacher, TrainingOffer offer, int currentTurn)
+    private static void AppendMortalTrainingReceipt(
+        JsonObject npcRoot,
+        JsonObject teacher,
+        TrainingOffer offer,
+        int currentTurn,
+        string resolutionState = "completed_locally",
+        string? pendingRequestId = null,
+        string? pendingRequestKind = null,
+        string? pendingReason = null)
     {
         var receipts = EnsureArray(npcRoot, "trainingPurchaseReceipts");
-        receipts.Add(new JsonObject
+        var receipt = new JsonObject
         {
             ["receiptId"] = $"training_receipt_{Guid.NewGuid():N}",
             ["realm"] = RealmMortal,
@@ -853,8 +1095,18 @@ public sealed class TrainingService
             ["currentLevelExperiencePercent"] = offer.Cost.CurrentLevelExperiencePercent,
             ["currentLevelExperienceSpent"] = offer.Cost.CurrentLevelExperiencePoints,
             ["createdAtTurn"] = currentTurn,
-            ["createdAtUtc"] = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture)
-        });
+            ["createdAtUtc"] = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture),
+            ["resolutionState"] = resolutionState
+        };
+
+        if (!string.IsNullOrWhiteSpace(pendingRequestId))
+            receipt["pendingRequestId"] = pendingRequestId;
+        if (!string.IsNullOrWhiteSpace(pendingRequestKind))
+            receipt["pendingRequestKind"] = pendingRequestKind;
+        if (!string.IsNullOrWhiteSpace(pendingReason))
+            receipt["pendingReason"] = pendingReason;
+
+        receipts.Add(receipt);
     }
 
     private static void ApplyAfterlifeTraining(JsonObject profile, TrainingOffer offer)
@@ -1434,6 +1686,80 @@ public sealed class TrainingService
         "Средоточию Души или прокачивать уже известные особые искусства; sourceCap не выше профиля наставника, " +
         "sourceActorSnapshotHash должен совпасть с requested hash " +
         $"{request.SourceActorSnapshotHash}. Клиент сам спишет валюту и поднимет уровень после покупки.";
+
+    private static bool IsPassiveMortalTrainingTarget(TrainingOffer offer) =>
+        offer.TargetKind.Contains("passive", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsMortalPracticeOffer(TrainingOffer offer) =>
+        offer.TargetKind.Contains("progress", StringComparison.OrdinalIgnoreCase) ||
+        offer.TargetKind.Contains("practice", StringComparison.OrdinalIgnoreCase);
+
+    private static JsonObject? FindMortalSkillObject(JsonObject root, string arrayName, TrainingOffer offer)
+    {
+        if (root[arrayName] is not JsonArray array)
+            return null;
+
+        return array.OfType<JsonObject>().FirstOrDefault(skill => MatchesMortalTrainingTarget(skill, offer));
+    }
+
+    private static JsonObject? FindMortalSkillObject(JsonObject root, string arrayName, string? targetId, string? targetName)
+    {
+        if (root[arrayName] is not JsonArray array)
+            return null;
+
+        return array.OfType<JsonObject>().FirstOrDefault(skill => MatchesMortalTrainingTarget(skill, targetId, targetName));
+    }
+
+    private static bool MatchesMortalTrainingTarget(JsonObject node, TrainingOffer offer)
+    {
+        return MatchesMortalTrainingTarget(node, offer.TargetId, offer.TargetName);
+    }
+
+    private static bool MatchesMortalTrainingTarget(JsonObject node, string? targetId, string? targetName)
+    {
+        var skillId = GetNodeString(node["skillId"]) ?? GetNodeString(node["id"]);
+        var skillName = GetNodeString(node["skillName"]) ?? GetNodeString(node["name"]);
+        return (!string.IsNullOrWhiteSpace(skillId) &&
+                !string.IsNullOrWhiteSpace(targetId) &&
+                string.Equals(skillId, targetId, StringComparison.OrdinalIgnoreCase)) ||
+               (!string.IsNullOrWhiteSpace(skillName) &&
+                !string.IsNullOrWhiteSpace(targetName) &&
+                string.Equals(skillName, targetName, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static int ResolveMortalMasteryProgressGain(JsonObject offer)
+    {
+        foreach (var field in new[] { "masteryProgressGain", "progressGain", "masteryPoints", "practicePoints" })
+        {
+            var value = GetNodeInt(offer[field]);
+            if (value > 0)
+                return value;
+        }
+
+        return 0;
+    }
+
+    private static int FirstPositive(params int[] values)
+    {
+        foreach (var value in values)
+        {
+            if (value > 0)
+                return value;
+        }
+
+        return 0;
+    }
+
+    private static int FirstPositiveOrZero(params int[] values)
+    {
+        foreach (var value in values)
+        {
+            if (value >= 0)
+                return value;
+        }
+
+        return 0;
+    }
 
     private static JsonArray EnsureArray(JsonObject root, string propertyName)
     {

@@ -182,16 +182,16 @@
       "surfaceType": "pending_contract",
       "owner": "training_showcases",
       "realm": "Mortal World / Chaos Sea / Shining Abode",
-      "authority": "client-owned pending request; GM materializes teacher/mentor showcase only",
+      "authority": "client-owned pending request; GM materializes teacher/mentor showcase or finalizes paid Mortal skill evolution",
       "emptyWrapperSemantics": "Missing or empty requests[] means no pending training showcase. Malformed present file is preserved.",
       "malformedBehavior": "Fail closed until repaired or resolved by valid turn output.",
       "blockerBehavior": "Blocks stale training purchases; should be resolved before relying on teacher/mentor lessons.",
-      "closureSurface": "Mortal: UpdateNPCs[].trainingShowcase. Afterlife: afterlifeEntityProfileUpdates[].mentorTrainingShowcase. Client clears fulfilled requests after it sees a fresh matching showcase.",
+      "closureSurface": "Mortal showcase: UpdateNPCs[].trainingShowcase. Afterlife showcase: afterlifeEntityProfileUpdates[].mentorTrainingShowcase. Mortal paid skill evolution: activeSkillChanges/passiveSkillChanges plus matching skillMasteryChanges. Client clears fulfilled showcase requests after it sees a fresh matching showcase; skill-evolution requests are resolved by the accepted GM skill update.",
       "docAnchors": [
         "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules",
         "Examples/E_CLI_Training_Showcases.txt"
       ],
-      "notes": "Freshness-sensitive showcase request; GM echoes sourceActorSnapshotHash and never spends player resources. Fulfilled entries are client-cleaned, malformed files remain preserved."
+      "notes": "Freshness-sensitive showcase request and paid Mortal skill-evolution request surface; GM echoes sourceActorSnapshotHash for showcases and never spends player resources. Fulfilled entries are client-cleaned, malformed files remain preserved."
     },
     {
       "path": "game_state/control/pending_player_guardian_foundation.json",

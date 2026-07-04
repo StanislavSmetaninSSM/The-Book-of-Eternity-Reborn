@@ -128,10 +128,14 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         var result = await trainingService.BuyTrainingAsync(sourceActorId, offerId, currentTurn);
         var severity = result.Success ? UiNotificationSeverity.Success : UiNotificationSeverity.Warning;
         var state = result.Success ? CommandExecutionState.Completed : CommandExecutionState.Blocked;
+        var awaitingGmFinalization = IsTrainingAwaitingGmFinalization(result);
+        var resultTitle = result.Success
+            ? awaitingGmFinalization ? "Обучение оплачено" : "Обучение завершено"
+            : "Обучение не выполнено";
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            Message(severity, result.Success ? "Обучение завершено" : "Обучение не выполнено", result.Message)
+            Message(severity, resultTitle, result.Message)
         };
 
         if (offer != null)
@@ -374,14 +378,18 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         return new UiEntityDossierBlock
         {
             EntityType = "training-receipt",
-            Title = result.Success ? "Обучение завершено" : "Обучение не выполнено",
+            Title = result.Success
+                ? IsTrainingAwaitingGmFinalization(result) ? "Обучение оплачено" : "Обучение завершено"
+                : "Обучение не выполнено",
             Subtitle = offer.TargetName,
             Summary = result.Message,
             Badges =
             [
                 new UiEntityBadge
                 {
-                    Label = result.Success ? "успешно" : "заблокировано",
+                    Label = result.Success
+                        ? IsTrainingAwaitingGmFinalization(result) ? "ожидает ГМ" : "успешно"
+                        : "заблокировано",
                     Tone = result.Success ? UiTone.Success : UiTone.Warning,
                     Icon = result.Success ? "check-circle" : "alert-triangle"
                 }
@@ -389,6 +397,10 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
             Facts = BuildTrainingPurchaseReceiptFacts(sourceName, offer)
         };
     }
+
+    private static bool IsTrainingAwaitingGmFinalization(TrainingService.TrainingOperationResult result) =>
+        result.Success &&
+        result.Message.Contains("ожидает ГМ", StringComparison.OrdinalIgnoreCase);
 
     private static List<UiEntityFact> BuildTrainingPurchaseReceiptFacts(
         string sourceName,

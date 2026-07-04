@@ -95,6 +95,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         }
 
         Assert.Contains("mortal_teacher_showcase", example + manifest, StringComparison.Ordinal);
+        Assert.Contains("mortal_training_skill_evolution", example + manifest + matrix, StringComparison.Ordinal);
+        Assert.Contains("client has already charged", example, StringComparison.Ordinal);
         Assert.Contains("afterlife_teacher_showcase", example + manifest, StringComparison.Ordinal);
         Assert.Contains("SelfStandardArtMultiplierPercent = 400", example, StringComparison.Ordinal);
         Assert.Contains("SelfSpiritFocusMultiplierPercent = 300", example, StringComparison.Ordinal);

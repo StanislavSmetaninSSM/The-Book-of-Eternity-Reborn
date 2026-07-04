@@ -16,6 +16,13 @@
       "description": "Mortal teacher showcase with skill_mastery offers, sourceCap, money cost, and current-level experience percent cost."
     },
     {
+      "contractId": "mortal_training_skill_evolution",
+      "file": "E_CLI_Training_Showcases.txt",
+      "statePath": "game_state/control/pending_training_showcase_requests.json",
+      "responseSurface": "activeSkillChanges / passiveSkillChanges + skillMasteryChanges",
+      "description": "Paid Mortal training request for GM-authored skill unlocks or mastery level-ups after the client has already spent money and current-level experience."
+    },
+    {
       "contractId": "afterlife_teacher_showcase",
       "file": "E_CLI_Training_Showcases.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",

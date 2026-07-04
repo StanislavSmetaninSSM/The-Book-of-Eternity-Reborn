@@ -43,18 +43,21 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task BuyTrainingAsync_MortalOffer_SpendsMoneyAndCurrentLevelExperienceAndRaisesMastery()
+    public async Task BuyTrainingAsync_MortalLevelUpOffer_DeductsResourcesAndCreatesPendingGmEvolutionRequest()
     {
         await SeedMortalSoulStateAsync();
         await SeedMortalTeacherAsync(includeShowcase: true);
         await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
-        await SeedPlayerActiveSkillAsync(skillName: "Ножи", masteryLevel: 1);
+        await SeedPlayerActiveSkillAsync(skillName: "Ножи", masteryLevel: 1, currentProgress: 4, progressNeeded: 5);
+        var activeBefore = await _fs.ReadFileAsync("game_state/player/skills_active.json");
+        var masteryBefore = await _fs.ReadFileAsync("game_state/player/skill_mastery.json");
 
         var service = CreateService();
         var result = await service.BuyTrainingAsync("npc_hunter_001", "offer_knife_mastery_2", currentTurn: 13);
 
         Assert.True(result.Success);
         Assert.True(result.StateChanged);
+        Assert.Contains("ГМ", result.Message, StringComparison.OrdinalIgnoreCase);
 
         using var statusDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/core/player_status.json") ?? "{}");
         Assert.Equal(380, statusDoc.RootElement.GetProperty("money").GetInt32());
@@ -63,16 +66,82 @@ public sealed class TrainingServiceTests : IDisposable
         Assert.Equal(150, experienceDoc.RootElement.GetProperty("currentLevelExperience").GetInt32());
         Assert.Equal(1000, experienceDoc.RootElement.GetProperty("experienceForNextLevel").GetInt32());
 
-        using var masteryDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/skill_mastery.json") ?? "{}");
-        var mastery = masteryDoc.RootElement.GetProperty("skillMasteryChanges").EnumerateArray().Single();
-        Assert.Equal("Ножи", mastery.GetProperty("skillName").GetString());
-        Assert.Equal(2, mastery.GetProperty("newMasteryLevel").GetInt32());
+        Assert.Equal(activeBefore, await _fs.ReadFileAsync("game_state/player/skills_active.json"));
+        Assert.Equal(masteryBefore, await _fs.ReadFileAsync("game_state/player/skill_mastery.json"));
+
+        using var pendingDoc = JsonDocument.Parse(await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath) ?? "{}");
+        var request = pendingDoc.RootElement.GetProperty("requests").EnumerateArray().Single();
+        Assert.Equal("mortal_training_skill_evolution", request.GetProperty("requestKind").GetString());
+        Assert.Equal("npc_hunter_001", request.GetProperty("sourceActorId").GetString());
+        Assert.Equal("mastery_threshold_crossed", request.GetProperty("reason").GetString());
+        var details = request.GetProperty("details");
+        Assert.Equal("offer_knife_mastery_2", details.GetProperty("offerId").GetString());
+        Assert.Equal("Ножи", details.GetProperty("targetName").GetString());
+        Assert.Equal(2, details.GetProperty("targetValue").GetInt32());
+        Assert.Equal(120, details.GetProperty("moneySpent").GetInt32());
+        Assert.Equal(250, details.GetProperty("currentLevelExperienceSpent").GetInt32());
 
         using var npcDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? "{}");
         var receipt = npcDoc.RootElement.GetProperty("trainingPurchaseReceipts")[0];
         Assert.Equal("offer_knife_mastery_2", receipt.GetProperty("offerId").GetString());
         Assert.Equal(120, receipt.GetProperty("moneySpent").GetInt32());
         Assert.Equal(250, receipt.GetProperty("currentLevelExperienceSpent").GetInt32());
+        Assert.Equal("pending_gm_skill_evolution", receipt.GetProperty("resolutionState").GetString());
+        Assert.Equal("mortal_training_skill_evolution", receipt.GetProperty("pendingRequestKind").GetString());
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalUnknownPassiveOffer_CreatesPendingGmUnlockWithoutAddingSkillLocally()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalPassiveUnlockTeacherAsync();
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedEmptyPlayerSkillsAsync();
+        var passiveBefore = await _fs.ReadFileAsync("game_state/player/skills_passive.json");
+
+        var service = CreateService();
+        var result = await service.BuyTrainingAsync("npc_skinner_001", "offer_skinning_unlock", currentTurn: 14);
+
+        Assert.True(result.Success);
+        Assert.True(result.StateChanged);
+        Assert.Contains("ГМ", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(passiveBefore, await _fs.ReadFileAsync("game_state/player/skills_passive.json"));
+
+        using var pendingDoc = JsonDocument.Parse(await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath) ?? "{}");
+        var request = pendingDoc.RootElement.GetProperty("requests").EnumerateArray().Single();
+        Assert.Equal("mortal_training_skill_evolution", request.GetProperty("requestKind").GetString());
+        Assert.Equal("unknown_skill_unlock", request.GetProperty("reason").GetString());
+        var details = request.GetProperty("details");
+        Assert.Equal("offer_skinning_unlock", details.GetProperty("offerId").GetString());
+        Assert.Equal("Снятие шкур", details.GetProperty("targetName").GetString());
+        Assert.Equal("passive_skill_unlock", details.GetProperty("targetKind").GetString());
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalPracticeOfferBelowThreshold_AddsOnlyActiveMasteryProgressLocally()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalPracticeTeacherAsync();
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedPlayerActiveSkillAsync(skillName: "Ножи", masteryLevel: 1, currentProgress: 1, progressNeeded: 5);
+        var activeBefore = await _fs.ReadFileAsync("game_state/player/skills_active.json");
+
+        var service = CreateService();
+        var result = await service.BuyTrainingAsync("npc_hunter_001", "offer_knife_practice", currentTurn: 15);
+
+        Assert.True(result.Success);
+        Assert.True(result.StateChanged);
+        Assert.Contains("практика", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+        Assert.Equal(activeBefore, await _fs.ReadFileAsync("game_state/player/skills_active.json"));
+
+        using var masteryDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/skill_mastery.json") ?? "{}");
+        var mastery = masteryDoc.RootElement.GetProperty("skillMasteryChanges").EnumerateArray().Single();
+        Assert.Equal("Ножи", mastery.GetProperty("skillName").GetString());
+        Assert.Equal(1, mastery.GetProperty("newMasteryLevel").GetInt32());
+        Assert.Equal(3, mastery.GetProperty("newCurrentMasteryProgress").GetInt32());
+        Assert.Equal(5, mastery.GetProperty("newMasteryProgressNeeded").GetInt32());
+        Assert.False(mastery.GetProperty("masteryLeveledUp").GetBoolean());
     }
 
     [Fact]
@@ -259,6 +328,44 @@ public sealed class TrainingServiceTests : IDisposable
 
         var service = CreateService();
         var view = await service.EnsureTrainingAsync(currentTurn: 12);
+
+        Assert.False(view.RequestPending);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalSkillEvolutionRequestSatisfiedByGmUpdate_ClearsPendingRequest()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        await SeedPlayerActiveSkillAsync(skillName: "Ножи", masteryLevel: 2, currentProgress: 0, progressNeeded: 8);
+        await TrainingRequestState.WriteRequestAsync(
+            _fs,
+            "mortal_training_skill_evolution",
+            "npc_hunter_001",
+            "Старый охотник",
+            "npc_teacher",
+            "mortal",
+            createdAtTurn: 13,
+            sourceActorSnapshotHash: "paid-lesson-hash",
+            reason: "mastery_threshold_crossed",
+            details: new JsonObject
+            {
+                ["dedupeKey"] = "offer_knife_mastery_2:skill_knife:2",
+                ["offerId"] = "offer_knife_mastery_2",
+                ["targetId"] = "skill_knife",
+                ["targetName"] = "Ножи",
+                ["targetKind"] = "active_skill_mastery",
+                ["targetValue"] = 2,
+                ["sourceCap"] = 3,
+                ["moneySpent"] = 120,
+                ["currentLevelExperienceSpent"] = 250,
+                ["gmInstruction"] = "Создай полный activeSkillChanges объект и matching skillMasteryChanges.",
+                ["skillStateBefore"] = new JsonObject()
+            });
+
+        var service = CreateService();
+        var view = await service.EnsureTrainingAsync(currentTurn: 16);
 
         Assert.False(view.RequestPending);
         Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
@@ -689,7 +796,153 @@ public sealed class TrainingServiceTests : IDisposable
         """);
     }
 
-    private async Task SeedPlayerActiveSkillAsync(string skillName, int masteryLevel)
+    private async Task SeedMortalPassiveUnlockTeacherAsync()
+    {
+        var teacher = new JsonObject
+        {
+            ["npcId"] = "npc_skinner_001",
+            ["name"] = "Старый кожевник",
+            ["teacherProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 45,
+                ["skills"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["skillId"] = "skinning",
+                        ["skillName"] = "Снятие шкур",
+                        ["skillKind"] = "passive",
+                        ["masteryLevel"] = 2
+                    }
+                }
+            }
+        };
+
+        var snapshotHash = TrainingService.ComputeSourceSnapshotHash(teacher);
+        teacher["trainingShowcase"] = new JsonObject
+        {
+            ["showcaseId"] = "showcase_skinner_001",
+            ["sourceActorId"] = "npc_skinner_001",
+            ["sourceActorName"] = "Старый кожевник",
+            ["sourceActorSnapshotHash"] = snapshotHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "offer_skinning_unlock",
+                    ["targetId"] = "skinning",
+                    ["targetName"] = "Снятие шкур",
+                    ["targetKind"] = "passive_skill_unlock",
+                    ["currentValue"] = 0,
+                    ["targetValue"] = 1,
+                    ["sourceCap"] = 2,
+                    ["cost"] = new JsonObject
+                    {
+                        ["money"] = 80,
+                        ["currentLevelExperiencePercent"] = 10
+                    },
+                    ["requirements"] = new JsonObject
+                    {
+                        ["minimumRelationship"] = 20
+                    },
+                    ["summary"] = "Кожевник показывает, как не испортить трофей."
+                }
+            }
+        };
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["UpdateNPCs"] = new JsonArray(teacher) }.ToJsonString());
+    }
+
+    private async Task SeedMortalPracticeTeacherAsync()
+    {
+        var teacher = new JsonObject
+        {
+            ["npcId"] = "npc_hunter_001",
+            ["name"] = "Старый охотник",
+            ["teacherProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 45,
+                ["skills"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["skillId"] = "skill_knife",
+                        ["skillName"] = "Ножи",
+                        ["skillKind"] = "active",
+                        ["masteryLevel"] = 3
+                    }
+                }
+            }
+        };
+
+        var snapshotHash = TrainingService.ComputeSourceSnapshotHash(teacher);
+        teacher["trainingShowcase"] = new JsonObject
+        {
+            ["showcaseId"] = "showcase_hunter_practice",
+            ["sourceActorId"] = "npc_hunter_001",
+            ["sourceActorName"] = "Старый охотник",
+            ["sourceActorSnapshotHash"] = snapshotHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "offer_knife_practice",
+                    ["targetId"] = "skill_knife",
+                    ["targetName"] = "Ножи",
+                    ["targetKind"] = "active_skill_mastery_progress",
+                    ["currentValue"] = 1,
+                    ["targetValue"] = 1,
+                    ["sourceCap"] = 3,
+                    ["masteryProgressGain"] = 2,
+                    ["cost"] = new JsonObject
+                    {
+                        ["money"] = 30,
+                        ["currentLevelExperiencePercent"] = 5
+                    },
+                    ["requirements"] = new JsonObject
+                    {
+                        ["minimumRelationship"] = 20
+                    },
+                    ["summary"] = "Охотник поправляет стойку и дает короткую практику ножа."
+                }
+            }
+        };
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["UpdateNPCs"] = new JsonArray(teacher) }.ToJsonString());
+    }
+
+    private async Task SeedEmptyPlayerSkillsAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_active.json", """
+        {
+          "activeSkillChanges": []
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_passive.json", """
+        {
+          "passiveSkillChanges": []
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """
+        {
+          "skillMasteryChanges": []
+        }
+        """);
+    }
+
+    private async Task SeedPlayerActiveSkillAsync(
+        string skillName,
+        int masteryLevel,
+        int currentProgress = 0,
+        int progressNeeded = 5)
     {
         await _fs.WriteFileAtomicAsync("game_state/player/skills_active.json", $$"""
         {
@@ -711,9 +964,17 @@ public sealed class TrainingServiceTests : IDisposable
           "passiveSkillChanges": []
         }
         """);
-        await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """
+        await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", $$"""
         {
-          "skillMasteryChanges": []
+          "skillMasteryChanges": [
+            {
+              "skillName": "{{skillName}}",
+              "newMasteryLevel": {{masteryLevel}},
+              "newCurrentMasteryProgress": {{currentProgress}},
+              "newMasteryProgressNeeded": {{progressNeeded}},
+              "masteryLeveledUp": false
+            }
+          ]
         }
         """);
     }

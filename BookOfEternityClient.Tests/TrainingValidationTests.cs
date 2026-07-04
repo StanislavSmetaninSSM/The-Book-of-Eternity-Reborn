@@ -171,6 +171,35 @@ public sealed class TrainingValidationTests : IDisposable
             string.Equals(issue.Code, "training_showcase_source_actor_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_MortalTrainingSkillEvolutionPendingRequestWithoutDetails_ReportsTrainingIssue()
+    {
+        await _fs.WriteFileAtomicAsync(
+            TrainingRequestState.PendingRequestPath,
+            """
+            {
+              "requests": [
+                {
+                  "requestId": "training_showcase_req_bad",
+                  "requestKind": "mortal_training_skill_evolution",
+                  "sourceActorId": "npc_teacher_reina",
+                  "sourceActorName": "Рейна",
+                  "sourceActorKind": "npc_teacher",
+                  "realm": "mortal",
+                  "createdAtTurn": 12,
+                  "reason": "mastery_threshold_crossed"
+                }
+              ]
+            }
+            """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "training_skill_evolution_missing_details", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("pending_training_showcase_requests.json", StringComparison.OrdinalIgnoreCase));
+    }
+
     private async Task WriteAfterlifeMentorProfileAsync(string? sourceActorSnapshotHash, int sourceCap)
     {
         await _fs.WriteFileAtomicAsync(

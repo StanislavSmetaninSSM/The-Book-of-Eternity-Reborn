@@ -7,7 +7,9 @@ Purpose
 This file documents the GM-authored side of the `/training` / `/обучение`
 feature. The client owns purchases and currency/experience spending. The GM
 prepares fresh, readable trainingShowcase data when the client creates
-`game_state/control/pending_training_showcase_requests.json`.
+`game_state/control/pending_training_showcase_requests.json`, and finalizes
+Mortal skill unlocks/level-ups when a paid lesson crosses a mechanical
+threshold.
 
 Shared rules
 ------------
@@ -21,9 +23,15 @@ Shared rules
   `pending_training_showcase_requests.json`, and deletes the file when no
   requests remain.
 - GM does not spend player currency.
-- GM does not raise player tiers directly.
+- In afterlife showcase/self-training purchases, GM does not raise player tiers directly. The client applies standard spiritual-art, spirit_focus, and known special-art upgrades.
+- In Mortal World training, the client may apply only simple active-skill
+  mastery progress that does not cross a threshold. If a paid lesson unlocks a
+  skill or crosses a mastery level, the client writes requestKind
+  `mortal_training_skill_evolution`; the GM must author the full updated
+  `activeSkillChanges` or `passiveSkillChanges` object plus matching
+  `skillMasteryChanges`. Do not charge the player again.
 - GM does not grant mastery or standard spiritual-art progression through free
-  prose when the player used the showcase. Purchases are applied by the client.
+  prose when the player used the showcase. Use the request/receipt surfaces.
 - Free roleplay training remains valid. In afterlife, learning a new teachable
   special art through roleplay still uses `afterlifeSpecialArtLearningReceipts`;
   that receipt starts the learned art at tier 0 and never substitutes for a
@@ -185,6 +193,99 @@ The showcase is not a purchase receipt; it is the list of available lessons.
           }
         ]
       }
+    }
+  ]
+}
+```
+
+Mortal paid skill evolution request
+-----------------------------------
+
+When the player buys a Mortal lesson that unlocks a skill or crosses the
+mastery threshold, the client has already charged the paid lesson: it checked
+the teacher cap, spent money, spent current-level XP, and appended a training
+receipt. It then leaves a pending request like this:
+
+```json
+{
+  "requests": [
+    {
+      "requestId": "training_showcase_req_paid_knife_001",
+      "requestKind": "mortal_training_skill_evolution",
+      "sourceActorId": "npc_hunter_roden",
+      "sourceActorName": "Роден, охотник у северных ворот",
+      "sourceActorKind": "npc_teacher",
+      "realm": "mortal",
+      "sourceActorSnapshotHash": "sha256:requested-hash-from-client",
+      "createdAtTurn": 13,
+      "reason": "mastery_threshold_crossed",
+      "details": {
+        "offerId": "train_roden_knife_handling_2",
+        "targetKind": "active_skill_mastery",
+        "targetId": "knife_handling",
+        "targetName": "Обращение с ножом",
+        "currentValue": 1,
+        "targetValue": 2,
+        "sourceCap": 3,
+        "moneySpent": 65,
+        "currentLevelExperiencePercent": 18,
+        "currentLevelExperienceSpent": 180,
+        "skillStateBefore": {
+          "currentMasteryLevel": 1,
+          "currentMasteryProgress": 4,
+          "masteryProgressNeeded": 5
+        },
+        "gmInstruction": "Создай или обнови полный activeSkillChanges объект с combatEffect и matching skillMasteryChanges для нового уровня."
+      }
+    }
+  ]
+}
+```
+
+The GM resolves this by writing the actual skill update through normal Mortal
+skill surfaces. The response must not spend money/XP again; the purchase receipt
+already proves payment.
+
+```json
+{
+  "activeSkillChanges": [
+    {
+      "skillId": "knife_handling",
+      "skillName": "Обращение с ножом",
+      "skillDescription": "Роден научил вести нож ниже взгляда противника и завершать выпад без лишнего замаха.",
+      "rarity": "Common",
+      "actionCost": "Fast",
+      "scalingCharacteristic": "dexterity",
+      "scalesValue": true,
+      "scalesDuration": false,
+      "scalesChance": false,
+      "currentMasteryLevel": 2,
+      "maxMasteryLevel": 3,
+      "combatEffect": {
+        "isActivatedEffect": true,
+        "actionName": "Обращение с ножом",
+        "actionDescription": "Короткий выпад в открытую сторону цели.",
+        "damageType": "piercing",
+        "baseDamage": 10,
+        "range": "melee",
+        "actionCost": "Fast",
+        "actionPointCost": 1,
+        "cooldown": 0,
+        "duration": 0,
+        "scalesValue": true,
+        "scalesDuration": false,
+        "scalesChance": false
+      }
+    }
+  ],
+  "skillMasteryChanges": [
+    {
+      "skillId": "knife_handling",
+      "skillName": "Обращение с ножом",
+      "newMasteryLevel": 2,
+      "newCurrentMasteryProgress": 0,
+      "newMasteryProgressNeeded": 200,
+      "masteryLeveledUp": true
     }
   ]
 }

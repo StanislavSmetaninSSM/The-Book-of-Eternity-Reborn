@@ -10,8 +10,120 @@ public partial class ValidationService
 
     private async Task ValidateTrainingShowcasesAsync(List<ValidationIssue> issues)
     {
+        await ValidatePendingTrainingRequestsAsync(issues);
         await ValidateAfterlifeMentorTrainingShowcasesAsync(issues);
         await ValidateMortalTeacherTrainingShowcasesAsync(issues);
+    }
+
+    private async Task ValidatePendingTrainingRequestsAsync(List<ValidationIssue> issues)
+    {
+        var raw = await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath);
+        if (string.IsNullOrWhiteSpace(raw))
+            return;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(raw);
+            if (!doc.RootElement.TryGetProperty("requests", out var requests) ||
+                requests.ValueKind != JsonValueKind.Array)
+            {
+                return;
+            }
+
+            var index = 0;
+            foreach (var request in requests.EnumerateArray())
+            {
+                var context = $"{TrainingRequestState.PendingRequestPath}.requests[{index++}]";
+                if (request.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var requestKind = GetTrainingString(request, "requestKind");
+                if (!string.Equals(requestKind, "mortal_training_skill_evolution", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                ValidateMortalTrainingSkillEvolutionRequest(request, context, issues);
+            }
+        }
+        catch (JsonException)
+        {
+            // JSON integrity validation reports malformed files.
+        }
+    }
+
+    private static void ValidateMortalTrainingSkillEvolutionRequest(
+        JsonElement request,
+        string requestContext,
+        List<ValidationIssue> issues)
+    {
+        if (!request.TryGetProperty("details", out var details) ||
+            details.ValueKind != JsonValueKind.Object)
+        {
+            AddTrainingIssue(
+                $"{requestContext}.details",
+                "training_skill_evolution_missing_details",
+                "Mortal training skill evolution request требует details object с оплаченным offer audit и состоянием навыка.",
+                "details object",
+                "missing",
+                "Сохрани request.details с offerId, targetId, targetName, targetKind, targetValue, sourceCap, spent resources, skillStateBefore и gmInstruction.",
+                issues);
+            return;
+        }
+
+        foreach (var required in new[] { "offerId", "targetId", "targetName", "targetKind", "gmInstruction" })
+        {
+            if (string.IsNullOrWhiteSpace(GetTrainingString(details, required)))
+            {
+                AddTrainingIssue(
+                    $"{requestContext}.details.{required}",
+                    "training_skill_evolution_missing_required_field",
+                    "Mortal training skill evolution request lacks required text field.",
+                    $"non-empty details.{required}",
+                    "missing",
+                    "Восстанови request.details from the paid training offer audit.",
+                    issues);
+            }
+        }
+
+        var targetValue = GetTrainingInt(details, "targetValue");
+        var sourceCap = GetTrainingInt(details, "sourceCap");
+        if (targetValue <= 0 || sourceCap <= 0 || targetValue > sourceCap)
+        {
+            AddTrainingIssue(
+                $"{requestContext}.details.targetValue",
+                "training_skill_evolution_invalid_target_or_cap",
+                "Mortal training skill evolution request has invalid target/sourceCap audit.",
+                "0 < targetValue <= sourceCap",
+                $"targetValue={targetValue}, sourceCap={sourceCap}",
+                "Пересоздай request через клиентскую покупку из свежей витрины учителя.",
+                issues);
+        }
+
+        if (GetTrainingInt(details, "moneySpent") < 0 ||
+            GetTrainingInt(details, "currentLevelExperienceSpent") < 0 ||
+            GetTrainingInt(details, "currentLevelExperiencePercent") < 0)
+        {
+            AddTrainingIssue(
+                $"{requestContext}.details",
+                "training_skill_evolution_negative_spent_resources",
+                "Mortal training skill evolution request cannot contain negative spent resources.",
+                "moneySpent/currentLevelExperienceSpent/currentLevelExperiencePercent >= 0",
+                details.ToString(),
+                "Откати поврежденный request или пересоздай покупку через клиент.",
+                issues);
+        }
+
+        if (!details.TryGetProperty("skillStateBefore", out var skillStateBefore) ||
+            skillStateBefore.ValueKind != JsonValueKind.Object)
+        {
+            AddTrainingIssue(
+                $"{requestContext}.details.skillStateBefore",
+                "training_skill_evolution_missing_skill_state_before",
+                "Mortal training skill evolution request должен хранить снимок навыка до авторского обновления.",
+                "skillStateBefore object",
+                "missing",
+                "Добавь skillStateBefore с currentMasteryLevel/currentMasteryProgress/masteryProgressNeeded и текущим skill/mastery snapshot, если он есть.",
+                issues);
+        }
     }
 
     private async Task ValidateAfterlifeMentorTrainingShowcasesAsync(List<ValidationIssue> issues)

@@ -62,7 +62,7 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task ExecuteAsync_TrainingBuyCommand_SpendsResourcesAndReturnsReadableReceipt()
+    public async Task ExecuteAsync_TrainingBuyCommand_SpendsResourcesAndReturnsReadablePendingGmReceipt()
     {
         await SeedMortalTrainingAsync();
 
@@ -70,9 +70,10 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         var text = CollectText(result);
-        Assert.Contains("Обучение завершено", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ожидает ГМ", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Ножевой бой", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("trainingPurchaseReceipts", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("pending_training_showcase_requests", text, StringComparison.OrdinalIgnoreCase);
 
         using var status = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/core/player_status.json") ?? "{}");
         Assert.Equal(380, status.RootElement.GetProperty("money").GetInt32());
@@ -81,7 +82,12 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
         using var mastery = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/skill_mastery.json") ?? "{}");
         Assert.Contains(mastery.RootElement.GetProperty("skillMasteryChanges").EnumerateArray(), entry =>
             entry.GetProperty("skillId").GetString() == "knife" &&
-            entry.GetProperty("newMasteryLevel").GetInt32() == 2);
+            entry.GetProperty("newMasteryLevel").GetInt32() == 1);
+
+        using var pending = JsonDocument.Parse(await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath) ?? "{}");
+        var request = pending.RootElement.GetProperty("requests").EnumerateArray().Single();
+        Assert.Equal("mortal_training_skill_evolution", request.GetProperty("requestKind").GetString());
+        Assert.Equal("offer_knife_mastery_2", request.GetProperty("details").GetProperty("offerId").GetString());
     }
 
     [Fact]
@@ -150,7 +156,14 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """
         {
           "skillMasteryChanges": [
-            { "skillId": "knife", "skillName": "Ножевой бой", "masteryLevel": 1 }
+            {
+              "skillId": "knife",
+              "skillName": "Ножевой бой",
+              "newMasteryLevel": 1,
+              "newCurrentMasteryProgress": 0,
+              "newMasteryProgressNeeded": 5,
+              "masteryLeveledUp": false
+            }
           ]
         }
         """);

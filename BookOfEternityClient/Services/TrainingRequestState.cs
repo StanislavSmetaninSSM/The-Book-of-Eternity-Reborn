@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -22,7 +23,8 @@ public static class TrainingRequestState
         int CreatedAtTurn,
         DateTime CreatedAtUtc,
         string? SourceActorSnapshotHash,
-        string Reason);
+        string Reason,
+        JsonObject? Details = null);
 
     private sealed record PendingTrainingShowcaseRequestRoot(
         IReadOnlyList<PendingTrainingShowcaseRequest> Requests);
@@ -47,12 +49,21 @@ public static class TrainingRequestState
     public static async Task<PendingTrainingShowcaseRequest?> FindPendingRequestAsync(
         FileSystemManager fs,
         string sourceActorId,
-        string requestKind)
+        string requestKind) =>
+        await FindPendingRequestAsync(fs, sourceActorId, requestKind, dedupeKey: null);
+
+    public static async Task<PendingTrainingShowcaseRequest?> FindPendingRequestAsync(
+        FileSystemManager fs,
+        string sourceActorId,
+        string requestKind,
+        string? dedupeKey)
     {
         var requests = await ReadRequestsAsync(fs);
         return requests.FirstOrDefault(request =>
             string.Equals(request.SourceActorId, sourceActorId, StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(request.RequestKind, requestKind, StringComparison.OrdinalIgnoreCase));
+            string.Equals(request.RequestKind, requestKind, StringComparison.OrdinalIgnoreCase) &&
+            (string.IsNullOrWhiteSpace(dedupeKey) ||
+             string.Equals(GetRequestDedupeKey(request.Details), dedupeKey, StringComparison.OrdinalIgnoreCase)));
     }
 
     public static async Task<PendingTrainingShowcaseRequest> WriteRequestAsync(
@@ -64,12 +75,38 @@ public static class TrainingRequestState
         string realm,
         int createdAtTurn,
         string? sourceActorSnapshotHash,
-        string reason)
+        string reason) =>
+        await WriteRequestAsync(
+            fs,
+            requestKind,
+            sourceActorId,
+            sourceActorName,
+            sourceActorKind,
+            realm,
+            createdAtTurn,
+            sourceActorSnapshotHash,
+            reason,
+            details: null);
+
+    public static async Task<PendingTrainingShowcaseRequest> WriteRequestAsync(
+        FileSystemManager fs,
+        string requestKind,
+        string sourceActorId,
+        string sourceActorName,
+        string sourceActorKind,
+        string realm,
+        int createdAtTurn,
+        string? sourceActorSnapshotHash,
+        string reason,
+        JsonObject? details)
     {
         var existing = await ReadRequestsAsync(fs);
+        var dedupeKey = GetRequestDedupeKey(details);
         var alreadyPending = existing.FirstOrDefault(request =>
             string.Equals(request.SourceActorId, sourceActorId, StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(request.RequestKind, requestKind, StringComparison.OrdinalIgnoreCase));
+            string.Equals(request.RequestKind, requestKind, StringComparison.OrdinalIgnoreCase) &&
+            (string.IsNullOrWhiteSpace(dedupeKey) ||
+             string.Equals(GetRequestDedupeKey(request.Details), dedupeKey, StringComparison.OrdinalIgnoreCase)));
         if (alreadyPending != null)
             return alreadyPending;
 
@@ -83,7 +120,8 @@ public static class TrainingRequestState
             createdAtTurn,
             DateTime.UtcNow,
             sourceActorSnapshotHash,
-            reason);
+            reason,
+            details);
 
         await WriteRequestsAsync(fs, existing.Concat(new[] { request }).ToArray());
         return request;
@@ -99,5 +137,13 @@ public static class TrainingRequestState
 
         var root = new PendingTrainingShowcaseRequestRoot(requests);
         await fs.WriteFileAtomicAsync(PendingRequestPath, JsonSerializer.Serialize(root, JsonOpts));
+    }
+
+    private static string? GetRequestDedupeKey(JsonObject? details)
+    {
+        if (details?["dedupeKey"] is JsonValue value && value.TryGetValue<string>(out var text))
+            return string.IsNullOrWhiteSpace(text) ? null : text.Trim();
+
+        return null;
     }
 }
