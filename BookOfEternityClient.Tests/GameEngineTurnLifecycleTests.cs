@@ -596,6 +596,119 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateCurrentGameStateOrShowErrorsAsync_CanonicalRepairRequiresFreshPlayerFacingOutput()
+    {
+        const string sessionId = "session-canonical-repair-refreshes-output";
+        const string requestId = "request-canonical-repair-refreshes-output";
+        const int turnNumber = 35;
+        const string trackedPath = "game_state/meta/soul_state.json";
+
+        await WriteJsonAsync(trackedPath, new
+        {
+            soulName = "Искра Испытаний",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 0,
+            soulFormDescription = new { invalid = true }
+        });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{trackedPath}", new
+        {
+            soulName = "Искра Испытаний",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 0,
+            soulFormDescription = new { invalid = true }
+        });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await WriteJsonAsync("output/narrative_response.json", new
+        {
+            response = "До ремонта canonical state: Средоточие возвращает 1 ОД, теперь 3/6.",
+            timestamp = "2026-07-04T05:18:22Z"
+        });
+        await WriteJsonAsync("output/debug_logs.json", new
+        {
+            timestamp = "2026-07-04T05:18:22Z",
+            gm_thoughts_markdown = "## Охват NPC-анализа\nРежим: Guardian-centric\nРелевантные акторы: Иларион Архивный Свет\nПочему они релевантны: он ведёт учебный духовный обмен.\nАкторы вне охвата: нет\nПочему они вне охвата: все видимые акторы учтены.\n\n## Размышления акторов\n### Иларион Архивный Свет\n- Текущая локация: Архив Лучистых Тишин\n- Ситуация: учебный духовный обмен\n- Мысли: проверить темп восстановления\n- Действия: удерживает безопасное давление"
+        });
+        File.SetLastWriteTimeUtc(
+            _fs.ResolvePath("output/narrative_response.json"),
+            DateTime.UtcNow.AddMinutes(-10));
+
+        var gmRepair = Task.Run(async () =>
+        {
+            var firstRequest = await WaitForValidationRepairRequestContainingAsync(
+                "soul_form_description_invalid_shape",
+                TimeSpan.FromSeconds(5));
+            Assert.Contains("game_state/meta/soul_state.json", firstRequest, StringComparison.OrdinalIgnoreCase);
+
+            await WriteJsonAsync(trackedPath, new
+            {
+                soulName = "Искра Испытаний",
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 0,
+                soulFormDescription = "Женский силуэт из серебристого пепла."
+            });
+            await WriteJsonAsync("game_state/control/validation_repair_ready.json", new
+            {
+                sessionId,
+                requestId,
+                turnNumber,
+                updatedAtUtc = "2026-07-04T05:19:00Z",
+                note = "Canonical state repaired, but player-facing output intentionally left stale."
+            });
+
+            var secondRequest = await WaitForValidationRepairRequestContainingAsync(
+                "accepted_turn_stale_player_facing_output_after_canonical_repair",
+                TimeSpan.FromSeconds(5));
+            Assert.Contains("output/narrative_response.json", secondRequest, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("accepted_turn_output_artifact_repair", secondRequest, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("canonical state repair", secondRequest, StringComparison.OrdinalIgnoreCase);
+
+            await WriteJsonAsync("output/narrative_response.json", new
+            {
+                response = "После ремонта canonical state: Средоточие не восстановило ОД, теперь 2/6.",
+                timestamp = "2026-07-04T05:20:00Z"
+            });
+            await WriteJsonAsync("output/debug_logs.json", new
+            {
+                timestamp = "2026-07-04T05:20:00Z",
+                gm_thoughts_markdown = "## Охват NPC-анализа\nРежим: Guardian-centric\nРелевантные акторы: Иларион Архивный Свет\nПочему они релевантны: он корректирует учебный духовный обмен после ремонта canonical state.\nАкторы вне охвата: нет\nПочему они вне охвата: все видимые акторы учтены.\n\n## Размышления акторов\n### Иларион Архивный Свет\n- Текущая локация: Архив Лучистых Тишин\n- Ситуация: canonical state repaired before player-facing output refresh\n- Мысли: игрок должен увидеть итог, согласованный с исправленным состоянием\n- Действия: завершает ремонт вывода"
+            });
+            await WriteJsonAsync("game_state/control/validation_repair_ready.json", new
+            {
+                sessionId,
+                requestId,
+                turnNumber,
+                updatedAtUtc = "2026-07-04T05:20:05Z",
+                note = "Player-facing output refreshed after canonical repair."
+            });
+        });
+
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var accepted = await InvokePrivateAsync<bool>(
+            engine,
+            "ValidateCurrentGameStateOrShowErrorsAsync",
+            "state validation",
+            null,
+            null,
+            true);
+
+        await gmRepair;
+
+        Assert.True(accepted);
+        Assert.False(_fs.FileExists("game_state/control/validation_repair_request.json"));
+        Assert.False(_fs.FileExists("game_state/control/validation_repair_ready.json"));
+
+        var narrativeJson = await _fs.ReadFileAsync("output/narrative_response.json");
+        Assert.Contains("2/6", narrativeJson, StringComparison.Ordinal);
+        Assert.DoesNotContain("3/6", narrativeJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_GuardianScopeErrors_AddsConcreteHarnessRepairPacket()
     {
         var engine = CreateGameEngine();
@@ -5135,6 +5248,27 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             return;
 
         await WriteJsonAsync(relativePath, payload);
+    }
+
+    private async Task<string> WaitForValidationRepairRequestContainingAsync(string expectedText, TimeSpan timeout)
+    {
+        var deadline = DateTime.UtcNow + timeout;
+        string? lastRequest = null;
+
+        while (DateTime.UtcNow < deadline)
+        {
+            if (_fs.FileExists("game_state/control/validation_repair_request.json"))
+            {
+                lastRequest = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+                if (lastRequest?.Contains(expectedText, StringComparison.OrdinalIgnoreCase) == true)
+                    return lastRequest;
+            }
+
+            await Task.Delay(50);
+        }
+
+        throw new TimeoutException(
+            $"Timed out waiting for validation_repair_request.json containing '{expectedText}'. Last request: {lastRequest ?? "<missing>"}");
     }
 
     private static int ReadInt(JsonNode? node)

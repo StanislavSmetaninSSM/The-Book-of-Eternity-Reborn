@@ -225,6 +225,7 @@
 - [X] T168 [Live-test coverage #1349/#1285/#1290] Run and record Mortal World combat, skill mastery/progression, level-up, and stat-allocation coverage through Agent Console with Codex GM bridge.
 - [X] T169 [Live-test coverage #1350/#1340/#1285/#1290] Run and record afterlife spiritual combat, spiritual art learning, and spiritual art mastery/progression coverage through Agent Console with Codex GM bridge.
 - [X] T183 [Harness/RLM live-test follow-up #1419/#1350/#1285/#1290] Add machine-readable `exactFieldCorrections[]` to afterlife spiritual conflict action-cost repair packets and daemon repair guidance, so GM repairs apply concrete path -> expected values before recomputing dependent ОД fields.
+- [X] T184 [Harness/RLM live-test follow-up #1420/#1350/#1285/#1290] Reject stale player-facing `narrative_response` / `interface_updates` artifacts after a canonical validation repair, so repaired state cannot return to the player with contradictory prose or options.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.

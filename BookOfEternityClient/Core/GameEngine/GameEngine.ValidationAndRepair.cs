@@ -70,6 +70,8 @@ public partial class GameEngine
                 issues.AddRange(await _validator.ValidateAcceptedTurnMortalCombatMaterializationAsync());
                 issues.AddRange(await _validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());
             }
+            if (allowRepairLoop && lastRepairErrors is { Count: > 0 })
+                issues.AddRange(CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues(lastRepairErrors));
             issues.AddRange(await _validator.ValidatePendingMemoryLegacyApplicationAsync());
             if (progressionControl != null)
                 issues.AddRange(await _progressionSchedule.ValidateAcceptedTurnOutcomeAsync(progressionControl));
@@ -267,6 +269,59 @@ public partial class GameEngine
     private static bool RequiresFreshNarrativePayload(string source)
     {
         return source is "ответа GM" or "late response GM" or "обработки хода" or "оценки жизни";
+    }
+
+    private List<ValidationIssue> CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues(
+        IReadOnlyCollection<ValidationIssue> repairedErrors)
+    {
+        var canonicalRepairCodes = repairedErrors
+            .Where(IsCanonicalStateRepairIssue)
+            .Select(issue => string.IsNullOrWhiteSpace(issue.Code) ? issue.Category.ToString() : issue.Code!)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(code => code, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        if (canonicalRepairCodes.Length == 0)
+            return [];
+
+        var requestFullPath = _fs.ResolvePath(ValidationRepairRequestPath);
+        if (!File.Exists(requestFullPath))
+            return [];
+
+        var requestWrittenAtUtc = File.GetLastWriteTimeUtc(requestFullPath);
+        var issues = new List<ValidationIssue>();
+        foreach (var outputPath in new[]
+                 {
+                     "output/narrative_response.json",
+                     "output/interface_updates.json"
+                 })
+        {
+            var outputFullPath = _fs.ResolvePath(outputPath);
+            if (!File.Exists(outputFullPath))
+                continue;
+
+            var outputWrittenAtUtc = File.GetLastWriteTimeUtc(outputFullPath);
+            if (outputWrittenAtUtc >= requestWrittenAtUtc)
+                continue;
+
+            issues.Add(new ValidationIssue(
+                outputPath,
+                IssueSeverity.Error,
+                $"{outputPath} был записан до canonical validation repair и может противоречить исправленному состоянию.",
+                code: "accepted_turn_stale_player_facing_output_after_canonical_repair",
+                section: "PlayerFacingOutput",
+                expected: $"player-facing output rewritten after canonical state repair request at {requestWrittenAtUtc:o}",
+                actual: $"{outputPath} last write {outputWrittenAtUtc:o}; repaired canonical issues: {string.Join(", ", canonicalRepairCodes)}",
+                repairHint: "Перепиши player-facing output под уже исправленное canonical state: обнови output/narrative_response.json.response и, если есть варианты выбора, output/interface_updates.json.dialogueOptions. Не меняй canonical state повторно, если validation_repair_request.json не перечисляет новые canonical ошибки."));
+        }
+
+        return issues;
+    }
+
+    private static bool IsCanonicalStateRepairIssue(ValidationIssue issue)
+    {
+        var path = NormalizeRepairTargetPath(issue.FilePath);
+        return path.StartsWith("game_state/", StringComparison.OrdinalIgnoreCase) ||
+               path.StartsWith("lore/", StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task<bool> TryAutoRollbackRealmSegregationViolationsAsync(
@@ -1367,10 +1422,18 @@ public partial class GameEngine
             "accepted_turn_missing_narrative_response" => true,
             "accepted_turn_empty_narrative_response" => true,
             "accepted_turn_stale_narrative_response" => true,
+            "accepted_turn_stale_player_facing_output_after_canonical_repair" => true,
             "accepted_turn_invalid_narrative_json_root" => true,
             "accepted_turn_invalid_narrative_json" => true,
             "narrative_response_missing_timestamp" => true,
             "narrative_response_invalid_timestamp" => true,
+            "accepted_turn_stale_interface_updates" => true,
+            "accepted_turn_invalid_interface_updates_root" => true,
+            "accepted_turn_invalid_interface_updates_json" => true,
+            "interface_updates_missing_timestamp" => true,
+            "interface_updates_invalid_timestamp" => true,
+            "interface_updates_missing_payload" => true,
+            "interface_updates_unknown_field" => true,
             "missing_gm_thoughts" => true,
             "accepted_turn_stale_debug_logs" => true,
             "invalid_debug_logs_json_root" => true,
@@ -1393,6 +1456,12 @@ public partial class GameEngine
 
         if (!targetFiles.Contains("output/narrative_response.json", StringComparer.OrdinalIgnoreCase))
             targetFiles.Add("output/narrative_response.json");
+        if (outputArtifactErrors.Any(issue =>
+                string.Equals(NormalizeRepairTargetPath(issue.FilePath), "output/interface_updates.json", StringComparison.OrdinalIgnoreCase)) &&
+            !targetFiles.Contains("output/interface_updates.json", StringComparer.OrdinalIgnoreCase))
+        {
+            targetFiles.Add("output/interface_updates.json");
+        }
         if (!targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase))
             targetFiles.Add("output/debug_logs.json");
 
@@ -1405,6 +1474,7 @@ public partial class GameEngine
             ExpectedShape = new List<string>
             {
                 "output/narrative_response.json must be a fresh JSON object for the current accepted turn: { \"response\": \"player-facing narrative text\", \"timestamp\": \"ISO-8601 UTC timestamp\" }.",
+                "If output/interface_updates.json exists or validation_repair_request.json lists it, rewrite it as a fresh JSON object for the same accepted turn: { \"dialogueOptions\": [ { \"text\": \"visible option\", \"inputValue\": \"player input\" } ], \"timestamp\": \"ISO-8601 UTC timestamp\" }.",
                 "output/debug_logs.json must be a fresh JSON object for the current accepted turn: { \"gm_thoughts_markdown\": \"## Охват NPC-анализа\\n...\", \"timestamp\": \"ISO-8601 UTC timestamp\" }.",
                 "gm_thoughts_markdown must contain a separate `## Охват NPC-анализа` / `## NPC Scope` section before detailed actor reasoning blocks.",
                 "If no NPC, Guardian, faction, or other actor meaningfully acts or changes, explicitly say that the relevant-actor list is empty and why; do not omit gm_thoughts_markdown."
@@ -1413,6 +1483,8 @@ public partial class GameEngine
             {
                 "Open game_state/control/validation_repair_request.json first and repair only the listed accepted-turn output artifact errors.",
                 "Rewrite output/narrative_response.json with a fresh non-empty response for this same player action; preserve the already accepted narrative meaning instead of inventing a new turn.",
+                "If validation_repair_request.json says player-facing output is stale after canonical state repair, base the rewritten narrative/options on the current canonical game_state files, not the pre-repair wording.",
+                "If output/interface_updates.json is listed, rewrite its dialogueOptions/inputValue choices so they match the repaired canonical state and current player-facing narrative.",
                 "Rewrite output/debug_logs.json.gm_thoughts_markdown with timestamp in output/debug_logs.json. Include `## Охват NPC-анализа`, scope mode, relevant actors, actors outside scope, and short reasoning for every relevant actor when any actor is involved.",
                 "Do not touch canonical game_state files unless validation_repair_request.json lists a canonical state error as well.",
                 "After both output artifacts are repaired, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from validation_repair_request.json."
