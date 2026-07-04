@@ -345,6 +345,8 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("_stateManager.Settings.GmTimeoutSeconds", turnLifecycleSource, StringComparison.Ordinal);
         Assert.Contains("\"turnTimeoutSeconds\"", turnLifecycleSource, StringComparison.Ordinal);
         Assert.Contains("activeDaemonTimeoutSeconds + GmDaemonTerminalTimeoutGraceSeconds", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("GmDisabledDaemonTimeoutClientFloorSeconds", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("activeDaemonDisabledTimeoutSeconds <= 0", turnLifecycleSource, StringComparison.Ordinal);
         Assert.Contains("private async Task<string?> DetectUnavailableGmRuntimeAsync()", turnLifecycleSource, StringComparison.Ordinal);
         Assert.Contains("\"game_state/control/gm_daemon_status.json\"", turnLifecycleSource, StringComparison.Ordinal);
         Assert.Contains("\"game_state/control/gm_bridge_status.json\"", turnLifecycleSource, StringComparison.Ordinal);

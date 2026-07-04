@@ -28,7 +28,7 @@ public class GameSettings
     public int AutosaveIntervalTurns { get; set; } = 1;
     public int MaxAutosaves { get; set; } = 10;
     public int MaxManualSaves { get; set; } = 50;
-    public int GmTimeoutSeconds { get; set; } = 300;
+    public int GmTimeoutSeconds { get; set; } = 900;
     /// <summary>
     /// Enables the local GM bridge transport instead of clipboard/window automation when available.
     /// </summary>

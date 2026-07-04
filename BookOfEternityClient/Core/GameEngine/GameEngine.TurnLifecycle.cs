@@ -22,6 +22,7 @@ public partial class GameEngine
     private const string GmDaemonStatusPath = "game_state/control/gm_daemon_status.json";
     private const string GmBridgeStatusPath = "game_state/control/gm_bridge_status.json";
     private const int GmDaemonTerminalTimeoutGraceSeconds = 15;
+    private const int GmDisabledDaemonTimeoutClientFloorSeconds = 900;
 
     private enum TerminalSignalWaitOutcome
     {
@@ -396,6 +397,9 @@ public partial class GameEngine
         if (daemonTimeoutSeconds is int activeDaemonTimeoutSeconds && activeDaemonTimeoutSeconds > 0)
             return Math.Max(configuredTimeoutSeconds, activeDaemonTimeoutSeconds + GmDaemonTerminalTimeoutGraceSeconds);
 
+        if (daemonTimeoutSeconds is int activeDaemonDisabledTimeoutSeconds && activeDaemonDisabledTimeoutSeconds <= 0)
+            return Math.Max(configuredTimeoutSeconds, GmDisabledDaemonTimeoutClientFloorSeconds);
+
         return configuredTimeoutSeconds;
     }
 
@@ -427,8 +431,7 @@ public partial class GameEngine
                 return null;
             }
 
-            return TryGetHarnessJsonInt(document.RootElement, "turnTimeoutSeconds", out var daemonTimeoutSeconds) &&
-                   daemonTimeoutSeconds > 0
+            return TryGetHarnessJsonInt(document.RootElement, "turnTimeoutSeconds", out var daemonTimeoutSeconds)
                 ? daemonTimeoutSeconds
                 : null;
         }

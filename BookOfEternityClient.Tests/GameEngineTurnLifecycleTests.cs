@@ -3268,6 +3268,30 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task ResolveTerminalSignalTimeoutSecondsAsync_ActiveDaemonWithDisabledTimeoutUsesBridgeSafeMinimum()
+    {
+        await WriteJsonAsync("game_state/control/gm_daemon_status.json", new
+        {
+            status = "running",
+            pid = Environment.ProcessId,
+            sessionPath = _rootPath,
+            turnTimeoutSeconds = 0,
+            heartbeatAtUtc = DateTime.UtcNow.ToString("o")
+        });
+
+        var engine = CreateGameEngine(configureSettings: settings =>
+        {
+            settings.GmTimeoutSeconds = 300;
+            settings.GmBridgeEnabled = true;
+            settings.GmBridgeBackend = "ConPTYBridge";
+        });
+
+        var timeoutSeconds = await InvokePrivateAsync<int>(engine, "ResolveTerminalSignalTimeoutSecondsAsync");
+
+        Assert.True(timeoutSeconds >= 900);
+    }
+
+    [Fact]
     public async Task CleanupAcceptedTurnTerminalArtifactsAsync_PreservesSnapshotButNotReadyForIncarnationTrigger()
     {
         const string sessionId = "session-late-incarnation";
