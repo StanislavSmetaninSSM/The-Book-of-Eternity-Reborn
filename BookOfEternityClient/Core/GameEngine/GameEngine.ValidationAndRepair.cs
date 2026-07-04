@@ -1030,6 +1030,7 @@ public partial class GameEngine
         };
 
         await _fs.WriteFileAtomicAsync(ValidationRepairRequestPath, JsonSerializer.Serialize(request, JsonOpts));
+        PublishAgentConsoleValidationRepairSnapshot(request);
         if (!metadataDiagnosticOnly)
             await RunWorkerValidationRepairIfAvailableAsync(prioritizedErrors, requestMetadata, request.DetectedAtUtc, attempt);
         return metadataDiagnosticOnly;

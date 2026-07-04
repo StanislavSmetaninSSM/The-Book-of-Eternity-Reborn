@@ -1,6 +1,7 @@
 using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models.GameState;
+using System.Text;
 using Spectre.Console;
 
 namespace BookOfEternityClient.Core;
@@ -106,6 +107,93 @@ public partial class GameEngine
             RenderedAtUtc = now,
             UpdatedAtUtc = now
         }, "Waiting for GM response.");
+    }
+
+    private void PublishAgentConsoleValidationRepairSnapshot(ValidationRepairRequest request)
+    {
+        if (_inputSource is not AgentConsoleLiveInputSource liveInput)
+            return;
+
+        var lines = new List<string>
+        {
+            $"Ремонт данных: ход {request.TurnNumber}, попытка {request.RevalidationAttempt}",
+            $"Источник проверки: {request.Source}",
+            $"Запрос: {request.RequestId}",
+            string.Empty
+        };
+
+        if (request.SummaryGroups.Count > 0)
+        {
+            lines.Add("Сводка ошибок:");
+            foreach (var summary in request.SummaryGroups.Take(6))
+                lines.Add("- " + summary);
+            lines.Add(string.Empty);
+        }
+
+        if (request.HarnessRepairPackets.Count > 0)
+        {
+            lines.Add("Harness-пакеты:");
+            foreach (var packet in request.HarnessRepairPackets.Take(4))
+                lines.Add("- " + JoinNonEmpty(packet.Kind, packet.Title));
+            lines.Add(string.Empty);
+        }
+
+        if (request.Errors.Count > 0)
+        {
+            lines.Add("Первые ошибки:");
+            foreach (var error in request.Errors.Take(5))
+            {
+                var code = string.IsNullOrWhiteSpace(error.Code) ? "validation_error" : error.Code;
+                var path = string.IsNullOrWhiteSpace(error.FilePath) ? "<unknown path>" : error.FilePath;
+                lines.Add("- " + code + " :: " + path);
+                if (!string.IsNullOrWhiteSpace(error.Message))
+                    lines.Add("  " + error.Message);
+            }
+            lines.Add(string.Empty);
+        }
+
+        lines.Add("GM сейчас исправляет данные и должен завершить ремонт через Complete-BoeValidationRepair или validation_repair_ready.json.");
+
+        var diagnostics = request.Errors
+            .Take(AgentConsoleLimits.MaxDiagnostics)
+            .Select(error => new AgentConsoleDiagnostic
+            {
+                Severity = AgentConsoleDiagnosticSeverity.Warning,
+                Code = "validation-repair-progress",
+                Message = string.IsNullOrWhiteSpace(error.Code)
+                    ? "Validation repair is in progress."
+                    : $"Validation repair is in progress: {error.Code}",
+                Detail = BuildValidationRepairDiagnosticDetail(error)
+            })
+            .ToArray();
+
+        var now = DateTimeOffset.UtcNow;
+        liveInput.PublishSnapshot(new AgentConsoleSnapshot
+        {
+            ScreenId = "gm-validation-repair",
+            Mode = AgentConsoleMode.Loading,
+            Title = "Ремонт данных",
+            PlainText = string.Join(Environment.NewLine, lines),
+            AwaitingInput = false,
+            InputKind = AgentConsoleInputKind.None,
+            RenderedAtUtc = now,
+            UpdatedAtUtc = now,
+            Diagnostics = diagnostics
+        }, "Validation repair request published.");
+    }
+
+    private static string BuildValidationRepairDiagnosticDetail(ValidationRepairIssue error)
+    {
+        var detail = new StringBuilder();
+        if (!string.IsNullOrWhiteSpace(error.FilePath))
+            detail.Append(error.FilePath);
+        if (!string.IsNullOrWhiteSpace(error.Message))
+        {
+            if (detail.Length > 0)
+                detail.Append(": ");
+            detail.Append(error.Message);
+        }
+        return detail.ToString();
     }
 
     private bool ConfirmWithConsoleObservation(

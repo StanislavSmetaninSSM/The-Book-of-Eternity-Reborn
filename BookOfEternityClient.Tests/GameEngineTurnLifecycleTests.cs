@@ -303,6 +303,67 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_WithAgentConsole_PublishesRepairProgressSnapshot()
+    {
+        const string sessionId = "session-repair-console";
+        const string requestId = "request-repair-console";
+        const int turnNumber = 12;
+        const string trackedPath = "game_state/world/current_location.json";
+
+        await WriteJsonAsync(trackedPath, new
+        {
+            locationId = "loc_gate"
+        });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{trackedPath}", new
+        {
+            locationId = "loc_gate"
+        });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+
+        var store = new AgentConsoleStateStore();
+        using var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromSeconds(5));
+        var engine = CreateGameEngine(input);
+        var issue = new ValidationIssue(
+            "game_state/world/current_location.json.locationId",
+            IssueSeverity.Error,
+            "Current location references an unknown location id.",
+            code: "current_location_unknown_location_id",
+            category: IssueCategory.StateConsistency,
+            expected: "known location id",
+            actual: "loc_gate");
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", new List<ValidationIssue> { issue }, 2 })!);
+
+        await task;
+
+        var snapshot = store.GetSnapshot();
+        Assert.NotNull(snapshot);
+        Assert.Equal("gm-validation-repair", snapshot!.ScreenId);
+        Assert.Equal(AgentConsoleMode.Loading, snapshot.Mode);
+        Assert.False(snapshot.AwaitingInput);
+        Assert.Contains("Ремонт данных", snapshot.Title, StringComparison.Ordinal);
+        Assert.Contains("ход 12", snapshot.PlainText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("попытка 2", snapshot.PlainText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("current_location_unknown_location_id", snapshot.PlainText, StringComparison.Ordinal);
+        Assert.Contains("game_state/world/current_location.json.locationId", snapshot.PlainText, StringComparison.Ordinal);
+        Assert.Contains(snapshot.Diagnostics, diagnostic =>
+            diagnostic.Severity == AgentConsoleDiagnosticSeverity.Warning &&
+            string.Equals(diagnostic.Code, "validation-repair-progress", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WaitForContractRepairAsync_AcceptedRepairReady_WritesAcceptedTrajectoryRecord()
     {
         const string sessionId = "session-repair-ledger";
