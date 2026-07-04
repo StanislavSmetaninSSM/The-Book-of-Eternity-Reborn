@@ -1421,6 +1421,7 @@ Use this before opening large examples for repair mode.
 
 - Keep `sessionId`, `requestId`, and `turnNumber` from the current repair request.
 - If diagnostic-only sentinel metadata is present, restore the missing authority first.
+- If `harnessRepairPackets[]` contains `exactFieldCorrections[]`, apply those path -> expected replacements first, then recompute only dependent fields named by the same packet. Do not infer different values from prose when exact corrections are present.
 - If `harnessRepairPackets[]` names exact fields, fix those fields instead of searching source code.
 - If an inventory item `durability` field is named, write a percentage string such as `100%`; never write a bare number such as `100`.
 - If an inventory item `journalEntries[]` field is named, write an array of non-empty strings, not objects; each entry is one player-facing note string without technical turn anchors such as `#[3].`.

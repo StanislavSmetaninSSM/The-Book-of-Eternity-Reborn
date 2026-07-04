@@ -2394,6 +2394,12 @@ public partial class GameEngine
         var issueSummary = issueDetails.Count == 0
             ? "see validation_repair_request.json.errors for exact paths and expected/actual values"
             : string.Join("; ", issueDetails);
+        var exactFieldCorrections = actionCostErrors
+            .Select(BuildExactFieldCorrection)
+            .Where(correction => !string.IsNullOrWhiteSpace(correction.Path))
+            .DistinctBy(correction => correction.Path, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(correction => correction.Path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
 
         return new ValidationRepairHarnessPacket
         {
@@ -2406,6 +2412,7 @@ public partial class GameEngine
                 "OtherGuides/Afterlife_Contract_Matrix.md",
                 "Examples/E_CLI_Afterlife_Turns.txt"
             },
+            ExactFieldCorrections = exactFieldCorrections,
             ExpectedShape = new List<string>
             {
                 "For every current exchange, actionCostAudit.<side>.before must equal the previous current exchange's actionCostAudit.<side>.after; for the first current exchange, before must equal pre-turn activeConflict.actionEconomy.<side>.current.",
@@ -2425,6 +2432,7 @@ public partial class GameEngine
             {
                 "Open game_state/control/validation_repair_request.json first and repair only the listed validation errors in place.",
                 $"Patch these action-cost/audit fields exactly: {issueSummary}.",
+                "Use exactFieldCorrections[] as the machine-readable checklist: set each listed path to expected, then recompute dependent actionEconomy current values.",
                 "In game_state/meta/afterlife_spiritual_conflict_state.json, inspect activeConflict.exchangeLog in order and recompute actionCostAudit.player/actionCostAudit.opposition before/after values from the previous current exchange.",
                 "For every listed exchangeLog[n], patch actionCostAudit.<side>.before to the expected value, then recompute that side's after using effectiveCost or the recovery rule; update activeConflict.actionEconomy.<side>.current to the final audited after value.",
                 "Use pending_turn_snapshot and control authority only as read-only baselines for pre-turn action economy, dice, and authorized operations.",
@@ -2720,6 +2728,17 @@ public partial class GameEngine
         var code = string.IsNullOrWhiteSpace(issue.Code) ? "validation_error" : issue.Code.Trim();
 
         return $"{location}: expected {expected}, actual {actual} ({code})";
+    }
+
+    private static ValidationRepairExactFieldCorrection BuildExactFieldCorrection(ValidationIssue issue)
+    {
+        return new ValidationRepairExactFieldCorrection
+        {
+            Path = issue.FilePath?.Trim() ?? "",
+            Expected = string.IsNullOrWhiteSpace(issue.Expected) ? "see error.expected" : issue.Expected.Trim(),
+            Actual = string.IsNullOrWhiteSpace(issue.Actual) ? "see error.actual" : issue.Actual.Trim(),
+            Code = string.IsNullOrWhiteSpace(issue.Code) ? "validation_error" : issue.Code.Trim()
+        };
     }
 
     private static string DescribeAfterlifeActionCostRepairIssue(ValidationIssue issue)

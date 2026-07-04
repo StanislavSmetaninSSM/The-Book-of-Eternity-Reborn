@@ -98,11 +98,20 @@ public partial class GameEngine
         public List<string> TemplateRefs { get; set; } = new();
         public List<string> CanonicalActorNames { get; set; } = new();
         public List<string>? MissingFields { get; set; }
+        public List<ValidationRepairExactFieldCorrection> ExactFieldCorrections { get; set; } = new();
         public List<string> ExpectedShape { get; set; } = new();
         public List<string> SafeCorrectionRules { get; set; } = new();
         public List<string> Steps { get; set; } = new();
         public string DebugLogTemplate { get; set; } = "";
         public List<string> DoNotDo { get; set; } = new();
+    }
+
+    private sealed class ValidationRepairExactFieldCorrection
+    {
+        public string Path { get; set; } = "";
+        public string Expected { get; set; } = "";
+        public string Actual { get; set; } = "";
+        public string Code { get; set; } = "";
     }
 
     private sealed class ValidationRepairIssue

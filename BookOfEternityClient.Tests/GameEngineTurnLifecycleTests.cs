@@ -1997,6 +1997,22 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 code: "afterlife_conflict_action_cost_sequence_mismatch",
                 section: "AfterlifeSpiritualConflict",
                 expected: "0",
+                actual: "3"),
+            new(
+                "game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict.exchangeLog[2].actionCostAudit.player.after",
+                IssueSeverity.Error,
+                "actionCostAudit.player.after должен точно равняться before - effectiveCost.",
+                code: "afterlife_conflict_action_cost_delta_mismatch",
+                section: "AfterlifeSpiritualConflict",
+                expected: "0",
+                actual: "4"),
+            new(
+                "game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict.exchangeLog[2].actionCostAudit.opposition.after",
+                IssueSeverity.Error,
+                "actionCostAudit.opposition.after должен точно равняться before - effectiveCost.",
+                code: "afterlife_conflict_opposition_action_cost_delta_mismatch",
+                section: "AfterlifeSpiritualConflict",
+                expected: "2",
                 actual: "3")
         };
 
@@ -2028,7 +2044,25 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(steps, step => step.Contains("player.before", StringComparison.OrdinalIgnoreCase) &&
                                       step.Contains("expected 0", StringComparison.OrdinalIgnoreCase) &&
                                       step.Contains("actual 3", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("player.after", StringComparison.OrdinalIgnoreCase) &&
+                                      step.Contains("expected 0", StringComparison.OrdinalIgnoreCase) &&
+                                      step.Contains("actual 4", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("opposition.after", StringComparison.OrdinalIgnoreCase) &&
+                                      step.Contains("expected 2", StringComparison.OrdinalIgnoreCase) &&
+                                      step.Contains("actual 3", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("validation_repair_ready.json", StringComparison.OrdinalIgnoreCase));
+
+        var exactFieldCorrections = packet.GetProperty("exactFieldCorrections").EnumerateArray().ToArray();
+        Assert.Contains(exactFieldCorrections, correction =>
+            correction.GetProperty("path").GetString()!.Contains("exchangeLog[2].actionCostAudit.player.after", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(correction.GetProperty("expected").GetString(), "0", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(correction.GetProperty("actual").GetString(), "4", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(correction.GetProperty("code").GetString(), "afterlife_conflict_action_cost_delta_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(exactFieldCorrections, correction =>
+            correction.GetProperty("path").GetString()!.Contains("exchangeLog[2].actionCostAudit.opposition.after", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(correction.GetProperty("expected").GetString(), "2", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(correction.GetProperty("actual").GetString(), "3", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(correction.GetProperty("code").GetString(), "afterlife_conflict_opposition_action_cost_delta_mismatch", StringComparison.OrdinalIgnoreCase));
 
         var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(expectedShape, item => item.Contains("actionCostAudit.<side>.before", StringComparison.OrdinalIgnoreCase));
