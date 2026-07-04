@@ -403,6 +403,139 @@ function Assert-BoeGmFilesModifiedEntries {
     }
 }
 
+function Test-BoeTerminalSignalPath {
+    param(
+        [AllowNull()]
+        [string]$RelativePath
+    )
+
+    $path = Normalize-BoeRelativePath -RelativePath $RelativePath
+    return [string]::Equals($path, "ready/turn_complete.json", [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($path, "ready/turn_error.json", [System.StringComparison]::OrdinalIgnoreCase)
+}
+
+function Read-BoeTerminalSignalOrNull {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RelativePath
+    )
+
+    $path = Resolve-BoeSessionPath -RelativePath $RelativePath
+    if (!(Test-Path -LiteralPath $path)) {
+        return $null
+    }
+
+    try {
+        return Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+    }
+    catch {
+        throw "Existing terminal signal is unreadable: $RelativePath. Let the client clean stale ready state before writing more runtime data."
+    }
+}
+
+function Test-BoeTerminalSignalMatchesTurn {
+    param(
+        [AllowNull()]
+        [object]$Signal,
+
+        [Parameter(Mandatory = $true)]
+        [object]$TurnRequest
+    )
+
+    if ($null -eq $Signal) {
+        return $false
+    }
+
+    return [string]$Signal.sessionId -eq [string]$TurnRequest.sessionId -and
+        [string]$Signal.requestId -eq [string]$TurnRequest.requestId -and
+        [int]$Signal.turnNumber -eq [int]$TurnRequest.turnNumber
+}
+
+function Assert-BoeNoExistingTerminalSignalForTurn {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$TurnRequest,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Operation
+    )
+
+    foreach ($terminalPath in @("ready/turn_complete.json", "ready/turn_error.json")) {
+        $signal = Read-BoeTerminalSignalOrNull -RelativePath $terminalPath
+        if ($null -eq $signal) {
+            continue
+        }
+
+        if (Test-BoeTerminalSignalMatchesTurn -Signal $signal -TurnRequest $TurnRequest) {
+            throw "$Operation blocked: current request already has terminal signal $terminalPath. Do not write stale runtime data after success/error; wait for the client rollback/cleanup cycle and resend a fresh turn if needed."
+        }
+
+        throw "$Operation blocked: existing terminal signal $terminalPath belongs to another request. Let the client clean stale ready state before writing more runtime data."
+    }
+}
+
+function Get-BoeCurrentTurnRequestOrNull {
+    $path = Resolve-BoeSessionPath -RelativePath "input/turn_request.json"
+    if (!(Test-Path -LiteralPath $path)) {
+        return $null
+    }
+
+    try {
+        return Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+    }
+    catch {
+        throw "Current input/turn_request.json is unreadable; do not write runtime state until the client repairs or clears the pending turn."
+    }
+}
+
+function Test-BoeActiveValidationRepairRequestForTurn {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$TurnRequest
+    )
+
+    $path = Resolve-BoeSessionPath -RelativePath "game_state/control/validation_repair_request.json"
+    if (!(Test-Path -LiteralPath $path)) {
+        return $false
+    }
+
+    try {
+        $repair = Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ($repair.metadataDiagnosticOnly) {
+            return $false
+        }
+
+        return [string]$repair.sessionId -eq [string]$TurnRequest.sessionId -and
+            [string]$repair.requestId -eq [string]$TurnRequest.requestId -and
+            [int]$repair.turnNumber -eq [int]$TurnRequest.turnNumber
+    }
+    catch {
+        return $false
+    }
+}
+
+function Assert-BoeNoTerminalSignalBeforeRuntimeWrite {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RelativePath
+    )
+
+    if (Test-BoeTerminalSignalPath -RelativePath $RelativePath) {
+        return
+    }
+
+    $turn = Get-BoeCurrentTurnRequestOrNull
+    if ($null -eq $turn) {
+        return
+    }
+
+    if (Test-BoeActiveValidationRepairRequestForTurn -TurnRequest $turn) {
+        return
+    }
+
+    Assert-BoeNoExistingTerminalSignalForTurn -TurnRequest $turn -Operation "Write-BoeJson"
+}
+
 function Get-BoeFileSha256 {
     param(
         [Parameter(Mandatory = $true)]
@@ -804,6 +937,7 @@ function Write-BoeJson {
     if (!$AllowClientOwnedRuntimeWrite) {
         Assert-BoeGmWritableRuntimePath -RelativePath $RelativePath
     }
+    Assert-BoeNoTerminalSignalBeforeRuntimeWrite -RelativePath $RelativePath
 
     $path = Resolve-BoeSessionPath -RelativePath $RelativePath
     $parent = Split-Path -Parent $path
@@ -863,6 +997,7 @@ function Complete-BoeTurn {
     Assert-BoeNoRawMortalWorldProfileMutations -Operation "Complete-BoeTurn"
     $turn = Get-BoeCurrentTurnRequest
     Assert-BoeCurrentPendingSnapshotContext -TurnRequest $turn
+    Assert-BoeNoExistingTerminalSignalForTurn -TurnRequest $turn -Operation "Complete-BoeTurn"
     Assert-BoeNoUnauthorizedSystemGuardianBootstrapMutation -TurnRequest $turn -FilesModified $FilesModified
     $signal = [ordered]@{
         sessionId = [string]$turn.sessionId
@@ -884,6 +1019,7 @@ function Fail-BoeTurn {
 
     $turn = Get-BoeCurrentTurnRequest
     Assert-BoeCurrentPendingSnapshotContext -TurnRequest $turn
+    Assert-BoeNoExistingTerminalSignalForTurn -TurnRequest $turn -Operation "Fail-BoeTurn"
     $signal = [ordered]@{
         sessionId = [string]$turn.sessionId
         requestId = [string]$turn.requestId

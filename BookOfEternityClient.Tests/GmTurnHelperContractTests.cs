@@ -119,6 +119,147 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void Helper_CompleteBoeTurnRejectsRequestThatAlreadyHasTerminalError()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-terminal-error-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-terminal-error",
+                  "turnNumber": 46,
+                  "playerAction": "test"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-terminal-error",
+                  "turnNumber": 46
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.authority.json"),
+                "{}",
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "ready", "turn_error.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-terminal-error",
+                  "turnNumber": 46,
+                  "timestamp": "2026-07-04T00:02:35Z",
+                  "status": "error",
+                  "error": "terminal error already emitted"
+                }
+                """,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "Complete-BoeTurn -FilesModified @('output/narrative_response.json')"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("terminal", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(Path.Combine(session, "ready", "turn_complete.json")));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void Helper_WriteBoeJsonRejectsRuntimeWriteAfterTerminalError()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-terminal-write-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-terminal-write",
+                  "turnNumber": 47,
+                  "playerAction": "test"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-terminal-write",
+                  "turnNumber": 47
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_turn_snapshot.authority.json"),
+                "{}",
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "ready", "turn_error.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-terminal-write",
+                  "turnNumber": 47,
+                  "timestamp": "2026-07-04T00:02:35Z",
+                  "status": "error",
+                  "error": "terminal error already emitted"
+                }
+                """,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$payload = @{ response = 'late write' }",
+                "Write-BoeJson -RelativePath 'output/narrative_response.json' -Data $payload"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("terminal", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(Path.Combine(session, "output", "narrative_response.json")));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void Helper_CompleteBoeTurnRejectsClientOwnedFilesModifiedEntries()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-client-owned-" + Guid.NewGuid().ToString("N"));
@@ -781,6 +922,79 @@ public sealed class GmTurnHelperContractTests
 
             Assert.Equal(0, result.ExitCode);
             Assert.True(File.Exists(Path.Combine(session, "ready", "turn_complete.json")), result.StdErr + result.StdOut);
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void Helper_CompleteBoeValidationRepairAllowsRepairReadyAfterAcceptedTurnCompletion()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-validation-repair-terminal-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-repair-ready",
+                  "turnNumber": 48,
+                  "playerAction": "test"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "ready", "turn_complete.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-repair-ready",
+                  "turnNumber": 48,
+                  "timestamp": "2026-07-04T00:02:35Z",
+                  "status": "success",
+                  "filesModified": [ "output/narrative_response.json" ]
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-repair-ready",
+                  "turnNumber": 48,
+                  "metadataDiagnosticOnly": false
+                }
+                """,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "Complete-BoeValidationRepair"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.Equal(0, result.ExitCode);
+            var readyPath = Path.Combine(session, "game_state", "control", "validation_repair_ready.json");
+            Assert.True(File.Exists(readyPath), result.StdErr + result.StdOut);
+
+            using var document = JsonDocument.Parse(File.ReadAllText(readyPath, Encoding.UTF8));
+            var rootElement = document.RootElement;
+            Assert.Equal("test-session", rootElement.GetProperty("sessionId").GetString());
+            Assert.Equal("request-repair-ready", rootElement.GetProperty("requestId").GetString());
+            Assert.Equal(48, rootElement.GetProperty("turnNumber").GetInt32());
         }
         finally
         {

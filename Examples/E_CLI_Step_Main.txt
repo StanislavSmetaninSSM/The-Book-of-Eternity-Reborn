@@ -664,6 +664,8 @@ If you add or update durable Mortal anchors, use only the compact template for t
 
 Never return to idle without writing at least the player-facing output files and one terminal signal. A prior `gm_bridge_idle_without_terminal_signal` trajectory with no player-facing output means the retry must use this checklist before any broad reading.
 
+After `Fail-BoeTurn` or any `ready/turn_error.json` / `ready/turn_complete.json` exists for the current request, stop working on that request. Do not keep writing state/output files and do not try to replace an error with success; the client owns rollback/cleanup and will send a fresh request if the action should be retried.
+
 Mortal NPC repair packets:
 {
   "kind": "mortal_npc_location_repair",

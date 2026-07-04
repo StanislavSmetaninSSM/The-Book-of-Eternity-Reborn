@@ -200,6 +200,7 @@ Read canonical `game_state/meta/soul_state.json.currentRealm`; the runtime also 
 6. **LAST:** Write exactly one terminal signal:
    - `ready/turn_complete.json` for terminal success with exact `sessionId`, `requestId`, `turnNumber`, `timestamp`, `status="success"`, and `filesModified`
    - OR `ready/turn_error.json` for terminal error with exact `sessionId`, `requestId`, `turnNumber`, `timestamp`, `status="error"`, and non-empty `error`
+   - After either terminal signal exists for this request, stop. Do not write more state/output files and do not try to replace error with success; wait for the client rollback/cleanup cycle and handle a fresh request.
 
 ### FILE-WRITING DISCIPLINE (MANDATORY)
 
@@ -238,6 +239,7 @@ $data | ConvertTo-Json -Depth 100 | Set-Content -Path "game_state/meta/guardians
 - Copy exact `sessionId/requestId/turnNumber` from the current `turn_request.json`
 - Write terminal signal LAST
 - Never write both `turn_complete.json` and `turn_error.json` for one request
+- After `Fail-BoeTurn` or any terminal signal for the current request, do not continue mutating files for that request
 - `validation_repair_request.json` is for accepted terminal completion with invalid resulting state
 - `terminal_protocol_failure_request.json` means the terminal signal itself was invalid and is NOT a repair loop
 
