@@ -1173,6 +1173,58 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void Helper_ReadBoeJsonReturnsObjectsThatAllowMissingPropertyDotAssignment()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-mutable-json-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var npcPath = Path.Combine(session, "game_state", "npcs", "npc_core.json");
+        Directory.CreateDirectory(Path.GetDirectoryName(npcPath)!);
+
+        try
+        {
+            File.WriteAllText(
+                npcPath,
+                """
+                {
+                  "npcs": [
+                    {
+                      "npcId": "npc_mara",
+                      "name": "Мара Дымная"
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                "$ErrorActionPreference = 'Stop'",
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$root = Read-BoeJson -RelativePath 'game_state/npcs/npc_core.json'",
+                "$npc = @($root.npcs)[0]",
+                "$npc.trainingShowcase = [ordered]@{ teacherId = 'npc_mara'; items = @([ordered]@{ skillId = 'skill_magic_flow'; price = 12 }) }",
+                "Write-BoeJson -RelativePath 'game_state/npcs/npc_core.json' -Data $root -Depth 20"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.True(string.IsNullOrWhiteSpace(result.StdErr), result.StdErr);
+            using var document = JsonDocument.Parse(File.ReadAllText(npcPath, Encoding.UTF8));
+            var trainingShowcase = document.RootElement
+                .GetProperty("npcs")[0]
+                .GetProperty("trainingShowcase");
+            Assert.Equal("npc_mara", trainingShowcase.GetProperty("teacherId").GetString());
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void Helper_SetBoeJsonPropertyReplacesExistingNonPropertyMember()
     {
         var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
@@ -1207,6 +1259,8 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("Get-BoeJsonValue", daemon, StringComparison.Ordinal);
         Assert.Contains("Set-BoeJsonProperty", daemon, StringComparison.Ordinal);
         Assert.Contains("Add-BoeJsonArrayItem", daemon, StringComparison.Ordinal);
+        Assert.Contains("mutable JSON-like objects that preserve arrays", daemon, StringComparison.Ordinal);
+        Assert.Contains("$object.newField = <value>", daemon, StringComparison.Ordinal);
         Assert.Contains("optional or differently cased JSON fields", daemon, StringComparison.Ordinal);
         Assert.Contains("add or update optional object properties", daemon, StringComparison.Ordinal);
         Assert.Contains("PowerShell collapses single JSON array items into scalars", daemon, StringComparison.Ordinal);

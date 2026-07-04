@@ -56,7 +56,79 @@ function Read-BoeJson {
         throw "JSON file does not exist: $RelativePath"
     }
 
-    return Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+    $json = Get-Content -LiteralPath $path -Raw -Encoding UTF8
+    return ConvertFrom-BoeJsonMutable -Json $json
+}
+
+function ConvertFrom-BoeJsonMutable {
+    param(
+        [AllowNull()]
+        [string]$Json
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Json)) {
+        return $null
+    }
+
+    $convertFromJson = Get-Command ConvertFrom-Json
+    if ($convertFromJson.Parameters.ContainsKey("AsHashtable") -and
+        $convertFromJson.Parameters.ContainsKey("NoEnumerate")) {
+        $parsed = $Json | ConvertFrom-Json -AsHashtable -NoEnumerate
+        return ConvertTo-BoeMutableJsonValue -Value $parsed
+    }
+
+    try {
+        Add-Type -AssemblyName System.Web.Extensions -ErrorAction Stop
+        $serializer = New-Object System.Web.Script.Serialization.JavaScriptSerializer
+        $serializer.MaxJsonLength = [int]::MaxValue
+        return ConvertTo-BoeMutableJsonValue -Value $serializer.DeserializeObject($Json)
+    }
+    catch {
+        $parsed = $Json | ConvertFrom-Json
+        return ConvertTo-BoeMutableJsonValue -Value $parsed
+    }
+}
+
+function ConvertTo-BoeMutableJsonValue {
+    param(
+        [AllowNull()]
+        [object]$Value
+    )
+
+    if ($null -eq $Value) {
+        return $null
+    }
+
+    if ($Value -is [System.Collections.IDictionary]) {
+        $result = [ordered]@{}
+        foreach ($key in $Value.Keys) {
+            $result[[string]$key] = ConvertTo-BoeMutableJsonValue -Value $Value[$key]
+        }
+
+        return $result
+    }
+
+    if ($Value -is [System.Array]) {
+        $items = New-Object System.Collections.Generic.List[object]
+        foreach ($item in $Value) {
+            $items.Add((ConvertTo-BoeMutableJsonValue -Value $item))
+        }
+
+        return ,([object[]]$items.ToArray())
+    }
+
+    if ($Value.GetType().FullName -eq "System.Management.Automation.PSCustomObject") {
+        $result = [ordered]@{}
+        foreach ($property in $Value.PSObject.Properties) {
+            if ($property.MemberType -eq [System.Management.Automation.PSMemberTypes]::NoteProperty) {
+                $result[$property.Name] = ConvertTo-BoeMutableJsonValue -Value $property.Value
+            }
+        }
+
+        return $result
+    }
+
+    return $Value
 }
 
 function Get-BoeJsonValue {
