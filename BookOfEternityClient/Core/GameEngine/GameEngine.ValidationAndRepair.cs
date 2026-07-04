@@ -1670,7 +1670,8 @@ public partial class GameEngine
             ExpectedShape = new List<string>
             {
                 "Read game_state/meta/guardians.json.pendingGuardianCreation as the startup request authority. For mode=freeform, use soulName and description; for mode=system_preset, use the exact requested preset identity.",
-                "For a freeform New Game startup request, repair through the supported Guardian create surface: UpdateGuardians.create semantics with a full canonical Guardian, not a partial direct mirror and not a pending-only state.",
+                "For a freeform New Game startup request, repair through the supported Guardian create surface `UpdateGuardians.create`: `UpdateGuardians`: [{ `command`: `create`, `data`: <full canonical Guardian> }]. The `data` object is the authority for the new Guardian identity.",
+                "Do not satisfy guardian_materialized_without_create_surface by editing only materialized mirrors. `guardians[]` and `activeGuardian` must match the create result, but the explicit `UpdateGuardians.create` command=create data=<full canonical Guardian> surface must be present in the repaired response.",
                 "The accepted game_state/meta/guardians.json must contain the new Guardian in guardians[] with stable guardianId, displayName/canonicalName, title/domain/originType, abode identity, relationshipData/currentReputation, loreFragments, musings, trade/project/profile arrays or empty containers required by the canonical Guardian shape.",
                 "activeGuardian must mirror the created Guardian, and chaosSeaNavigation.currentAbodeId must point to the created/discovered abode when the Guardian is now accessible.",
                 "After guardians[] and activeGuardian are materialized, remove pendingGuardianCreation from guardians.json. Leaving pendingGuardianCreation unresolved or beside the materialized Guardian keeps /хранители empty or pending.",
@@ -1679,7 +1680,7 @@ public partial class GameEngine
             SafeCorrectionRules = new List<string>
             {
                 "Preserve the player's requested soul name and freeform Guardian description as the source of the created Guardian's identity and domain details.",
-                "If the already written Guardian has useful prose/domain details, reshape them into the full canonical Guardian object instead of deleting the Guardian fiction.",
+                "If the already written Guardian has useful prose/domain details, copy/reshape them into UpdateGuardians[0].data as the full canonical Guardian object instead of leaving them only in guardians[] or activeGuardian.",
                 "For New Game freeform startup repairs, do not keep the request as pending-only: the accepted repair must create the requested Guardian or remain rejected.",
                 "For system_preset requests, do not substitute a similar Guardian; materialize the exact preset or route to the already materialized exact preset.",
                 "Repair only the startup Guardian creation fields and matching debug-log actor coverage unless validation_repair_request.json lists additional errors."
@@ -1688,7 +1689,7 @@ public partial class GameEngine
             {
                 "Open game_state/control/validation_repair_request.json first and repair only the listed startup Guardian creation errors in place.",
                 "Use Read-BoeJson -RelativePath 'game_state/meta/guardians.json' and inspect pendingGuardianCreation before editing.",
-                "Materialize the requested startup Guardian through UpdateGuardians.create semantics; do not choose a pending-only fallback for a freeform New Game request.",
+                "Write or repair `UpdateGuardians.create` first: `UpdateGuardians`: [{ `command`: `create`, `data`: <full canonical Guardian> }]. This create command is the authority; do not repair only guardians[]/activeGuardian.",
                 "For materialization, write a full canonical Guardian into guardians[], set activeGuardian to the matching mirror, update chaosSeaNavigation.currentAbodeId, and remove pendingGuardianCreation only after those roots are present.",
                 "Repair output/debug_logs.json.gm_thoughts_markdown with Guardian-centric/Mixed scope, the Guardian's player-facing name in Relevant actors, and a matching Guardian Thoughts block.",
                 "Write repaired files with Write-BoeJson, then call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from validation_repair_request.json."
@@ -1712,6 +1713,7 @@ public partial class GameEngine
                 "Do not create a new turn or write ready/turn_complete.json during validation repair.",
                 "Do not delete pendingGuardianCreation without materializing the requested Guardian into both guardians[] and activeGuardian.",
                 "Do not keep a direct materialized Guardian object that lacks the supported UpdateGuardians.create semantics and full canonical Guardian shape.",
+                "Do not repair only guardians[] or activeGuardian without UpdateGuardians command=create data=<full canonical Guardian>.",
                 "Do not leave the Guardian only in narrative prose while /хранители still has no canonical Guardian.",
                 "Do not rewrite the requested freeform Guardian into an unrelated system preset or Mortal NPC.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer startup Guardian rules; use this packet, validation_repair_request.json, afterlife docs/examples, and session state."

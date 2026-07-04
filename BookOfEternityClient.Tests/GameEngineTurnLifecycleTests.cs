@@ -1068,6 +1068,10 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(expectedShape, item => item.Contains("pendingGuardianCreation", StringComparison.Ordinal));
         Assert.Contains(expectedShape, item => item.Contains("UpdateGuardians.create", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("UpdateGuardians", StringComparison.Ordinal) &&
+                                               item.Contains("command", StringComparison.OrdinalIgnoreCase) &&
+                                               item.Contains("create", StringComparison.OrdinalIgnoreCase) &&
+                                               item.Contains("data", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(expectedShape, item => item.Contains("guardians[]", StringComparison.Ordinal));
         Assert.Contains(expectedShape, item => item.Contains("activeGuardian", StringComparison.Ordinal));
         Assert.Contains(expectedShape, item => item.Contains("chaosSeaNavigation", StringComparison.Ordinal));
@@ -1078,11 +1082,17 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(steps, step => step.Contains("Read-BoeJson", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("pendingGuardianCreation", StringComparison.Ordinal));
         Assert.Contains(steps, step => step.Contains("UpdateGuardians.create", StringComparison.Ordinal));
+        Assert.Contains(steps, step => step.Contains("do not repair", StringComparison.OrdinalIgnoreCase) &&
+                                       step.Contains("guardians[]", StringComparison.Ordinal) &&
+                                       step.Contains("activeGuardian", StringComparison.Ordinal));
         Assert.Contains(steps, step => step.Contains("Complete-BoeValidationRepair", StringComparison.OrdinalIgnoreCase));
 
         var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(doNotDo, item => item.Contains("delete pendingGuardianCreation", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(doNotDo, item => item.Contains("direct materialized", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("guardians[]", StringComparison.Ordinal) &&
+                                         item.Contains("activeGuardian", StringComparison.Ordinal) &&
+                                         item.Contains("without UpdateGuardians", StringComparison.OrdinalIgnoreCase));
 
         var safeCorrectionRules = packet.GetProperty("safeCorrectionRules").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(safeCorrectionRules, item => item.Contains("pending-only", StringComparison.OrdinalIgnoreCase));
@@ -1122,7 +1132,12 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         Assert.Equal("guardian_pending_creation_materialization_repair", packet.GetProperty("kind").GetString());
         var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
-        Assert.Contains(expectedShape, item => item.Contains("pending-only state", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("UpdateGuardians.create", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("command", StringComparison.OrdinalIgnoreCase) &&
+                                               item.Contains("create", StringComparison.OrdinalIgnoreCase) &&
+                                               item.Contains("data", StringComparison.OrdinalIgnoreCase));
+        var safeCorrectionRules = packet.GetProperty("safeCorrectionRules").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(safeCorrectionRules, item => item.Contains("pending-only", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
