@@ -3657,6 +3657,16 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonStatus_PublishesConfiguredTurnTimeoutForClientTerminalWait()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        var statusFunction = ExtractFunctionBlock(daemon, "function Write-DaemonStatus");
+
+        Assert.Contains("turnTimeoutSeconds = $TurnTimeout", statusFunction, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");

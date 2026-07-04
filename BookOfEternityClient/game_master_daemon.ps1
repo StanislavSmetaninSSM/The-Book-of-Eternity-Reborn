@@ -2813,6 +2813,7 @@ function Write-DaemonStatus {
         startedAtUtc = $script:StartTime.ToUniversalTime().ToString("o")
         heartbeatAtUtc = (Get-Date).ToUniversalTime().ToString("o")
         command = $script:DaemonCommandLine
+        turnTimeoutSeconds = $TurnTimeout
         turnCount = $script:TurnCount
         errorCount = $script:ErrorCount
     }

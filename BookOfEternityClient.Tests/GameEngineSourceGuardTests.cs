@@ -319,11 +319,17 @@ public sealed class GameEngineSourceGuardTests
         var turnLifecycleSource = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
         var waitMethod = ExtractMethodSource(turnLifecycleSource, "private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync()");
 
-        Assert.Contains("_stateManager.Settings.GmTimeoutSeconds", waitMethod, StringComparison.Ordinal);
+        Assert.Contains("ResolveTerminalSignalTimeoutSecondsAsync()", waitMethod, StringComparison.Ordinal);
+        Assert.DoesNotContain("Math.Max(15, _stateManager.Settings.GmTimeoutSeconds)", waitMethod, StringComparison.Ordinal);
         Assert.Contains("DetectUnavailableGmRuntimeAsync()", waitMethod, StringComparison.Ordinal);
         Assert.Contains("TryWriteHarnessTerminalErrorAsync(", waitMethod, StringComparison.Ordinal);
         Assert.Contains("TerminalSignalWaitOutcome.Completed", waitMethod, StringComparison.Ordinal);
 
+        Assert.Contains("private async Task<int> ResolveTerminalSignalTimeoutSecondsAsync()", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("GmDaemonTerminalTimeoutGraceSeconds", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("_stateManager.Settings.GmTimeoutSeconds", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("\"turnTimeoutSeconds\"", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("activeDaemonTimeoutSeconds + GmDaemonTerminalTimeoutGraceSeconds", turnLifecycleSource, StringComparison.Ordinal);
         Assert.Contains("private async Task<string?> DetectUnavailableGmRuntimeAsync()", turnLifecycleSource, StringComparison.Ordinal);
         Assert.Contains("\"game_state/control/gm_daemon_status.json\"", turnLifecycleSource, StringComparison.Ordinal);
         Assert.Contains("\"game_state/control/gm_bridge_status.json\"", turnLifecycleSource, StringComparison.Ordinal);

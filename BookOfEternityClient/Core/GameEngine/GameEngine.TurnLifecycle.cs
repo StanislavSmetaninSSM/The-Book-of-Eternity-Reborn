@@ -21,6 +21,7 @@ public partial class GameEngine
     private const string GmTerminalWaitTimeoutHarnessSource = "gm_terminal_wait_timeout";
     private const string GmDaemonStatusPath = "game_state/control/gm_daemon_status.json";
     private const string GmBridgeStatusPath = "game_state/control/gm_bridge_status.json";
+    private const int GmDaemonTerminalTimeoutGraceSeconds = 15;
 
     private enum TerminalSignalWaitOutcome
     {
@@ -295,7 +296,7 @@ public partial class GameEngine
     {
         using var cts = new CancellationTokenSource();
         var startTime = DateTime.UtcNow;
-        var terminalTimeoutSeconds = Math.Max(15, _stateManager.Settings.GmTimeoutSeconds);
+        var terminalTimeoutSeconds = await ResolveTerminalSignalTimeoutSecondsAsync();
         var nextRuntimeHealthCheckAt = startTime.AddSeconds(15);
 
         var waitTask = Task.Run(async () =>
@@ -385,6 +386,56 @@ public partial class GameEngine
             });
 
         return cts.IsCancellationRequested ? TerminalSignalWaitOutcome.Cancelled : result;
+    }
+
+    private async Task<int> ResolveTerminalSignalTimeoutSecondsAsync()
+    {
+        var configuredTimeoutSeconds = Math.Max(15, _stateManager.Settings.GmTimeoutSeconds);
+        var daemonTimeoutSeconds = await TryReadActiveDaemonTurnTimeoutSecondsAsync();
+
+        if (daemonTimeoutSeconds is int activeDaemonTimeoutSeconds && activeDaemonTimeoutSeconds > 0)
+            return Math.Max(configuredTimeoutSeconds, activeDaemonTimeoutSeconds + GmDaemonTerminalTimeoutGraceSeconds);
+
+        return configuredTimeoutSeconds;
+    }
+
+    private async Task<int?> TryReadActiveDaemonTurnTimeoutSecondsAsync()
+    {
+        if (!_fs.FileExists(GmDaemonStatusPath))
+            return null;
+
+        var statusJson = await _fs.ReadFileAsync(GmDaemonStatusPath);
+        if (string.IsNullOrWhiteSpace(statusJson))
+            return null;
+
+        try
+        {
+            using var document = JsonDocument.Parse(statusJson);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+                return null;
+
+            if (TryGetHarnessJsonString(document.RootElement, "status", out var statusValue) &&
+                IsTerminalRuntimeStatus(statusValue))
+            {
+                return null;
+            }
+
+            if (!TryGetHarnessJsonInt(document.RootElement, "pid", out var daemonProcessId) ||
+                daemonProcessId <= 0 ||
+                !IsProcessAlive(daemonProcessId))
+            {
+                return null;
+            }
+
+            return TryGetHarnessJsonInt(document.RootElement, "turnTimeoutSeconds", out var daemonTimeoutSeconds) &&
+                   daemonTimeoutSeconds > 0
+                ? daemonTimeoutSeconds
+                : null;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private async Task<string?> DetectUnavailableGmRuntimeAsync()
