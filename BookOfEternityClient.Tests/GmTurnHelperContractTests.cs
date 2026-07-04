@@ -1173,6 +1173,28 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void Helper_SetBoeJsonPropertyReplacesExistingNonPropertyMember()
+    {
+        var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+        var command = string.Join("; ", new[]
+        {
+            "$ErrorActionPreference = 'Stop'",
+            ". " + QuotePowerShell(helperPath),
+            "$actor = [pscustomobject]@{ name = 'Gate thief' }",
+            "$actor | Add-Member -MemberType ScriptMethod -Name role -Value { 'old role' }",
+            "Set-BoeJsonProperty -Object $actor -Name 'role' -Value 'combatant'",
+            "if ($actor.role -ne 'combatant') { throw \"Unexpected role: $($actor.role)\" }",
+            "$member = $actor.PSObject.Members | Where-Object { $_.Name -eq 'role' } | Select-Object -First 1",
+            "if ($member.MemberType -ne [System.Management.Automation.PSMemberTypes]::NoteProperty) { throw \"Unexpected role member type: $($member.MemberType)\" }"
+        });
+
+        var result = RunPowerShell(command);
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.True(string.IsNullOrWhiteSpace(result.StdErr), result.StdErr);
+    }
+
+    [Fact]
     public void DaemonPrompt_ExposesSessionLocalGmTurnHelper()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -3799,6 +3821,16 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("Removed stale daemon timeout terminal signal artifact", daemon, StringComparison.Ordinal);
         Assert.Contains("$matchedSignals.Count -gt 1", daemon, StringComparison.Ordinal);
         Assert.Contains("return $resolvedTimeoutConflict", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void LauncherConfigDefaults_UseForceWhenAddingMissingProperties()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var launcher = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");
+
+        Assert.Contains("Add-Member -NotePropertyName $key -NotePropertyValue $defaults[$key] -Force", daemon, StringComparison.Ordinal);
+        Assert.Contains("Add-Member -NotePropertyName $key -NotePropertyValue $defaults[$key] -Force", launcher, StringComparison.Ordinal);
     }
 
     private static (int ExitCode, string StdOut, string StdErr) RunPowerShell(string command)

@@ -198,7 +198,7 @@ function Read-GameConfig {
         $loaded = Get-Content -Path $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
         foreach ($key in @($defaults.Keys)) {
             if ($null -eq $loaded.$key) {
-                $loaded | Add-Member -NotePropertyName $key -NotePropertyValue $defaults[$key]
+                $loaded | Add-Member -NotePropertyName $key -NotePropertyValue $defaults[$key] -Force
             }
         }
         return $loaded

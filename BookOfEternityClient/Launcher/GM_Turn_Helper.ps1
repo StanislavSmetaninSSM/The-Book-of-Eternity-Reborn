@@ -145,11 +145,16 @@ function Set-BoeJsonProperty {
         Select-Object -First 1
 
     if ($null -ne $property) {
-        $property.Value = $Value
-        return
+        try {
+            $property.Value = $Value
+            return
+        }
+        catch {
+            # Fall through and replace unusual member shapes with a JSON-like NoteProperty.
+        }
     }
 
-    $Object | Add-Member -NotePropertyName $Name -NotePropertyValue $Value
+    $Object | Add-Member -NotePropertyName $Name -NotePropertyValue $Value -Force
 }
 
 function Add-BoeJsonArrayItem {
