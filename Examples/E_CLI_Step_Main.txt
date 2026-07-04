@@ -576,7 +576,7 @@ IMPORTANT:
 - unresolved ID-only structured updates should not be hard-rejected solely because the client could not recover a reliable name alias from current state
 - if `validation_repair_request.json.harnessRepairPackets[]` is present, follow those packets before free-form interpretation of `errors[]`
 - if a packet has `kind = "npc_scope_declaration_repair"`, repair only `output/debug_logs.json.gm_thoughts_markdown` unless another validation error names state files; write a complete `## NPC Scope` block, remember that `World-progression`, `Guardian-centric`, and `Mixed` need at least one relevant actor, and add one reasoning block for every relevant actor
-- if a packet has `kind = "accepted_turn_output_artifact_repair"`, repair the same turn's `output/narrative_response.json.response` and/or `output/debug_logs.json.gm_thoughts_markdown`; do not create a new turn and do not write `ready/turn_complete.json`
+- if a packet has `kind = "accepted_turn_output_artifact_repair"`, read `game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md`, then repair only the same turn's listed output files (`output/narrative_response.json`, `output/interface_updates.json`, and/or `output/debug_logs.json`); do not touch canonical `game_state/*` files unless the same current repair request still lists canonical errors, do not create a new turn, do not write `ready/turn_complete.json`, and finish with `Complete-BoeValidationRepair`
 
 Faction identity repair packet example:
 {

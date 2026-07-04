@@ -536,6 +536,7 @@ MATH ASSISTANT / МАТЕМАТИК:
 - клиент повторно валидирует состояние и либо принимает ход, либо обновляет repair request новым списком ошибок
 - если `validation_repair_ready.json` невалиден как JSON или содержит неправильные `sessionId/requestId/turnNumber`, клиент отклоняет ready-сигнал, переписывает `validation_repair_request.json`, и daemon должен пинговать GM повторно
 - repair loop не является новым ходом; GM не должен создавать новый `turn_request.json`
+- если `validation_repair_request.json.harnessRepairPackets[].kind` равен `accepted_turn_output_artifact_repair`, это узкий output-only repair уже принятого хода: GM должен читать compact template `game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md`, переписать только перечисленные player-facing output artifacts (`output/narrative_response.json`, `output/interface_updates.json`, `output/debug_logs.json`) и завершить через `Complete-BoeValidationRepair`; canonical `game_state/*` файлы нельзя трогать, если текущий repair request не перечисляет отдельные canonical errors
 - при рестарте daemon обязан повторно обработать уже существующий `validation_repair_request.json`
 - late `ready/turn_error.json` после отменённого ожидания тоже считается валидным late signal и будет подобран/очищен клиентом
 - если клиент пишет `game_state/control/terminal_protocol_failure_request.json`, это НЕ repair loop: terminal ready signal был невалиден сам по себе
@@ -555,6 +556,7 @@ MATH ASSISTANT / МАТЕМАТИК:
 - if the daemon cannot dispatch a turn because the ConPTY bridge named pipe is unreachable or never accepts the prompt before the dispatch deadline, daemon emits a correlated `ready/turn_error.json` with `harnessSource = "gm_bridge_dispatch_unavailable"` and records the rejected trajectory; treat this as harness/bridge failure evidence, not as a player choice or validation repair
 - if the Codex bridge returns to its idle prompt after the GM wrote turn outputs but no correlated `ready/turn_complete.json` or `ready/turn_error.json` exists, daemon emits a correlated `ready/turn_error.json` with `harnessSource = "gm_bridge_idle_without_terminal_signal"`; treat this as terminal protocol failure evidence for the next request, not as a player choice or validation repair
 - if the daemon sees `output/` or game-state payload files change after dispatch, but no correlated terminal signal appears after the grace window, daemon emits a correlated `ready/turn_error.json` with `harnessSource = "gm_output_without_terminal_signal"` and lists changed files; treat this as evidence that the GM skipped `Complete-BoeTurn`/`Fail-BoeTurn`, not as a player choice or validation repair
+- if a validation repair dispatch stays active without `validation_repair_ready.json` and without progress in the target artifacts from the current repair request, daemon records `game_state/control/gm_validation_repair_artifact_stall_report.json`, stops the bridge with `harnessSource = "gm_validation_repair_artifact_stall"`, and records a rejected trajectory. Treat this as harness feedback: the next attempt must use the narrower repair packet/template instead of continuing broad edits.
 
 ---
 

@@ -1693,7 +1693,8 @@ public sealed class GmTurnHelperContractTests
             var repairTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "VALIDATION_REPAIR_TEMPLATE.md"), Encoding.UTF8);
             Assert.Contains("accepted_turn_output_artifact_repair", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("output/narrative_response.json", repairTemplate, StringComparison.Ordinal);
-            Assert.Contains("output/debug_logs.json.gm_thoughts_markdown", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("output/interface_updates.json", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("output/debug_logs.json", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("afterlife_chronicle_string_array_repair", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("persistentConsequences[]", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("openThreads[]", repairTemplate, StringComparison.Ordinal);
@@ -2996,6 +2997,123 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("output/narrative_response.json", acceptedFix, StringComparison.Ordinal);
             Assert.Contains("gm_thoughts_markdown", acceptedFix, StringComparison.Ordinal);
             Assert.Contains("interface_updates.json", acceptedFix, StringComparison.Ordinal);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_StaleOutputArtifactLessonsNameOutputArtifactRepairTemplate()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-stale-output-artifact-lessons-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            File.WriteAllText(
+                Path.Combine(control, "gm_trajectory_ledger.jsonl"),
+                """
+                {"recordId":"gmtraj_stale_player_facing_output","kind":"repair","sessionId":"prior","turnId":"repair-stale-output","requestId":"repair-stale-output","turnNumber":12,"realm":"ChaosSea","mode":"validation_repair","contextPackPath":"game_state/control/gm_context_pack","templateVersions":{"turnOutput":"v1","validationRepair":"v1"},"dispatch":{"attempts":1,"busyRetries":0,"timeout":false,"status":"sent"},"validation":{"status":"accepted","issueKinds":["accepted_turn_stale_player_facing_output_after_canonical_repair"],"diagnostics":[{"code":"accepted_turn_stale_player_facing_output_after_canonical_repair","category":"ProtocolViolation","path":"output/narrative_response.json","message":"output/narrative_response.json was written before canonical validation repair","expected":"fresh output after canonical repair","actual":"stale output"}],"repairPacketRefs":["accepted_turn_output_artifact_repair"]},"repair":{"attempts":5,"status":"accepted"},"workerEvents":[],"rollbackEvents":[],"rubric":{"validTurn":true,"playerFacingOutputPresent":true,"implementationSourceRead":false,"rawWrongRealmWrite":false,"manualReasoningNeeded":true,"missingHarnessTool":"output_only_repair_template"},"createdAt":"2026-07-04T16:20:00Z"}
+                """.Trim() + Environment.NewLine,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(control, "validation_repair_request.json"),
+                """
+                {
+                  "sessionId": "current-session",
+                  "requestId": "current-repair",
+                  "turnNumber": 13,
+                  "currentRealm": "Chaos Sea",
+                  "revalidationAttempt": 1,
+                  "errors": [
+                    {
+                      "code": "accepted_turn_stale_player_facing_output_after_canonical_repair",
+                      "category": "ProtocolViolation",
+                      "section": "PlayerFacingOutput",
+                      "path": "output/narrative_response.json",
+                      "message": "output/narrative_response.json was written before canonical validation repair",
+                      "expected": "fresh output after canonical repair",
+                      "actual": "stale output"
+                    }
+                  ],
+                  "harnessRepairPackets": [
+                    {
+                      "kind": "accepted_turn_output_artifact_repair",
+                      "targetFiles": [
+                        "output/narrative_response.json",
+                        "output/interface_updates.json"
+                      ]
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            process = StartDaemon(session, logPath);
+            var lessonsMarkdownPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.md");
+            Assert.True(WaitForFileContaining(lessonsMarkdownPath, "accepted_turn_stale_player_facing_output_after_canonical_repair", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
+            Assert.Contains("OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md", markdown, StringComparison.Ordinal);
+            Assert.Contains("output/narrative_response.json", markdown, StringComparison.Ordinal);
+            Assert.Contains("output/interface_updates.json", markdown, StringComparison.Ordinal);
+
+            var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
+            using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
+            var lesson = document.RootElement.GetProperty("lessons")[0];
+            Assert.Equal("OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
+            var acceptedFix = lesson.GetProperty("acceptedFix").GetString() ?? string.Empty;
+            Assert.Contains("output-only", acceptedFix, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("output/interface_updates.json", acceptedFix, StringComparison.Ordinal);
+            Assert.Contains("do not touch canonical", acceptedFix, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void DaemonContextPack_OutputArtifactRepairTemplateGivesNarrowRepairFlow()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-output-artifact-template-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        var control = Path.Combine(session, "game_state", "control");
+        Directory.CreateDirectory(control);
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            process = StartDaemon(session, logPath);
+
+            var templatePath = Path.Combine(control, "gm_context_pack", "Templates", "OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md");
+            Assert.True(WaitForFileContaining(templatePath, "Output-only accepted turn repair", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+
+            var template = File.ReadAllText(templatePath, Encoding.UTF8);
+            Assert.Contains("validation_repair_request.json", template, StringComparison.Ordinal);
+            Assert.Contains("output/narrative_response.json", template, StringComparison.Ordinal);
+            Assert.Contains("output/interface_updates.json", template, StringComparison.Ordinal);
+            Assert.Contains("output/debug_logs.json", template, StringComparison.Ordinal);
+            Assert.Contains("Do not touch canonical game_state files", template, StringComparison.Ordinal);
+            Assert.Contains("Complete-BoeValidationRepair", template, StringComparison.Ordinal);
+
+            var daemon = File.ReadAllText(Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "game_master_daemon.ps1"), Encoding.UTF8);
+            Assert.Contains("$script:CompactOutputArtifactRepairTemplatePath", daemon, StringComparison.Ordinal);
+            Assert.Contains("accepted_turn_output_artifact_repair", daemon, StringComparison.Ordinal);
+            Assert.Contains("You MUST read '$($script:CompactOutputArtifactRepairTemplatePath)'", daemon, StringComparison.Ordinal);
+            Assert.Contains("Test-GmValidationRepairArtifactWritingStall", daemon, StringComparison.Ordinal);
+            Assert.Contains("gm_validation_repair_artifact_stall", daemon, StringComparison.Ordinal);
         }
         finally
         {

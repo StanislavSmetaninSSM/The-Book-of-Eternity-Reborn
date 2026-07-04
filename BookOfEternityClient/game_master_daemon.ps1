@@ -110,6 +110,7 @@ $ObservedTerminalRequestKeysFile = Join-Path $ControlDir "gm_observed_terminal_r
 $TimeoutBridgeCleanupFile = Join-Path $ControlDir "gm_timeout_bridge_cleanup.json"
 $ArtifactWriteStallReportFile = Join-Path $ControlDir "gm_artifact_write_stall_report.json"
 $OutputWithoutTerminalReportFile = Join-Path $ControlDir "gm_output_without_terminal_report.json"
+$ValidationRepairArtifactStallReportFile = Join-Path $ControlDir "gm_validation_repair_artifact_stall_report.json"
 $BridgeControlScript = Join-Path $PSScriptRoot "Launcher\bookofeternity.ps1"
 $script:GmTrajectoryLedgerPath = Join-Path $ControlDir "gm_trajectory_ledger.jsonl"
 $script:BridgeDispatchMaxWaitSeconds = 60
@@ -117,6 +118,9 @@ $script:ArtifactWritingStallMinimumSeconds = 120
 $script:ArtifactWritingStallNoProgressSeconds = 180
 $script:OutputWithoutTerminalMinimumSeconds = 120
 $script:OutputWithoutTerminalNoProgressSeconds = 90
+$script:ValidationRepairArtifactStallMinimumSeconds = 120
+$script:ValidationRepairArtifactStallNoProgressSeconds = 180
+$script:ActiveValidationRepairWatch = $null
 $script:DaemonCommandLine = [Environment]::CommandLine
 $script:DaemonLastHeartbeatUtc = [DateTime]::MinValue
 $script:DaemonFatalError = $null
@@ -135,6 +139,7 @@ $script:GmContextPackManifestPath = Join-Path $script:GmContextPackRoot "context
 $script:GmContextPackDirective = ""
 $script:CompactTurnOutputTemplatePath = Join-Path $script:GmContextPackRoot "Templates\TURN_OUTPUT_TEMPLATE.md"
 $script:CompactValidationRepairTemplatePath = Join-Path $script:GmContextPackRoot "Templates\VALIDATION_REPAIR_TEMPLATE.md"
+$script:CompactOutputArtifactRepairTemplatePath = Join-Path $script:GmContextPackRoot "Templates\OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md"
 $script:CompactProgressionReportTemplatePath = Join-Path $script:GmContextPackRoot "Templates\PROGRESSION_REPORT_TEMPLATE.json"
 $script:CompactActorReasoningTemplatePath = Join-Path $script:GmContextPackRoot "Templates\ACTOR_REASONING_TEMPLATE.md"
 $script:CompactMortalNpcTemplatePath = Join-Path $script:GmContextPackRoot "Templates\MORTAL_NPC_UPDATE_TEMPLATE.md"
@@ -601,6 +606,10 @@ function Get-GmExperiencePreferredSurface {
         return "AFTERLIFE_CHRONICLE_TEMPLATE.md"
     }
 
+    if ($joined.Contains("accepted_turn_stale_player_facing_output_after_canonical_repair")) {
+        return "OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md"
+    }
+
     if ($joined.Contains("narrative_response_unknown_field") -or
         $joined.Contains("narrative_response_missing_timestamp") -or
         $joined.Contains("missing_gm_thoughts") -or
@@ -644,6 +653,7 @@ function New-GmExperienceLesson {
     $hasMortalExperienceIssue = $preferredSurface -eq "MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md"
     $hasMortalCombatIssue = $preferredSurface -eq "MORTAL_COMBAT_STATE_TEMPLATE.md"
     $hasIdleWithoutTerminalSignal = $joinedIssues.Contains("gm_bridge_idle_without_terminal_signal")
+    $hasStalePlayerFacingOutputIssue = $joinedIssues.Contains("accepted_turn_stale_player_facing_output_after_canonical_repair")
     $repairPacketText = (($repairPacketRefs | ForEach-Object { [string]$_ }) -join " ").ToLowerInvariant()
     $hasGenericTurnOutputArtifactIssue = -not $hasNarrativeResponseAfterlifeChronicleWrongSurface -and (
         $repairPacketText.Contains("accepted_turn_output_artifact_repair") -or
@@ -695,6 +705,9 @@ function New-GmExperienceLesson {
     }
     elseif ($hasNarrativeResponseAfterlifeChronicleWrongSurface) {
         "Use TURN_OUTPUT_TEMPLATE.md for output/narrative_response.json: only response and timestamp are allowed there. Never put afterlifeChronicleUpdates into output/narrative_response.json. Use AFTERLIFE_CHRONICLE_TEMPLATE.md and the afterlifeChronicleUpdates surface for game_state/meta/afterlife_chronicles.json external memory, then include game_state/meta/afterlife_chronicles.json in Complete-BoeTurn -FilesModified when that state was changed."
+    }
+    elseif ($hasStalePlayerFacingOutputIssue) {
+        "Use OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md for this output-only validation repair. Rewrite only stale player-facing output artifacts such as output/narrative_response.json, output/interface_updates.json, and output/debug_logs.json so they match the already repaired canonical state. Do not touch canonical game_state files unless the current validation_repair_request.json still lists canonical state errors."
     }
     elseif ($hasGenericTurnOutputArtifactIssue) {
         "Use TURN_OUTPUT_TEMPLATE.md before writing ordinary turn output artifacts. Write output/narrative_response.json with only response and timestamp. Write output/debug_logs.json with gm_thoughts_markdown and timestamp. Write output/interface_updates.json with payload and timestamp. Do not write generic checks/mode/outcome/requestId/rewards/sessionId/turnNumber envelopes into output artifacts. Finish with Complete-BoeTurn -FilesModified only after canonical state changes are written."
@@ -1351,6 +1364,75 @@ Add every state/output file you changed. Do not include client-owned files:
 '@
     $turnOutputTemplate = $turnOutputTemplate.Replace("__ACTOR_LOCATION_LABEL__", $script:ActorLocationLabel).Replace("__ACTOR_SITUATION_LABEL__", $script:ActorSituationLabel).Replace("__ACTOR_THOUGHTS_LABEL__", $script:ActorThoughtsLabel).Replace("__ACTOR_ACTIONS_LABEL__", $script:ActorActionsLabel)
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\TURN_OUTPUT_TEMPLATE.md" -Role "compact_turn_output_template" -Content $turnOutputTemplate
+    $templates += Write-GmContextPackTemplate -RelativePath "Templates\OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md" -Role "compact_output_artifact_repair_template" -Content @'
+# Output-only accepted turn repair
+
+Use this template only in validation repair mode when
+`validation_repair_request.json.harnessRepairPackets[].kind` is
+`accepted_turn_output_artifact_repair`, especially for
+`accepted_turn_stale_player_facing_output_after_canonical_repair`.
+
+## Required flow
+
+1. Dot-source `game_state/control/gm_turn_helper.bootstrap.ps1`.
+2. Read `game_state/control/validation_repair_request.json`.
+3. Read the current canonical state only as needed to align player-facing prose/options with the already repaired state.
+4. Rewrite only listed output artifacts:
+   - `output/narrative_response.json`
+   - `output/interface_updates.json`
+   - `output/debug_logs.json`
+5. Do not touch canonical game_state files unless the current repair request still lists canonical state errors.
+6. Finish with `Complete-BoeValidationRepair` as the last command.
+
+## Minimal shapes
+
+`output/narrative_response.json`:
+
+```json
+{
+  "response": "<fresh player-facing narrative for the same accepted turn>",
+  "timestamp": "<ISO 8601 UTC timestamp>"
+}
+```
+
+`output/interface_updates.json`:
+
+```json
+{
+  "dialogueOptions": [
+    {
+      "text": "<clean visible option>",
+      "inputValue": "<optional exact input>"
+    }
+  ],
+  "timestamp": "<ISO 8601 UTC timestamp>"
+}
+```
+
+`output/debug_logs.json`:
+
+```json
+{
+  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local | World-progression | Guardian-centric | Mixed\n- Relevant actors: <actors or нет>\n- Why relevant: <short reason>\n- Actors outside scope: <actors or нет>\n- Why outside scope: <short reason>\n\n## Reasoning\n### <actor if any>\n- Ситуация: ...\n- Мысли: ...\n- Действия: ...",
+  "timestamp": "<ISO 8601 UTC timestamp>"
+}
+```
+
+## Rules
+
+- This is output-only repair. Do not create a new turn, reroll dice, advance time, change rewards, or rewrite canonical state.
+- Preserve the accepted player action and already repaired story meaning.
+- If the old narrative/options contradict repaired canonical state, rewrite the text/options to match current canonical state.
+- Keep player-facing `text` clean; put exact machine input in `inputValue` only when needed.
+- Do not write `ready/turn_complete.json` in validation repair mode.
+- Do not search implementation source for output schema. This template and `validation_repair_request.json` are enough.
+
+## Terminal rule
+
+```powershell
+Complete-BoeValidationRepair
+```
+'@
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\AFTERLIFE_CHRONICLE_TEMPLATE.md" -Role "compact_afterlife_chronicle_template" -Content @'
 # Compact Afterlife Chronicle Template
 
@@ -1430,7 +1512,7 @@ Use this before opening large examples for repair mode.
 - If an inventory item `durability` field is named, write a percentage string such as `100%`; never write a bare number such as `100`.
 - If an inventory item `journalEntries[]` field is named, write an array of non-empty strings, not objects; each entry is one player-facing note string without technical turn anchors such as `#[3].`.
 - If a wrong-realm auto-rollback report exists, treat it as diagnostic evidence, not permission to rewrite mortal files from afterlife.
-- If `harnessRepairPackets[].kind` is `accepted_turn_output_artifact_repair`, repair only the listed `output/narrative_response.json` and `output/debug_logs.json.gm_thoughts_markdown` fields for the same turn; do not create a new turn.
+- If `harnessRepairPackets[].kind` is `accepted_turn_output_artifact_repair`, use `OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md` and repair only the listed output artifacts (`output/narrative_response.json`, `output/interface_updates.json`, `output/debug_logs.json`) for the same turn; do not create a new turn and do not touch canonical game_state files unless canonical errors remain listed in the current request.
 - If validation reports `narrative_response_unknown_field`, remove the unsupported field from `output/narrative_response.json`; keep only `response` and `timestamp`. If the field is `afterlifeChronicleUpdates`, move/keep that data only on the afterlife chronicle surface described by `AFTERLIFE_CHRONICLE_TEMPLATE.md` and `game_state/meta/afterlife_chronicles.json`.
 - If `harnessRepairPackets[].kind` is `afterlife_chronicle_string_array_repair`, repair the listed `persistentConsequences[]` / `openThreads[]` fields into arrays of non-empty strings; do not add `eventDescriptions[]`, do not substitute Mortal memory files, and do not create a new turn.
 - If `harnessRepairPackets[].kind` is `afterlife_spiritual_conflict_action_cost_repair`, repair the listed `actionCostAudit` / `actionEconomy` fields sequentially in the already written spiritual conflict file; do not create a new exchange, reroll dice, or edit pending snapshots.
@@ -2098,7 +2180,7 @@ Start here instead of browsing repository implementation code.
     $script:AfterlifeExamplesDirective = $script:AfterlifeExamplesDirective.Replace($script:RepoRootPath, $script:GmContextPackRoot)
     $script:GmContextPackDirective = " GM session context pack is the first authority: Manifest='$($script:GmContextPackManifestPath)', Root='$($script:GmContextPackRoot)', README='$readmePath'. Bootstrap scope: read only context_pack_manifest.json and README.md. Do not open copied guides/examples during bootstrap; open large copied docs only when a per-turn, repair, or terminal-failure prompt explicitly names them."
     $script:GmDocPathDirective = " GM documentation paths are session-local and authoritative: TaskGuide='$($script:TaskGuideMainPath)', MainExample='$($script:ExampleMainPath)', AfterlifeMatrix='$($script:AfterlifeMatrixPath)', AfterlifeTurns='$($script:AfterlifeTurnsExamplePath)'. Do not search repository source or other worktrees for GM docs; use these context-pack paths first."
-    $script:GmCompactTemplateDirective = " Compact GM templates are first for executable shapes: Turn='$($script:CompactTurnOutputTemplatePath)', Repair='$($script:CompactValidationRepairTemplatePath)', ProgressionReport='$($script:CompactProgressionReportTemplatePath)', ActorReasoning='$($script:CompactActorReasoningTemplatePath)', MortalNpc='$($script:CompactMortalNpcTemplatePath)', MortalFaction='$($script:CompactMortalFactionTemplatePath)', MortalLocation='$($script:CompactMortalLocationTemplatePath)', MortalSkill='$($script:CompactMortalSkillTemplatePath)', MortalExperience='$($script:CompactMortalExperienceTemplatePath)', MortalCombat='$($script:CompactMortalCombatTemplatePath)', AfterlifeChronicle='$($script:CompactAfterlifeChronicleTemplatePath)', TempoAdvantage='$($script:CompactTempoAdvantageTemplatePath)'. Use these before opening large copied examples; open long examples only for route-specific contracts not covered by compact templates. Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; use MortalNpc template and a stable role-based visible name when a visible actor speaks, acts, gives clues, receives a player action, or blocks/opens a route. For Mortal World training, skill unlocks, active skill use, or mastery updates, use MortalSkill template and avoid prose-only learning unless this turn is explicitly only early practice. For Mortal World XP rewards, combat rewards, level-up thresholds, or stat-allocation tests, use MortalExperience template and update game_state/player/experience.json rather than leaving rewards prose-only. For Mortal World open combat, enemy exchanges, combat XP, active-skill combat mastery, or combat resource changes, use MortalCombat template and leave /бой useful through game_state/combat/combat_log.json plus enemies/allies when relevant."
+    $script:GmCompactTemplateDirective = " Compact GM templates are first for executable shapes: Turn='$($script:CompactTurnOutputTemplatePath)', Repair='$($script:CompactValidationRepairTemplatePath)', OutputArtifactRepair='$($script:CompactOutputArtifactRepairTemplatePath)', ProgressionReport='$($script:CompactProgressionReportTemplatePath)', ActorReasoning='$($script:CompactActorReasoningTemplatePath)', MortalNpc='$($script:CompactMortalNpcTemplatePath)', MortalFaction='$($script:CompactMortalFactionTemplatePath)', MortalLocation='$($script:CompactMortalLocationTemplatePath)', MortalSkill='$($script:CompactMortalSkillTemplatePath)', MortalExperience='$($script:CompactMortalExperienceTemplatePath)', MortalCombat='$($script:CompactMortalCombatTemplatePath)', AfterlifeChronicle='$($script:CompactAfterlifeChronicleTemplatePath)', TempoAdvantage='$($script:CompactTempoAdvantageTemplatePath)'. Use these before opening large copied examples; open long examples only for route-specific contracts not covered by compact templates. For accepted_turn_output_artifact_repair, use OutputArtifactRepair before broad repair examples. Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; use MortalNpc template and a stable role-based visible name when a visible actor speaks, acts, gives clues, receives a player action, or blocks/opens a route. For Mortal World training, skill unlocks, active skill use, or mastery updates, use MortalSkill template and avoid prose-only learning unless this turn is explicitly only early practice. For Mortal World XP rewards, combat rewards, level-up thresholds, or stat-allocation tests, use MortalExperience template and update game_state/player/experience.json rather than leaving rewards prose-only. For Mortal World open combat, enemy exchanges, combat XP, active-skill combat mastery, or combat resource changes, use MortalCombat template and leave /бой useful through game_state/combat/combat_log.json plus enemies/allies when relevant."
     $script:GmExperienceLessonsDirective = " Experience lessons are hints only: '$($script:GmExperienceLessonMarkdownPath)'. Use them to avoid repeated mistakes, but current validators, repair packets, and compact templates remain authoritative."
     $script:GmSafeProbeDirective = " Safe GM probes are first for bounded context questions: '$($script:GmSafeProbeMarkdownPath)'. They are read-only; if a needed fact is missing, record a missing harness surface instead of treating implementation source as normal workflow."
     $script:GmSourceFallbackDirective = " Do not read implementation code such as BookOfEternityClient/**/*.cs during normal play or validation repair; use safe GM probes, validation_repair_request.json.harnessRepairPackets, session state/control files, helper commands, and named copied GM docs instead."
@@ -2682,6 +2764,204 @@ function Test-GmBridgeArtifactWritingStall {
         visibleScreenText = $visibleScreenText
         recentOutputTail = $recentOutputTail
     })
+}
+
+function ConvertTo-GmValidationRepairTargetPath {
+    param([string]$Path)
+
+    if ([string]::IsNullOrWhiteSpace($Path)) {
+        return ""
+    }
+
+    $normalized = $Path.Trim().Replace("\", "/")
+    $match = [regex]::Match($normalized, "([A-Za-z0-9_\-./]+\.json)")
+    if (-not $match.Success) {
+        return ""
+    }
+
+    return $match.Groups[1].Value.TrimStart(".", "/")
+}
+
+function Get-GmValidationRepairTargetFiles {
+    param([object]$RepairRequest)
+
+    $targets = [System.Collections.Generic.List[string]]::new()
+
+    foreach ($packetCollectionName in @("harnessRepairPackets", "repairPackets")) {
+        $packetCollection = $RepairRequest.PSObject.Properties[$packetCollectionName]
+        if ($null -eq $packetCollection -or $null -eq $packetCollection.Value) {
+            continue
+        }
+
+        foreach ($packet in @($packetCollection.Value)) {
+            if ($null -ne $packet.targetFiles) {
+                foreach ($targetFile in @($packet.targetFiles)) {
+                    $target = ConvertTo-GmValidationRepairTargetPath -Path ([string]$targetFile)
+                    if ($target) { $targets.Add($target) }
+                }
+            }
+        }
+    }
+
+    if ($null -ne $RepairRequest.errors) {
+        foreach ($err in @($RepairRequest.errors)) {
+            foreach ($fieldName in @("path", "filePath")) {
+                $field = $err.PSObject.Properties[$fieldName]
+                if ($null -ne $field -and $null -ne $field.Value) {
+                    $target = ConvertTo-GmValidationRepairTargetPath -Path ([string]$field.Value)
+                    if ($target) { $targets.Add($target) }
+                }
+            }
+        }
+    }
+
+    if ($targets.Count -eq 0) {
+        $targets.Add("output/narrative_response.json")
+        $targets.Add("output/debug_logs.json")
+    }
+
+    return @($targets | Select-Object -Unique)
+}
+
+function Get-GmValidationRepairTargetSnapshot {
+    param([string[]]$TargetFiles)
+
+    $snapshot = [ordered]@{}
+    foreach ($relativePath in @($TargetFiles)) {
+        $normalized = ConvertTo-GmValidationRepairTargetPath -Path $relativePath
+        if (-not $normalized) {
+            continue
+        }
+
+        $fullPath = Join-Path $GameSessionPath $normalized
+        if (Test-Path $fullPath) {
+            $item = Get-Item $fullPath
+            $snapshot[$normalized] = "$($item.LastWriteTimeUtc.Ticks):$($item.Length)"
+        }
+        else {
+            $snapshot[$normalized] = "<missing>"
+        }
+    }
+
+    return $snapshot
+}
+
+function ConvertTo-GmValidationRepairSnapshotSignature {
+    param([object]$Snapshot)
+
+    return (($Snapshot.GetEnumerator() | Sort-Object Key | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join "|")
+}
+
+function New-GmValidationRepairArtifactWatchState {
+    param(
+        [object]$RepairRequest,
+        [string]$DispatchStatus
+    )
+
+    $targetFiles = @(Get-GmValidationRepairTargetFiles -RepairRequest $RepairRequest)
+    $snapshot = Get-GmValidationRepairTargetSnapshot -TargetFiles $targetFiles
+    $now = (Get-Date).ToUniversalTime()
+    return @{
+        request = $RepairRequest
+        dispatchStatus = $DispatchStatus
+        startedAtUtc = $now
+        lastProgressUtc = $now
+        targetFiles = $targetFiles
+        lastSnapshotSignature = ConvertTo-GmValidationRepairSnapshotSignature -Snapshot $snapshot
+    }
+}
+
+function Test-GmValidationRepairArtifactWritingStall {
+    param(
+        [hashtable]$WatchState,
+        [int]$MinimumElapsedSeconds = $script:ValidationRepairArtifactStallMinimumSeconds,
+        [int]$NoProgressSeconds = $script:ValidationRepairArtifactStallNoProgressSeconds
+    )
+
+    if ($null -eq $WatchState) {
+        return $null
+    }
+
+    $readyPath = Join-Path $ControlDir "validation_repair_ready.json"
+    if (Test-Path $readyPath) {
+        return [pscustomobject]([ordered]@{
+            isStalled = $false
+            completed = $true
+            harnessSource = "gm_validation_repair_artifact_stall"
+        })
+    }
+
+    $targetFiles = @($WatchState.targetFiles)
+    $snapshot = Get-GmValidationRepairTargetSnapshot -TargetFiles $targetFiles
+    $signature = ConvertTo-GmValidationRepairSnapshotSignature -Snapshot $snapshot
+    $now = (Get-Date).ToUniversalTime()
+    if ([string]$WatchState.lastSnapshotSignature -ne $signature) {
+        $WatchState.lastSnapshotSignature = $signature
+        $WatchState.lastProgressUtc = $now
+    }
+
+    $elapsedSeconds = [int][Math]::Floor(($now - [datetime]$WatchState.startedAtUtc).TotalSeconds)
+    $noProgressElapsed = [int][Math]::Floor(($now - [datetime]$WatchState.lastProgressUtc).TotalSeconds)
+    $isStalled = (
+        $targetFiles.Count -gt 0 -and
+        $elapsedSeconds -ge $MinimumElapsedSeconds -and
+        $noProgressElapsed -ge $NoProgressSeconds
+    )
+
+    return [pscustomobject]([ordered]@{
+        isStalled = $isStalled
+        completed = $false
+        harnessSource = "gm_validation_repair_artifact_stall"
+        elapsedSeconds = $elapsedSeconds
+        minimumElapsedSeconds = $MinimumElapsedSeconds
+        noProgressSeconds = $NoProgressSeconds
+        noProgressElapsedSeconds = $noProgressElapsed
+        dispatchStatus = [string]$WatchState.dispatchStatus
+        targetFiles = @($targetFiles)
+        currentSnapshot = $snapshot
+    })
+}
+
+function Watch-ActiveValidationRepairProgress {
+    if ($null -eq $script:ActiveValidationRepairWatch) {
+        return
+    }
+
+    $stall = Test-GmValidationRepairArtifactWritingStall -WatchState $script:ActiveValidationRepairWatch
+    if ($null -eq $stall) {
+        return
+    }
+
+    if ($stall.completed) {
+        $script:ActiveValidationRepairWatch = $null
+        return
+    }
+
+    if (-not $stall.isStalled) {
+        return
+    }
+
+    Write-Log "  Validation repair appears stalled without target artifact progress; stopping GM bridge." -Level "ERROR" -Color Red
+    [void](Write-DaemonJsonFileBestEffort -Path $ValidationRepairArtifactStallReportFile -Payload $stall -Depth 10)
+    $repairRequest = $script:ActiveValidationRepairWatch.request
+    $cleanup = Stop-GmBridgeAfterTurnTimeout -TurnRequest $repairRequest -ElapsedSeconds ([int]$stall.elapsedSeconds) -Reason "gm_validation_repair_artifact_stall"
+    $stall | Add-Member -NotePropertyName bridgeCleanup -NotePropertyValue $cleanup -Force
+    [void](Write-DaemonJsonFileBestEffort -Path $ValidationRepairArtifactStallReportFile -Payload $stall -Depth 10)
+    $repairAttempts = if ($repairRequest.revalidationAttempt) { [int]$repairRequest.revalidationAttempt } else { 1 }
+    Write-GmTrajectoryRecord `
+        -Kind "repair" `
+        -Mode "validation_repair" `
+        -RequestObject $repairRequest `
+        -Dispatch (New-GmDispatchDiagnostics -Status "gm_validation_repair_artifact_stall" -Attempts 0 -BusyRetries 0 -Timeout $true) `
+        -ValidationStatus "rejected" `
+        -IssueKinds (Get-GmTrajectoryIssueKinds -RequestObject $repairRequest) `
+        -RepairPacketRefs (Get-GmTrajectoryRepairPacketRefs -RequestObject $repairRequest) `
+        -ValidationDiagnostics (Get-GmTrajectoryValidationDiagnostics -RequestObject $repairRequest) `
+        -RepairPacketDiagnostics (Get-GmTrajectoryRepairPacketDiagnostics -RequestObject $repairRequest) `
+        -RepairAttempts $repairAttempts `
+        -RepairStatus "stalled" `
+        -MissingHarnessTool "gm_validation_repair_artifact_stall"
+    $script:ActiveValidationRepairWatch = $null
 }
 
 function Stop-GmBridgeAfterTurnTimeout {
@@ -4916,8 +5196,35 @@ function Process-RepairRequest {
             }
         }
 
+        $repairPacketKinds = @()
+        foreach ($packetCollectionName in @("harnessRepairPackets", "repairPackets")) {
+            $packetCollection = $repair.PSObject.Properties[$packetCollectionName]
+            if ($null -ne $packetCollection -and $null -ne $packetCollection.Value) {
+                foreach ($packet in @($packetCollection.Value)) {
+                    if ($null -ne $packet.kind -and -not [string]::IsNullOrWhiteSpace([string]$packet.kind)) {
+                        $repairPacketKinds += [string]$packet.kind
+                    }
+                }
+            }
+        }
+
+        $issueCodes = @()
+        if ($repair.errors) {
+            foreach ($err in @($repair.errors)) {
+                if ($err.code) { $issueCodes += [string]$err.code }
+            }
+        }
+
+        $hasAcceptedTurnOutputArtifactRepair = @($repairPacketKinds | Where-Object { [string]::Equals($_, "accepted_turn_output_artifact_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
+        $hasStalePlayerFacingOutputRepair = @($issueCodes | Where-Object { [string]::Equals($_, "accepted_turn_stale_player_facing_output_after_canonical_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
+        $outputArtifactRepairDirective = if ($hasAcceptedTurnOutputArtifactRepair -or $hasStalePlayerFacingOutputRepair) {
+            " You MUST read '$($script:CompactOutputArtifactRepairTemplatePath)' before any broad repair examples. For accepted_turn_output_artifact_repair, this is output-only repair: rewrite only output/narrative_response.json, output/interface_updates.json, and output/debug_logs.json as listed by validation_repair_request.json; do not touch canonical game_state files unless the current request still lists canonical errors."
+        } else {
+            ""
+        }
+
         $readyPath = "$GameSessionPath\game_state\control\validation_repair_ready.json"
-        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples. Also use '$($script:CompactActorReasoningTemplatePath)' for actor coverage repairs; use '$($script:CompactMortalNpcTemplatePath)' for any repair touching game_state/npcs/npc_core.json or NPC validation errors; use '$($script:CompactMortalFactionTemplatePath)' for any repair touching game_state/factions/* or faction validation errors; use '$($script:CompactMortalLocationTemplatePath)' for any repair touching game_state/world/current_location.json, game_state/world/world_map.json, or unknown location ids; use '$($script:CompactMortalSkillTemplatePath)' for any repair touching activeSkillChanges, passiveSkillChanges, skillMasteryChanges, or player skill files; use '$($script:CompactMortalExperienceTemplatePath)' for any repair touching game_state/player/experience.json, experienceGained, level-up, or stat-point level progression; and prefer validation_repair_request.json.harnessRepairPackets over source-code archaeology. Read '$($script:TaskGuideMainPath)' for repair phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) Fix only the listed validation errors in the already written files IN PLACE. Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
+        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples.$outputArtifactRepairDirective Also use '$($script:CompactActorReasoningTemplatePath)' for actor coverage repairs; use '$($script:CompactMortalNpcTemplatePath)' for any repair touching game_state/npcs/npc_core.json or NPC validation errors; use '$($script:CompactMortalFactionTemplatePath)' for any repair touching game_state/factions/* or faction validation errors; use '$($script:CompactMortalLocationTemplatePath)' for any repair touching game_state/world/current_location.json, game_state/world/world_map.json, or unknown location ids; use '$($script:CompactMortalSkillTemplatePath)' for any repair touching activeSkillChanges, passiveSkillChanges, skillMasteryChanges, or player skill files; use '$($script:CompactMortalExperienceTemplatePath)' for any repair touching game_state/player/experience.json, experienceGained, level-up, or stat-point level progression; and prefer validation_repair_request.json.harnessRepairPackets over source-code archaeology. Read '$($script:TaskGuideMainPath)' for repair phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) Fix only the listed validation errors in the already written files IN PLACE. Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
         if ($hasDiagnosticOnlyMetadata) {
             $message += " The current repair request marks sessionId/requestId/turnNumber as diagnostic-only sentinel values because validated pending snapshot context is unavailable or invalid. Do NOT copy those sentinel metadata into $readyPath. First restore pending snapshot context/authority and then use the freshest client-authored repair request with valid metadata before writing validation_repair_ready.json."
         }
@@ -4964,6 +5271,9 @@ function Process-RepairRequest {
         }
 
         $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ReturnDetails
+        if ($dispatchDiagnostics.Status -eq "sent" -or $dispatchDiagnostics.Status -eq "clipboard") {
+            $script:ActiveValidationRepairWatch = New-GmValidationRepairArtifactWatchState -RepairRequest $repair -DispatchStatus ([string]$dispatchDiagnostics.Status)
+        }
         Write-GmTrajectoryRecord `
             -Kind "repair" `
             -Mode "validation_repair" `
@@ -5334,6 +5644,7 @@ try {
             if (Test-Path $TerminalProtocolFailureRequestFile) {
                 Process-TerminalProtocolFailureRequest -FailurePath $TerminalProtocolFailureRequestFile
             }
+            Watch-ActiveValidationRepairProgress
 
             # Status every 5 minutes
             $statusTimer += $PollingInterval
