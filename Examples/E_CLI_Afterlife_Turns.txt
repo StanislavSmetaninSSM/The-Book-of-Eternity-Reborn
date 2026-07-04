@@ -1164,6 +1164,11 @@ Correct GM procedure:
 - Do not write `afterlife_notifications.json`; the client derives the ready inbox event.
 - The fragment below shows the canonical persisted Guardian state patch; preserve all other fields on the existing Guardian object.
 
+Repair-mode note:
+- If validation rejects this route with `guardian_trade_request_missing_guardian_resolution`, `guardian_trade_request_missing_inventory_resolution`, or `guardian_trade_request_missing_receipt_resolution`, open `validation_repair_request.json.harnessRepairPackets[]` and use packet kind `guardian_trade_inventory_resolution_repair`.
+- In repair mode, do not make a new turn and do not edit `game_state/control/pending_guardian_trade_request.json`; it is read-only client authority for request identity, cycle, slot count, reputation tier inputs, and project bonus signature.
+- Patch only the matching Guardian in `game_state/meta/guardians.json` plus required `output/debug_logs.json` actor reasoning. The repair is complete only when the Guardian has a matching `tradeInventory` and a matching ready receipt through `UpdateGuardianTradeInventoryReceipts` or `guardians[].tradeInventoryReceipts[]`.
+
 Correct response/state fragment:
 
 ```json

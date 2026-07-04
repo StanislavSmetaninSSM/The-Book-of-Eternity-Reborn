@@ -953,6 +953,68 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_GuardianTradeInventoryResolutionErrors_AddsConcreteHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/control/pending_guardian_trade_request.json",
+                IssueSeverity.Error,
+                "pending_guardian_trade_request из pre-turn snapshot не привёл к matching guardian.tradeInventory",
+                code: "guardian_trade_request_missing_inventory_resolution",
+                section: "GuardianTrade",
+                expected: "guardian.tradeInventory matching requestId/tradeCycleId/returnCycleId",
+                actual: "missing tradeInventory",
+                repairHint: "На accepted turn обязательно materialize-ь guardian.tradeInventory по exact client-authored request contract; не игнорируй request и не закрывай его частично совпадающей витриной."),
+            new(
+                "game_state/control/pending_guardian_trade_request.json",
+                IssueSeverity.Error,
+                "pending_guardian_trade_request из pre-turn snapshot не был закрыт canonical tradeInventory receipt",
+                code: "guardian_trade_request_missing_receipt_resolution",
+                section: "GuardianTrade",
+                expected: "matching guardianTradeInventoryReceipts[] entry",
+                actual: "missing receipt")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "повторной проверки repair", issues, 3 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("guardian_trade_inventory_resolution_repair", packet.GetProperty("kind").GetString());
+        Assert.Equal("high", packet.GetProperty("priority").GetString());
+        Assert.Contains("game_state/meta/guardians.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/control/pending_guardian_trade_request.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("guardian.tradeInventory", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("requestId", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("tradeCycleId", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("tradeInventoryReceipts", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("pending_guardian_trade_request.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("Read-BoeJson", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("tradeInventory", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("Complete-BoeValidationRepair", StringComparison.OrdinalIgnoreCase));
+
+        var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(doNotDo, item => item.Contains("new turn", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("pending_guardian_trade_request.json", StringComparison.OrdinalIgnoreCase) &&
+                                         item.Contains("rewrite", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_ActorReasoningSubpointErrors_AddsHarnessPacket()
     {
         var engine = CreateGameEngine();

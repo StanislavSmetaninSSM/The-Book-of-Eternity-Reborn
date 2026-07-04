@@ -1702,6 +1702,9 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("afterlife_spiritual_conflict_reward_repair", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("afterlife_entity_profile_scaffold_repair", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("specialArtLearningReceipts", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("guardian_trade_inventory_resolution_repair", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("pending_guardian_trade_request.json", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("guardian.tradeInventory", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("narrative_response_unknown_field", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("remove the unsupported field from `output/narrative_response.json`", repairTemplate, StringComparison.OrdinalIgnoreCase);
 

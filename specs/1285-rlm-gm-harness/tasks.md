@@ -229,6 +229,7 @@
 - [X] T185 [Harness/RLM live-test follow-up #1434/#1285/#1290] Publish validation repair progress in Agent Console snapshots, including turn, attempt, issue summary, and machine-readable diagnostics while preserving existing trajectory ledger postmortems.
 - [X] T186 [Harness/RLM live-test follow-up #1435/#1285/#1290] Detect GM payload files written without a correlated terminal ready signal, emit a bounded daemon terminal error with changed-file diagnostics, and document the new `gm_output_without_terminal_signal` RLM pattern for future turns.
 - [X] T187 [Harness/RLM live-test follow-up #1436/#1285/#1290] Add output-only accepted-turn repair template, route stale player-facing output repairs to it, and detect validation repair artifact stalls without target-file progress.
+- [X] T188 [Harness/RLM live-test blocker #1443/#1285/#1290] Add a dedicated Guardian trade request resolution repair packet/template guidance so `pending_guardian_trade_request.json` repairs materialize `guardian.tradeInventory` and receipts instead of stalling in generic Guardian scope repair.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.

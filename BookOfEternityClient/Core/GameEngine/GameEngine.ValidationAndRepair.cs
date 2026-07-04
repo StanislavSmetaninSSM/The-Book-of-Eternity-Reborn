@@ -1111,6 +1111,7 @@ public partial class GameEngine
         var mortalNpcReferenceErrors = errors.Where(IsMortalNpcReferenceRepairIssue).ToList();
         var mortalCombatStateErrors = errors.Where(IsMortalCombatStateRepairIssue).ToList();
         var afterlifeChronicleStringArrayErrors = errors.Where(IsAfterlifeChronicleStringArrayRepairIssue).ToList();
+        var guardianTradeInventoryResolutionErrors = errors.Where(IsGuardianTradeInventoryResolutionRepairIssue).ToList();
         var afterlifeActionCostErrors = errors.Where(IsAfterlifeSpiritualConflictActionCostRepairIssue).ToList();
         var afterlifeConflictRewardErrors = errors.Where(IsAfterlifeSpiritualConflictRewardRepairIssue).ToList();
         var afterlifeEntityProfileScaffoldErrors = errors.Where(IsAfterlifeEntityProfileScaffoldRepairIssue).ToList();
@@ -1167,6 +1168,9 @@ public partial class GameEngine
 
         if (afterlifeChronicleStringArrayErrors.Count > 0)
             packets.Add(BuildAfterlifeChronicleStringArrayRepairPacket(afterlifeChronicleStringArrayErrors));
+
+        if (guardianTradeInventoryResolutionErrors.Count > 0)
+            packets.Add(BuildGuardianTradeInventoryResolutionRepairPacket(guardianTradeInventoryResolutionErrors));
 
         if (afterlifeActionCostErrors.Count > 0)
             packets.Add(BuildAfterlifeSpiritualConflictActionCostRepairPacket(afterlifeActionCostErrors));
@@ -1414,6 +1418,17 @@ public partial class GameEngine
                code.Contains("action_economy", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(code, "afterlife_conflict_dice_value_not_authorized", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(code, "afterlife_conflict_maneuver_changes_strain", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsGuardianTradeInventoryResolutionRepairIssue(ValidationIssue issue)
+    {
+        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
+        {
+            "guardian_trade_request_missing_guardian_resolution" => true,
+            "guardian_trade_request_missing_inventory_resolution" => true,
+            "guardian_trade_request_missing_receipt_resolution" => true,
+            _ => false
+        };
     }
 
     private static bool IsAfterlifeSpiritualConflictRewardRepairIssue(ValidationIssue issue)
@@ -2757,6 +2772,97 @@ public partial class GameEngine
         };
     }
 
+    private static ValidationRepairHarnessPacket BuildGuardianTradeInventoryResolutionRepairPacket(
+        IReadOnlyList<ValidationIssue> tradeErrors)
+    {
+        var targetFiles = tradeErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("game_state/meta/guardians.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/meta/guardians.json");
+        if (!targetFiles.Contains(GuardianTradeRequestState.PendingRequestPath, StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add(GuardianTradeRequestState.PendingRequestPath);
+        if (!targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("output/debug_logs.json");
+
+        var issueDetails = tradeErrors
+            .Select(DescribeGuardianTradeInventoryResolutionRepairIssue)
+            .Where(detail => !string.IsNullOrWhiteSpace(detail))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(detail => detail, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var issueSummary = issueDetails.Count == 0
+            ? "see validation_repair_request.json.errors for exact Guardian trade resolution errors"
+            : string.Join("; ", issueDetails);
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "guardian_trade_inventory_resolution_repair",
+            Priority = "high",
+            Title = "Guardian trade inventory request resolution repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string>
+            {
+                "OtherGuides/Afterlife_Contract_Matrix.md",
+                "Examples/E_CLI_Afterlife_Turns.txt"
+            },
+            ExpectedShape = new List<string>
+            {
+                "Read game_state/control/pending_guardian_trade_request.json as read-only authority. It supplies requestId, guardianId, guardianName, abodeId, returnCycleId, currentReputation, derivedTradeSlotCount, effectiveRarityCeilingBonusSteps, projectBonusSignature, and createdAtTurn.",
+                "In game_state/meta/guardians.json, patch the matching guardian so guardian.tradeInventory.tradeCycleId equals request.returnCycleId and generatedAtUtc is a fresh ISO-8601 UTC timestamp.",
+                "guardian.tradeInventory.generationReputationTier and pricingReputationTier must match the request currentReputation tier; effectiveRarityCeilingBonusSteps and projectBonusSignature must exactly match the request.",
+                "guardian.tradeInventory.items must be an array with exactly request.derivedTradeSlotCount entries. Every item needs a unique non-empty slotId and player-facing item data suitable for the Guardian's domain.",
+                $"Close the request with {GuardianTradeRequestState.UpdateReceiptsProperty} or guardians[].{GuardianTradeRequestState.ReceiptsProperty}: requestId, guardianId, abodeId, tradeCycleId, status=ready, itemCount matching tradeInventory.items, resolvedAtTurn > 0, and resolvedAtUtc ISO-8601 UTC timestamp."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Patch only the Guardian trade resolution fields named by validation plus adjacent receipt/inventory fields required for the same request to validate.",
+                "If tradeInventory already contains useful items, preserve and reshape them to the request contract instead of deleting the vitrine.",
+                "If tradeInventory is missing, create a compact valid vitrine with request.derivedTradeSlotCount domain-appropriate offers; use player-facing Russian names/descriptions and stable slotId values.",
+                "Use the active/matching Guardian from guardians.json; do not create a new Guardian just to close the trade request.",
+                "Keep pending_guardian_trade_request.json unchanged; it is client-owned authority for this repair."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json first and repair only the listed Guardian trade errors in place.",
+                $"Patch this Guardian trade checklist: {issueSummary}.",
+                "Use Read-BoeJson -RelativePath 'game_state/control/pending_guardian_trade_request.json' to read the exact client-authored request; do not edit that file.",
+                "Use Read-BoeJson -RelativePath 'game_state/meta/guardians.json' and find the guardian whose guardianId matches request.guardianId.",
+                "Set that guardian.tradeInventory to a valid object matching request.returnCycleId, currentReputation tier, effectiveRarityCeilingBonusSteps, projectBonusSignature, and derivedTradeSlotCount.",
+                $"Add a matching receipt through {GuardianTradeRequestState.UpdateReceiptsProperty} at the guardians root or through guardians[].{GuardianTradeRequestState.ReceiptsProperty}; include requestId, guardianId, guardianName, abodeId, tradeCycleId, status=ready, itemCount, resolvedAtTurn, and resolvedAtUtc.",
+                "Repair output/debug_logs.json.gm_thoughts_markdown so the active Guardian is in Relevant actors and has situation/thoughts/actions explaining the vitrine.",
+                "Write the repaired guardians.json with Write-BoeJson, then call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from validation_repair_request.json."
+            },
+            DebugLogTemplate = string.Join(
+                Environment.NewLine,
+                "## Охват NPC-анализа",
+                "Режим: Guardian-centric",
+                "Релевантные акторы: <имя активного Хранителя>",
+                "Почему они релевантны: Хранитель подготавливает торговую витрину по pending_guardian_trade_request.json.",
+                "Акторы вне охвата: нет",
+                "Почему они вне охвата: repair закрывает только торговую витрину активного Хранителя.",
+                "",
+                "## Guardian Thoughts",
+                "### <имя активного Хранителя>",
+                "- Ситуация: игрок запросил торговлю, и Хранитель подготавливает ограниченную витрину своего домена.",
+                "- Мысли: кратко объясни, почему эти реликвии/услуги соответствуют домену и текущей репутации.",
+                "- Действия: Хранитель materialize-ит tradeInventory и закрывает request receipt."),
+            DoNotDo = new List<string>
+            {
+                "Do not create a new turn or write ready/turn_complete.json during validation repair.",
+                "Do not rewrite pending_guardian_trade_request.json; it is the read-only client-authored contract for this repair.",
+                "Do not delete the pending request from game_state/control; the client clears it after a valid receipt is accepted.",
+                "Do not leave guardian.tradeInventory prose-only in narrative output; the vitrine must be materialized in game_state/meta/guardians.json.",
+                "Do not change requestId, guardianId, returnCycleId/tradeCycleId, derivedTradeSlotCount, effectiveRarityCeilingBonusSteps, or projectBonusSignature to fit already written inventory.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer trade rules; use this packet, validation_repair_request.json, afterlife docs/examples, and session state."
+            }
+        };
+    }
+
     private static string DescribeAfterlifeChronicleStringArrayRepairIssue(ValidationIssue issue)
     {
         var normalizedPath = (issue.FilePath ?? string.Empty).Replace('\\', '/');
@@ -2770,6 +2876,16 @@ public partial class GameEngine
                 : $"chronicles[{match.Groups["index"].Value}].{match.Groups["field"].Value}[{match.Groups["entry"].Value}]"
             : NormalizeRepairTargetPath(normalizedPath);
         var expected = string.IsNullOrWhiteSpace(issue.Expected) ? "see error.expected" : issue.Expected.Trim();
+        var actual = string.IsNullOrWhiteSpace(issue.Actual) ? "see error.actual" : issue.Actual.Trim();
+        var code = string.IsNullOrWhiteSpace(issue.Code) ? "validation_error" : issue.Code.Trim();
+
+        return $"{location}: expected {expected}, actual {actual} ({code})";
+    }
+
+    private static string DescribeGuardianTradeInventoryResolutionRepairIssue(ValidationIssue issue)
+    {
+        var location = NormalizeRepairTargetPath(issue.FilePath);
+        var expected = string.IsNullOrWhiteSpace(issue.Expected) ? "matching Guardian tradeInventory/receipt for pending request" : issue.Expected.Trim();
         var actual = string.IsNullOrWhiteSpace(issue.Actual) ? "see error.actual" : issue.Actual.Trim();
         var code = string.IsNullOrWhiteSpace(issue.Code) ? "validation_error" : issue.Code.Trim();
 
