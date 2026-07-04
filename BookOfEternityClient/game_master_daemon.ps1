@@ -109,11 +109,14 @@ $DaemonFatalErrorFile = Join-Path $ControlDir "gm_daemon_fatal_error.json"
 $ObservedTerminalRequestKeysFile = Join-Path $ControlDir "gm_observed_terminal_requests.json"
 $TimeoutBridgeCleanupFile = Join-Path $ControlDir "gm_timeout_bridge_cleanup.json"
 $ArtifactWriteStallReportFile = Join-Path $ControlDir "gm_artifact_write_stall_report.json"
+$OutputWithoutTerminalReportFile = Join-Path $ControlDir "gm_output_without_terminal_report.json"
 $BridgeControlScript = Join-Path $PSScriptRoot "Launcher\bookofeternity.ps1"
 $script:GmTrajectoryLedgerPath = Join-Path $ControlDir "gm_trajectory_ledger.jsonl"
 $script:BridgeDispatchMaxWaitSeconds = 60
 $script:ArtifactWritingStallMinimumSeconds = 120
 $script:ArtifactWritingStallNoProgressSeconds = 180
+$script:OutputWithoutTerminalMinimumSeconds = 120
+$script:OutputWithoutTerminalNoProgressSeconds = 90
 $script:DaemonCommandLine = [Environment]::CommandLine
 $script:DaemonLastHeartbeatUtc = [DateTime]::MinValue
 $script:DaemonFatalError = $null
@@ -524,7 +527,8 @@ function Get-GmExperiencePreferredSurface {
     param([string[]]$IssueKinds)
 
     $joined = (($IssueKinds | ForEach-Object { [string]$_ }) -join " ").ToLowerInvariant()
-    if ($joined.Contains("gm_bridge_idle_without_terminal_signal")) {
+    if ($joined.Contains("gm_bridge_idle_without_terminal_signal") -or
+        $joined.Contains("gm_output_without_terminal_signal")) {
         return "TURN_OUTPUT_TEMPLATE.md"
     }
 
@@ -2446,6 +2450,137 @@ function Test-GmBridgeReturnedIdleWithoutTerminalSignal {
         $combinedOutput.IndexOf("> Write tests for @filename", [System.StringComparison]::Ordinal) -ge 0
 
     return ($ready -and $hasCodexIdlePrompt)
+}
+
+function ConvertTo-GmSessionRelativePath {
+    param([string]$FullName)
+
+    if ([string]::IsNullOrWhiteSpace($FullName)) {
+        return ""
+    }
+
+    $root = [IO.Path]::GetFullPath($GameSessionPath)
+    if (-not $root.EndsWith([IO.Path]::DirectorySeparatorChar)) {
+        $root += [IO.Path]::DirectorySeparatorChar
+    }
+
+    $full = [IO.Path]::GetFullPath($FullName)
+    if ($full.StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $full.Substring($root.Length).Replace("\", "/")
+    }
+
+    return $full.Replace("\", "/")
+}
+
+function Test-GmTerminalPayloadCandidatePath {
+    param([string]$RelativePath)
+
+    if ([string]::IsNullOrWhiteSpace($RelativePath)) {
+        return $false
+    }
+
+    $normalized = $RelativePath.Replace("\", "/")
+    if ($normalized.EndsWith(".tmp", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $false
+    }
+
+    if ($normalized.StartsWith("game_state/control/", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $false
+    }
+
+    return $normalized.StartsWith("output/", [System.StringComparison]::OrdinalIgnoreCase) -or
+        $normalized.StartsWith("game_state/", [System.StringComparison]::OrdinalIgnoreCase) -or
+        $normalized.StartsWith("lore/", [System.StringComparison]::OrdinalIgnoreCase)
+}
+
+function Get-GmTerminalPayloadFileSnapshot {
+    $snapshot = @{}
+    $roots = @(
+        $OutputDir,
+        (Join-Path $GameSessionPath "game_state"),
+        (Join-Path $GameSessionPath "lore")
+    )
+
+    foreach ($root in $roots) {
+        if (!(Test-Path $root)) {
+            continue
+        }
+
+        Get-ChildItem -LiteralPath $root -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object {
+            $relativePath = ConvertTo-GmSessionRelativePath -FullName $_.FullName
+            if (Test-GmTerminalPayloadCandidatePath -RelativePath $relativePath) {
+                $snapshot[$relativePath] = "$($_.LastWriteTimeUtc.Ticks):$($_.Length)"
+            }
+        }
+    }
+
+    return $snapshot
+}
+
+function New-GmOutputWithoutTerminalWatchState {
+    return @{
+        baseline = Get-GmTerminalPayloadFileSnapshot
+        firstPayloadElapsed = -1
+        lastProgressElapsed = 0
+        lastChangeSignature = ""
+        lastChangedFiles = @()
+    }
+}
+
+function Test-GmOutputWithoutTerminalSignal {
+    param(
+        [int]$ElapsedSeconds,
+        [hashtable]$WatchState,
+        [int]$MinimumElapsedSeconds = $script:OutputWithoutTerminalMinimumSeconds,
+        [int]$NoProgressSeconds = $script:OutputWithoutTerminalNoProgressSeconds
+    )
+
+    if ($null -eq $WatchState) {
+        $WatchState = New-GmOutputWithoutTerminalWatchState
+    }
+
+    $baseline = if ($WatchState.ContainsKey("baseline") -and $null -ne $WatchState.baseline) { $WatchState.baseline } else { @{} }
+    $current = Get-GmTerminalPayloadFileSnapshot
+    $changedFiles = @()
+
+    foreach ($key in @($current.Keys | Sort-Object)) {
+        if (-not $baseline.ContainsKey($key) -or [string]$baseline[$key] -ne [string]$current[$key]) {
+            $changedFiles += [string]$key
+        }
+    }
+
+    $changeSignature = ($changedFiles | ForEach-Object { "$_=$($current[$_])" }) -join "|"
+    if ($changedFiles.Count -gt 0 -and [string]$WatchState.lastChangeSignature -ne $changeSignature) {
+        $WatchState.lastChangeSignature = $changeSignature
+        $WatchState.lastProgressElapsed = $ElapsedSeconds
+        $WatchState.lastChangedFiles = @($changedFiles)
+        if (-not $WatchState.ContainsKey("firstPayloadElapsed") -or [int]$WatchState.firstPayloadElapsed -lt 0) {
+            $WatchState.firstPayloadElapsed = $ElapsedSeconds
+        }
+    }
+
+    $firstPayloadElapsed = if ($WatchState.ContainsKey("firstPayloadElapsed")) { [int]$WatchState.firstPayloadElapsed } else { -1 }
+    $lastProgressElapsed = if ($WatchState.ContainsKey("lastProgressElapsed")) { [int]$WatchState.lastProgressElapsed } else { $ElapsedSeconds }
+    $payloadAgeSeconds = if ($firstPayloadElapsed -ge 0) { [Math]::Max(0, $ElapsedSeconds - $firstPayloadElapsed) } else { 0 }
+    $noProgressElapsed = [Math]::Max(0, $ElapsedSeconds - $lastProgressElapsed)
+    $isStalled = (
+        $changedFiles.Count -gt 0 -and
+        $ElapsedSeconds -ge $MinimumElapsedSeconds -and
+        $payloadAgeSeconds -ge $NoProgressSeconds -and
+        $noProgressElapsed -ge $NoProgressSeconds
+    )
+
+    return [pscustomobject]([ordered]@{
+        isStalled = $isStalled
+        harnessSource = "gm_output_without_terminal_signal"
+        elapsedSeconds = $ElapsedSeconds
+        minimumElapsedSeconds = $MinimumElapsedSeconds
+        noProgressSeconds = $NoProgressSeconds
+        payloadAgeSeconds = $payloadAgeSeconds
+        noProgressElapsedSeconds = $noProgressElapsed
+        changedFileCount = $changedFiles.Count
+        changedFiles = @($changedFiles | Select-Object -First 40)
+    })
 }
 
 function Test-GmBridgeArtifactWritingIntent {
@@ -4527,6 +4662,7 @@ function Process-Turn {
         # Wait for terminal signal
         $elapsed = 0
         $artifactWriteStallWatchState = @{}
+        $outputWithoutTerminalWatchState = New-GmOutputWithoutTerminalWatchState
 
         while ($null -eq $terminalSignal -and ($TurnTimeout -le 0 -or $elapsed -lt $TurnTimeout)) {
             Start-Sleep -Seconds 1
@@ -4568,6 +4704,34 @@ function Process-Turn {
             }
 
             if ($null -eq $terminalSignal -and $elapsed % 15 -eq 0) {
+                $payloadStall = Test-GmOutputWithoutTerminalSignal -ElapsedSeconds $elapsed -WatchState $outputWithoutTerminalWatchState
+                if ($null -ne $payloadStall -and $payloadStall.isStalled) {
+                    $script:ErrorCount++
+                    Write-Log "  GM wrote turn payload files without a correlated terminal signal; emitting daemon terminal error before indefinite wait." -Level "ERROR" -Color Red
+                    $missingHarnessTool = "gm_output_without_terminal_signal"
+                    $payloadCleanup = Stop-GmBridgeAfterTurnTimeout -TurnRequest $turnRequest -ElapsedSeconds $elapsed -Reason "gm_output_without_terminal_signal"
+                    $payloadStall | Add-Member -NotePropertyName timeoutBridgeCleanup -NotePropertyValue $payloadCleanup -Force
+                    [void](Write-DaemonJsonFileBestEffort -Path $OutputWithoutTerminalReportFile -Payload $payloadStall -Depth 10)
+                    $payloadTerminalSignal = @{
+                        sessionId = $turnRequest.sessionId
+                        requestId = $turnRequest.requestId
+                        turnNumber = $turnNumber
+                        status = "error"
+                        harnessSource = "gm_output_without_terminal_signal"
+                        timestamp = (Get-Date).ToUniversalTime().ToString("o")
+                        error = "GM wrote turn payload files without a correlated terminal signal."
+                        changedFiles = $payloadStall.changedFiles
+                        outputWithoutTerminal = $payloadStall
+                    }
+                    Set-Content -Path $errorPath -Value ($payloadTerminalSignal | ConvertTo-Json -Depth 12) -Encoding UTF8
+                    $terminalSignal = [pscustomobject]@{
+                        Path = $errorPath
+                        Kind = "error"
+                        Signal = [pscustomobject]$payloadTerminalSignal
+                    }
+                    break
+                }
+
                 $artifactStall = Test-GmBridgeArtifactWritingStall -ElapsedSeconds $elapsed -WatchState $artifactWriteStallWatchState
                 if ($null -ne $artifactStall -and $artifactStall.isStalled) {
                     $script:ErrorCount++

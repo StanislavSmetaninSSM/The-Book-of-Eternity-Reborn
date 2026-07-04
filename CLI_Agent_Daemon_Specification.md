@@ -554,6 +554,7 @@ MATH ASSISTANT / МАТЕМАТИК:
 - `terminal_protocol_failure_request.json` survives restart by default and must not be auto-deleted only because a pending snapshot manifest still exists
 - if the daemon cannot dispatch a turn because the ConPTY bridge named pipe is unreachable or never accepts the prompt before the dispatch deadline, daemon emits a correlated `ready/turn_error.json` with `harnessSource = "gm_bridge_dispatch_unavailable"` and records the rejected trajectory; treat this as harness/bridge failure evidence, not as a player choice or validation repair
 - if the Codex bridge returns to its idle prompt after the GM wrote turn outputs but no correlated `ready/turn_complete.json` or `ready/turn_error.json` exists, daemon emits a correlated `ready/turn_error.json` with `harnessSource = "gm_bridge_idle_without_terminal_signal"`; treat this as terminal protocol failure evidence for the next request, not as a player choice or validation repair
+- if the daemon sees `output/` or game-state payload files change after dispatch, but no correlated terminal signal appears after the grace window, daemon emits a correlated `ready/turn_error.json` with `harnessSource = "gm_output_without_terminal_signal"` and lists changed files; treat this as evidence that the GM skipped `Complete-BoeTurn`/`Fail-BoeTurn`, not as a player choice or validation repair
 
 ---
 

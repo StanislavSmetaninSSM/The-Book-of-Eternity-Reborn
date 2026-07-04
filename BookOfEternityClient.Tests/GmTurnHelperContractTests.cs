@@ -3712,6 +3712,39 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonTurnWait_EmitsEarlyTerminalErrorWhenGmWritesPayloadWithoutTerminalSignal()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("function Test-GmOutputWithoutTerminalSignal", daemon, StringComparison.Ordinal);
+        Assert.Contains("gm_output_without_terminal_signal", daemon, StringComparison.Ordinal);
+        Assert.Contains("GM wrote turn payload files without a correlated terminal signal", daemon, StringComparison.Ordinal);
+        Assert.Contains("changedFiles = $payloadStall.changedFiles", daemon, StringComparison.Ordinal);
+        Assert.Contains("gm_output_without_terminal_report.json", daemon, StringComparison.Ordinal);
+
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides/CLI_Step_Main.txt");
+        var mainExample = ReadRepoFile("Examples/E_CLI_Step_Main.txt");
+        foreach (var gmFacingText in new[] { daemonSpec, taskGuide, mainExample })
+        {
+            Assert.Contains("gm_output_without_terminal_signal", gmFacingText, StringComparison.Ordinal);
+            Assert.Contains("Complete-BoeTurn", gmFacingText, StringComparison.Ordinal);
+        }
+
+        var waitLoopIndex = daemon.IndexOf("while ($null -eq $terminalSignal", StringComparison.Ordinal);
+        var idleProbeIndex = daemon.IndexOf("Test-GmBridgeReturnedIdleWithoutTerminalSignal", waitLoopIndex, StringComparison.Ordinal);
+        var payloadProbeIndex = daemon.IndexOf("Test-GmOutputWithoutTerminalSignal", waitLoopIndex, StringComparison.Ordinal);
+        var artifactProbeIndex = daemon.IndexOf("Test-GmBridgeArtifactWritingStall", waitLoopIndex, StringComparison.Ordinal);
+        var timeoutIndex = daemon.IndexOf("Timeout after ${elapsed}s", waitLoopIndex, StringComparison.Ordinal);
+
+        Assert.True(waitLoopIndex >= 0, "Expected a terminal wait loop.");
+        Assert.True(payloadProbeIndex > waitLoopIndex, "Expected output-without-terminal detection inside the wait loop.");
+        Assert.True(payloadProbeIndex > idleProbeIndex, "Expected output-without-terminal detection after the cheaper idle probe.");
+        Assert.True(artifactProbeIndex > payloadProbeIndex, "Expected artifact-writing stall detection after concrete payload detection.");
+        Assert.True(timeoutIndex > payloadProbeIndex, "Expected output-without-terminal detection before full timeout fallback.");
+    }
+
+    [Fact]
     public void DaemonTurnTimeout_ShutsDownBridgeBeforeWritingTimeoutTerminalError()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
