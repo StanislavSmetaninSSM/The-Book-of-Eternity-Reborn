@@ -886,7 +886,7 @@ public sealed partial class NpcTradeService
                 merchantProfile,
                 GetMerchantProfileDisplayName(merchantProfile),
                 false,
-                "Локальная торговля включается только через tradeState.canTrade = true.");
+                "Торговля сейчас недоступна.");
         }
 
         if (!tradeState.Value.TryGetProperty("canTrade", out var canTradeNode) ||
@@ -896,7 +896,7 @@ public sealed partial class NpcTradeService
                 merchantProfile,
                 GetMerchantProfileDisplayName(merchantProfile),
                 false,
-                "Локальная торговля включается только через tradeState.canTrade = true.");
+                "Торговля сейчас недоступна.");
         }
 
         if (canTradeNode.ValueKind == JsonValueKind.False)
@@ -941,7 +941,7 @@ public sealed partial class NpcTradeService
                 merchantProfile,
                 GetMerchantProfileDisplayName(merchantProfile),
                 false,
-                "Локальная торговля включается только через tradeState.canTrade = true.");
+                "Торговля сейчас недоступна.");
         }
 
         if (tradeState["canTrade"] is not JsonValue canTradeValue ||
@@ -951,7 +951,7 @@ public sealed partial class NpcTradeService
                 merchantProfile,
                 GetMerchantProfileDisplayName(merchantProfile),
                 false,
-                "Локальная торговля включается только через tradeState.canTrade = true.");
+                "Торговля сейчас недоступна.");
         }
 
         if (!canTrade)

@@ -15,6 +15,8 @@ internal static class ConsoleCommandOutputQualityClassifier
         "pending_",
         "requestId",
         "actionType",
+        "tradeState",
+        "canTrade",
         "debug",
         "debug_logs",
         "null",

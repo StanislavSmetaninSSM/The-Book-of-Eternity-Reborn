@@ -142,6 +142,26 @@ public sealed class ConsoleCommandOutputQualityClassifierTests
     }
 
     [Fact]
+    public void Classify_DefaultPlayerOutputFlagsNpcTradeContractKeys()
+    {
+        var result = new ExplorerCommandResult
+        {
+            Command = "/нпс",
+            State = CommandExecutionState.Completed,
+            Blocks =
+            [
+                new UiTextBlock { Text = "Локальная торговля включается только через tradeState.canTrade = true." }
+            ]
+        };
+
+        var report = ConsoleCommandOutputQualityClassifier.Classify(result);
+
+        Assert.False(report.IsUsablePlayerOutput);
+        Assert.Contains(report.Violations, violation => violation.Contains("tradeState", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(report.Violations, violation => violation.Contains("canTrade", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void Classify_DefaultPlayerOutputFlagsUiInstructionCopyAndGenericReferenceSummaries()
     {
         var result = new ExplorerCommandResult

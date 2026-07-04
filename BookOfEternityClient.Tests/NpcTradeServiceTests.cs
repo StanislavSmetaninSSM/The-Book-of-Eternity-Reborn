@@ -88,6 +88,35 @@ public sealed class NpcTradeServiceTests
     }
 
     [Fact]
+    public void EvaluateTradeAvailability_UsesPlayerFacingReasonWhenMerchantTradeStateIsMissing()
+    {
+        const string json = """
+        {
+          "npcId": "npc_merchant_001",
+          "name": "Марек",
+          "currentLocationId": "loc_market_square",
+          "currentLocation": "Рыночная площадь",
+          "tradeState": {
+            "merchantProfile": "GeneralGoods"
+          }
+        }
+        """;
+
+        using var doc = JsonDocument.Parse(json);
+        var node = JsonNode.Parse(json)!.AsObject();
+
+        var fromElement = NpcTradeService.EvaluateTradeAvailability(doc.RootElement, "loc_market_square", "Рыночная площадь");
+        var fromObject = NpcTradeService.EvaluateTradeAvailability(node, "loc_market_square", "Рыночная площадь");
+
+        Assert.True(fromElement.IsMerchant);
+        Assert.False(fromElement.TradeAvailable);
+        Assert.Equal("Торговля сейчас недоступна.", fromElement.BlockReason);
+        Assert.DoesNotContain("tradeState", fromElement.BlockReason, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("canTrade", fromElement.BlockReason, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(fromElement, fromObject);
+    }
+
+    [Fact]
     public void EvaluateTradeAvailability_RecognizesNonMerchantNpc()
     {
         const string json = """
