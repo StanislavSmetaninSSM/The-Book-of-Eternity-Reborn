@@ -1136,15 +1136,26 @@ public partial class ValidationService
         {
             const string activeGuardianContextSuffix = ".activeGuardian";
             var activeGuardianContext = $"{contextPrefix}{activeGuardianContextSuffix}";
-            ValidateGuardianCanonicalObject(activeGuardian, activeGuardianContext, issues);
+            var effectiveActiveGuardian = activeGuardian;
+            var activeGuardianSelectorId = GetFirstNonEmptyString(activeGuardian, "guardianId");
+            if (IsIdOnlyGuardianSelector(activeGuardian) &&
+                !string.IsNullOrWhiteSpace(activeGuardianSelectorId) &&
+                guardiansById.TryGetValue(activeGuardianSelectorId!, out var recoverableGuardianMatch))
+            {
+                effectiveActiveGuardian = recoverableGuardianMatch.Guardian;
+            }
+            else
+            {
+                ValidateGuardianCanonicalObject(activeGuardian, activeGuardianContext, issues);
+            }
 
             if (activeGuardian.TryGetProperty("guardianId", out var activeGuardianIdNode) &&
                 activeGuardianIdNode.ValueKind == JsonValueKind.String &&
                 !string.IsNullOrWhiteSpace(activeGuardianIdNode.GetString()) &&
                 guardiansById.TryGetValue(activeGuardianIdNode.GetString()!, out var guardianMatch))
             {
-                CompareGuardianGachaState(activeGuardian, activeGuardianContext, guardianMatch.Guardian, guardianMatch.Context, issues);
-                CompareGuardianTradeState(activeGuardian, activeGuardianContext, guardianMatch.Guardian, guardianMatch.Context, issues);
+                CompareGuardianGachaState(effectiveActiveGuardian, activeGuardianContext, guardianMatch.Guardian, guardianMatch.Context, issues);
+                CompareGuardianTradeState(effectiveActiveGuardian, activeGuardianContext, guardianMatch.Guardian, guardianMatch.Context, issues);
                 ValidateActiveGuardianNavigationState(root, contextPrefix, activeGuardianContext, guardianMatch.Guardian, guardianMatch.Context, issues);
             }
         }
@@ -1235,7 +1246,11 @@ public partial class ValidationService
         if (authorityRoot.ValueKind != JsonValueKind.Object ||
             !authorityRoot.TryGetProperty("activeGuardian", out var authorityActiveGuardian) ||
             authorityActiveGuardian.ValueKind != JsonValueKind.Object ||
-            !JsonElementsSemanticallyEqual(currentActiveGuardian, authorityActiveGuardian))
+            !JsonElementsSemanticallyEqual(
+                CanonicalizeGuardianForMaterializedComparison(
+                    ResolveGuardianMirrorForMaterializedComparison(currentGuardiansRoot, currentActiveGuardian)),
+                CanonicalizeGuardianForMaterializedComparison(
+                    ResolveGuardianMirrorForMaterializedComparison(authorityRoot, authorityActiveGuardian))))
         {
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.activeGuardian",
@@ -1263,12 +1278,72 @@ public partial class ValidationService
             if (result.ContainsKey(guardianId))
                 return null;
 
-            result[guardianId] = guardian;
+            result[guardianId] = CanonicalizeGuardianForMaterializedComparison(guardian);
         }
 
         return result;
     }
 
+    private static JsonElement ResolveGuardianMirrorForMaterializedComparison(JsonElement root, JsonElement guardian)
+    {
+        if (!IsIdOnlyGuardianSelector(guardian))
+            return guardian.Clone();
+
+        var guardianId = GetFirstNonEmptyString(guardian, "guardianId");
+        if (string.IsNullOrWhiteSpace(guardianId) ||
+            root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty("guardians", out var guardians) ||
+            guardians.ValueKind != JsonValueKind.Array)
+        {
+            return guardian.Clone();
+        }
+
+        foreach (var candidate in guardians.EnumerateArray())
+        {
+            var candidateId = GetFirstNonEmptyString(candidate, "guardianId", "id");
+            if (string.Equals(candidateId, guardianId, StringComparison.OrdinalIgnoreCase))
+                return candidate.Clone();
+        }
+
+        return guardian.Clone();
+    }
+
+    private static JsonElement CanonicalizeGuardianForMaterializedComparison(JsonElement guardian)
+    {
+        if (guardian.ValueKind != JsonValueKind.Object)
+            return guardian.Clone();
+
+        var guardianObject = TryParseJsonObject(guardian);
+        if (guardianObject == null)
+            return guardian.Clone();
+
+        AbodePowerRules.EnsureCanonicalState(guardianObject);
+        GuardianGachaChargeRules.NormalizeGuardianGachaState(guardianObject);
+        GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardianObject);
+
+        return CloneJsonObjectToElement(guardianObject);
+    }
+
+    private static bool IsIdOnlyGuardianSelector(JsonElement guardian)
+    {
+        if (guardian.ValueKind != JsonValueKind.Object)
+            return false;
+
+        var propertyCount = 0;
+        foreach (var property in guardian.EnumerateObject())
+        {
+            propertyCount++;
+            if (!string.Equals(property.Name, "guardianId", StringComparison.Ordinal))
+                return false;
+            if (property.Value.ValueKind != JsonValueKind.String ||
+                string.IsNullOrWhiteSpace(property.Value.GetString()))
+            {
+                return false;
+            }
+        }
+
+        return propertyCount == 1;
+    }
 
     private void ValidateActiveGuardianNavigationState(
         JsonElement root,

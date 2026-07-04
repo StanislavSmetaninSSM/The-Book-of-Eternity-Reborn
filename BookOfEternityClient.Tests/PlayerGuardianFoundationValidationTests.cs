@@ -140,6 +140,65 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CreateSurfaceWithIdOnlyActiveGuardianMirror_IsAcceptedAsRecoverableMirror()
+    {
+        var preTurnSoul = CreateSoulState();
+        var preTurnGuardians = new JsonObject
+        {
+            ["guardians"] = new JsonArray(),
+            ["activeGuardian"] = null,
+            ["chaosSeaNavigation"] = new JsonObject
+            {
+                ["currentAbodeId"] = null,
+                ["discoveredAbodes"] = new JsonArray()
+            }
+        };
+        var guardian = CreateGuardian("guardian_eira", "Эйра", "abode_eira", originType: "freeform", currentReputation: 10);
+        var currentGuardians = CreateGuardiansRoot(guardian, "guardian_eira", "abode_eira");
+        currentGuardians["UpdateGuardians"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["command"] = "create",
+                ["data"] = guardian.DeepClone()
+            }
+        };
+        currentGuardians["activeGuardian"] = new JsonObject
+        {
+            ["guardianId"] = "guardian_eira"
+        };
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await WriteJsonAsync("game_state/meta/guardians.json", currentGuardians);
+        await WriteJsonAsync(GuardianPowerEventState.JournalPath, new { entries = Array.Empty<object>() });
+        await WriteChaosSeaLoreBootstrapAsync();
+        await WriteJsonAsync("ready/turn_complete.json", new { status = "ok" });
+
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", preTurnSoul);
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/guardians.json", preTurnGuardians);
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{GuardianPowerEventState.JournalPath}", new { entries = Array.Empty<object>() });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}", new
+        {
+            activeProjects = Array.Empty<object>(),
+            completedProjects = Array.Empty<object>(),
+            temporaryProjectModifiers = Array.Empty<object>()
+        });
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("activeGuardian", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "missing_required_string", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.StartsWith("game_state/meta/guardians.json.activeGuardian.", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("guardian_missing_", StringComparison.OrdinalIgnoreCase) == true &&
+            issue.FilePath.StartsWith("game_state/meta/guardians.json.activeGuardian.", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_FoundationNewGuardianWithoutCreateSurface_Fails()
     {
         await WriteSuccessfulFoundationResolutionAsync(includeCreateCommand: false);
