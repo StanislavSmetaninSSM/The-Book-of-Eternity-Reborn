@@ -145,6 +145,21 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void MortalBootstrapScaffold_MustMakeRequestedTrainingMentorsActionable()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
+
+        Assert.Contains("\"trainingAnchorRequirements\"", method, StringComparison.Ordinal);
+        Assert.Contains("teacherProfile", method, StringComparison.Ordinal);
+        Assert.Contains("canTeach", method, StringComparison.Ordinal);
+        Assert.Contains("skills", method, StringComparison.Ordinal);
+        Assert.Contains("/обучение", method, StringComparison.Ordinal);
+        Assert.Contains("pending_training_showcase_requests.json", method, StringComparison.Ordinal);
+        Assert.Contains("Do not advertise paid training only in prose", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MortalBootstrapScaffold_NpcCoreTopLevelCollectionsMustMatchValidatorFileContract()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");

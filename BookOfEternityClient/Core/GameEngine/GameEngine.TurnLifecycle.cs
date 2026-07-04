@@ -2752,7 +2752,32 @@ public partial class GameEngine
                 ["startingItemOrPropIfNarrated"] = "If narration gives the player an inspectable object, sealed container, letter, weapon, clue, or tool, create or reference a matching canonical inventory/storage/location object.",
                 ["startingQuestIfNarrated"] = "If the opening scene creates an obvious investigation, escape, delivery, social, or survival hook, create a readable starting quest/objective instead of relying on narrative only.",
                 ["mapExitIfNarrated"] = "If the scene implies a door, corridor, road, gate, or route, create at least one known exit and map link.",
-                ["factionHookIfNarrated"] = "If the scene names an organization, house, guild, cult, guard, or authority, materialize it with a permanent factionId."
+                ["factionHookIfNarrated"] = "If the scene names an organization, house, guild, cult, guard, or authority, materialize it with a permanent factionId.",
+                ["trainingMentorIfNarrated"] = "If the player-authored start asks for a teacher, mentor, trainer, paid lesson, school, practice, обучение, тренировка, урок, наставник, or учитель, materialize at least one matching NPC teacher instead of leaving training only in prose."
+            },
+            ["trainingAnchorRequirements"] = new JsonObject
+            {
+                ["purpose"] = "Make requested Mortal training usable through /обучение instead of only narrated by the GM.",
+                ["trigger"] = "Apply when characterDescription, worldDescription, startingCircumstances, or first scene narration promises a teacher, mentor, paid lesson, drill, school, training yard, apprenticeship, обучение, тренировка, урок, наставник, or учитель.",
+                ["requiredNpcShape"] = "The relevant NPC in NPCsInScene/UpdateNPCs must include teacherProfile with canTeach=true. Do not advertise paid training only in prose.",
+                ["requiredTeacherProfileFields"] = new JsonArray
+                {
+                    "canTeach",
+                    "relationshipLevel",
+                    "summary",
+                    "skills"
+                },
+                ["teacherProfileSkillMinimum"] = new JsonArray
+                {
+                    "skillId",
+                    "skillName",
+                    "displayName",
+                    "skillKind",
+                    "masteryLevel"
+                },
+                ["showcaseLifecycle"] = "It is acceptable to omit trainingShowcase on the bootstrap turn: /обучение will then create game_state/control/pending_training_showcase_requests.json for a fresh mortal_teacher_showcase. It is not acceptable to omit teacherProfile for a narrated trainer.",
+                ["sourceCapRule"] = "Every future trainingShowcase offer sourceCap must be no higher than the matching teacherProfile.skills[] masteryLevel/currentMasteryLevel/maxMasteryLevel for that skill.",
+                ["playerFacingRule"] = "If the scene tells the player they can pay for a lesson, the /обучение command must list that teacher or a pending request for that teacher."
             },
             ["canonicalShapeHints"] = new JsonObject
             {
@@ -3093,11 +3118,13 @@ public partial class GameEngine
                 "Prevent current_location_coordinates_mismatch: copy canonicalCoordinateAuthority coordinates exactly for suggested stable location ids across current_location, world_map newLocations, adjacencyMap, and newLinks.",
                 "Prevent faction_full_object_partial_optional_extension_data: if you create a durable faction, create complete faction core plus sidecars; do not mix partial optional arrays into a full faction object.",
                 "Prevent item_missing_equipment_slot/item_missing_durability: every starting item needs a valid slot when equipment-like and durability as a percentage string such as 100% when player-visible.",
-                "Prevent invalid_string_array_item and player-facing turn anchors in item journalEntries: journalEntries[] entries must be non-empty strings, not objects, and must not start with technical prefixes such as '#[3].'."
+                "Prevent invalid_string_array_item and player-facing turn anchors in item journalEntries: journalEntries[] entries must be non-empty strings, not objects, and must not start with technical prefixes such as '#[3].'.",
+                "Prevent missing Mortal training surface: if the opening scene narrates a mentor/teacher/paid lesson/training yard, add teacherProfile.canTeach=true and teacherProfile.skills[] to that NPC so /обучение can create pending_training_showcase_requests.json."
             },
             ["playerFacingQualityRules"] = new JsonArray
             {
                 "The first playable Mortal prompt should have useful /инв, /квесты, /карта, /локации, and /фракции data when the scene text makes those entities actionable.",
+                "The first playable Mortal prompt should have useful /обучение data when a teacher, mentor, paid lesson, training yard, or practice scene is actionable.",
                 "Do not leave player-facing hooks only in prose when a command surface exists for that entity.",
                 "Do not persist raw temp ids, null persistent ids, or empty placeholder objects after accepted bootstrap."
             }
