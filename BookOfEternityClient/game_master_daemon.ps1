@@ -673,6 +673,7 @@ function New-GmExperienceLesson {
     $hasGuardianPendingCreationMaterializationIssue = $joinedIssues.Contains("guardian_materialized_without_create_surface") -or
         $joinedIssues.Contains("stale_pending_guardian_creation_after_materialization") -or
         $joinedIssues.Contains("pending_guardian_creation_missing_materialized_guardian") -or
+        $joinedIssues.Contains("pending_guardian_creation_unresolved_after_startup_turn") -or
         $repairPacketText.Contains("guardian_pending_creation_materialization_repair")
     $hasGuardianTradeInventoryResolutionIssue = $joinedIssues.Contains("guardian_trade_request_missing_guardian_resolution") -or
         $joinedIssues.Contains("guardian_trade_request_missing_inventory_resolution") -or
@@ -706,7 +707,7 @@ function New-GmExperienceLesson {
         "Use validation_repair_request.json.harnessRepairPackets[] kind afterlife_entity_profile_scaffold_repair before editing game_state/meta/afterlife_entity_profiles.json. Patch the minimum profile scaffold in place: goals as object with goalId/shortTermGoal/longTermGoal/plan/gmThoughtsSummary/updatedAtTurn, progressionStrategy with strategyId/summary/priorityOrder/resourceReserve/allowedSpends/forbiddenSpends, ledger as array, and profileCommands.specialArtLearningReceipts with receiptId/artId/teacherActorType/teacherActorId/playerActorId/trainingConditionSatisfied/learnedAtTurn/roleplayEvidence/summary plus initialTier absent or 0."
     }
     elseif ($hasGuardianPendingCreationMaterializationIssue) {
-        "Use validation_repair_request.json.harnessRepairPackets[] kind guardian_pending_creation_materialization_repair before broad Guardian scope examples. Read game_state/meta/guardians.json.pendingGuardianCreation as startup authority. If the turn introduced that Guardian, materialize the requested Guardian through UpdateGuardians.create semantics into full guardians[] + activeGuardian + chaosSeaNavigation, then remove pendingGuardianCreation. Do not delete pendingGuardianCreation by itself, do not leave the Guardian only in prose, and do not rewrite the requested freeform Guardian into an unrelated preset or NPC."
+        "Use validation_repair_request.json.harnessRepairPackets[] kind guardian_pending_creation_materialization_repair before broad Guardian scope examples. Read game_state/meta/guardians.json.pendingGuardianCreation as startup authority. For a New Game freeform startup request, materialize the requested Guardian through UpdateGuardians.create semantics into full guardians[] + activeGuardian + chaosSeaNavigation, then remove pendingGuardianCreation. Do not keep pendingGuardianCreation as a pending-only fallback, do not delete it by itself, do not leave the Guardian only in prose, and do not rewrite the requested freeform Guardian into an unrelated preset or NPC."
     }
     elseif ($hasGuardianTradeInventoryResolutionIssue) {
         "Use validation_repair_request.json.harnessRepairPackets[] kind guardian_trade_inventory_resolution_repair before editing game_state/meta/guardians.json. Read game_state/control/pending_guardian_trade_request.json as read-only authority, keep it unchanged, patch the matching guardian.tradeInventory to the request returnCycleId/slot count/tier fields, and add a matching tradeInventoryReceipts/UpdateGuardianTradeInventoryReceipts ready receipt. Do not create a new turn, do not rewrite the pending request, and do not leave the vitrine only in prose."
@@ -1532,7 +1533,7 @@ Use this before opening large examples for repair mode.
 - If `harnessRepairPackets[].kind` is `afterlife_spiritual_conflict_action_cost_repair`, repair the listed `actionCostAudit` / `actionEconomy` fields sequentially in the already written spiritual conflict file; do not create a new exchange, reroll dice, or edit pending snapshots.
 - If `harnessRepairPackets[].kind` is `afterlife_spiritual_conflict_reward_repair`, repair only the listed `rewardAudit` / currency reward fields in `game_state/meta/afterlife_spiritual_conflict_state.json`. Currency rewards require a contested player victory with `diceAudit.outcomeBand = player_success|decisive_player_success`; for negotiated, training-only, withdrawn, failed, or non-contested outcomes, remove `rewardAudit` and matching currency deltas while preserving valid learning/chronicle consequences.
 - If `harnessRepairPackets[].kind` is `afterlife_entity_profile_scaffold_repair`, repair `game_state/meta/afterlife_entity_profiles.json` in place. Keep `goals` as an object with goal fields and `updatedAtTurn`, add/repair `progressionStrategy`, keep `ledger` as an array, and complete `profileCommands.specialArtLearningReceipts[]` with required teacher/player fields and `initialTier` absent or `0`.
-- If `harnessRepairPackets[].kind` is `guardian_pending_creation_materialization_repair`, repair `game_state/meta/guardians.json` in place from `pendingGuardianCreation`. If the turn introduced the requested Guardian, materialize that Guardian through `UpdateGuardians.create` semantics into full `guardians[]`, matching `activeGuardian`, and `chaosSeaNavigation.currentAbodeId`, then remove `pendingGuardianCreation`. Do not delete `pendingGuardianCreation` by itself and do not leave the Guardian only in prose.
+- If `harnessRepairPackets[].kind` is `guardian_pending_creation_materialization_repair`, repair `game_state/meta/guardians.json` in place from `pendingGuardianCreation`. For a New Game freeform startup request, materialize that Guardian through `UpdateGuardians.create` semantics into full `guardians[]`, matching `activeGuardian`, and `chaosSeaNavigation.currentAbodeId`, then remove `pendingGuardianCreation`. Do not keep `pendingGuardianCreation` as a pending-only fallback, do not delete it by itself, and do not leave the Guardian only in prose.
 - If `harnessRepairPackets[].kind` is `guardian_trade_inventory_resolution_repair`, repair `game_state/meta/guardians.json` in place. Read `game_state/control/pending_guardian_trade_request.json` as read-only authority, keep it unchanged, patch the matching `guardian.tradeInventory` to the request `returnCycleId`, reputation tier, bonus signature, and slot count, then add a matching ready receipt through `UpdateGuardianTradeInventoryReceipts` or `guardians[].tradeInventoryReceipts[]`. Do not create a new turn, do not rewrite the pending request, and do not leave Guardian trade stock only in prose.
 
 ## Terminal rule
@@ -5282,7 +5283,8 @@ function Process-RepairRequest {
         $hasGuardianPendingCreationIssue = @($issueCodes | Where-Object {
             [string]::Equals($_, "guardian_materialized_without_create_surface", [System.StringComparison]::OrdinalIgnoreCase) -or
             [string]::Equals($_, "stale_pending_guardian_creation_after_materialization", [System.StringComparison]::OrdinalIgnoreCase) -or
-            [string]::Equals($_, "pending_guardian_creation_missing_materialized_guardian", [System.StringComparison]::OrdinalIgnoreCase)
+            [string]::Equals($_, "pending_guardian_creation_missing_materialized_guardian", [System.StringComparison]::OrdinalIgnoreCase) -or
+            [string]::Equals($_, "pending_guardian_creation_unresolved_after_startup_turn", [System.StringComparison]::OrdinalIgnoreCase)
         }).Count -gt 0
         $hasGuardianTradeInventoryIssue = @($issueCodes | Where-Object {
             [string]::Equals($_, "guardian_trade_request_missing_guardian_resolution", [System.StringComparison]::OrdinalIgnoreCase) -or
@@ -5295,7 +5297,7 @@ function Process-RepairRequest {
             ""
         }
         $guardianPendingCreationRepairDirective = if ($hasGuardianPendingCreationRepair -or $hasGuardianPendingCreationIssue) {
-            " For startup Guardian creation repairs, use validation_repair_request.json.harnessRepairPackets[] kind guardian_pending_creation_materialization_repair before broad Guardian examples. Read game_state/meta/guardians.json.pendingGuardianCreation as startup authority; if the turn introduced the requested Guardian, materialize it through UpdateGuardians.create semantics into full guardians[] + activeGuardian + chaosSeaNavigation, then remove pendingGuardianCreation. Do not delete pendingGuardianCreation alone or leave the Guardian only in prose."
+            " For startup Guardian creation repairs, use validation_repair_request.json.harnessRepairPackets[] kind guardian_pending_creation_materialization_repair before broad Guardian examples. Read game_state/meta/guardians.json.pendingGuardianCreation as startup authority; for a New Game freeform startup request, materialize it through UpdateGuardians.create semantics into full guardians[] + activeGuardian + chaosSeaNavigation, then remove pendingGuardianCreation. Do not keep pendingGuardianCreation as a pending-only fallback, delete it alone, or leave the Guardian only in prose."
         } else {
             ""
         }

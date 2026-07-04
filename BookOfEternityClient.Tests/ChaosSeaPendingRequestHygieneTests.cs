@@ -555,6 +555,58 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
             string.Equals(issue.Code, "pending_guardian_creation_missing_materialized_guardian", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_PreTurnPendingGuardianCreationLeftUnresolvedAfterStartupTurn_Fails()
+    {
+        const string sessionId = "fresh-bootstrap-session";
+        const string requestId = "fresh-bootstrap-turn";
+        const int turnNumber = 1;
+
+        const string soulStateJson = """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 0,
+          "soulName": "Пепельная Искра",
+          "inkFeathers": { "current": 0, "total": 0 },
+          "soulRelics": { "equipped": [], "stored": [] }
+        }
+        """;
+        const string guardiansJson = """
+        {
+          "activeGuardian": null,
+          "guardians": [],
+          "chaosSeaNavigation": {
+            "currentAbodeId": null,
+            "discoveredAbodes": []
+          },
+          "pendingGuardianCreation": {
+            "mode": "freeform",
+            "description": "Хранительница Эйра из Дома Тлеющих Звёзд.",
+            "soulName": "Пепельная Искра"
+          }
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", $$"""
+        {
+          "sessionId": "{{sessionId}}",
+          "requestId": "{{requestId}}",
+          "turnNumber": {{turnNumber}}
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulStateJson);
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansJson);
+        await WritePendingTurnSnapshotFileAsync("game_state/meta/soul_state.json", soulStateJson);
+        await WritePendingTurnSnapshotFileAsync("game_state/meta/guardians.json", guardiansJson);
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber,
+            "Душа выбирает свободно описанную Хранительницу Эйру как первого Хранителя.");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "pending_guardian_creation_unresolved_after_startup_turn", StringComparison.OrdinalIgnoreCase));
+    }
+
     [Theory]
     [InlineData("Chaos Sea")]
     [InlineData("Shining Abode")]

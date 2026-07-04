@@ -1083,6 +1083,46 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(doNotDo, item => item.Contains("delete pendingGuardianCreation", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(doNotDo, item => item.Contains("direct materialized", StringComparison.OrdinalIgnoreCase));
+
+        var safeCorrectionRules = packet.GetProperty("safeCorrectionRules").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(safeCorrectionRules, item => item.Contains("pending-only", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(safeCorrectionRules, item => item.Contains("materialization was not intended", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_UnresolvedStartupPendingGuardianCreation_AddsConcreteHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/guardians.json.pendingGuardianCreation",
+                IssueSeverity.Error,
+                "Стартовый freeform pendingGuardianCreation нельзя оставлять неразрешенным после принятого первого хода.",
+                code: "pending_guardian_creation_unresolved_after_startup_turn",
+                section: "Guardians",
+                expected: "startup freeform Guardian materialized into canonical guardians[] + activeGuardian + chaosSeaNavigation",
+                actual: "pending-only state")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "первого хода после создания души", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+
+        Assert.Equal("guardian_pending_creation_materialization_repair", packet.GetProperty("kind").GetString());
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("pending-only state", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

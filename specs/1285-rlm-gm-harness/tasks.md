@@ -231,6 +231,7 @@
 - [X] T187 [Harness/RLM live-test follow-up #1436/#1285/#1290] Add output-only accepted-turn repair template, route stale player-facing output repairs to it, and detect validation repair artifact stalls without target-file progress.
 - [X] T188 [Harness/RLM live-test blocker #1443/#1285/#1290] Add a dedicated Guardian trade request resolution repair packet/template guidance so `pending_guardian_trade_request.json` repairs materialize `guardian.tradeInventory` and receipts instead of stalling in generic Guardian scope repair.
 - [X] T189 [Harness/RLM live-test blocker #1444/#1285/#1290] Add a dedicated startup Guardian creation repair packet/template guidance so freeform `pendingGuardianCreation` materializes through the supported Guardian create surface instead of leaving `/хранители` empty.
+- [X] T190 [Harness/RLM live-test blocker #1444/#1285/#1290] Reject accepted New Game startup turns that leave freeform `pendingGuardianCreation` unresolved with no `activeGuardian`/`guardians[]`, so the GM cannot pass validation by retreating to pending-only state.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.

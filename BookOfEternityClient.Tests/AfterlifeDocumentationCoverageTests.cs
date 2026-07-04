@@ -1072,6 +1072,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             "pendingGuardianCreation",
             "remove `pendingGuardianCreation`",
             "do not delete `pendingGuardianCreation` without materializing",
+            "pending-only fallback",
             "Fresh New Game system Guardian seed",
             "GM narrates the first meeting instead of materializing",
             "system_preset",

@@ -135,6 +135,23 @@ public partial class ValidationService
                     repairHint: "Не удаляй startup-запрос pendingGuardianCreation сам по себе. Создай Хранителя через valid UpdateGuardians.create, синхронизируй activeGuardian и guardians[], затем удали pendingGuardianCreation."));
             }
 
+            if (HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) &&
+                IsFreeformPendingGuardianCreation(guardianPolicyContext.PreTurnRoot) &&
+                IsFreeformPendingGuardianCreation(guardianPolicyContext.CurrentRoot) &&
+                !guardianPolicyContext.HasCurrentActiveGuardian &&
+                guardianStateById.Count == 0)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.pendingGuardianCreation",
+                    IssueSeverity.Error,
+                    "Стартовый freeform pendingGuardianCreation нельзя оставлять неразрешенным после принятого первого хода.",
+                    code: "pending_guardian_creation_unresolved_after_startup_turn",
+                    section: "Guardians",
+                    expected: "startup freeform Guardian materialized into canonical guardians[] + activeGuardian + chaosSeaNavigation, then pendingGuardianCreation removed",
+                    actual: DescribeUnresolvedPendingGuardianCreation(guardianPolicyContext.CurrentRoot),
+                    repairHint: "При старте новой игры freeform pendingGuardianCreation является запросом на создание первого Хранителя. Материализуй его через valid UpdateGuardians.create/full canonical Guardian shape, синхронизируй activeGuardian и chaosSeaNavigation, затем удали pendingGuardianCreation. Не возвращай ход игроку с пустым /хранители."));
+            }
+
             var currentPendingPresetId = TryReadPendingSystemGuardianPresetId(guardianPolicyContext.CurrentRoot);
             if (!string.IsNullOrWhiteSpace(currentPendingPresetId) &&
                 TryGetGuardianBaselineFailureKind(guardianPolicyContext, out var guardianBaselineFailureKind))
@@ -198,6 +215,33 @@ public partial class ValidationService
         root.ValueKind == JsonValueKind.Object &&
         root.TryGetProperty("pendingGuardianCreation", out var pending) &&
         pending.ValueKind == JsonValueKind.Object;
+
+    private static bool IsFreeformPendingGuardianCreation(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty("pendingGuardianCreation", out var pending) ||
+            pending.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        var mode = GetFirstNonEmptyString(pending, "mode");
+        return string.Equals(mode, "freeform", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string DescribeUnresolvedPendingGuardianCreation(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty("pendingGuardianCreation", out var pending) ||
+            pending.ValueKind != JsonValueKind.Object)
+        {
+            return "pendingGuardianCreation missing or malformed";
+        }
+
+        var soulName = GetFirstNonEmptyString(pending, "soulName") ?? "unknown soul";
+        var description = GetFirstNonEmptyString(pending, "description") ?? "no description";
+        return $"pendingGuardianCreation.mode=freeform for soulName={soulName}; activeGuardian missing/null; guardians[] empty; description={description}";
+    }
 
     private static bool TryFindGuardianBesidePendingCreation(
         GuardianPolicyContext guardianPolicyContext,
