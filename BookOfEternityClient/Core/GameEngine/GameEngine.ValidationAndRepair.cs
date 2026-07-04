@@ -28,6 +28,7 @@ public partial class GameEngine
 
     private async Task EnsureClientOwnedSystemFilesHealthyAsync()
     {
+        await CleanupOrphanedTurnRequestBeforeValidationAsync();
         await _stateManager.RefreshGameStateAsync();
         var preserveControlFilesForTerminalValidation =
             await ShouldPreserveClientOwnedControlFilesForTerminalValidationAsync();
@@ -44,6 +45,27 @@ public partial class GameEngine
 
         await _qteSceneService.EnsureRuntimeStateHealthyAsync();
         await _progressionSchedule.EnsureInitializedAsync();
+    }
+
+    private async Task CleanupOrphanedTurnRequestBeforeValidationAsync()
+    {
+        if (!_fs.FileExists("input/turn_request.json"))
+            return;
+
+        if (HasTerminalReadySignal() ||
+            _fs.FileExists(ValidationRepairRequestPath) ||
+            _fs.FileExists(ValidationRepairReadyPath))
+            return;
+
+        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+        if (pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable)
+            return;
+
+        _logger.LogWarning(
+            pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Missing
+                ? "Найден orphaned input/turn_request.json без pending snapshot manifest перед validation. Удаление как stale runtime artifact."
+                : "Найден input/turn_request.json с unreadable/invalid validated pending snapshot authority перед validation. Удаление как stale runtime artifact.");
+        _fs.DeleteFile("input/turn_request.json");
     }
 
     private async Task<bool> ValidateCurrentGameStateOrShowErrorsAsync(string source,

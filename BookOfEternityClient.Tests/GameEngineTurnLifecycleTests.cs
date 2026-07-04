@@ -3245,6 +3245,29 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureClientOwnedSystemFilesHealthyAsync_RemovesOrphanedTurnRequestBeforeValidation()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Mortal World",
+            currentIncarnation = 1
+        });
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = "session-stale-request",
+            requestId = "request-stale-request",
+            turnNumber = 7,
+            playerAction = "Старый ход после аварийного завершения"
+        });
+
+        var engine = CreateGameEngine();
+
+        await InvokePrivateTaskAsync(engine, "EnsureClientOwnedSystemFilesHealthyAsync");
+
+        Assert.False(_fs.FileExists("input/turn_request.json"));
+    }
+
+    [Fact]
     public async Task CleanupAcceptedTurnTerminalArtifactsAsync_PreservesSnapshotButNotReadyForIncarnationTrigger()
     {
         const string sessionId = "session-late-incarnation";
