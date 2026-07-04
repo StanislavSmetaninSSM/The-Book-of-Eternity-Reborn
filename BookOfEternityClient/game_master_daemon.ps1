@@ -2871,6 +2871,44 @@ function New-GmValidationRepairArtifactWatchState {
     }
 }
 
+function Get-GmValidationRepairWatchCorrelation {
+    param([object]$RepairRequest)
+
+    if ($null -eq $RepairRequest) {
+        return ""
+    }
+
+    $sessionId = if ($RepairRequest.sessionId) { [string]$RepairRequest.sessionId } else { "" }
+    $requestId = if ($RepairRequest.requestId) { [string]$RepairRequest.requestId } else { "" }
+    $turnNumber = if ($null -ne $RepairRequest.turnNumber) { [string]$RepairRequest.turnNumber } else { "" }
+    $attempt = if ($null -ne $RepairRequest.revalidationAttempt) { [string]$RepairRequest.revalidationAttempt } else { "" }
+    return "$sessionId|$requestId|$turnNumber|$attempt"
+}
+
+function Test-GmValidationRepairWatchStillCurrent {
+    param([hashtable]$WatchState)
+
+    if ($null -eq $WatchState) {
+        return $false
+    }
+
+    if (-not (Test-Path $RepairRequestFile)) {
+        return $false
+    }
+
+    try {
+        $currentRepairRequest = Get-Content -Path $RepairRequestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+    }
+    catch {
+        return $false
+    }
+
+    $watchedCorrelation = Get-GmValidationRepairWatchCorrelation -RepairRequest $WatchState.request
+    $currentCorrelation = Get-GmValidationRepairWatchCorrelation -RepairRequest $currentRepairRequest
+    return -not [string]::IsNullOrWhiteSpace($watchedCorrelation) -and
+        [string]::Equals($watchedCorrelation, $currentCorrelation, [System.StringComparison]::Ordinal)
+}
+
 function Test-GmValidationRepairArtifactWritingStall {
     param(
         [hashtable]$WatchState,
@@ -2924,6 +2962,12 @@ function Test-GmValidationRepairArtifactWritingStall {
 
 function Watch-ActiveValidationRepairProgress {
     if ($null -eq $script:ActiveValidationRepairWatch) {
+        return
+    }
+
+    if (-not (Test-GmValidationRepairWatchStillCurrent -WatchState $script:ActiveValidationRepairWatch)) {
+        Write-Log "  Active validation repair request disappeared or changed; clearing artifact watch." -Level "INFO" -Color DarkGray
+        $script:ActiveValidationRepairWatch = $null
         return
     }
 

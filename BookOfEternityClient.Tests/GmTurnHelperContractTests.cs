@@ -3123,6 +3123,18 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonSource_ValidationRepairWatchClearsWhenRequestIsGoneOrChanged()
+    {
+        var daemon = File.ReadAllText(Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "game_master_daemon.ps1"), Encoding.UTF8);
+
+        Assert.Contains("Test-GmValidationRepairWatchStillCurrent", daemon, StringComparison.Ordinal);
+        Assert.Contains("validation repair request disappeared or changed; clearing artifact watch", daemon, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Test-Path $RepairRequestFile", daemon, StringComparison.Ordinal);
+        Assert.Contains("requestId", daemon, StringComparison.Ordinal);
+        Assert.Contains("revalidationAttempt", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void DaemonContextPack_AfterlifeConflictRewardLessonsNameRewardRepair()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-afterlife-reward-lessons-" + Guid.NewGuid().ToString("N"));
