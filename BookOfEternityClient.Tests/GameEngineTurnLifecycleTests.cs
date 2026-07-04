@@ -1015,6 +1015,77 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_PendingGuardianCreationMaterializationErrors_AddsConcreteHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/guardians.json.guardians[0].guardianId",
+                IssueSeverity.Error,
+                "Fresh startup Guardian was materialized without the supported create surface.",
+                code: "guardian_materialized_without_create_surface",
+                section: "Guardians",
+                expected: "UpdateGuardians.create with full canonical Guardian shape",
+                actual: "direct materialized guardian object"),
+            new(
+                "game_state/meta/guardians.json.pendingGuardianCreation",
+                IssueSeverity.Error,
+                "pendingGuardianCreation remains after Guardian materialization.",
+                code: "stale_pending_guardian_creation_after_materialization",
+                section: "Guardians",
+                expected: "pendingGuardianCreation removed after canonical guardians[] and activeGuardian materialization",
+                actual: "pending request still present"),
+            new(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "Structured Guardian create update is missing canonical identity.",
+                code: "structured_guardian_update_missing_canonical_identity",
+                section: "UpdateGuardians",
+                expected: "canonical guardianId/displayName/title/domain/abode identity",
+                actual: "partial startup guardian")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "первого хода после создания души", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("guardian_pending_creation_materialization_repair", packet.GetProperty("kind").GetString());
+        Assert.Equal("high", packet.GetProperty("priority").GetString());
+        Assert.Contains("game_state/meta/guardians.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("output/debug_logs.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("pendingGuardianCreation", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("UpdateGuardians.create", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("guardians[]", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("activeGuardian", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("chaosSeaNavigation", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("remove pendingGuardianCreation", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("validation_repair_request.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("Read-BoeJson", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("pendingGuardianCreation", StringComparison.Ordinal));
+        Assert.Contains(steps, step => step.Contains("UpdateGuardians.create", StringComparison.Ordinal));
+        Assert.Contains(steps, step => step.Contains("Complete-BoeValidationRepair", StringComparison.OrdinalIgnoreCase));
+
+        var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(doNotDo, item => item.Contains("delete pendingGuardianCreation", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("direct materialized", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_ActorReasoningSubpointErrors_AddsHarnessPacket()
     {
         var engine = CreateGameEngine();

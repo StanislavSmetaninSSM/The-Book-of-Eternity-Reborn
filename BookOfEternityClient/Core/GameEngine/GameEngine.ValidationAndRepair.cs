@@ -1092,6 +1092,7 @@ public partial class GameEngine
         IReadOnlyCollection<string>? guardianActorNameHints = null)
     {
         var packets = new List<ValidationRepairHarnessPacket>();
+        var guardianPendingCreationMaterializationErrors = errors.Where(IsGuardianPendingCreationMaterializationRepairIssue).ToList();
         var guardianScopeErrors = errors.Where(IsGuardianScopeRepairIssue).ToList();
         var guardianScopeActorNames = CollectRepairActorNames(guardianScopeErrors, guardianActorNameHints);
         var actorReasoningSubpointErrors = errors
@@ -1117,6 +1118,9 @@ public partial class GameEngine
         var afterlifeEntityProfileScaffoldErrors = errors.Where(IsAfterlifeEntityProfileScaffoldRepairIssue).ToList();
         var npcScopeDeclarationErrors = errors.Where(IsNpcScopeDeclarationRepairIssue).ToList();
         var acceptedTurnOutputArtifactErrors = errors.Where(IsAcceptedTurnOutputArtifactRepairIssue).ToList();
+
+        if (guardianPendingCreationMaterializationErrors.Count > 0)
+            packets.Add(BuildGuardianPendingCreationMaterializationRepairPacket(guardianPendingCreationMaterializationErrors));
 
         if (guardianScopeErrors.Count > 0)
             packets.Add(BuildGuardianScopeRepairPacket(guardianScopeErrors, guardianActorNameHints));
@@ -1190,6 +1194,13 @@ public partial class GameEngine
                string.Equals(issue.Code, "guardian_project_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "structured_guardian_update_out_of_scope", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "active_guardian_missing_from_scope", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsGuardianPendingCreationMaterializationRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Code, "guardian_materialized_without_create_surface", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "stale_pending_guardian_creation_after_materialization", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "pending_guardian_creation_missing_materialized_guardian", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsActorReasoningSubpointRepairIssue(ValidationIssue issue)
@@ -1624,6 +1635,85 @@ public partial class GameEngine
                 "Do not delete meaningful actor state just to make Scene-local with empty actors pass.",
                 "Do not list an actor in Relevant actors without a matching `### <actor name>` reasoning block.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, validation_repair_request.json, templates, and session files."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildGuardianPendingCreationMaterializationRepairPacket(
+        IReadOnlyList<ValidationIssue> creationErrors)
+    {
+        var targetFiles = creationErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("game_state/meta/guardians.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/meta/guardians.json");
+        if (!targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("output/debug_logs.json");
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "guardian_pending_creation_materialization_repair",
+            Priority = "high",
+            Title = "Startup pending Guardian creation materialization repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string>
+            {
+                "TaskGuides/CLI_Step_Main.txt",
+                "OtherGuides/Afterlife_Contract_Matrix.md",
+                "Examples/E_CLI_Afterlife_Turns.txt"
+            },
+            ExpectedShape = new List<string>
+            {
+                "Read game_state/meta/guardians.json.pendingGuardianCreation as the startup request authority. For mode=freeform, use soulName and description; for mode=system_preset, use the exact requested preset identity.",
+                "If the turn introduced that Guardian to the player, repair through the supported Guardian create surface: UpdateGuardians.create semantics with a full canonical Guardian, not a partial direct mirror.",
+                "The accepted game_state/meta/guardians.json must contain the new Guardian in guardians[] with stable guardianId, displayName/canonicalName, title/domain/originType, abode identity, relationshipData/currentReputation, loreFragments, musings, trade/project/profile arrays or empty containers required by the canonical Guardian shape.",
+                "activeGuardian must mirror the created Guardian, and chaosSeaNavigation.currentAbodeId must point to the created/discovered abode when the Guardian is now accessible.",
+                "After guardians[] and activeGuardian are materialized, remove pendingGuardianCreation from guardians.json. Leaving pendingGuardianCreation beside the materialized Guardian keeps /хранители empty or pending.",
+                "output/debug_logs.json.gm_thoughts_markdown must be Guardian-centric or Mixed, list the Guardian by player-facing name in Relevant actors, and include situation/thoughts/actions explaining the materialization."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Preserve the player's requested soul name and freeform Guardian description as the source of the created Guardian's identity and domain details.",
+                "If the already written Guardian has useful prose/domain details, reshape them into the full canonical Guardian object instead of deleting the Guardian fiction.",
+                "If the materialization was not intended, keep pendingGuardianCreation and rewrite player-facing output so the Guardian is not presented as found, accessible, or available in /хранители.",
+                "For system_preset requests, do not substitute a similar Guardian; materialize the exact preset or route to the already materialized exact preset.",
+                "Repair only the startup Guardian creation fields and matching debug-log actor coverage unless validation_repair_request.json lists additional errors."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json first and repair only the listed startup Guardian creation errors in place.",
+                "Use Read-BoeJson -RelativePath 'game_state/meta/guardians.json' and inspect pendingGuardianCreation before editing.",
+                "Choose one coherent repair route: materialize the requested Guardian through UpdateGuardians.create semantics, or keep pendingGuardianCreation and remove claims that the Guardian is accessible.",
+                "For materialization, write a full canonical Guardian into guardians[], set activeGuardian to the matching mirror, update chaosSeaNavigation.currentAbodeId, and remove pendingGuardianCreation only after those roots are present.",
+                "Repair output/debug_logs.json.gm_thoughts_markdown with Guardian-centric/Mixed scope, the Guardian's player-facing name in Relevant actors, and a matching Guardian Thoughts block.",
+                "Write repaired files with Write-BoeJson, then call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from validation_repair_request.json."
+            },
+            DebugLogTemplate = string.Join(
+                Environment.NewLine,
+                "## Охват NPC-анализа",
+                "Режим: Guardian-centric",
+                "Релевантные акторы: <имя создаваемого Хранителя>",
+                "Почему они релевантны: pendingGuardianCreation просит материализовать этого Хранителя как доступного покровителя души.",
+                "Акторы вне охвата: NPC смертного мира, другие Хранители",
+                "Почему они вне охвата: repair закрывает только стартовое создание Хранителя.",
+                "",
+                "## Guardian Thoughts",
+                "### <имя создаваемого Хранителя>",
+                "- Ситуация: душа завершает стартовую встречу с Хранителем, описанным в pendingGuardianCreation.",
+                "- Мысли: Хранитель оценивает форму души и решает, как открыть свою Обитель.",
+                "- Действия: Хранитель материализуется с полной canonical identity, activeGuardian mirror, abode navigation и без stale pendingGuardianCreation."),
+            DoNotDo = new List<string>
+            {
+                "Do not create a new turn or write ready/turn_complete.json during validation repair.",
+                "Do not delete pendingGuardianCreation without materializing the requested Guardian into both guardians[] and activeGuardian.",
+                "Do not keep a direct materialized Guardian object that lacks the supported UpdateGuardians.create semantics and full canonical Guardian shape.",
+                "Do not leave the Guardian only in narrative prose while /хранители still has no canonical Guardian.",
+                "Do not rewrite the requested freeform Guardian into an unrelated system preset or Mortal NPC.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer startup Guardian rules; use this packet, validation_repair_request.json, afterlife docs/examples, and session state."
             }
         };
     }
