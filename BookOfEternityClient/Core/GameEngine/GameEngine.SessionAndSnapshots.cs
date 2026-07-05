@@ -1030,6 +1030,9 @@ public partial class GameEngine
 
         var snapshotContext = pendingSnapshot.Context;
 
+        if (repairRequestExists && await TryPromoteValidationRepairArtifactStallToTerminalErrorAsync(snapshotContext))
+            return;
+
         if (repairReadyExists && !repairRequestExists)
         {
             _logger.LogWarning(
@@ -1076,6 +1079,90 @@ public partial class GameEngine
                 snapshotContext.RequestId,
                 snapshotContext.TurnNumber);
         }
+    }
+
+    private async Task<bool> TryPromoteValidationRepairArtifactStallToTerminalErrorAsync(
+        ValidatedPendingTurnSnapshotContext snapshotContext)
+    {
+        if (!_fs.FileExists(ValidationRepairArtifactStallReportPath) ||
+            _fs.FileExists("ready/turn_error.json") ||
+            !_fs.FileExists(ValidationRepairRequestPath) ||
+            !_fs.FileExists("ready/turn_complete.json"))
+        {
+            return false;
+        }
+
+        var requestJson = await _fs.ReadFileAsync(ValidationRepairRequestPath);
+        if (string.IsNullOrWhiteSpace(requestJson))
+            return false;
+
+        ValidationRepairRequest? repairRequest;
+        try
+        {
+            repairRequest = JsonSerializer.Deserialize<ValidationRepairRequest>(requestJson, JsonOpts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Найден validation repair artifact stall report, но validation_repair_request.json не читается.");
+            return false;
+        }
+
+        if (repairRequest == null ||
+            !string.Equals(repairRequest.SessionId, snapshotContext.SessionId, StringComparison.Ordinal) ||
+            !string.Equals(repairRequest.RequestId, snapshotContext.RequestId, StringComparison.Ordinal) ||
+            repairRequest.TurnNumber != snapshotContext.TurnNumber)
+        {
+            return false;
+        }
+
+        var completeMetadata = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
+        if (completeMetadata == null ||
+            !string.Equals(completeMetadata.SessionId, snapshotContext.SessionId, StringComparison.Ordinal) ||
+            !string.Equals(completeMetadata.RequestId, snapshotContext.RequestId, StringComparison.Ordinal) ||
+            completeMetadata.TurnNumber != snapshotContext.TurnNumber)
+        {
+            return false;
+        }
+
+        JsonNode? stallReportNode = null;
+        var stallReportJson = await _fs.ReadFileAsync(ValidationRepairArtifactStallReportPath);
+        if (!string.IsNullOrWhiteSpace(stallReportJson))
+        {
+            try
+            {
+                stallReportNode = JsonNode.Parse(stallReportJson);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Найден validation repair artifact stall report, но report JSON не читается.");
+            }
+        }
+
+        var signal = new JsonObject
+        {
+            ["sessionId"] = repairRequest.SessionId,
+            ["requestId"] = repairRequest.RequestId,
+            ["turnNumber"] = repairRequest.TurnNumber,
+            ["timestamp"] = DateTimeOffset.UtcNow.ToString("O"),
+            ["status"] = "error",
+            ["harnessSource"] = "gm_validation_repair_artifact_stall",
+            ["error"] = "Validation repair stalled without target artifact progress; GM bridge was stopped by harness cleanup."
+        };
+
+        if (stallReportNode != null)
+            signal["validationRepairArtifactStall"] = stallReportNode;
+
+        await _fs.WriteFileAtomicAsync("ready/turn_error.json", signal.ToJsonString(JsonOpts));
+        _fs.DeleteFile("ready/turn_complete.json");
+        if (_fs.FileExists(ValidationRepairReadyPath))
+            _fs.DeleteFile(ValidationRepairReadyPath);
+
+        _logger.LogWarning(
+            "Validation repair artifact stall promoted to terminal error for pending turn(session={Session}, request={Request}, turn={Turn}).",
+            repairRequest.SessionId,
+            repairRequest.RequestId,
+            repairRequest.TurnNumber);
+        return true;
     }
 
     private async Task NormalizePendingTerminalProtocolFailureArtifactsAsync()

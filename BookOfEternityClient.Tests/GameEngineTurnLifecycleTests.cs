@@ -364,6 +364,67 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task NormalizePendingRepairArtifactsAsync_ValidationRepairArtifactStall_WritesTerminalError()
+    {
+        const string sessionId = "session-repair-stall";
+        const string requestId = "request-repair-stall";
+        const int turnNumber = 5;
+        const string trackedPath = "game_state/world/current_location.json";
+
+        await WriteJsonAsync(trackedPath, new { locationId = "loc_stable" });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{trackedPath}", new { locationId = "loc_stable" });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber,
+            status = "success",
+            timestamp = "2026-07-05T02:00:00Z"
+        });
+        await WriteJsonAsync("game_state/control/validation_repair_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber,
+            revalidationAttempt = 2
+        });
+        await WriteJsonAsync("game_state/control/gm_validation_repair_artifact_stall_report.json", new
+        {
+            isStalled = true,
+            elapsedSeconds = 180,
+            bridgeCleanup = new
+            {
+                reason = "gm_validation_repair_artifact_stall",
+                status = "fallback-stopped",
+                ok = true
+            }
+        });
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+
+        await InvokePrivateTaskAsync(engine, "NormalizePendingRepairArtifactsAsync");
+
+        Assert.True(_fs.FileExists("ready/turn_error.json"));
+        var errorJson = await _fs.ReadFileAsync("ready/turn_error.json");
+        Assert.NotNull(errorJson);
+        using var errorDoc = JsonDocument.Parse(errorJson!);
+        var root = errorDoc.RootElement;
+        Assert.Equal(sessionId, root.GetProperty("sessionId").GetString());
+        Assert.Equal(requestId, root.GetProperty("requestId").GetString());
+        Assert.Equal(turnNumber, root.GetProperty("turnNumber").GetInt32());
+        Assert.Equal("error", root.GetProperty("status").GetString());
+        Assert.Equal("gm_validation_repair_artifact_stall", root.GetProperty("harnessSource").GetString());
+        Assert.Contains("validation repair", root.GetProperty("error").GetString(), StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+    }
+
+    [Fact]
     public async Task WaitForContractRepairAsync_AcceptedRepairReady_WritesAcceptedTrajectoryRecord()
     {
         const string sessionId = "session-repair-ledger";
