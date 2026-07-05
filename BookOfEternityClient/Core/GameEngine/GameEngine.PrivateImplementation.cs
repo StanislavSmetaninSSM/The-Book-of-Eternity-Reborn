@@ -99,6 +99,8 @@ public partial class GameEngine
         public List<string> CanonicalActorNames { get; set; } = new();
         public List<string>? MissingFields { get; set; }
         public List<ValidationRepairExactFieldCorrection> ExactFieldCorrections { get; set; } = new();
+        public JsonObject? CanonicalCreateSkeleton { get; set; }
+        public JsonObject? AllowedEnums { get; set; }
         public List<string> ExpectedShape { get; set; } = new();
         public List<string> SafeCorrectionRules { get; set; } = new();
         public List<string> Steps { get; set; } = new();

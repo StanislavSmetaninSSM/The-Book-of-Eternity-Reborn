@@ -555,6 +555,7 @@ public partial class GameEngine
         {
             using var cts = new CancellationTokenSource();
             var startTime = DateTime.UtcNow;
+            var harnessTerminalErrorPublished = false;
 
             var waitTask = Task.Run(async () =>
             {
@@ -562,6 +563,17 @@ public partial class GameEngine
                 {
                     if (_fs.FileExists(ValidationRepairReadyPath))
                         return true;
+                    if (_fs.FileExists(ValidationRepairArtifactStallReportPath))
+                    {
+                        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+                        if (pendingSnapshot is { Status: PendingTurnSnapshotResolutionStatus.Usable, Context: not null } &&
+                            await TryPromoteValidationRepairArtifactStallToTerminalErrorAsync(pendingSnapshot.Context))
+                        {
+                            harnessTerminalErrorPublished = true;
+                            return false;
+                        }
+                    }
+
                     await Task.Delay(500, cts.Token);
                 }
                 return false;
@@ -610,6 +622,12 @@ public partial class GameEngine
 
                 await _progressionSchedule.DeleteTransientReportAsync();
                 await DeleteValidationRepairFilesAsync();
+                return false;
+            }
+
+            if (harnessTerminalErrorPublished)
+            {
+                AnsiConsole.MarkupLine("[yellow]⏹ Ремонтный цикл остановлен harness: GM bridge завис во время исправления, создан terminal error для восстановления.[/]");
                 return false;
             }
 
@@ -1667,12 +1685,18 @@ public partial class GameEngine
                 "OtherGuides/Afterlife_Contract_Matrix.md",
                 "Examples/E_CLI_Afterlife_Turns.txt"
             },
+            CanonicalCreateSkeleton = BuildGuardianPendingCreationCanonicalCreateSkeleton(),
+            AllowedEnums = BuildGuardianPendingCreationAllowedEnums(),
             ExpectedShape = new List<string>
             {
                 "Read game_state/meta/guardians.json.pendingGuardianCreation as the startup request authority. For mode=freeform, use soulName and description; for mode=system_preset, use the exact requested preset identity.",
                 "For a freeform New Game startup request, repair through the supported Guardian create surface `UpdateGuardians.create`: `UpdateGuardians`: [{ `command`: `create`, `data`: <full canonical Guardian> }]. The `data` object is the authority for the new Guardian identity.",
+                "Use harnessRepairPackets[].canonicalCreateSkeleton as the bounded machine-readable starting point. Replace placeholder ids/names/prose from pendingGuardianCreation, but keep the same command/data shape and canonical field families.",
                 "Do not satisfy guardian_materialized_without_create_surface by editing only materialized mirrors. `guardians[]` and `activeGuardian` must match the create result, but the explicit `UpdateGuardians.create` command=create data=<full canonical Guardian> surface must be present in the repaired response.",
                 "The accepted game_state/meta/guardians.json must contain the new Guardian in guardians[] with stable guardianId, displayName/canonicalName, title/domain/originType, abode identity, relationshipData/currentReputation, loreFragments, musings, trade/project/profile arrays or empty containers required by the canonical Guardian shape.",
+                "Canonical Guardian create data must include at least 7 loreFragments. Use the allowed category and requiredReputation values from harnessRepairPackets[].allowedEnums.",
+                "Canonical musings must include turn, topic, mood, and thought/text. Use only guardianMusingTopics and guardianMusingMoods from harnessRepairPackets[].allowedEnums.",
+                "Do not invent relationshipData.guardianRoleToPlayer for normal startup Guardians. Omit it unless repairing an explicit foundation/former patron branch; in v1 the only allowed value is former_patron.",
                 "activeGuardian must mirror the created Guardian, and chaosSeaNavigation.currentAbodeId must point to the created/discovered abode when the Guardian is now accessible.",
                 "After guardians[] and activeGuardian are materialized, remove pendingGuardianCreation from guardians.json. Leaving pendingGuardianCreation unresolved or beside the materialized Guardian keeps /хранители empty or pending.",
                 "output/debug_logs.json.gm_thoughts_markdown must be Guardian-centric or Mixed, list the Guardian by player-facing name in Relevant actors, and include situation/thoughts/actions explaining the materialization."
@@ -1690,6 +1714,7 @@ public partial class GameEngine
                 "Open game_state/control/validation_repair_request.json first and repair only the listed startup Guardian creation errors in place.",
                 "Use Read-BoeJson -RelativePath 'game_state/meta/guardians.json' and inspect pendingGuardianCreation before editing.",
                 "Write or repair `UpdateGuardians.create` first: `UpdateGuardians`: [{ `command`: `create`, `data`: <full canonical Guardian> }]. This create command is the authority; do not repair only guardians[]/activeGuardian.",
+                "Start from harnessRepairPackets[].canonicalCreateSkeleton. Replace placeholders with pendingGuardianCreation soulName/description, keep 7 loreFragments, keep mood/musings enum values from allowedEnums, and omit guardianRoleToPlayer unless the repair request explicitly names a former_patron foundation branch.",
                 "For materialization, write a full canonical Guardian into guardians[], set activeGuardian to the matching mirror, update chaosSeaNavigation.currentAbodeId, and remove pendingGuardianCreation only after those roots are present.",
                 "Repair output/debug_logs.json.gm_thoughts_markdown with Guardian-centric/Mixed scope, the Guardian's player-facing name in Relevant actors, and a matching Guardian Thoughts block.",
                 "Write repaired files with Write-BoeJson, then call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from validation_repair_request.json."
@@ -1714,12 +1739,186 @@ public partial class GameEngine
                 "Do not delete pendingGuardianCreation without materializing the requested Guardian into both guardians[] and activeGuardian.",
                 "Do not keep a direct materialized Guardian object that lacks the supported UpdateGuardians.create semantics and full canonical Guardian shape.",
                 "Do not repair only guardians[] or activeGuardian without UpdateGuardians command=create data=<full canonical Guardian>.",
+                "Do not invent relationshipData.guardianRoleToPlayer such as mentor, teacher, patron, owner, bonded, or ally; omit the field unless the explicit valid value is former_patron.",
+                "Do not use arbitrary musing topics/moods, arbitrary mood.current values, or fewer than 7 loreFragments.",
                 "Do not leave the Guardian only in narrative prose while /хранители still has no canonical Guardian.",
                 "Do not rewrite the requested freeform Guardian into an unrelated system preset or Mortal NPC.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer startup Guardian rules; use this packet, validation_repair_request.json, afterlife docs/examples, and session state."
             }
         };
     }
+
+    private static JsonObject BuildGuardianPendingCreationCanonicalCreateSkeleton()
+    {
+        var guardianData = new JsonObject
+        {
+            ["guardianId"] = "guardian_<stable_slug_from_pending_guardian_creation>",
+            ["canonicalName"] = "<guardian name from pendingGuardianCreation.description>",
+            ["originType"] = "freeform",
+            ["domain"] = "<short domain inferred from pendingGuardianCreation.description>",
+            ["nameVariants"] = new JsonObject
+            {
+                ["default"] = "<guardian display name>",
+                ["feminine"] = "<optional feminine form or same display name>",
+                ["masculine"] = "<optional masculine form or same display name>",
+                ["neutral"] = "<optional neutral form or same display name>"
+            },
+            ["manifestation"] = new JsonObject
+            {
+                ["currentDisplayName"] = "<guardian display name>",
+                ["formFlexibility"] = "selective",
+                ["currentPresentationStyle"] = "neutral",
+                ["currentPronouns"] = "они/их",
+                ["appearanceDescription"] = "<visual form from pendingGuardianCreation.description>"
+            },
+            ["manifestationHistory"] = new JsonArray(),
+            ["abode"] = new JsonObject
+            {
+                ["abodeId"] = "abode_<stable_slug_from_guardian>",
+                ["name"] = "<guardian abode name>",
+                ["isDiscovered"] = true
+            },
+            ["personalityProfile"] = new JsonObject
+            {
+                ["archetype"] = "<short archetype>",
+                ["speechPattern"] = "<how the guardian speaks>",
+                ["coreValues"] = new JsonArray("memory", "discipline", "truth")
+            },
+            ["relationshipData"] = new JsonObject
+            {
+                ["currentReputation"] = 0,
+                ["reputationHistory"] = new JsonArray(),
+                ["lastInteraction"] = "startup_turn"
+            },
+            ["abodePower"] = new JsonObject
+            {
+                ["currentPower"] = 10,
+                ["tier"] = "Зарождающаяся",
+                ["lastUpdatedAt"] = "<current turn timestamp or turn marker>",
+                ["history"] = new JsonArray()
+            },
+            ["guardianRelationships"] = new JsonArray(),
+            ["questManagement"] = new JsonObject
+            {
+                ["availableQuests"] = new JsonArray(),
+                ["activeQuests"] = new JsonArray(),
+                ["completedQuests"] = new JsonArray()
+            },
+            ["gachaSystem"] = new JsonObject
+            {
+                ["chargesPerReturn"] = 1,
+                ["chargesUsedThisReturn"] = 0,
+                ["gachaHistory"] = new JsonArray()
+            },
+            ["mood"] = new JsonObject
+            {
+                ["current"] = "focused",
+                ["intensity"] = 40,
+                ["reason"] = "startup Guardian materialization",
+                ["since"] = 1
+            },
+            ["loreFragments"] = new JsonArray
+            {
+                BuildGuardianLoreFragmentSkeleton(1, "personal_history", 0),
+                BuildGuardianLoreFragmentSkeleton(2, "domain_mastery", 0),
+                BuildGuardianLoreFragmentSkeleton(3, "soul_mechanics", 50),
+                BuildGuardianLoreFragmentSkeleton(4, "lost_world", 50),
+                BuildGuardianLoreFragmentSkeleton(5, "other_guardians", 130),
+                BuildGuardianLoreFragmentSkeleton(6, "cosmic_secret", 130),
+                BuildGuardianLoreFragmentSkeleton(7, "personal_history", 230)
+            },
+            ["musings"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["turn"] = 1,
+                    ["topic"] = "soul_assessment",
+                    ["mood"] = "contemplative",
+                    ["thought"] = "<short private thought about the newly created soul>"
+                }
+            }
+        };
+
+        return new JsonObject
+        {
+            ["authoritySurface"] = "UpdateGuardians.create",
+            ["updateGuardians"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["command"] = "create",
+                    ["data"] = guardianData
+                }
+            },
+            ["materializedMirrorRules"] = new JsonObject
+            {
+                ["guardians[]"] = "copy the same created Guardian data into guardians[] after the create surface is present",
+                ["activeGuardian"] = "mirror the same created Guardian",
+                ["chaosSeaNavigation.currentAbodeId"] = "use data.abode.abodeId",
+                ["pendingGuardianCreation"] = "remove only after create data, guardians[], activeGuardian, and chaosSeaNavigation are present"
+            },
+            ["forbiddenDirectMirrorRepair"] = new JsonArray(
+                "do not repair only guardians[]",
+                "do not repair only activeGuardian",
+                "do not omit UpdateGuardians[0].command=create",
+                "do not invent relationshipData.guardianRoleToPlayer for normal startup")
+        };
+    }
+
+    private static JsonObject BuildGuardianLoreFragmentSkeleton(int index, string category, int requiredReputation) => new()
+    {
+        ["fragmentId"] = $"lore_<stable_slug>_{index}",
+        ["category"] = category,
+        ["title"] = $"<planned lore fragment {index}>",
+        ["content"] = index <= 2 ? $"<visible starter lore fragment {index}>" : null,
+        ["requiredReputation"] = requiredReputation
+    };
+
+    private static JsonObject BuildGuardianPendingCreationAllowedEnums() => new()
+    {
+        ["guardianMusingTopics"] = new JsonArray(
+            "soul_assessment",
+            "domain_insight",
+            "guardian_politics",
+            "chaos_sea",
+            "personal_reflection",
+            "quest_planning"),
+        ["guardianMusingMoods"] = new JsonArray(
+            "content",
+            "intrigued",
+            "concerned",
+            "amused",
+            "proud",
+            "disappointed",
+            "wary",
+            "nostalgic",
+            "determined",
+            "melancholic",
+            "excited",
+            "contemplative",
+            "irritated",
+            "hopeful"),
+        ["guardianMoodCurrent"] = new JsonArray(
+            "welcoming",
+            "contemplative",
+            "energized",
+            "melancholic",
+            "irritated",
+            "proud",
+            "suspicious",
+            "playful",
+            "focused",
+            "nostalgic"),
+        ["guardianLoreFragmentCategories"] = new JsonArray(
+            "personal_history",
+            "cosmic_secret",
+            "domain_mastery",
+            "lost_world",
+            "other_guardians",
+            "soul_mechanics"),
+        ["guardianLoreFragmentRequiredReputation"] = new JsonArray("0", "50", "130", "230"),
+        ["guardianRoleToPlayerV1"] = new JsonArray("former_patron")
+    };
 
     private static ValidationRepairHarnessPacket BuildGuardianScopeRepairPacket(
         IReadOnlyList<ValidationIssue> guardianScopeErrors,

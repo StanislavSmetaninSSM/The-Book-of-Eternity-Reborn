@@ -425,6 +425,83 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WaitForContractRepairAsync_ValidationRepairArtifactStall_ExitsWithTerminalError()
+    {
+        const string sessionId = "session-active-repair-stall";
+        const string requestId = "request-active-repair-stall";
+        const int turnNumber = 6;
+        const string trackedPath = "game_state/meta/guardians.json";
+
+        await WriteJsonAsync(trackedPath, new { guardians = Array.Empty<object>() });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{trackedPath}", new { guardians = Array.Empty<object>() });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber,
+            status = "success",
+            timestamp = "2026-07-05T03:00:00Z"
+        });
+
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/guardians.json.guardians",
+                IssueSeverity.Error,
+                "Current guardians[] must match kernel authority.",
+                code: "guardian_materialized_state_outside_authority",
+                section: "Guardians")
+        };
+
+        var repairTask = InvokePrivateAsync<bool>(
+            engine,
+            "WaitForContractRepairAsync",
+            "active validation repair stall test",
+            issues,
+            1,
+            null);
+
+        var deadline = DateTime.UtcNow.AddSeconds(5);
+        while (!_fs.FileExists("game_state/control/validation_repair_request.json") && DateTime.UtcNow < deadline)
+            await Task.Delay(100);
+
+        Assert.True(_fs.FileExists("game_state/control/validation_repair_request.json"));
+        await WriteJsonAsync("game_state/control/gm_validation_repair_artifact_stall_report.json", new
+        {
+            isStalled = true,
+            elapsedSeconds = 180,
+            bridgeCleanup = new
+            {
+                reason = "gm_validation_repair_artifact_stall",
+                status = "fallback-stopped",
+                ok = true
+            }
+        });
+
+        var accepted = await repairTask.WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.False(accepted);
+        Assert.True(_fs.FileExists("ready/turn_error.json"));
+        var errorJson = await _fs.ReadFileAsync("ready/turn_error.json");
+        Assert.NotNull(errorJson);
+        using var errorDoc = JsonDocument.Parse(errorJson!);
+        var root = errorDoc.RootElement;
+        Assert.Equal(sessionId, root.GetProperty("sessionId").GetString());
+        Assert.Equal(requestId, root.GetProperty("requestId").GetString());
+        Assert.Equal(turnNumber, root.GetProperty("turnNumber").GetInt32());
+        Assert.Equal("gm_validation_repair_artifact_stall", root.GetProperty("harnessSource").GetString());
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+    }
+
+    [Fact]
     public async Task WaitForContractRepairAsync_AcceptedRepairReady_WritesAcceptedTrajectoryRecord()
     {
         const string sessionId = "session-repair-ledger";
@@ -1158,6 +1235,98 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var safeCorrectionRules = packet.GetProperty("safeCorrectionRules").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(safeCorrectionRules, item => item.Contains("pending-only", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(safeCorrectionRules, item => item.Contains("materialization was not intended", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_PendingGuardianCreationRepair_IncludesBoundedCreateSkeletonAndEnums()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/guardians.json.guardians[0].guardianId",
+                IssueSeverity.Error,
+                "Fresh startup Guardian was materialized without the supported create surface.",
+                code: "guardian_materialized_without_create_surface",
+                section: "Guardians",
+                expected: "UpdateGuardians.create with full canonical Guardian shape",
+                actual: "direct materialized guardian object"),
+            new(
+                "game_state/meta/guardians.json.guardians[0].loreFragments",
+                IssueSeverity.Error,
+                "Canonical guardian state должен хранить как минимум 7 pre-planned lore fragments",
+                code: "guardian_state_lore_fragments_below_minimum",
+                section: "Guardians",
+                expected: ">= 7 lore fragments",
+                actual: "2"),
+            new(
+                "game_state/meta/guardians.json.guardians[0].musings[0].topic",
+                IssueSeverity.Error,
+                "Guardian musing.topic должен быть одним из canonical topic enums",
+                code: "guardian_musing_invalid_topic",
+                section: "Guardians",
+                expected: "soul_assessment | domain_insight | guardian_politics | chaos_sea | personal_reflection | quest_planning",
+                actual: "mirror_memory"),
+            new(
+                "game_state/meta/guardians.json.guardians[0].relationshipData.guardianRoleToPlayer",
+                IssueSeverity.Error,
+                "guardianRoleToPlayer поддерживает только canonical значение former_patron в v1 foundation branch",
+                code: "guardian_relationship_invalid_role_to_player",
+                section: "Guardians",
+                expected: "former_patron or omit field",
+                actual: "mentor")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "первого хода после создания души", issues, 2 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("guardian_pending_creation_materialization_repair", packet.GetProperty("kind").GetString());
+
+        var skeleton = packet.GetProperty("canonicalCreateSkeleton");
+        Assert.Equal("UpdateGuardians.create", skeleton.GetProperty("authoritySurface").GetString());
+        Assert.Equal("create", skeleton.GetProperty("updateGuardians").EnumerateArray().Single().GetProperty("command").GetString());
+        var data = skeleton.GetProperty("updateGuardians").EnumerateArray().Single().GetProperty("data");
+        Assert.True(data.TryGetProperty("guardianId", out _));
+        Assert.True(data.TryGetProperty("canonicalName", out _));
+        Assert.True(data.TryGetProperty("manifestation", out _));
+        Assert.True(data.TryGetProperty("abode", out _));
+        Assert.True(data.TryGetProperty("relationshipData", out var relationshipData));
+        Assert.False(relationshipData.TryGetProperty("guardianRoleToPlayer", out _));
+        Assert.True(data.TryGetProperty("mood", out var mood));
+        Assert.Equal("focused", mood.GetProperty("current").GetString());
+        Assert.True(data.TryGetProperty("loreFragments", out var loreFragments));
+        Assert.Equal(7, loreFragments.GetArrayLength());
+        Assert.True(data.TryGetProperty("musings", out var musings));
+        Assert.Equal("soul_assessment", musings.EnumerateArray().Single().GetProperty("topic").GetString());
+
+        var allowedEnums = packet.GetProperty("allowedEnums");
+        Assert.Contains("soul_assessment", allowedEnums.GetProperty("guardianMusingTopics").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("contemplative", allowedEnums.GetProperty("guardianMusingMoods").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("focused", allowedEnums.GetProperty("guardianMoodCurrent").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("personal_history", allowedEnums.GetProperty("guardianLoreFragmentCategories").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("230", allowedEnums.GetProperty("guardianLoreFragmentRequiredReputation").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("former_patron", allowedEnums.GetProperty("guardianRoleToPlayerV1").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("canonicalCreateSkeleton", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("7 loreFragments", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("guardianRoleToPlayer", StringComparison.Ordinal) &&
+                                               item.Contains("omit", StringComparison.OrdinalIgnoreCase));
+
+        var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(doNotDo, item => item.Contains("invent", StringComparison.OrdinalIgnoreCase) &&
+                                         item.Contains("guardianRoleToPlayer", StringComparison.Ordinal));
     }
 
     [Fact]

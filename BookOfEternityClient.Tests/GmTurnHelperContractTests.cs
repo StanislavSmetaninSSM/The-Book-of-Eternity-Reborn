@@ -1327,6 +1327,28 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonTurnPrompt_UsesCompactFirstMortalBootstrapDispatchPacket()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var turnBlock = ExtractFunctionBlock(daemon, "function Process-Turn");
+        var compactBuilder = ExtractFunctionBlock(daemon, "function Build-FirstMortalBootstrapDispatchMessage");
+
+        Assert.Contains("Build-FirstMortalBootstrapDispatchMessage", daemon, StringComparison.Ordinal);
+        Assert.Contains("if (-not [string]::IsNullOrWhiteSpace($firstMortalBootstrapPrompt))", turnBlock, StringComparison.Ordinal);
+        Assert.Contains("Build-FirstMortalBootstrapDispatchMessage", turnBlock, StringComparison.Ordinal);
+        Assert.Contains("FIRST MORTAL BOOTSTRAP OUTPUT CHECKLIST", compactBuilder, StringComparison.Ordinal);
+        Assert.Contains("game_state/control/mortal_bootstrap_scaffold.json", compactBuilder, StringComparison.Ordinal);
+        Assert.Contains("$script:CompactTurnOutputTemplatePath", compactBuilder, StringComparison.Ordinal);
+        Assert.Contains("$script:CompactActorReasoningTemplatePath", compactBuilder, StringComparison.Ordinal);
+        Assert.Contains("$script:GmTurnHelperDirective", compactBuilder, StringComparison.Ordinal);
+        Assert.Contains("Complete-BoeTurn -FilesModified", compactBuilder, StringComparison.Ordinal);
+        Assert.DoesNotContain("You MUST read '$($script:CompactMortalFactionTemplatePath)'", compactBuilder, StringComparison.Ordinal);
+        Assert.DoesNotContain("You MUST read '$($script:CompactMortalCombatTemplatePath)'", compactBuilder, StringComparison.Ordinal);
+        Assert.DoesNotContain("$script:AfterlifeRealmGateDirective", compactBuilder, StringComparison.Ordinal);
+        Assert.DoesNotContain("$script:WeatherContractDirective", compactBuilder, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void DaemonBootstrap_DoesNotAskGmToReadLargeContextPackDocs()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -1710,6 +1732,10 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("UpdateGuardians.create", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("command=create", repairTemplate, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("data=<full canonical Guardian>", repairTemplate, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("UpdateGuardians[]", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("JSON array", repairTemplate, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("canonicalCreateSkeleton", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("allowedEnums", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("pending-only fallback", repairTemplate, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("narrative_response_unknown_field", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("remove the unsupported field from `output/narrative_response.json`", repairTemplate, StringComparison.OrdinalIgnoreCase);

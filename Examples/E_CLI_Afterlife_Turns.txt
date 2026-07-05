@@ -5481,7 +5481,7 @@ The GM must not improvise a nearby Guardian archetype. The result must point to 
 
 If the turn materializes the Guardian requested by `guardians.json.pendingGuardianCreation`, the accepted `guardians.json` must remove `pendingGuardianCreation`. Keeping that startup request after `activeGuardian` and `guardians[]` have been materialized means the client will still show "Guardian creation pending" and validation must reject it. Also do not delete `pendingGuardianCreation` without materializing the requested Guardian into both `activeGuardian` and canonical `guardians[]`; deleting only the startup request creates narrative-only Guardian fiction and must be rejected.
 
-Repair-mode shortcut: when `validation_repair_request.json.harnessRepairPackets[].kind` is `guardian_pending_creation_materialization_repair`, follow that packet before this long example. Read `pendingGuardianCreation`. For New Game `mode=freeform`, do not choose a pending-only fallback and do not repair only materialized mirrors: write `UpdateGuardians.create` as `UpdateGuardians` with `command=create` and `data=<full canonical Guardian>`, mirror that create result into full `guardians[]`, matching `activeGuardian`, and `chaosSeaNavigation.currentAbodeId`, then remove `pendingGuardianCreation`.
+Repair-mode shortcut: when `validation_repair_request.json.harnessRepairPackets[].kind` is `guardian_pending_creation_materialization_repair`, follow that packet before this long example. Read `pendingGuardianCreation`. For New Game `mode=freeform`, do not choose a pending-only fallback and do not repair only materialized mirrors: write `UpdateGuardians.create` as `UpdateGuardians` with `command=create` and `data=<full canonical Guardian>`, mirror that create result into full `guardians[]`, matching `activeGuardian`, and `chaosSeaNavigation.currentAbodeId`, then remove `pendingGuardianCreation`. Use `canonicalCreateSkeleton` and `allowedEnums` from the repair packet: keep at least 7 `loreFragments`, use listed mood/musing/lore enum values, and omit `relationshipData.guardianRoleToPlayer` unless the explicit branch is `former_patron`.
 
 Important runtime marker: the canonical `turn_request.json.playerAction` for this flow starts with `[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: <presetId>]`. This is a client-authored routing tag. Keep it in the input/audit context so the runtime can clear `system_guardian_attraction.json` after acceptance, but do not present the tag to the player as diegetic speech.
 
@@ -5624,8 +5624,71 @@ Correct accepted response fragment:
           "chargesUsedThisReturn": 0,
           "gachaHistory": []
         },
-        "loreFragments": [],
-        "musings": []
+        "mood": {
+          "current": "focused",
+          "intensity": 45,
+          "reason": "Ответ на точный системный зов.",
+          "since": 420
+        },
+        "loreFragments": [
+          {
+            "fragmentId": "azalia_lore_1",
+            "category": "personal_history",
+            "title": "Шёлковая память",
+            "content": "Азалия хранит воспоминания так, чтобы они не ломали душу.",
+            "requiredReputation": 0
+          },
+          {
+            "fragmentId": "azalia_lore_2",
+            "category": "domain_mastery",
+            "title": "Мягкая власть",
+            "content": "Её домен удерживает власть через согласие, долг и точные обещания.",
+            "requiredReputation": 0
+          },
+          {
+            "fragmentId": "azalia_lore_3",
+            "category": "soul_mechanics",
+            "title": "Узел доверия",
+            "content": null,
+            "requiredReputation": 50
+          },
+          {
+            "fragmentId": "azalia_lore_4",
+            "category": "lost_world",
+            "title": "Сад забытых клятв",
+            "content": null,
+            "requiredReputation": 50
+          },
+          {
+            "fragmentId": "azalia_lore_5",
+            "category": "other_guardians",
+            "title": "Переписка Хранителей",
+            "content": null,
+            "requiredReputation": 130
+          },
+          {
+            "fragmentId": "azalia_lore_6",
+            "category": "cosmic_secret",
+            "title": "Цена бережной памяти",
+            "content": null,
+            "requiredReputation": 130
+          },
+          {
+            "fragmentId": "azalia_lore_7",
+            "category": "personal_history",
+            "title": "Последний шёлковый зал",
+            "content": null,
+            "requiredReputation": 230
+          }
+        ],
+        "musings": [
+          {
+            "turn": 420,
+            "topic": "soul_assessment",
+            "mood": "contemplative",
+            "thought": "Душа пришла по точному зову, значит первый ответ должен быть ясным и без подмен."
+          }
+        ]
       }
     }
   ],
@@ -5693,8 +5756,71 @@ Correct accepted response fragment:
         "chargesUsedThisReturn": 0,
         "gachaHistory": []
       },
-      "loreFragments": [],
-      "musings": []
+      "mood": {
+        "current": "focused",
+        "intensity": 45,
+        "reason": "Ответ на точный системный зов.",
+        "since": 420
+      },
+      "loreFragments": [
+        {
+          "fragmentId": "azalia_lore_1",
+          "category": "personal_history",
+          "title": "Шёлковая память",
+          "content": "Азалия хранит воспоминания так, чтобы они не ломали душу.",
+          "requiredReputation": 0
+        },
+        {
+          "fragmentId": "azalia_lore_2",
+          "category": "domain_mastery",
+          "title": "Мягкая власть",
+          "content": "Её домен удерживает власть через согласие, долг и точные обещания.",
+          "requiredReputation": 0
+        },
+        {
+          "fragmentId": "azalia_lore_3",
+          "category": "soul_mechanics",
+          "title": "Узел доверия",
+          "content": null,
+          "requiredReputation": 50
+        },
+        {
+          "fragmentId": "azalia_lore_4",
+          "category": "lost_world",
+          "title": "Сад забытых клятв",
+          "content": null,
+          "requiredReputation": 50
+        },
+        {
+          "fragmentId": "azalia_lore_5",
+          "category": "other_guardians",
+          "title": "Переписка Хранителей",
+          "content": null,
+          "requiredReputation": 130
+        },
+        {
+          "fragmentId": "azalia_lore_6",
+          "category": "cosmic_secret",
+          "title": "Цена бережной памяти",
+          "content": null,
+          "requiredReputation": 130
+        },
+        {
+          "fragmentId": "azalia_lore_7",
+          "category": "personal_history",
+          "title": "Последний шёлковый зал",
+          "content": null,
+          "requiredReputation": 230
+        }
+      ],
+      "musings": [
+        {
+          "turn": 420,
+          "topic": "soul_assessment",
+          "mood": "contemplative",
+          "thought": "Душа пришла по точному зову, значит первый ответ должен быть ясным и без подмен."
+        }
+      ]
     }
   ],
   "activeGuardian": {

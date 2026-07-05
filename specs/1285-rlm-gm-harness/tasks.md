@@ -236,6 +236,8 @@
 - [X] T192 [Harness/RLM live-test blocker #1444/#1285/#1290] Treat `activeGuardian` id-only mirrors as safely reconstructable when a valid same-turn `UpdateGuardians.create.data` and matching `guardians[]` authority exist, preventing startup Guardian repair loops over a derived mirror field.
 - [X] T193 [Harness/RLM live-test follow-up #1446/#1349/#1285/#1290] Materialize fresh Mortal starter competencies from explicit player character concepts and keep early skill checks from remaining prose-only during live tests.
 - [X] T194 [Harness/RLM live-test blocker #1447/#1285/#1290] Publish a terminal Agent Console recovery state when validation repair artifact stall cleanup stops the GM bridge, instead of leaving autonomous tests on a non-interactive repair-progress screen.
+- [X] T195 [Harness/RLM live-test blocker #1448/#1349/#1285/#1290] Split or constrain first Mortal World entry so it cannot stall as one oversized GM turn with no output, preserving starter skill/bootstrap coverage for autonomous live tests.
+- [X] T196 [Harness/RLM live-test blocker #1449/#1349/#1285/#1290] Prevent freeform Guardian startup from entering repeated materialized-mirror repair loops by making the canonical create surface exact, bounded, and hard to misuse.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.
