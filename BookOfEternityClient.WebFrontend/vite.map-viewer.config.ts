@@ -20,6 +20,15 @@ import react from '@vitejs/plugin-react';
  */
 export default defineConfig({
   plugins: [react()],
+  // Library builds don't get NODE_ENV replaced automatically (app builds do).
+  // React 19 branches on process.env.NODE_ENV to select its dev vs prod code
+  // path; without this define the dev build ships and the bare process.env
+  // reference throws "process is not defined" in the browser. Pinning to
+  // "production" both fixes the runtime error and ships the smaller/faster
+  // React prod bundle.
+  define: {
+    'process.env.NODE_ENV': JSON.stringify('production')
+  },
   build: {
     // Output is consumed from a tracked path; do not empty the parent dir.
     emptyOutDir: false,
