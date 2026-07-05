@@ -3517,6 +3517,8 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("skillMasteryChanges", template, StringComparison.Ordinal);
             Assert.Contains("attribute-only check", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("prose-only learning", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("starter passive skills", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("fresh Mortal bootstrap", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("Чтение свидетельских меток", template, StringComparison.Ordinal);
             Assert.DoesNotContain("Р§С‚РµРЅРёРµ", template, StringComparison.Ordinal);
 

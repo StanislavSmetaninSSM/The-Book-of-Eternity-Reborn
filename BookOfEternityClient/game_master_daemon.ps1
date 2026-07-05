@@ -1890,6 +1890,7 @@ Use this before Mortal World turns that teach, unlock, practice, use, or improve
 
 - An attribute-only check is allowed when the fiction is just "try with Strength/Intelligence/Perception/etc." and no durable technique, craft, combat move, or knowledge skill is learned.
 - Prose-only learning is not enough when the fiction says the player learned, trained, practiced, unlocked, or repeatedly applied a concrete skill.
+- Fresh Mortal bootstrap may already create starter passive skills from the player's explicit character concept in `game_state/player/skills_passive.json`. Preserve and use these starter passive skills during early checks; if the player repeatedly applies one, update the passive skill object instead of narrating permanent competence as prose-only text.
 - If the player learns durable knowledge, perception, craft, social, or utility expertise, write `passiveSkillChanges` with a complete passive skill object.
 - If the player learns a usable combat move or activated technique, write `activeSkillChanges` with a complete active skill object and initialize/update its mastery through `skillMasteryChanges`.
 - If the player uses an already-known active skill, update `skillMasteryChanges`; do not write mastery for a skill that is not already present in `game_state/player/skills_active.json` or added in the same turn.

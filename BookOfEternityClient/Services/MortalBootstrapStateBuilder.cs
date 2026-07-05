@@ -42,6 +42,7 @@ public static class MortalBootstrapStateBuilder
         var factionName = "Силы стартовой сцены";
         var shortCircumstances = TrimSentence(circumstances, 180);
         var turnAnchor = $"#[{turn}].";
+        var starterPassiveSkills = BuildStarterPassiveSkills(character);
 
         return new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
         {
@@ -121,6 +122,9 @@ public static class MortalBootstrapStateBuilder
                 locationName,
                 shortCircumstances),
             ["game_state/player/experience.json"] = BuildExperience(),
+            ["game_state/player/skills_active.json"] = BuildActiveSkills(),
+            ["game_state/player/skills_passive.json"] = BuildPassiveSkills(starterPassiveSkills),
+            ["game_state/player/skill_mastery.json"] = BuildSkillMastery(),
             ["game_state/factions/faction_core.json"] = BuildFactionCore(factionId, factionName, shortCircumstances, turn, timestamp),
             ["game_state/factions/faction_resources.json"] = new()
             {
@@ -142,6 +146,125 @@ public static class MortalBootstrapStateBuilder
             ["totalExperience"] = 0,
             ["experienceForNextLevel"] = 100,
             ["experienceGained"] = 0
+        };
+
+    private static JsonObject BuildActiveSkills() =>
+        new()
+        {
+            ["activeSkillChanges"] = new JsonArray(),
+            ["removeActiveSkills"] = new JsonArray()
+        };
+
+    private static JsonObject BuildPassiveSkills(JsonArray starterPassiveSkills) =>
+        new()
+        {
+            ["passiveSkillChanges"] = starterPassiveSkills,
+            ["removePassiveSkills"] = new JsonArray()
+        };
+
+    private static JsonObject BuildSkillMastery() =>
+        new()
+        {
+            ["skillMasteryChanges"] = new JsonArray()
+        };
+
+    private static JsonArray BuildStarterPassiveSkills(string characterDescription)
+    {
+        var skills = new JsonArray();
+        AddIfMatched(
+            skills,
+            characterDescription,
+            new[] { "следопыт", "следы", "след", "tracker", "tracking" },
+            BuildPassiveSkill(
+                "Чтение следов",
+                "Асурэн умеет замечать свежие следы, повреждённую грязь, потерянные мелочи и слабые признаки чужого маршрута.",
+                "Полевые навыки",
+                "perception",
+                "Восприятие",
+                "Бонус к проверкам следов, улик на земле и маршрута беглеца."));
+
+        AddIfMatched(
+            skills,
+            characterDescription,
+            new[] { "дворян", "аристократ", "этикет", "вежлив", "noble", "etiquette" },
+            BuildPassiveSkill(
+                "Аристократический этикет",
+                "Героиня умеет держать лицо, выбирать допустимую форму обращения и скрывать страх за вежливой речью.",
+                "Социальные навыки",
+                "persuasion",
+                "Убеждение",
+                "Бонус к осторожным разговорам со знатью, стражей и чиновниками."));
+
+        AddIfMatched(
+            skills,
+            characterDescription,
+            new[] { "скрытност", "прят", "крад", "вор", "stealth", "thief" },
+            BuildPassiveSkill(
+                "Тихая поступь",
+                "Герой привык двигаться осторожно, выбирать тень и не привлекать лишнего внимания.",
+                "Полевые навыки",
+                "dexterity",
+                "Ловкость",
+                "Бонус к осторожному перемещению, укрытию и скрытным действиям."));
+
+        AddIfMatched(
+            skills,
+            characterDescription,
+            new[] { "охотник", "лук", "стрел", "hunter", "bow", "archer" },
+            BuildPassiveSkill(
+                "Охотничья выучка",
+                "Герой знает повадки зверя, дорожные приметы и осторожную работу с добычей.",
+                "Полевые навыки",
+                "perception",
+                "Восприятие",
+                "Бонус к поиску следов, засад, звериных троп и природных опасностей."));
+
+        return skills;
+    }
+
+    private static void AddIfMatched(JsonArray skills, string source, IReadOnlyList<string> needles, JsonObject skill)
+    {
+        if (ContainsAny(source, needles.ToArray()) && !ContainsSkill(skills, skill["skillName"]?.GetValue<string>()))
+            skills.Add(skill);
+    }
+
+    private static bool ContainsSkill(JsonArray skills, string? skillName) =>
+        !string.IsNullOrWhiteSpace(skillName) &&
+        skills.OfType<JsonObject>().Any(skill =>
+            string.Equals(skill["skillName"]?.GetValue<string>(), skillName, StringComparison.Ordinal));
+
+    private static JsonObject BuildPassiveSkill(
+        string skillName,
+        string skillDescription,
+        string group,
+        string target,
+        string targetDisplayName,
+        string bonusDescription) =>
+        new()
+        {
+            ["skillName"] = skillName,
+            ["skillDescription"] = skillDescription,
+            ["rarity"] = "Common",
+            ["type"] = "KnowledgeBased",
+            ["group"] = group,
+            ["masteryLevel"] = 1,
+            ["maxMasteryLevel"] = 5,
+            ["playerStatBonus"] = $"{targetDisplayName} +1",
+            ["structuredBonuses"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["bonusType"] = "Characteristic",
+                    ["target"] = target,
+                    ["targetDisplayName"] = targetDisplayName,
+                    ["targetType"] = "characteristic",
+                    ["targetTypeDisplayName"] = targetDisplayName,
+                    ["valueType"] = "Flat",
+                    ["value"] = 1,
+                    ["application"] = "Permanent",
+                    ["description"] = bonusDescription
+                }
+            }
         };
 
     private static JsonObject BuildInventory(

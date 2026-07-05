@@ -39,6 +39,9 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.Contains("game_state/quests/regular_quests.json", files.Keys);
         Assert.Contains("game_state/inventory/items.json", files.Keys);
         Assert.Contains("game_state/player/experience.json", files.Keys);
+        Assert.Contains("game_state/player/skills_active.json", files.Keys);
+        Assert.Contains("game_state/player/skills_passive.json", files.Keys);
+        Assert.Contains("game_state/player/skill_mastery.json", files.Keys);
         Assert.Contains("lore/codex_entries.json", files.Keys);
 
         var currentLocation = files["game_state/world/current_location.json"];
@@ -83,6 +86,17 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.Equal(100, experience["experienceForNextLevel"]!.GetValue<int>());
         Assert.Equal(0, experience["experienceGained"]!.GetValue<int>());
 
+        var activeSkills = files["game_state/player/skills_active.json"];
+        Assert.Empty(activeSkills["activeSkillChanges"]!.AsArray());
+        Assert.Empty(activeSkills["removeActiveSkills"]!.AsArray());
+
+        var passiveSkills = files["game_state/player/skills_passive.json"];
+        Assert.Empty(passiveSkills["passiveSkillChanges"]!.AsArray());
+        Assert.Empty(passiveSkills["removePassiveSkills"]!.AsArray());
+
+        var skillMastery = files["game_state/player/skill_mastery.json"];
+        Assert.Empty(skillMastery["skillMasteryChanges"]!.AsArray());
+
         var codexEntries = files["lore/codex_entries.json"]!["entries"]!.AsArray();
         var currentWorldEntry = codexEntries
             .OfType<JsonObject>()
@@ -94,6 +108,73 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             "current_world/",
             currentWorldEntry["sourceFile"]!.GetValue<string>(),
             StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MortalBootstrapStateBuilder_MaterializesExplicitTrackerCompetencyAsPassiveSkill()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 5,
+            characterDescription: "Молодая женщина-следопыт из обедневшего дворянского рода: зовут Асурэн де Вальмонт, носит дорожный плащ, умеет читать следы и скрывать страх за вежливостью.",
+            worldDescription: "Тёмное фэнтези позднего средневековья.",
+            startingCircumstances: "Асурэн приходит в себя в дорожной харчевне у северных ворот.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-05T01:00:00Z"));
+
+        var passiveSkills = files["game_state/player/skills_passive.json"];
+        var skills = passiveSkills["passiveSkillChanges"]!.AsArray();
+        var tracking = Assert.Single(skills.OfType<JsonObject>(), skill =>
+            string.Equals(skill["skillName"]?.GetValue<string>(), "Чтение следов", StringComparison.Ordinal));
+
+        Assert.Equal("KnowledgeBased", tracking["type"]!.GetValue<string>());
+        Assert.Equal("Полевые навыки", tracking["group"]!.GetValue<string>());
+        Assert.Equal(1, tracking["masteryLevel"]!.GetValue<int>());
+        Assert.Equal(5, tracking["maxMasteryLevel"]!.GetValue<int>());
+        Assert.Contains("след", tracking["skillDescription"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Восприятие", tracking["playerStatBonus"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+
+        var structuredBonuses = tracking["structuredBonuses"]!.AsArray();
+        var bonus = Assert.Single(structuredBonuses.OfType<JsonObject>());
+        Assert.Equal("Characteristic", bonus["bonusType"]!.GetValue<string>());
+        Assert.Equal("perception", bonus["target"]!.GetValue<string>());
+        Assert.Equal("Восприятие", bonus["targetDisplayName"]!.GetValue<string>());
+        Assert.Equal("Flat", bonus["valueType"]!.GetValue<string>());
+        Assert.Equal("Permanent", bonus["application"]!.GetValue<string>());
+        Assert.Equal(1, bonus["value"]!.GetValue<int>());
+        Assert.Empty(files["game_state/player/skills_active.json"]["activeSkillChanges"]!.AsArray());
+        Assert.Empty(files["game_state/player/skill_mastery.json"]["skillMasteryChanges"]!.AsArray());
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_FreshMortalBootstrapStarterSkillsAreCanonical()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 5,
+            characterDescription: "Молодая женщина-следопыт из обедневшего дворянского рода: умеет читать следы и скрывать страх за вежливостью.",
+            worldDescription: "Тёмное фэнтези позднего средневековья.",
+            startingCircumstances: "Асурэн приходит в себя в дорожной харчевне у северных ворот.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-05T01:00:00Z"));
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.FilePath is not null &&
+            issue.FilePath.Contains("skills_", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "passive_skill_missing_structured_bonuses", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "passive_skill_missing_player_stat_bonus_mirror", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
