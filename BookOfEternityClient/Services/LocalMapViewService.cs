@@ -1706,8 +1706,15 @@ public static class LocalMapViewerRenderer
 {
     public static string BuildStandaloneHtml(MapViewDto map)
     {
+        // The map JSON lives inside a <script type="application/json"> element.
+        // HTML-encoding it (as the old data-attribute wiring required) would
+        // corrupt the payload — browsers do NOT decode HTML entities inside
+        // <script>, so JSON.parse would see &quot; literally and fail. Instead we
+        // serialize safely and only escape the one sequence that can prematurely
+        // close the script element ("</"), which is the standard, secure way to
+        // embed JSON in <script>.
         var json = JsonSerializer.Serialize(map, LocalMapViewService.JsonOptions);
-        var encodedJson = WebUtility.HtmlEncode(json);
+        var encodedJson = json.Replace("</", @"<\/");
         var title = WebUtility.HtmlEncode(string.IsNullOrWhiteSpace(map.Title) ? "Карта" : map.Title);
 
         return $$"""
