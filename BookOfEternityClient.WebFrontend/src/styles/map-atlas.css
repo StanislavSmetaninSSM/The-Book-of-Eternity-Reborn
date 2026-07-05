@@ -144,6 +144,18 @@
   box-shadow: inset 0 1px 0 rgba(245, 212, 136, 0.08);
   transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
 }
+.map-toolbar select {
+  color-scheme: dark;
+}
+.map-toolbar select option {
+  background: #160f09;
+  color: #f3dfab;
+}
+.map-toolbar select option:checked,
+.map-toolbar select option:hover {
+  background: #6e4a18;
+  color: #fff4d1;
+}
 .map-toolbar button {
   cursor: pointer;
 }
@@ -405,46 +417,6 @@
   pointer-events: none;
   text-shadow: 0 0 0.5rem color-mix(in srgb, var(--atlas-gold) 45%, transparent);
 }
-/* 8-point compass star ornament. */
-.map-compass-rose {
-  position: absolute;
-  z-index: 2;
-  right: 1rem;
-  bottom: 1rem;
-  width: 4.6rem;
-  aspect-ratio: 1;
-  border: 1px solid color-mix(in srgb, var(--atlas-gold) 60%, transparent);
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, rgba(246, 224, 160, 0.32), rgba(112, 72, 28, 0.12)),
-    conic-gradient(
-      from 0deg,
-      transparent 0 11deg,
-      color-mix(in srgb, var(--atlas-gold) 50%, transparent) 11deg 22deg,
-      transparent 22deg 56deg,
-      color-mix(in srgb, var(--atlas-gold) 30%, transparent) 56deg 67deg,
-      transparent 67deg
-    );
-  color: var(--atlas-ink);
-  font-family: var(--font-rune, var(--font-display));
-  font-size: 0.5rem;
-  pointer-events: none;
-  box-shadow:
-    inset 0 0 0.6rem rgba(246, 224, 160, 0.18),
-    0 0 0.8rem color-mix(in srgb, var(--atlas-gold) 18%, transparent);
-}
-.map-compass-rose span {
-  position: absolute;
-}
-.map-compass-rose span:nth-child(1) { top: 0.2rem; left: 50%; transform: translateX(-50%); font-weight: 700; }
-.map-compass-rose span:nth-child(2) { top: 26%; right: 0.25rem; }
-.map-compass-rose span:nth-child(3) { right: 0.2rem; top: 50%; transform: translateY(-50%); font-weight: 700; }
-.map-compass-rose span:nth-child(4) { right: 26%; bottom: 0.25rem; }
-.map-compass-rose span:nth-child(5) { bottom: 0.2rem; left: 50%; transform: translateX(-50%); font-weight: 700; }
-.map-compass-rose span:nth-child(6) { bottom: 26%; left: 0.25rem; }
-.map-compass-rose span:nth-child(7) { left: 0.2rem; top: 50%; transform: translateY(-50%); font-weight: 700; }
-.map-compass-rose span:nth-child(8) { left: 26%; top: 0.25rem; }
-
 .map-canvas {
   width: 100%;
   min-height: 22rem;
@@ -661,11 +633,24 @@
 /* ---------- Fullscreen dialog ---------- */
 
 .map-fullscreen-dialog {
+  --atlas-ink: #2b2116;
+  --atlas-ink-soft: #5a4a32;
   --atlas-gold: var(--color-gold, #c89b3c);
   --atlas-gold-bright: var(--color-gold-bright, #f5d488);
+  --atlas-blood: var(--color-crimson, #8a1c1c);
+  --atlas-blood-deep: var(--color-blood, #4a0c0c);
+  --atlas-moss: #2f5a3a;
+  --atlas-parchment: #e4cf99;
+  --atlas-parchment-deep: #b89356;
+  --atlas-parchment-ink: #2b2116;
+  --color-parchment: #f4ead0;
+  --color-mist: #b8aa8a;
+  --text-primary: #f4ead0;
+  --text-muted: #b8aa8a;
   position: fixed;
   z-index: 10000;
   inset: 0;
+  isolation: isolate;
   box-sizing: border-box;
   width: 100vw;
   max-width: none;
@@ -677,12 +662,9 @@
   overscroll-behavior: contain;
   border: 0;
   background:
-    linear-gradient(180deg, rgb(3, 5, 6), rgb(6, 9, 9)),
-    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--atlas-gold) 14%, transparent), transparent 28rem);
+    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--atlas-gold) 14%, transparent), transparent 28rem),
+    linear-gradient(180deg, rgb(3, 5, 6), rgb(6, 9, 9));
   color: var(--text-primary, var(--color-parchment));
-}
-.map-fullscreen-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.84);
 }
 .map-fullscreen-panel {
   display: grid;

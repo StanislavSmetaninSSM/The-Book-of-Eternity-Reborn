@@ -319,7 +319,8 @@ describe('playerCopy robustness', () => {
     expect(atlas).toContain('className="map-image-dialog"');
     expect(atlas).toContain('dialog');
     expect(atlas).toContain('Известный выход');
-    expect(atlas).toContain('Роза ветров');
+    expect(atlas).not.toContain('Роза ветров');
+    expect(atlas).not.toContain('map-compass-rose');
     expect(atlas).toContain('map-border-runes');
   });
 

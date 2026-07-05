@@ -482,6 +482,17 @@ public sealed class LocalMapViewerServiceTests : IDisposable
     }
 
     [Fact]
+    public void LocalMapViewerAssets_BundleContainsInlinedMapAtlasStyles()
+    {
+        var bundle = LocalMapViewerAssets.Bundle;
+
+        Assert.Contains("document.createElement('style')", bundle, StringComparison.Ordinal);
+        Assert.Contains(".map-atlas", bundle, StringComparison.Ordinal);
+        Assert.Contains(".map-vignette", bundle, StringComparison.Ordinal);
+        Assert.Contains("pointer-events:none", bundle.Replace(" ", string.Empty, StringComparison.Ordinal), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task LocalMapViewerRenderer_EmbedsStandaloneMountPoint()
     {
         await SeedMortalMapAsync();

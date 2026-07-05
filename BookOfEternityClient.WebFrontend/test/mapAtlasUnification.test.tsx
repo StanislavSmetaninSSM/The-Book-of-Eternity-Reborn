@@ -6,11 +6,14 @@ import type { MapNodeDto, MapViewDto, UiBlock } from '../src/api/contracts';
 import { BlockList } from '../src/components/BlockRenderer';
 import {
   buildViewBox,
+  describeMapNode,
   describeNodeStatus,
   groupNodesForDrawer,
   isContested,
+  MAP_NODE_HIT_RADIUS,
   nodeMatchesQuery,
-  orderMapNodesForDisplay
+  orderMapNodesForDisplay,
+  resolveNodeDisplayGeometry
 } from '../src/components/map/mapAtlasLogic';
 
 const cwd = process.cwd();
@@ -114,12 +117,71 @@ describe('unified MapAtlas — drawer navigation + search', () => {
     expect(describeNodeStatus(node('x', {})).kind).toBe('normal');
   });
 
+  it('describes faction influence by name and score instead of a generic status', () => {
+    const status = describeNodeStatus(
+      node('gate', {
+        ownerFactionId: 'merchant_guild',
+        ownerFactionName: 'Купеческая гильдия Этернии',
+        influence: { merchant_guild: 55 }
+      })
+    );
+
+    expect(status.kind).toBe('faction');
+    expect(status.label).toContain('Купеческая гильдия Этернии');
+    expect(status.label).toContain('55');
+    expect(status.label).not.toBe('Под контролем фракции');
+  });
+
+  it('localizes selected-node detail keys and common technical values', () => {
+    const details = describeMapNode(
+      node('gate', {
+        type: 'outdoor',
+        ownerFactionId: 'merchant_guild',
+        ownerFactionName: 'Купеческая гильдия Этернии',
+        influence: { merchant_guild: 55 },
+        details: [
+          { key: 'Тип', value: 'outdoor' },
+          { key: 'biome', value: 'Urban' },
+          { key: 'Выходы', value: 'Коридор поместья (Safe)' },
+          { key: 'Контроль фракций', value: 'Купеческая гильдия Этернии: Economic 55' }
+        ]
+      })
+    );
+    const byKey = new Map(details.map((item) => [item.key, item.value]));
+
+    expect(byKey.get('Тип')).toBe('на открытом воздухе');
+    expect(byKey.get('Биом')).toBe('городская среда');
+    expect(byKey.get('Выходы')).toContain('безопасный');
+    expect(byKey.get('Влияние фракций')).toContain('экономическое влияние');
+    expect(details.map((item) => item.value).join(' ')).not.toMatch(/\b(outdoor|Urban|Safe|Economic)\b/);
+  });
+
   it('buildViewBox frames nodes with the asymmetric padding used to keep labels unclipped', () => {
     const vb = buildViewBox([node('a', { x: 0, y: 0 })]);
     // +9 extra on the right so labels above nodes aren't clipped (preserved invariant).
     expect(vb.width).toBeGreaterThanOrEqual(12);
     expect(vb.x).toBe(-3);
     expect(vb.y).toBe(-4);
+  });
+
+  it('spreads nodes that share exact coordinates so exits and created locations stay clickable', () => {
+    const display = resolveNodeDisplayGeometry([
+      node('created_location', { x: 0, y: 1 }),
+      node('known_exit', { x: 0, y: 1, isPlaceholder: true }),
+      node('current_room', { x: 0, y: 0, isCurrent: true })
+    ]);
+
+    const created = display.find((item) => item.node.id === 'created_location');
+    const exit = display.find((item) => item.node.id === 'known_exit');
+    const current = display.find((item) => item.node.id === 'current_room');
+
+    expect(created).toBeDefined();
+    expect(exit).toBeDefined();
+    expect(current).toBeDefined();
+    expect(created!.x).not.toBe(exit!.x);
+    expect(created!.y).toBe(exit!.y);
+    expect(distance(created!, exit!)).toBeGreaterThan(MAP_NODE_HIT_RADIUS);
+    expect(distance(exit!, current!)).toBeGreaterThan(MAP_NODE_HIT_RADIUS);
   });
 });
 
@@ -169,6 +231,12 @@ describe('unified MapAtlas — component surfaces the overlap fix + drawer', () 
     expect(html).toContain('map-node-current-glow');
     expect(html).toContain('Влияние фракций');
   });
+
+  it('does not render the old compass ornament over the atlas corner', () => {
+    const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
+    expect(html).not.toContain('map-compass-rose');
+    expect(html).not.toContain('Роза ветров');
+  });
 });
 
 describe('unified MapAtlas — single source of truth (parity source-guard)', () => {
@@ -185,6 +253,7 @@ describe('unified MapAtlas — single source of truth (parity source-guard)', ()
 
   it('standalone IIFE entry mounts the SAME MapAtlas component', () => {
     const standalone = readSource('src', 'mapViewerStandalone.tsx');
+    expect(standalone).toContain("import './styles/map-atlas.css'");
     expect(standalone).toContain("from './components/map/MapAtlas'");
     expect(standalone).toContain('MapAtlas');
     expect(standalone).toContain('variant: \'standalone\'');
@@ -208,7 +277,21 @@ describe('unified MapAtlas — single source of truth (parity source-guard)', ()
     expect(atlas).toContain('.map-node--hovered');
     expect(atlas).toContain('.map-node--selected');
     expect(atlas).toContain('.map-location-selector');
+    expect(atlas).toContain('.map-toolbar select option');
+    expect(atlas).toContain('color-scheme: dark');
     expect(styles).toContain("styles/map-atlas.css");
+  });
+
+  it('fullscreen atlas uses a themed fixed overlay instead of the native dialog backdrop', () => {
+    const atlas = readSource('src', 'components', 'map', 'MapAtlas.tsx');
+    const css = readSource('src', 'styles', 'map-atlas.css');
+    expect(atlas).not.toContain('<dialog\n            className="map-fullscreen-dialog"');
+    expect(atlas).toContain('role="dialog"');
+    expect(atlas).toContain('aria-modal="true"');
+    expect(css).not.toContain('.map-fullscreen-dialog::backdrop');
+    expect(css).toContain('isolation: isolate');
+    expect(css).toContain('--text-primary: #f4ead0');
+    expect(css).toContain('--text-muted: #b8aa8a');
   });
 
   it('local web UI shell mounts the unified bundle, not a vanilla viewer', () => {
@@ -253,4 +336,8 @@ function mapWith(nodes: MapNodeDto[]): MapViewDto {
     links: [],
     regions: []
   };
+}
+
+function distance(left: { x: number; y: number }, right: { x: number; y: number }): number {
+  return Math.hypot(left.x - right.x, left.y - right.y);
 }

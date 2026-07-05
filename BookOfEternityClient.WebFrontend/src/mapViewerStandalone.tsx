@@ -13,6 +13,7 @@
 
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
+import './styles/map-atlas.css';
 import type { MapViewDto, UiMapBlock } from './api/contracts';
 import { MapAtlas } from './components/map/MapAtlas';
 
