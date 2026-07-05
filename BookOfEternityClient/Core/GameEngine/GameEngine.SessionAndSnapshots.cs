@@ -1086,8 +1086,7 @@ public partial class GameEngine
     {
         if (!_fs.FileExists(ValidationRepairArtifactStallReportPath) ||
             _fs.FileExists("ready/turn_error.json") ||
-            !_fs.FileExists(ValidationRepairRequestPath) ||
-            !_fs.FileExists("ready/turn_complete.json"))
+            !_fs.FileExists(ValidationRepairRequestPath))
         {
             return false;
         }
@@ -1115,13 +1114,16 @@ public partial class GameEngine
             return false;
         }
 
-        var completeMetadata = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
-        if (completeMetadata == null ||
-            !string.Equals(completeMetadata.SessionId, snapshotContext.SessionId, StringComparison.Ordinal) ||
-            !string.Equals(completeMetadata.RequestId, snapshotContext.RequestId, StringComparison.Ordinal) ||
-            completeMetadata.TurnNumber != snapshotContext.TurnNumber)
+        if (_fs.FileExists("ready/turn_complete.json"))
         {
-            return false;
+            var completeMetadata = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
+            if (completeMetadata == null ||
+                !string.Equals(completeMetadata.SessionId, snapshotContext.SessionId, StringComparison.Ordinal) ||
+                !string.Equals(completeMetadata.RequestId, snapshotContext.RequestId, StringComparison.Ordinal) ||
+                completeMetadata.TurnNumber != snapshotContext.TurnNumber)
+            {
+                return false;
+            }
         }
 
         JsonNode? stallReportNode = null;

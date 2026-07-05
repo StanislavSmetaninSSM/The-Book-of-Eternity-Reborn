@@ -425,6 +425,57 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task NormalizePendingRepairArtifactsAsync_ValidationRepairArtifactStallWithoutTurnComplete_WritesTerminalError()
+    {
+        const string sessionId = "session-repair-stall-no-complete";
+        const string requestId = "request-repair-stall-no-complete";
+        const int turnNumber = 15;
+        const string trackedPath = "game_state/world/current_location.json";
+
+        await WriteJsonAsync(trackedPath, new { locationId = "loc_stable" });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{trackedPath}", new { locationId = "loc_stable" });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await WriteJsonAsync("game_state/control/validation_repair_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber,
+            revalidationAttempt = 3
+        });
+        await WriteJsonAsync("game_state/control/gm_validation_repair_artifact_stall_report.json", new
+        {
+            isStalled = true,
+            elapsedSeconds = 180,
+            bridgeCleanup = new
+            {
+                reason = "gm_validation_repair_artifact_stall",
+                status = "graceful-stopped",
+                ok = true
+            }
+        });
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+
+        await InvokePrivateTaskAsync(engine, "NormalizePendingRepairArtifactsAsync");
+
+        Assert.True(_fs.FileExists("ready/turn_error.json"));
+        var errorJson = await _fs.ReadFileAsync("ready/turn_error.json");
+        Assert.NotNull(errorJson);
+        using var errorDoc = JsonDocument.Parse(errorJson!);
+        var root = errorDoc.RootElement;
+        Assert.Equal(sessionId, root.GetProperty("sessionId").GetString());
+        Assert.Equal(requestId, root.GetProperty("requestId").GetString());
+        Assert.Equal(turnNumber, root.GetProperty("turnNumber").GetInt32());
+        Assert.Equal("gm_validation_repair_artifact_stall", root.GetProperty("harnessSource").GetString());
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+    }
+
+    [Fact]
     public async Task WaitForContractRepairAsync_ValidationRepairArtifactStall_ExitsWithTerminalError()
     {
         const string sessionId = "session-active-repair-stall";
@@ -482,6 +533,75 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             {
                 reason = "gm_validation_repair_artifact_stall",
                 status = "fallback-stopped",
+                ok = true
+            }
+        });
+
+        var accepted = await repairTask.WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.False(accepted);
+        Assert.True(_fs.FileExists("ready/turn_error.json"));
+        var errorJson = await _fs.ReadFileAsync("ready/turn_error.json");
+        Assert.NotNull(errorJson);
+        using var errorDoc = JsonDocument.Parse(errorJson!);
+        var root = errorDoc.RootElement;
+        Assert.Equal(sessionId, root.GetProperty("sessionId").GetString());
+        Assert.Equal(requestId, root.GetProperty("requestId").GetString());
+        Assert.Equal(turnNumber, root.GetProperty("turnNumber").GetInt32());
+        Assert.Equal("gm_validation_repair_artifact_stall", root.GetProperty("harnessSource").GetString());
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+    }
+
+    [Fact]
+    public async Task WaitForContractRepairAsync_ValidationRepairArtifactStallWithoutTurnComplete_ExitsWithTerminalError()
+    {
+        const string sessionId = "session-active-repair-stall-no-complete";
+        const string requestId = "request-active-repair-stall-no-complete";
+        const int turnNumber = 16;
+        const string trackedPath = "game_state/meta/guardians.json";
+
+        await WriteJsonAsync(trackedPath, new { guardians = Array.Empty<object>() });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{trackedPath}", new { guardians = Array.Empty<object>() });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/guardians.json.guardians",
+                IssueSeverity.Error,
+                "Current guardians[] must match kernel authority.",
+                code: "guardian_materialized_state_outside_authority",
+                section: "Guardians")
+        };
+
+        var repairTask = InvokePrivateAsync<bool>(
+            engine,
+            "WaitForContractRepairAsync",
+            "active validation repair stall test without turn_complete",
+            issues,
+            1,
+            null);
+
+        var deadline = DateTime.UtcNow.AddSeconds(5);
+        while (!_fs.FileExists("game_state/control/validation_repair_request.json") && DateTime.UtcNow < deadline)
+            await Task.Delay(100);
+
+        Assert.True(_fs.FileExists("game_state/control/validation_repair_request.json"));
+        await WriteJsonAsync("game_state/control/gm_validation_repair_artifact_stall_report.json", new
+        {
+            isStalled = true,
+            elapsedSeconds = 180,
+            bridgeCleanup = new
+            {
+                reason = "gm_validation_repair_artifact_stall",
+                status = "graceful-stopped",
                 ok = true
             }
         });

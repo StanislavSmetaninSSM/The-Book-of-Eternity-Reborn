@@ -387,6 +387,16 @@ Actions:
 5. Use `/default-action` when the next intended input is simply the current enabled default action and a screen transition may have happened between polls.
 6. If an action only selects a menu item, read the next snapshot and submit the now-selected action again.
 
+### stalled validation repair
+
+Symptoms: the snapshot stays on `screenId: gm-validation-repair`, the daemon writes `game_state/control/gm_validation_repair_artifact_stall_report.json`, and the GM bridge has already been stopped by timeout cleanup.
+
+Actions:
+
+1. Preserve `gm_validation_repair_artifact_stall_report.json`, `validation_repair_request.json`, `gm_trajectory_ledger.jsonl`, and `daemon.log` in the disposable run root.
+2. The client must promote the stall report to a correlated `ready/turn_error.json` even if `ready/turn_complete.json` has already disappeared during the repair loop.
+3. Treat a repair screen that remains indefinitely after bridge cleanup as a harness bug, not a player action problem.
+
 ### bounded artifacts
 
 Symptoms: smoke output starts accumulating in the repo or artifacts are too large to review.
