@@ -109,8 +109,11 @@ public static class LocalWebUiHost
                 ? Results.Json(result, WebJsonOptions)
                 : Results.BadRequest(new { result.Error, result.LoadedSaveId, result.Menu });
         });
-        app.MapGet("/assets/map-viewer.css", () => Results.Content(LocalMapViewerAssets.StyleSheet, "text/css; charset=utf-8"));
-        app.MapGet("/assets/map-viewer.js", () => Results.Content(LocalMapViewerAssets.Script, "application/javascript; charset=utf-8"));
+        // The unified map viewer is a single self-contained bundle (React + MapAtlas
+        // + inlined CSS). It is the SAME renderer used by the standalone
+        // map_viewer.html and the Vite React client, so all three surfaces stay
+        // in lockstep. The local web UI shell calls window.BookOfEternityMap.mount.
+        app.MapGet("/assets/map-viewer.js", () => Results.Content(LocalMapViewerAssets.Bundle, "application/javascript; charset=utf-8"));
         app.MapGet("/api/health", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
         app.MapGet("/api/session", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
         app.MapGet("/api/game-screen", async (BrowserGameScreenService gameScreen) =>

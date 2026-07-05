@@ -291,45 +291,51 @@ describe('playerCopy robustness', () => {
     expect(commandResult).not.toContain('подробные данные доступны в расширенном режиме');
   });
 
-  it('renders command map blocks through a visual atlas surface instead of text or node lists', () => {
+  it('renders command map blocks through the unified MapAtlas surface instead of text or node lists', () => {
     const commandResult = readSource('src', 'components', 'CommandResult.tsx');
     const blockRenderer = readSource('src', 'components', 'BlockRenderer.tsx');
-    const mapBlockPath = join(frontendDir, 'src', 'components', 'MapBlock.tsx');
+    // The implementation moved from MapBlock.tsx to the unified components/map/MapAtlas.tsx.
+    // MapBlock.tsx remains as a thin re-export so BlockRenderer/CommandResult keep working.
+    const atlasPath = join(frontendDir, 'src', 'components', 'map', 'MapAtlas.tsx');
 
     expect(commandResult).not.toContain('карта содержит');
     expect(blockRenderer).not.toContain('block.map.nodes.slice');
-    expect(existsSync(mapBlockPath)).toBe(true);
-    if (!existsSync(mapBlockPath)) return;
+    expect(existsSync(atlasPath)).toBe(true);
+    if (!existsSync(atlasPath)) return;
 
-    const mapBlock = readFileSync(mapBlockPath, 'utf-8');
+    const atlas = readFileSync(atlasPath, 'utf-8');
     expect(commandResult).toContain("import { MapBlock } from './MapBlock';");
     expect(blockRenderer).toContain("import { MapBlock } from './MapBlock';");
     expect(commandResult).toContain('<MapBlock block={block} variant="compact" />');
     expect(blockRenderer).toContain('<MapBlock block={block} />');
-    expect(mapBlock).toContain('<svg');
-    expect(mapBlock).toContain('className="map-canvas"');
-    expect(mapBlock).toContain('block.map.links.map');
-    expect(mapBlock).toContain('aria-label={mapTitle}');
-    expect(mapBlock).toContain("node.isPlaceholder ? 'map-node--placeholder' : ''");
-    expect(mapBlock).toContain('setSelectedNodeId(node.id)');
-    expect(mapBlock).toContain('className="map-detail-media"');
-    expect(mapBlock).toContain('className="map-image-thumb"');
-    expect(mapBlock).toContain('className="map-image-dialog"');
-    expect(mapBlock).toContain('dialog');
-    expect(mapBlock).toContain('Известный выход');
-    expect(mapBlock).toContain('Роза ветров');
-    expect(mapBlock).toContain('map-border-runes');
+    expect(atlas).toContain('<svg');
+    expect(atlas).toContain('className="map-canvas"');
+    expect(atlas).toContain('block.map.links');
+    expect(atlas).toContain('aria-label={mapTitle}');
+    expect(atlas).toContain("node.isPlaceholder ? 'map-node--placeholder' : ''");
+    expect(atlas).toContain('setSelectedNodeId(node.id)');
+    expect(atlas).toContain('className="map-detail-media"');
+    expect(atlas).toContain('className="map-image-thumb"');
+    expect(atlas).toContain('className="map-image-dialog"');
+    expect(atlas).toContain('dialog');
+    expect(atlas).toContain('Известный выход');
+    expect(atlas).toContain('Роза ветров');
+    expect(atlas).toContain('map-border-runes');
   });
 
   it('resets browser map selection controls when a different map block is rendered', () => {
-    const mapBlock = readSource('src', 'components', 'MapBlock.tsx');
+    // The selection-reset effect now lives in the unified MapAtlas component.
+    const atlas = readSource('src', 'components', 'map', 'MapAtlas.tsx');
 
-    expect(mapBlock).toContain("import { useEffect, useMemo, useState } from 'react';");
-    expect(mapBlock).toContain('useEffect(() => {');
-    expect(mapBlock).toContain('setSelectedZ(defaultZ);');
-    expect(mapBlock).toContain('setSelectedLayer(defaultLayer);');
-    expect(mapBlock).toContain('setSelectedNodeId(defaultNodeId);');
-    expect(mapBlock).toContain('const mapResetKey = block.map;');
-    expect(mapBlock).toContain('[defaultLayer, defaultNodeId, defaultZ, mapResetKey]');
+    expect(atlas).toContain("import {");
+    expect(atlas).toContain("useEffect");
+    expect(atlas).toContain("useMemo");
+    expect(atlas).toContain("useState");
+    expect(atlas).toContain('useEffect(() => {');
+    expect(atlas).toContain('setSelectedZ(defaultZ);');
+    expect(atlas).toContain('setSelectedLayer(defaultLayer);');
+    expect(atlas).toContain('setSelectedNodeId(defaultNodeId);');
+    expect(atlas).toContain('const mapResetKey = block.map;');
+    expect(atlas).toContain('[defaultLayer, defaultNodeId, defaultZ, mapResetKey]');
   });
 });

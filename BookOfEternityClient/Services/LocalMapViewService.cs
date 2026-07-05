@@ -1535,58 +1535,12 @@ public static class LocalMapViewerRenderer
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
           <title>{{title}}</title>
-          <style>
-            :root {
-              color-scheme: dark;
-              --bg: #101410;
-              --panel: rgba(32, 39, 30, .96);
-              --line: rgba(205, 168, 90, .45);
-              --text: #f4ead0;
-              --muted: #c6b78e;
-              --accent: #f7d991;
-            }
-            * { box-sizing: border-box; }
-            body { margin: 0; background: #101410; color: var(--text); font: 16px Georgia, "Times New Roman", serif; }
-            main {
-              min-height: 100vh;
-              padding: clamp(1rem, 3vw, 2.5rem);
-              background:
-                radial-gradient(circle at 20% 12%, rgba(207, 166, 83, .24), transparent 24rem),
-                radial-gradient(circle at 80% 4%, rgba(91, 32, 24, .18), transparent 22rem),
-                linear-gradient(135deg, #111710, #1b1710 62%, #0d1110);
-            }
-            .map-shell {
-              border: 1px solid var(--line);
-              border-radius: 1.35rem;
-              padding: clamp(1rem, 2.4vw, 1.8rem);
-              background: linear-gradient(145deg, rgba(32, 39, 30, .96), rgba(19, 21, 17, .94));
-              box-shadow: 0 1.4rem 4rem rgba(0, 0, 0, .36), inset 0 0 0 1px rgba(255, 233, 172, .07);
-            }
-            button, select {
-              border: 1px solid rgba(205, 168, 90, .42);
-              border-radius: 999px;
-              background: #1b241d;
-              color: var(--text);
-              padding: .48rem .72rem;
-              box-shadow: inset 0 0 1rem rgba(0, 0, 0, .16);
-            }
-            button:hover, select:focus { border-color: rgba(247, 217, 145, .82); }
-            .secondary { color: var(--text); }
-            .map-canvas { height: min(70vh, 48rem); }
-          </style>
-          <style>
-            {{LocalMapViewerAssets.StyleSheet}}
-          </style>
         </head>
         <body>
-          <main>
-            <div id="map-viewer-root" class="map-shell" data-map-json="{{encodedJson}}"></div>
-          </main>
+          <div id="map-viewer-root"></div>
+          <script type="application/json" id="map-viewer-data">{{encodedJson}}</script>
           <script>
-            {{LocalMapViewerAssets.Script}}
-          </script>
-          <script>
-            BookOfEternityMapViewer.mountStandalone(document.getElementById('map-viewer-root'));
+            {{LocalMapViewerAssets.Bundle}}
           </script>
         </body>
         </html>

@@ -1,0 +1,5 @@
+# Everything in this directory is build-time-generated EXCEPT the committed
+# map viewer bundle. Ignore all, then re-include the bundle.
+*
+!map-viewer-bundle.js
+!.gitignore

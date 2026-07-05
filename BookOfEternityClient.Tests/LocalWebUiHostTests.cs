@@ -1097,32 +1097,34 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Contains("postQteAction", html, StringComparison.Ordinal);
         Assert.Contains("renderImageBlock", html, StringComparison.Ordinal);
         Assert.Contains("renderMapBlock", html, StringComparison.Ordinal);
-        Assert.Contains("href=\"/assets/map-viewer.css\"", html, StringComparison.Ordinal);
+        // Unified bundle: separate map-viewer.css <link> is gone (CSS inlined).
+        Assert.DoesNotContain("href=\"/assets/map-viewer.css\"", html, StringComparison.Ordinal);
         Assert.Contains("src=\"/assets/map-viewer.js\"", html, StringComparison.Ordinal);
         Assert.Contains("/api/media/", html, StringComparison.Ordinal);
         Assert.Contains("Пока нет результата", html, StringComparison.Ordinal);
     }
 
     [Fact]
-    public async Task MapViewerAssetEndpoints_ReturnSharedRendererPackage()
+    public async Task MapViewerAssetEndpoints_ReturnUnifiedBundle()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
         await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
-        var css = await client.GetStringAsync("/assets/map-viewer.css");
+        // The single bundle endpoint serves the embedded React+MapAtlas+CSS IIFE.
         var js = await client.GetStringAsync("/assets/map-viewer.js");
 
-        Assert.Equal(LocalMapViewerAssets.StyleSheet, css);
-        Assert.Equal(LocalMapViewerAssets.Script, js);
-        Assert.Contains(".map-block", css, StringComparison.Ordinal);
-        Assert.Contains("BookOfEternityMapViewer", js, StringComparison.Ordinal);
-        Assert.Contains("renderMapBlock", js, StringComparison.Ordinal);
+        Assert.Equal(LocalMapViewerAssets.Bundle, js);
+        Assert.Contains(LocalMapViewerAssets.Global, js, StringComparison.Ordinal);
+        // The separate CSS route was removed when CSS was inlined into the bundle.
+        var cssResponse = await client.GetAsync("/assets/map-viewer.css");
+        Assert.True(cssResponse.StatusCode == System.Net.HttpStatusCode.NotFound,
+            $"expected /assets/map-viewer.css to be gone, got {cssResponse.StatusCode}");
     }
 
     [Fact]
-    public async Task RootEndpoint_UsesSharedMapViewerPackage()
+    public async Task RootEndpoint_MountsUnifiedMapBundle()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
         await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
@@ -1131,9 +1133,12 @@ public sealed class LocalWebUiHostTests : IDisposable
         using var client = new HttpClient { BaseAddress = new Uri(url) };
         var html = await client.GetStringAsync("/");
 
-        Assert.Contains("href=\"/assets/map-viewer.css\"", html, StringComparison.Ordinal);
+        // The shell loads the unified bundle and mounts the SAME MapAtlas the
+        // React client and standalone viewer use, via window.BookOfEternityMap.
         Assert.Contains("src=\"/assets/map-viewer.js\"", html, StringComparison.Ordinal);
-        Assert.Contains("BookOfEternityMapViewer.renderMapBlock", html, StringComparison.Ordinal);
+        Assert.Contains("BookOfEternityMap.mount", html, StringComparison.Ordinal);
+        // The deleted vanilla viewer must not be referenced anywhere.
+        Assert.DoesNotContain("BookOfEternityMapViewer.renderMapBlock", html, StringComparison.Ordinal);
         Assert.DoesNotContain("function renderMapBlock(block)", html, StringComparison.Ordinal);
     }
 

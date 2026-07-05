@@ -1,0 +1,965 @@
+/* =============================================================
+   Unified map atlas — illuminated-parchment / arcane-atlas style.
+   One stylesheet consumed by BOTH surfaces:
+   - the embedded React client (BlockRenderer → MapAtlas)
+   - the standalone map_viewer.html (console /map command)
+   So the two can never visually drift.
+   Uses the project's shared dark-fantasy tokens (see tokens.css):
+   --color-gold, --color-gold-bright, --color-crimson, --color-parchment,
+   --color-obsidian, --font-display, --font-narrative, etc.
+   ============================================================= */
+
+.map-atlas {
+  /* Atlas-scoped palette derived from project tokens so the map harmonizes
+     with the rest of the dark-fantasy UI even on the standalone page. */
+  --atlas-ink: #2b2116;
+  --atlas-ink-soft: #5a4a32;
+  --atlas-gold: var(--color-gold, #c89b3c);
+  --atlas-gold-bright: var(--color-gold-bright, #f5d488);
+  --atlas-blood: var(--color-crimson, #8a1c1c);
+  --atlas-blood-deep: var(--color-blood, #4a0c0c);
+  --atlas-moss: #2f5a3a;
+  --atlas-parchment: #e4cf99;
+  --atlas-parchment-deep: #b89356;
+  --atlas-parchment-ink: #2b2116;
+
+  display: grid;
+  gap: 0.85rem;
+  margin: 0.5rem 0;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 38%, transparent);
+  border-radius: var(--radius-lg, 1.1rem);
+  background:
+    radial-gradient(circle at 18% 8%, color-mix(in srgb, var(--atlas-gold) 18%, transparent), transparent 22rem),
+    radial-gradient(circle at 88% 92%, color-mix(in srgb, var(--atlas-blood) 14%, transparent), transparent 26rem),
+    linear-gradient(150deg, var(--color-obsidian-2, #221a14), var(--color-ink-2, #120d09));
+  box-shadow:
+    var(--shadow-panel, 0 1.4rem 4rem rgba(0, 0, 0, 0.55)),
+    inset 0 0 0 1px rgba(255, 233, 172, 0.06),
+    inset 0 0 2.4rem rgba(0, 0, 0, 0.4);
+}
+
+/* Decorative illuminated corner flourishes on the atlas shell. */
+.map-atlas::before,
+.map-atlas::after {
+  content: '✦';
+  position: absolute;
+  color: color-mix(in srgb, var(--atlas-gold-bright) 50%, transparent);
+  font-size: 0.9rem;
+  text-shadow: 0 0 0.5rem color-mix(in srgb, var(--atlas-gold) 40%, transparent);
+  pointer-events: none;
+}
+.map-atlas {
+  position: relative;
+}
+.map-atlas::before {
+  top: 0.4rem;
+  left: 0.6rem;
+}
+.map-atlas::after {
+  bottom: 0.4rem;
+  right: 0.6rem;
+}
+
+.map-atlas--standalone-shell {
+  margin: 0;
+  min-height: 100vh;
+  border-radius: 0;
+}
+
+/* ---------- Header / subtitle / stats ---------- */
+
+.map-block__header,
+.map-block__footer {
+  display: grid;
+  gap: 0.7rem;
+}
+.map-block__header {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+.map-block__header h4 {
+  margin: 0;
+  color: var(--text-primary, var(--color-parchment));
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  letter-spacing: 0.02em;
+}
+.map-subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted, var(--color-mist));
+  font-family: var(--font-narrative);
+  font-size: 0.92rem;
+  font-style: italic;
+}
+.map-block__stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  max-width: 20rem;
+}
+.map-block__stats span {
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 32%, transparent);
+  border-radius: 999px;
+  padding: 0.22rem 0.55rem;
+  color: var(--text-muted, var(--color-mist));
+  background: rgba(0, 0, 0, 0.22);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+/* ---------- Toolbar ---------- */
+
+.map-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 22%, transparent);
+  border-radius: var(--radius-md, 0.75rem);
+  background:
+    linear-gradient(180deg, rgba(245, 212, 136, 0.05), rgba(0, 0, 0, 0.18)),
+    rgba(11, 8, 5, 0.55);
+}
+.map-toolbar label {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+  color: var(--text-muted, var(--color-mist));
+  font-size: 0.78rem;
+  font-family: var(--font-narrative);
+}
+.map-toolbar select,
+.map-toolbar button {
+  min-height: 2.05rem;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 34%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(40, 30, 18, 0.92), rgba(12, 9, 6, 0.94));
+  color: var(--text-primary, var(--color-parchment));
+  padding: 0.28rem 0.65rem;
+  font: inherit;
+  font-family: var(--font-narrative);
+  box-shadow: inset 0 1px 0 rgba(245, 212, 136, 0.08);
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
+}
+.map-toolbar button {
+  cursor: pointer;
+}
+.map-toolbar button:hover,
+.map-toolbar select:hover {
+  border-color: color-mix(in srgb, var(--atlas-gold-bright) 70%, transparent);
+  box-shadow: 0 0 0.6rem color-mix(in srgb, var(--atlas-gold) 22%, transparent);
+}
+.map-toolbar button.is-active,
+.map-toolbar button[aria-pressed='true'] {
+  border-color: color-mix(in srgb, var(--atlas-gold-bright) 78%, transparent);
+  color: var(--atlas-gold-bright);
+  box-shadow: inset 0 0 0.8rem color-mix(in srgb, var(--atlas-gold) 22%, transparent);
+}
+.map-toolbar__toggle {
+  cursor: pointer;
+}
+.map-toolbar__toggle input {
+  accent-color: var(--atlas-gold);
+}
+.map-fullscreen-button {
+  border-color: color-mix(in srgb, var(--atlas-gold-bright) 55%, transparent);
+  color: var(--atlas-gold-bright);
+}
+.map-interaction-hint {
+  margin-left: auto;
+  color: var(--text-muted, var(--color-mist));
+  font-size: 0.74rem;
+  line-height: 1.35;
+  font-family: var(--font-narrative);
+  font-style: italic;
+}
+.map-toolbar select:focus-visible,
+.map-toolbar button:focus-visible {
+  outline: 2px solid var(--atlas-gold-bright);
+  outline-offset: 2px;
+}
+
+/* ---------- Viewport (drawer + canvas) ---------- */
+
+.map-viewport {
+  display: grid;
+  grid-template-columns: minmax(15rem, 19rem) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0.85rem;
+  min-width: 0;
+}
+.map-viewport--drawer-closed {
+  grid-template-columns: minmax(0, 1fr);
+}
+.map-viewport--fullscreen {
+  min-height: 0;
+  height: 100%;
+}
+
+/* ---------- Location navigation drawer ---------- */
+
+.map-location-selector {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.65rem;
+  min-width: 0;
+  max-height: clamp(22rem, 50vh, 38rem);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 32%, transparent);
+  border-radius: var(--radius-md, 0.75rem);
+  padding: 0.8rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--atlas-gold) 9%, transparent), rgba(0, 0, 0, 0.22)),
+    rgba(11, 14, 12, 0.74);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.07),
+    inset 0 0 1.6rem rgba(0, 0, 0, 0.35);
+}
+.map-viewport--fullscreen .map-location-selector {
+  max-height: none;
+}
+.map-location-selector__header {
+  display: grid;
+  gap: 0.3rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--atlas-gold) 22%, transparent);
+}
+.map-location-selector__header h5 {
+  margin: 0;
+  color: var(--atlas-gold-bright);
+  font-family: var(--font-display);
+  font-size: 0.96rem;
+  letter-spacing: 0.04em;
+}
+.map-location-selector__header p,
+.map-location-selector__empty {
+  margin: 0;
+  color: var(--text-muted, var(--color-mist));
+  font-size: 0.78rem;
+  line-height: 1.45;
+  font-family: var(--font-narrative);
+}
+.map-location-selector__header strong {
+  color: var(--atlas-gold-bright);
+}
+.map-location-selector__search {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.35rem;
+  color: var(--text-muted, var(--color-mist));
+  font-size: 0.74rem;
+}
+.map-location-selector__search input {
+  min-height: 2rem;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 30%, transparent);
+  border-radius: var(--radius-sm, 0.4rem);
+  background: rgba(8, 6, 4, 0.7);
+  color: var(--text-primary, var(--color-parchment));
+  padding: 0.3rem 0.55rem;
+  font: inherit;
+  font-family: var(--font-narrative);
+}
+.map-location-selector__search input:focus-visible {
+  outline: 2px solid var(--atlas-gold-bright);
+  outline-offset: 1px;
+  border-color: color-mix(in srgb, var(--atlas-gold-bright) 70%, transparent);
+}
+.map-location-selector__list {
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 0.25rem;
+}
+.map-location-group {
+  display: grid;
+  gap: 0.4rem;
+}
+.map-location-group h6 {
+  margin: 0;
+  color: var(--atlas-gold);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px dotted color-mix(in srgb, var(--atlas-gold) 30%, transparent);
+  padding-bottom: 0.2rem;
+}
+.map-location-group__level {
+  display: grid;
+  gap: 0.3rem;
+}
+.map-location-group__level-label {
+  color: var(--text-muted, var(--color-mist));
+  font-size: 0.7rem;
+  font-family: var(--font-narrative);
+  font-style: italic;
+  padding-left: 0.2rem;
+}
+.map-location-option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.45rem;
+  align-items: start;
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 22%, transparent);
+  border-radius: var(--radius-sm, 0.4rem);
+  padding: 0.5rem 0.6rem;
+  background: linear-gradient(160deg, rgba(20, 14, 8, 0.6), rgba(8, 6, 4, 0.6));
+  color: var(--text-primary, var(--color-parchment));
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition: border-color var(--motion-fast), background var(--motion-fast), box-shadow var(--motion-fast), transform var(--motion-fast);
+}
+.map-location-option:hover {
+  border-color: color-mix(in srgb, var(--atlas-gold-bright) 55%, transparent);
+  background: linear-gradient(160deg, rgba(48, 36, 20, 0.85), rgba(20, 14, 8, 0.85));
+  transform: translateX(2px);
+}
+.map-location-option:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--atlas-gold-bright) 70%, transparent);
+  outline-offset: 2px;
+}
+.map-location-option.is-selected {
+  border-color: color-mix(in srgb, var(--atlas-gold-bright) 78%, transparent);
+  background:
+    radial-gradient(circle at 8% 50%, color-mix(in srgb, var(--atlas-gold-bright) 22%, transparent), transparent 45%),
+    linear-gradient(160deg, rgba(58, 44, 22, 0.9), rgba(28, 20, 12, 0.9));
+  box-shadow:
+    inset 3px 0 0 var(--atlas-gold-bright),
+    0 0 0.9rem color-mix(in srgb, var(--atlas-gold) 22%, transparent);
+}
+.map-location-option.is-placeholder {
+  border-style: dashed;
+}
+.map-location-option.is-contested {
+  border-color: color-mix(in srgb, var(--atlas-blood) 55%, transparent);
+}
+.map-location-option.is-faction {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--atlas-gold) 60%, transparent);
+}
+.map-location-option__glyph {
+  color: var(--atlas-gold);
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-shadow: 0 0 0.4rem color-mix(in srgb, var(--atlas-gold) 35%, transparent);
+}
+.map-location-option.is-selected .map-location-option__glyph {
+  color: var(--atlas-gold-bright);
+}
+.map-location-option__body {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.map-location-option__title {
+  color: var(--text-primary, var(--color-parchment));
+  font-weight: 700;
+  font-family: var(--font-narrative);
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+.map-location-option__meta {
+  color: var(--text-muted, var(--color-mist));
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+.map-location-option.is-selected .map-location-option__meta {
+  color: var(--atlas-gold-bright);
+}
+
+/* ---------- Atlas frame (canvas + ornaments) ---------- */
+
+.map-atlas-frame {
+  position: relative;
+  min-height: 22rem;
+}
+.map-viewport--fullscreen .map-atlas-frame {
+  min-height: 0;
+}
+.map-atlas-frame--interactive {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.map-atlas-frame--panning {
+  cursor: grabbing;
+}
+.map-atlas-frame--fullscreen {
+  min-height: 0;
+}
+.map-border-runes {
+  position: absolute;
+  z-index: 2;
+  inset: 0.7rem auto auto 50%;
+  transform: translateX(-50%);
+  color: color-mix(in srgb, var(--atlas-gold-bright) 55%, transparent);
+  font-family: var(--font-rune, var(--font-display));
+  font-size: 0.85rem;
+  letter-spacing: 0.34em;
+  pointer-events: none;
+  text-shadow: 0 0 0.5rem color-mix(in srgb, var(--atlas-gold) 45%, transparent);
+}
+/* 8-point compass star ornament. */
+.map-compass-rose {
+  position: absolute;
+  z-index: 2;
+  right: 1rem;
+  bottom: 1rem;
+  width: 4.6rem;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 60%, transparent);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(246, 224, 160, 0.32), rgba(112, 72, 28, 0.12)),
+    conic-gradient(
+      from 0deg,
+      transparent 0 11deg,
+      color-mix(in srgb, var(--atlas-gold) 50%, transparent) 11deg 22deg,
+      transparent 22deg 56deg,
+      color-mix(in srgb, var(--atlas-gold) 30%, transparent) 56deg 67deg,
+      transparent 67deg
+    );
+  color: var(--atlas-ink);
+  font-family: var(--font-rune, var(--font-display));
+  font-size: 0.5rem;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0.6rem rgba(246, 224, 160, 0.18),
+    0 0 0.8rem color-mix(in srgb, var(--atlas-gold) 18%, transparent);
+}
+.map-compass-rose span {
+  position: absolute;
+}
+.map-compass-rose span:nth-child(1) { top: 0.2rem; left: 50%; transform: translateX(-50%); font-weight: 700; }
+.map-compass-rose span:nth-child(2) { top: 26%; right: 0.25rem; }
+.map-compass-rose span:nth-child(3) { right: 0.2rem; top: 50%; transform: translateY(-50%); font-weight: 700; }
+.map-compass-rose span:nth-child(4) { right: 26%; bottom: 0.25rem; }
+.map-compass-rose span:nth-child(5) { bottom: 0.2rem; left: 50%; transform: translateX(-50%); font-weight: 700; }
+.map-compass-rose span:nth-child(6) { bottom: 26%; left: 0.25rem; }
+.map-compass-rose span:nth-child(7) { left: 0.2rem; top: 50%; transform: translateY(-50%); font-weight: 700; }
+.map-compass-rose span:nth-child(8) { left: 26%; top: 0.25rem; }
+
+.map-canvas {
+  width: 100%;
+  min-height: 22rem;
+  height: clamp(22rem, 50vh, 36rem);
+  border: 2px solid color-mix(in srgb, var(--atlas-gold) 50%, transparent);
+  border-radius: var(--radius-md, 0.75rem);
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255, 246, 190, 0.28), transparent 16rem),
+    radial-gradient(circle at 86% 72%, rgba(88, 47, 26, 0.2), transparent 20rem),
+    repeating-linear-gradient(35deg, rgba(96, 65, 30, 0.05) 0 2px, transparent 2px 9px),
+    linear-gradient(135deg, var(--atlas-parchment), var(--atlas-parchment-deep));
+  box-shadow:
+    inset 0 0 3.8rem rgba(42, 24, 8, 0.34),
+    inset 0 0 0 1px rgba(246, 224, 160, 0.18),
+    0 0.9rem 2.2rem rgba(22, 13, 5, 0.34);
+}
+.map-atlas-frame--interactive .map-canvas {
+  display: block;
+}
+.map-atlas-frame--fullscreen .map-canvas {
+  height: 100%;
+  min-height: 0;
+}
+.atlas-texture {
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.map-vignette {
+  pointer-events: none;
+}
+
+.map-empty {
+  position: absolute;
+  inset: 42% 1rem auto;
+  width: fit-content;
+  max-width: min(90%, 34rem);
+  margin: 0 auto;
+  padding: 0.8rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 40%, transparent);
+  border-radius: var(--radius-md, 0.75rem);
+  background: rgba(247, 229, 177, 0.88);
+  color: var(--atlas-ink);
+  font-family: var(--font-narrative);
+  box-shadow: 0 0.8rem 1.6rem rgba(58, 35, 13, 0.2);
+}
+
+/* ---------- SVG layers: regions, halos, links ---------- */
+
+.map-region {
+  fill: rgba(128, 80, 31, 0.16);
+  stroke: rgba(105, 60, 22, 0.46);
+  stroke-width: 0.18;
+  stroke-dasharray: 0.6 0.32;
+  pointer-events: none;
+}
+.map-region-label {
+  fill: rgba(43, 33, 22, 0.7);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 0.3px;
+  paint-order: stroke;
+  stroke: rgba(247, 229, 177, 0.62);
+  stroke-width: 0.055px;
+  pointer-events: none;
+}
+.map-political-halo {
+  fill: rgba(128, 80, 31, 0.22);
+  stroke: rgba(128, 80, 31, 0.38);
+  stroke-width: 0.09;
+  pointer-events: none;
+}
+.map-political-halo--contested {
+  fill: rgba(123, 36, 27, 0.22);
+  stroke: rgba(123, 36, 27, 0.6);
+  stroke-dasharray: 0.16 0.12;
+}
+.map-link {
+  stroke: rgba(81, 57, 31, 0.85);
+  stroke-width: 0.16;
+  stroke-linecap: round;
+  stroke-dasharray: 0.25 0.36;
+}
+.map-link--dangerous {
+  stroke: var(--atlas-blood);
+  stroke-dasharray: 0.08 0.28;
+}
+
+/* ---------- SVG nodes (the heart of the overlap fix + graphics) ---------- */
+
+.map-node {
+  cursor: pointer;
+}
+/* Base core: filled medallion with gold rim and soft drop shadow. */
+.map-node .map-node-core {
+  fill: #6a2d22;
+  stroke: var(--atlas-gold-bright);
+  stroke-width: 0.12;
+  filter: drop-shadow(0 0.2px 0.2px rgba(29, 19, 8, 0.7));
+  transition: r 0.14s ease, stroke-width 0.14s ease;
+}
+/* Larger transparent hit target so dense clusters are still clickable. */
+.map-node .map-node-hit-area {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 0;
+  filter: none;
+  pointer-events: all;
+}
+/* Focus/selection ring — invisible until hovered/selected/focused. */
+.map-node .map-node-focus-ring {
+  fill: none;
+  stroke: color-mix(in srgb, var(--atlas-gold-bright) 85%, transparent);
+  stroke-width: 0.14;
+  opacity: 0;
+  filter: drop-shadow(0 0 0.18px rgba(255, 236, 178, 0.75));
+  pointer-events: none;
+  transition: opacity var(--motion-fast);
+}
+/* Type glyph at node centre. */
+.map-node .map-node-glyph {
+  fill: rgba(247, 229, 177, 0.92);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 0.5px;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: rgba(43, 24, 8, 0.65);
+  stroke-width: 0.04px;
+  pointer-events: none;
+}
+/* Label above the node. paint-order stroke fill = parchment cartouche halo
+   so overlapping labels stay readable even before hover. */
+.map-node .map-node-label {
+  fill: var(--atlas-ink);
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  font-size: 0.34px;
+  paint-order: stroke fill;
+  stroke: rgba(247, 229, 177, 0.78);
+  stroke-width: 0.075px;
+  stroke-linejoin: round;
+  text-anchor: middle;
+  pointer-events: none;
+  transition: font-size 0.14s ease, stroke-width 0.14s ease;
+}
+.map-node-current-glow {
+  fill: none;
+  stroke: var(--atlas-gold-bright);
+  stroke-width: 0.1;
+  opacity: 0.55;
+  animation: map-node-breathe 2.8s ease-in-out infinite;
+}
+@keyframes map-node-breathe {
+  0%, 100% { opacity: 0.4; stroke-width: 0.08; }
+  50% { opacity: 0.75; stroke-width: 0.16; }
+}
+
+/* --- State variants --- */
+.map-node--current .map-node-core {
+  fill: var(--atlas-moss);
+  stroke-width: 0.16;
+}
+.map-node--faction .map-node-core {
+  fill: #80501f;
+}
+.map-node--contested .map-node-core {
+  stroke: var(--atlas-blood);
+  stroke-dasharray: 0.16 0.1;
+}
+.map-node--placeholder .map-node-core {
+  fill: rgba(245, 229, 180, 0.2);
+  stroke: rgba(43, 33, 22, 0.86);
+  stroke-dasharray: 0.1 0.16;
+}
+.map-node--placeholder .map-node-glyph {
+  opacity: 0;
+}
+.map-node--placeholder .map-node-label {
+  opacity: 0.82;
+  font-style: italic;
+}
+
+/* --- Bring-to-front interactions (the overlap fix) ---
+   Hovered and selected nodes: bigger core, visible ring, enlarged label
+   with a thicker parchment cartouche so the label sits ON TOP of neighbours.
+   Combined with `orderMapNodesForDisplay` (hovered drawn last) this means the
+   hovered/selected point and its label are always visually foremost. */
+.map-node:hover .map-node-core,
+.map-node--hovered .map-node-core,
+.map-node--selected .map-node-core,
+.map-node:focus-visible .map-node-core {
+  stroke-width: 0.24;
+}
+.map-node:hover .map-node-focus-ring,
+.map-node--hovered .map-node-focus-ring,
+.map-node--selected .map-node-focus-ring,
+.map-node:focus-visible .map-node-focus-ring {
+  opacity: 1;
+  stroke-width: 0.18;
+}
+.map-node:hover .map-node-label,
+.map-node--hovered .map-node-label,
+.map-node--selected .map-node-label,
+.map-node:focus-visible .map-node-label {
+  font-size: 0.46px;
+  stroke-width: 0.11px;
+  stroke: rgba(247, 229, 177, 0.94);
+}
+.map-node:hover .map-node-glyph,
+.map-node--hovered .map-node-glyph,
+.map-node--selected .map-node-glyph,
+.map-node:focus-visible .map-node-glyph {
+  font-size: 0.62px;
+}
+
+/* ---------- Fullscreen dialog ---------- */
+
+.map-fullscreen-dialog {
+  --atlas-gold: var(--color-gold, #c89b3c);
+  --atlas-gold-bright: var(--color-gold-bright, #f5d488);
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100vw;
+  max-width: none;
+  height: 100vh;
+  max-height: none;
+  margin: 0;
+  padding: clamp(1rem, 2vw, 1.6rem);
+  overflow: hidden;
+  overscroll-behavior: contain;
+  border: 0;
+  background:
+    linear-gradient(180deg, rgb(3, 5, 6), rgb(6, 9, 9)),
+    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--atlas-gold) 14%, transparent), transparent 28rem);
+  color: var(--text-primary, var(--color-parchment));
+}
+.map-fullscreen-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.84);
+}
+.map-fullscreen-panel {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 0.85rem;
+  height: 100%;
+  min-width: 0;
+  max-width: 100rem;
+  margin: 0 auto;
+}
+.map-fullscreen-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+  border-bottom: 1px solid color-mix(in srgb, var(--atlas-gold) 26%, transparent);
+  padding-bottom: 0.8rem;
+}
+.map-fullscreen-header h3 {
+  margin: 0;
+  color: var(--text-primary, var(--color-parchment));
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2vw, 2.1rem);
+  letter-spacing: 0.03em;
+}
+.map-fullscreen-header p {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted, var(--color-mist));
+  font-family: var(--font-narrative);
+  font-style: italic;
+}
+.map-fullscreen-close-button {
+  border: 1px solid color-mix(in srgb, var(--atlas-gold-bright) 55%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(40, 30, 18, 0.96), rgba(12, 10, 8, 0.94));
+  color: var(--atlas-gold-bright);
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-family: var(--font-narrative);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(245, 212, 136, 0.12),
+    0 0 1.2rem color-mix(in srgb, var(--atlas-gold) 12%, transparent);
+}
+.map-fullscreen-close-button:hover {
+  border-color: color-mix(in srgb, var(--atlas-gold-bright) 75%, transparent);
+  background: linear-gradient(180deg, rgba(58, 44, 22, 0.98), rgba(20, 14, 10, 0.96));
+}
+.map-fullscreen-close-button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--atlas-gold-bright) 75%, transparent);
+  outline-offset: 3px;
+}
+.map-fullscreen-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(20rem, 30rem);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 0.85rem;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.map-fullscreen-content .map-block__footer {
+  align-content: start;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 0.2rem;
+}
+.map-fullscreen-content .map-legend {
+  align-items: flex-start;
+}
+.map-fullscreen-content .map-card {
+  grid-template-columns: 1fr;
+}
+
+/* ---------- Footer: legend + selected-node card ---------- */
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.85rem;
+  align-items: center;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 24%, transparent);
+  border-radius: var(--radius-sm, 0.4rem);
+  background: rgba(0, 0, 0, 0.22);
+  color: var(--text-muted, var(--color-mist));
+  font-size: 0.78rem;
+  font-family: var(--font-narrative);
+}
+.map-legend strong {
+  color: var(--atlas-gold-bright);
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+.map-legend span {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+.legend-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold-bright) 75%, transparent);
+  border-radius: 50%;
+  background: #6a2d22;
+}
+.legend-swatch.current {
+  background: var(--atlas-moss);
+  box-shadow: 0 0 0.4rem color-mix(in srgb, var(--atlas-gold) 55%, transparent);
+}
+.legend-swatch.faction {
+  background: #80501f;
+}
+.legend-swatch.contested {
+  background: linear-gradient(135deg, #80501f 0 48%, var(--atlas-blood) 52%);
+  border-color: color-mix(in srgb, var(--atlas-blood) 70%, transparent);
+}
+.legend-swatch.placeholder {
+  background: rgba(245, 229, 180, 0.16);
+  border-color: color-mix(in srgb, var(--atlas-gold) 86%, transparent);
+  border-style: dashed;
+}
+
+.map-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.5rem 0.85rem;
+  margin: 0;
+  padding: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 26%, transparent);
+  border-radius: var(--radius-md, 0.75rem);
+  background:
+    linear-gradient(160deg, rgba(30, 22, 14, 0.85), rgba(12, 9, 6, 0.9));
+  box-shadow: inset 0 1px 0 rgba(245, 212, 136, 0.07);
+}
+.map-card__title-row {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 0.2rem;
+  padding-bottom: 0.45rem;
+  margin-bottom: 0.2rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--atlas-gold) 22%, transparent);
+}
+.map-card__title-row dd {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--atlas-gold-bright);
+  letter-spacing: 0.02em;
+}
+.map-card div {
+  min-width: 0;
+}
+.map-card dt {
+  color: var(--text-muted, var(--color-mist));
+  font-size: 0.72rem;
+  font-family: var(--font-narrative);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.map-card dd {
+  margin: 0.15rem 0 0;
+  color: var(--text-primary, var(--color-parchment));
+  overflow-wrap: anywhere;
+  font-size: 0.86rem;
+  font-family: var(--font-narrative);
+  line-height: 1.4;
+}
+.map-detail-media {
+  grid-column: span 2;
+}
+.map-image-thumb {
+  display: block;
+  width: min(16rem, 100%);
+  padding: 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 36%, transparent);
+  border-radius: var(--radius-sm, 0.4rem);
+  background: rgba(13, 17, 15, 0.78);
+  cursor: zoom-in;
+}
+.map-image-thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 0.25rem;
+  object-fit: cover;
+}
+.map-image-dialog[open] {
+  position: fixed;
+  z-index: 50;
+  inset: 50% auto auto 50%;
+  width: min(92vw, 72rem);
+  max-height: 88vh;
+  transform: translate(-50%, -50%);
+  padding: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--atlas-gold) 55%, transparent);
+  border-radius: var(--radius-md, 0.75rem);
+  background: rgba(12, 9, 6, 0.96);
+  color: var(--text-primary, var(--color-parchment));
+  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.65);
+}
+.map-image-dialog form {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.6rem;
+}
+.map-image-dialog img {
+  display: block;
+  width: 100%;
+  max-height: 76vh;
+  border-radius: 0.3rem;
+  object-fit: contain;
+}
+
+/* ---------- Embedded vs compact ---------- */
+
+.map-atlas--embedded {
+  /* keeps default sizing */
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 760px) {
+  .map-block__header {
+    grid-template-columns: 1fr;
+  }
+  .map-block__stats {
+    justify-content: flex-start;
+  }
+  .map-viewport,
+  .map-viewport--fullscreen {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(18rem, 1fr);
+    height: auto;
+  }
+  .map-location-selector,
+  .map-viewport--fullscreen .map-location-selector {
+    max-height: 17rem;
+  }
+  .map-fullscreen-content {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(18rem, 55vh) auto;
+    overflow: auto;
+  }
+  .map-atlas-frame--fullscreen .map-canvas {
+    height: 55vh;
+    min-height: 18rem;
+  }
+  .map-canvas {
+    min-height: 17rem;
+    height: 19rem;
+  }
+  .map-interaction-hint {
+    display: none;
+  }
+}
+
+/* ---------- Standalone page shell (console /map viewer) ----------
+   The standalone page loads only the map bundle, so it must supply its own
+   body/token scaffolding since the rest of the app CSS is not present. */
+
+.map-atlas--standalone-shell {
+  --color-obsidian-2: #221a14;
+  --color-ink-2: #120d09;
+  --color-gold: #c89b3c;
+  --color-gold-bright: #f5d488;
+  --color-parchment: #f4e9cf;
+  --color-mist: #8d8170;
+  --font-display: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  --font-narrative: 'Cormorant Garamond', Georgia, serif;
+  --font-rune: 'Cinzel', serif;
+  --text-primary: #f4ead0;
+  --text-muted: #b9a884;
+  min-height: 100vh;
+  padding: clamp(1rem, 3vw, 2.4rem);
+  background:
+    radial-gradient(circle at 20% 12%, rgba(207, 166, 83, 0.22), transparent 26rem),
+    radial-gradient(circle at 80% 4%, rgba(91, 32, 24, 0.18), transparent 24rem),
+    linear-gradient(135deg, #111710, #1b1710 62%, #0d1110);
+}
