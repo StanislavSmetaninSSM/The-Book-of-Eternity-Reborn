@@ -670,7 +670,7 @@ public partial class GameEngine
                     snapshotContext != null &&
                     HasValidTerminalSignalContract("turn_error", signal))
                 {
-                    var recoveredSignal = await TryRecoverIdleBridgeOutputWithoutTerminalSignalAsync(signal, snapshotContext);
+                    var recoveredSignal = await TryRecoverGmOutputWithoutTerminalSignalAsync(signal, snapshotContext);
                     if (recoveredSignal != null)
                         continue;
                 }

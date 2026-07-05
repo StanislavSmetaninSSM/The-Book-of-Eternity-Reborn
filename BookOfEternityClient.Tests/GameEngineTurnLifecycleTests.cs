@@ -3161,6 +3161,79 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task ProcessPlayerTurn_OutputWithoutTerminalErrorWithFreshOutputArtifacts_RecoversAsAcceptedTurn()
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        var input = new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]);
+        var engine = CreateGameEngine(input);
+        var gmOutputTask = Task.Run(async () =>
+        {
+            var request = await WaitForTurnRequestAsync();
+            var outputTimestamp = DateTime.UtcNow.ToString("o");
+            await WriteJsonAsync("output/narrative_response.json", new
+            {
+                response = "Книга принимает записанный ответ, даже если daemon восстановил пропущенный terminal signal.",
+                timestamp = outputTimestamp
+            });
+            await WriteJsonAsync("output/interface_updates.json", new
+            {
+                dialogueOptions = new[]
+                {
+                    new
+                    {
+                        text = "Продолжить путь.",
+                        category = "neutral"
+                    }
+                },
+                timestamp = outputTimestamp
+            });
+            await WriteJsonAsync("output/debug_logs.json", new
+            {
+                timestamp = outputTimestamp,
+                gm_thoughts_markdown = string.Join(
+                    "\n",
+                    "## NPC Scope",
+                    "- Mode: Scene-local",
+                    "- Relevant actors: нет",
+                    "- Why relevant: Ход проверяет восстановление свежего payload после daemon output-stall.",
+                    "- Actors outside scope: нет",
+                    "- Why outside scope: Нет акторов со структурным состоянием.",
+                    "",
+                    "## Reasoning",
+                    "- The client can validate fresh output artifacts after daemon reports gm_output_without_terminal_signal.")
+            });
+            await WriteJsonAsync("ready/turn_error.json", new
+            {
+                sessionId = request.SessionId,
+                requestId = request.RequestId,
+                turnNumber = request.TurnNumber,
+                timestamp = DateTime.UtcNow.ToString("o"),
+                status = "error",
+                harnessSource = "gm_output_without_terminal_signal",
+                error = "GM wrote turn payload files without a correlated terminal signal.",
+                changedFiles = new[]
+                {
+                    "output/narrative_response.json",
+                    "output/interface_updates.json",
+                    "output/debug_logs.json"
+                }
+            });
+        });
+
+        await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Проверить восстановление свежего ответа GM.", null);
+        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(5));
+
+        var gameLoop = GetPrivateField<GameLoop>(engine, "_gameLoop");
+        Assert.Equal(1, gameLoop.TurnNumber);
+        var lastResponse = GetPrivateField<GameResponse>(engine, "_lastResponse");
+        Assert.Contains("пропущенный terminal signal", lastResponse.Response, StringComparison.Ordinal);
+        Assert.False(_fs.FileExists("input/turn_request.json"));
+        Assert.False(_fs.FileExists("ready/turn_error.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.authority.json"));
+    }
+
+    [Fact]
     public async Task ProcessPlayerTurn_IdleBridgeErrorWithoutOutputArtifacts_RemainsFailClosed()
     {
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);

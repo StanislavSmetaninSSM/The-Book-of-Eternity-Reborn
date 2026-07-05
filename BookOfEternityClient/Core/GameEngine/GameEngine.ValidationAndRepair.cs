@@ -19,6 +19,7 @@ namespace BookOfEternityClient.Core;
 public partial class GameEngine
 {
     private const string GmBridgeIdleWithoutTerminalSignalHarnessSource = "gm_bridge_idle_without_terminal_signal";
+    private const string GmOutputWithoutTerminalSignalHarnessSource = "gm_output_without_terminal_signal";
     private const string ClientRecoveredMissingTerminalSignalHarnessSource = "client_recovered_gm_output_without_terminal_signal";
     private static readonly string[] RecoverableGmOutputRequiredFiles =
     [
@@ -4073,11 +4074,11 @@ public partial class GameEngine
         return $"turn_complete_exists={turnCompleteExists}; turn_error_exists={turnErrorExists}; {manifestDescription}";
     }
 
-    private async Task<ReadySignalMetadata?> TryRecoverIdleBridgeOutputWithoutTerminalSignalAsync(
+    private async Task<ReadySignalMetadata?> TryRecoverGmOutputWithoutTerminalSignalAsync(
         ReadySignalMetadata errorSignal,
         ValidatedPendingTurnSnapshotContext snapshotContext)
     {
-        if (!IsRecoverableIdleBridgeMissingTerminalSignal(errorSignal))
+        if (!IsRecoverableMissingTerminalSignal(errorSignal))
             return null;
 
         if (!IsMatchingReadySignal(errorSignal, snapshotContext))
@@ -4104,7 +4105,7 @@ public partial class GameEngine
             timestamp = DateTime.UtcNow.ToString("o"),
             status = "success",
             harnessSource = ClientRecoveredMissingTerminalSignalHarnessSource,
-            recoveredFrom = GmBridgeIdleWithoutTerminalSignalHarnessSource,
+            recoveredFrom = errorSignal.HarnessSource,
             originalError = errorSignal.Error,
             filesModified
         };
@@ -4114,14 +4115,15 @@ public partial class GameEngine
         _logger.LogWarning(
             "Recovered GM output for turn {TurnNumber} after daemon emitted {HarnessSource}; synthesized ready/turn_complete.json with {FileCount} modified files.",
             snapshotContext.TurnNumber,
-            GmBridgeIdleWithoutTerminalSignalHarnessSource,
+            errorSignal.HarnessSource,
             filesModified.Length);
 
         return await ReadReadySignalMetadataAsync("ready/turn_complete.json");
     }
 
-    private static bool IsRecoverableIdleBridgeMissingTerminalSignal(ReadySignalMetadata signal) =>
-        string.Equals(signal.HarnessSource, GmBridgeIdleWithoutTerminalSignalHarnessSource, StringComparison.OrdinalIgnoreCase);
+    private static bool IsRecoverableMissingTerminalSignal(ReadySignalMetadata signal) =>
+        string.Equals(signal.HarnessSource, GmBridgeIdleWithoutTerminalSignalHarnessSource, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(signal.HarnessSource, GmOutputWithoutTerminalSignalHarnessSource, StringComparison.OrdinalIgnoreCase);
 
     private bool TryResolveTurnRequestTimestampUtc(
         ValidatedPendingTurnSnapshotContext snapshotContext,
@@ -4269,7 +4271,7 @@ public partial class GameEngine
                 IsMatchingReadySignal(errorSignal, snapshotContext) &&
                 HasValidTerminalSignalContract("turn_error", errorSignal))
             {
-                var recoveredSignal = await TryRecoverIdleBridgeOutputWithoutTerminalSignalAsync(errorSignal, snapshotContext);
+                var recoveredSignal = await TryRecoverGmOutputWithoutTerminalSignalAsync(errorSignal, snapshotContext);
                 if (recoveredSignal != null &&
                     HasValidTerminalSignalContract("turn_complete", recoveredSignal))
                 {

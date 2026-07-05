@@ -405,6 +405,17 @@ Actions:
 2. The client must promote the stall report to a correlated `ready/turn_error.json` even if `ready/turn_complete.json` has already disappeared during the repair loop.
 3. Treat a repair screen that remains indefinitely after bridge cleanup as a harness bug, not a player action problem.
 
+### output written without terminal signal
+
+Symptoms: the daemon writes `game_state/control/gm_output_without_terminal_report.json` and `ready/turn_error.json` with `harnessSource: "gm_output_without_terminal_signal"` after fresh `output/*.json` or canonical payload files changed, but the GM skipped `Complete-BoeTurn`.
+
+Actions:
+
+1. Preserve `gm_output_without_terminal_report.json`, `ready/turn_error.json`, `gm_trajectory_ledger.jsonl`, and `daemon.log` in the disposable run root.
+2. The client may synthesize `ready/turn_complete.json` with `harnessSource: "client_recovered_gm_output_without_terminal_signal"` only when the error signal matches the active request and required fresh output artifacts are present.
+3. If required output artifacts are missing or stale, the run must remain fail-closed and roll back the turn.
+4. Treat repeated recovery as harness feedback: the GM still needs a safer helper path or smaller task packet so it finishes with the normal terminal helper instead of relying on client recovery.
+
 ### bounded artifacts
 
 Symptoms: smoke output starts accumulating in the repo or artifacts are too large to review.
