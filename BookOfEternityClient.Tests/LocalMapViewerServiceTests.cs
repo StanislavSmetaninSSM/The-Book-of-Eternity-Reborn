@@ -1,3 +1,4 @@
+using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -496,6 +497,40 @@ public sealed class LocalMapViewerServiceTests : IDisposable
         // The bundle exposes the unified mount global; the deleted constants
         // (StyleSheet/Script) and vanilla mount call are gone.
         Assert.DoesNotContain("BookOfEternityMapViewer.mountStandalone", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task LocalMapViewerRenderer_EmbedsParseableJsonInScriptTag()
+    {
+        await SeedMortalMapAsync();
+        var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
+
+        var html = LocalMapViewerRenderer.BuildStandaloneHtml(map);
+
+        // The map JSON lives in <script type="application/json">. HTML-encoding
+        // it (the old data-attribute wiring) would corrupt the payload because
+        // browsers do NOT decode HTML entities inside <script>, so JSON.parse
+        // would see &quot; literally and the page would render blank.
+        Assert.DoesNotContain("&quot;", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("&amp;", html, StringComparison.Ordinal);
+
+        // Extract the script payload and confirm it parses back to the MapViewDto.
+        var marker = "id=" + "\"map-viewer-data\"";
+        var start = html.IndexOf(marker, StringComparison.Ordinal);
+        Assert.True(start >= 0, "map-viewer-data script tag not found");
+        var payloadStart = html.IndexOf('>', start) + 1;
+        var payloadEnd = html.IndexOf("</script>", payloadStart, StringComparison.Ordinal);
+        Assert.True(payloadEnd > payloadStart, "script closing tag not found");
+        var payload = html.Substring(payloadStart, payloadEnd - payloadStart);
+
+        // The "</"-escape serialization must be reversed so the round-trip
+        // matches the original DTO; System.Text.Json accepts <\/ as equivalent
+        // to </, so a plain parse must succeed.
+        var roundTripped = System.Text.Json.JsonSerializer.Deserialize<MapViewDto>(
+            payload, LocalMapViewService.JsonOptions);
+        Assert.NotNull(roundTripped);
+        Assert.Equal(map.CurrentNodeId, roundTripped!.CurrentNodeId);
+        Assert.Equal(map.Nodes.Count, roundTripped.Nodes.Count);
     }
 
     private async Task SeedMortalMapAsync()
