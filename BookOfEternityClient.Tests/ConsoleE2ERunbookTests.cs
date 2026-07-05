@@ -151,6 +151,26 @@ public sealed class ConsoleE2ERunbookTests
     }
 
     [Fact]
+    public void AgentConsoleRunbookDocumentsPreflightedLiveRunLauncher()
+    {
+        var runbook = ReadRepoFile("docs", "e2e", "agent-console-runbook.md");
+
+        foreach (var requiredText in new[]
+        {
+            "scripts\\start-agent-console-live-run.ps1",
+            "preflighted launcher",
+            "starts the daemon",
+            "starts the GM bridge",
+            "ready=true",
+            "live-meta.json",
+            "before selecting New Game"
+        })
+        {
+            Assert.Contains(requiredText, runbook, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void AgentConsoleGoldenRouteDriverScriptUsesStateAwareControlEndpoints()
     {
         var script = ReadRepoFile("scripts", "agent-console-golden-route-driver.ps1");
@@ -172,6 +192,29 @@ public sealed class ConsoleE2ERunbookTests
         {
             Assert.Contains(requiredText, script, StringComparison.OrdinalIgnoreCase);
         }
+    }
+
+    [Fact]
+    public void AgentConsoleLiveRunLauncherPreflightsBridgeBeforeGmBoundTurns()
+    {
+        var script = ReadRepoFile("scripts", "start-agent-console-live-run.ps1");
+
+        foreach (var requiredText in new[]
+        {
+            "start-daemon",
+            "start-bridge",
+            "Wait-GmBridgeReady",
+            "gm_bridge_status.json",
+            "ready",
+            "Wait-AgentSnapshot",
+            "live-meta.json",
+            "BookOfEternityClient.exe"
+        })
+        {
+            Assert.Contains(requiredText, script, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain("Remove-Item", script, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

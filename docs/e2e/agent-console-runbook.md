@@ -21,6 +21,14 @@ dotnet build BookOfEternityClient/BookOfEternityClient.csproj --no-restore
 
 ## Launch from PowerShell
 
+For GM-bound live routes, prefer the preflighted launcher. It starts the console client, starts the daemon, starts the GM bridge, waits for `gm_bridge_status.json` to report `ready=true`, waits for the first Agent Console snapshot, and writes `live-meta.json` into the disposable run root. Do this before selecting New Game or submitting any turn that requires the GM.
+
+```powershell
+.\scripts\start-agent-console-live-run.ps1
+```
+
+The returned object contains `runRoot`, `sessionPath`, `base`, `token`, `clientPid`, `daemonPid`, `bridgeReady`, and `initialScreenId`. Keep the token in local shell variables only; do not paste it into issues or committed files.
+
 This starts the real console client in the background with an explicit local token. The token is kept in a shell variable and is not written into repo files.
 
 ```powershell
