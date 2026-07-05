@@ -1842,7 +1842,7 @@ public partial class GameEngine
         return new JsonObject
         {
             ["authoritySurface"] = "UpdateGuardians.create",
-            ["updateGuardians"] = new JsonArray
+            ["UpdateGuardians"] = new JsonArray
             {
                 new JsonObject
                 {

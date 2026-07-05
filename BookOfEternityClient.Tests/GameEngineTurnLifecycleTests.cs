@@ -1202,6 +1202,14 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Equal("high", packet.GetProperty("priority").GetString());
         Assert.Contains("game_state/meta/guardians.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
         Assert.Contains("output/debug_logs.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        var skeleton = packet.GetProperty("canonicalCreateSkeleton");
+        Assert.True(skeleton.TryGetProperty("UpdateGuardians", out var updateGuardians));
+        Assert.Equal(JsonValueKind.Array, updateGuardians.ValueKind);
+        Assert.False(skeleton.TryGetProperty("updateGuardians", out _));
+        var createCommand = Assert.Single(updateGuardians.EnumerateArray());
+        Assert.Equal("create", createCommand.GetProperty("command").GetString());
+        Assert.True(createCommand.TryGetProperty("data", out var createData));
+        Assert.True(createData.TryGetProperty("guardianId", out _));
 
         var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(expectedShape, item => item.Contains("pendingGuardianCreation", StringComparison.Ordinal));
@@ -1295,8 +1303,12 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         var skeleton = packet.GetProperty("canonicalCreateSkeleton");
         Assert.Equal("UpdateGuardians.create", skeleton.GetProperty("authoritySurface").GetString());
-        Assert.Equal("create", skeleton.GetProperty("updateGuardians").EnumerateArray().Single().GetProperty("command").GetString());
-        var data = skeleton.GetProperty("updateGuardians").EnumerateArray().Single().GetProperty("data");
+        Assert.True(skeleton.TryGetProperty("UpdateGuardians", out var updateGuardians));
+        Assert.Equal(JsonValueKind.Array, updateGuardians.ValueKind);
+        Assert.False(skeleton.TryGetProperty("updateGuardians", out _));
+        var createCommand = updateGuardians.EnumerateArray().Single();
+        Assert.Equal("create", createCommand.GetProperty("command").GetString());
+        var data = createCommand.GetProperty("data");
         Assert.True(data.TryGetProperty("guardianId", out _));
         Assert.True(data.TryGetProperty("canonicalName", out _));
         Assert.True(data.TryGetProperty("manifestation", out _));
