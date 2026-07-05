@@ -433,9 +433,14 @@ public sealed class LocalMapViewerServiceTests : IDisposable
         Assert.True(File.Exists(_fs.ResolvePath(result.RelativePath)));
         Assert.Contains("browser disabled", result.Error, StringComparison.OrdinalIgnoreCase);
         var html = await File.ReadAllTextAsync(_fs.ResolvePath(result.RelativePath));
-        Assert.Contains("data-map-json", html, StringComparison.Ordinal);
-        Assert.Contains("BookOfEternityMapViewer.mountStandalone", html, StringComparison.Ordinal);
+        // The unified standalone HTML embeds the React+MapAtlas bundle and
+        // the MapViewDto JSON. The bundle auto-mounts MapAtlas on load.
+        Assert.Contains(LocalMapViewerAssets.Bundle, html, StringComparison.Ordinal);
+        Assert.Contains(LocalMapViewerAssets.Global, html, StringComparison.Ordinal);
+        Assert.Contains("id=" + "\"map-viewer-data\"", html, StringComparison.Ordinal);
         Assert.Contains("Старая площадь", html, StringComparison.Ordinal);
+        // The deleted vanilla viewer must not be referenced.
+        Assert.DoesNotContain("BookOfEternityMapViewer.mountStandalone", html, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -453,47 +458,44 @@ public sealed class LocalMapViewerServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task LocalMapViewerRenderer_UsesDarkFantasyAtlasVisualSystem()
+    public async Task LocalMapViewerRenderer_EmbedsUnifiedAtlasBundle()
     {
         await SeedMortalMapAsync();
         var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
 
         var html = LocalMapViewerRenderer.BuildStandaloneHtml(map);
 
-        Assert.Contains("--atlas-parchment", html, StringComparison.Ordinal);
-        Assert.Contains("atlas-texture", html, StringComparison.Ordinal);
-        Assert.Contains("map-legend", html, StringComparison.Ordinal);
-        Assert.Contains("Легенда карты", html, StringComparison.Ordinal);
-        Assert.Contains("Текущая точка", html, StringComparison.Ordinal);
-        Assert.Contains("Влияние фракций", html, StringComparison.Ordinal);
-        Assert.Contains("Нет точек на выбранном уровне", html, StringComparison.Ordinal);
-        Assert.Contains("map-node--selected", html, StringComparison.Ordinal);
-        Assert.Contains("data-layer-state", html, StringComparison.Ordinal);
-        Assert.Contains("map-political-toggle", html, StringComparison.Ordinal);
-        Assert.Contains("map-political-halo", html, StringComparison.Ordinal);
-        Assert.Contains("map-region", html, StringComparison.Ordinal);
-        Assert.Contains("Политическое влияние", html, StringComparison.Ordinal);
-        Assert.Contains("Спорная зона", html, StringComparison.Ordinal);
-        Assert.Contains("map-compass-rose", html, StringComparison.Ordinal);
-        Assert.Contains("map-border-runes", html, StringComparison.Ordinal);
-        Assert.Contains("map-node--placeholder", html, StringComparison.Ordinal);
-        Assert.Contains("map-image-thumb", html, StringComparison.Ordinal);
-        Assert.Contains("map-image-dialog", html, StringComparison.Ordinal);
-        Assert.Contains("Выберите точку на карте", html, StringComparison.Ordinal);
+        // The standalone HTML embeds the unified bundle (React + MapAtlas +
+        // inlined CSS) and the MapViewDto JSON. MapAtlas renders client-side,
+        // so the visual chrome comes from the bundle, not from this HTML.
+        Assert.Contains(LocalMapViewerAssets.Bundle, html, StringComparison.Ordinal);
+        Assert.Contains(LocalMapViewerAssets.Global, html, StringComparison.Ordinal);
+        Assert.Contains("id=" + "\"map-viewer-data\"", html, StringComparison.Ordinal);
+        // Player-facing content flows through the embedded DTO JSON.
+        Assert.Contains("Старая площадь", html, StringComparison.Ordinal);
+        Assert.Contains("schemaVersion", html, StringComparison.Ordinal);
+        // The standalone shell is a minimal HTML document; the old vanilla
+        // viewer string invariants must not be present.
+        Assert.DoesNotContain("BookOfEternityMapViewer", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("function renderMapBlock", html, StringComparison.Ordinal);
     }
 
     [Fact]
-    public async Task LocalMapViewerRenderer_EmbedsSharedMapViewerPackage()
+    public async Task LocalMapViewerRenderer_EmbedsStandaloneMountPoint()
     {
         await SeedMortalMapAsync();
         var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
 
         var html = LocalMapViewerRenderer.BuildStandaloneHtml(map);
 
-        Assert.Contains(LocalMapViewerAssets.StyleSheet, html, StringComparison.Ordinal);
-        Assert.Contains(LocalMapViewerAssets.Script, html, StringComparison.Ordinal);
-        Assert.Contains("BookOfEternityMapViewer.mountStandalone", html, StringComparison.Ordinal);
-        Assert.Contains("data-map-json", html, StringComparison.Ordinal);
+        // The bundle is the single renderer; the standalone HTML provides a
+        // root element + JSON data tag that the IIFE auto-mounts into.
+        Assert.Contains("id=" + "\"map-viewer-root\"", html, StringComparison.Ordinal);
+        Assert.Contains("id=" + "\"map-viewer-data\"", html, StringComparison.Ordinal);
+        Assert.Contains(LocalMapViewerAssets.Bundle, html, StringComparison.Ordinal);
+        // The bundle exposes the unified mount global; the deleted constants
+        // (StyleSheet/Script) and vanilla mount call are gone.
+        Assert.DoesNotContain("BookOfEternityMapViewer.mountStandalone", html, StringComparison.Ordinal);
     }
 
     private async Task SeedMortalMapAsync()

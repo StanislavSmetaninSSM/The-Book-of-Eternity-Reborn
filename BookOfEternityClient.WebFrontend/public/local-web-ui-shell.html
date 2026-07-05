@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>The Book of Eternity: Reborn</title>
-  <link rel="stylesheet" href="/assets/map-viewer.css">
   <style>
     :root {
       color-scheme: dark;
@@ -1205,9 +1204,25 @@
         case 'message': return renderMessage(block);
         case 'rawJson': return renderRawJson(block);
         case 'image': return renderImageBlock(block);
-        case 'map': return BookOfEternityMapViewer.renderMapBlock(block, { blockClass: 'block' });
+        case 'map': return renderMapBlockShell(block);
         default: return renderMessage({ severity: 'Warning', title: 'Неизвестный блок', message: JSON.stringify(block) });
       }
+    }
+
+    function renderMapBlockShell(block) {
+      const title = block.title || (block.map && block.map.title) || 'Карта';
+      const container = el('div', 'block map-block-host');
+      const map = (block && block.map) || block;
+      // Mount after the container is in the DOM. requestAnimationFrame fires
+      // after the synchronous render pass that appends the returned node.
+      requestAnimationFrame(() => {
+        if (window.BookOfEternityMap && typeof window.BookOfEternityMap.mount === 'function') {
+          window.BookOfEternityMap.mount(container, map, { title });
+        } else {
+          container.append(renderMessage({ severity: 'Warning', title: 'Карта недоступна', message: 'Просмотрщик карты не загрузился.' }));
+        }
+      });
+      return container;
     }
 
     function renderPanel(block) {
