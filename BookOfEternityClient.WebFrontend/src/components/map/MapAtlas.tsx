@@ -23,12 +23,14 @@ import {
   groupNodesForDrawer,
   hasPoliticalSignal,
   isContested,
+  MAP_NODE_HIT_RADIUS,
   MAX_VIEWBOX_SCALE,
   MIN_VIEWBOX_SCALE,
   nodeGlyph,
   nodeMatchesQuery,
   orderMapNodesForDisplay,
   regionCircle,
+  resolveNodeDisplayGeometry,
   resolveVisibleLinks,
   scaleViewBox,
   type PanPoint
@@ -149,15 +151,22 @@ export function MapAtlas({ block, variant = 'embedded' }: MapAtlasProps) {
       ),
     [allNodes, selectedLayer, selectedZ]
   );
-  const nodeById = useMemo(
-    () => new Map(nodes.map((node) => [node.id, node] as const)),
+  const displayNodes = useMemo(
+    () =>
+      resolveNodeDisplayGeometry(nodes).map(({ node, x, y }) =>
+        x === node.x && y === node.y ? node : { ...node, x, y }
+      ),
     [nodes]
   );
+  const nodeById = useMemo(
+    () => new Map(displayNodes.map((node) => [node.id, node] as const)),
+    [displayNodes]
+  );
   const currentNode =
-    nodes.find((node) => node.id === selectedNodeId) ??
-    nodes.find((node) => node.id === block.map.currentNodeId) ??
-    nodes.find((node) => node.isCurrent) ??
-    nodes[0];
+    displayNodes.find((node) => node.id === selectedNodeId) ??
+    displayNodes.find((node) => node.id === block.map.currentNodeId) ??
+    displayNodes.find((node) => node.isCurrent) ??
+    displayNodes[0];
   const focus = useMemo(
     () => ({
       hoveredNodeId: hoveredNodeId ?? undefined,
@@ -167,15 +176,15 @@ export function MapAtlas({ block, variant = 'embedded' }: MapAtlasProps) {
     [block.map.currentNodeId, currentNode?.id, hoveredNodeId]
   );
   const renderedNodes = useMemo(
-    () => orderMapNodesForDisplay(nodes, focus),
-    [focus, nodes]
+    () => orderMapNodesForDisplay(displayNodes, focus),
+    [displayNodes, focus]
   );
   const visibleLinks = useMemo(() => resolveVisibleLinks(block.map.links, nodeById), [
     block.map.links,
     nodeById
   ]);
   const drawerGroups = useMemo(() => groupNodesForDrawer(block.map), [block.map]);
-  const baseViewBox = useMemo(() => buildViewBox(nodes), [nodes]);
+  const baseViewBox = useMemo(() => buildViewBox(displayNodes), [displayNodes]);
   const transformedViewBox = useMemo(
     () => scaleViewBox(baseViewBox, zoom, pan),
     [baseViewBox, pan, zoom]
@@ -378,16 +387,6 @@ export function MapAtlas({ block, variant = 'embedded' }: MapAtlasProps) {
         <div className="map-border-runes" aria-hidden="true">
           ✦ ᚱ ᚨ ᚾ ᛃ ᛟ ✦
         </div>
-        <div className="map-compass-rose" aria-label="Роза ветров">
-          <span>С</span>
-          <span>СВ</span>
-          <span>В</span>
-          <span>ЮВ</span>
-          <span>Ю</span>
-          <span>ЮЗ</span>
-          <span>З</span>
-          <span>СЗ</span>
-        </div>
         <svg
           className="map-canvas"
           role="img"
@@ -435,7 +434,7 @@ export function MapAtlas({ block, variant = 'embedded' }: MapAtlasProps) {
             })}
 
           {politicalOverlay &&
-            nodes
+            displayNodes
               .filter(hasPoliticalSignal)
               .map((node) => (
                 <circle
@@ -502,7 +501,7 @@ export function MapAtlas({ block, variant = 'embedded' }: MapAtlasProps) {
                     filter="url(#map-node-glow)"
                   />
                 )}
-                <circle className="map-node-hit-area" cx={node.x} cy={-node.y} r={1.45} />
+                <circle className="map-node-hit-area" cx={node.x} cy={-node.y} r={MAP_NODE_HIT_RADIUS} />
                 <circle
                   className="map-node-focus-ring"
                   cx={node.x}
@@ -531,7 +530,7 @@ export function MapAtlas({ block, variant = 'embedded' }: MapAtlasProps) {
 
           <rect className="map-vignette" x="-2000" y="-2000" width="4000" height="4000" fill="url(#map-atlas-vignette)" />
         </svg>
-        {nodes.length === 0 && <p className="map-empty">На карте пока нет видимых точек.</p>}
+        {displayNodes.length === 0 && <p className="map-empty">На карте пока нет видимых точек.</p>}
       </div>
     );
   }
@@ -757,9 +756,10 @@ export function MapAtlas({ block, variant = 'embedded' }: MapAtlasProps) {
       {isFullscreen &&
         typeof document !== 'undefined' &&
         createPortal(
-          <dialog
+          <div
             className="map-fullscreen-dialog"
-            open
+            role="dialog"
+            aria-modal="true"
             aria-label={`Полноэкранная карта: ${mapTitle}`}
           >
             <div className="map-fullscreen-panel">
@@ -782,7 +782,7 @@ export function MapAtlas({ block, variant = 'embedded' }: MapAtlasProps) {
                 {renderMapFooter()}
               </div>
             </div>
-          </dialog>,
+          </div>,
           document.body
         )}
 
