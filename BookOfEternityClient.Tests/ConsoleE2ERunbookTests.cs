@@ -128,6 +128,53 @@ public sealed class ConsoleE2ERunbookTests
     }
 
     [Fact]
+    public void AgentConsoleRunbookDocumentsGoldenRouteDriver()
+    {
+        var runbook = ReadRepoFile("docs", "e2e", "agent-console-runbook.md");
+
+        foreach (var requiredText in new[]
+        {
+            "scripts/agent-console-golden-route-driver.ps1",
+            "state-aware golden route driver",
+            "step kinds",
+            "text",
+            "action",
+            "defaultAction",
+            "keys",
+            "returnToGameLoop",
+            "autoContinueKeyScreens",
+            "stat-allocation"
+        })
+        {
+            Assert.Contains(requiredText, runbook, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void AgentConsoleGoldenRouteDriverScriptUsesStateAwareControlEndpoints()
+    {
+        var script = ReadRepoFile("scripts", "agent-console-golden-route-driver.ps1");
+
+        foreach (var requiredText in new[]
+        {
+            "/api/agent-console/snapshot",
+            "/api/agent-console/text",
+            "/api/agent-console/action",
+            "/api/agent-console/default-action",
+            "/api/agent-console/key",
+            "/api/agent-console/return-to-game-loop-step",
+            "step kinds",
+            "autoContinueKeyScreens",
+            "stat-allocation",
+            "notAwaitingInput",
+            "returnToGameLoop"
+        })
+        {
+            Assert.Contains(requiredText, script, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void AgentConsoleGmRuntimePreflightScriptChecksDaemonAndBridgeLiveness()
     {
         var script = ReadRepoFile("scripts", "agent-console-gm-runtime-preflight.ps1");

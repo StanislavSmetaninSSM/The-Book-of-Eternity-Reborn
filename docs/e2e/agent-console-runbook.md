@@ -230,6 +230,68 @@ The helper waits for `screenId: game-loop` with `inputKind: text`, submits each 
 
 For read-only command sweeps, do not use `/default-action`. That endpoint is useful only when the explicit test intent is to accept the current player-visible default action. It is not a safe unwind primitive for command-output audits because a stale or unexpected screen can turn a data inspection into a player turn.
 
+## State-Aware Golden Route Driver
+
+Use `scripts/agent-console-golden-route-driver.ps1` when the test is an actual live route rather than a read-only command audit. It is a state-aware golden route driver: it polls snapshots, waits for the expected `screenId`, handles bounded local prompt screens, writes an artifact after each step, and fails when input is rejected with states such as `notAwaitingInput`.
+
+The driver exists because a full new-game route is not a single wait for `game-loop`. It includes local text prompts, confirmation screens, key-only transition screens, `stat-allocation`, command submenus, GM waits, and validation repair waits. Ad-hoc scripts that blindly sleep or wait only for `game-loop` miss these states and can submit input to the wrong screen.
+
+Supported step kinds:
+
+- `text`: wait for a text prompt and submit `text`.
+- `action`: choose an action by `actionId` or `labelPattern`. Use `activate: true` for menus where the first action call only selects an item and the second activates it.
+- `defaultAction`: accept the current enabled default action.
+- `keys`: send a bounded key sequence. This is the intended path for `stat-allocation`; do not put `stat-allocation` in `autoContinueKeyScreens`.
+- `returnToGameLoop`: safely unwind local command result screens through `/api/agent-console/return-to-game-loop-step`.
+
+Example steps file:
+
+```json
+[
+  {
+    "kind": "text",
+    "name": "soul name",
+    "screenId": "new-game-soul-name",
+    "text": "Искра-Тестировщик"
+  },
+  {
+    "kind": "defaultAction",
+    "name": "confirm incarnation",
+    "screenId": "incarnation-contract-confirmation"
+  },
+  {
+    "kind": "keys",
+    "name": "allocate scout stats",
+    "screenId": "stat-allocation",
+    "keys": ["Down", "Right", "Right", "Down", "Down", "Right", "Enter"]
+  },
+  {
+    "kind": "returnToGameLoop",
+    "name": "close local command screen"
+  },
+  {
+    "kind": "action",
+    "name": "choose first dialogue option",
+    "screenId": "game-loop",
+    "labelPattern": "Осмотреть",
+    "activate": true
+  }
+]
+```
+
+Run it from PowerShell:
+
+```powershell
+.\scripts\agent-console-golden-route-driver.ps1 `
+  -Base $Base `
+  -Token $Token `
+  -StepsFile (Join-Path $RunRoot "golden-route.steps.json") `
+  -OutputPath (Join-Path $RunRoot "golden-route-driver.json") `
+  -AutoContinueKeyScreens @("incarnation-trigger-gate-opened", "realm-transition-mortal-life")
+```
+
+Keep the steps file and output artifact inside the disposable run root unless the steps become a deliberate checked-in regression fixture.
+
 ## Safe smoke path
 
 1. Launch with a copied `FileSystemExample/game_session` under a disposable run root.
