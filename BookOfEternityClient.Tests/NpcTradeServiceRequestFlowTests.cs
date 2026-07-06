@@ -168,6 +168,35 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
     }
 
     [Fact]
+    public async Task BuyAsync_MinimalTradeItemData_WritesCanonicalInventoryItemShape()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);
+
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
+        var result = await service.BuyAsync("npc_merchant_001", "npc_trade_slot_001", currentTurn: 8);
+
+        Assert.True(result.Success);
+        Assert.True(result.StateChanged);
+
+        using var inventoryDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/inventory/items.json") ?? "{}");
+        var item = Assert.Single(inventoryDoc.RootElement.GetProperty("items").EnumerateArray());
+        Assert.Equal("npc_item_merchant_001", item.GetProperty("itemId").GetString());
+        Assert.Equal("npc_item_merchant_001", item.GetProperty("id").GetString());
+        Assert.Equal("npc_item_merchant_001", item.GetProperty("existedId").GetString());
+        Assert.False(string.IsNullOrWhiteSpace(item.GetProperty("image_prompt").GetString()));
+        Assert.Equal("100%", item.GetProperty("durability").GetString());
+        Assert.Equal(JsonValueKind.Null, item.GetProperty("contentsPath").ValueKind);
+        Assert.Equal(JsonValueKind.Null, item.GetProperty("equipmentSlot").ValueKind);
+        Assert.Equal(JsonValueKind.Null, item.GetProperty("accessoryForSlot").ValueKind);
+        Assert.False(item.GetProperty("isContainer").GetBoolean());
+        Assert.False(item.GetProperty("isConsumption").GetBoolean());
+        Assert.False(item.GetProperty("requiresTwoHands").GetBoolean());
+        Assert.Equal(1, item.GetProperty("count").GetInt32());
+        Assert.Equal(JsonValueKind.Number, item.GetProperty("weight").ValueKind);
+        Assert.Equal(JsonValueKind.Number, item.GetProperty("volume").ValueKind);
+    }
+
+    [Fact]
     public async Task SellAsync_WithoutValidCurrentTurn_FailsWithoutMutatingState()
     {
         await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true, includeSellableInventoryItem: true);

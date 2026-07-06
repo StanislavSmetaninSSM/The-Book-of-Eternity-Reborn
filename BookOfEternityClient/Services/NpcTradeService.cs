@@ -159,7 +159,7 @@ public sealed partial class NpcTradeService
 
         NormalizeInventoryShape(itemsRoot);
         var inventoryItems = itemsRoot["items"]!.AsArray();
-        UpsertInventoryItem(inventoryItems, CloneObject(itemData));
+        UpsertInventoryItem(inventoryItems, BuildCanonicalInventoryItemForLocalPurchase(CloneObject(itemData), slot));
         statusRoot["money"] = money - price;
         slot["soldOut"] = true;
         SyncNpcEntries(npcRoot, GetNpcIdentity(npc), npc);
@@ -286,7 +286,7 @@ public sealed partial class NpcTradeService
 
         NormalizeInventoryShape(itemsRoot);
         var inventoryItems = itemsRoot["items"]!.AsArray();
-        UpsertInventoryItem(inventoryItems, CloneObject(itemData));
+        UpsertInventoryItem(inventoryItems, BuildCanonicalInventoryItemForLocalPurchase(CloneObject(itemData), buybackEntry));
         statusRoot["money"] = money - price;
 
         buybackEntry["status"] = BuybackStatusRebought;
@@ -1216,6 +1216,99 @@ public sealed partial class NpcTradeService
         items.Add(item);
     }
 
+    private static JsonObject BuildCanonicalInventoryItemForLocalPurchase(JsonObject item, JsonObject? tradeSource)
+    {
+        var itemId = FirstNonEmpty(
+            GetNodeString(item["itemId"]),
+            GetNodeString(item["id"]),
+            GetNodeString(item["existedId"]),
+            GetNodeString(tradeSource?["itemId"]),
+            "npc_trade_item_" + Guid.NewGuid().ToString("N"));
+        var name = FirstNonEmpty(GetNodeString(item["name"]), "Купленный товар");
+        var description = FirstNonEmpty(GetNodeString(item["description"]), name);
+        var quality = NormalizeInventoryItemQuality(FirstNonEmpty(GetNodeString(item["quality"]), GetNodeString(item["rarity"]), "Common"));
+        var price = Math.Max(0, GetNodeInt(item["price"], GetNodeInt(tradeSource?["price"], 0)));
+        var count = Math.Max(1, GetNodeInt(item["count"], GetNodeInt(item["quantity"], GetNodeInt(tradeSource?["quantity"], 1))));
+        var type = GetNodeString(item["type"]) ?? "";
+        var group = GetNodeString(item["group"]) ?? "";
+        var isContainer = GetNodeBool(item["isContainer"]) ||
+                          ContainsAny(type, "container", "контейнер", "сумка", "кофр") ||
+                          ContainsAny(group, "container", "контейнер");
+        var isConsumption = GetNodeBool(item["isConsumption"]) ||
+                            ContainsAny(type, "consumable", "consumption", "расход", "припас", "еда", "food") ||
+                            ContainsAny(group, "consumable", "consumption", "расход", "припас", "еда", "food");
+
+        EnsureStringField(item, "itemId", itemId);
+        EnsureStringField(item, "id", itemId);
+        EnsureStringField(item, "existedId", itemId);
+        EnsureStringField(item, "name", name);
+        EnsureStringField(item, "description", description);
+        EnsureStringField(item, "image_prompt", FirstNonEmpty(
+            GetNodeString(item["image_prompt"]),
+            GetNodeString(item["imagePrompt"]),
+            $"{name}. {description}"));
+
+        item["quality"] = quality;
+        item["price"] = price;
+        item["count"] = count;
+        item["weight"] = Math.Max(0, GetNodeDouble(item["weight"], 0));
+        item["volume"] = Math.Max(0, GetNodeDouble(item["volume"], 0));
+        item["isContainer"] = isContainer;
+        item["isConsumption"] = isConsumption;
+        item["requiresTwoHands"] = GetNodeBool(item["requiresTwoHands"]);
+        item["durability"] = NormalizeInventoryDurability(GetNodeString(item["durability"]));
+
+        if (!IsJsonNullOrArray(item["contentsPath"]))
+            item["contentsPath"] = null;
+        if (!item.ContainsKey("contentsPath"))
+            item["contentsPath"] = null;
+        if (!item.ContainsKey("equipmentSlot"))
+            item["equipmentSlot"] = null;
+        if (!item.ContainsKey("accessoryForSlot"))
+            item["accessoryForSlot"] = null;
+
+        return item;
+    }
+
+    private static void EnsureStringField(JsonObject item, string propertyName, string fallback)
+    {
+        if (string.IsNullOrWhiteSpace(GetNodeString(item[propertyName])))
+            item[propertyName] = fallback;
+    }
+
+    private static string FirstNonEmpty(params string?[] values) =>
+        values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+
+    private static bool IsJsonNullOrArray(JsonNode? node) =>
+        node == null || node is JsonArray;
+
+    private static string NormalizeInventoryDurability(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "100%";
+
+        var trimmed = value.Trim();
+        if (trimmed.EndsWith('%') && int.TryParse(trimmed.TrimEnd('%').Trim(), out var percent))
+            return $"{Math.Clamp(percent, 0, 100)}%";
+        if (int.TryParse(trimmed, out percent))
+            return $"{Math.Clamp(percent, 0, 100)}%";
+        return "100%";
+    }
+
+    private static string NormalizeInventoryItemQuality(string quality) =>
+        quality.Trim().ToLowerInvariant() switch
+        {
+            "trash" => "Trash",
+            "common" => "Common",
+            "uncommon" => "Uncommon",
+            "good" => "Good",
+            "rare" => "Rare",
+            "epic" => "Epic",
+            "legendary" => "Legendary",
+            "unique" => "Unique",
+            _ => "Common"
+        };
+
     private static int FindInventoryItemIndex(JsonArray items, string itemId)
     {
         for (var i = 0; i < items.Count; i++)
@@ -1365,6 +1458,23 @@ public sealed partial class NpcTradeService
                 return parsed;
             if (value.TryGetValue<string>(out var str) && int.TryParse(str, out parsed))
                 return parsed;
+        }
+        return fallback;
+    }
+
+    private static double GetNodeDouble(JsonNode? node, double fallback = 0)
+    {
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<double>(out var parsed))
+                return parsed;
+            if (value.TryGetValue<int>(out var intValue))
+                return intValue;
+            if (value.TryGetValue<string>(out var str) &&
+                double.TryParse(str, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out parsed))
+            {
+                return parsed;
+            }
         }
         return fallback;
     }
