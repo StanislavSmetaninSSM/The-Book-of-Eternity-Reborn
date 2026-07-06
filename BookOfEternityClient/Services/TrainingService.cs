@@ -427,7 +427,7 @@ public sealed class TrainingService
                 Offers: offers));
         }
 
-        await ClearSatisfiedMortalSkillEvolutionRequestsAsync();
+        await CleanupSatisfiedMortalSkillEvolutionRequestsAsync();
         await ClearSatisfiedTrainingShowcaseRequestsAsync(satisfiedRequests);
         if (npcRootChanged && npcRoot != null)
             await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
@@ -552,7 +552,7 @@ public sealed class TrainingService
             await TrainingRequestState.WriteRequestsAsync(_fs, remaining);
     }
 
-    private async Task ClearSatisfiedMortalSkillEvolutionRequestsAsync()
+    public async Task CleanupSatisfiedMortalSkillEvolutionRequestsAsync()
     {
         var existing = await TrainingRequestState.ReadRequestsAsync(_fs);
         if (existing.Count == 0)

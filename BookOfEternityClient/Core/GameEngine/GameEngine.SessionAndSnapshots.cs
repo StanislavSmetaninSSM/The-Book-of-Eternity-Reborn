@@ -9,6 +9,7 @@ using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Spectre.Console;
 
 namespace BookOfEternityClient.Core;
@@ -1271,6 +1272,8 @@ public partial class GameEngine
             _fs.DeleteFile("input/turn_request.json");
             await CleanupPendingTurnSnapshotAsync();
         }
+        await new TrainingService(_fs, NullLogger<TrainingService>.Instance)
+            .CleanupSatisfiedMortalSkillEvolutionRequestsAsync();
         await CleanupResolvedAfterlifePendingContractsAfterAcceptedTurnAsync();
     }
 

@@ -226,6 +226,88 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task CleanupSatisfiedMortalSkillEvolutionRequestsAsync_ClearsFulfilledActiveSkillRequest()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedEmptyPlayerSkillsAsync();
+        await TrainingRequestState.WriteRequestsAsync(
+            _fs,
+            new[]
+            {
+                new TrainingRequestState.PendingTrainingShowcaseRequest(
+                    "training_showcase_req_magical_diagnostics",
+                    "mortal_training_skill_evolution",
+                    "npc_life_001_selina_mentor",
+                    "Селина",
+                    "npc_teacher",
+                    "mortal",
+                    5,
+                    DateTime.UtcNow,
+                    "hash",
+                    "unknown_skill_unlock",
+                    new JsonObject
+                    {
+                        ["targetId"] = "skill_magical_diagnostics",
+                        ["targetName"] = "Магическая диагностика",
+                        ["targetKind"] = "active_skill_unlock",
+                        ["targetValue"] = 1
+                    })
+            });
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_active.json", """
+        {
+          "activeSkillChanges": [
+            {
+              "skillId": "skill_magical_diagnostics",
+              "skillName": "Магическая диагностика",
+              "currentMasteryLevel": 1
+            }
+          ]
+        }
+        """);
+
+        var service = CreateService();
+        await service.CleanupSatisfiedMortalSkillEvolutionRequestsAsync();
+
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task CleanupSatisfiedMortalSkillEvolutionRequestsAsync_KeepsUnfulfilledRequest()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedEmptyPlayerSkillsAsync();
+        await TrainingRequestState.WriteRequestsAsync(
+            _fs,
+            new[]
+            {
+                new TrainingRequestState.PendingTrainingShowcaseRequest(
+                    "training_showcase_req_magical_diagnostics",
+                    "mortal_training_skill_evolution",
+                    "npc_life_001_selina_mentor",
+                    "Селина",
+                    "npc_teacher",
+                    "mortal",
+                    5,
+                    DateTime.UtcNow,
+                    "hash",
+                    "unknown_skill_unlock",
+                    new JsonObject
+                    {
+                        ["targetId"] = "skill_magical_diagnostics",
+                        ["targetName"] = "Магическая диагностика",
+                        ["targetKind"] = "active_skill_unlock",
+                        ["targetValue"] = 1
+                    })
+            });
+
+        var service = CreateService();
+        await service.CleanupSatisfiedMortalSkillEvolutionRequestsAsync();
+
+        var request = Assert.Single(await TrainingRequestState.ReadRequestsAsync(_fs));
+        Assert.Equal("training_showcase_req_magical_diagnostics", request.RequestId);
+    }
+
+    [Fact]
     public async Task BuyTrainingAsync_MortalPracticeOfferBelowThreshold_AddsOnlyActiveMasteryProgressLocally()
     {
         await SeedMortalSoulStateAsync();

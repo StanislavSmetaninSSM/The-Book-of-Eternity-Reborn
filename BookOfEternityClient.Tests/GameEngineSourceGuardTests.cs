@@ -197,6 +197,15 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void AcceptedTurnCleanup_MustClearSatisfiedMortalTrainingSkillEvolutionRequests()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.SessionAndSnapshots.cs");
+        var method = ExtractMethodSource(source, "private async Task CleanupAcceptedTurnTerminalArtifactsAsync()");
+
+        Assert.Contains("CleanupSatisfiedMortalSkillEvolutionRequestsAsync", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MortalBootstrapScaffold_MustWarnAgainstPuttingOffscreenExitActorsIntoNpcScene()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
