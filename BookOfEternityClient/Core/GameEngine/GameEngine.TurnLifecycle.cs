@@ -2893,7 +2893,8 @@ public partial class GameEngine
                         "NPCsInScene",
                         "NPCsRenameData",
                         "UpdateNPCs",
-                        "UpdateNpcTradeInventoryReceipts"
+                        "UpdateNpcTradeInventoryReceipts",
+                        "trainingPurchaseReceipts"
                     },
                     ["forbiddenTopLevelKeysInNpcCore"] = new JsonArray
                     {

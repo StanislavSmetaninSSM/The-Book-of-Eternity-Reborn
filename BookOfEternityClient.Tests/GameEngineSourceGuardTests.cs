@@ -190,6 +190,7 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("\"NPCsRenameData\"", allowList, StringComparison.Ordinal);
         Assert.Contains("\"UpdateNPCs\"", allowList, StringComparison.Ordinal);
         Assert.Contains("\"UpdateNpcTradeInventoryReceipts\"", allowList, StringComparison.Ordinal);
+        Assert.Contains("\"trainingPurchaseReceipts\"", allowList, StringComparison.Ordinal);
         Assert.DoesNotContain("\"NPCJournals\"", allowList, StringComparison.Ordinal);
         Assert.DoesNotContain("\"NPCQuestUpdates\"", allowList, StringComparison.Ordinal);
         Assert.DoesNotContain("\"NPCRelationshipUpdates\"", allowList, StringComparison.Ordinal);

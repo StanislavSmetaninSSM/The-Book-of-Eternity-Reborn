@@ -170,6 +170,9 @@ public sealed class TrainingValidationTests : IDisposable
         var issues = await _validator.ValidateGameStateAsync();
 
         Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "npc_contract_unknown_top_level_key", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("trainingPurchaseReceipts", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "training_purchase_receipt_missing_source_actor", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "training_showcase_source_actor_mismatch", StringComparison.OrdinalIgnoreCase));
