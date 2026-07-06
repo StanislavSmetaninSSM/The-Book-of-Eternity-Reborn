@@ -26,12 +26,16 @@ public sealed class TrainingValidationTests : IDisposable
     public async Task ValidateGameStateAsync_AfterlifeMentorShowcaseWithStaleHash_ReportsTrainingIssue()
     {
         await WriteAfterlifeMentorProfileAsync(sourceActorSnapshotHash: "stale-hash", sourceCap: 4);
+        var expectedHash = TrainingService.ComputeSourceSnapshotHash(
+            BuildAfterlifeMentorProfile(sourceActorSnapshotHash: null, sourceCap: 4, includeShowcase: false));
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue =>
+        var issue = Assert.Single(issues, issue =>
             string.Equals(issue.Code, "training_showcase_stale_source_actor_snapshot", StringComparison.OrdinalIgnoreCase) &&
             issue.FilePath.Contains("afterlife_entity_profiles.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(expectedHash, issue.Expected);
+        Assert.Contains(expectedHash, issue.RepairHint ?? string.Empty, StringComparison.Ordinal);
     }
 
     [Fact]

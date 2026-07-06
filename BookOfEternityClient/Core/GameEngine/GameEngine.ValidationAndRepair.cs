@@ -1135,6 +1135,7 @@ public partial class GameEngine
         var afterlifeActionCostErrors = errors.Where(IsAfterlifeSpiritualConflictActionCostRepairIssue).ToList();
         var afterlifeConflictRewardErrors = errors.Where(IsAfterlifeSpiritualConflictRewardRepairIssue).ToList();
         var afterlifeEntityProfileScaffoldErrors = errors.Where(IsAfterlifeEntityProfileScaffoldRepairIssue).ToList();
+        var trainingShowcaseSnapshotErrors = errors.Where(IsTrainingShowcaseSnapshotRepairIssue).ToList();
         var npcScopeDeclarationErrors = errors.Where(IsNpcScopeDeclarationRepairIssue).ToList();
         var acceptedTurnOutputArtifactErrors = errors.Where(IsAcceptedTurnOutputArtifactRepairIssue).ToList();
 
@@ -1188,6 +1189,9 @@ public partial class GameEngine
 
         if (mortalCombatStateErrors.Count > 0)
             packets.Add(BuildMortalCombatStateRepairPacket(mortalCombatStateErrors));
+
+        if (trainingShowcaseSnapshotErrors.Count > 0)
+            packets.Add(BuildTrainingShowcaseSnapshotHashRepairPacket(trainingShowcaseSnapshotErrors));
 
         if (afterlifeChronicleStringArrayErrors.Count > 0)
             packets.Add(BuildAfterlifeChronicleStringArrayRepairPacket(afterlifeChronicleStringArrayErrors));
@@ -1428,6 +1432,11 @@ public partial class GameEngine
     private static bool IsMortalCombatStateRepairIssue(ValidationIssue issue)
     {
         return string.Equals(issue.Code, "mortal_combat_state_missing", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsTrainingShowcaseSnapshotRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Code, "training_showcase_stale_source_actor_snapshot", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsMortalNpcRepairPath(string? path)
@@ -2775,6 +2784,71 @@ public partial class GameEngine
         };
     }
 
+    private static ValidationRepairHarnessPacket BuildTrainingShowcaseSnapshotHashRepairPacket(
+        IReadOnlyList<ValidationIssue> trainingShowcaseSnapshotErrors)
+    {
+        var targetFiles = trainingShowcaseSnapshotErrors
+            .Select(issue => NormalizeTrainingShowcaseRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (!targetFiles.Contains("game_state/control/pending_training_showcase_requests.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("game_state/control/pending_training_showcase_requests.json");
+
+        var actorNames = CollectRepairActorNames(trainingShowcaseSnapshotErrors)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var exactFieldCorrections = trainingShowcaseSnapshotErrors
+            .Select(BuildExactFieldCorrection)
+            .Where(correction => !string.IsNullOrWhiteSpace(correction.Path))
+            .DistinctBy(correction => correction.Path, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(correction => correction.Path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "training_showcase_snapshot_hash_repair",
+            Priority = "high",
+            Title = "Training showcase source snapshot hash repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Examples/E_CLI_Training_Showcases.txt" },
+            CanonicalActorNames = actorNames,
+            ExactFieldCorrections = exactFieldCorrections,
+            ExpectedShape = new List<string>
+            {
+                "trainingShowcase/mentorTrainingShowcase must describe the current teacher or mentor profile and carry sourceActorSnapshotHash that matches that same current source actor.",
+                "If the repair only refreshes the showcase, preserve the source actor's profile and set sourceActorSnapshotHash exactly from exactFieldCorrections[].",
+                "If the repair also changes the teacher profile, finish those profile fields first, then use exactFieldCorrections[] from the current validation request as the authoritative hash for this repair attempt.",
+                "The showcase must remain a data vitrines surface only: it lists offers, costs, source caps, and conditions; it does not spend player currency or grant skills directly."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Open game_state/control/pending_training_showcase_requests.json first and preserve the requested requestId/requestKind/sourceActorId/sourceActorName/realm.",
+                "Apply exactFieldCorrections[] path -> expected replacements before trying to infer hashes from prose.",
+                "Patch only the listed teacher/mentor showcase and directly related source actor fields required by validation; preserve unrelated NPCs, guardians, memories, relationships, and location state.",
+                "Do not update an unrelated NPC teacher just because the file contains multiple actors."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json and game_state/control/pending_training_showcase_requests.json.",
+                "Open the target source actor file named in targetFiles, usually game_state/npcs/npc_core.json for Mortal teachers or game_state/meta/afterlife_entity_profiles.json for afterlife mentors.",
+                "Find the teacher/mentor showcase field named by exactFieldCorrections[].path.",
+                "Set each exactFieldCorrections[].path to exactFieldCorrections[].expected.",
+                "Recheck that every offer still obeys sourceCap <= teacher skill/art level and that costs are present; do not apply the purchase locally.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not guess sourceActorSnapshotHash manually.",
+                "Do not delete the training showcase just to silence stale-hash validation while a pending training showcase request exists.",
+                "Do not spend player money, experience, ink feathers, or change skill mastery during showcase repair.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer training rules; use this packet, Examples/E_CLI_Training_Showcases.txt, the validation request, and pending_training_showcase_requests.json."
+            }
+        };
+    }
+
     private static ValidationRepairHarnessPacket BuildAfterlifeSpiritualConflictActionCostRepairPacket(
         IReadOnlyList<ValidationIssue> actionCostErrors)
     {
@@ -3280,6 +3354,19 @@ public partial class GameEngine
         }
 
         return targetFiles;
+    }
+
+    private static string NormalizeTrainingShowcaseRepairTargetPath(string path)
+    {
+        var normalized = path.Replace('\\', '/');
+        if (normalized.StartsWith("game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/npcs/npc_core.json";
+        if (normalized.StartsWith("game_state/meta/afterlife_entity_profiles.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/meta/afterlife_entity_profiles.json";
+        if (normalized.StartsWith("game_state/control/pending_training_showcase_requests.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/control/pending_training_showcase_requests.json";
+
+        return NormalizeRepairTargetPath(path);
     }
 
     private async Task<IReadOnlyCollection<string>> ReadCurrentGuardianRepairActorNameHintsAsync()

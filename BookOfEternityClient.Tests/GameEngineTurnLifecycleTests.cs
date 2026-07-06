@@ -2188,6 +2188,55 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_TrainingShowcaseStaleSnapshot_AddsExactHashHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var expectedHash = "401ba6b8c2d057a629cf1bf97820fb050c6b1ec25e89e7ee853e85f0c3324079";
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/npcs/npc_core.json.UpdateNPCs[0].trainingShowcase.sourceActorSnapshotHash",
+                IssueSeverity.Error,
+                "Витрина обучения устарела: sourceActorSnapshotHash не совпадает с текущим профилем источника.",
+                code: "training_showcase_stale_source_actor_snapshot",
+                actor: "Селина Орвейн",
+                section: "trainingShowcase",
+                expected: expectedHash,
+                actual: "stale-hash",
+                repairHint: "Запиши свежий sourceActorSnapshotHash.")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("training_showcase_snapshot_hash_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/control/pending_training_showcase_requests.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Examples/E_CLI_Training_Showcases.txt", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Селина Орвейн", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var correction = Assert.Single(packet.GetProperty("exactFieldCorrections").EnumerateArray());
+        Assert.Equal("game_state/npcs/npc_core.json.UpdateNPCs[0].trainingShowcase.sourceActorSnapshotHash", correction.GetProperty("path").GetString());
+        Assert.Equal(expectedHash, correction.GetProperty("expected").GetString());
+        Assert.Equal("stale-hash", correction.GetProperty("actual").GetString());
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, item => item.Contains("pending_training_showcase_requests.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, item => item.Contains("Complete-BoeValidationRepair", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_EmptyRelevantActorsScopeError_AddsExecutableHarnessPacket()
     {
         var engine = CreateGameEngine();

@@ -18,6 +18,13 @@ Shared rules
 - Every showcase must copy the requested `sourceActorSnapshotHash` into
   `trainingShowcase.sourceActorSnapshotHash`. If the teacher changes, the
   client treats the showcase as stale and requests a refresh.
+- During validation repair, when `harnessRepairPackets[].kind` is
+  `training_showcase_snapshot_hash_repair`, apply
+  `exactFieldCorrections[]` first. Set each listed
+  `sourceActorSnapshotHash` path to the exact `expected` value from the packet.
+  Do not guess or recompute the hash manually. If you also change the teacher or
+  mentor profile in the same repair, finish that profile patch first, then use
+  the exact correction from the current validation request.
 - A fresh showcase for the requested teacher or mentor satisfies that pending
   request. The client clears fulfilled entries from
   `pending_training_showcase_requests.json`, and deletes the file when no

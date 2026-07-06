@@ -372,9 +372,9 @@ public partial class ValidationService
                 $"{sourceContext}.{showcaseProperty}.sourceActorSnapshotHash",
                 "training_showcase_stale_source_actor_snapshot",
                 "Витрина обучения устарела: sourceActorSnapshotHash не совпадает с текущим профилем источника.",
-                "sourceActorSnapshotHash текущего источника",
+                expectedHash,
                 actualHash ?? "missing",
-                "Обнови витрину обучения по pending_training_showcase_requests.json и запиши свежий sourceActorSnapshotHash.",
+                $"Обнови витрину обучения по pending_training_showcase_requests.json и запиши свежий sourceActorSnapshotHash: {expectedHash}. Если профиль учителя меняется в этом же ремонте, сначала зафиксируй профиль, затем используй exactFieldCorrections[] из repair packet.",
                 issues);
         }
     }

@@ -76,6 +76,7 @@
 - [ ] T042 Run manual console smoke checks for Mortal World, Chaos Sea, and Shining Abode.
 - [ ] T043 Run manual browser smoke checks for training command output.
 - [ ] T044 Review diffs, update issue comments, commit, and merge only after evidence is available.
+- [x] T045 [Live-test harness follow-up #1452] Add exact training-showcase stale snapshot hash diagnostics and a dedicated validation repair packet so GM repairs can apply `sourceActorSnapshotHash` without source-code archaeology.
 
 ## Dependencies
 
