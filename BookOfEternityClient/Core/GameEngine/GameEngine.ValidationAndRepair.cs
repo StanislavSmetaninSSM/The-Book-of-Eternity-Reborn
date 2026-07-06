@@ -551,6 +551,9 @@ public partial class GameEngine
         if (metadataDiagnosticOnly)
             return await FailClosedDiagnosticOnlyValidationRepairAsync(source, errors, attempt, rollbackSnapshot);
 
+        using var agentConsoleRepairInputBlock = BeginAgentConsoleInputBlockFromCurrentSnapshot(
+            "Validation repair is active. Agent Console input is blocked until GM finishes data repair.");
+
         var rollbackAvailable = HasRollbackCapability(rollbackSnapshot);
         while (true)
         {

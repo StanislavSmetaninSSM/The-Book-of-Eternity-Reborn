@@ -182,6 +182,14 @@ public partial class GameEngine
         }, "Validation repair request published.");
     }
 
+    private IDisposable? BeginAgentConsoleInputBlockFromCurrentSnapshot(string reason)
+    {
+        if (_inputSource is not AgentConsoleLiveInputSource liveInput)
+            return null;
+
+        return liveInput.BeginInputBlockFromCurrentSnapshot(reason);
+    }
+
     private static string BuildValidationRepairDiagnosticDetail(ValidationRepairIssue error)
     {
         var detail = new StringBuilder();

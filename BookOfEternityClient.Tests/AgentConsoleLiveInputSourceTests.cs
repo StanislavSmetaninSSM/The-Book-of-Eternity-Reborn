@@ -665,6 +665,43 @@ public sealed class AgentConsoleLiveInputSourceTests
         Assert.Null(consumedSnapshot.Prompt);
     }
 
+    [Fact]
+    public void EnqueueLine_WhenInputBlockActive_RejectsStaleGameLoopPrompt()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        input.PublishSnapshot(BuildTextSnapshot("gm-validation-repair") with
+        {
+            Mode = AgentConsoleMode.Loading,
+            Title = "Ремонт данных",
+            PlainText = "GM исправляет невалидное состояние.",
+            AwaitingInput = false,
+            InputKind = AgentConsoleInputKind.None,
+            Prompt = null
+        });
+
+        using var block = input.BeginInputBlockFromCurrentSnapshot("Validation repair is active.");
+        input.PublishSnapshot(BuildTextSnapshot("game-loop"));
+
+        var snapshot = store.GetSnapshot();
+        Assert.NotNull(snapshot);
+        Assert.Equal("gm-validation-repair", snapshot!.ScreenId);
+        Assert.False(snapshot.AwaitingInput);
+        Assert.Equal(AgentConsoleInputKind.None, snapshot.InputKind);
+
+        var rejected = input.EnqueueLine("Продолжить путь");
+
+        Assert.False(rejected.Accepted);
+        Assert.Equal(AgentConsoleInputRejectionCode.NotAwaitingInput, rejected.RejectionCode);
+        Assert.Contains("Validation repair is active", rejected.Message, StringComparison.OrdinalIgnoreCase);
+
+        block.Dispose();
+        input.PublishSnapshot(BuildTextSnapshot("game-loop"));
+
+        var accepted = input.EnqueueLine("Продолжить путь");
+        Assert.True(accepted.Accepted);
+    }
+
     private static AgentConsoleSnapshot BuildMenuSnapshot(string screenId, int selectedIndex)
     {
         var renderedAt = new DateTimeOffset(2026, 5, 31, 10, 0, 0, TimeSpan.Zero);

@@ -1,4 +1,5 @@
 using BookOfEternityClient.Core;
+using System.Threading;
 
 namespace BookOfEternityClient.AgentConsole;
 
@@ -25,6 +26,9 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
     private readonly int _maxQueueLength;
     private QueuedInputKind? _activeReadKind;
     private AgentConsoleInputKind? _activeReadInputKind;
+    private AgentConsoleSnapshot? _inputBlockSnapshot;
+    private string? _inputBlockReason;
+    private long _inputBlockVersion;
     private long _cancelSignalVersion;
     private bool _isShutdown;
     private string? _shutdownReason;
@@ -77,7 +81,46 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
             screenId: _stateStore.GetSnapshot()?.ScreenId);
 
     public AgentConsoleEvent PublishSnapshot(AgentConsoleSnapshot snapshot, string? message = null)
-        => _stateStore.UpdateSnapshot(snapshot, message);
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+
+        AgentConsoleSnapshot effectiveSnapshot;
+        lock (_sync)
+        {
+            effectiveSnapshot = _inputBlockSnapshot is not null && snapshot.AwaitingInput
+                ? _inputBlockSnapshot with { UpdatedAtUtc = DateTimeOffset.UtcNow }
+                : snapshot;
+        }
+
+        return _stateStore.UpdateSnapshot(effectiveSnapshot, message);
+    }
+
+    public IDisposable BeginInputBlockFromCurrentSnapshot(string? reason = null)
+    {
+        var snapshot = _stateStore.GetSnapshot() ?? BuildFallbackInputBlockSnapshot(reason);
+        return BeginInputBlock(snapshot, reason);
+    }
+
+    public IDisposable BeginInputBlock(AgentConsoleSnapshot snapshot, string? reason = null)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+
+        var normalizedReason = string.IsNullOrWhiteSpace(reason)
+            ? "Agent Console input is temporarily blocked."
+            : reason.Trim();
+        var blockSnapshot = BuildInputBlockSnapshot(snapshot, normalizedReason);
+        long version;
+
+        lock (_sync)
+        {
+            version = ++_inputBlockVersion;
+            _inputBlockReason = normalizedReason;
+            _inputBlockSnapshot = blockSnapshot;
+        }
+
+        _stateStore.UpdateSnapshot(blockSnapshot, normalizedReason);
+        return new InputBlockScope(this, version);
+    }
 
     public AgentConsoleInputResult TryQueueAction(AgentConsoleActionRequest request)
     {
@@ -361,6 +404,11 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
                 rejectionCode = AgentConsoleInputRejectionCode.InvalidRequest;
                 rejectionMessage = "Agent Console action resolved to no input.";
             }
+            else if (_inputBlockSnapshot is not null)
+            {
+                rejectionCode = AgentConsoleInputRejectionCode.NotAwaitingInput;
+                rejectionMessage = _inputBlockReason ?? "Agent Console input is temporarily blocked.";
+            }
             else if (_queue.Count + queuedInputs.Count > _maxQueueLength)
             {
                 rejectionCode = AgentConsoleInputRejectionCode.QueueFull;
@@ -485,6 +533,60 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
             $"Agent Console screen '{snapshot.ScreenId}' is waiting for {snapshot.InputKind.ToString().ToLowerInvariant()} input; " +
             $"{inputKind.ToString().ToLowerInvariant()} input cannot be queued.";
         return false;
+    }
+
+    private void EndInputBlock(long version)
+    {
+        lock (_sync)
+        {
+            if (_inputBlockVersion != version)
+                return;
+
+            _inputBlockSnapshot = null;
+            _inputBlockReason = null;
+        }
+    }
+
+    private static AgentConsoleSnapshot BuildInputBlockSnapshot(
+        AgentConsoleSnapshot snapshot,
+        string reason)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var plainText = string.IsNullOrWhiteSpace(snapshot.PlainText)
+            ? reason
+            : snapshot.PlainText;
+
+        if (!plainText.Contains(reason, StringComparison.OrdinalIgnoreCase))
+            plainText += Environment.NewLine + Environment.NewLine + reason;
+
+        return snapshot with
+        {
+            AwaitingInput = false,
+            InputKind = AgentConsoleInputKind.None,
+            Actions = [],
+            Prompt = null,
+            RenderedAtUtc = snapshot.RenderedAtUtc == default ? now : snapshot.RenderedAtUtc,
+            UpdatedAtUtc = now
+        };
+    }
+
+    private static AgentConsoleSnapshot BuildFallbackInputBlockSnapshot(string? reason)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var plainText = string.IsNullOrWhiteSpace(reason)
+            ? "Agent Console input is temporarily blocked."
+            : reason.Trim();
+        return new AgentConsoleSnapshot
+        {
+            ScreenId = "agent-console-input-blocked",
+            Mode = AgentConsoleMode.Loading,
+            Title = "Ожидание",
+            PlainText = plainText,
+            AwaitingInput = false,
+            InputKind = AgentConsoleInputKind.None,
+            RenderedAtUtc = now,
+            UpdatedAtUtc = now
+        };
     }
 
     private static bool IsInputCompatibleWithSnapshot(QueuedInputKind queuedInputKind, AgentConsoleInputKind snapshotInputKind)
@@ -949,5 +1051,23 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
     {
         Key,
         Line
+    }
+
+    private sealed class InputBlockScope : IDisposable
+    {
+        private AgentConsoleLiveInputSource? _owner;
+        private readonly long _version;
+
+        public InputBlockScope(AgentConsoleLiveInputSource owner, long version)
+        {
+            _owner = owner;
+            _version = version;
+        }
+
+        public void Dispose()
+        {
+            var owner = Interlocked.Exchange(ref _owner, null);
+            owner?.EndInputBlock(_version);
+        }
     }
 }
