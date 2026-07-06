@@ -591,11 +591,47 @@ public sealed class TrainingService
             return false;
 
         var targetKind = GetNodeString(details["targetKind"]) ?? "";
-        var skillRoot = targetKind.Contains("passive", StringComparison.OrdinalIgnoreCase) ? passiveRoot : activeRoot;
-        var skillArrayName = targetKind.Contains("passive", StringComparison.OrdinalIgnoreCase)
-            ? "passiveSkillChanges"
-            : "activeSkillChanges";
-        var skill = FindMortalSkillObject(skillRoot, skillArrayName, targetId, targetName);
+        if (IsExplicitPassiveMortalTrainingTarget(targetKind))
+        {
+            return IsMortalSkillEvolutionSatisfiedBy(
+                FindMortalSkillObject(passiveRoot, "passiveSkillChanges", targetId, targetName),
+                masteryRoot,
+                targetId,
+                targetName,
+                targetValue);
+        }
+
+        if (IsExplicitActiveMortalTrainingTarget(targetKind))
+        {
+            return IsMortalSkillEvolutionSatisfiedBy(
+                FindMortalSkillObject(activeRoot, "activeSkillChanges", targetId, targetName),
+                masteryRoot,
+                targetId,
+                targetName,
+                targetValue);
+        }
+
+        return IsMortalSkillEvolutionSatisfiedBy(
+                   FindMortalSkillObject(activeRoot, "activeSkillChanges", targetId, targetName),
+                   masteryRoot,
+                   targetId,
+                   targetName,
+                   targetValue) ||
+               IsMortalSkillEvolutionSatisfiedBy(
+                   FindMortalSkillObject(passiveRoot, "passiveSkillChanges", targetId, targetName),
+                   masteryRoot,
+                   targetId,
+                   targetName,
+                   targetValue);
+    }
+
+    private static bool IsMortalSkillEvolutionSatisfiedBy(
+        JsonObject? skill,
+        JsonObject masteryRoot,
+        string? targetId,
+        string? targetName,
+        int targetValue)
+    {
         if (skill == null)
             return false;
 
@@ -911,8 +947,12 @@ public sealed class TrainingService
         JsonObject passiveRoot,
         JsonObject masteryRoot)
     {
-        var isPassive = IsPassiveMortalTrainingTarget(offer);
-        var existingSkill = FindMortalSkillObject(isPassive ? passiveRoot : activeRoot, isPassive ? "passiveSkillChanges" : "activeSkillChanges", offer);
+        var explicitPassive = IsExplicitPassiveMortalTrainingTarget(offer.TargetKind);
+        var explicitActive = IsExplicitActiveMortalTrainingTarget(offer.TargetKind);
+        var activeSkill = explicitPassive ? null : FindMortalSkillObject(activeRoot, "activeSkillChanges", offer);
+        var passiveSkill = explicitActive ? null : FindMortalSkillObject(passiveRoot, "passiveSkillChanges", offer);
+        var isPassive = explicitPassive || (!explicitActive && passiveSkill != null && activeSkill == null);
+        var existingSkill = isPassive ? passiveSkill : activeSkill;
         var existingMastery = FindMortalSkillObject(masteryRoot, "skillMasteryChanges", offer);
         var currentMasteryLevel = Math.Max(
             1,
@@ -1018,7 +1058,7 @@ public sealed class TrainingService
             ["offerId"] = offer.OfferId,
             ["targetId"] = offer.TargetId,
             ["targetName"] = offer.TargetName,
-            ["targetKind"] = offer.TargetKind,
+            ["targetKind"] = NormalizeMortalTrainingTargetKind(offer.TargetKind, plan.IsPassive),
             ["currentValue"] = offer.CurrentValue,
             ["targetValue"] = offer.TargetValue,
             ["sourceCap"] = offer.SourceCap,
@@ -1791,8 +1831,38 @@ public sealed class TrainingService
         "sourceActorSnapshotHash должен совпасть с requested hash " +
         $"{request.SourceActorSnapshotHash}. Клиент сам спишет валюту и поднимет уровень после покупки.";
 
-    private static bool IsPassiveMortalTrainingTarget(TrainingOffer offer) =>
-        offer.TargetKind.Contains("passive", StringComparison.OrdinalIgnoreCase);
+    private static bool IsExplicitPassiveMortalTrainingTarget(string targetKind) =>
+        targetKind.Contains("passive", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsExplicitActiveMortalTrainingTarget(string targetKind) =>
+        targetKind.Contains("active", StringComparison.OrdinalIgnoreCase);
+
+    private static string NormalizeMortalTrainingTargetKind(string targetKind, bool isPassive)
+    {
+        if (IsExplicitActiveMortalTrainingTarget(targetKind) ||
+            IsExplicitPassiveMortalTrainingTarget(targetKind))
+        {
+            return targetKind;
+        }
+
+        if (targetKind.Contains("unlock", StringComparison.OrdinalIgnoreCase))
+            return isPassive ? "passive_skill_unlock" : "active_skill_unlock";
+
+        if (targetKind.Contains("progress", StringComparison.OrdinalIgnoreCase) ||
+            targetKind.Contains("practice", StringComparison.OrdinalIgnoreCase))
+        {
+            return isPassive ? "passive_skill_mastery_progress" : "active_skill_mastery_progress";
+        }
+
+        if (targetKind.Contains("mastery", StringComparison.OrdinalIgnoreCase) ||
+            targetKind.Contains("skill", StringComparison.OrdinalIgnoreCase) ||
+            string.IsNullOrWhiteSpace(targetKind))
+        {
+            return isPassive ? "passive_skill_mastery" : "active_skill_mastery";
+        }
+
+        return targetKind;
+    }
 
     private static bool IsMortalPracticeOffer(TrainingOffer offer) =>
         offer.TargetKind.Contains("progress", StringComparison.OrdinalIgnoreCase) ||

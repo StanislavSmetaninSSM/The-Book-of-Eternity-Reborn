@@ -45,6 +45,13 @@ Shared rules
   `mortal_training_skill_evolution`; the GM must author the full updated
   `activeSkillChanges` or `passiveSkillChanges` object plus matching
   `skillMasteryChanges`. Do not charge the player again.
+- For `mortal_training_skill_evolution`, follow `details.targetKind` rather
+  than the original showcase offer label. The client normalizes generic Mortal
+  offer kinds such as `skill_mastery` to `active_skill_mastery`,
+  `passive_skill_mastery`, `active_skill_unlock`, or `passive_skill_unlock`
+  after inspecting the player's actual skill state. If `details.targetKind`
+  names a passive target, write `passiveSkillChanges`; do not invent an active
+  skill just because the original offer used generic `skill_mastery`.
 - GM does not grant mastery or standard spiritual-art progression through free
   prose when the player used the showcase. Use the request/receipt surfaces.
 - `trainingPurchaseReceipts` and `afterlifeTrainingPurchaseReceipts` are
@@ -310,6 +317,70 @@ already proves payment.
     {
       "skillId": "knife_handling",
       "skillName": "Обращение с ножом",
+      "newMasteryLevel": 2,
+      "newCurrentMasteryProgress": 0,
+      "newMasteryProgressNeeded": 200,
+      "masteryLeveledUp": true
+    }
+  ]
+}
+```
+
+Passive mastery requests use the same pending file. The important field is the
+normalized `details.targetKind`; it tells the GM which Mortal skill surface to
+author.
+
+```json
+{
+  "requests": [
+    {
+      "requestId": "training_showcase_req_paid_tracking_001",
+      "requestKind": "mortal_training_skill_evolution",
+      "sourceActorId": "npc_hunter_roden",
+      "sourceActorName": "Роден, охотник у северных ворот",
+      "sourceActorKind": "npc_teacher",
+      "realm": "mortal",
+      "sourceActorSnapshotHash": "sha256:requested-hash-from-client",
+      "createdAtTurn": 14,
+      "reason": "mastery_threshold_crossed",
+      "details": {
+        "offerId": "train_roden_tracking_2",
+        "targetKind": "passive_skill_mastery",
+        "targetId": "tracking",
+        "targetName": "Выслеживание",
+        "currentValue": 1,
+        "targetValue": 2,
+        "sourceCap": 4,
+        "moneySpent": 80,
+        "currentLevelExperiencePercent": 22,
+        "currentLevelExperienceSpent": 220,
+        "gmInstruction": "Создай или обнови полный passiveSkillChanges объект и matching skillMasteryChanges для нового уровня."
+      }
+    }
+  ]
+}
+```
+
+The matching response updates the passive skill, not `activeSkillChanges`:
+
+```json
+{
+  "passiveSkillChanges": [
+    {
+      "skillId": "tracking",
+      "skillName": "Выслеживание",
+      "skillDescription": "Роден научил читать свежесть следа по глубине грязи, сорванной траве и сбитому дыханию добычи.",
+      "rarity": "Common",
+      "type": "KnowledgeBased",
+      "group": "Полевые навыки",
+      "masteryLevel": 2,
+      "maxMasteryLevel": 4
+    }
+  ],
+  "skillMasteryChanges": [
+    {
+      "skillId": "tracking",
+      "skillName": "Выслеживание",
       "newMasteryLevel": 2,
       "newCurrentMasteryProgress": 0,
       "newMasteryProgressNeeded": 200,

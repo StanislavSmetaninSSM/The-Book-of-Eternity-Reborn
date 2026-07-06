@@ -308,6 +308,77 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task CleanupSatisfiedMortalSkillEvolutionRequestsAsync_ClearsFulfilledGenericPassiveSkillRequest()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedEmptyPlayerSkillsAsync();
+        await TrainingRequestState.WriteRequestsAsync(
+            _fs,
+            new[]
+            {
+                new TrainingRequestState.PendingTrainingShowcaseRequest(
+                    "training_showcase_req_road_survival",
+                    "mortal_training_skill_evolution",
+                    "npc_hunter_001",
+                    "Старый охотник",
+                    "npc_teacher",
+                    "mortal",
+                    6,
+                    DateTime.UtcNow,
+                    "hash",
+                    "mastery_threshold_crossed",
+                    new JsonObject
+                    {
+                        ["targetId"] = "road_survival",
+                        ["targetName"] = "Выживание на дороге",
+                        ["targetKind"] = "skill_mastery",
+                        ["targetValue"] = 2
+                    })
+            });
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_passive.json", """
+        {
+          "passiveSkillChanges": [
+            {
+              "skillId": "road_survival",
+              "skillName": "Выживание на дороге",
+              "masteryLevel": 2
+            }
+          ]
+        }
+        """);
+
+        var service = CreateService();
+        await service.CleanupSatisfiedMortalSkillEvolutionRequestsAsync();
+
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalGenericPassiveMasteryOffer_CreatesPassiveEvolutionRequest()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalGenericPassiveMasteryTeacherAsync();
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedPlayerPassiveSkillAsync("road_survival", "Выживание на дороге", masteryLevel: 1);
+
+        var service = CreateService();
+        var result = await service.BuyTrainingAsync("npc_hunter_001", "offer_road_survival_2", currentTurn: 16);
+
+        Assert.True(result.Success);
+        Assert.True(result.StateChanged);
+        Assert.Contains("ГМ", result.Message, StringComparison.OrdinalIgnoreCase);
+
+        using var pendingDoc = JsonDocument.Parse(await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath) ?? "{}");
+        var request = pendingDoc.RootElement.GetProperty("requests").EnumerateArray().Single();
+        Assert.Equal("mortal_training_skill_evolution", request.GetProperty("requestKind").GetString());
+        Assert.Equal("mastery_threshold_crossed", request.GetProperty("reason").GetString());
+        var details = request.GetProperty("details");
+        Assert.Equal("offer_road_survival_2", details.GetProperty("offerId").GetString());
+        Assert.Equal("passive_skill_mastery", details.GetProperty("targetKind").GetString());
+        Assert.Contains("passiveSkillChanges", details.GetProperty("gmInstruction").GetString(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task BuyTrainingAsync_MortalPracticeOfferBelowThreshold_AddsOnlyActiveMasteryProgressLocally()
     {
         await SeedMortalSoulStateAsync();
@@ -1158,6 +1229,66 @@ public sealed class TrainingServiceTests : IDisposable
             new JsonObject { ["UpdateNPCs"] = new JsonArray(teacher) }.ToJsonString());
     }
 
+    private async Task SeedMortalGenericPassiveMasteryTeacherAsync()
+    {
+        var teacher = new JsonObject
+        {
+            ["npcId"] = "npc_hunter_001",
+            ["name"] = "Старый охотник",
+            ["teacherProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 45,
+                ["skills"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["skillId"] = "road_survival",
+                        ["skillName"] = "Выживание на дороге",
+                        ["skillKind"] = "passive",
+                        ["masteryLevel"] = 2
+                    }
+                }
+            }
+        };
+
+        var snapshotHash = TrainingService.ComputeSourceSnapshotHash(teacher);
+        teacher["trainingShowcase"] = new JsonObject
+        {
+            ["showcaseId"] = "showcase_hunter_generic_passive",
+            ["sourceActorId"] = "npc_hunter_001",
+            ["sourceActorName"] = "Старый охотник",
+            ["sourceActorSnapshotHash"] = snapshotHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "offer_road_survival_2",
+                    ["targetId"] = "road_survival",
+                    ["targetName"] = "Выживание на дороге",
+                    ["targetKind"] = "skill_mastery",
+                    ["currentValue"] = 1,
+                    ["targetValue"] = 2,
+                    ["sourceCap"] = 2,
+                    ["cost"] = new JsonObject
+                    {
+                        ["money"] = 35,
+                        ["currentLevelExperiencePercent"] = 12
+                    },
+                    ["requirements"] = new JsonObject
+                    {
+                        ["minimumRelationship"] = 20
+                    },
+                    ["summary"] = "Охотник закрепляет дорожное выживание."
+                }
+            }
+        };
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["UpdateNPCs"] = new JsonArray(teacher) }.ToJsonString());
+    }
+
     private async Task SeedEmptyPlayerSkillsAsync()
     {
         await _fs.WriteFileAtomicAsync("game_state/player/skills_active.json", """
@@ -1169,6 +1300,38 @@ public sealed class TrainingServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/player/skills_passive.json", """
         {
           "passiveSkillChanges": []
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """
+        {
+          "skillMasteryChanges": []
+        }
+        """);
+    }
+
+    private async Task SeedPlayerPassiveSkillAsync(string skillId, string skillName, int masteryLevel)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_active.json", """
+        {
+          "activeSkillChanges": []
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_passive.json", $$"""
+        {
+          "passiveSkillChanges": [
+            {
+              "skillId": "{{skillId}}",
+              "skillName": "{{skillName}}",
+              "skillDescription": "Пассивный навык для обучения.",
+              "rarity": "Common",
+              "type": "KnowledgeBased",
+              "group": "Полевые навыки",
+              "masteryLevel": {{masteryLevel}},
+              "maxMasteryLevel": 5
+            }
+          ]
         }
         """);
 
