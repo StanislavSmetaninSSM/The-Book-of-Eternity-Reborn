@@ -173,6 +173,89 @@ public sealed class GuardianPolicyKernelTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameState_FreeformSameTurnCreateAuthorizesMaterializedGuardianMirrors()
+    {
+        var guardian = BuildCanonicalGuardian(
+            "guard_freeform_selena_shadow_001",
+            "Хранительница Селена Теневая",
+            reputation: 0,
+            power: 10,
+            appearanceDescription: "Высокая женственная фигура в темной мантии с серебряной окантовкой.");
+        guardian["guardianName"] = "Хранительница Селена Теневая";
+        guardian["name"] = "Хранительница Селена Теневая";
+        guardian["displayName"] = "Хранительница Селена Теневая";
+        guardian["originType"] = "freeform";
+        guardian["sourceReason"] = "pending_guardian_creation_freeform";
+        guardian["sourceRequestId"] = "test-freeform-request";
+        guardian["abode"] = new JsonObject
+        {
+            ["abodeId"] = "abode_selena_infinite_archives_001",
+            ["name"] = "Башня Бесконечных Архивов",
+            ["displayName"] = "Башня Бесконечных Архивов",
+            ["isDiscovered"] = true,
+            ["sourceReason"] = "pending_guardian_creation_freeform"
+        };
+
+        await WriteRawAsync(
+            "game_state/meta/guardians.json",
+            SerializeJson(new JsonObject
+            {
+                ["UpdateGuardians"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["command"] = "create",
+                        ["data"] = guardian.DeepClone()
+                    }
+                },
+                ["guardians"] = new JsonArray
+                {
+                    guardian.DeepClone()
+                },
+                ["activeGuardian"] = guardian.DeepClone(),
+                ["chaosSeaNavigation"] = new JsonObject
+                {
+                    ["currentAbodeId"] = "abode_selena_infinite_archives_001",
+                    ["discoveredAbodes"] = new JsonArray("abode_selena_infinite_archives_001"),
+                    ["discoveredAbodeDetails"] = new JsonArray
+                    {
+                        new JsonObject
+                        {
+                            ["abodeId"] = "abode_selena_infinite_archives_001",
+                            ["guardianId"] = "guard_freeform_selena_shadow_001",
+                            ["displayName"] = "Башня Бесконечных Архивов",
+                            ["sourceReason"] = "pending_guardian_creation_freeform"
+                        }
+                    }
+                }
+            }));
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_empty_guardians_for_freeform_create.json",
+            """
+            {
+              "guardians": [],
+              "activeGuardian": null,
+              "chaosSeaNavigation": {
+                "currentAbodeId": null,
+                "discoveredAbodes": []
+              }
+            }
+            """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_materialized_without_create_surface", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_scope_invalid_active_guardian_identity", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameState_SameTurnCreateAuthorizesFollowUpGuardianCommandWithoutPreTurnBaseline()
     {
         var createdGuardian = BuildCanonicalGuardian("guardian_new", "Лира", reputation: 25, power: 18);
