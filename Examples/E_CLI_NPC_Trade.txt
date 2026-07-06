@@ -208,4 +208,4 @@ Complete-BoeNpcTradeInventoryRequest -RequestId "npc_trade_req_egor_001" -Items 
 Complete-BoeTurn -FilesModified @("game_state/npcs/npc_core.json")
 ```
 
-`Complete-BoeNpcTradeInventoryRequest` reads the pending request, finds the NPC by `NPCId`, `npcId`, `id`, or `initialId`, writes `npc.tradeInventory`, and appends the matching `UpdateNpcTradeInventoryReceipts` entry with `requestId`, `npcId`, `tradeCycleId`, `merchantProfile`, `itemCount`, `resolvedAtTurn`, and `resolvedAtUtc`.
+`Complete-BoeNpcTradeInventoryRequest` reads the pending request, finds the NPC by `NPCId`, `npcId`, `id`, or `initialId`, validates required `itemData` fields including `tradeItemClass`, recalculates each slot `price` from `itemData.price`, NPC trade, player trade, and `pricingTradeTier`, writes `npc.tradeInventory`, and appends the matching `UpdateNpcTradeInventoryReceipts` entry with `requestId`, `npcId`, `tradeCycleId`, `merchantProfile`, `itemCount`, `resolvedAtTurn`, and `resolvedAtUtc`.

@@ -305,6 +305,146 @@ function Get-BoeFirstNonEmptyJsonString {
     return ""
 }
 
+function Get-BoeJsonInt {
+    param(
+        [AllowNull()]
+        [object]$Object,
+
+        [Parameter(Mandatory = $true)]
+        [string[]]$Names,
+
+        [int]$Default = 0
+    )
+
+    $value = Get-BoeJsonValue -Object $Object -Names $Names
+    if ($null -eq $value) {
+        return $Default
+    }
+
+    try {
+        return [int]$value
+    }
+    catch {
+        $parsed = 0
+        if ([int]::TryParse([string]$value, [ref]$parsed)) {
+            return $parsed
+        }
+    }
+
+    return $Default
+}
+
+function Test-BoeNpcTradeItemClassCode {
+    param(
+        [AllowNull()]
+        [string]$TradeItemClass
+    )
+
+    return $TradeItemClass -in @("Functional", "Material", "FlavorOrUtility")
+}
+
+function Get-BoeClampedDouble {
+    param(
+        [double]$Value,
+        [double]$Min,
+        [double]$Max
+    )
+
+    if ($Value -lt $Min) {
+        return $Min
+    }
+
+    if ($Value -gt $Max) {
+        return $Max
+    }
+
+    return $Value
+}
+
+function Get-BoePlayerTradeValue {
+    foreach ($relativePath in @("game_state/misc/characteristics.json", "game_state/player/player_status.json", "game_state/core/player_status.json")) {
+        try {
+            $path = Resolve-BoeSessionPath -RelativePath $relativePath
+            if (!(Test-Path -LiteralPath $path)) {
+                continue
+            }
+
+            $root = Read-BoeJson -RelativePath $relativePath
+            $modified = Get-BoeJsonInt -Object $root -Names @("modifiedTrade") -Default ([int]::MinValue)
+            if ($modified -ne [int]::MinValue) {
+                return $modified
+            }
+
+            $trade = Get-BoeJsonInt -Object $root -Names @("trade") -Default ([int]::MinValue)
+            if ($trade -ne [int]::MinValue) {
+                return $trade
+            }
+        }
+        catch {
+            # Try the next canonical source.
+        }
+    }
+
+    return 10
+}
+
+function Get-BoeNpcTradeValue {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Npc
+    )
+
+    $characteristics = Get-BoeJsonValue -Object $Npc -Names @("characteristics")
+    if ($null -ne $characteristics) {
+        $modified = Get-BoeJsonInt -Object $characteristics -Names @("modifiedTrade") -Default ([int]::MinValue)
+        if ($modified -ne [int]::MinValue) {
+            return $modified
+        }
+
+        $standard = Get-BoeJsonInt -Object $characteristics -Names @("standardTrade") -Default ([int]::MinValue)
+        if ($standard -ne [int]::MinValue) {
+            return $standard
+        }
+
+        $trade = Get-BoeJsonInt -Object $characteristics -Names @("trade") -Default ([int]::MinValue)
+        if ($trade -ne [int]::MinValue) {
+            return $trade
+        }
+    }
+
+    return 10
+}
+
+function Get-BoeNpcPricingReputationModifier {
+    param(
+        [AllowNull()]
+        [string]$PricingTradeTier
+    )
+
+    switch ($PricingTradeTier) {
+        "Hostile" { return 1.20 }
+        "Wary" { return 1.10 }
+        "Warm" { return 0.92 }
+        "Trusted" { return 0.85 }
+        default { return 1.00 }
+    }
+}
+
+function Get-BoeNpcTradeBuyPrice {
+    param(
+        [int]$BasePrice,
+        [int]$PlayerTrade,
+        [int]$NpcTrade,
+        [string]$PricingTradeTier
+    )
+
+    $tradeDelta = $PlayerTrade - $NpcTrade
+    $tradeAdjustment = Get-BoeClampedDouble -Value ([double]$tradeDelta * 0.01) -Min -0.20 -Max 0.20
+    $tradeModifier = 1.20 - $tradeAdjustment
+    $reputationModifier = Get-BoeNpcPricingReputationModifier -PricingTradeTier $PricingTradeTier
+    return [int][Math]::Ceiling([double]$BasePrice * [double]$tradeModifier * [double]$reputationModifier)
+}
+
 function Find-BoeNpcTradeRequest {
     param(
         [Parameter(Mandatory = $true)]
@@ -359,6 +499,12 @@ function Normalize-BoeNpcTradeItem {
         [object]$Request,
 
         [Parameter(Mandatory = $true)]
+        [object]$Npc,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PricingTradeTier,
+
+        [Parameter(Mandatory = $true)]
         [int]$Index
     )
 
@@ -370,6 +516,11 @@ function Normalize-BoeNpcTradeItem {
     $itemData = Get-BoeJsonValue -Object $Item -Names @("itemData")
     if ($null -eq $itemData) {
         throw "NPC trade item #$Index is missing itemData."
+    }
+
+    $itemName = Get-BoeFirstNonEmptyJsonString -Object $itemData -Names @("name")
+    if ([string]::IsNullOrWhiteSpace($itemName)) {
+        throw "NPC trade item #$Index itemData is missing name."
     }
 
     $itemId = Get-BoeFirstNonEmptyJsonString -Object $Item -Names @("itemId")
@@ -407,17 +558,42 @@ function Normalize-BoeNpcTradeItem {
         Set-BoeJsonProperty -Object $Item -Name "soldOut" -Value $false
     }
 
-    $price = Get-BoeJsonValue -Object $Item -Names @("price")
-    if ($null -eq $price) {
-        $itemDataPrice = Get-BoeJsonValue -Object $itemData -Names @("price")
-        if ($null -ne $itemDataPrice) {
-            Set-BoeJsonProperty -Object $Item -Name "price" -Value $itemDataPrice
-        }
+    $tradeItemClass = Get-BoeFirstNonEmptyJsonString -Object $itemData -Names @("tradeItemClass")
+    if ([string]::IsNullOrWhiteSpace($tradeItemClass)) {
+        $tradeItemClass = Get-BoeFirstNonEmptyJsonString -Object $Item -Names @("tradeItemClass")
     }
 
-    if ($null -eq (Get-BoeJsonValue -Object $Item -Names @("price"))) {
-        throw "NPC trade item #$Index is missing price."
+    if ([string]::IsNullOrWhiteSpace($tradeItemClass)) {
+        throw "NPC trade item #$Index itemData is missing tradeItemClass. Use Functional, Material, or FlavorOrUtility."
     }
+
+    if (!(Test-BoeNpcTradeItemClassCode -TradeItemClass $tradeItemClass)) {
+        throw "NPC trade item #$Index has unsupported tradeItemClass '$tradeItemClass'. Use Functional, Material, or FlavorOrUtility."
+    }
+
+    Set-BoeJsonProperty -Object $itemData -Name "tradeItemClass" -Value $tradeItemClass
+
+    $rarity = Get-BoeFirstNonEmptyJsonString -Object $itemData -Names @("quality", "rarity")
+    if ([string]::IsNullOrWhiteSpace($rarity)) {
+        throw "NPC trade item #$Index itemData is missing quality or rarity."
+    }
+
+    $basePrice = Get-BoeJsonInt -Object $itemData -Names @("price") -Default 0
+    if ($basePrice -le 0) {
+        throw "NPC trade item #$Index itemData.price must be a positive number."
+    }
+
+    $baseSellPrice = Get-BoeJsonInt -Object $itemData -Names @("baseSellPrice") -Default -1
+    if ($baseSellPrice -lt 0) {
+        throw "NPC trade item #$Index itemData.baseSellPrice must be a non-negative number."
+    }
+
+    $canonicalPrice = Get-BoeNpcTradeBuyPrice `
+        -BasePrice $basePrice `
+        -PlayerTrade (Get-BoePlayerTradeValue) `
+        -NpcTrade (Get-BoeNpcTradeValue -Npc $Npc) `
+        -PricingTradeTier $PricingTradeTier
+    Set-BoeJsonProperty -Object $Item -Name "price" -Value $canonicalPrice
 
     return $Item
 }
@@ -461,7 +637,7 @@ function Complete-BoeNpcTradeInventoryRequest {
     $itemList = New-Object System.Collections.Generic.List[object]
     $index = 1
     foreach ($item in @($Items)) {
-        $itemList.Add((Normalize-BoeNpcTradeItem -Item $item -Request $request -Index $index))
+        $itemList.Add((Normalize-BoeNpcTradeItem -Item $item -Request $request -Npc $npc -PricingTradeTier $PricingTradeTier -Index $index))
         $index++
     }
 

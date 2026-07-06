@@ -1326,6 +1326,7 @@ public sealed class GmTurnHelperContractTests
             Assert.Equal(2, tradeInventory.GetProperty("items").GetArrayLength());
             Assert.Equal("GeneralGoods", tradeInventory.GetProperty("items")[0].GetProperty("merchantProfile").GetString());
             Assert.False(tradeInventory.GetProperty("items")[0].GetProperty("soldOut").GetBoolean());
+            Assert.Equal(27, tradeInventory.GetProperty("items")[1].GetProperty("price").GetInt32());
 
             var receipt = npcRoot.GetProperty("UpdateNpcTradeInventoryReceipts")[0];
             Assert.Equal("npc_trade_req_egor_001", receipt.GetProperty("requestId").GetString());
@@ -1337,6 +1338,77 @@ public sealed class GmTurnHelperContractTests
             Assert.Equal(2, receipt.GetProperty("itemCount").GetInt32());
             Assert.Equal(8, receipt.GetProperty("resolvedAtTurn").GetInt32());
             Assert.False(string.IsNullOrWhiteSpace(receipt.GetProperty("resolvedAtUtc").GetString()));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void Helper_CompleteBoeNpcTradeInventoryRequestRejectsItemsWithoutTradeItemClass()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-npc-trade-invalid-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "npcs"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_npc_trade_inventory_requests.json"),
+                """
+                {
+                  "requests": [
+                    {
+                      "requestId": "npc_trade_req_invalid_001",
+                      "npcId": "npc_egor_frontier_trader",
+                      "npcName": "Егор",
+                      "merchantProfile": "GeneralGoods",
+                      "tradeCycleId": "world_trade_0",
+                      "derivedTradeSlotCount": 1,
+                      "createdAtTurn": 8,
+                      "createdAtUtc": "2026-07-06T00:00:00Z",
+                      "createdAtWorldDate": 100,
+                      "refreshAfterWorldDate": 43200
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "npcs", "npc_core.json"),
+                """
+                {
+                  "NPCsInScene": [
+                    {
+                      "initialId": "npc_egor_frontier_trader",
+                      "npcName": "Егор",
+                      "tradeState": { "canTrade": true, "merchantProfile": "GeneralGoods" }
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                "$ErrorActionPreference = 'Stop'",
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$items = @([ordered]@{ itemId = 'npc_item_bad'; price = 12; itemData = [ordered]@{ itemId = 'npc_item_bad'; name = 'Плохой товар'; description = 'Без класса.'; type = 'Tool'; quality = 'Common'; price = 10; baseSellPrice = 4; weight = '0.2'; group = 'Тест' } })",
+                "Complete-BoeNpcTradeInventoryRequest -RequestId 'npc_trade_req_invalid_001' -Items $items"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("tradeItemClass", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+
+            using var document = JsonDocument.Parse(File.ReadAllText(Path.Combine(session, "game_state", "npcs", "npc_core.json"), Encoding.UTF8));
+            Assert.False(document.RootElement.GetProperty("NPCsInScene")[0].TryGetProperty("tradeInventory", out _));
+            Assert.False(document.RootElement.TryGetProperty("UpdateNpcTradeInventoryReceipts", out _));
         }
         finally
         {
