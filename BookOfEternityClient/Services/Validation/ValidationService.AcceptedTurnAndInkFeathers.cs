@@ -149,7 +149,22 @@ public partial class ValidationService
             }
 
             if (!string.IsNullOrWhiteSpace(responseText))
+            {
+                if (TryFindTechnicalRepairLeakInNarrative(responseText, out var matchedTechnicalText))
+                {
+                    issues.Add(new ValidationIssue(
+                        "output/narrative_response.json.response",
+                        IssueSeverity.Error,
+                        "Player-facing narrative response содержит технический repair/validation/storage текст.",
+                        code: "narrative_response_technical_repair_leak",
+                        section: "Narrative",
+                        expected: "diegetic player-facing scene text without JSON, validation, repair, canonical-state, or storage-shape wording",
+                        actual: matchedTechnicalText,
+                        repairHint: "Перепиши response как внутриигровую сцену. Не упоминай JSON, validation/repair, canonical state, массивы, поля, файлы или факт технической записи состояния; технические детали должны оставаться только в debug_logs/repair evidence."));
+                }
+
                 await ValidateAchievementUnlockNarrativeMarkersAsync(responseText, issues);
+            }
         }
         catch (JsonException)
         {
@@ -165,6 +180,32 @@ public partial class ValidationService
         }
 
         return issues;
+    }
+
+    private static bool TryFindTechnicalRepairLeakInNarrative(string responseText, out string matchedText)
+    {
+        var directTechnicalMatch = Regex.Match(
+            responseText,
+            @"\b(JSON|canonical|validation|repair|game_state|debug_logs|interface_updates|narrative_response|activeSkillChanges|passiveSkillChanges|skillMasteryChanges|pending_training_showcase_requests)\b",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        if (directTechnicalMatch.Success)
+        {
+            matchedText = directTechnicalMatch.Value;
+            return true;
+        }
+
+        var russianRepairLeakMatch = Regex.Match(
+            responseText,
+            @"(?i)(запис\w*|сохран\w*)[^.!?\r\n]{0,90}(массив\w*|состояни[ея]\s+(навык\w*|мастерств\w*))|состояни[ея]\s+(навык\w*|мастерств\w*)[^.!?\r\n]{0,90}(корректн\w*|массив\w*)",
+            RegexOptions.CultureInvariant);
+        if (russianRepairLeakMatch.Success)
+        {
+            matchedText = russianRepairLeakMatch.Value;
+            return true;
+        }
+
+        matchedText = string.Empty;
+        return false;
     }
 
     private async Task<List<ValidationIssue>> ValidateAcceptedTurnInterfacePayloadInternalAsync()

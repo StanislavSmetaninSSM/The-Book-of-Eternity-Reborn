@@ -1557,6 +1557,7 @@ public partial class GameEngine
             "accepted_turn_empty_narrative_response" => true,
             "accepted_turn_stale_narrative_response" => true,
             "accepted_turn_stale_player_facing_output_after_canonical_repair" => true,
+            "narrative_response_technical_repair_leak" => true,
             "accepted_turn_invalid_narrative_json_root" => true,
             "accepted_turn_invalid_narrative_json" => true,
             "narrative_response_missing_timestamp" => true,
@@ -1618,6 +1619,7 @@ public partial class GameEngine
                 "Open game_state/control/validation_repair_request.json first and repair only the listed accepted-turn output artifact errors.",
                 "Rewrite output/narrative_response.json with a fresh non-empty response for this same player action; preserve the already accepted narrative meaning instead of inventing a new turn.",
                 "If validation_repair_request.json says player-facing output is stale after canonical state repair, base the rewritten narrative/options on the current canonical game_state files, not the pre-repair wording.",
+                "If validation reports narrative_response_technical_repair_leak, rewrite response as an in-world scene only; keep validation/repair/JSON/storage details out of player-facing prose.",
                 "If output/interface_updates.json is listed, rewrite its dialogueOptions/inputValue choices so they match the repaired canonical state and current player-facing narrative.",
                 "Rewrite output/debug_logs.json.gm_thoughts_markdown with timestamp in output/debug_logs.json. Include `## Охват NPC-анализа`, scope mode, relevant actors, actors outside scope, and short reasoning for every relevant actor when any actor is involved.",
                 "Do not touch canonical game_state files unless validation_repair_request.json lists a canonical state error as well.",
@@ -1642,6 +1644,7 @@ public partial class GameEngine
             {
                 "Do not write ready/turn_complete.json for validation repair.",
                 "Do not create a new turn, reroll, advance time, or change player choice while repairing missing output artifacts.",
+                "Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside output/narrative_response.json.response.",
                 "Do not leave output/debug_logs.json empty just because no visible NPC changed; write an explicit empty-scope explanation.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, validation_repair_request.json, GM docs, and session files."
             }

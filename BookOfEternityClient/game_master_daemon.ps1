@@ -722,7 +722,7 @@ function New-GmExperienceLesson {
         "Use TURN_OUTPUT_TEMPLATE.md for output/narrative_response.json: only response and timestamp are allowed there. Never put afterlifeChronicleUpdates into output/narrative_response.json. Use AFTERLIFE_CHRONICLE_TEMPLATE.md and the afterlifeChronicleUpdates surface for game_state/meta/afterlife_chronicles.json external memory, then include game_state/meta/afterlife_chronicles.json in Complete-BoeTurn -FilesModified when that state was changed."
     }
     elseif ($hasStalePlayerFacingOutputIssue) {
-        "Use OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md for this output-only validation repair. Rewrite only stale player-facing output artifacts such as output/narrative_response.json, output/interface_updates.json, and output/debug_logs.json so they match the already repaired canonical state. Do not touch canonical game_state files unless the current validation_repair_request.json still lists canonical state errors."
+        "Use OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md for this output-only validation repair. Rewrite only stale or technically contaminated player-facing output artifacts such as output/narrative_response.json, output/interface_updates.json, and output/debug_logs.json so they match the already repaired canonical state. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside narrative_response.response. Do not touch canonical game_state files unless the current validation_repair_request.json still lists canonical state errors."
     }
     elseif ($hasGenericTurnOutputArtifactIssue) {
         "Use TURN_OUTPUT_TEMPLATE.md before writing ordinary turn output artifacts. Write output/narrative_response.json with only response and timestamp. Write output/debug_logs.json with gm_thoughts_markdown and timestamp. Write output/interface_updates.json with payload and timestamp. Do not write generic checks/mode/outcome/requestId/rewards/sessionId/turnNumber envelopes into output artifacts. Finish with Complete-BoeTurn -FilesModified only after canonical state changes are written."
@@ -1400,7 +1400,8 @@ Add every state/output file you changed. Do not include client-owned files:
 Use this template only in validation repair mode when
 `validation_repair_request.json.harnessRepairPackets[].kind` is
 `accepted_turn_output_artifact_repair`, especially for
-`accepted_turn_stale_player_facing_output_after_canonical_repair`.
+`accepted_turn_stale_player_facing_output_after_canonical_repair` or
+`narrative_response_technical_repair_leak`.
 
 ## Required flow
 
@@ -1413,6 +1414,13 @@ Use this template only in validation repair mode when
    - `output/debug_logs.json`
 5. Do not touch canonical game_state files unless the current repair request still lists canonical state errors.
 6. Finish with `Complete-BoeValidationRepair` as the last command.
+
+## Narrative response must stay diegetic
+
+`output/narrative_response.json.response` is player-facing prose. Never mention
+JSON, validation, repair, canonical state, arrays, file paths, field names,
+storage mechanics, or that a technical state write succeeded. Keep such details
+only in `output/debug_logs.json` or repair evidence.
 
 ## Minimal shapes
 
@@ -1543,6 +1551,7 @@ Use this before opening large examples for repair mode.
 - If an inventory item `journalEntries[]` field is named, write an array of non-empty strings, not objects; each entry is one player-facing note string without technical turn anchors such as `#[3].`.
 - If a wrong-realm auto-rollback report exists, treat it as diagnostic evidence, not permission to rewrite mortal files from afterlife.
 - If `harnessRepairPackets[].kind` is `accepted_turn_output_artifact_repair`, use `OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md` and repair only the listed output artifacts (`output/narrative_response.json`, `output/interface_updates.json`, `output/debug_logs.json`) for the same turn; do not create a new turn and do not touch canonical game_state files unless canonical errors remain listed in the current request.
+- If validation reports `narrative_response_technical_repair_leak`, rewrite `output/narrative_response.json.response` as diegetic in-world prose only. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, storage shape, or that a technical state write succeeded.
 - If validation reports `narrative_response_unknown_field`, remove the unsupported field from `output/narrative_response.json`; keep only `response` and `timestamp`. If the field is `afterlifeChronicleUpdates`, move/keep that data only on the afterlife chronicle surface described by `AFTERLIFE_CHRONICLE_TEMPLATE.md` and `game_state/meta/afterlife_chronicles.json`.
 - If `harnessRepairPackets[].kind` is `mortal_skill_progression_shape_repair`, repair the listed Mortal player skill files in place. `activeSkillChanges`, `passiveSkillChanges`, `removeActiveSkills`, `removePassiveSkills`, and `skillMasteryChanges` are always arrays, even for one changed skill. Read `game_state/control/pending_training_showcase_requests.json` for paid lesson `targetKind` authority and do not charge money/XP/currency again.
 - If `harnessRepairPackets[].kind` is `afterlife_chronicle_string_array_repair`, repair the listed `persistentConsequences[]` / `openThreads[]` fields into arrays of non-empty strings; do not add `eventDescriptions[]`, do not substitute Mortal memory files, and do not create a new turn.
@@ -5328,7 +5337,7 @@ function Process-RepairRequest {
             [string]::Equals($_, "guardian_trade_request_missing_receipt_resolution", [System.StringComparison]::OrdinalIgnoreCase)
         }).Count -gt 0
         $outputArtifactRepairDirective = if ($hasAcceptedTurnOutputArtifactRepair -or $hasStalePlayerFacingOutputRepair) {
-            " You MUST read '$($script:CompactOutputArtifactRepairTemplatePath)' before any broad repair examples. For accepted_turn_output_artifact_repair, this is output-only repair: rewrite only output/narrative_response.json, output/interface_updates.json, and output/debug_logs.json as listed by validation_repair_request.json; do not touch canonical game_state files unless the current request still lists canonical errors."
+            " You MUST read '$($script:CompactOutputArtifactRepairTemplatePath)' before any broad repair examples. For accepted_turn_output_artifact_repair, this is output-only repair: rewrite only output/narrative_response.json, output/interface_updates.json, and output/debug_logs.json as listed by validation_repair_request.json; do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside narrative_response.response; do not touch canonical game_state files unless the current request still lists canonical errors."
         } else {
             ""
         }

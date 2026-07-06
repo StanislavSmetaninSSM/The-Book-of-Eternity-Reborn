@@ -3144,11 +3144,15 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("output/debug_logs.json", template, StringComparison.Ordinal);
             Assert.Contains("Do not touch canonical game_state files", template, StringComparison.Ordinal);
             Assert.Contains("Complete-BoeValidationRepair", template, StringComparison.Ordinal);
+            Assert.Contains("narrative_response_technical_repair_leak", template, StringComparison.Ordinal);
+            Assert.Contains("Never mention", template, StringComparison.Ordinal);
+            Assert.Contains("JSON, validation, repair, canonical state, arrays", template, StringComparison.Ordinal);
 
             var daemon = File.ReadAllText(Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "game_master_daemon.ps1"), Encoding.UTF8);
             Assert.Contains("$script:CompactOutputArtifactRepairTemplatePath", daemon, StringComparison.Ordinal);
             Assert.Contains("accepted_turn_output_artifact_repair", daemon, StringComparison.Ordinal);
             Assert.Contains("You MUST read '$($script:CompactOutputArtifactRepairTemplatePath)'", daemon, StringComparison.Ordinal);
+            Assert.Contains("narrative_response_technical_repair_leak", daemon, StringComparison.Ordinal);
             Assert.Contains("Test-GmValidationRepairArtifactWritingStall", daemon, StringComparison.Ordinal);
             Assert.Contains("gm_validation_repair_artifact_stall", daemon, StringComparison.Ordinal);
         }
