@@ -322,6 +322,21 @@ public sealed class SystemGuardianLibraryService
         };
     }
 
+    public JsonObject BuildAfterlifeEntityProfileRootForFreshNewGame(
+        SystemGuardianPresetDescriptor preset,
+        string soulName,
+        int turnNumber,
+        DateTimeOffset createdAtUtc)
+    {
+        var profile = BuildAfterlifeEntityProfileForFreshNewGame(preset, soulName, turnNumber, createdAtUtc);
+
+        return new JsonObject
+        {
+            ["schemaVersion"] = AfterlifeEntityProfileState.SchemaVersion,
+            [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray(profile)
+        };
+    }
+
     public JsonObject BuildFreeformPendingGuardianCreationNode(string description, string soulName)
     {
         return new JsonObject
@@ -432,6 +447,130 @@ public sealed class SystemGuardianLibraryService
         };
 
         return guardian;
+    }
+
+    private static JsonObject BuildAfterlifeEntityProfileForFreshNewGame(
+        SystemGuardianPresetDescriptor preset,
+        string soulName,
+        int turnNumber,
+        DateTimeOffset createdAtUtc)
+    {
+        var timestamp = createdAtUtc.ToUniversalTime().ToString("o");
+        var presetId = FirstNonEmpty(preset.PresetId, "system_guardian");
+        var guardianId = BuildSystemGuardianId(presetId);
+        var defaultName = FirstNonEmpty(preset.DefaultNameVariant, preset.DisplayName, presetId);
+        var abodeName = FirstNonEmpty(preset.AbodeName, $"{defaultName} — Обитель");
+        var domain = FirstNonEmpty(preset.Domain, "Knowledge");
+
+        return new JsonObject
+        {
+            ["actorType"] = "guardian",
+            ["actorId"] = guardianId,
+            ["displayName"] = defaultName,
+            ["realm"] = "Chaos Sea",
+            ["locationName"] = abodeName,
+            ["sourcePreset"] = new JsonObject
+            {
+                ["presetId"] = presetId,
+                ["displayName"] = FirstNonEmpty(preset.DisplayName, defaultName),
+                ["version"] = preset.Version,
+                ["library"] = preset.LibraryKind
+            },
+            ["mentorProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 0,
+                ["summary"] = BuildInitialMentorSummary(defaultName, domain, preset.Summary),
+                ["createdBy"] = "fresh_new_game_system_guardian_bootstrap"
+            },
+            ["currencies"] = new JsonObject
+            {
+                ["inkFeathers"] = 0,
+                ["lightSparks"] = 0
+            },
+            ["progression"] = new JsonObject
+            {
+                ["enlightenment"] = new JsonObject
+                {
+                    ["experience"] = 0,
+                    ["tier"] = 0
+                },
+                ["radiance"] = new JsonObject
+                {
+                    ["experience"] = 0,
+                    ["tier"] = 0
+                }
+            },
+            ["standardArts"] = BuildInitialMentorStandardArts(domain),
+            ["specialArts"] = new JsonArray(),
+            ["customStates"] = new JsonArray(),
+            ["fateCards"] = new JsonArray(),
+            ["soulDissipationTier"] = 0,
+            ["progressionStrategy"] = new JsonObject
+            {
+                ["strategyId"] = $"strategy_system_guardian_{SanitizeIdSegment(presetId)}",
+                ["summary"] = "Стартовый системный Хранитель держит запас духовных техник для обучения души через витрину наставника.",
+                ["priorityOrder"] = new JsonArray("guard", "maneuver"),
+                ["lastUpdatedAtTurn"] = Math.Max(0, turnNumber),
+                ["resourceReserve"] = new JsonObject
+                {
+                    ["inkFeathers"] = 0,
+                    ["lightSparks"] = 0
+                },
+                ["allowedSpends"] = new JsonArray("standardArts", "specialArts")
+            },
+            ["ledger"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["entryId"] = $"system_guardian_profile_bootstrap_{SanitizeIdSegment(presetId)}",
+                    ["turnNumber"] = Math.Max(0, turnNumber),
+                    ["reason"] = "fresh_new_game_system_guardian_bootstrap",
+                    ["summary"] = $"Клиент создал стартовый профиль наставника для системного Хранителя {defaultName}, чтобы команда /обучение могла запросить витрину у ГМ.",
+                    ["createdAt"] = timestamp,
+                    ["soulName"] = soulName
+                }
+            }
+        };
+    }
+
+    private static JsonObject BuildInitialMentorStandardArts(string domain)
+    {
+        var arts = new JsonObject
+        {
+            ["guard"] = 2,
+            ["maneuver"] = 1
+        };
+
+        switch (domain.Trim().ToLowerInvariant())
+        {
+            case "combat":
+                arts["pressure"] = 2;
+                arts["counter"] = 1;
+                break;
+            case "magic":
+            case "knowledge":
+                arts["binding"] = 1;
+                break;
+            case "intrigue":
+            case "social":
+            case "trade":
+                arts["counter"] = 1;
+                break;
+            case "healing":
+            case "survival":
+                arts["recover_spiritual_power"] = 1;
+                break;
+        }
+
+        return arts;
+    }
+
+    private static string BuildInitialMentorSummary(string guardianName, string domain, string summary)
+    {
+        var domainText = FirstNonEmpty(domain, "Knowledge");
+        var summaryText = FirstNonEmpty(summary, "готовит душу к первым шагам в Море Хаоса");
+        return $"{guardianName} может наставлять душу в домене {domainText}: {summaryText}";
     }
 
     private static JsonArray BuildInitialLoreFragments(SystemGuardianPresetDescriptor preset)

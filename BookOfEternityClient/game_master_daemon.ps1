@@ -1366,11 +1366,14 @@ but the GM must not rely on that fallback when authoring normal turns.
 
 Fresh New Game system Guardian seed is client-owned. If turn #1 in the Chaos Sea already has a
 materialized system Guardian in `game_state/meta/guardians.json` and no pending Guardian contract,
-narrate the first meeting and use `afterlifeChronicleUpdates[]` for durable memory. Do not write
-`game_state/meta/guardians.json`, do not emit `UpdateGuardians.create`, and do not include
-`game_state/meta/guardians.json` in `Complete-BoeTurn -FilesModified @(...)` unless the current
-turn_request/player action has an explicit Guardian mutation contract such as system attraction,
-player-founded Guardian, Guardian trade, Chaos Sea travel, Guardian project, or Guardian gacha.
+narrate the first meeting and use `afterlifeChronicleUpdates[]` for durable memory. The client also
+creates a matching starter mentor profile in `game_state/meta/afterlife_entity_profiles.json` for the
+same `guard_system_*` actor; keep that profile as authority and update it through documented profile
+surfaces when needed. Do not write `game_state/meta/guardians.json`, do not emit
+`UpdateGuardians.create`, and do not include `game_state/meta/guardians.json` in
+`Complete-BoeTurn -FilesModified @(...)` unless the current turn_request/player action has an explicit
+Guardian mutation contract such as system attraction, player-founded Guardian, Guardian trade, Chaos
+Sea travel, Guardian project, or Guardian gacha.
 
 ## Terminal rule
 
@@ -1906,6 +1909,7 @@ Use this before Mortal World turns that teach, unlock, practice, use, or improve
 - If the player learns durable knowledge, perception, craft, social, or utility expertise, write `passiveSkillChanges` with a complete passive skill object.
 - If the player learns a usable combat move or activated technique, write `activeSkillChanges` with a complete active skill object and initialize/update its mastery through `skillMasteryChanges`.
 - If the player uses an already-known active skill, update `skillMasteryChanges`; do not write mastery for a skill that is not already present in `game_state/player/skills_active.json` or added in the same turn.
+- If `game_state/control/pending_training_showcase_requests.json` contains requestKind `afterlife_teacher_showcase` for a `guard_system_*` actor, treat the existing system Guardian profile in `game_state/meta/afterlife_entity_profiles.json` as client-created authority. Fill `mentorTrainingShowcase` through `afterlifeEntityProfileUpdates` and copy the requested `sourceActorSnapshotHash`; do not create a second Guardian, do not replace the profile with a bare stub, and do not charge the player.
 - If `game_state/control/pending_training_showcase_requests.json` contains requestKind `mortal_training_skill_evolution`, the client has already charged the paid lesson. Resolve it by writing the complete updated `activeSkillChanges` or `passiveSkillChanges` plus matching `skillMasteryChanges`; do not charge money/XP again and do not leave the level-up as prose only.
 - `trainingPurchaseReceipts` are client-owned historical audit records. Do not rewrite an old receipt only because the teacher profile changed after the paid lesson.
 - Do not imply a mechanical skill in player-facing prose unless the corresponding state is updated or the prose clearly says this is only early practice, not a learned skill yet.

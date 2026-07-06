@@ -162,6 +162,55 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildAfterlifeEntityProfileRootForFreshNewGame_SystemPreset_CreatesValidMentorProfile()
+    {
+        await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "Азалия", "Social", "built_in");
+        var preset = await _service.FindPresetAsync("azalia", includeDossier: true);
+        Assert.NotNull(preset);
+
+        var root = _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+            preset!,
+            "Тестовая Душа",
+            turnNumber: 1,
+            createdAtUtc: DateTimeOffset.Parse("2026-06-29T00:00:00Z"));
+
+        Assert.Equal(1, root["schemaVersion"]?.GetValue<int>());
+        var profiles = Assert.IsType<JsonArray>(root["profiles"]);
+        var profile = Assert.IsType<JsonObject>(Assert.Single(profiles));
+        Assert.Equal("guardian", profile["actorType"]?.GetValue<string>());
+        Assert.Equal("guard_system_azalia_001", profile["actorId"]?.GetValue<string>());
+        Assert.Equal("Азалия", profile["displayName"]?.GetValue<string>());
+        Assert.Equal("Chaos Sea", profile["realm"]?.GetValue<string>());
+        Assert.Equal("Тестовая Обитель", profile["locationName"]?.GetValue<string>());
+
+        var mentorProfile = Assert.IsType<JsonObject>(profile["mentorProfile"]);
+        Assert.True(mentorProfile["canTeach"]?.GetValue<bool>());
+        Assert.Equal(0, mentorProfile["relationshipLevel"]?.GetValue<int>());
+
+        var standardArts = Assert.IsType<JsonObject>(profile["standardArts"]);
+        Assert.Equal(2, standardArts["guard"]?.GetValue<int>());
+        Assert.Equal(1, standardArts["maneuver"]?.GetValue<int>());
+        Assert.IsType<JsonArray>(profile["specialArts"]);
+        Assert.Equal(0, profile["soulDissipationTier"]?.GetValue<int>());
+
+        var progressionStrategy = Assert.IsType<JsonObject>(profile["progressionStrategy"]);
+        Assert.Equal("strategy_system_guardian_azalia", progressionStrategy["strategyId"]?.GetValue<string>());
+        var priorityOrder = Assert.IsType<JsonArray>(progressionStrategy["priorityOrder"]);
+        Assert.Contains(priorityOrder, item => item?.GetValue<string>() == "guard");
+
+        var ledger = Assert.IsType<JsonArray>(profile["ledger"]);
+        var entry = Assert.IsType<JsonObject>(Assert.Single(ledger));
+        Assert.Equal("system_guardian_profile_bootstrap_azalia", entry["entryId"]?.GetValue<string>());
+
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, root.ToJsonString());
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
     public async Task BuildReminderFragmentAsync_ShiningAbodeTreatsAttractionAsRepairOnly()
     {
         await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "Азалия", "Social", "built_in");

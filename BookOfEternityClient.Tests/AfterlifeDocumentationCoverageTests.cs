@@ -106,6 +106,10 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("MentorExcellentMultiplierPercent = 60", example, StringComparison.Ordinal);
         Assert.Contains("GM does not spend player currency", example, StringComparison.Ordinal);
         Assert.Contains("GM does not raise player tiers directly", example, StringComparison.Ordinal);
+        Assert.Contains("Fresh New Game system Guardian", matrix + example + manifest, StringComparison.Ordinal);
+        Assert.Contains("guard_system_*", matrix + example + manifest, StringComparison.Ordinal);
+        Assert.Contains("mentorProfile.canTeach=true", matrix + example, StringComparison.Ordinal);
+        Assert.Contains("starter mentor profiles", example + manifest, StringComparison.Ordinal);
         Assert.Contains("afterlifeSpecialArtLearningReceipts", example + matrix, StringComparison.Ordinal);
         Assert.Contains("/обучение", example + matrix, StringComparison.Ordinal);
         Assert.Contains("/духовные_искусства", example + matrix, StringComparison.Ordinal);

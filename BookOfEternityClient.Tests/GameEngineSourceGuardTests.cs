@@ -69,6 +69,8 @@ public sealed class GameEngineSourceGuardTests
 
         Assert.Contains("ChaosSeaBootstrapStateBuilder.BuildFreshNewGameFiles", method, StringComparison.Ordinal);
         Assert.Contains("\"lore/chaos_sea/player_chronicle.json\"", method, StringComparison.Ordinal);
+        Assert.Contains("BuildAfterlifeEntityProfileRootForFreshNewGame", method, StringComparison.Ordinal);
+        Assert.Contains("AfterlifeEntityProfileState.StatePath", method, StringComparison.Ordinal);
         Assert.Contains("WriteInitialGuardianProjectTrackerStateAsync", method, StringComparison.Ordinal);
         Assert.Contains("var rollbackBackups = await CreatePreTurnBackup(request.RequestId);", method, StringComparison.Ordinal);
         Assert.Contains("await CreateCanonicalBaselineSnapshotAsync(request, rollbackBackups, sourceLabel: \"первого описания Моря Хаоса\");", method, StringComparison.Ordinal);

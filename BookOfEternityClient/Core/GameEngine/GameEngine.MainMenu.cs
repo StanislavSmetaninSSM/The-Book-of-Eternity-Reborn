@@ -1047,6 +1047,16 @@ public partial class GameEngine
                     };
                 _fs.WriteFileAtomicAsync("game_state/meta/guardians.json",
                     JsonSerializer.Serialize(guardian, JsonOpts)).Wait();
+                if (selectedSystemGuardianPreset != null)
+                {
+                    var guardianProfileRoot = _systemGuardianLibraryService.BuildAfterlifeEntityProfileRootForFreshNewGame(
+                        selectedSystemGuardianPreset,
+                        soulName,
+                        turnNumber: 1,
+                        createdAtUtc: DateTimeOffset.UtcNow);
+                    _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, guardianProfileRoot.ToJsonString(JsonOpts)).Wait();
+                }
+
                 WriteInitialGuardianProjectTrackerStateAsync().Wait();
 
                 // Initialize session

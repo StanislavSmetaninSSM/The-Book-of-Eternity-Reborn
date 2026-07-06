@@ -64,6 +64,14 @@ Shared rules
   `MentorNeutralMultiplierPercent = 100`,
   `MentorGoodMultiplierPercent = 80`,
   `MentorExcellentMultiplierPercent = 60`.
+- When New Game starts with a named system Guardian, the client already creates
+  a valid `game_state/meta/afterlife_entity_profiles.json` profile for the
+  matching `guard_system_*` actor. That profile is a starter mentor authority:
+  it has `mentorProfile.canTeach=true`, starter `standardArts`, a
+  `progressionStrategy`, and `ledger`. Do not replace it with a bare profile or
+  try to materialize the Guardian again. If `/обучение` requests an
+  `afterlife_teacher_showcase` for that actor, update the existing profile with
+  `mentorTrainingShowcase` and copy the requested `sourceActorSnapshotHash`.
 - In afterlife, the player's current Ink Feathers, Light Sparks, ordinary
   Spiritual Art tiers, Spirit Focus tier, enlightenment, and radiance are read
   from client-owned `soul_state.json` / `shining_abode_state.json`. The

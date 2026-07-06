@@ -501,6 +501,37 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureTrainingAsync_AfterlifeFreshSystemGuardianProfile_CreatesPendingMentorRefreshRequest()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 0);
+        var guardianLibrary = new SystemGuardianLibraryService(_fs, NullLogger<SystemGuardianLibraryService>.Instance);
+        var profileRoot = guardianLibrary.BuildAfterlifeEntityProfileRootForFreshNewGame(
+            CreateSystemGuardianPreset("myriel", "Мириэль Пепельная Звезда", "Magic"),
+            "Северная Искра",
+            turnNumber: 1,
+            createdAtUtc: DateTimeOffset.Parse("2026-07-06T05:00:00Z"));
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, profileRoot.ToJsonString());
+
+        var service = CreateService();
+        var view = await service.EnsureTrainingAsync(currentTurn: 2);
+
+        var teacher = Assert.Single(view.Teachers);
+        Assert.Equal("guard_system_myriel_001", teacher.SourceActorId);
+        Assert.Equal("Мириэль Пепельная Звезда", teacher.SourceActorName);
+        Assert.Equal("afterlife_mentor", teacher.SourceActorKind);
+        Assert.False(teacher.ShowcaseReady);
+        Assert.Equal("ГМ ещё не подготовил витрину наставника.", teacher.BlockReason);
+        Assert.True(view.RequestCreatedThisCall);
+        Assert.True(view.RequestPending);
+        Assert.Contains("витрину обучения для наставника посмертия", view.PendingGmAction, StringComparison.OrdinalIgnoreCase);
+
+        var pendingRaw = await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("\"requestKind\": \"afterlife_teacher_showcase\"", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains("\"sourceActorId\": \"guard_system_myriel_001\"", pendingRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task EnsureTrainingAsync_MortalTeacherFreshShowcase_ClearsSatisfiedPendingRequest()
     {
         await SeedMortalSoulStateAsync();
@@ -620,6 +651,26 @@ public sealed class TrainingServiceTests : IDisposable
 
     private TrainingService CreateService() =>
         new(_fs, NullLogger<TrainingService>.Instance);
+
+    private static SystemGuardianLibraryService.SystemGuardianPresetDescriptor CreateSystemGuardianPreset(
+        string presetId,
+        string displayName,
+        string domain) =>
+        new()
+        {
+            PresetId = presetId,
+            DisplayName = displayName,
+            Summary = $"Тестовый системный Хранитель домена {domain}.",
+            LibraryKind = "built_in",
+            Version = "1.0",
+            Domain = domain,
+            Archetype = "Наставник",
+            Tone = "спокойная речь",
+            CoreValues = new[] { "обучение", "память" },
+            DefaultNameVariant = displayName,
+            AbodeName = "Пепельная Обитель",
+            AbodeTheme = "зал холодных звезд"
+        };
 
     private async Task SeedMortalSoulStateAsync()
     {
