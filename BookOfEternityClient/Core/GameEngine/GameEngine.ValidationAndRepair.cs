@@ -1135,6 +1135,7 @@ public partial class GameEngine
         var afterlifeActionCostErrors = errors.Where(IsAfterlifeSpiritualConflictActionCostRepairIssue).ToList();
         var afterlifeConflictRewardErrors = errors.Where(IsAfterlifeSpiritualConflictRewardRepairIssue).ToList();
         var afterlifeEntityProfileScaffoldErrors = errors.Where(IsAfterlifeEntityProfileScaffoldRepairIssue).ToList();
+        var mortalTrainingSkillEvolutionErrors = errors.Where(IsMortalTrainingSkillEvolutionRepairIssue).ToList();
         var trainingShowcaseSnapshotErrors = errors.Where(IsTrainingShowcaseSnapshotRepairIssue).ToList();
         var npcScopeDeclarationErrors = errors.Where(IsNpcScopeDeclarationRepairIssue).ToList();
         var acceptedTurnOutputArtifactErrors = errors.Where(IsAcceptedTurnOutputArtifactRepairIssue).ToList();
@@ -1189,6 +1190,9 @@ public partial class GameEngine
 
         if (mortalCombatStateErrors.Count > 0)
             packets.Add(BuildMortalCombatStateRepairPacket(mortalCombatStateErrors));
+
+        if (mortalTrainingSkillEvolutionErrors.Count > 0)
+            packets.Add(BuildMortalTrainingSkillEvolutionRepairPacket(mortalTrainingSkillEvolutionErrors));
 
         if (trainingShowcaseSnapshotErrors.Count > 0)
             packets.Add(BuildTrainingShowcaseSnapshotHashRepairPacket(trainingShowcaseSnapshotErrors));
@@ -1433,6 +1437,12 @@ public partial class GameEngine
     private static bool IsMortalCombatStateRepairIssue(ValidationIssue issue)
     {
         return string.Equals(issue.Code, "mortal_combat_state_missing", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMortalTrainingSkillEvolutionRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Code, "skill_mastery_unknown_active_skill", StringComparison.OrdinalIgnoreCase) &&
+               NormalizeRepairTargetPath(issue.FilePath).StartsWith("game_state/player/skill_mastery.json", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsTrainingShowcaseSnapshotRepairIssue(ValidationIssue issue)
@@ -2791,6 +2801,84 @@ public partial class GameEngine
                 "Do not delete XP, skill mastery, or player_status changes just to silence this repair.",
                 "Do not leave /бой empty after a player-facing open combat scene.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer combat shape; use this packet, the compact template, and session files."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildMortalTrainingSkillEvolutionRepairPacket(
+        IReadOnlyList<ValidationIssue> skillEvolutionErrors)
+    {
+        var targetFiles = skillEvolutionErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        foreach (var path in new[]
+                 {
+                     "game_state/control/pending_training_showcase_requests.json",
+                     "game_state/player/skills_active.json",
+                     "game_state/player/skills_passive.json",
+                     "game_state/player/skill_mastery.json",
+                     "game_state/npcs/npc_core.json"
+                 })
+        {
+            if (!targetFiles.Contains(path, StringComparer.OrdinalIgnoreCase))
+                targetFiles.Add(path);
+        }
+
+        var actorNames = CollectRepairActorNames(skillEvolutionErrors)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var exactFieldCorrections = skillEvolutionErrors
+            .Select(BuildExactFieldCorrection)
+            .Where(correction => !string.IsNullOrWhiteSpace(correction.Path))
+            .DistinctBy(correction => correction.Path, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(correction => correction.Path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_training_skill_evolution_repair",
+            Priority = "high",
+            Title = "Mortal training skill evolution target-kind repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string> { "Examples/E_CLI_Training_Showcases.txt" },
+            CanonicalActorNames = actorNames,
+            ExactFieldCorrections = exactFieldCorrections,
+            ExpectedShape = new List<string>
+            {
+                "A paid mortal training request in game_state/control/pending_training_showcase_requests.json is authoritative for the trained target.",
+                "Open the pending request with requestKind = mortal_training_skill_evolution and follow details.targetKind exactly.",
+                "If details.targetKind is passive_skill_mastery or passive_skill_unlock, patch game_state/player/skills_passive.json through passiveSkillChanges, not skillMasteryChanges.",
+                "If details.targetKind is active_skill_mastery or active_skill_unlock, patch game_state/player/skills_active.json and only reference skills that already exist in canonical active skills state unless the request is an unlock.",
+                "When updating passive skills, preserve structuredBonuses, playerStatBonus, source tags, and player-facing Russian descriptions unless the pending request explicitly changes them."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Do not charge money, experience, ink feathers, or any other currency again; the local showcase purchase already created the paid pending request and receipt.",
+                "Resolve only the pending training evolution described by the current validation request; do not rewrite unrelated skills, NPCs, inventory, or world state.",
+                "If validation reports skill_mastery_unknown_active_skill for a passive skill, remove the invalid skillMasteryChanges active entry and express the same evolution through passiveSkillChanges.",
+                "Preserve structuredBonuses, playerStatBonus, source labels, and existing localized descriptions when patching passive skill data.",
+                "Use the teacher's canonical skill profile in game_state/npcs/npc_core.json only to confirm caps and story wording; pending details.targetKind remains the source of truth for active vs passive."
+            },
+            Steps = new List<string>
+            {
+                "Open validation_repair_request.json and game_state/control/pending_training_showcase_requests.json first.",
+                "Find the pending request with requestKind = mortal_training_skill_evolution and read details.targetKind, details.targetName, details.currentLevel, details.nextLevel, and purchaseReceipt.",
+                "If details.targetKind says passive_skill_mastery or passive_skill_unlock, remove the invalid active skillMasteryChanges entry and patch game_state/player/skills_passive.json with passiveSkillChanges for that same target.",
+                "If details.targetKind says active_skill_mastery or active_skill_unlock, keep the change on the active skill surface and ensure the active skill name/id exists or is created by the same unlock request.",
+                "Preserve structuredBonuses, playerStatBonus, mastery progress, sourceCap, teacher identity, and player-facing Russian skill prose when patching the skill object.",
+                "Include the touched skill file and pending request in repair completion evidence.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not invent an active skill just because skillMasteryChanges rejected a passive skill name.",
+                "Do not delete pending_training_showcase_requests.json to silence the error.",
+                "Do not apply a second purchase cost or refund the existing purchase unless validation explicitly asks for a receipt rollback.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer training rules; use this packet, Examples/E_CLI_Training_Showcases.txt, the pending request, and canonical session files."
             }
         };
     }

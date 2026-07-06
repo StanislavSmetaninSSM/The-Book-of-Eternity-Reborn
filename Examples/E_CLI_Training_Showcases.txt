@@ -52,6 +52,13 @@ Shared rules
   after inspecting the player's actual skill state. If `details.targetKind`
   names a passive target, write `passiveSkillChanges`; do not invent an active
   skill just because the original offer used generic `skill_mastery`.
+- During validation repair, when `harnessRepairPackets[].kind` is
+  `mortal_training_skill_evolution_repair`, open the pending
+  `mortal_training_skill_evolution` request first and use
+  `details.targetKind` as the active/passive authority. If validation rejected
+  `skillMasteryChanges` because the skill is not active, remove the invalid
+  active mastery entry and repair the paid lesson through `passiveSkillChanges`
+  when the pending target is passive. Do not charge the lesson again.
 - GM does not grant mastery or standard spiritual-art progression through free
   prose when the player used the showcase. Use the request/receipt surfaces.
 - `trainingPurchaseReceipts` and `afterlifeTrainingPurchaseReceipts` are

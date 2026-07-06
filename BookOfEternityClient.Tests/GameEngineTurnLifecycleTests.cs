@@ -2243,6 +2243,60 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_PendingPassiveTrainingSkillEvolution_AddsTargetKindHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/player/skill_mastery.json.skillMasteryChanges[0].skillName",
+                IssueSeverity.Error,
+                "skillMasteryChanges не может ссылаться на навык, которого нет в canonical active skills state",
+                code: "skill_mastery_unknown_active_skill",
+                actor: "Чтение следов",
+                section: "Skills.Active",
+                expected: "existing skillName from game_state/player/skills_active.json",
+                actual: "Чтение следов",
+                repairHint: "Сохраняй mastery только для реально существующих active skills.")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_training_skill_evolution_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/control/pending_training_showcase_requests.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/player/skills_passive.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/player/skill_mastery.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Examples/E_CLI_Training_Showcases.txt", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("details.targetKind", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("passive_skill_mastery", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("passiveSkillChanges", StringComparison.OrdinalIgnoreCase));
+
+        var safeRules = packet.GetProperty("safeCorrectionRules").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(safeRules, item => item.Contains("Do not charge", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(safeRules, item => item.Contains("structuredBonuses", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, item => item.Contains("pending_training_showcase_requests.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, item => item.Contains("details.targetKind", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, item => item.Contains("remove", StringComparison.OrdinalIgnoreCase) && item.Contains("skillMasteryChanges", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, item => item.Contains("Complete-BoeValidationRepair", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_EmptyRelevantActorsScopeError_AddsExecutableHarnessPacket()
     {
         var engine = CreateGameEngine();
