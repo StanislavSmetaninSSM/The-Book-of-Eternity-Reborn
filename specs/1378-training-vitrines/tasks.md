@@ -77,6 +77,7 @@
 - [ ] T043 Run manual browser smoke checks for training command output.
 - [ ] T044 Review diffs, update issue comments, commit, and merge only after evidence is available.
 - [x] T045 [Live-test harness follow-up #1452] Add exact training-showcase stale snapshot hash diagnostics and a dedicated validation repair packet so GM repairs can apply `sourceActorSnapshotHash` without source-code archaeology.
+- [x] T046 [Live-test harness follow-up #1426] Block Mortal bootstrap acceptance when player-authored start promises a teacher/training surface but no usable `teacherProfile.canTeach=true` NPC exists for `/обучение`.
 
 ## Dependencies
 

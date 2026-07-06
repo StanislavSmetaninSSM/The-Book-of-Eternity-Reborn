@@ -2546,6 +2546,12 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 IssueSeverity.Error,
                 "Mortal bootstrap reused previous world lore.",
                 code: "mortal_bootstrap_reused_previous_world_lore",
+                section: "MortalBootstrap"),
+            new(
+                "game_state/npcs/npc_core.json",
+                IssueSeverity.Error,
+                "Mortal bootstrap promised training but has no usable teacherProfile.",
+                code: "mortal_bootstrap_requested_teacher_missing",
                 section: "MortalBootstrap")
         };
 
@@ -2569,16 +2575,19 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains("game_state/inventory/items.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
         Assert.Contains("game_state/factions/faction_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
         Assert.Contains("game_state/world/current_location.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
 
         var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(expectedShape, item => item.Contains("bootstrap_codex_missing_current_world_entries", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(expectedShape, item => item.Contains("readable_document_missing_detail_authority", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(expectedShape, item => item.Contains("canonical_faction_custom_state_missing_required_fields", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("teacherProfile.canTeach=true", StringComparison.OrdinalIgnoreCase));
 
         var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(steps, step => step.Contains("mortal_bootstrap_scaffold.json", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("current-world", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("readable", StringComparison.OrdinalIgnoreCase) && step.Contains("document", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("requested training", StringComparison.OrdinalIgnoreCase) && step.Contains("teacherProfile", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

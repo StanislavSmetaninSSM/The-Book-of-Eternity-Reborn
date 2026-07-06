@@ -1375,6 +1375,7 @@ public partial class GameEngine
             "npc_contract_unknown_top_level_key" => true,
             "flexible_state_unknown_top_level_key" => true,
             "mortal_relevant_actor_missing_persistence" => true,
+            "mortal_bootstrap_requested_teacher_missing" => true,
             "missing_required_string" => IsMortalBootstrapGenericShapeRepairIssue(issue),
             "missing_required_boolean_field" => IsMortalBootstrapGenericShapeRepairIssue(issue),
             "expected_string_array" => IsMortalBootstrapGenericShapeRepairIssue(issue),
@@ -2339,6 +2340,7 @@ public partial class GameEngine
                 "Mortal World Relevant actors must be backed by a persistent NPC/faction/quest/inventory surface, or moved to Actors outside scope when they are only background scenery.",
                 "The player character is not an NPC persistence target. If the current protagonist is named in Relevant actors, mark them as player character and do not create NPCsInScene/UpdateNPCs for them.",
                 "NPCsInScene is only for actors physically present in currentLocationData. Offscreen voices, people behind a door, nearbyExitLocationId actors, and route pressure do not belong in NPCsInScene for the current room.",
+                "If mortal_bootstrap_scaffold.json or the opening scene promises a teacher, mentor, paid lesson, training yard, or /обучение surface, game_state/npcs/npc_core.json must materialize at least one matching NPC with teacherProfile.canTeach=true and non-empty teacherProfile.skills[].",
                 "Faction custom sidecars must carry full Custom State Objects: stateId/name, currentValue, minValue, maxValue, description, progressionRule { changePerTurn, description }, and thresholds[]; if you only need a narrative note, use faction_core chronicle instead.",
                 "Active threats must be full objects, not strings: threatId/name/longTermGoal plus threatArchetype { motivation, method } and impactProfile { primaryTargetType, primaryTargetId, primaryTargetName, primaryImpact, baseImpactValue }. Use canonical enum values or keep activeThreats empty for vague pressure.",
                 "current_location coordinates/factionControl must match world_map and use object-shaped faction-control data."
@@ -2359,6 +2361,7 @@ public partial class GameEngine
                 "Patch item journalEntries as a JSON array of non-empty strings, not objects; preserve useful text by flattening each malformed object into one player-facing note string.",
                 "Patch string-array fields as JSON arrays of strings, not scalar text or semicolon-delimited strings.",
                 "Patch output/debug_logs.json Relevant actors: keep the current protagonist as player character, materialize real non-player Mortal actors through NPC/faction/quest/inventory surfaces, or move background objects to Actors outside scope with a clear reason.",
+                "Patch requested training anchors: if the player-authored start names a teacher/mentor/trainer or promises paid lessons/training showcase, add that NPC to NPCsInScene or UpdateNPCs with teacherProfile.canTeach=true, relationshipLevel, summary, and skills[] entries containing skillId, skillName, displayName, skillKind, and masteryLevel.",
                 "Patch NPCsInScene location scope: if an actor is behind a door, near nearbyExitLocationId, in another corridor, or only heard offscreen, remove them from NPCsInScene and represent them through narrative/location/quest/faction memory or UpdateNPCs at their actual location only when they are durable known actors.",
                 "Patch factions: complete faction custom/progression sidecar fields with full Custom State Objects, or move narrative-only pressure into faction_core chronicle and leave faction_custom customStates empty.",
                 "Patch active threats: either write complete Active Threat Objects with canonical enum values, or remove vague string-only threats and represent pressure through location events/faction chronicle.",
@@ -2371,6 +2374,7 @@ public partial class GameEngine
                 "Do not copy afterlife lore or previous-world lore into current-world bootstrap files.",
                 "Do not write item durability as bare numbers such as 100; use percentage strings such as 100%.",
                 "Do not write item journalEntries as objects; journalEntries[] entries must be non-empty strings.",
+                "Do not remove a promised teacher, mentor, lesson, or /обучение hook from the player-facing scene just to avoid creating teacherProfile.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer bootstrap rules; use this packet, the scaffold, templates, and validation errors."
             }
         };

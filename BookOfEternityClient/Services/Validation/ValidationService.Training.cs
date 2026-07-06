@@ -7,11 +7,13 @@ namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
     private const string TrainingNpcCorePath = "game_state/npcs/npc_core.json";
+    private const string MortalBootstrapScaffoldPath = "game_state/control/mortal_bootstrap_scaffold.json";
 
     private async Task ValidateTrainingShowcasesAsync(List<ValidationIssue> issues)
     {
         await ValidatePendingTrainingRequestsAsync(issues);
         await ValidateAfterlifeMentorTrainingShowcasesAsync(issues);
+        await ValidateMortalBootstrapTrainingAnchorsAsync(issues);
         await ValidateMortalTeacherTrainingShowcasesAsync(issues);
     }
 
@@ -244,6 +246,40 @@ public partial class ValidationService
         }
     }
 
+    private async Task ValidateMortalBootstrapTrainingAnchorsAsync(List<ValidationIssue> issues)
+    {
+        var currentRealm = await TryResolveCurrentRealmAsync();
+        if (!IsMortalRealmName(currentRealm))
+            return;
+
+        var scaffoldRaw = await _fs.ReadFileAsync(MortalBootstrapScaffoldPath);
+        if (string.IsNullOrWhiteSpace(scaffoldRaw))
+            return;
+
+        try
+        {
+            using var scaffoldDoc = JsonDocument.Parse(scaffoldRaw);
+            if (!MortalBootstrapScaffoldRequestsTraining(scaffoldDoc.RootElement))
+                return;
+
+            if (await HasUsableMortalTeacherProfileAsync())
+                return;
+
+            AddTrainingIssue(
+                TrainingNpcCorePath,
+                "mortal_bootstrap_requested_teacher_missing",
+                "Mortal bootstrap обещает обучение, но не материализует ни одного NPC-учителя для /обучение.",
+                "NPCsInScene/UpdateNPCs entry with teacherProfile.canTeach=true and non-empty teacherProfile.skills[]",
+                "missing usable teacherProfile",
+                "Создай или обнови NPC-учителя из стартовой сцены в game_state/npcs/npc_core.json: добавь teacherProfile.canTeach=true, relationshipLevel, summary и skills[] с skillId/skillName/displayName/skillKind/masteryLevel. Не оставляй обещанное обучение только в прозе.",
+                issues);
+        }
+        catch (JsonException)
+        {
+            // JSON integrity validation reports malformed scaffold files.
+        }
+    }
+
     private static void ValidateTrainingShowcaseActorMetadata(
         JsonElement sourceActor,
         JsonElement showcase,
@@ -351,6 +387,87 @@ public partial class ValidationService
                 index++;
             }
         }
+    }
+
+    private async Task<bool> HasUsableMortalTeacherProfileAsync()
+    {
+        var raw = await _fs.ReadFileAsync(TrainingNpcCorePath);
+        if (string.IsNullOrWhiteSpace(raw))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(raw);
+            return EnumerateMortalNpcTrainingCandidates(doc.RootElement)
+                .Any(candidate => HasUsableMortalTeacherProfile(candidate.Teacher));
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private static bool HasUsableMortalTeacherProfile(JsonElement teacher)
+    {
+        if (!teacher.TryGetProperty("teacherProfile", out var profile) ||
+            profile.ValueKind != JsonValueKind.Object ||
+            !profile.TryGetProperty("canTeach", out var canTeach) ||
+            !TryGetTrainingBool(canTeach, out var canTeachValue) ||
+            !canTeachValue ||
+            !profile.TryGetProperty("skills", out var skills) ||
+            skills.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        return skills.EnumerateArray().Any(skill => skill.ValueKind == JsonValueKind.Object);
+    }
+
+    private static bool MortalBootstrapScaffoldRequestsTraining(JsonElement scaffold)
+    {
+        if (scaffold.ValueKind != JsonValueKind.Object ||
+            !scaffold.TryGetProperty("playerAuthoredStart", out var authoredStart) ||
+            authoredStart.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        foreach (var field in new[] { "startingCircumstances", "characterDescription" })
+        {
+            if (authoredStart.TryGetProperty(field, out var value) &&
+                value.ValueKind == JsonValueKind.String &&
+                ContainsTrainingAnchorKeyword(value.GetString()))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool ContainsTrainingAnchorKeyword(string? text) =>
+        ContainsAnyTrainingKeyword(
+            text,
+            "обуч",
+            "учител",
+            "настав",
+            "тренер",
+            "трениров",
+            "урок",
+            "витрин",
+            "teacher",
+            "mentor",
+            "trainer",
+            "training",
+            "lesson",
+            "apprentice");
+
+    private static bool ContainsAnyTrainingKeyword(string? text, params string[] keywords)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return false;
+
+        return keywords.Any(keyword => text.Contains(keyword, StringComparison.OrdinalIgnoreCase));
     }
 
     private static void ValidateTrainingShowcaseSnapshot(

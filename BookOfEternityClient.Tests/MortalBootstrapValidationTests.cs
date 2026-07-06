@@ -376,6 +376,70 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             string.Equals(issue.Code, "mortal_bootstrap_reused_previous_world_lore", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_MortalBootstrapRequestedTeacherWithoutTeacherProfile_ReportsTrainingSurfaceIssue()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 3,
+            characterDescription: "Асурэн де Вальмонт, молодой аристократ-маг.",
+            worldDescription: "Этерния: темное фэнтези с учителями навыков и витринами обучения.",
+            startingCircumstances: "За дверью ждёт наставница Селина Орвейн, которая может обучать магической диагностике, быстрым выпадам и этикету через витрину обучения.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-06T01:00:00Z"));
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        var npcCorePath = _fs.ResolvePath("game_state/npcs/npc_core.json");
+        if (File.Exists(npcCorePath))
+            File.Delete(npcCorePath);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/control/mortal_bootstrap_scaffold.json", """
+        {
+          "schemaVersion": 1,
+          "purpose": "fresh_mortal_world_bootstrap",
+          "playerAuthoredStart": {
+            "characterDescription": "Асурэн де Вальмонт, молодой аристократ-маг.",
+            "worldDescription": "Этерния: темное фэнтези с учителями навыков и витринами обучения.",
+            "startingCircumstances": "За дверью ждёт наставница Селина Орвейн, которая может обучать магической диагностике, быстрым выпадам и этикету через витрину обучения."
+          },
+          "trainingAnchorRequirements": {
+            "requiredNpcShape": "The relevant NPC in NPCsInScene/UpdateNPCs must include teacherProfile with canTeach=true."
+          }
+        }
+        """);
+
+        var bootstrapLoreFiles = new[]
+        {
+            "lore/current_world/world_setting.json",
+            "lore/current_world/geography.json",
+            "lore/current_world/history.json",
+            "lore/current_world/cultures.json",
+            "lore/current_world/threats.json",
+            "lore/codex_entries.json"
+        };
+
+        await WriteValidatedSnapshotManifestAsync(
+            sourceLabel: "GM-инициированного воплощения",
+            includeSnapshotFilesAsRollbackBaseline: false,
+            bootstrapLoreFiles.Select(path => (Path: path, Json: files[path].ToJsonString())).ToArray());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase));
+    }
+
     public void Dispose()
     {
         try

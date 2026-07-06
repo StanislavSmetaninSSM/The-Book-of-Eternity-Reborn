@@ -623,6 +623,7 @@ Mortal bootstrap materialization repair packet:
     "current_location_coordinates_mismatch: if currentLocationData uses a known locationId from the bootstrap scaffold, copy that locationId coordinates exactly from canonicalCoordinateAuthority.",
     "location shape: current_location and durable world_map locations must include knownExits, adjacencyMap, factionControl, locationStorages, activeThreats, internalDifficultyProfile, and externalDifficultyProfile.",
     "world_map_new_link_missing_required_fields: every map link preview must include targetName, targetCoordinates, estimatedInternalDifficultyProfile, and estimatedExternalDifficultyProfile.",
+    "mortal_bootstrap_requested_teacher_missing: if the opening scene promises a teacher, mentor, paid lesson, or /обучение surface, npc_core.json must contain a usable NPC teacherProfile with canTeach=true and non-empty skills[].",
     "canonical_faction_custom_state_missing_required_fields: faction state must keep required identity, rank/reputation/progression, and sidecar-compatible fields."
   ],
   "steps": [
@@ -632,6 +633,7 @@ Mortal bootstrap materialization repair packet:
     "Patch every new map link preview with targetName, targetCoordinates, estimatedInternalDifficultyProfile, and estimatedExternalDifficultyProfile.",
     "Patch the current-world bootstrap files in place: current location/map, current-world codex/lore, starting inventory/readable document details, factions, and NPC bootstrap surfaces listed in targetFiles.",
     "Do not reuse previous-life lore/current_world files; every current-world codex or lore entry must describe the life being created now.",
+    "If the player-authored start names a teacher/mentor/trainer or promises lessons/training showcase, add that NPC to NPCsInScene or UpdateNPCs with teacherProfile.canTeach=true, relationshipLevel, summary, and skills[] entries containing skillId, skillName, displayName, skillKind, and masteryLevel.",
     "Fix readable document items by adding an actual player-openable document/detail authority, not by changing the item type to avoid validation.",
     "Fix inventory item durability by writing percentage strings such as 100%, not bare numbers.",
     "Fix inventory item journalEntries by flattening malformed objects into one player-facing note string per array entry.",
