@@ -79,6 +79,55 @@ public sealed partial class GuardianSystemRegressionTests
     }
 
     [Fact]
+    public async Task AcceptedTurnReasoning_UnchangedCanonicalUpdateNpcsFromPreTurnSnapshotDoNotRequireCurrentScope()
+    {
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        const string npcCoreJson = """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_miron_hunter",
+              "name": "Мирон-охотник",
+              "role": "Следопыт",
+              "currentLocationId": "old_watch_house",
+              "thoughtJournal": [
+                {
+                  "entry": "Мирон держит сторожку под наблюдением и не вмешивается в текущий ход."
+                }
+              ]
+            }
+          ]
+        }
+        """;
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/npcs/npc_core.json",
+            "test_backups/preturn_npc_core_unchanged_scope.json",
+            npcCoreJson);
+        await WriteRawAsync("game_state/npcs/npc_core.json", npcCoreJson);
+        await WriteRawAsync("output/debug_logs.json", """
+        {
+          "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: player character\n- Why relevant: The player character examines the porch and chooses the next move.\n- Actors outside scope: Мирон-охотник\n- Why outside scope: Мирон remains unchanged canonical context from the previous turn.\n\n## Reasoning\n### player character\n- Situation: The protagonist examines the porch and fresh tracks.\n- Thoughts: She is trying to decide whether to enter or circle the house.\n- Actions: She studies the mud without interacting with Мирон.\n",
+          "timestamp": "2026-07-06T12:00:00Z"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "structured_npc_update_out_of_scope", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actor, "Мирон-охотник", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task AcceptedTurnReasoning_MortalPlayerCharacterFromScenarioCoreDoesNotRequireNpcPersistence()
     {
         await WriteRawAsync("game_state/meta/soul_state.json", """

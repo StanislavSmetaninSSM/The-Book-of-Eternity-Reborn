@@ -756,6 +756,7 @@ public partial class ValidationService
 
         try
         {
+            var unchangedPreTurnNpcSignatures = await LoadUnchangedPreTurnCanonicalNpcObjectSignaturesAsync();
             using var doc = JsonDocument.Parse(npcJson);
             if (doc.RootElement.ValueKind != JsonValueKind.Object)
                 return;
@@ -771,6 +772,14 @@ public partial class ValidationService
 
                 foreach (var item in property.Value.EnumerateArray())
                 {
+                    if (IsUnchangedPreTurnCanonicalNpcObject(
+                            property.Name,
+                            item,
+                            unchangedPreTurnNpcSignatures))
+                    {
+                        continue;
+                    }
+
                     if (property.Name.Equals("NPCsRenameData", StringComparison.OrdinalIgnoreCase))
                     {
                         updates.AddRange(CreateNpcRenameStructuredActorUpdates(item, property.Name));
@@ -792,6 +801,134 @@ public partial class ValidationService
         catch
         {
             // Ignore consistency extraction failures; generic validation will surface malformed JSON separately.
+        }
+    }
+
+    private async Task<IReadOnlyDictionary<string, string>> LoadUnchangedPreTurnCanonicalNpcObjectSignaturesAsync()
+    {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        var preTurnNpcJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+            lookup.Manifest,
+            "game_state/npcs/npc_core.json");
+        return BuildCanonicalNpcObjectSignatureIndex(preTurnNpcJson);
+    }
+
+    private static IReadOnlyDictionary<string, string> BuildCanonicalNpcObjectSignatureIndex(string? npcJson)
+    {
+        var signatures = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(npcJson))
+            return signatures;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(npcJson);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return signatures;
+
+            foreach (var property in doc.RootElement.EnumerateObject())
+            {
+                if (!IsNpcCoreCanonicalNpcObjectSection(property.Name) ||
+                    property.Value.ValueKind != JsonValueKind.Array)
+                {
+                    continue;
+                }
+
+                foreach (var item in property.Value.EnumerateArray())
+                {
+                    if (item.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    var identityKey = BuildNpcIdentityKey(item);
+                    if (string.IsNullOrWhiteSpace(identityKey))
+                        continue;
+
+                    signatures[identityKey] = CanonicalizeJsonElement(item);
+                }
+            }
+        }
+        catch
+        {
+            // Snapshot integrity is validated elsewhere; extraction should stay best-effort.
+        }
+
+        return signatures;
+    }
+
+    private static bool IsUnchangedPreTurnCanonicalNpcObject(
+        string sectionName,
+        JsonElement item,
+        IReadOnlyDictionary<string, string> preTurnNpcSignatures)
+    {
+        if (!IsNpcCoreCanonicalNpcObjectSection(sectionName) ||
+            item.ValueKind != JsonValueKind.Object ||
+            preTurnNpcSignatures.Count == 0)
+        {
+            return false;
+        }
+
+        var identityKey = BuildNpcIdentityKey(item);
+        if (string.IsNullOrWhiteSpace(identityKey) ||
+            !preTurnNpcSignatures.TryGetValue(identityKey, out var preTurnSignature))
+        {
+            return false;
+        }
+
+        return string.Equals(
+            preTurnSignature,
+            CanonicalizeJsonElement(item),
+            StringComparison.Ordinal);
+    }
+
+    private static bool IsNpcCoreCanonicalNpcObjectSection(string sectionName) =>
+        GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections
+            .Any(section => string.Equals(section, sectionName, StringComparison.OrdinalIgnoreCase));
+
+    private static string CanonicalizeJsonElement(JsonElement element)
+    {
+        using var stream = new MemoryStream();
+        using (var writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = false }))
+        {
+            WriteCanonicalJsonElement(element, writer);
+        }
+
+        return Encoding.UTF8.GetString(stream.ToArray());
+    }
+
+    private static void WriteCanonicalJsonElement(JsonElement element, Utf8JsonWriter writer)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Object:
+                writer.WriteStartObject();
+                foreach (var property in element.EnumerateObject().OrderBy(property => property.Name, StringComparer.Ordinal))
+                {
+                    writer.WritePropertyName(property.Name);
+                    WriteCanonicalJsonElement(property.Value, writer);
+                }
+
+                writer.WriteEndObject();
+                break;
+            case JsonValueKind.Array:
+                writer.WriteStartArray();
+                foreach (var item in element.EnumerateArray())
+                    WriteCanonicalJsonElement(item, writer);
+                writer.WriteEndArray();
+                break;
+            case JsonValueKind.String:
+                writer.WriteStringValue(element.GetString());
+                break;
+            case JsonValueKind.Number:
+            case JsonValueKind.True:
+            case JsonValueKind.False:
+            case JsonValueKind.Null:
+                element.WriteTo(writer);
+                break;
+            default:
+                writer.WriteNullValue();
+                break;
         }
     }
 

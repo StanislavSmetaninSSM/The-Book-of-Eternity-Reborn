@@ -571,8 +571,9 @@ Client behavior:
   - deletes both repair files
 
 IMPORTANT:
-- declared `Relevant actors` must cover any structured actor updates already written into state, such as `UpdateNPCs`, actor-specific NPC update arrays, and `UpdateGuardians`
-- `Scene-local + Relevant actors: нет` is valid only when no such structured actor updates are emitted
+- declared `Relevant actors` must cover any new or changed structured actor updates written in this turn, such as changed `UpdateNPCs`, actor-specific NPC update arrays, and `UpdateGuardians`
+- unchanged canonical NPC objects that exactly match the validated pre-turn snapshot may remain in `UpdateNPCs` / `NPCsInScene` as state context; they are not a same-turn actor update by themselves
+- `Scene-local + Relevant actors: нет` is valid only when no new or changed structured actor updates are emitted
 - unresolved ID-only structured updates should not be hard-rejected solely because the client could not recover a reliable name alias from current state
 - if `validation_repair_request.json.harnessRepairPackets[]` is present, follow those packets before free-form interpretation of `errors[]`
 - if a packet has `kind = "npc_scope_declaration_repair"`, repair only `output/debug_logs.json.gm_thoughts_markdown` unless another validation error names state files; write a complete `## NPC Scope` block, remember that `World-progression`, `Guardian-centric`, and `Mixed` need at least one relevant actor, and add one reasoning block for every relevant actor
@@ -884,6 +885,8 @@ Example of another invalid repair cause after revalidation:
 - `UpdateNPCs` changed `Марта`, but `Марта` is absent from `Relevant actors`
 - client rewrites repair request with `structured_npc_update_out_of_scope`
 - GM must either add `Марта` to scope + reasoning blocks or remove the structural NPC update
+
+If `UpdateNPCs` / `NPCsInScene` contains an existing NPC object that is byte-for-byte the same logical object as the validated pre-turn snapshot, the client treats it as unchanged canonical background. Do not add that NPC to `Relevant actors` merely because the unchanged object is still present. Add the NPC to `Relevant actors` only if the turn actually changes the NPC, brings the NPC into the scene as an active participant, or emits an actor-specific update for that NPC.
 
 Concrete structured NPC mismatch example:
 
