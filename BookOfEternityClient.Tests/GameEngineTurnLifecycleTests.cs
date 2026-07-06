@@ -1435,6 +1435,12 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.True(data.TryGetProperty("abode", out _));
         Assert.True(data.TryGetProperty("relationshipData", out var relationshipData));
         Assert.False(relationshipData.TryGetProperty("guardianRoleToPlayer", out _));
+        Assert.True(relationshipData.TryGetProperty("lastInteraction", out var lastInteraction));
+        Assert.Equal(JsonValueKind.Null, lastInteraction.ValueKind);
+        Assert.True(data.TryGetProperty("abodePower", out var abodePower));
+        Assert.Equal(10, abodePower.GetProperty("currentPower").GetInt32());
+        Assert.Equal("Угасающая", abodePower.GetProperty("tier").GetString());
+        Assert.DoesNotContain("startup_turn", data.GetRawText(), StringComparison.OrdinalIgnoreCase);
         Assert.True(data.TryGetProperty("mood", out var mood));
         Assert.Equal("focused", mood.GetProperty("current").GetString());
         Assert.True(data.TryGetProperty("loreFragments", out var loreFragments));

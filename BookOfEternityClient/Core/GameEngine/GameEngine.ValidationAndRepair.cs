@@ -1703,6 +1703,7 @@ public partial class GameEngine
                 "Read game_state/meta/guardians.json.pendingGuardianCreation as the startup request authority. For mode=freeform, use soulName and description; for mode=system_preset, use the exact requested preset identity.",
                 "For a freeform New Game startup request, repair through the supported Guardian create surface `UpdateGuardians.create`: `UpdateGuardians`: [{ `command`: `create`, `data`: <full canonical Guardian> }]. The `data` object is the authority for the new Guardian identity.",
                 "Use harnessRepairPackets[].canonicalCreateSkeleton as the bounded machine-readable starting point. Replace placeholder ids/names/prose from pendingGuardianCreation, but keep the same command/data shape and canonical field families.",
+                "Keep scalar validation fields valid while replacing prose: relationshipData.lastInteraction must be null or ISO 8601, abodePower.tier must match abodePower.currentPower, timestamps must be ISO 8601, and abodePower.history may stay empty unless you can write canonical entries with timestamp/change/reason/source.",
                 "Do not satisfy guardian_materialized_without_create_surface by editing only materialized mirrors. `guardians[]` and `activeGuardian` must match the create result, but the explicit `UpdateGuardians.create` command=create data=<full canonical Guardian> surface must be present in the repaired response.",
                 "The accepted game_state/meta/guardians.json must contain the new Guardian in guardians[] with stable guardianId, displayName/canonicalName, title/domain/originType, abode identity, relationshipData/currentReputation, loreFragments, musings, trade/project/profile arrays or empty containers required by the canonical Guardian shape.",
                 "Canonical Guardian create data must include at least 7 loreFragments. Use the allowed category and requiredReputation values from harnessRepairPackets[].allowedEnums.",
@@ -1726,6 +1727,7 @@ public partial class GameEngine
                 "Use Read-BoeJson -RelativePath 'game_state/meta/guardians.json' and inspect pendingGuardianCreation before editing.",
                 "Write or repair `UpdateGuardians.create` first: `UpdateGuardians`: [{ `command`: `create`, `data`: <full canonical Guardian> }]. This create command is the authority; do not repair only guardians[]/activeGuardian.",
                 "Start from harnessRepairPackets[].canonicalCreateSkeleton. Replace placeholders with pendingGuardianCreation soulName/description, keep 7 loreFragments, keep mood/musings enum values from allowedEnums, and omit guardianRoleToPlayer unless the repair request explicitly names a former_patron foundation branch.",
+                "Before writing, preserve canonical scalar constraints from the skeleton: lastInteraction stays null until a real ISO timestamp exists, abodePower.tier stays derived from currentPower, all timestamp fields stay ISO 8601, and abodePower.history stays empty unless every entry has timestamp/change/reason/source.",
                 "For materialization, write a full canonical Guardian into guardians[], set activeGuardian to the matching mirror, update chaosSeaNavigation.currentAbodeId, and remove pendingGuardianCreation only after those roots are present.",
                 "Repair output/debug_logs.json.gm_thoughts_markdown with Guardian-centric/Mixed scope, the Guardian's player-facing name in Relevant actors, and a matching Guardian Thoughts block.",
                 "Write repaired files with Write-BoeJson, then call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from validation_repair_request.json."
@@ -1751,6 +1753,9 @@ public partial class GameEngine
                 "Do not keep a direct materialized Guardian object that lacks the supported UpdateGuardians.create semantics and full canonical Guardian shape.",
                 "Do not repair only guardians[] or activeGuardian without UpdateGuardians command=create data=<full canonical Guardian>.",
                 "Do not invent relationshipData.guardianRoleToPlayer such as mentor, teacher, patron, owner, bonded, or ally; omit the field unless the explicit valid value is former_patron.",
+                "Do not use sentinel strings such as startup_turn for relationshipData.lastInteraction; use null or a real ISO 8601 timestamp.",
+                "Do not hand-write abodePower.tier from prose; derive it from abodePower.currentPower.",
+                "Do not add non-canonical abodePower.history entries such as delta/resultingPower-only audit notes; leave history empty instead.",
                 "Do not use arbitrary musing topics/moods, arbitrary mood.current values, or fewer than 7 loreFragments.",
                 "Do not leave the Guardian only in narrative prose while /хранители still has no canonical Guardian.",
                 "Do not rewrite the requested freeform Guardian into an unrelated system preset or Mortal NPC.",
@@ -1761,6 +1766,8 @@ public partial class GameEngine
 
     private static JsonObject BuildGuardianPendingCreationCanonicalCreateSkeleton()
     {
+        const int startupAbodePower = 10;
+        var startupTimestamp = DateTimeOffset.UtcNow.ToString("O");
         var guardianData = new JsonObject
         {
             ["guardianId"] = "guardian_<stable_slug_from_pending_guardian_creation>",
@@ -1799,13 +1806,13 @@ public partial class GameEngine
             {
                 ["currentReputation"] = 0,
                 ["reputationHistory"] = new JsonArray(),
-                ["lastInteraction"] = "startup_turn"
+                ["lastInteraction"] = null
             },
             ["abodePower"] = new JsonObject
             {
-                ["currentPower"] = 10,
-                ["tier"] = "Зарождающаяся",
-                ["lastUpdatedAt"] = "<current turn timestamp or turn marker>",
+                ["currentPower"] = startupAbodePower,
+                ["tier"] = AbodePowerRules.GetTierLabel(startupAbodePower),
+                ["lastUpdatedAt"] = startupTimestamp,
                 ["history"] = new JsonArray()
             },
             ["guardianRelationships"] = new JsonArray(),
