@@ -210,6 +210,43 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_OutdoorLocationMissingBiome_ReportsSpecificRepairableIssue()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 5,
+            characterDescription: "Лира Сурожская, молодая следопытка.",
+            worldDescription: "Пограничная деревня у сырого леса и заброшенной сторожки.",
+            startingCircumstances: "Лира выходит из охотничьего двора к лесной дороге.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-06T04:00:00Z"));
+
+        var currentLocation = files["game_state/world/current_location.json"]!.AsObject();
+        currentLocation["type"] = "outdoor";
+        currentLocation["locationType"] = "outdoor";
+        currentLocation.Remove("biome");
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Северная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        var biomeIssue = Assert.Single(issues, issue =>
+            string.Equals(issue.FilePath, "game_state/world/current_location.json.biome", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal("location_outdoor_biome_missing", biomeIssue.Code);
+        Assert.Equal("Location", biomeIssue.Section);
+        Assert.Contains("TemperateForest", biomeIssue.Expected, StringComparison.Ordinal);
+        Assert.Contains("canonical biome", biomeIssue.RepairHint, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_CanonicalFactionWithOnlyTemporaryIdentity_ReportsBlockingIssue()
     {
         await _fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", new JsonObject

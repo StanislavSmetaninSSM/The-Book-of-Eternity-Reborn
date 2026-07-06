@@ -1817,6 +1817,7 @@ When validation reports `current_location_unknown_location_id`, `npc_unknown_cur
 2. If durable, register the destination in `game_state/world/world_map.json` first.
    - Use one stable `locationId`.
    - Add visible name, region, description, exits/adjacency, required arrays, difficulty profiles, and unique coordinates.
+   - If `type`/`locationType` is `outdoor`, add a canonical `biome`: `TemperateForest`, `ColdForest`, `Swamp`, `Urban`, `Plains`, `Mountains`, `Desert`, `Coast`, or `Unique`. For `Unique`, also add `biomeDescription`.
    - Avoid duplicate coordinates with existing locations and same-turn new locations.
 
 3. Only after registration, update `game_state/world/current_location.json`.
@@ -1840,6 +1841,7 @@ When validation reports `current_location_unknown_location_id`, `npc_unknown_cur
   "displayName": "<visible Russian name>",
   "region": "<region or settlement>",
   "type": "indoor",
+  "biome": null,
   "description": "<what the player can see and use here>",
   "coordinates": { "x": 0, "y": 0, "z": 0 },
   "exits": [
@@ -1869,6 +1871,8 @@ When validation reports `current_location_unknown_location_id`, `npc_unknown_cur
   "lastEventsDescription": "<what just happened here>"
 }
 ```
+
+For an outdoor location, set both `type` and `locationType` to `outdoor`, replace `biome: null` with a canonical biome value, and add `biomeDescription` only when the biome is `Unique`.
 
 ## Minimal world-map link preview
 

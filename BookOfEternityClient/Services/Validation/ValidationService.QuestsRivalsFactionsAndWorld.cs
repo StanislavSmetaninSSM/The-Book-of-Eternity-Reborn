@@ -460,7 +460,12 @@ public partial class ValidationService
             issues.Add(new ValidationIssue(
                 $"{context}.biome",
                 IssueSeverity.Error,
-                "Outdoor location обязан содержать biome"));
+                "Outdoor location обязан содержать biome",
+                code: "location_outdoor_biome_missing",
+                section: "Location",
+                expected: string.Join(" | ", AllowedOutdoorBiomes),
+                actual: "missing",
+                repairHint: "Выбери canonical biome из Block 20.5, подходящий сцене outdoor-локации. Для уникальной среды используй biome=Unique и добавь biomeDescription."));
         }
         else if (string.Equals(locationType, "outdoor", StringComparison.OrdinalIgnoreCase))
         {

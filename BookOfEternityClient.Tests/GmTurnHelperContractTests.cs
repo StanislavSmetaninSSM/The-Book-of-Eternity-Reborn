@@ -1518,6 +1518,8 @@ public sealed class GmTurnHelperContractTests
             afterlifeChronicleTemplate,
             StringComparison.Ordinal);
         Assert.Contains("activeThreats", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("canonical `biome`", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("TemperateForest", locationTemplate, StringComparison.Ordinal);
         Assert.Contains("adjacencyMap", locationTemplate, StringComparison.Ordinal);
         Assert.Contains("locationStorages", locationTemplate, StringComparison.Ordinal);
         Assert.Contains("internalDifficultyProfile", locationTemplate, StringComparison.Ordinal);
@@ -3332,6 +3334,8 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("known ids", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("duplicate coordinates", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("narrative color", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("canonical `biome`", template, StringComparison.Ordinal);
+            Assert.Contains("TemperateForest", template, StringComparison.Ordinal);
         }
         finally
         {

@@ -1289,6 +1289,7 @@ public partial class GameEngine
                string.Equals(issue.Code, "location_missing_active_threat_array", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "location_missing_adjacency_array", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "location_missing_difficulty_profile", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "location_outdoor_biome_missing", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "location_missing_storage_array", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "world_map_new_link_missing_required_fields", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "world_map_new_location_coordinates_duplicate_same_turn", StringComparison.OrdinalIgnoreCase) ||
@@ -2234,6 +2235,7 @@ public partial class GameEngine
                 "game_state/world/current_location.json must reference a known world_map location id, name, region, description, exits, and last-events summary.",
                 "Durable location objects must carry required arrays/collections: knownExits, adjacencyMap, factionControl, locationStorages, and activeThreats. Use [] for empty locationStorages/activeThreats/adjacencyMap when no entries exist.",
                 "Durable location objects must carry both internalDifficultyProfile and externalDifficultyProfile with combat/environment/social/exploration facets.",
+                "Every outdoor durable/current location must carry a canonical biome value: TemperateForest, ColdForest, Swamp, Urban, Plains, Mountains, Desert, Coast, or Unique. Use biomeDescription when biome is Unique.",
                 "World-map link previews must include targetName, targetCoordinates, estimatedInternalDifficultyProfile, and estimatedExternalDifficultyProfile.",
                 "NPC currentLocationId values must point only to known ids from world_map; same-turn scene color should not invent canonical ids.",
                 "Same-turn world_map new location coordinates must be unique and must not conflict with existing map coordinates."
@@ -2253,6 +2255,7 @@ public partial class GameEngine
                 "For a durable destination, create or repair the world_map entry first, including stable id, visible name, description, region, exits, and unique coordinates.",
                 "Patch required arrays on every durable/current location object: knownExits, adjacencyMap, factionControl, locationStorages, and activeThreats.",
                 "Patch difficulty profile objects on every durable/current location object before completing repair.",
+                "Patch biome on every outdoor durable/current location before completing repair; choose the canonical biome that matches the scene, and add biomeDescription for Unique.",
                 "Patch each world-map link preview with targetName, targetCoordinates, and both estimated difficulty profiles.",
                 "After the map entry exists, update current_location.json and any moved NPC currentLocationId/currentLocationName to the known id/name.",
                 "For duplicate same-turn coordinates, assign unique coordinates before completing repair.",
