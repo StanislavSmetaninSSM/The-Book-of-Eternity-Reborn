@@ -2512,6 +2512,45 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Combat_DefeatedEnemiesRenderAsCompletedEncounter()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/combat/enemies.json", new
+        {
+            enemiesData = new[]
+            {
+                new
+                {
+                    enemyId = "enemy_gray_forest_creature_001",
+                    name = "Серая лесная тварь",
+                    type = "beast",
+                    status = "defeated",
+                    currentHealth = "0%",
+                    currentPoise = "0%",
+                    maxPoise = "100%",
+                    description = "Тварь добита и больше не представляет угрозы."
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/combat/allies.json", new { alliesData = Array.Empty<object>() });
+        await WriteJsonAsync("game_state/combat/combat_log.json", new
+        {
+            combat_log_markdown = "Бой окончен: тварь повержена."
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/бой");
+
+        Assert.Equal(string.Empty, result);
+        AssertNoHiddenExplorerErrors("combat_defeated_overview");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Сражение завершено", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Сражение активно", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("зверь", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("beast", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void ConsoleCombatSource_UsesSharedMortalCombatResultBuilder()
     {
         var source = File.ReadAllText(Path.Combine(

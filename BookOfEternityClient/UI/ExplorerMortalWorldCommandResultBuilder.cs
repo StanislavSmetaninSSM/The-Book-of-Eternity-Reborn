@@ -7421,6 +7421,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
         IReadOnlyList<CombatantSnapshot> allies,
         IReadOnlyList<CombatLogSnapshot> logEntries)
     {
+        var activeEnemyCount = enemies.Count(IsActiveCombatant);
+        var activeAllyCount = allies.Count(IsActiveCombatant);
+        var hasCombatants = enemies.Count > 0 || allies.Count > 0;
+        var hasActiveCombat = activeEnemyCount > 0;
+        var hasCompletedCombat = !hasActiveCombat && (hasCombatants || logEntries.Count > 0);
         var sections = new List<UiEntityDossierSection>
         {
             new()
@@ -7439,6 +7444,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
                         [
                             new UiKeyValueItem { Key = "Враги", Value = DescribeCombatCount(enemies.Count, "враг", "врага", "врагов") },
                             new UiKeyValueItem { Key = "Союзники", Value = DescribeCombatCount(allies.Count, "союзник", "союзника", "союзников") },
+                            new UiKeyValueItem { Key = "Активные противники", Value = DescribeCombatCount(activeEnemyCount, "противник", "противника", "противников") },
+                            new UiKeyValueItem { Key = "Активные союзники", Value = DescribeCombatCount(activeAllyCount, "союзник", "союзника", "союзников") },
                             new UiKeyValueItem { Key = "Боевой журнал", Value = DescribeCombatCount(logEntries.Count, "запись", "записи", "записей") }
                         ]
                     }
@@ -7452,7 +7459,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
             {
                 Id = "enemies",
                 Title = "Враги",
-                Summary = "Противники, которые сейчас участвуют в столкновении.",
+                Summary = activeEnemyCount > 0
+                    ? "Противники, которые сейчас участвуют в столкновении."
+                    : "Противники из последнего столкновения. Поверженные и выбывшие оставлены для контекста.",
                 Icon = "combat",
                 Collapsible = true,
                 InitiallyExpanded = true,
@@ -7492,16 +7501,22 @@ public static class ExplorerMortalWorldCommandResultBuilder
         {
             EntityType = "combat-overview",
             Title = "Боевая обстановка",
-            Subtitle = enemies.Count > 0 ? "Сражение активно" : "Обзор боя",
-            Summary = enemies.Count > 0
+            Subtitle = hasActiveCombat
+                ? "Сражение активно"
+                : hasCompletedCombat
+                    ? "Сражение завершено"
+                    : "Обзор боя",
+            Summary = hasActiveCombat
                 ? "Здесь собраны участники текущего столкновения, их намерения и последние события боя."
-                : "Данных о текущем сражении пока нет.",
+                : hasCompletedCombat
+                    ? "Текущая угроза закрыта; ниже сохранены участники и журнал последнего столкновения."
+                    : "Данных о текущем сражении пока нет.",
             Badges =
             [
                 new UiEntityBadge
                 {
                     Label = DescribeCombatCount(enemies.Count, "враг", "врага", "врагов"),
-                    Tone = enemies.Count > 0 ? UiTone.Warning : UiTone.Muted,
+                    Tone = activeEnemyCount > 0 ? UiTone.Warning : UiTone.Muted,
                     Icon = "combat"
                 },
                 new UiEntityBadge
@@ -7513,6 +7528,60 @@ public static class ExplorerMortalWorldCommandResultBuilder
             ],
             Sections = sections
         };
+    }
+
+    private static bool IsActiveCombatant(CombatantSnapshot combatant)
+    {
+        var status = FirstCombatNodeString(combatant.Node, "status", "currentCondition", "state");
+        if (IsTerminalCombatStatus(status))
+            return false;
+
+        var health = FirstCombatNodeString(combatant.Node, "currentHealth", "health", "hp", "healthPercentage");
+        if (IsZeroCombatResource(health))
+            return false;
+
+        return true;
+    }
+
+    private static bool IsTerminalCombatStatus(string status)
+    {
+        var normalized = status.Trim().ToLowerInvariant();
+        return normalized is
+            "dead" or
+            "defeated" or
+            "down" or
+            "inactive" or
+            "resolved" or
+            "retreated" or
+            "fled" or
+            "escaped" or
+            "surrendered" or
+            "повержен" or
+            "повержена" or
+            "побежден" or
+            "побеждён" or
+            "мертв" or
+            "мёртв" or
+            "убит" or
+            "сбежал" or
+            "сбежала" or
+            "отступил" or
+            "отступила";
+    }
+
+    private static bool IsZeroCombatResource(string value)
+    {
+        var trimmed = value.Trim();
+        if (string.IsNullOrWhiteSpace(trimmed))
+            return false;
+
+        trimmed = trimmed.TrimEnd('%').Trim();
+        return double.TryParse(
+            trimmed,
+            System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture,
+            out var parsed) &&
+            parsed <= 0;
     }
 
     private static UiEntityDossierBlock BuildCombatantOverviewCard(CombatantSnapshot combatant, string role)
@@ -8345,6 +8414,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "moderate" => "средняя угроза",
             "weak" => "слабая угроза",
             "frail" => "хрупкая цель",
+            "beast" => "зверь",
+            "creature" => "тварь",
+            "humanoid" => "гуманоид",
+            "undead" => "нежить",
+            "wounded_scavenger" => "раненый падальщик",
             "shield" => "щит",
             "support" => "поддержка",
             "healer" => "целитель",
