@@ -5877,7 +5877,10 @@ public partial class ValidationService
 
             foreach (var npc in entries.OfType<JsonObject>())
             {
-                var currentNpcId = GetNodeString(npc["npcId"]) ?? GetNodeString(npc["NPCId"]);
+                var currentNpcId = GetNodeString(npc["npcId"])
+                    ?? GetNodeString(npc["NPCId"])
+                    ?? GetNodeString(npc["id"])
+                    ?? GetNodeString(npc["initialId"]);
                 if (string.Equals(currentNpcId, npcId, StringComparison.OrdinalIgnoreCase))
                     return npc;
             }

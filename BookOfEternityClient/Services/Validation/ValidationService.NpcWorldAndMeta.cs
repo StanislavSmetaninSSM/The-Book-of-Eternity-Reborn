@@ -958,7 +958,7 @@ public partial class ValidationService
 
             foreach (var item in arr.EnumerateArray())
             {
-                var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id");
+                var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id", "initialId");
                 var name = GetFirstNonEmptyString(item, "name", "npcName", "NPCName");
                 if (!string.IsNullOrWhiteSpace(npcId) && !string.IsNullOrWhiteSpace(name))
                     aliases[npcId] = name;
@@ -1015,7 +1015,7 @@ public partial class ValidationService
                 if (item.ValueKind != JsonValueKind.Object)
                     continue;
 
-                var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id");
+                var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id", "initialId");
                 if (!string.IsNullOrWhiteSpace(npcId))
                     map[npcId] = (item, itemContext);
             }
@@ -4162,7 +4162,7 @@ public partial class ValidationService
             return;
         }
 
-        var npcId = GetFirstNonEmptyString(npc, "npcId", "NPCId") ?? "";
+        var npcId = GetFirstNonEmptyString(npc, "npcId", "NPCId", "id", "initialId") ?? "";
         var normalizedMerchantProfile = ResolveNormalizedMerchantProfileForValidation(npc);
         var hasTradeInventory = npc.TryGetProperty("tradeInventory", out var tradeInventory) && tradeInventory.ValueKind == JsonValueKind.Object;
         var tradeCycleId = hasTradeInventory ? GetFirstNonEmptyString(tradeInventory, "tradeCycleId") ?? "" : "";

@@ -11,6 +11,83 @@ namespace BookOfEternityClient.UI;
 
 public partial class ExplorerMode
 {
+    private async Task ShowNpcTradeCommand()
+    {
+        var npcId = _currentCommandRemainder.Trim();
+        if (!string.IsNullOrWhiteSpace(npcId))
+        {
+            await ShowNpcTradePanel(npcId);
+            return;
+        }
+
+        var doc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_core.json");
+        if (doc == null)
+        {
+            ShowEmptyPanel("Торговля с НПС", "Торговцы не обнаружены");
+            return;
+        }
+
+        var npcs = CollectNpcListEntries(doc);
+        if (npcs.Count == 0)
+        {
+            ShowEmptyPanel("Торговля с НПС", "Торговцы не обнаружены");
+            return;
+        }
+
+        var renameMap = BuildNpcRenameMap(doc);
+        var (currentLocationId, currentLocationName) = await ReadCurrentLocationIdentityAsync();
+        var merchantChoices = new List<(string Label, string NpcId)>();
+
+        foreach (var npc in npcs)
+        {
+            var trade = NpcTradeService.EvaluateTradeAvailability(npc, currentLocationId, currentLocationName);
+            if (!trade.IsMerchant)
+                continue;
+
+            var id = GetPrimaryNpcId(npc);
+            if (string.IsNullOrWhiteSpace(id))
+                continue;
+
+            var name = ResolveNpcDisplayName(npc, renameMap);
+            var status = trade.TradeAvailable
+                ? "доступна"
+                : trade.BlockReason ?? "сейчас недоступна";
+            merchantChoices.Add((
+                ConsoleLayout.PlainChoiceLabel(
+                    $"🛒 {name}",
+                    trade.MerchantProfileDisplay,
+                    status),
+                id));
+        }
+
+        if (merchantChoices.Count == 0)
+        {
+            ShowEmptyPanel("Торговля с НПС", "В текущей сцене нет НПС с торговой витриной");
+            return;
+        }
+
+        while (true)
+        {
+            var choices = merchantChoices.Select(static item => item.Label).ToList();
+            choices.Add("← Назад");
+            var selected = Prompt(new SelectionPrompt<string>()
+                .Title("[bold purple]🛒 Торговля с НПС[/]  [dim](выберите торговца)[/]")
+                .PageSize(12)
+                .HighlightStyle(new Style(Color.Purple))
+                .AddChoices(choices));
+
+            if (selected == "← Назад")
+                return;
+
+            var index = choices.IndexOf(selected);
+            if (index < 0 || index >= merchantChoices.Count)
+                return;
+
+            await ShowNpcTradePanel(merchantChoices[index].NpcId);
+            Clear();
+        }
+    }
+
     private async Task ShowNpcTradePanel(string npcId)
     {
         if (_npcTradeService == null)

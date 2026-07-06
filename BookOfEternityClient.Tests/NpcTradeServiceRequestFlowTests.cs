@@ -44,6 +44,25 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureTradeInventoryAsync_SameTurnInitialIdMerchant_CreatesPendingRequestForInitialId()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: false, includeTradeReceipt: false, useSameTurnInitialId: true);
+
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
+        var view = await service.EnsureTradeInventoryAsync("npc_merchant_initial_001", currentTurn: 7);
+
+        Assert.NotNull(view);
+        Assert.False(view!.InventoryReady);
+        Assert.True(view.InventoryRequestPending);
+        Assert.True(view.InventoryRequestCreatedThisCall);
+
+        var pendingRaw = await _fs.ReadFileAsync(NpcTradeRequestState.PendingRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("\"npcId\": \"npc_merchant_initial_001\"", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains("\"tradeCycleId\": \"world_trade_0\"", pendingRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task EnsureTradeInventoryAsync_MatchingInventoryAndReceipt_ReturnsReadyAndClearsPendingRequest()
     {
         await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);
@@ -246,7 +265,12 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
         Assert.True(_fs.FileExists(NpcTradeRequestState.PendingRequestPath));
     }
 
-    private async Task SeedBaseStateAsync(bool includeTradeInventory, bool includeTradeReceipt, bool includeSellableInventoryItem = false, bool includeBuybackInventory = false)
+    private async Task SeedBaseStateAsync(
+        bool includeTradeInventory,
+        bool includeTradeReceipt,
+        bool includeSellableInventoryItem = false,
+        bool includeBuybackInventory = false,
+        bool useSameTurnInitialId = false)
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
@@ -501,11 +525,14 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
             """
             : "";
 
+        var npcIdLiteral = useSameTurnInitialId ? "null" : "\"npc_merchant_001\"";
+
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", $$"""
         {
           "UpdateNPCs": [
             {
-              "npcId": "npc_merchant_001",
+              "npcId": {{npcIdLiteral}},
+              "initialId": "npc_merchant_initial_001",
               "name": "Марек",
               "currentLocationId": "loc_market_square",
               "currentLocation": "Рыночная площадь",

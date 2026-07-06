@@ -1995,7 +1995,8 @@ internal static class GuardianPolicyContracts
     {
         return GetStringValue(npc["NPCId"]) ??
                GetStringValue(npc["npcId"]) ??
-               GetStringValue(npc["id"]);
+               GetStringValue(npc["id"]) ??
+               GetStringValue(npc["initialId"]);
     }
 
     private static string? GetStringValue(JsonNode? node)

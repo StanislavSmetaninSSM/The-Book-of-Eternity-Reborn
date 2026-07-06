@@ -164,7 +164,7 @@ public partial class ExplorerMode
             ("inventory_drop", ShowInventory),
             ("inventory_split", ShowInventory),
             ("inventory_merge", ShowInventory),
-            ("npc_trade", ShowNPCs),
+            ("npc_trade", ShowNpcTradeCommand),
             ("world_news", ShowWorldNews),
             ("rival_threads", ShowRivalSoulThreads),
             ("guardian_corrections", ShowGuardianCorrections),

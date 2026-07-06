@@ -60,6 +60,35 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_PendingNpcTradeRequestWithSameTurnInitialId_DoesNotFailUnknownNpc()
+    {
+        var request = new
+        {
+            requestId = "npc_trade_req_initial_001",
+            npcId = "npc_merchant_initial_001",
+            npcName = "Марек",
+            merchantProfile = "GeneralGoods",
+            tradeCycleId = "world_trade_0",
+            derivedTradeSlotCount = 7,
+            createdAtTurn = 7,
+            createdAtUtc = "2026-03-28T00:00:00Z",
+            createdAtWorldDate = 100,
+            refreshAfterWorldDate = 43200
+        };
+
+        await SeedBaseStateAsync(
+            includeTradeInventory: false,
+            includeTradeReceipt: false,
+            useSameTurnInitialId: true);
+        await WriteJsonAsync(NpcTradeRequestState.PendingRequestPath, new { requests = new[] { request } });
+
+        var issues = await InvokeValidationAsync("ValidatePendingNpcTradeInventoryRequestContextAsync");
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "npc_trade_request_unknown_npc", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_PreTurnNpcTradeRequestWithInventoryButWithoutReceipt_FailsResolutionContract()
     {
         var request = new
@@ -276,7 +305,11 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
         Assert.Contains(issues, issue => string.Equals(issue.Code, "npc_buyback_entry_item_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task SeedBaseStateAsync(bool includeTradeInventory, bool includeTradeReceipt, string buybackBlock = "")
+    private async Task SeedBaseStateAsync(
+        bool includeTradeInventory,
+        bool includeTradeReceipt,
+        string buybackBlock = "",
+        bool useSameTurnInitialId = false)
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
         {
@@ -466,11 +499,14 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
             """
             : "";
 
+        var npcIdLiteral = useSameTurnInitialId ? "null" : "\"npc_merchant_001\"";
+
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", $$"""
         {
           "UpdateNPCs": [
             {
-              "npcId": "npc_merchant_001",
+              "npcId": {{npcIdLiteral}},
+              "initialId": "npc_merchant_initial_001",
               "name": "Марек",
               "currentLocationId": "loc_market_square",
               "currentLocation": "Рыночная площадь",

@@ -1378,7 +1378,8 @@ private async Task ShowNPCs()
     {
         return GetStr(item, "NPCId",
             GetStr(item, "npcId",
-                GetStr(item, "id", "")));
+                GetStr(item, "id",
+                    GetStr(item, "initialId", ""))));
     }
 
 

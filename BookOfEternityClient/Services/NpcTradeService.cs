@@ -1330,7 +1330,11 @@ public sealed partial class NpcTradeService
     };
 
     private static string GetNpcIdentity(JsonObject npc) =>
-        GetNodeString(npc["NPCId"]) ?? GetNodeString(npc["npcId"]) ?? GetNodeString(npc["id"]) ?? "";
+        GetNodeString(npc["NPCId"])
+        ?? GetNodeString(npc["npcId"])
+        ?? GetNodeString(npc["id"])
+        ?? GetNodeString(npc["initialId"])
+        ?? "";
 
     private static string SanitizeId(string value)
     {
