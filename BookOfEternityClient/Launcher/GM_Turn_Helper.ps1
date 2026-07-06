@@ -270,6 +270,235 @@ function Add-BoeJsonArrayItem {
     return ,$arrayValue
 }
 
+function Test-BoeJsonTextEquals {
+    param(
+        [AllowNull()]
+        [object]$Left,
+
+        [AllowNull()]
+        [object]$Right
+    )
+
+    if ($null -eq $Left -or $null -eq $Right) {
+        return $false
+    }
+
+    return [string]::Equals([string]$Left, [string]$Right, [System.StringComparison]::OrdinalIgnoreCase)
+}
+
+function Get-BoeFirstNonEmptyJsonString {
+    param(
+        [AllowNull()]
+        [object]$Object,
+
+        [Parameter(Mandatory = $true)]
+        [string[]]$Names
+    )
+
+    foreach ($name in @($Names)) {
+        $value = Get-BoeJsonValue -Object $Object -Names @($name)
+        if ($null -ne $value -and ![string]::IsNullOrWhiteSpace([string]$value)) {
+            return [string]$value
+        }
+    }
+
+    return ""
+}
+
+function Find-BoeNpcTradeRequest {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$PendingRoot,
+
+        [Parameter(Mandatory = $true)]
+        [string]$RequestId
+    )
+
+    foreach ($request in @(Get-BoeJsonArrayItems -Value (Get-BoeJsonValue -Object $PendingRoot -Names @("requests")))) {
+        $candidateRequestId = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("requestId")
+        if (Test-BoeJsonTextEquals -Left $candidateRequestId -Right $RequestId) {
+            return $request
+        }
+    }
+
+    $singleRequestId = Get-BoeFirstNonEmptyJsonString -Object $PendingRoot -Names @("requestId")
+    if (Test-BoeJsonTextEquals -Left $singleRequestId -Right $RequestId) {
+        return $PendingRoot
+    }
+
+    return $null
+}
+
+function Find-BoeCanonicalNpcObject {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$NpcRoot,
+
+        [Parameter(Mandatory = $true)]
+        [string]$NpcId
+    )
+
+    foreach ($arrayName in @("NPCsInScene", "npcs", "UpdateNPCs", "NPCs", "characters", "actors")) {
+        foreach ($npc in @(Get-BoeJsonArrayItems -Value (Get-BoeJsonValue -Object $NpcRoot -Names @($arrayName)))) {
+            $candidateId = Get-BoeFirstNonEmptyJsonString -Object $npc -Names @("NPCId", "npcId", "id", "initialId")
+            if (Test-BoeJsonTextEquals -Left $candidateId -Right $NpcId) {
+                return $npc
+            }
+        }
+    }
+
+    return $null
+}
+
+function Normalize-BoeNpcTradeItem {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Item,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Request,
+
+        [Parameter(Mandatory = $true)]
+        [int]$Index
+    )
+
+    $requestProfile = Get-BoeFirstNonEmptyJsonString -Object $Request -Names @("merchantProfile")
+    if ([string]::IsNullOrWhiteSpace($requestProfile)) {
+        throw "NPC trade request is missing merchantProfile."
+    }
+
+    $itemData = Get-BoeJsonValue -Object $Item -Names @("itemData")
+    if ($null -eq $itemData) {
+        throw "NPC trade item #$Index is missing itemData."
+    }
+
+    $itemId = Get-BoeFirstNonEmptyJsonString -Object $Item -Names @("itemId")
+    if ([string]::IsNullOrWhiteSpace($itemId)) {
+        $itemId = Get-BoeFirstNonEmptyJsonString -Object $itemData -Names @("itemId", "id")
+        if (![string]::IsNullOrWhiteSpace($itemId)) {
+            Set-BoeJsonProperty -Object $Item -Name "itemId" -Value $itemId
+        }
+    }
+
+    if ([string]::IsNullOrWhiteSpace($itemId)) {
+        throw "NPC trade item #$Index must define itemId either on the slot or itemData."
+    }
+
+    if ([string]::IsNullOrWhiteSpace((Get-BoeFirstNonEmptyJsonString -Object $itemData -Names @("itemId", "id")))) {
+        Set-BoeJsonProperty -Object $itemData -Name "itemId" -Value $itemId
+    }
+
+    $slotId = Get-BoeFirstNonEmptyJsonString -Object $Item -Names @("slotId")
+    if ([string]::IsNullOrWhiteSpace($slotId)) {
+        $requestId = Get-BoeFirstNonEmptyJsonString -Object $Request -Names @("requestId")
+        $slotId = "$requestId-slot-$Index"
+        Set-BoeJsonProperty -Object $Item -Name "slotId" -Value $slotId
+    }
+
+    $itemProfile = Get-BoeFirstNonEmptyJsonString -Object $Item -Names @("merchantProfile")
+    if ([string]::IsNullOrWhiteSpace($itemProfile)) {
+        Set-BoeJsonProperty -Object $Item -Name "merchantProfile" -Value $requestProfile
+    }
+    elseif (!(Test-BoeJsonTextEquals -Left $itemProfile -Right $requestProfile)) {
+        throw "NPC trade item #$Index merchantProfile '$itemProfile' does not match request merchantProfile '$requestProfile'."
+    }
+
+    if ($null -eq (Get-BoeJsonValue -Object $Item -Names @("soldOut"))) {
+        Set-BoeJsonProperty -Object $Item -Name "soldOut" -Value $false
+    }
+
+    $price = Get-BoeJsonValue -Object $Item -Names @("price")
+    if ($null -eq $price) {
+        $itemDataPrice = Get-BoeJsonValue -Object $itemData -Names @("price")
+        if ($null -ne $itemDataPrice) {
+            Set-BoeJsonProperty -Object $Item -Name "price" -Value $itemDataPrice
+        }
+    }
+
+    if ($null -eq (Get-BoeJsonValue -Object $Item -Names @("price"))) {
+        throw "NPC trade item #$Index is missing price."
+    }
+
+    return $Item
+}
+
+function Complete-BoeNpcTradeInventoryRequest {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RequestId,
+
+        [Parameter(Mandatory = $true)]
+        [object[]]$Items,
+
+        [string]$GenerationTradeTier = "Good",
+
+        [string]$PricingTradeTier = "Neutral"
+    )
+
+    if ([string]::IsNullOrWhiteSpace($RequestId)) {
+        throw "RequestId is required for Complete-BoeNpcTradeInventoryRequest."
+    }
+
+    $pendingRoot = Read-BoeJson -RelativePath "game_state/control/pending_npc_trade_inventory_requests.json"
+    $request = Find-BoeNpcTradeRequest -PendingRoot $pendingRoot -RequestId $RequestId
+    if ($null -eq $request) {
+        throw "NPC trade request not found: $RequestId"
+    }
+
+    $npcId = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("npcId")
+    if ([string]::IsNullOrWhiteSpace($npcId)) {
+        throw "NPC trade request '$RequestId' is missing npcId."
+    }
+
+    $npcRoot = Read-BoeJson -RelativePath "game_state/npcs/npc_core.json"
+    $npc = Find-BoeCanonicalNpcObject -NpcRoot $npcRoot -NpcId $npcId
+    if ($null -eq $npc) {
+        throw "NPC trade request '$RequestId' references unknown NPC '$npcId'. Same-turn NPCs may expose this identity as initialId; ensure npc_core.json contains NPCId, npcId, id, or initialId."
+    }
+
+    $expectedCountRaw = Get-BoeJsonValue -Object $request -Names @("derivedTradeSlotCount") -Default 0
+    $expectedCount = [int]$expectedCountRaw
+    $itemList = New-Object System.Collections.Generic.List[object]
+    $index = 1
+    foreach ($item in @($Items)) {
+        $itemList.Add((Normalize-BoeNpcTradeItem -Item $item -Request $request -Index $index))
+        $index++
+    }
+
+    if ($expectedCount -gt 0 -and $itemList.Count -ne $expectedCount) {
+        throw "NPC trade request '$RequestId' expects $expectedCount trade items, but helper received $($itemList.Count)."
+    }
+
+    $createdAtWorldDateRaw = Get-BoeJsonValue -Object $request -Names @("createdAtWorldDate") -Default 0
+    $refreshAfterWorldDateRaw = Get-BoeJsonValue -Object $request -Names @("refreshAfterWorldDate") -Default 0
+    $createdAtTurnRaw = Get-BoeJsonValue -Object $request -Names @("createdAtTurn") -Default 0
+    $tradeInventory = [ordered]@{
+        tradeCycleId = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("tradeCycleId")
+        generatedAtWorldDate = [int]$createdAtWorldDateRaw
+        refreshAfterWorldDate = [int]$refreshAfterWorldDateRaw
+        generationTradeTier = $GenerationTradeTier
+        pricingTradeTier = $PricingTradeTier
+        items = [object[]]$itemList.ToArray()
+    }
+
+    Set-BoeJsonProperty -Object $npc -Name "tradeInventory" -Value $tradeInventory
+
+    $receipt = [ordered]@{
+        requestId = $RequestId
+        npcId = $npcId
+        npcName = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("npcName")
+        tradeCycleId = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("tradeCycleId")
+        merchantProfile = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("merchantProfile")
+        status = "ready"
+        itemCount = $itemList.Count
+        resolvedAtTurn = [int]$createdAtTurnRaw
+        resolvedAtUtc = [DateTimeOffset]::UtcNow.ToString("O")
+    }
+
+    $null = Add-BoeJsonArrayItem -Object $npcRoot -PropertyName "UpdateNpcTradeInventoryReceipts" -Item $receipt -UniqueBy "requestId"
+    Write-BoeJson -RelativePath "game_state/npcs/npc_core.json" -Data $npcRoot -Depth 100
+}
+
 function Normalize-BoeRelativePath {
     param(
         [AllowNull()]

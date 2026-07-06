@@ -1247,6 +1247,104 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void Helper_CompleteBoeNpcTradeInventoryRequestFindsSameTurnInitialIdAndWritesReceipt()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-npc-trade-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "npcs"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_npc_trade_inventory_requests.json"),
+                """
+                {
+                  "requests": [
+                    {
+                      "requestId": "npc_trade_req_egor_001",
+                      "npcId": "npc_egor_frontier_trader",
+                      "npcName": "Егор",
+                      "merchantProfile": "GeneralGoods",
+                      "tradeCycleId": "world_trade_0",
+                      "derivedTradeSlotCount": 2,
+                      "createdAtTurn": 8,
+                      "createdAtUtc": "2026-07-06T00:00:00Z",
+                      "createdAtWorldDate": 100,
+                      "refreshAfterWorldDate": 43200
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "npcs", "npc_core.json"),
+                """
+                {
+                  "NPCsInScene": [
+                    {
+                      "npcId": null,
+                      "initialId": "npc_egor_frontier_trader",
+                      "npcName": "Егор",
+                      "name": "Егор",
+                      "tradeState": {
+                        "canTrade": true,
+                        "merchantProfile": "GeneralGoods"
+                      }
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                "$ErrorActionPreference = 'Stop'",
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$items = @(" +
+                    "[ordered]@{ itemId = 'npc_item_egor_bread'; price = 12; itemData = [ordered]@{ itemId = 'npc_item_egor_bread'; name = 'Дорожный хлеб'; description = 'Плотная буханка для дороги.'; type = 'Food'; tradeItemClass = 'Functional'; quality = 'Common'; price = 10; baseSellPrice = 4; weight = '0.2'; group = 'Еда' } }, " +
+                    "[ordered]@{ slotId = 'npc_trade_slot_custom'; itemId = 'npc_item_egor_lantern'; price = 25; merchantProfile = 'GeneralGoods'; soldOut = $false; itemData = [ordered]@{ itemId = 'npc_item_egor_lantern'; name = 'Масляный фонарь'; description = 'Простой фонарь для темных дорог.'; type = 'Tool'; tradeItemClass = 'FlavorOrUtility'; quality = 'Common'; price = 22; baseSellPrice = 8; weight = '0.7'; group = 'Инструменты' } })",
+                "Complete-BoeNpcTradeInventoryRequest -RequestId 'npc_trade_req_egor_001' -Items $items -GenerationTradeTier 'Good' -PricingTradeTier 'Neutral'"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.True(string.IsNullOrWhiteSpace(result.StdErr), result.StdErr);
+
+            using var document = JsonDocument.Parse(File.ReadAllText(Path.Combine(session, "game_state", "npcs", "npc_core.json"), Encoding.UTF8));
+            var npcRoot = document.RootElement;
+            var npc = npcRoot.GetProperty("NPCsInScene")[0];
+            var tradeInventory = npc.GetProperty("tradeInventory");
+            Assert.Equal("world_trade_0", tradeInventory.GetProperty("tradeCycleId").GetString());
+            Assert.Equal(100, tradeInventory.GetProperty("generatedAtWorldDate").GetInt32());
+            Assert.Equal(43200, tradeInventory.GetProperty("refreshAfterWorldDate").GetInt32());
+            Assert.Equal("Good", tradeInventory.GetProperty("generationTradeTier").GetString());
+            Assert.Equal("Neutral", tradeInventory.GetProperty("pricingTradeTier").GetString());
+            Assert.Equal(2, tradeInventory.GetProperty("items").GetArrayLength());
+            Assert.Equal("GeneralGoods", tradeInventory.GetProperty("items")[0].GetProperty("merchantProfile").GetString());
+            Assert.False(tradeInventory.GetProperty("items")[0].GetProperty("soldOut").GetBoolean());
+
+            var receipt = npcRoot.GetProperty("UpdateNpcTradeInventoryReceipts")[0];
+            Assert.Equal("npc_trade_req_egor_001", receipt.GetProperty("requestId").GetString());
+            Assert.Equal("npc_egor_frontier_trader", receipt.GetProperty("npcId").GetString());
+            Assert.Equal("Егор", receipt.GetProperty("npcName").GetString());
+            Assert.Equal("world_trade_0", receipt.GetProperty("tradeCycleId").GetString());
+            Assert.Equal("GeneralGoods", receipt.GetProperty("merchantProfile").GetString());
+            Assert.Equal("ready", receipt.GetProperty("status").GetString());
+            Assert.Equal(2, receipt.GetProperty("itemCount").GetInt32());
+            Assert.Equal(8, receipt.GetProperty("resolvedAtTurn").GetInt32());
+            Assert.False(string.IsNullOrWhiteSpace(receipt.GetProperty("resolvedAtUtc").GetString()));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonPrompt_ExposesSessionLocalGmTurnHelper()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -1259,6 +1357,9 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("Get-BoeJsonValue", daemon, StringComparison.Ordinal);
         Assert.Contains("Set-BoeJsonProperty", daemon, StringComparison.Ordinal);
         Assert.Contains("Add-BoeJsonArrayItem", daemon, StringComparison.Ordinal);
+        Assert.Contains("Complete-BoeNpcTradeInventoryRequest", daemon, StringComparison.Ordinal);
+        Assert.Contains("@('NPCId','npcId','id','initialId')", daemon, StringComparison.Ordinal);
+        Assert.Contains("UpdateNpcTradeInventoryReceipts", daemon, StringComparison.Ordinal);
         Assert.Contains("mutable JSON-like objects that preserve arrays", daemon, StringComparison.Ordinal);
         Assert.Contains("$object.newField = <value>", daemon, StringComparison.Ordinal);
         Assert.Contains("optional or differently cased JSON fields", daemon, StringComparison.Ordinal);

@@ -175,3 +175,37 @@ NPC trade MUST use `game_state/core/player_status.json.money`, not Ink Feathers.
 - If the player later asks this merchant about an item bought from that local stock, the merchant knows the item and may explain its practical use, origin, or reputation.
 - Special off-menu goods may still exist through roleplay. Those are separate from the local panel.
 - Mundane local goods without bonus arrays are valid and expected. Do not assume every local stock item is a build-oriented reward item.
+
+## Closing a pending NPC trade inventory request with the GM helper
+
+When `game_state/control/pending_npc_trade_inventory_requests.json` exists, use the session-local GM helper instead of manually searching and wiring receipts.
+This is especially important for same-turn NPCs: the merchant can be present in `npc_core.json` only through `initialId`, before the canonical id is promoted.
+
+```powershell
+. "$GameSessionPath\gm_turn_helper.bootstrap.ps1"
+Initialize-BoeGmTurnHelper -GameSessionPath $GameSessionPath
+
+$items = @(
+  [ordered]@{
+    itemId = "npc_item_egor_bread"
+    price = 12
+    itemData = [ordered]@{
+      itemId = "npc_item_egor_bread"
+      name = "Дорожный хлеб"
+      description = "Плотная буханка для дороги."
+      type = "Food"
+      tradeItemClass = "Functional"
+      quality = "Common"
+      price = 10
+      baseSellPrice = 4
+      weight = "0.2"
+      group = "Еда"
+    }
+  }
+)
+
+Complete-BoeNpcTradeInventoryRequest -RequestId "npc_trade_req_egor_001" -Items $items -GenerationTradeTier "Good" -PricingTradeTier "Neutral"
+Complete-BoeTurn -FilesModified @("game_state/npcs/npc_core.json")
+```
+
+`Complete-BoeNpcTradeInventoryRequest` reads the pending request, finds the NPC by `NPCId`, `npcId`, `id`, or `initialId`, writes `npc.tradeInventory`, and appends the matching `UpdateNpcTradeInventoryReceipts` entry with `requestId`, `npcId`, `tradeCycleId`, `merchantProfile`, `itemCount`, `resolvedAtTurn`, and `resolvedAtUtc`.

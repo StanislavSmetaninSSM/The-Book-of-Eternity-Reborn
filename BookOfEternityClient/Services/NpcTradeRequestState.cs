@@ -397,12 +397,13 @@ internal static class NpcTradeRequestState
         {
             "NPC TRADE INVENTORY REQUESTS:",
             $"There are {requests.Count} pending entries in pending_npc_trade_inventory_requests.json.",
-            "For each request, materialize explicit npc.tradeInventory for the requested world-time cycle and close it canonically through UpdateNpcTradeInventoryReceipts.",
-            "Each receipt must carry requestId, npcId, tradeCycleId, merchantProfile, itemCount, resolvedAtTurn, and resolvedAtUtc."
+            "Prefer the session-local GM helper instead of hand-editing the receipt path: dot-source gm_turn_helper.bootstrap.ps1, build an $items array, then call Complete-BoeNpcTradeInventoryRequest -RequestId '<requestId>' -Items $items.",
+            "The helper finds same-turn NPCs by NPCId/npcId/id/initialId, writes npc.tradeInventory for the requested world-time cycle, and closes the contract through UpdateNpcTradeInventoryReceipts.",
+            "If you cannot use the helper, each receipt must carry requestId, npcId, tradeCycleId, merchantProfile, itemCount, resolvedAtTurn, and resolvedAtUtc."
         };
 
         foreach (var request in requests.Take(5))
-            lines.Add($"- npcId={request.NpcId}, tradeCycleId={request.TradeCycleId}, merchantProfile={request.MerchantProfile}, npcName={request.NpcName}");
+            lines.Add($"- requestId={request.RequestId}, npcId={request.NpcId}, tradeCycleId={request.TradeCycleId}, merchantProfile={request.MerchantProfile}, npcName={request.NpcName}");
 
         return string.Join("\n", lines);
     }
