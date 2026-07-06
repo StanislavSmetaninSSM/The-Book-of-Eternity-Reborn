@@ -1647,6 +1647,7 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
 - Keep `relationshipLevel` numeric. For neutral/unknown NPCs use `0` and `attitude: "Neutral"`.
 - Nullable string fields must be either a real string or JSON `null`, not `{}` and not missing when validator names them.
 - Object-shaped fields must stay objects: `progressionTrackers`, `goals`, `relationshipLock`, `personalityTraits[]` entries.
+- `activeSkills` and `passiveSkills` must contain full skill objects, not string names. Put the visible name in `skillName`/`displayName`; active skills need action/combat fields, passive skills need type/group/bonus fields.
 
 ## Minimal safe NPC scene object
 

@@ -472,6 +472,89 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             string.Equals(issue.FilePath, "game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_NpcSkillStringEntries_ReportShapeIssuesInsteadOfThrowing()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Северная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "NPCsInScene": [
+            {
+              "NPCId": "npc_life_001_old_miron",
+              "name": "Старый Мирон",
+              "image_prompt": "old hunter mentor",
+              "rarity": "Common",
+              "worldview": "Осторожность важнее бравады.",
+              "personalityArchetype": "stern_practical_mentor",
+              "culturalStance": "Pragmatist",
+              "race": "Человек",
+              "class": "Охотник",
+              "appearanceDescription": "Седой охотник с дорожным ножом.",
+              "history": "Много лет водит артель по границе леса.",
+              "progressionType": "static_teacher_npc",
+              "currentLocationId": "loc_life_001_start",
+              "initialLocationId": null,
+              "age": 57,
+              "level": 2,
+              "experience": 0,
+              "experienceForNextLevel": 150,
+              "relationshipLevel": 0,
+              "attitude": "Нейтралитет",
+              "playerCompanionDirective": "not_companion",
+              "culturalLayer": "приграничная охотничья артель",
+              "personalityTraits": [],
+              "maxWeight": 35,
+              "totalWeight": 0,
+              "isOverloaded": false,
+              "progressionTrackers": {},
+              "plans": "Обучить Лиру осторожности.",
+              "personalQuests": [],
+              "relationshipLock": {
+                "isLocked": false,
+                "breakthroughQuestId": null
+              },
+              "characteristics": {
+                "strength": 12,
+                "dexterity": 13
+              },
+              "activeSkills": [
+                "Короткий выпад копьём"
+              ],
+              "passiveSkills": [
+                "Чтение следов"
+              ],
+              "equippedItems": {},
+              "fateCards": [],
+              "inventory": [],
+              "goals": {
+                "shortTerm": "Проверить готовность Лиры.",
+                "longTerm": "Сделать из Лиры осторожную следопытку."
+              }
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "expected_object", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("npc_core", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("activeSkills[0]", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "expected_object", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("npc_core", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("passiveSkills[0]", StringComparison.OrdinalIgnoreCase) &&
+            issue.RepairHint?.Contains("JSON object", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
     public void Dispose()
     {
         try

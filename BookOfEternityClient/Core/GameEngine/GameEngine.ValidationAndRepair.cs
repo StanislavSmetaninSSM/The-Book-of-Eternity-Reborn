@@ -1326,6 +1326,10 @@ public partial class GameEngine
         if (string.Equals(issue.Code, "npc_full_object_missing_required_fields", StringComparison.OrdinalIgnoreCase))
             return true;
 
+        if (string.Equals(issue.Code, "expected_object", StringComparison.OrdinalIgnoreCase) &&
+            IsMortalNpcSkillObjectRepairPath(issue.FilePath))
+            return true;
+
         var code = issue.Code ?? string.Empty;
         return code.StartsWith("npc_", StringComparison.OrdinalIgnoreCase) &&
                (code.Contains("object", StringComparison.OrdinalIgnoreCase) ||
@@ -1457,6 +1461,17 @@ public partial class GameEngine
 
         var normalized = path.Replace('\\', '/');
         return normalized.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMortalNpcSkillObjectRepairPath(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        var normalized = path.Replace('\\', '/');
+        return normalized.StartsWith("game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase) &&
+               (normalized.Contains(".activeSkills[", StringComparison.OrdinalIgnoreCase) ||
+                normalized.Contains(".passiveSkills[", StringComparison.OrdinalIgnoreCase));
     }
 
     private static bool IsAfterlifeSpiritualConflictActionCostRepairIssue(ValidationIssue issue)
@@ -2585,6 +2600,7 @@ public partial class GameEngine
             .ToList();
         var targetFiles = BuildMortalNpcTargetFiles(mortalNpcFullObjectErrors, includeNpcCoreWhenMissing: true);
         var missingFields = CollectRepairMissingFields(mortalNpcFullObjectErrors);
+        var hasMalformedSkillArrays = mortalNpcFullObjectErrors.Any(issue => IsMortalNpcSkillObjectRepairPath(issue.FilePath));
         var expectedShape = new List<string>
         {
             "Every meaningful Mortal World NPC update must materialize a full NPC object in game_state/npcs/npc_core.json.",
@@ -2607,6 +2623,12 @@ public partial class GameEngine
 
         if (missingFields.Contains("inventory", StringComparer.OrdinalIgnoreCase))
             steps.Add("For a newly created NPC without carried items, add inventory: [] rather than omitting the inventory field.");
+
+        if (hasMalformedSkillArrays)
+        {
+            expectedShape.Add("NPC activeSkills/passiveSkills arrays must contain full skill objects, not string names. Put names in skillName/displayName fields inside each object.");
+            steps.Add("Replace activeSkills/passiveSkills string names with full skill objects: active skills need skillName, skillDescription, rarity, actionCost, and combatEffect; passive skills need skillName, skillDescription, rarity, type/group, bonuses, and structuredBonuses/playerStatBonus where applicable.");
+        }
 
         steps.Add("After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json.");
 

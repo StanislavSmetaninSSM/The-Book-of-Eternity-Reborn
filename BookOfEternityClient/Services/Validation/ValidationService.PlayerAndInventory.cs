@@ -7392,7 +7392,13 @@ public partial class ValidationService
 
         var index = 0;
         foreach (var item in array.EnumerateArray())
-            validator(item, $"{context}[{index++}]", issues);
+        {
+            var itemContext = $"{context}[{index++}]";
+            if (!RequireObject(item, itemContext, issues))
+                continue;
+
+            validator(item, itemContext, issues);
+        }
     }
 
     private static bool LooksLikeEffectObject(JsonElement item)

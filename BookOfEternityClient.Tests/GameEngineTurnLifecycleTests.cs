@@ -2558,6 +2558,61 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalNpcSkillStringShapeErrors_AddsFullObjectHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/npcs/npc_core.json.NPCsInScene[0].activeSkills[0]",
+                IssueSeverity.Error,
+                "Элемент должен быть объектом",
+                code: "expected_object",
+                actor: "Старый Мирон",
+                section: "NPC",
+                expected: "JSON object",
+                actual: "String",
+                repairHint: "Исправь элемент до JSON object перед заполнением его обязательных полей."),
+            new(
+                "game_state/npcs/npc_core.json.NPCsInScene[0].passiveSkills[0]",
+                IssueSeverity.Error,
+                "Элемент должен быть объектом",
+                code: "expected_object",
+                actor: "Старый Мирон",
+                section: "NPC",
+                expected: "JSON object",
+                actual: "String",
+                repairHint: "Исправь элемент до JSON object перед заполнением его обязательных полей.")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_npc_full_object_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Старый Мирон", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("activeSkills/passiveSkills", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("full skill objects", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("activeSkills/passiveSkills", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("string names", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_MortalBootstrapMaterializationErrors_AddsHarnessPacket()
     {
         var engine = CreateGameEngine();
