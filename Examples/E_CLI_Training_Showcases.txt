@@ -17,7 +17,9 @@ Shared rules
 - `pending_training_showcase_requests.json` is a client-authored request file.
 - Every showcase must copy the requested `sourceActorSnapshotHash` into
   `trainingShowcase.sourceActorSnapshotHash`. If the teacher changes, the
-  client treats the showcase as stale and requests a refresh.
+  client treats the showcase as stale, marks it unavailable for purchase, and
+  requests a refresh. A stale cached showcase is not itself permission to edit
+  old purchase receipts.
 - During validation repair, when `harnessRepairPackets[].kind` is
   `training_showcase_snapshot_hash_repair`, apply
   `exactFieldCorrections[]` first. Set each listed
@@ -45,6 +47,11 @@ Shared rules
   `skillMasteryChanges`. Do not charge the player again.
 - GM does not grant mastery or standard spiritual-art progression through free
   prose when the player used the showcase. Use the request/receipt surfaces.
+- `trainingPurchaseReceipts` and `afterlifeTrainingPurchaseReceipts` are
+  client-owned purchase-time audit records. If the teacher or mentor changes
+  after the lesson, do not rewrite historical receipt hashes or costs just to
+  match the current profile; repair them only when validation reports a concrete
+  non-historical target/resource mismatch.
 - Free roleplay training remains valid. In afterlife, learning a new teachable
   special art through roleplay still uses `afterlifeSpecialArtLearningReceipts`;
   that receipt starts the learned art at tier 0 and never substitutes for a

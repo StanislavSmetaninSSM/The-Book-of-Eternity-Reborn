@@ -1907,6 +1907,7 @@ Use this before Mortal World turns that teach, unlock, practice, use, or improve
 - If the player learns a usable combat move or activated technique, write `activeSkillChanges` with a complete active skill object and initialize/update its mastery through `skillMasteryChanges`.
 - If the player uses an already-known active skill, update `skillMasteryChanges`; do not write mastery for a skill that is not already present in `game_state/player/skills_active.json` or added in the same turn.
 - If `game_state/control/pending_training_showcase_requests.json` contains requestKind `mortal_training_skill_evolution`, the client has already charged the paid lesson. Resolve it by writing the complete updated `activeSkillChanges` or `passiveSkillChanges` plus matching `skillMasteryChanges`; do not charge money/XP again and do not leave the level-up as prose only.
+- `trainingPurchaseReceipts` are client-owned historical audit records. Do not rewrite an old receipt only because the teacher profile changed after the paid lesson.
 - Do not imply a mechanical skill in player-facing prose unless the corresponding state is updated or the prose clearly says this is only early practice, not a learned skill yet.
 
 ## Files and response fields

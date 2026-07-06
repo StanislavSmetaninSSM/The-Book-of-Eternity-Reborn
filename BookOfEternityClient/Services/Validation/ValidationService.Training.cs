@@ -492,7 +492,8 @@ public partial class ValidationService
                 expectedHash,
                 actualHash ?? "missing",
                 $"Обнови витрину обучения по pending_training_showcase_requests.json и запиши свежий sourceActorSnapshotHash: {expectedHash}. Если профиль учителя меняется в этом же ремонте, сначала зафиксируй профиль, затем используй exactFieldCorrections[] из repair packet.",
-                issues);
+                issues,
+                IssueSeverity.Warning);
         }
     }
 
@@ -856,6 +857,17 @@ public partial class ValidationService
         bool isAfterlife,
         List<ValidationIssue> issues)
     {
+        var expectedHash = TrainingService.ComputeSourceSnapshotHash(JsonNode.Parse(sourceActor.GetRawText())!.AsObject());
+        var receiptHash = GetTrainingString(receipt, "sourceActorSnapshotHash");
+        if (!string.IsNullOrWhiteSpace(receiptHash) &&
+            !string.Equals(receiptHash, expectedHash, StringComparison.OrdinalIgnoreCase))
+        {
+            // Purchase receipts are historical client-owned audit records. If the
+            // teacher/mentor changed after purchase, the current showcase is no
+            // longer authoritative for that old receipt.
+            return;
+        }
+
         if (!sourceActor.TryGetProperty(showcaseProperty, out var showcase) ||
             showcase.ValueKind != JsonValueKind.Object)
         {
@@ -868,21 +880,6 @@ public partial class ValidationService
                 "Восстанови свежую витрину обучения или удали receipt, который невозможно проверить.",
                 issues);
             return;
-        }
-
-        var expectedHash = TrainingService.ComputeSourceSnapshotHash(JsonNode.Parse(sourceActor.GetRawText())!.AsObject());
-        var receiptHash = GetTrainingString(receipt, "sourceActorSnapshotHash");
-        if (!string.IsNullOrWhiteSpace(receiptHash) &&
-            !string.Equals(receiptHash, expectedHash, StringComparison.OrdinalIgnoreCase))
-        {
-            AddTrainingIssue(
-                $"{receiptContext}.sourceActorSnapshotHash",
-                "training_purchase_receipt_stale_source_actor_snapshot",
-                "Training receipt создан против устаревшего sourceActorSnapshotHash.",
-                expectedHash,
-                receiptHash,
-                "Пересоздай receipt из свежей витрины или откати неверную покупку.",
-                issues);
         }
 
         var offerId = GetTrainingString(receipt, "offerId");
@@ -1236,10 +1233,11 @@ public partial class ValidationService
         string expected,
         string actual,
         string repairHint,
-        List<ValidationIssue> issues) =>
+        List<ValidationIssue> issues,
+        IssueSeverity severity = IssueSeverity.Error) =>
         issues.Add(new ValidationIssue(
             filePath,
-            IssueSeverity.Error,
+            severity,
             message,
             code: code,
             expected: expected,

@@ -6,7 +6,7 @@
       "file": "E_CLI_Training_Showcases.txt",
       "statePath": "game_state/control/pending_training_showcase_requests.json",
       "responseSurface": "trainingShowcase / mentorTrainingShowcase",
-      "description": "Mortal teacher and afterlife mentor training vitrines, requested sourceActorSnapshotHash freshness, client-owned purchases, expensive self fallback multipliers, and afterlifeSpecialArtLearningReceipts limited to roleplay learning of new special arts."
+      "description": "Mortal teacher and afterlife mentor training vitrines, requested sourceActorSnapshotHash freshness, stale showcase purchase blocking, historical client-owned purchase receipts, expensive self fallback multipliers, and afterlifeSpecialArtLearningReceipts limited to roleplay learning of new special arts."
     },
     {
       "contractId": "mortal_teacher_showcase",

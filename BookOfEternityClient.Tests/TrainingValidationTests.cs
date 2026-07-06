@@ -163,6 +163,39 @@ public sealed class TrainingValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_MortalTeacherWithStaleShowcase_DoesNotReportBlockingStateError()
+    {
+        await WriteMortalTeacherWithStaleShowcaseAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Code, "training_showcase_stale_source_actor_snapshot", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            issue.Severity == IssueSeverity.Warning &&
+            string.Equals(issue.Code, "training_showcase_stale_source_actor_snapshot", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MortalHistoricalTrainingReceipt_DoesNotBecomeInvalidWhenTeacherChanges()
+    {
+        await WriteMortalTeacherWithHistoricalReceiptAfterTeacherChangeAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Code, "training_purchase_receipt_stale_source_actor_snapshot", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Code, "training_purchase_receipt_resource_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Code, "training_purchase_receipt_offer_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_MortalTrainingReceiptWithInitialIdTeacher_ResolvesSourceActor()
     {
         await WriteMortalInitialIdTeacherWithReceiptAsync();
@@ -504,6 +537,134 @@ public sealed class TrainingValidationTests : IDisposable
                 }
             }.ToJsonString());
     }
+
+    private async Task WriteMortalTeacherWithStaleShowcaseAsync()
+    {
+        await WriteMortalTrainingBaseStateAsync();
+
+        var teacher = BuildMortalTeacher();
+        var purchaseHash = TrainingService.ComputeSourceSnapshotHash(teacher);
+        teacher["trainingShowcase"] = BuildMortalTeacherShowcase(purchaseHash);
+        ((teacher["teacherProfile"]!["skills"] as JsonArray)![0] as JsonObject)!["masteryLevel"] = 4;
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject
+            {
+                ["UpdateNPCs"] = new JsonArray(teacher)
+            }.ToJsonString());
+    }
+
+    private async Task WriteMortalTeacherWithHistoricalReceiptAfterTeacherChangeAsync()
+    {
+        await WriteMortalTrainingBaseStateAsync();
+
+        var teacher = BuildMortalTeacher();
+        var purchaseHash = TrainingService.ComputeSourceSnapshotHash(teacher);
+        teacher["trainingShowcase"] = BuildMortalTeacherShowcase(purchaseHash);
+        ((teacher["teacherProfile"]!["skills"] as JsonArray)![0] as JsonObject)!["masteryLevel"] = 4;
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject
+            {
+                ["UpdateNPCs"] = new JsonArray(teacher),
+                ["trainingPurchaseReceipts"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["receiptId"] = "receipt_historical_teacher_change",
+                        ["realm"] = "mortal",
+                        ["sourceActorId"] = "npc_teacher_reina",
+                        ["offerId"] = "offer_knife_mastery_2",
+                        ["targetKind"] = "active_skill_mastery",
+                        ["targetId"] = "knife",
+                        ["targetValue"] = 2,
+                        ["sourceCap"] = 3,
+                        ["sourceActorSnapshotHash"] = purchaseHash,
+                        ["moneySpent"] = 120,
+                        ["currentLevelExperiencePercent"] = 15,
+                        ["currentLevelExperienceSpent"] = 150
+                    }
+                }
+            }.ToJsonString());
+    }
+
+    private async Task WriteMortalTrainingBaseStateAsync()
+    {
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            """
+            {
+              "currentRealm": "Eternia",
+              "soulName": "Тестовая душа"
+            }
+            """);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/core/player_status.json",
+            """
+            {
+              "name": "Асуран",
+              "level": 3,
+              "money": 500,
+              "health": 100,
+              "energy": 100,
+              "balance": 100,
+              "healthPercentage": 100,
+              "energyPercentage": 100,
+              "poisePercentage": 100
+            }
+            """);
+    }
+
+    private static JsonObject BuildMortalTeacher()
+    {
+        return new JsonObject
+        {
+            ["npcId"] = "npc_teacher_reina",
+            ["name"] = "Рейна Быстрый Нож",
+            ["teacherProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 45,
+                ["skills"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["skillId"] = "knife",
+                        ["skillName"] = "Ножевой бой",
+                        ["masteryLevel"] = 3
+                    }
+                }
+            }
+        };
+    }
+
+    private static JsonObject BuildMortalTeacherShowcase(string sourceActorSnapshotHash) =>
+        new()
+        {
+            ["realm"] = "mortal_world",
+            ["sourceActorId"] = "npc_teacher_reina",
+            ["sourceActorSnapshotHash"] = sourceActorSnapshotHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "offer_knife_mastery_2",
+                    ["targetKind"] = "active_skill_mastery",
+                    ["targetId"] = "knife",
+                    ["targetName"] = "Ножевой бой",
+                    ["currentValue"] = 1,
+                    ["targetValue"] = 2,
+                    ["sourceCap"] = 3,
+                    ["cost"] = new JsonObject
+                    {
+                        ["money"] = 120,
+                        ["currentLevelExperiencePercent"] = 15
+                    }
+                }
+            }
+        };
 
     private async Task WriteMortalInitialIdTeacherWithReceiptAsync()
     {
