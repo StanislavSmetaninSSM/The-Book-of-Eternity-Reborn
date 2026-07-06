@@ -49,6 +49,30 @@ public sealed class ConsoleNpcTradeCommandTests : IDisposable
 
     [Fact]
     [Trait("Category", "ConsoleNpcTrade")]
+    public async Task TryProcessCommand_NpcTradeWithNpcName_OpensTradePanel()
+    {
+        await SeedNpcTradeStateAsync();
+        await _stateManager.RefreshGameStateAsync();
+        var console = new TestExplorerConsole();
+        console.QueueSelection("Выберите раздел", "← Назад");
+        var explorer = new ExplorerMode(
+            _stateManager,
+            _fs,
+            new LocalizationManager(),
+            npcTradeService: new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance),
+            console: console);
+
+        var result = await explorer.TryProcessCommand("/торговля_нпс Марек");
+
+        Assert.Equal(string.Empty, result);
+        Assert.Contains(console.SelectionTitles, title => title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(console.SelectionChoicesHistory, entry =>
+            entry.Choices.Any(choice => choice.Contains("Купить товары", StringComparison.OrdinalIgnoreCase)));
+        Assert.DoesNotContain(console.MarkupLines, text => text.Contains("Не удалось загрузить витрину", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    [Trait("Category", "ConsoleNpcTrade")]
     public async Task TryProcessCommand_NpcTradeWithoutNpcId_SelectsMerchantAndOpensTradePanel()
     {
         await SeedNpcTradeStateAsync();
