@@ -205,6 +205,7 @@ internal static class AfterlifeEntityProfileState
         ApplySpecialArtLearningReceipts(result, currentRoot?[SpecialArtLearningReceiptsProperty]);
         ApplyProgressionOverrides(result, currentRoot?[ProgressionOverridesProperty]);
         commandAuthoredMentorShowcaseKeys.UnionWith(ApplyAutomaticProgression(result, progressionReportRoot));
+        NormalizeCustomStateProgressionRules(result);
         RefreshCommandAuthoredMentorShowcaseHashes(result, commandAuthoredMentorShowcaseKeys);
 
         result.Remove(UpdateProperty);
@@ -692,6 +693,34 @@ internal static class AfterlifeEntityProfileState
         states = new JsonArray();
         profile[CustomStatesProperty] = states;
         return states;
+    }
+
+    private static void NormalizeCustomStateProgressionRules(JsonObject root)
+    {
+        if (root[ProfilesProperty] is not JsonArray profiles)
+            return;
+
+        foreach (var profile in profiles.OfType<JsonObject>())
+        {
+            if (profile[CustomStatesProperty] is not JsonArray states)
+                continue;
+
+            foreach (var state in states.OfType<JsonObject>())
+            {
+                if (state["progressionRule"] is not JsonValue progressionRule ||
+                    !progressionRule.TryGetValue<string>(out var description) ||
+                    string.IsNullOrWhiteSpace(description))
+                {
+                    continue;
+                }
+
+                state["progressionRule"] = new JsonObject
+                {
+                    ["changePerTurn"] = 0,
+                    ["description"] = description.Trim()
+                };
+            }
+        }
     }
 
     private static string? BuildCustomStateIdentity(JsonObject state) =>

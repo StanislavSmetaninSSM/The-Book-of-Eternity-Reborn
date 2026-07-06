@@ -166,6 +166,62 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_WrapsAfterlifeCustomStateStringProgressionRule()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_archive",
+                  "displayName": "Хранитель Архива",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 0, "tier": 0 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "pressure": 0, "guard": 0 },
+                  "specialArts": [],
+                  "customStates": [
+                    {
+                      "stateId": "first_audit",
+                      "stateName": "Первичная оценка",
+                      "currentValue": 1,
+                      "minValue": 0,
+                      "maxValue": 3,
+                      "description": "Хранитель начал оценивать душу.",
+                      "progressionRule": "Повышается через осторожные вопросы.",
+                      "thresholds": []
+                    }
+                  ],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_guardian_archive",
+                    "summary": "Не тратит ресурсы автоматически.",
+                    "priorityOrder": []
+                  },
+                  "ledger": []
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        var state = Assert.Single(profile["customStates"]!.AsArray().OfType<JsonObject>());
+        var progressionRule = Assert.IsType<JsonObject>(state["progressionRule"]);
+        Assert.Equal(0, progressionRule["changePerTurn"]?.GetValue<int>());
+        Assert.Equal("Повышается через осторожные вопросы.", progressionRule["description"]?.GetValue<string>());
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_AppliesAfterlifeActorAgencyCommands()
     {
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
