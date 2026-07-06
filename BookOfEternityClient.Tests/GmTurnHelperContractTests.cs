@@ -3659,6 +3659,19 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonRepairPrompt_ExplainsMortalSkillProgressionShapePacket()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        Assert.Contains("mortal_skill_progression_shape_repair", daemon, StringComparison.Ordinal);
+        Assert.Contains("activeSkillChanges", daemon, StringComparison.Ordinal);
+        Assert.Contains("passiveSkillChanges", daemon, StringComparison.Ordinal);
+        Assert.Contains("skillMasteryChanges", daemon, StringComparison.Ordinal);
+        Assert.Contains("pending_training_showcase_requests.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("do not charge", daemon, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void DaemonContextPack_CopiesTrainingShowcaseExample()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");

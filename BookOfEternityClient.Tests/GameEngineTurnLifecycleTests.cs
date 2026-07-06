@@ -2340,6 +2340,71 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalSkillProgressionShapeErrors_AddsConcreteHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/player/skills_active.json.activeSkillChanges",
+                IssueSeverity.Error,
+                "activeSkillChanges должен быть массивом объектов.",
+                code: "expected_array_of_objects",
+                actor: "Ножевой бой",
+                section: "Skills.Active",
+                expected: "array<object>",
+                actual: "Object",
+                repairHint: "Запиши изменение навыка как массив объектов, даже если изменение одно."),
+            new(
+                "game_state/player/skill_mastery.json.skillMasteryChanges",
+                IssueSeverity.Error,
+                "skillMasteryChanges должен быть массивом.",
+                code: "expected_array",
+                actor: "Ножевой бой",
+                section: "Skills.Mastery",
+                expected: "JSON array",
+                actual: "Object",
+                repairHint: "Запиши изменение мастерства как массив, даже если изменение одно.")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 2 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_skill_progression_shape_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/control/pending_training_showcase_requests.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/player/skills_active.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/player/skills_passive.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("game_state/player/skill_mastery.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Ножевой бой", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("activeSkillChanges", StringComparison.OrdinalIgnoreCase) && item.Contains("array", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("skillMasteryChanges", StringComparison.OrdinalIgnoreCase) && item.Contains("array", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("pending_training_showcase_requests.json", StringComparison.OrdinalIgnoreCase));
+
+        var safeRules = packet.GetProperty("safeCorrectionRules").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(safeRules, item => item.Contains("Do not charge", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(safeRules, item => item.Contains("single object", StringComparison.OrdinalIgnoreCase) && item.Contains("array", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, item => item.Contains("pending_training_showcase_requests.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, item => item.Contains("wrap", StringComparison.OrdinalIgnoreCase) && item.Contains("array", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, item => item.Contains("Complete-BoeValidationRepair", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_EmptyRelevantActorsScopeError_AddsExecutableHarnessPacket()
     {
         var engine = CreateGameEngine();

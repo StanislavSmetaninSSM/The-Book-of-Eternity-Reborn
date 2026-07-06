@@ -1130,6 +1130,7 @@ public partial class GameEngine
         var mortalNpcRelationshipEnumErrors = errors.Where(IsMortalNpcRelationshipEnumRepairIssue).ToList();
         var mortalNpcReferenceErrors = errors.Where(IsMortalNpcReferenceRepairIssue).ToList();
         var mortalCombatStateErrors = errors.Where(IsMortalCombatStateRepairIssue).ToList();
+        var mortalSkillProgressionShapeErrors = errors.Where(IsMortalSkillProgressionShapeRepairIssue).ToList();
         var afterlifeChronicleStringArrayErrors = errors.Where(IsAfterlifeChronicleStringArrayRepairIssue).ToList();
         var guardianTradeInventoryResolutionErrors = errors.Where(IsGuardianTradeInventoryResolutionRepairIssue).ToList();
         var afterlifeActionCostErrors = errors.Where(IsAfterlifeSpiritualConflictActionCostRepairIssue).ToList();
@@ -1190,6 +1191,9 @@ public partial class GameEngine
 
         if (mortalCombatStateErrors.Count > 0)
             packets.Add(BuildMortalCombatStateRepairPacket(mortalCombatStateErrors));
+
+        if (mortalSkillProgressionShapeErrors.Count > 0)
+            packets.Add(BuildMortalSkillProgressionShapeRepairPacket(mortalSkillProgressionShapeErrors));
 
         if (mortalTrainingSkillEvolutionErrors.Count > 0)
             packets.Add(BuildMortalTrainingSkillEvolutionRepairPacket(mortalTrainingSkillEvolutionErrors));
@@ -1448,6 +1452,31 @@ public partial class GameEngine
     {
         return string.Equals(issue.Code, "skill_mastery_unknown_active_skill", StringComparison.OrdinalIgnoreCase) &&
                NormalizeRepairTargetPath(issue.FilePath).StartsWith("game_state/player/skill_mastery.json", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMortalSkillProgressionShapeRepairIssue(ValidationIssue issue)
+    {
+        var code = issue.Code ?? string.Empty;
+        if (!string.Equals(code, "expected_array", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(code, "expected_array_of_objects", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(code, "expected_string_array", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var path = (issue.FilePath ?? string.Empty).Replace('\\', '/');
+        if (!path.StartsWith("game_state/player/skills_active.json", StringComparison.OrdinalIgnoreCase) &&
+            !path.StartsWith("game_state/player/skills_passive.json", StringComparison.OrdinalIgnoreCase) &&
+            !path.StartsWith("game_state/player/skill_mastery.json", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return path.Contains("activeSkillChanges", StringComparison.OrdinalIgnoreCase) ||
+               path.Contains("passiveSkillChanges", StringComparison.OrdinalIgnoreCase) ||
+               path.Contains("skillMasteryChanges", StringComparison.OrdinalIgnoreCase) ||
+               path.Contains("removeActiveSkills", StringComparison.OrdinalIgnoreCase) ||
+               path.Contains("removePassiveSkills", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsTrainingShowcaseSnapshotRepairIssue(ValidationIssue issue)
@@ -2830,6 +2859,89 @@ public partial class GameEngine
         };
     }
 
+    private static ValidationRepairHarnessPacket BuildMortalSkillProgressionShapeRepairPacket(
+        IReadOnlyList<ValidationIssue> skillShapeErrors)
+    {
+        var targetFiles = skillShapeErrors
+            .Select(issue => NormalizeMortalSkillProgressionRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        foreach (var path in new[]
+                 {
+                     "game_state/control/pending_training_showcase_requests.json",
+                     "game_state/player/skills_active.json",
+                     "game_state/player/skills_passive.json",
+                     "game_state/player/skill_mastery.json"
+                 })
+        {
+            if (!targetFiles.Contains(path, StringComparer.OrdinalIgnoreCase))
+                targetFiles.Add(path);
+        }
+
+        var actorNames = CollectRepairActorNames(skillShapeErrors)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var exactFieldCorrections = skillShapeErrors
+            .Select(BuildExactFieldCorrection)
+            .Where(correction => !string.IsNullOrWhiteSpace(correction.Path))
+            .DistinctBy(correction => correction.Path, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(correction => correction.Path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "mortal_skill_progression_shape_repair",
+            Priority = "high",
+            Title = "Mortal skill progression array-shape repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string>
+            {
+                "Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md",
+                "Examples/E_CLI_Training_Showcases.txt"
+            },
+            CanonicalActorNames = actorNames,
+            ExactFieldCorrections = exactFieldCorrections,
+            ExpectedShape = new List<string>
+            {
+                "Mortal skill progression fields are always JSON arrays, even when the turn changes exactly one skill.",
+                "game_state/player/skills_active.json.activeSkillChanges, removeActiveSkills, and related active skill change fields must be arrays, not a single object.",
+                "game_state/player/skills_passive.json.passiveSkillChanges, removePassiveSkills, and related passive skill change fields must be arrays, not a single object.",
+                "game_state/player/skill_mastery.json.skillMasteryChanges must be an array, not a single mastery object.",
+                "If game_state/control/pending_training_showcase_requests.json contains requestKind = mortal_training_skill_evolution, use that pending paid request as authority for targetKind, targetName, currentLevel, nextLevel, and purchaseReceipt.",
+                "For an active skill unlock from paid training, write activeSkillChanges as an array with the complete active skill object and skillMasteryChanges as an array with the matching mastery entry.",
+                "For a passive skill unlock or passive mastery training, write passiveSkillChanges as an array and do not invent an active skill solely to satisfy skillMasteryChanges."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Do not charge money, experience, ink feathers, or any other currency again; a paid training showcase purchase already created the pending request and receipt.",
+                "If a field contains a valid single object where an array is expected, wrap that single object in an array instead of rewriting unrelated skill data.",
+                "Patch only the listed player skill files and the directly related pending training request evidence; do not rewrite unrelated NPCs, inventory, combat, map, or world state.",
+                "Preserve localized names, descriptions, structuredBonuses, playerStatBonus, mastery progress, sourceCap, and teacher identity while correcting array shape.",
+                "If details.targetKind in the pending request conflicts with the malformed file, follow details.targetKind and remove the malformed change from the wrong skill surface."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json first and inspect harnessRepairPackets[].exactFieldCorrections for the malformed paths.",
+                "Open game_state/control/pending_training_showcase_requests.json and check whether a requestKind = mortal_training_skill_evolution is still pending.",
+                "Open the listed player skill files: game_state/player/skills_active.json, game_state/player/skills_passive.json, and game_state/player/skill_mastery.json.",
+                "For each malformed activeSkillChanges, passiveSkillChanges, removeActiveSkills, removePassiveSkills, or skillMasteryChanges field, wrap a valid single object/value into an array or replace malformed scalar content with the correct empty array when validation expected an empty collection.",
+                "When a paid training request is pending, make the repaired skill change match details.targetKind: active targets use activeSkillChanges plus skillMasteryChanges; passive targets use passiveSkillChanges and no invented active skill.",
+                "Do not apply another purchase, refund, or new turn result; this repair only fixes the shape and placement of the already authored skill progression.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not leave activeSkillChanges, passiveSkillChanges, removeActiveSkills, removePassiveSkills, or skillMasteryChanges as a single object.",
+                "Do not delete pending_training_showcase_requests.json to silence the error.",
+                "Do not charge resources a second time or create a second training receipt.",
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer skill progression shape; use this packet, MORTAL_SKILL_PROGRESSION_TEMPLATE.md, Examples/E_CLI_Training_Showcases.txt, and canonical session files."
+            }
+        };
+    }
+
     private static ValidationRepairHarnessPacket BuildMortalTrainingSkillEvolutionRepairPacket(
         IReadOnlyList<ValidationIssue> skillEvolutionErrors)
     {
@@ -3487,6 +3599,21 @@ public partial class GameEngine
             return "game_state/npcs/npc_core.json";
         if (normalized.StartsWith("game_state/meta/afterlife_entity_profiles.json", StringComparison.OrdinalIgnoreCase))
             return "game_state/meta/afterlife_entity_profiles.json";
+        if (normalized.StartsWith("game_state/control/pending_training_showcase_requests.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/control/pending_training_showcase_requests.json";
+
+        return NormalizeRepairTargetPath(path);
+    }
+
+    private static string NormalizeMortalSkillProgressionRepairTargetPath(string path)
+    {
+        var normalized = path.Replace('\\', '/');
+        if (normalized.StartsWith("game_state/player/skills_active.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/player/skills_active.json";
+        if (normalized.StartsWith("game_state/player/skills_passive.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/player/skills_passive.json";
+        if (normalized.StartsWith("game_state/player/skill_mastery.json", StringComparison.OrdinalIgnoreCase))
+            return "game_state/player/skill_mastery.json";
         if (normalized.StartsWith("game_state/control/pending_training_showcase_requests.json", StringComparison.OrdinalIgnoreCase))
             return "game_state/control/pending_training_showcase_requests.json";
 
