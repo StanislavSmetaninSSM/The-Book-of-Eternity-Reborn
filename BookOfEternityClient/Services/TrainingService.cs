@@ -125,7 +125,11 @@ public sealed class TrainingService
         if (npcRoot == null)
             return new TrainingOperationResult(false, false, "Нет данных НПС для обучения.");
 
-        var teacher = EnumerateNpcObjects(npcRoot)
+        RefreshMortalShowcaseHashesForPendingRequests(
+            npcRoot,
+            await TrainingRequestState.ReadRequestsAsync(_fs));
+
+        var teacher = DeduplicateMortalTeachers(EnumerateNpcObjects(npcRoot).Where(IsMortalTeacher))
             .FirstOrDefault(npc => string.Equals(ResolveMortalTeacherActorId(npc), sourceActorId, StringComparison.OrdinalIgnoreCase));
         if (teacher == null)
             return new TrainingOperationResult(false, false, "Учитель не найден.");
@@ -351,13 +355,16 @@ public sealed class TrainingService
     private async Task<TrainingView> BuildMortalTrainingViewAsync(int currentTurn, bool createPendingRequests)
     {
         var npcRoot = await ReadObjectAsync(NpcCorePath);
+        var npcRootChanged = RefreshMortalShowcaseHashesForPendingRequests(
+            npcRoot,
+            await TrainingRequestState.ReadRequestsAsync(_fs));
         var teachers = new List<TrainingTeacherView>();
         var satisfiedRequests = new List<(string SourceActorId, string RequestKind)>();
         var requestPending = false;
         var requestCreated = false;
         string? pendingGmAction = null;
 
-        foreach (var teacher in EnumerateNpcObjects(npcRoot).Where(IsMortalTeacher))
+        foreach (var teacher in DeduplicateMortalTeachers(EnumerateNpcObjects(npcRoot).Where(IsMortalTeacher)))
         {
             var sourceActorId = ResolveMortalTeacherActorId(teacher);
             var sourceActorName = GetNodeString(teacher["name"]) ?? sourceActorId;
@@ -422,6 +429,8 @@ public sealed class TrainingService
 
         await ClearSatisfiedMortalSkillEvolutionRequestsAsync();
         await ClearSatisfiedTrainingShowcaseRequestsAsync(satisfiedRequests);
+        if (npcRootChanged && npcRoot != null)
+            await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
 
         return new TrainingView(
             RealmMortal,
@@ -1236,6 +1245,101 @@ public sealed class TrainingService
             foreach (var item in array.OfType<JsonObject>())
                 yield return item;
         }
+    }
+
+    private static IEnumerable<JsonObject> DeduplicateMortalTeachers(IEnumerable<JsonObject> teachers)
+    {
+        var deduplicated = new List<JsonObject>();
+        var indexByActorId = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var teacher in teachers)
+        {
+            var sourceActorId = ResolveMortalTeacherActorId(teacher);
+            if (string.IsNullOrWhiteSpace(sourceActorId))
+            {
+                deduplicated.Add(teacher);
+                continue;
+            }
+
+            if (!indexByActorId.TryGetValue(sourceActorId, out var existingIndex))
+            {
+                indexByActorId[sourceActorId] = deduplicated.Count;
+                deduplicated.Add(teacher);
+                continue;
+            }
+
+            if (GetMortalTeacherPriority(teacher) > GetMortalTeacherPriority(deduplicated[existingIndex]))
+                deduplicated[existingIndex] = teacher;
+        }
+
+        return deduplicated;
+    }
+
+    private static int GetMortalTeacherPriority(JsonObject teacher)
+    {
+        var score = 0;
+        if (!string.IsNullOrWhiteSpace(GetNodeString(teacher["npcId"])) ||
+            !string.IsNullOrWhiteSpace(GetNodeString(teacher["NPCId"])))
+        {
+            score += 20;
+        }
+
+        if (teacher["trainingShowcase"] is JsonObject showcase)
+        {
+            score += 10;
+            var actualHash = GetNodeString(showcase["sourceActorSnapshotHash"]);
+            var expectedHash = ComputeSourceSnapshotHash(teacher);
+            if (string.Equals(actualHash, expectedHash, StringComparison.OrdinalIgnoreCase))
+                score += 40;
+        }
+
+        score += teacher.Count;
+        return score;
+    }
+
+    private static bool RefreshMortalShowcaseHashesForPendingRequests(
+        JsonObject? npcRoot,
+        IReadOnlyList<TrainingRequestState.PendingTrainingShowcaseRequest> pendingRequests)
+    {
+        if (npcRoot == null || pendingRequests.Count == 0)
+            return false;
+
+        var changed = false;
+        foreach (var teacher in EnumerateNpcObjects(npcRoot).Where(IsMortalTeacher))
+        {
+            if (teacher["trainingShowcase"] is not JsonObject showcase)
+                continue;
+
+            var sourceActorId = ResolveMortalTeacherActorId(teacher);
+            if (string.IsNullOrWhiteSpace(sourceActorId))
+                continue;
+
+            var pending = pendingRequests.FirstOrDefault(request =>
+                string.Equals(request.RequestKind, MortalRequestKind, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(request.SourceActorId, sourceActorId, StringComparison.OrdinalIgnoreCase));
+            if (pending == null || string.IsNullOrWhiteSpace(pending.SourceActorSnapshotHash))
+                continue;
+
+            var showcaseRequestId = GetNodeString(showcase["requestId"]);
+            if (!string.IsNullOrWhiteSpace(showcaseRequestId) &&
+                !string.Equals(showcaseRequestId, pending.RequestId, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var actualHash = GetNodeString(showcase["sourceActorSnapshotHash"]);
+            if (!string.Equals(actualHash, pending.SourceActorSnapshotHash, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var expectedHash = ComputeSourceSnapshotHash(teacher);
+            if (string.Equals(actualHash, expectedHash, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            showcase["sourceActorSnapshotHash"] = expectedHash;
+            changed = true;
+        }
+
+        return changed;
     }
 
     private static IEnumerable<JsonObject> EnumerateAfterlifeProfiles(JsonObject? root)

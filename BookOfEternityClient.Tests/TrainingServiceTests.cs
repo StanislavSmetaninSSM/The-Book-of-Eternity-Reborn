@@ -43,6 +43,114 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureTrainingAsync_MortalPendingShowcaseRefreshesHashAndDeduplicatesTeacher()
+    {
+        await SeedMortalSoulStateAsync();
+
+        var baseTeacher = new JsonObject
+        {
+            ["npcId"] = "npc_selina_001",
+            ["initialId"] = "npc_selina_001",
+            ["name"] = "Наставница Селина",
+            ["teacherProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 0,
+                ["skills"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["skillId"] = "skill_diagnostics",
+                        ["skillName"] = "magical_diagnostics",
+                        ["displayName"] = "Магическая диагностика",
+                        ["skillKind"] = "active",
+                        ["masteryLevel"] = 2
+                    }
+                }
+            }
+        };
+        var requestedHash = TrainingService.ComputeSourceSnapshotHash(baseTeacher);
+
+        var currentTeacher = baseTeacher.DeepClone()!.AsObject();
+        currentTeacher["relationshipLevel"] = 0;
+        currentTeacher["role"] = "Частная наставница Асурэна";
+        currentTeacher["trainingShowcase"] = new JsonObject
+        {
+            ["requestId"] = "training_showcase_req_selina",
+            ["requestKind"] = "mortal_teacher_showcase",
+            ["sourceActorSnapshotHash"] = requestedHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "train_selina_diagnostics_1",
+                    ["targetId"] = "skill_diagnostics",
+                    ["targetName"] = "Магическая диагностика",
+                    ["targetKind"] = "active_skill_mastery",
+                    ["currentValue"] = 0,
+                    ["targetValue"] = 1,
+                    ["sourceCap"] = 2,
+                    ["cost"] = new JsonObject
+                    {
+                        ["money"] = 20,
+                        ["currentLevelExperiencePercent"] = 5
+                    },
+                    ["summary"] = "Селина показывает первую диагностическую печать."
+                }
+            }
+        };
+
+        await TrainingRequestState.WriteRequestsAsync(
+            _fs,
+            new[]
+            {
+                new TrainingRequestState.PendingTrainingShowcaseRequest(
+                    "training_showcase_req_selina",
+                    "mortal_teacher_showcase",
+                    "npc_selina_001",
+                    "Наставница Селина",
+                    "npc_teacher",
+                    "mortal",
+                    4,
+                    DateTime.UtcNow,
+                    requestedHash,
+                    "missing_showcase")
+            });
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject
+            {
+                ["NPCsInScene"] = new JsonArray(currentTeacher.DeepClone()),
+                ["UpdateNPCs"] = new JsonArray(currentTeacher.DeepClone())
+            }.ToJsonString());
+
+        var service = CreateService();
+        var view = await service.EnsureTrainingAsync(currentTurn: 4);
+
+        var teacher = Assert.Single(view.Teachers);
+        Assert.True(teacher.ShowcaseReady, teacher.BlockReason);
+        Assert.False(teacher.ShowcaseStale);
+        Assert.Single(teacher.Offers);
+        Assert.False(view.RequestPending);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+
+        var expectedHash = TrainingService.ComputeSourceSnapshotHash(currentTeacher);
+        using var npcDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? "{}");
+        Assert.Equal(
+            expectedHash,
+            npcDoc.RootElement.GetProperty("NPCsInScene")[0]
+                .GetProperty("trainingShowcase")
+                .GetProperty("sourceActorSnapshotHash")
+                .GetString());
+        Assert.Equal(
+            expectedHash,
+            npcDoc.RootElement.GetProperty("UpdateNPCs")[0]
+                .GetProperty("trainingShowcase")
+                .GetProperty("sourceActorSnapshotHash")
+                .GetString());
+    }
+
+    [Fact]
     public async Task BuyTrainingAsync_MortalLevelUpOffer_DeductsResourcesAndCreatesPendingGmEvolutionRequest()
     {
         await SeedMortalSoulStateAsync();
