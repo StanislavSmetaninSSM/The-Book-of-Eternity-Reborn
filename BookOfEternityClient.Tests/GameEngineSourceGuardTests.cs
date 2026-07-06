@@ -160,6 +160,21 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void MortalBootstrap_MustGrantStarterResourcesWhenPaidTrainingOrTradeIsRequested()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var triggerMethod = ExtractMethodSource(source, "private async Task<bool> CheckGmIncarnationTrigger(");
+        var scaffoldMethod = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
+
+        Assert.Contains("MortalBootstrapStateBuilder.InferStarterResourceGrant", triggerMethod, StringComparison.Ordinal);
+        Assert.Contains("starterResourceGrant.Money", triggerMethod, StringComparison.Ordinal);
+        Assert.DoesNotContain("money = 0", triggerMethod, StringComparison.Ordinal);
+        Assert.Contains("\"starterResourceRequirements\"", scaffoldMethod, StringComparison.Ordinal);
+        Assert.Contains("starter purse", scaffoldMethod, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("current-level XP", scaffoldMethod, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void MortalBootstrapScaffold_NpcCoreTopLevelCollectionsMustMatchValidatorFileContract()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");

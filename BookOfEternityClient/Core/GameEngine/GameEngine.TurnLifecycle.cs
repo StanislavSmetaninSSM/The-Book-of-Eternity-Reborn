@@ -2368,6 +2368,16 @@ public partial class GameEngine
             // Update soul state: switch realm to Mortal World and increment incarnation
             localStateMutated = true;
             var newIncarnationNumber = _stateManager.CurrentState.Incarnation + 1;
+            var starterResourceGrant = MortalBootstrapStateBuilder.InferStarterResourceGrant(
+                charDesc,
+                worldDesc,
+                circumstances);
+            if (starterResourceGrant.Money > 0 || starterResourceGrant.CurrentLevelExperience > 0)
+            {
+                parts.Add(
+                    $"Client starter resource grant for requested training/trade: {starterResourceGrant.Money} money and {starterResourceGrant.CurrentLevelExperience} current-level XP already exist in baseline; preserve them unless local purchase/training spends them.");
+            }
+
             if (!await UpdateSoulStateRealm("Mortal World", incrementIncarnation: true))
                 throw new InvalidOperationException("Не удалось безопасно обновить soul_state.currentRealm для начала новой смертной жизни.");
             await RefreshRuntimeStateAsync();
@@ -2383,7 +2393,7 @@ public partial class GameEngine
                 poisePercentage = "100%",
                 currentCondition = "Здоров",
                 activeConditions = Array.Empty<string>(),
-                money = 0
+                money = starterResourceGrant.Money
             };
             await _fs.WriteFileAtomicAsync("game_state/core/player_status.json",
                 JsonSerializer.Serialize(status, JsonOpts));
@@ -2643,6 +2653,10 @@ public partial class GameEngine
         string? startingCircumstances)
     {
         var idSuffix = $"life_{Math.Max(incarnationNumber, 1):D3}";
+        var starterResourceGrant = MortalBootstrapStateBuilder.InferStarterResourceGrant(
+            characterDescription,
+            worldDescription,
+            startingCircumstances);
         var root = new JsonObject
         {
             ["schemaVersion"] = 1,
@@ -2781,6 +2795,16 @@ public partial class GameEngine
                 ["showcaseLifecycle"] = "It is acceptable to omit trainingShowcase on the bootstrap turn: /обучение will then create game_state/control/pending_training_showcase_requests.json for a fresh mortal_teacher_showcase. It is not acceptable to omit teacherProfile for a narrated trainer.",
                 ["sourceCapRule"] = "Every future trainingShowcase offer sourceCap must be no higher than the matching teacherProfile.skills[] masteryLevel/currentMasteryLevel/maxMasteryLevel for that skill.",
                 ["playerFacingRule"] = "If the scene tells the player they can pay for a lesson, the /обучение command must list that teacher or a pending request for that teacher."
+            },
+            ["starterResourceRequirements"] = new JsonObject
+            {
+                ["purpose"] = "Prevent a fresh Mortal training/trade opening from becoming a dead local purchase path.",
+                ["trigger"] = "If the player-authored start mentions training, lessons, teachers, merchants, paid preparation, or trade, the client grants a small starter purse and, for training, current-level XP.",
+                ["starterMoney"] = starterResourceGrant.Money,
+                ["starterCurrentLevelExperience"] = starterResourceGrant.CurrentLevelExperience,
+                ["moneyPath"] = "game_state/core/player_status.json.money",
+                ["experiencePath"] = "game_state/player/experience.json.currentExperience",
+                ["gmRule"] = "Preserve these baseline resources unless the local training/trade systems spend them. Do not delete them as unexplained state, and do not charge the player again when resolving a paid-training evolution pending request."
             },
             ["canonicalShapeHints"] = new JsonObject
             {

@@ -30,6 +30,12 @@ Shared rules
   `pending_training_showcase_requests.json`, and deletes the file when no
   requests remain.
 - GM does not spend player currency.
+- During the first Mortal bootstrap, the client may grant a small starter purse
+  and current-level XP buffer when the player-authored start asks for training,
+  paid lessons, merchants, or trade. These resources live in
+  `game_state/core/player_status.json.money` and
+  `game_state/player/experience.json.currentExperience`. Preserve them as
+  client-owned baseline resources; do not delete them as unexplained state.
 - In afterlife showcase/self-training purchases, GM does not raise player tiers directly. The client applies standard spiritual-art, spirit_focus, and known special-art upgrades.
 - In Mortal World training, the client may apply only simple active-skill
   mastery progress that does not cross a threshold. If a paid lesson unlocks a

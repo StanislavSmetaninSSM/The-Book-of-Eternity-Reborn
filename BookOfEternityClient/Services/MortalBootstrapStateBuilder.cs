@@ -4,6 +4,11 @@ namespace BookOfEternityClient.Services;
 
 public static class MortalBootstrapStateBuilder
 {
+    private const int TrainingOrTradeStarterMoney = 100;
+    private const int TrainingStarterCurrentLevelExperience = 25;
+
+    public readonly record struct StarterResourceGrant(int Money, int CurrentLevelExperience);
+
     private static readonly string[] CodexCategoryOrder =
     [
         "cosmology",
@@ -43,6 +48,7 @@ public static class MortalBootstrapStateBuilder
         var shortCircumstances = TrimSentence(circumstances, 180);
         var turnAnchor = $"#[{turn}].";
         var starterPassiveSkills = BuildStarterPassiveSkills(character);
+        var starterResourceGrant = InferStarterResourceGrant(character, world, circumstances);
 
         return new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
         {
@@ -121,7 +127,7 @@ public static class MortalBootstrapStateBuilder
                 currentLocationId,
                 locationName,
                 shortCircumstances),
-            ["game_state/player/experience.json"] = BuildExperience(),
+            ["game_state/player/experience.json"] = BuildExperience(starterResourceGrant.CurrentLevelExperience),
             ["game_state/player/skills_active.json"] = BuildActiveSkills(),
             ["game_state/player/skills_passive.json"] = BuildPassiveSkills(starterPassiveSkills),
             ["game_state/player/skill_mastery.json"] = BuildSkillMastery(),
@@ -136,17 +142,66 @@ public static class MortalBootstrapStateBuilder
         };
     }
 
-    private static JsonObject BuildExperience() =>
-        new()
+    public static StarterResourceGrant InferStarterResourceGrant(
+        string? characterDescription,
+        string? worldDescription,
+        string? startingCircumstances)
+    {
+        var combined = string.Join(
+            ' ',
+            characterDescription ?? string.Empty,
+            worldDescription ?? string.Empty,
+            startingCircumstances ?? string.Empty);
+
+        var hasTrainingCue = ContainsAny(
+            combined,
+            "обуч",
+            "трениров",
+            "урок",
+            "настав",
+            "учител",
+            "витрин",
+            "teacher",
+            "mentor",
+            "training",
+            "lesson",
+            "apprentice");
+        var hasTradeCue = ContainsAny(
+            combined,
+            "торгов",
+            "купец",
+            "купить",
+            "прода",
+            "платн",
+            "merchant",
+            "trade",
+            "shop",
+            "buy",
+            "sell",
+            "paid");
+
+        if (!hasTrainingCue && !hasTradeCue)
+            return new StarterResourceGrant(0, 0);
+
+        return new StarterResourceGrant(
+            TrainingOrTradeStarterMoney,
+            hasTrainingCue ? TrainingStarterCurrentLevelExperience : 0);
+    }
+
+    private static JsonObject BuildExperience(int starterCurrentLevelExperience)
+    {
+        var starterExperience = Math.Clamp(starterCurrentLevelExperience, 0, 99);
+        return new JsonObject
         {
             ["playerLevel"] = 1,
             ["level"] = 1,
-            ["currentExperience"] = 0,
-            ["experience"] = 0,
-            ["totalExperience"] = 0,
+            ["currentExperience"] = starterExperience,
+            ["experience"] = starterExperience,
+            ["totalExperience"] = starterExperience,
             ["experienceForNextLevel"] = 100,
             ["experienceGained"] = 0
         };
+    }
 
     private static JsonObject BuildActiveSkills() =>
         new()

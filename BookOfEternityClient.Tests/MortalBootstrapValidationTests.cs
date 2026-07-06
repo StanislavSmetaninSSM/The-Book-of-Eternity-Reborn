@@ -111,6 +111,38 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Fact]
+    public void MortalBootstrapStateBuilder_AddsStarterExperienceBufferForPaidTrainingOrTradeStarts()
+    {
+        var paidStartFiles = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 4,
+            characterDescription: "Асурэн де Вальмонт, молодой аристократ-маг.",
+            worldDescription: "Столица Этернии с платными уроками навыков и купеческой торговлей.",
+            startingCircumstances: "За дверью ждёт наставница, которая продаёт первые уроки через витрину обучения, а рядом купец предлагает купить кинжал и бинты.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-06T02:00:00Z"));
+
+        var paidExperience = paidStartFiles["game_state/player/experience.json"];
+        Assert.Equal(25, paidExperience["currentExperience"]!.GetValue<int>());
+        Assert.Equal(25, paidExperience["experience"]!.GetValue<int>());
+        Assert.Equal(25, paidExperience["totalExperience"]!.GetValue<int>());
+        Assert.Equal(100, paidExperience["experienceForNextLevel"]!.GetValue<int>());
+        Assert.Equal(0, paidExperience["experienceGained"]!.GetValue<int>());
+
+        var plainStartFiles = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 4,
+            characterDescription: "Мирон, молодой архивариус-изгнанник.",
+            worldDescription: "Город-государство у болот и старых руин.",
+            startingCircumstances: "Мирон приходит в себя ночью в архивной башне после кражи запретной описи.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-06T02:00:00Z"));
+
+        var plainExperience = plainStartFiles["game_state/player/experience.json"];
+        Assert.Equal(0, plainExperience["currentExperience"]!.GetValue<int>());
+        Assert.Equal(0, plainExperience["experience"]!.GetValue<int>());
+        Assert.Equal(0, plainExperience["totalExperience"]!.GetValue<int>());
+    }
+
+    [Fact]
     public void MortalBootstrapStateBuilder_MaterializesExplicitTrackerCompetencyAsPassiveSkill()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
