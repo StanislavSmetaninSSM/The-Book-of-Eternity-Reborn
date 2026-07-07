@@ -26,8 +26,7 @@ public partial class ExplorerMode
             else
                 RenderMortalTrainingOverview(view);
 
-            MarkupLine("[yellow]⏳ Витрина обучения подготавливается. Запрос отправляется ГМ сейчас; дождитесь ответа и откройте /обучение снова.[/]");
-            WaitForKey();
+            MarkupLine("[yellow]⏳ Витрина обучения подготавливается. Запрос отправлен ГМ сейчас; дождитесь ответа и откройте /обучение снова.[/]");
             return;
         }
 

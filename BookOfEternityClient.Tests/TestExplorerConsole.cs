@@ -25,6 +25,7 @@ internal sealed class TestExplorerConsole : IExplorerConsole
     public List<string> SelectionTitles { get; } = new();
     public List<(string Title, IReadOnlyList<string> Choices)> SelectionChoicesHistory { get; } = new();
     public int ClearCalls { get; private set; }
+    public int ReadKeyCalls { get; private set; }
 
     public void Clear() => ClearCalls++;
 
@@ -89,6 +90,7 @@ internal sealed class TestExplorerConsole : IExplorerConsole
 
     public ConsoleKeyInfo ReadKey()
     {
+        ReadKeyCalls++;
         if (_readKeys.Count > 0)
             return _readKeys.Dequeue();
 

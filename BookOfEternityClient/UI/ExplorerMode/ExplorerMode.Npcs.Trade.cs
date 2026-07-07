@@ -212,8 +212,7 @@ public partial class ExplorerMode
 
             if (!view.InventoryReady && !string.IsNullOrWhiteSpace(view.PendingGmAction))
             {
-                MarkupLine("[yellow]⏳ Запрос на торговую витрину отправляется ГМ сейчас; дождитесь ответа и откройте торговлю снова.[/]");
-                WaitForKey();
+                MarkupLine("[yellow]⏳ Запрос на торговую витрину отправлен ГМ сейчас; дождитесь ответа и откройте торговлю снова.[/]");
                 return;
             }
 

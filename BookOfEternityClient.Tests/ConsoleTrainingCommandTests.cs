@@ -44,6 +44,7 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
         Assert.Contains("витрину обучения", result!, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(console.SelectionTitles, title => title.Contains("Выберите учителя", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(console.SelectionTitles, title => title.Contains("предложения", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(0, console.ReadKeyCalls);
     }
 
     public void Dispose()

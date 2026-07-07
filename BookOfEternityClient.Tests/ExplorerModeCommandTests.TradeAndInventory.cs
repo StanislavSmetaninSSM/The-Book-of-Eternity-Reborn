@@ -573,7 +573,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain(_console.SelectionChoicesHistory,
             entry => entry.Title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(_console.MarkupLines,
-            line => line.Contains("Запрос на торговую витрину отправляется ГМ сейчас", StringComparison.OrdinalIgnoreCase));
+            line => line.Contains("Запрос на торговую витрину отправлен ГМ сейчас", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

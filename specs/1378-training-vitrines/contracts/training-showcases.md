@@ -11,7 +11,7 @@
 
 1. Player opens `/обучение`.
 2. If a fresh teacher showcase exists in the current scene/location, the client renders offers.
-3. If no fresh showcase exists, the client creates or reuses `TrainingRefreshRequest` and immediately dispatches the dedicated GM action for that request. This must not wait for the player's next ordinary turn input.
+3. If no fresh showcase exists, the client creates or reuses `TrainingRefreshRequest` and immediately dispatches the dedicated GM action for that request. This must not wait for the player to close the command screen, press a key, or type the next ordinary turn input.
 4. GM closes the request by materializing teacher data and offers.
 5. Player purchases an available offer.
 6. Client deducts money and current-level XP progress, updates skill/mastery, and writes `TrainingPurchaseReceipt`.
@@ -21,7 +21,7 @@
 
 1. Player opens `/обучение` or `/духовные_искусства` mentor-training section.
 2. Client renders active mentor offers when fresh.
-3. If a mentor showcase is missing or stale, the client creates or reuses `TrainingRefreshRequest` and immediately dispatches the dedicated GM action for that request.
+3. If a mentor showcase is missing or stale, the client creates or reuses `TrainingRefreshRequest` and immediately dispatches the dedicated GM action for that request without requiring the player to close the command screen or press a key.
 4. Self-training fallback is always visible for legal already-known standard art/focus upgrades, with high multipliers.
 5. New special-art unlocks are hidden or locked unless a mentor/story/Shining source exists.
 6. Purchase writes receipt and deducts afterlife currencies.

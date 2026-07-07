@@ -67,6 +67,7 @@ public sealed class ConsoleNpcTradeCommandTests : IDisposable
         Assert.NotEqual(string.Empty, result);
         Assert.Contains(NpcTradeRequestState.ActionTag, result!, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(console.SelectionTitles, title => title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(0, console.ReadKeyCalls);
     }
 
     [Fact]
