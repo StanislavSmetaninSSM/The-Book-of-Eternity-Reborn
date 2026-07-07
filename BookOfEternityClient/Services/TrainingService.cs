@@ -78,6 +78,18 @@ public sealed class TrainingService
 
     public sealed record TrainingOperationResult(bool Success, bool StateChanged, string Message);
 
+    internal static bool NormalizeAfterlifeMentorShowcaseCosts(JsonObject profileRoot)
+    {
+        if (profileRoot[AfterlifeEntityProfileState.ProfilesProperty] is not JsonArray profiles)
+            return false;
+
+        var changed = false;
+        foreach (var profile in profiles.OfType<JsonObject>())
+            changed |= NormalizeAfterlifeMentorShowcaseCostsForProfile(profile);
+
+        return changed;
+    }
+
     private sealed record MortalTrainingApplicationPlan(
         bool RequiresGmEvolution,
         string Reason,
@@ -1828,7 +1840,7 @@ public sealed class TrainingService
         $"{request.SourceActorName} ({request.SourceActorId}). " +
         "Заполни mentorTrainingShowcase через afterlifeEntityProfileUpdates: предложения могут учить стандартным духовным искусствам, " +
         "Средоточию Души или прокачивать уже известные особые искусства; sourceCap не выше профиля наставника, " +
-        "sourceActorSnapshotHash должен совпасть с requested hash " +
+        "каждое предложение должно иметь cost с Чернильными Перьями/Искрами Света, sourceActorSnapshotHash должен совпасть с requested hash " +
         $"{request.SourceActorSnapshotHash}. Клиент сам спишет валюту и поднимет уровень после покупки.";
 
     private static bool IsExplicitPassiveMortalTrainingTarget(string targetKind) =>
@@ -1911,6 +1923,77 @@ public sealed class TrainingService
         }
 
         return 0;
+    }
+
+    private static bool NormalizeAfterlifeMentorShowcaseCostsForProfile(JsonObject mentor)
+    {
+        if (mentor["mentorTrainingShowcase"] is not JsonObject showcase ||
+            showcase["offers"] is not JsonArray offers)
+        {
+            return false;
+        }
+
+        var changed = false;
+        foreach (var offer in offers.OfType<JsonObject>())
+        {
+            if (HasPositiveTrainingCost(offer["cost"] as JsonObject))
+                continue;
+
+            if (!TryBuildDeterministicAfterlifeMentorCost(mentor, offer, out var cost))
+                continue;
+
+            offer["cost"] = cost;
+            changed = true;
+        }
+
+        return changed;
+    }
+
+    private static bool TryBuildDeterministicAfterlifeMentorCost(
+        JsonObject mentor,
+        JsonObject offer,
+        out JsonObject cost)
+    {
+        cost = new JsonObject();
+        var targetId = GetNodeString(offer["targetId"]) ?? "";
+        var targetKind = NormalizeAfterlifeTrainingTargetKind(
+            GetNodeString(offer["targetKind"]) ?? GetNodeString(offer["targetType"]),
+            targetId);
+        var targetValue = Math.Max(0, GetNodeInt(offer["targetValue"]));
+        if (string.IsNullOrWhiteSpace(targetId) || targetValue <= 0)
+            return false;
+
+        var baseInkFeatherCost = 0;
+        if (IsAfterlifeStandardArtTarget(targetKind))
+        {
+            var art = AfterlifeSpiritualConflictState.SpiritualArts.FirstOrDefault(candidate =>
+                string.Equals(candidate.ArtId, targetId, StringComparison.OrdinalIgnoreCase));
+            if (art != null)
+                baseInkFeatherCost = AfterlifeTrainingCostPolicy.ComputeStandardArtBaseInkFeatherCost(art, targetValue);
+        }
+        else if (IsAfterlifeSpiritFocusTarget(targetKind))
+        {
+            baseInkFeatherCost = AfterlifeTrainingCostPolicy.ComputeSpiritFocusBaseInkFeatherCost(targetValue);
+        }
+
+        if (baseInkFeatherCost <= 0)
+            return false;
+
+        var relationshipLevel = ResolveAfterlifeMentorRelationshipLevel(mentor);
+        cost["inkFeathers"] = AfterlifeTrainingCostPolicy.ComputeMentorCost(baseInkFeatherCost, relationshipLevel);
+        cost["lightSparks"] = 0;
+        return true;
+    }
+
+    private static bool HasPositiveTrainingCost(JsonObject? cost)
+    {
+        if (cost == null)
+            return false;
+
+        return GetNodeInt(cost["money"]) > 0 ||
+               GetNodeInt(cost["currentLevelExperiencePercent"]) > 0 ||
+               GetTrainingCostAmount(cost, "inkFeathers", "inkFeatherCost", "inkFeathersCost", "costInFeathers") > 0 ||
+               GetTrainingCostAmount(cost, "lightSparks", "lightSparkCost", "lightSparksCost", "costInLightSparks") > 0;
     }
 
     private static int FirstPositive(params int[] values)

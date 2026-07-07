@@ -1153,6 +1153,93 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_FillsMissingAfterlifeMentorShowcaseCostForDeterministicOffers()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var mentorProfile = JsonNode.Parse(
+            """
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_training_costs",
+              "displayName": "Хранитель Цен",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 0, "tier": 0 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "guard": 3 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "mentorProfile": {
+                "canTeach": true,
+                "relationshipLevel": 62,
+                "spiritFocusTier": 2
+              },
+              "ledger": [],
+              "mentorTrainingShowcase": {
+                "requestKind": "afterlife_teacher_showcase",
+                "sourceActorId": "guardian_training_costs",
+                "sourceActorSnapshotHash": "hash-before-normalization",
+                "offers": [
+                  {
+                    "offerId": "mentor_cost_guard_1",
+                    "targetKind": "standard_spiritual_art",
+                    "targetId": "guard",
+                    "targetName": "Защита",
+                    "currentValue": 0,
+                    "targetValue": 1,
+                    "sourceCap": 3
+                  },
+                  {
+                    "offerId": "mentor_cost_focus_1",
+                    "targetKind": "spirit_focus",
+                    "targetId": "spirit_focus",
+                    "targetName": "Средоточие Души",
+                    "currentValue": 0,
+                    "targetValue": 1,
+                    "sourceCap": 2,
+                    "cost": {}
+                  }
+                ]
+              }
+            }
+            """)!.AsObject();
+
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                [AfterlifeEntityProfileState.UpdateProperty] = new JsonArray(mentorProfile)
+            }.ToJsonString());
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        var offers = Assert.IsType<JsonArray>(profile["mentorTrainingShowcase"]?["offers"]);
+        var guardCost = Assert.IsType<JsonObject>(offers[0]?["cost"]);
+        var focusCost = Assert.IsType<JsonObject>(offers[1]?["cost"]);
+
+        var guardArt = Assert.Single(
+            AfterlifeSpiritualConflictState.SpiritualArts,
+            art => string.Equals(art.ArtId, "guard", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(
+            AfterlifeTrainingCostPolicy.ComputeMentorCost(
+                AfterlifeTrainingCostPolicy.ComputeStandardArtBaseInkFeatherCost(guardArt, 1),
+                relationshipLevel: 62),
+            guardCost["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(
+            AfterlifeTrainingCostPolicy.ComputeMentorCost(
+                AfterlifeTrainingCostPolicy.ComputeSpiritFocusBaseInkFeatherCost(1),
+                relationshipLevel: 62),
+            focusCost["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(0, guardCost["lightSparks"]?.GetValue<int>());
+        Assert.Equal(0, focusCost["lightSparks"]?.GetValue<int>());
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_RefreshesChangedProfileMentorShowcaseHashAfterAutoProgression()
     {
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);

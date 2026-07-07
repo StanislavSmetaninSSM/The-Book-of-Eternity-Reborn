@@ -78,9 +78,17 @@ Shared rules
   `MentorNeutralMultiplierPercent = 100`,
   `MentorGoodMultiplierPercent = 80`,
   `MentorExcellentMultiplierPercent = 60`.
-- When New Game starts with a named system Guardian, the client already creates
+- Every `trainingShowcase.offers[]` / `mentorTrainingShowcase.offers[]`
+  entry must include a positive `cost` object. The client owns the actual
+  purchase and spending, but the showcase still advertises the price the
+  player will see. For afterlife standard spiritual arts and `spirit_focus`,
+  the client can normalize a missing deterministic `cost` from the base price
+  and mentor relationship, but GM-authored examples and normal output should
+  include the explicit `cost`.
+- When New Game starts with a named system Guardian or a freeform Guardian
+  description, the client already creates
   a valid `game_state/meta/afterlife_entity_profiles.json` profile for the
-  matching `guard_system_*` actor. That profile is a starter mentor authority:
+  matching Guardian actor. That profile is a starter mentor authority:
   it has `mentorProfile.canTeach=true`, starter `standardArts`, a
   `progressionStrategy`, and `ledger`. Do not replace it with a bare profile or
   try to materialize the Guardian again. If `/обучение` requests an
@@ -101,7 +109,8 @@ When the GM prepares an afterlife mentor showcase, it may reference the player
 profile only for identity, visible story state, Fate Cards, relationships, and
 learned `specialArts[]`. It should not patch a purchase into the player profile.
 The accepted response below is correct because Liora's profile advertises the
-lesson, while the client later handles the player's purchase:
+lesson price, while the client later handles the player's purchase and actual
+currency spending:
 
 ```json
 {
@@ -122,6 +131,10 @@ lesson, while the client later handles the player's purchase:
             "targetId": "guard",
             "targetValue": 2,
             "sourceCap": 4,
+            "cost": {
+              "inkFeathers": 105,
+              "lightSparks": 0
+            },
             "description": "Лиора показывает, как принять удар поворотом света; покупку и списание выполнит клиент."
           }
         ]

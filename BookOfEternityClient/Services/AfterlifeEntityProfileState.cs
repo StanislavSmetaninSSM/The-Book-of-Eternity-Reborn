@@ -208,6 +208,7 @@ internal static class AfterlifeEntityProfileState
         NormalizeCustomStateProgressionRules(result);
         NormalizeRelationshipLocks(result);
         RefreshCommandAuthoredMentorShowcaseHashes(result, commandAuthoredMentorShowcaseKeys);
+        TrainingService.NormalizeAfterlifeMentorShowcaseCosts(result);
 
         result.Remove(UpdateProperty);
         result.Remove(ResponseProfilesProperty);
