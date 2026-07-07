@@ -628,6 +628,55 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_NormalizesAfterlifeRelationshipLockScaffold()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guard_freeform_selena_shadow_001",
+                  "displayName": "Хранительница Селена Теневая",
+                  "realm": "Chaos Sea",
+                  "relationships": [
+                    {
+                      "relationshipId": "selena_player_trust",
+                      "axis": "trust",
+                      "targetActorType": "player_soul",
+                      "targetActorId": "player_soul",
+                      "value": 25,
+                      "relationshipTier": "cautious_interest",
+                      "relationshipLock": {
+                        "lockState": "none",
+                        "direction": "none",
+                        "threshold": 50,
+                        "breakthroughQuestId": null,
+                        "evidence": "Первая встреча прошла без нарушения границ."
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        var relationship = Assert.Single(profile["relationships"]!.AsArray().OfType<JsonObject>());
+        var relationshipLock = Assert.IsType<JsonObject>(relationship["relationshipLock"]);
+        Assert.Equal("positive", relationshipLock["direction"]?.GetValue<string>());
+        Assert.Equal("Отношение не заблокировано, но наблюдается в положительном направлении.", relationshipLock["reason"]?.GetValue<string>());
+        Assert.Equal("Первая встреча прошла без нарушения границ.", relationshipLock["evidence"]?.GetValue<string>());
+        Assert.Equal(0, relationshipLock["updatedAtTurn"]?.GetValue<int>());
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_AppliesAfterlifeActorMaskCommands()
     {
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);

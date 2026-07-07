@@ -206,6 +206,7 @@ internal static class AfterlifeEntityProfileState
         ApplyProgressionOverrides(result, currentRoot?[ProgressionOverridesProperty]);
         commandAuthoredMentorShowcaseKeys.UnionWith(ApplyAutomaticProgression(result, progressionReportRoot));
         NormalizeCustomStateProgressionRules(result);
+        NormalizeRelationshipLocks(result);
         RefreshCommandAuthoredMentorShowcaseHashes(result, commandAuthoredMentorShowcaseKeys);
 
         result.Remove(UpdateProperty);
@@ -721,6 +722,101 @@ internal static class AfterlifeEntityProfileState
                 };
             }
         }
+    }
+
+    private static void NormalizeRelationshipLocks(JsonObject root)
+    {
+        if (root[ProfilesProperty] is not JsonArray profiles)
+            return;
+
+        foreach (var profile in profiles.OfType<JsonObject>())
+        {
+            if (profile[RelationshipsProperty] is not JsonArray relationships)
+                continue;
+
+            foreach (var relationship in relationships.OfType<JsonObject>())
+            {
+                if (relationship["relationshipLock"] is not JsonObject relationshipLock)
+                    continue;
+
+                var lockState = GetNodeString(relationshipLock["lockState"]);
+                if (string.IsNullOrWhiteSpace(lockState) || !RelationshipLockStates.Contains(lockState))
+                {
+                    lockState = "none";
+                    relationshipLock["lockState"] = lockState;
+                }
+
+                var direction = NormalizeRelationshipLockDirection(
+                    GetNodeString(relationshipLock["direction"]),
+                    relationship,
+                    lockState);
+                relationshipLock["direction"] = direction;
+
+                if (!TryGetNodeInt(relationshipLock["threshold"], out var threshold) || threshold is < -100 or > 100)
+                    relationshipLock["threshold"] = string.Equals(direction, "negative", StringComparison.OrdinalIgnoreCase) ? -50 : 50;
+
+                if (string.IsNullOrWhiteSpace(GetNodeString(relationshipLock["reason"])))
+                    relationshipLock["reason"] = BuildDefaultRelationshipLockReason(lockState, direction);
+
+                if (string.IsNullOrWhiteSpace(GetNodeString(relationshipLock["evidence"])))
+                {
+                    relationshipLock["evidence"] =
+                        GetNodeString(relationship["evidence"]) ??
+                        GetNodeString(relationship["reason"]) ??
+                        "Состояние отношений сохранено в профиле сущности.";
+                }
+
+                if (!TryGetNodeInt(relationshipLock["updatedAtTurn"], out var updatedAtTurn) || updatedAtTurn < 0)
+                {
+                    relationshipLock["updatedAtTurn"] =
+                        TryGetNodeInt(relationship["updatedAtTurn"], out var relationshipUpdatedAtTurn) && relationshipUpdatedAtTurn >= 0
+                            ? relationshipUpdatedAtTurn
+                            : 0;
+                }
+            }
+        }
+    }
+
+    private static string NormalizeRelationshipLockDirection(string? rawDirection, JsonObject relationship, string lockState)
+    {
+        if (string.Equals(rawDirection, "positive", StringComparison.OrdinalIgnoreCase))
+            return "positive";
+        if (string.Equals(rawDirection, "negative", StringComparison.OrdinalIgnoreCase))
+            return "negative";
+
+        if (string.Equals(lockState, "negative_locked", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(lockState, "point_of_no_return", StringComparison.OrdinalIgnoreCase))
+        {
+            return "negative";
+        }
+
+        if (string.Equals(lockState, "positive_locked", StringComparison.OrdinalIgnoreCase))
+            return "positive";
+
+        if (relationship["relationshipLock"] is JsonObject relationshipLock &&
+            TryGetNodeInt(relationshipLock["threshold"], out var threshold) &&
+            threshold < 0)
+        {
+            return "negative";
+        }
+
+        return GetNodeInt(relationship["value"]) < 0 ? "negative" : "positive";
+    }
+
+    private static string BuildDefaultRelationshipLockReason(string lockState, string direction)
+    {
+        if (string.Equals(lockState, "positive_locked", StringComparison.OrdinalIgnoreCase))
+            return "Отношение достигло положительного порога и требует сцены доверия.";
+
+        if (string.Equals(lockState, "negative_locked", StringComparison.OrdinalIgnoreCase))
+            return "Отношение достигло отрицательного порога и требует сцены искупления.";
+
+        if (string.Equals(lockState, "point_of_no_return", StringComparison.OrdinalIgnoreCase))
+            return "Отношение пересекло точку невозврата и закреплено драматическим событием.";
+
+        return string.Equals(direction, "negative", StringComparison.OrdinalIgnoreCase)
+            ? "Отношение не заблокировано, но наблюдается в отрицательном направлении."
+            : "Отношение не заблокировано, но наблюдается в положительном направлении.";
     }
 
     private static string? BuildCustomStateIdentity(JsonObject state) =>

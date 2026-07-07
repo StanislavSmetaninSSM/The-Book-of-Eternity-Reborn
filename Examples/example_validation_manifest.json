@@ -113,7 +113,7 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "afterlifeRelationshipChanges / afterlifeRelationshipLockUpdates / afterlifeBreakthroughQuestUpdates",
-      "description": "Afterlife-only relationship gates for Guardians, residents, faction heads, and custom spiritual actors: relationships[], trust/romance/rivalry/oath/fear/reverence/debt axes, relationshipLock, breakthroughQuestId, redemptionQuestId, pointOfNoReturn, _clear_, and no Mortal NPCRelationshipChanges."
+      "description": "Afterlife-only relationship gates for Guardians, residents, faction heads, and custom spiritual actors: relationships[], trust/romance/rivalry/oath/fear/reverence/debt axes, relationshipLock scaffold normalization, breakthroughQuestId, redemptionQuestId, pointOfNoReturn, _clear_, and no Mortal NPCRelationshipChanges."
     },
     {
       "contractId": "afterlife_actor_masks_v1",
