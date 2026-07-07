@@ -4135,14 +4135,46 @@ public partial class ExplorerMode
     {
         var guardianId = (_currentCommandRemainder ?? string.Empty).Trim();
         if (string.IsNullOrWhiteSpace(guardianId))
+            guardianId = await ResolveDefaultGuardianTradeTargetAsync();
+
+        if (string.IsNullOrWhiteSpace(guardianId))
         {
-            MarkupLine("[yellow]Укажите Хранителя: /торговля_хранителя <id хранителя>.[/]");
-            MarkupLine("[dim]Если ID неизвестен, откройте /хранители и выберите действие «Торговать» у нужного Хранителя.[/]");
+            MarkupLine("[yellow]Не удалось определить активного Хранителя для торговли.[/]");
+            MarkupLine("[dim]Откройте /хранители и выберите действие «Торговать» у нужного Хранителя.[/]");
             WaitForKey();
             return;
         }
 
         await ShowGuardianTradePanel(guardianId);
+    }
+
+    private async Task<string> ResolveDefaultGuardianTradeTargetAsync()
+    {
+        var doc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        if (doc == null || doc.RootElement.ValueKind != JsonValueKind.Object)
+            return string.Empty;
+
+        var root = doc.RootElement;
+        if (root.TryGetProperty("activeGuardian", out var activeGuardian) &&
+            activeGuardian.ValueKind == JsonValueKind.Object)
+        {
+            var activeGuardianId = GetStr(activeGuardian, "guardianId", "");
+            if (!string.IsNullOrWhiteSpace(activeGuardianId))
+                return activeGuardianId;
+        }
+
+        if (root.TryGetProperty("chaosSeaNavigation", out var navigation) &&
+            navigation.ValueKind == JsonValueKind.Object)
+        {
+            var currentGuardianId = GetStr(navigation, "currentGuardianId", "");
+            if (!string.IsNullOrWhiteSpace(currentGuardianId))
+                return currentGuardianId;
+        }
+
+        var guardians = CollectGuardianDisplayEntries(root);
+        return guardians.Count == 1
+            ? GetStr(guardians[0], "guardianId", "")
+            : string.Empty;
     }
 
     private async Task ShowGuardianTradePanel(string guardianId)

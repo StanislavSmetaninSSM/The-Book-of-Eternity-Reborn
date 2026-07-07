@@ -2053,6 +2053,23 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_GuardianTradeDirectCommand_DefaultsToActiveGuardianWhenIdIsOmitted()
+    {
+        await SeedGuardianTradeStateAsync();
+        _console.QueueSelection("Выберите раздел", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/торговля_хранителя"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("guardian_trade_direct_command_defaults_to_active_guardian");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Торговля с Хранителем Азалия", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Укажите Хранителя", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guardian_trade_001", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_GuardianTradeSell_SucceedsAndRemovesRelic()
     {
