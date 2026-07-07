@@ -55,6 +55,13 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.False(faction.ContainsKey("initialId"));
         Assert.False(faction.ContainsKey("isNewFaction"));
 
+        var factionResources = files["game_state/factions/faction_resources.json"];
+        var resourceEntry = Assert.Single(factionResources["entries"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("faction_life_001_initial_context", resourceEntry["factionId"]!.GetValue<string>());
+        Assert.Equal("Силы стартовой сцены", resourceEntry["name"]!.GetValue<string>());
+        Assert.NotNull(resourceEntry["metaResources"]);
+        Assert.NotNull(resourceEntry["strategicGoods"]);
+
         var quest = files["game_state/quests/regular_quests.json"]!["quests"]!.AsArray()[0]!.AsObject();
         var detailsLog = quest["detailsLog"]!.AsArray();
         Assert.Equal("#[3]. Первая цель новой жизни связала выбранные обстоятельства стартовой сцены.", detailsLog[0]!.GetValue<string>());
@@ -208,6 +215,54 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "npc_attitude_relationship_tier_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LocalUiSessionLock_IsClientOwnedAndDoesNotFailStateContract()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 3,
+            characterDescription: "Асурэн де Вальмонт, молодой аристократ-маг.",
+            worldDescription: "Столица Этернии с городскими наставниками и витринами обучения.",
+            startingCircumstances: "За дверью ждёт наставница семейного архива, которая может обучить чтению печатей за плату.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-06T01:00:00Z"));
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await new LocalUiSessionLockService(_fs).AcquireOrRefreshAsync(
+            new LocalUiSessionLockOwner("console:test", "console", "Консольный тест", TimeSpan.FromMinutes(2)),
+            "Команда /обучение");
+        await TrainingRequestState.WriteRequestAsync(
+            _fs,
+            requestKind: "mortal_teacher_showcase",
+            sourceActorId: "npc_life_001_start_teacher",
+            sourceActorName: "Наставница семейного архива",
+            sourceActorKind: "npc_teacher",
+            realm: "mortal",
+            createdAtTurn: 1,
+            sourceActorSnapshotHash: "test-snapshot-hash",
+            reason: "missing_showcase");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.FilePath, LocalUiSessionLockService.LockPath, StringComparison.OrdinalIgnoreCase) &&
+            (string.Equals(issue.Code, "missing_allowed_top_level_key", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(issue.Code, "strict_state_missing_allowed_top_level_key", StringComparison.OrdinalIgnoreCase)));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.FilePath, TrainingRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) &&
+            (string.Equals(issue.Code, "missing_allowed_top_level_key", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(issue.Code, "strict_state_missing_allowed_top_level_key", StringComparison.OrdinalIgnoreCase)));
     }
 
     [Fact]

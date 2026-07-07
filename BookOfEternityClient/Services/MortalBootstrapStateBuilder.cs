@@ -134,9 +134,16 @@ public static class MortalBootstrapStateBuilder
             ["game_state/factions/faction_core.json"] = BuildFactionCore(factionId, factionName, shortCircumstances, turn, timestamp),
             ["game_state/factions/faction_resources.json"] = new()
             {
-                ["factionResources"] = new JsonArray(),
-                ["metaResources"] = new JsonArray(),
-                ["strategicGoods"] = new JsonArray()
+                ["entries"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["name"] = factionName,
+                        ["metaResources"] = new JsonArray(),
+                        ["strategicGoods"] = new JsonArray()
+                    }
+                }
             },
             ["game_state/quests/regular_quests.json"] = BuildRegularQuests(questId, currentLocationId, factionId, shortCircumstances, turn)
         };
