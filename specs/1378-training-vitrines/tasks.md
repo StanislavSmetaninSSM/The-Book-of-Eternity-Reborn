@@ -79,6 +79,7 @@
 - [x] T045 [Live-test harness follow-up #1452] Add exact training-showcase stale snapshot hash diagnostics and a dedicated validation repair packet so GM repairs can apply `sourceActorSnapshotHash` without source-code archaeology.
 - [x] T046 [Live-test harness follow-up #1426] Block Mortal bootstrap acceptance when player-authored start promises a teacher/training surface but no usable `teacherProfile.canTeach=true` NPC exists for `/обучение`.
 - [x] T047 [Live-test harness follow-up #1455] Dispatch missing/stale `/обучение` and Mortal NPC trade showcase GM requests immediately from console/browser command flows instead of waiting for the player's next ordinary turn.
+- [x] T048 [Live-test harness follow-up #1460] Add a GM helper for `pending_training_showcase_requests.json` so Mortal and afterlife showcase refreshes can be resolved without manual source actor lookup or broad illegal JSON patches.
 
 ## Dependencies
 

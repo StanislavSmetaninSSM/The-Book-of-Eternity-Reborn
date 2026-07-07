@@ -44,6 +44,7 @@ Add a teacher/mentor training showcase system that lets the GM materialize reada
 - #1384 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1384
 - #1385 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1385
 - #1455 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1455
+- #1460 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1460
 
 **Contract Scope**: player-facing, GM-facing prompts, runtime-state, validation, docs, examples, console, browser, frontend.
 
@@ -64,7 +65,7 @@ Manual:
 
 ## Constitution Check
 
-- **GitHub traceability**: PASS. Source issues #1377-#1385 are linked.
+- **GitHub traceability**: PASS. Source issues #1377-#1385 plus live-test follow-ups #1455 and #1460 are linked.
 - **Spec Kit fit**: PASS. This is player-facing, cross-client, validation/runtime, GM contract, docs/examples, and multi-session work.
 - **Player-facing integrity**: PASS. Console/browser Russian labels, no raw JSON, no internal keys, and browser prototype parity are explicitly required.
 - **Contract/state authority**: PASS. Training showcase, purchase receipt, refresh request, validator authority, and GM docs/examples are planned.

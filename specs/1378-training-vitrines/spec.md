@@ -21,6 +21,7 @@
   - #1384 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1384
   - #1385 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1385
   - #1455 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1455
+  - #1460 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1460
 - **Issue type**: epic plus implementation tasks.
 - **Spec Kit justification**: This feature changes player-facing progression, client-owned purchases, GM-authored NPC/mentor contracts, validation/normalizer behavior, console/browser command output, examples, and live-test coverage.
 - **Contract scope**: player-facing, GM-facing prompts, runtime-state, validation, docs, examples, console, browser, frontend.

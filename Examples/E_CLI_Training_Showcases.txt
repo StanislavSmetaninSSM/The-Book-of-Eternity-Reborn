@@ -26,11 +26,18 @@ Shared rules
   requests a refresh. A stale cached showcase is not itself permission to edit
   old purchase receipts.
 - For `mortal_teacher_showcase` on an existing NPC teacher, write a narrow
-  `UpdateNPCs` patch containing only the identity (`npcId`/`name`) and the fresh
-  `trainingShowcase`. Do not resend `inventory`, do not replace the whole NPC
-  object, and do not repeat `teacherProfile` unless the turn is intentionally
-  creating or changing the teacher profile itself. The client normalizer applies
-  the showcase patch to the existing full NPC object.
+  `UpdateNPCs` patch only as a manual fallback. Preferred path: after
+  dot-sourcing `game_state/control/gm_turn_helper.bootstrap.ps1`, call
+  `Complete-BoeTrainingShowcaseRequest -RequestId '<requestId>' -Offers <offers>
+  -Summary '<player-facing summary>'`. The helper finds the teacher by
+  `sourceActorId`, validates costs/caps/duplicate offer ids, writes
+  `trainingShowcase`, and leaves the fulfilled pending request for client
+  cleanup after the accepted turn/view refresh. If the helper is
+  unavailable and manual fallback is necessary, include only the identity
+  (`npcId`/`name`) and the fresh `trainingShowcase`. Do not resend `inventory`,
+  do not replace the whole NPC object, and do not repeat `teacherProfile` unless
+  the turn is intentionally creating or changing the teacher profile itself. The
+  client normalizer applies the showcase patch to the existing full NPC object.
 - During validation repair, when `harnessRepairPackets[].kind` is
   `training_showcase_snapshot_hash_repair`, apply
   `exactFieldCorrections[]` first. Set each listed
@@ -103,7 +110,8 @@ Shared rules
   it has `mentorProfile.canTeach=true`, starter `standardArts`, a
   `progressionStrategy`, and `ledger`. Do not replace it with a bare profile or
   try to materialize the Guardian again. If `/обучение` requests an
-  `afterlife_teacher_showcase` for that actor, update the existing profile with
+  `afterlife_teacher_showcase` for that actor, prefer
+  `Complete-BoeTrainingShowcaseRequest` to update the existing profile with
   `mentorTrainingShowcase` and copy the requested `sourceActorSnapshotHash`.
 - In afterlife, the player's current Ink Feathers, Light Sparks, ordinary
   Spiritual Art tiers, Spirit Focus tier, enlightenment, and radiance are read
@@ -184,13 +192,50 @@ profile data but no fresh trainingShowcase:
 }
 ```
 
+Preferred Mortal helper call
+----------------------------
+
+When `game_state/control/gm_turn_helper.bootstrap.ps1` exists, prefer the helper
+over a manual `UpdateNPCs` patch:
+
+```powershell
+. "game_state/control/gm_turn_helper.bootstrap.ps1"
+
+$offers = @(
+  [ordered]@{
+    offerId = "train_roden_knife_handling_2"
+    targetKind = "skill_mastery"
+    targetId = "knife_handling"
+    targetName = "Обращение с ножом"
+    currentValue = 1
+    targetValue = 2
+    sourceCap = 3
+    cost = [ordered]@{
+      money = 65
+      currentLevelExperiencePercent = 18
+    }
+    requirements = [ordered]@{
+      minimumRelationship = 20
+      lessonScene = "Короткая тренировка с настоящими ножами у старой стены."
+    }
+    description = "Роден учит держать клинок ниже взгляда противника и не тратить движение на красивость."
+  }
+)
+
+Complete-BoeTrainingShowcaseRequest `
+  -RequestId "training_req_hunter_roden_001" `
+  -Offers $offers `
+  -Summary "Роден готов провести короткое практическое занятие за оплату и часть опыта текущего уровня."
+```
+
 Valid Mortal NPC trainingShowcase patch
 ---------------------------------------
 
 The GM answers by updating the same NPC in `game_state/npcs/npc_core.json`.
-For an existing teacher, this is a narrow patch: do not resend the teacher's
-inventory, full canonical NPC object, or unchanged teacherProfile. The showcase
-is not a purchase receipt; it is the list of available lessons.
+Use this only as manual fallback when the helper is unavailable. For an existing
+teacher, this is a narrow patch: do not resend the teacher's inventory, full
+canonical NPC object, or unchanged teacherProfile. The showcase is not a purchase
+receipt; it is the list of available lessons.
 
 ```json
 {
@@ -412,6 +457,36 @@ Afterlife mentor trainingShowcase
 Afterlife mentors, Guardians, residents, or Shining representatives may expose
 discounted spiritual-art lessons. They never bypass the player's progression
 cap and cannot teach above their own tier/sourceCap.
+
+Preferred helper path:
+
+```powershell
+. "game_state/control/gm_turn_helper.bootstrap.ps1"
+
+$offers = @(
+  [ordered]@{
+    offerId = "mentor_liora_guard_2"
+    targetKind = "standard_spiritual_art"
+    targetId = "guard"
+    targetName = "Защита"
+    currentValue = 1
+    targetValue = 2
+    sourceCap = 4
+    cost = [ordered]@{
+      inkFeathers = 105
+      lightSparks = 0
+    }
+    summary = "Лиора показывает, как принять удар краем света."
+  }
+)
+
+Complete-BoeTrainingShowcaseRequest `
+  -RequestId "training_req_liora_001" `
+  -Offers $offers `
+  -Summary "Лиора может удешевить обучение защите, но не поднимает искусство выше собственного уровня."
+```
+
+Manual fallback:
 
 ```json
 {

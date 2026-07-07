@@ -1417,6 +1417,203 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void Helper_CompleteBoeTrainingShowcaseRequestWritesMortalShowcaseAndLeavesPendingForClientCleanup()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-training-mortal-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "npcs"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_training_showcase_requests.json"),
+                """
+                {
+                  "requests": [
+                    {
+                      "requestId": "training_req_reina_001",
+                      "requestKind": "mortal_teacher_showcase",
+                      "sourceActorId": "npc_teacher_reina",
+                      "sourceActorName": "Рейна Быстрый Нож",
+                      "sourceActorKind": "npc_teacher",
+                      "realm": "mortal",
+                      "createdAtTurn": 9,
+                      "createdAtUtc": "2026-07-07T00:00:00Z",
+                      "sourceActorSnapshotHash": "sha256:requested-reina-hash",
+                      "reason": "missing_showcase"
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "npcs", "npc_core.json"),
+                """
+                {
+                  "UpdateNPCs": [
+                    {
+                      "npcId": null,
+                      "initialId": "npc_teacher_reina",
+                      "name": "Рейна Быстрый Нож",
+                      "inventory": [
+                        { "itemId": "knife_training_blunt", "name": "Учебный нож" }
+                      ],
+                      "teacherProfile": {
+                        "canTeach": true,
+                        "relationshipLevel": 45,
+                        "skills": [
+                          {
+                            "skillId": "knife",
+                            "skillName": "Ножевой бой",
+                            "displayName": "Ножевой бой",
+                            "masteryLevel": 3
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                "$ErrorActionPreference = 'Stop'",
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$offers = @([ordered]@{ offerId = 'train_reina_knife_2'; targetKind = 'skill_mastery'; targetId = 'knife'; targetName = 'Ножевой бой'; currentValue = 1; targetValue = 2; sourceCap = 3; cost = [ordered]@{ money = 120; currentLevelExperiencePercent = 15 }; summary = 'Рейна учит короткому выпаду без лишнего замаха.' })",
+                "Complete-BoeTrainingShowcaseRequest -RequestId 'training_req_reina_001' -Offers $offers -Summary 'Рейна готова провести короткую практику с учебными ножами.'"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.True(string.IsNullOrWhiteSpace(result.StdErr), result.StdErr);
+
+            using var document = JsonDocument.Parse(File.ReadAllText(Path.Combine(session, "game_state", "npcs", "npc_core.json"), Encoding.UTF8));
+            var npc = document.RootElement.GetProperty("UpdateNPCs")[0];
+            Assert.True(npc.TryGetProperty("inventory", out _), "Helper must not strip existing NPC inventory.");
+            var showcase = npc.GetProperty("trainingShowcase");
+            Assert.Equal(1, showcase.GetProperty("schemaVersion").GetInt32());
+            Assert.Equal("training_req_reina_001", showcase.GetProperty("requestId").GetString());
+            Assert.Equal("mortal_teacher_showcase", showcase.GetProperty("requestKind").GetString());
+            Assert.Equal("sha256:requested-reina-hash", showcase.GetProperty("sourceActorSnapshotHash").GetString());
+            Assert.Equal(9, showcase.GetProperty("preparedAtTurn").GetInt32());
+            Assert.Contains("Рейна", showcase.GetProperty("summary").GetString(), StringComparison.Ordinal);
+            var offer = showcase.GetProperty("offers")[0];
+            Assert.Equal("train_reina_knife_2", offer.GetProperty("offerId").GetString());
+            Assert.Equal("skill_mastery", offer.GetProperty("targetKind").GetString());
+            Assert.Equal("knife", offer.GetProperty("targetId").GetString());
+            Assert.Equal(3, offer.GetProperty("sourceCap").GetInt32());
+            Assert.Equal(120, offer.GetProperty("cost").GetProperty("money").GetInt32());
+            Assert.Equal(15, offer.GetProperty("cost").GetProperty("currentLevelExperiencePercent").GetInt32());
+
+            using var pendingDocument = JsonDocument.Parse(File.ReadAllText(Path.Combine(session, "game_state", "control", "pending_training_showcase_requests.json"), Encoding.UTF8));
+            Assert.Equal("training_req_reina_001", pendingDocument.RootElement.GetProperty("requests")[0].GetProperty("requestId").GetString());
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void Helper_CompleteBoeTrainingShowcaseRequestWritesAfterlifeMentorShowcaseAndLeavesPendingForClientCleanup()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-training-afterlife-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "meta"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_training_showcase_requests.json"),
+                """
+                {
+                  "requests": [
+                    {
+                      "requestId": "training_req_liora_001",
+                      "requestKind": "afterlife_teacher_showcase",
+                      "sourceActorId": "guardian_liora",
+                      "sourceActorName": "Архонт Лиора",
+                      "sourceActorKind": "afterlife_mentor",
+                      "realm": "afterlife",
+                      "createdAtTurn": 14,
+                      "createdAtUtc": "2026-07-07T00:00:00Z",
+                      "sourceActorSnapshotHash": "sha256:requested-liora-hash",
+                      "reason": "missing_showcase"
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "meta", "afterlife_entity_profiles.json"),
+                """
+                {
+                  "profiles": [
+                    {
+                      "actorId": "guardian_liora",
+                      "displayName": "Архонт Лиора",
+                      "actorType": "guardian",
+                      "standardArts": {
+                        "guard": 3
+                      },
+                      "mentorProfile": {
+                        "canTeach": true,
+                        "relationshipLevel": 62,
+                        "spiritFocusTier": 3
+                      }
+                    }
+                  ]
+                }
+                """,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                "$ErrorActionPreference = 'Stop'",
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$offers = @([ordered]@{ offerId = 'mentor_liora_guard_2'; targetKind = 'standard_spiritual_art'; targetId = 'guard'; targetName = 'Защита'; currentValue = 1; targetValue = 2; sourceCap = 3; cost = [ordered]@{ inkFeathers = 105; lightSparks = 0 }; summary = 'Лиора показывает, как принять удар краем света.' })",
+                "Complete-BoeTrainingShowcaseRequest -RequestId 'training_req_liora_001' -Offers $offers -Summary 'Лиора готова показать безопасную форму защиты.'"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.True(string.IsNullOrWhiteSpace(result.StdErr), result.StdErr);
+
+            using var document = JsonDocument.Parse(File.ReadAllText(Path.Combine(session, "game_state", "meta", "afterlife_entity_profiles.json"), Encoding.UTF8));
+            var profile = document.RootElement.GetProperty("profiles")[0];
+            var showcase = profile.GetProperty("mentorTrainingShowcase");
+            Assert.Equal(1, showcase.GetProperty("schemaVersion").GetInt32());
+            Assert.Equal("training_req_liora_001", showcase.GetProperty("requestId").GetString());
+            Assert.Equal("afterlife_teacher_showcase", showcase.GetProperty("requestKind").GetString());
+            Assert.Equal("sha256:requested-liora-hash", showcase.GetProperty("sourceActorSnapshotHash").GetString());
+            Assert.Equal(14, showcase.GetProperty("preparedAtTurn").GetInt32());
+            Assert.Contains("Лиора", showcase.GetProperty("summary").GetString(), StringComparison.Ordinal);
+            var offer = showcase.GetProperty("offers")[0];
+            Assert.Equal("mentor_liora_guard_2", offer.GetProperty("offerId").GetString());
+            Assert.Equal("standard_spiritual_art", offer.GetProperty("targetKind").GetString());
+            Assert.Equal("guard", offer.GetProperty("targetId").GetString());
+            Assert.Equal(3, offer.GetProperty("sourceCap").GetInt32());
+            Assert.Equal(105, offer.GetProperty("cost").GetProperty("inkFeathers").GetInt32());
+
+            using var pendingDocument = JsonDocument.Parse(File.ReadAllText(Path.Combine(session, "game_state", "control", "pending_training_showcase_requests.json"), Encoding.UTF8));
+            Assert.Equal("training_req_liora_001", pendingDocument.RootElement.GetProperty("requests")[0].GetProperty("requestId").GetString());
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void Helper_CompleteBoeGuardianTradeInventoryRequestWritesCanonicalInventoryAndReceipt()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-guardian-trade-" + Guid.NewGuid().ToString("N"));
@@ -1547,6 +1744,7 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("Add-BoeJsonArrayItem", daemon, StringComparison.Ordinal);
         Assert.Contains("Complete-BoeNpcTradeInventoryRequest", daemon, StringComparison.Ordinal);
         Assert.Contains("Complete-BoeGuardianTradeInventoryRequest", daemon, StringComparison.Ordinal);
+        Assert.Contains("Complete-BoeTrainingShowcaseRequest", daemon, StringComparison.Ordinal);
         Assert.Contains("@('NPCId','npcId','id','initialId')", daemon, StringComparison.Ordinal);
         Assert.Contains("UpdateNpcTradeInventoryReceipts", daemon, StringComparison.Ordinal);
         Assert.Contains("UpdateGuardianTradeInventoryReceipts", daemon, StringComparison.Ordinal);

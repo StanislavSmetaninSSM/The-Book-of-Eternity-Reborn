@@ -1028,6 +1028,341 @@ function Complete-BoeGuardianTradeInventoryRequest {
     Write-BoeJson -RelativePath "game_state/meta/guardians.json" -Data $guardiansRoot -Depth 100
 }
 
+function Find-BoeTrainingShowcaseRequest {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$PendingRoot,
+
+        [Parameter(Mandatory = $true)]
+        [string]$RequestId
+    )
+
+    foreach ($request in @(Get-BoeJsonArrayItems -Value (Get-BoeJsonValue -Object $PendingRoot -Names @("requests")))) {
+        $candidateRequestId = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("requestId")
+        if (Test-BoeJsonTextEquals -Left $candidateRequestId -Right $RequestId) {
+            return $request
+        }
+    }
+
+    $singleRequestId = Get-BoeFirstNonEmptyJsonString -Object $PendingRoot -Names @("requestId")
+    if (Test-BoeJsonTextEquals -Left $singleRequestId -Right $RequestId) {
+        return $PendingRoot
+    }
+
+    return $null
+}
+
+function Find-BoeAfterlifeMentorProfile {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$ProfilesRoot,
+
+        [Parameter(Mandatory = $true)]
+        [string]$ActorId
+    )
+
+    foreach ($arrayName in @("profiles", "entityProfiles", "afterlifeEntityProfiles", "actors")) {
+        foreach ($profile in @(Get-BoeJsonArrayItems -Value (Get-BoeJsonValue -Object $ProfilesRoot -Names @($arrayName)))) {
+            $candidateId = Get-BoeFirstNonEmptyJsonString -Object $profile -Names @("actorId", "actorRef", "guardianId", "id", "initialId")
+            if (Test-BoeJsonTextEquals -Left $candidateId -Right $ActorId) {
+                return $profile
+            }
+        }
+    }
+
+    return $null
+}
+
+function Get-BoeTrainingActorCap {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Actor,
+
+        [Parameter(Mandatory = $true)]
+        [string]$RequestKind,
+
+        [Parameter(Mandatory = $true)]
+        [string]$TargetKind,
+
+        [Parameter(Mandatory = $true)]
+        [string]$TargetId
+    )
+
+    if ([string]::Equals($RequestKind, "mortal_teacher_showcase", [System.StringComparison]::OrdinalIgnoreCase)) {
+        $teacherProfile = Get-BoeJsonValue -Object $Actor -Names @("teacherProfile")
+        foreach ($skill in @(Get-BoeJsonArrayItems -Value (Get-BoeJsonValue -Object $teacherProfile -Names @("skills", "teachableSkills")))) {
+            $skillId = Get-BoeFirstNonEmptyJsonString -Object $skill -Names @("skillId", "targetId", "id")
+            $skillName = Get-BoeFirstNonEmptyJsonString -Object $skill -Names @("skillName", "displayName", "name")
+            if ((Test-BoeJsonTextEquals -Left $skillId -Right $TargetId) -or (Test-BoeJsonTextEquals -Left $skillName -Right $TargetId)) {
+                foreach ($capField in @("maxMasteryLevel", "currentMasteryLevel", "masteryLevel", "level", "sourceCap")) {
+                    $cap = Get-BoeJsonInt -Object $skill -Names @($capField) -Default 0
+                    if ($cap -gt 0) {
+                        return $cap
+                    }
+                }
+            }
+        }
+
+        return 0
+    }
+
+    if (![string]::Equals($RequestKind, "afterlife_teacher_showcase", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return 0
+    }
+
+    if ([string]::Equals($TargetKind, "spirit_focus", [System.StringComparison]::OrdinalIgnoreCase)) {
+        $mentorProfile = Get-BoeJsonValue -Object $Actor -Names @("mentorProfile")
+        return Get-BoeJsonInt -Object $mentorProfile -Names @("spiritFocusTier", "focusTier", "sourceCap") -Default 0
+    }
+
+    $standardArts = Get-BoeJsonValue -Object $Actor -Names @("standardArts")
+    if ($null -ne $standardArts) {
+        $cap = Get-BoeJsonInt -Object $standardArts -Names @($TargetId) -Default 0
+        if ($cap -gt 0) {
+            return $cap
+        }
+    }
+
+    foreach ($art in @(Get-BoeJsonArrayItems -Value (Get-BoeJsonValue -Object $Actor -Names @("specialArts", "knownSpecialArts", "arts")))) {
+        $artId = Get-BoeFirstNonEmptyJsonString -Object $art -Names @("artId", "targetId", "id", "name")
+        if (Test-BoeJsonTextEquals -Left $artId -Right $TargetId) {
+            foreach ($capField in @("sourceCap", "tier", "currentTier", "maxTier", "level")) {
+                $cap = Get-BoeJsonInt -Object $art -Names @($capField) -Default 0
+                if ($cap -gt 0) {
+                    return $cap
+                }
+            }
+        }
+    }
+
+    return 0
+}
+
+function Test-BoeTrainingCostHasPositiveValue {
+    param(
+        [AllowNull()]
+        [object]$Cost,
+
+        [Parameter(Mandatory = $true)]
+        [string[]]$Names
+    )
+
+    if ($null -eq $Cost) {
+        return $false
+    }
+
+    foreach ($name in @($Names)) {
+        if ((Get-BoeJsonInt -Object $Cost -Names @($name) -Default 0) -gt 0) {
+            return $true
+        }
+    }
+
+    return $false
+}
+
+function Normalize-BoeTrainingOffer {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Offer,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Request,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Actor,
+
+        [Parameter(Mandatory = $true)]
+        [int]$Index
+    )
+
+    $requestId = Get-BoeFirstNonEmptyJsonString -Object $Request -Names @("requestId")
+    $requestKind = Get-BoeFirstNonEmptyJsonString -Object $Request -Names @("requestKind")
+
+    $offerId = Get-BoeFirstNonEmptyJsonString -Object $Offer -Names @("offerId", "id")
+    if ([string]::IsNullOrWhiteSpace($offerId)) {
+        throw "Training showcase request '$requestId' offer #$Index is missing offerId."
+    }
+
+    if ([string]::IsNullOrWhiteSpace((Get-BoeFirstNonEmptyJsonString -Object $Offer -Names @("offerId")))) {
+        Set-BoeJsonProperty -Object $Offer -Name "offerId" -Value $offerId
+    }
+
+    $targetKind = Get-BoeFirstNonEmptyJsonString -Object $Offer -Names @("targetKind", "kind")
+    if ([string]::IsNullOrWhiteSpace($targetKind)) {
+        throw "Training showcase request '$requestId' offer '$offerId' is missing targetKind."
+    }
+
+    Set-BoeJsonProperty -Object $Offer -Name "targetKind" -Value $targetKind
+
+    $targetId = Get-BoeFirstNonEmptyJsonString -Object $Offer -Names @("targetId", "skillId", "artId", "id")
+    if ([string]::IsNullOrWhiteSpace($targetId)) {
+        throw "Training showcase request '$requestId' offer '$offerId' is missing targetId."
+    }
+
+    Set-BoeJsonProperty -Object $Offer -Name "targetId" -Value $targetId
+
+    if ([string]::IsNullOrWhiteSpace((Get-BoeFirstNonEmptyJsonString -Object $Offer -Names @("targetName", "displayName", "name")))) {
+        Set-BoeJsonProperty -Object $Offer -Name "targetName" -Value $targetId
+    }
+
+    $actorCap = Get-BoeTrainingActorCap -Actor $Actor -RequestKind $requestKind -TargetKind $targetKind -TargetId $targetId
+    $sourceCap = Get-BoeJsonInt -Object $Offer -Names @("sourceCap", "maxValue", "teacherCap", "mentorCap") -Default 0
+    if ($sourceCap -le 0 -and $actorCap -gt 0) {
+        $sourceCap = $actorCap
+        Set-BoeJsonProperty -Object $Offer -Name "sourceCap" -Value $sourceCap
+    }
+
+    if ($sourceCap -le 0) {
+        throw "Training showcase request '$requestId' offer '$offerId' must define positive sourceCap, or the helper must be able to infer it from the teacher/mentor."
+    }
+
+    if ($actorCap -gt 0 -and $sourceCap -gt $actorCap) {
+        throw "Training showcase request '$requestId' offer '$offerId' sourceCap $sourceCap exceeds teacher/mentor cap $actorCap."
+    }
+
+    $targetValue = Get-BoeJsonInt -Object $Offer -Names @("targetValue", "targetTier", "targetMasteryLevel", "targetLevel") -Default 0
+    if ($targetValue -le 0) {
+        throw "Training showcase request '$requestId' offer '$offerId' must define a positive targetValue."
+    }
+
+    Set-BoeJsonProperty -Object $Offer -Name "targetValue" -Value $targetValue
+
+    if ($targetValue -gt $sourceCap) {
+        throw "Training showcase request '$requestId' offer '$offerId' targetValue $targetValue exceeds sourceCap $sourceCap."
+    }
+
+    $cost = Get-BoeJsonValue -Object $Offer -Names @("cost")
+    if ($null -eq $cost) {
+        throw "Training showcase request '$requestId' offer '$offerId' is missing cost."
+    }
+
+    if ([string]::Equals($requestKind, "mortal_teacher_showcase", [System.StringComparison]::OrdinalIgnoreCase)) {
+        if (!(Test-BoeTrainingCostHasPositiveValue -Cost $cost -Names @("money")) -or
+            !(Test-BoeTrainingCostHasPositiveValue -Cost $cost -Names @("currentLevelExperiencePercent"))) {
+            throw "Training showcase request '$requestId' offer '$offerId' mortal cost must include positive money and currentLevelExperiencePercent."
+        }
+    }
+    elseif ([string]::Equals($requestKind, "afterlife_teacher_showcase", [System.StringComparison]::OrdinalIgnoreCase)) {
+        if (!(Test-BoeTrainingCostHasPositiveValue -Cost $cost -Names @("inkFeathers", "lightSparks"))) {
+            throw "Training showcase request '$requestId' offer '$offerId' afterlife cost must include positive inkFeathers or lightSparks."
+        }
+    }
+
+    return $Offer
+}
+
+function New-BoeTrainingShowcase {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Request,
+
+        [Parameter(Mandatory = $true)]
+        [object[]]$Offers,
+
+        [string]$Summary = ""
+    )
+
+    $createdAtTurn = Get-BoeJsonInt -Object $Request -Names @("createdAtTurn") -Default 0
+    $showcase = [ordered]@{
+        schemaVersion = 1
+        requestId = Get-BoeFirstNonEmptyJsonString -Object $Request -Names @("requestId")
+        requestKind = Get-BoeFirstNonEmptyJsonString -Object $Request -Names @("requestKind")
+        sourceActorId = Get-BoeFirstNonEmptyJsonString -Object $Request -Names @("sourceActorId")
+        sourceActorName = Get-BoeFirstNonEmptyJsonString -Object $Request -Names @("sourceActorName")
+        sourceActorSnapshotHash = Get-BoeFirstNonEmptyJsonString -Object $Request -Names @("sourceActorSnapshotHash")
+        preparedAtTurn = [int]$createdAtTurn
+        preparedAtUtc = [DateTimeOffset]::UtcNow.ToString("O")
+        offers = [object[]]$Offers
+    }
+
+    if (![string]::IsNullOrWhiteSpace($Summary)) {
+        $showcase["summary"] = $Summary
+    }
+
+    return $showcase
+}
+
+function Complete-BoeTrainingShowcaseRequest {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RequestId,
+
+        [Parameter(Mandatory = $true)]
+        [object[]]$Offers,
+
+        [string]$Summary = ""
+    )
+
+    if ([string]::IsNullOrWhiteSpace($RequestId)) {
+        throw "RequestId is required for Complete-BoeTrainingShowcaseRequest."
+    }
+
+    $pendingRoot = Read-BoeJson -RelativePath "game_state/control/pending_training_showcase_requests.json"
+    $request = Find-BoeTrainingShowcaseRequest -PendingRoot $pendingRoot -RequestId $RequestId
+    if ($null -eq $request) {
+        throw "Training showcase request not found: $RequestId"
+    }
+
+    $requestKind = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("requestKind")
+    $sourceActorId = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("sourceActorId", "teacherId", "mentorId", "npcId", "guardianId")
+    if ([string]::IsNullOrWhiteSpace($sourceActorId)) {
+        throw "Training showcase request '$RequestId' is missing sourceActorId."
+    }
+
+    $rootRelativePath = ""
+    $root = $null
+    $actor = $null
+    $showcaseProperty = ""
+
+    if ([string]::Equals($requestKind, "mortal_teacher_showcase", [System.StringComparison]::OrdinalIgnoreCase)) {
+        $rootRelativePath = "game_state/npcs/npc_core.json"
+        $root = Read-BoeJson -RelativePath $rootRelativePath
+        $actor = Find-BoeCanonicalNpcObject -NpcRoot $root -NpcId $sourceActorId
+        if ($null -eq $actor) {
+            throw "Training showcase request '$RequestId' references unknown Mortal teacher '$sourceActorId'. Ensure npc_core.json contains NPCId, npcId, id, or initialId for the teacher."
+        }
+
+        $showcaseProperty = "trainingShowcase"
+    }
+    elseif ([string]::Equals($requestKind, "afterlife_teacher_showcase", [System.StringComparison]::OrdinalIgnoreCase)) {
+        $rootRelativePath = "game_state/meta/afterlife_entity_profiles.json"
+        $root = Read-BoeJson -RelativePath $rootRelativePath
+        $actor = Find-BoeAfterlifeMentorProfile -ProfilesRoot $root -ActorId $sourceActorId
+        if ($null -eq $actor) {
+            throw "Training showcase request '$RequestId' references unknown afterlife mentor '$sourceActorId'. Ensure afterlife_entity_profiles.json contains actorId, actorRef, guardianId, id, or initialId for the mentor."
+        }
+
+        $showcaseProperty = "mentorTrainingShowcase"
+    }
+    else {
+        throw "Training showcase request '$RequestId' has unsupported requestKind '$requestKind'. Use this helper for mortal_teacher_showcase and afterlife_teacher_showcase only."
+    }
+
+    $offerList = New-Object System.Collections.Generic.List[object]
+    $seenOfferIds = New-Object System.Collections.Generic.HashSet[string]([System.StringComparer]::OrdinalIgnoreCase)
+    $index = 1
+    foreach ($offer in @($Offers)) {
+        $normalizedOffer = Normalize-BoeTrainingOffer -Offer $offer -Request $request -Actor $actor -Index $index
+        $offerId = Get-BoeFirstNonEmptyJsonString -Object $normalizedOffer -Names @("offerId")
+        if (!$seenOfferIds.Add($offerId)) {
+            throw "Training showcase request '$RequestId' has duplicate offerId '$offerId'."
+        }
+
+        $offerList.Add($normalizedOffer)
+        $index++
+    }
+
+    if ($offerList.Count -le 0) {
+        throw "Training showcase request '$RequestId' must receive at least one offer."
+    }
+
+    $showcase = New-BoeTrainingShowcase -Request $request -Offers ([object[]]$offerList.ToArray()) -Summary $Summary
+    Set-BoeJsonProperty -Object $actor -Name $showcaseProperty -Value $showcase
+    Write-BoeJson -RelativePath $rootRelativePath -Data $root -Depth 100
+
+    return $showcase
+}
+
 function Normalize-BoeRelativePath {
     param(
         [AllowNull()]
