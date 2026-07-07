@@ -1152,6 +1152,8 @@ Input fragment:
 ```
 
 Correct GM procedure:
+- Preferred harness path: dot-source `game_state/control/gm_turn_helper.bootstrap.ps1` and call `Complete-BoeGuardianTradeInventoryRequest -RequestId 'guardian_trade_azalia_return_5' -Items <two authored relic slots>`. The helper computes canonical tiers/prices, writes `guardian.tradeInventory`, syncs `activeGuardian`, and appends `UpdateGuardianTradeInventoryReceipts`.
+- Use the manual rules below only when the helper is unavailable or validation repair explicitly requires inspecting the persisted patch.
 - Read the pending request exactly; do not change `requestId`, `guardianId`, `abodeId`, `returnCycleId`, slot count, or project bonus signature.
 - Materialize `guardian.tradeInventory` for the same Guardian in `game_state/meta/guardians.json`; do not put trade stock into a commandless `UpdateGuardians` entry.
 - `tradeInventory.tradeCycleId` must equal `returnCycleId`.
@@ -1166,6 +1168,7 @@ Correct GM procedure:
 
 Repair-mode note:
 - If validation rejects this route with `guardian_trade_request_missing_guardian_resolution`, `guardian_trade_request_missing_inventory_resolution`, or `guardian_trade_request_missing_receipt_resolution`, open `validation_repair_request.json.harnessRepairPackets[]` and use packet kind `guardian_trade_inventory_resolution_repair`.
+- Prefer rerunning `Complete-BoeGuardianTradeInventoryRequest` with corrected relic slots instead of manually recalculating `priceInFeathers` or receipt fields.
 - In repair mode, do not make a new turn and do not edit `game_state/control/pending_guardian_trade_request.json`; it is read-only client authority for request identity, cycle, slot count, reputation tier inputs, and project bonus signature.
 - Patch only the matching Guardian in `game_state/meta/guardians.json` plus required `output/debug_logs.json` actor reasoning. The repair is complete only when the Guardian has a matching `tradeInventory` and a matching ready receipt through `UpdateGuardianTradeInventoryReceipts` or `guardians[].tradeInventoryReceipts[]`.
 

@@ -675,6 +675,359 @@ function Complete-BoeNpcTradeInventoryRequest {
     Write-BoeJson -RelativePath "game_state/npcs/npc_core.json" -Data $npcRoot -Depth 100
 }
 
+function Find-BoeGuardianTradeRequest {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$PendingRoot,
+
+        [Parameter(Mandatory = $true)]
+        [string]$RequestId
+    )
+
+    $singleRequestId = Get-BoeFirstNonEmptyJsonString -Object $PendingRoot -Names @("requestId")
+    if (Test-BoeJsonTextEquals -Left $singleRequestId -Right $RequestId) {
+        return $PendingRoot
+    }
+
+    foreach ($request in @(Get-BoeJsonArrayItems -Value (Get-BoeJsonValue -Object $PendingRoot -Names @("requests")))) {
+        $candidateRequestId = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("requestId")
+        if (Test-BoeJsonTextEquals -Left $candidateRequestId -Right $RequestId) {
+            return $request
+        }
+    }
+
+    return $null
+}
+
+function Find-BoeCanonicalGuardianObject {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$GuardiansRoot,
+
+        [Parameter(Mandatory = $true)]
+        [string]$GuardianId
+    )
+
+    foreach ($guardian in @(Get-BoeJsonArrayItems -Value (Get-BoeJsonValue -Object $GuardiansRoot -Names @("guardians")))) {
+        $candidateId = Get-BoeFirstNonEmptyJsonString -Object $guardian -Names @("guardianId", "id")
+        if (Test-BoeJsonTextEquals -Left $candidateId -Right $GuardianId) {
+            return $guardian
+        }
+    }
+
+    return $null
+}
+
+function Get-BoeGuardianExpectedTradeTierCode {
+    param([int]$Reputation)
+
+    if ($Reputation -le -51) { return "Hostile" }
+    if ($Reputation -le 49) { return "Neutral" }
+    if ($Reputation -le 129) { return "Friendly" }
+    if ($Reputation -le 229) { return "Devoted" }
+    return "Legendary"
+}
+
+function Normalize-BoeGuardianTradeTierCode {
+    param(
+        [AllowNull()]
+        [string]$TierCode
+    )
+
+    if ([string]::IsNullOrWhiteSpace($TierCode)) {
+        return ""
+    }
+
+    $trimmed = $TierCode.Trim()
+    $slashIndex = $trimmed.LastIndexOf('/')
+    if ($slashIndex -ge 0 -and $slashIndex -lt ($trimmed.Length - 1)) {
+        $trimmed = $trimmed.Substring($slashIndex + 1).Trim()
+    }
+
+    switch ($trimmed.ToLowerInvariant()) {
+        "hostile" { return "Hostile" }
+        "neutral" { return "Neutral" }
+        "friendly" { return "Friendly" }
+        "devoted" { return "Devoted" }
+        "legendary" { return "Legendary" }
+        default { return "" }
+    }
+}
+
+function Get-BoeGuardianRarityRank {
+    param(
+        [AllowNull()]
+        [string]$Rarity
+    )
+
+    switch ([string]$Rarity) {
+        "Common" { return 1 }
+        "Uncommon" { return 2 }
+        "Rare" { return 3 }
+        "Epic" { return 4 }
+        "Legendary" { return 5 }
+        default { return 0 }
+    }
+}
+
+function Get-BoeGuardianTradeBuyPrice {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Rarity,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PricingReputationTier
+    )
+
+    switch ($Rarity) {
+        "Common" { $basePrice = 30; break }
+        "Uncommon" { $basePrice = 70; break }
+        "Rare" { $basePrice = 140; break }
+        "Epic" { $basePrice = 260; break }
+        "Legendary" { $basePrice = 420; break }
+        default { $basePrice = 30; break }
+    }
+
+    switch ($PricingReputationTier) {
+        "Neutral" { $multiplier = 1.15; break }
+        "Friendly" { $multiplier = 1.00; break }
+        "Devoted" { $multiplier = 0.90; break }
+        "Legendary" { $multiplier = 0.80; break }
+        default { return [int]::MaxValue }
+    }
+
+    return [int][Math]::Ceiling([double]$basePrice * [double]$multiplier)
+}
+
+function Test-BoeGuardianRarityAllowedForTradeTier {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Rarity,
+
+        [Parameter(Mandatory = $true)]
+        [string]$GenerationReputationTier,
+
+        [int]$RarityBonusStepsApplied = 0
+    )
+
+    $maxRank = switch ($GenerationReputationTier) {
+        "Hostile" { 0 }
+        "Neutral" { Get-BoeGuardianRarityRank -Rarity "Uncommon" }
+        "Friendly" { Get-BoeGuardianRarityRank -Rarity "Rare" }
+        "Devoted" { Get-BoeGuardianRarityRank -Rarity "Epic" }
+        "Legendary" { Get-BoeGuardianRarityRank -Rarity "Epic" }
+        default { 0 }
+    }
+
+    $effectiveMax = [Math]::Min((Get-BoeGuardianRarityRank -Rarity "Legendary"), $maxRank + [Math]::Max(0, $RarityBonusStepsApplied))
+    return (Get-BoeGuardianRarityRank -Rarity $Rarity) -le $effectiveMax
+}
+
+function Get-BoeGuardianTradeBonusSignaturePart {
+    param(
+        [AllowNull()]
+        [string]$Signature,
+
+        [int]$Index
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Signature)) {
+        return 0
+    }
+
+    $parts = $Signature.Split('|')
+    if ($Index -lt 0 -or $Index -ge $parts.Length) {
+        return 0
+    }
+
+    $parsed = 0
+    if ([int]::TryParse($parts[$Index], [ref]$parsed)) {
+        return [Math]::Max(0, $parsed)
+    }
+
+    return 0
+}
+
+function Normalize-BoeGuardianTradeItem {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Item,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Request,
+
+        [Parameter(Mandatory = $true)]
+        [string]$GenerationReputationTier,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PricingReputationTier,
+
+        [Parameter(Mandatory = $true)]
+        [int]$Index
+    )
+
+    $relicData = Get-BoeJsonValue -Object $Item -Names @("relicData")
+    if ($null -eq $relicData) {
+        throw "Guardian trade item #$Index is missing relicData."
+    }
+
+    $relicId = Get-BoeFirstNonEmptyJsonString -Object $relicData -Names @("relicId", "id")
+    if ([string]::IsNullOrWhiteSpace($relicId)) {
+        throw "Guardian trade item #$Index relicData is missing relicId."
+    }
+
+    if ([string]::IsNullOrWhiteSpace((Get-BoeFirstNonEmptyJsonString -Object $relicData -Names @("relicId")))) {
+        Set-BoeJsonProperty -Object $relicData -Name "relicId" -Value $relicId
+    }
+
+    $name = Get-BoeFirstNonEmptyJsonString -Object $relicData -Names @("name")
+    if ([string]::IsNullOrWhiteSpace($name)) {
+        throw "Guardian trade item #$Index relicData is missing name."
+    }
+
+    $rarity = Get-BoeFirstNonEmptyJsonString -Object $relicData -Names @("quality", "rarity")
+    if ([string]::IsNullOrWhiteSpace($rarity)) {
+        throw "Guardian trade item #$Index relicData is missing quality or rarity."
+    }
+
+    $rarity = switch ($rarity) {
+        "Common" { "Common" }
+        "Uncommon" { "Uncommon" }
+        "Rare" { "Rare" }
+        "Epic" { "Epic" }
+        "Legendary" { "Legendary" }
+        default { throw "Guardian trade item #$Index has unsupported rarity '$rarity'. Use Common, Uncommon, Rare, Epic, or Legendary." }
+    }
+
+    Set-BoeJsonProperty -Object $relicData -Name "quality" -Value $rarity
+    Set-BoeJsonProperty -Object $relicData -Name "rarity" -Value $rarity
+
+    $maxBonusSteps = Get-BoeJsonInt -Object $Request -Names @("effectiveRarityCeilingBonusSteps") -Default 0
+    $rarityBonusStepsApplied = Get-BoeJsonInt -Object $Item -Names @("rarityBonusStepsApplied") -Default 0
+    if ($rarityBonusStepsApplied -lt 0 -or $rarityBonusStepsApplied -gt $maxBonusSteps) {
+        throw "Guardian trade item #$Index rarityBonusStepsApplied must be between 0 and pending request effectiveRarityCeilingBonusSteps ($maxBonusSteps)."
+    }
+
+    if (!(Test-BoeGuardianRarityAllowedForTradeTier -Rarity $rarity -GenerationReputationTier $GenerationReputationTier -RarityBonusStepsApplied $rarityBonusStepsApplied)) {
+        throw "Guardian trade item #$Index rarity '$rarity' exceeds generationReputationTier '$GenerationReputationTier' with rarityBonusStepsApplied=$rarityBonusStepsApplied."
+    }
+
+    $slotId = Get-BoeFirstNonEmptyJsonString -Object $Item -Names @("slotId")
+    if ([string]::IsNullOrWhiteSpace($slotId)) {
+        $requestId = Get-BoeFirstNonEmptyJsonString -Object $Request -Names @("requestId")
+        $slotId = "$requestId-slot-$Index"
+        Set-BoeJsonProperty -Object $Item -Name "slotId" -Value $slotId
+    }
+
+    Set-BoeJsonProperty -Object $Item -Name "priceInFeathers" -Value (Get-BoeGuardianTradeBuyPrice -Rarity $rarity -PricingReputationTier $PricingReputationTier)
+    Set-BoeJsonProperty -Object $Item -Name "rarityBonusStepsApplied" -Value $rarityBonusStepsApplied
+
+    if ($null -eq (Get-BoeJsonValue -Object $Item -Names @("soldOut"))) {
+        Set-BoeJsonProperty -Object $Item -Name "soldOut" -Value $false
+    }
+
+    if ([string]::IsNullOrWhiteSpace((Get-BoeFirstNonEmptyJsonString -Object $Item -Names @("domainTag")))) {
+        Set-BoeJsonProperty -Object $Item -Name "domainTag" -Value "Витрина Хранителя"
+    }
+
+    return $Item
+}
+
+function Complete-BoeGuardianTradeInventoryRequest {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RequestId,
+
+        [Parameter(Mandatory = $true)]
+        [object[]]$Items
+    )
+
+    if ([string]::IsNullOrWhiteSpace($RequestId)) {
+        throw "RequestId is required for Complete-BoeGuardianTradeInventoryRequest."
+    }
+
+    $pendingRoot = Read-BoeJson -RelativePath "game_state/control/pending_guardian_trade_request.json"
+    $request = Find-BoeGuardianTradeRequest -PendingRoot $pendingRoot -RequestId $RequestId
+    if ($null -eq $request) {
+        throw "Guardian trade request not found: $RequestId"
+    }
+
+    $guardianId = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("guardianId")
+    if ([string]::IsNullOrWhiteSpace($guardianId)) {
+        throw "Guardian trade request '$RequestId' is missing guardianId."
+    }
+
+    $guardiansRoot = Read-BoeJson -RelativePath "game_state/meta/guardians.json"
+    $guardian = Find-BoeCanonicalGuardianObject -GuardiansRoot $guardiansRoot -GuardianId $guardianId
+    if ($null -eq $guardian) {
+        throw "Guardian trade request '$RequestId' references unknown guardian '$guardianId'."
+    }
+
+    $expectedCount = Get-BoeJsonInt -Object $request -Names @("derivedTradeSlotCount") -Default 0
+    $currentReputation = Get-BoeJsonInt -Object $request -Names @("currentReputation") -Default 0
+    $tradeTier = Get-BoeGuardianExpectedTradeTierCode -Reputation $currentReputation
+
+    $itemList = New-Object System.Collections.Generic.List[object]
+    $seenSlotIds = New-Object System.Collections.Generic.HashSet[string]([System.StringComparer]::OrdinalIgnoreCase)
+    $index = 1
+    foreach ($item in @($Items)) {
+        $normalizedItem = Normalize-BoeGuardianTradeItem -Item $item -Request $request -GenerationReputationTier $tradeTier -PricingReputationTier $tradeTier -Index $index
+        $slotId = Get-BoeFirstNonEmptyJsonString -Object $normalizedItem -Names @("slotId")
+        if (!$seenSlotIds.Add($slotId)) {
+            throw "Guardian trade request '$RequestId' has duplicate slotId '$slotId'."
+        }
+
+        $itemList.Add($normalizedItem)
+        $index++
+    }
+
+    if ($expectedCount -gt 0 -and $itemList.Count -ne $expectedCount) {
+        throw "Guardian trade request '$RequestId' expects $expectedCount trade items, but helper received $($itemList.Count)."
+    }
+
+    $signature = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("projectBonusSignature")
+    $tradeInventory = [ordered]@{
+        tradeCycleId = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("returnCycleId")
+        generatedAtUtc = [DateTimeOffset]::UtcNow.ToString("O")
+        generationReputationTier = $tradeTier
+        pricingReputationTier = $tradeTier
+        projectBonusSignature = $signature
+        upgradedTradeSlots = Get-BoeGuardianTradeBonusSignaturePart -Signature $signature -Index 0
+        elevatedTradeSlots = Get-BoeGuardianTradeBonusSignaturePart -Signature $signature -Index 1
+        effectiveRarityCeilingBonusSteps = Get-BoeJsonInt -Object $request -Names @("effectiveRarityCeilingBonusSteps") -Default 0
+        items = [object[]]$itemList.ToArray()
+    }
+
+    Set-BoeJsonProperty -Object $guardian -Name "tradeInventory" -Value $tradeInventory
+
+    $createdAtTurn = Get-BoeJsonInt -Object $request -Names @("createdAtTurn") -Default 0
+    $receipt = [ordered]@{
+        requestId = $RequestId
+        guardianId = $guardianId
+        guardianName = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("guardianName")
+        abodeId = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("abodeId")
+        tradeCycleId = Get-BoeFirstNonEmptyJsonString -Object $request -Names @("returnCycleId")
+        status = "ready"
+        itemCount = $itemList.Count
+        resolvedAtTurn = [int]$createdAtTurn
+        resolvedAtUtc = [DateTimeOffset]::UtcNow.ToString("O")
+    }
+
+    $null = Add-BoeJsonArrayItem -Object $guardian -PropertyName "tradeInventoryReceipts" -Item $receipt -UniqueBy "requestId"
+    $null = Add-BoeJsonArrayItem -Object $guardiansRoot -PropertyName "UpdateGuardianTradeInventoryReceipts" -Item $receipt -UniqueBy "requestId"
+
+    $activeGuardian = Get-BoeJsonValue -Object $guardiansRoot -Names @("activeGuardian")
+    if ($null -ne $activeGuardian) {
+        $activeGuardianId = Get-BoeFirstNonEmptyJsonString -Object $activeGuardian -Names @("guardianId", "id")
+        if (Test-BoeJsonTextEquals -Left $activeGuardianId -Right $guardianId) {
+            Set-BoeJsonProperty -Object $activeGuardian -Name "tradeInventory" -Value $tradeInventory
+            $null = Add-BoeJsonArrayItem -Object $activeGuardian -PropertyName "tradeInventoryReceipts" -Item $receipt -UniqueBy "requestId"
+        }
+    }
+
+    Write-BoeJson -RelativePath "game_state/meta/guardians.json" -Data $guardiansRoot -Depth 100
+}
+
 function Normalize-BoeRelativePath {
     param(
         [AllowNull()]

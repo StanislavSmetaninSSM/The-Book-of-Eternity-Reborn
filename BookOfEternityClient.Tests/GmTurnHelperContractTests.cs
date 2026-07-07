@@ -1417,6 +1417,122 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void Helper_CompleteBoeGuardianTradeInventoryRequestWritesCanonicalInventoryAndReceipt()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-guardian-trade-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "meta"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "control", "pending_guardian_trade_request.json"),
+                """
+                {
+                  "requestId": "guardian_trade_req_001",
+                  "guardianId": "guardian_alpha",
+                  "guardianName": "Азалия",
+                  "abodeId": "abode_alpha",
+                  "returnCycleId": "return_7",
+                  "currentReputation": 30,
+                  "derivedTradeSlotCount": 2,
+                  "effectiveRarityCeilingBonusSteps": 1,
+                  "projectBonusSignature": "1|0|1",
+                  "createdAtTurn": 12,
+                  "createdAtUtc": "2026-07-06T00:00:00Z"
+                }
+                """,
+                Encoding.UTF8);
+            File.WriteAllText(
+                Path.Combine(session, "game_state", "meta", "guardians.json"),
+                """
+                {
+                  "guardians": [
+                    {
+                      "guardianId": "guardian_alpha",
+                      "canonicalName": "Азалия",
+                      "domain": "Порог Сна",
+                      "abode": { "abodeId": "abode_alpha", "name": "Обитель Азалии" },
+                      "relationshipData": { "currentReputation": 30 },
+                      "tradeInventoryReceipts": []
+                    }
+                  ],
+                  "activeGuardian": {
+                    "guardianId": "guardian_alpha",
+                    "canonicalName": "Азалия",
+                    "domain": "Порог Сна",
+                    "abode": { "abodeId": "abode_alpha", "name": "Обитель Азалии" },
+                    "relationshipData": { "currentReputation": 30 },
+                    "tradeInventoryReceipts": []
+                  }
+                }
+                """,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                "$ErrorActionPreference = 'Stop'",
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$items = @(" +
+                    "[ordered]@{ domainTag = 'Сны и Переходы'; relicData = [ordered]@{ relicId = 'relic_threshold_ash'; name = 'Пепел Порога'; quality = 'Common'; description = 'Тихая реликвия для проверки витрины.' } }, " +
+                    "[ordered]@{ slotId = 'guardian_slot_custom'; rarityBonusStepsApplied = 1; relicData = [ordered]@{ relicId = 'relic_threshold_echo'; name = 'Эхо Порога'; rarity = 'Uncommon'; description = 'Редкость указана через rarity, цена должна считаться автоматически.' } })",
+                "Complete-BoeGuardianTradeInventoryRequest -RequestId 'guardian_trade_req_001' -Items $items"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.True(string.IsNullOrWhiteSpace(result.StdErr), result.StdErr);
+
+            using var document = JsonDocument.Parse(File.ReadAllText(Path.Combine(session, "game_state", "meta", "guardians.json"), Encoding.UTF8));
+            var rootElement = document.RootElement;
+            var guardian = rootElement.GetProperty("guardians")[0];
+            var tradeInventory = guardian.GetProperty("tradeInventory");
+            Assert.Equal("return_7", tradeInventory.GetProperty("tradeCycleId").GetString());
+            Assert.Equal("Neutral", tradeInventory.GetProperty("generationReputationTier").GetString());
+            Assert.Equal("Neutral", tradeInventory.GetProperty("pricingReputationTier").GetString());
+            Assert.Equal("1|0|1", tradeInventory.GetProperty("projectBonusSignature").GetString());
+            Assert.Equal(1, tradeInventory.GetProperty("upgradedTradeSlots").GetInt32());
+            Assert.Equal(0, tradeInventory.GetProperty("elevatedTradeSlots").GetInt32());
+            Assert.Equal(1, tradeInventory.GetProperty("effectiveRarityCeilingBonusSteps").GetInt32());
+            Assert.Equal(2, tradeInventory.GetProperty("items").GetArrayLength());
+            Assert.Equal(35, tradeInventory.GetProperty("items")[0].GetProperty("priceInFeathers").GetInt32());
+            Assert.Equal("guardian_trade_req_001-slot-1", tradeInventory.GetProperty("items")[0].GetProperty("slotId").GetString());
+            Assert.False(tradeInventory.GetProperty("items")[0].GetProperty("soldOut").GetBoolean());
+            Assert.Equal("Common", tradeInventory.GetProperty("items")[0].GetProperty("relicData").GetProperty("rarity").GetString());
+            Assert.Equal(81, tradeInventory.GetProperty("items")[1].GetProperty("priceInFeathers").GetInt32());
+            Assert.Equal("guardian_slot_custom", tradeInventory.GetProperty("items")[1].GetProperty("slotId").GetString());
+            Assert.Equal("Uncommon", tradeInventory.GetProperty("items")[1].GetProperty("relicData").GetProperty("quality").GetString());
+
+            var receipt = guardian.GetProperty("tradeInventoryReceipts")[0];
+            Assert.Equal("guardian_trade_req_001", receipt.GetProperty("requestId").GetString());
+            Assert.Equal("guardian_alpha", receipt.GetProperty("guardianId").GetString());
+            Assert.Equal("Азалия", receipt.GetProperty("guardianName").GetString());
+            Assert.Equal("abode_alpha", receipt.GetProperty("abodeId").GetString());
+            Assert.Equal("return_7", receipt.GetProperty("tradeCycleId").GetString());
+            Assert.Equal("ready", receipt.GetProperty("status").GetString());
+            Assert.Equal(2, receipt.GetProperty("itemCount").GetInt32());
+            Assert.Equal(12, receipt.GetProperty("resolvedAtTurn").GetInt32());
+            Assert.False(string.IsNullOrWhiteSpace(receipt.GetProperty("resolvedAtUtc").GetString()));
+
+            var updateReceipt = rootElement.GetProperty("UpdateGuardianTradeInventoryReceipts")[0];
+            Assert.Equal("guardian_trade_req_001", updateReceipt.GetProperty("requestId").GetString());
+
+            var activeInventory = rootElement.GetProperty("activeGuardian").GetProperty("tradeInventory");
+            Assert.Equal("return_7", activeInventory.GetProperty("tradeCycleId").GetString());
+            Assert.Equal(81, activeInventory.GetProperty("items")[1].GetProperty("priceInFeathers").GetInt32());
+            Assert.Equal("guardian_trade_req_001", rootElement.GetProperty("activeGuardian").GetProperty("tradeInventoryReceipts")[0].GetProperty("requestId").GetString());
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void DaemonPrompt_ExposesSessionLocalGmTurnHelper()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -1430,8 +1546,10 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("Set-BoeJsonProperty", daemon, StringComparison.Ordinal);
         Assert.Contains("Add-BoeJsonArrayItem", daemon, StringComparison.Ordinal);
         Assert.Contains("Complete-BoeNpcTradeInventoryRequest", daemon, StringComparison.Ordinal);
+        Assert.Contains("Complete-BoeGuardianTradeInventoryRequest", daemon, StringComparison.Ordinal);
         Assert.Contains("@('NPCId','npcId','id','initialId')", daemon, StringComparison.Ordinal);
         Assert.Contains("UpdateNpcTradeInventoryReceipts", daemon, StringComparison.Ordinal);
+        Assert.Contains("UpdateGuardianTradeInventoryReceipts", daemon, StringComparison.Ordinal);
         Assert.Contains("mutable JSON-like objects that preserve arrays", daemon, StringComparison.Ordinal);
         Assert.Contains("$object.newField = <value>", daemon, StringComparison.Ordinal);
         Assert.Contains("optional or differently cased JSON fields", daemon, StringComparison.Ordinal);
@@ -1901,6 +2019,7 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("specialArtLearningReceipts", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("guardian_trade_inventory_resolution_repair", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("pending_guardian_trade_request.json", repairTemplate, StringComparison.Ordinal);
+            Assert.Contains("Complete-BoeGuardianTradeInventoryRequest", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("guardian.tradeInventory", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("guardian_pending_creation_materialization_repair", repairTemplate, StringComparison.Ordinal);
             Assert.Contains("pendingGuardianCreation", repairTemplate, StringComparison.Ordinal);
