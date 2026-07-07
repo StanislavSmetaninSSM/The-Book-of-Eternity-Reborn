@@ -211,6 +211,79 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
     }
 
     [Fact]
+    public void BuildCanonicalGuardianRootForFreshNewGame_Freeform_UsesClientOwnedCanonicalSeed()
+    {
+        const string description = "Хранительница Селена Теневая: покровительница забытых библиотек, тайных сделок и осторожной мудрости.";
+
+        var root = _service.BuildCanonicalGuardianRootForFreshNewGame(
+            description,
+            "Искра Перед Рассветом",
+            turnNumber: 1,
+            createdAtUtc: DateTimeOffset.Parse("2026-06-29T00:00:00Z"));
+
+        Assert.Null(root["pendingGuardianCreation"]);
+
+        var guardians = Assert.IsType<JsonArray>(root["guardians"]);
+        var guardian = Assert.IsType<JsonObject>(Assert.Single(guardians));
+        var activeGuardian = Assert.IsType<JsonObject>(root["activeGuardian"]);
+
+        var guardianId = guardian["guardianId"]?.GetValue<string>();
+        Assert.False(string.IsNullOrWhiteSpace(guardianId));
+        Assert.Equal(guardianId, activeGuardian["guardianId"]?.GetValue<string>());
+        Assert.Equal("freeform", guardian["originType"]?.GetValue<string>());
+        Assert.Equal("Хранительница Селена Теневая", guardian["canonicalName"]?.GetValue<string>());
+        Assert.Equal(description, guardian["freeformSourceDescription"]?.GetValue<string>());
+
+        var loreFragments = Assert.IsType<JsonArray>(guardian["loreFragments"]);
+        Assert.True(loreFragments.Count >= 7);
+        foreach (var fragmentNode in loreFragments)
+        {
+            var fragment = Assert.IsType<JsonObject>(fragmentNode);
+            Assert.False(string.IsNullOrWhiteSpace(fragment["fragmentId"]?.GetValue<string>()));
+            Assert.False(string.IsNullOrWhiteSpace(fragment["summary"]?.GetValue<string>()));
+            Assert.False(string.IsNullOrWhiteSpace(fragment["category"]?.GetValue<string>()));
+        }
+
+        var navigation = Assert.IsType<JsonObject>(root["chaosSeaNavigation"]);
+        Assert.Equal(guardian["abode"]?["abodeId"]?.GetValue<string>(), navigation["currentAbodeId"]?.GetValue<string>());
+        Assert.Equal(guardianId, navigation["currentGuardianId"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task BuildAfterlifeEntityProfileRootForFreshNewGame_Freeform_CreatesValidMentorProfile()
+    {
+        const string description = "Хранительница Селена Теневая: покровительница забытых библиотек, тайных сделок и осторожной мудрости.";
+
+        var root = _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+            description,
+            "Искра Перед Рассветом",
+            turnNumber: 1,
+            createdAtUtc: DateTimeOffset.Parse("2026-06-29T00:00:00Z"));
+
+        Assert.Equal(1, root["schemaVersion"]?.GetValue<int>());
+        var profiles = Assert.IsType<JsonArray>(root["profiles"]);
+        var profile = Assert.IsType<JsonObject>(Assert.Single(profiles));
+        Assert.Equal("guardian", profile["actorType"]?.GetValue<string>());
+        Assert.Equal("Хранительница Селена Теневая", profile["displayName"]?.GetValue<string>());
+        Assert.Equal("Chaos Sea", profile["realm"]?.GetValue<string>());
+        Assert.Equal("freeform", profile["originType"]?.GetValue<string>());
+        Assert.Equal(description, profile["freeformSourceDescription"]?.GetValue<string>());
+
+        var mentorProfile = Assert.IsType<JsonObject>(profile["mentorProfile"]);
+        Assert.True(mentorProfile["canTeach"]?.GetValue<bool>());
+        var standardArts = Assert.IsType<JsonObject>(profile["standardArts"]);
+        Assert.Equal(2, standardArts["guard"]?.GetValue<int>());
+        Assert.IsType<JsonArray>(profile["relationships"]);
+
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, root.ToJsonString());
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
     public async Task BuildReminderFragmentAsync_ShiningAbodeTreatsAttractionAsRepairOnly()
     {
         await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "Азалия", "Social", "built_in");

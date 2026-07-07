@@ -322,6 +322,30 @@ public sealed class SystemGuardianLibraryService
         };
     }
 
+    public JsonObject BuildCanonicalGuardianRootForFreshNewGame(
+        string freeformDescription,
+        string soulName,
+        int turnNumber,
+        DateTimeOffset createdAtUtc)
+    {
+        var guardian = BuildCanonicalFreeformGuardianForFreshNewGame(freeformDescription, soulName, turnNumber, createdAtUtc);
+        var guardianId = GetRequiredString(guardian, "guardianId");
+        var abode = guardian["abode"] as JsonObject ?? new JsonObject();
+        var abodeId = GetNodeString(abode["abodeId"]) ?? BuildFreeformGuardianAbodeId(guardianId);
+
+        return new JsonObject
+        {
+            ["guardians"] = new JsonArray(guardian.DeepClone()),
+            ["activeGuardian"] = guardian.DeepClone(),
+            ["chaosSeaNavigation"] = new JsonObject
+            {
+                ["currentAbodeId"] = abodeId,
+                ["currentGuardianId"] = guardianId,
+                ["discoveredAbodes"] = new JsonArray(abodeId)
+            }
+        };
+    }
+
     public JsonObject BuildAfterlifeEntityProfileRootForFreshNewGame(
         SystemGuardianPresetDescriptor preset,
         string soulName,
@@ -329,6 +353,21 @@ public sealed class SystemGuardianLibraryService
         DateTimeOffset createdAtUtc)
     {
         var profile = BuildAfterlifeEntityProfileForFreshNewGame(preset, soulName, turnNumber, createdAtUtc);
+
+        return new JsonObject
+        {
+            ["schemaVersion"] = AfterlifeEntityProfileState.SchemaVersion,
+            [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray(profile)
+        };
+    }
+
+    public JsonObject BuildAfterlifeEntityProfileRootForFreshNewGame(
+        string freeformDescription,
+        string soulName,
+        int turnNumber,
+        DateTimeOffset createdAtUtc)
+    {
+        var profile = BuildAfterlifeEntityProfileForFreshNewGame(freeformDescription, soulName, turnNumber, createdAtUtc);
 
         return new JsonObject
         {
@@ -345,6 +384,98 @@ public sealed class SystemGuardianLibraryService
             ["description"] = description,
             ["soulName"] = soulName,
             ["_lastUpdated"] = DateTime.UtcNow.ToString("o")
+        };
+    }
+
+    private static JsonObject BuildCanonicalFreeformGuardianForFreshNewGame(
+        string freeformDescription,
+        string soulName,
+        int turnNumber,
+        DateTimeOffset createdAtUtc)
+    {
+        var timestamp = createdAtUtc.ToUniversalTime().ToString("o");
+        var normalizedDescription = NormalizeFreeformDescription(freeformDescription);
+        var displayName = ExtractFreeformGuardianName(normalizedDescription);
+        var domain = InferFreeformDomain(normalizedDescription);
+        var guardianId = BuildFreeformGuardianId(displayName, normalizedDescription);
+        var abodeId = BuildFreeformGuardianAbodeId(guardianId);
+        var abodeName = BuildFreeformAbodeName(displayName, normalizedDescription);
+        var currentPower = AbodePowerRules.DefaultCurrentPower;
+
+        return new JsonObject
+        {
+            ["guardianId"] = guardianId,
+            ["canonicalName"] = displayName,
+            ["domain"] = domain,
+            ["originType"] = "freeform",
+            ["freeformSourceDescription"] = normalizedDescription,
+            ["nameVariants"] = new JsonObject
+            {
+                ["default"] = displayName,
+                ["feminine"] = displayName,
+                ["masculine"] = displayName,
+                ["neutral"] = displayName
+            },
+            ["manifestation"] = new JsonObject
+            {
+                ["formFlexibility"] = GuardianManifestation.SelectiveFlexibility,
+                ["currentDisplayName"] = displayName,
+                ["currentPresentationStyle"] = "freeform",
+                ["currentPronouns"] = InferFreeformPronouns(displayName, normalizedDescription),
+                ["appearanceDescription"] = $"Первичная форма Хранителя взята из описания игрока: {TruncateForSummary(normalizedDescription, 420)}"
+            },
+            ["manifestationHistory"] = new JsonArray(),
+            ["abode"] = new JsonObject
+            {
+                ["abodeId"] = abodeId,
+                ["name"] = abodeName,
+                ["description"] = $"{abodeName}: стартовая обитель, созданная из свободного описания игрока. Исходный образ: {TruncateForSummary(normalizedDescription, 520)}",
+                ["image_prompt"] = $"dark fantasy afterlife guardian abode, {abodeName}, {domain}, cinematic, readable composition",
+                ["isDiscovered"] = true
+            },
+            ["personalityProfile"] = new JsonObject
+            {
+                ["archetype"] = "Freeform Guardian",
+                ["speechPattern"] = "тон и манера речи заданы свободным описанием игрока",
+                ["coreValues"] = BuildFreeformCoreValues(normalizedDescription)
+            },
+            ["mood"] = new JsonObject
+            {
+                ["current"] = "focused",
+                ["intensity"] = 40,
+                ["reason"] = $"Первая встреча с душой «{soulName}» после свободного описания Хранителя.",
+                ["since"] = Math.Max(0, turnNumber)
+            },
+            ["relationshipData"] = new JsonObject
+            {
+                ["currentReputation"] = 0,
+                ["reputationHistory"] = new JsonArray(),
+                ["lastInteraction"] = timestamp
+            },
+            ["abodePower"] = new JsonObject
+            {
+                ["currentPower"] = currentPower,
+                ["tier"] = AbodePowerRules.GetTierLabel(currentPower),
+                ["lastUpdatedAt"] = timestamp,
+                ["history"] = new JsonArray()
+            },
+            ["guardianRelationships"] = new JsonArray(),
+            ["questManagement"] = new JsonObject
+            {
+                ["availableQuests"] = new JsonArray(),
+                ["activeQuests"] = new JsonArray(),
+                ["completedQuests"] = new JsonArray()
+            },
+            ["gachaSystem"] = new JsonObject
+            {
+                ["chargesPerReturn"] = GuardianGachaChargeRules.GetChargesPerReturnForReputation(0, currentPower),
+                ["chargesUsedThisReturn"] = 0,
+                ["gachaHistory"] = new JsonArray()
+            },
+            ["loreFragments"] = BuildInitialFreeformLoreFragments(guardianId, displayName, domain, abodeName, normalizedDescription),
+            ["musings"] = new JsonArray(),
+            ["tradeInventoryReceipts"] = new JsonArray(),
+            ["displayName"] = displayName
         };
     }
 
@@ -534,6 +665,89 @@ public sealed class SystemGuardianLibraryService
         };
     }
 
+    private static JsonObject BuildAfterlifeEntityProfileForFreshNewGame(
+        string freeformDescription,
+        string soulName,
+        int turnNumber,
+        DateTimeOffset createdAtUtc)
+    {
+        var timestamp = createdAtUtc.ToUniversalTime().ToString("o");
+        var normalizedDescription = NormalizeFreeformDescription(freeformDescription);
+        var displayName = ExtractFreeformGuardianName(normalizedDescription);
+        var domain = InferFreeformDomain(normalizedDescription);
+        var guardianId = BuildFreeformGuardianId(displayName, normalizedDescription);
+        var abodeName = BuildFreeformAbodeName(displayName, normalizedDescription);
+        var seedSegment = SanitizeIdSegment(guardianId);
+
+        return new JsonObject
+        {
+            ["actorType"] = "guardian",
+            ["actorId"] = guardianId,
+            ["displayName"] = displayName,
+            ["realm"] = "Chaos Sea",
+            ["locationName"] = abodeName,
+            ["originType"] = "freeform",
+            ["freeformSourceDescription"] = normalizedDescription,
+            ["mentorProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 0,
+                ["summary"] = BuildInitialMentorSummary(displayName, domain, normalizedDescription),
+                ["createdBy"] = "fresh_new_game_freeform_guardian_bootstrap"
+            },
+            ["currencies"] = new JsonObject
+            {
+                ["inkFeathers"] = 0,
+                ["lightSparks"] = 0
+            },
+            ["progression"] = new JsonObject
+            {
+                ["enlightenment"] = new JsonObject
+                {
+                    ["experience"] = 0,
+                    ["tier"] = 0
+                },
+                ["radiance"] = new JsonObject
+                {
+                    ["experience"] = 0,
+                    ["tier"] = 0
+                }
+            },
+            ["standardArts"] = BuildInitialMentorStandardArts(domain),
+            ["specialArts"] = new JsonArray(),
+            ["customStates"] = new JsonArray(),
+            ["fateCards"] = new JsonArray(),
+            ["relationships"] = new JsonArray(),
+            ["soulDissipationTier"] = 0,
+            ["progressionStrategy"] = new JsonObject
+            {
+                ["strategyId"] = $"strategy_{seedSegment}",
+                ["summary"] = "Стартовый свободно описанный Хранитель держит безопасный набор духовных техник для первых уроков души.",
+                ["priorityOrder"] = new JsonArray("guard", "maneuver"),
+                ["lastUpdatedAtTurn"] = Math.Max(0, turnNumber),
+                ["resourceReserve"] = new JsonObject
+                {
+                    ["inkFeathers"] = 0,
+                    ["lightSparks"] = 0
+                },
+                ["allowedSpends"] = new JsonArray("standardArts", "specialArts")
+            },
+            ["progressionLedger"] = new JsonArray(),
+            ["ledger"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["entryId"] = $"freeform_guardian_profile_bootstrap_{seedSegment}",
+                    ["turnNumber"] = Math.Max(0, turnNumber),
+                    ["reason"] = "fresh_new_game_freeform_guardian_bootstrap",
+                    ["summary"] = $"Клиент создал стартовый профиль наставника для свободно описанного Хранителя {displayName}, чтобы первый ход не зависел от технической материализации.",
+                    ["createdAt"] = timestamp,
+                    ["soulName"] = soulName
+                }
+            }
+        };
+    }
+
     private static JsonObject BuildInitialMentorStandardArts(string domain)
     {
         var arts = new JsonObject
@@ -615,6 +829,48 @@ public sealed class SystemGuardianLibraryService
         return result;
     }
 
+    private static JsonArray BuildInitialFreeformLoreFragments(
+        string guardianId,
+        string displayName,
+        string domain,
+        string abodeName,
+        string description)
+    {
+        var sourceId = SanitizeIdSegment(guardianId);
+        var shortDescription = TruncateForSummary(description, 240);
+        var fragments = new[]
+        {
+            ("identity", "Личность Хранителя", $"{displayName} создан из свободного описания игрока и должен сохранять эту личность в будущих сценах.", "personal_history", 0),
+            ("domain", "Домен влияния", $"Домен стартового Хранителя: {domain}. Он задаёт первые уроки, помощь и ограничения.", "domain_mastery", 0),
+            ("abode", "Обитель", $"{abodeName} уже признана первой безопасной точкой души в Море Хаоса.", "lost_world", 0),
+            ("source", "Исходный образ", $"Ключевой образ из описания игрока: {shortDescription}", "personal_history", 0),
+            ("limits", "Границы помощи", "Хранитель может наставлять и предупреждать, но не отменяет цену выбора и не проживает путь вместо души.", "soul_mechanics", 50),
+            ("quest_seed", "Будущий личный квест", "Личный квест Хранителя должен раскрыться позже через доверие, репутацию и события новых жизней.", "personal_history", 130),
+            ("secret", "Скрытая причина", "У Хранителя есть причина наблюдать за этой душой внимательнее, чем за случайным гостем Моря Хаоса; её нельзя раскрывать на старте.", "cosmic_secret", 230)
+        };
+
+        var result = new JsonArray();
+        foreach (var (suffix, title, summary, category, requiredReputation) in fragments)
+        {
+            result.Add(new JsonObject
+            {
+                ["fragmentId"] = $"lore_{sourceId}_{suffix}",
+                ["title"] = title,
+                ["summary"] = summary,
+                ["discoveryState"] = "planned",
+                ["visibility"] = "hidden",
+                ["sourcePresetId"] = "freeform",
+                ["sourceGuardianId"] = guardianId,
+                ["tags"] = new JsonArray(SanitizeIdSegment(suffix), SanitizeIdSegment(domain)),
+                ["category"] = category,
+                ["content"] = summary,
+                ["requiredReputation"] = requiredReputation
+            });
+        }
+
+        return result;
+    }
+
     private static string BuildInitialAbodeDescription(SystemGuardianPresetDescriptor preset)
     {
         var abodeName = FirstNonEmpty(preset.AbodeName, "Обитель Хранителя");
@@ -643,6 +899,129 @@ public sealed class SystemGuardianLibraryService
 
     private static string BuildSystemGuardianAbodeId(string presetId) =>
         $"abode_system_{SanitizeIdSegment(presetId)}_001";
+
+    private static string BuildFreeformGuardianId(string displayName, string description)
+    {
+        var slug = SanitizeIdSegment(displayName);
+        if (string.Equals(slug, "guardian", StringComparison.OrdinalIgnoreCase))
+            slug = SanitizeIdSegment(description);
+
+        return $"guard_freeform_{TruncateIdSegment(slug, 48)}_001";
+    }
+
+    private static string BuildFreeformGuardianAbodeId(string guardianId) =>
+        $"abode_{SanitizeIdSegment(guardianId)}";
+
+    private static string NormalizeFreeformDescription(string description)
+    {
+        var normalized = string.Join(
+            " ",
+            (description ?? string.Empty)
+                .Replace('\r', ' ')
+                .Replace('\n', ' ')
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+        return string.IsNullOrWhiteSpace(normalized)
+            ? "Свободно описанный Хранитель души."
+            : normalized;
+    }
+
+    private static string ExtractFreeformGuardianName(string description)
+    {
+        var firstLine = description.Split(new[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? description.Trim();
+        foreach (var separator in new[] { ':', '—', '-' })
+        {
+            var index = firstLine.IndexOf(separator);
+            if (index > 2)
+            {
+                var candidate = firstLine[..index].Trim(' ', '"', '\'', '«', '»');
+                if (candidate.Length is >= 3 and <= 80)
+                    return candidate;
+            }
+        }
+
+        var words = firstLine.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (words.Length >= 2)
+            return string.Join(' ', words.Take(Math.Min(words.Length, 4))).Trim(' ', '"', '\'', '«', '»');
+
+        return FirstNonEmpty(firstLine, "Свободный Хранитель");
+    }
+
+    private static string InferFreeformDomain(string description)
+    {
+        var source = description.ToLowerInvariant();
+        if (ContainsAny(source, "библиот", "архив", "знан", "мудрост", "книг", "тайн"))
+            return "Knowledge";
+        if (ContainsAny(source, "сдел", "торг", "куп", "долг", "цен", "обмен"))
+            return "Trade";
+        if (ContainsAny(source, "бой", "меч", "клин", "воин", "битв", "охот"))
+            return "Combat";
+        if (ContainsAny(source, "исцел", "леч", "милосерд", "забот"))
+            return "Healing";
+        if (ContainsAny(source, "лес", "дорог", "выжив", "пустош", "след"))
+            return "Survival";
+        if (ContainsAny(source, "интриг", "лож", "маск", "тайн", "договор"))
+            return "Intrigue";
+
+        return "Knowledge";
+    }
+
+    private static string BuildFreeformAbodeName(string displayName, string description)
+    {
+        var source = description.ToLowerInvariant();
+        if (ContainsAny(source, "башн") && ContainsAny(source, "архив", "библиот"))
+            return "Башня Бесконечных Архивов";
+        if (ContainsAny(source, "библиот"))
+            return $"Библиотека {displayName}";
+        if (ContainsAny(source, "архив"))
+            return $"Архив {displayName}";
+
+        return $"Обитель {displayName}";
+    }
+
+    private static JsonArray BuildFreeformCoreValues(string description)
+    {
+        var values = new JsonArray();
+        var source = description.ToLowerInvariant();
+        if (ContainsAny(source, "мудрост", "осторож"))
+            values.Add("осторожная мудрость");
+        if (ContainsAny(source, "сдел", "цен", "договор"))
+            values.Add("цена любого обещания");
+        if (ContainsAny(source, "библиот", "архив", "знан"))
+            values.Add("сохранение забытых знаний");
+        if (values.Count == 0)
+            values.Add("сопровождение души");
+        return values;
+    }
+
+    private static string InferFreeformPronouns(string displayName, string description)
+    {
+        var source = $"{displayName} {description}".ToLowerInvariant();
+        if (ContainsAny(source, "хранительница", "покровительница", "она", "женск"))
+            return "она/её";
+        if (ContainsAny(source, "хранитель", "покровитель", "он", "мужск"))
+            return "он/его";
+
+        return "они/их";
+    }
+
+    private static bool ContainsAny(string source, params string[] fragments) =>
+        fragments.Any(fragment => source.Contains(fragment, StringComparison.OrdinalIgnoreCase));
+
+    private static string TruncateForSummary(string value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length <= maxLength)
+            return value;
+
+        return value[..Math.Max(0, maxLength - 1)].TrimEnd() + "…";
+    }
+
+    private static string TruncateIdSegment(string value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length <= maxLength)
+            return string.IsNullOrWhiteSpace(value) ? "guardian" : value;
+
+        return value[..maxLength].Trim('_');
+    }
 
     private static string SanitizeIdSegment(string? value)
     {

@@ -1027,35 +1027,33 @@ public partial class GameEngine
                     .GetResult();
                 WriteCanonicalSoulStateAsync(soulState).Wait();
 
-                // Initialize guardian. System presets are client-owned canonical seeds;
-                // freeform guardians stay GM-authored pending creation contracts.
+                // Initialize guardian. New Game guardian seeds are client-owned so the first GM turn can
+                // focus on the scene instead of repairing technical materialization contracts.
                 var guardian = selectedSystemGuardianPreset != null
                     ? _systemGuardianLibraryService.BuildCanonicalGuardianRootForFreshNewGame(
                         selectedSystemGuardianPreset,
                         soulName,
                         turnNumber: 1,
                         createdAtUtc: DateTimeOffset.UtcNow)
-                    : new JsonObject
-                    {
-                        ["guardians"] = new JsonArray(),
-                        ["activeGuardian"] = null,
-                        ["chaosSeaNavigation"] = new JsonObject
-                        {
-                            ["currentAbodeId"] = null
-                        },
-                        ["pendingGuardianCreation"] = pendingGuardianCreation.DeepClone()
-                    };
-                _fs.WriteFileAtomicAsync("game_state/meta/guardians.json",
-                    JsonSerializer.Serialize(guardian, JsonOpts)).Wait();
-                if (selectedSystemGuardianPreset != null)
-                {
-                    var guardianProfileRoot = _systemGuardianLibraryService.BuildAfterlifeEntityProfileRootForFreshNewGame(
-                        selectedSystemGuardianPreset,
+                    : _systemGuardianLibraryService.BuildCanonicalGuardianRootForFreshNewGame(
+                        pendingGuardianCreation["description"]?.GetValue<string>() ?? string.Empty,
                         soulName,
                         turnNumber: 1,
                         createdAtUtc: DateTimeOffset.UtcNow);
-                    _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, guardianProfileRoot.ToJsonString(JsonOpts)).Wait();
-                }
+                _fs.WriteFileAtomicAsync("game_state/meta/guardians.json",
+                    JsonSerializer.Serialize(guardian, JsonOpts)).Wait();
+                var guardianProfileRoot = selectedSystemGuardianPreset != null
+                    ? _systemGuardianLibraryService.BuildAfterlifeEntityProfileRootForFreshNewGame(
+                        selectedSystemGuardianPreset,
+                        soulName,
+                        turnNumber: 1,
+                        createdAtUtc: DateTimeOffset.UtcNow)
+                    : _systemGuardianLibraryService.BuildAfterlifeEntityProfileRootForFreshNewGame(
+                        pendingGuardianCreation["description"]?.GetValue<string>() ?? string.Empty,
+                        soulName,
+                        turnNumber: 1,
+                        createdAtUtc: DateTimeOffset.UtcNow);
+                _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, guardianProfileRoot.ToJsonString(JsonOpts)).Wait();
 
                 WriteInitialGuardianProjectTrackerStateAsync().Wait();
 

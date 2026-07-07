@@ -1364,12 +1364,14 @@ but the GM must not rely on that fallback when authoring normal turns.
 
 ## Guardian bootstrap guard
 
-Fresh New Game system Guardian seed is client-owned. If turn #1 in the Chaos Sea already has a
-materialized system Guardian in `game_state/meta/guardians.json` and no pending Guardian contract,
-narrate the first meeting and use `afterlifeChronicleUpdates[]` for durable memory. The client also
-creates a matching starter mentor profile in `game_state/meta/afterlife_entity_profiles.json` for the
-same `guard_system_*` actor; keep that profile as authority and update it through documented profile
-surfaces when needed. Do not write `game_state/meta/guardians.json`, do not emit
+Fresh New Game system Guardian seed is client-owned; freeform New Game Guardian seed is client-owned too.
+If turn #1 in the Chaos Sea already has a materialized Guardian in `game_state/meta/guardians.json`
+and no pending Guardian contract, narrate the first meeting and use `afterlifeChronicleUpdates[]` for
+durable memory. The client also creates a matching starter mentor profile in
+`game_state/meta/afterlife_entity_profiles.json` for the same Guardian actor; keep that profile as
+authority and update it through documented profile surfaces when needed. System seeds carry
+`sourcePreset`; freeform seeds carry `originType=freeform` and `freeformSourceDescription`. Do not
+write `game_state/meta/guardians.json`, do not emit
 `UpdateGuardians.create`, and do not include `game_state/meta/guardians.json` in
 `Complete-BoeTurn -FilesModified @(...)` unless the current turn_request/player action has an explicit
 Guardian mutation contract such as system attraction, player-founded Guardian, Guardian trade, Chaos
