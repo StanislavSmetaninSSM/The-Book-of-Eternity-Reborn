@@ -1190,7 +1190,8 @@ public sealed partial class CanonicalStateNormalizerTests
                     "targetName": "Защита",
                     "currentValue": 0,
                     "targetValue": 1,
-                    "sourceCap": 3
+                    "sourceCap": 3,
+                    "cost": { "inkFeathers": 90, "lightSparks": 0 }
                   },
                   {
                     "offerId": "mentor_cost_focus_1",

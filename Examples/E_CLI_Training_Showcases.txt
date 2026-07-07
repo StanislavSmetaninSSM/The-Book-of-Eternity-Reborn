@@ -82,9 +82,9 @@ Shared rules
   entry must include a positive `cost` object. The client owns the actual
   purchase and spending, but the showcase still advertises the price the
   player will see. For afterlife standard spiritual arts and `spirit_focus`,
-  the client can normalize a missing deterministic `cost` from the base price
-  and mentor relationship, but GM-authored examples and normal output should
-  include the explicit `cost`.
+  the client normalizes missing or mismatched deterministic `cost` values from
+  the base price and mentor relationship, but GM-authored examples and normal
+  output should include the explicit `cost`.
 - When New Game starts with a named system Guardian or a freeform Guardian
   description, the client already creates
   a valid `game_state/meta/afterlife_entity_profiles.json` profile for the

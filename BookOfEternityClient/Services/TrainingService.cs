@@ -1936,14 +1936,14 @@ public sealed class TrainingService
         var changed = false;
         foreach (var offer in offers.OfType<JsonObject>())
         {
-            if (HasPositiveTrainingCost(offer["cost"] as JsonObject))
-                continue;
-
             if (!TryBuildDeterministicAfterlifeMentorCost(mentor, offer, out var cost))
                 continue;
 
-            offer["cost"] = cost;
-            changed = true;
+            if (!TrainingCostsEqual(offer["cost"] as JsonObject, cost))
+            {
+                offer["cost"] = cost;
+                changed = true;
+            }
         }
 
         return changed;
@@ -1985,15 +1985,17 @@ public sealed class TrainingService
         return true;
     }
 
-    private static bool HasPositiveTrainingCost(JsonObject? cost)
+    private static bool TrainingCostsEqual(JsonObject? left, JsonObject right)
     {
-        if (cost == null)
+        if (left == null)
             return false;
 
-        return GetNodeInt(cost["money"]) > 0 ||
-               GetNodeInt(cost["currentLevelExperiencePercent"]) > 0 ||
-               GetTrainingCostAmount(cost, "inkFeathers", "inkFeatherCost", "inkFeathersCost", "costInFeathers") > 0 ||
-               GetTrainingCostAmount(cost, "lightSparks", "lightSparkCost", "lightSparksCost", "costInLightSparks") > 0;
+        return GetNodeInt(left["money"]) == GetNodeInt(right["money"]) &&
+               GetNodeInt(left["currentLevelExperiencePercent"]) == GetNodeInt(right["currentLevelExperiencePercent"]) &&
+               GetTrainingCostAmount(left, "inkFeathers", "inkFeatherCost", "inkFeathersCost", "costInFeathers") ==
+               GetTrainingCostAmount(right, "inkFeathers", "inkFeatherCost", "inkFeathersCost", "costInFeathers") &&
+               GetTrainingCostAmount(left, "lightSparks", "lightSparkCost", "lightSparksCost", "costInLightSparks") ==
+               GetTrainingCostAmount(right, "lightSparks", "lightSparkCost", "lightSparksCost", "costInLightSparks");
     }
 
     private static int FirstPositive(params int[] values)
