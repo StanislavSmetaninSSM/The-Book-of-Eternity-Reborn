@@ -662,7 +662,16 @@ public sealed class TrainingService
     {
         var targetId = GetNodeString(offer["targetId"]) ?? "";
         var targetName = GetNodeString(offer["targetName"]) ?? GetNodeString(offer["skillName"]) ?? targetId;
-        var targetKind = GetNodeString(offer["targetKind"]) ?? "active_skill_mastery";
+        var targetKind = GetNodeString(offer["targetKind"]) ?? "";
+        if (!IsExplicitActiveMortalTrainingTarget(targetKind) &&
+            !IsExplicitPassiveMortalTrainingTarget(targetKind))
+        {
+            var teacherSkillKind = ResolveMortalTeacherSkillKind(teacher, targetId, targetName);
+            targetKind = NormalizeMortalTrainingTargetKind(
+                targetKind,
+                IsExplicitPassiveMortalTrainingTarget(teacherSkillKind));
+        }
+
         var currentValue = Math.Max(0, GetNodeInt(offer["currentValue"]));
         var targetValue = Math.Max(0, GetNodeInt(offer["targetValue"]));
         var sourceCap = Math.Max(0, GetNodeInt(offer["sourceCap"]));
@@ -697,6 +706,7 @@ public sealed class TrainingService
         }
 
         var details = CloneObject(offer);
+        details["targetKind"] = targetKind;
         details["sourceActorId"] = ResolveMortalTeacherActorId(teacher);
         details["sourceActorName"] = GetNodeString(teacher["name"]) ?? "";
 
@@ -1880,6 +1890,23 @@ public sealed class TrainingService
         offer.TargetKind.Contains("progress", StringComparison.OrdinalIgnoreCase) ||
         offer.TargetKind.Contains("practice", StringComparison.OrdinalIgnoreCase);
 
+    private static string ResolveMortalTeacherSkillKind(JsonObject teacher, string? targetId, string? targetName)
+    {
+        if (teacher["teacherProfile"] is not JsonObject profile ||
+            profile["skills"] is not JsonArray skills)
+        {
+            return "";
+        }
+
+        var skill = skills.OfType<JsonObject>().FirstOrDefault(entry =>
+            MatchesMortalTrainingTarget(entry, targetId, targetName));
+
+        return GetNodeString(skill?["skillKind"]) ??
+               GetNodeString(skill?["targetKind"]) ??
+               GetNodeString(skill?["type"]) ??
+               "";
+    }
+
     private static JsonObject? FindMortalSkillObject(JsonObject root, string arrayName, TrainingOffer offer)
     {
         if (root[arrayName] is not JsonArray array)
@@ -1904,7 +1931,10 @@ public sealed class TrainingService
     private static bool MatchesMortalTrainingTarget(JsonObject node, string? targetId, string? targetName)
     {
         var skillId = GetNodeString(node["skillId"]) ?? GetNodeString(node["id"]);
-        var skillName = GetNodeString(node["skillName"]) ?? GetNodeString(node["name"]);
+        var skillName =
+            GetNodeString(node["skillName"]) ??
+            GetNodeString(node["displayName"]) ??
+            GetNodeString(node["name"]);
         return (!string.IsNullOrWhiteSpace(skillId) &&
                 !string.IsNullOrWhiteSpace(targetId) &&
                 string.Equals(skillId, targetId, StringComparison.OrdinalIgnoreCase)) ||

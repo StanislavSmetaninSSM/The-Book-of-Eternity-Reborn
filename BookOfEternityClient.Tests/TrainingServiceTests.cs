@@ -226,6 +226,28 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuyTrainingAsync_MortalGenericPassiveOffer_UsesTeacherSkillKindForPendingGmUnlock()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalPassiveUnlockTeacherAsync(targetKind: "skill_mastery");
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedEmptyPlayerSkillsAsync();
+
+        var service = CreateService();
+        var result = await service.BuyTrainingAsync("npc_skinner_001", "offer_skinning_unlock", currentTurn: 14);
+
+        Assert.True(result.Success);
+
+        using var pendingDoc = JsonDocument.Parse(await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath) ?? "{}");
+        var request = pendingDoc.RootElement.GetProperty("requests").EnumerateArray().Single();
+        var details = request.GetProperty("details");
+        Assert.Equal("unknown_skill_unlock", request.GetProperty("reason").GetString());
+        Assert.Equal("Снятие шкур", details.GetProperty("targetName").GetString());
+        Assert.Equal("passive_skill_mastery", details.GetProperty("targetKind").GetString());
+        Assert.Contains("passiveSkillChanges", details.GetProperty("gmInstruction").GetString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task CleanupSatisfiedMortalSkillEvolutionRequestsAsync_ClearsFulfilledActiveSkillRequest()
     {
         await SeedMortalSoulStateAsync();
@@ -1108,7 +1130,7 @@ public sealed class TrainingServiceTests : IDisposable
         """);
     }
 
-    private async Task SeedMortalPassiveUnlockTeacherAsync()
+    private async Task SeedMortalPassiveUnlockTeacherAsync(string targetKind = "passive_skill_unlock")
     {
         var teacher = new JsonObject
         {
@@ -1145,7 +1167,7 @@ public sealed class TrainingServiceTests : IDisposable
                     ["offerId"] = "offer_skinning_unlock",
                     ["targetId"] = "skinning",
                     ["targetName"] = "Снятие шкур",
-                    ["targetKind"] = "passive_skill_unlock",
+                    ["targetKind"] = targetKind,
                     ["currentValue"] = 0,
                     ["targetValue"] = 1,
                     ["sourceCap"] = 2,
