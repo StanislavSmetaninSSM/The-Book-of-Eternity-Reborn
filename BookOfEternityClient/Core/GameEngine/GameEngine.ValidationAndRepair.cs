@@ -119,6 +119,12 @@ public partial class GameEngine
                 continue;
             }
 
+            if (allowRepairLoop && await TryAutoRepairStartupGuardianDirectMaterializationAsync(source, errors))
+            {
+                await RefreshRuntimeStateAsync();
+                continue;
+            }
+
             _logger.LogError("Нарушение контракта состояния после {Source}: {Count} ошибок", source, errors.Count);
 
             if (!allowRepairLoop)
@@ -385,6 +391,176 @@ public partial class GameEngine
             source,
             result.ReportPath);
         return true;
+    }
+
+    private async Task<bool> TryAutoRepairStartupGuardianDirectMaterializationAsync(
+        string source,
+        IReadOnlyCollection<ValidationIssue> errors)
+    {
+        if (!errors.Any(IsGuardianPendingCreationMaterializationRepairIssue))
+            return false;
+
+        const string path = "game_state/meta/guardians.json";
+        var json = await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(json))
+            return false;
+
+        JsonObject root;
+        try
+        {
+            if (JsonNode.Parse(json) is not JsonObject parsedRoot)
+                return false;
+
+            root = parsedRoot;
+        }
+        catch
+        {
+            return false;
+        }
+
+        if (root["UpdateGuardians"] is JsonArray existingUpdates && existingUpdates.Count > 0)
+            return false;
+
+        if (root["pendingGuardianCreation"] is not JsonObject pendingCreation ||
+            !string.Equals(GetNodeString(pendingCreation["mode"]), "freeform", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (root["guardians"] is not JsonArray guardians)
+            return false;
+
+        var materializedGuardians = guardians.OfType<JsonObject>().ToList();
+        if (materializedGuardians.Count != 1)
+            return false;
+
+        var guardian = materializedGuardians[0];
+        if (!IsAutoRepairableStartupGuardianCreateCandidate(guardian))
+            return false;
+
+        var createData = CloneJsonObjectNode(guardian);
+        NormalizeStartupGuardianCreateCandidate(createData);
+        var guardianId = GetNodeString(createData["guardianId"]);
+        root["UpdateGuardians"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["command"] = "create",
+                ["data"] = createData.DeepClone()
+            }
+        };
+        root["guardians"] = new JsonArray(createData.DeepClone());
+        root["activeGuardian"] = createData.DeepClone();
+
+        if (root["chaosSeaNavigation"] is JsonObject navigation)
+        {
+            navigation["currentGuardianId"] = guardianId;
+            if (createData["abode"] is JsonObject abode)
+            {
+                var abodeId = GetNodeString(abode["abodeId"]);
+                if (!string.IsNullOrWhiteSpace(abodeId))
+                {
+                    navigation["currentAbodeId"] = abodeId;
+                    if (navigation["discoveredAbodes"] is not JsonArray discoveredAbodes ||
+                        !discoveredAbodes.OfType<JsonValue>().Any(value =>
+                            value.TryGetValue<string>(out var discovered) &&
+                            string.Equals(discovered, abodeId, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        navigation["discoveredAbodes"] = new JsonArray(abodeId);
+                    }
+                }
+            }
+        }
+
+        root.Remove("pendingGuardianCreation");
+        await _fs.WriteFileAtomicAsync(path, root.ToJsonString(JsonOpts));
+        _logger.LogWarning(
+            "Auto-repaired startup Guardian direct materialization after {Source}: synthesized UpdateGuardians.create for {GuardianId} and cleared pendingGuardianCreation.",
+            source,
+            guardianId);
+        return true;
+    }
+
+    private static bool IsAutoRepairableStartupGuardianCreateCandidate(JsonObject guardian)
+    {
+        if (string.IsNullOrWhiteSpace(GetNodeString(guardian["guardianId"])) ||
+            string.IsNullOrWhiteSpace(GetNodeString(guardian["canonicalName"])) ||
+            guardian["manifestation"] is not JsonObject ||
+            guardian["abode"] is not JsonObject ||
+            guardian["personalityProfile"] is not JsonObject ||
+            guardian["relationshipData"] is not JsonObject ||
+            guardian["abodePower"] is not JsonObject ||
+            guardian["questManagement"] is not JsonObject ||
+            guardian["gachaSystem"] is not JsonObject ||
+            guardian["mood"] is not JsonObject ||
+            guardian["loreFragments"] is not JsonArray loreFragments ||
+            loreFragments.Count < 7 ||
+            guardian["musings"] is not JsonArray musings ||
+            musings.Count == 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static JsonObject CloneJsonObjectNode(JsonObject source)
+    {
+        return JsonNode.Parse(source.ToJsonString(JsonOpts))!.AsObject();
+    }
+
+    private static void NormalizeStartupGuardianCreateCandidate(JsonObject guardian)
+    {
+        if (guardian["relationshipData"] is JsonObject relationshipData)
+        {
+            if (relationshipData.TryGetPropertyValue("guardianRoleToPlayer", out var roleNode) &&
+                !string.Equals(GetNodeString(roleNode), PlayerGuardianFoundationState.GuardianRoleFormerPatron, StringComparison.OrdinalIgnoreCase))
+            {
+                relationshipData.Remove("guardianRoleToPlayer");
+            }
+
+            var lastInteraction = GetNodeString(relationshipData["lastInteraction"]);
+            if (!string.IsNullOrWhiteSpace(lastInteraction) &&
+                !DateTimeOffset.TryParse(lastInteraction, out _))
+            {
+                relationshipData["lastInteraction"] = null;
+            }
+        }
+
+        if (guardian["abodePower"] is JsonObject)
+            AbodePowerRules.EnsureCanonicalState(guardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+        GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardian);
+
+        if (guardian["musings"] is JsonArray musings)
+        {
+            foreach (var musing in musings.OfType<JsonObject>())
+            {
+                var topic = GetNodeString(musing["topic"]);
+                if (!IsAllowedStartupGuardianMusingTopic(topic))
+                    musing["topic"] = "soul_assessment";
+
+                var mood = GetNodeString(musing["mood"]);
+                if (!IsAllowedStartupGuardianMusingMood(mood))
+                    musing["mood"] = "contemplative";
+
+                if (string.IsNullOrWhiteSpace(GetNodeString(musing["thought"])) &&
+                    string.IsNullOrWhiteSpace(GetNodeString(musing["text"])))
+                {
+                    musing["thought"] = "Хранитель оценивает новую душу и условия первой встречи.";
+                }
+            }
+        }
+    }
+
+    private static bool IsAllowedStartupGuardianMusingTopic(string topic)
+    {
+        return topic is "soul_assessment" or "domain_insight" or "guardian_politics" or "chaos_sea" or "personal_reflection" or "quest_planning";
+    }
+
+    private static bool IsAllowedStartupGuardianMusingMood(string mood)
+    {
+        return mood is "content" or "intrigued" or "concerned" or "amused" or "proud" or "disappointed" or "wary" or "nostalgic" or "determined" or "melancholic" or "excited" or "contemplative" or "irritated" or "hopeful";
     }
 
     private async Task<List<ValidationIssue>> FilterRestoredForbiddenRealmBaselineErrorsAsync(
@@ -1539,7 +1715,8 @@ public partial class GameEngine
     private static bool IsAfterlifeEntityProfileScaffoldRepairIssue(ValidationIssue issue)
     {
         var code = issue.Code ?? string.Empty;
-        return string.Equals(code, "afterlife_entity_profile_agency_goals_not_object", StringComparison.OrdinalIgnoreCase) ||
+        return code.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(code, "afterlife_entity_profile_agency_goals_not_object", StringComparison.OrdinalIgnoreCase) ||
                code.StartsWith("afterlife_entity_profile_agency_goal_", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(code, "afterlife_entity_profile_missing_progression_strategy", StringComparison.OrdinalIgnoreCase) ||
                code.StartsWith("afterlife_entity_profile_strategy_", StringComparison.OrdinalIgnoreCase) ||

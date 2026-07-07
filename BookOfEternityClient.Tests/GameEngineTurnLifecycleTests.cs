@@ -3280,6 +3280,165 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(doNotDo, item => item.Contains("initialTier", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_AfterlifeEntityProfileActivityAndRelationshipErrors_AddsScaffoldHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/afterlife_entity_profiles.json.profiles[0].currentActivity.activityType",
+                IssueSeverity.Error,
+                "currentActivity должен явно хранить тип активности.",
+                code: "afterlife_entity_profile_agency_activity_missing_type",
+                actor: "Хранительница Селена",
+                section: "AfterlifeEntityProfiles",
+                expected: "activityType"),
+            new(
+                "game_state/meta/afterlife_entity_profiles.json.profiles[0].currentActivity.linkedQuestId",
+                IssueSeverity.Error,
+                "currentActivity должен ссылаться на квест.",
+                code: "afterlife_entity_profile_agency_activity_missing_linked_quest_id",
+                actor: "Хранительница Селена",
+                section: "AfterlifeEntityProfiles",
+                expected: "linkedQuestId"),
+            new(
+                "game_state/meta/afterlife_entity_profiles.json.profiles[0].relationshipLock",
+                IssueSeverity.Error,
+                "relationshipLock должен хранить направление, evidence и reason.",
+                code: "afterlife_entity_profile_relationship_lock_missing_direction",
+                actor: "Хранительница Селена",
+                section: "AfterlifeEntityProfiles",
+                expected: "direction/evidence/reason"),
+            new(
+                "game_state/meta/afterlife_entity_profiles.json.profiles[0].relationships[0].updatedAtTurn",
+                IssueSeverity.Error,
+                "relationship turn должен быть числом.",
+                code: "afterlife_entity_profile_relationship_invalid_turn",
+                actor: "Хранительница Селена",
+                section: "AfterlifeEntityProfiles",
+                expected: "non-negative integer")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "первого хода после создания души", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("afterlife_entity_profile_scaffold_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("Хранительница Селена", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+    }
+
+    [Fact]
+    public async Task TryAutoRepairStartupGuardianDirectMaterializationAsync_AddsCreateAuthorityAndClearsPending()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guard_freeform_selena",
+              "canonicalName": "Хранительница Селена",
+              "originType": "freeform",
+              "domain": "Забытые библиотеки",
+              "nameVariants": { "default": "Хранительница Селена", "feminine": "Хранительница Селена", "masculine": "Хранитель Селен", "neutral": "Селена" },
+              "manifestation": {
+                "currentDisplayName": "Хранительница Селена",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Женщина в тёмном плаще архивариуса."
+              },
+              "manifestationHistory": [],
+              "abode": { "abodeId": "abode_selena_archive", "name": "Башня архивов", "isDiscovered": true },
+              "personalityProfile": { "archetype": "Строгая наставница", "speechPattern": "сухо и точно", "coreValues": [ "память", "осторожность", "правда" ] },
+              "relationshipData": { "currentReputation": 10, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 10, "tier": "Угасающая", "lastUpdatedAt": "2026-07-06T00:00:00Z", "history": [] },
+              "guardianRelationships": [],
+              "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+              "gachaSystem": { "chargesPerReturn": 1, "chargesUsedThisReturn": 0, "gachaHistory": [] },
+              "mood": { "current": "focused", "intensity": 40, "reason": "Первая встреча.", "since": 1 },
+              "loreFragments": [
+                { "fragmentId": "selena_lore_1", "category": "personal_history", "title": "Первый урок", "content": "Селена не скрывает цену знания.", "requiredReputation": 0 },
+                { "fragmentId": "selena_lore_2", "category": "domain_mastery", "title": "Архивы", "content": "Её домен связан с забытыми библиотеками.", "requiredReputation": 0 },
+                { "fragmentId": "selena_lore_3", "category": "soul_mechanics", "title": "Память души", "content": null, "requiredReputation": 50 },
+                { "fragmentId": "selena_lore_4", "category": "lost_world", "title": "Серый берег", "content": null, "requiredReputation": 50 },
+                { "fragmentId": "selena_lore_5", "category": "other_guardians", "title": "Долги", "content": null, "requiredReputation": 130 },
+                { "fragmentId": "selena_lore_6", "category": "cosmic_secret", "title": "Последняя полка", "content": null, "requiredReputation": 130 },
+                { "fragmentId": "selena_lore_7", "category": "personal_history", "title": "Скрытое имя", "content": null, "requiredReputation": 230 }
+              ],
+              "musings": [
+                { "turn": 1, "topic": "first_soul_assessment", "mood": "contemplative", "thought": "Новая душа требует осторожного первого урока." }
+              ]
+            }
+          ],
+          "activeGuardian": { "guardianId": "guard_freeform_selena" },
+          "chaosSeaNavigation": {
+            "currentAbodeId": "abode_selena_archive",
+            "currentGuardianId": "guard_freeform_selena",
+            "discoveredAbodes": [ "abode_selena_archive" ]
+          },
+          "pendingGuardianCreation": {
+            "mode": "freeform",
+            "soulName": "Искра Перед Рассветом",
+            "description": "Хранительница Селена, покровительница забытых библиотек."
+          }
+        }
+        """);
+        var engine = CreateGameEngine();
+        var errors = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/guardians.json.guardians[0].guardianId",
+                IssueSeverity.Error,
+                "Fresh startup Guardian was materialized without the supported create surface.",
+                code: "guardian_materialized_without_create_surface",
+                section: "Guardians",
+                expected: "UpdateGuardians.create",
+                actual: "direct guardians[] entry"),
+            new(
+                "game_state/meta/guardians.json.pendingGuardianCreation",
+                IssueSeverity.Error,
+                "pendingGuardianCreation remains after Guardian materialization.",
+                code: "stale_pending_guardian_creation_after_materialization",
+                section: "Guardians",
+                expected: "pendingGuardianCreation removed",
+                actual: "pending request still present")
+        };
+
+        var repaired = await InvokePrivateAsync<bool>(
+            engine,
+            "TryAutoRepairStartupGuardianDirectMaterializationAsync",
+            "первого хода после создания души",
+            errors);
+
+        Assert.True(repaired);
+        var repairedJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        Assert.False(string.IsNullOrWhiteSpace(repairedJson));
+        using var doc = JsonDocument.Parse(repairedJson!);
+        var root = doc.RootElement;
+        var createCommand = Assert.Single(root.GetProperty("UpdateGuardians").EnumerateArray());
+        Assert.Equal("create", createCommand.GetProperty("command").GetString());
+        Assert.Equal(
+            "guard_freeform_selena",
+            createCommand.GetProperty("data").GetProperty("guardianId").GetString());
+        Assert.Equal(
+            "soul_assessment",
+            createCommand.GetProperty("data").GetProperty("musings")[0].GetProperty("topic").GetString());
+        Assert.False(root.TryGetProperty("pendingGuardianCreation", out var pending) && pending.ValueKind != JsonValueKind.Null);
+        Assert.Equal(
+            "guard_freeform_selena",
+            root.GetProperty("activeGuardian").GetProperty("guardianId").GetString());
+    }
+
 
     [Theory]
     [InlineData("[ABODE_OFFERING] Игрок подносит Реликвию Души.", true)]
