@@ -19,6 +19,18 @@ public partial class ExplorerMode
         if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
             _pendingGmAction = view.PendingGmAction;
 
+        if (ShouldDispatchTrainingPendingRequest(view))
+        {
+            if (string.Equals(view.Realm, "afterlife", StringComparison.OrdinalIgnoreCase))
+                RenderAfterlifeTrainingOverview(view);
+            else
+                RenderMortalTrainingOverview(view);
+
+            MarkupLine("[yellow]⏳ Витрина обучения подготавливается. Запрос отправляется ГМ сейчас; дождитесь ответа и откройте /обучение снова.[/]");
+            WaitForKey();
+            return;
+        }
+
         if (string.Equals(view.Realm, "afterlife", StringComparison.OrdinalIgnoreCase))
             await ShowAfterlifeTrainingAsync(view);
         else
@@ -60,12 +72,14 @@ public partial class ExplorerMode
             {
                 MarkupLine($"[yellow]⏳ {Markup.Escape(teacher.BlockReason ?? "Витрина обучения ещё не готова.")}[/]");
                 if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
-                    MarkupLine("[dim]Запрос к ГМ уже создан. Следующий ход должен материализовать свежую витрину.[/]");
+                    MarkupLine("[dim]Запрос к ГМ уже создан и будет отправлен сейчас, без ожидания следующего обычного хода.[/]");
                 WaitForKey();
                 Clear();
                 view = await _trainingService!.EnsureTrainingAsync(await TryReadCurrentTurnNumberAsync());
                 if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
                     _pendingGmAction = view.PendingGmAction;
+                if (ShouldDispatchTrainingPendingRequest(view))
+                    return;
                 continue;
             }
 
@@ -173,12 +187,14 @@ public partial class ExplorerMode
             {
                 MarkupLine($"[yellow]⏳ {Markup.Escape(teacher.BlockReason ?? "Витрина наставника ещё не готова.")}[/]");
                 if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
-                    MarkupLine("[dim]Запрос к ГМ уже создан. Следующий ход должен материализовать свежую витрину наставника.[/]");
+                    MarkupLine("[dim]Запрос к ГМ уже создан и будет отправлен сейчас, без ожидания следующего обычного хода.[/]");
                 WaitForKey();
                 Clear();
                 view = await _trainingService!.EnsureTrainingAsync(await TryReadCurrentTurnNumberAsync());
                 if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
                     _pendingGmAction = view.PendingGmAction;
+                if (ShouldDispatchTrainingPendingRequest(view))
+                    return;
                 continue;
             }
 
@@ -271,6 +287,10 @@ public partial class ExplorerMode
             Expand = true
         });
     }
+
+    private static bool ShouldDispatchTrainingPendingRequest(TrainingService.TrainingView view) =>
+        !string.IsNullOrWhiteSpace(view.PendingGmAction) &&
+        (view.RequestCreatedThisCall || view.Teachers.All(static teacher => !teacher.ShowcaseReady));
 
     private void RenderMortalTrainingOverview(TrainingService.TrainingView view)
     {

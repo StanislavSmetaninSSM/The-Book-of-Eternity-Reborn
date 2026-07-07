@@ -168,7 +168,8 @@ public sealed class ExplorerWebCommandService
             Actions = result.Actions,
             Prompts = result.Prompts,
             Notifications = result.Notifications,
-            InteractiveSession = result.InteractiveSession
+            InteractiveSession = result.InteractiveSession,
+            PendingGmAction = result.PendingGmAction
         };
 
         return BrowserEntityDossierPrototypeNormalizer.Normalize(projected);

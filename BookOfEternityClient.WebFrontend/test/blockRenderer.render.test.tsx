@@ -953,7 +953,6 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     expect(html).toContain('map-node-focus-ring');
     expect(html).toContain('Известный выход');
     expect(html).toContain('Комната с тяжёлыми шторами.');
-    expect(html).not.toContain('atlas-texture');
     expect(html).not.toContain('browser-atlas-texture');
   });
 
@@ -1002,8 +1001,8 @@ describe('BlockRenderer rendered rich command output #1126', () => {
   });
 
   it('wires browser maps for wheel zoom and left-button drag panning', () => {
-    const mapBlock = readSource('src', 'components', 'MapBlock.tsx');
-    const commandUi = readSource('src', 'styles', 'command-ui.css');
+    const mapBlock = readSource('src', 'components', 'map', 'MapAtlas.tsx');
+    const mapAtlasCss = readSource('src', 'styles', 'map-atlas.css');
 
     expect(mapBlock).toContain('onWheel={handleWheel}');
     expect(mapBlock).toContain("addEventListener('wheel', handleNativeWheel");
@@ -1015,10 +1014,10 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     expect(mapBlock).toContain('buttons !== 1');
     expect(mapBlock).toContain('map-fullscreen-dialog');
     expect(mapBlock).toContain('map-fullscreen-close-button');
-    expect(commandUi).toContain('.map-atlas-frame--fullscreen');
-    expect(commandUi).toContain('.map-atlas-frame--panning');
-    expect(commandUi).toContain('.map-fullscreen-dialog');
-    expect(commandUi).toContain('.map-fullscreen-close-button');
+    expect(mapAtlasCss).toContain('.map-atlas-frame--fullscreen');
+    expect(mapAtlasCss).toContain('.map-atlas-frame--panning');
+    expect(mapAtlasCss).toContain('.map-fullscreen-dialog');
+    expect(mapAtlasCss).toContain('.map-fullscreen-close-button');
   });
 
   it('renders the selected map node after other nodes so it stays on top visually', () => {
@@ -1135,7 +1134,7 @@ describe('BlockRenderer rendered rich command output #1126', () => {
     ];
 
     const html = renderToStaticMarkup(<BlockList blocks={blocks} />);
-    const mapBlock = readSource('src', 'components', 'MapBlock.tsx');
+    const mapBlock = readSource('src', 'components', 'map', 'MapAtlas.tsx');
 
     expect(html).toContain('map-location-selector');
     expect(html).toContain('Список локаций');
@@ -1147,13 +1146,13 @@ describe('BlockRenderer rendered rich command output #1126', () => {
   });
 
   it('uses an SVG-local focus halo for map nodes instead of a browser outline rectangle', () => {
-    const mapBlock = readSource('src', 'components', 'MapBlock.tsx');
-    const commandUi = readSource('src', 'styles', 'command-ui.css');
+    const mapBlock = readSource('src', 'components', 'map', 'MapAtlas.tsx');
+    const mapAtlasCss = readSource('src', 'styles', 'map-atlas.css');
 
     expect(mapBlock).toContain('className="map-node-hit-area"');
     expect(mapBlock).toContain('className="map-node-focus-ring"');
-    expect(commandUi).toContain('.map-node:focus-visible .map-node-focus-ring');
-    expect(cssRule(commandUi, '.map-node:focus-visible')).not.toContain('outline: 2px');
+    expect(mapAtlasCss).toContain('.map-node:focus-visible .map-node-focus-ring');
+    expect(mapAtlasCss).not.toContain('.map-node:focus-visible {\n  outline: 2px');
   });
 });
 

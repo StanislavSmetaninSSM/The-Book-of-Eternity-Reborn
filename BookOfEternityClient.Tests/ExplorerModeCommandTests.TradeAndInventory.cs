@@ -559,20 +559,21 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     {
         await SeedNpcTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false);
         _console.QueueSelection("Действие", "🛒 Торговать");
-        _console.QueueSelection("Выберите раздел", "← Назад");
         await _stateManager.RefreshGameStateAsync();
 
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
+        var result = await _explorer.TryProcessCommand("/нпс");
 
-        Assert.Null(ex);
+        Assert.NotNull(result);
+        Assert.Contains(NpcTradeRequestState.ActionTag, result, StringComparison.OrdinalIgnoreCase);
         AssertNoHiddenExplorerErrors("npc_trade_pending_inventory_request");
         var pendingRaw = await _fs.ReadFileAsync(NpcTradeRequestState.PendingRequestPath);
         Assert.NotNull(pendingRaw);
         Assert.Contains("\"npcId\": \"npc_merchant_001\"", pendingRaw, StringComparison.Ordinal);
         Assert.Contains("\"tradeCycleId\": \"world_trade_0\"", pendingRaw, StringComparison.Ordinal);
-        Assert.Contains(_console.SelectionChoicesHistory,
-            entry => entry.Title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase) &&
-                     entry.Choices.Contains("🔄 Проверить витрину", StringComparer.Ordinal));
+        Assert.DoesNotContain(_console.SelectionChoicesHistory,
+            entry => entry.Title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(_console.MarkupLines,
+            line => line.Contains("Запрос на торговую витрину отправляется ГМ сейчас", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -634,7 +635,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     [Fact]
     public async Task TryProcessCommand_NpcTradeBuyback_ReacquiresPreviouslySoldItem()
     {
-        await SeedNpcTradeStateAsync(includeBuybackInventory: true, includeTradeInventory: false, includeTradeReceipt: false);
+        await SeedNpcTradeStateAsync(includeBuybackInventory: true);
         _console.QueueSelection("Выберите раздел", "🔁 Выкупить обратно");
         _console.QueueSelection("Действие", "🛒 Торговать", "🔁 Выкупить");
         await _stateManager.RefreshGameStateAsync();

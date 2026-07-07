@@ -15,6 +15,10 @@ Shared rules
 ------------
 
 - `pending_training_showcase_requests.json` is a client-authored request file.
+- When `/обучение` creates or finds a pending showcase request, the console and
+  browser clients send the matching dedicated GM action immediately. Treat that
+  received action as the current request to resolve now; do not wait for the
+  player's next unrelated turn before preparing the showcase.
 - Every showcase must copy the requested `sourceActorSnapshotHash` into
   `trainingShowcase.sourceActorSnapshotHash`. If the teacher changes, the
   client treats the showcase as stale, marks it unavailable for purchase, and

@@ -43,5 +43,6 @@
     "requiresLocalUiLock": true,
     "ownerId": "browser:contract",
     "expiresAtUtc": "2026-05-25T09:50:00Z"
-  }
+  },
+  "pendingGmAction": null
 }

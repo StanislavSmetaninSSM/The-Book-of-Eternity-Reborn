@@ -62,6 +62,18 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_TrainingMortalWithoutShowcase_ReturnsPendingGmAction()
+    {
+        await SeedMortalTrainingTeacherWithoutShowcaseAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/training"));
+
+        Assert.Equal(CommandExecutionState.Pending, result.State);
+        Assert.Contains("витрину обучения", result.PendingGmAction, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(result.Prompts);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_TrainingBuyCommand_SpendsResourcesAndReturnsReadablePendingGmReceipt()
     {
         await SeedMortalTrainingAsync();
@@ -241,6 +253,38 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
         {
             ["NPCs"] = new JsonArray(teacher)
         }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private async Task SeedMortalTrainingTeacherWithoutShowcaseAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Eternia",
+          "turnNumber": 7
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "NPCs": [
+            {
+              "npcId": "npc_teacher_reina",
+              "name": "Рейна Быстрый Нож",
+              "teacherProfile": {
+                "canTeach": true,
+                "relationshipLevel": 45,
+                "skills": [
+                  {
+                    "skillId": "knife",
+                    "skillName": "Ножевой бой",
+                    "masteryLevel": 3
+                  }
+                ]
+              }
+            }
+          ]
+        }
+        """);
     }
 
     private async Task SeedAfterlifeTrainingAsync()

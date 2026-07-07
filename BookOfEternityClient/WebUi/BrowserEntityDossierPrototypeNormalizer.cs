@@ -122,7 +122,8 @@ internal static class BrowserEntityDossierPrototypeNormalizer
             Actions = CloneActions(result.Actions),
             Prompts = ClonePrompts(result.Prompts),
             Notifications = CloneNotifications(result.Notifications),
-            InteractiveSession = result.InteractiveSession
+            InteractiveSession = result.InteractiveSession,
+            PendingGmAction = result.PendingGmAction
         };
     }
 

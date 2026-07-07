@@ -76,6 +76,7 @@
                - If the player asks the current active Guardian about a relic bought from Guardian local stock, the Guardian should know that relic as part of their own trade assortment
                - If `pending_npc_trade_inventory_requests.json` or `[NPC_TRADE_REQUEST]` exists while AfterlifeProfile is active, treat it as stale or realm-wrong; do NOT author NPC trade from an afterlife turn
                - If `pending_training_showcase_requests.json` exists while AfterlifeProfile is active, answer only after selecting the matching row in `OtherGuides/Afterlife_Contract_Matrix.md`: fill `mentorTrainingShowcase` through `afterlifeEntityProfileUpdates`, echo `sourceActorSnapshotHash`, and do not spend player currency or raise player tiers directly
+               - If the current afterlife player action is the dedicated `/обучение` mentor-showcase request created by the console/browser client, resolve that pending showcase now; do not wait for another ordinary player turn to materialize the same витрина
                - If validation repair includes `harnessRepairPackets[].kind = training_showcase_snapshot_hash_repair`, apply its `exactFieldCorrections[]` path -> expected values before guessing anything else. Do not recompute or invent `sourceActorSnapshotHash`; use the packet's exact expected hash after preserving or finishing the teacher/mentor profile patch.
                - If a turn materializes the current active Guardian, you MUST also materialize the abode navigation state in `guardians.json`: `chaosSeaNavigation.currentAbodeId`, `chaosSeaNavigation.discoveredAbodes` containing that abodeId, and `abode.isDiscovered = true`
                - If `guardians.json.pendingGuardianCreation` exists and this turn materializes that requested Guardian, remove `pendingGuardianCreation` from the accepted `guardians.json`; leaving the startup request beside `activeGuardian` means the Guardian is still pending and is invalid
@@ -133,6 +134,7 @@
                - Every `publicSignals[]` item must include explicit boolean `visibleToPlayer`
                - If a rival arc becomes personal for the player, surface that through an ordinary player-facing soul quest in `UpdateSoulQuests` linked by `relatedRivalArcId`
                - If `pending_training_showcase_requests.json` exists in MortalWorldProfile, fill requested NPC teacher `trainingShowcase` through `UpdateNPCs`, echo `sourceActorSnapshotHash`, and do not spend player money/experience or raise mastery directly; the client applies purchases through `/обучение`
+               - If the current player action is the dedicated `/обучение` showcase request created by the console/browser client, resolve that pending showcase now; do not wait for another ordinary player turn to materialize the same витрина
                - If validation repair includes `harnessRepairPackets[].kind = training_showcase_snapshot_hash_repair`, apply its `exactFieldCorrections[]` path -> expected values before guessing anything else. Do not recompute or invent `sourceActorSnapshotHash`; use the packet's exact expected hash after preserving or finishing the teacher/mentor profile patch.
                - If a world news item is one of those clues, mark that `worldEventsLog` entry with `relatedRivalArcId` too, so the player can recognize it as part of a parallel destiny line
                - Linked `worldEventsLog` entries count as player-visible rival clues only if `visibility` is `Public`, `Regional`, or `player_known`
@@ -144,6 +146,7 @@
                - Local NPC trade may also exist as a client-side panel for mortal-world goods only
                - Local NPC trade uses `game_state/core/player_status.json.money`, never Ink Feathers, and never trades Soul Relics
                - If `pending_npc_trade_inventory_requests.json` or `[NPC_TRADE_REQUEST]` exists in MortalWorldProfile, answer each request with explicit `npc.tradeInventory` for the requested world-time cycle **and** close it through `UpdateNpcTradeInventoryReceipts`; matching stock without receipt is invalid on accepted turn
+               - If the current player action is the dedicated `[NPC_TRADE_REQUEST]` sent by the console/browser client, resolve that trade inventory now; do not wait for another ordinary player turn to open the shop
                - If the player asks a merchant NPC about an item bought from that NPC's local stock, the merchant should know that item as part of their own local assortment
                - For canonical local NPC trade examples, read `Examples/E_CLI_NPC_Trade.txt`
                - QTE offers are optional cinematic scene graphs for Mortal World only

@@ -133,6 +133,24 @@ public sealed class BrowserTradeParityTests : IDisposable
 
     [Fact]
     [Trait("Category", "BrowserTradeParity")]
+    public async Task ExecuteAsync_NpcTradeWithoutInventory_ReturnsPendingGmAction()
+    {
+        await SeedStoryTurnAsync(12);
+        await SeedNpcTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeSellableInventoryItem: false, includeBuybackInventory: false);
+
+        var result = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/npc_trade npc_merchant_001",
+            OwnerId: "browser-trade-test",
+            OwnerLabel: "Browser trade test"));
+
+        Assert.Equal(CommandExecutionState.Pending, result.State);
+        Assert.Contains(NpcTradeRequestState.ActionTag, result.PendingGmAction, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(result.Prompts);
+        Assert.Null(result.InteractiveSession);
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserTradeParity")]
     public async Task ExecuteAsync_ShiningTrade_ReturnsPromptAndDocumentsUnsupportedSellBoundary()
     {
         await SeedStoryTurnAsync(12);

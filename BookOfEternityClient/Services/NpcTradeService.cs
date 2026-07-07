@@ -533,13 +533,10 @@ public sealed partial class NpcTradeService
                     await NpcTradeRequestState.WriteRequestAsync(_fs, request);
                     inventoryRequestPending = true;
                     inventoryRequestCreatedThisCall = true;
-                    pendingGmAction =
-                        $"[{NpcTradeRequestState.ActionTag}] Игрок открывает торговлю с NPC {npcName} ({npcId}), но explicit витрина отсутствует или устарела для текущего world-time cycle. " +
-                        $"Обязательно прочитай {NpcTradeRequestState.PendingRequestPath} как client-authored contract. " +
-                        "Материализуй explicit npc.tradeInventory для указанного tradeCycleId и не выводи ассортимент клиентом. " +
-                        $"После materialization закрой запрос canonical receipt через {NpcTradeRequestState.UpdateReceiptsProperty} в npc_core.json. " +
-                        "Витрина должна уважать merchantProfile, tradeCycleId, refreshAfterWorldDate и derivedTradeSlotCount из request.";
                 }
+
+                if (inventoryRequestPending && request != null)
+                    pendingGmAction = BuildNpcTradePendingGmAction(request);
 
                 inventoryStatusMessage = inventoryRequestCreatedThisCall
                     ? "Витрина торговца подготавливается. Запрос на ассортимент отправлен GM."
@@ -563,6 +560,13 @@ public sealed partial class NpcTradeService
             pendingGmAction);
         return (changed, view);
     }
+
+    private static string BuildNpcTradePendingGmAction(NpcTradeRequestState.PendingNpcTradeInventoryRequest request) =>
+        $"[{NpcTradeRequestState.ActionTag}] Игрок открывает торговлю с NPC {request.NpcName} ({request.NpcId}), но explicit витрина отсутствует или устарела для текущего world-time cycle. " +
+        $"Обязательно прочитай {NpcTradeRequestState.PendingRequestPath} как client-authored contract. " +
+        "Материализуй explicit npc.tradeInventory для указанного tradeCycleId и не выводи ассортимент клиентом. " +
+        $"После materialization закрой запрос canonical receipt через {NpcTradeRequestState.UpdateReceiptsProperty} в npc_core.json. " +
+        "Витрина должна уважать merchantProfile, tradeCycleId, refreshAfterWorldDate и derivedTradeSlotCount из request.";
 
     private NpcTradeView BuildTradeView(
         JsonObject npc,

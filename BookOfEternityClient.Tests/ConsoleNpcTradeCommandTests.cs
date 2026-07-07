@@ -49,6 +49,28 @@ public sealed class ConsoleNpcTradeCommandTests : IDisposable
 
     [Fact]
     [Trait("Category", "ConsoleNpcTrade")]
+    public async Task TryProcessCommand_NpcTradeWithoutInventory_ReturnsPendingGmActionImmediately()
+    {
+        await SeedNpcTradeStateWithoutInventoryAsync();
+        await _stateManager.RefreshGameStateAsync();
+        var console = new TestExplorerConsole();
+        var explorer = new ExplorerMode(
+            _stateManager,
+            _fs,
+            new LocalizationManager(),
+            npcTradeService: new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance),
+            console: console);
+
+        var result = await explorer.TryProcessCommand("/торговля_нпс npc_merchant_001");
+
+        Assert.NotNull(result);
+        Assert.NotEqual(string.Empty, result);
+        Assert.Contains(NpcTradeRequestState.ActionTag, result!, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(console.SelectionTitles, title => title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    [Trait("Category", "ConsoleNpcTrade")]
     public async Task TryProcessCommand_NpcTradeWithNpcName_OpensTradePanel()
     {
         await SeedNpcTradeStateAsync();
@@ -360,5 +382,69 @@ public sealed class ConsoleNpcTradeCommandTests : IDisposable
             ? raw.Replace("\"__NPC_ID__\"", "null").Replace("__INITIAL_ID__", "npc_merchant_initial_001")
             : raw.Replace("__NPC_ID__", "npc_merchant_001").Replace("__INITIAL_ID__", "npc_merchant_initial_001");
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", raw);
+    }
+
+    private async Task SeedNpcTradeStateWithoutInventoryAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("stories/console-npc-trade-request-test.json", """
+        {
+          "turnNumber": 13
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/core/player_status.json", """
+        {
+          "money": 500,
+          "trade": 12
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/world_time.json", """
+        {
+          "currentTimeInMinutes": 100
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "locationId": "loc_market_square",
+          "name": "Рыночная площадь"
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+        {
+          "items": [],
+          "equipment": {}
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "NPCId": "npc_merchant_001",
+              "name": "Марек",
+              "currentLocationId": "loc_market_square",
+              "currentLocation": "Рыночная площадь",
+              "level": 10,
+              "relationshipLevel": 80,
+              "characteristics": { "modifiedTrade": 14 },
+              "tradeState": {
+                "canTrade": true,
+                "merchantProfile": "GeneralGoods"
+              }
+            }
+          ]
+        }
+        """);
     }
 }

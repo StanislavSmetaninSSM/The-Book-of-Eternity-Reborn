@@ -192,7 +192,20 @@ export function ShellProvider({ children }: { children: ReactNode }) {
         setCommandResult(advancedEnabled ? result.data : sanitizeExplorerCommandResultForPlayer(result.data));
         setIsCommandView(true);
         setActiveRouteState('game');
-        setComposerNotice(null);
+        const pendingGmAction = result.data.pendingGmAction?.trim();
+        if (pendingGmAction) {
+          setComposerNotice('Запрос отправляется ГМ. Витрина подготавливается…');
+          const actionResult = await browserApi.submitPlayerAction({ text: pendingGmAction });
+          if (actionResult.ok && actionResult.data.success) {
+            setComposerNotice(actionResult.data.playerMessage || 'Запрос отправлен ГМ. Дождитесь обновления витрины.');
+          } else if (actionResult.ok) {
+            setComposerNotice(actionResult.data.playerMessage || 'Не удалось отправить запрос ГМ.');
+          } else {
+            setComposerNotice(actionResult.playerMessage || 'Не удалось отправить запрос ГМ.');
+          }
+        } else {
+          setComposerNotice(null);
+        }
       } else {
         setComposerNotice(result.playerMessage);
       }

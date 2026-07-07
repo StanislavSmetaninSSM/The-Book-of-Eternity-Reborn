@@ -651,6 +651,7 @@ export interface ExplorerCommandResult {
   prompts: UiPrompt[];
   notifications: UiNotification[];
   interactiveSession: UiPromptSession | null;
+  pendingGmAction?: string | null;
 }
 
 export type UiBlock =

@@ -11,6 +11,7 @@ public sealed class ExplorerCommandResult
     public List<UiPrompt> Prompts { get; init; } = [];
     public List<UiNotification> Notifications { get; init; } = [];
     public UiPromptSession? InteractiveSession { get; init; }
+    public string? PendingGmAction { get; init; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

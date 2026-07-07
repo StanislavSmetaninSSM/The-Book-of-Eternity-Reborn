@@ -172,6 +172,11 @@ NPC trade MUST use `game_state/core/player_status.json.money`, not Ink Feathers.
 ## Important operational note for GM
 
 - The stock in local NPC trade is canonical for that merchant in the current world-time window.
+- When `/торговля_нпс` / `/npc_trade` creates or finds a pending inventory
+  request because the current stock is missing or stale, the console and browser
+  clients send `[NPC_TRADE_REQUEST]` to the GM immediately. Resolve that request
+  in the current GM turn; the player should not need to type another ordinary
+  action just to make the shop appear.
 - If the player later asks this merchant about an item bought from that local stock, the merchant knows the item and may explain its practical use, origin, or reputation.
 - Special off-menu goods may still exist through roleplay. Those are separate from the local panel.
 - Mundane local goods without bonus arrays are valid and expected. Do not assume every local stock item is a build-oriented reward item.

@@ -15,7 +15,7 @@ dotnet build BookOfEternityClient\BookOfEternityClient.csproj --no-restore -p:Us
    - teacher list appears;
    - offer details show price, requirements, current value, target value, teacher cap, lock reasons;
    - buying a legal skill deducts money and current-level XP progress;
-   - stale offers request refresh instead of buying.
+   - stale or missing offers create the refresh request and send the GM action immediately instead of waiting for the next ordinary player input.
 
 ## Afterlife smoke test
 
@@ -24,6 +24,7 @@ dotnet build BookOfEternityClient\BookOfEternityClient.csproj --no-restore -p:Us
 3. Verify:
    - mentor offers show relationship discount;
    - self-training fallback is visible but expensive;
+   - missing or stale mentor showcases send the GM request immediately;
    - new special-art fallback unlock is blocked;
    - legal mentor upgrade writes a receipt.
 

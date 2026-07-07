@@ -38,6 +38,15 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
             BuildTrainingDossier(view, selectedTeacher: null, showOnlySelf: false)
         };
 
+        if (ShouldDispatchTrainingPendingRequest(view))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Pending,
+                blocks,
+                pendingGmAction: localTurn.HasActiveGmTurn ? null : view.PendingGmAction);
+        }
+
         return Result(
             command,
             CommandExecutionState.Completed,
@@ -479,6 +488,10 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
             Style = UiActionStyle.Secondary,
             RequiresConfirmation = false
         };
+
+    private static bool ShouldDispatchTrainingPendingRequest(TrainingService.TrainingView view) =>
+        !string.IsNullOrWhiteSpace(view.PendingGmAction) &&
+        (view.RequestCreatedThisCall || view.Teachers.All(static teacher => !teacher.ShowcaseReady));
 
     private static TrainingService.TrainingTeacherView? FindTrainingTeacher(
         TrainingService.TrainingView view,

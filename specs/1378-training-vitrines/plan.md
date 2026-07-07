@@ -43,6 +43,7 @@ Add a teacher/mentor training showcase system that lets the GM materialize reada
 - #1383 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1383
 - #1384 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1384
 - #1385 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1385
+- #1455 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1455
 
 **Contract Scope**: player-facing, GM-facing prompts, runtime-state, validation, docs, examples, console, browser, frontend.
 

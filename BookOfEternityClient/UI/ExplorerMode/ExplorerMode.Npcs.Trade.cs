@@ -210,6 +210,13 @@ public partial class ExplorerMode
                 Expand = true
             });
 
+            if (!view.InventoryReady && !string.IsNullOrWhiteSpace(view.PendingGmAction))
+            {
+                MarkupLine("[yellow]⏳ Запрос на торговую витрину отправляется ГМ сейчас; дождитесь ответа и откройте торговлю снова.[/]");
+                WaitForKey();
+                return;
+            }
+
             var sectionChoices = new List<string>();
             if (view.InventoryReady)
                 sectionChoices.Add("🛍 Купить товары");

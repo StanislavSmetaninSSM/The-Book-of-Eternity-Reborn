@@ -1984,7 +1984,7 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
 
         var service = new NpcTradeService(fs, NullLogger<NpcTradeService>.Instance);
         var currentTurn = Math.Max(1, stateManager.CurrentState.TurnNumber);
-        var view = await service.EnsureTradeInventoryAsync(npcId, currentTurn, createPendingRequests: false);
+        var view = await service.EnsureTradeInventoryAsync(npcId, currentTurn);
         if (view == null)
         {
             return Result(
@@ -2024,6 +2024,15 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
             localTurn.Panel,
             BuildNpcTradeDossier(view, sellOffers)
         };
+
+        if (!view.InventoryReady && !string.IsNullOrWhiteSpace(view.PendingGmAction))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Pending,
+                blocks,
+                pendingGmAction: localTurn.HasActiveGmTurn ? null : view.PendingGmAction);
+        }
 
         if (options.Count == 0)
             return Result(command, CommandExecutionState.Completed, blocks);
@@ -5718,14 +5727,16 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         CommandExecutionState state,
         IEnumerable<UiBlock> blocks,
         IEnumerable<UiAction>? actions = null,
-        IEnumerable<UiPrompt>? prompts = null) =>
+        IEnumerable<UiPrompt>? prompts = null,
+        string? pendingGmAction = null) =>
         new()
         {
             Command = command,
             State = state,
             Blocks = blocks.ToList(),
             Actions = actions?.ToList() ?? [],
-            Prompts = prompts?.ToList() ?? []
+            Prompts = prompts?.ToList() ?? [],
+            PendingGmAction = pendingGmAction
         };
 
     private static UiTableRow Row(params string[] cells) => new() { Cells = cells.ToList() };
