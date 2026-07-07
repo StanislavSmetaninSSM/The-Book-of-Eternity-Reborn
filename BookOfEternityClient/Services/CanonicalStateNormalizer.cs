@@ -63,6 +63,7 @@ public partial class CanonicalStateNormalizer
         "game_state/world/rival_soul_arcs.json",
         "game_state/factions/faction_core.json",
         "game_state/npcs/npc_core.json",
+        "game_state/npcs/npc_journals.json",
         NpcInteractionJournalState.StatePath,
         "game_state/inventory/items.json",
         "game_state/inventory/item_resources.json",
@@ -173,6 +174,7 @@ public partial class CanonicalStateNormalizer
         await NormalizeSarefMainStoryStateAsync(backups);
         await NormalizeFactionCoreAsync(backups);
         await NormalizeNpcTradeCoreAsync(backups);
+        await NormalizeNpcJournalsAsync(backups);
         await NormalizeNpcInteractionJournalAsync(backups);
         await NormalizeInventoryItemsAsync(backups);
         await NormalizeInventoryItemResourcesAsync(backups);

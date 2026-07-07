@@ -1332,6 +1332,11 @@
                 When generating a 'lastJournalNote' for an NPC, you are no longer the objective GM. You are embodying the NPC.
                 Your writing style must reflect their personality, intelligence, and emotional state.
 
+                In canonical JSON, 'NPCJournals[].journalEntries[]' must contain objects, not bare strings.
+                Each object must include a non-empty 'description'. Optional fields include 'timestamp', 'event',
+                'emotionalImpact', and 'relationshipChange'. Inventory item 'journalEntries[]' use a different
+                string-array shape; do not copy that shape into NPC journals.
+
                 ]]>
             </InstructionText>
             <Content type="ruleset">
