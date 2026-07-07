@@ -160,6 +160,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.Equal("Наставница семейного архива", teacher["name"]!.GetValue<string>());
         Assert.Equal("loc_life_001_start", teacher["currentLocationId"]!.GetValue<string>());
         Assert.Contains("витрин", teacher["summary"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(25, teacher["relationshipLevel"]!.GetValue<int>());
+        Assert.Equal("Нейтралитет", teacher["attitude"]!.GetValue<string>());
 
         var teacherProfile = Assert.IsType<JsonObject>(teacher["teacherProfile"]);
         Assert.True(teacherProfile["canTeach"]!.GetValue<bool>());
@@ -204,6 +206,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "npc_attitude_relationship_tier_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

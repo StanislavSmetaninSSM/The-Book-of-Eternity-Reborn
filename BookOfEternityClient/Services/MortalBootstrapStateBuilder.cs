@@ -281,7 +281,7 @@ public static class MortalBootstrapStateBuilder
                     ["experience"] = 0,
                     ["experienceForNextLevel"] = 150,
                     ["relationshipLevel"] = 25,
-                    ["attitude"] = "Доверие и Расположение",
+                    ["attitude"] = "Нейтралитет",
                     ["playerCompanionDirective"] = "not_companion",
                     ["culturalLayer"] = "локальная школа стартовой сцены",
                     ["personalityTraits"] = new JsonArray(),
