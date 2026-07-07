@@ -20,6 +20,12 @@ Shared rules
   client treats the showcase as stale, marks it unavailable for purchase, and
   requests a refresh. A stale cached showcase is not itself permission to edit
   old purchase receipts.
+- For `mortal_teacher_showcase` on an existing NPC teacher, write a narrow
+  `UpdateNPCs` patch containing only the identity (`npcId`/`name`) and the fresh
+  `trainingShowcase`. Do not resend `inventory`, do not replace the whole NPC
+  object, and do not repeat `teacherProfile` unless the turn is intentionally
+  creating or changing the teacher profile itself. The client normalizer applies
+  the showcase patch to the existing full NPC object.
 - During validation repair, when `harnessRepairPackets[].kind` is
   `training_showcase_snapshot_hash_repair`, apply
   `exactFieldCorrections[]` first. Set each listed
@@ -177,7 +183,9 @@ Valid Mortal NPC trainingShowcase patch
 ---------------------------------------
 
 The GM answers by updating the same NPC in `game_state/npcs/npc_core.json`.
-The showcase is not a purchase receipt; it is the list of available lessons.
+For an existing teacher, this is a narrow patch: do not resend the teacher's
+inventory, full canonical NPC object, or unchanged teacherProfile. The showcase
+is not a purchase receipt; it is the list of available lessons.
 
 ```json
 {
@@ -185,23 +193,6 @@ The showcase is not a purchase receipt; it is the list of available lessons.
     {
       "npcId": "npc_hunter_roden",
       "name": "Роден, охотник у северных ворот",
-      "teacherProfile": {
-        "canTeach": true,
-        "relationshipLevel": 35,
-        "summary": "Роден учит практичным охотничьим навыкам только тех, кому доверяет.",
-        "teachableSkills": [
-          {
-            "skillId": "knife_handling",
-            "displayName": "Обращение с ножом",
-            "mastery": 3
-          },
-          {
-            "skillId": "tracking",
-            "displayName": "Выслеживание",
-            "mastery": 4
-          }
-        ]
-      },
       "trainingShowcase": {
         "schemaVersion": 1,
         "requestId": "training_req_hunter_roden_001",

@@ -8,6 +8,101 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class CanonicalStateNormalizerTests
 {
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_MergesMortalTeacherShowcasePatchIntoExistingNpc()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 4,
+            characterDescription: "Асур де Вальмонт, молодой аристократ-маг.",
+            worldDescription: "Столица Этернии с городскими наставниками и витринами обучения.",
+            startingCircumstances: "За дверью ждёт наставница семейного архива, которая может обучить чтению печатей за плату.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-07T08:00:00Z"));
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Искра Перед Рассветом",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        var npcRoot = Assert.IsType<JsonObject>(files["game_state/npcs/npc_core.json"].DeepClone());
+        var teacher = Assert.Single(npcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        var sourceHash = TrainingService.ComputeSourceSnapshotHash(teacher);
+        npcRoot["UpdateNPCs"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["npcId"] = "npc_life_001_start_teacher",
+                ["name"] = "Наставница семейного архива",
+                ["inventory"] = new JsonArray(),
+                ["trainingShowcase"] = new JsonObject
+                {
+                    ["requestId"] = "training_showcase_req_npc_life_001_start_teacher",
+                    ["requestKind"] = "mortal_teacher_showcase",
+                    ["realm"] = "mortal_world",
+                    ["sourceActorId"] = "npc_life_001_start_teacher",
+                    ["sourceActorSnapshotHash"] = sourceHash,
+                    ["offers"] = new JsonArray
+                    {
+                        new JsonObject
+                        {
+                            ["offerId"] = "train_npc_life_001_start_teacher_seal_reading_1",
+                            ["targetKind"] = "skill_mastery",
+                            ["targetId"] = "skill_life_001_seal_reading",
+                            ["targetName"] = "Чтение печатей",
+                            ["currentValue"] = 0,
+                            ["targetValue"] = 1,
+                            ["sourceCap"] = 2,
+                            ["cost"] = new JsonObject
+                            {
+                                ["money"] = 30,
+                                ["currentLevelExperiencePercent"] = 10
+                            },
+                            ["summary"] = "Наставница объясняет, как увидеть ложь в воске и нитях печати."
+                        }
+                    }
+                }
+            },
+            new JsonObject
+            {
+                ["npcId"] = "npc_life_001_start_teacher",
+                ["name"] = null,
+                ["role"] = null,
+                ["inventory"] = null,
+                ["goals"] = null,
+                ["trainingShowcase"] = null
+            }
+        };
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", npcRoot.ToJsonString());
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var normalizedRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+        var normalizedTeacher = Assert.Single(normalizedRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.NotNull(normalizedTeacher["trainingShowcase"]);
+        Assert.Equal(
+            "training_showcase_req_npc_life_001_start_teacher",
+            normalizedTeacher["trainingShowcase"]!["requestId"]!.GetValue<string>());
+        Assert.False(normalizedRoot.ContainsKey("UpdateNPCs"));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+        var forbiddenCodes = new[]
+        {
+            "npc_full_object_missing_required_fields",
+            "npc_existing_inventory_resend_forbidden",
+            "structured_npc_update_out_of_scope",
+            "mortal_relevant_actor_missing_persistence"
+        };
+        Assert.DoesNotContain(issues, issue => forbiddenCodes.Contains(issue.Code, StringComparer.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_CanonicalizesNpcJournalEntryStrings()
     {
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);

@@ -136,6 +136,8 @@ public partial class CanonicalStateNormalizer
         var result = CloneObject(currentObj);
         var changed = false;
 
+        changed |= NormalizeMortalTeacherTrainingShowcasePatches(result);
+
         if (result[NpcTradeRequestState.UpdateReceiptsProperty] is JsonArray receiptUpdates)
         {
             NpcTradeRequestState.ApplyReceiptUpdates(result, receiptUpdates);
@@ -157,4 +159,137 @@ public partial class CanonicalStateNormalizer
         if (changed)
             await WriteIfChangedAsync(path, currentNode, result);
     }
+
+    private static bool NormalizeMortalTeacherTrainingShowcasePatches(JsonObject root)
+    {
+        if (root["UpdateNPCs"] is not JsonArray updates)
+            return false;
+
+        var changed = false;
+        for (var index = updates.Count - 1; index >= 0; index--)
+        {
+            if (updates[index] is not JsonObject patch ||
+                !IsMortalTeacherTrainingShowcasePatchOrDebris(patch, out var hasShowcase))
+            {
+                continue;
+            }
+
+            var npcId = ResolveNpcPatchIdentity(patch);
+            if (string.IsNullOrWhiteSpace(npcId))
+                continue;
+
+            var existing = FindExistingNpcForTrainingShowcasePatch(root, npcId, patch);
+            if (existing == null)
+                continue;
+
+            if (hasShowcase && patch["trainingShowcase"] is JsonObject showcase)
+                existing["trainingShowcase"] = showcase.DeepClone();
+
+            updates.RemoveAt(index);
+            changed = true;
+        }
+
+        if (updates.Count == 0)
+        {
+            root.Remove("UpdateNPCs");
+            changed = true;
+        }
+
+        return changed;
+    }
+
+    private static bool IsMortalTeacherTrainingShowcasePatchOrDebris(
+        JsonObject patch,
+        out bool hasShowcase)
+    {
+        hasShowcase = patch["trainingShowcase"] is JsonObject;
+        if (!patch.ContainsKey("trainingShowcase"))
+            return false;
+
+        if (string.IsNullOrWhiteSpace(ResolveNpcPatchIdentity(patch)))
+            return false;
+
+        foreach (var property in patch)
+        {
+            if (IsNpcPatchIdentityField(property.Key))
+            {
+                if (property.Value == null || !string.IsNullOrWhiteSpace(GetNodeString(property.Value)))
+                    continue;
+                return false;
+            }
+
+            if (string.Equals(property.Key, "trainingShowcase", StringComparison.OrdinalIgnoreCase))
+            {
+                if (property.Value is null or JsonObject)
+                    continue;
+                return false;
+            }
+
+            if (string.Equals(property.Key, "inventory", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (string.Equals(property.Key, "name", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(property.Key, "npcName", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(property.Key, "NPCName", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(property.Key, "role", StringComparison.OrdinalIgnoreCase))
+            {
+                if (property.Value == null || !string.IsNullOrWhiteSpace(GetNodeString(property.Value)))
+                    continue;
+                return false;
+            }
+
+            if (property.Value == null)
+                continue;
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private static JsonObject? FindExistingNpcForTrainingShowcasePatch(
+        JsonObject root,
+        string npcId,
+        JsonObject patch)
+    {
+        foreach (var sectionName in new[] { "NPCsInScene", "NPCs", "npcs", "npcDataChanges", "UpdateNPCs" })
+        {
+            if (root[sectionName] is not JsonArray npcs)
+                continue;
+
+            foreach (var npc in npcs.OfType<JsonObject>())
+            {
+                if (ReferenceEquals(npc, patch) ||
+                    !string.Equals(ResolveNpcPatchIdentity(npc), npcId, StringComparison.OrdinalIgnoreCase) ||
+                    !HasCompleteNpcCoreSurface(npc))
+                {
+                    continue;
+                }
+
+                return npc;
+            }
+        }
+
+        return null;
+    }
+
+    private static bool HasCompleteNpcCoreSurface(JsonObject npc) =>
+        !string.IsNullOrWhiteSpace(GetNodeString(npc["name"])) &&
+        npc.ContainsKey("currentLocationId") &&
+        npc.ContainsKey("relationshipLevel") &&
+        npc.ContainsKey("attitude") &&
+        npc.ContainsKey("inventory") &&
+        npc.ContainsKey("goals");
+
+    private static string? ResolveNpcPatchIdentity(JsonObject npc) =>
+        GetNodeString(npc["NPCId"]) ??
+        GetNodeString(npc["npcId"]) ??
+        GetNodeString(npc["id"]) ??
+        GetNodeString(npc["initialId"]);
+
+    private static bool IsNpcPatchIdentityField(string fieldName) =>
+        string.Equals(fieldName, "NPCId", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(fieldName, "npcId", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(fieldName, "id", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(fieldName, "initialId", StringComparison.OrdinalIgnoreCase);
 }
