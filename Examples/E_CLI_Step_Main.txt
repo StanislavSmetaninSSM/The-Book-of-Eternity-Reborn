@@ -651,6 +651,8 @@ If the turn request says `MORTAL BOOTSTRAP BASELINE`, do not start from large ex
 - `game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md`
 - `game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json`
 
+When `mortal_bootstrap_scaffold.json.preMaterializedBaselineFiles` includes `game_state/npcs/npc_core.json`, the client has already created a starter NPC teacher for a player-authored training opening. Preserve that NPC and make the scene choices consistent with `/обучение`; do not drop the teacher/training surface into prose only.
+
 Minimum successful output for the first Mortal scene:
 - `output/narrative_response.json`: the first playable Mortal scene text with a timestamp.
 - `output/debug_logs.json`: NPC Scope and reasoning, even if the scene is local and only the player is acting.

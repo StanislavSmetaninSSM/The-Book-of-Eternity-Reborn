@@ -50,7 +50,7 @@ public static class MortalBootstrapStateBuilder
         var starterPassiveSkills = BuildStarterPassiveSkills(character);
         var starterResourceGrant = InferStarterResourceGrant(character, world, circumstances);
 
-        return new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
+        var files = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
         {
             ["lore/current_world/world_setting.json"] = new()
             {
@@ -140,6 +140,18 @@ public static class MortalBootstrapStateBuilder
             },
             ["game_state/quests/regular_quests.json"] = BuildRegularQuests(questId, currentLocationId, factionId, shortCircumstances, turn)
         };
+
+        if (starterResourceGrant.CurrentLevelExperience > 0)
+        {
+            files["game_state/npcs/npc_core.json"] = BuildStarterTeacherNpcCore(
+                idSuffix,
+                currentLocationId,
+                locationName,
+                circumstances,
+                shortCircumstances);
+        }
+
+        return files;
     }
 
     public static StarterResourceGrant InferStarterResourceGrant(
@@ -153,19 +165,7 @@ public static class MortalBootstrapStateBuilder
             worldDescription ?? string.Empty,
             startingCircumstances ?? string.Empty);
 
-        var hasTrainingCue = ContainsAny(
-            combined,
-            "обуч",
-            "трениров",
-            "урок",
-            "настав",
-            "учител",
-            "витрин",
-            "teacher",
-            "mentor",
-            "training",
-            "lesson",
-            "apprentice");
+        var hasTrainingCue = ContainsTrainingCue(combined);
         var hasTradeCue = ContainsAny(
             combined,
             "торгов",
@@ -187,6 +187,21 @@ public static class MortalBootstrapStateBuilder
             TrainingOrTradeStarterMoney,
             hasTrainingCue ? TrainingStarterCurrentLevelExperience : 0);
     }
+
+    private static bool ContainsTrainingCue(string text) =>
+        ContainsAny(
+            text,
+            "обуч",
+            "трениров",
+            "урок",
+            "настав",
+            "учител",
+            "витрин",
+            "teacher",
+            "mentor",
+            "training",
+            "lesson",
+            "apprentice");
 
     private static JsonObject BuildExperience(int starterCurrentLevelExperience)
     {
@@ -222,6 +237,137 @@ public static class MortalBootstrapStateBuilder
         {
             ["skillMasteryChanges"] = new JsonArray()
         };
+
+    private static JsonObject BuildStarterTeacherNpcCore(
+        string idSuffix,
+        string currentLocationId,
+        string currentLocationName,
+        string circumstances,
+        string shortCircumstances)
+    {
+        var teacherId = $"npc_{idSuffix}_start_teacher";
+        var skill = BuildStarterTeacherSkill(idSuffix, circumstances);
+        var skillName = skill["skillName"]!.GetValue<string>();
+        var trainingPhrase = string.Equals(skillName, "Чтение печатей", StringComparison.Ordinal)
+            ? "чтению печатей"
+            : $"навыку «{skillName}»";
+
+        return new JsonObject
+        {
+            ["NPCsInScene"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["npcId"] = teacherId,
+                    ["NPCId"] = teacherId,
+                    ["name"] = BuildStarterTeacherName(circumstances),
+                    ["role"] = "Стартовый наставник",
+                    ["summary"] = $"Наставник из стартовой сцены делает обещанное обучение доступным через витрину навыков: {shortCircumstances}",
+                    ["image_prompt"] = "dark fantasy mentor in an old archive room, candlelight, practical medieval clothes, realistic portrait",
+                    ["rarity"] = "Common",
+                    ["worldview"] = "Знание полезно только тому, кто готов заплатить цену вниманием, временем и осторожностью.",
+                    ["personalityArchetype"] = "строгий практичный наставник",
+                    ["culturalStance"] = "Pragmatist",
+                    ["race"] = "Человек",
+                    ["class"] = "Наставник",
+                    ["appearanceDescription"] = "Сдержанный наставник стартовой сцены: внимательный взгляд, рабочая одежда и привычка оценивать ученика по первым вопросам.",
+                    ["history"] = "Первый наставник закреплён в выбранных обстоятельствах новой жизни и готов провести практический урок.",
+                    ["progressionType"] = "static_teacher_npc",
+                    ["currentLocationId"] = currentLocationId,
+                    ["currentLocationName"] = currentLocationName,
+                    ["initialLocationId"] = null,
+                    ["age"] = 43,
+                    ["level"] = 2,
+                    ["experience"] = 0,
+                    ["experienceForNextLevel"] = 150,
+                    ["relationshipLevel"] = 25,
+                    ["attitude"] = "Доверие и Расположение",
+                    ["playerCompanionDirective"] = "not_companion",
+                    ["culturalLayer"] = "локальная школа стартовой сцены",
+                    ["personalityTraits"] = new JsonArray(),
+                    ["maxWeight"] = 35,
+                    ["totalWeight"] = 0,
+                    ["isOverloaded"] = false,
+                    ["progressionTrackers"] = new JsonObject(),
+                    ["plans"] = "Проверить, стоит ли герой первого урока.",
+                    ["personalQuests"] = new JsonArray(),
+                    ["relationshipLock"] = new JsonObject
+                    {
+                        ["isLocked"] = false,
+                        ["breakthroughQuestId"] = null
+                    },
+                    ["characteristics"] = new JsonObject
+                    {
+                        ["intelligence"] = 5,
+                        ["wisdom"] = 4,
+                        ["perception"] = 4,
+                        ["persuasion"] = 3
+                    },
+                    ["activeSkills"] = new JsonArray(),
+                    ["passiveSkills"] = new JsonArray(),
+                    ["equippedItems"] = new JsonObject(),
+                    ["fateCards"] = new JsonArray(),
+                    ["inventory"] = new JsonArray(),
+                    ["goals"] = new JsonObject
+                    {
+                        ["shortTerm"] = $"Провести первый урок навыка «{skillName}», если герой оплатит обучение.",
+                        ["longTerm"] = "Оставить герою практическую зацепку для развития навыков в этом мире."
+                    },
+                    ["teacherProfile"] = new JsonObject
+                    {
+                        ["canTeach"] = true,
+                        ["relationshipLevel"] = 25,
+                        ["summary"] = $"Может обучить {trainingPhrase} через витрину обучения, пока герой находится в стартовой сцене.",
+                        ["skills"] = new JsonArray(skill)
+                    }
+                }
+            }
+        };
+    }
+
+    private static JsonObject BuildStarterTeacherSkill(string idSuffix, string circumstances)
+    {
+        if (ContainsAny(circumstances, "печат", "seal", "sigil"))
+        {
+            return new JsonObject
+            {
+                ["skillId"] = $"skill_{idSuffix}_seal_reading",
+                ["skillName"] = "Чтение печатей",
+                ["displayName"] = "Чтение печатей",
+                ["skillKind"] = "passive_skill_mastery",
+                ["masteryLevel"] = 2,
+                ["currentMasteryLevel"] = 2,
+                ["maxMasteryLevel"] = 2,
+                ["summary"] = "Разбор гербовых, магических и личных печатей без грубого вскрытия."
+            };
+        }
+
+        return new JsonObject
+        {
+            ["skillId"] = $"skill_{idSuffix}_basic_training",
+            ["skillName"] = "Основы осторожного действия",
+            ["displayName"] = "Основы осторожного действия",
+            ["skillKind"] = "passive_skill_mastery",
+            ["masteryLevel"] = 2,
+            ["currentMasteryLevel"] = 2,
+            ["maxMasteryLevel"] = 2,
+            ["summary"] = "Базовая подготовка к внимательному, безопасному действию в первой сцене."
+        };
+    }
+
+    private static string BuildStarterTeacherName(string circumstances)
+    {
+        if (ContainsAny(circumstances, "семейн", "архив"))
+            return "Наставница семейного архива";
+
+        if (ContainsAny(circumstances, "охот", "лес", "след"))
+            return "Охотник-наставник";
+
+        if (ContainsAny(circumstances, "тренер", "трениров"))
+            return "Тренер стартовой сцены";
+
+        return "Наставник стартовой сцены";
+    }
 
     private static JsonArray BuildStarterPassiveSkills(string characterDescription)
     {

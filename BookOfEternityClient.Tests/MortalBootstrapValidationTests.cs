@@ -143,6 +143,70 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task MortalBootstrapStateBuilder_MaterializesRequestedTeacherIntoBaseline()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 3,
+            characterDescription: "Асурэн де Вальмонт, молодой аристократ-маг.",
+            worldDescription: "Столица Этернии с городскими наставниками и витринами обучения.",
+            startingCircumstances: "За дверью ждёт наставница семейного архива, которая может обучить чтению печатей за плату.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-06T01:00:00Z"));
+
+        var npcCore = Assert.IsType<JsonObject>(files["game_state/npcs/npc_core.json"]);
+        var sceneNpcs = Assert.IsType<JsonArray>(npcCore["NPCsInScene"]);
+        var teacher = Assert.Single(sceneNpcs.OfType<JsonObject>());
+        Assert.Equal("npc_life_001_start_teacher", teacher["npcId"]!.GetValue<string>());
+        Assert.Equal("Наставница семейного архива", teacher["name"]!.GetValue<string>());
+        Assert.Equal("loc_life_001_start", teacher["currentLocationId"]!.GetValue<string>());
+        Assert.Contains("витрин", teacher["summary"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+
+        var teacherProfile = Assert.IsType<JsonObject>(teacher["teacherProfile"]);
+        Assert.True(teacherProfile["canTeach"]!.GetValue<bool>());
+        Assert.Equal(25, teacherProfile["relationshipLevel"]!.GetValue<int>());
+        Assert.Contains("чтению печатей", teacherProfile["summary"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+
+        var taughtSkill = Assert.Single(teacherProfile["skills"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("skill_life_001_seal_reading", taughtSkill["skillId"]!.GetValue<string>());
+        Assert.Equal("Чтение печатей", taughtSkill["skillName"]!.GetValue<string>());
+        Assert.Equal("Чтение печатей", taughtSkill["displayName"]!.GetValue<string>());
+        Assert.Equal("passive_skill_mastery", taughtSkill["skillKind"]!.GetValue<string>());
+        Assert.Equal(2, taughtSkill["masteryLevel"]!.GetValue<int>());
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/control/mortal_bootstrap_scaffold.json", """
+        {
+          "schemaVersion": 1,
+          "purpose": "fresh_mortal_world_bootstrap",
+          "baselineMaterializedBeforeDispatch": true,
+          "playerAuthoredStart": {
+            "characterDescription": "Асурэн де Вальмонт, молодой аристократ-маг.",
+            "worldDescription": "Столица Этернии с городскими наставниками и витринами обучения.",
+            "startingCircumstances": "За дверью ждёт наставница семейного архива, которая может обучить чтению печатей за плату."
+          },
+          "trainingAnchorRequirements": {
+            "requiredNpcShape": "The relevant NPC in NPCsInScene/UpdateNPCs must include teacherProfile with canTeach=true."
+          }
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void MortalBootstrapStateBuilder_MaterializesExplicitTrackerCompetencyAsPassiveSkill()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(

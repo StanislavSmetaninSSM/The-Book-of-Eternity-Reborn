@@ -2470,7 +2470,7 @@ public partial class GameEngine
                 Timestamp = DateTime.UtcNow.ToString("o"),
                 GameMode = "normal",
                 SystemReminder = await BuildTurnSystemReminderAsync(
-                    "MORTAL BOOTSTRAP BASELINE: this is the first Mortal World turn of a new incarnation. The client already materialized valid baseline location/map/faction/quest/current-world codex files before this request and captured them in pending_turn_snapshot. Read game_state/control/mortal_bootstrap_scaffold.json, then develop the existing stable ids instead of recreating the world from scratch. Use canonical turn anchors exactly like #[3]. text for location/quest logs, do not write #3 - date, and do not edit client-owned game_state/world/guardian_corrections.json.")
+                    "MORTAL BOOTSTRAP BASELINE: this is the first Mortal World turn of a new incarnation. The client already materialized valid baseline location/map/faction/quest/current-world codex files before this request; if the player-authored start promised training, it also materialized a starter NPC teacher in npc_core.json. These files are captured in pending_turn_snapshot. Read game_state/control/mortal_bootstrap_scaffold.json, then develop the existing stable ids instead of recreating the world from scratch. Use canonical turn anchors exactly like #[3]. text for location/quest logs, do not write #3 - date, and do not edit client-owned game_state/world/guardian_corrections.json.")
             };
             AttachFreshDiceAndGacha(request);
             request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync("Mortal World");
@@ -2657,6 +2657,42 @@ public partial class GameEngine
             characterDescription,
             worldDescription,
             startingCircumstances);
+        var requiredMortalBootstrapFiles = new JsonArray
+        {
+            "lore/current_world/world_setting.json",
+            "lore/current_world/geography.json",
+            "lore/current_world/history.json",
+            "lore/current_world/cultures.json",
+            "lore/current_world/threats.json",
+            "lore/codex_entries.json",
+            "game_state/world/current_location.json",
+            "game_state/world/world_map.json",
+            "game_state/inventory/items.json",
+            "game_state/player/experience.json",
+            "game_state/factions/faction_core.json"
+        };
+        var preMaterializedBaselineFiles = new JsonArray
+        {
+            "lore/current_world/world_setting.json",
+            "lore/current_world/geography.json",
+            "lore/current_world/history.json",
+            "lore/current_world/cultures.json",
+            "lore/current_world/threats.json",
+            "lore/codex_entries.json",
+            "game_state/world/current_location.json",
+            "game_state/world/world_map.json",
+            "game_state/inventory/items.json",
+            "game_state/player/experience.json",
+            "game_state/factions/faction_core.json",
+            "game_state/factions/faction_resources.json",
+            "game_state/quests/regular_quests.json"
+        };
+        if (starterResourceGrant.CurrentLevelExperience > 0)
+        {
+            requiredMortalBootstrapFiles.Add("game_state/npcs/npc_core.json");
+            preMaterializedBaselineFiles.Add("game_state/npcs/npc_core.json");
+        }
+
         var root = new JsonObject
         {
             ["schemaVersion"] = 1,
@@ -2683,36 +2719,8 @@ public partial class GameEngine
                 ["startingObjectiveId"] = $"quest_{idSuffix}_opening_hook",
                 ["startingAnchorItemId"] = $"item_{idSuffix}_opening_anchor"
             },
-            ["requiredMortalBootstrapFiles"] = new JsonArray
-            {
-                "lore/current_world/world_setting.json",
-                "lore/current_world/geography.json",
-                "lore/current_world/history.json",
-                "lore/current_world/cultures.json",
-                "lore/current_world/threats.json",
-                "lore/codex_entries.json",
-                "game_state/world/current_location.json",
-                "game_state/world/world_map.json",
-                "game_state/inventory/items.json",
-                "game_state/player/experience.json",
-                "game_state/factions/faction_core.json"
-            },
-            ["preMaterializedBaselineFiles"] = new JsonArray
-            {
-                "lore/current_world/world_setting.json",
-                "lore/current_world/geography.json",
-                "lore/current_world/history.json",
-                "lore/current_world/cultures.json",
-                "lore/current_world/threats.json",
-                "lore/codex_entries.json",
-                "game_state/world/current_location.json",
-                "game_state/world/world_map.json",
-                "game_state/inventory/items.json",
-                "game_state/player/experience.json",
-                "game_state/factions/faction_core.json",
-                "game_state/factions/faction_resources.json",
-                "game_state/quests/regular_quests.json"
-            },
+            ["requiredMortalBootstrapFiles"] = requiredMortalBootstrapFiles,
+            ["preMaterializedBaselineFiles"] = preMaterializedBaselineFiles,
             ["locationRequirements"] = new JsonObject
             {
                 ["currentLocationMustUseStableLocationId"] = true,

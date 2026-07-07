@@ -159,6 +159,9 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("/обучение", method, StringComparison.Ordinal);
         Assert.Contains("pending_training_showcase_requests.json", method, StringComparison.Ordinal);
         Assert.Contains("Do not advertise paid training only in prose", method, StringComparison.Ordinal);
+        Assert.Contains("starterResourceGrant.CurrentLevelExperience", method, StringComparison.Ordinal);
+        Assert.Contains("preMaterializedBaselineFiles.Add(\"game_state/npcs/npc_core.json\")", method, StringComparison.Ordinal);
+        Assert.Contains("requiredMortalBootstrapFiles.Add(\"game_state/npcs/npc_core.json\")", method, StringComparison.Ordinal);
     }
 
     [Fact]
