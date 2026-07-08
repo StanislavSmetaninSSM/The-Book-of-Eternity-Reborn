@@ -3534,6 +3534,136 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task ProcessPlayerTurn_RepairStalledAcceptedTurn_RestoresPreTurnSnapshot()
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        const string passiveSkillsPath = "game_state/player/skills_passive.json";
+        const string activeSkillsPath = "game_state/player/skills_active.json";
+        const string skillMasteryPath = "game_state/player/skill_mastery.json";
+
+        var input = new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]);
+        var engine = CreateGameEngine(input);
+        var gmOutputTask = Task.Run(async () =>
+        {
+            var request = await WaitForTurnRequestAsync();
+            var outputTimestamp = DateTime.UtcNow.ToString("o");
+            await WriteJsonAsync("output/narrative_response.json", new
+            {
+                response = "Наставница показывает печать, но запись урока намеренно повреждена для проверки rollback.",
+                timestamp = outputTimestamp
+            });
+            await WriteJsonAsync("output/interface_updates.json", new
+            {
+                dialogueOptions = new[]
+                {
+                    new
+                    {
+                        text = "Вернуться к уроку позже.",
+                        category = "neutral"
+                    }
+                },
+                timestamp = outputTimestamp
+            });
+            await WriteJsonAsync("output/debug_logs.json", new
+            {
+                timestamp = outputTimestamp,
+                gm_thoughts_markdown = string.Join(
+                    "\n",
+                    "## NPC Scope",
+                    "- Mode: Scene-local",
+                    "- Relevant actors: наставница архива",
+                    "- Why relevant: Проверяется провал repair loop после paid training.",
+                    "- Actors outside scope: нет",
+                    "- Why outside scope: Ход не меняет других NPC.",
+                    "",
+                    "## Reasoning",
+                    "- The test intentionally writes a passive skill and an invalid active mastery entry.")
+            });
+            await WriteJsonAsync(passiveSkillsPath, new
+            {
+                passiveSkillChanges = new[]
+                {
+                    new
+                    {
+                        skillId = "skill_life_001_seal_reading",
+                        skillName = "Чтение печатей",
+                        skillKind = "passive_skill_mastery",
+                        description = "Распознавание родовых и торговых печатей.",
+                        rarity = "Common",
+                        category = "knowledge"
+                    }
+                }
+            });
+            await WriteJsonAsync(activeSkillsPath, new
+            {
+                activeSkillChanges = Array.Empty<object>()
+            });
+            await WriteJsonAsync(skillMasteryPath, new
+            {
+                skillMasteryChanges = new[]
+                {
+                    new
+                    {
+                        skillId = "skill_life_001_seal_reading",
+                        skillName = "Чтение печатей",
+                        targetKind = "passive_skill_mastery",
+                        newMasteryLevel = 1,
+                        newCurrentMasteryProgress = 0,
+                        newMasteryProgressNeeded = 100,
+                        masteryLeveledUp = true
+                    }
+                }
+            });
+            await WriteJsonAsync("ready/turn_complete.json", new
+            {
+                sessionId = request.SessionId,
+                requestId = request.RequestId,
+                turnNumber = request.TurnNumber,
+                timestamp = DateTime.UtcNow.ToString("o"),
+                status = "success",
+                filesModified = new[]
+                {
+                    "output/narrative_response.json",
+                    "output/interface_updates.json",
+                    "output/debug_logs.json",
+                    passiveSkillsPath,
+                    activeSkillsPath,
+                    skillMasteryPath
+                }
+            });
+
+            var deadline = DateTime.UtcNow.AddSeconds(5);
+            while (!_fs.FileExists("game_state/control/validation_repair_request.json") && DateTime.UtcNow < deadline)
+                await Task.Delay(25);
+
+            Assert.True(_fs.FileExists("game_state/control/validation_repair_request.json"));
+            await WriteJsonAsync("game_state/control/gm_validation_repair_artifact_stall_report.json", new
+            {
+                isStalled = true,
+                elapsedSeconds = 180,
+                bridgeCleanup = new
+                {
+                    reason = "gm_validation_repair_artifact_stall",
+                    status = "fallback-stopped",
+                    ok = true
+                }
+            });
+        });
+
+        await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Купить урок чтения печатей.", null);
+        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(8));
+
+        Assert.False(_fs.FileExists(passiveSkillsPath));
+        Assert.False(_fs.FileExists(activeSkillsPath));
+        Assert.False(_fs.FileExists(skillMasteryPath));
+        Assert.False(_fs.FileExists("input/turn_request.json"));
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+        Assert.False(_fs.FileExists("ready/turn_error.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.authority.json"));
+    }
+
+    [Fact]
     public async Task ProcessPlayerTurn_IdleBridgeErrorWithFreshOutputArtifacts_RecoversAsAcceptedTurn()
     {
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
