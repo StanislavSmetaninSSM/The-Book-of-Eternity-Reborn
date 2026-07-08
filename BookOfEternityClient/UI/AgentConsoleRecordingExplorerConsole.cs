@@ -322,6 +322,7 @@ public sealed class AgentConsoleRecordingExplorerConsole : IExplorerConsole
             {
                 Id = $"option-{index}",
                 Label = string.IsNullOrWhiteSpace(label) ? $"Пункт {index + 1}" : label,
+                IsEnabled = IsSelectionActionEnabled(label),
                 IsDefault = selectedIndex == index
             }).ToArray(),
             RenderedAtUtc = now,
@@ -329,6 +330,14 @@ public sealed class AgentConsoleRecordingExplorerConsole : IExplorerConsole
         };
 
         _liveInput?.PublishSnapshot(snapshot, $"Rendered explorer selection prompt {screenId}.");
+    }
+
+    private static bool IsSelectionActionEnabled(string? label)
+    {
+        if (string.IsNullOrWhiteSpace(label))
+            return true;
+
+        return !label.Contains("закрыто:", StringComparison.OrdinalIgnoreCase);
     }
 
     private bool RunLiveConfirmationPrompt(

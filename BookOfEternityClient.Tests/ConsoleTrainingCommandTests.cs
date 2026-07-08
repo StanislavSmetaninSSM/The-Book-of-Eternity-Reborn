@@ -49,6 +49,39 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
         Assert.Equal(0, console.ReadKeyCalls);
     }
 
+    [Fact]
+    [Trait("Category", "ConsoleTraining")]
+    public async Task TryProcessCommand_AfterlifeSelfTraining_UsesLocalizedLockedOfferNames()
+    {
+        await SeedAfterlifeSelfTrainingAsync();
+        await _stateManager.RefreshGameStateAsync();
+        var console = new TestExplorerConsole();
+        console.QueueSelection(
+            "Выберите наставника",
+            "◇ Самостоятельная прокачка души",
+            "← Закрыть обучение");
+        console.QueueSelection("Самостоятельная прокачка", "← К обучению души");
+        var explorer = new ExplorerMode(
+            _stateManager,
+            _fs,
+            new LocalizationManager(),
+            trainingService: new TrainingService(_fs, NullLogger<TrainingService>.Instance),
+            console: console);
+
+        var result = await explorer.TryProcessCommand("/обучение");
+
+        Assert.Equal(string.Empty, result);
+        var selfTrainingChoices = console.SelectionChoicesHistory
+            .Single(entry => entry.Title.Contains("Самостоятельная прокачка", StringComparison.OrdinalIgnoreCase))
+            .Choices;
+        Assert.Contains(selfTrainingChoices, choice => choice.Contains("Давление", StringComparison.Ordinal));
+        Assert.Contains(selfTrainingChoices, choice => choice.Contains("Контрприём", StringComparison.Ordinal));
+        Assert.DoesNotContain(selfTrainingChoices, choice => choice.Contains("Pressure", StringComparison.Ordinal));
+        Assert.DoesNotContain(selfTrainingChoices, choice => choice.Contains("Counter", StringComparison.Ordinal));
+        Assert.DoesNotContain(selfTrainingChoices, choice => choice.Contains("Guard", StringComparison.Ordinal));
+        Assert.DoesNotContain(selfTrainingChoices, choice => choice.Contains("Maneuver", StringComparison.Ordinal));
+    }
+
     public void Dispose()
     {
         try
@@ -97,6 +130,31 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
               }
             }
           ]
+        }
+        """);
+    }
+
+    private async Task SeedAfterlifeSelfTrainingAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Северная Искра",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 0,
+          "inkFeathers": { "current": 0, "total": 0 },
+          "afterlifeCombatProfile": {
+            "enlightenmentRank": 0,
+            "radianceRank": 0,
+            "retainedRadianceRank": 0,
+            "spiritFocusTier": 0,
+            "artTiers": {}
+          }
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("stories/console-training-test.json", """
+        {
+          "turnNumber": 1
         }
         """);
     }

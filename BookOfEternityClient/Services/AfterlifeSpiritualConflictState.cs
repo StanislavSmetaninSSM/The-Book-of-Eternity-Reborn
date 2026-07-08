@@ -187,14 +187,14 @@ public static class AfterlifeSpiritualConflictState
 
     public static readonly IReadOnlyList<SpiritualArtDefinition> SpiritualArts =
     [
-        new("pressure", "Pressure", "Improve direct strain pressure on the opposing lead contestant.", 1),
-        new("counter", "Counter", "Improve countering and reversal of a declared incoming operation.", 1),
-        new("guard", "Guard", "Improve prevention of incoming strain/consequence against your own side.", 1),
-        new("maneuver", "Maneuver", "Improve positional shifts without requiring raw overpowering.", 1),
-        new("break_binding", "Break Binding", "Improve resisting or breaking spiritual bindings and forced handoffs.", 2),
-        new("binding", "Binding", "Improve imposing a bounded spiritual bind after winning leverage.", 2),
-        new("incarnation_resistance", "Incarnation Resistance", "Improve resistance to guardian_forced incarnation attempts.", 2),
-        new("champion_coordination", "Champion Coordination", "Improve side-vs-side support when an ally is the lead contestant.", 3)
+        new("pressure", "Давление", "Improve direct strain pressure on the opposing lead contestant.", 1),
+        new("counter", "Контрприём", "Improve countering and reversal of a declared incoming operation.", 1),
+        new("guard", "Защита", "Improve prevention of incoming strain/consequence against your own side.", 1),
+        new("maneuver", "Манёвр", "Improve positional shifts without requiring raw overpowering.", 1),
+        new("break_binding", "Разрыв оков", "Improve resisting or breaking spiritual bindings and forced handoffs.", 2),
+        new("binding", "Оковы", "Improve imposing a bounded spiritual bind after winning leverage.", 2),
+        new("incarnation_resistance", "Сопротивление воплощению", "Improve resistance to guardian_forced incarnation attempts.", 2),
+        new("champion_coordination", "Связь с чемпионом", "Improve side-vs-side support when an ally is the lead contestant.", 3)
     ];
 
     public static readonly IReadOnlyList<SpiritFocusTierDefinition> SpiritFocusTiers =

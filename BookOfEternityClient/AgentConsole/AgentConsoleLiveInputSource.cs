@@ -769,6 +769,7 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
            ContainsReturnToken(action.Label, "закрыть") ||
            ContainsReturnToken(action.Label, "вернуться") ||
            ContainsReturnToken(action.Label, "к списку") ||
+           ContainsReturnToken(action.Label, "к обучен") ||
            ContainsReturnToken(action.Label, "к учител") ||
            ContainsReturnToken(action.Label, "к наставник") ||
            ContainsReturnToken(action.Label, "к игре") ||

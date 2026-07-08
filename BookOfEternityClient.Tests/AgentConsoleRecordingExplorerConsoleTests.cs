@@ -127,6 +127,39 @@ public sealed class AgentConsoleRecordingExplorerConsoleTests
         Assert.Equal(7, await promptTask.WaitAsync(TimeSpan.FromSeconds(2)));
     }
 
+    [Fact]
+    public async Task Prompt_LiveSelectionMarksLockedTrainingChoicesAsDisabledActions()
+    {
+        var store = new AgentConsoleStateStore();
+        var liveInput = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromSeconds(2));
+        var console = new AgentConsoleRecordingExplorerConsole(
+            new LiveInputExplorerConsole(liveInput),
+            liveInput);
+        var prompt = new SelectionPrompt<string>()
+            .Title("🎓 Самостоятельная прокачка")
+            .AddChoices(
+                "• Pressure | духовное искусство: самостоятельная прокачка | закрыто: нужно открыть уровень искусства 1",
+                "← К обучению души");
+
+        var promptTask = Task.Run(() => console.Prompt(prompt));
+
+        var published = SpinWait.SpinUntil(
+            () => store.GetSnapshot()?.InputKind == AgentConsoleInputKind.MenuSelection || promptTask.IsCompleted,
+            TimeSpan.FromSeconds(1));
+
+        Assert.True(published);
+        Assert.False(promptTask.IsCompleted);
+        var snapshot = Assert.IsType<AgentConsoleSnapshot>(store.GetSnapshot());
+        var lockedAction = Assert.Single(snapshot.Actions, action => action.Label.Contains("закрыто:", StringComparison.OrdinalIgnoreCase));
+
+        Assert.False(lockedAction.IsEnabled);
+
+        var backAccepted = liveInput.TryQueueReturnToGameLoopStep();
+
+        Assert.True(backAccepted.Accepted, backAccepted.Message);
+        Assert.Equal("← К обучению души", await promptTask.WaitAsync(TimeSpan.FromSeconds(2)));
+    }
+
     private sealed class PromptlessExplorerConsole : IExplorerConsole
     {
         public bool KeyAvailable => false;
