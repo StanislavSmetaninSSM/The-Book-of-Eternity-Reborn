@@ -1101,9 +1101,8 @@ public sealed class TrainingService
             ["currentLevelExperiencePercent"] = offer.Cost.CurrentLevelExperiencePercent,
             ["currentLevelExperienceSpent"] = offer.Cost.CurrentLevelExperiencePoints,
             ["masteryProgressGain"] = plan.MasteryProgressGain,
-            ["gmInstruction"] = plan.IsPassive
-                ? "Создай или обнови полный passiveSkillChanges объект и matching skillMasteryChanges/уровень, не теряя structuredBonuses."
-                : "Создай или обнови полный activeSkillChanges объект с combatEffect и matching skillMasteryChanges для нового уровня."
+            ["gmInstruction"] = BuildMortalSkillEvolutionGmInstruction(
+                NormalizeMortalTrainingTargetKind(offer.TargetKind, plan.IsPassive))
         };
 
         var summary = GetNodeString(offer.Details["summary"]);
@@ -1871,14 +1870,33 @@ public sealed class TrainingService
         var targetKind = GetNodeString(details?["targetKind"]) ?? "skill";
         var targetValue = GetNodeInt(details?["targetValue"]);
         var offerId = GetNodeString(details?["offerId"]) ?? "unknown_offer";
-        var instruction = GetNodeString(details?["gmInstruction"]) ??
-                          "Создай или обнови полный объект навыка и matching skillMasteryChanges для оплаченного обучения.";
+        var instruction = BuildMortalSkillEvolutionGmInstruction(
+            targetKind,
+            GetNodeString(details?["gmInstruction"]));
 
         return "Заверши оплаченное обучение в смертном мире для NPC-учителя " +
                $"{request.SourceActorName} ({request.SourceActorId}). " +
                $"Игрок уже оплатил offer {offerId}; не списывай деньги или опыт повторно. " +
                $"Цель: {targetName}, тип {targetKind}, новый уровень/мастерство {targetValue}. " +
                $"{instruction} Используй pending_training_showcase_requests.json requestId {request.RequestId} и details как источник аудита.";
+    }
+
+    private static string BuildMortalSkillEvolutionGmInstruction(string targetKind, string? legacyInstruction = null)
+    {
+        if (IsExplicitPassiveMortalTrainingTarget(targetKind))
+        {
+            return "Создай или обнови только полный passiveSkillChanges объект для пассивного навыка; " +
+                   "сохрани structuredBonuses, playerStatBonus, источник, русское описание и текущий прогресс навыка.";
+        }
+
+        if (IsExplicitActiveMortalTrainingTarget(targetKind))
+        {
+            return "Создай или обнови полный activeSkillChanges объект с combatEffect и matching skillMasteryChanges для нового уровня.";
+        }
+
+        return string.IsNullOrWhiteSpace(legacyInstruction)
+            ? "Создай или обнови полный объект навыка для оплаченного обучения, следуя details.targetKind."
+            : legacyInstruction;
     }
 
     private static bool IsExplicitPassiveMortalTrainingTarget(string targetKind) =>

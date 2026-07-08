@@ -61,10 +61,11 @@ Shared rules
   mastery progress that does not cross a threshold. If a paid lesson unlocks a
   skill or crosses a mastery level, the client writes requestKind
   `mortal_training_skill_evolution` and immediately sends a dedicated GM action
-  for that request. The GM must author the full updated `activeSkillChanges` or
-  `passiveSkillChanges` object plus matching `skillMasteryChanges` in that GM
-  turn. Do not wait for a later ordinary player input and do not charge the
-  player again.
+  for that request. Active targets use the full updated `activeSkillChanges`
+  object plus matching `skillMasteryChanges`. Passive targets use the full
+  updated `passiveSkillChanges` object only; do not invent an active skill or
+  active mastery entry for a passive target. Do not wait for a later ordinary
+  player input and do not charge the player again.
 - For `mortal_training_skill_evolution`, follow `details.targetKind` rather
   than the original showcase offer label. The client normalizes generic Mortal
   offer kinds such as `skill_mastery` to `active_skill_mastery`,
@@ -417,14 +418,15 @@ author.
         "moneySpent": 80,
         "currentLevelExperiencePercent": 22,
         "currentLevelExperienceSpent": 220,
-        "gmInstruction": "Создай или обнови полный passiveSkillChanges объект и matching skillMasteryChanges для нового уровня."
+        "gmInstruction": "Создай или обнови только полный passiveSkillChanges объект для пассивного навыка, сохрани structuredBonuses, playerStatBonus и описание."
       }
     }
   ]
 }
 ```
 
-The matching response updates the passive skill, not `activeSkillChanges`:
+The matching response updates the passive skill only, not `activeSkillChanges`
+and not active-skill mastery:
 
 ```json
 {
@@ -438,16 +440,6 @@ The matching response updates the passive skill, not `activeSkillChanges`:
       "group": "Полевые навыки",
       "masteryLevel": 2,
       "maxMasteryLevel": 4
-    }
-  ],
-  "skillMasteryChanges": [
-    {
-      "skillId": "tracking",
-      "skillName": "Выслеживание",
-      "newMasteryLevel": 2,
-      "newCurrentMasteryProgress": 0,
-      "newMasteryProgressNeeded": 200,
-      "masteryLeveledUp": true
     }
   ]
 }

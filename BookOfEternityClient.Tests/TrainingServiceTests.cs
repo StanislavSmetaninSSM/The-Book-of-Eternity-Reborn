@@ -403,6 +403,42 @@ public sealed class TrainingServiceTests : IDisposable
         Assert.Equal("offer_road_survival_2", details.GetProperty("offerId").GetString());
         Assert.Equal("passive_skill_mastery", details.GetProperty("targetKind").GetString());
         Assert.Contains("passiveSkillChanges", details.GetProperty("gmInstruction").GetString(), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("skillMasteryChanges", details.GetProperty("gmInstruction").GetString(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalLegacyPassiveEvolutionRequest_DoesNotSendSkillMasteryInstruction()
+    {
+        await SeedMortalSoulStateAsync();
+        await TrainingRequestState.WriteRequestAsync(
+            _fs,
+            "mortal_training_skill_evolution",
+            "npc_teacher_archivist",
+            "Наставница семейного архива",
+            "npc_teacher",
+            "mortal",
+            createdAtTurn: 6,
+            sourceActorSnapshotHash: "legacy-hash",
+            reason: "unknown_skill_unlock",
+            details: new JsonObject
+            {
+                ["offerId"] = "train_archive_seal_reading_1",
+                ["targetId"] = "skill_life_001_seal_reading",
+                ["targetName"] = "Чтение печатей",
+                ["targetKind"] = "passive_skill_mastery",
+                ["targetValue"] = 1,
+                ["sourceCap"] = 2,
+                ["moneySpent"] = 30,
+                ["currentLevelExperienceSpent"] = 10,
+                ["gmInstruction"] = "Создай или обнови полный passiveSkillChanges объект и matching skillMasteryChanges/уровень."
+            });
+
+        var service = CreateService();
+        var view = await service.EnsureTrainingAsync(currentTurn: 6, createPendingRequests: false);
+
+        Assert.True(view.RequestPending);
+        Assert.Contains("passiveSkillChanges", view.PendingGmAction, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("skillMasteryChanges", view.PendingGmAction, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

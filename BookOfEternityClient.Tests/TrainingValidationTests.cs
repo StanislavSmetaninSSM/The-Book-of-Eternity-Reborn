@@ -163,6 +163,89 @@ public sealed class TrainingValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_MortalGenericSkillMasteryOffer_AllowsConcreteReceiptTargetKind()
+    {
+        await WriteMortalTrainingBaseStateAsync();
+
+        var teacher = new JsonObject
+        {
+            ["npcId"] = "npc_teacher_marta",
+            ["name"] = "Марта Печатница",
+            ["teacherProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 25,
+                ["skills"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["skillId"] = "seal_reading",
+                        ["skillName"] = "Чтение печатей",
+                        ["skillKind"] = "passive_skill_mastery",
+                        ["masteryLevel"] = 2
+                    }
+                }
+            }
+        };
+        var sourceHash = TrainingService.ComputeSourceSnapshotHash(teacher);
+        teacher["trainingShowcase"] = new JsonObject
+        {
+            ["realm"] = "mortal_world",
+            ["sourceActorId"] = "npc_teacher_marta",
+            ["sourceActorSnapshotHash"] = sourceHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "offer_seal_reading_1",
+                    ["targetKind"] = "skill_mastery",
+                    ["targetId"] = "seal_reading",
+                    ["targetName"] = "Чтение печатей",
+                    ["currentValue"] = 0,
+                    ["targetValue"] = 1,
+                    ["sourceCap"] = 2,
+                    ["cost"] = new JsonObject
+                    {
+                        ["money"] = 30,
+                        ["currentLevelExperiencePercent"] = 10
+                    }
+                }
+            }
+        };
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject
+            {
+                ["UpdateNPCs"] = new JsonArray(teacher),
+                ["trainingPurchaseReceipts"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["receiptId"] = "receipt_concrete_passive_kind",
+                        ["realm"] = "mortal",
+                        ["sourceActorId"] = "npc_teacher_marta",
+                        ["offerId"] = "offer_seal_reading_1",
+                        ["targetKind"] = "passive_skill_mastery",
+                        ["targetId"] = "seal_reading",
+                        ["targetValue"] = 1,
+                        ["sourceCap"] = 2,
+                        ["sourceActorSnapshotHash"] = sourceHash,
+                        ["moneySpent"] = 30,
+                        ["currentLevelExperiencePercent"] = 10,
+                        ["currentLevelExperienceSpent"] = 10
+                    }
+                }
+            }.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "training_purchase_receipt_offer_mismatch", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("trainingPurchaseReceipts", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_MortalTeacherWithStaleShowcase_DoesNotReportBlockingStateError()
     {
         await WriteMortalTeacherWithStaleShowcaseAsync();

@@ -734,6 +734,20 @@ public sealed class ExplorerModeSourceGuardTests
     }
 
     [Fact]
+    public void ExplorerMode_TrainingPurchasePendingGmAction_MustExitParentTrainingMenu()
+    {
+        var source = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.Training.cs"));
+        var mortalTraining = ExtractMethodSource(source, "private async Task ShowMortalTrainingAsync");
+        var afterlifeTraining = ExtractMethodSource(source, "private async Task ShowAfterlifeTrainingAsync");
+
+        Assert.Contains("await ShowTeacherTrainingOffersAsync(teacher);", mortalTraining, StringComparison.Ordinal);
+        Assert.Contains("if (!string.IsNullOrWhiteSpace(_pendingGmAction))", mortalTraining, StringComparison.Ordinal);
+
+        Assert.Contains("await ShowTeacherTrainingOffersAsync(teacher);", afterlifeTraining, StringComparison.Ordinal);
+        Assert.Contains("if (!string.IsNullOrWhiteSpace(_pendingGmAction))", afterlifeTraining, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ExplorerMode_ChaosSeaTravelAction_MustExposeCanonicalNavigationContract()
     {
         var source = ReadExplorerModeSource();

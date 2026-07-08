@@ -930,7 +930,7 @@ public partial class ValidationService
     {
         var mismatches = new List<string>();
         AddTrainingStringMismatch(mismatches, "targetId", GetTrainingString(offer, "targetId"), GetTrainingString(receipt, "targetId"));
-        AddTrainingStringMismatch(mismatches, "targetKind", GetTrainingString(offer, "targetKind"), GetTrainingString(receipt, "targetKind"));
+        AddTrainingTargetKindMismatch(mismatches, GetTrainingString(offer, "targetKind"), GetTrainingString(receipt, "targetKind"));
         AddTrainingIntMismatch(mismatches, "targetValue", GetTrainingInt(offer, "targetValue"), GetTrainingInt(receipt, "targetValue"));
         AddTrainingIntMismatch(mismatches, "sourceCap", GetTrainingInt(offer, "sourceCap"), GetTrainingInt(receipt, "sourceCap"));
         if (mismatches.Count == 0)
@@ -945,6 +945,49 @@ public partial class ValidationService
             "Синхронизируй receipt с offer из свежей витрины или пересоздай покупку через клиент.",
             issues);
     }
+
+    private static void AddTrainingTargetKindMismatch(List<string> mismatches, string? offerKind, string? receiptKind)
+    {
+        if (AreTrainingTargetKindsReceiptEquivalent(offerKind, receiptKind))
+            return;
+
+        mismatches.Add($"targetKind: expected {offerKind ?? "missing"}, actual {receiptKind ?? "missing"}");
+    }
+
+    private static bool AreTrainingTargetKindsReceiptEquivalent(string? offerKind, string? receiptKind)
+    {
+        if (string.Equals(offerKind ?? string.Empty, receiptKind ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (string.IsNullOrWhiteSpace(offerKind) || string.IsNullOrWhiteSpace(receiptKind))
+            return false;
+
+        var expected = offerKind.Trim();
+        var actual = receiptKind.Trim();
+        if (!IsGenericMortalSkillTrainingKind(expected) || !IsConcreteMortalSkillTrainingKind(actual))
+            return false;
+
+        if (ContainsTrainingToken(expected, "progress") || ContainsTrainingToken(expected, "practice"))
+            return ContainsTrainingToken(actual, "progress");
+
+        if (ContainsTrainingToken(expected, "unlock"))
+            return ContainsTrainingToken(actual, "unlock");
+
+        return ContainsTrainingToken(expected, "skill") &&
+               (ContainsTrainingToken(actual, "mastery") || ContainsTrainingToken(actual, "unlock"));
+    }
+
+    private static bool IsGenericMortalSkillTrainingKind(string value) =>
+        ContainsTrainingToken(value, "skill") &&
+        !ContainsTrainingToken(value, "active") &&
+        !ContainsTrainingToken(value, "passive");
+
+    private static bool IsConcreteMortalSkillTrainingKind(string value) =>
+        ContainsTrainingToken(value, "skill") &&
+        (ContainsTrainingToken(value, "active") || ContainsTrainingToken(value, "passive"));
+
+    private static bool ContainsTrainingToken(string value, string token) =>
+        value.Contains(token, StringComparison.OrdinalIgnoreCase);
 
     private static void ValidateTrainingReceiptResourceAudit(
         JsonElement receipt,

@@ -18,7 +18,7 @@ Mortal World training vitrines must let the client charge resources and advance 
 - When training would unlock an unknown skill or cross a mastery threshold, the client must create a pending GM request and must not locally mutate the full skill object or final mastery level.
 - The pending request must include the teacher, offer, current/target values, paid costs, source cap, source snapshot hash, and enough skill context for the GM to author the updated skill.
 - Teacher `sourceCap` remains authoritative: no request may target a value above the teacher's capability.
-- The GM resolves a pending Mortal training evolution by writing the complete updated `activeSkillChanges` or `passiveSkillChanges` plus matching `skillMasteryChanges`.
+- The GM resolves a pending Mortal training evolution by following `details.targetKind`: active targets use complete updated `activeSkillChanges` plus matching `skillMasteryChanges`, while passive targets use complete updated `passiveSkillChanges` only.
 - Afterlife standard training remains client-owned for this issue.
 
 ## Non-Goals

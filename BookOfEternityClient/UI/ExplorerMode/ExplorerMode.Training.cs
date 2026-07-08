@@ -83,6 +83,9 @@ public partial class ExplorerMode
             }
 
             await ShowTeacherTrainingOffersAsync(teacher);
+            if (!string.IsNullOrWhiteSpace(_pendingGmAction))
+                return;
+
             await _stateManager.RefreshGameStateAsync();
             Clear();
             view = await _trainingService!.EnsureTrainingAsync(await TryReadCurrentTurnNumberAsync(), createPendingRequests: false);
@@ -205,6 +208,9 @@ public partial class ExplorerMode
             }
 
             await ShowTeacherTrainingOffersAsync(teacher);
+            if (!string.IsNullOrWhiteSpace(_pendingGmAction))
+                return;
+
             await _stateManager.RefreshGameStateAsync();
             Clear();
             view = await _trainingService!.EnsureTrainingAsync(await TryReadCurrentTurnNumberAsync(), createPendingRequests: false);
