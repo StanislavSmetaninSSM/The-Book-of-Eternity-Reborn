@@ -231,6 +231,7 @@ public partial class ExplorerMode
 
         var commandParts = parsedCommand.BuilderCommand.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
         var cmd = commandParts.Length > 0 ? commandParts[0].ToLowerInvariant() : string.Empty;
+        _currentCommandInput = trimmedInput;
         _currentCommandRemainder = commandParts.Length > 1 ? commandParts[1].Trim() : string.Empty;
         var currentRealm = _stateManager.CurrentState.CurrentRealm;
         var hasResolvedRealm = RealmSemantics.HasResolvedRealm(currentRealm);
@@ -252,9 +253,7 @@ public partial class ExplorerMode
                 return "";
 
             await SafeExecute(handler, cmd);
-            if (string.IsNullOrEmpty(_pendingGmAction))
-                await DiscardPendingLocalTurnRollbackSnapshotAsync();
-            return _pendingGmAction ?? "";
+            return await CompleteCommandResultAsync();
         }
 
         if (_chaosSeaOnlyCommands.TryGetValue(cmd, out var chaosHandler))
@@ -273,9 +272,7 @@ public partial class ExplorerMode
                     return "";
 
                 await SafeExecute(mortalHandlerForCurrentRealm, cmd);
-                if (string.IsNullOrEmpty(_pendingGmAction))
-                    await DiscardPendingLocalTurnRollbackSnapshotAsync();
-                return _pendingGmAction ?? "";
+                return await CompleteCommandResultAsync();
             }
 
             if (IsExactChaosSeaCommand(cmd) && isAfterlife && !_stateManager.CurrentState.IsInChaosSea)
@@ -292,9 +289,7 @@ public partial class ExplorerMode
                     return "";
 
                 await SafeExecute(chaosHandler, cmd);
-                if (string.IsNullOrEmpty(_pendingGmAction))
-                    await DiscardPendingLocalTurnRollbackSnapshotAsync();
-                return _pendingGmAction ?? "";
+                return await CompleteCommandResultAsync();
             }
 
             MarkupLine("[yellow]⚠️ Эта команда доступна только в загробном цикле.[/]");
@@ -311,9 +306,7 @@ public partial class ExplorerMode
                     return "";
 
                 await SafeExecute(mortalHandler, cmd);
-                if (string.IsNullOrEmpty(_pendingGmAction))
-                    await DiscardPendingLocalTurnRollbackSnapshotAsync();
-                return _pendingGmAction ?? "";
+                return await CompleteCommandResultAsync();
             }
 
             if (!hasResolvedRealm)
@@ -336,6 +329,17 @@ public partial class ExplorerMode
 
     public bool IsCommand(string input)
         => input.TrimStart().StartsWith('/');
+
+    private async Task<string> CompleteCommandResultAsync()
+    {
+        if (_pendingInPlaceGmRequest != null)
+            return "";
+
+        if (string.IsNullOrEmpty(_pendingGmAction))
+            await DiscardPendingLocalTurnRollbackSnapshotAsync();
+
+        return _pendingGmAction ?? "";
+    }
 
     private static bool RequiresResolvedRealmForUniversalCommand(string command) =>
         string.Equals(command, "/feathers", StringComparison.OrdinalIgnoreCase) ||

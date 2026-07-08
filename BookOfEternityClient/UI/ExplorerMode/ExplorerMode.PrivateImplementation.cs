@@ -50,6 +50,8 @@ public partial class ExplorerMode
 
     // Set by interactive commands (equip/unequip) to signal an action to send to the GM
     private string? _pendingGmAction;
+    private InPlacePendingGmRequest? _pendingInPlaceGmRequest;
+    private string _currentCommandInput = string.Empty;
     private string _currentCommandRemainder = string.Empty;
     private PendingLocalTurnRollbackSnapshot? _pendingLocalTurnRollbackSnapshot;
     private int _agentConsoleWaitKeyScreenIndex;
@@ -68,6 +70,12 @@ public partial class ExplorerMode
         string Location,
         string TimeLabel,
         IReadOnlyList<string> ChangeEffects);
+
+    public sealed record InPlacePendingGmRequest(
+        string Action,
+        string OriginalCommand,
+        string WaitingTitle,
+        string WaitingMessage);
 
     internal sealed class PendingLocalTurnRollbackSnapshot
     {
@@ -213,6 +221,31 @@ public partial class ExplorerMode
     private string? ReadLine() => _console.ReadLine();
 
     private ConsoleKeyInfo ReadKey() => _console.ReadKey();
+
+    internal const string VitrinePreparationWaitingMessage =
+        "Витрина подготавливается. Дождитесь завершения, ГМ работает";
+
+    internal InPlacePendingGmRequest? ConsumePendingInPlaceGmRequest()
+    {
+        var request = _pendingInPlaceGmRequest;
+        _pendingInPlaceGmRequest = null;
+        if (request != null)
+            _pendingGmAction = null;
+        return request;
+    }
+
+    private void MarkPendingInPlaceVitrineRequest(string actionText, string waitingTitle, string? refreshCommand = null)
+    {
+        if (string.IsNullOrWhiteSpace(actionText))
+            return;
+
+        _pendingGmAction = actionText;
+        _pendingInPlaceGmRequest = new InPlacePendingGmRequest(
+            actionText,
+            string.IsNullOrWhiteSpace(refreshCommand) ? _currentCommandInput : refreshCommand,
+            waitingTitle,
+            VitrinePreparationWaitingMessage);
+    }
 
     // ═══ Helper methods ═══
 

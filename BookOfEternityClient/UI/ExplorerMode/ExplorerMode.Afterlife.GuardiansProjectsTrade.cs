@@ -4240,12 +4240,20 @@ public partial class ExplorerMode
                 }
 
                 if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
-                    _pendingGmAction = view.PendingGmAction;
-                MarkupLine("[cyan]Витрина Хранителя подготавливается. Запрос на формирование ассортимента отправлен GM.[/]");
+                    MarkPendingInPlaceVitrineRequest(
+                        view.PendingGmAction,
+                        "Подготовка торговой витрины Хранителя",
+                        $"/торговля_хранителя {guardianId}");
+                MarkupLine($"[cyan]{Markup.Escape(VitrinePreparationWaitingMessage)}.[/]");
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
+            if (!view.InventoryReady && !string.IsNullOrWhiteSpace(view.PendingGmAction))
+                MarkPendingInPlaceVitrineRequest(
+                    view.PendingGmAction,
+                    "Подготовка торговой витрины Хранителя",
+                    $"/торговля_хранителя {guardianId}");
+            else if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
                 _pendingGmAction = view.PendingGmAction;
 
             if (view.TradeBlocked)

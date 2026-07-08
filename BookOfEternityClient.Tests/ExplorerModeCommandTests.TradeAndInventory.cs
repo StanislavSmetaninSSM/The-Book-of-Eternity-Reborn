@@ -563,8 +563,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         var result = await _explorer.TryProcessCommand("/нпс");
 
-        Assert.NotNull(result);
-        Assert.Contains(NpcTradeRequestState.ActionTag, result, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(string.Empty, result);
         AssertNoHiddenExplorerErrors("npc_trade_pending_inventory_request");
         var pendingRaw = await _fs.ReadFileAsync(NpcTradeRequestState.PendingRequestPath);
         Assert.NotNull(pendingRaw);
@@ -573,7 +572,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain(_console.SelectionChoicesHistory,
             entry => entry.Title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(_console.MarkupLines,
-            line => line.Contains("Запрос на торговую витрину отправлен ГМ сейчас", StringComparison.OrdinalIgnoreCase));
+            line => line.Contains("Витрина подготавливается. Дождитесь завершения, ГМ работает", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

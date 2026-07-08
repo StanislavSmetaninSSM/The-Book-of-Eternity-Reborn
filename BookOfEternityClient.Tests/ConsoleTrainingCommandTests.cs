@@ -25,7 +25,7 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
 
     [Fact]
     [Trait("Category", "ConsoleTraining")]
-    public async Task TryProcessCommand_MortalTrainingWithoutShowcase_ReturnsPendingGmActionImmediately()
+    public async Task TryProcessCommand_MortalTrainingWithoutShowcase_WaitsInPlaceForGmVitrine()
     {
         await SeedMortalTrainingTeacherWithoutShowcaseAsync();
         await _stateManager.RefreshGameStateAsync();
@@ -39,9 +39,11 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
 
         var result = await explorer.TryProcessCommand("/обучение");
 
-        Assert.NotNull(result);
-        Assert.NotEqual(string.Empty, result);
-        Assert.Contains("витрину обучения", result!, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(string.Empty, result);
+        Assert.Contains(console.MarkupLines, line =>
+            line.Contains("Витрина подготавливается. Дождитесь завершения, ГМ работает", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(console.MarkupLines, line =>
+            line.Contains("откройте /обучение снова", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(console.SelectionTitles, title => title.Contains("Выберите учителя", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(console.SelectionTitles, title => title.Contains("предложения", StringComparison.OrdinalIgnoreCase));
         Assert.Equal(0, console.ReadKeyCalls);

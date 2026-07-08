@@ -951,6 +951,13 @@ public partial class GameEngine
                 var result = await _explorer.TryProcessCommand(input);
                 if (result != null)
                 {
+                    var inPlaceGmRequest = _explorer.ConsumePendingInPlaceGmRequest();
+                    if (inPlaceGmRequest != null)
+                    {
+                        await ProcessInPlaceExplorerGmRequest(inPlaceGmRequest);
+                        continue;
+                    }
+
                     // If the command produced a GM action (e.g., equip/unequip), send it
                     if (result.Length > 0)
                         await ProcessPlayerTurn(result);
@@ -980,6 +987,28 @@ public partial class GameEngine
         }
     }
 
+    private async Task ProcessInPlaceExplorerGmRequest(ExplorerMode.InPlacePendingGmRequest request)
+    {
+        await ProcessPlayerTurn(
+            request.Action,
+            extraSystemReminder: "Это служебное обновление витрины для локальной команды. Подготовь требуемую витрину/ассортимент по pending-контракту, без отдельной игровой сцены для игрока.",
+            waitingTitle: request.WaitingTitle,
+            waitingText: request.WaitingMessage);
+
+        var refreshResult = await _explorer.TryProcessCommand(request.OriginalCommand);
+        var repeatedInPlaceRequest = _explorer.ConsumePendingInPlaceGmRequest();
+        if (repeatedInPlaceRequest != null)
+        {
+            AnsiConsole.MarkupLine("[yellow]⚠️ Витрина всё ещё не готова после ответа ГМ. Повторный автозапрос не отправлен, чтобы не зациклить ожидание.[/]");
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(refreshResult))
+        {
+            AnsiConsole.MarkupLine("[yellow]⚠️ Команда после обновления всё ещё требует действия ГМ. Повторный автозапрос не отправлен.[/]");
+        }
+    }
+
     internal static bool IsPendingAbodeOfferingTurnAction(string? action)
     {
         if (string.IsNullOrWhiteSpace(action))
@@ -989,7 +1018,11 @@ public partial class GameEngine
                action.Contains($"[{GuardianAbodeOfferingState.ActionTag}]", StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task ProcessPlayerTurn(string action, string? extraSystemReminder = null)
+    private async Task ProcessPlayerTurn(
+        string action,
+        string? extraSystemReminder = null,
+        string? waitingTitle = null,
+        string? waitingText = null)
     {
         if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
             return;
@@ -1107,8 +1140,8 @@ public partial class GameEngine
             throw new InvalidOperationException("Turn staging failed before rollback snapshot and request were created.");
 
         PublishAgentConsoleGmWaitingSnapshot(
-            "Ожидание мастера",
-            "GM обрабатывает ход. Агент-консоль ждёт готовый ответ или запрос на ремонт данных.");
+            waitingTitle ?? "Ожидание мастера",
+            waitingText ?? "GM обрабатывает ход. Агент-консоль ждёт готовый ответ или запрос на ремонт данных.");
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");

@@ -762,10 +762,13 @@ public partial class ExplorerMode
                 }
 
                 await ShiningTradeRequestState.WriteRequestAsync(_fs, request);
-                MarkupLine(BuildShiningTradePostConfirmMarkup(request));
-                WaitForKey();
-                await _stateManager.RefreshGameStateAsync();
-                continue;
+                var actionText = await ShiningTradeRequestState.BuildSystemReminderFragmentAsync(
+                    _fs,
+                    _stateManager.CurrentState.CurrentRealm);
+                if (!string.IsNullOrWhiteSpace(actionText))
+                    MarkPendingInPlaceVitrineRequest(actionText, "Подготовка сияющей торговой витрины");
+                MarkupLine($"[cyan]{Markup.Escape(VitrinePreparationWaitingMessage)}.[/]");
+                return;
             }
 
             if (choice.Contains("Купить", StringComparison.Ordinal))

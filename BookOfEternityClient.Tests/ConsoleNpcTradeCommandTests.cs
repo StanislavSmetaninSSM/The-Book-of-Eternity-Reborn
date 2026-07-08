@@ -49,7 +49,7 @@ public sealed class ConsoleNpcTradeCommandTests : IDisposable
 
     [Fact]
     [Trait("Category", "ConsoleNpcTrade")]
-    public async Task TryProcessCommand_NpcTradeWithoutInventory_ReturnsPendingGmActionImmediately()
+    public async Task TryProcessCommand_NpcTradeWithoutInventory_WaitsInPlaceForGmVitrine()
     {
         await SeedNpcTradeStateWithoutInventoryAsync();
         await _stateManager.RefreshGameStateAsync();
@@ -63,9 +63,11 @@ public sealed class ConsoleNpcTradeCommandTests : IDisposable
 
         var result = await explorer.TryProcessCommand("/торговля_нпс npc_merchant_001");
 
-        Assert.NotNull(result);
-        Assert.NotEqual(string.Empty, result);
-        Assert.Contains(NpcTradeRequestState.ActionTag, result!, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(string.Empty, result);
+        Assert.Contains(console.MarkupLines, line =>
+            line.Contains("Витрина подготавливается. Дождитесь завершения, ГМ работает", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(console.MarkupLines, line =>
+            line.Contains("откройте торговлю снова", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(console.SelectionTitles, title => title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase));
         Assert.Equal(0, console.ReadKeyCalls);
     }

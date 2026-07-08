@@ -211,6 +211,25 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void LocalCommandLoop_MustHandleInPlaceVitrineRequestsBeforeOrdinaryGmTurns()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var loopMethod = ExtractMethodSource(source, "private async Task EnterGameLoop()");
+        var inPlaceIndex = loopMethod.IndexOf("ConsumePendingInPlaceGmRequest", StringComparison.Ordinal);
+        var ordinaryIndex = loopMethod.IndexOf("await ProcessPlayerTurn(result)", StringComparison.Ordinal);
+
+        Assert.True(inPlaceIndex >= 0, "Local commands that create vitrine refresh requests must expose in-place metadata.");
+        Assert.True(ordinaryIndex >= 0, "Ordinary local GM actions must still dispatch through ProcessPlayerTurn.");
+        Assert.True(inPlaceIndex < ordinaryIndex, "In-place vitrine refresh must be checked before treating non-empty command output as an ordinary player turn.");
+
+        var method = ExtractMethodSource(source, "private async Task ProcessInPlaceExplorerGmRequest(");
+        Assert.Contains("request.WaitingTitle", method, StringComparison.Ordinal);
+        Assert.Contains("request.WaitingMessage", method, StringComparison.Ordinal);
+        Assert.Contains("await _explorer.TryProcessCommand(request.OriginalCommand)", method, StringComparison.Ordinal);
+        Assert.Contains("Повторный автозапрос не отправлен", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MortalBootstrapScaffold_MustWarnAgainstPuttingOffscreenExitActorsIntoNpcScene()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");

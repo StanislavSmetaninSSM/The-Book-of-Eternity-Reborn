@@ -16,19 +16,19 @@ public partial class ExplorerMode
         }
 
         var view = await _trainingService.EnsureTrainingAsync(await TryReadCurrentTurnNumberAsync());
-        if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
-            _pendingGmAction = view.PendingGmAction;
-
         if (ShouldDispatchTrainingPendingRequest(view))
         {
+            MarkPendingInPlaceVitrineRequest(view.PendingGmAction!, "Подготовка витрины обучения");
             if (string.Equals(view.Realm, "afterlife", StringComparison.OrdinalIgnoreCase))
                 RenderAfterlifeTrainingOverview(view);
             else
                 RenderMortalTrainingOverview(view);
 
-            MarkupLine("[yellow]⏳ Витрина обучения подготавливается. Запрос отправлен ГМ сейчас; дождитесь ответа и откройте /обучение снова.[/]");
+            MarkupLine($"[yellow]⏳ {Markup.Escape(VitrinePreparationWaitingMessage)}.[/]");
             return;
         }
+        if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
+            _pendingGmAction = view.PendingGmAction;
 
         if (string.Equals(view.Realm, "afterlife", StringComparison.OrdinalIgnoreCase))
             await ShowAfterlifeTrainingAsync(view);
@@ -75,10 +75,13 @@ public partial class ExplorerMode
                 WaitForKey();
                 Clear();
                 view = await _trainingService!.EnsureTrainingAsync(await TryReadCurrentTurnNumberAsync());
+                if (ShouldDispatchTrainingPendingRequest(view))
+                {
+                    MarkPendingInPlaceVitrineRequest(view.PendingGmAction!, "Подготовка витрины обучения");
+                    return;
+                }
                 if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
                     _pendingGmAction = view.PendingGmAction;
-                if (ShouldDispatchTrainingPendingRequest(view))
-                    return;
                 continue;
             }
 
@@ -200,10 +203,13 @@ public partial class ExplorerMode
                 WaitForKey();
                 Clear();
                 view = await _trainingService!.EnsureTrainingAsync(await TryReadCurrentTurnNumberAsync());
+                if (ShouldDispatchTrainingPendingRequest(view))
+                {
+                    MarkPendingInPlaceVitrineRequest(view.PendingGmAction!, "Подготовка витрины обучения");
+                    return;
+                }
                 if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
                     _pendingGmAction = view.PendingGmAction;
-                if (ShouldDispatchTrainingPendingRequest(view))
-                    return;
                 continue;
             }
 

@@ -177,7 +177,12 @@ public partial class ExplorerMode
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
+            if (!view.InventoryReady && !string.IsNullOrWhiteSpace(view.PendingGmAction))
+                MarkPendingInPlaceVitrineRequest(
+                    view.PendingGmAction,
+                    "Подготовка торговой витрины",
+                    $"/торговля_нпс {npcId}");
+            else if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
                 _pendingGmAction = view.PendingGmAction;
 
             if (view.TradeBlocked)
@@ -212,7 +217,7 @@ public partial class ExplorerMode
 
             if (!view.InventoryReady && !string.IsNullOrWhiteSpace(view.PendingGmAction))
             {
-                MarkupLine("[yellow]⏳ Запрос на торговую витрину отправлен ГМ сейчас; дождитесь ответа и откройте торговлю снова.[/]");
+                MarkupLine($"[yellow]⏳ {Markup.Escape(VitrinePreparationWaitingMessage)}.[/]");
                 return;
             }
 

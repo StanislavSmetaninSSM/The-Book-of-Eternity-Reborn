@@ -2137,9 +2137,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("guardian_trade_inventory_request");
-        Assert.Contains("GUARDIAN_TRADE_REQUEST", gmAction ?? string.Empty, StringComparison.Ordinal);
+        Assert.Equal(string.Empty, gmAction);
         Assert.Contains(_console.MarkupLines,
-            line => line.Contains("Витрина Хранителя подготавливается", StringComparison.OrdinalIgnoreCase));
+            line => line.Contains("Витрина подготавливается. Дождитесь завершения, ГМ работает", StringComparison.OrdinalIgnoreCase));
         var renderedText = ExtractRenderedText();
         Assert.Contains("Подготовка торговой витрины Хранителя", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Полный предпросмотр торговли Хранителя", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -2157,7 +2157,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task TryProcessCommand_GuardianTradeWithoutInventory_ReturnsGmActionImmediatelyAfterRequest()
+    public async Task TryProcessCommand_GuardianTradeWithoutInventory_WaitsInPlaceAfterRequest()
     {
         await SeedGuardianTradeStateAsync(includeTradeInventory: false);
         _console.QueueSelection("Действие", "🛒 Торговать");
@@ -2165,7 +2165,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         var gmAction = await _explorer.TryProcessCommand("/хранители");
 
-        Assert.Contains("GUARDIAN_TRADE_REQUEST", gmAction ?? string.Empty, StringComparison.Ordinal);
+        Assert.Equal(string.Empty, gmAction);
+        Assert.Contains(_console.MarkupLines,
+            line => line.Contains("Витрина подготавливается. Дождитесь завершения, ГМ работает", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(_console.SelectionChoicesHistory,
             entry => entry.Choices.Contains("🔄 Проверить витрину", StringComparer.Ordinal));
         var pendingRequestRaw = await _fs.ReadFileAsync("game_state/control/pending_guardian_trade_request.json");
@@ -5411,8 +5413,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var pendingRaw = await _fs.ReadFileAsync(ShiningTradeRequestState.PendingRequestsPath);
         Assert.Contains("\"createdAtTurn\":", pendingRaw, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(_console.MarkupLines,
-            line => line.Contains("pending Shining trade contract", StringComparison.OrdinalIgnoreCase) &&
-                    line.Contains("requestId=", StringComparison.OrdinalIgnoreCase));
+            line => line.Contains("Витрина подготавливается. Дождитесь завершения, ГМ работает", StringComparison.OrdinalIgnoreCase));
 
         var renderedText = ExtractRenderedText();
         Assert.Contains("Предпросмотр сияющей торговой витрины", renderedText, StringComparison.OrdinalIgnoreCase);
