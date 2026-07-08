@@ -166,6 +166,7 @@ public sealed class TrainingServiceTests : IDisposable
         Assert.True(result.Success);
         Assert.True(result.StateChanged);
         Assert.Contains("ГМ", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("заверши оплаченное обучение", result.PendingGmAction, StringComparison.OrdinalIgnoreCase);
 
         using var statusDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/core/player_status.json") ?? "{}");
         Assert.Equal(380, statusDoc.RootElement.GetProperty("money").GetInt32());
@@ -196,6 +197,10 @@ public sealed class TrainingServiceTests : IDisposable
         Assert.Equal(250, receipt.GetProperty("currentLevelExperienceSpent").GetInt32());
         Assert.Equal("pending_gm_skill_evolution", receipt.GetProperty("resolutionState").GetString());
         Assert.Equal("mortal_training_skill_evolution", receipt.GetProperty("pendingRequestKind").GetString());
+
+        var viewAfterPurchase = await service.EnsureTrainingAsync(currentTurn: 13, createPendingRequests: false);
+        Assert.True(viewAfterPurchase.RequestPending);
+        Assert.Contains("заверши оплаченное обучение", viewAfterPurchase.PendingGmAction, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

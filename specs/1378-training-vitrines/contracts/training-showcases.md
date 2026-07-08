@@ -14,8 +14,9 @@
 3. If no fresh showcase exists, the client creates or reuses `TrainingRefreshRequest` and immediately dispatches the dedicated GM action for that request. This must not wait for the player to close the command screen, press a key, or type the next ordinary turn input.
 4. GM closes the request by materializing teacher data and offers.
 5. Player purchases an available offer.
-6. Client deducts money and current-level XP progress, updates skill/mastery, and writes `TrainingPurchaseReceipt`.
-7. Validator rejects the receipt if the showcase is stale, the offer is illegal, resources do not match, or the cap is exceeded.
+6. Client deducts money and current-level XP progress, updates skill/mastery locally only when the lesson is pure mastery practice below a threshold, and writes `TrainingPurchaseReceipt`.
+7. If a paid lesson unlocks a skill or crosses a mastery threshold, the client writes `mortal_training_skill_evolution` and immediately dispatches that dedicated GM action. This must not wait for the player to close the command screen, press a key, or type the next ordinary turn input.
+8. Validator rejects the receipt if the showcase is stale, the offer is illegal, resources do not match, or the cap is exceeded.
 
 ## Afterlife Flow
 

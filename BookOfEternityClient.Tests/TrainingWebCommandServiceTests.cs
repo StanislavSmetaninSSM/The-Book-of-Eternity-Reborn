@@ -80,7 +80,8 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/training buy npc_teacher_reina offer_knife_mastery_2"));
 
-        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Equal(CommandExecutionState.Pending, result.State);
+        Assert.Contains("заверши оплаченное обучение", result.PendingGmAction, StringComparison.OrdinalIgnoreCase);
         var text = CollectText(result);
         Assert.Contains("ожидает ГМ", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Ножевой бой", text, StringComparison.OrdinalIgnoreCase);

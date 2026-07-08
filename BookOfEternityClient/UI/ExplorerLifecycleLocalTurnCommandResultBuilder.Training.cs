@@ -136,7 +136,9 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         var offer = FindTrainingOffer(beforeView, sourceActorId, offerId, out var sourceName);
         var result = await trainingService.BuyTrainingAsync(sourceActorId, offerId, currentTurn);
         var severity = result.Success ? UiNotificationSeverity.Success : UiNotificationSeverity.Warning;
-        var state = result.Success ? CommandExecutionState.Completed : CommandExecutionState.Blocked;
+        var state = result.Success
+            ? IsTrainingAwaitingGmFinalization(result) ? CommandExecutionState.Pending : CommandExecutionState.Completed
+            : CommandExecutionState.Blocked;
         var awaitingGmFinalization = IsTrainingAwaitingGmFinalization(result);
         var resultTitle = result.Success
             ? awaitingGmFinalization ? "Обучение оплачено" : "Обучение завершено"
@@ -154,7 +156,8 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
             command,
             state,
             blocks,
-            actions: [BackToTrainingAction()]);
+            actions: state == CommandExecutionState.Pending ? [] : [BackToTrainingAction()],
+            pendingGmAction: state == CommandExecutionState.Pending && !localTurn.HasActiveGmTurn ? result.PendingGmAction : null);
     }
 
     private static UiEntityDossierBlock BuildTrainingDossier(
@@ -165,6 +168,8 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         var isAfterlife = string.Equals(view.Realm, "afterlife", StringComparison.OrdinalIgnoreCase);
         var readyCount = view.Teachers.Count(static teacher => teacher.ShowcaseReady);
         var pendingCount = view.Teachers.Count - readyCount;
+        if (view.RequestPending && pendingCount == 0)
+            pendingCount = 1;
         var sections = new List<UiEntityDossierSection>();
 
         if (!showOnlySelf)
@@ -409,7 +414,8 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
 
     private static bool IsTrainingAwaitingGmFinalization(TrainingService.TrainingOperationResult result) =>
         result.Success &&
-        result.Message.Contains("ожидает ГМ", StringComparison.OrdinalIgnoreCase);
+        (!string.IsNullOrWhiteSpace(result.PendingGmAction) ||
+         result.Message.Contains("ожидает ГМ", StringComparison.OrdinalIgnoreCase));
 
     private static List<UiEntityFact> BuildTrainingPurchaseReceiptFacts(
         string sourceName,
@@ -491,7 +497,7 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
 
     private static bool ShouldDispatchTrainingPendingRequest(TrainingService.TrainingView view) =>
         !string.IsNullOrWhiteSpace(view.PendingGmAction) &&
-        (view.RequestCreatedThisCall || view.Teachers.All(static teacher => !teacher.ShowcaseReady));
+        view.RequestPending;
 
     private static TrainingService.TrainingTeacherView? FindTrainingTeacher(
         TrainingService.TrainingView view,

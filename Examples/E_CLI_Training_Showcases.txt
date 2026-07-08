@@ -60,9 +60,11 @@ Shared rules
 - In Mortal World training, the client may apply only simple active-skill
   mastery progress that does not cross a threshold. If a paid lesson unlocks a
   skill or crosses a mastery level, the client writes requestKind
-  `mortal_training_skill_evolution`; the GM must author the full updated
-  `activeSkillChanges` or `passiveSkillChanges` object plus matching
-  `skillMasteryChanges`. Do not charge the player again.
+  `mortal_training_skill_evolution` and immediately sends a dedicated GM action
+  for that request. The GM must author the full updated `activeSkillChanges` or
+  `passiveSkillChanges` object plus matching `skillMasteryChanges` in that GM
+  turn. Do not wait for a later ordinary player input and do not charge the
+  player again.
 - For `mortal_training_skill_evolution`, follow `details.targetKind` rather
   than the original showcase offer label. The client normalizes generic Mortal
   offer kinds such as `skill_mastery` to `active_skill_mastery`,

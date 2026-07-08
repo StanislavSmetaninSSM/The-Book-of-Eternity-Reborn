@@ -143,6 +143,13 @@ public partial class ExplorerMode
             MarkupLine(result.Success
                 ? $"[green]✓ {Markup.Escape(result.Message)}[/]"
                 : $"[red]❌ {Markup.Escape(result.Message)}[/]");
+            if (!string.IsNullOrWhiteSpace(result.PendingGmAction))
+            {
+                _pendingGmAction = result.PendingGmAction;
+                MarkupLine("[yellow]⏳ Запрос отправлен ГМ сейчас; дождитесь ответа мастера.[/]");
+                return;
+            }
+
             WaitForKey();
             return;
         }
@@ -289,12 +296,14 @@ public partial class ExplorerMode
 
     private static bool ShouldDispatchTrainingPendingRequest(TrainingService.TrainingView view) =>
         !string.IsNullOrWhiteSpace(view.PendingGmAction) &&
-        (view.RequestCreatedThisCall || view.Teachers.All(static teacher => !teacher.ShowcaseReady));
+        view.RequestPending;
 
     private void RenderMortalTrainingOverview(TrainingService.TrainingView view)
     {
         var ready = view.Teachers.Count(teacher => teacher.ShowcaseReady);
         var pending = view.Teachers.Count(teacher => !teacher.ShowcaseReady);
+        if (view.RequestPending && pending == 0)
+            pending = 1;
         var lines = new List<string>
         {
             "[bold yellow]🎓 Обучение[/]",

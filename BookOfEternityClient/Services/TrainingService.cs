@@ -76,7 +76,7 @@ public sealed class TrainingService
         int InkFeathers,
         int LightSparks);
 
-    public sealed record TrainingOperationResult(bool Success, bool StateChanged, string Message);
+    public sealed record TrainingOperationResult(bool Success, bool StateChanged, string Message, string? PendingGmAction = null);
 
     internal static bool NormalizeAfterlifeMentorShowcaseCosts(JsonObject profileRoot)
     {
@@ -220,7 +220,8 @@ public sealed class TrainingService
             return new TrainingOperationResult(
                 true,
                 true,
-                "Занятие оплачено и ожидает ГМ: мастер завершит изменение навыка и обновит его эффекты.");
+                "Занятие оплачено и ожидает ГМ: мастер завершит изменение навыка и обновит его эффекты.",
+                BuildMortalSkillEvolutionPendingGmAction(request));
         }
 
         ApplyMortalActiveSkillPractice(masteryRoot, evaluatedOffer, applicationPlan);
@@ -441,6 +442,15 @@ public sealed class TrainingService
 
         await CleanupSatisfiedMortalSkillEvolutionRequestsAsync();
         await ClearSatisfiedTrainingShowcaseRequestsAsync(satisfiedRequests);
+        var remainingRequests = await TrainingRequestState.ReadRequestsAsync(_fs);
+        var pendingSkillEvolution = remainingRequests.FirstOrDefault(request =>
+            string.Equals(request.RequestKind, MortalSkillEvolutionRequestKind, StringComparison.OrdinalIgnoreCase));
+        if (pendingSkillEvolution != null)
+        {
+            requestPending = true;
+            pendingGmAction ??= BuildMortalSkillEvolutionPendingGmAction(pendingSkillEvolution);
+        }
+
         if (npcRootChanged && npcRoot != null)
             await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
 
@@ -1852,6 +1862,24 @@ public sealed class TrainingService
         "Средоточию Души или прокачивать уже известные особые искусства; sourceCap не выше профиля наставника, " +
         "каждое предложение должно иметь cost с Чернильными Перьями/Искрами Света, sourceActorSnapshotHash должен совпасть с requested hash " +
         $"{request.SourceActorSnapshotHash}. Клиент сам спишет валюту и поднимет уровень после покупки.";
+
+    private static string BuildMortalSkillEvolutionPendingGmAction(
+        TrainingRequestState.PendingTrainingShowcaseRequest request)
+    {
+        var details = request.Details;
+        var targetName = GetNodeString(details?["targetName"]) ?? "навык";
+        var targetKind = GetNodeString(details?["targetKind"]) ?? "skill";
+        var targetValue = GetNodeInt(details?["targetValue"]);
+        var offerId = GetNodeString(details?["offerId"]) ?? "unknown_offer";
+        var instruction = GetNodeString(details?["gmInstruction"]) ??
+                          "Создай или обнови полный объект навыка и matching skillMasteryChanges для оплаченного обучения.";
+
+        return "Заверши оплаченное обучение в смертном мире для NPC-учителя " +
+               $"{request.SourceActorName} ({request.SourceActorId}). " +
+               $"Игрок уже оплатил offer {offerId}; не списывай деньги или опыт повторно. " +
+               $"Цель: {targetName}, тип {targetKind}, новый уровень/мастерство {targetValue}. " +
+               $"{instruction} Используй pending_training_showcase_requests.json requestId {request.RequestId} и details как источник аудита.";
+    }
 
     private static bool IsExplicitPassiveMortalTrainingTarget(string targetKind) =>
         targetKind.Contains("passive", StringComparison.OrdinalIgnoreCase);

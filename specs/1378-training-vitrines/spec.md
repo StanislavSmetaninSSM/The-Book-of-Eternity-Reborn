@@ -162,6 +162,7 @@ As the GM and harness, I know how to author teacher/mentor vitrines and how to t
 - **FR-013**: Training showcases MUST carry staleness metadata: realm, source actor id, source actor snapshot hash, relationship/reputation snapshot, player progression snapshot, synced turn/cycle, and offer revision.
 - **FR-014**: The client MUST block purchase from stale showcases and provide a refresh/request action.
 - **FR-014a**: When opening `/обучение` creates or reuses a pending showcase request and no usable fresh showcase is available, console and browser clients MUST dispatch the corresponding dedicated GM action immediately without waiting for the player to close the command screen, press a key, or type an unrelated next turn.
+- **FR-014b**: When a paid Mortal lesson creates `mortal_training_skill_evolution`, console and browser clients MUST dispatch the corresponding dedicated GM action immediately after purchase without waiting for the player to close the training screen, press a key, or type an unrelated next turn.
 - **FR-015**: Validation MUST reject impossible offers, stale receipts, resource mismatches, wrong realm updates, illegal special-art fallback unlocks, and teacher/mentor caps that exceed source actor capabilities.
 - **FR-016**: GM-facing prompts, TaskGuides, OtherGuides, examples, manifests, and source-guard/documentation tests MUST be updated when the contract is implemented.
 - **FR-017**: Console output MUST avoid raw JSON, internal keys, untranslated enums, and semicolon-packed details.
