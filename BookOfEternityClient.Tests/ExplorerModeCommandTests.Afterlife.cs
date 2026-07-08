@@ -2128,7 +2128,6 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     {
         await SeedGuardianTradeStateAsync(includeTradeInventory: false);
         _console.QueueSelection("Действие", "🛒 Торговать");
-        _console.QueueSelection("Подтвердить контракт Моря Хаоса", "✅ Подтвердить и продолжить");
         _console.QueueSelection("Выберите раздел", "← Назад");
         await _stateManager.RefreshGameStateAsync();
 
@@ -2147,9 +2146,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("UpdateGuardianTradeInventoryReceipts", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("requestId", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("derivedTradeSlotCount", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains(_console.SelectionChoicesHistory,
-            entry => entry.Title.Contains("Подтвердить контракт Моря Хаоса", StringComparison.OrdinalIgnoreCase) &&
-                     entry.Choices.Contains("🔧 Показать технический контракт", StringComparer.Ordinal));
+        Assert.DoesNotContain(_console.SelectionTitles,
+            title => title.Contains("Подтвердить контракт Моря Хаоса", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(_console.SelectionChoicesHistory,
+            entry => entry.Choices.Contains("🔧 Показать технический контракт", StringComparer.Ordinal));
         var pendingRequestRaw = await _fs.ReadFileAsync("game_state/control/pending_guardian_trade_request.json");
         Assert.Contains("\"guardianId\": \"guardian_trade_001\"", pendingRequestRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains("\"derivedTradeSlotCount\":", pendingRequestRaw ?? string.Empty, StringComparison.Ordinal);
@@ -2168,6 +2168,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Equal(string.Empty, gmAction);
         Assert.Contains(_console.MarkupLines,
             line => line.Contains("Витрина подготавливается. Дождитесь завершения, ГМ работает", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(_console.SelectionTitles,
+            title => title.Contains("Подтвердить контракт Моря Хаоса", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(_console.SelectionChoicesHistory,
             entry => entry.Choices.Contains("🔄 Проверить витрину", StringComparer.Ordinal));
         var pendingRequestRaw = await _fs.ReadFileAsync("game_state/control/pending_guardian_trade_request.json");

@@ -4199,33 +4199,27 @@ public partial class ExplorerMode
             if (!string.IsNullOrWhiteSpace(view.PendingInventoryRequestJson) &&
                 !string.IsNullOrWhiteSpace(view.PendingInventoryRequestPath))
             {
-                var requestAudit = JsonNode.Parse(view.PendingInventoryRequestJson);
+                var pendingDomainDisplay = GuardianTradeDisplayDomain(view.DomainDisplay);
                 var tradeLines = new List<string>
                 {
                     "[bold cyan]Подготовка торговой витрины Хранителя[/]",
                     "",
-                    $"  Хранитель: [white]{Markup.Escape(view.GuardianName)}[/] [dim]({Markup.Escape(view.GuardianId)})[/]",
-                    $"  Цикл возвращения: [dim]{Markup.Escape(view.TradeCycleId)}[/]",
-                    $"  Репутация: [dim]{view.CurrentReputation} / {Markup.Escape(view.ReputationTierLabel)}[/]",
-                    $"  Домен: [dim]{Markup.Escape(view.DomainDisplay)}[/]",
+                    $"  Хранитель: [white]{Markup.Escape(view.GuardianName)}[/]",
+                    $"  Репутация: [white]{view.CurrentReputation}[/] — {Markup.Escape(view.ReputationTierLabel)}",
+                    $"  Домен: [white]{Markup.Escape(pendingDomainDisplay)}[/]",
                     "",
-                    "[bold]Контракт материализации для ГМ:[/]",
-                    "  • Прочитать pending_guardian_trade_request.json как контракт, созданный клиентом.",
-                    "  • Сгенерировать явный guardian.tradeInventory для текущего цикла возвращения.",
-                    "  • Не выводить ассортимент только из prose/domain; слоты, потолок редкости и projectBonusSignature берутся из request.",
-                    $"  • Закрыть через {GuardianTradeRequestState.UpdateReceiptsProperty} с requestId, tradeCycleId, itemCount, resolvedAtTurn, resolvedAtUtc.",
-                    "  • До receipt-а покупки заблокированы, а витрина считается неподтверждённой."
+                    "Витрина ещё не готова. Запрос отправляется Хранителю прямо сейчас; дождитесь завершения, и торговля откроется на этом же экране."
                 };
-                AppendChaosSeaPendingFileRule(tradeLines, view.PendingInventoryRequestPath);
-                AppendChaosSeaCommonContractRules(tradeLines);
-                if (!ConfirmChaosSeaContractPreview(
-                        "Полный предпросмотр торговли Хранителя",
-                        tradeLines,
-                        requestAudit,
-                        "Полный JSON pending guardian trade request"))
+
+                Clear();
+                Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", tradeLines)))
                 {
-                    return;
-                }
+                    Header = new PanelHeader(" 🛒 Торговля с Хранителем ", Justify.Center),
+                    Border = BoxBorder.Rounded,
+                    BorderStyle = new Style(Color.Cyan1),
+                    Padding = new Padding(2, 1),
+                    Expand = true
+                });
 
                 try
                 {
