@@ -100,6 +100,20 @@ public partial class ExplorerMode
         string ReservedForProjectName,
         JsonObject RawJson);
 
+    private sealed record CompletedLifeArchiveMemorySummary(
+        string MemoryId,
+        int Incarnation,
+        string Title,
+        string Summary,
+        int TurnsLived,
+        string EndedBy,
+        int InkFeathers,
+        int EnlightenmentExperience,
+        IReadOnlyList<string> SoulRelicIds,
+        IReadOnlyList<string> SoulRelicNames,
+        int RecordedAtTurn,
+        JsonObject RawJson);
+
     private sealed record AfterlifeArchiveCandidateSummary(
         string CandidateId,
         string SourceKind,

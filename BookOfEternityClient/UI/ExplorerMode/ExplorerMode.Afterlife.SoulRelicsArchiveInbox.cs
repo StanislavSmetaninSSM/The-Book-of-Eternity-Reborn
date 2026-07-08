@@ -148,6 +148,13 @@ public partial class ExplorerMode
             var entries = await ReadStoredAfterlifeArchiveEntriesAsync();
             if (entries.Count == 0)
             {
+                var completedLives = await ReadCompletedLifeArchiveMemoriesAsync();
+                if (completedLives.Count > 0)
+                {
+                    ShowCompletedLifeArchiveLoop(completedLives);
+                    return;
+                }
+
                 ShowEmptyPanel(
                     "📚 Архив души",
                     "Архив души пока пуст.\n\nСобытия посмертия и важные встречи записываются отдельно: откройте /хроники_посмертия.");
@@ -336,6 +343,91 @@ public partial class ExplorerMode
             WaitForKey();
         }
     }
+
+    private void ShowCompletedLifeArchiveLoop(IReadOnlyList<CompletedLifeArchiveMemorySummary> memories)
+    {
+        while (true)
+        {
+            var choices = MakeUniqueChoiceLabels(memories.Select(memory =>
+            {
+                var turnsLabel = memory.TurnsLived > 0
+                    ? $", {memory.TurnsLived} ходов"
+                    : string.Empty;
+                return ($"📜 {Markup.Escape(memory.Title)} [dim](жизнь {memory.Incarnation}{turnsLabel})[/]", memory.MemoryId);
+            }).ToList());
+            choices.Add("[grey]← Назад[/]");
+
+            var selected = Prompt(new SelectionPrompt<string>()
+                .Title("[bold yellow]📚 Архив души[/] [dim](завершённые жизни)[/]")
+                .PageSize(12)
+                .HighlightStyle(new Style(Color.Yellow))
+                .AddChoices(choices));
+
+            if (selected.Contains("← Назад", StringComparison.Ordinal))
+                return;
+
+            var index = choices.IndexOf(selected);
+            if (index < 0 || index >= memories.Count)
+                return;
+
+            ShowCompletedLifeArchiveMemoryDetail(memories[index]);
+            WaitForKey();
+        }
+    }
+
+    private void ShowCompletedLifeArchiveMemoryDetail(CompletedLifeArchiveMemorySummary memory)
+    {
+        var lines = new List<string>
+        {
+            "[bold yellow]📜 Завершённые жизни[/]",
+            "",
+            $"[bold]{Markup.Escape(memory.Title)}[/]",
+            $"Инкарнация: [cyan]{memory.Incarnation}[/]",
+            $"Итог: [white]{Markup.Escape(memory.Summary)}[/]"
+        };
+
+        if (memory.TurnsLived > 0)
+            lines.Add($"Прожито ходов: [yellow]{memory.TurnsLived}[/]");
+        if (!string.IsNullOrWhiteSpace(memory.EndedBy))
+            lines.Add($"Завершение: [dim]{Markup.Escape(DescribeCompletedLifeEndReason(memory.EndedBy))}[/]");
+
+        var rewardParts = new List<string>();
+        if (memory.InkFeathers != 0)
+            rewardParts.Add($"{memory.InkFeathers} Чернильных Перьев");
+        if (memory.EnlightenmentExperience != 0)
+            rewardParts.Add($"{memory.EnlightenmentExperience} опыта Просветления");
+        if (memory.SoulRelicNames.Count > 0)
+            rewardParts.Add("реликвии: " + string.Join(", ", memory.SoulRelicNames));
+
+        if (rewardParts.Count > 0)
+        {
+            lines.Add("");
+            lines.Add("[bold yellow]Награды[/]");
+            foreach (var reward in rewardParts)
+                lines.Add($"• {Markup.Escape(reward)}");
+        }
+
+        if (memory.RecordedAtTurn > 0)
+            lines.Add($"[dim]Записано на ходу {memory.RecordedAtTurn}.[/]");
+
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines), "completed life archive memory"))
+        {
+            Header = GameInterface.SafePanelHeader("Архив души"),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Yellow),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+    }
+
+    private static string DescribeCompletedLifeEndReason(string reason) =>
+        reason.Trim().ToLowerInvariant() switch
+        {
+            "voluntary_life_end" => "добровольное завершение жизни",
+            "death" => "смерть",
+            "life_completed" => "жизнь завершена",
+            _ => reason
+        };
 
     private async Task<string?> DescribeArchiveConsultationBlockerAsync(AfterlifeArchiveEntrySummary entry)
     {

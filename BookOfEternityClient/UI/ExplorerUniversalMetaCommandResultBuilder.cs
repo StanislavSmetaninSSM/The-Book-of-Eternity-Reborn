@@ -43,6 +43,19 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         MemoryScene
     }
 
+    private sealed record CompletedLifeArchiveMemory(
+        string MemoryId,
+        int Incarnation,
+        string Title,
+        string Summary,
+        int TurnsLived,
+        string EndedBy,
+        int InkFeathers,
+        int EnlightenmentExperience,
+        IReadOnlyList<string> SoulRelicIds,
+        IReadOnlyList<string> SoulRelicNames,
+        int RecordedAtTurn);
+
     private static readonly IReadOnlyDictionary<string, CommandKind> CommandKinds =
         new Dictionary<string, CommandKind>(StringComparer.OrdinalIgnoreCase)
         {
@@ -1721,7 +1734,37 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             return BuildAfterlifeArchiveDetail(command, stored, archiveSelector);
 
         var entries = stored.OfType<JsonObject>().ToList();
+        var completedLifeMemories = await ReadCompletedLifeArchiveMemories(fs, root);
         var cards = entries.Select(BuildAfterlifeArchiveOverviewCard).ToList();
+        var completedLifeCards = completedLifeMemories.Select(BuildCompletedLifeArchiveMemoryCard).ToList();
+        var sections = new List<UiEntityDossierSection>();
+        if (cards.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "afterlife-archive-entries",
+                Title = "Записи Архива",
+                Icon = "book-open",
+                Presentation = "cards",
+                CollectionLabel = cards.Count == 1 ? "1 запись" : $"{cards.Count} записей",
+                Cards = cards
+            });
+        }
+
+        if (completedLifeCards.Count > 0)
+        {
+            sections.Add(new UiEntityDossierSection
+            {
+                Id = "afterlife-archive-completed-lives",
+                Title = "Завершённые жизни",
+                Summary = "Итоги прошлых инкарнаций, награды и следы, перенесённые душой после оценки жизни.",
+                Icon = "scroll-text",
+                Presentation = "cards",
+                CollectionLabel = completedLifeCards.Count == 1 ? "1 жизнь" : $"{completedLifeCards.Count} жизней",
+                Cards = completedLifeCards
+            });
+        }
+
         var blocks = new List<UiBlock>
         {
             new UiEntityDossierBlock
@@ -1732,24 +1775,14 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 Facts =
                 [
                     new UiEntityFact { Label = "Записей", Value = entries.Count.ToString() },
-                    new UiEntityFact { Label = "Свободно для действий", Value = entries.Count(entry => !AfterlifeArchiveState.IsReserved(entry)).ToString() }
+                    new UiEntityFact { Label = "Свободно для действий", Value = entries.Count(entry => !AfterlifeArchiveState.IsReserved(entry)).ToString() },
+                    new UiEntityFact { Label = "Завершённых жизней", Value = completedLifeMemories.Count.ToString() }
                 ],
-                Sections =
-                [
-                    new UiEntityDossierSection
-                    {
-                        Id = "afterlife-archive-entries",
-                        Title = "Записи Архива",
-                        Icon = "book-open",
-                        Presentation = "cards",
-                        CollectionLabel = cards.Count == 1 ? "1 запись" : $"{cards.Count} записей",
-                        Cards = cards
-                    }
-                ]
+                Sections = sections
             }
         };
 
-        if (entries.Count == 0)
+        if (entries.Count == 0 && completedLifeMemories.Count == 0)
         {
             blocks.Add(Message(
                 UiNotificationSeverity.Info,
@@ -1785,6 +1818,184 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             Facts = facts
         };
     }
+
+    private static async Task<List<CompletedLifeArchiveMemory>> ReadCompletedLifeArchiveMemories(
+        FileSystemManager fs,
+        JsonObject soulRoot)
+    {
+        var result = new List<CompletedLifeArchiveMemory>();
+        var relicNames = BuildSoulRelicNameLookup(soulRoot);
+        var seenIncarnations = new HashSet<int>();
+        var chronicleRead = await ReadJson(fs, "lore/chaos_sea/player_chronicle.json");
+        if (chronicleRead.Node is JsonObject chronicleRoot &&
+            chronicleRoot["entries"] is JsonArray entries)
+        {
+            foreach (var entry in entries.OfType<JsonObject>())
+            {
+                var memory = BuildCompletedLifeArchiveMemory(entry, relicNames);
+                if (memory == null)
+                    continue;
+
+                result.Add(memory);
+                if (memory.Incarnation > 0)
+                    seenIncarnations.Add(memory.Incarnation);
+            }
+        }
+
+        if (soulRoot["livesHistory"] is JsonArray livesHistory)
+        {
+            foreach (var life in livesHistory.OfType<JsonObject>())
+            {
+                var incarnation = GetIntValue(life["incarnation"], 0);
+                if (incarnation > 0 && seenIncarnations.Contains(incarnation))
+                    continue;
+
+                var memory = BuildCompletedLifeArchiveMemory(life, relicNames);
+                if (memory == null)
+                    continue;
+
+                result.Add(memory);
+                if (memory.Incarnation > 0)
+                    seenIncarnations.Add(memory.Incarnation);
+            }
+        }
+
+        return result
+            .OrderBy(memory => memory.Incarnation <= 0 ? int.MaxValue : memory.Incarnation)
+            .ThenBy(memory => memory.RecordedAtTurn <= 0 ? int.MaxValue : memory.RecordedAtTurn)
+            .ToList();
+    }
+
+    private static CompletedLifeArchiveMemory? BuildCompletedLifeArchiveMemory(
+        JsonObject source,
+        IReadOnlyDictionary<string, string> relicNames)
+    {
+        var incarnation = GetIntValue(source["incarnation"], 0);
+        var memoryId = FirstNonEmpty(GetString(source, "entryId", string.Empty), incarnation > 0 ? $"life_{incarnation}" : Guid.NewGuid().ToString("N"));
+        var title = FirstNonEmpty(GetString(source, "title", string.Empty), incarnation > 0 ? $"Жизнь #{incarnation}" : "Завершённая жизнь");
+        var summary = GetString(source, "summary", string.Empty);
+        var turnsLived = GetIntValue(source["turnsLived"], 0);
+        var endedBy = GetString(source, "endedBy", string.Empty);
+        var recordedAtTurn = GetIntValue(source["recordedAtTurn"], 0);
+        var inkFeathers = 0;
+        var enlightenmentExperience = 0;
+        var relicIds = Array.Empty<string>();
+
+        if (source["rewards"] is JsonObject rewards)
+        {
+            inkFeathers = GetIntValue(rewards["inkFeathers"], 0);
+            enlightenmentExperience = GetIntValue(rewards["enlightenmentExperience"], 0);
+            relicIds = ReadStringArrayValues(rewards["soulRelicIds"]);
+        }
+
+        if (string.IsNullOrWhiteSpace(summary) &&
+            inkFeathers == 0 &&
+            enlightenmentExperience == 0 &&
+            relicIds.Length == 0)
+        {
+            return null;
+        }
+
+        var relicDisplayNames = relicIds
+            .Select(relicId => relicNames.TryGetValue(relicId, out var name) ? name : relicId)
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToArray();
+
+        return new CompletedLifeArchiveMemory(
+            memoryId,
+            incarnation,
+            title,
+            string.IsNullOrWhiteSpace(summary) ? "Жизнь завершена; подробное резюме пока не записано." : summary,
+            turnsLived,
+            endedBy,
+            inkFeathers,
+            enlightenmentExperience,
+            relicIds,
+            relicDisplayNames,
+            recordedAtTurn);
+    }
+
+    private static UiEntityCard BuildCompletedLifeArchiveMemoryCard(CompletedLifeArchiveMemory memory)
+    {
+        var facts = new List<UiEntityFact>
+        {
+            new() { Label = "Инкарнация", Value = memory.Incarnation > 0 ? memory.Incarnation.ToString(CultureInfo.InvariantCulture) : "не указана" }
+        };
+        if (memory.TurnsLived > 0)
+            facts.Add(new UiEntityFact { Label = "Прожито ходов", Value = memory.TurnsLived.ToString(CultureInfo.InvariantCulture) });
+        if (!string.IsNullOrWhiteSpace(memory.EndedBy))
+            facts.Add(new UiEntityFact { Label = "Завершение", Value = DescribeCompletedLifeEndReason(memory.EndedBy) });
+        if (memory.InkFeathers != 0)
+            facts.Add(new UiEntityFact { Label = "Чернильные Перья", Value = memory.InkFeathers.ToString(CultureInfo.InvariantCulture) });
+        if (memory.EnlightenmentExperience != 0)
+            facts.Add(new UiEntityFact { Label = "Опыт Просветления", Value = memory.EnlightenmentExperience.ToString(CultureInfo.InvariantCulture) });
+        if (memory.RecordedAtTurn > 0)
+            facts.Add(new UiEntityFact { Label = "Записано на ходу", Value = memory.RecordedAtTurn.ToString(CultureInfo.InvariantCulture) });
+
+        return new UiEntityCard
+        {
+            Title = memory.Title,
+            Subtitle = "завершённая жизнь",
+            Summary = memory.Summary,
+            Icon = "scroll-text",
+            Badges =
+            [
+                new UiEntityBadge { Label = "Завершённые жизни", Icon = "archive", Tone = UiTone.Accent }
+            ],
+            Facts = facts,
+            List = memory.SoulRelicNames.Count > 0
+                ? memory.SoulRelicNames.Select(name => $"Реликвия: {name}").ToList()
+                : []
+        };
+    }
+
+    private static Dictionary<string, string> BuildSoulRelicNameLookup(JsonObject soulRoot)
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (soulRoot["soulRelics"] is not JsonObject soulRelics)
+            return result;
+
+        foreach (var propertyName in new[] { "equipped", "stored" })
+        {
+            if (soulRelics[propertyName] is not JsonArray relics)
+                continue;
+
+            foreach (var relic in relics.OfType<JsonObject>())
+            {
+                var relicId = GetString(relic, "relicId", string.Empty);
+                var name = GetString(relic, "name", relicId);
+                if (!string.IsNullOrWhiteSpace(relicId) && !string.IsNullOrWhiteSpace(name))
+                    result[relicId] = name;
+            }
+        }
+
+        return result;
+    }
+
+    private static string[] ReadStringArrayValues(JsonNode? node)
+    {
+        if (node is not JsonArray array)
+            return Array.Empty<string>();
+
+        return array
+            .Select(static item => item switch
+            {
+                JsonValue value when value.TryGetValue<string>(out var text) => text,
+                JsonValue value when value.TryGetValue<int>(out var number) => number.ToString(CultureInfo.InvariantCulture),
+                _ => string.Empty
+            })
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToArray();
+    }
+
+    private static string DescribeCompletedLifeEndReason(string reason) =>
+        reason.Trim().ToLowerInvariant() switch
+        {
+            "voluntary_life_end" => "добровольное завершение жизни",
+            "death" => "смерть",
+            "life_completed" => "жизнь завершена",
+            _ => reason
+        };
 
     private static ExplorerCommandResult BuildAfterlifeArchiveDetail(string command, JsonArray stored, string selector)
     {

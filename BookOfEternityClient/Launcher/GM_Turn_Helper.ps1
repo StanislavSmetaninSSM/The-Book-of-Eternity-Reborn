@@ -1438,6 +1438,11 @@ function Test-BoeClientOwnedRuntimePath {
         return $true
     }
 
+    if ([string]::Equals($path, "game_state/control/next_life_scenario_core.json", [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals($path, "lore/current_world/world_directives.json", [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $true
+    }
+
     if ([string]::Equals($path, "game_state/control/pending_turn_snapshot.json", [System.StringComparison]::OrdinalIgnoreCase) -or
         [string]::Equals($path, "game_state/control/pending_turn_snapshot.authority.json", [System.StringComparison]::OrdinalIgnoreCase) -or
         [string]::Equals($path, "game_state/control/pending_turn_snapshot_manifest.json", [System.StringComparison]::OrdinalIgnoreCase) -or
@@ -1551,7 +1556,7 @@ function Assert-BoeGmWritableRuntimePath {
 
     $policyPath = Get-BoePolicyRelativePath -Path $RelativePath
     if (Test-BoeClientOwnedRuntimePath -RelativePath $policyPath) {
-        throw "Path is client-owned runtime state and must not be written by the GM helper: $RelativePath"
+        throw "Path is client-owned runtime state and must not be written by the GM helper: $policyPath (requested: $RelativePath)"
     }
 
     Assert-BoeRealmWritableRuntimePath -RelativePath $policyPath
@@ -1566,7 +1571,7 @@ function Assert-BoeGmFilesModifiedEntries {
     foreach ($entry in @($FilesModified)) {
         $policyPath = Get-BoePolicyRelativePath -Path $entry
         if (Test-BoeClientOwnedRuntimePath -RelativePath $policyPath) {
-            throw "filesModified contains client-owned runtime state. Remove this entry and let the client maintain it: $entry"
+            throw "filesModified contains client-owned runtime state. Remove this entry and let the client maintain it: $policyPath (requested: $entry)"
         }
 
         Assert-BoeRealmWritableRuntimePath -RelativePath $policyPath

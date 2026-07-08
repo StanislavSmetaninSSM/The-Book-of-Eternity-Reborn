@@ -2060,6 +2060,161 @@ public partial class ExplorerMode
         return result;
     }
 
+    private async Task<List<CompletedLifeArchiveMemorySummary>> ReadCompletedLifeArchiveMemoriesAsync()
+    {
+        var soulDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
+        var chronicleDoc = await _stateManager.LoadGameStateFileAsync("lore/chaos_sea/player_chronicle.json");
+        var result = new List<CompletedLifeArchiveMemorySummary>();
+        var relicNames = BuildSoulRelicNameLookup(soulDoc?.RootElement);
+        var seenIncarnations = new HashSet<int>();
+
+        if (chronicleDoc?.RootElement.ValueKind == JsonValueKind.Object &&
+            chronicleDoc.RootElement.TryGetProperty("entries", out var entries) &&
+            entries.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in entries.EnumerateArray())
+            {
+                if (entry.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var memory = BuildCompletedLifeArchiveMemory(entry, relicNames);
+                if (memory == null)
+                    continue;
+
+                result.Add(memory);
+                if (memory.Incarnation > 0)
+                    seenIncarnations.Add(memory.Incarnation);
+            }
+        }
+
+        if (soulDoc?.RootElement.ValueKind == JsonValueKind.Object &&
+            soulDoc.RootElement.TryGetProperty("livesHistory", out var livesHistory) &&
+            livesHistory.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var life in livesHistory.EnumerateArray())
+            {
+                if (life.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var incarnation = GetInt(life, "incarnation", 0);
+                if (incarnation > 0 && seenIncarnations.Contains(incarnation))
+                    continue;
+
+                var memory = BuildCompletedLifeArchiveMemory(life, relicNames);
+                if (memory == null)
+                    continue;
+
+                result.Add(memory);
+                if (memory.Incarnation > 0)
+                    seenIncarnations.Add(memory.Incarnation);
+            }
+        }
+
+        return result
+            .OrderBy(memory => memory.Incarnation <= 0 ? int.MaxValue : memory.Incarnation)
+            .ThenBy(memory => memory.RecordedAtTurn <= 0 ? int.MaxValue : memory.RecordedAtTurn)
+            .ToList();
+    }
+
+    private static CompletedLifeArchiveMemorySummary? BuildCompletedLifeArchiveMemory(
+        JsonElement source,
+        IReadOnlyDictionary<string, string> relicNames)
+    {
+        var incarnation = GetInt(source, "incarnation", 0);
+        var memoryId = GetStr(source, "entryId", incarnation > 0 ? $"life_{incarnation}" : Guid.NewGuid().ToString("N"));
+        var title = GetStr(source, "title", incarnation > 0 ? $"Жизнь #{incarnation}" : "Завершённая жизнь");
+        var summary = GetStr(source, "summary", "");
+        var turnsLived = GetInt(source, "turnsLived", 0);
+        var endedBy = GetStr(source, "endedBy", "");
+        var recordedAtTurn = GetInt(source, "recordedAtTurn", 0);
+        var inkFeathers = 0;
+        var enlightenmentExperience = 0;
+        var relicIds = Array.Empty<string>();
+
+        if (source.TryGetProperty("rewards", out var rewards) &&
+            rewards.ValueKind == JsonValueKind.Object)
+        {
+            inkFeathers = GetInt(rewards, "inkFeathers", 0);
+            enlightenmentExperience = GetInt(rewards, "enlightenmentExperience", 0);
+            relicIds = ReadStringArray(rewards, "soulRelicIds");
+        }
+
+        if (string.IsNullOrWhiteSpace(summary) &&
+            inkFeathers == 0 &&
+            enlightenmentExperience == 0 &&
+            relicIds.Length == 0)
+        {
+            return null;
+        }
+
+        var relicDisplayNames = relicIds
+            .Select(relicId => relicNames.TryGetValue(relicId, out var relicName) ? relicName : relicId)
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToArray();
+
+        return new CompletedLifeArchiveMemorySummary(
+            memoryId,
+            incarnation,
+            title,
+            string.IsNullOrWhiteSpace(summary) ? "Жизнь завершена; подробное резюме пока не записано." : summary,
+            turnsLived,
+            endedBy,
+            inkFeathers,
+            enlightenmentExperience,
+            relicIds,
+            relicDisplayNames,
+            recordedAtTurn,
+            CloneJsonObjectElementForAudit(source) ?? new JsonObject());
+    }
+
+    private static Dictionary<string, string> BuildSoulRelicNameLookup(JsonElement? soulRoot)
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (soulRoot == null ||
+            soulRoot.Value.ValueKind != JsonValueKind.Object ||
+            !soulRoot.Value.TryGetProperty("soulRelics", out var soulRelics) ||
+            soulRelics.ValueKind != JsonValueKind.Object)
+        {
+            return result;
+        }
+
+        foreach (var propertyName in new[] { "equipped", "stored" })
+        {
+            if (!soulRelics.TryGetProperty(propertyName, out var relics) ||
+                relics.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            foreach (var relic in relics.EnumerateArray())
+            {
+                if (relic.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var relicId = GetStr(relic, "relicId", "");
+                var name = GetStr(relic, "name", relicId);
+                if (!string.IsNullOrWhiteSpace(relicId) && !string.IsNullOrWhiteSpace(name))
+                    result[relicId] = name;
+            }
+        }
+
+        return result;
+    }
+
+    private static string[] ReadStringArray(JsonElement source, string propertyName)
+    {
+        if (!source.TryGetProperty(propertyName, out var array) ||
+            array.ValueKind != JsonValueKind.Array)
+        {
+            return Array.Empty<string>();
+        }
+
+        return array.EnumerateArray()
+            .Where(static item => item.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(item.GetString()))
+            .Select(static item => item.GetString() ?? string.Empty)
+            .ToArray();
+    }
+
     private async Task<bool> CanUseArchiveConsultationAsync(AfterlifeArchiveEntrySummary entry)
     {
         if (_afterlifeArchiveConsultationService == null ||

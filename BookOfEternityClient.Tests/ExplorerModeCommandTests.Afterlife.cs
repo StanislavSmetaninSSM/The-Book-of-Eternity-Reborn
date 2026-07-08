@@ -7031,6 +7031,86 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_AfterlifeArchive_WhenCompletedLifeChronicleExists_ShowsLifeMemory()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 10 },
+            livesHistory = new[]
+            {
+                new
+                {
+                    incarnation = 1,
+                    title = "Жизнь Асурена де Вальмона",
+                    summary = "Короткая первая жизнь завершилась добровольным возвращением в Море Хаоса.",
+                    turnsLived = 8,
+                    endedBy = "voluntary_life_end",
+                    rewards = new
+                    {
+                        inkFeathers = 10,
+                        soulRelicIds = new[] { "relic_life_001_cut_registry_grain" }
+                    }
+                }
+            },
+            soulRelics = new
+            {
+                stored = new[]
+                {
+                    new
+                    {
+                        relicId = "relic_life_001_cut_registry_grain",
+                        name = "Зерно разрезанной описи",
+                        rarity = "common",
+                        sourceLife = 1
+                    }
+                }
+            },
+            afterlifeArchive = new
+            {
+                stored = Array.Empty<object>()
+            }
+        });
+        await WriteJsonAsync("lore/chaos_sea/player_chronicle.json", new
+        {
+            entries = new[]
+            {
+                new
+                {
+                    entryId = "chronicle_life_001_evaluation",
+                    incarnation = 1,
+                    title = "Жизнь Асурена де Вальмона",
+                    summary = "Короткая первая жизнь завершилась добровольным возвращением в Море Хаоса.",
+                    turnsLived = 8,
+                    endedBy = "voluntary_life_end",
+                    rewards = new
+                    {
+                        inkFeathers = 10,
+                        enlightenmentExperience = 1,
+                        soulRelicIds = new[] { "relic_life_001_cut_registry_grain" }
+                    },
+                    recordedAtTurn = 9
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/архив_души"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_archive_completed_life_chronicle");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Завершённые жизни", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Жизнь Асурена де Вальмона", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("10", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Зерно разрезанной описи", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Архив души пока пуст", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_AfterlifeArchive_Consultation_ShowsPlayerPreviewBeforeWritingRequest()
     {
         await SeedAfterlifeStateAsync();

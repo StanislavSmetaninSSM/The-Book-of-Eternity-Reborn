@@ -301,6 +301,51 @@ public sealed class GmTurnHelperContractTests
         }
     }
 
+    [Theory]
+    [InlineData("game_state/control/next_life_scenario_core.json")]
+    [InlineData("lore/current_world/world_directives.json")]
+    public void Helper_CompleteBoeTurnRejectsClientOwnedWorldSetupFilesModifiedEntries(string clientOwnedPath)
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-client-owned-world-setup-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "input", "turn_request.json"),
+                """
+                {
+                  "sessionId": "test-session",
+                  "requestId": "request-client-owned-world-setup",
+                  "turnNumber": 44,
+                  "playerAction": "life evaluation"
+                }
+                """,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "Complete-BoeTurn -FilesModified @('output/narrative_response.json', " + QuotePowerShell(clientOwnedPath) + ")"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("client-owned", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(clientOwnedPath, result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(Path.Combine(session, "ready", "turn_complete.json")));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
     [Fact]
     public void Helper_FailBoeTurnWritesCorrelatedTerminalSignalAndFailsShellCommand()
     {
@@ -463,6 +508,39 @@ public sealed class GmTurnHelperContractTests
             Assert.NotEqual(0, result.ExitCode);
             Assert.Contains("client-owned", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
             Assert.False(File.Exists(Path.Combine(session, "game_state", "history", "chat_log.json")));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Theory]
+    [InlineData("game_state/control/next_life_scenario_core.json")]
+    [InlineData("lore/current_world/world_directives.json")]
+    public void Helper_WriteBoeJsonRejectsClientOwnedWorldSetupFiles(string clientOwnedPath)
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-client-owned-world-setup-write-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(session);
+
+        try
+        {
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$data = [ordered]@{ changed = $true }",
+                "Write-BoeJson -RelativePath " + QuotePowerShell(clientOwnedPath) + " -Data $data"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("client-owned", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(clientOwnedPath, result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(Path.Combine(session, clientOwnedPath.Replace('/', Path.DirectorySeparatorChar))));
         }
         finally
         {

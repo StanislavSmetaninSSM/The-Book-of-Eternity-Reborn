@@ -195,6 +195,32 @@ public sealed class ConsoleE2ERunbookTests
     }
 
     [Fact]
+    public void AgentConsoleGoldenRouteDriverAutoContinuesKnownLifecycleKeyScreens()
+    {
+        var script = ReadRepoFile("scripts", "agent-console-golden-route-driver.ps1");
+
+        foreach (var requiredScreen in new[]
+        {
+            "stat-allocation-finished",
+            "life-transition-death",
+            "realm-transition-chaos-sea",
+            "life-evaluation-rewards"
+        })
+        {
+            Assert.Contains(requiredScreen, script, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void AgentConsoleGoldenRouteDriverFailsFastOnUnexpectedAwaitingScreens()
+    {
+        var script = ReadRepoFile("scripts", "agent-console-golden-route-driver.ps1");
+
+        Assert.Contains("FailOnUnexpectedAwaitingScreen", script, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("unexpected awaiting screen", script, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void AgentConsoleLiveRunLauncherPreflightsBridgeBeforeGmBoundTurns()
     {
         var script = ReadRepoFile("scripts", "start-agent-console-live-run.ps1");

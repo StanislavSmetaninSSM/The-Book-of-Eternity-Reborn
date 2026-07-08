@@ -16,9 +16,15 @@ param(
 
     [int]$ReturnStepLimit = 16,
 
+    [bool]$FailOnUnexpectedAwaitingScreen = $true,
+
     [string[]]$AutoContinueKeyScreens = @(
         "incarnation-trigger-gate-opened",
-        "realm-transition-mortal-life"
+        "realm-transition-mortal-life",
+        "stat-allocation-finished",
+        "life-transition-death",
+        "realm-transition-chaos-sea",
+        "life-evaluation-rewards"
     )
 )
 
@@ -42,9 +48,15 @@ step kinds:
 - returnToGameLoop: safely unwind local command screens through return-to-game-loop-step.
 
 autoContinueKeyScreens:
-The driver can automatically accept known local key prompts, for example
-incarnation-trigger-gate-opened and realm-transition-mortal-life. Do not add
-stat-allocation here: stat-allocation requires an explicit keys step.
+The driver can automatically accept known local key prompts such as transition
+and summary screens. Do not add stat-allocation here: stat-allocation requires
+an explicit keys step.
+
+FailOnUnexpectedAwaitingScreen:
+When enabled, a route waiting for a concrete screen fails immediately if another
+awaiting-input screen appears and is not an approved auto-continue screen. Add an
+explicit step, screenIds alternative, or allowIntermediateAwaitingScreens only
+when the intermediate prompt is intentional.
 
 notAwaitingInput:
 The driver records input rejections such as notAwaitingInput in the artifact and
@@ -144,6 +156,7 @@ function Write-Artifact {
         status = $artifactStatus
         failure = $failureMessage
         autoContinueKeyScreens = $AutoContinueKeyScreens
+        failOnUnexpectedAwaitingScreen = $FailOnUnexpectedAwaitingScreen
         steps = $stepArtifacts
     }
 
@@ -214,6 +227,47 @@ function Invoke-AutoContinueIfAllowed {
     return $true
 }
 
+function Test-AllowIntermediateAwaitingScreens {
+    param($Step)
+
+    $value = Get-JsonProperty $Step "allowIntermediateAwaitingScreens"
+    if ($null -eq $value) {
+        return $false
+    }
+
+    return [bool]$value
+}
+
+function Assert-NoUnexpectedAwaitingScreen {
+    param(
+        $Snapshot,
+        $Step,
+        [System.Collections.IList]$Trace
+    )
+
+    if (-not $FailOnUnexpectedAwaitingScreen) {
+        return
+    }
+
+    if (Test-AllowIntermediateAwaitingScreens -Step $Step) {
+        return
+    }
+
+    if (-not [bool](Get-JsonProperty $Snapshot "awaitingInput")) {
+        return
+    }
+
+    $screenId = [string](Get-JsonProperty $Snapshot "screenId")
+    $inputKind = [string](Get-JsonProperty $Snapshot "inputKind")
+    [void]$Trace.Add([pscustomobject]@{
+        action = "FailOnUnexpectedAwaitingScreen"
+        screenId = $screenId
+        inputKind = $inputKind
+    })
+
+    throw "Unexpected awaiting screen '$screenId' while waiting for requested step screen. Add an explicit route step, include it in screenIds, or add it to AutoContinueKeyScreens only when it is a safe local key prompt."
+}
+
 function Wait-StepScreen {
     param(
         $Step,
@@ -243,11 +297,17 @@ function Wait-StepScreen {
             if (Test-ScreenMatches -Snapshot $snapshot -Step $Step) {
                 return $snapshot
             }
+
+            Assert-NoUnexpectedAwaitingScreen -Snapshot $snapshot -Step $Step -Trace $Trace
         }
         catch {
             [void]$Trace.Add([pscustomobject]@{
                 error = $_.Exception.Message
             })
+
+            if ($_.Exception.Message.StartsWith("Unexpected awaiting screen", [System.StringComparison]::Ordinal)) {
+                throw
+            }
         }
 
         Start-Sleep -Milliseconds $PollMilliseconds

@@ -4243,6 +4243,72 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         AssertNoAfterlifeIssue1064TechnicalLeak(result);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeArchive_WhenCompletedLifeChronicleExists_RendersLifeMemory()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Test Soul",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "inkFeathers": { "current": 10 },
+          "livesHistory": [
+            {
+              "incarnation": 1,
+              "title": "Жизнь Асурена де Вальмона",
+              "summary": "Короткая первая жизнь завершилась добровольным возвращением в Море Хаоса.",
+              "turnsLived": 8,
+              "endedBy": "voluntary_life_end",
+              "rewards": {
+                "inkFeathers": 10,
+                "soulRelicIds": [ "relic_life_001_cut_registry_grain" ]
+              }
+            }
+          ],
+          "soulRelics": {
+            "stored": [
+              {
+                "relicId": "relic_life_001_cut_registry_grain",
+                "name": "Зерно разрезанной описи",
+                "rarity": "common",
+                "sourceLife": 1
+              }
+            ]
+          },
+          "afterlifeArchive": { "stored": [] }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("lore/chaos_sea/player_chronicle.json", """
+        {
+          "entries": [
+            {
+              "entryId": "chronicle_life_001_evaluation",
+              "incarnation": 1,
+              "title": "Жизнь Асурена де Вальмона",
+              "summary": "Короткая первая жизнь завершилась добровольным возвращением в Море Хаоса.",
+              "turnsLived": 8,
+              "endedBy": "voluntary_life_end",
+              "rewards": {
+                "inkFeathers": 10,
+                "enlightenmentExperience": 1,
+                "soulRelicIds": [ "relic_life_001_cut_registry_grain" ]
+              },
+              "recordedAtTurn": 9
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_archive"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Завершённые жизни", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Жизнь Асурена де Вальмона", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Зерно разрезанной описи", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Сохранённых записей Архива пока нет", text, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/archive_consultation", "archive-consultation", "Архивная консультация", "Азалия")]
     [InlineData("/archive_project_fuel", "archive-project-fuel", "Подпитка проекта Архивом", "Песнь кузни")]

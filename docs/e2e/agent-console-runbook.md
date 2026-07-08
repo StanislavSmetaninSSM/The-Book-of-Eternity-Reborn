@@ -252,6 +252,8 @@ Supported step kinds:
 - `keys`: send a bounded key sequence. This is the intended path for `stat-allocation`; do not put `stat-allocation` in `autoContinueKeyScreens`.
 - `returnToGameLoop`: safely unwind local command result screens through `/api/agent-console/return-to-game-loop-step`.
 
+By default the driver accepts known local key prompts such as `stat-allocation-finished`, `life-transition-death`, `realm-transition-chaos-sea`, and `life-evaluation-rewards`. It also uses `FailOnUnexpectedAwaitingScreen`: if a different awaiting-input screen appears while a step waits for a concrete screen, the driver fails fast instead of sleeping blindly. Add an explicit route step or a `screenIds` alternative for intentional intermediate prompts; use `allowIntermediateAwaitingScreens` only for deliberately broad waits.
+
 Example steps file:
 
 ```json
@@ -295,7 +297,7 @@ Run it from PowerShell:
   -Token $Token `
   -StepsFile (Join-Path $RunRoot "golden-route.steps.json") `
   -OutputPath (Join-Path $RunRoot "golden-route-driver.json") `
-  -AutoContinueKeyScreens @("incarnation-trigger-gate-opened", "realm-transition-mortal-life")
+  -AutoContinueKeyScreens @("incarnation-trigger-gate-opened", "realm-transition-mortal-life", "stat-allocation-finished", "life-transition-death", "realm-transition-chaos-sea", "life-evaluation-rewards")
 ```
 
 Keep the steps file and output artifact inside the disposable run root unless the steps become a deliberate checked-in regression fixture.
