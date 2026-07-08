@@ -309,6 +309,14 @@ public sealed class AgentConsoleRecordingExplorerConsole : IExplorerConsole
         int selectedIndex)
     {
         var now = DateTimeOffset.UtcNow;
+        var actionEnabledStates = labels
+            .Select(IsSelectionActionEnabled)
+            .ToArray();
+        var defaultIndex = selectedIndex >= 0 &&
+                           selectedIndex < actionEnabledStates.Length &&
+                           actionEnabledStates[selectedIndex]
+            ? selectedIndex
+            : Array.FindIndex(actionEnabledStates, static enabled => enabled);
         var snapshot = new AgentConsoleSnapshot
         {
             ScreenId = screenId,
@@ -322,8 +330,8 @@ public sealed class AgentConsoleRecordingExplorerConsole : IExplorerConsole
             {
                 Id = $"option-{index}",
                 Label = string.IsNullOrWhiteSpace(label) ? $"Пункт {index + 1}" : label,
-                IsEnabled = IsSelectionActionEnabled(label),
-                IsDefault = selectedIndex == index
+                IsEnabled = actionEnabledStates[index],
+                IsDefault = defaultIndex == index
             }).ToArray(),
             RenderedAtUtc = now,
             UpdatedAtUtc = now

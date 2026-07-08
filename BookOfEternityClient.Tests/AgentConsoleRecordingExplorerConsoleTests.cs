@@ -151,8 +151,11 @@ public sealed class AgentConsoleRecordingExplorerConsoleTests
         Assert.False(promptTask.IsCompleted);
         var snapshot = Assert.IsType<AgentConsoleSnapshot>(store.GetSnapshot());
         var lockedAction = Assert.Single(snapshot.Actions, action => action.Label.Contains("закрыто:", StringComparison.OrdinalIgnoreCase));
+        var backAction = Assert.Single(snapshot.Actions, action => action.Label.Contains("К обучению", StringComparison.OrdinalIgnoreCase));
 
         Assert.False(lockedAction.IsEnabled);
+        Assert.False(lockedAction.IsDefault);
+        Assert.True(backAction.IsDefault);
 
         var backAccepted = liveInput.TryQueueReturnToGameLoopStep();
 
