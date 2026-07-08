@@ -624,11 +624,13 @@ Mortal bootstrap materialization repair packet:
     "current_location_coordinates_mismatch: if currentLocationData uses a known locationId from the bootstrap scaffold, copy that locationId coordinates exactly from canonicalCoordinateAuthority.",
     "location shape: current_location and durable world_map locations must include knownExits, adjacencyMap, factionControl, locationStorages, activeThreats, internalDifficultyProfile, and externalDifficultyProfile.",
     "world_map_new_link_missing_required_fields: every map link preview must include targetName, targetCoordinates, estimatedInternalDifficultyProfile, and estimatedExternalDifficultyProfile.",
+    "mortal_bootstrap_placeholder_player_visible_name: accepted Mortal bootstrap must replace client scaffold labels such as Стартовая сцена, Силы стартовой сцены, Путь из стартовой сцены, Ближайший выход из стартовой сцены, or Наставник стартовой сцены with concrete in-world names.",
     "mortal_bootstrap_requested_teacher_missing: if the opening scene promises a teacher, mentor, paid lesson, or /обучение surface, npc_core.json must contain a usable NPC teacherProfile with canTeach=true and non-empty skills[].",
     "canonical_faction_custom_state_missing_required_fields: faction state must keep required identity, rank/reputation/progression, and sidecar-compatible fields."
   ],
   "steps": [
     "Read game_state/control/mortal_bootstrap_scaffold.json first and use it as the client-authored checklist for this first Mortal World materialization.",
+    "Treat scaffold labels as temporary internal anchors only: before Complete-BoeTurn, rename the visible current location, map locations, exits/links, factions, and starter NPCs to concrete world-specific names derived from playerAuthoredStart. Do not leave Стартовая сцена, Силы стартовой сцены, Путь из стартовой сцены, Ближайший выход из стартовой сцены, or Наставник стартовой сцены in accepted state.",
     "When editing current_location.json or world_map.json, use mortal_bootstrap_scaffold.json canonicalCoordinateAuthority: the same locationId must have identical coordinates in current_location, world_map newLocations, adjacencyMap targetCoordinates, and newLinks targetCoordinates.",
     "Patch current_location.json and every durable world_map location object with required arrays/collections and internal/external difficulty profiles before completing repair.",
     "Patch every new map link preview with targetName, targetCoordinates, estimatedInternalDifficultyProfile, and estimatedExternalDifficultyProfile.",
@@ -652,6 +654,8 @@ If the turn request says `MORTAL BOOTSTRAP BASELINE`, do not start from large ex
 - `game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json`
 
 When `mortal_bootstrap_scaffold.json.preMaterializedBaselineFiles` includes `game_state/npcs/npc_core.json`, the client has already created a starter NPC teacher for a player-authored training opening. Preserve that NPC and make the scene choices consistent with `/обучение`; do not drop the teacher/training surface into prose only.
+
+The scaffold baseline may contain temporary labels such as `Стартовая сцена`, `Силы стартовой сцены`, `Путь из стартовой сцены`, `Ближайший выход из стартовой сцены`, or `Наставник стартовой сцены`. These labels are never acceptable player-visible names after the first Mortal bootstrap is accepted. Before `Complete-BoeTurn`, rename the durable current location, map locations, exits/links, factions, and starter NPCs to concrete in-world names based on `playerAuthoredStart.characterDescription`, `playerAuthoredStart.worldDescription`, and `playerAuthoredStart.startingCircumstances`. Do not delete the entities and do not expect the client to invent names.
 
 Minimum successful output for the first Mortal scene:
 - `output/narrative_response.json`: the first playable Mortal scene text with a timestamp.

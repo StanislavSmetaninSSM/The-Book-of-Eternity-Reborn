@@ -569,6 +569,121 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_AcceptedMortalBootstrapWithPlayerVisiblePlaceholderNames_ReportsBlockingIssues()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 3,
+            characterDescription: "Эйра, молодая городская писарка при архиве купеческой гильдии.",
+            worldDescription: "Портовый город-государство с купеческими гильдиями, архивами и тайными культами.",
+            startingCircumstances: "Эйра просыпается до рассвета в комнате при архиве; на столе лежит чужая опечатанная расписка.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-09T01:00:00Z"));
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/control/mortal_bootstrap_scaffold.json", """
+        {
+          "schemaVersion": 1,
+          "purpose": "fresh_mortal_world_bootstrap",
+          "playerAuthoredStart": {
+            "characterDescription": "Эйра, молодая городская писарка при архиве купеческой гильдии.",
+            "worldDescription": "Портовый город-государство с купеческими гильдиями, архивами и тайными культами.",
+            "startingCircumstances": "Эйра просыпается до рассвета в комнате при архиве; на столе лежит чужая опечатанная расписка."
+          }
+        }
+        """);
+
+        var bootstrapLoreFiles = new[]
+        {
+            "lore/current_world/world_setting.json",
+            "lore/current_world/geography.json",
+            "lore/current_world/history.json",
+            "lore/current_world/cultures.json",
+            "lore/current_world/threats.json",
+            "lore/codex_entries.json"
+        };
+
+        await WriteValidatedSnapshotManifestAsync(
+            sourceLabel: "GM-инициированного воплощения",
+            includeSnapshotFilesAsRollbackBaseline: false,
+            bootstrapLoreFiles.Select(path => (Path: path, Json: files[path].ToJsonString())).ToArray());
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "sessionId": "session_mortal_bootstrap_validation_tests",
+          "requestId": "request_mortal_bootstrap_validation_tests",
+          "turnNumber": 3
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Code, "mortal_bootstrap_placeholder_player_visible_name", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/world/current_location.json.name", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actual, "Стартовая сцена новой жизни", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Code, "mortal_bootstrap_placeholder_player_visible_name", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("game_state/factions/faction_core.json", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actual, "Силы стартовой сцены", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Code, "mortal_bootstrap_placeholder_player_visible_name", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("world_map.json", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actual, "Путь из стартовой сцены", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ClientOwnedMortalBootstrapBaselineWithPlaceholderNames_DoesNotReportAcceptedBootstrapPlaceholderIssue()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 3,
+            characterDescription: "Эйра, молодая городская писарка при архиве купеческой гильдии.",
+            worldDescription: "Портовый город-государство с купеческими гильдиями, архивами и тайными культами.",
+            startingCircumstances: "Эйра просыпается до рассвета в комнате при архиве; на столе лежит чужая опечатанная расписка.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-09T01:00:00Z"));
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/control/mortal_bootstrap_scaffold.json", """
+        {
+          "schemaVersion": 1,
+          "purpose": "fresh_mortal_world_bootstrap",
+          "playerAuthoredStart": {
+            "characterDescription": "Эйра, молодая городская писарка при архиве купеческой гильдии.",
+            "worldDescription": "Портовый город-государство с купеческими гильдиями, архивами и тайными культами.",
+            "startingCircumstances": "Эйра просыпается до рассвета в комнате при архиве; на столе лежит чужая опечатанная расписка."
+          }
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_placeholder_player_visible_name", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_MortalBootstrapRequestedTeacherWithoutTeacherProfile_ReportsTrainingSurfaceIssue()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
