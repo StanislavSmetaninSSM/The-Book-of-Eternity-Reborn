@@ -100,7 +100,11 @@ public sealed class AfterlifeRussianTerminologyScannerTests
             "требует выигрыш (payoff)",
             "актор (actor)=",
             "канонический файл состояния",
-            "side strain"
+            "side strain",
+            "fallback-режим",
+            "клиент локально",
+            "ГМ не пишет",
+            "операция клиента"
         })
         {
             Assert.DoesNotContain(forbidden, source, StringComparison.OrdinalIgnoreCase);

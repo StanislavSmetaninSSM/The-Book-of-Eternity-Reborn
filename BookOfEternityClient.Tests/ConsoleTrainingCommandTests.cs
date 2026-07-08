@@ -3,6 +3,8 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
+using Spectre.Console;
+using Spectre.Console.Rendering;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -82,6 +84,31 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
         Assert.DoesNotContain(selfTrainingChoices, choice => choice.Contains("Maneuver", StringComparison.Ordinal));
     }
 
+    [Fact]
+    [Trait("Category", "ConsoleTraining")]
+    public async Task TryProcessCommand_SpiritualArts_HidesImplementationOwnershipCopy()
+    {
+        await SeedAfterlifeSelfTrainingAsync();
+        await _stateManager.RefreshGameStateAsync();
+        var console = new TestExplorerConsole();
+        var explorer = new ExplorerMode(
+            _stateManager,
+            _fs,
+            new LocalizationManager(),
+            trainingService: new TrainingService(_fs, NullLogger<TrainingService>.Instance),
+            console: console);
+
+        var result = await explorer.TryProcessCommand("/духовные_искусства");
+
+        Assert.Equal(string.Empty, result);
+        var renderedText = string.Join("\n", console.Rendered.Select(ExtractRenderableText));
+        Assert.Contains("Самостоятельная прокачка здесь намеренно дорогая", renderedText, StringComparison.Ordinal);
+        Assert.Contains("наставник", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("fallback-режим", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Клиент локально", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("ГМ не пишет", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
     public void Dispose()
     {
         try
@@ -157,5 +184,52 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
           "turnNumber": 1
         }
         """);
+    }
+
+    private static string ExtractRenderableText(IRenderable renderable)
+    {
+        return renderable switch
+        {
+            Panel panel => ExtractPanelText(panel),
+            Markup markup => ExtractParagraphText(markup),
+            Text text => text.ToString() ?? string.Empty,
+            _ => renderable.ToString() ?? string.Empty
+        };
+    }
+
+    private static string ExtractPanelText(Panel panel)
+    {
+        var childField = typeof(Panel).GetField("_child", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        return childField?.GetValue(panel) is IRenderable child
+            ? ExtractRenderableText(child)
+            : string.Empty;
+    }
+
+    private static string ExtractParagraphText(object renderable)
+    {
+        var paragraphField = renderable.GetType().GetField("_paragraph", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        var paragraph = paragraphField?.GetValue(renderable);
+        if (paragraph == null)
+            return string.Empty;
+
+        var linesField = paragraph.GetType().GetField("_lines", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        if (linesField?.GetValue(paragraph) is not IEnumerable<object> lines)
+            return string.Empty;
+
+        var lineTexts = new List<string>();
+        foreach (var line in lines)
+        {
+            var itemsField = line.GetType().GetField("_items", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            if (itemsField?.GetValue(line) is not Array items)
+                continue;
+
+            lineTexts.Add(string.Concat(items.Cast<object?>().Where(static segment => segment != null).Select(static segment =>
+            {
+                var textProperty = segment!.GetType().GetProperty("Text", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                return textProperty?.GetValue(segment)?.ToString() ?? string.Empty;
+            })));
+        }
+
+        return string.Join("\n", lineTexts);
     }
 }

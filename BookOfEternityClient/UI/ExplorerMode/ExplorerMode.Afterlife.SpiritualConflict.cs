@@ -292,8 +292,8 @@ public partial class ExplorerMode
             "[bold]Прокачка[/]",
             "  • /spiritual_arts показывает ранги, текущие уровни искусств и стоимость улучшений.",
             "  • Ранги Просветления и Сияния открывают максимальный уровень искусства; сохранённый ранг Сияния продолжает помогать после возвращения в Море Хаоса.",
-            "  • Прокачка принадлежит клиенту: клиент локально тратит Чернильные Перья или, в активной Сияющей Обители, Искры Света. ГМ не пишет квитанцию/отчёт прокачки.",
-            "  • Прокачка заблокирована во время активного конфликта, активного жизненного цикла хода ГМ и открытых ожидающих контрактов со стоимостью.",
+            "  • Улучшение применяется сразу после подтверждения и тратит Чернильные Перья или, в активной Сияющей Обители, Искры Света.",
+            "  • Прокачка заблокирована во время активного конфликта, ожидания ответа мира и открытых обязательств со стоимостью.",
             "",
             "[bold]Награды[/]",
             "  • Победа в проверяемом спорном конфликте может дать валюту: Чернильные Перья в Море Хаоса или Искры Света в Сияющей Обители.",
@@ -425,7 +425,7 @@ public partial class ExplorerMode
             lines.Add($"  • {rank.Rank}: {Markup.Escape(FormatRankIdLabel(rank.RankId))}, требует {rank.RequiredProgress}, открывает уровень искусства {rank.UnlocksArtTier}. {Markup.Escape(FormatRankMechanicalEffect(rank.MechanicalEffect))}");
 
         lines.Add("");
-        lines.Add("[dim]Правило прокачки: ранги ограничивают максимальный уровень искусства; самостоятельная прокачка дороже наставника и служит fallback-режимом. Клиент локально обновляет боевой профиль души и тратит выбранную валюту. ГМ не пишет квитанцию/отчёт прокачки.[/]");
+        lines.Add("[dim]Правило прокачки: ранги ограничивают максимальный уровень искусства. Самостоятельная прокачка намеренно дороже наставника: душа сама тратит выбранную валюту и сразу получает подтверждённое улучшение.[/]");
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
@@ -1383,7 +1383,7 @@ public partial class ExplorerMode
     {
         var lines = new List<string>
         {
-            "[bold cyan]Предпросмотр локальной прокачки духовного искусства[/]",
+            "[bold cyan]Предпросмотр прокачки духовного искусства[/]",
             "",
             $"  • Искусство: [white]{Markup.Escape(FormatSpiritualArtQuoteLabel(quote))}[/]",
             $"  • Уровень: [white]{quote.CurrentTier}[/] -> [white]{quote.NextTier}[/]",
@@ -1391,7 +1391,7 @@ public partial class ExplorerMode
             $"  • Чернильные Перья: [white]{ReadSoulInkFeathers(beforeSoulRoot).Current}[/] -> [white]{ReadSoulInkFeathers(afterSoulRoot).Current}[/]",
             $"  • Искры Света: [white]{AfterlifeSpiritualConflictState.GetNodeInt(beforeShiningRoot?["lightSparks"])}[/] -> [white]{AfterlifeSpiritualConflictState.GetNodeInt(afterShiningRoot?["lightSparks"])}[/]",
             "",
-            "[dim]Это операция клиента: ход ГМ, квитанция и отчёт не создаются.[/]"
+            "[dim]После подтверждения выбранное искусство сразу поднимется на следующий уровень и будет учитываться в новых духовных конфликтах.[/]"
         };
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -1452,7 +1452,7 @@ public partial class ExplorerMode
     {
         var lines = new List<string>
         {
-            "[bold cyan]Предпросмотр локальной прокачки Средоточия Души[/]",
+            "[bold cyan]Предпросмотр прокачки Средоточия Души[/]",
             "",
             "  • Параметр: [white]Средоточие Души[/]",
             $"  • Уровень: [white]{quote.CurrentTier}[/] -> [white]{quote.NextTier}[/]",
@@ -1461,7 +1461,7 @@ public partial class ExplorerMode
             $"  • Чернильные Перья: [white]{ReadSoulInkFeathers(beforeSoulRoot).Current}[/] -> [white]{ReadSoulInkFeathers(afterSoulRoot).Current}[/]",
             $"  • Искры Света: [white]{AfterlifeSpiritualConflictState.GetNodeInt(beforeShiningRoot?["lightSparks"])}[/] -> [white]{AfterlifeSpiritualConflictState.GetNodeInt(afterShiningRoot?["lightSparks"])}[/]",
             "",
-            "[dim]Это операция клиента: ГМ не пишет и не подтверждает Средоточие Души. В новом духовном конфликте максимум ОД берётся из этого уровня.[/]"
+            "[dim]После подтверждения Средоточие Души сразу изменит запас ОД. В новом духовном конфликте максимум ОД берётся из этого уровня.[/]"
         };
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
