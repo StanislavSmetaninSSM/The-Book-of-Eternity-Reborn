@@ -60,6 +60,30 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void TransitionWaitForGmResponse_RejectedValidationMustClearActiveRequestArtifacts()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(
+            source,
+            "private async Task<bool> WaitForGmResponse()");
+
+        var validationFailureIndex = method.IndexOf(
+            "if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(",
+            StringComparison.Ordinal);
+        Assert.True(validationFailureIndex >= 0, "Expected transition wait validation failure branch.");
+
+        var snapshotCleanupIndex = method.IndexOf(
+            "await CleanupPendingTurnSnapshotAsync();",
+            validationFailureIndex,
+            StringComparison.Ordinal);
+        Assert.True(snapshotCleanupIndex > validationFailureIndex, "Expected pending snapshot cleanup in validation failure branch.");
+
+        var failureBranch = method[validationFailureIndex..snapshotCleanupIndex];
+        Assert.Contains("_fs.DeleteFile(\"input/turn_request.json\");", failureBranch, StringComparison.Ordinal);
+        Assert.Contains("ClearTransientOutputFiles();", failureBranch, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void NewGameBootstrap_MustCreateGuardianProjectRollbackBaselineBeforeInitialDispatch()
     {
         var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");

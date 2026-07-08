@@ -6819,7 +6819,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     {
         var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(method);
-        var task = method!.Invoke(instance, args) as Task<T>;
+        var task = method!.Invoke(instance, BuildPrivateInvocationArguments(method, args)) as Task<T>;
         Assert.NotNull(task);
         return await task!;
     }
@@ -6828,7 +6828,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     {
         var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(method);
-        var task = method!.Invoke(instance, args) as Task;
+        var task = method!.Invoke(instance, BuildPrivateInvocationArguments(method, args)) as Task;
         Assert.NotNull(task);
         await task!;
     }
@@ -6837,14 +6837,14 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     {
         var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(method);
-        method!.Invoke(instance, args);
+        method!.Invoke(instance, BuildPrivateInvocationArguments(method, args));
     }
 
     private static T InvokePrivateValue<T>(object instance, string methodName, params object?[]? args)
     {
         var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(method);
-        var value = method!.Invoke(instance, args);
+        var value = method!.Invoke(instance, BuildPrivateInvocationArguments(method, args));
         Assert.IsType<T>(value);
         return (T)value!;
     }
@@ -6853,7 +6853,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     {
         var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(method);
-        var task = method!.Invoke(instance, args) as Task;
+        var task = method!.Invoke(instance, BuildPrivateInvocationArguments(method, args)) as Task;
         Assert.NotNull(task);
         await task!;
         var resultProperty = task.GetType().GetProperty("Result");
@@ -6861,6 +6861,29 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var result = resultProperty!.GetValue(task);
         Assert.NotNull(result);
         return result!;
+    }
+
+    private static object?[]? BuildPrivateInvocationArguments(MethodInfo method, object?[]? args)
+    {
+        var supplied = args ?? Array.Empty<object?>();
+        var parameters = method.GetParameters();
+        if (supplied.Length == parameters.Length)
+            return supplied;
+
+        if (supplied.Length > parameters.Length)
+            return supplied;
+
+        var completed = new object?[parameters.Length];
+        Array.Copy(supplied, completed, supplied.Length);
+        for (var i = supplied.Length; i < parameters.Length; i++)
+        {
+            if (!parameters[i].HasDefaultValue)
+                return supplied;
+
+            completed[i] = parameters[i].DefaultValue;
+        }
+
+        return completed;
     }
 
     public void Dispose()

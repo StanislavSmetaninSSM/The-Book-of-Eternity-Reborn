@@ -77,8 +77,10 @@ public partial class GameEngine
                     snapshotContext?.ProgressionControl))
             {
                 _pendingMemoryLegacyAwaitingConsumption = false;
+                _fs.DeleteFile("input/turn_request.json");
                 _fs.DeleteFile("ready/turn_complete.json");
                 _fs.DeleteFile("ready/turn_error.json");
+                ClearTransientOutputFiles();
                 await RollbackRejectedAcceptedTurnAsync(
                     rollbackSnapshot,
                     "[yellow]↩ Ответ GM отклонён проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
