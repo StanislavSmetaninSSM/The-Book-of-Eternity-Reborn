@@ -14,6 +14,7 @@ public partial class ValidationService
         await ValidatePendingTrainingRequestsAsync(issues);
         await ValidateAfterlifeMentorTrainingShowcasesAsync(issues);
         await ValidateMortalBootstrapTrainingAnchorsAsync(issues);
+        await ValidateMortalBootstrapTradeAnchorsAsync(issues);
         await ValidateMortalTeacherTrainingShowcasesAsync(issues);
     }
 
@@ -280,6 +281,40 @@ public partial class ValidationService
         }
     }
 
+    private async Task ValidateMortalBootstrapTradeAnchorsAsync(List<ValidationIssue> issues)
+    {
+        var currentRealm = await TryResolveCurrentRealmAsync();
+        if (!IsMortalRealmName(currentRealm))
+            return;
+
+        var scaffoldRaw = await _fs.ReadFileAsync(MortalBootstrapScaffoldPath);
+        if (string.IsNullOrWhiteSpace(scaffoldRaw))
+            return;
+
+        try
+        {
+            using var scaffoldDoc = JsonDocument.Parse(scaffoldRaw);
+            if (!MortalBootstrapScaffoldRequestsTrade(scaffoldDoc.RootElement))
+                return;
+
+            if (await HasUsableMortalTradeStateAsync())
+                return;
+
+            AddTrainingIssue(
+                TrainingNpcCorePath,
+                "mortal_bootstrap_requested_trade_missing",
+                "Mortal bootstrap обещает торговлю, но не материализует ни одного NPC-торговца для /торговля_нпс.",
+                "NPCsInScene/UpdateNPCs entry with tradeState.canTrade=true and a valid or resolvable merchant profile",
+                "missing usable tradeState",
+                "Создай или обнови NPC-торговца из стартовой сцены в game_state/npcs/npc_core.json: добавь tradeState.canTrade=true, merchantProfile, relationshipLevel и summary. Если торговля сюжетно заблокирована, убери обещание немедленной покупки из player-facing сцены и запиши tradeBlockedReason.",
+                issues);
+        }
+        catch (JsonException)
+        {
+            // JSON integrity validation reports malformed scaffold files.
+        }
+    }
+
     private static void ValidateTrainingShowcaseActorMetadata(
         JsonElement sourceActor,
         JsonElement showcase,
@@ -407,6 +442,24 @@ public partial class ValidationService
         }
     }
 
+    private async Task<bool> HasUsableMortalTradeStateAsync()
+    {
+        var raw = await _fs.ReadFileAsync(TrainingNpcCorePath);
+        if (string.IsNullOrWhiteSpace(raw))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(raw);
+            return EnumerateMortalNpcTrainingCandidates(doc.RootElement)
+                .Any(candidate => HasUsableMortalTradeState(candidate.Teacher));
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
     private static bool HasUsableMortalTeacherProfile(JsonElement teacher)
     {
         if (!teacher.TryGetProperty("teacherProfile", out var profile) ||
@@ -421,6 +474,30 @@ public partial class ValidationService
         }
 
         return skills.EnumerateArray().Any(skill => skill.ValueKind == JsonValueKind.Object);
+    }
+
+    private static bool HasUsableMortalTradeState(JsonElement npc)
+    {
+        if (!npc.TryGetProperty("tradeState", out var tradeState) ||
+            tradeState.ValueKind != JsonValueKind.Object ||
+            !tradeState.TryGetProperty("canTrade", out var canTrade) ||
+            !TryGetTrainingBool(canTrade, out var canTradeValue) ||
+            !canTradeValue)
+        {
+            return false;
+        }
+
+        var merchantProfile = GetTrainingString(tradeState, "merchantProfile");
+        if (NpcTradeService.IsValidMerchantProfileCode(merchantProfile))
+            return true;
+
+        var resolvedProfile = NpcTradeService.ResolveMerchantProfileCode(
+            merchantProfile,
+            GetTrainingString(npc, "role"),
+            GetTrainingString(npc, "occupation"),
+            GetTrainingString(npc, "class"),
+            GetTrainingString(npc, "name"));
+        return !string.IsNullOrWhiteSpace(resolvedProfile);
     }
 
     private static bool MortalBootstrapScaffoldRequestsTraining(JsonElement scaffold)
@@ -445,6 +522,28 @@ public partial class ValidationService
         return false;
     }
 
+    private static bool MortalBootstrapScaffoldRequestsTrade(JsonElement scaffold)
+    {
+        if (scaffold.ValueKind != JsonValueKind.Object)
+            return false;
+
+        if (scaffold.TryGetProperty("tradeAnchorRequirements", out var tradeRequirements) &&
+            tradeRequirements.ValueKind == JsonValueKind.Object)
+        {
+            return true;
+        }
+
+        if (!scaffold.TryGetProperty("playerAuthoredStart", out var authoredStart) ||
+            authoredStart.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        return authoredStart.TryGetProperty("startingCircumstances", out var value) &&
+               value.ValueKind == JsonValueKind.String &&
+               ContainsTradeAnchorKeyword(value.GetString());
+    }
+
     private static bool ContainsTrainingAnchorKeyword(string? text) =>
         ContainsAnyTrainingKeyword(
             text,
@@ -461,6 +560,26 @@ public partial class ValidationService
             "training",
             "lesson",
             "apprentice");
+
+    private static bool ContainsTradeAnchorKeyword(string? text) =>
+        ContainsAnyTrainingKeyword(
+            text,
+            "торгов",
+            "купец",
+            "лавк",
+            "магазин",
+            "купить",
+            "покуп",
+            "прода",
+            "товар",
+            "merchant",
+            "trade",
+            "trader",
+            "shop",
+            "buy",
+            "sell",
+            "vendor",
+            "goods");
 
     private static bool ContainsAnyTrainingKeyword(string? text, params string[] keywords)
     {

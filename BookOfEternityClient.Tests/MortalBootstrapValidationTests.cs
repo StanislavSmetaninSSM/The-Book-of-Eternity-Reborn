@@ -748,6 +748,129 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_MortalBootstrapRequestedTradeWithoutTradeState_ReportsTradeSurfaceIssue()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 3,
+            characterDescription: "Ронан Вельт, молодой городской писарь.",
+            worldDescription: "Портовый город Астерн с лавками, архивами и купеческими гильдиями.",
+            startingCircumstances: "Рядом купец Дорн предлагает купить воск, чернила и простой талисман перед опасным поручением.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-09T01:00:00Z"));
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        var npcCorePath = _fs.ResolvePath("game_state/npcs/npc_core.json");
+        if (File.Exists(npcCorePath))
+            File.Delete(npcCorePath);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/control/mortal_bootstrap_scaffold.json", """
+        {
+          "schemaVersion": 1,
+          "purpose": "fresh_mortal_world_bootstrap",
+          "playerAuthoredStart": {
+            "characterDescription": "Ронан Вельт, молодой городской писарь.",
+            "worldDescription": "Портовый город Астерн с лавками, архивами и купеческими гильдиями.",
+            "startingCircumstances": "Рядом купец Дорн предлагает купить воск, чернила и простой талисман перед опасным поручением."
+          },
+          "tradeAnchorRequirements": {
+            "requiredNpcShape": "The relevant NPC in NPCsInScene/UpdateNPCs must include tradeState.canTrade=true."
+          }
+        }
+        """);
+
+        var bootstrapLoreFiles = new[]
+        {
+            "lore/current_world/world_setting.json",
+            "lore/current_world/geography.json",
+            "lore/current_world/history.json",
+            "lore/current_world/cultures.json",
+            "lore/current_world/threats.json",
+            "lore/codex_entries.json"
+        };
+
+        await WriteValidatedSnapshotManifestAsync(
+            sourceLabel: "GM-инициированного воплощения",
+            includeSnapshotFilesAsRollbackBaseline: false,
+            bootstrapLoreFiles.Select(path => (Path: path, Json: files[path].ToJsonString())).ToArray());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Code, "mortal_bootstrap_requested_trade_missing", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MortalBootstrapPlayerIsMerchantWithoutTradePromise_DoesNotReportTradeSurfaceIssue()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 3,
+            characterDescription: "Ронан Вельт, молодой купец-писарь без собственной лавки.",
+            worldDescription: "Портовый город Астерн с архивами и купеческими гильдиями.",
+            startingCircumstances: "Ронан просыпается до рассвета в каморке при архиве; на столе лежит чужая опечатанная расписка.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-09T01:00:00Z"));
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        var npcCorePath = _fs.ResolvePath("game_state/npcs/npc_core.json");
+        if (File.Exists(npcCorePath))
+            File.Delete(npcCorePath);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/control/mortal_bootstrap_scaffold.json", """
+        {
+          "schemaVersion": 1,
+          "purpose": "fresh_mortal_world_bootstrap",
+          "playerAuthoredStart": {
+            "characterDescription": "Ронан Вельт, молодой купец-писарь без собственной лавки.",
+            "worldDescription": "Портовый город Астерн с архивами и купеческими гильдиями.",
+            "startingCircumstances": "Ронан просыпается до рассвета в каморке при архиве; на столе лежит чужая опечатанная расписка."
+          }
+        }
+        """);
+
+        var bootstrapLoreFiles = new[]
+        {
+            "lore/current_world/world_setting.json",
+            "lore/current_world/geography.json",
+            "lore/current_world/history.json",
+            "lore/current_world/cultures.json",
+            "lore/current_world/threats.json",
+            "lore/codex_entries.json"
+        };
+
+        await WriteValidatedSnapshotManifestAsync(
+            sourceLabel: "GM-инициированного воплощения",
+            includeSnapshotFilesAsRollbackBaseline: false,
+            bootstrapLoreFiles.Select(path => (Path: path, Json: files[path].ToJsonString())).ToArray());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_requested_trade_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_NpcSkillStringEntries_ReportShapeIssuesInsteadOfThrowing()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """

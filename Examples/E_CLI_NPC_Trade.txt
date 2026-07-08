@@ -23,6 +23,7 @@
   - `FlavorOrUtility`
 - Ordinary local goods may have no `bonuses`, `effects`, `passiveEffects`, or `structuredBonuses`. This is normal.
 - A merchant NPC knows the local goods from their own stock and should not be surprised if the player asks about an item bought from that stock.
+- During the first Mortal bootstrap, if the opening scene promises a merchant, shop, purchase, sale, or `/торговля_нпс`, the merchant must be materialized in `game_state/npcs/npc_core.json` with `tradeState.canTrade=true`. A trade-flavored class, role, or `progressionType` without `tradeState` is not enough for the client.
 
 ## Valid NPC trade state fragment
 
