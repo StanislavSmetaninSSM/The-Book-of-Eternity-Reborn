@@ -17,6 +17,7 @@ public partial class ValidationService
         public string Mode { get; set; } = "";
         public bool HasModeField { get; set; }
         public List<string> RelevantActors { get; } = new();
+        public List<string> RelevantActorFieldValues { get; } = new();
         public bool HasRelevantActorsField { get; set; }
         public string WhyRelevant { get; set; } = "";
         public bool HasWhyRelevantField { get; set; }
@@ -160,6 +161,7 @@ public partial class ValidationService
             if (LabelContainsAny(label, "релевантные акторы", "relevant actors"))
             {
                 scope.HasRelevantActorsField = true;
+                scope.RelevantActorFieldValues.Add(value);
                 scope.RelevantActors.AddRange(ParseActorList(value));
                 continue;
             }
@@ -2389,8 +2391,19 @@ public partial class ValidationService
 
     private static bool ScopeContainsRelevantActor(ReasoningScopeManifest scope, string alias)
     {
-        return scope.RelevantActors.Any(actor => ActorNamesMatch(actor, alias));
+        return scope.RelevantActors.Any(actor => ActorNamesMatch(actor, alias)) ||
+               scope.RelevantActorFieldValues.Any(rawValue => RawScopeFieldContainsActorAlias(rawValue, alias));
     }
+
+    private static bool RawScopeFieldContainsActorAlias(string rawValue, string alias)
+    {
+        var normalizedRaw = NormalizeActorNameForMatching(rawValue.Trim('[', ']'));
+        var normalizedAlias = NormalizeActorNameForMatching(alias);
+        return !string.IsNullOrWhiteSpace(normalizedRaw) &&
+               !string.IsNullOrWhiteSpace(normalizedAlias) &&
+               normalizedRaw.Contains(normalizedAlias, StringComparison.OrdinalIgnoreCase);
+    }
+
     private void ValidateActorReasoningBlock(string thoughts, string actorName, string actorType, bool requiresNpcLocationAudit, List<ValidationIssue> issues)
     {
         if (!TryExtractReasoningBlock(thoughts, actorName, out var block))

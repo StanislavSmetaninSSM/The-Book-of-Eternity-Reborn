@@ -7514,7 +7514,7 @@ public partial class ValidationService
 
         if (scopeMode == ReasoningScopeMode.GuardianCentric &&
             activeGuardianNames.Count > 0 &&
-            !scope.RelevantActors.Any(actor => activeGuardianNames.Contains(actor)))
+            !activeGuardianNames.Any(activeGuardianName => ScopeContainsRelevantActor(scope, activeGuardianName)))
         {
             issues.Add(new ValidationIssue(
                 "output/debug_logs.json", IssueSeverity.Error,

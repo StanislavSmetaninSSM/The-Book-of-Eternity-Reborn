@@ -292,6 +292,7 @@ Afterlife Writer's Room: for Chaos Sea / Shining Abode long-form planning use `a
 - `shining_abode_state.json.shiningPoliticalActors[]` and important Shining faction/head-actor changes (`Shining political` pack)
 - late actor-mutating updates are checked against the same scope contract
 
+Если canonical actor name само содержит запятую, пиши это имя целиком в `Релевантные акторы` и в `### <actor>` heading. Для нескольких акторов с такими именами предпочитай `;` как визуальный разделитель, чтобы не дробить имя на части.
 `Scene-local` с `Релевантные акторы: нет` допустим только если в ходе действительно нет структурированных actor updates.
 Для `Guardian-centric` клиент проверяет `activeGuardian` только если он явно задан в состоянии; он не должен угадывать Хранителя по порядку массива.
 Если structured update содержит только ID и имя нельзя надёжно восстановить из текущего state, это само по себе не должно считаться hard mismatch scope.

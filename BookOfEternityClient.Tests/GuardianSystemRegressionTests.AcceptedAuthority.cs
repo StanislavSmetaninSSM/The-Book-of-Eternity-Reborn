@@ -5128,6 +5128,117 @@ public sealed partial class GuardianSystemRegressionTests
     }
 
     [Fact]
+    public async Task AcceptedTurnReasoning_GuardianAliasWithCommaStaysSingleRelevantActor()
+    {
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", """
+        {
+          "sessionId": "test-session",
+          "requestId": "test-request",
+          "turnNumber": 12
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea"
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "UpdateGuardians": [
+            {
+              "command": "updateReputation",
+              "guardianId": "guardian_selena",
+              "reputationChange": 1,
+              "reason": "The comma-containing Guardian name must still satisfy reasoning scope."
+            }
+          ]
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_guardian_reasoning_comma_alias.json",
+            """
+            {
+              "currentRealm": "Chaos Sea"
+            }
+            """);
+
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/preturn_guardians_reasoning_comma_alias.json",
+            """
+            {
+              "guardians": [
+                {
+                  "guardianId": "guardian_selena",
+                  "canonicalName": "Селена, хранительница забытых библиотек",
+                  "nameVariants": {
+                    "default": "Селена, хранительница забытых библиотек",
+                    "feminine": "Селена, хранительница забытых библиотек",
+                    "masculine": null,
+                    "neutral": null
+                  },
+                  "manifestation": {
+                    "currentDisplayName": "Селена, хранительница забытых библиотек",
+                    "formFlexibility": "selective",
+                    "currentPresentationStyle": "feminine",
+                    "currentPronouns": "она/её",
+                    "appearanceDescription": "Хранительница архивов над Серым морем."
+                  },
+                  "manifestationHistory": [],
+                  "relationshipData": { "currentReputation": 0, "reputationHistory": [], "lastInteraction": null },
+                  "abodePower": { "currentPower": 10, "tier": "Угасающая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+                  "guardianRelationships": [],
+                  "gachaSystem": { "chargesPerReturn": 1, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                }
+              ],
+              "activeGuardian": {
+                "guardianId": "guardian_selena",
+                "canonicalName": "Селена, хранительница забытых библиотек",
+                "nameVariants": {
+                  "default": "Селена, хранительница забытых библиотек",
+                  "feminine": "Селена, хранительница забытых библиотек",
+                  "masculine": null,
+                  "neutral": null
+                },
+                "manifestation": {
+                  "currentDisplayName": "Селена, хранительница забытых библиотек",
+                  "formFlexibility": "selective",
+                  "currentPresentationStyle": "feminine",
+                  "currentPronouns": "она/её",
+                  "appearanceDescription": "Хранительница архивов над Серым морем."
+                },
+                "manifestationHistory": [],
+                "relationshipData": { "currentReputation": 0, "reputationHistory": [], "lastInteraction": null },
+                "abodePower": { "currentPower": 10, "tier": "Угасающая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+                "guardianRelationships": [],
+                "gachaSystem": { "chargesPerReturn": 1, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+              }
+            }
+            """);
+
+        await WriteRawAsync("output/debug_logs.json", """
+        {
+          "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Релевантные акторы: Селена, хранительница забытых библиотек\n- Почему они релевантны: ход меняет репутацию активного Хранителя.\n- Акторы вне охвата: нет\n- Почему они вне охвата: Другие акторы не участвуют.\n\n## Guardian Thoughts\n### Селена, хранительница забытых библиотек\n- Ситуация: Хранительница принимает первую оценку души.\n- Мысли: Она сверяет просьбу с памятью своих архивов.\n- Действия: Она меняет отношение к душе.\n",
+          "timestamp": "2026-03-28T00:00:00Z"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "active_guardian_missing_from_scope", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "structured_guardian_update_out_of_scope", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "missing_actor_block", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameState_NewGuardianMaterializedInCurrentGuardiansWithoutCreateSurfaceRaisesExplicitError()
     {
         await WriteRawAsync("game_state/meta/guardians.json", """
