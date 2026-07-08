@@ -993,7 +993,8 @@ public partial class GameEngine
             request.Action,
             extraSystemReminder: "Это служебное обновление витрины для локальной команды. Подготовь требуемую витрину/ассортимент по pending-контракту, без отдельной игровой сцены для игрока.",
             waitingTitle: request.WaitingTitle,
-            waitingText: request.WaitingMessage);
+            waitingText: request.WaitingMessage,
+            playerFacingTurn: false);
 
         var refreshResult = await _explorer.TryProcessCommand(request.OriginalCommand);
         var repeatedInPlaceRequest = _explorer.ConsumePendingInPlaceGmRequest();
@@ -1022,7 +1023,8 @@ public partial class GameEngine
         string action,
         string? extraSystemReminder = null,
         string? waitingTitle = null,
-        string? waitingText = null)
+        string? waitingText = null,
+        bool playerFacingTurn = true)
     {
         if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
             return;
@@ -1216,55 +1218,59 @@ public partial class GameEngine
             return;
         }
 
-        _gameLoop.IncrementTurn();
-        _lastResponse = response;
-        _pendingImagePrompt = null;
-
-        // Persist turn to story file
-        var state = _stateManager.CurrentState;
-        await _storyService.AppendTurnAsync(
-            _gameLoop.TurnNumber,
-            state.CurrentRealm ?? "Chaos Sea",
-            state.Incarnation,
-            action,
-            response?.Response,
-            state.CurrentLocation,
-            await ExtractStoryEntityRefsAsync(action));
-
-        await ProcessMortalProgressionAfterAcceptedTurnAsync();
-
-        // Check for GM-triggered life transitions
-        if (await CheckLifeTransitions(activeSnapshotContext))
+        if (playerFacingTurn)
         {
-            CleanupBackup(backedUpFiles);
-            return;
+            _gameLoop.IncrementTurn();
+            _lastResponse = response;
+            _pendingImagePrompt = null;
+
+            // Persist turn to story file
+            var state = _stateManager.CurrentState;
+            await _storyService.AppendTurnAsync(
+                _gameLoop.TurnNumber,
+                state.CurrentRealm ?? "Chaos Sea",
+                state.Incarnation,
+                action,
+                response?.Response,
+                state.CurrentLocation,
+                await ExtractStoryEntityRefsAsync(action));
+
+            await ProcessMortalProgressionAfterAcceptedTurnAsync();
+
+            // Check for GM-triggered life transitions
+            if (await CheckLifeTransitions(activeSnapshotContext))
+            {
+                CleanupBackup(backedUpFiles);
+                return;
+            }
+            await CheckAscensionTrigger();
+
+            await ConsumeAfterlifeReturnProtectionIfNeededAsync(activeSnapshotContext);
+
+            var qteHandling = await HandleAcceptedQteOfferAsync(response, activeSnapshotContext);
+            if (qteHandling.EarlyExit)
+            {
+                CleanupBackup(backedUpFiles);
+                return;
+            }
+
+            _lastResponse = qteHandling.Response;
+            _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
+
+            // Autosave
+            if (_stateManager.Settings.AutosaveIntervalTurns > 0 &&
+                _gameLoop.TurnNumber % _stateManager.Settings.AutosaveIntervalTurns == 0)
+            {
+                await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
+            }
+
+            if (await CheckGmIncarnationTrigger(activeSnapshotContext))
+            {
+                CleanupBackup(backedUpFiles);
+                return;
+            }
         }
-        await CheckAscensionTrigger();
 
-        await ConsumeAfterlifeReturnProtectionIfNeededAsync(activeSnapshotContext);
-
-        var qteHandling = await HandleAcceptedQteOfferAsync(response, activeSnapshotContext);
-        if (qteHandling.EarlyExit)
-        {
-            CleanupBackup(backedUpFiles);
-            return;
-        }
-
-        _lastResponse = qteHandling.Response;
-        _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
-
-        // Autosave
-        if (_stateManager.Settings.AutosaveIntervalTurns > 0 &&
-            _gameLoop.TurnNumber % _stateManager.Settings.AutosaveIntervalTurns == 0)
-        {
-            await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
-        }
-
-        if (await CheckGmIncarnationTrigger(activeSnapshotContext))
-        {
-            CleanupBackup(backedUpFiles);
-            return;
-        }
         CleanupBackup(backedUpFiles);
         await CleanupAcceptedTurnTerminalArtifactsAsync();
     }

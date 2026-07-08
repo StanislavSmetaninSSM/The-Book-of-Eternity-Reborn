@@ -35,6 +35,7 @@ When the player opens `/торговля` or a specific trade command and the tr
 - **REQ-003**: The engine must send the GM action immediately, wait for validation/repair as usual, and then re-render the originating command once.
 - **REQ-004**: If the GM response fails or the vitrine is still missing after refresh, the command must not spin in an infinite auto-dispatch loop.
 - **REQ-005**: Player-facing copy must be Russian and must not mention JSON, validation, pending files, or implementation details.
+- **REQ-006**: Accepted vitrine-preparation service responses must not overwrite the current visible scene, must not be appended as a normal story turn, and must not advance the player-visible turn counter.
 
 ## Out of Scope
 
@@ -45,4 +46,3 @@ When the player opens `/торговля` or a specific trade command and the tr
 ## Prompt and Documentation Impact
 
 This is primarily a client harness/UX flow. Existing GM request contracts stay the same: the GM still resolves the same pending training/trade requests. GM docs need only a short clarification if code changes the player-visible workflow or the request timing language.
-

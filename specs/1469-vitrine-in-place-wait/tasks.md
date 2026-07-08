@@ -10,4 +10,9 @@
 - [x] T006 Update training and trade waiting copy to the approved wording.
 - [x] T007 Check whether GM-facing docs/examples need wording updates for the harness timing change.
 - [x] T008 Run focused tests and documentation/source-guard tests.
-- [ ] T009 Comment verification evidence on #1469 and commit changes.
+- [x] T009 Comment verification evidence on #1469 and commit initial in-place wait changes.
+- [x] T010 Reopen #1469 from live-test evidence: vitrine preparation still became a visible service scene/turn after returning from the command screen.
+- [x] T011 Add guard coverage that in-place vitrine preparation uses a non-player-facing GM lifecycle.
+- [x] T012 Prevent accepted vitrine-preparation service responses from overwriting `_lastResponse`, appending a normal story turn, or advancing the player-visible turn.
+- [x] T013 Verify focused tests and repeat the live `/обучение` wait/regression path.
+- [x] T014 Comment final verification evidence on #1469 and commit the reopened fix.

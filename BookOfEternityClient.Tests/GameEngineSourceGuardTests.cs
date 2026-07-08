@@ -225,8 +225,16 @@ public sealed class GameEngineSourceGuardTests
         var method = ExtractMethodSource(source, "private async Task ProcessInPlaceExplorerGmRequest(");
         Assert.Contains("request.WaitingTitle", method, StringComparison.Ordinal);
         Assert.Contains("request.WaitingMessage", method, StringComparison.Ordinal);
+        Assert.Contains("playerFacingTurn: false", method, StringComparison.Ordinal);
         Assert.Contains("await _explorer.TryProcessCommand(request.OriginalCommand)", method, StringComparison.Ordinal);
         Assert.Contains("Повторный автозапрос не отправлен", method, StringComparison.Ordinal);
+
+        var processPlayerTurn = ExtractMethodSource(source, "private async Task ProcessPlayerTurn(");
+        Assert.Contains("bool playerFacingTurn = true", processPlayerTurn, StringComparison.Ordinal);
+        Assert.Contains("if (playerFacingTurn)", processPlayerTurn, StringComparison.Ordinal);
+        Assert.Contains("_gameLoop.IncrementTurn();", processPlayerTurn, StringComparison.Ordinal);
+        Assert.Contains("_lastResponse = response;", processPlayerTurn, StringComparison.Ordinal);
+        Assert.Contains("_storyService.AppendTurnAsync", processPlayerTurn, StringComparison.Ordinal);
     }
 
     [Fact]
