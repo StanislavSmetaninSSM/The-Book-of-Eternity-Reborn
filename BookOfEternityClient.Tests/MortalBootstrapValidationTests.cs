@@ -218,6 +218,32 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Fact]
+    public void MortalBootstrapStateBuilder_MaterializesLearnIntentAsStarterTeacher()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 3,
+            characterDescription: "Кай Рен, молодой подмастерье картографа, хочет научиться защищаться ножом.",
+            worldDescription: "Портовый город с картографическими мастерскими, купеческими домами и уличными бандами.",
+            startingCircumstances: "Утро в мастерской старого картографа у причала Соляных Верфей. Мастер Орт велит Каю сверить печати.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-09T01:00:00Z"));
+
+        var experience = files["game_state/player/experience.json"];
+        Assert.Equal(25, experience["currentExperience"]!.GetValue<int>());
+        Assert.Equal(25, experience["experience"]!.GetValue<int>());
+
+        var npcCore = Assert.IsType<JsonObject>(files["game_state/npcs/npc_core.json"]);
+        var sceneNpcs = Assert.IsType<JsonArray>(npcCore["NPCsInScene"]);
+        var teacher = Assert.Single(sceneNpcs.OfType<JsonObject>());
+        Assert.Equal("npc_life_001_start_teacher", teacher["npcId"]!.GetValue<string>());
+        Assert.Equal("loc_life_001_start", teacher["currentLocationId"]!.GetValue<string>());
+
+        var teacherProfile = Assert.IsType<JsonObject>(teacher["teacherProfile"]);
+        Assert.True(teacherProfile["canTeach"]!.GetValue<bool>());
+        Assert.NotEmpty(teacherProfile["skills"]!.AsArray());
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_LocalUiSessionLock_IsClientOwnedAndDoesNotFailStateContract()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
@@ -740,6 +766,71 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             "startingCircumstances": "За дверью ждёт наставница Селина Орвейн, которая может обучать магической диагностике, быстрым выпадам и этикету через витрину обучения."
           },
           "trainingAnchorRequirements": {
+            "requiredNpcShape": "The relevant NPC in NPCsInScene/UpdateNPCs must include teacherProfile with canTeach=true."
+          }
+        }
+        """);
+
+        var bootstrapLoreFiles = new[]
+        {
+            "lore/current_world/world_setting.json",
+            "lore/current_world/geography.json",
+            "lore/current_world/history.json",
+            "lore/current_world/cultures.json",
+            "lore/current_world/threats.json",
+            "lore/codex_entries.json"
+        };
+
+        await WriteValidatedSnapshotManifestAsync(
+            sourceLabel: "GM-инициированного воплощения",
+            includeSnapshotFilesAsRollbackBaseline: false,
+            bootstrapLoreFiles.Select(path => (Path: path, Json: files[path].ToJsonString())).ToArray());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MortalBootstrapLearnIntentAndMasterWithoutTeacherProfile_ReportsTrainingSurfaceIssue()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 3,
+            characterDescription: "Кай Рен, молодой подмастерье картографа, хочет научиться защищаться ножом.",
+            worldDescription: "Портовый город с картографическими мастерскими, купеческими домами и уличными бандами.",
+            startingCircumstances: "Утро в мастерской старого картографа у причала Соляных Верфей. Мастер Орт велит Каю сверить печати.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-09T01:00:00Z"));
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        var npcCorePath = _fs.ResolvePath("game_state/npcs/npc_core.json");
+        if (File.Exists(npcCorePath))
+            File.Delete(npcCorePath);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Пепельная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/control/mortal_bootstrap_scaffold.json", """
+        {
+          "schemaVersion": 1,
+          "purpose": "fresh_mortal_world_bootstrap",
+          "playerAuthoredStart": {
+            "characterDescription": "Кай Рен, молодой подмастерье картографа, хочет научиться защищаться ножом.",
+            "worldDescription": "Портовый город с картографическими мастерскими, купеческими домами и уличными бандами.",
+            "startingCircumstances": "Утро в мастерской старого картографа у причала Соляных Верфей. Мастер Орт велит Каю сверить печати."
+          },
+          "trainingAnchorRequirements": {
+            "trigger": "Apply when the player-authored start asks for a teacher, mentor, trainer, paid lesson, school, practice, обучение, тренировка, урок, наставник, or учитель.",
             "requiredNpcShape": "The relevant NPC in NPCsInScene/UpdateNPCs must include teacherProfile with canTeach=true."
           }
         }

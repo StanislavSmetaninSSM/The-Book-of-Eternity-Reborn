@@ -199,6 +199,7 @@ public static class MortalBootstrapStateBuilder
         ContainsAny(
             text,
             "обуч",
+            "науч",
             "трениров",
             "урок",
             "настав",

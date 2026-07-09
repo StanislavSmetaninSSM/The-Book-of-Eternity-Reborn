@@ -181,6 +181,7 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("canTeach", method, StringComparison.Ordinal);
         Assert.Contains("skills", method, StringComparison.Ordinal);
         Assert.Contains("/обучение", method, StringComparison.Ordinal);
+        Assert.Contains("научиться", method, StringComparison.Ordinal);
         Assert.Contains("pending_training_showcase_requests.json", method, StringComparison.Ordinal);
         Assert.Contains("Do not advertise paid training only in prose", method, StringComparison.Ordinal);
         Assert.Contains("starterResourceGrant.CurrentLevelExperience", method, StringComparison.Ordinal);

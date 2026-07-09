@@ -548,6 +548,7 @@ public partial class ValidationService
         ContainsAnyTrainingKeyword(
             text,
             "обуч",
+            "науч",
             "учител",
             "настав",
             "тренер",
