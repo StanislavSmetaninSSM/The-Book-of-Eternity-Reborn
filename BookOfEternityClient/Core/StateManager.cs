@@ -84,6 +84,9 @@ public class StateManager
                 CurrentConditionDescription = GetString(root, "currentConditionDescription", ""),
                 ActiveConditions = GetStringArray(root, "activeConditions")
             };
+            state.CharacterName = GetString(root, "characterName", state.CharacterName);
+            state.CharacterClass = GetString(root, "characterClass", state.CharacterClass);
+            state.CharacterRace = GetString(root, "characterRace", state.CharacterRace);
         });
 
         // Core: Narrative
@@ -153,6 +156,8 @@ public class StateManager
                 enl.TryGetProperty("currentTier", out var tier))
                 state.EnlightenmentTier = tier.GetString() ?? "Новичок";
         });
+
+        await TryLoadMortalIncarnationIdentityFallbackAsync(state);
 
         // Meta: Shining Abode lifecycle handoff
         await TryLoadJson("game_state/meta/shining_abode_state.json", (doc) =>
@@ -376,6 +381,53 @@ public class StateManager
         {
             _logger.LogWarning(ex, "Ошибка чтения {Path}", path);
         }
+    }
+
+    private async Task TryLoadMortalIncarnationIdentityFallbackAsync(AggregatedGameState state)
+    {
+        if (state.IsInAfterlifeRealm || !string.IsNullOrWhiteSpace(state.CharacterName))
+            return;
+
+        await TryLoadJson("game_state/control/next_life_scenario_core.json", doc =>
+        {
+            if (!doc.RootElement.TryGetProperty("scenarioCoreAssertions", out var assertions) ||
+                assertions.ValueKind != JsonValueKind.Array)
+                return;
+
+            foreach (var assertion in assertions.EnumerateArray())
+            {
+                if (assertion.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var category = GetString(assertion, "category", "");
+                if (!string.Equals(category, "identity_anchor", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var value = GetString(assertion, "value", "");
+                var identityName = ExtractMortalIdentityName(value);
+                if (string.IsNullOrWhiteSpace(identityName))
+                    continue;
+
+                state.CharacterName = identityName;
+                return;
+            }
+        });
+    }
+
+    private static string ExtractMortalIdentityName(string value)
+    {
+        value = value.Trim();
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var boundary = value.IndexOfAny([',', ':', ';', '.', '\r', '\n']);
+        var candidate = boundary > 0 ? value[..boundary] : value;
+        candidate = candidate.Trim(' ', '—', '-', '–');
+        if (candidate.Length <= 80)
+            return candidate;
+
+        var words = candidate.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        return words.Length <= 4 ? candidate : string.Join(' ', words.Take(4));
     }
 
     private async Task RepairClientOwnedProfileMirrorsAsync()

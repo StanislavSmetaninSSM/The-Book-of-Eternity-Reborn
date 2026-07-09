@@ -977,6 +977,8 @@ public partial class ExplorerMode
         var identityName = !string.IsNullOrWhiteSpace(state.CharacterName)
             ? state.CharacterName
             : state.SoulName;
+        var usesSoulIdentityFallback = string.IsNullOrWhiteSpace(state.CharacterName) &&
+                                       !string.IsNullOrWhiteSpace(state.SoulName);
         if (!string.IsNullOrWhiteSpace(identityName))
             leftContent.AddRow(new Markup($"[bold white]👤 {Markup.Escape(identityName)}[/]"));
 
@@ -991,6 +993,7 @@ public partial class ExplorerMode
             identityTable.AddRow(new Markup("[dim]Класс[/]"), new Markup($"[white]{Markup.Escape(state.CharacterClass)}[/]"));
         if (string.IsNullOrWhiteSpace(state.CharacterRace) &&
             string.IsNullOrWhiteSpace(state.CharacterClass) &&
+            usesSoulIdentityFallback &&
             !string.IsNullOrWhiteSpace(state.SoulFormDescription))
         {
             identityTable.AddRow(new Markup("[dim]Форма души[/]"), new Markup($"[white]{Markup.Escape(state.SoulFormDescription)}[/]"));

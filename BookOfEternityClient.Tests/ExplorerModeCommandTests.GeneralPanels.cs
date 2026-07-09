@@ -1259,6 +1259,59 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Status_MortalBootstrapUsesIncarnationIdentityBeforeSoulFallback()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Северная Искра",
+            soulFormDescription = "Полупрозрачная душа в серо-синем свете.",
+            currentRealm = "Mortal World",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 0 },
+            enlightenment = new { currentTier = "Новичок" }
+        });
+        await WriteJsonAsync("game_state/control/next_life_scenario_core.json", new
+        {
+            scenarioCoreAssertions = new[]
+            {
+                new
+                {
+                    assertionId = "core_identity",
+                    category = "identity_anchor",
+                    value = "Ронан Вельт, молодой городской писарь из портового архива: худой человек с чернильными пальцами.",
+                    @explicit = true,
+                    source = "structured_field"
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/core/player_status.json", new
+        {
+            healthPercentage = "100%",
+            energyPercentage = "100%",
+            poisePercentage = "100%",
+            currentCondition = "Здоров",
+            money = 100
+        });
+        await WriteJsonAsync("game_state/player/computed_characteristics.json", new
+        {
+            characteristics = new { strength = 1, dexterity = 2, constitution = 1, intelligence = 4, wisdom = 2, faith = 1, attractiveness = 2, trade = 3, persuasion = 2, perception = 3, luck = 1, speed = 2 },
+            modifiedCharacteristics = new { strength = 1, dexterity = 2, constitution = 1, intelligence = 4, wisdom = 2, faith = 1, attractiveness = 2, trade = 3, persuasion = 2, perception = 3, luck = 1, speed = 2 },
+            permanentlyModifiedCharacteristics = new { strength = 1, dexterity = 2, constitution = 1, intelligence = 4, wisdom = 2, faith = 1, attractiveness = 2, trade = 3, persuasion = 2, perception = 3, luck = 1, speed = 2 }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/статус"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("status_mortal_bootstrap_identity");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Ронан Вельт", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("👤 Северная Искра", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Форма души", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_Skills_RendersWithoutHiddenErrors()
     {
