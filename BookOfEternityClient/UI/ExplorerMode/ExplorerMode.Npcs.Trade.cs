@@ -84,6 +84,9 @@ public partial class ExplorerMode
                 return;
 
             await ShowNpcTradePanel(merchantChoices[index].NpcId);
+            if (_pendingInPlaceGmRequest is not null)
+                return;
+
             Clear();
         }
     }

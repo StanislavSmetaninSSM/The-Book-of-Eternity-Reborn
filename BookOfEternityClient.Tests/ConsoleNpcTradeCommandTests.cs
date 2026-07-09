@@ -148,6 +148,29 @@ public sealed class ConsoleNpcTradeCommandTests : IDisposable
         Assert.DoesNotContain(console.SelectionTitles, title => title.Contains("Выберите НПС", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    [Trait("Category", "ConsoleNpcTrade")]
+    public async Task TryProcessCommand_NpcTradeWithoutNpcIdAndMissingInventory_WaitsInPlaceWithoutReturningToMerchantList()
+    {
+        await SeedNpcTradeStateWithoutInventoryAsync();
+        await _stateManager.RefreshGameStateAsync();
+        var console = new TestExplorerConsole();
+        var explorer = new ExplorerMode(
+            _stateManager,
+            _fs,
+            new LocalizationManager(),
+            npcTradeService: new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance),
+            console: console);
+
+        var result = await explorer.TryProcessCommand("/торговля_нпс");
+
+        Assert.Equal(string.Empty, result);
+        Assert.Contains(console.MarkupLines, line =>
+            line.Contains("Витрина подготавливается. Дождитесь завершения, ГМ работает", StringComparison.OrdinalIgnoreCase));
+        Assert.Single(console.SelectionTitles, title =>
+            title.Contains("Торговля с НПС", StringComparison.OrdinalIgnoreCase));
+    }
+
     public void Dispose()
     {
         try
