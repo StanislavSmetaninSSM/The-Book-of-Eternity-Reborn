@@ -163,6 +163,50 @@ public sealed class AgentConsoleRecordingExplorerConsoleTests
         Assert.Equal("← К обучению души", await promptTask.WaitAsync(TimeSpan.FromSeconds(2)));
     }
 
+    [Fact]
+    public async Task Prompt_LiveSelectionBackActionTargetsBackChoiceWhenLockedRowsAreSelected()
+    {
+        var store = new AgentConsoleStateStore();
+        var liveInput = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromSeconds(2));
+        var console = new AgentConsoleRecordingExplorerConsole(
+            new LiveInputExplorerConsole(liveInput),
+            liveInput);
+        var prompt = new SelectionPrompt<string>()
+            .Title("🎓 Хранительница Ориана Безмолвных Полок: предложения")
+            .AddChoices(
+                "• Защита памяти | духовное искусство | закрыто: нужно открыть уровень искусства 1",
+                "• Манёвр нитей | духовное искусство | закрыто: нужно открыть уровень искусства 1",
+                "• Связывание обета | духовное искусство | закрыто: нужно открыть уровень искусства 1",
+                "← К учителям");
+
+        var promptTask = Task.Run(() => console.Prompt(prompt));
+
+        var published = SpinWait.SpinUntil(
+            () => store.GetSnapshot()?.InputKind == AgentConsoleInputKind.MenuSelection || promptTask.IsCompleted,
+            TimeSpan.FromSeconds(1));
+
+        Assert.True(published);
+        Assert.False(promptTask.IsCompleted);
+        var snapshot = Assert.IsType<AgentConsoleSnapshot>(store.GetSnapshot());
+        Assert.Equal(0, snapshot.SelectedIndex);
+        var lockedAction = Assert.Single(snapshot.Actions, action => action.Id == "option-0");
+        var backAction = Assert.Single(snapshot.Actions, action => action.Label.Contains("К учителям", StringComparison.OrdinalIgnoreCase));
+
+        Assert.False(lockedAction.IsEnabled);
+        Assert.True(backAction.IsEnabled);
+        Assert.True(backAction.IsDefault);
+
+        var backAccepted = liveInput.TryQueueAction(new AgentConsoleActionRequest
+        {
+            ScreenId = snapshot.ScreenId,
+            ActionId = backAction.Id,
+            InputKind = AgentConsoleInputKind.MenuSelection
+        });
+
+        Assert.True(backAccepted.Accepted, backAccepted.Message);
+        Assert.Equal("← К учителям", await promptTask.WaitAsync(TimeSpan.FromSeconds(2)));
+    }
+
     private sealed class PromptlessExplorerConsole : IExplorerConsole
     {
         public bool KeyAvailable => false;

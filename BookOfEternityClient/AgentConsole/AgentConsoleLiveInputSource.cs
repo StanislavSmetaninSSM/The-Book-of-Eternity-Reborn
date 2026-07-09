@@ -872,7 +872,8 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
             return true;
         }
 
-        if ((snapshot.SelectedIndex.HasValue && snapshot.SelectedIndex.Value == actionIndex) || action.IsDefault)
+        if ((snapshot.SelectedIndex.HasValue && snapshot.SelectedIndex.Value == actionIndex) ||
+            (snapshot.InputKind != AgentConsoleInputKind.MenuSelection && action.IsDefault))
         {
             queuedInputs = [QueuedInput.ForKey(new ConsoleKeyInfo('\0', ConsoleKey.Enter, shift: false, alt: false, control: false))];
             return true;
