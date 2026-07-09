@@ -4790,6 +4790,10 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var engine = CreateGameEngine(new QueuedConsoleInputSource(inputKeys));
         var stateManager = GetPrivateField<StateManager>(engine, "_stateManager");
         await stateManager.RefreshGameStateAsync();
+        SetPrivateField(engine, "_lastResponse", new GameResponse
+        {
+            Response = "Серет открывает Врата Души. Следующее пробуждение уже принадлежит смертной жизни Нерия Сольвейна."
+        });
         var manifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
         var acceptedSnapshotContext = await InvokePrivateTaskResultAsync(
             engine,
@@ -4859,6 +4863,9 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.False(_fs.FileExists("input/turn_request.json"));
         Assert.False(_fs.FileExists("ready/turn_complete.json"));
         Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+        var lastResponse = GetPrivateField<GameResponse>(engine, "_lastResponse");
+        Assert.DoesNotContain("Следующее пробуждение уже принадлежит смертной жизни", lastResponse.Response, StringComparison.Ordinal);
+        Assert.Contains("не удалось подготовить смертную жизнь", lastResponse.Response, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -6980,6 +6987,13 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var value = field!.GetValue(instance) as T;
         Assert.NotNull(value);
         return value!;
+    }
+
+    private static void SetPrivateField<T>(object instance, string fieldName, T value)
+    {
+        var field = instance.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(field);
+        field!.SetValue(instance, value);
     }
 
     private static async Task<T> InvokePrivateAsync<T>(object instance, string methodName, params object?[]? args)

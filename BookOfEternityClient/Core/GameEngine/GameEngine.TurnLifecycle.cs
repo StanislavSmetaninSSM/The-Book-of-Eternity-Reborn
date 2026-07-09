@@ -2571,7 +2571,10 @@ public partial class GameEngine
 
             // Wait for GM response describing the new mortal world
             if (!await WaitForGmResponse())
+            {
+                SetIncarnationBootstrapFailureResponse(worldDesc, charDesc);
                 return false;
+            }
 
             await RefreshRuntimeStateAsync();
             await _worldDirectiveService.MaterializePendingToActiveAsync(worldDesc, circumstances);
@@ -2592,6 +2595,35 @@ public partial class GameEngine
                 _fs.DeleteFile("game_state/control/incarnation_trigger.json");
             return requestDispatched;
         }
+    }
+
+    private void SetIncarnationBootstrapFailureResponse(string? worldDescription, string? characterDescription)
+    {
+        var details = new List<string>
+        {
+            "Воплощение не завершилось: мастеру не удалось подготовить смертную жизнь так, чтобы она прошла проверку мира.",
+            "Состояние возвращено в Море Хаоса; смертный персонаж ещё не создан."
+        };
+        if (!string.IsNullOrWhiteSpace(characterDescription))
+            details.Add($"Запрошенный персонаж: {characterDescription}");
+        if (!string.IsNullOrWhiteSpace(worldDescription))
+            details.Add($"Запрошенный мир: {worldDescription}");
+        details.Add("Можно попробовать открыть Врата Души заново или уточнить запрос на воплощение.");
+
+        _lastResponse = new GameResponse
+        {
+            Response = string.Join(Environment.NewLine + Environment.NewLine, details),
+            DialogueOptions =
+            [
+                new DialogueOption
+                {
+                    Text = "Попробовать открыть Врата Души заново",
+                    InputValue = "/воплотиться",
+                    Category = "system"
+                }
+            ]
+        };
+        _pendingImagePrompt = null;
     }
 
     private async Task WriteMortalBootstrapBaselineAsync(
