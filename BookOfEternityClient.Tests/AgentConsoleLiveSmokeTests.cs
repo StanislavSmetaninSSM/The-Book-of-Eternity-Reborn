@@ -75,35 +75,19 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
                 snapshot => (snapshot["selectedIndex"]?.GetValue<int>() ?? -1) != initialSelectedIndex);
             Assert.Equal("main-menu", afterKeySnapshot["screenId"]!.GetValue<string>());
 
-            using var selectExitResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
+            using var activateExitResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
             {
                 actionId = exitActionId,
                 screenId = afterKeySnapshot["screenId"]!.GetValue<string>(),
                 inputKind = "menuSelection"
             });
             Assert.True(
-                selectExitResponse.IsSuccessStatusCode,
-                $"Expected action endpoint to select exit, got {(int)selectExitResponse.StatusCode}: {await selectExitResponse.Content.ReadAsStringAsync()}");
-
-            var exitSelectedSnapshot = await WaitForSnapshotAsync(
-                client,
-                TimeSpan.FromSeconds(10),
-                snapshot => (snapshot["selectedIndex"]?.GetValue<int>() ?? -1) == exitAction.Index);
-            Assert.Equal(exitActionId, exitSelectedSnapshot["actions"]![exitAction.Index]!["id"]!.GetValue<string>());
+                activateExitResponse.IsSuccessStatusCode,
+                $"Expected action endpoint to activate exit, got {(int)activateExitResponse.StatusCode}: {await activateExitResponse.Content.ReadAsStringAsync()}");
 
             var events = JsonNode.Parse(await client.GetStringAsync("/api/agent-console/events"))!.AsArray();
             Assert.Contains(events, node => node?["kind"]?.GetValue<string>() == "screenRendered");
             Assert.Contains(events, node => node?["kind"]?.GetValue<string>() == "inputAccepted");
-
-            using var activateExitResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
-            {
-                actionId = exitActionId,
-                screenId = exitSelectedSnapshot["screenId"]!.GetValue<string>(),
-                inputKind = "menuSelection"
-            });
-            Assert.True(
-                activateExitResponse.IsSuccessStatusCode,
-                $"Expected action endpoint to activate exit, got {(int)activateExitResponse.StatusCode}: {await activateExitResponse.Content.ReadAsStringAsync()}");
 
             var waitForExitTask = process.WaitForExitAsync();
             var exited = await Task.WhenAny(waitForExitTask, Task.Delay(TimeSpan.FromSeconds(30)));
@@ -663,26 +647,6 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
                 backResponse.IsSuccessStatusCode,
                 $"Expected options back action success, got {(int)backResponse.StatusCode}: {await backResponse.Content.ReadAsStringAsync()}");
 
-            var maybeSelectedBack = await WaitForSnapshotAsync(
-                client,
-                TimeSpan.FromSeconds(20),
-                snapshot =>
-                    string.Equals(snapshot["screenId"]?.GetValue<string>(), optionsMenu["screenId"]!.GetValue<string>(), StringComparison.Ordinal) ||
-                    string.Equals(snapshot["screenId"]?.GetValue<string>(), "game-loop", StringComparison.Ordinal));
-
-            if (string.Equals(maybeSelectedBack["screenId"]?.GetValue<string>(), optionsMenu["screenId"]!.GetValue<string>(), StringComparison.Ordinal))
-            {
-                using var activateBackResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
-                {
-                    actionId = backAction.Action["id"]!.GetValue<string>(),
-                    screenId = maybeSelectedBack["screenId"]!.GetValue<string>(),
-                    inputKind = "menuSelection"
-                });
-                Assert.True(
-                    activateBackResponse.IsSuccessStatusCode,
-                    $"Expected options back activation success, got {(int)activateBackResponse.StatusCode}: {await activateBackResponse.Content.ReadAsStringAsync()}");
-            }
-
             await WaitForSnapshotAsync(
                 client,
                 TimeSpan.FromSeconds(20),
@@ -742,25 +706,10 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
                 snapshot => string.Equals(snapshot["screenId"]?.GetValue<string>(), "main-menu", StringComparison.Ordinal));
 
             var qtePracticeAction = FindActionByLabel(mainMenu, "Тренировка QTE");
-            using var selectQteResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
-            {
-                actionId = qtePracticeAction.Action["id"]!.GetValue<string>(),
-                screenId = mainMenu["screenId"]!.GetValue<string>(),
-                inputKind = "menuSelection"
-            });
-            Assert.True(
-                selectQteResponse.IsSuccessStatusCode,
-                $"Expected QTE practice select action endpoint success, got {(int)selectQteResponse.StatusCode}: {await selectQteResponse.Content.ReadAsStringAsync()}");
-
-            var qteSelectedSnapshot = await WaitForSnapshotAsync(
-                client,
-                TimeSpan.FromSeconds(10),
-                snapshot => (snapshot["selectedIndex"]?.GetValue<int>() ?? -1) == qtePracticeAction.Index);
-
             using var enterQteResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
             {
                 actionId = qtePracticeAction.Action["id"]!.GetValue<string>(),
-                screenId = qteSelectedSnapshot["screenId"]!.GetValue<string>(),
+                screenId = mainMenu["screenId"]!.GetValue<string>(),
                 inputKind = "menuSelection"
             });
             Assert.True(

@@ -104,7 +104,7 @@ public sealed class AgentConsoleLiveInputSourceTests
     }
 
     [Fact]
-    public void TryQueueAction_WhenMenuActionIsNotSelected_QueuesSelectionDigitOnly()
+    public void TryQueueAction_WhenMenuActionIsNotSelected_QueuesSelectionDigitAndEnter()
     {
         var store = new AgentConsoleStateStore();
         var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
@@ -120,11 +120,12 @@ public sealed class AgentConsoleLiveInputSourceTests
         Assert.True(result.Accepted);
         Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
         Assert.Equal(ConsoleKey.D2, input.ReadKey(intercept: true).Key);
+        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
         Assert.False(input.KeyAvailable);
     }
 
     [Fact]
-    public void TryQueueAction_WhenMenuActionIsAfterNine_QueuesInputValueDigitsOnly()
+    public void TryQueueAction_WhenMenuActionIsAfterNine_QueuesInputValueDigitsAndEnter()
     {
         var store = new AgentConsoleStateStore();
         var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
@@ -141,6 +142,7 @@ public sealed class AgentConsoleLiveInputSourceTests
         Assert.Equal(AgentConsoleInputRejectionCode.None, result.RejectionCode);
         Assert.Equal(ConsoleKey.D1, input.ReadKey(intercept: true).Key);
         Assert.Equal(ConsoleKey.D2, input.ReadKey(intercept: true).Key);
+        Assert.Equal(ConsoleKey.Enter, input.ReadKey(intercept: true).Key);
         Assert.False(input.KeyAvailable);
     }
 

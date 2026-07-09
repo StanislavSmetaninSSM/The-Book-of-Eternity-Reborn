@@ -879,7 +879,7 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
         }
 
         if (snapshot.InputKind == AgentConsoleInputKind.MenuSelection &&
-            TryBuildMenuInputValueKeys(action.InputValue, appendEnter: false, out var inputValueKeys))
+            TryBuildMenuInputValueKeys(action.InputValue, appendEnter: true, out var inputValueKeys))
         {
             queuedInputs = inputValueKeys;
             return true;
@@ -890,7 +890,11 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
             actionIndex < 9)
         {
             var digit = (char)('1' + actionIndex);
-            queuedInputs = [QueuedInput.ForKey(new ConsoleKeyInfo(digit, (ConsoleKey)((int)ConsoleKey.D1 + actionIndex), shift: false, alt: false, control: false))];
+            queuedInputs =
+            [
+                QueuedInput.ForKey(new ConsoleKeyInfo(digit, (ConsoleKey)((int)ConsoleKey.D1 + actionIndex), shift: false, alt: false, control: false)),
+                QueuedInput.ForKey(new ConsoleKeyInfo('\0', ConsoleKey.Enter, shift: false, alt: false, control: false))
+            ];
             return true;
         }
 
@@ -898,7 +902,7 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
             actionIndex >= 0 &&
             actionIndex < snapshot.Actions.Count)
         {
-            queuedInputs = BuildMenuNavigationInputs(snapshot, actionIndex, appendEnter: false);
+            queuedInputs = BuildMenuNavigationInputs(snapshot, actionIndex, appendEnter: true);
             return true;
         }
 
