@@ -65,7 +65,7 @@
 **Independent Test**: Manual live run produces ledger records and rubric notes tied to follow-up issues/comments.
 
 - [X] T023 [US5] Add a live-test checklist or generated context-pack note for the rubric dimensions from #1290.
-- [X] T024 [US5] Run a short live GM bridge test with `codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox`.
+- [X] T024 [US5] Run a short live GM bridge test with an explicitly pinned Codex model and `high` reasoning effort.
 - [X] T025 [US5] Record findings as comments on #1285-#1290 or create follow-up issues for repeated harness gaps.
 
 ## Final Phase: Polish & Verification
@@ -115,7 +115,7 @@
 - [X] T071 [Follow-up #1309] Keep the GM daemon watcher alive after recoverable polling/status errors, persist explicit fatal diagnostics, document daemon repair-loop checks, and guard the lifecycle contract with tests.
 - [X] T072 [Follow-up #1231] Add shared realm-aware afterlife worker task/proposal contract, Mortal-substitute guards, builder support, runner prompt guidance, and GM-facing documentation/example coverage.
 - [X] T073 [Follow-up #1232] Add `guardian-abode-content` worker role, Guardian/Abode task/proposal contract, hidden-dossier and Mortal-substitute guards, disabled profile templates, runner guidance, and GM-facing documentation/example coverage.
-- [X] T074 [Follow-up #1249/#1285] Pin main GM and hidden worker Codex launch commands to explicit `gpt-5.5 high`, update GM-facing examples, and verify with a live Chaos Sea turn.
+- [X] T074 [Follow-up #1249/#1285] Pin main GM and hidden worker Codex launch commands to an explicit model and `high` reasoning, update GM-facing examples, and verify with a live Chaos Sea turn.
 - [X] T075 [Follow-up #1249/#1285] Make fresh New Game startup pass through Agent Console/redirected output without Spectre selection-prompt failure, then rerun a full new-game live GM test from main menu.
 - [X] T076 [Follow-up #1249/#1285] Reject or repair stale `pendingGuardianCreation` after fresh Guardian materialization so `/хранители` does not report a new Guardian is still pending after accepted bootstrap.
 - [X] T077 [Follow-up #1249/#1285] Publish New Game text prompts (soul name/form and freeform Guardian description) into Agent Console snapshots so live-test agents do not have to read redirected stdout while the API input queue is already waiting for text.
@@ -238,6 +238,7 @@
 - [X] T194 [Harness/RLM live-test blocker #1447/#1285/#1290] Publish a terminal Agent Console recovery state when validation repair artifact stall cleanup stops the GM bridge, instead of leaving autonomous tests on a non-interactive repair-progress screen.
 - [X] T195 [Harness/RLM live-test blocker #1448/#1349/#1285/#1290] Split or constrain first Mortal World entry so it cannot stall as one oversized GM turn with no output, preserving starter skill/bootstrap coverage for autonomous live tests.
 - [X] T196 [Harness/RLM live-test blocker #1449/#1349/#1285/#1290] Prevent freeform Guardian startup from entering repeated materialized-mirror repair loops by making the canonical create surface exact, bounded, and hard to misuse.
+- [X] T197 [Harness/RLM follow-up #1485/#1285] Migrate main GM and hidden worker defaults to `gpt-5.6-terra high`, migrate only exact retired built-in commands, remove the retired model id from the repository, and verify both `codex exec` and the interactive ConPTY bridge startup.
 - [X] T026 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GmTurnHelperContractTests|GmBridgeDiagnosticsContractTests"`.
 - [X] T027 Run `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"` if prompts/docs/examples changed.
 - [X] T028 Inspect `git diff --check` and final diffs against #1285-#1290 before committing.

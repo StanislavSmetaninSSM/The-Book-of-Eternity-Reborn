@@ -34,7 +34,7 @@ E:\Games\The Book of Eternity Reborn\BookOfEternityClient\game_session\game_stat
 
 ```powershell
 cd "E:\Games\The Book of Eternity Reborn"
-codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox
+codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox
 ```
 
 ### 3. Запусти daemon wrapper

@@ -8,6 +8,15 @@ namespace BookOfEternityClient.Configuration;
 /// </summary>
 public class GameSettings
 {
+    public const string DefaultGmCliLaunchCommand =
+        "codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox";
+
+    private static readonly string RetiredDefaultGmCliLaunchCommand =
+        $"codex -m {"gpt-5" + ".5"} -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox";
+
+    private static readonly string RetiredUnquotedDefaultGmCliLaunchCommand =
+        $"codex -m {"gpt-5" + ".5"} -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox";
+
     private static readonly PropertyInfo[] WritableProperties = typeof(GameSettings)
         .GetProperties(BindingFlags.Public | BindingFlags.Instance)
         .Where(prop => prop.CanRead && prop.CanWrite)
@@ -38,9 +47,9 @@ public class GameSettings
     /// </summary>
     public string GmBridgeBackend { get; set; } = "ConPTYBridge";
     /// <summary>
-    /// Arbitrary shell command line started inside the GM bridge shell session, for example "codex -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox".
+    /// Arbitrary shell command line started inside the GM bridge shell session, for example "codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox".
     /// </summary>
-    public string GmCliLaunchCommand { get; set; } = "codex -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox";
+    public string GmCliLaunchCommand { get; set; } = DefaultGmCliLaunchCommand;
     /// <summary>
     /// Optional explicit working directory for the hidden GM bridge shell. Empty means the game_session directory.
     /// </summary>
@@ -158,6 +167,7 @@ public class GameSettings
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList() ?? new List<string>();
         GmBridgePasteVisibilityPolicy = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.NormalizePolicy(GmBridgePasteVisibilityPolicy);
+        GmCliLaunchCommand = NormalizeGmCliLaunchCommand(GmCliLaunchCommand);
         GmBridgeShellWorkingDirectory = GmBridgeShellWorkingDirectory?.Trim() ?? string.Empty;
         GmBridgePromptVisibilityTimeoutSeconds = loaded.GmBridgePromptVisibilityTimeoutSeconds > 0
             ? Math.Clamp(loaded.GmBridgePromptVisibilityTimeoutSeconds, 1, 60)
@@ -176,6 +186,7 @@ public class GameSettings
                 return profile with
                 {
                     LaunchVisibility = WorkerLaunchVisibility.Hidden,
+                    LaunchCommand = GmWorkerBridgeProfileTemplates.MigrateRetiredCodexLaunchCommand(profile.WorkerId, profile.LaunchCommand),
                     TimeoutSeconds = profile.TimeoutSeconds > 0 ? profile.TimeoutSeconds : 180,
                     MaxConcurrentTasks = profile.MaxConcurrentTasks > 0 ? profile.MaxConcurrentTasks : 1,
                     Permissions = permissions with
@@ -191,6 +202,17 @@ public class GameSettings
         return normalized.Count == 0
             ? GmWorkerBridgeProfileTemplates.CreateDefaultTemplates().ToList()
             : normalized;
+    }
+
+    private static string NormalizeGmCliLaunchCommand(string? command)
+    {
+        if (string.Equals(command, RetiredDefaultGmCliLaunchCommand, StringComparison.Ordinal) ||
+            string.Equals(command, RetiredUnquotedDefaultGmCliLaunchCommand, StringComparison.Ordinal))
+        {
+            return DefaultGmCliLaunchCommand;
+        }
+
+        return command ?? string.Empty;
     }
 }
 

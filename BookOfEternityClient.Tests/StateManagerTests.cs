@@ -15,7 +15,24 @@ public sealed class StateManagerTests
         var settings = new GameSettings();
 
         Assert.Equal(
-            "codex -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox",
+            "codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox",
+            settings.GmCliLaunchCommand);
+    }
+
+    [Fact]
+    public void ApplyLoadedValues_RetiredBuiltInGmCommand_MigratesToCurrentDefault()
+    {
+        var settings = new GameSettings();
+        var retiredModel = "gpt-5" + ".5";
+        var loaded = new GameSettings
+        {
+            GmCliLaunchCommand = $"codex -m {retiredModel} -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox"
+        };
+
+        settings.ApplyLoadedValues(loaded);
+
+        Assert.Equal(
+            "codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox",
             settings.GmCliLaunchCommand);
     }
 

@@ -184,7 +184,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         var normalizedGuide = guide
             .Replace("\\\\\\\"", "\"", StringComparison.Ordinal)
             .Replace("\\\"", "\"", StringComparison.Ordinal);
-        Assert.Contains("codex exec -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -", normalizedGuide, StringComparison.Ordinal);
+        Assert.Contains("codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -", normalizedGuide, StringComparison.Ordinal);
         Assert.Contains("worker-proposal-v1", runner, StringComparison.Ordinal);
         Assert.Contains("Required worker-proposal-v1 JSON shape", runner, StringComparison.Ordinal);
         Assert.Contains("Do not omit summary, status, changedFiles, findings, selfCheck, or createdAtUtc.", runner, StringComparison.Ordinal);
@@ -206,6 +206,11 @@ public sealed class GmWorkerBridgeDocumentationTests
 
         foreach (var source in new[] { daemon, launcher })
         {
+            Assert.Contains("codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox", source, StringComparison.Ordinal);
+            Assert.Contains("codex exec -m gpt-5.6-terra -c model_reasoning_effort", source, StringComparison.Ordinal);
+            Assert.Contains("Convert-RetiredCodexLaunchDefaults", source, StringComparison.Ordinal);
+            Assert.Contains("$retiredModel = 'gpt-5' + '.5'", source, StringComparison.Ordinal);
+            Assert.Contains("$Config.GmCliLaunchCommand -ceq $retiredMainQuoted", source, StringComparison.Ordinal);
             Assert.Contains("GmWorkerBridgeProfiles", source, StringComparison.Ordinal);
             Assert.Contains("validation_repair_codex", source, StringComparison.Ordinal);
             Assert.Contains("narrative_draft_codex", source, StringComparison.Ordinal);

@@ -13,7 +13,7 @@
 конфигурацию модели:
 
 ```powershell
-codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox
+codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox
 ```
 
 В каждом маршруте фиксировать:

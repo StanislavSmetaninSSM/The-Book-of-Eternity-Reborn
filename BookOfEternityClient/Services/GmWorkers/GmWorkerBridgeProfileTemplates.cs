@@ -3,7 +3,13 @@ namespace BookOfEternityClient.Services.GmWorkers;
 public static class GmWorkerBridgeProfileTemplates
 {
     public const string RunnerRelativePath = "BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1";
-    public const string CodexWorkerExecCommand = "codex exec -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -";
+    public const string CodexWorkerExecCommand = "codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -";
+
+    private static readonly string RetiredCodexWorkerExecCommand =
+        $"codex exec -m {"gpt-5" + ".5"} -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -";
+
+    private static readonly string RetiredUnquotedCodexWorkerExecCommand =
+        $"codex exec -m {"gpt-5" + ".5"} -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -";
 
     public static IReadOnlyList<WorkerBridgeProfile> CreateDefaultTemplates() =>
     [
@@ -190,6 +196,39 @@ public static class GmWorkerBridgeProfileTemplates
 
     public static string BuildRunnerLaunchCommand(string agentCommand, int timeoutSeconds) =>
         $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{RunnerRelativePath}\" -AgentCommand \"{EscapeForDoubleQuotedArgument(agentCommand)}\" -TimeoutSeconds {timeoutSeconds}";
+
+    public static string MigrateRetiredCodexLaunchCommand(string? workerId, string? launchCommand)
+    {
+        if (string.IsNullOrEmpty(launchCommand))
+            return launchCommand ?? string.Empty;
+
+        var runnerTimeoutSeconds = GetBuiltInRunnerTimeoutSeconds(workerId);
+        if (!runnerTimeoutSeconds.HasValue)
+            return launchCommand;
+
+        var retiredQuotedTemplate = BuildRunnerLaunchCommand(RetiredCodexWorkerExecCommand, runnerTimeoutSeconds.Value);
+        var retiredUnquotedTemplate = BuildRunnerLaunchCommand(RetiredUnquotedCodexWorkerExecCommand, runnerTimeoutSeconds.Value);
+        if (!string.Equals(launchCommand, retiredQuotedTemplate, StringComparison.Ordinal) &&
+            !string.Equals(launchCommand, retiredUnquotedTemplate, StringComparison.Ordinal))
+        {
+            return launchCommand;
+        }
+
+        return BuildRunnerLaunchCommand(CodexWorkerExecCommand, runnerTimeoutSeconds.Value);
+    }
+
+    private static int? GetBuiltInRunnerTimeoutSeconds(string? workerId) => workerId switch
+    {
+        "validation_repair_codex" => 180,
+        "analysis_codex" or
+        "guardian_abode_content_codex" or
+        "inventory_content_codex" or
+        "narrative_draft_codex" or
+        "npc_content_codex" or
+        "skill_content_codex" or
+        "soul_content_codex" => 120,
+        _ => null
+    };
 
     private static string EscapeForDoubleQuotedArgument(string value) =>
         value.Replace("\"", "\\\"", StringComparison.Ordinal);

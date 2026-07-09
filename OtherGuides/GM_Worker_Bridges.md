@@ -105,7 +105,7 @@ Codex validation-repair example:
 {
   "workerId": "validation_repair_codex",
   "displayName": "Codex validation repair",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.5 -c model_reasoning_effort=\\\"high\\\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 180",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 180",
   "role": "validation-repair",
   "enabled": false,
   "launchVisibility": "hidden",
@@ -120,7 +120,7 @@ Codex narrative-draft example:
 {
   "workerId": "narrative_draft_codex",
   "displayName": "Codex narrative drafter",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.5 -c model_reasoning_effort=\\\"high\\\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
   "role": "narrative-draft",
   "enabled": false,
   "launchVisibility": "hidden",
@@ -135,7 +135,7 @@ Codex analysis example:
 {
   "workerId": "analysis_codex",
   "displayName": "Codex analysis worker",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.5 -c model_reasoning_effort=\\\"high\\\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
   "role": "analysis",
   "enabled": false,
   "launchVisibility": "hidden",
@@ -150,7 +150,7 @@ Codex inventory content-authoring example:
 {
   "workerId": "inventory_content_codex",
   "displayName": "Codex inventory content author",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.5 -c model_reasoning_effort=\\\"high\\\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
   "role": "inventory-content",
   "enabled": false,
   "launchVisibility": "hidden",
@@ -165,7 +165,7 @@ Codex skill content-authoring example:
 {
   "workerId": "skill_content_codex",
   "displayName": "Codex skill content author",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.5 -c model_reasoning_effort=\\\"high\\\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
   "role": "skill-content",
   "enabled": false,
   "launchVisibility": "hidden",
@@ -180,7 +180,7 @@ Codex NPC content-authoring example:
 {
   "workerId": "npc_content_codex",
   "displayName": "Codex NPC content author",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.5 -c model_reasoning_effort=\\\"high\\\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
   "role": "npc-content",
   "enabled": false,
   "launchVisibility": "hidden",
@@ -195,7 +195,7 @@ Codex Guardian/Abode content-authoring example:
 {
   "workerId": "guardian_abode_content_codex",
   "displayName": "Codex Guardian/Abode content author",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.5 -c model_reasoning_effort=\\\"high\\\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
   "role": "guardian-abode-content",
   "enabled": false,
   "launchVisibility": "hidden",
@@ -210,7 +210,7 @@ Codex soul content-authoring example:
 {
   "workerId": "soul_content_codex",
   "displayName": "Codex soul content author",
-  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.5 -c model_reasoning_effort=\\\"high\\\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
+  "launchCommand": "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1\" -AgentCommand \"codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -\" -TimeoutSeconds 120",
   "role": "soul-content",
   "enabled": false,
   "launchVisibility": "hidden",

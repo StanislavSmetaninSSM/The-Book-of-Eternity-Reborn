@@ -11,7 +11,7 @@ Run root: `C:\Temp\boe-chaos-console-1249-20260627-181715`
 
 Result:
 - Three ordinary Chaos Sea turns were accepted by the live Codex GM bridge.
-- Turn durations were high: roughly 190-416 seconds on `gpt-5.5 xhigh`.
+- Turn durations were high: roughly 190-416 seconds on the previously pinned Codex model at `xhigh`.
 - After Chaos Sea abode travel, the client wrote a diagnostic-only repair request and previously stayed in a non-playable waiting state.
 
 Harness finding:
@@ -73,7 +73,7 @@ Result:
 - `game_state/control/gm_trajectory_ledger.jsonl` recorded `validation.status: accepted`, `terminal.kind: success`, `rubric.validTurn: true`, `rawWrongRealmWrite: false`, and `manualReasoningNeeded: false`.
 
 Harness finding:
-- The harness is now capable of completing this Chaos Sea travel flow without manual repair. The remaining concern is turn latency on `gpt-5.5 xhigh`, not validator livelock.
+- The harness is now capable of completing this Chaos Sea travel flow without manual repair. The remaining concern is turn latency on the previously pinned Codex model at `xhigh`, not validator livelock.
 
 ### Run 6
 
@@ -99,7 +99,7 @@ Harness/RLM finding:
 Run root: `C:\Temp\boe-chaos-console-1249-live-20260628-193340`
 
 Scope:
-- Live Chaos Sea play with Codex GM bridge (`gpt-5.5 xhigh`) through Agent Console.
+- Live Chaos Sea play with the then-current Codex GM bridge at `xhigh` through Agent Console.
 - Player-facing check of `/хранители` detail.
 - Two ordinary roleplay turns inside an active afterlife spiritual conflict.
 
@@ -118,12 +118,12 @@ Harness/RLM finding:
 Run root: `C:\Temp\boe-chaos-console-1249-high-20260628-213344`
 
 Scope:
-- Live Chaos Sea play with Codex GM bridge launched as `codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox`.
-- Verify the bridge can run with explicit model/reasoning settings instead of the previous implicit `gpt-5.5 xhigh` default.
+- Live Chaos Sea play with the then-current Codex GM bridge launched with an explicit model and `high` reasoning effort.
+- Verify the bridge can run with explicit model/reasoning settings instead of the previous implicit `xhigh` default.
 - Re-test an ordinary spiritual-conflict roleplay turn after the action-cost repair-packet change.
 
 Result:
-- Bridge diagnostics showed the Codex CLI screen with `model: gpt-5.5 high`.
+- Bridge diagnostics showed the Codex CLI screen with the then-current model pinned at `high`.
 - Codex still surfaced the trust-directory/update startup screen, but the bridge boot guards waited until it reached the normal prompt before marking the bridge ready.
 - The daemon sent turn #4 at 21:36:24 and the live GM completed it in 268.3 seconds.
 - `game_state/control/gm_trajectory_ledger.jsonl` recorded `validation.status: accepted`, `repair.attempts: 0`, `terminal.kind: success`, `rubric.validTurn: true`, and `rubric.manualReasoningNeeded: false`.
@@ -131,7 +131,7 @@ Result:
 - Player-facing narrative was present and no `validation_repair_request.json` remained.
 
 Harness/RLM finding:
-- Explicit `gpt-5.5 high` is a better current default for live tests than relying on the Codex CLI implicit xhigh configuration: this run stayed valid while reducing latency against earlier xhigh Chaos Sea runs that were roughly 353-416 seconds.
+- An explicit model at `high` was a better default for those live tests than relying on the Codex CLI implicit `xhigh` configuration: this run stayed valid while reducing latency against earlier `xhigh` Chaos Sea runs that were roughly 353-416 seconds.
 - Keeping the model and reasoning effort in launch commands makes live-test results reproducible and matches the Codex configuration contract where `model` and `model_reasoning_effort` are separate settings.
 
 ## Player-Facing / UX Findings
@@ -156,11 +156,11 @@ Harness/RLM finding:
 - The helper wrong-realm raw profile scanner ignores `.rollback.*` backup artifacts while preserving canonical Mortal World profile protections.
 - Afterlife player command output now hides common canonical field names and notification ids in normal screens; technical details remain available through explicit audit/debug surfaces.
 - Validation repair now emits an executable `afterlife_spiritual_conflict_action_cost_repair` harness packet for afterlife action-cost/action-economy repair loops.
-- Main GM and hidden worker Codex launch defaults now pin `gpt-5.5 high` explicitly instead of inheriting the CLI's implicit reasoning setting.
+- Main GM and hidden worker Codex launch defaults now pin their model and `high` reasoning explicitly instead of inheriting the CLI's implicit reasoning setting.
 - Worker launch-command parsing now preserves escaped quotes (`\"`) through both the C# worker pool and the PowerShell worker runner, so nested Codex config arguments such as `model_reasoning_effort="high"` reach the worker process intact.
 
 ## Follow-Up
 
 - Continue broader live testing from a clean runroot using the updated runbook.
 - Add a reusable Agent Console output-leak scanner for live tests instead of keeping the pattern list as an ad-hoc script.
-- Continue comparing live-test latency and correctness after the `gpt-5.5 high` default; if high still stalls on larger turns, reduce task-packet size before changing prompts.
+- Continue comparing live-test latency and correctness with the explicit `high` default; if `high` still stalls on larger turns, reduce task-packet size before changing prompts.

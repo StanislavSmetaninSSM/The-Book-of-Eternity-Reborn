@@ -452,7 +452,7 @@ public partial class GameEngine
     private string PromptGmCliLaunchCommand(string currentValue)
     {
         var current = string.IsNullOrWhiteSpace(currentValue)
-            ? "codex -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox"
+            ? GameSettings.DefaultGmCliLaunchCommand
             : currentValue.Trim();
 
         SpectreConsoleSafe.Clear();

@@ -7,7 +7,7 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmWorkerProfileTemplateTests
 {
     private const string ExpectedCodexWorkerCommand =
-        "codex exec -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -";
+        "codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -";
 
     [Fact]
     public void DefaultTemplates_AreDisabledRunnerBasedAndValid()
@@ -130,6 +130,53 @@ public sealed class GmWorkerProfileTemplateTests
             ["analysis_codex", "guardian_abode_content_codex", "inventory_content_codex", "narrative_draft_codex", "npc_content_codex", "skill_content_codex", "soul_content_codex", "validation_repair_codex"],
             settings.GmWorkerBridgeProfiles.Select(profile => profile.WorkerId).OrderBy(id => id).ToArray());
         Assert.All(settings.GmWorkerBridgeProfiles, profile => Assert.False(profile.Enabled));
+    }
+
+    [Fact]
+    public void SettingsWithRetiredBuiltInWorkerCommand_MigratesToCurrentTemplateCommand()
+    {
+        var currentTemplate = GmWorkerBridgeProfileTemplates.CreateNarrativeDraftCodexTemplate();
+        var retiredModel = "gpt-5" + ".5";
+        var retiredLaunchCommand = currentTemplate.LaunchCommand
+            .Replace("gpt-5.6-terra", retiredModel, StringComparison.Ordinal)
+            .Replace("model_reasoning_effort=high", "model_reasoning_effort=\\\"high\\\"", StringComparison.Ordinal);
+        var settings = new GameSettings();
+        var loaded = new GameSettings
+        {
+            GmWorkerBridgeProfiles = [currentTemplate with { LaunchCommand = retiredLaunchCommand }]
+        };
+
+        settings.ApplyLoadedValues(loaded);
+
+        var migrated = Assert.Single(settings.GmWorkerBridgeProfiles);
+        Assert.Equal(currentTemplate.LaunchCommand, migrated.LaunchCommand);
+    }
+
+    [Fact]
+    public void SettingsWithCustomWorkerWrappingRetiredPayload_PreservesCustomCommand()
+    {
+        var currentTemplate = GmWorkerBridgeProfileTemplates.CreateNarrativeDraftCodexTemplate();
+        var retiredModel = "gpt-5" + ".5";
+        var retiredPayload = GmWorkerBridgeProfileTemplates.CodexWorkerExecCommand
+            .Replace("gpt-5.6-terra", retiredModel, StringComparison.Ordinal);
+        var customLaunchCommand = $"custom-prefix {retiredPayload} custom-suffix";
+        var settings = new GameSettings();
+        var loaded = new GameSettings
+        {
+            GmWorkerBridgeProfiles =
+            [
+                currentTemplate with
+                {
+                    WorkerId = "custom_worker",
+                    LaunchCommand = customLaunchCommand
+                }
+            ]
+        };
+
+        settings.ApplyLoadedValues(loaded);
+
+        var preserved = Assert.Single(settings.GmWorkerBridgeProfiles);
+        Assert.Equal(customLaunchCommand, preserved.LaunchCommand);
     }
 
     [Fact]

@@ -46,7 +46,7 @@ Instead of:
 
 the client ecosystem would:
 1. start a dedicated helper process
-2. let that helper launch `codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox` inside a ConPTY
+2. let that helper launch `codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox` inside a ConPTY
 3. send prompts directly into the pseudo-console input stream
 4. read CLI output directly from the pseudo-console output stream
 
@@ -156,7 +156,7 @@ Why:
 The helper should:
 1. start
 2. create ConPTY
-3. launch `codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox`
+3. launch `codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox`
 4. wait for operator to confirm the CLI is ready
 5. accept prompt dispatches from the daemon
 

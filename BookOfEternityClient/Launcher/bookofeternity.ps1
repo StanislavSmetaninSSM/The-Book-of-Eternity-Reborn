@@ -34,7 +34,7 @@ function Resolve-SessionPath {
 
 function New-DefaultGmWorkerBridgeProfiles {
     $runner = 'BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1'
-    $codexWorker = 'codex exec -m gpt-5.5 -c model_reasoning_effort=\"high\" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -'
+    $codexWorker = 'codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -'
 
     return @(
         [ordered]@{
@@ -176,6 +176,62 @@ function New-DefaultGmWorkerBridgeProfiles {
     )
 }
 
+function Convert-RetiredCodexLaunchDefaults {
+    param([object]$Config)
+
+    $retiredModel = 'gpt-5' + '.5'
+    $currentMain = 'codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox'
+    $retiredMainQuoted = "codex -m $retiredModel -c model_reasoning_effort=`"high`" --dangerously-bypass-approvals-and-sandbox"
+    $retiredMainUnquoted = "codex -m $retiredModel -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox"
+
+    if ($Config.GmCliLaunchCommand -ceq $retiredMainQuoted -or $Config.GmCliLaunchCommand -ceq $retiredMainUnquoted) {
+        $Config.GmCliLaunchCommand = $currentMain
+    }
+
+    $currentWorker = 'codex exec -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -'
+    $retiredWorkerQuoted = "codex exec -m $retiredModel -c model_reasoning_effort=`"high`" --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"
+    $retiredWorkerEscapedQuoted = $retiredWorkerQuoted.Replace('"', '\"')
+    $retiredWorkerUnquoted = "codex exec -m $retiredModel -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -"
+
+    $runner = 'BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1'
+    $standardWorkerIds = @(
+        'analysis_codex',
+        'guardian_abode_content_codex',
+        'inventory_content_codex',
+        'narrative_draft_codex',
+        'npc_content_codex',
+        'skill_content_codex',
+        'soul_content_codex'
+    )
+
+    foreach ($profile in @($Config.GmWorkerBridgeProfiles)) {
+        if ($null -eq $profile -or [string]::IsNullOrWhiteSpace([string]$profile.LaunchCommand)) {
+            continue
+        }
+
+        $workerId = [string]$profile.WorkerId
+        $runnerTimeout = if ($workerId -ceq 'validation_repair_codex') {
+            180
+        } elseif ($standardWorkerIds -ccontains $workerId) {
+            120
+        } else {
+            $null
+        }
+        if ($null -eq $runnerTimeout) {
+            continue
+        }
+
+        $currentLaunch = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$currentWorker`" -TimeoutSeconds $runnerTimeout"
+        $retiredQuotedLaunch = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$retiredWorkerEscapedQuoted`" -TimeoutSeconds $runnerTimeout"
+        $retiredUnquotedLaunch = "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$runner`" -AgentCommand `"$retiredWorkerUnquoted`" -TimeoutSeconds $runnerTimeout"
+        if ($profile.LaunchCommand -ceq $retiredQuotedLaunch -or $profile.LaunchCommand -ceq $retiredUnquotedLaunch) {
+            $profile.LaunchCommand = $currentLaunch
+        }
+    }
+
+    return $Config
+}
+
 function Read-GameConfig {
     param([string]$ResolvedSessionPath)
 
@@ -183,7 +239,7 @@ function Read-GameConfig {
     $defaults = [ordered]@{
         GmBridgeEnabled = $true
         GmBridgeBackend = "ConPTYBridge"
-        GmCliLaunchCommand = 'codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals-and-sandbox'
+        GmCliLaunchCommand = 'codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox'
         GmBridgeShellWorkingDirectory = ""
         GmBridgeAutoStart = $false
         GmBridgePipeNameOverride = ""
@@ -201,7 +257,7 @@ function Read-GameConfig {
                 $loaded | Add-Member -NotePropertyName $key -NotePropertyValue $defaults[$key] -Force
             }
         }
-        return $loaded
+        return (Convert-RetiredCodexLaunchDefaults -Config $loaded)
     }
     catch {
         return [pscustomobject]$defaults

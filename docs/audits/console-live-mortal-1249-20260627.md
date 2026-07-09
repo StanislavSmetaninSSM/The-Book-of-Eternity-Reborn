@@ -226,7 +226,7 @@ Harness assessment:
 - Codex GM stayed within helper-driven session operations; the ledger recorded
   `implementationSourceRead=false`.
 - The remaining recurring cost is latency: one ordinary accepted turn took just
-  over six minutes on `gpt-5.5 xhigh`.
+  over six minutes on the previously pinned Codex model at `xhigh`.
 
 Run teardown:
 - The bridge shutdown request returned an empty response after closing the
