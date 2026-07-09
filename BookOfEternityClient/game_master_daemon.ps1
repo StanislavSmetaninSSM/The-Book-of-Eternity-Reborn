@@ -3019,11 +3019,24 @@ function Test-GmValidationRepairArtifactWritingStall {
     }
 
     $targetFiles = @($WatchState.targetFiles)
+    $bridgeSnapshot = Get-GmBridgeDiagnosticsSnapshot
+    $bridgeOutputVersion = -1
+    if ($null -ne $bridgeSnapshot -and
+        $null -ne $bridgeSnapshot.diagnostics -and
+        $null -ne $bridgeSnapshot.diagnostics.outputVersion) {
+        $bridgeOutputVersion = [int]$bridgeSnapshot.diagnostics.outputVersion
+    }
+
     $snapshot = Get-GmValidationRepairTargetSnapshot -TargetFiles $targetFiles
     $signature = ConvertTo-GmValidationRepairSnapshotSignature -Snapshot $snapshot
     $now = (Get-Date).ToUniversalTime()
-    if ([string]$WatchState.lastSnapshotSignature -ne $signature) {
+    $targetSnapshotChanged = [string]$WatchState.lastSnapshotSignature -ne $signature
+    $bridgeOutputChanged = -not $WatchState.ContainsKey("lastBridgeOutputVersion") -or
+        [int]$WatchState.lastBridgeOutputVersion -ne $bridgeOutputVersion
+
+    if ($targetSnapshotChanged -or $bridgeOutputChanged) {
         $WatchState.lastSnapshotSignature = $signature
+        $WatchState.lastBridgeOutputVersion = $bridgeOutputVersion
         $WatchState.lastProgressUtc = $now
     }
 
@@ -3044,6 +3057,7 @@ function Test-GmValidationRepairArtifactWritingStall {
         noProgressSeconds = $NoProgressSeconds
         noProgressElapsedSeconds = $noProgressElapsed
         dispatchStatus = [string]$WatchState.dispatchStatus
+        bridgeOutputVersion = $bridgeOutputVersion
         targetFiles = @($targetFiles)
         currentSnapshot = $snapshot
     })

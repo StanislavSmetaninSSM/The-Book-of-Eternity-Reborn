@@ -3744,6 +3744,23 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonSource_ValidationRepairArtifactWatchTreatsBridgeOutputAsProgress()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var functionBlock = ExtractFunctionBlock(daemon, "function Test-GmValidationRepairArtifactWritingStall");
+
+        Assert.Contains("Get-GmBridgeDiagnosticsSnapshot", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("outputVersion", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("lastBridgeOutputVersion", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("lastProgressUtc = $now", functionBlock, StringComparison.Ordinal);
+
+        var outputVersionIndex = functionBlock.IndexOf("outputVersion", StringComparison.Ordinal);
+        var stallIndex = functionBlock.IndexOf("$isStalled = (", StringComparison.Ordinal);
+        Assert.True(outputVersionIndex >= 0, "Expected validation-repair stall watch to read bridge output version.");
+        Assert.True(stallIndex > outputVersionIndex, "Expected bridge output progress to refresh lastProgressUtc before stall is calculated.");
+    }
+
+    [Fact]
     public void DaemonContextPack_AfterlifeConflictRewardLessonsNameRewardRepair()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-afterlife-reward-lessons-" + Guid.NewGuid().ToString("N"));
