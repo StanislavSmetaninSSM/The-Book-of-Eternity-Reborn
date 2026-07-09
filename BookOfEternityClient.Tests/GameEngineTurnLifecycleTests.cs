@@ -4745,6 +4745,123 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CheckGmIncarnationTrigger_BootstrapRepairStall_ReturnsFalseAfterRollback()
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        const string acceptedSessionId = "session-incarnation-trigger-stall";
+        const string acceptedRequestId = "request-incarnation-trigger-stall";
+        const int acceptedTurnNumber = 12;
+        var chaosSoul = new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 0,
+            inkFeathers = new { current = 0, total = 0 }
+        };
+        await WriteJsonAsync("game_state/meta/soul_state.json", chaosSoul);
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", chaosSoul);
+        await WritePendingTurnSnapshotManifestAsync(
+            acceptedSessionId,
+            acceptedRequestId,
+            acceptedTurnNumber,
+            "game_state/meta/soul_state.json");
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId = acceptedSessionId,
+            requestId = acceptedRequestId,
+            turnNumber = acceptedTurnNumber,
+            status = "success",
+            timestamp = "2026-07-09T01:00:00Z",
+            filesModified = new[] { "game_state/control/incarnation_trigger.json" }
+        });
+        await WriteJsonAsync("game_state/control/incarnation_trigger.json", new
+        {
+            worldDescription = "Портовый город Аргенвик с купеческими каналами.",
+            characterDescription = "Писарь Нерий Сольвейн.",
+            circumstances = "Наставница Селена и торговец Мирко ждут в канцелярии.",
+            source = "test"
+        });
+
+        var inputKeys = new List<ConsoleKeyInfo> { Key(ConsoleKey.Enter) };
+        inputKeys.AddRange(Enumerable.Repeat(Key(ConsoleKey.RightArrow), 8));
+        inputKeys.Add(Key(ConsoleKey.Enter));
+        inputKeys.Add(Key(ConsoleKey.Enter));
+        inputKeys.Add(Key(ConsoleKey.Enter));
+        var engine = CreateGameEngine(new QueuedConsoleInputSource(inputKeys));
+        var stateManager = GetPrivateField<StateManager>(engine, "_stateManager");
+        await stateManager.RefreshGameStateAsync();
+        var manifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+        var acceptedSnapshotContext = await InvokePrivateTaskResultAsync(
+            engine,
+            "LoadValidatedPendingTurnSnapshotContextAsync",
+            manifest,
+            true);
+
+        var gmOutputTask = Task.Run(async () =>
+        {
+            var request = await WaitForTurnRequestAsync();
+            await WriteJsonAsync("output/narrative_response.json", new
+            {
+                narrative = "Повреждённый bootstrap без response и timestamp."
+            });
+            await WriteJsonAsync("output/interface_updates.json", new
+            {
+                dialogueOptions = Array.Empty<object>(),
+                timestamp = DateTime.UtcNow.ToString("o")
+            });
+            await WriteJsonAsync("output/debug_logs.json", new
+            {
+                timestamp = DateTime.UtcNow.ToString("o"),
+                gm_thoughts_markdown = "## Охват NPC-анализа\n- Режим / Mode: Scene-local\n- Релевантные акторы / Relevant actors: Селена, Мирко\n- Почему они релевантны / Why they are relevant: Тестовый bootstrap.\n- Акторы вне охвата / Actors outside scope: нет\n- Почему они вне охвата / Why outside scope: нет\n\n## Reasoning / Размышления NPC\n- Bootstrap intentionally malformed for rollback test."
+            });
+            await WriteJsonAsync("ready/turn_complete.json", new
+            {
+                sessionId = request.SessionId,
+                requestId = request.RequestId,
+                turnNumber = request.TurnNumber,
+                status = "success",
+                timestamp = DateTime.UtcNow.ToString("o"),
+                filesModified = new[]
+                {
+                    "output/narrative_response.json",
+                    "output/interface_updates.json",
+                    "output/debug_logs.json"
+                }
+            });
+
+            await WaitForValidationRepairRequestContainingAsync("narrative_response", TimeSpan.FromSeconds(5));
+            await WriteJsonAsync("game_state/control/gm_validation_repair_artifact_stall_report.json", new
+            {
+                isStalled = true,
+                completed = false,
+                elapsedSeconds = 180,
+                noProgressSeconds = 180,
+                harnessSource = "gm_validation_repair_artifact_stall",
+                bridgeCleanup = new
+                {
+                    reason = "gm_validation_repair_artifact_stall",
+                    status = "fallback-stopped",
+                    ok = true
+                }
+            });
+        });
+
+        var dispatched = await InvokePrivateAsync<bool>(
+            engine,
+            "CheckGmIncarnationTrigger",
+            new[] { acceptedSnapshotContext });
+        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(8));
+
+        Assert.False(dispatched);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Equal("Chaos Sea", soul["currentRealm"]!.GetValue<string>());
+        Assert.Equal(0, soul["currentIncarnation"]!.GetValue<int>());
+        Assert.False(_fs.FileExists("input/turn_request.json"));
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+    }
+
+    [Fact]
     public async Task ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_ValidActiveManifest_Authorizes()
     {
         await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new

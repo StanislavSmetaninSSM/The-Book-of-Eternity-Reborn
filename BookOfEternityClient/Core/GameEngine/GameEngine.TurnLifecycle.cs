@@ -2570,13 +2570,13 @@ public partial class GameEngine
             GameInterface.RenderRealmTransition(false, _inputSource);
 
             // Wait for GM response describing the new mortal world
-            if (await WaitForGmResponse())
-            {
-                await RefreshRuntimeStateAsync();
-                await _worldDirectiveService.MaterializePendingToActiveAsync(worldDesc, circumstances);
-                if (preparedShiningPackage != null)
-                    await ClearPreparedShiningPackageAfterBootstrapAsync();
-            }
+            if (!await WaitForGmResponse())
+                return false;
+
+            await RefreshRuntimeStateAsync();
+            await _worldDirectiveService.MaterializePendingToActiveAsync(worldDesc, circumstances);
+            if (preparedShiningPackage != null)
+                await ClearPreparedShiningPackageAfterBootstrapAsync();
 
             return true;
         }
