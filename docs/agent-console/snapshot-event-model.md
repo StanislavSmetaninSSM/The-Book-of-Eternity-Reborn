@@ -67,7 +67,7 @@ The control endpoints require a Bearer token in the Authorization header (for ex
 - `POST /api/agent-console/default-action`
 - `POST /api/agent-console/return-to-game-loop-step`
 
-The key endpoint accepts a small key-name request, the text endpoint accepts a bounded text line, the action endpoint uses `AgentConsoleActionRequest`, `default-action` queues the latest enabled default action without a caller-provided screen id, and `return-to-game-loop-step` exposes the local-command unwind helper for autonomous live tests. The API does not accept filesystem paths, shell commands, or gameplay authority changes.
+The key endpoint accepts a small key-name request, the text endpoint accepts a bounded text line, the action endpoint uses `AgentConsoleActionRequest`, `default-action` queues the latest enabled default action without a caller-provided screen id, and `return-to-game-loop-step` exposes the local-command unwind helper for autonomous live tests. For `menuSelection` screens, `POST /api/agent-console/action` activates the requested action atomically: when the action is not already selected, the harness queues the needed selection movement and an Enter confirmation. Use `POST /api/agent-console/key` only when a test deliberately needs to move highlight without activating a menu item. The API does not accept filesystem paths, shell commands, or gameplay authority changes.
 
 ## E2E compatibility mapping
 

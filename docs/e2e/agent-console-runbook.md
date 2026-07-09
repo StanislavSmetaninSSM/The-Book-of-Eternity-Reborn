@@ -180,7 +180,7 @@ curl -sS -X POST "$BASE/api/agent-console/action" \
   --data-raw '{"actionId":"option-0","screenId":"main-menu","inputKind":"menuSelection"}'
 ```
 
-For menu actions without shortcuts, the API resolves the action to a safe existing console input: a digit selection when possible, or Enter when the action is already selected/default. If the first action call only changes selection, read the next snapshot and submit the selected action again to activate it.
+For menu actions without shortcuts, the API resolves the action to a safe existing console input and activates it in one request: digit selection or navigation when needed, followed by Enter. If a test deliberately needs to move the highlight without activating an item, use `POST /api/agent-console/key` with arrow keys instead of `POST /api/agent-console/action`.
 
 When an autonomous live-test driver only needs to accept the current default action, prefer the race-safe default endpoint. It reads the latest server-side snapshot at the moment of the call and does not require the caller to pass a `screenId`:
 
@@ -307,7 +307,7 @@ Keep the steps file and output artifact inside the disposable run root unless th
 1. Launch with a copied `FileSystemExample/game_session` under a disposable run root.
 2. Poll `GET /api/agent-console/snapshot` until `screenId` is `main-menu`.
 3. Read `actions` and find the player-visible Exit option.
-4. Use `POST /api/agent-console/key` or `POST /api/agent-console/action` to move selection.
+4. Use `POST /api/agent-console/key` to move selection without activating it, or use `POST /api/agent-console/action` to activate a menu item in one request.
 5. Read the next snapshot and confirm `selectedIndex` changed.
 6. Use `POST /api/agent-console/action` for the selected Exit action.
 7. Wait for the process to exit with code `0`.
