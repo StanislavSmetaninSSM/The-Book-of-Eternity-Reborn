@@ -301,6 +301,27 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Fact]
+    public void MortalBootstrapStateBuilder_StarterPassiveSkillTextDoesNotLeakOldCharacterName()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 5,
+            characterDescription: "Лира Мерран, молодая городская следопытка-писарь: умеет читать следы, сверять документы и замечать мелкие улики.",
+            worldDescription: "Тёмное городское фэнтези позднего средневековья.",
+            startingCircumstances: "Лира просыпается в комнате над архивом Медных Линий.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-09T01:00:00Z"));
+
+        var passiveSkills = files["game_state/player/skills_passive.json"];
+        var tracking = Assert.Single(
+            passiveSkills["passiveSkillChanges"]!.AsArray().OfType<JsonObject>(),
+            skill => string.Equals(skill["skillName"]?.GetValue<string>(), "Чтение следов", StringComparison.Ordinal));
+
+        var description = tracking["skillDescription"]!.GetValue<string>();
+        Assert.Contains("след", description, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Асурэн", description, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_FreshMortalBootstrapStarterSkillsAreCanonical()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
