@@ -2814,6 +2814,56 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalBootstrapTradeAnchorMissing_AddsMerchantHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/npcs/npc_core.json",
+                IssueSeverity.Error,
+                "Mortal bootstrap promised trade but has no usable merchant NPC.",
+                code: "mortal_bootstrap_requested_trade_missing",
+                section: "MortalBootstrap",
+                expected: "NPCsInScene/UpdateNPCs entry with tradeState.canTrade=true and a valid merchant profile",
+                actual: "missing usable tradeState")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_bootstrap_materialization_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Templates/MORTAL_NPC_UPDATE_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("mortal_bootstrap_requested_trade_missing", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("tradeState.canTrade=true", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("merchantProfile", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("tradeInventory", StringComparison.OrdinalIgnoreCase) && item.Contains("object", StringComparison.OrdinalIgnoreCase));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step => step.Contains("requested trade", StringComparison.OrdinalIgnoreCase) && step.Contains("tradeState", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("tradeBlockedReason", StringComparison.OrdinalIgnoreCase) && step.Contains("string", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("do not include inventory", StringComparison.OrdinalIgnoreCase) && step.Contains("UpdateNPCs", StringComparison.OrdinalIgnoreCase));
+
+        var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(doNotDo, item => item.Contains("tradeInventory", StringComparison.OrdinalIgnoreCase) && item.Contains("scalar", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("promised trader", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_MortalBootstrapItemShapeAndActorPersistenceErrors_AddsHarnessPacket()
     {
         var engine = CreateGameEngine();
