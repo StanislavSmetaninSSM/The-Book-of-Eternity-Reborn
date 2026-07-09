@@ -2237,6 +2237,49 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_MortalRelevantActorMissingPersistence_AddsNpcSpecificHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                "Mortal World relevant actor 'Матео' declared in NPC scope but has no persistent Mortal surface",
+                code: "mortal_relevant_actor_missing_persistence",
+                actor: "Матео",
+                section: "npc_scope",
+                expected: "matching NPC/faction/quest/inventory persistence in canonical state or structured same-turn updates",
+                actual: "actor appears only in gm_thoughts_markdown / narrative reasoning")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("mortal_npc_scope_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("output/debug_logs.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Templates/MORTAL_NPC_UPDATE_TEMPLATE.md", packet.GetProperty("templateRefs").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Матео", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+
+        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(steps, step =>
+            step.Contains("persistent", StringComparison.OrdinalIgnoreCase) &&
+            step.Contains("NPC", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_TrainingShowcaseStaleSnapshot_AddsExactHashHarnessPacket()
     {
         var engine = CreateGameEngine();
@@ -2944,17 +2987,18 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
         Assert.False(string.IsNullOrWhiteSpace(requestJson));
         using var doc = JsonDocument.Parse(requestJson!);
-        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        var packets = doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray().ToArray();
+        Assert.Equal(2, packets.Length);
+        var packet = Assert.Single(packets, item =>
+            string.Equals(item.GetProperty("kind").GetString(), "mortal_bootstrap_materialization_repair", StringComparison.Ordinal));
         Assert.Equal("mortal_bootstrap_materialization_repair", packet.GetProperty("kind").GetString());
         Assert.Contains("game_state/inventory/items.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
         Assert.Contains("lore/codex_entries.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
-        Assert.Contains("output/debug_logs.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
 
         var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(expectedShape, item => item.Contains("missing_required_string", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(expectedShape, item => item.Contains("missing_required_boolean_field", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(expectedShape, item => item.Contains("item_invalid_accessory_slot", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(expectedShape, item => item.Contains("mortal_relevant_actor_missing_persistence", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(expectedShape, item =>
             item.Contains("durability", StringComparison.OrdinalIgnoreCase) &&
             item.Contains("percentage string", StringComparison.OrdinalIgnoreCase) &&
@@ -2977,6 +3021,14 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             step.Contains("strings", StringComparison.OrdinalIgnoreCase) &&
             step.Contains("not objects", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("Relevant actors", StringComparison.OrdinalIgnoreCase));
+
+        var npcPacket = Assert.Single(packets, item =>
+            string.Equals(item.GetProperty("kind").GetString(), "mortal_npc_scope_repair", StringComparison.Ordinal));
+        Assert.Contains("game_state/npcs/npc_core.json", npcPacket.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("output/debug_logs.json", npcPacket.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains("Дом Вальмонт", npcPacket.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+        var npcSteps = npcPacket.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(npcSteps, step => step.Contains("mortal_relevant_actor_missing_persistence", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

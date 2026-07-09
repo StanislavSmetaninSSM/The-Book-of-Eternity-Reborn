@@ -1523,7 +1523,8 @@ public partial class GameEngine
 
     private static bool IsMortalNpcScopeRepairIssue(ValidationIssue issue)
     {
-        return string.Equals(issue.Code, "structured_npc_update_out_of_scope", StringComparison.OrdinalIgnoreCase);
+        return string.Equals(issue.Code, "structured_npc_update_out_of_scope", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "mortal_relevant_actor_missing_persistence", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsNpcScopeDeclarationRepairIssue(ValidationIssue issue)
@@ -1566,7 +1567,6 @@ public partial class GameEngine
             "codex_related_entry_unknown_target" => true,
             "npc_contract_unknown_top_level_key" => true,
             "flexible_state_unknown_top_level_key" => true,
-            "mortal_relevant_actor_missing_persistence" => true,
             "mortal_bootstrap_requested_teacher_missing" => true,
             "mortal_bootstrap_requested_trade_missing" => true,
             "missing_required_string" => IsMortalBootstrapGenericShapeRepairIssue(issue),
@@ -2742,12 +2742,15 @@ public partial class GameEngine
             {
                 "Every structured Mortal NPC update must be covered by output/debug_logs.json NPC scope: the actor name appears in Relevant actors and has a reasoning block.",
                 "The reasoning block must include current location, situation, thoughts, and actions for that actor in the accepted turn.",
+                "Every non-player Mortal relevant actor must have a persistent NPC/faction/quest/inventory surface, or be moved to Actors outside scope when it is only background context.",
+                "When a direct-speaking or directly addressed actor is an NPC, game_state/npcs/npc_core.json must keep or restore a full canonical NPC object for that actor.",
                 "If the NPC is only offscreen continuity, route color, background pressure, or unchanged existing state, do not emit UpdateNPCs/NPCsInScene/other structured NPC updates for that actor this turn.",
                 "Actors outside scope is for named actors not structurally changed this turn; it is not enough when UpdateNPCs changes that actor."
             },
             SafeCorrectionRules = new List<string>
             {
                 "Add the actor to Relevant actors and a full reasoning block only when the accepted player action truly changes, addresses, observes, or depends on that actor this turn.",
+                "Materialize or restore a missing direct NPC as a full canonical NPC object instead of deleting the actor from the scene to silence validation.",
                 "Remove the structured NPC update when the actor is merely offscreen, unchanged, or mentioned only as context; preserve the information in narrative, quest log, location summary, or Actors outside scope instead.",
                 "Keep canonical NPC names identical across Relevant actors, reasoning headings, and game_state/npcs/npc_core.json.",
                 "Preserve unrelated NPC state while repairing only the out-of-scope update or its missing reasoning coverage."
@@ -2756,6 +2759,8 @@ public partial class GameEngine
             {
                 "Open output/debug_logs.json and game_state/npcs/npc_core.json before repairing structured_npc_update_out_of_scope.",
                 "For each named actor, decide whether the accepted turn really changed or directly used that NPC.",
+                "For mortal_relevant_actor_missing_persistence, either restore/materialize the missing persistent NPC/faction/quest/inventory surface, or move the actor to Actors outside scope if the actor was only background context.",
+                "If the actor is a direct-speaking or directly addressed NPC, keep a full persistent NPC object in game_state/npcs/npc_core.json and preserve existing canonical fields from the pre-turn state when available.",
                 "If yes, add the exact canonical name to Relevant actors and add a matching reasoning block with current location, situation, thoughts, and actions.",
                 "If no, remove that actor's structured NPC update from this turn and keep any useful clue in non-NPC structured surfaces such as quest log or current_location summary.",
                 "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
