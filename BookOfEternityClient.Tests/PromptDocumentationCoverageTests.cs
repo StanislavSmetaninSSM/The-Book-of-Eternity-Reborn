@@ -481,6 +481,43 @@ public sealed class PromptDocumentationCoverageTests
         }
     }
 
+    [Fact]
+    public void AcceptedTurnProseStateDeltaContract_IsDocumentedForGmAndLiveTests()
+    {
+        var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var launchScript = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
+        var launchGenerator = ReadRepoFile("BookOfEternityClient", "Launcher", "Generate_CLI_Launch_Script.ps1");
+        var example = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+        var liveRoutes = ReadRepoFile("docs", "e2e", "live-test-paths.md");
+
+        foreach (var requiredText in new[]
+        {
+            "Prose State Delta Rationale",
+            "accepted_turn_skill_claim_missing_state_delta",
+            "accepted_turn_quest_clue_missing_state_delta",
+            "skillMasteryChanges",
+            "detailsLog",
+            "no-progress rationale"
+        })
+        {
+            Assert.Contains(requiredText, stepGuide, StringComparison.Ordinal);
+            Assert.Contains(requiredText, launchScript, StringComparison.Ordinal);
+            Assert.Contains(requiredText, launchGenerator, StringComparison.Ordinal);
+            Assert.Contains(requiredText, example, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "trained skill use",
+            "quest clue persistence",
+            "accepted_turn_skill_claim_missing_state_delta",
+            "accepted_turn_quest_clue_missing_state_delta"
+        })
+        {
+            Assert.Contains(requiredText, liveRoutes, StringComparison.Ordinal);
+        }
+    }
+
     private static string ReadRepoFile(params string[] parts) =>
         File.ReadAllText(Path.Combine(new[] { TestRepoPaths.RepoRoot }.Concat(parts).ToArray()));
 }

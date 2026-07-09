@@ -164,6 +164,7 @@ public partial class ValidationService
                 }
 
                 await ValidateAchievementUnlockNarrativeMarkersAsync(responseText, issues);
+                await ValidateAcceptedTurnProseStateDeltasAsync(responseText, issues);
             }
         }
         catch (JsonException)
@@ -207,6 +208,324 @@ public partial class ValidationService
         matchedText = string.Empty;
         return false;
     }
+
+    private async Task ValidateAcceptedTurnProseStateDeltasAsync(string narrativeText, List<ValidationIssue> issues)
+    {
+        var playerFacingText = await BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync(narrativeText);
+        if (string.IsNullOrWhiteSpace(playerFacingText))
+            return;
+
+        var filesModified = await ReadAcceptedTurnFilesModifiedAsync();
+        var noProgressRationaleText = await ReadAcceptedTurnNoProgressRationaleTextAsync();
+
+        var knownSkillNames = await ReadCurrentKnownPlayerSkillNamesAsync();
+        foreach (var skillName in knownSkillNames.OrderBy(name => name, StringComparer.OrdinalIgnoreCase))
+        {
+            if (!ContainsSkillUseClaim(playerFacingText, skillName))
+                continue;
+
+            var hasDelta = await HasAcceptedTurnStateDeltaAsync(
+                filesModified,
+                "game_state/player/skill_mastery.json",
+                "game_state/player/skills_active.json",
+                "game_state/player/skills_passive.json");
+            if (hasDelta || HasNoProgressRationale(noProgressRationaleText, "skill", skillName))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                "game_state/player/skill_mastery.json",
+                IssueSeverity.Error,
+                $"Player-facing prose says known skill '{skillName}' affected the scene, but accepted state has no matching skill delta or no-progress rationale.",
+                code: "accepted_turn_skill_claim_missing_state_delta",
+                section: "ProseStateDelta",
+                expected: "skill mastery/progression delta, skill state delta, or explicit no-progress rationale in gm_thoughts_markdown",
+                actual: "skill claim found in narrative/interface text; skill state unchanged",
+                repairHint: $"Если '{skillName}' реально помог, добавь узкое изменение mastery/progression в game_state/player/skill_mastery.json или соответствующий skill state delta. Если прогресса быть не должно, добавь в output/debug_logs.json.gm_thoughts_markdown секцию 'Prose State Delta Rationale' с именем навыка и причиной отсутствия прогресса."));
+        }
+
+        var activeQuests = await ReadCurrentActiveRegularQuestIdentitiesAsync();
+        foreach (var quest in activeQuests.OrderBy(q => q.Title, StringComparer.OrdinalIgnoreCase))
+        {
+            if (!ContainsQuestClueClaim(playerFacingText, quest.Title))
+                continue;
+
+            var hasDelta = await HasAcceptedTurnStateDeltaAsync(
+                filesModified,
+                "game_state/quests/regular_quests.json",
+                "game_state/quests/quest_history.json",
+                "game_state/quests/plot_outline.json");
+            if (hasDelta || HasNoProgressRationale(noProgressRationaleText, "quest", quest.Title))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                "game_state/quests/regular_quests.json",
+                IssueSeverity.Error,
+                $"Player-facing prose reveals a clue for active quest '{quest.Title}', but accepted state has no matching quest delta or no-progress rationale.",
+                code: "accepted_turn_quest_clue_missing_state_delta",
+                section: "ProseStateDelta",
+                expected: "regular quest/log/objective delta, quest history delta, plot outline delta, or explicit no-progress rationale in gm_thoughts_markdown",
+                actual: "quest clue claim found in narrative/interface text; quest state unchanged",
+                repairHint: $"Если зацепка по квесту '{quest.Title}' действительно найдена, допиши regular_quests.json: detailsLog/newDetailsLogEntry, objective/status, lastUpdatedTurn или quest_history. Если это только атмосферная фраза без прогресса, добавь в output/debug_logs.json.gm_thoughts_markdown секцию 'Prose State Delta Rationale' с названием квеста и причиной отсутствия state delta."));
+        }
+    }
+
+    private async Task<string> BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync(string narrativeText)
+    {
+        var builder = new StringBuilder(narrativeText ?? string.Empty);
+        var interfaceJson = await _fs.ReadFileAsync("output/interface_updates.json");
+        if (string.IsNullOrWhiteSpace(interfaceJson))
+            return builder.ToString();
+
+        try
+        {
+            using var doc = JsonDocument.Parse(interfaceJson);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return builder.ToString();
+
+            if (doc.RootElement.TryGetProperty("dialogueOptions", out var dialogueOptions) &&
+                dialogueOptions.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var option in dialogueOptions.EnumerateArray())
+                {
+                    if (option.ValueKind == JsonValueKind.String)
+                    {
+                        builder.AppendLine(option.GetString());
+                    }
+                    else if (option.ValueKind == JsonValueKind.Object &&
+                             option.TryGetProperty("text", out var textNode) &&
+                             textNode.ValueKind == JsonValueKind.String)
+                    {
+                        builder.AppendLine(textNode.GetString());
+                    }
+                }
+            }
+        }
+        catch (JsonException)
+        {
+            // Interface validation reports malformed JSON separately.
+        }
+
+        return builder.ToString();
+    }
+
+    private async Task<HashSet<string>> ReadCurrentKnownPlayerSkillNamesAsync()
+    {
+        var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        names.UnionWith(ParsePlayerSkillNames(await _fs.ReadFileAsync("game_state/player/skills_active.json"), "activeSkillChanges"));
+        names.UnionWith(ParsePlayerSkillNames(await _fs.ReadFileAsync("game_state/player/skills_passive.json"), "passiveSkillChanges"));
+        return names.Where(name => !string.IsNullOrWhiteSpace(name)).ToHashSet(StringComparer.OrdinalIgnoreCase);
+    }
+
+    private async Task<List<ProseQuestIdentity>> ReadCurrentActiveRegularQuestIdentitiesAsync()
+    {
+        var result = new List<ProseQuestIdentity>();
+        var json = await _fs.ReadFileAsync("game_state/quests/regular_quests.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            foreach (var propName in new[] { "quests", "UpdateQuests" })
+            {
+                if (!doc.RootElement.TryGetProperty(propName, out var arr) || arr.ValueKind != JsonValueKind.Array)
+                    continue;
+
+                foreach (var item in arr.EnumerateArray())
+                {
+                    if (item.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    var status = GetFirstNonEmptyString(item, "status");
+                    if (!string.IsNullOrWhiteSpace(status) &&
+                        (status.Contains("Completed", StringComparison.OrdinalIgnoreCase) ||
+                         status.Contains("Failed", StringComparison.OrdinalIgnoreCase) ||
+                         status.Contains("Abandoned", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        continue;
+                    }
+
+                    var title = GetFirstNonEmptyString(item, "title", "questName", "name");
+                    if (string.IsNullOrWhiteSpace(title) ||
+                        result.Any(existing => string.Equals(existing.Title, title, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        continue;
+                    }
+
+                    result.Add(new ProseQuestIdentity(GetFirstNonEmptyString(item, "questId") ?? string.Empty, title));
+                }
+            }
+        }
+        catch (JsonException)
+        {
+            // Generic quest state validation reports malformed JSON separately.
+        }
+
+        return result;
+    }
+
+    private async Task<bool> HasAcceptedTurnStateDeltaAsync(IReadOnlyCollection<string> filesModified, params string[] paths)
+    {
+        var hasPreTurnSnapshotEvidence = false;
+
+        foreach (var path in paths)
+        {
+            var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(path);
+            if (preTurnJson == null)
+                continue;
+
+            hasPreTurnSnapshotEvidence = true;
+            var currentJson = await _fs.ReadFileAsync(path) ?? string.Empty;
+            if (!string.Equals(currentJson, preTurnJson, StringComparison.Ordinal))
+                return true;
+        }
+
+        if (hasPreTurnSnapshotEvidence)
+            return false;
+
+        foreach (var path in paths)
+        {
+            if (ContainsPath(filesModified, path))
+                return true;
+        }
+
+        return false;
+    }
+
+    private async Task<string> ReadAcceptedTurnNoProgressRationaleTextAsync()
+    {
+        var debugJson = await _fs.ReadFileAsync("output/debug_logs.json");
+        if (string.IsNullOrWhiteSpace(debugJson))
+            return string.Empty;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(debugJson);
+            if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                doc.RootElement.TryGetProperty("gm_thoughts_markdown", out var gmThoughts) &&
+                gmThoughts.ValueKind == JsonValueKind.String)
+            {
+                return gmThoughts.GetString() ?? string.Empty;
+            }
+        }
+        catch (JsonException)
+        {
+            // Debug logs validation reports malformed JSON separately.
+        }
+
+        return string.Empty;
+    }
+
+    private static bool ContainsSkillUseClaim(string text, string skillName)
+    {
+        if (string.IsNullOrWhiteSpace(skillName))
+            return false;
+
+        return EnumerateNormalizedProseSentences(text)
+            .Any(sentence =>
+                ContainsEntityNameLoose(sentence, skillName) &&
+                LooksLikeSkillUseClaimSentence(sentence));
+    }
+
+    private static bool LooksLikeSkillUseClaimSentence(string sentence)
+    {
+        var hasSkillUseMarker = ContainsAny(
+            sentence,
+            "помог", "помога", "благодаря", "с помощью", "используя", "использован", "применив", "применен",
+            "подготовк", "натренирован", "мастерств");
+        var hasResultMarker = ContainsAny(
+            sentence,
+            "замет", "выяв", "распозна", "прочит", "поня", "удалось", "открыл", "наш", "обнаруж", "проясн");
+        return hasSkillUseMarker && hasResultMarker;
+    }
+
+    private static bool ContainsQuestClueClaim(string text, string questTitle)
+    {
+        if (string.IsNullOrWhiteSpace(questTitle))
+            return false;
+
+        return EnumerateNormalizedProseSentences(text)
+            .Any(sentence =>
+                ContainsEntityNameLoose(sentence, questTitle) &&
+                LooksLikeQuestClueClaimSentence(sentence));
+    }
+
+    private static bool LooksLikeQuestClueClaimSentence(string sentence)
+    {
+        return ContainsAny(
+            sentence,
+            "зацепк", "ули", "доказ", "след", "наход", "наш", "замет", "выясн", "обнаруж", "раскры", "проясн",
+            "подтвержд", "свидетель", "реестр");
+    }
+
+    private static bool HasNoProgressRationale(string rationaleText, string kind, string entityName)
+    {
+        if (string.IsNullOrWhiteSpace(rationaleText) || string.IsNullOrWhiteSpace(entityName))
+            return false;
+
+        var normalized = NormalizeProseDeltaText(rationaleText);
+        return normalized.Contains(NormalizeProseDeltaText(entityName), StringComparison.OrdinalIgnoreCase) &&
+               ContainsAny(
+                   normalized,
+                   "prose state delta rationale",
+                   "no-progress",
+                   "no progress",
+                   "без прогресса",
+                   "нет прогресса",
+                   "без state delta",
+                   "нет state delta",
+                   "не дает прогресса",
+                   "не повышает мастерство",
+                   "не обновляет квест",
+                   "только атмосфер",
+                   "только цвет сцены",
+                   $"{NormalizeProseDeltaText(kind)} no-progress");
+    }
+
+    private static IEnumerable<string> EnumerateNormalizedProseSentences(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            yield break;
+
+        foreach (var sentence in Regex.Split(text, @"(?<=[.!?。！？])\s+|[\r\n]+"))
+        {
+            var normalized = NormalizeProseDeltaText(sentence);
+            if (!string.IsNullOrWhiteSpace(normalized))
+                yield return normalized;
+        }
+    }
+
+    private static string NormalizeProseDeltaText(string value)
+    {
+        return Regex.Replace(
+                value.Replace('ё', 'е').Replace('Ё', 'Е').ToLowerInvariant(),
+                @"\s+",
+                " ")
+            .Trim();
+    }
+
+    private static bool ContainsEntityNameLoose(string normalizedSentence, string entityName)
+    {
+        var normalizedName = NormalizeProseDeltaText(entityName);
+        if (normalizedSentence.Contains(normalizedName, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        var tokens = Regex.Matches(normalizedName, @"[\p{L}\p{Nd}]+")
+            .Select(match => match.Value)
+            .Where(token => token.Length >= 4)
+            .Select(BuildLooseNameToken)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        return tokens.Count > 0 &&
+               tokens.All(token => normalizedSentence.Contains(token, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string BuildLooseNameToken(string token)
+    {
+        return token.Length <= 5 ? token : token[..5];
+    }
+
+    private sealed record ProseQuestIdentity(string QuestId, string Title);
 
     private async Task<List<ValidationIssue>> ValidateAcceptedTurnInterfacePayloadInternalAsync()
     {

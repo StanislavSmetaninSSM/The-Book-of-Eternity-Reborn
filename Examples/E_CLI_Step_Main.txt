@@ -43,6 +43,53 @@ Example gm_thoughts_markdown:
 ## Логика прогрессии
 - Существенных off-screen обновлений не требуется
 
+Prose State Delta Rationale / связь прозы и состояния:
+- Если player-facing response говорит, что известный навык помог, сработал или
+  раскрыл деталь, accepted turn должен записать это в канон: например
+  `skillMasteryChanges`, `activeSkillChanges` или `passiveSkillChanges`.
+- Если response говорит, что по активному квесту найдена новая зацепка,
+  accepted turn должен обновить `detailsLog`, objective/status,
+  `lastUpdatedTurn`, `quest_history.json` или `plot_outline.json`.
+- Если прогресса намеренно нет, не стирай полезную прозу. Добавь в
+  `output/debug_logs.json.gm_thoughts_markdown` раздел
+  `## Prose State Delta Rationale` с именем навыка или названием квеста и
+  clear no-progress rationale.
+- Иначе валидатор вернет `accepted_turn_skill_claim_missing_state_delta` или
+  `accepted_turn_quest_clue_missing_state_delta`.
+
+Пример реального delta:
+
+```json
+{
+  "skillMasteryChanges": [
+    {
+      "skillId": "skill_life_001_seal_reading",
+      "skillName": "Чтение печатей",
+      "newCurrentMasteryProgress": 1,
+      "newMasteryProgressNeeded": 100,
+      "masteryLeveledUp": false,
+      "reason": "Навык помог заметить поддельную зарубку на контрактной печати."
+    }
+  ],
+  "UpdateQuests": [
+    {
+      "questId": "quest_life_001_opening_hook",
+      "questName": "Печать Серебряной Луны",
+      "lastUpdatedTurn": 4,
+      "newDetailsLogEntry": "#[4]. Чтение печатей выявило смещенную свидетельскую зарубку на контракте."
+    }
+  ]
+}
+```
+
+Пример допустимого no-progress rationale:
+
+```markdown
+## Prose State Delta Rationale
+- skill: Чтение печатей - no-progress rationale: сцена только перечисляет уже известные ориентиры, новый навык не применялся.
+- quest: Печать Серебряной Луны - no-progress rationale: название дела упомянуто как контекст, новой зацепки или стадии квеста нет.
+```
+
 ==================================================
 2. WORLD-PROGRESSION TURN WITH OFF-SCREEN NPCS
 ==================================================

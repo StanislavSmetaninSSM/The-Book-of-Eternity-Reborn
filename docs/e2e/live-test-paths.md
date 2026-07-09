@@ -60,6 +60,19 @@ codex -m gpt-5.5 -c model_reasoning_effort="high" --dangerously-bypass-approvals
 - если в художественном тексте произошло долговременное изменение, GM обновил
   соответствующее состояние.
 
+Дополнительная проверка harness/RLM для этого маршрута:
+
+- trained skill use: если игрок применил недавно изученный или уже известный
+  навык, а художественный текст говорит, что навык помог, нужно проверить
+  `skillMasteryChanges`, `skills_active.json` или `skills_passive.json`; если
+  прогресса нет, должен быть явный `Prose State Delta Rationale`;
+- quest clue persistence: если текст говорит о найденной зацепке, открытии или
+  прогрессе активного квеста, это должно быть видно в `/квесты` и в
+  `regular_quests.json` / `quest_history.json` / `plot_outline.json`;
+- ошибки `accepted_turn_skill_claim_missing_state_delta` и
+  `accepted_turn_quest_clue_missing_state_delta` считаются блокерами golden
+  path: исправлять через harness/validator contract, а не ручной правкой сейва.
+
 В этом маршруте живой мир проверяется только дымовым образом. Полная симуляция
 живого мира проверяется отдельно в маршрутах 2 и 3.
 

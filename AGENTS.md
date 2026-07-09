@@ -111,6 +111,7 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 ```
 
 <!-- SPECKIT START -->
-Current Spec Kit plan for this branch:
-`specs/1378-training-vitrines/plan.md`
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+at specs\1479-prose-state-delta-audit\plan.md
 <!-- SPECKIT END -->
