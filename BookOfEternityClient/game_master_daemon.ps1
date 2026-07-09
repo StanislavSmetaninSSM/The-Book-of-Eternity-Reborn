@@ -5452,7 +5452,44 @@ function Process-RepairRequest {
             return
         }
 
-        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ReturnDetails
+        $repairDispatchMaxWaitSeconds = if ($TurnTimeout -gt 0 -and $TurnTimeout -lt $script:BridgeDispatchMaxWaitSeconds) { $TurnTimeout } else { $script:BridgeDispatchMaxWaitSeconds }
+        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ReturnDetails -MaxWaitSeconds $repairDispatchMaxWaitSeconds
+        if ($dispatchDiagnostics.Status -eq "bridge-dispatch-timeout") {
+            $script:ErrorCount++
+            Write-Log "  GM bridge did not accept validation repair dispatch before the dispatch timeout; publishing repair stall report." -Level "ERROR" -Color Red
+            $dispatchStall = [ordered]@{
+                isStalled = $true
+                completed = $false
+                harnessSource = "gm_validation_repair_dispatch_unavailable"
+                elapsedSeconds = $repairDispatchMaxWaitSeconds
+                minimumElapsedSeconds = $repairDispatchMaxWaitSeconds
+                noProgressSeconds = 0
+                noProgressElapsedSeconds = $repairDispatchMaxWaitSeconds
+                dispatchStatus = [string]$dispatchDiagnostics.Status
+                bridgeOutputVersion = -1
+                targetFiles = @()
+                requestId = if ($repair.requestId) { [string]$repair.requestId } else { "" }
+                turnNumber = $turnNumber
+                error = "GM bridge did not accept validation repair dispatch before the dispatch timeout."
+            }
+            [void](Write-DaemonJsonFileBestEffort -Path $ValidationRepairArtifactStallReportFile -Payload $dispatchStall -Depth 10)
+            $script:ActiveValidationRepairWatch = $null
+            Write-GmTrajectoryRecord `
+                -Kind "repair" `
+                -Mode "validation_repair" `
+                -RequestObject $repair `
+                -Dispatch $dispatchDiagnostics `
+                -ValidationStatus "rejected" `
+                -IssueKinds (Get-GmTrajectoryIssueKinds -RequestObject $repair) `
+                -RepairPacketRefs (Get-GmTrajectoryRepairPacketRefs -RequestObject $repair) `
+                -ValidationDiagnostics (Get-GmTrajectoryValidationDiagnostics -RequestObject $repair) `
+                -RepairPacketDiagnostics (Get-GmTrajectoryRepairPacketDiagnostics -RequestObject $repair) `
+                -RepairAttempts $attempt `
+                -RepairStatus "dispatch-timeout" `
+                -StartedAtUtc $fileInfo.LastWriteTimeUtc `
+                -MissingHarnessTool "gm_validation_repair_dispatch_unavailable"
+            return
+        }
         if ($dispatchDiagnostics.Status -eq "sent" -or $dispatchDiagnostics.Status -eq "clipboard") {
             $script:ActiveValidationRepairWatch = New-GmValidationRepairArtifactWatchState -RepairRequest $repair -DispatchStatus ([string]$dispatchDiagnostics.Status)
         }

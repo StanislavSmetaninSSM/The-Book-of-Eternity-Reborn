@@ -4346,6 +4346,29 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonRepairDispatch_TimesOutAndPublishesStallReportWhenBridgeNeverAcceptsPrompt()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+
+        var functionBlock = ExtractFunctionBlock(daemon, "function Process-RepairRequest");
+
+        Assert.Contains("$repairDispatchMaxWaitSeconds", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ReturnDetails -MaxWaitSeconds $repairDispatchMaxWaitSeconds", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("$dispatchDiagnostics.Status -eq \"bridge-dispatch-timeout\"", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("gm_validation_repair_dispatch_unavailable", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("Write-DaemonJsonFileBestEffort -Path $ValidationRepairArtifactStallReportFile", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("-RepairStatus \"dispatch-timeout\"", functionBlock, StringComparison.Ordinal);
+
+        var dispatchIndex = functionBlock.IndexOf("$dispatchDiagnostics = Dispatch-WithRetry", StringComparison.Ordinal);
+        var timeoutBranchIndex = functionBlock.IndexOf("$dispatchDiagnostics.Status -eq \"bridge-dispatch-timeout\"", dispatchIndex, StringComparison.Ordinal);
+        var watchIndex = functionBlock.IndexOf("New-GmValidationRepairArtifactWatchState", dispatchIndex, StringComparison.Ordinal);
+
+        Assert.True(dispatchIndex >= 0, "Expected validation repair dispatch call.");
+        Assert.True(timeoutBranchIndex > dispatchIndex, "Expected validation repair dispatch timeout handling after dispatch returns.");
+        Assert.True(watchIndex > timeoutBranchIndex, "Expected timeout handling before daemon starts a repair artifact watch.");
+    }
+
+    [Fact]
     public void DaemonRepairDispatch_SkipsDiagnosticOnlyRepairRequests()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
