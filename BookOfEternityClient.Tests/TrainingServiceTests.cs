@@ -204,6 +204,33 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuyTrainingAsync_MortalOffer_KeepsExperienceCountersAlignedAfterSpendingCurrentLevelExperience()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        await SeedMortalPlayerProgressWithAliasesAsync(
+            money: 500,
+            level: 2,
+            currentLevelExperience: 49,
+            totalExperience: 149,
+            experienceForNextLevel: 100);
+        await SeedPlayerActiveSkillAsync(skillName: "Ножи", masteryLevel: 1, currentProgress: 4, progressNeeded: 5);
+
+        var service = CreateService();
+        var result = await service.BuyTrainingAsync("npc_hunter_001", "offer_knife_mastery_2", currentTurn: 13);
+
+        Assert.True(result.Success);
+
+        using var experienceDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/experience.json") ?? "{}");
+        var experience = experienceDoc.RootElement;
+        Assert.Equal(24, experience.GetProperty("currentLevelExperience").GetInt32());
+        Assert.Equal(24, experience.GetProperty("currentExperience").GetInt32());
+        Assert.Equal(24, experience.GetProperty("experience").GetInt32());
+        Assert.Equal(124, experience.GetProperty("totalExperience").GetInt32());
+        Assert.Equal(100, experience.GetProperty("experienceForNextLevel").GetInt32());
+    }
+
+    [Fact]
     public async Task BuyTrainingAsync_MortalUnknownPassiveOffer_AddsSkillLocallyWithoutPendingGmUnlock()
     {
         await SeedMortalSoulStateAsync();
@@ -1270,6 +1297,32 @@ public sealed class TrainingServiceTests : IDisposable
         {
           "level": 4,
           "currentLevelExperience": {{currentLevelExperience}},
+          "experienceForNextLevel": {{experienceForNextLevel}}
+        }
+        """);
+    }
+
+    private async Task SeedMortalPlayerProgressWithAliasesAsync(
+        int money,
+        int level,
+        int currentLevelExperience,
+        int totalExperience,
+        int experienceForNextLevel)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/core/player_status.json", $$"""
+        {
+          "money": {{money}}
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/player/experience.json", $$"""
+        {
+          "level": {{level}},
+          "playerLevel": {{level}},
+          "currentLevelExperience": {{currentLevelExperience}},
+          "currentExperience": {{currentLevelExperience}},
+          "experience": {{currentLevelExperience}},
+          "totalExperience": {{totalExperience}},
           "experienceForNextLevel": {{experienceForNextLevel}}
         }
         """);

@@ -192,7 +192,10 @@ public sealed class TrainingService
         }
 
         statusRoot["money"] = currentMoney - evaluatedOffer.Cost.Money;
-        experienceRoot["currentLevelExperience"] = currentLevelExperience - evaluatedOffer.Cost.CurrentLevelExperiencePoints;
+        ApplyMortalTrainingExperienceSpend(
+            experienceRoot,
+            currentLevelExperience,
+            evaluatedOffer.Cost.CurrentLevelExperiencePoints);
         if (!experienceRoot.ContainsKey("experienceForNextLevel"))
             experienceRoot["experienceForNextLevel"] = InferExperienceForNextLevel(experienceRoot);
 
@@ -2049,6 +2052,28 @@ public sealed class TrainingService
             return Math.Max(0, current);
 
         return Math.Max(0, GetNodeInt(experienceRoot["totalExperience"]));
+    }
+
+    private static void ApplyMortalTrainingExperienceSpend(JsonObject experienceRoot, int previousCurrentLevelExperience, int spent)
+    {
+        spent = Math.Max(0, spent);
+        previousCurrentLevelExperience = Math.Max(0, previousCurrentLevelExperience);
+        var remainingCurrentLevelExperience = Math.Max(0, previousCurrentLevelExperience - spent);
+
+        experienceRoot["currentLevelExperience"] = remainingCurrentLevelExperience;
+        experienceRoot["currentExperience"] = remainingCurrentLevelExperience;
+        experienceRoot["experience"] = remainingCurrentLevelExperience;
+
+        if (GetNodeInt(experienceRoot["totalExperience"], int.MinValue) is var totalExperience &&
+            totalExperience != int.MinValue)
+        {
+            var previousLevelBase = Math.Max(0, totalExperience - previousCurrentLevelExperience);
+            experienceRoot["totalExperience"] = previousLevelBase + remainingCurrentLevelExperience;
+        }
+        else
+        {
+            experienceRoot["totalExperience"] = remainingCurrentLevelExperience;
+        }
     }
 
     private static int ResolveMaxUnlockedSpiritualArtTier(JsonObject profile, JsonObject? shiningRoot)
