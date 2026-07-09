@@ -635,7 +635,7 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task EnsureTrainingAsync_AfterlifeFreshSystemGuardianProfile_CreatesPendingMentorRefreshRequest()
+    public async Task EnsureTrainingAsync_AfterlifeFreshSystemGuardianProfile_BuildsClientOwnedStarterShowcase()
     {
         await SeedAfterlifeSoulStateAsync(inkFeathers: 0);
         var guardianLibrary = new SystemGuardianLibraryService(_fs, NullLogger<SystemGuardianLibraryService>.Instance);
@@ -653,16 +653,28 @@ public sealed class TrainingServiceTests : IDisposable
         Assert.Equal("guard_system_myriel_001", teacher.SourceActorId);
         Assert.Equal("Мириэль Пепельная Звезда", teacher.SourceActorName);
         Assert.Equal("afterlife_mentor", teacher.SourceActorKind);
-        Assert.False(teacher.ShowcaseReady);
-        Assert.Equal("ГМ ещё не подготовил витрину наставника.", teacher.BlockReason);
-        Assert.True(view.RequestCreatedThisCall);
-        Assert.True(view.RequestPending);
-        Assert.Contains("витрину обучения для наставника посмертия", view.PendingGmAction, StringComparison.OrdinalIgnoreCase);
+        Assert.True(teacher.ShowcaseReady);
+        Assert.False(teacher.ShowcaseStale);
+        Assert.Null(teacher.BlockReason);
+        Assert.False(view.RequestCreatedThisCall);
+        Assert.False(view.RequestPending);
+        Assert.Null(view.PendingGmAction);
 
-        var pendingRaw = await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath);
-        Assert.NotNull(pendingRaw);
-        Assert.Contains("\"requestKind\": \"afterlife_teacher_showcase\"", pendingRaw, StringComparison.Ordinal);
-        Assert.Contains("\"sourceActorId\": \"guard_system_myriel_001\"", pendingRaw, StringComparison.Ordinal);
+        Assert.NotEmpty(teacher.Offers);
+        Assert.Contains(teacher.Offers, offer =>
+            offer.TargetId == "guard" &&
+            offer.TargetKind == "standard_spiritual_art" &&
+            offer.TargetValue == 1 &&
+            offer.SourceCap > 0 &&
+            offer.Cost.InkFeathers > 0);
+        Assert.DoesNotContain(teacher.Offers, offer =>
+            offer.TargetKind.Contains("special", StringComparison.OrdinalIgnoreCase));
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+
+        var profileRootRaw = await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath);
+        Assert.NotNull(profileRootRaw);
+        Assert.Contains("\"mentorTrainingShowcase\"", profileRootRaw, StringComparison.Ordinal);
+        Assert.Contains("\"generatedBy\": \"client_system_guardian_starter_showcase\"", profileRootRaw, StringComparison.Ordinal);
     }
 
     [Fact]

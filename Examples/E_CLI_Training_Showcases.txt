@@ -112,10 +112,16 @@ Shared rules
   matching Guardian actor. That profile is a starter mentor authority:
   it has `mentorProfile.canTeach=true`, starter `standardArts`, a
   `progressionStrategy`, and `ledger`. Do not replace it with a bare profile or
-  try to materialize the Guardian again. If `/обучение` requests an
-  `afterlife_teacher_showcase` for that actor, prefer
-  `Complete-BoeTrainingShowcaseRequest` to update the existing profile with
-  `mentorTrainingShowcase` and copy the requested `sourceActorSnapshotHash`.
+  try to materialize the Guardian again. Built-in system Guardians can receive a
+  basic client-owned starter showcase directly from those `standardArts`:
+  `mentorTrainingShowcase.generatedBy =
+  client_system_guardian_starter_showcase`. That showcase exists so the first
+  `/обучение` screen can open without waiting on a full GM service turn. Do not
+  duplicate it or create a parallel pending request. If `/обучение` requests an
+  `afterlife_teacher_showcase` for a freeform, authorial, or otherwise
+  GM-authored mentor, prefer `Complete-BoeTrainingShowcaseRequest` to update the
+  existing profile with `mentorTrainingShowcase` and copy the requested
+  `sourceActorSnapshotHash`.
 - In afterlife, the player's current Ink Feathers, Light Sparks, ordinary
   Spiritual Art tiers, Spirit Focus tier, enlightenment, and radiance are read
   from client-owned `soul_state.json` / `shining_abode_state.json`. The

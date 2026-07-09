@@ -27,7 +27,7 @@
       "file": "E_CLI_Training_Showcases.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "afterlifeEntityProfileUpdates[].mentorTrainingShowcase",
-      "description": "Afterlife mentor showcase with discounted standard spiritual-art training, sourceCap, relationship gates, no direct GM tier upgrades, and Fresh New Game system/freeform Guardian starter mentor profiles."
+      "description": "Afterlife mentor showcase with discounted standard spiritual-art training, sourceCap, relationship gates, no direct GM tier upgrades, Fresh New Game system/freeform Guardian starter mentor profiles, and client_system_guardian_starter_showcase bootstrap for built-in system Guardians."
     }
   ],
   "gmWorkerBridgeCoverage": [

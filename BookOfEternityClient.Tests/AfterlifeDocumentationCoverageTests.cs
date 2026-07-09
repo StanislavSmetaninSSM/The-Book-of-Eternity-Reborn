@@ -110,6 +110,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("guard_system_*", matrix + example + manifest, StringComparison.Ordinal);
         Assert.Contains("mentorProfile.canTeach=true", matrix + example, StringComparison.Ordinal);
         Assert.Contains("starter mentor profiles", example + manifest, StringComparison.Ordinal);
+        Assert.Contains("client_system_guardian_starter_showcase", matrix + example + manifest, StringComparison.Ordinal);
         Assert.Contains("afterlifeSpecialArtLearningReceipts", example + matrix, StringComparison.Ordinal);
         Assert.Contains("/обучение", example + matrix, StringComparison.Ordinal);
         Assert.Contains("/духовные_искусства", example + matrix, StringComparison.Ordinal);

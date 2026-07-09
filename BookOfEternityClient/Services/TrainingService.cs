@@ -472,6 +472,7 @@ public sealed class TrainingService
         var selfOffers = BuildAfterlifeSelfTrainingOffers(profile, soulRoot, shiningRoot).ToArray();
         var teachers = new List<TrainingTeacherView>();
         var satisfiedRequests = new List<(string SourceActorId, string RequestKind)>();
+        var afterlifeProfilesChanged = false;
         var requestPending = false;
         var requestCreated = false;
         string? pendingGmAction = null;
@@ -489,6 +490,22 @@ public sealed class TrainingService
             var actualHash = GetNodeString(showcase?["sourceActorSnapshotHash"]);
             var hasFreshShowcase = showcase != null &&
                                    string.Equals(actualHash, expectedHash, StringComparison.OrdinalIgnoreCase);
+
+            if (!hasFreshShowcase &&
+                TryBuildClientOwnedAfterlifeStarterShowcase(
+                    mentor,
+                    profile,
+                    sourceActorId,
+                    sourceActorName,
+                    expectedHash,
+                    currentTurn,
+                    out var clientOwnedShowcase))
+            {
+                mentor["mentorTrainingShowcase"] = clientOwnedShowcase;
+                showcase = clientOwnedShowcase;
+                hasFreshShowcase = true;
+                afterlifeProfilesChanged = true;
+            }
 
             if (!hasFreshShowcase)
             {
@@ -544,6 +561,8 @@ public sealed class TrainingService
         }
 
         await ClearSatisfiedTrainingShowcaseRequestsAsync(satisfiedRequests);
+        if (afterlifeProfilesChanged && afterlifeProfilesRoot != null)
+            await _fs.WriteFileAtomicAsync(AfterlifeEntityProfilesPath, afterlifeProfilesRoot.ToJsonString(JsonOpts));
 
         return new TrainingView(
             RealmAfterlife,
@@ -1459,6 +1478,103 @@ public sealed class TrainingService
             return true;
 
         return GetNodeBool(profile["canTeachPlayer"]);
+    }
+
+    private static bool TryBuildClientOwnedAfterlifeStarterShowcase(
+        JsonObject mentor,
+        JsonObject playerProfile,
+        string sourceActorId,
+        string sourceActorName,
+        string expectedHash,
+        int currentTurn,
+        out JsonObject showcase)
+    {
+        showcase = new JsonObject();
+
+        if (!IsClientOwnedSystemGuardianStarterMentor(mentor))
+            return false;
+
+        if (mentor["standardArts"] is not JsonObject standardArts)
+            return false;
+
+        var offers = new JsonArray();
+        foreach (var art in AfterlifeSpiritualConflictState.SpiritualArts)
+        {
+            var sourceCap = Math.Clamp(GetNodeInt(standardArts[art.ArtId]), 0, SpiritualArtMaxTier);
+            if (sourceCap <= 0)
+                continue;
+
+            var currentValue = ResolveAfterlifePlayerTargetValue(
+                playerProfile,
+                "standard_spiritual_art",
+                art.ArtId);
+            if (currentValue >= sourceCap)
+                continue;
+
+            var targetValue = Math.Min(sourceCap, currentValue + 1);
+            var relationshipLevel = ResolveAfterlifeMentorRelationshipLevel(mentor);
+            var baseCost = AfterlifeTrainingCostPolicy.ComputeStandardArtBaseInkFeatherCost(art, targetValue);
+            var mentorCost = AfterlifeTrainingCostPolicy.ComputeMentorCost(baseCost, relationshipLevel);
+
+            offers.Add(new JsonObject
+            {
+                ["offerId"] = $"client_{sourceActorId}_{art.ArtId}_tier_{targetValue}",
+                ["targetKind"] = "standard_spiritual_art",
+                ["targetId"] = art.ArtId,
+                ["targetName"] = art.DisplayName,
+                ["targetValue"] = targetValue,
+                ["sourceCap"] = sourceCap,
+                ["cost"] = new JsonObject
+                {
+                    ["inkFeathers"] = mentorCost,
+                    ["lightSparks"] = 0
+                },
+                ["requirements"] = new JsonObject
+                {
+                    ["minimumRelationship"] = 0
+                },
+                ["summary"] = $"Базовое наставление хранителя: {art.DisplayName.ToLowerInvariant()} до уровня {targetValue}.",
+                ["generatedBy"] = "client_system_guardian_starter_showcase"
+            });
+        }
+
+        if (offers.Count == 0)
+            return false;
+
+        showcase = new JsonObject
+        {
+            ["showcaseId"] = $"client_starter_showcase_{sourceActorId}",
+            ["requestKind"] = AfterlifeRequestKind,
+            ["sourceActorId"] = sourceActorId,
+            ["sourceActorName"] = sourceActorName,
+            ["sourceActorKind"] = "afterlife_mentor",
+            ["sourceActorSnapshotHash"] = expectedHash,
+            ["generatedBy"] = "client_system_guardian_starter_showcase",
+            ["syncedAtTurn"] = currentTurn,
+            ["syncedAtUtc"] = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture),
+            ["summary"] = "Базовая стартовая витрина встроенного Хранителя создана клиентом из структурного профиля наставника.",
+            ["offers"] = offers
+        };
+        return true;
+    }
+
+    private static bool IsClientOwnedSystemGuardianStarterMentor(JsonObject mentor)
+    {
+        if (mentor["mentorProfile"] is not JsonObject mentorProfile || !GetNodeBool(mentorProfile["canTeach"]))
+            return false;
+
+        if (mentor["sourcePreset"] is not JsonObject sourcePreset)
+            return false;
+
+        var library = GetNodeString(sourcePreset["library"]);
+        if (!string.Equals(library, "built_in", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        return (mentor["ledger"] as JsonArray)?.OfType<JsonObject>().Any(entry =>
+            string.Equals(
+                GetNodeString(entry["reason"]),
+                "fresh_new_game_system_guardian_bootstrap",
+                StringComparison.OrdinalIgnoreCase)) == true;
     }
 
     private static string ResolveAfterlifeActorId(JsonObject profile) =>
