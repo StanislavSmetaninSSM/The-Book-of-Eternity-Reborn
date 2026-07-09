@@ -8,8 +8,9 @@ This file documents the GM-authored side of the `/training` / `/обучение
 feature. The client owns purchases and currency/experience spending. The GM
 prepares fresh, readable trainingShowcase data when the client creates
 `game_state/control/pending_training_showcase_requests.json`, and finalizes
-Mortal skill unlocks/level-ups when a paid lesson crosses a mechanical
-threshold.
+Mortal skill level-ups/effect changes when a paid lesson crosses a mechanical
+threshold. A normal new Mortal skill from a fresh showcase is client-owned and
+is added locally at mastery level 1 after payment.
 
 Shared rules
 ------------
@@ -57,22 +58,24 @@ Shared rules
   `game_state/player/experience.json.currentExperience`. Preserve them as
   client-owned baseline resources; do not delete them as unexplained state.
 - In afterlife showcase/self-training purchases, GM does not raise player tiers directly. The client applies standard spiritual-art, spirit_focus, and known special-art upgrades.
-- In Mortal World training, the client may apply only simple active-skill
-  mastery progress that does not cross a threshold. If a paid lesson unlocks a
-  skill or crosses a mastery level, the client writes requestKind
-  `mortal_training_skill_evolution` and immediately sends a dedicated GM action
-  for that request. Active targets use the full updated `activeSkillChanges`
-  object plus matching `skillMasteryChanges`. Passive targets use the full
-  updated `passiveSkillChanges` object only; do not invent an active skill or
-  active mastery entry for a passive target. Do not wait for a later ordinary
-  player input and do not charge the player again.
+- In Mortal World training, the client locally applies a normal new skill from
+  a fresh showcase at mastery level 1, and may apply simple active-skill mastery
+  progress that does not cross a threshold. If a paid lesson crosses a mastery
+  threshold or requires new/changed mechanical effects, the client writes
+  requestKind `mortal_training_skill_evolution` and immediately sends a
+  dedicated GM action for that request. Active targets use the full updated
+  `activeSkillChanges` object plus matching `skillMasteryChanges`. Passive
+  targets use the full updated `passiveSkillChanges` object only; do not invent
+  an active skill or active mastery entry for a passive target. Do not wait for
+  a later ordinary player input and do not charge the player again.
 - For `mortal_training_skill_evolution`, follow `details.targetKind` rather
-  than the original showcase offer label. The client normalizes generic Mortal
-  offer kinds such as `skill_mastery` to `active_skill_mastery`,
-  `passive_skill_mastery`, `active_skill_unlock`, or `passive_skill_unlock`
-  after inspecting the player's actual skill state. If `details.targetKind`
-  names a passive target, write `passiveSkillChanges`; do not invent an active
-  skill just because the original offer used generic `skill_mastery`.
+  than the original showcase offer label. Current clients use this pending path
+  for mastery-threshold/effect changes and normalize generic Mortal offer kinds
+  such as `skill_mastery` to `active_skill_mastery` or
+  `passive_skill_mastery`. Legacy/repaired requests may still carry
+  `active_skill_unlock` or `passive_skill_unlock`. If `details.targetKind` names
+  a passive target, write `passiveSkillChanges`; do not invent an active skill
+  just because the original offer used generic `skill_mastery`.
 - During validation repair, when `harnessRepairPackets[].kind` is
   `mortal_training_skill_evolution_repair`, open the pending
   `mortal_training_skill_evolution` request first and use
@@ -306,10 +309,10 @@ receipt; it is the list of available lessons.
 Mortal paid skill evolution request
 -----------------------------------
 
-When the player buys a Mortal lesson that unlocks a skill or crosses the
-mastery threshold, the client has already charged the paid lesson: it checked
-the teacher cap, spent money, spent current-level XP, and appended a training
-receipt. It then leaves a pending request like this:
+When the player buys a Mortal lesson that crosses the mastery threshold or
+requires new/changed mechanical effects, the client has already charged the
+paid lesson: it checked the teacher cap, spent money, spent current-level XP,
+and appended a training receipt. It then leaves a pending request like this:
 
 ```json
 {

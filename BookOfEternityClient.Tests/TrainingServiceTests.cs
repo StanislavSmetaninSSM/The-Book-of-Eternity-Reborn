@@ -204,34 +204,46 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task BuyTrainingAsync_MortalUnknownPassiveOffer_CreatesPendingGmUnlockWithoutAddingSkillLocally()
+    public async Task BuyTrainingAsync_MortalUnknownPassiveOffer_AddsSkillLocallyWithoutPendingGmUnlock()
     {
         await SeedMortalSoulStateAsync();
         await SeedMortalPassiveUnlockTeacherAsync();
         await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
         await SeedEmptyPlayerSkillsAsync();
-        var passiveBefore = await _fs.ReadFileAsync("game_state/player/skills_passive.json");
 
         var service = CreateService();
         var result = await service.BuyTrainingAsync("npc_skinner_001", "offer_skinning_unlock", currentTurn: 14);
 
         Assert.True(result.Success);
         Assert.True(result.StateChanged);
-        Assert.Contains("ГМ", result.Message, StringComparison.OrdinalIgnoreCase);
-        Assert.Equal(passiveBefore, await _fs.ReadFileAsync("game_state/player/skills_passive.json"));
+        Assert.DoesNotContain("ГМ", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
 
-        using var pendingDoc = JsonDocument.Parse(await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath) ?? "{}");
-        var request = pendingDoc.RootElement.GetProperty("requests").EnumerateArray().Single();
-        Assert.Equal("mortal_training_skill_evolution", request.GetProperty("requestKind").GetString());
-        Assert.Equal("unknown_skill_unlock", request.GetProperty("reason").GetString());
-        var details = request.GetProperty("details");
-        Assert.Equal("offer_skinning_unlock", details.GetProperty("offerId").GetString());
-        Assert.Equal("Снятие шкур", details.GetProperty("targetName").GetString());
-        Assert.Equal("passive_skill_unlock", details.GetProperty("targetKind").GetString());
+        using var passiveDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/skills_passive.json") ?? "{}");
+        var skill = passiveDoc.RootElement.GetProperty("passiveSkillChanges").EnumerateArray().Single();
+        Assert.Equal("skinning", skill.GetProperty("skillId").GetString());
+        Assert.Equal("Снятие шкур", skill.GetProperty("skillName").GetString());
+        Assert.Equal("Кожевник показывает, как не испортить трофей.", skill.GetProperty("skillDescription").GetString());
+        Assert.Equal(1, skill.GetProperty("currentMasteryLevel").GetInt32());
+        Assert.Equal(1, skill.GetProperty("masteryLevel").GetInt32());
+        Assert.Equal(2, skill.GetProperty("maxMasteryLevel").GetInt32());
+        Assert.Equal(JsonValueKind.Null, skill.GetProperty("structuredBonuses").ValueKind);
+        Assert.Equal(JsonValueKind.Null, skill.GetProperty("playerStatBonus").ValueKind);
+
+        using var statusDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/core/player_status.json") ?? "{}");
+        Assert.Equal(420, statusDoc.RootElement.GetProperty("money").GetInt32());
+
+        using var experienceDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/experience.json") ?? "{}");
+        Assert.Equal(300, experienceDoc.RootElement.GetProperty("currentLevelExperience").GetInt32());
+
+        using var npcDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? "{}");
+        var receipt = npcDoc.RootElement.GetProperty("trainingPurchaseReceipts")[0];
+        Assert.Equal("offer_skinning_unlock", receipt.GetProperty("offerId").GetString());
+        Assert.Equal("completed_local_unlock", receipt.GetProperty("resolutionState").GetString());
     }
 
     [Fact]
-    public async Task BuyTrainingAsync_MortalGenericPassiveOffer_UsesTeacherSkillKindForPendingGmUnlock()
+    public async Task BuyTrainingAsync_MortalGenericPassiveOffer_UsesTeacherSkillKindForLocalUnlock()
     {
         await SeedMortalSoulStateAsync();
         await SeedMortalPassiveUnlockTeacherAsync(targetKind: "skill_mastery");
@@ -242,14 +254,94 @@ public sealed class TrainingServiceTests : IDisposable
         var result = await service.BuyTrainingAsync("npc_skinner_001", "offer_skinning_unlock", currentTurn: 14);
 
         Assert.True(result.Success);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+
+        using var passiveDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/skills_passive.json") ?? "{}");
+        var skill = passiveDoc.RootElement.GetProperty("passiveSkillChanges").EnumerateArray().Single();
+        Assert.Equal("skinning", skill.GetProperty("skillId").GetString());
+        Assert.Equal("Снятие шкур", skill.GetProperty("skillName").GetString());
+        Assert.Equal(1, skill.GetProperty("currentMasteryLevel").GetInt32());
+
+        using var npcDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? "{}");
+        var receipt = npcDoc.RootElement.GetProperty("trainingPurchaseReceipts")[0];
+        Assert.Equal("passive_skill_mastery", receipt.GetProperty("targetKind").GetString());
+        Assert.Equal("completed_local_unlock", receipt.GetProperty("resolutionState").GetString());
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalUnknownPassiveOfferAboveFirstLevel_CreatesPendingGmEvolution()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalPassiveUnlockTeacherAsync(targetValue: 2);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedEmptyPlayerSkillsAsync();
+
+        var service = CreateService();
+        var result = await service.BuyTrainingAsync("npc_skinner_001", "offer_skinning_unlock", currentTurn: 14);
+
+        Assert.True(result.Success);
+        Assert.Contains("ГМ", result.Message, StringComparison.OrdinalIgnoreCase);
+
+        using var passiveDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/skills_passive.json") ?? "{}");
+        Assert.Empty(passiveDoc.RootElement.GetProperty("passiveSkillChanges").EnumerateArray());
 
         using var pendingDoc = JsonDocument.Parse(await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath) ?? "{}");
         var request = pendingDoc.RootElement.GetProperty("requests").EnumerateArray().Single();
-        var details = request.GetProperty("details");
-        Assert.Equal("unknown_skill_unlock", request.GetProperty("reason").GetString());
-        Assert.Equal("Снятие шкур", details.GetProperty("targetName").GetString());
-        Assert.Equal("passive_skill_mastery", details.GetProperty("targetKind").GetString());
-        Assert.Contains("passiveSkillChanges", details.GetProperty("gmInstruction").GetString(), StringComparison.Ordinal);
+        Assert.Equal("mortal_training_skill_evolution", request.GetProperty("requestKind").GetString());
+        Assert.Equal("mastery_threshold_crossed", request.GetProperty("reason").GetString());
+        Assert.Equal(2, request.GetProperty("details").GetProperty("targetValue").GetInt32());
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalUnknownActiveOfferWithoutCombatEffect_CreatesPendingGmEvolution()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalActiveUnlockTeacherAsync(includeCombatEffect: false);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedEmptyPlayerSkillsAsync();
+
+        var service = CreateService();
+        var result = await service.BuyTrainingAsync("npc_duelist_001", "offer_lunge_unlock", currentTurn: 14);
+
+        Assert.True(result.Success);
+        Assert.Contains("ГМ", result.Message, StringComparison.OrdinalIgnoreCase);
+
+        using var activeDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/skills_active.json") ?? "{}");
+        Assert.Empty(activeDoc.RootElement.GetProperty("activeSkillChanges").EnumerateArray());
+
+        using var pendingDoc = JsonDocument.Parse(await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath) ?? "{}");
+        var request = pendingDoc.RootElement.GetProperty("requests").EnumerateArray().Single();
+        Assert.Equal("mortal_training_skill_evolution", request.GetProperty("requestKind").GetString());
+        Assert.Equal("skill_effect_authoring_required", request.GetProperty("reason").GetString());
+        Assert.Equal("active_skill_unlock", request.GetProperty("details").GetProperty("targetKind").GetString());
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalUnknownActiveOfferWithCombatEffect_AddsSkillLocally()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalActiveUnlockTeacherAsync(includeCombatEffect: true);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedEmptyPlayerSkillsAsync();
+
+        var service = CreateService();
+        var result = await service.BuyTrainingAsync("npc_duelist_001", "offer_lunge_unlock", currentTurn: 14);
+
+        Assert.True(result.Success);
+        Assert.DoesNotContain("ГМ", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+
+        using var activeDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/skills_active.json") ?? "{}");
+        var skill = activeDoc.RootElement.GetProperty("activeSkillChanges").EnumerateArray().Single();
+        Assert.Equal("quick_lunge", skill.GetProperty("skillId").GetString());
+        Assert.Equal("Быстрый выпад", skill.GetProperty("skillName").GetString());
+        Assert.Equal("Fast", skill.GetProperty("actionCost").GetString());
+        Assert.True(skill.GetProperty("combatEffect").GetProperty("isActivatedEffect").GetBoolean());
+
+        using var masteryDoc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/skill_mastery.json") ?? "{}");
+        var mastery = masteryDoc.RootElement.GetProperty("skillMasteryChanges").EnumerateArray().Single();
+        Assert.Equal("quick_lunge", mastery.GetProperty("skillId").GetString());
+        Assert.Equal(1, mastery.GetProperty("newMasteryLevel").GetInt32());
     }
 
     [Fact]
@@ -1183,7 +1275,7 @@ public sealed class TrainingServiceTests : IDisposable
         """);
     }
 
-    private async Task SeedMortalPassiveUnlockTeacherAsync(string targetKind = "passive_skill_unlock")
+    private async Task SeedMortalPassiveUnlockTeacherAsync(string targetKind = "passive_skill_unlock", int targetValue = 1)
     {
         var teacher = new JsonObject
         {
@@ -1222,7 +1314,7 @@ public sealed class TrainingServiceTests : IDisposable
                     ["targetName"] = "Снятие шкур",
                     ["targetKind"] = targetKind,
                     ["currentValue"] = 0,
-                    ["targetValue"] = 1,
+                    ["targetValue"] = targetValue,
                     ["sourceCap"] = 2,
                     ["cost"] = new JsonObject
                     {
@@ -1236,6 +1328,82 @@ public sealed class TrainingServiceTests : IDisposable
                     ["summary"] = "Кожевник показывает, как не испортить трофей."
                 }
             }
+        };
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["UpdateNPCs"] = new JsonArray(teacher) }.ToJsonString());
+    }
+
+    private async Task SeedMortalActiveUnlockTeacherAsync(bool includeCombatEffect)
+    {
+        var offer = new JsonObject
+        {
+            ["offerId"] = "offer_lunge_unlock",
+            ["targetId"] = "quick_lunge",
+            ["targetName"] = "Быстрый выпад",
+            ["targetKind"] = "active_skill_unlock",
+            ["currentValue"] = 0,
+            ["targetValue"] = 1,
+            ["sourceCap"] = 2,
+            ["actionCost"] = "Fast",
+            ["cost"] = new JsonObject
+            {
+                ["money"] = 80,
+                ["currentLevelExperiencePercent"] = 10
+            },
+            ["requirements"] = new JsonObject
+            {
+                ["minimumRelationship"] = 20
+            },
+            ["summary"] = "Дуэлянт показывает короткий выпад тонким клинком."
+        };
+
+        if (includeCombatEffect)
+        {
+            offer["combatEffect"] = new JsonObject
+            {
+                ["isActivatedEffect"] = true,
+                ["actionName"] = "Быстрый выпад",
+                ["actionDescription"] = "Короткая атака по открывшейся цели.",
+                ["damageType"] = "piercing",
+                ["baseDamage"] = 8,
+                ["range"] = "melee",
+                ["actionCost"] = "Fast",
+                ["actionPointCost"] = 1,
+                ["cooldown"] = 0
+            };
+        }
+
+        var teacher = new JsonObject
+        {
+            ["npcId"] = "npc_duelist_001",
+            ["name"] = "Старый дуэлянт",
+            ["teacherProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 45,
+                ["skills"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["skillId"] = "quick_lunge",
+                        ["skillName"] = "Быстрый выпад",
+                        ["skillKind"] = "active",
+                        ["masteryLevel"] = 2
+                    }
+                }
+            }
+        };
+
+        var snapshotHash = TrainingService.ComputeSourceSnapshotHash(teacher);
+        teacher["trainingShowcase"] = new JsonObject
+        {
+            ["showcaseId"] = "showcase_duelist_001",
+            ["sourceActorId"] = "npc_duelist_001",
+            ["sourceActorName"] = "Старый дуэлянт",
+            ["sourceActorSnapshotHash"] = snapshotHash,
+            ["offers"] = new JsonArray(offer)
         };
 
         await _fs.WriteFileAtomicAsync(

@@ -2,6 +2,11 @@
 
 Source issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1424
 
+Status: superseded by `specs/1378-training-vitrines/` for ordinary first-skill
+training. New Mortal skills from fresh showcases are now client-owned local
+unlocks; these tasks remain historical background for threshold/effect-change
+requests.
+
 - [x] Add failing tests proving Mortal `/training buy` creates a pending GM request instead of locally raising a skill level when the offer crosses the mastery threshold.
 - [x] Add failing tests proving an unknown Mortal skill unlock creates a pending GM request and leaves skill files unchanged.
 - [x] Add failing tests proving a GM-satisfied skill-evolution request is cleared after the updated skill/mastery state appears.

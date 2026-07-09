@@ -2,6 +2,11 @@
 
 Source issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1424
 
+**Status**: Superseded by `specs/1378-training-vitrines/`. The current contract
+keeps `mortal_training_skill_evolution` for paid mastery-threshold/effect
+changes, but ordinary first purchases of a new Mortal skill from a fresh
+showcase are client-owned local unlocks at mastery level 1.
+
 ## Goal
 
 Mortal World training vitrines must let the client charge resources and advance practice safely, but must not let the client author or silently mutate the mechanical level of a player skill when that level-up can change effects.

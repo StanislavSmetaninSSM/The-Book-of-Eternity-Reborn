@@ -224,20 +224,34 @@ public sealed class TrainingService
                 BuildMortalSkillEvolutionPendingGmAction(request));
         }
 
-        ApplyMortalActiveSkillPractice(masteryRoot, evaluatedOffer, applicationPlan);
+        var localMessage = "Практика завершена: мастерство навыка выросло без изменения эффектов.";
+        var localResolutionState = "completed_local_practice";
+        if (applicationPlan.ExistingSkill == null)
+        {
+            ApplyMortalSkillUnlock(activeRoot, passiveRoot, masteryRoot, evaluatedOffer, applicationPlan);
+            localMessage = $"Навык изучен: {evaluatedOffer.TargetName}.";
+            localResolutionState = "completed_local_unlock";
+        }
+        else
+        {
+            ApplyMortalActiveSkillPractice(masteryRoot, evaluatedOffer, applicationPlan);
+        }
+
         AppendMortalTrainingReceipt(
             npcRoot,
             teacher,
             evaluatedOffer,
             currentTurn,
-            resolutionState: "completed_local_practice");
+            resolutionState: localResolutionState);
 
         await _fs.WriteFileAtomicAsync(PlayerStatusPath, statusRoot.ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(PlayerExperiencePath, experienceRoot.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(ActiveSkillsPath, activeRoot.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(PassiveSkillsPath, passiveRoot.ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(SkillMasteryPath, masteryRoot.ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
 
-        return new TrainingOperationResult(true, true, "Практика завершена: мастерство навыка выросло без изменения эффектов.");
+        return new TrainingOperationResult(true, true, localMessage);
     }
 
     private async Task<TrainingOperationResult> BuyAfterlifeSelfTrainingAsync(string sourceActorId, string offerId, int currentTurn)
@@ -1030,9 +1044,39 @@ public sealed class TrainingService
 
         if (existingSkill == null)
         {
+            if (offer.TargetValue > 1)
+            {
+                return new MortalTrainingApplicationPlan(
+                    RequiresGmEvolution: true,
+                    Reason: "mastery_threshold_crossed",
+                    DedupeKey: dedupeKey,
+                    IsPassive: isPassive,
+                    ExistingSkill: null,
+                    ExistingMastery: existingMastery,
+                    CurrentMasteryLevel: currentMasteryLevel,
+                    CurrentMasteryProgress: currentProgress,
+                    MasteryProgressNeeded: progressNeeded,
+                    MasteryProgressGain: progressGain);
+            }
+
+            if (!isPassive && !CanApplyMortalActiveSkillUnlockLocally(offer))
+            {
+                return new MortalTrainingApplicationPlan(
+                    RequiresGmEvolution: true,
+                    Reason: "skill_effect_authoring_required",
+                    DedupeKey: dedupeKey,
+                    IsPassive: false,
+                    ExistingSkill: null,
+                    ExistingMastery: existingMastery,
+                    CurrentMasteryLevel: currentMasteryLevel,
+                    CurrentMasteryProgress: currentProgress,
+                    MasteryProgressNeeded: progressNeeded,
+                    MasteryProgressGain: progressGain);
+            }
+
             return new MortalTrainingApplicationPlan(
-                RequiresGmEvolution: true,
-                Reason: "unknown_skill_unlock",
+                RequiresGmEvolution: false,
+                Reason: "local_skill_unlock",
                 DedupeKey: dedupeKey,
                 IsPassive: isPassive,
                 ExistingSkill: null,
@@ -1164,6 +1208,130 @@ public sealed class TrainingService
         existingMastery["newCurrentMasteryProgress"] = plan.CurrentMasteryProgress + plan.MasteryProgressGain;
         existingMastery["newMasteryProgressNeeded"] = plan.MasteryProgressNeeded;
         existingMastery["masteryLeveledUp"] = false;
+    }
+
+    private static void ApplyMortalSkillUnlock(
+        JsonObject activeRoot,
+        JsonObject passiveRoot,
+        JsonObject masteryRoot,
+        TrainingOffer offer,
+        MortalTrainingApplicationPlan plan)
+    {
+        var skill = BuildMortalUnlockedSkillObject(offer, plan);
+        if (plan.IsPassive)
+        {
+            var passiveArray = EnsureArray(passiveRoot, "passiveSkillChanges");
+            RemoveMatchingMortalTrainingTarget(passiveArray, offer);
+            passiveArray.Add(skill);
+            return;
+        }
+
+        var activeArray = EnsureArray(activeRoot, "activeSkillChanges");
+        RemoveMatchingMortalTrainingTarget(activeArray, offer);
+        activeArray.Add(skill);
+
+        var masteryArray = EnsureArray(masteryRoot, "skillMasteryChanges");
+        RemoveMatchingMortalTrainingTarget(masteryArray, offer);
+        masteryArray.Add(new JsonObject
+        {
+            ["skillId"] = offer.TargetId,
+            ["skillName"] = offer.TargetName,
+            ["newMasteryLevel"] = Math.Max(1, offer.TargetValue),
+            ["newCurrentMasteryProgress"] = plan.CurrentMasteryProgress,
+            ["newMasteryProgressNeeded"] = plan.MasteryProgressNeeded,
+            ["masteryLeveledUp"] = false
+        });
+    }
+
+    private static JsonObject BuildMortalUnlockedSkillObject(
+        TrainingOffer offer,
+        MortalTrainingApplicationPlan plan)
+    {
+        var details = offer.Details;
+        var description =
+            FirstNonBlank(
+                GetNodeString(details["skillDescription"]),
+                GetNodeString(details["description"]),
+                GetNodeString(details["summary"])) ??
+            "Навык получен через обучение у наставника.";
+        var masteryLevel = Math.Max(1, offer.TargetValue);
+        var skill = new JsonObject
+        {
+            ["skillId"] = offer.TargetId,
+            ["skillName"] = offer.TargetName,
+            ["skillDescription"] = description,
+            ["rarity"] = FirstNonBlank(GetNodeString(details["rarity"]), GetNodeString(details["quality"])) ?? "Common",
+            ["type"] = FirstNonBlank(GetNodeString(details["type"]), GetNodeString(details["skillType"])) ??
+                       (plan.IsPassive ? "KnowledgeBased" : "Activated Effect"),
+            ["group"] = FirstNonBlank(GetNodeString(details["group"]), GetNodeString(details["skillGroup"])) ?? "Обученные навыки",
+            ["currentMasteryLevel"] = masteryLevel,
+            ["masteryLevel"] = masteryLevel,
+            ["maxMasteryLevel"] = Math.Max(masteryLevel, offer.SourceCap),
+            ["currentMasteryProgress"] = plan.CurrentMasteryProgress,
+            ["masteryProgressNeeded"] = plan.MasteryProgressNeeded
+        };
+
+        CopyIfPresent(details, skill, "structuredBonuses");
+        CopyIfPresent(details, skill, "playerStatBonus");
+        CopyIfPresent(details, skill, "combatEffect");
+        CopyIfPresent(details, skill, "actionCost");
+        CopyIfPresent(details, skill, "scalingCharacteristic");
+        CopyIfPresent(details, skill, "scalesValue");
+        CopyIfPresent(details, skill, "scalesDuration");
+        CopyIfPresent(details, skill, "scalesChance");
+        CopyIfPresent(details, skill, "energyCost");
+        CopyIfPresent(details, skill, "cooldownTurns");
+        CopyIfPresent(details, skill, "timeCost");
+        CopyIfPresent(details, skill, "actionName");
+        CopyIfPresent(details, skill, "actionDescription");
+        CopyIfPresent(details, skill, "cooldown");
+        CopyIfPresent(details, skill, "actionPointCost");
+
+        if (plan.IsPassive && !skill.ContainsKey("structuredBonuses"))
+            skill["structuredBonuses"] = null;
+        if (plan.IsPassive && !skill.ContainsKey("playerStatBonus"))
+            skill["playerStatBonus"] = null;
+
+        return skill;
+    }
+
+    private static bool CanApplyMortalActiveSkillUnlockLocally(TrainingOffer offer)
+    {
+        if (offer.Details["combatEffect"] is not JsonObject combatEffect ||
+            combatEffect["isActivatedEffect"] is not JsonValue activationValue ||
+            !activationValue.TryGetValue<bool>(out var isActivatedEffect) ||
+            !isActivatedEffect)
+        {
+            return false;
+        }
+
+        return !string.IsNullOrWhiteSpace(GetNodeString(offer.Details["actionCost"]));
+    }
+
+    private static void CopyIfPresent(JsonObject source, JsonObject target, string propertyName)
+    {
+        if (source[propertyName] is JsonNode value)
+            target[propertyName] = value.DeepClone();
+    }
+
+    private static string? FirstNonBlank(params string?[] values)
+    {
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return null;
+    }
+
+    private static void RemoveMatchingMortalTrainingTarget(JsonArray array, TrainingOffer offer)
+    {
+        for (var i = array.Count - 1; i >= 0; i--)
+        {
+            if (array[i] is JsonObject item && MatchesMortalTrainingTarget(item, offer))
+                array.RemoveAt(i);
+        }
     }
 
     private static void AppendMortalTrainingReceipt(
