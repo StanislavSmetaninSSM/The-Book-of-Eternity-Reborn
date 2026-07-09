@@ -13,7 +13,7 @@ Bring the console client and live GM flow to a state where one complete player r
 - Keep prompts and examples synchronized after any GM-facing contract or tool change.
 - Focus on one stable golden route before widening coverage.
 - Limit active work in progress to one harness/runtime blocker, one gameplay contract issue, and one live-test report.
-- Treat actor agency as a first-class live-test quality gate. Nearby significant NPCs, Guardians, residents, Shining political actors, faction heads, merchants, trainers, and enemies must have relevant actor scope, useful thoughts/diary/ledger state, and Actor Brain/NPC Brain strategy reasoning when they react, decide, speak, train, trade, fight, move, or change relationships.
+- Treat actor agency as a first-class live-test quality gate. Nearby significant NPCs, Guardians, residents, Shining political actors, faction heads, merchants, trainers, and enemies must have both layers when they react, decide, speak, train, trade, fight, move, or change relationships: GM-only Actor Brain/NPC Brain strategy reasoning, and persistent actor thought/diary/ledger state visible through the appropriate command surfaces.
 
 ## Phase 1: Triage The Backlog
 
@@ -63,9 +63,10 @@ Success means the route completes without manual JSON/file edits and without the
 Every step with a significant actor also checks actor agency:
 
 - `NPC Scope` / `Охват NPC-анализа` lists the actor as relevant, or explicitly justifies why they are outside scope.
-- `Actor Brain 2.0`, `Размышления акторов`, `Размышления NPC`, `Guardian Thoughts`, or equivalent reasoning explains the actor's situation, constraints, thoughts, considered strategies, rejected alternatives, chosen strategy/action, and state-change summary when the actor makes a decision.
+- `Actor Brain 2.0`, `Размышления акторов`, `Размышления NPC`, `Guardian Thoughts`, or equivalent reasoning is GM-only decision reasoning. It explains actor profile inputs, situation, known information, existing thoughts/memory, constraints, several considered behavior or communication strategies, benefit/risk for those strategies, rejected alternatives, chosen strategy/action, and state-change summary when the actor makes a decision.
 - Mortal NPCs keep full `NPC Brain 2.0` depth for knowledge limits, personality, culture, relationship pressure, motives, risk, and communication strategy.
-- Persistent actor state follows the reasoning: Mortal NPC journals/thoughts or equivalent memory, afterlife profile ledger/goals/current activity/personal quests/relationships, or the appropriate contract state.
+- Persistent actor thoughts are separate from GM reasoning. Mortal NPC journals/thoughts and afterlife entity thoughts/ledgers should record first-person or close third-person actor reactions to what happened, then remain discoverable through the relevant commands.
+- Persistent actor state follows the chosen strategy: Mortal NPC journals/thoughts or equivalent memory, afterlife profile ledger/goals/current activity/personal quests/relationships/thought journal, or the appropriate contract state.
 - Missing actor persistence for a significant speaking/acting entity is P1. Missing or shallow thoughts/strategy for an otherwise persistent actor is P2 unless it blocks progression.
 
 ## Phase 4: P0/P1 Gameplay Burn-Down
@@ -84,7 +85,7 @@ Prioritize fixes that block:
 - afterlife trade and gacha;
 - spiritual combat;
 - living-world changes without direct player action.
-- actor agency in scenes with significant nearby actors, including thought journals, strategy-choice reasoning, and persistent state changes for Mortal and afterlife actors.
+- actor agency in scenes with significant nearby actors, including GM-only strategy-choice reasoning, first-person thought journals, and persistent state changes for Mortal and afterlife actors.
 
 Do not spend major time on P2/P3 while a P0/P1 blocker prevents the golden route.
 

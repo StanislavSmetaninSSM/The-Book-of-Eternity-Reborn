@@ -53,18 +53,21 @@
 - [ ] P2: The feature works but is confusing, misleading, incomplete, visually broken, or makes a normal player likely to abandon the flow.
 - [ ] P3: Polish issue with low gameplay risk.
 
-## Actor Agency And Brain Protocol Checks
+## Actor Agency, Brain Protocol, And Thought Journals
 
-- [ ] Treat nearby significant actors as living entities, not scene props. If the player is in one location with a Mortal NPC, Guardian, resident, Shining political actor, faction head, merchant, trainer, enemy, or other decision-making entity, the run must check whether the GM gives that actor a mind, memory, and strategy.
-- [ ] For every accepted turn where such an actor speaks, reacts, negotiates, trains, trades, attacks, refuses, grants a reward, updates a quest, changes relationship, moves location, changes activity, or makes any material decision, verify `output/debug_logs.json.gm_thoughts_markdown` contains:
+- [ ] Treat nearby significant actors as living entities, not scene props. If the player is in one location with a Mortal NPC, Guardian, resident, Shining political actor, faction head, merchant, trainer, enemy, or other decision-making entity, the run must check two separate layers: GM decision reasoning and persistent actor thoughts/memory.
+- [ ] Brain protocol is GM-only reasoning. For every accepted turn where such an actor speaks, reacts, negotiates, trains, trades, attacks, refuses, grants a reward, updates a quest, changes relationship, moves location, changes activity, or makes any material decision, verify `output/debug_logs.json.gm_thoughts_markdown` contains:
   - `## NPC Scope` / `## Охват NPC-анализа` with the actor listed as relevant, or an explicit reason why the actor is outside scope;
   - an `Actor Brain 2.0`, `Размышления акторов`, `Размышления NPC`, `Guardian Thoughts`, or equivalent reasoning block for each relevant actor;
-  - situation, thoughts/constraints, considered strategies, rejected alternatives, final chosen strategy/action, and state-change summary when a strategy or decision is made.
+  - actor profile inputs: situation, known information, current thoughts/memory, personality/culture/relationship pressure, motives, risks, and constraints;
+  - several considered behavior or communication strategies, each with benefit/risk notes;
+  - rejected alternatives, final chosen strategy/action, and state-change summary.
 - [ ] For Mortal NPCs, do not accept a shallow generic Actor Brain block as enough when the turn is social, strategic, or emotional. Mortal `NPC Brain 2.0` depth must still account for knowledge limits, personality, culture, relationship pressure, motives, risk, and the chosen communication strategy.
 - [ ] For afterlife actors, use the actor packs from `OtherGuides/Actor_Brain_2_0.md`: Guardian, resident, and Shining political/faction actors need the same strategy-choice discipline when they make decisions or receive state changes.
-- [ ] Verify persistent state follows the reasoning. Mortal NPCs should have useful diary/thought/journal or equivalent NPC state updates when they materially react. Afterlife actors should update profile ledger, goals, current activity, personal quests, relationship state, or `gmThoughtsSummary` where the contract expects it.
+- [ ] Thought journals are persistent actor state, not the same thing as GM reasoning. Mortal NPCs and afterlife entities should write/update first-person thoughts or equivalent diary/journal entries when they materially react. Example shape: "Этот человек кажется мне подозрительным. Пожалуй, не буду с ним связываться." These entries should later be visible through the relevant NPC/afterlife command surfaces.
+- [ ] Verify persistent state follows the chosen strategy. Mortal NPCs should have useful diary/thought/journal or equivalent NPC state updates when they materially react. Afterlife actors should update profile ledger, goals, current activity, personal quests, relationship state, thought journal, or `gmThoughtsSummary` where the contract expects it.
 - [ ] Fail as P1 if a significant actor changes state, speaks for a major scene, trains/trades/fights, or drives a quest while remaining only prose with no persistent actor surface.
-- [ ] Fail as P2 if the actor has persistence but no useful thoughts/diary/strategy record, or if the reasoning is purely mechanical and does not explain the actor's in-world choice.
+- [ ] Fail as P2 if the actor has persistence but no useful thought journal/diary update when one is warranted, or if GM-only brain reasoning is purely mechanical and does not explain the actor's in-world strategy choice.
 - [ ] Record harness/RLM follow-ups when this fails. Prefer validators, repair packets, command snapshots, actor-state templates, or live-test rubrics that make missing actor agency hard to accept, rather than prompt-only reminders.
 
 ## Task 1: Preflight And Sandbox Setup
@@ -238,7 +241,7 @@ Invoke-RestMethod -Method Get -Uri "$AgentUrl/api/agent-console/events" | Conver
 
 - [ ] Start from the first visible player-facing screen and record whether the player is in afterlife, mortal world, or a recovery screen.
 - [ ] If the session starts in afterlife, talk to the guardian using visible commands or actions.
-- [ ] During Guardian interaction, apply Actor Agency checks: the Guardian must have relevant actor scope, a reasoning/brain block, and persistent profile/ledger/thought/activity changes when the Guardian reacts, judges, teaches, trades, grants, refuses, or changes relationship.
+- [ ] During Guardian interaction, apply Actor Agency checks: the Guardian must have relevant actor scope, GM-only strategy reasoning, and persistent profile/ledger/thought-journal/activity changes when the Guardian reacts, judges, teaches, trades, grants, refuses, or changes relationship.
 - [ ] Open all visible afterlife command surfaces that exist in the current build:
   - `/статус`
   - `/квесты`
@@ -289,8 +292,8 @@ Invoke-RestMethod -Method Get -Uri "$AgentUrl/api/agent-console/events" | Conver
 - [ ] Do not guide GM-Codex with test goals. The player agent may phrase actions naturally, as a player would.
 - [ ] Verify the GM response is reflected in the client without raw protocol, JSON, debug paths, or markup errors.
 - [ ] Verify newly introduced entities become discoverable through the relevant command surface.
-- [ ] For every NPC the player talks to or directly affects, apply Actor Agency checks. The NPC should have persistent identity, diary/thought/journal or equivalent memory, and a brain/strategy block if they answer, refuse, bargain, reveal a clue, move, or change attitude.
-- [ ] If the NPC makes a communication choice, check that the GM considered multiple strategies and selected the final approach based on profile, situation, relationship, knowledge, and risk.
+- [ ] For every NPC the player talks to or directly affects, apply Actor Agency checks. The NPC should have persistent identity, a first-person diary/thought/journal or equivalent memory update when warranted, and a GM-only brain/strategy block if they answer, refuse, bargain, reveal a clue, move, or change attitude.
+- [ ] If the NPC makes a communication choice, check that the GM considered multiple strategies and selected the final approach based on profile, existing thoughts, situation, relationship, knowledge, benefit, and risk.
 
 ## Task 8: Combat Route
 
@@ -298,7 +301,7 @@ Invoke-RestMethod -Method Get -Uri "$AgentUrl/api/agent-console/events" | Conver
 - [ ] Use at least two different available combat actions or skills.
 - [ ] Check that action point costs, health/energy/balance changes, enemy state, and result text are understandable.
 - [ ] Check repeated-use behavior for a strong skill. If spam is possible, record whether it is actually harmful to pacing or balance.
-- [ ] Apply Actor Agency checks to enemies and allies when they choose tactics, retreat, negotiate, use an ability, or change target. Combat decisions should not be unexplained random actions when the actor has a profile or state.
+- [ ] Apply Actor Agency checks to enemies and allies when they choose tactics, retreat, negotiate, use an ability, or change target. Combat decisions should not be unexplained random actions when the actor has a profile or state; persistent thoughts/journals should record meaningful reactions after important combat beats where the actor survives or remains relevant.
 - [ ] End combat with a clear win, escape, or loss state.
 - [ ] Fail as P1 if combat gets stuck in a pending state the player cannot resolve.
 - [ ] Fail as P2 if combat works mechanically but the player cannot infer legal actions or consequences.
@@ -307,7 +310,7 @@ Invoke-RestMethod -Method Get -Uri "$AgentUrl/api/agent-console/events" | Conver
 
 - [ ] End the mortal life through a natural story outcome, voluntary ending, or controlled death route available in the current build.
 - [ ] Confirm the console transitions back to afterlife without manual state repair.
-- [ ] If the Guardian, afterlife resident, or evaluating actor comments on the life, apply Actor Agency checks: evaluation should include relevant actor scope, reasoning/brain, and persistent afterlife profile/ledger/reward state where applicable.
+- [ ] If the Guardian, afterlife resident, or evaluating actor comments on the life, apply Actor Agency checks: evaluation should include relevant actor scope, GM-only reasoning/brain, and persistent afterlife profile/ledger/thought/reward state where applicable.
 - [ ] Verify life results are visible and understandable:
   - death or ending reason
   - rewards
