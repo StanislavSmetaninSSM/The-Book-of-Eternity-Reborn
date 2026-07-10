@@ -1349,7 +1349,11 @@ public partial class GameEngine
             packets.Add(BuildNpcScopeDeclarationRepairPacket(npcScopeDeclarationErrors));
 
         if (acceptedTurnOutputArtifactErrors.Count > 0)
-            packets.Add(BuildAcceptedTurnOutputArtifactRepairPacket(acceptedTurnOutputArtifactErrors));
+        {
+            var outputArtifactPacket = BuildAcceptedTurnOutputArtifactRepairPacket(acceptedTurnOutputArtifactErrors);
+            if (outputArtifactPacket.TargetFiles.Count > 0)
+                packets.Add(outputArtifactPacket);
+        }
 
         if (actorReasoningSubpointErrors.Count > 0)
             packets.Add(BuildActorReasoningSubpointRepairPacket(actorReasoningSubpointErrors));
@@ -1798,8 +1802,10 @@ public partial class GameEngine
             "narrative_response_technical_repair_leak" => true,
             "accepted_turn_invalid_narrative_json_root" => true,
             "accepted_turn_invalid_narrative_json" => true,
+            "narrative_response_unknown_field" => true,
             "narrative_response_missing_timestamp" => true,
             "narrative_response_invalid_timestamp" => true,
+            "accepted_turn_empty_interface_updates" => true,
             "accepted_turn_stale_interface_updates" => true,
             "accepted_turn_invalid_interface_updates_root" => true,
             "accepted_turn_invalid_interface_updates_json" => true,
@@ -1811,6 +1817,7 @@ public partial class GameEngine
             "accepted_turn_stale_debug_logs" => true,
             "invalid_debug_logs_json_root" => true,
             "invalid_debug_logs_json" => true,
+            "debug_logs_unknown_field" => true,
             "debug_logs_missing_timestamp" => true,
             "debug_logs_invalid_timestamp" => true,
             _ => false
@@ -1821,22 +1828,87 @@ public partial class GameEngine
         IReadOnlyList<ValidationIssue> outputArtifactErrors)
     {
         var targetFiles = outputArtifactErrors
-            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Select(ResolveAcceptedTurnOutputArtifactTargetPath)
             .Where(path => !string.IsNullOrWhiteSpace(path))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
-        if (!targetFiles.Contains("output/narrative_response.json", StringComparer.OrdinalIgnoreCase))
-            targetFiles.Add("output/narrative_response.json");
-        if (outputArtifactErrors.Any(issue =>
-                string.Equals(NormalizeRepairTargetPath(issue.FilePath), "output/interface_updates.json", StringComparison.OrdinalIgnoreCase)) &&
-            !targetFiles.Contains("output/interface_updates.json", StringComparer.OrdinalIgnoreCase))
+        var repairsNarrative = targetFiles.Contains("output/narrative_response.json", StringComparer.OrdinalIgnoreCase);
+        var repairsInterface = targetFiles.Contains("output/interface_updates.json", StringComparer.OrdinalIgnoreCase);
+        var repairsDebugLog = targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase);
+
+        var expectedShape = new List<string>();
+        if (repairsNarrative)
         {
-            targetFiles.Add("output/interface_updates.json");
+            expectedShape.Add(
+                "output/narrative_response.json must be a fresh JSON object for the current accepted turn: { \"response\": \"player-facing narrative text\", \"timestamp\": \"ISO-8601 UTC timestamp\" }.");
         }
-        if (!targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase))
-            targetFiles.Add("output/debug_logs.json");
+        if (repairsInterface)
+        {
+            expectedShape.Add(
+                "output/interface_updates.json must be a fresh JSON object for the same accepted turn: { \"dialogueOptions\": [ { \"text\": \"visible option\", \"inputValue\": \"player input\" } ], \"timestamp\": \"ISO-8601 UTC timestamp\" }.");
+        }
+        if (repairsDebugLog)
+        {
+            expectedShape.Add(
+                "output/debug_logs.json must be a fresh JSON object for the current accepted turn: { \"gm_thoughts_markdown\": \"## Охват NPC-анализа\\n...\", \"timestamp\": \"ISO-8601 UTC timestamp\" }.");
+            expectedShape.Add(
+                "gm_thoughts_markdown must contain a separate `## Охват NPC-анализа` / `## NPC Scope` section before full Actor Brain reasoning blocks for every relevant actor.");
+            expectedShape.Add(
+                "If no NPC, Guardian, faction, or other actor meaningfully acts or changes, explicitly preserve an actorless scope and explain why; do not invent an actor.");
+        }
+
+        var steps = new List<string>
+        {
+            "Open game_state/control/validation_repair_request.json first and repair only the listed accepted-turn output artifact errors and targetFiles."
+        };
+        if (repairsNarrative)
+        {
+            steps.Add(
+                "Rewrite output/narrative_response.json with a fresh non-empty response for this same player action; preserve the already accepted narrative meaning instead of inventing a new turn.");
+            steps.Add(
+                "If validation_repair_request.json says player-facing output is stale after canonical state repair, base the rewritten narrative on the current canonical game_state files, not the pre-repair wording.");
+            steps.Add(
+                "If validation reports narrative_response_technical_repair_leak, rewrite response as an in-world scene only; keep validation/repair/JSON/storage details out of player-facing prose.");
+        }
+        if (repairsInterface)
+        {
+            steps.Add(
+                "Rewrite output/interface_updates.json dialogueOptions/inputValue choices so they match the repaired canonical state and current player-facing narrative.");
+        }
+        if (repairsDebugLog)
+        {
+            steps.Add(
+                "Rewrite output/debug_logs.json.gm_thoughts_markdown only because output/debug_logs.json is listed in targetFiles. Preserve every already valid full Actor Brain block and its exact `Изменения состояния` journal/ledger command or canonical surface; repair only the invalid or stale portions and refresh the file timestamp.");
+            steps.Add(
+                "For any relevant actor, keep the full Actor Brain fields from debugLogTemplate, including profile inputs, motivation, constraints, at least two strategies with benefit/risk, the chosen strategy, rejected alternatives, actions, and exact state changes.");
+            steps.Add(
+                "Preserve the exact actor-memory surface already used: Mortal NPC `NPCJournals[].journalEntries[]`; Guardian `guardianThoughtJournalUpdates` or `UpdateGuardians.addMusings`; resident `residentThoughtJournalUpdates`; existing afterlife entity actor-owned `ledger/progressionLedger`; existing Shining faction `shiningFactionChronicleUpdates`.");
+            steps.Add(
+                "If the accepted scope was genuinely actorless, preserve the actorless scope explanation and omit Actor Brain actor blocks; do not invent an actor for output repair.");
+        }
+        steps.Add("Do not touch canonical game_state files unless validation_repair_request.json lists a canonical state error as well.");
+        steps.Add(
+            "After all listed output artifacts are repaired, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from validation_repair_request.json.");
+
+        var doNotDo = new List<string>
+        {
+            "Do not write ready/turn_complete.json for validation repair.",
+            "Do not create a new turn, reroll, advance time, or change player choice while repairing missing output artifacts.",
+            "Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside output/narrative_response.json.response.",
+            "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, validation_repair_request.json, GM docs, and session files."
+        };
+        if (repairsDebugLog)
+        {
+            doNotDo.Add(
+                "Do not shorten a valid Actor Brain block or replace its exact journal/ledger surface with generic wording such as `state unchanged` or `the prior memory remains valid`.");
+        }
+        else
+        {
+            doNotDo.Add(
+                "Do not rewrite output/debug_logs.json because it is not listed in targetFiles; preserve its valid Actor Brain and exact journal/ledger surface unchanged.");
+        }
 
         return new ValidationRepairHarnessPacket
         {
@@ -1844,48 +1916,55 @@ public partial class GameEngine
             Priority = "high",
             Title = "Accepted turn output artifact repair",
             TargetFiles = targetFiles,
-            ExpectedShape = new List<string>
-            {
-                "output/narrative_response.json must be a fresh JSON object for the current accepted turn: { \"response\": \"player-facing narrative text\", \"timestamp\": \"ISO-8601 UTC timestamp\" }.",
-                "If output/interface_updates.json exists or validation_repair_request.json lists it, rewrite it as a fresh JSON object for the same accepted turn: { \"dialogueOptions\": [ { \"text\": \"visible option\", \"inputValue\": \"player input\" } ], \"timestamp\": \"ISO-8601 UTC timestamp\" }.",
-                "output/debug_logs.json must be a fresh JSON object for the current accepted turn: { \"gm_thoughts_markdown\": \"## Охват NPC-анализа\\n...\", \"timestamp\": \"ISO-8601 UTC timestamp\" }.",
-                "gm_thoughts_markdown must contain a separate `## Охват NPC-анализа` / `## NPC Scope` section before detailed actor reasoning blocks.",
-                "If no NPC, Guardian, faction, or other actor meaningfully acts or changes, explicitly say that the relevant-actor list is empty and why; do not omit gm_thoughts_markdown."
-            },
-            Steps = new List<string>
-            {
-                "Open game_state/control/validation_repair_request.json first and repair only the listed accepted-turn output artifact errors.",
-                "Rewrite output/narrative_response.json with a fresh non-empty response for this same player action; preserve the already accepted narrative meaning instead of inventing a new turn.",
-                "If validation_repair_request.json says player-facing output is stale after canonical state repair, base the rewritten narrative/options on the current canonical game_state files, not the pre-repair wording.",
-                "If validation reports narrative_response_technical_repair_leak, rewrite response as an in-world scene only; keep validation/repair/JSON/storage details out of player-facing prose.",
-                "If output/interface_updates.json is listed, rewrite its dialogueOptions/inputValue choices so they match the repaired canonical state and current player-facing narrative.",
-                "Rewrite output/debug_logs.json.gm_thoughts_markdown with timestamp in output/debug_logs.json. Include `## Охват NPC-анализа`, scope mode, relevant actors, actors outside scope, and short reasoning for every relevant actor when any actor is involved.",
-                "Do not touch canonical game_state files unless validation_repair_request.json lists a canonical state error as well.",
-                "After both output artifacts are repaired, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from validation_repair_request.json."
-            },
-            DebugLogTemplate = string.Join(
-                Environment.NewLine,
-                "## Охват NPC-анализа",
-                "Режим: None | Mortal-centric | Guardian-centric | Mixed",
-                "Релевантные акторы: <имена через запятую или нет>",
-                "Почему они релевантны: <коротко>",
-                "Акторы вне охвата: <имена или нет>",
-                "Почему они вне охвата: <коротко>",
-                "",
-                "## Размышления акторов",
-                "### <имя актора>",
-                "- Текущая локация: <если применимо>",
-                "- Ситуация: <кратко>",
-                "- Мысли: <кратко>",
-                "- Действия: <кратко>"),
-            DoNotDo = new List<string>
-            {
-                "Do not write ready/turn_complete.json for validation repair.",
-                "Do not create a new turn, reroll, advance time, or change player choice while repairing missing output artifacts.",
-                "Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside output/narrative_response.json.response.",
-                "Do not leave output/debug_logs.json empty just because no visible NPC changed; write an explicit empty-scope explanation.",
-                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, validation_repair_request.json, GM docs, and session files."
-            }
+            ExpectedShape = expectedShape,
+            Steps = steps,
+            DebugLogTemplate = repairsDebugLog
+                ? BuildAcceptedTurnOutputArtifactDebugLogTemplate()
+                : string.Empty,
+            DoNotDo = doNotDo
+        };
+    }
+
+    private static string ResolveAcceptedTurnOutputArtifactTargetPath(ValidationIssue issue)
+    {
+        var normalized = NormalizeRepairTargetPath(issue.FilePath);
+        if (normalized.StartsWith("output/narrative_response.json", StringComparison.OrdinalIgnoreCase))
+            return "output/narrative_response.json";
+        if (normalized.StartsWith("output/interface_updates.json", StringComparison.OrdinalIgnoreCase))
+            return "output/interface_updates.json";
+        if (normalized.StartsWith("output/debug_logs.json", StringComparison.OrdinalIgnoreCase))
+            return "output/debug_logs.json";
+
+        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
+        {
+            "accepted_turn_missing_narrative_response" or
+            "accepted_turn_empty_narrative_response" or
+            "accepted_turn_stale_narrative_response" or
+            "narrative_response_technical_repair_leak" or
+            "accepted_turn_invalid_narrative_json_root" or
+            "accepted_turn_invalid_narrative_json" or
+            "narrative_response_unknown_field" or
+            "narrative_response_missing_timestamp" or
+            "narrative_response_invalid_timestamp" => "output/narrative_response.json",
+
+            "accepted_turn_empty_interface_updates" or
+            "accepted_turn_stale_interface_updates" or
+            "accepted_turn_invalid_interface_updates_root" or
+            "accepted_turn_invalid_interface_updates_json" or
+            "interface_updates_missing_timestamp" or
+            "interface_updates_invalid_timestamp" or
+            "interface_updates_missing_payload" or
+            "interface_updates_unknown_field" => "output/interface_updates.json",
+
+            "missing_gm_thoughts" or
+            "accepted_turn_stale_debug_logs" or
+            "invalid_debug_logs_json_root" or
+            "invalid_debug_logs_json" or
+            "debug_logs_unknown_field" or
+            "debug_logs_missing_timestamp" or
+            "debug_logs_invalid_timestamp" => "output/debug_logs.json",
+
+            _ => string.Empty
         };
     }
 
@@ -4151,6 +4230,28 @@ public partial class GameEngine
             AppendFullActorBrainDecisionTemplate(builder);
             builder.AppendLine();
         }
+
+        return builder.ToString().TrimEnd();
+    }
+
+    private static string BuildAcceptedTurnOutputArtifactDebugLogTemplate()
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine("## Охват NPC-анализа");
+        builder.AppendLine("Режим: None | Scene-local | World-progression | Guardian-centric | Mixed");
+        builder.AppendLine("Релевантные акторы: <точные имена из уже принятого хода или нет только для действительно actorless scope>");
+        builder.AppendLine("Почему они релевантны: <сохрани уже принятое обоснование>");
+        builder.AppendLine("Акторы вне охвата: <точные имена или нет>");
+        builder.AppendLine("Почему они вне охвата: <сохрани уже принятое обоснование>");
+        builder.AppendLine();
+        builder.AppendLine("Если релевантных акторов нет, остановись после полного scope-блока и не выдумывай Actor Brain.");
+        builder.AppendLine("Если релевантные акторы есть, сохрани отдельный полный блок для каждого:");
+        builder.AppendLine();
+        builder.AppendLine("## Actor Brain 2.0");
+        builder.AppendLine("### <точное имя релевантного актора>");
+        builder.AppendLine("- Текущая локация: сохрани принятую локацию и решение остаться/переместиться.");
+        builder.AppendLine("- Ситуация: сохрани принятую ситуацию этого же хода.");
+        AppendFullActorBrainDecisionTemplate(builder);
 
         return builder.ToString().TrimEnd();
     }

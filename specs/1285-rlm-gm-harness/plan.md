@@ -29,6 +29,7 @@ Implement an RLM-inspired GM harness layer without adding unsafe arbitrary REPL 
 - No arbitrary REPL/shell authority for normal GM gameplay.
 - Workers remain hidden/background and proposal-only unless accepted through existing gates.
 - GM-facing docs/examples must stay synchronized for Mortal World and afterlife surfaces.
+- Output-only repair packets must derive their target set from current diagnostics: valid Actor Brain output is preserved, while an actual debug-log repair receives the full Actor Brain template and exact memory-surface guidance.
 
 **Scale/Scope**: One active local game session, one main GM bridge, optional hidden worker tasks, bounded context-pack artifacts.
 
@@ -62,6 +63,7 @@ Implement an RLM-inspired GM harness layer without adding unsafe arbitrary REPL 
 - #1420 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1420
 - #1485 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1485
 - #1486 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1486
+- #1490 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1490
 
 **Contract Scope**: GM-facing prompts, runtime-state, validation, docs, examples, agent-console, e2e.
 

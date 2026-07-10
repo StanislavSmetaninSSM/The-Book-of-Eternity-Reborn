@@ -3736,6 +3736,14 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("narrative_response_technical_repair_leak", template, StringComparison.Ordinal);
             Assert.Contains("Never mention", template, StringComparison.Ordinal);
             Assert.Contains("JSON, validation, repair, canonical state, arrays", template, StringComparison.Ordinal);
+            Assert.Contains("A file absent from targetFiles must not be rewritten", template, StringComparison.Ordinal);
+            Assert.Contains("preserve its full Actor Brain", template, StringComparison.Ordinal);
+            Assert.Contains("NPCJournals[].journalEntries[]", template, StringComparison.Ordinal);
+            Assert.Contains("guardianThoughtJournalUpdates", template, StringComparison.Ordinal);
+            Assert.Contains("residentThoughtJournalUpdates", template, StringComparison.Ordinal);
+            Assert.Contains("ledger/progressionLedger", template, StringComparison.Ordinal);
+            Assert.Contains("shiningFactionChronicleUpdates", template, StringComparison.Ordinal);
+            Assert.Contains("do not invent an actor", template, StringComparison.OrdinalIgnoreCase);
 
             var daemon = File.ReadAllText(Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "game_master_daemon.ps1"), Encoding.UTF8);
             Assert.Contains("$script:CompactOutputArtifactRepairTemplatePath", daemon, StringComparison.Ordinal);

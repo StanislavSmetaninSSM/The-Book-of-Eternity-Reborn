@@ -957,6 +957,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             _fs.ResolvePath("output/narrative_response.json"),
             DateTime.UtcNow.AddMinutes(-10));
 
+        string[]? outputRepairTargetFiles = null;
         var gmRepair = Task.Run(async () =>
         {
             var firstRequest = await WaitForValidationRepairRequestContainingAsync(
@@ -986,16 +987,21 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             Assert.Contains("output/narrative_response.json", secondRequest, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("accepted_turn_output_artifact_repair", secondRequest, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("canonical state repair", secondRequest, StringComparison.OrdinalIgnoreCase);
+            using (var repairDocument = JsonDocument.Parse(secondRequest))
+            {
+                var packet = Assert.Single(
+                    repairDocument.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+                outputRepairTargetFiles = packet
+                    .GetProperty("targetFiles")
+                    .EnumerateArray()
+                    .Select(item => item.GetString() ?? string.Empty)
+                    .ToArray();
+            }
 
             await WriteJsonAsync("output/narrative_response.json", new
             {
                 response = "После ремонта canonical state: Средоточие не восстановило ОД, теперь 2/6.",
                 timestamp = "2026-07-04T05:20:00Z"
-            });
-            await WriteJsonAsync("output/debug_logs.json", new
-            {
-                timestamp = "2026-07-04T05:20:00Z",
-                gm_thoughts_markdown = "## Охват NPC-анализа\nРежим: Guardian-centric\nРелевантные акторы: Иларион Архивный Свет\nПочему они релевантны: он корректирует учебный духовный обмен после ремонта canonical state.\nАкторы вне охвата: нет\nПочему они вне охвата: все видимые акторы учтены.\n\n## Размышления акторов\n### Иларион Архивный Свет\n- Текущая локация: Архив Лучистых Тишин\n- Ситуация: canonical state repaired before player-facing output refresh\n- Мысли: игрок должен увидеть итог, согласованный с исправленным состоянием\n- Действия: завершает ремонт вывода"
             });
             await WriteJsonAsync("game_state/control/validation_repair_ready.json", new
             {
@@ -1019,6 +1025,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         await gmRepair;
 
         Assert.True(accepted);
+        Assert.NotNull(outputRepairTargetFiles);
+        Assert.DoesNotContain("output/debug_logs.json", outputRepairTargetFiles);
         Assert.False(_fs.FileExists("game_state/control/validation_repair_request.json"));
         Assert.False(_fs.FileExists("game_state/control/validation_repair_ready.json"));
 
@@ -2023,6 +2031,18 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(
             packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
             item => item.Contains("new turn", StringComparison.OrdinalIgnoreCase));
+
+        var debugTemplate = packet.GetProperty("debugLogTemplate").GetString() ?? string.Empty;
+        Assert.Contains("- Данные профиля:", debugTemplate, StringComparison.Ordinal);
+        Assert.Contains("- Варианты стратегий:", debugTemplate, StringComparison.Ordinal);
+        Assert.Contains("Выгода:", debugTemplate, StringComparison.Ordinal);
+        Assert.Contains("Риск:", debugTemplate, StringComparison.Ordinal);
+        Assert.Contains("- Изменения состояния:", debugTemplate, StringComparison.Ordinal);
+        Assert.Contains("NPCJournals[].journalEntries[]", string.Join("\n", steps), StringComparison.Ordinal);
+        Assert.Contains("guardianThoughtJournalUpdates", string.Join("\n", steps), StringComparison.Ordinal);
+        Assert.Contains("residentThoughtJournalUpdates", string.Join("\n", steps), StringComparison.Ordinal);
+        Assert.Contains("ledger/progressionLedger", string.Join("\n", steps), StringComparison.Ordinal);
+        Assert.Contains("shiningFactionChronicleUpdates", string.Join("\n", steps), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -2057,10 +2077,99 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
         Assert.Equal("accepted_turn_output_artifact_repair", packet.GetProperty("kind").GetString());
         Assert.Contains("output/narrative_response.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
-        Assert.Contains("output/debug_logs.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.DoesNotContain("output/debug_logs.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
         Assert.Contains(
             packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
             item => item.Contains("\"timestamp\"", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(
+            packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
+            item => item.Contains("Do not rewrite output/debug_logs.json", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_OutputUnknownFieldCodes_WhitelistCanonicalTargetsWhenPathsAreMalformed()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "unexpected/narrative-path.json",
+                IssueSeverity.Error,
+                "Narrative output contains an unsupported field.",
+                code: "narrative_response_unknown_field",
+                section: "Narrative"),
+            new(
+                string.Empty,
+                IssueSeverity.Error,
+                "Interface output is empty.",
+                code: "accepted_turn_empty_interface_updates",
+                section: "Interface"),
+            new(
+                "unexpected/debug-path.json",
+                IssueSeverity.Error,
+                "Debug output contains an unsupported field.",
+                code: "debug_logs_unknown_field",
+                section: "gm_thoughts_markdown")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        using var doc = JsonDocument.Parse(
+            (await _fs.ReadFileAsync("game_state/control/validation_repair_request.json"))!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("accepted_turn_output_artifact_repair", packet.GetProperty("kind").GetString());
+
+        var targets = packet.GetProperty("targetFiles")
+            .EnumerateArray()
+            .Select(item => item.GetString() ?? string.Empty)
+            .ToArray();
+        Assert.Equal(3, targets.Length);
+        Assert.Contains("output/narrative_response.json", targets);
+        Assert.Contains("output/interface_updates.json", targets);
+        Assert.Contains("output/debug_logs.json", targets);
+        Assert.DoesNotContain(targets, path => string.IsNullOrWhiteSpace(path));
+        Assert.DoesNotContain(targets, path => path.StartsWith("unexpected/", StringComparison.OrdinalIgnoreCase));
+
+        var debugTemplate = packet.GetProperty("debugLogTemplate").GetString() ?? string.Empty;
+        Assert.Contains("- Данные профиля:", debugTemplate, StringComparison.Ordinal);
+        Assert.Contains("- Изменения состояния:", debugTemplate, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_UnroutableStaleOutputDiagnostic_DoesNotEmitEmptyHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "unexpected/player-facing-output.json",
+                IssueSeverity.Error,
+                "A player-facing artifact is stale, but its canonical output file is unknown.",
+                code: "accepted_turn_stale_player_facing_output_after_canonical_repair",
+                section: "PlayerFacingOutput")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        using var doc = JsonDocument.Parse(
+            (await _fs.ReadFileAsync("game_state/control/validation_repair_request.json"))!);
+        Assert.Empty(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
     }
 
     [Fact]
