@@ -1243,6 +1243,20 @@
             "\"newLastGuardianProjectCycleOrdinal\": 38",
             "\"newLastResidentAgencyCycleOrdinal\": 38"
           ]
+        },
+        {
+          "path": "game_state/meta/guardian_thought_journal.json",
+          "requiredText": [
+            "\"entryId\": \"guardian_thought_azalia_419_silent_anchor\"",
+            "\"guardianId\": \"guard_social_azalia_001\""
+          ]
+        },
+        {
+          "path": "game_state/meta/guardian_abode_residents.json",
+          "requiredText": [
+            "\"entryId\": \"thought_liora_419_quiet_edge\"",
+            "\"residentId\": \"res_azalia_liora_001\""
+          ]
         }
       ]
     },
@@ -1335,6 +1349,10 @@
         "game_state/control/incarnation_trigger.json",
         "game_state/control/progression_report.json"
       ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardian_thought_journal.json",
+        "game_state/meta/guardian_abode_residents.json"
+      ],
       "expectedFilesUnchanged": [
         "game_state/control/afterlife_return_guard.json",
         "game_state/world/world_time.json",
@@ -1349,6 +1367,20 @@
           "requiredText": [
             "afterlife_return_guard.json",
             "No `TriggerIncarnation` is written"
+          ]
+        },
+        {
+          "path": "game_state/meta/guardian_thought_journal.json",
+          "requiredText": [
+            "\"entryId\": \"guardian_thought_azalia_return_421\"",
+            "Я вижу усталость вернувшейся Души"
+          ]
+        },
+        {
+          "path": "game_state/meta/guardian_abode_residents.json",
+          "requiredText": [
+            "\"entryId\": \"resident_thought_liora_return_421\"",
+            "Я останусь рядом"
           ]
         }
       ]
@@ -1409,7 +1441,8 @@
           "requiredText": [
             "\"bondRewardState\": \"granted\"",
             "\"grantedRelicId\": \"soul_relic_liora_echo_522\"",
-            "\"entryId\": \"resident_log_liora_relic_522\""
+            "\"entryId\": \"resident_log_liora_relic_522\"",
+            "\"entryId\": \"resident_thought_liora_relic_522\""
           ]
         }
       ],
@@ -1486,7 +1519,8 @@
           "path": "game_state/meta/guardian_abode_residents.json",
           "requiredText": [
             "\"linkedSoulQuestId\": \"soul_quest_liora_name_thread_523\"",
-            "\"entryId\": \"resident_log_liora_quest_523\""
+            "\"entryId\": \"resident_log_liora_quest_523\"",
+            "\"entryId\": \"resident_thought_liora_quest_523\""
           ]
         }
       ],

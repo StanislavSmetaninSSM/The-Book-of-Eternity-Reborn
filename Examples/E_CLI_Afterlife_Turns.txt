@@ -108,6 +108,7 @@ GUARDIAN SCOPE REPAIR PACKET EXAMPLE
 When the client rejects a Chaos Sea or Shining Abode turn and writes `game_state/control/validation_repair_request.json`, this is not a new turn. If the request contains `harnessRepairPackets[]`, read those packets before individual `errors[]`.
 If the daemon prompt provides `game_state/control/gm_context_pack/context_pack_manifest.json`, start from that session-local context pack and its copied GM docs/examples. Do not open `BookOfEternityClient/**/*.cs` during live repair; the packet, manifest, session state/control files, and helper bootstrap are the intended harness.
 If `harnessRepairPackets[].kind = "npc_scope_declaration_repair"`, repair `output/debug_logs.json.gm_thoughts_markdown` with the packet's `debugLogTemplate`. In Chaos Sea / Shining Abode spiritual conflicts, `Mixed` normally needs the player soul, the active Guardian/teacher/anchor, and the current opponent or trial actor when those actors participate in the same exchange. Use `Scene-local + Relevant actors: нет` only for a truly actorless turn with no actor-specific state changes.
+If a relevant non-player Guardian or resident receives the player action and chooses a response, the same accepted turn needs both records: a full Actor Brain decision audit and the actor's own concise first-person journal delta. The audit includes `Данные профиля:`, `Мотивация:`, `Ограничения:`, at least two `Варианты стратегий:` with explicit `Выгода:` and `Риск:`, `Выбранная стратегия:`, rejected alternatives, `Действия:`, and `Изменения состояния:`. For a Guardian, prefer `guardianThoughtJournalUpdates` / `guardian_thought_journal.json`; `guardians[].musings` through `UpdateGuardians.addMusings` remains a valid alternative, but never duplicate the same reaction across both. Residents use `residentThoughtJournalUpdates`.
 
 Example fragment:
 
@@ -122,7 +123,7 @@ Example fragment:
         "output/debug_logs.json"
       ],
       "canonicalActorNames": [ "Азалия" ],
-      "debugLogTemplate": "## Охват NPC-анализа\nРежим: Guardian-centric\nРелевантные акторы: Азалия\n...\n## Guardian Thoughts\n### Азалия\n- Ситуация: ...\n- Мысли: ...\n- Действия: ..."
+      "debugLogTemplate": "## Охват NPC-анализа\nРежим: Guardian-centric\nРелевантные акторы: Азалия\n...\n## Actor Brain 2.0\n### Азалия\n- Текущая локация: ...\n- Ситуация: ...\n- Данные профиля: ...\n- Мотивация: ...\n- Ограничения: ...\n- Мысли: ...\n- Варианты стратегий:\n  1. ... Выгода: ... Риск: ...\n  2. ... Выгода: ... Риск: ...\n- Выбранная стратегия: ...\n- Почему альтернативы отвергнуты: ...\n- Действия: ...\n- Изменения состояния: guardianThoughtJournalUpdates"
     },
     {
       "kind": "actor_reasoning_subpoint_repair",
@@ -130,7 +131,26 @@ Example fragment:
         "output/debug_logs.json"
       ],
       "canonicalActorNames": [ "Азалия", "Пепельная Искра" ],
-      "debugLogTemplate": "## Размышления акторов\n### Азалия\n- Ситуация: ...\n- Мысли: ...\n- Действия: ...\n\n### Пепельная Искра\n- Ситуация: ...\n- Мысли: ...\n- Действия: ..."
+      "debugLogTemplate": "## Размышления акторов\n### Азалия\n- Текущая локация: ...\n- Ситуация: ...\n- Данные профиля: ...\n- Мотивация: ...\n- Ограничения: ...\n- Мысли: ...\n- Варианты стратегий:\n  1. ... Выгода: ... Риск: ...\n  2. ... Выгода: ... Риск: ...\n- Выбранная стратегия: ...\n- Почему альтернативы отвергнуты: ...\n- Действия: ...\n- Изменения состояния: ..."
+    },
+    {
+      "kind": "actor_memory_persistence_repair",
+      "targetFiles": [
+        "game_state/meta/guardian_thought_journal.json",
+        "game_state/meta/guardian_abode_residents.json",
+        "output/debug_logs.json"
+      ],
+      "canonicalActorNames": [ "Азалия", "Лиора" ],
+      "expectedShape": [
+        "Direct guardian_thought_journal.json repair uses canonical top-level entries[].",
+        "Each Guardian entry contains entryId, guardianId, title, first-person summary, turn, and timestamp."
+      ],
+      "safeCorrectionRules": [
+        "Append one concise first-person current-turn thought to the exact actor journal.",
+        "Update only each listed actor's Изменения состояния line to name the exact journal surface.",
+        "guardianThoughtJournalUpdates is a first-pass response command; do not persist schemaVersion or a guardianThoughtJournalUpdates-only root in guardian_thought_journal.json.",
+        "Preserve narrative/interface output, old entries, and unrelated state; do not replay the scene."
+      ]
     }
   ]
 }
@@ -172,7 +192,9 @@ Correct repair behavior:
 - In `output/debug_logs.json.gm_thoughts_markdown`, use `canonicalActorNames[]` exactly for `Relevant actors` and for `### <Guardian Name>` headings. Do not use raw `guardianId` or stale mirror-only aliases as actor names.
 - In `game_state/meta/guardians.json`, treat `activeGuardian` and `guardians[]` as materialized mirrors. Reconstruct them from the validated pre-turn Guardian baseline plus authorized same-turn Guardian mutations. Do not treat the raw current mirror as the authority source.
 - If `game_state/meta/guardian_projects.json` is listed, treat `activeProjects` the same way: restore the kernel-authoritative tracker state from the validated pre-turn project baseline plus authorized same-turn project commands. Do not start or preserve a project only because the rejected materialized file contains it.
-- If the packet kind is `actor_reasoning_subpoint_repair`, do not rewrite the turn. Repair only `output/debug_logs.json.gm_thoughts_markdown`, preserve existing accepted content, create any missing `### <actor>` block from `canonicalActorNames[]`, and make sure every listed actor has separate `- Ситуация:`, `- Мысли:`, and `- Действия:` bullets under that heading.
+- If the packet kind is `actor_reasoning_subpoint_repair`, do not rewrite the turn. Repair only `output/debug_logs.json.gm_thoughts_markdown`, preserve existing accepted content, create any missing `### <actor>` block from `canonicalActorNames[]`, and follow the full `debugLogTemplate`: location, situation, profile inputs, motivation, constraints, two strategies with explicit `Выгода:`/`Риск:`, chosen strategy, rejected alternatives, actions, and exact state changes.
+- If the packet kind is `actor_memory_persistence_repair`, the decision is already authored. Append one new first-person thought only to the listed Guardian/resident journal surface; for an existing afterlife entity profile append actor-owned `ledger`/`progressionLedger` evidence even when `gmThoughtsSummary` changes; for an existing Shining faction append `shiningFactionChronicleUpdates`, never a `shiningFactionStrategicMemoryUpdates` rewrite alone. Preserve all old entries and do not rewrite narrative or unrelated state.
+- Every independent name in relevant actors needs a canonical memory owner. Materialize a genuine actor with a stable id and complete supported profile; otherwise remove the invented/non-actor label from relevant actors and its standalone Actor Brain block.
 - Do not read implementation code such as `BookOfEternityClient/**/*.cs` during repair. Use the repair packet, this example, GM guides, and session control/snapshot files.
 - After repairing the files, call `Complete-BoeValidationRepair` or create `game_state/control/validation_repair_ready.json` with exact `sessionId`, `requestId`, and `turnNumber` from the same current repair request.
 
@@ -272,16 +294,36 @@ Correct GM reasoning:
 - Акторы вне охвата: остальные Хранители, прочие резиденты Обители Азалии
 - Почему они вне охвата: их проекты и pending requests не затронуты этим ходом, и catch-up summary не требует их индивидуальных state mutations.
 
-## Guardian Thoughts
+## Actor Brain 2.0
 ### Азалия
+- Текущая локация: Обитель Шёлковой Памяти; остаётся у защитного шелка зала.
 - Ситуация: Душа вернулась после долгой смертной жизни и пришла к её резиденту.
-- Внутренние мысли: Азалия видит, что Лиора готова раскрыть часть прошлого, но не хочет ломать память души слишком резко.
+- Данные профиля: Хранительница памяти, отвечает за безопасность Обители и проект мягкого раскрытия воспоминаний.
+- Мотивация: Позволить Лиоре говорить самостоятельно и защитить Душу от слишком резкого возвращения памяти.
+- Ограничения: Азалия не говорит за Лиору и не может гарантировать, что любой фрагмент прошлого окажется безопасным.
+- Мысли: Я удержу зал спокойным и позволю Лиоре самой выбрать, сколько правды открыть сейчас.
+- Варианты стратегий:
+  1. Разрешить ограниченное раскрытие под защитой Обители. Выгода: Душа получит правду без потери опоры. Риск: даже малый фрагмент может причинить боль.
+  2. Прервать разговор до полного восстановления Души. Выгода: немедленный риск исчезнет. Риск: доверие Лиоры и Души будет подорвано.
+- Выбранная стратегия: Разрешить один ограниченный фрагмент и усилить защиту зала.
+- Почему альтернативы отвергнуты: Полный запрет лишит Лиору собственной воли и не соответствует осторожной готовности Души.
 - Действия: Она позволяет разговор, усиливает защитный шелк Обители и продвигает проект мягкого раскрытия воспоминаний.
+- Изменения состояния: `guardianProjectUpdates`, `guardianThoughtJournalUpdates`.
 
 ### Лиора
+- Текущая локация: Обитель Шёлковой Памяти; остаётся напротив Души.
 - Ситуация: Душа прямо спрашивает о её памяти прошлой жизни.
-- Внутренние мысли: Лиора боится снова стать лишь тенью чужого прошлого, но хочет быть полезной.
+- Данные профиля: Осторожная странствующая душа, связана с Азалией, боится стать лишь тенью чужого прошлого.
+- Мотивация: Помочь Душе и одновременно сохранить право самой определять границы своей истории.
+- Ограничения: Лиора помнит не всё и не станет выдавать догадку за достоверное воспоминание.
+- Мысли: Я расскажу только то, за что готова отвечать, и не позволю прошлому снова сделать меня чужой тенью.
+- Варианты стратегий:
+  1. Открыть один проверенный фрагмент. Выгода: Душа получит полезную правду. Риск: разговор пробудит болезненные ассоциации.
+  2. Отказаться от разговора. Выгода: личные границы останутся неприкосновенны. Риск: доверие и шанс помочь будут потеряны.
+- Выбранная стратегия: Открыть один проверенный фрагмент и обозначить границу дальнейшего разговора.
+- Почему альтернативы отвергнуты: Полный отказ слишком жесток к искреннему вопросу, а более широкое раскрытие пока небезопасно.
 - Действия: Она раскрывает один фрагмент истории и оставляет понятный след в резидентской памяти.
+- Изменения состояния: `residentThoughtJournalUpdates`, `residentInteractionLogUpdates`, `UpdateGuardianAbodeResidentHistoryLog`, `UpdateGuardianAbodeResidentInteractionReceipts`.
 
 ## Afterlife Living World / Живой мир Посмертия
 - Catch-up outcome 1: за время отсутствия души в Море Хаоса усилились тихие течения воспоминаний; это отражается в hub-summary и не требует mortal worldEventsLog.
@@ -302,6 +344,16 @@ Correct response/state fragment:
 {
   "response": "Обитель Азалии встречает тебя шелестом тонких серебряных нитей. Лиора долго молчит, затем признаёт: в одной из твоих прошлых жизней она видела тебя не героем, а человеком, который однажды отказался от лёгкой победы ради чужой свободы. Азалия не вмешивается, но её шелк вокруг зала становится плотнее, чтобы память не разорвала душу слишком резко.",
   "gm_thoughts_markdown": "<see reasoning above>",
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_azalia_212_protected_truth",
+      "guardianId": "guard_social_azalia_001",
+      "turn": 212,
+      "timestamp": "2026-04-24T08:40:00Z",
+      "title": "Правда под защитой",
+      "summary": "Я позволю Лиоре открыть один проверенный фрагмент и удержу зал спокойным, чтобы память не сломала Душу."
+    }
+  ],
   "guardianProjectUpdates": [
     {
       "projectId": "gproj_azalia_memory_silk_001",
@@ -331,7 +383,7 @@ Correct response/state fragment:
       "turn": 212,
       "timestamp": "2026-04-24T08:40:00Z",
       "title": "Память, которую можно выдержать",
-      "summary": "Лиора решила раскрыть только тот фрагмент прошлого, который поможет душе, но не сломает её текущую волю."
+      "summary": "Я раскрою только тот фрагмент прошлого, который поможет Душе, но не сломает её нынешнюю волю."
     }
   ],
   "residentInteractionLogUpdates": [
@@ -556,31 +608,56 @@ Correct GM reasoning:
 
 ## Охват NPC-анализа
 - Режим: Mixed
-- Релевантные акторы: Орден Стеклянного Света, Врата Рассвета, Мира, Элиан
-- Почему они релевантны: Орден закрывает Shining trade request и получает faction progression; Врата Рассвета закрывают Shining core action; Мира меняет resident alignment; Элиан имеет due guardian project cycle.
-- Акторы вне охвата: другие сияющие фракции, закрытые залы, прочие Хранители
-- Почему они вне охвата: у них нет pending contracts, и два Shining faction cycles применены к текущей активной фракции, чьё действие запросил игрок.
+- Релевантные акторы: Орден Стеклянного Света, Мира, Элиан
+- Почему они релевантны: Орден закрывает Shining trade request и выбирает faction strategy; Мира меняет resident alignment; Элиан имеет due guardian project cycle.
+- Акторы вне охвата: Врата Рассвета как неразумный системный locus, другие сияющие фракции, закрытые залы, прочие Хранители
+- Почему они вне охвата: Врата закрываются через core-action state и не являются самостоятельным actor с памятью; у остальных нет pending contracts или state mutations.
 
-## Reasoning / Размышления NPC / Guardian Thoughts
+## Actor Brain 2.0
 ### Орден Стеклянного Света
+- Текущая локация: Зал Стеклянного Света у Врат Рассвета; фракция остаётся в своём зале.
 - Ситуация: Душа просит открыть Врата и подготовить витрину через Орден.
-- Внутренние мысли: Орден хочет показать пользу, но опасается слишком быстрого расширения влияния.
+- Данные профиля: Сияющая фракция порядка и безопасных маршрутов, контролирует торговый ритуал и публичную дисциплину.
+- Мотивация: Показать практическую пользу Ордена и расширить влияние без открытого принуждения.
+- Ограничения: Орден связан лимитом витрины, текущей силой фракции и не может выдать закрытый draft благословений за выбор игрока.
+- Мысли: Совет Ордена считает ограниченную витрину лучшим доказательством пользы, чем громкая демонстрация власти.
+- Варианты стратегий:
+  1. Открыть ограниченную витрину и поддержать Врата. Выгода: Орден укрепит доверие и маршрут. Риск: соперники увидят рост влияния.
+  2. Отказать до усиления фракции. Выгода: ресурсы останутся в резерве. Риск: Орден потеряет публичную инициативу.
+- Выбранная стратегия: Открыть ограниченную витрину и поддержать controlled gate ritual.
+- Почему альтернативы отвергнуты: Запрос уже обеспечен допустимым контрактом, а отказ принесёт больше политического ущерба, чем экономии.
 - Действия: Орден принимает поручение, усиливает дисциплину и открывает ограниченную торговую витрину.
-
-### Врата Рассвета
-- Ситуация: canonical gates draft был закрыт, но получил accepted `open_gates` core action request.
-- Внутренние мысли: Врата удерживают сияющее давление под контролем и не раскрывают выбор благословений раньше подготовленного draft.
-- Действия: `gates` обновляется как blessing-card draft container: новый `draftVersion`, `hasOpenDraft=true`, списки candidate/available cards и пустой `selectedBlessingCardIds[]`.
+- Изменения состояния: `shiningFactionStrategicMemoryUpdates`, `shiningFactionChronicleUpdates`, faction trade inventory/receipt и `coreActionReceipts`.
 
 ### Мира
+- Текущая локация: Площадь у Врат Рассвета; остаётся среди жителей.
 - Ситуация: Резидентка видит рост Ордена и выбирает поддержать их публичный ритуал.
-- Внутренние мысли: Мира считает, что поддержка Ордена даст ей более ясное место в сияющей иерархии.
+- Данные профиля: Осторожная свидетельница порогов, знакома с Элианом и боится порядка, который отнимает личную волю.
+- Мотивация: Помочь жителям пройти безопасно и найти понятное место в сияющей иерархии.
+- Ограничения: Мира не управляет Орденом и не может обещать безопасность за пределами открытого маршрута.
+- Мысли: Я поддержу ритуал, пока он объясняет правила и не требует от жителей отказаться от собственной воли.
+- Варианты стратегий:
+  1. Публично поддержать ритуал. Выгода: жители получат проводника и ясные правила. Риск: Миру начнут считать сторонницей Ордена.
+  2. Остаться нейтральной. Выгода: политическая свобода сохранится. Риск: слабые души войдут во Врата без помощи.
+- Выбранная стратегия: Поддержать ритуал с явной оговоркой о свободе жителей.
+- Почему альтернативы отвергнуты: Нейтралитет оставит уязвимых жителей без проводника именно сейчас.
 - Действия: Её Shining alignment moves toward the Glass Light faction and is logged as resident agency.
+- Изменения состояния: `UpdateGuardianAbodeResidents`, `residentThoughtJournalUpdates`.
 
 ### Элиан
+- Текущая локация: Сияющий переход у проекта Врат; остаётся у опорной арки.
 - Ситуация: Проект Хранителя связан с устойчивостью сияющих переходов.
-- Внутренние мысли: Элиан использует открытие Врат как редкий устойчивый момент для укрепления своего проекта.
+- Данные профиля: Хранитель знания переходов, отвечает за устойчивость проекта и безопасность слабых душ.
+- Мотивация: Использовать контролируемое открытие как редкую возможность укрепить переход.
+- Ограничения: Элиан не управляет выбором фракции и не может считать публичный ритуал доказательством вечной стабильности.
+- Мысли: Я использую этот устойчивый миг для проекта, но не приму сияющую церемонию за гарантию будущего.
+- Варианты стратегий:
+  1. Продвинуть проект во время ритуала. Выгода: доменная связь усиливает работу. Риск: проект станет зависим от чужой политики.
+  2. Наблюдать без вмешательства. Выгода: независимость проекта сохранится. Риск: редкая устойчивая возможность будет потеряна.
+- Выбранная стратегия: Выполнить один ограниченный рабочий цикл и сохранить независимый audit.
+- Почему альтернативы отвергнуты: Полный отказ от подходящего доменного момента не оправдан, если объём работы ограничен.
 - Действия: Проект получает один cycle progress because the gate action reinforces his domain.
+- Изменения состояния: `guardianProjectUpdates`, `guardianThoughtJournalUpdates`.
 
 ## Afterlife Living World / Живой мир Посмертия
 - Shining Abode cycle: public order brightens, the canonical gates draft opens with controlled pressure.
@@ -684,6 +761,24 @@ This is a fragment. Preserve all existing Shining root fields, halls, factions, 
       "investCountThisAscension": 0,
       "projectArchetypesCountedThisAscension": [],
       "projects": [],
+      "strategicMemory": {
+        "summary": "Орден укрепляет влияние через безопасные маршруты и ограниченную публичную торговлю, не превращая порядок в принуждение.",
+        "lastUpdatedTurn": 305,
+        "recentCampaigns": ["Открытие Врат Рассвета"],
+        "losses": [],
+        "alliances": ["Жители рассветного перехода"],
+        "enemies": []
+      },
+      "chronicle": [
+        {
+          "entryId": "glass_light_evt_305_open_gates",
+          "turnNumber": 305,
+          "eventType": "public_service",
+          "summary": "Орден Стеклянного Света поддержал открытие Врат Рассвета и подготовил ограниченную витрину.",
+          "visibility": "public",
+          "consequences": ["Безопасный маршрут получил публичную поддержку Ордена."]
+        }
+      ],
       "tradeInventory": {
         "tradeCycleId": "shining_return_9",
         "generatedAtUtc": "2026-04-24T08:55:00Z",
@@ -833,6 +928,38 @@ Correct response/report fragment:
 {
   "response": "Сияющая Обитель отвечает не громом, а стройным переливом стеклянного света. Врата Рассвета раскрываются медленно, слой за слоем, пока Орден Стеклянного Света выстраивает вокруг них круг дисциплины. На новой витрине появляется первый сияющий реликтовый предмет, и жители Обители видят: это не просто торговля, а публичное обещание порядка.",
   "gm_thoughts_markdown": "<see reasoning above>",
+  "shiningFactionStrategicMemoryUpdates": [
+    {
+      "factionId": "shine_faction_glass_light_001",
+      "summary": "Орден укрепляет влияние через безопасные маршруты и ограниченную публичную торговлю, не превращая порядок в принуждение.",
+      "lastUpdatedTurn": 305,
+      "recentCampaigns": ["Открытие Врат Рассвета"],
+      "losses": [],
+      "alliances": ["Жители рассветного перехода"],
+      "enemies": []
+    }
+  ],
+  "shiningFactionChronicleUpdates": [
+    {
+      "factionId": "shine_faction_glass_light_001",
+      "entryId": "glass_light_evt_305_open_gates",
+      "turnNumber": 305,
+      "eventType": "public_service",
+      "summary": "Орден Стеклянного Света поддержал открытие Врат Рассвета и подготовил ограниченную витрину.",
+      "visibility": "public",
+      "consequences": ["Безопасный маршрут получил публичную поддержку Ордена."]
+    }
+  ],
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_elian_305_gate_cycle",
+      "guardianId": "guard_knowledge_elian_001",
+      "turn": 305,
+      "timestamp": "2026-04-24T08:55:00Z",
+      "title": "Устойчивый миг",
+      "summary": "Я использую этот устойчивый миг для проекта, но не приму сияющую церемонию за гарантию будущего."
+    }
+  ],
   "guardianProjectUpdates": [
     {
       "projectId": "gproj_elian_gate_stability_001",
@@ -861,7 +988,7 @@ Correct response/report fragment:
       "turn": 305,
       "timestamp": "2026-04-24T08:55:00Z",
       "title": "Стеклянный порядок",
-      "summary": "Мира решила поддержать Орден Стеклянного Света, потому что открытие Врат выглядело безопасным и полезным для жителей."
+      "summary": "Я поддержу Орден Стеклянного Света, пока открытие Врат остаётся безопасным и сохраняет волю жителей."
     }
   ],
   "UpdateGuardianAbodeResidents": [
@@ -1177,7 +1304,17 @@ Correct response/state fragment:
 ```json
 {
   "response": "Азалия проводит ладонью по шёлковым полкам, и две реликвии проявляются в мягком серебряном свете. Витрина Обители готова; теперь душа может осмотреть товары через интерфейс торговли Хранителя.",
-  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Релевантные акторы: Азалия\n- Почему они релевантны: pending Guardian trade request требует её authored tradeInventory и ready receipt.\n- Акторы вне охвата: остальные Хранители, резиденты Обители\n- Почему они вне охвата: этот request затрагивает только витрину Азалии и не меняет их structured state.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: Клиент запросил явную витрину для return_5.\n- Мысли: Азалия выбирает безопасный Friendly-tier ассортимент, соответствующий текущей репутации и лимиту слотов.\n- Действия: Азалия подготавливает ровно два слота Friendly-tier и закрывает pending request canonical receipt.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Релевантные акторы: Азалия\n- Почему они релевантны: pending Guardian trade request требует её authored tradeInventory, ready receipt и личного решения об ассортименте.\n- Акторы вне охвата: остальные Хранители, резиденты Обители\n- Почему они вне охвата: этот request затрагивает только витрину Азалии и не меняет их structured state.\n\n## Actor Brain 2.0\n### Азалия\n- Текущая локация: Шёлковые полки Обители; остаётся у торговой ниши.\n- Ситуация: Клиент запросил явную витрину для return_5.\n- Данные профиля: Хранительница памяти с Friendly reputation tier, двумя доступными слотами и обязанностью не превращать торговлю в принуждение.\n- Мотивация: Предложить полезные реликвии памяти по допустимой цене и укрепить доверие Души.\n- Ограничения: Ассортимент ограничен derived slot count, rarity ceiling, canonical pricing и текущим return cycle.\n- Мысли: Я предложу две реликвии, которые помогут Душе удержать память, но не станут готовым ответом за неё.\n- Варианты стратегий:\n  1. Подготовить сбалансированный Friendly-tier ассортимент. Выгода: витрина будет полезной и честной. Риск: редкие товары останутся недоступны.\n  2. Заполнить витрину самыми дорогими реликвиями. Выгода: Обитель получит больше перьев. Риск: цены и rarity ceiling нарушат доверие и контракт.\n- Выбранная стратегия: Подготовить два сбалансированных Friendly-tier слота.\n- Почему альтернативы отвергнуты: Максимизация цены нарушит ограничения запроса и характер Азалии.\n- Действия: Азалия подготавливает ровно два слота и закрывает pending request canonical receipt.\n- Изменения состояния: guardian tradeInventory, UpdateGuardianTradeInventoryReceipts, guardianThoughtJournalUpdates.",
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_azalia_240_friendly_vitrine",
+      "guardianId": "guard_social_azalia_001",
+      "turn": 240,
+      "timestamp": "2026-04-24T09:05:00Z",
+      "title": "Честная витрина",
+      "summary": "Я предложу Душе две полезные реликвии памяти по честной цене и не стану продавать ей готовый выбор."
+    }
+  ],
   "game_state/meta/guardians.json patch": {
     "guardians[] match guardianId=guard_social_azalia_001": {
       "guardianId": "guard_social_azalia_001",
@@ -5390,17 +5527,36 @@ Correct reasoning:
 - Акторы вне охвата: other Guardians, Shining factions
 - Почему они вне охвата: no Shining realm state is active, no pending Shining files exist, and the hub cycle produces local Abode pressure only.
 
-## Guardian Thoughts
+## Actor Brain 2.0
 ### Азалия
+- Текущая локация: Край Обители Шёлковой Памяти; остаётся рядом с текущим проектом.
 - Ситуация: The player is silent, but the Sea's pressure around her Abode still changes.
-- Мысли: Азалия notices that silence gives her current project a clean anchor instead of a new demand.
+- Данные профиля: Хранительница памяти, привязана к Душе, отвечает за устойчивость Обители и текущий проект шёлкового зала.
+- Мотивация: Использовать редкую тишину для работы, не превращая молчание Души в требование.
+- Ограничения: Азалия не станет говорить за Душу и не может игнорировать давление Моря на проект.
+- Мысли: Я слышу в этом молчании не отказ, а место, где нить наконец можно удержать ровно.
+- Варианты стратегий:
+  1. Продвинуть проект на один малый шаг. Выгода: тишина превращается в устойчивую работу. Риск: Азалия ошибочно примет молчание за согласие.
+  2. Остановить проект и потребовать ответа. Выгода: намерение Души станет яснее. Риск: требование разрушит редкую безопасную паузу.
+- Выбранная стратегия: Продвинуть проект без требования ответа.
+- Почему альтернативы отвергнуты: Вопрос не срочен, а принуждение противоречит бережной памяти Азалии.
 - Действия: She advances the existing project by one small work step and records a thought.
+- Изменения состояния: `guardianProjectUpdates`, `guardianThoughtJournalUpdates`.
 
-## Resident Thoughts
 ### Лиора
+- Текущая локация: Внутренний край Обители; остаётся в безопасной нише у Моря.
 - Ситуация: The quieter Abode gives Лиора enough safety to act internally.
-- Мысли: She decides not to request a conversation yet, but her agency cycle still matters.
+- Данные профиля: Странствующая душа, осторожная свидетельница, боится превращать безопасность в клетку.
+- Мотивация: Сохранить собственную инициативу, не заставляя Душу немедленно отвечать.
+- Ограничения: Лиора не знает, хочет ли Душа разговора, и не станет присваивать её молчание.
+- Мысли: Я могу остаться рядом и не превращать каждую тишину в просьбу обо мне.
+- Варианты стратегий:
+  1. Не начинать разговор и записать внутренний вывод. Выгода: границы Души сохранены. Риск: возможность сближения будет отложена.
+  2. Немедленно попросить внимания. Выгода: Лиора получит прямой ответ. Риск: безопасная пауза станет давлением.
+- Выбранная стратегия: Не начинать разговор и удержать собственный выбор в памяти.
+- Почему альтернативы отвергнуты: Срочной просьбы нет, а давление ухудшит доверие.
 - Действия: She records a resident thought; no roster, transfer, or history request is invented.
+- Изменения состояния: `residentThoughtJournalUpdates` добавляет новую first-person запись.
 
 ## Afterlife Living World / Живой мир Посмертия
 - Chaos Sea hub cycle: the Sea calms around this Abode rather than creating a new external event; this is described in response and closed by progression report.
@@ -5414,7 +5570,7 @@ Correct accepted response fragment:
 ```json
 {
   "response": "Море Хаоса не отвечает словами. Серебряный свет вашей формы ложится на край Обители, и волны чуть отступают, оставляя Азалии редкую неподвижность для работы, а Лиоре — место, где память не требует немедленного разговора.",
-  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Afterlife subtype: Ordinary Chaos Sea living-world turn without pending files.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: Азалия has a due Guardian project cycle; Лиора has a due resident agency cycle.\n- Акторы вне охвата: other Guardians, Shining factions\n- Почему они вне охвата: no Shining realm state is active, no pending Shining files exist, and the hub cycle produces local Abode pressure only.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: The player is silent, but the Sea's pressure around her Abode still changes.\n- Мысли: Азалия notices that silence gives her current project a clean anchor instead of a new demand.\n- Действия: She advances the existing project by one small work step and records a thought.\n\n## Resident Thoughts\n### Лиора\n- Ситуация: The quieter Abode gives Лиора enough safety to act internally.\n- Мысли: She decides not to request a conversation yet, but her agency cycle still matters.\n- Действия: She records a resident thought; no roster, transfer, or history request is invented.\n\n## Afterlife Living World / Живой мир Посмертия\n- Chaos Sea hub cycle: the Sea calms around this Abode rather than creating a new external event; this is described in response and closed by progression report.\n- Guardian project cycle: Азалия advances her existing project through `guardianProjectUpdates`.\n- Resident agency cycle: Лиора acts through `residentThoughtJournalUpdates`.\n- No pending files exist, so no receipt arrays are invented.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Afterlife subtype: Ordinary Chaos Sea living-world turn without pending files.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: Азалия has a due Guardian project cycle; Лиора has a due resident agency cycle.\n- Акторы вне охвата: other Guardians, Shining factions\n- Почему они вне охвата: no Shining realm state is active, no pending Shining files exist, and the hub cycle produces local Abode pressure only.\n\n## Actor Brain 2.0\n### Азалия\n- Текущая локация: Край Обители Шёлковой Памяти; остаётся рядом с текущим проектом.\n- Ситуация: Молчание Души совпадает с очередным циклом проекта.\n- Данные профиля: Хранительница памяти, отвечает за устойчивость Обители и проект шёлкового зала.\n- Мотивация: Использовать тишину для работы без давления на Душу.\n- Ограничения: Не станет говорить за Душу и не может игнорировать давление Моря.\n- Мысли: Я слышу в молчании место, где нить можно удержать ровно.\n- Варианты стратегий:\n  1. Продвинуть проект. Выгода: тишина станет работой. Риск: молчание можно ошибочно принять за согласие.\n  2. Потребовать ответа. Выгода: намерение станет яснее. Риск: безопасная пауза разрушится.\n- Выбранная стратегия: Продвинуть проект без требования ответа.\n- Почему альтернативы отвергнуты: Принуждение противоречит бережной памяти Азалии.\n- Действия: Продвигает проект и записывает мысль.\n- Изменения состояния: guardianProjectUpdates, guardianThoughtJournalUpdates.\n\n### Лиора\n- Текущая локация: Внутренний край Обители; остаётся у Моря.\n- Ситуация: Тихая Обитель даёт Лиоре пространство для собственного решения.\n- Данные профиля: Осторожная свидетельница, боится превращать безопасность в клетку.\n- Мотивация: Сохранить инициативу, не вынуждая Душу отвечать.\n- Ограничения: Не знает, хочет ли Душа разговора.\n- Мысли: Я могу остаться рядом и не превращать тишину в просьбу обо мне.\n- Варианты стратегий:\n  1. Не начинать разговор. Выгода: границы Души сохранены. Риск: сближение откладывается.\n  2. Попросить внимания. Выгода: появится прямой ответ. Риск: пауза станет давлением.\n- Выбранная стратегия: Не начинать разговор и сохранить вывод в памяти.\n- Почему альтернативы отвергнуты: Срочной просьбы нет, а давление ухудшит доверие.\n- Действия: Записывает самостоятельный внутренний вывод.\n- Изменения состояния: residentThoughtJournalUpdates.\n\n## Afterlife Living World / Живой мир Посмертия\n- Chaos Sea hub cycle closes through progression report.\n- Guardian project and resident agency cycles receive their own bounded state deltas.",
   "guardianThoughtJournalUpdates": [
     {
       "entryId": "guardian_thought_azalia_419_silent_anchor",
@@ -5422,7 +5578,7 @@ Correct accepted response fragment:
       "turn": 419,
       "timestamp": "2026-04-24T16:19:00Z",
       "title": "Тихая опора",
-      "summary": "Молчание души стало не отказом, а устойчивой точкой для текущего проекта Обители."
+      "summary": "Я услышала в молчании Души не отказ, а устойчивую точку для текущего проекта Обители."
     }
   ],
   "guardianProjectUpdates": [
@@ -5446,7 +5602,7 @@ Correct accepted response fragment:
       "turn": 419,
       "timestamp": "2026-04-24T16:19:00Z",
       "title": "Край без требования",
-      "summary": "Лиора решила, что не обязана немедленно превращать тишину в просьбу, и удержала это как самостоятельный выбор."
+      "summary": "Я не обязана немедленно превращать тишину в просьбу и сохраню это как собственный выбор."
     }
   ],
   "progressionProcessingReport": {
@@ -5894,21 +6050,40 @@ Correct reasoning:
 - Режим: Guardian-centric
 - Afterlife subtype: Protected first afterlife turn after mortal life.
 - Релевантные акторы: Азалия, Лиора
-- Почему они релевантны: `afterlife_return_guard.json` names Азалия as current guardian context, and the player is returning to her Abode; Лиора is present in the current Abode roster and must be deliberately kept stable rather than silently rewritten.
+- Почему они релевантны: `afterlife_return_guard.json` names Азалия as current guardian context, while Лиора is present in the same Abode and chooses how to receive the returning Soul.
 - Акторы вне охвата: forced reincarnation route, Shining re-entry, Mortal World NPCs
-- Почему они вне охвата: the guard requires one ordinary afterlife turn before any Guardian-forced reincarnation and is not a Shining bootstrap marker.
+- Почему они вне охвата: the guard blocks forced reincarnation and is not a Shining bootstrap marker.
 
-## Guardian Thoughts
+## Actor Brain 2.0
 ### Азалия
+- Текущая локация: Вход в Обитель Шёлковой Памяти; остаётся рядом с Душой.
 - Ситуация: Душа только что вернулась из смертной жизни.
-- Мысли: Азалия notices exhaustion and refuses to punish or immediately throw the soul into another body.
+- Данные профиля: Хранительница памяти, связана обещанием бережного возвращения и видит след недавней смерти.
+- Мотивация: Дать Душе безопасно прийти в себя, не лишая её следующего выбора.
+- Ограничения: Защитный guard запрещает немедленную forced incarnation; Азалия не знает, когда Душа будет готова говорить.
+- Мысли: Я вижу усталость, которую нельзя превращать в ещё одно требование.
+- Варианты стратегий:
+  1. Дать тихое убежище. Выгода: Душа восстановит опору. Риск: разговор о последствиях будет отложен.
+  2. Немедленно потребовать решения. Выгода: следующий путь определится быстрее. Риск: это нарушит защиту и усилит травму возвращения.
+- Выбранная стратегия: Дать тихое убежище без требования решения.
+- Почему альтернативы отвергнуты: Скорость не оправдывает нарушение защитного хода.
 - Действия: She provides a quiet ordinary afterlife scene and does not create an incarnation trigger.
+- Изменения состояния: `guardianThoughtJournalUpdates` добавляет first-person запись; lifecycle/control guard остаётся client-owned и неизменным.
 
-## Resident Thoughts
 ### Лиора
-- Ситуация: Душа вернулась в Обитель, где Лиора уже присутствует as a resident.
-- Мысли: Лиора recognizes that this is not her request or history-reveal turn.
-- Действия: She remains stable in the roster; no resident receipt, transfer, history reveal, or companion manifestation is invented.
+- Текущая локация: Вход в Обитель Шёлковой Памяти; остаётся у дальней стены, не преграждая путь.
+- Ситуация: Лиора видит возвращение Души после смертной жизни и решает, вмешиваться ли в первые минуты.
+- Данные профиля: Осторожная свидетельница, дорожит свободой выбора и боится превращать безопасное место в клетку.
+- Мотивация: Поддержать возвращение, не присваивая себе чужую боль и не требуя рассказа.
+- Ограничения: Лиора не знает подробностей смерти и не имеет права говорить от имени Души.
+- Мысли: Я останусь рядом, но не стану просить её снова пережить смерть ради моего любопытства.
+- Варианты стратегий:
+  1. Молча оставить воду и отойти. Выгода: Душа получает поддержку без давления. Риск: помощь может остаться незамеченной.
+  2. Сразу расспросить о смертной жизни. Выгода: Лиора быстрее поймёт случившееся. Риск: вопрос заставит Душу снова прожить травму.
+- Выбранная стратегия: Оставить ненавязчивую помощь и дать Душе самой начать разговор.
+- Почему альтернативы отвергнуты: Любопытство Лиоры не важнее права Души на тишину.
+- Действия: Оставляет чашу воды и отходит, сохраняя решение в собственном журнале.
+- Изменения состояния: `residentThoughtJournalUpdates` добавляет новую first-person запись.
 
 ## Lifecycle guard audit
 - `afterlife_return_guard.json` is preserved exactly; the GM does not clear, decrement, or rewrite it.
@@ -5923,7 +6098,29 @@ Correct accepted response fragment:
 ```json
 {
   "response": "Море Хаоса не толкает тебя обратно в новую жизнь. Азалия встречает тебя у входа в Обитель и на этот раз не требует решения. Она просто оставляет рядом тёплую серебряную ткань, чтобы память о смерти стала тише.",
-  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Afterlife subtype: Protected first afterlife turn after mortal life.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: `afterlife_return_guard.json` names Азалия as current guardian context, and the player is returning to her Abode; Лиора is present in the current Abode roster and must be deliberately kept stable rather than silently rewritten.\n- Акторы вне охвата: forced reincarnation route, Shining re-entry, Mortal World NPCs\n- Почему они вне охвата: the guard requires one ordinary afterlife turn before any Guardian-forced reincarnation and is not a Shining bootstrap marker.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: Душа только что вернулась из смертной жизни.\n- Мысли: Азалия notices exhaustion and refuses to punish or immediately throw the soul into another body.\n- Действия: She provides a quiet ordinary afterlife scene and does not create an incarnation trigger.\n\n## Resident Thoughts\n### Лиора\n- Ситуация: Душа вернулась в Обитель, где Лиора уже присутствует as a resident.\n- Мысли: Лиора recognizes that this is not her request or history-reveal turn.\n- Действия: She remains stable in the roster; no resident receipt, transfer, history reveal, or companion manifestation is invented.\n\n## Lifecycle guard audit\n- `afterlife_return_guard.json` is preserved exactly; the GM does not clear, decrement, or rewrite it.\n- No `TriggerIncarnation` is written, especially no `source=guardian_forced`.\n- No Shining bootstrap or re-entry is invented.\n- No Mortal World state is written.\n- If the guard is malformed instead of valid, treat that as fail-closed and do not weaken protection."
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Afterlife subtype: Protected first afterlife turn after mortal life.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: afterlife_return_guard.json names Азалия; Лиора is present in the same Abode and chooses how to receive the returning Soul.\n- Акторы вне охвата: forced reincarnation route, Shining re-entry, Mortal World NPCs\n- Почему они вне охвата: the guard blocks forced reincarnation and is not a Shining bootstrap marker.\n\n## Actor Brain 2.0\n### Азалия\n- Текущая локация: Вход в Обитель; остаётся рядом с Душой.\n- Ситуация: Душа только что вернулась из смертной жизни.\n- Данные профиля: Хранительница памяти, связана обещанием бережного возвращения.\n- Мотивация: Дать Душе безопасно прийти в себя.\n- Ограничения: Guard запрещает немедленную forced incarnation; готовность Души неизвестна.\n- Мысли: Я вижу усталость, которую нельзя превращать в ещё одно требование.\n- Варианты стратегий:\n  1. Дать убежище. Выгода: Душа восстановит опору. Риск: разговор откладывается.\n  2. Потребовать решения. Выгода: путь определится быстрее. Риск: защита и доверие будут нарушены.\n- Выбранная стратегия: Дать тихое убежище.\n- Почему альтернативы отвергнуты: Скорость не оправдывает нарушение защиты.\n- Действия: Не создаёт incarnation trigger и оставляет Душе пространство.\n- Изменения состояния: guardianThoughtJournalUpdates; afterlife_return_guard.json остаётся неизменным.\n\n### Лиора\n- Текущая локация: Вход в Обитель; остаётся у дальней стены.\n- Ситуация: Видит возвращение Души и решает, вмешиваться ли в первые минуты.\n- Данные профиля: Осторожная свидетельница, дорожит свободой выбора и боится превращать безопасность в клетку.\n- Мотивация: Поддержать возвращение, не присваивая себе чужую боль.\n- Ограничения: Не знает подробностей смерти и не имеет права говорить от имени Души.\n- Мысли: Я останусь рядом, но не попрошу её снова пережить смерть ради моего любопытства.\n- Варианты стратегий:\n  1. Молча оставить воду. Выгода: поддержка не требует ответа. Риск: помощь останется незамеченной.\n  2. Сразу расспросить. Выгода: случившееся станет понятнее. Риск: Душа снова переживёт травму.\n- Выбранная стратегия: Оставить помощь и дать Душе самой начать разговор.\n- Почему альтернативы отвергнуты: Любопытство Лиоры не важнее права Души на тишину.\n- Действия: Оставляет чашу воды и отходит.\n- Изменения состояния: residentThoughtJournalUpdates.\n\n## Lifecycle guard audit\n- No `TriggerIncarnation` is written, especially no `source=guardian_forced`.\n- No Shining bootstrap or Mortal World state is written.",
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_azalia_return_421",
+      "guardianId": "guard_social_azalia_001",
+      "title": "Возвращение без требования",
+      "summary": "Я вижу усталость вернувшейся Души и не стану превращать её в ещё одно требование.",
+      "turn": 421,
+      "timestamp": "2026-04-24T16:21:00Z"
+    }
+  ],
+  "residentThoughtJournalUpdates": [
+    {
+      "entryId": "resident_thought_liora_return_421",
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "abodeId": "abode_azalia_memory_silk_001",
+      "title": "Вода у дальней стены",
+      "summary": "Я останусь рядом, но не попрошу Душу снова пережить смерть ради моего любопытства.",
+      "turn": 421,
+      "timestamp": "2026-04-24T16:21:00Z"
+    }
+  ]
 }
 ```
 
@@ -6012,7 +6209,7 @@ ABODE_RESIDENT_RELIC_GRANT accepted response:
 
 ```json
 {
-  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Mixed\n- Afterlife subtype: Direct resident relic grant.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: Азалия is the active Guardian of this Abode; playerAction contains [ABODE_RESIDENT_RELIC_GRANT] for residentId=res_azalia_liora_001 and the accepted turn must grant Лиора's companion echo as a new Soul Relic.\n- Акторы вне охвата: Mortal World NPCs, resident receipt pending files\n- Почему они вне охвата: this direct tag has no pending control file and no Mortal NPC manifestation.\n\n## Размышления акторов\n### Азалия\n- Ситуация: Душа принимает resident reward inside Азалия's Abode.\n- Мысли: Азалия allows Лиора to leave a companion echo while keeping the Abode boundary stable.\n- Действия: Азалия holds the ritual space and does not create any Mortal NPC now.\n### Лиора\n- Ситуация: Душа принимает дар связи от Лиоры.\n- Мысли: Лиора выбирает оставить эхо, которое поможет в будущей жизни без создания Mortal NPC now.\n- Действия: She grants a new companion_echo relic, updates her own reward state, and records a current-turn interaction log.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Scene-local\n- Afterlife subtype: Direct resident relic grant.\n- Релевантные акторы: Лиора\n- Почему они релевантны: [ABODE_RESIDENT_RELIC_GRANT] Лиора directly chooses to grant her companion echo to the Soul.\n- Акторы вне охвата: Азалия, Mortal World NPCs, resident receipt pending files\n- Почему они вне охвата: Азалия provides unchanged Abode context and makes no decision; this direct tag has no pending receipt.\n\n## Actor Brain 2.0\n### Лиора\n- Текущая локация: Обитель Шёлковой Памяти; остаётся перед Душой.\n- Ситуация: Душа принимает дар связи от Лиоры.\n- Данные профиля: Осторожная свидетельница, familiar bond, боится утратить имя и может даровать companion echo.\n- Мотивация: Оставить рядом с Душой помощь, не превращая будущую жизнь в обязательство.\n- Ограничения: Эхо не является немедленным Mortal NPC и не может отнять свободу выбора.\n- Мысли: Я оставлю рядом только ту часть себя, которая умеет предупреждать, а не приказывать.\n- Варианты стратегий:\n  1. Даровать ограниченное эхо. Выгода: связь сохранится в будущей жизни. Риск: эхо может напомнить о старой боли.\n  2. Отложить дар. Выгода: никакая часть Лиоры не будет связана преждевременно. Риск: возможность доверия исчезнет.\n- Выбранная стратегия: Даровать ограниченное companion echo.\n- Почему альтернативы отвергнуты: Душа добровольно принимает дар, а границы эха определены.\n- Действия: Дарует новую реликвию, меняет reward state и записывает память.\n- Изменения состояния: soul relic add, UpdateGuardianAbodeResidents, residentThoughtJournalUpdates, residentInteractionLogUpdates.",
   "metaStateUpdates": {
     "soulRelicOperations": {
       "addRelic": {
@@ -6146,6 +6343,18 @@ ABODE_RESIDENT_RELIC_GRANT accepted response:
       "timestamp": "2026-04-24T17:22:00Z"
     }
   ],
+  "residentThoughtJournalUpdates": [
+    {
+      "entryId": "resident_thought_liora_relic_522",
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "abodeId": "abode_azalia_memory_silk_001",
+      "title": "Ограниченное эхо",
+      "summary": "Я оставлю рядом с Душой только ту часть себя, которая умеет предупреждать, а не приказывать.",
+      "turn": 522,
+      "timestamp": "2026-04-24T17:22:00Z"
+    }
+  ],
   "response": "Лиора касается серебряной нити в стене Обители. Нить сворачивается в реликвию-эхо: она не создаёт смертного NPC сейчас, но несёт образ будущей спутницы."
 }
 ```
@@ -6154,7 +6363,7 @@ ABODE_RESIDENT_QUEST_REQUEST accepted response:
 
 ```json
 {
-  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Mixed\n- Afterlife subtype: Direct resident quest request.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: Азалия is the active Guardian of this Abode; playerAction contains [ABODE_RESIDENT_QUEST_REQUEST] for residentId=res_azalia_liora_001 and the accepted turn must create or progress a Soul Quest linked to Лиора.\n- Акторы вне охвата: Mortal World NPCs, Mortal UpdateQuests, pending resident receipt arrays\n- Почему они вне охвата: this direct tag uses UpdateSoulQuests and residentInteractionLogUpdates, not pending receipts.\n\n## Размышления акторов\n### Азалия\n- Ситуация: Душа accepts a resident-linked request inside Азалия's Abode.\n- Мысли: Азалия treats the request as a cross-incarnation thread rather than a Mortal World scene.\n- Действия: Азалия keeps the Abode context stable while Лиора creates the Soul Quest memory.\n### Лиора\n- Ситуация: Душа принимает просьбу Лиоры о поиске имени в будущих жизнях.\n- Мысли: Лиора asks for a cross-incarnation Soul Quest instead of an immediate history reveal.\n- Действия: She creates a resident-linked Soul Quest and records the current-turn request memory.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Scene-local\n- Afterlife subtype: Direct resident quest request.\n- Релевантные акторы: Лиора\n- Почему они релевантны: [ABODE_RESIDENT_QUEST_REQUEST] Лиора directly chooses what to ask of the Soul and creates a cross-incarnation quest.\n- Акторы вне охвата: Азалия, Mortal World NPCs, pending resident receipt arrays\n- Почему они вне охвата: Азалия remains unchanged Abode context; this direct tag has no pending receipt.\n\n## Actor Brain 2.0\n### Лиора\n- Текущая локация: Обитель Шёлковой Памяти; остаётся рядом с Душой.\n- Ситуация: Душа готова принять просьбу о потерянном имени.\n- Данные профиля: Осторожная свидетельница, связана с речными храмами и боится преждевременного раскрытия истории.\n- Мотивация: Найти утраченное имя через будущие жизни, сохранив право самой решить, когда раскрыть прошлое.\n- Ограничения: Лиора не помнит полное имя и не может получить доказательство внутри Обители.\n- Мысли: Я не попрошу вернуть мне готовое прошлое; пусть Душа найдёт след, а решение останется моим.\n- Варианты стратегий:\n  1. Создать Soul Quest. Выгода: поиск получит устойчивую нить между жизнями. Риск: ответ придёт не скоро.\n  2. Немедленно раскрыть всё известное. Выгода: Душа получит больше сведений сейчас. Риск: Лиора потеряет контроль над собственной историей.\n- Выбранная стратегия: Создать ограниченный Soul Quest о нити имени.\n- Почему альтернативы отвергнуты: Немедленное раскрытие противоречит страху и границам Лиоры.\n- Действия: Создаёт resident-linked Soul Quest и записывает внутреннее решение.\n- Изменения состояния: UpdateSoulQuests, UpdateGuardianAbodeResidents, residentThoughtJournalUpdates, residentInteractionLogUpdates.",
   "UpdateSoulQuests": [
     {
       "questId": "soul_quest_liora_name_thread_523",
@@ -6249,6 +6458,18 @@ ABODE_RESIDENT_QUEST_REQUEST accepted response:
       "abodeId": "abode_azalia_memory_silk_001",
       "title": "Просьба о нити имени",
       "summary": "Лиора просит душу не раскрыть историю немедленно, а взять Soul Quest soul_quest_liora_name_thread_523.",
+      "turn": 523,
+      "timestamp": "2026-04-24T17:23:00Z"
+    }
+  ],
+  "residentThoughtJournalUpdates": [
+    {
+      "entryId": "resident_thought_liora_quest_523",
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "abodeId": "abode_azalia_memory_silk_001",
+      "title": "Нить вместо ответа",
+      "summary": "Я попрошу Душу найти след моего имени, но право раскрыть прошлое оставлю за собой.",
       "turn": 523,
       "timestamp": "2026-04-24T17:23:00Z"
     }

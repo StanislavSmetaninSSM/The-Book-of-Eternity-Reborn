@@ -43,6 +43,12 @@ public partial class ValidationService
         public bool DirectCanonicalGuardianDiffRequiredButSnapshotMissing { get; set; }
     }
 
+    private sealed class CanonicalActorReference
+    {
+        public string DisplayName { get; init; } = string.Empty;
+        public HashSet<string> Aliases { get; } = new(StringComparer.OrdinalIgnoreCase);
+    }
+
     private sealed class GuardianReasoningIdentityContext
     {
         public bool GuardianStateReadable { get; set; } = true;
@@ -745,6 +751,7 @@ public partial class ValidationService
         var result = new StructuredActorExtractionResult();
         await CollectStructuredNpcUpdatesAsync(result.Updates);
         await CollectStructuredResidentUpdatesAsync(result.Updates);
+        await CollectStructuredAfterlifeEntityProfileUpdatesAsync(result.Updates);
         await CollectStructuredShiningActorUpdatesAsync(result.Updates);
         CollectStructuredGuardianUpdates(result, guardianPolicyContext);
         return result;
@@ -963,10 +970,10 @@ public partial class ValidationService
             AddResidentJournalStructuredActorUpdates(currentRoot[GuardianAbodeResidentState.UpdateInteractionReceiptsProperty], aliasLookup, GuardianAbodeResidentState.UpdateInteractionReceiptsProperty, updates);
 
             var preTurnResidentJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(GuardianAbodeResidentState.StatePath);
-            if (string.IsNullOrWhiteSpace(preTurnResidentJson))
-                return;
-
-            if (JsonNode.Parse(preTurnResidentJson) is not JsonObject preTurnRoot)
+            var preTurnRoot = string.IsNullOrWhiteSpace(preTurnResidentJson)
+                ? new JsonObject()
+                : JsonNode.Parse(preTurnResidentJson) as JsonObject;
+            if (preTurnRoot == null)
                 return;
 
             GuardianAbodeResidentState.NormalizeShape(preTurnRoot);
@@ -985,16 +992,17 @@ public partial class ValidationService
             return;
 
         var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningAbodeState.StatePath);
-        if (string.IsNullOrWhiteSpace(preTurnJson))
-            return;
 
         try
         {
-            if (JsonNode.Parse(currentJson) is not JsonObject currentRoot ||
-                JsonNode.Parse(preTurnJson) is not JsonObject preTurnRoot)
-            {
+            if (JsonNode.Parse(currentJson) is not JsonObject currentRoot)
                 return;
-            }
+
+            var preTurnRoot = string.IsNullOrWhiteSpace(preTurnJson)
+                ? new JsonObject()
+                : JsonNode.Parse(preTurnJson) as JsonObject;
+            if (preTurnRoot == null)
+                return;
 
             CollectShiningPoliticalActorDiffStructuredActorTouches(preTurnRoot, currentRoot, updates);
             CollectShiningFactionDiffStructuredActorTouches(preTurnRoot, currentRoot, updates);
@@ -1003,6 +1011,108 @@ public partial class ValidationService
         {
             // Ignore consistency extraction failures; generic validation will surface malformed JSON separately.
         }
+    }
+
+    private async Task CollectStructuredAfterlifeEntityProfileUpdatesAsync(List<StructuredActorUpdate> updates)
+    {
+        var currentJson = await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath);
+        if (string.IsNullOrWhiteSpace(currentJson))
+            return;
+
+        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(AfterlifeEntityProfileState.StatePath);
+
+        try
+        {
+            if (JsonNode.Parse(currentJson) is not JsonObject currentRoot)
+                return;
+
+            var preTurnRoot = string.IsNullOrWhiteSpace(preTurnJson)
+                ? new JsonObject()
+                : JsonNode.Parse(preTurnJson) as JsonObject;
+            if (preTurnRoot == null)
+                return;
+
+            var currentProfiles = BuildAfterlifeEntityProfileMap(currentRoot);
+            var preTurnProfiles = BuildAfterlifeEntityProfileMap(preTurnRoot);
+            foreach (var pair in currentProfiles)
+            {
+                if (preTurnProfiles.TryGetValue(pair.Key, out var preTurnProfile) &&
+                    JsonNode.DeepEquals(preTurnProfile, pair.Value))
+                {
+                    continue;
+                }
+
+                if (TryCreateAfterlifeEntityProfileStructuredUpdate(pair.Value, out var update))
+                    updates.Add(update);
+            }
+
+            foreach (var pair in preTurnProfiles)
+            {
+                if (currentProfiles.ContainsKey(pair.Key))
+                    continue;
+
+                if (TryCreateAfterlifeEntityProfileStructuredUpdate(pair.Value, out var update))
+                    updates.Add(update);
+            }
+        }
+        catch
+        {
+            // Dedicated afterlife entity-profile validators report malformed canonical state.
+        }
+    }
+
+    private static Dictionary<string, JsonObject> BuildAfterlifeEntityProfileMap(JsonObject root)
+    {
+        var result = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+        if (root[AfterlifeEntityProfileState.ProfilesProperty] is not JsonArray profiles)
+            return result;
+
+        foreach (var profile in profiles.OfType<JsonObject>())
+        {
+            var actorType = GetFirstNonEmptyNodeString(profile, "actorType");
+            var actorId = GetFirstNonEmptyNodeString(profile, "actorId", "actorRef", "id");
+            if (string.IsNullOrWhiteSpace(actorType) || string.IsNullOrWhiteSpace(actorId))
+                continue;
+
+            result[$"{actorType}:{actorId}"] = JsonNode.Parse(profile.ToJsonString())!.AsObject();
+        }
+
+        return result;
+    }
+
+    private static bool TryCreateAfterlifeEntityProfileStructuredUpdate(
+        JsonObject profile,
+        out StructuredActorUpdate update)
+    {
+        update = new StructuredActorUpdate();
+        var actorType = GetFirstNonEmptyNodeString(profile, "actorType");
+        if (string.Equals(actorType, "player_soul", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var actorId = GetFirstNonEmptyNodeString(profile, "actorId", "actorRef", "id");
+        var displayName = GetFirstNonEmptyNodeString(
+            profile,
+            "displayName",
+            "canonicalName",
+            "name",
+            "actorRef");
+        if (string.IsNullOrWhiteSpace(displayName) && string.IsNullOrWhiteSpace(actorId))
+            return false;
+
+        update = new StructuredActorUpdate
+        {
+            ActorType = "AfterlifeEntity",
+            FilePath = AfterlifeEntityProfileState.StatePath,
+            Section = AfterlifeEntityProfileState.ProfilesProperty,
+            DisplayName = !string.IsNullOrWhiteSpace(displayName) ? displayName! : actorId!,
+            HasResolvedName = !string.IsNullOrWhiteSpace(displayName)
+        };
+        AddStructuredAlias(update.Aliases, displayName);
+        AddStructuredAlias(update.Aliases, actorId);
+        AddStructuredAlias(update.Aliases, GetNodeString(profile["actorRef"]));
+        if (!string.IsNullOrWhiteSpace(actorType) && !string.IsNullOrWhiteSpace(actorId))
+            AddStructuredAlias(update.Aliases, $"{actorType}:{actorId}");
+        return update.Aliases.Count > 0;
     }
 
     private void CollectStructuredGuardianUpdates(
@@ -2147,6 +2257,7 @@ public partial class ValidationService
                     "Resident" => "structured_resident_update_out_of_scope",
                     "ShiningActor" => "structured_shining_actor_update_out_of_scope",
                     "ShiningFaction" => "structured_shining_faction_update_out_of_scope",
+                    "AfterlifeEntity" => "structured_afterlife_entity_update_out_of_scope",
                     _ => "structured_npc_update_out_of_scope"
                 },
                 actor: update.DisplayName,
@@ -2214,7 +2325,314 @@ public partial class ValidationService
         return ActorAliasSetContains(mortalPersistentActorAliases, actor) ||
                persistedStructuredActors.Any(update =>
                    ActorNamesMatch(update.DisplayName, actor) ||
-                   update.Aliases.Any(alias => ActorNamesMatch(alias, actor)));
+                    update.Aliases.Any(alias => ActorNamesMatch(alias, actor)));
+    }
+
+    private static bool StructuredActorUpdateMatchesActor(StructuredActorUpdate update, string actor)
+    {
+        return ActorNamesMatch(update.DisplayName, actor) ||
+               update.Aliases.Any(alias => ActorNamesMatch(alias, actor));
+    }
+
+    private async Task<IReadOnlyCollection<string>> ResolveCanonicalActorsMentionedInPlayerActionAsync(
+        string? playerAction,
+        IReadOnlyCollection<string> playerAliases)
+    {
+        if (string.IsNullOrWhiteSpace(playerAction))
+            return Array.Empty<string>();
+
+        var actorAddressText = RemoveStructuredRoutingMetadataFromPlayerAction(playerAction);
+        var explicitTargetActorIds = ResolveExplicitTargetActorIds(playerAction);
+
+        var references = new List<CanonicalActorReference>();
+        var guardians = BuildGuardianMusingAuditMap(await _fs.ReadFileAsync("game_state/meta/guardians.json"));
+        foreach (var guardian in guardians.Values)
+            AddCanonicalActorReference(references, guardian.GuardianId, guardian.Aliases);
+
+        var mortalNpcs = BuildMortalNpcThoughtJournalAuditMap(
+            await _fs.ReadFileAsync("game_state/npcs/npc_core.json"),
+            await _fs.ReadFileAsync("game_state/npcs/npc_journals.json"));
+        foreach (var npc in mortalNpcs.Values)
+            AddCanonicalActorReference(references, npc.ActorId, npc.Aliases);
+
+        var residents = BuildAfterlifeResidentThoughtJournalAuditMap(
+            await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath));
+        foreach (var resident in residents.Values)
+            AddCanonicalActorReference(references, resident.ActorId, resident.Aliases);
+
+        var afterlifeEntities = BuildAfterlifeEntityMemoryAuditMap(
+            await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath));
+        foreach (var entity in afterlifeEntities.Values)
+        {
+            var actorId = entity.ActorKey.Contains(':', StringComparison.Ordinal)
+                ? entity.ActorKey[(entity.ActorKey.IndexOf(':') + 1)..]
+                : entity.ActorKey;
+            AddCanonicalActorReference(references, actorId, entity.Aliases);
+        }
+
+        var shiningFactions = BuildShiningFactionMemoryAuditMap(
+            await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
+        foreach (var faction in shiningFactions.Values)
+            AddCanonicalActorReference(
+                references,
+                faction.FactionId,
+                faction.Aliases,
+                includeShortPersonalAlias: false);
+
+        try
+        {
+            var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+            if (!string.IsNullOrWhiteSpace(shiningJson) && JsonNode.Parse(shiningJson) is JsonObject shiningRoot)
+            {
+                foreach (var actor in BuildShiningPoliticalActorMap(shiningRoot).Values)
+                {
+                    if (TryCreateShiningPoliticalActorStructuredUpdate(actor, out var update))
+                    {
+                        var actorId = GetFirstNonEmptyNodeString(actor, "actorId", "id") ?? update.DisplayName;
+                        AddCanonicalActorReference(references, actorId, update.Aliases);
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Dedicated Shining validators report malformed canonical state.
+        }
+
+        var aliasOwners = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+        foreach (var actorReference in references)
+        {
+            foreach (var alias in actorReference.Aliases)
+            {
+                if (!aliasOwners.TryGetValue(alias, out var owners))
+                {
+                    owners = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    aliasOwners[alias] = owners;
+                }
+
+                owners.Add(actorReference.DisplayName);
+            }
+        }
+
+        var result = new List<string>();
+        foreach (var actorReference in references)
+        {
+            var namedInActionText = actorReference.Aliases.Any(alias =>
+                    aliasOwners.TryGetValue(alias, out var owners) &&
+                    owners.Count == 1 &&
+                    PlayerActionContainsCanonicalActorAlias(actorAddressText, alias));
+            var selectedByExplicitTargetId = actorReference.Aliases.Any(explicitTargetActorIds.Contains);
+            if (!namedInActionText && !selectedByExplicitTargetId)
+                continue;
+            if (IsPlayerScopeActor(actorReference.DisplayName, playerAliases))
+                continue;
+            if (result.Any(existing => ActorNamesMatch(existing, actorReference.DisplayName)))
+                continue;
+
+            result.Add(actorReference.DisplayName);
+        }
+
+        return result;
+    }
+
+    private static string RemoveStructuredRoutingMetadataFromPlayerAction(string playerAction)
+    {
+        return Regex.Replace(
+            playerAction,
+            """(?<![\p{L}\p{N}_])[\p{L}_][\p{L}\p{N}_-]*Id\s*=\s*(?:'[^']*'|"[^"]*"|[^\s,;)]+)""",
+            " ",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    }
+
+    private static HashSet<string> ResolveExplicitTargetActorIds(string playerAction)
+    {
+        var matches = Regex.Matches(
+            playerAction,
+            """(?<![\p{L}\p{N}_])(?<key>npcId|residentId|guardianId|actorId|targetActorId|factionId)\s*=\s*(?:'(?<single>[^']+)'|"(?<double>[^"]+)"|(?<bare>[^\s,;)]+))""",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        var references = matches
+            .Select(match => new
+            {
+                Key = match.Groups["key"].Value,
+                Value = new[]
+                    {
+                        match.Groups["single"].Value,
+                        match.Groups["double"].Value,
+                        match.Groups["bare"].Value
+                    }
+                    .FirstOrDefault(value => !string.IsNullOrWhiteSpace(value))
+            })
+            .Where(reference => !string.IsNullOrWhiteSpace(reference.Value))
+            .ToList();
+        var hasMoreSpecificTarget = references.Any(reference =>
+            !string.Equals(reference.Key, "guardianId", StringComparison.OrdinalIgnoreCase));
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var reference in references)
+        {
+            if (string.Equals(reference.Key, "guardianId", StringComparison.OrdinalIgnoreCase) &&
+                hasMoreSpecificTarget)
+            {
+                continue;
+            }
+
+            result.Add(reference.Value!);
+        }
+
+        return result;
+    }
+
+    private static void AddCanonicalActorReference(
+        ICollection<CanonicalActorReference> references,
+        string stableId,
+        IEnumerable<string> aliases,
+        bool includeShortPersonalAlias = true)
+    {
+        var aliasSet = aliases
+            .Where(alias => !string.IsNullOrWhiteSpace(alias))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        if (!string.IsNullOrWhiteSpace(stableId))
+            aliasSet.Add(stableId);
+        if (aliasSet.Count == 0)
+            return;
+
+        var displayName = aliasSet
+            .Where(alias => !string.Equals(alias, stableId, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(alias => alias.Length)
+            .ThenBy(alias => alias, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault() ?? stableId;
+        var actorReference = new CanonicalActorReference { DisplayName = displayName };
+        foreach (var alias in aliasSet)
+            actorReference.Aliases.Add(alias);
+        if (includeShortPersonalAlias)
+        {
+            var shortAlias = TryBuildShortPersonalActorAlias(displayName);
+            if (!string.IsNullOrWhiteSpace(shortAlias))
+                actorReference.Aliases.Add(shortAlias);
+        }
+        references.Add(actorReference);
+    }
+
+    private static string? TryBuildShortPersonalActorAlias(string displayName)
+    {
+        var tokens = Regex.Split(displayName, @"\s+")
+            .Select(token => token.Trim(',', '.', ';', ':', '!', '?', '—', '-', '«', '»'))
+            .Where(token => !string.IsNullOrWhiteSpace(token))
+            .ToList();
+        if (tokens.Count < 2)
+            return null;
+
+        var first = tokens[0];
+        if (ContainsAny(
+                first.ToLowerInvariant(),
+                "хранительница",
+                "хранитель",
+                "guardian"))
+        {
+            return tokens.Count >= 3 && tokens[1].Length >= 3
+                ? tokens[1]
+                : null;
+        }
+
+        if (ContainsAny(
+                first.ToLowerInvariant(),
+                "канцлер",
+                "советник",
+                "наставник",
+                "посланник",
+                "орден",
+                "гильдия",
+                "братство",
+                "фракция",
+                "зал",
+                "врата"))
+        {
+            return null;
+        }
+
+        return first.Length >= 3 ? first : null;
+    }
+
+    private static bool PlayerActionContainsCanonicalActorAlias(string playerAction, string alias)
+    {
+        var normalizedAlias = NormalizeActorNameForMatching(alias);
+        if (string.IsNullOrWhiteSpace(normalizedAlias) || normalizedAlias.Length < 3)
+            return false;
+
+        var aliasPattern = Regex.Escape(normalizedAlias).Replace("\\ ", @"\s+");
+        if (Regex.IsMatch(
+            playerAction,
+            $@"(?<![\p{{L}}\p{{N}}_]){aliasPattern}(?![\p{{L}}\p{{N}}_])",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            return true;
+        }
+
+        if (!Regex.IsMatch(normalizedAlias, @"\p{IsCyrillic}", RegexOptions.CultureInvariant) ||
+            normalizedAlias.Contains('_', StringComparison.Ordinal) ||
+            normalizedAlias.Contains(':', StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var inflectedTokens = Regex.Split(normalizedAlias, @"\s+")
+            .Select(token => token.Trim(',', '.', ';', ':', '!', '?', '—', '-'))
+            .Where(token => !string.IsNullOrWhiteSpace(token))
+            .Select(BuildRussianInflectedActorTokenPattern)
+            .ToList();
+        if (inflectedTokens.Count == 0)
+            return false;
+
+        var inflectedAliasPattern = string.Join(@"[\s,.;:!?'’\-—]+", inflectedTokens);
+        return Regex.IsMatch(
+            playerAction,
+            $@"(?<![\p{{L}}\p{{N}}_]){inflectedAliasPattern}(?![\p{{L}}\p{{N}}_])",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    }
+
+    private static string BuildRussianInflectedActorTokenPattern(string token)
+    {
+        if (token.Length < 4)
+            return Regex.Escape(token);
+
+        var last = char.ToLowerInvariant(token[^1]);
+        if (last is not ('а' or 'я' or 'ь' or 'й'))
+        {
+            var isCyrillicConsonant = Regex.IsMatch(
+                last.ToString(),
+                @"\p{IsCyrillic}",
+                RegexOptions.CultureInvariant) &&
+                last is not ('а' or 'е' or 'ё' or 'и' or 'о' or 'у' or 'ы' or 'э' or 'ю' or 'я');
+            return isCyrillicConsonant
+                ? $@"{Regex.Escape(token)}(?:а|у|ом|е|ы|и|ов|ам|ами|ах)?"
+                : Regex.Escape(token);
+        }
+
+        var stem = Regex.Escape(token[..^1]);
+        return $@"{stem}[\p{{L}}]{{1,3}}";
+    }
+
+    private static void ValidateDirectlyAddressedActorsAgainstScope(
+        ReasoningScopeManifest scope,
+        IReadOnlyCollection<string> directlyAddressedActors,
+        List<ValidationIssue> issues)
+    {
+        foreach (var actorName in directlyAddressedActors)
+        {
+            if (ScopeContainsRelevantActor(scope, actorName))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                $"Прямо названный в действии игрока canonical actor '{actorName}' отсутствует в Relevant actors",
+                code: "directly_addressed_actor_missing_from_scope",
+                actor: actorName,
+                section: "npc_scope",
+                expected: $"'{actorName}' in Relevant actors with a full Actor Brain block",
+                actual: "canonical actor is named in playerAction but omitted from declared scope",
+                repairHint: $"Добавь '{actorName}' в Relevant actors и создай для него полный Actor Brain block с собственной canonical memory delta. Не объявляй прямо адресованного актора фоном."));
+        }
     }
 
     private async Task<IReadOnlyCollection<string>> ReadMortalPlayerScopeActorAliasesAsync()
@@ -2231,6 +2649,22 @@ public partial class ValidationService
             "душа",
             "soul"
         };
+
+        try
+        {
+            var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+            if (!string.IsNullOrWhiteSpace(soulJson))
+            {
+                using var soulDoc = JsonDocument.Parse(soulJson);
+                var soulName = GetFirstNonEmptyString(soulDoc.RootElement, "soulName", "displayName", "name");
+                if (!string.IsNullOrWhiteSpace(soulName))
+                    aliases.Add(soulName!);
+            }
+        }
+        catch
+        {
+            // Dedicated Soul state validators report malformed canonical state.
+        }
 
         try
         {
@@ -2314,6 +2748,11 @@ public partial class ValidationService
 
         await AddMortalPersistentActorAliasesFromFileAsync(
             aliases,
+            "game_state/npcs/npc_core.json",
+            GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections,
+            new[] { "NPCId", "npcId", "id", "name", "npcName", "NPCName", "displayName" });
+        await AddMortalPersistentActorAliasesFromFileAsync(
+            aliases,
             "game_state/factions/faction_core.json",
             new[] { "factions", "entries" },
             new[] { "factionId", "id", "name", "displayName", "factionName" });
@@ -2389,6 +2828,28 @@ public partial class ValidationService
                guardianIdentityContext.AuthoritativeGuardianIds.Contains(actor);
     }
 
+    private static void CoalesceCanonicalGuardianAliasesInScope(
+        ReasoningScopeManifest scope,
+        GuardianReasoningIdentityContext guardianIdentityContext)
+    {
+        foreach (var canonicalAlias in guardianIdentityContext.CanonicalGuardianAliases
+                     .Where(alias => alias.Contains(',', StringComparison.Ordinal)))
+        {
+            if (!scope.RelevantActorFieldValues.Any(rawValue =>
+                    rawValue.Contains(canonicalAlias, StringComparison.OrdinalIgnoreCase)))
+            {
+                continue;
+            }
+
+            var aliasFragments = canonicalAlias
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            scope.RelevantActors.RemoveAll(actor => aliasFragments.Any(fragment =>
+                string.Equals(fragment, actor, StringComparison.OrdinalIgnoreCase)));
+            if (!scope.RelevantActors.Any(actor => ActorNamesMatch(actor, canonicalAlias)))
+                scope.RelevantActors.Add(canonicalAlias);
+        }
+    }
+
     private static bool ScopeContainsRelevantActor(ReasoningScopeManifest scope, string alias)
     {
         return scope.RelevantActors.Any(actor => ActorNamesMatch(actor, alias)) ||
@@ -2404,7 +2865,13 @@ public partial class ValidationService
                normalizedRaw.Contains(normalizedAlias, StringComparison.OrdinalIgnoreCase);
     }
 
-    private void ValidateActorReasoningBlock(string thoughts, string actorName, string actorType, bool requiresNpcLocationAudit, List<ValidationIssue> issues)
+    private void ValidateActorReasoningBlock(
+        string thoughts,
+        string actorName,
+        string actorType,
+        bool requiresNpcLocationAudit,
+        bool requiresFullDecisionAudit,
+        List<ValidationIssue> issues)
     {
         if (!TryExtractReasoningBlock(thoughts, actorName, out var block))
         {
@@ -2472,6 +2939,1424 @@ public partial class ValidationService
                 actual: "missing",
                 repairHint: $"Добавь в блок '### {actorName}' явный подпункт текущей локации: где NPC находится сейчас и остаётся ли он там или перемещается."));
         }
+
+        if (requiresFullDecisionAudit)
+            ValidateFullActorBrainDecision(block, actorName, actorType, issues);
+    }
+
+    private static void ValidateFullActorBrainDecision(
+        string block,
+        string actorName,
+        string actorType,
+        List<ValidationIssue> issues)
+    {
+        AddMissingActorBrainFieldIssue(
+            block,
+            actorName,
+            actorType,
+            issues,
+            "actor_brain_missing_profile_inputs",
+            "Profile inputs / Данные профиля",
+            "Добавь отдельный подпункт 'Данные профиля' или 'Profile inputs' с релевантными чертами, отношениями, памятью, ролью, доменом и текущим состоянием актора.",
+            "данные профиля", "профиль актора", "profile inputs", "actor profile");
+        AddMissingActorBrainFieldIssue(
+            block,
+            actorName,
+            actorType,
+            issues,
+            "actor_brain_missing_motivation",
+            "Motivation / Мотивация",
+            "Добавь отдельный подпункт 'Мотивация' или 'Motivation': чего актор хочет и почему это важно сейчас.",
+            "мотивац", "motivation");
+        AddMissingActorBrainFieldIssue(
+            block,
+            actorName,
+            actorType,
+            issues,
+            "actor_brain_missing_constraints",
+            "Constraints / Ограничения",
+            "Добавь отдельный подпункт 'Ограничения' или 'Constraints': чего актор не знает, не может или не станет делать.",
+            "огранич", "границы", "constraints", "limitations");
+        AddMissingActorBrainFieldIssue(
+            block,
+            actorName,
+            actorType,
+            issues,
+            "actor_brain_missing_strategy_options",
+            "Strategy options / Варианты стратегий",
+            "Добавь отдельный подпункт 'Варианты стратегий' или 'Strategy options' и перечисли минимум две реально различимые стратегии.",
+            "варианты стратег", "рассмотренные стратег", "strategy options", "considered strategies");
+
+        var strategyChoices = ExtractActorBrainStrategyChoices(block);
+        if (strategyChoices.Count < 2)
+        {
+            issues.Add(new ValidationIssue(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                $"Для {actorType} '{actorName}' отсутствует сравнение выгоды и риска минимум двух стратегий",
+                code: "actor_brain_missing_strategy_tradeoffs",
+                actor: actorName,
+                section: "npc_reasoning",
+                expected: "At least two strategy entries; every entry contains Benefit/Выгода and Risk/Риск",
+                actual: $"tradeoff entries={strategyChoices.Count}",
+                repairHint: "Под заголовком 'Варианты стратегий' добавь минимум две нумерованные стратегии. Для каждой на той же строке явно укажи 'Выгода:' и 'Риск:' (или Benefit/Risk)."));
+        }
+        else if (strategyChoices.Distinct(StringComparer.OrdinalIgnoreCase).Count() < 2)
+        {
+            issues.Add(new ValidationIssue(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                $"Для {actorType} '{actorName}' перечислены дублирующие, а не реально различимые стратегии",
+                code: "actor_brain_missing_distinct_strategy_options",
+                actor: actorName,
+                section: "npc_reasoning",
+                expected: "at least two distinct normalized strategy actions before their Benefit/Risk clauses",
+                actual: string.Join(" | ", strategyChoices),
+                repairHint: "Замени повтор одной линии поведения на реально другую стратегию с собственной выгодой и риском; косметически разные формулировки одного действия не считаются альтернативами."));
+        }
+
+        AddMissingActorBrainFieldIssue(
+            block,
+            actorName,
+            actorType,
+            issues,
+            "actor_brain_missing_chosen_strategy",
+            "Chosen strategy / Выбранная стратегия",
+            "Добавь отдельный подпункт 'Выбранная стратегия' или 'Chosen strategy' и назови итоговую линию поведения.",
+            "выбранная стратег", "выбранный подход", "chosen strategy", "selected strategy");
+        AddMissingActorBrainFieldIssue(
+            block,
+            actorName,
+            actorType,
+            issues,
+            "actor_brain_missing_rejected_alternatives",
+            "Rejected alternatives / Почему альтернативы отвергнуты",
+            "Добавь отдельный подпункт с причинами отклонения остальных стратегий.",
+            "почему альтернатив", "отвергнутые альтернатив", "отклоненные альтернатив", "отклонённые альтернатив", "rejected alternatives");
+        AddMissingActorBrainFieldIssue(
+            block,
+            actorName,
+            actorType,
+            issues,
+            "actor_brain_missing_state_changes",
+            "State changes / Изменения состояния",
+            "Добавь отдельный подпункт 'Изменения состояния' или 'State changes' и перечисли точные canonical surfaces, включая явное 'нет', если состояние обоснованно не меняется.",
+            "изменения состояния", "изменения данных", "state changes", "state delta");
+    }
+
+    private static void AddMissingActorBrainFieldIssue(
+        string block,
+        string actorName,
+        string actorType,
+        List<ValidationIssue> issues,
+        string code,
+        string expected,
+        string repairHint,
+        params string[] labels)
+    {
+        var allowsEmptyHeader = string.Equals(
+            code,
+            "actor_brain_missing_strategy_options",
+            StringComparison.OrdinalIgnoreCase);
+        if (HasActorBrainLabeledField(block, allowsEmptyHeader, labels))
+            return;
+
+        issues.Add(new ValidationIssue(
+            "output/debug_logs.json",
+            IssueSeverity.Error,
+            $"Для {actorType} '{actorName}' отсутствует обязательный подпункт полного Actor Brain: {expected}",
+            code: code,
+            actor: actorName,
+            section: "npc_reasoning",
+            expected: expected,
+            actual: "missing",
+            repairHint: repairHint));
+    }
+
+    private static bool HasActorBrainLabeledField(
+        string block,
+        bool allowsEmptyHeader,
+        params string[] labels)
+    {
+        foreach (var rawLine in block.Replace("\r\n", "\n").Split('\n'))
+        {
+            var line = rawLine.Trim().TrimStart('-', '*', ' ').Trim();
+            var separator = line.IndexOf(':');
+            if (separator < 0)
+                continue;
+
+            var label = line[..separator];
+            var value = line[(separator + 1)..].Trim().Trim('*', '_', ' ');
+            if (labels.Any(candidate => label.Contains(candidate, StringComparison.OrdinalIgnoreCase)) &&
+                (allowsEmptyHeader || !string.IsNullOrWhiteSpace(value)))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static List<string> ExtractActorBrainStrategyChoices(string block)
+    {
+        var choices = new List<string>();
+        var insideStrategySection = false;
+        foreach (var rawLine in block.Replace("\r\n", "\n").Split('\n'))
+        {
+            var line = rawLine.Trim();
+            if (!insideStrategySection)
+            {
+                var header = line.TrimStart('-', '*', ' ').Trim();
+                var separator = header.IndexOf(':');
+                var label = separator >= 0 ? header[..separator] : header;
+                if (ContainsAny(
+                        label.ToLowerInvariant(),
+                        "варианты стратег",
+                        "рассмотренные стратег",
+                        "strategy options",
+                        "considered strategies"))
+                {
+                    insideStrategySection = true;
+                }
+
+                continue;
+            }
+
+            if (Regex.IsMatch(line, @"^[-*]\s+(?!\d+[.)])[^:]+:", RegexOptions.CultureInvariant))
+                break;
+
+            var tradeoffMatch = Regex.Match(
+                line,
+                @"^(?:[-*]\s*)?\d+[.)]\s+(?<action>.+?)\s+(?:Выгода|Benefit)\s*:\s*(?<benefit>.+?)\s+(?:Риск|Risk)\s*:\s*(?<risk>.+?)\s*$",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            if (!tradeoffMatch.Success)
+                continue;
+
+            var action = tradeoffMatch.Groups["action"].Value;
+            action = Regex.Replace(action.ToLowerInvariant(), @"[^\p{L}\p{N}]+", " ").Trim();
+            if (!string.IsNullOrWhiteSpace(action))
+                choices.Add(action);
+        }
+
+        return choices;
+    }
+
+    private async Task ValidateRelevantGuardianMusingDeltasAsync(
+        string reasoning,
+        IReadOnlyCollection<string> actorNames,
+        IReadOnlySet<string> explicitTargetActorIds,
+        GuardianReasoningIdentityContext guardianIdentityContext,
+        GuardianValidatedSnapshotContext snapshotContext,
+        List<ValidationIssue> issues)
+    {
+        if (actorNames.Count == 0 ||
+            snapshotContext.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable ||
+            snapshotContext.Manifest == null)
+        {
+            return;
+        }
+
+        const string guardiansPath = "game_state/meta/guardians.json";
+        var currentJson = await _fs.ReadFileAsync(guardiansPath);
+        var currentGuardians = BuildGuardianMusingAuditMap(currentJson);
+        var currentStructuredThoughts = BuildGuardianStructuredThoughtJournalAuditMap(
+            await _fs.ReadFileAsync(GuardianThoughtJournalState.StatePath));
+        var surfaceActors = actorNames
+            .Where(actorName =>
+                IsGuardianScopeActor(actorName, guardianIdentityContext) &&
+                currentGuardians.Values.Any(guardian =>
+                    guardian.Aliases.Any(alias => ActorNamesMatch(alias, actorName))))
+            .ToList();
+        if (surfaceActors.Count == 0)
+            return;
+
+        var preTurnGuardiansFile = await ReadActorMemorySnapshotFileAsync(
+            snapshotContext,
+            guardiansPath,
+            surfaceActors,
+            issues);
+        var preTurnStructuredThoughtsFile = await ReadActorMemorySnapshotFileAsync(
+            snapshotContext,
+            GuardianThoughtJournalState.StatePath,
+            surfaceActors,
+            issues);
+        if (!preTurnGuardiansFile.IsUsable || !preTurnStructuredThoughtsFile.IsUsable)
+            return;
+
+        var preTurnGuardians = BuildGuardianMusingAuditMap(preTurnGuardiansFile.Json);
+        var preTurnStructuredThoughts = BuildGuardianStructuredThoughtJournalAuditMap(
+            preTurnStructuredThoughtsFile.Json);
+
+        foreach (var actorName in surfaceActors)
+        {
+            var currentGuardian = ResolveExplicitActorMemoryState(
+                currentGuardians.Values,
+                actorName,
+                explicitTargetActorIds,
+                guardian => guardian.GuardianId,
+                guardian => guardian.Aliases);
+            if (currentGuardian == null)
+                continue;
+
+            preTurnGuardians.TryGetValue(currentGuardian.GuardianId, out var preTurnGuardian);
+            var previousMusings = preTurnGuardian?.MusingSignatures ?? new HashSet<string>(StringComparer.Ordinal);
+            currentStructuredThoughts.TryGetValue(currentGuardian.GuardianId, out var currentThoughtEntries);
+            preTurnStructuredThoughts.TryGetValue(currentGuardian.GuardianId, out var preTurnThoughtEntries);
+            var currentStructuredEntries = currentThoughtEntries?.EntrySignatures ?? new HashSet<string>(StringComparer.Ordinal);
+            var previousThoughtEntries = preTurnThoughtEntries?.EntrySignatures ?? new HashSet<string>(StringComparer.Ordinal);
+            var oldEntriesPreserved = previousMusings.All(currentGuardian.MusingSignatures.Contains) &&
+                                      previousThoughtEntries.All(currentStructuredEntries.Contains);
+            var hasNewEntry = currentGuardian.MusingSignatures.Any(signature => !previousMusings.Contains(signature)) ||
+                              currentStructuredEntries.Any(signature => !previousThoughtEntries.Contains(signature));
+            if (oldEntriesPreserved && hasNewEntry)
+            {
+                var newThoughtTexts = currentGuardian.MusingSignatures
+                    .Where(signature => !previousMusings.Contains(signature))
+                    .Select(signature => currentGuardian.MusingTexts.GetValueOrDefault(signature))
+                    .Concat(currentStructuredEntries
+                        .Where(signature => !previousThoughtEntries.Contains(signature))
+                        .Select(signature => currentThoughtEntries?.EntryTexts.GetValueOrDefault(signature)))
+                    .Where(text => !string.IsNullOrWhiteSpace(text))
+                    .Cast<string>()
+                    .ToList();
+                ValidateNewActorThoughtUsesFirstPerson(
+                    actorName,
+                    "Guardian",
+                    GuardianThoughtJournalState.StatePath,
+                    newThoughtTexts,
+                    issues);
+                ValidateActorBrainDeclaresActualJournalSurface(
+                    reasoning,
+                    actorName,
+                    "Guardian",
+                    new[] { "musings", "guardianthoughtjournal", "guardian_thought_journal" },
+                    "UpdateGuardians.addMusings or guardianThoughtJournalUpdates",
+                    issues);
+                continue;
+            }
+
+            issues.Add(new ValidationIssue(
+                $"game_state/meta/guardians.json.guardians[{currentGuardian.GuardianId}].musings",
+                IssueSeverity.Error,
+                $"Значимая реакция Хранителя '{actorName}' осталась только в прозе и не добавила запись внутренней памяти",
+                code: "guardian_relevant_actor_missing_thought_journal_delta",
+                actor: actorName,
+                section: "actor_memory",
+                expected: $"new canonical guardians[].musings or {GuardianThoughtJournalState.StatePath} entry compared with the validated pre-turn snapshot",
+                actual: "no new Guardian-owned thought entry",
+                repairHint: $"Добавь для '{actorName}' новую first-person запись либо через UpdateGuardians command=addMusings, либо через guardianThoughtJournalUpdates в {GuardianThoughtJournalState.StatePath}. Не переписывай старые записи и не заменяй внутренний журнал внешней хроникой."));
+        }
+    }
+
+    private sealed class GuardianMusingAuditState
+    {
+        public string GuardianId { get; init; } = string.Empty;
+        public HashSet<string> Aliases { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> MusingSignatures { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, string> MusingTexts { get; } = new(StringComparer.Ordinal);
+    }
+
+    private static Dictionary<string, GuardianMusingAuditState> BuildGuardianMusingAuditMap(string? json)
+    {
+        var result = new Dictionary<string, GuardianMusingAuditState>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("guardians", out var guardians) ||
+                guardians.ValueKind != JsonValueKind.Array)
+            {
+                return result;
+            }
+
+            foreach (var guardian in guardians.EnumerateArray())
+            {
+                if (guardian.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+                if (string.IsNullOrWhiteSpace(guardianId))
+                    continue;
+
+                var state = new GuardianMusingAuditState { GuardianId = guardianId! };
+                foreach (var alias in EnumerateGuardianAliases(guardian, includeGuardianId: false))
+                    state.Aliases.Add(alias);
+                if (guardian.TryGetProperty("musings", out var musings) && musings.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var musing in musings.EnumerateArray())
+                    {
+                        var signature = CanonicalizeJsonElement(musing);
+                        state.MusingSignatures.Add(signature);
+                        state.MusingTexts[signature] = ReadActorThoughtText(musing);
+                    }
+                }
+
+                result[guardianId!] = state;
+            }
+        }
+        catch
+        {
+            // Dedicated Guardian validators report malformed canonical state.
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, ActorThoughtJournalAuditState> BuildGuardianStructuredThoughtJournalAuditMap(string? json)
+    {
+        var result = new Dictionary<string, ActorThoughtJournalAuditState>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            foreach (var collectionName in new[]
+                     {
+                         ActorJournalState.EntriesProperty,
+                         GuardianThoughtJournalState.UpdateProperty
+                     })
+            {
+                if (!doc.RootElement.TryGetProperty(collectionName, out var entries) ||
+                    entries.ValueKind != JsonValueKind.Array)
+                {
+                    continue;
+                }
+
+                foreach (var entry in entries.EnumerateArray())
+                {
+                    if (entry.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    var guardianId = GetFirstNonEmptyString(
+                        entry,
+                        GuardianThoughtJournalState.ActorIdProperty,
+                        "guardianId",
+                        "id");
+                    if (string.IsNullOrWhiteSpace(guardianId))
+                        continue;
+
+                    if (!result.TryGetValue(guardianId!, out var state))
+                    {
+                        state = new ActorThoughtJournalAuditState { ActorId = guardianId! };
+                        result[guardianId!] = state;
+                    }
+
+                    AddJournalEntryAudit(entry, state);
+                }
+            }
+        }
+        catch
+        {
+            // Dedicated Guardian thought-journal validators report malformed files.
+        }
+
+        return result;
+    }
+
+    private async Task ValidateRelevantMortalNpcThoughtJournalDeltasAsync(
+        string reasoning,
+        IReadOnlyCollection<string> actorNames,
+        IReadOnlySet<string> explicitTargetActorIds,
+        GuardianValidatedSnapshotContext snapshotContext,
+        List<ValidationIssue> issues)
+    {
+        if (actorNames.Count == 0 ||
+            snapshotContext.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable ||
+            snapshotContext.Manifest == null ||
+            !IsMortalRealmName(snapshotContext.PreTurnRealm))
+        {
+            return;
+        }
+
+        const string npcCorePath = "game_state/npcs/npc_core.json";
+        const string npcJournalsPath = "game_state/npcs/npc_journals.json";
+        var currentStates = BuildMortalNpcThoughtJournalAuditMap(
+            await _fs.ReadFileAsync(npcCorePath),
+            await _fs.ReadFileAsync(npcJournalsPath));
+        var surfaceActors = actorNames
+            .Where(actorName => currentStates.Values.Any(state =>
+                state.Aliases.Any(alias => ActorNamesMatch(alias, actorName))))
+            .ToList();
+        if (surfaceActors.Count == 0)
+            return;
+
+        var preTurnCore = await ReadActorMemorySnapshotFileAsync(
+            snapshotContext,
+            npcCorePath,
+            surfaceActors,
+            issues);
+        var preTurnJournals = await ReadActorMemorySnapshotFileAsync(
+            snapshotContext,
+            npcJournalsPath,
+            surfaceActors,
+            issues);
+        if (!preTurnCore.IsUsable || !preTurnJournals.IsUsable)
+            return;
+
+        var preTurnStates = BuildMortalNpcThoughtJournalAuditMap(
+            preTurnCore.Json,
+            preTurnJournals.Json);
+
+        foreach (var actorName in surfaceActors)
+        {
+            var currentActor = ResolveExplicitActorMemoryState(
+                currentStates.Values,
+                actorName,
+                explicitTargetActorIds,
+                state => state.ActorId,
+                state => state.Aliases);
+            if (currentActor == null)
+                continue;
+
+            preTurnStates.TryGetValue(currentActor.ActorId, out var preTurnActor);
+            var previousEntries = preTurnActor?.EntrySignatures ?? new HashSet<string>(StringComparer.Ordinal);
+            if (HasAppendOnlyJournalDelta(currentActor.EntrySignatures, previousEntries))
+            {
+                var newThoughtTexts = currentActor.EntrySignatures
+                    .Where(signature => !previousEntries.Contains(signature))
+                    .Select(signature => currentActor.EntryTexts.GetValueOrDefault(signature))
+                    .Where(text => !string.IsNullOrWhiteSpace(text))
+                    .Cast<string>()
+                    .ToList();
+                ValidateNewActorThoughtUsesFirstPerson(
+                    actorName,
+                    "Mortal NPC",
+                    npcJournalsPath,
+                    newThoughtTexts,
+                    issues);
+                ValidateActorBrainDeclaresActualJournalSurface(
+                    reasoning,
+                    actorName,
+                    "Mortal NPC",
+                    new[] { "npcjournals", "npc_journals", "journalentries" },
+                    "NPCJournals[].journalEntries[]",
+                    issues);
+                continue;
+            }
+
+            issues.Add(new ValidationIssue(
+                npcJournalsPath,
+                IssueSeverity.Error,
+                $"Значимая реакция NPC '{actorName}' не добавила новую запись в его собственный журнал мыслей",
+                code: "mortal_npc_relevant_actor_missing_thought_journal_delta",
+                actor: actorName,
+                section: "actor_memory",
+                expected: "at least one new canonical NPCJournals[].journalEntries[] entry compared with the validated pre-turn snapshot",
+                actual: "no new NPC thought journal entry",
+                repairHint: $"Добавь для NPC '{actorName}' краткую first-person запись о его реакции, выводе или намерении в canonical NPCJournals[].journalEntries[]. Не заменяй внутреннюю мысль внешним пересказом сцены."));
+        }
+    }
+
+    private async Task ValidateRelevantAfterlifeResidentThoughtJournalDeltasAsync(
+        string reasoning,
+        IReadOnlyCollection<string> actorNames,
+        IReadOnlySet<string> explicitTargetActorIds,
+        GuardianValidatedSnapshotContext snapshotContext,
+        List<ValidationIssue> issues)
+    {
+        if (actorNames.Count == 0 ||
+            snapshotContext.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable ||
+            snapshotContext.Manifest == null ||
+            !IsChaosSeaRealm(snapshotContext.PreTurnRealm))
+        {
+            return;
+        }
+
+        var currentStates = BuildAfterlifeResidentThoughtJournalAuditMap(
+            await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath));
+        var surfaceActors = actorNames
+            .Where(actorName => currentStates.Values.Any(state =>
+                state.Aliases.Any(alias => ActorNamesMatch(alias, actorName))))
+            .ToList();
+        if (surfaceActors.Count == 0)
+            return;
+
+        var preTurnFile = await ReadActorMemorySnapshotFileAsync(
+            snapshotContext,
+            GuardianAbodeResidentState.StatePath,
+            surfaceActors,
+            issues);
+        if (!preTurnFile.IsUsable)
+            return;
+
+        var preTurnStates = BuildAfterlifeResidentThoughtJournalAuditMap(
+            preTurnFile.Json);
+
+        foreach (var actorName in surfaceActors)
+        {
+            var currentActor = ResolveExplicitActorMemoryState(
+                currentStates.Values,
+                actorName,
+                explicitTargetActorIds,
+                state => state.ActorId,
+                state => state.Aliases);
+            if (currentActor == null)
+                continue;
+
+            preTurnStates.TryGetValue(currentActor.ActorId, out var preTurnActor);
+            var previousEntries = preTurnActor?.EntrySignatures ?? new HashSet<string>(StringComparer.Ordinal);
+            if (HasAppendOnlyJournalDelta(currentActor.EntrySignatures, previousEntries))
+            {
+                var newThoughtTexts = currentActor.EntrySignatures
+                    .Where(signature => !previousEntries.Contains(signature))
+                    .Select(signature => currentActor.EntryTexts.GetValueOrDefault(signature))
+                    .Where(text => !string.IsNullOrWhiteSpace(text))
+                    .Cast<string>()
+                    .ToList();
+                ValidateNewActorThoughtUsesFirstPerson(
+                    actorName,
+                    "Guardian Abode resident",
+                    GuardianAbodeResidentState.StatePath,
+                    newThoughtTexts,
+                    issues);
+                ValidateActorBrainDeclaresActualJournalSurface(
+                    reasoning,
+                    actorName,
+                    "Guardian Abode resident",
+                    new[] { "residentthoughtjournal", "thoughtjournal" },
+                    "residentThoughtJournalUpdates",
+                    issues);
+                continue;
+            }
+
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentState.StatePath,
+                IssueSeverity.Error,
+                $"Значимая реакция жителя Обители '{actorName}' не добавила новую запись в его журнал мыслей",
+                code: "afterlife_resident_relevant_actor_missing_thought_journal_delta",
+                actor: actorName,
+                section: "actor_memory",
+                expected: $"at least one new canonical {GuardianAbodeResidentState.ThoughtJournalProperty} entry compared with the validated pre-turn snapshot",
+                actual: "no new resident thought journal entry",
+                repairHint: $"Добавь для жителя '{actorName}' first-person запись через {GuardianAbodeResidentState.UpdateThoughtJournalProperty} с residentId, entryId, turn, timestamp, title и summary. Не подменяй внутренний журнал interaction log или внешней хроникой."));
+        }
+    }
+
+    private sealed class ActorThoughtJournalAuditState
+    {
+        public string ActorId { get; init; } = string.Empty;
+        public HashSet<string> Aliases { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> EntrySignatures { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, string> EntryTexts { get; } = new(StringComparer.Ordinal);
+    }
+
+    private static TState? ResolveExplicitActorMemoryState<TState>(
+        IEnumerable<TState> states,
+        string actorName,
+        IReadOnlySet<string> explicitTargetActorIds,
+        Func<TState, string> stableIdSelector,
+        Func<TState, IEnumerable<string>> aliasesSelector)
+        where TState : class
+    {
+        var matches = states
+            .Where(state => aliasesSelector(state).Any(alias => ActorNamesMatch(alias, actorName)))
+            .ToList();
+        if (matches.Count <= 1 || explicitTargetActorIds.Count == 0)
+            return matches.FirstOrDefault();
+
+        var explicitMatches = matches
+            .Where(state =>
+                explicitTargetActorIds.Contains(stableIdSelector(state)) ||
+                aliasesSelector(state).Any(explicitTargetActorIds.Contains))
+            .ToList();
+        return explicitMatches.Count == 1
+            ? explicitMatches[0]
+            : matches.FirstOrDefault();
+    }
+
+    private sealed class AfterlifeEntityMemoryAuditState
+    {
+        public string ActorKey { get; init; } = string.Empty;
+        public string ActorType { get; init; } = string.Empty;
+        public HashSet<string> Aliases { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> LedgerSignatures { get; } = new(StringComparer.Ordinal);
+        public HashSet<string> DecisionSignatures { get; } = new(StringComparer.Ordinal);
+    }
+
+    private sealed class ShiningFactionMemoryAuditState
+    {
+        public string FactionId { get; init; } = string.Empty;
+        public HashSet<string> Aliases { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public string? StrategicMemorySignature { get; init; }
+        public HashSet<string> ChronicleSignatures { get; } = new(StringComparer.Ordinal);
+    }
+
+    private sealed record ActorMemorySnapshotFile(bool IsUsable, string? Json);
+
+    private async Task<ActorMemorySnapshotFile> ReadActorMemorySnapshotFileAsync(
+        GuardianValidatedSnapshotContext snapshotContext,
+        string relativePath,
+        IReadOnlyCollection<string> actorNames,
+        List<ValidationIssue> issues)
+    {
+        var manifest = snapshotContext.Manifest;
+        if (manifest == null)
+            return new ActorMemorySnapshotFile(false, null);
+
+        var fileRegistered = manifest.Files?.ContainsKey(relativePath) ?? false;
+        var fileExistedBeforeTurn = fileRegistered ||
+                                    (manifest.SnapshotFileHashes?.ContainsKey(relativePath) ?? false) ||
+                                    (manifest.RollbackBaselineFiles?.Contains(
+                                        relativePath,
+                                        StringComparer.OrdinalIgnoreCase) ?? false);
+        if (!fileRegistered)
+        {
+            if (!fileExistedBeforeTurn)
+                return new ActorMemorySnapshotFile(true, null);
+
+            AddActorMemorySnapshotFileIssues(
+                relativePath,
+                actorNames,
+                "pre-turn actor-memory file was baseline-tracked but is absent from manifest.Files",
+                issues);
+            return new ActorMemorySnapshotFile(false, null);
+        }
+
+        var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, relativePath);
+        if (!string.IsNullOrWhiteSpace(snapshotJson))
+            return new ActorMemorySnapshotFile(true, snapshotJson);
+
+        AddActorMemorySnapshotFileIssues(
+            relativePath,
+            actorNames,
+            "registered actor-memory snapshot is missing, unreadable, or hash-mismatched",
+            issues);
+        return new ActorMemorySnapshotFile(false, null);
+    }
+
+    private static void AddActorMemorySnapshotFileIssues(
+        string relativePath,
+        IReadOnlyCollection<string> actorNames,
+        string actual,
+        List<ValidationIssue> issues)
+    {
+        foreach (var actorName in actorNames)
+        {
+            issues.Add(new ValidationIssue(
+                relativePath,
+                IssueSeverity.Error,
+                $"Нельзя доказать append-only память значимой реакции актора '{actorName}': отсутствует validated pre-turn копия {relativePath}.",
+                code: "actor_memory_invalid_validated_snapshot_context",
+                actor: actorName,
+                section: "actor_memory",
+                expected: $"validated pre-turn snapshot entry and hash for pre-existing {relativePath}, or authoritative proof that the file did not exist before the turn",
+                actual: actual,
+                repairHint: "Это client-owned snapshot authority. ГМ не должен создавать или исправлять baseline вручную; клиент обязан откатить ход либо повторно подготовить его с полной pre-turn копией actor-memory surface."));
+        }
+    }
+
+    private async Task ValidateRelevantAfterlifeEntityMemoryLedgerDeltasAsync(
+        string reasoning,
+        IReadOnlyCollection<string> actorNames,
+        IReadOnlySet<string> explicitTargetActorIds,
+        GuardianValidatedSnapshotContext snapshotContext,
+        List<ValidationIssue> issues)
+    {
+        if (actorNames.Count == 0 ||
+            snapshotContext.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable ||
+            snapshotContext.Manifest == null ||
+            (!IsChaosSeaRealm(snapshotContext.PreTurnRealm) && !IsShiningAbodeRealm(snapshotContext.PreTurnRealm)))
+        {
+            return;
+        }
+
+        var currentStates = BuildAfterlifeEntityMemoryAuditMap(
+            await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath));
+        var surfaceActors = actorNames
+            .Where(actorName => currentStates.Values.Any(state =>
+                !string.Equals(state.ActorType, "guardian", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(state.ActorType, "resident", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(state.ActorType, "shining_resident", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(state.ActorType, "player_soul", StringComparison.OrdinalIgnoreCase) &&
+                state.Aliases.Any(alias => ActorNamesMatch(alias, actorName))))
+            .ToList();
+        if (surfaceActors.Count == 0)
+            return;
+
+        var preTurnFile = await ReadActorMemorySnapshotFileAsync(
+            snapshotContext,
+            AfterlifeEntityProfileState.StatePath,
+            surfaceActors,
+            issues);
+        if (!preTurnFile.IsUsable)
+            return;
+
+        var preTurnStates = BuildAfterlifeEntityMemoryAuditMap(
+            preTurnFile.Json);
+
+        foreach (var actorName in surfaceActors)
+        {
+            var currentActor = ResolveExplicitActorMemoryState(
+                currentStates.Values,
+                actorName,
+                explicitTargetActorIds,
+                state => state.ActorKey,
+                state => state.Aliases);
+            if (currentActor == null ||
+                string.Equals(currentActor.ActorType, "guardian", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(currentActor.ActorType, "resident", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(currentActor.ActorType, "shining_resident", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(currentActor.ActorType, "player_soul", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            preTurnStates.TryGetValue(currentActor.ActorKey, out var preTurnActor);
+            var previousLedger = preTurnActor?.LedgerSignatures ?? new HashSet<string>(StringComparer.Ordinal);
+            var ledgerPreserved = previousLedger.All(currentActor.LedgerSignatures.Contains);
+            var hasNewLedger = currentActor.LedgerSignatures.Any(signature => !previousLedger.Contains(signature));
+            var hasInitialDecisionMemory = currentActor.DecisionSignatures.Count > 0;
+            var hasRequiredMemoryDelta = preTurnActor == null
+                ? hasNewLedger || hasInitialDecisionMemory
+                : ledgerPreserved && hasNewLedger;
+            if (hasRequiredMemoryDelta)
+            {
+                ValidateActorBrainDeclaresActualJournalSurface(
+                    reasoning,
+                    actorName,
+                    "afterlife entity",
+                    new[] { "afterlifeentity", "afterlifeactor", "afterlife_entity_profiles", "ledger" },
+                    "afterlifeEntityProfileUpdates / afterlifeActor*Updates / afterlife_entity_profiles ledger",
+                    issues);
+                continue;
+            }
+
+            issues.Add(new ValidationIssue(
+                AfterlifeEntityProfileState.StatePath,
+                IssueSeverity.Error,
+                $"Значимая реакция сущности посмертия '{actorName}' не добавила canonical actor-memory/ledger delta",
+                code: "afterlife_entity_relevant_actor_missing_memory_ledger_delta",
+                actor: actorName,
+                section: "actor_memory",
+                expected: "new-profile gmThoughtsSummary initialization or an append-only ledger/progressionLedger entry for an existing profile compared with the validated pre-turn profile",
+                actual: preTurnActor != null && !ledgerPreserved
+                    ? "pre-turn ledger entries were removed or rewritten"
+                    : preTurnActor == null
+                        ? "new profile has neither gmThoughtsSummary initialization nor a ledger entry"
+                        : "existing profile has no new ledger/progressionLedger entry",
+                repairHint: $"Для существующего профиля '{actorName}' добавь actor-owned ledger/progressionLedger entry; gmThoughtsSummary можно обновить как текущую стратегию только вместе с append-only памятью. Непустой gmThoughtsSummary без ledger допустим при первичной материализации нового профиля. Не подменяй память внешней afterlife chronicle."));
+        }
+    }
+
+    private async Task ValidateRelevantShiningFactionMemoryDeltasAsync(
+        string reasoning,
+        IReadOnlyCollection<string> actorNames,
+        IReadOnlySet<string> explicitTargetActorIds,
+        GuardianValidatedSnapshotContext snapshotContext,
+        List<ValidationIssue> issues)
+    {
+        if (actorNames.Count == 0 ||
+            snapshotContext.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable ||
+            snapshotContext.Manifest == null ||
+            !IsShiningAbodeRealm(snapshotContext.PreTurnRealm))
+        {
+            return;
+        }
+
+        var currentStates = BuildShiningFactionMemoryAuditMap(
+            await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
+        var surfaceActors = actorNames
+            .Where(actorName => currentStates.Values.Any(state =>
+                state.Aliases.Any(alias => ActorNamesMatch(alias, actorName))))
+            .ToList();
+        if (surfaceActors.Count == 0)
+            return;
+
+        var preTurnFile = await ReadActorMemorySnapshotFileAsync(
+            snapshotContext,
+            ShiningAbodeState.StatePath,
+            surfaceActors,
+            issues);
+        if (!preTurnFile.IsUsable)
+            return;
+
+        var preTurnStates = BuildShiningFactionMemoryAuditMap(
+            preTurnFile.Json);
+
+        foreach (var actorName in surfaceActors)
+        {
+            var currentFaction = ResolveExplicitActorMemoryState(
+                currentStates.Values,
+                actorName,
+                explicitTargetActorIds,
+                state => state.FactionId,
+                state => state.Aliases);
+            if (currentFaction == null)
+                continue;
+
+            preTurnStates.TryGetValue(currentFaction.FactionId, out var preTurnFaction);
+            var previousChronicle = preTurnFaction?.ChronicleSignatures ??
+                                    new HashSet<string>(StringComparer.Ordinal);
+            var chroniclePreserved = previousChronicle.All(currentFaction.ChronicleSignatures.Contains);
+            var hasNewChronicle = currentFaction.ChronicleSignatures.Any(signature =>
+                !previousChronicle.Contains(signature));
+            var strategicMemoryChanged = !string.Equals(
+                currentFaction.StrategicMemorySignature,
+                preTurnFaction?.StrategicMemorySignature,
+                StringComparison.Ordinal);
+            var hasInitialMemory = !string.IsNullOrWhiteSpace(currentFaction.StrategicMemorySignature) ||
+                                   currentFaction.ChronicleSignatures.Count > 0;
+            var hasRequiredMemoryDelta = preTurnFaction == null
+                ? hasInitialMemory
+                : chroniclePreserved && hasNewChronicle;
+
+            if (hasRequiredMemoryDelta)
+            {
+                var allowedSurfaceAliases = preTurnFaction == null
+                    ? new[]
+                    {
+                        "shiningfactionstrategicmemoryupdates",
+                        "strategicmemory",
+                        "shiningfactionchronicleupdates",
+                        "chronicle"
+                    }
+                    : new[] { "shiningfactionchronicleupdates", "chronicle" };
+                ValidateActorBrainDeclaresActualJournalSurface(
+                    reasoning,
+                    actorName,
+                    "Shining faction",
+                    allowedSurfaceAliases,
+                    preTurnFaction == null
+                        ? "shiningFactionStrategicMemoryUpdates or shiningFactionChronicleUpdates"
+                        : "shiningFactionChronicleUpdates",
+                    issues);
+                continue;
+            }
+
+            issues.Add(new ValidationIssue(
+                ShiningAbodeState.StatePath,
+                IssueSeverity.Error,
+                $"Значимое решение сияющей фракции '{actorName}' не обновило её стратегическую память или хронику",
+                code: "shining_faction_relevant_actor_missing_strategic_memory_delta",
+                actor: actorName,
+                section: "actor_memory",
+                expected: "new-faction strategicMemory initialization or an append-only factions[].chronicle entry for an existing faction compared with the validated pre-turn snapshot",
+                actual: preTurnFaction != null && !chroniclePreserved
+                    ? "pre-turn faction chronicle entries were removed or rewritten"
+                    : preTurnFaction == null
+                        ? "new faction has neither strategicMemory initialization nor a chronicle entry"
+                        : strategicMemoryChanged
+                            ? "strategicMemory changed but existing faction chronicle has no new entry"
+                            : "no new faction chronicle entry",
+                repairHint: $"Для существующей фракции '{actorName}' добавь append-only запись через shiningFactionChronicleUpdates; strategicMemory можно обновить как текущий план только вместе с новой хроникой. Инициализация strategicMemory без хроники допустима только при первичном создании фракции. Не переписывай прежнюю хронику и не оставляй решение только в reasoning."));
+        }
+    }
+
+    private async Task ValidateRelevantAfterlifeActorsHaveCanonicalMemoryOwnersAsync(
+        IReadOnlyCollection<string> actorNames,
+        GuardianValidatedSnapshotContext snapshotContext,
+        List<ValidationIssue> issues)
+    {
+        if (actorNames.Count == 0 ||
+            snapshotContext.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable ||
+            (!IsChaosSeaRealm(snapshotContext.PreTurnRealm) && !IsShiningAbodeRealm(snapshotContext.PreTurnRealm)))
+        {
+            return;
+        }
+
+        var guardianStates = BuildGuardianMusingAuditMap(
+            await _fs.ReadFileAsync("game_state/meta/guardians.json"));
+        var residentStates = BuildAfterlifeResidentThoughtJournalAuditMap(
+            await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath));
+        var entityStates = BuildAfterlifeEntityMemoryAuditMap(
+            await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath));
+        var factionStates = IsShiningAbodeRealm(snapshotContext.PreTurnRealm)
+            ? BuildShiningFactionMemoryAuditMap(await _fs.ReadFileAsync(ShiningAbodeState.StatePath))
+            : new Dictionary<string, ShiningFactionMemoryAuditState>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var actorName in actorNames)
+        {
+            var hasCanonicalOwner = guardianStates.Values.Any(state =>
+                                        state.Aliases.Any(alias => ActorNamesMatch(alias, actorName))) ||
+                                    residentStates.Values.Any(state =>
+                                        state.Aliases.Any(alias => ActorNamesMatch(alias, actorName))) ||
+                                    entityStates.Values.Any(state =>
+                                        state.Aliases.Any(alias => ActorNamesMatch(alias, actorName))) ||
+                                    factionStates.Values.Any(state =>
+                                        state.Aliases.Any(alias => ActorNamesMatch(alias, actorName)));
+            if (hasCanonicalOwner)
+                continue;
+
+            issues.Add(new ValidationIssue(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                $"Значимый актор посмертия '{actorName}' не имеет канонического владельца внутренней памяти",
+                code: "afterlife_relevant_actor_missing_canonical_memory_owner",
+                actor: actorName,
+                section: "actor_memory",
+                expected: "matching canonical Guardian, Guardian Abode resident, afterlife entity profile, or Shining faction memory owner",
+                actual: "actor appears in relevant reasoning scope but cannot be resolved on any supported actor-memory surface",
+                repairHint: $"Если '{actorName}' действительно принимает решение, сначала материализуй его как поддерживаемого Guardian/resident/afterlife entity profile/Shining faction с устойчивым id и собственной памятью. Если это не самостоятельный актор, убери имя из relevant actors и не создавай для него отдельный Actor Brain block."));
+        }
+    }
+
+    private static Dictionary<string, AfterlifeEntityMemoryAuditState> BuildAfterlifeEntityMemoryAuditMap(string? json)
+    {
+        var result = new Dictionary<string, AfterlifeEntityMemoryAuditState>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty(AfterlifeEntityProfileState.ProfilesProperty, out var profiles) ||
+                profiles.ValueKind != JsonValueKind.Array)
+            {
+                return result;
+            }
+
+            foreach (var profile in profiles.EnumerateArray())
+            {
+                if (profile.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var actorType = GetFirstNonEmptyString(profile, "actorType");
+                var actorId = GetFirstNonEmptyString(profile, "actorId", "actorRef", "id");
+                if (string.IsNullOrWhiteSpace(actorType) || string.IsNullOrWhiteSpace(actorId))
+                    continue;
+
+                var actorKey = $"{actorType}:{actorId}";
+                var state = new AfterlifeEntityMemoryAuditState
+                {
+                    ActorKey = actorKey,
+                    ActorType = actorType!
+                };
+                AddAfterlifeEntityAliases(state, profile, actorId!);
+                CollectAfterlifeEntityMemorySignatures(profile, state, insideLedger: false);
+                result[actorKey] = state;
+            }
+        }
+        catch
+        {
+            // Dedicated afterlife entity-profile validators report malformed canonical state.
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, ShiningFactionMemoryAuditState> BuildShiningFactionMemoryAuditMap(string? json)
+    {
+        var result = new Dictionary<string, ShiningFactionMemoryAuditState>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("factions", out var factions) ||
+                factions.ValueKind != JsonValueKind.Array)
+            {
+                return result;
+            }
+
+            foreach (var faction in factions.EnumerateArray())
+            {
+                if (faction.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var factionId = GetFirstNonEmptyString(faction, "factionId", "id");
+                if (string.IsNullOrWhiteSpace(factionId))
+                    continue;
+
+                string? strategicMemorySignature = null;
+                if (faction.TryGetProperty(ShiningAbodeState.FactionStrategicMemoryProperty, out var strategicMemory) &&
+                    strategicMemory.ValueKind is not JsonValueKind.Null and not JsonValueKind.Undefined)
+                {
+                    strategicMemorySignature = CanonicalizeJsonElement(strategicMemory);
+                }
+
+                var state = new ShiningFactionMemoryAuditState
+                {
+                    FactionId = factionId!,
+                    StrategicMemorySignature = strategicMemorySignature
+                };
+                foreach (var aliasField in new[] { "factionId", "id", "name", "displayName", "factionName" })
+                {
+                    var alias = GetFirstNonEmptyString(faction, aliasField);
+                    if (!string.IsNullOrWhiteSpace(alias))
+                        state.Aliases.Add(alias!);
+                }
+
+                if (faction.TryGetProperty(ShiningAbodeState.FactionChronicleProperty, out var chronicle) &&
+                    chronicle.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var entry in chronicle.EnumerateArray())
+                        state.ChronicleSignatures.Add(CanonicalizeJsonElement(entry));
+                }
+
+                result[factionId!] = state;
+            }
+        }
+        catch
+        {
+            // Dedicated Shining Abode validators report malformed canonical state.
+        }
+
+        return result;
+    }
+
+    private static void AddAfterlifeEntityAliases(
+        AfterlifeEntityMemoryAuditState state,
+        JsonElement profile,
+        string actorId)
+    {
+        state.Aliases.Add(actorId);
+        foreach (var propertyName in new[] { "actorRef", "displayName", "canonicalName", "name" })
+        {
+            var alias = GetFirstNonEmptyString(profile, propertyName);
+            if (!string.IsNullOrWhiteSpace(alias))
+                state.Aliases.Add(alias!);
+        }
+    }
+
+    private static void CollectAfterlifeEntityMemorySignatures(
+        JsonElement node,
+        AfterlifeEntityMemoryAuditState state,
+        bool insideLedger)
+    {
+        if (node.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in node.EnumerateArray())
+            {
+                if (insideLedger)
+                    state.LedgerSignatures.Add(CanonicalizeJsonElement(item));
+                CollectAfterlifeEntityMemorySignatures(item, state, insideLedger);
+            }
+            return;
+        }
+
+        if (node.ValueKind != JsonValueKind.Object)
+            return;
+
+        if (!insideLedger && !string.IsNullOrWhiteSpace(GetFirstNonEmptyString(node, "gmThoughtsSummary")))
+            state.DecisionSignatures.Add(CanonicalizeJsonElement(node));
+
+        foreach (var property in node.EnumerateObject())
+        {
+            var childInsideLedger = insideLedger ||
+                                    string.Equals(property.Name, "ledger", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(property.Name, AfterlifeEntityProfileState.ProgressionLedgerProperty, StringComparison.OrdinalIgnoreCase);
+            CollectAfterlifeEntityMemorySignatures(property.Value, state, childInsideLedger);
+        }
+    }
+
+    private static Dictionary<string, ActorThoughtJournalAuditState> BuildMortalNpcThoughtJournalAuditMap(
+        string? npcCoreJson,
+        string? npcJournalsJson)
+    {
+        var result = new Dictionary<string, ActorThoughtJournalAuditState>(StringComparer.OrdinalIgnoreCase);
+
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(npcCoreJson))
+            {
+                using var coreDoc = JsonDocument.Parse(npcCoreJson);
+                foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+                {
+                    if (!coreDoc.RootElement.TryGetProperty(sectionName, out var npcs) ||
+                        npcs.ValueKind != JsonValueKind.Array)
+                    {
+                        continue;
+                    }
+
+                    foreach (var npc in npcs.EnumerateArray())
+                    {
+                        if (npc.ValueKind != JsonValueKind.Object)
+                            continue;
+
+                        var npcId = GetFirstNonEmptyString(npc, "NPCId", "npcId", "id");
+                        var npcName = GetFirstNonEmptyString(npc, "name", "npcName", "NPCName", "displayName");
+                        var state = GetOrCreateActorThoughtJournalState(result, npcId, npcName);
+                        AddActorAliases(state, npcId, npcName);
+                    }
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(npcJournalsJson))
+                return result;
+
+            using var journalsDoc = JsonDocument.Parse(npcJournalsJson);
+            foreach (var collectionName in new[] { "NPCJournals", "npcJournals" })
+            {
+                if (!journalsDoc.RootElement.TryGetProperty(collectionName, out var journals) ||
+                    journals.ValueKind != JsonValueKind.Array)
+                {
+                    continue;
+                }
+
+                foreach (var journal in journals.EnumerateArray())
+                {
+                    if (journal.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    var npcId = GetFirstNonEmptyString(journal, "NPCId", "npcId", "id");
+                    var npcName = GetFirstNonEmptyString(journal, "NPCName", "npcName", "name", "displayName");
+                    var state = FindOrCreateActorThoughtJournalState(result, npcId, npcName);
+                    AddActorAliases(state, npcId, npcName);
+                    AddJournalEntrySignatures(journal, "journalEntries", state);
+                    if (state.EntrySignatures.Count == 0)
+                    {
+                        var fallback = GetFirstNonEmptyString(
+                            journal,
+                            "lastJournalNote",
+                            "entry",
+                            "note",
+                            "text",
+                            "description");
+                        if (!string.IsNullOrWhiteSpace(fallback))
+                        {
+                            var signature = $"legacy:{NormalizeActorNameForMatching(fallback)}";
+                            state.EntrySignatures.Add(signature);
+                            state.EntryTexts[signature] = fallback!;
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Dedicated NPC state validators report malformed files.
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, ActorThoughtJournalAuditState> BuildAfterlifeResidentThoughtJournalAuditMap(
+        string? residentsJson)
+    {
+        var result = new Dictionary<string, ActorThoughtJournalAuditState>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(residentsJson))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(residentsJson);
+            if (doc.RootElement.TryGetProperty(GuardianAbodeResidentState.EntriesProperty, out var residents) &&
+                residents.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var resident in residents.EnumerateArray())
+                {
+                    if (resident.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    var residentId = GetFirstNonEmptyString(resident, "residentId", "id");
+                    var residentName = GetFirstNonEmptyString(resident, "displayName", "residentName", "name");
+                    var state = GetOrCreateActorThoughtJournalState(result, residentId, residentName);
+                    AddActorAliases(state, residentId, residentName);
+                }
+            }
+
+            foreach (var collectionName in new[]
+                     {
+                         GuardianAbodeResidentState.ThoughtJournalProperty,
+                         GuardianAbodeResidentState.UpdateThoughtJournalProperty
+                     })
+            {
+                if (!doc.RootElement.TryGetProperty(collectionName, out var entries) ||
+                    entries.ValueKind != JsonValueKind.Array)
+                {
+                    continue;
+                }
+
+                foreach (var entry in entries.EnumerateArray())
+                {
+                    if (entry.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    var residentId = GetFirstNonEmptyString(entry, "residentId", "id");
+                    var state = FindOrCreateActorThoughtJournalState(result, residentId, null);
+                    AddJournalEntryAudit(entry, state);
+                }
+            }
+        }
+        catch
+        {
+            // Dedicated resident state validators report malformed files.
+        }
+
+        return result;
+    }
+
+    private static ActorThoughtJournalAuditState FindOrCreateActorThoughtJournalState(
+        IDictionary<string, ActorThoughtJournalAuditState> states,
+        string? actorId,
+        string? actorName)
+    {
+        if (!string.IsNullOrWhiteSpace(actorId) && states.TryGetValue(actorId, out var byId))
+            return byId;
+
+        var byAlias = states.Values.FirstOrDefault(state =>
+            (!string.IsNullOrWhiteSpace(actorId) && state.Aliases.Contains(actorId)) ||
+            (!string.IsNullOrWhiteSpace(actorName) && state.Aliases.Contains(actorName)));
+        return byAlias ?? GetOrCreateActorThoughtJournalState(states, actorId, actorName);
+    }
+
+    private static ActorThoughtJournalAuditState GetOrCreateActorThoughtJournalState(
+        IDictionary<string, ActorThoughtJournalAuditState> states,
+        string? actorId,
+        string? actorName)
+    {
+        var key = !string.IsNullOrWhiteSpace(actorId)
+            ? actorId
+            : !string.IsNullOrWhiteSpace(actorName)
+                ? $"name:{NormalizeActorNameForMatching(actorName)}"
+                : $"anonymous:{states.Count}";
+        if (states.TryGetValue(key, out var existing))
+            return existing;
+
+        var state = new ActorThoughtJournalAuditState { ActorId = key };
+        states[key] = state;
+        return state;
+    }
+
+    private static void AddActorAliases(
+        ActorThoughtJournalAuditState state,
+        params string?[] aliases)
+    {
+        foreach (var alias in aliases)
+        {
+            if (!string.IsNullOrWhiteSpace(alias))
+                state.Aliases.Add(alias);
+        }
+    }
+
+    private static void AddJournalEntrySignatures(
+        JsonElement owner,
+        string propertyName,
+        ActorThoughtJournalAuditState state)
+    {
+        if (!owner.TryGetProperty(propertyName, out var entries) || entries.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var entry in entries.EnumerateArray())
+            AddJournalEntryAudit(entry, state);
+    }
+
+    private static void AddJournalEntryAudit(JsonElement entry, ActorThoughtJournalAuditState state)
+    {
+        var signature = BuildJournalEntryAuditIdentity(entry);
+        state.EntrySignatures.Add(signature);
+        state.EntryTexts[signature] = ReadActorThoughtText(entry);
+    }
+
+    private static string BuildJournalEntryAuditIdentity(JsonElement entry)
+    {
+        return CanonicalizeJsonElement(entry);
+    }
+
+    private static string ReadActorThoughtText(JsonElement entry)
+    {
+        if (entry.ValueKind == JsonValueKind.String)
+            return entry.GetString()?.Trim() ?? string.Empty;
+        if (entry.ValueKind != JsonValueKind.Object)
+            return string.Empty;
+
+        return GetFirstNonEmptyString(
+                   entry,
+                   "thought",
+                   "text",
+                   "summary",
+                   "description",
+                   "spiritVoice",
+                   "lastJournalNote")
+               ?? string.Empty;
+    }
+
+    private static void ValidateNewActorThoughtUsesFirstPerson(
+        string actorName,
+        string actorType,
+        string journalPath,
+        IReadOnlyCollection<string> newThoughtTexts,
+        List<ValidationIssue> issues)
+    {
+        if (newThoughtTexts.Any(IsFirstPersonThoughtText))
+            return;
+
+        issues.Add(new ValidationIssue(
+            journalPath,
+            IssueSeverity.Error,
+            $"Новая внутренняя память {actorType} '{actorName}' не содержит осмысленной записи от первого лица",
+            code: "actor_thought_journal_not_first_person",
+            actor: actorName,
+            section: "actor_memory",
+            expected: "at least one new current-turn thought using an explicit first-person marker",
+            actual: newThoughtTexts.Count == 0 ? "no readable thought text" : string.Join(" | ", newThoughtTexts),
+            repairHint: $"Добавь для '{actorName}' краткую внутреннюю запись с явным 'я/мне/мой/мы' (или I/me/my/we), а не внешний пересказ того, что актор сделал."));
+    }
+
+    private static bool IsFirstPersonThoughtText(string text)
+    {
+        return Regex.IsMatch(
+            text,
+            @"\b(?:я|мне|меня|мной|мною|мой|моя|моё|мое|мои|моего|моей|моём|моем|мы|нам|нас|нами|наш|наша|наше|наши|i|i'm|i’m|i'll|i’ll|me|my|mine|we|us|our|ours)\b",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    }
+
+    private static bool HasAppendOnlyJournalDelta(
+        IReadOnlySet<string> currentEntries,
+        IReadOnlySet<string> previousEntries)
+    {
+        return previousEntries.All(currentEntries.Contains) &&
+               currentEntries.Any(entry => !previousEntries.Contains(entry));
+    }
+
+    private static void ValidateActorBrainDeclaresActualJournalSurface(
+        string reasoning,
+        string actorName,
+        string actorType,
+        IReadOnlyCollection<string> acceptedSurfaceTokens,
+        string expectedSurface,
+        List<ValidationIssue> issues)
+    {
+        if (!TryExtractReasoningBlock(reasoning, actorName, out var block))
+            return;
+
+        var stateChanges = ReadActorBrainLabeledValue(
+            block,
+            "изменения состояния",
+            "изменения данных",
+            "state changes",
+            "state delta");
+        if (string.IsNullOrWhiteSpace(stateChanges))
+            return;
+
+        var normalized = Regex.Replace(stateChanges.ToLowerInvariant(), @"[^\p{L}\p{N}_]+", string.Empty);
+        if (acceptedSurfaceTokens.Any(token =>
+                normalized.Contains(token, StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            "output/debug_logs.json",
+            IssueSeverity.Error,
+            $"Для {actorType} '{actorName}' Actor Brain не называет фактически добавленную canonical запись журнала",
+            code: "actor_brain_state_changes_missing_actual_journal_surface",
+            actor: actorName,
+            section: "npc_reasoning",
+            expected: expectedSurface,
+            actual: stateChanges,
+            repairHint: $"В подпункте 'Изменения состояния' для '{actorName}' назови фактически использованный journal surface: {expectedSurface}. Не заявляй 'нет изменений', если accepted state содержит новую мысль."));
+    }
+
+    private static string? ReadActorBrainLabeledValue(string block, params string[] labels)
+    {
+        foreach (var rawLine in block.Replace("\r\n", "\n").Split('\n'))
+        {
+            var line = rawLine.Trim().TrimStart('-', '*', ' ').Trim();
+            var separator = line.IndexOf(':');
+            if (separator < 0)
+                continue;
+
+            var label = line[..separator];
+            if (labels.Any(candidate => label.Contains(candidate, StringComparison.OrdinalIgnoreCase)))
+                return line[(separator + 1)..].Trim().Trim('*', '_', ' ');
+        }
+
+        return null;
     }
 
     private static bool TryExtractReasoningBlock(string text, string actorName, out string block)
@@ -2505,21 +4390,8 @@ public partial class ValidationService
 
     private static bool IsReasoningBlockHeadingForActor(string heading, string actorName)
     {
-        if (heading.Contains(actorName, StringComparison.OrdinalIgnoreCase))
-            return true;
-
         var normalizedHeading = NormalizeReasoningActorHeading(heading);
-        foreach (var actorVariant in EnumerateActorNameVariants(actorName))
-        {
-            var normalizedActor = NormalizeReasoningActorHeading(actorVariant);
-            if (!string.IsNullOrWhiteSpace(normalizedActor) &&
-                normalizedHeading.Contains(normalizedActor, StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return ActorNamesMatch(normalizedHeading, actorName);
     }
 
     private static bool ActorAliasSetContains(IReadOnlyCollection<string> aliases, string actor)

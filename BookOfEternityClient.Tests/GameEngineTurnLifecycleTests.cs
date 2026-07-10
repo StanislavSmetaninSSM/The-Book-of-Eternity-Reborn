@@ -1028,6 +1028,114 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues_ActorMemoryOnlyRepair_DoesNotRequireNarrativeRewrite()
+    {
+        await WriteJsonAsync("output/narrative_response.json", new
+        {
+            response = "Элиара объясняет, как сохранить память.",
+            timestamp = "2026-07-10T07:30:00Z"
+        });
+        await WriteJsonAsync("output/interface_updates.json", new
+        {
+            dialogueOptions = new[]
+            {
+                new { text = "Задать следующий вопрос", inputValue = "Спросить Элиару ещё раз." }
+            },
+            timestamp = "2026-07-10T07:30:00Z"
+        });
+        await WriteJsonAsync("game_state/control/validation_repair_request.json", new
+        {
+            sessionId = "actor-memory-test",
+            requestId = "actor-memory-repair",
+            turnNumber = 2
+        });
+
+        var outputWrittenAt = new DateTime(2026, 7, 10, 7, 30, 0, DateTimeKind.Utc);
+        var requestWrittenAt = outputWrittenAt.AddMinutes(1);
+        File.SetLastWriteTimeUtc(_fs.ResolvePath("output/narrative_response.json"), outputWrittenAt);
+        File.SetLastWriteTimeUtc(_fs.ResolvePath("output/interface_updates.json"), outputWrittenAt);
+        File.SetLastWriteTimeUtc(_fs.ResolvePath("game_state/control/validation_repair_request.json"), requestWrittenAt);
+
+        var repairedErrors = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/guardian_thought_journal.json",
+                IssueSeverity.Error,
+                "Значимая реакция Хранителя осталась только в прозе.",
+                code: "guardian_relevant_actor_missing_thought_journal_delta",
+                actor: "Хранительница Элиара Карт Невозвращения",
+                section: "actor_memory")
+        };
+        var engine = CreateGameEngine();
+        var method = typeof(GameEngine).GetMethod(
+            "CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.NotNull(method);
+        var issues = Assert.IsType<List<ValidationIssue>>(method!.Invoke(
+            engine,
+            new object[] { repairedErrors }));
+
+        Assert.Empty(issues);
+    }
+
+    [Theory]
+    [InlineData("actor_thought_journal_not_first_person", "game_state/meta/guardian_thought_journal.json.entries[0].summary")]
+    [InlineData("flexible_state_unknown_top_level_key", "game_state/meta/guardian_thought_journal.json.schemaVersion")]
+    public async Task CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues_OtherActorMemoryRepairsDoNotRequireNarrativeRewrite(
+        string issueCode,
+        string issuePath)
+    {
+        await WriteJsonAsync("output/narrative_response.json", new
+        {
+            response = "Элиара объясняет, как сохранить память.",
+            timestamp = "2026-07-10T07:30:00Z"
+        });
+        await WriteJsonAsync("output/interface_updates.json", new
+        {
+            dialogueOptions = new[]
+            {
+                new { text = "Задать следующий вопрос", inputValue = "Спросить Элиару ещё раз." }
+            },
+            timestamp = "2026-07-10T07:30:00Z"
+        });
+        await WriteJsonAsync("game_state/control/validation_repair_request.json", new
+        {
+            sessionId = "actor-memory-test",
+            requestId = "actor-memory-repair",
+            turnNumber = 2
+        });
+
+        var outputWrittenAt = new DateTime(2026, 7, 10, 7, 30, 0, DateTimeKind.Utc);
+        var requestWrittenAt = outputWrittenAt.AddMinutes(1);
+        File.SetLastWriteTimeUtc(_fs.ResolvePath("output/narrative_response.json"), outputWrittenAt);
+        File.SetLastWriteTimeUtc(_fs.ResolvePath("output/interface_updates.json"), outputWrittenAt);
+        File.SetLastWriteTimeUtc(_fs.ResolvePath("game_state/control/validation_repair_request.json"), requestWrittenAt);
+
+        var repairedErrors = new List<ValidationIssue>
+        {
+            new(
+                issuePath,
+                IssueSeverity.Error,
+                "Внутренняя память Хранителя требует узкой правки.",
+                code: issueCode,
+                actor: "Хранительница Элиара Карт Невозвращения",
+                section: "actor_memory")
+        };
+        var engine = CreateGameEngine();
+        var method = typeof(GameEngine).GetMethod(
+            "CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.NotNull(method);
+        var issues = Assert.IsType<List<ValidationIssue>>(method!.Invoke(
+            engine,
+            new object[] { repairedErrors }));
+
+        Assert.Empty(issues);
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_GuardianScopeErrors_AddsConcreteHarnessRepairPacket()
     {
         var engine = CreateGameEngine();
@@ -1570,6 +1678,291 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(
             packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
             item => item.Contains("Complete-BoeValidationRepair", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_FullActorBrainErrors_AddsDecisionAuditTemplate()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                "Отсутствуют данные профиля",
+                code: "actor_brain_missing_profile_inputs",
+                actor: "Иветта",
+                section: "npc_reasoning",
+                expected: "Profile inputs / Данные профиля",
+                actual: "missing"),
+            new(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                "Отсутствует сравнение стратегий",
+                code: "actor_brain_missing_strategy_tradeoffs",
+                actor: "Иветта",
+                section: "npc_reasoning",
+                expected: "two strategies with Benefit/Risk",
+                actual: "missing"),
+            new(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                "Отсутствует выбранная стратегия",
+                code: "actor_brain_missing_chosen_strategy",
+                actor: "Иветта",
+                section: "npc_reasoning",
+                expected: "Chosen strategy",
+                actual: "missing")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        using var doc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/control/validation_repair_request.json"))!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("actor_reasoning_subpoint_repair", packet.GetProperty("kind").GetString());
+        var template = packet.GetProperty("debugLogTemplate").GetString() ?? string.Empty;
+        Assert.Contains("- Данные профиля:", template, StringComparison.Ordinal);
+        Assert.Contains("- Мотивация:", template, StringComparison.Ordinal);
+        Assert.Contains("- Ограничения:", template, StringComparison.Ordinal);
+        Assert.Contains("- Варианты стратегий:", template, StringComparison.Ordinal);
+        Assert.Contains("Выгода:", template, StringComparison.Ordinal);
+        Assert.Contains("Риск:", template, StringComparison.Ordinal);
+        Assert.Contains("- Выбранная стратегия:", template, StringComparison.Ordinal);
+        Assert.Contains("- Почему альтернативы отвергнуты:", template, StringComparison.Ordinal);
+        Assert.Contains("- Изменения состояния:", template, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_ActorMemoryErrors_AddsNarrowPersistencePacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/guardians.json.guardians[guard_elara].musings",
+                IssueSeverity.Error,
+                "Хранитель не записал мысль",
+                code: "guardian_relevant_actor_missing_thought_journal_delta",
+                actor: "Элиара",
+                section: "actor_memory"),
+            new(
+                "game_state/npcs/npc_journals.json",
+                IssueSeverity.Error,
+                "NPC не записал мысль",
+                code: "mortal_npc_relevant_actor_missing_thought_journal_delta",
+                actor: "Иветта",
+                section: "actor_memory"),
+            new(
+                "game_state/meta/guardian_abode_residents.json",
+                IssueSeverity.Error,
+                "Житель не записал мысль",
+                code: "afterlife_resident_relevant_actor_missing_thought_journal_delta",
+                actor: "Лиора",
+                section: "actor_memory")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        using var doc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/control/validation_repair_request.json"))!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("actor_memory_persistence_repair", packet.GetProperty("kind").GetString());
+        var targetFiles = packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()).ToArray();
+        Assert.Contains(GuardianThoughtJournalState.StatePath, targetFiles);
+        Assert.DoesNotContain("game_state/meta/guardians.json", targetFiles);
+        Assert.Contains("game_state/npcs/npc_journals.json", targetFiles);
+        Assert.Contains("game_state/meta/guardian_abode_residents.json", targetFiles);
+        Assert.Contains("output/debug_logs.json", targetFiles);
+        Assert.DoesNotContain("output/narrative_response.json", targetFiles);
+        Assert.Contains(
+            packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
+            item => item.Contains("Изменения состояния", StringComparison.OrdinalIgnoreCase) &&
+                    item.Contains("journal", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(
+            packet.GetProperty("safeCorrectionRules").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
+            item => item.Contains("first-person", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(
+            packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
+            item => item.Contains("\"entries\"", StringComparison.Ordinal) &&
+                    item.Contains("\"guardianId\"", StringComparison.Ordinal));
+        Assert.Contains(
+            packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
+            item => item.Contains("schemaVersion", StringComparison.Ordinal) &&
+                    item.Contains("guardianThoughtJournalUpdates", StringComparison.Ordinal));
+        Assert.Contains(
+            packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
+            item => item.Contains("unrelated", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_GuardianJournalShapeErrors_StayInActorMemoryPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/guardian_thought_journal.json",
+                IssueSeverity.Error,
+                "Файл не содержит ни одного допустимого top-level ключа для своего контракта",
+                code: "strict_state_missing_allowed_top_level_key",
+                section: "StateFiles",
+                expected: "entries",
+                actual: "schemaVersion, guardianThoughtJournalUpdates"),
+            new(
+                "game_state/meta/guardian_thought_journal.json.schemaVersion",
+                IssueSeverity.Error,
+                "Недопустимый top-level ключ: schemaVersion",
+                code: "flexible_state_unknown_top_level_key",
+                section: "StateFiles",
+                expected: "entries, guardianThoughtJournalUpdates",
+                actual: "schemaVersion")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 2 })!);
+
+        await task;
+
+        using var doc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/control/validation_repair_request.json"))!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("actor_memory_persistence_repair", packet.GetProperty("kind").GetString());
+        var targetFiles = packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()).ToArray();
+        Assert.Contains(GuardianThoughtJournalState.StatePath, targetFiles);
+        Assert.Contains("output/debug_logs.json", targetFiles);
+        Assert.DoesNotContain("game_state/control/mortal_bootstrap_scaffold.json", targetFiles);
+        Assert.DoesNotContain(targetFiles, path => path?.Contains("schemaVersion", StringComparison.Ordinal) == true);
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_ShiningFactionMemoryError_TargetsFactionMemorySurface()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                ShiningAbodeState.StatePath,
+                IssueSeverity.Error,
+                "Сияющая фракция не обновила стратегическую память",
+                code: "shining_faction_relevant_actor_missing_strategic_memory_delta",
+                actor: "Орден Рассвета",
+                section: "actor_memory")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        using var doc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/control/validation_repair_request.json"))!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("actor_memory_persistence_repair", packet.GetProperty("kind").GetString());
+        var targetFiles = packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()).ToArray();
+        Assert.Contains(ShiningAbodeState.StatePath, targetFiles);
+        Assert.Contains("output/debug_logs.json", targetFiles);
+        Assert.Equal(2, targetFiles.Length);
+        Assert.Contains(
+            packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
+            item => item.Contains(ShiningAbodeState.FactionChronicleUpdatesProperty, StringComparison.Ordinal) &&
+                    !item.Contains(ShiningAbodeState.FactionStrategicMemoryUpdatesProperty, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_AfterlifeActorWithoutMemoryOwner_OffersMaterializeOrDescopeRepair()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                "Актор не имеет canonical memory owner",
+                code: "afterlife_relevant_actor_missing_canonical_memory_owner",
+                actor: "Безымянный Советник",
+                section: "actor_memory")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        using var doc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/control/validation_repair_request.json"))!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("afterlife_entity_profile_scaffold_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains(
+            AfterlifeEntityProfileState.StatePath,
+            packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Contains(
+            packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty),
+            item => item.Contains("material", StringComparison.OrdinalIgnoreCase) &&
+                    item.Contains("relevant actors", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_DirectlyAddressedActorScopeError_UsesFullActorBrainScopePacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                "Прямо названный NPC отсутствует в scope",
+                code: "directly_addressed_actor_missing_from_scope",
+                actor: "Иветта",
+                section: "npc_scope")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "обработки хода", issues, 1 })!);
+
+        await task;
+
+        using var doc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/control/validation_repair_request.json"))!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("npc_scope_declaration_repair", packet.GetProperty("kind").GetString());
+        Assert.Contains("Иветта", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+        var template = packet.GetProperty("debugLogTemplate").GetString() ?? string.Empty;
+        Assert.Contains("- Данные профиля:", template, StringComparison.Ordinal);
+        Assert.Contains("- Варианты стратегий:", template, StringComparison.Ordinal);
+        Assert.Contains("Выгода:", template, StringComparison.Ordinal);
+        Assert.Contains("Риск:", template, StringComparison.Ordinal);
+        Assert.Contains("- Изменения состояния:", template, StringComparison.Ordinal);
     }
 
     [Fact]

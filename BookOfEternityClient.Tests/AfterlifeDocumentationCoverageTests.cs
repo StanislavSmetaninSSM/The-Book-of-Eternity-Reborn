@@ -1784,18 +1784,96 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("harnessRepairPackets", doc, StringComparison.Ordinal);
             Assert.Contains("guardian_scope_repair", doc, StringComparison.Ordinal);
             Assert.Contains("actor_reasoning_subpoint_repair", doc, StringComparison.Ordinal);
+            Assert.Contains("actor_memory_persistence_repair", doc, StringComparison.Ordinal);
             Assert.Contains("activeGuardian", doc, StringComparison.Ordinal);
             Assert.Contains("guardians[]", doc, StringComparison.Ordinal);
             Assert.Contains("guardian_projects.json", doc, StringComparison.Ordinal);
             Assert.Contains("Ситуация:", doc, StringComparison.Ordinal);
             Assert.Contains("Мысли:", doc, StringComparison.Ordinal);
             Assert.Contains("Действия:", doc, StringComparison.Ordinal);
+            Assert.Contains("Данные профиля:", doc, StringComparison.Ordinal);
+            Assert.Contains("Мотивация:", doc, StringComparison.Ordinal);
+            Assert.Contains("Ограничения:", doc, StringComparison.Ordinal);
+            Assert.Contains("Варианты стратегий:", doc, StringComparison.Ordinal);
+            Assert.Contains("Выгода:", doc, StringComparison.Ordinal);
+            Assert.Contains("Риск:", doc, StringComparison.Ordinal);
+            Assert.Contains("Выбранная стратегия:", doc, StringComparison.Ordinal);
+            Assert.Contains("Изменения состояния:", doc, StringComparison.Ordinal);
+            Assert.Contains("shiningFactionStrategicMemoryUpdates", doc, StringComparison.Ordinal);
+            Assert.Contains("shiningFactionChronicleUpdates", doc, StringComparison.Ordinal);
+            Assert.Contains("afterlife_entity_profiles.json", doc, StringComparison.Ordinal);
+            Assert.Contains("canonical memory owner", doc, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("implementation code", doc, StringComparison.OrdinalIgnoreCase);
         }
 
         Assert.Contains("canonicalActorNames", examples, StringComparison.Ordinal);
         Assert.Contains("debugLogTemplate", examples, StringComparison.Ordinal);
         Assert.Contains("materialized mirrors", examples, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void PrimaryAfterlifeAcceptedExamplesUseFullActorBrainAndOwnedMemorySurfaces()
+    {
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var repairPacket = ExtractRequiredSection(
+            examples,
+            "\"kind\": \"actor_memory_persistence_repair\"",
+            "\"safeCorrectionRules\"");
+        Assert.Contains(GuardianThoughtJournalState.StatePath, repairPacket, StringComparison.Ordinal);
+        Assert.Contains("output/debug_logs.json", repairPacket, StringComparison.Ordinal);
+        Assert.Contains("expectedShape", repairPacket, StringComparison.Ordinal);
+        Assert.Contains("entries[]", repairPacket, StringComparison.Ordinal);
+        Assert.DoesNotContain("game_state/meta/guardians.json", repairPacket, StringComparison.Ordinal);
+        Assert.Contains(
+            "do not persist schemaVersion or a guardianThoughtJournalUpdates-only root",
+            examples,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "does not invalidate or rewrite `output/narrative_response.json` / `output/interface_updates.json`",
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "First materialization of a resident, entity, political actor, or faction",
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "bind the decision and memory delta to that exact stable actor id",
+            ReadRepoFile("OtherGuides", "Actor_Brain_2_0.md"),
+            StringComparison.Ordinal);
+
+        var chaosScenario = ExtractRequiredSection(
+            examples,
+            "1. VALID — CHAOS SEA WITH CATCH-UP, GUARDIAN PROJECT, RESIDENT REQUEST",
+            "2. VALID — ACTIVE SHINING ABODE WITH CORE ACTION, FACTION, TRADE, RESIDENT AGENCY");
+        var shiningScenario = ExtractRequiredSection(
+            examples,
+            "2. VALID — ACTIVE SHINING ABODE WITH CORE ACTION, FACTION, TRADE, RESIDENT AGENCY",
+            "3. VALID — SHINING ABODE PENDING-BOOTSTRAP HANDOFF");
+        var guardianTradeScenario = ExtractRequiredSection(
+            examples,
+            "4. VALID — CHAOS SEA GUARDIAN TRADE REQUEST",
+            "5. VALID — CHAOS SEA ARCHIVE CONSULTATION AND PROJECT FUEL REQUESTS");
+
+        foreach (var scenario in new[] { chaosScenario, shiningScenario, guardianTradeScenario })
+        {
+            Assert.Contains("- Данные профиля:", scenario, StringComparison.Ordinal);
+            Assert.Contains("- Мотивация:", scenario, StringComparison.Ordinal);
+            Assert.Contains("- Ограничения:", scenario, StringComparison.Ordinal);
+            Assert.Contains("- Варианты стратегий:", scenario, StringComparison.Ordinal);
+            Assert.Contains("Выгода:", scenario, StringComparison.Ordinal);
+            Assert.Contains("Риск:", scenario, StringComparison.Ordinal);
+            Assert.Contains("- Выбранная стратегия:", scenario, StringComparison.Ordinal);
+            Assert.Contains("- Почему альтернативы отвергнуты:", scenario, StringComparison.Ordinal);
+            Assert.Contains("- Изменения состояния:", scenario, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("guardianThoughtJournalUpdates", chaosScenario, StringComparison.Ordinal);
+        Assert.Contains("residentThoughtJournalUpdates", chaosScenario, StringComparison.Ordinal);
+        Assert.Contains("shiningFactionStrategicMemoryUpdates", shiningScenario, StringComparison.Ordinal);
+        Assert.Contains("guardianThoughtJournalUpdates", shiningScenario, StringComparison.Ordinal);
+        Assert.Contains("residentThoughtJournalUpdates", shiningScenario, StringComparison.Ordinal);
+        Assert.Contains("guardianThoughtJournalUpdates", guardianTradeScenario, StringComparison.Ordinal);
     }
 
     [Fact]

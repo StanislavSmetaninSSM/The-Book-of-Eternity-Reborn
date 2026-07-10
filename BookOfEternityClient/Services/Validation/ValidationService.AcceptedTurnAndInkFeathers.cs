@@ -7688,11 +7688,36 @@ public partial class ValidationService
 
         var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
         var guardianIdentityContext = BuildGuardianReasoningIdentityContext(guardianPolicyContext);
+        CoalesceCanonicalGuardianAliasesInScope(scope, guardianIdentityContext);
         var structuredActorExtraction = await CollectStructuredActorUpdatesAsync(guardianPolicyContext);
         var structuredActorUpdates = structuredActorExtraction.Updates;
         ValidateStructuredActorUpdatesAgainstScope(scope, structuredActorUpdates, issues);
         var mortalPlayerScopeAliases = await ReadMortalPlayerScopeActorAliasesAsync();
         var mortalPersistentActorAliases = await ReadMortalPersistentActorAliasesAsync();
+        var playerAction = await TryReadStringPropertyFromJsonFileAsync("input/turn_request.json", "playerAction");
+        var explicitTargetActorIds = ResolveExplicitTargetActorIds(playerAction ?? string.Empty);
+        var directlyAddressedActors = await ResolveCanonicalActorsMentionedInPlayerActionAsync(
+            playerAction,
+            mortalPlayerScopeAliases);
+        ValidateDirectlyAddressedActorsAgainstScope(scope, directlyAddressedActors, issues);
+        var actorsRequiringDecisionAudit = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (!string.IsNullOrWhiteSpace(playerAction))
+        {
+            foreach (var actor in scope.RelevantActors.Where(actor =>
+                         !IsPlayerScopeActor(actor, mortalPlayerScopeAliases)))
+            {
+                actorsRequiringDecisionAudit.Add(actor);
+            }
+        }
+        foreach (var actor in directlyAddressedActors)
+            actorsRequiringDecisionAudit.Add(actor);
+        foreach (var update in structuredActorUpdates.Where(update =>
+                     update.HasResolvedName ||
+                     !string.Equals(update.ActorType, "Guardian", StringComparison.OrdinalIgnoreCase)))
+        {
+            if (!IsPlayerScopeActor(update.DisplayName, mortalPlayerScopeAliases))
+                actorsRequiringDecisionAudit.Add(update.DisplayName);
+        }
         ValidateMortalRelevantActorsHavePersistence(
             await TryResolveCurrentRealmAsync(),
             scopeMode,
@@ -7713,6 +7738,29 @@ public partial class ValidationService
         var guardianScopeSnapshotContext = requiresGuardianScopeValidation
             ? await ResolveGuardianValidatedSnapshotContextAsync()
             : new GuardianValidatedSnapshotContext(ValidatedPendingTurnSnapshotStatus.Missing, null, null);
+        var actorMemorySnapshotContext = actorsRequiringDecisionAudit.Count > 0
+            ? requiresGuardianScopeValidation
+                ? guardianScopeSnapshotContext
+                : await ResolveGuardianValidatedSnapshotContextAsync()
+            : new GuardianValidatedSnapshotContext(ValidatedPendingTurnSnapshotStatus.Missing, null, null);
+
+        if (actorsRequiringDecisionAudit.Count > 0 &&
+            actorMemorySnapshotContext.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable)
+        {
+            foreach (var actorName in actorsRequiringDecisionAudit)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/control/pending_turn_snapshot.json",
+                    IssueSeverity.Error,
+                    $"Нельзя доказать append-only журнал значимой реакции актора '{actorName}' без current validated pre-turn snapshot.",
+                    code: "actor_memory_invalid_validated_snapshot_context",
+                    actor: actorName,
+                    section: "actor_memory",
+                    expected: "current validated pending turn snapshot with matching request metadata and pre-turn canonical actor state",
+                    actual: DescribeValidatedPendingTurnSnapshotStatus(actorMemorySnapshotContext.SnapshotStatus),
+                    repairHint: "Это client-owned authority. Не редактируй snapshot вручную: клиент должен восстановить matching pre-turn snapshot или откатить текущий ход до повторной обработки."));
+            }
+        }
 
         if (requiresGuardianScopeValidation &&
             guardianScopeSnapshotContext.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable)
@@ -7845,12 +7893,59 @@ public partial class ValidationService
                 repairHint: "В guardian-centric режиме включи активного Хранителя в список релевантных акторов."));
         }
 
-        foreach (var actorName in scope.RelevantActors)
+        var actorsRequiringReasoningBlocks = scope.RelevantActors
+            .Concat(actorsRequiringDecisionAudit)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        foreach (var actorName in actorsRequiringReasoningBlocks)
         {
             var requiresNpcLocationAudit = knownNpcActorAliases.Contains(actorName) &&
                                            !activeGuardianNames.Contains(actorName);
-            ValidateActorReasoningBlock(normalizedThoughts, actorName, actorType, requiresNpcLocationAudit, issues);
+            var requiresFullDecisionAudit = actorsRequiringDecisionAudit.Contains(actorName);
+            ValidateActorReasoningBlock(
+                normalizedThoughts,
+                actorName,
+                actorType,
+                requiresNpcLocationAudit,
+                requiresFullDecisionAudit,
+                issues);
         }
+
+        await ValidateRelevantGuardianMusingDeltasAsync(
+            normalizedThoughts,
+            actorsRequiringDecisionAudit,
+            explicitTargetActorIds,
+            guardianIdentityContext,
+            actorMemorySnapshotContext,
+            issues);
+        await ValidateRelevantMortalNpcThoughtJournalDeltasAsync(
+            normalizedThoughts,
+            actorsRequiringDecisionAudit,
+            explicitTargetActorIds,
+            actorMemorySnapshotContext,
+            issues);
+        await ValidateRelevantAfterlifeResidentThoughtJournalDeltasAsync(
+            normalizedThoughts,
+            actorsRequiringDecisionAudit,
+            explicitTargetActorIds,
+            actorMemorySnapshotContext,
+            issues);
+        await ValidateRelevantAfterlifeEntityMemoryLedgerDeltasAsync(
+            normalizedThoughts,
+            actorsRequiringDecisionAudit,
+            explicitTargetActorIds,
+            actorMemorySnapshotContext,
+            issues);
+        await ValidateRelevantShiningFactionMemoryDeltasAsync(
+            normalizedThoughts,
+            actorsRequiringDecisionAudit,
+            explicitTargetActorIds,
+            actorMemorySnapshotContext,
+            issues);
+        await ValidateRelevantAfterlifeActorsHaveCanonicalMemoryOwnersAsync(
+            actorsRequiringDecisionAudit,
+            actorMemorySnapshotContext,
+            issues);
 
         return issues;
     }

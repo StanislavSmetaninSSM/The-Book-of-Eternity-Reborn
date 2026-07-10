@@ -674,6 +674,7 @@ function New-GmExperienceLesson {
     $hasAfterlifeConflictRewardIssue = $joinedIssues.Contains("afterlife_conflict_reward") -or
         $repairPacketText.Contains("afterlife_spiritual_conflict_reward_repair")
     $hasAfterlifeEntityProfileScaffoldIssue = $joinedIssues.Contains("afterlife_entity_profile") -or
+        $joinedIssues.Contains("afterlife_relevant_actor_missing_canonical_memory_owner") -or
         $joinedIssues.Contains("special_art_learning") -or
         $repairPacketText.Contains("afterlife_entity_profile_scaffold_repair")
     $hasGuardianPendingCreationMaterializationIssue = $joinedIssues.Contains("guardian_materialized_without_create_surface") -or
@@ -685,6 +686,15 @@ function New-GmExperienceLesson {
         $joinedIssues.Contains("guardian_trade_request_missing_inventory_resolution") -or
         $joinedIssues.Contains("guardian_trade_request_missing_receipt_resolution") -or
         $repairPacketText.Contains("guardian_trade_inventory_resolution_repair")
+    $hasActorReasoningIssue = $joinedIssues.Contains("actor_brain_missing_") -or
+        $joinedIssues.Contains("missing_actor_block") -or
+        $joinedIssues.Contains("missing_actor_situation") -or
+        $joinedIssues.Contains("missing_actor_thoughts") -or
+        $joinedIssues.Contains("missing_actor_actions") -or
+        $repairPacketText.Contains("actor_reasoning_subpoint_repair")
+    $hasActorMemoryPersistenceIssue = $joinedIssues.Contains("relevant_actor_missing_thought_journal_delta") -or
+        $joinedIssues.Contains("shining_faction_relevant_actor_missing_strategic_memory_delta") -or
+        $repairPacketText.Contains("actor_memory_persistence_repair")
     $fix = if ($hasIdleWithoutTerminalSignal) {
         "Use FIRST MORTAL BOOTSTRAP OUTPUT CHECKLIST and TURN_OUTPUT_TEMPLATE.md before broad docs. For first Mortal bootstrap, open game_state/control/mortal_bootstrap_scaffold.json and write the minimum complete output set: output/narrative_response.json, output/debug_logs.json with NPC Scope, output/interface_updates.json with clear choices, game_state/control/progression_report.json if progression counts are required, then finish with Complete-BoeTurn -FilesModified. Do not open large examples first and do not leave the player with no scene."
     }
@@ -698,7 +708,7 @@ function New-GmExperienceLesson {
         "Use MORTAL_FACTION_UPDATE_TEMPLATE.md before editing game_state/factions/*. For unknown faction ids, choose one explicit path: reference an existing canonical factionId from faction_core.json, create the missing faction as a complete factions[] object when the story truly introduced it, or remove/retarget sidecar entries that point to a faction that should not exist. Preserve ranks, branches, chronicles, relations, projects, resources, and reputation details; do not silence validation by deleting unrelated faction data."
     }
     elseif ($hasMortalNpcIssue) {
-        "Use MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json or game_state/npcs/npc_journals.json. Materialize meaningful Mortal World NPCs through UpdateNPCs/NPCsInScene as full objects with relationshipLock, goals, personalityTraits, attitude, and culturalStance in canonical shapes. Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; use a stable role-based visible name until the real name is learned. NPCsInScene is only for actors physically present in currentLocationData: voices behind a door, people near nearbyExitLocationId, nearby corridors, and route pressure stay in narrative/location/quest/faction memory or Actors outside scope until they are actually in the current scene. For NPCsInScene in a known current location, set currentLocationId to currentLocationData.locationId and initialLocationId to JSON null. For NPCsInScene in a same-turn new location, set initialLocationId to currentLocationData.initialId/newLocations.initialId and currentLocationId to JSON null. For NPCJournals, set lastJournalNote to the latest player-facing thought/observation and write journalEntries[] as objects with non-empty description, not as bare strings. If an NPC is only background-only color, move the name from Relevant actors to Actors outside scope instead of creating a partial NPC object."
+        "Use MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json or game_state/npcs/npc_journals.json. Materialize meaningful Mortal World NPCs through UpdateNPCs/NPCsInScene as full objects with relationshipLock, goals, personalityTraits, attitude, and culturalStance in canonical shapes. Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; use a stable role-based visible name until the real name is learned. NPCsInScene is only for actors physically present in currentLocationData: voices behind a door, people near nearbyExitLocationId, nearby corridors, and route pressure stay in narrative/location/quest/faction memory or Actors outside scope until they are actually in the current scene. For NPCsInScene in a known current location, set currentLocationId to currentLocationData.locationId and initialLocationId to JSON null. For NPCsInScene in a same-turn new location, set initialLocationId to currentLocationData.initialId/newLocations.initialId and currentLocationId to JSON null. For NPCJournals, set lastJournalNote to the latest first-person thought and append journalEntries[] objects with fresh entryId, non-empty first-person description, and timestamp. If an NPC is only background-only color, move the name from Relevant actors to Actors outside scope instead of creating a partial NPC object."
     }
     elseif ($hasMortalSkillIssue) {
         "Use MORTAL_SKILL_PROGRESSION_TEMPLATE.md before writing Mortal World training, skill unlocks, active skill use, or mastery updates. If harnessRepairPackets[].kind is mortal_skill_progression_shape_repair, repair activeSkillChanges, passiveSkillChanges, removeActiveSkills, removePassiveSkills, and skillMasteryChanges as arrays, even for a single changed skill; read pending_training_showcase_requests.json for paid lesson authority and do not charge resources again. Attribute-only checks may stay prose/math only, but prose-only learning must be avoided when the fiction says the player learned or practiced a concrete skill: create/update passiveSkillChanges or activeSkillChanges, and initialize/update skillMasteryChanges for active skills."
@@ -713,13 +723,19 @@ function New-GmExperienceLesson {
         "Use validation_repair_request.json.harnessRepairPackets[] kind afterlife_spiritual_conflict_reward_repair before editing game_state/meta/afterlife_spiritual_conflict_state.json. Currency rewardAudit is allowed only for resolved contested player victory with diceAudit.outcomeBand player_success or decisive_player_success. For negotiated, training-only, withdrawn, failed, or non-contested outcomes, remove rewardAudit and matching currency reward deltas while preserving learning, chronicle, relationship, and narrative consequences."
     }
     elseif ($hasAfterlifeEntityProfileScaffoldIssue) {
-        "Use validation_repair_request.json.harnessRepairPackets[] kind afterlife_entity_profile_scaffold_repair before editing game_state/meta/afterlife_entity_profiles.json. Patch the minimum profile scaffold in place: goals as object with goalId/shortTermGoal/longTermGoal/plan/gmThoughtsSummary/updatedAtTurn, progressionStrategy with strategyId/summary/priorityOrder/resourceReserve/allowedSpends/forbiddenSpends, ledger as array, and profileCommands.specialArtLearningReceipts with receiptId/artId/teacherActorType/teacherActorId/playerActorId/trainingConditionSatisfied/learnedAtTurn/roleplayEvidence/summary plus initialTier absent or 0."
+        "Use validation_repair_request.json.harnessRepairPackets[] kind afterlife_entity_profile_scaffold_repair before editing game_state/meta/afterlife_entity_profiles.json. Patch the minimum profile scaffold in place: goals as object with goalId/shortTermGoal/longTermGoal/plan/gmThoughtsSummary/updatedAtTurn, progressionStrategy with strategyId/summary/priorityOrder/resourceReserve/allowedSpends/forbiddenSpends, ledger as array, and profileCommands.specialArtLearningReceipts with receiptId/artId/teacherActorType/teacherActorId/playerActorId/trainingConditionSatisfied/learnedAtTurn/roleplayEvidence/summary plus initialTier absent or 0. For afterlife_relevant_actor_missing_canonical_memory_owner, materialize a complete profile only for a genuine actor; otherwise remove the invented/non-actor label from relevant actors and its standalone Actor Brain block."
     }
     elseif ($hasGuardianPendingCreationMaterializationIssue) {
         "Use validation_repair_request.json.harnessRepairPackets[] kind guardian_pending_creation_materialization_repair before broad Guardian scope examples. Read game_state/meta/guardians.json.pendingGuardianCreation as startup authority. For a New Game freeform startup request, write UpdateGuardians.create as the UpdateGuardians[] JSON array: UpdateGuardians = @(@{ command='create'; data=<full canonical Guardian> }); that create command is the authority. Start from harnessRepairPackets[].canonicalCreateSkeleton and allowedEnums, then make guardians[] + activeGuardian + chaosSeaNavigation match it and remove pendingGuardianCreation. Do not repair only materialized mirrors, do not keep pendingGuardianCreation as a pending-only fallback, do not delete it by itself, do not leave the Guardian only in prose, and do not rewrite the requested freeform Guardian into an unrelated preset or NPC."
     }
     elseif ($hasGuardianTradeInventoryResolutionIssue) {
         "Use validation_repair_request.json.harnessRepairPackets[] kind guardian_trade_inventory_resolution_repair before editing game_state/meta/guardians.json. Read game_state/control/pending_guardian_trade_request.json as read-only authority, keep it unchanged, patch the matching guardian.tradeInventory to the request returnCycleId/slot count/tier fields, and add a matching tradeInventoryReceipts/UpdateGuardianTradeInventoryReceipts ready receipt. Do not create a new turn, do not rewrite the pending request, and do not leave the vitrine only in prose."
+    }
+    elseif ($hasActorMemoryPersistenceIssue) {
+        "Use validation_repair_request.json.harnessRepairPackets[] kind actor_memory_persistence_repair. Persist the already chosen actor reaction in exactly the listed canonical memory surface. Guardian repair defaults to the packet-listed guardianThoughtJournalUpdates / guardian_thought_journal.json; when directly repairing that file, write its canonical top-level entries[] root. guardianThoughtJournalUpdates is a first-pass response command, not the on-disk root, and schemaVersion is unsupported in guardian_thought_journal.json. Do not touch guardians.json unless another current error explicitly lists it. First-pass authoring may still use UpdateGuardians.addMusings / guardians[].musings, but never duplicate the same reaction across both. Mortal NPCs use NPCJournals[].journalEntries[]; Guardian Abode residents use residentThoughtJournalUpdates; existing afterlife profiles append actor-owned ledger/progressionLedger even when gmThoughtsSummary changes; existing Shining factions append shiningFactionChronicleUpdates and never use a shiningFactionStrategicMemoryUpdates rewrite alone. Do not rewrite the scene, mutate old entries, or edit unrelated state."
+    }
+    elseif ($hasActorReasoningIssue) {
+        "Use ACTOR_REASONING_TEMPLATE.md and harnessRepairPackets[] kind actor_reasoning_subpoint_repair. For every listed non-player actor, write the full decision audit: current location, situation, profile inputs, motivation, constraints, internal thoughts, at least two numbered strategies each with Benefit/Risk, chosen strategy, rejected alternatives, actions, and exact state changes."
     }
     elseif ($hasMortalItemDurabilityIssue) {
         "Use VALIDATION_REPAIR_TEMPLATE.md and the current harnessRepairPackets before editing game_state/inventory/items.json. For item durability, write a percentage string such as 100% for intact items, never a bare number such as 100. Preserve the item and patch only the malformed durability/shape fields named by validation."
@@ -740,7 +756,7 @@ function New-GmExperienceLesson {
         "Open validation_repair_request.json.harnessRepairPackets first, patch only named files, then use the compact repair/template surface."
     }
     elseif ($preferredSurface -eq "ACTOR_REASONING_TEMPLATE.md") {
-        "Use NPC Scope plus separate Situation, Thoughts, and Actions bullets for every relevant canonical actor."
+        "Use NPC Scope plus the full Actor Brain decision audit for every relevant non-player actor: location, situation, profile inputs, motivation, constraints, thoughts, two strategies with Benefit/Risk, chosen strategy, rejected alternatives, actions, and state changes."
     }
     else {
         "Use the compact generated template before opening large examples or implementation source."
@@ -1343,7 +1359,7 @@ Never put `afterlifeChronicleUpdates` into `output/narrative_response.json`; aft
 
 ```json
 {
-  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local | World-progression | Guardian-centric | Mixed\n- Relevant actors: <actors or none>\n- Why relevant: <why these actors matter>\n- Actors outside scope: <actors or none>\n- Why outside scope: <why excluded actors do not matter>\n\n## Reasoning\n### <actor if any>\n- __ACTOR_LOCATION_LABEL__: where this actor is now and whether they stay there or relocate this turn.\n- __ACTOR_SITUATION_LABEL__: ...\n- __ACTOR_THOUGHTS_LABEL__: ...\n- __ACTOR_ACTIONS_LABEL__: ...",
+  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local | World-progression | Guardian-centric | Mixed\n- Relevant actors: <actors or none>\n- Why relevant: <why these actors matter>\n- Actors outside scope: <actors or none>\n- Why outside scope: <why excluded actors do not matter>\n\n## Actor Brain 2.0\n### <actor if any>\n- __ACTOR_LOCATION_LABEL__: ...\n- __ACTOR_SITUATION_LABEL__: ...\n- Данные профиля: ...\n- Мотивация: ...\n- Ограничения: ...\n- __ACTOR_THOUGHTS_LABEL__: ...\n- Варианты стратегий:\n  1. <strategy>. Выгода: ... Риск: ...\n  2. <strategy>. Выгода: ... Риск: ...\n- Выбранная стратегия: ...\n- Почему альтернативы отвергнуты: ...\n- __ACTOR_ACTIONS_LABEL__: ...\n- Изменения состояния: <exact canonical surfaces, including the actor's own thought journal when this actor reacts or decides>",
   "timestamp": "<ISO 8601 UTC timestamp>"
 }
 ```
@@ -1462,7 +1478,7 @@ only in `output/debug_logs.json` or repair evidence.
 
 ```json
 {
-  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local | World-progression | Guardian-centric | Mixed\n- Relevant actors: <actors or нет>\n- Why relevant: <short reason>\n- Actors outside scope: <actors or нет>\n- Why outside scope: <short reason>\n\n## Reasoning\n### <actor if any>\n- Ситуация: ...\n- Мысли: ...\n- Действия: ...",
+  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local | World-progression | Guardian-centric | Mixed\n- Relevant actors: <actors or нет>\n- Why relevant: <short reason>\n- Actors outside scope: <actors or нет>\n- Why outside scope: <short reason>\n\n## Actor Brain 2.0\n### <actor if any>\n- Текущая локация: ...\n- Ситуация: ...\n- Данные профиля: ...\n- Мотивация: ...\n- Ограничения: ...\n- Мысли: ...\n- Варианты стратегий:\n  1. <strategy>. Выгода: ... Риск: ...\n  2. <strategy>. Выгода: ... Риск: ...\n- Выбранная стратегия: ...\n- Почему альтернативы отвергнуты: ...\n- Действия: ...\n- Изменения состояния: ...",
   "timestamp": "<ISO 8601 UTC timestamp>"
 }
 ```
@@ -1561,6 +1577,8 @@ Use this before opening large examples for repair mode.
 - If an inventory item `durability` field is named, write a percentage string such as `100%`; never write a bare number such as `100`.
 - If an inventory item `journalEntries[]` field is named, write an array of non-empty strings, not objects; each entry is one player-facing note string without technical turn anchors such as `#[3].`.
 - If `game_state/npcs/npc_journals.json` or `NPCJournals[].journalEntries[]` is named, write `journalEntries[]` as objects with non-empty `description`; optional object fields are `timestamp`, `event`, `emotionalImpact`, and `relationshipChange`. Do not use the inventory item string-array shape for NPC journals.
+- If `harnessRepairPackets[].kind` is `actor_reasoning_subpoint_repair`, use its `debugLogTemplate` and complete every listed Actor Brain field. Every numbered strategy needs explicit `Выгода:` and `Риск:`; name the chosen strategy, rejected alternatives, and exact state changes.
+- If `harnessRepairPackets[].kind` is `actor_memory_persistence_repair`, persist one new current-turn actor-owned memory delta only to the listed state surface. Guardians/NPCs/residents use first-person journal entries; direct repair of `game_state/meta/guardian_thought_journal.json` writes its canonical top-level `entries[]` root, never `schemaVersion` or a `guardianThoughtJournalUpdates`-only root. Existing afterlife profiles append actor-owned `ledger`/`progressionLedger` even when `gmThoughtsSummary` changes; existing Shining factions append `shiningFactionChronicleUpdates`, never a `shiningFactionStrategicMemoryUpdates` rewrite alone. In packet-listed `output/debug_logs.json`, update only the same actor's `Изменения состояния:` line to name the journal command/surface actually used. This internal memory-only repair does not invalidate or rewrite narrative/interface output. Do not rewrite old entries or unrelated canonical state.
 - If a wrong-realm auto-rollback report exists, treat it as diagnostic evidence, not permission to rewrite mortal files from afterlife.
 - If `harnessRepairPackets[].kind` is `accepted_turn_output_artifact_repair`, use `OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md` and repair only the listed output artifacts (`output/narrative_response.json`, `output/interface_updates.json`, `output/debug_logs.json`) for the same turn; do not create a new turn and do not touch canonical game_state files unless canonical errors remain listed in the current request.
 - If validation reports `narrative_response_technical_repair_leak`, rewrite `output/narrative_response.json.response` as diegetic in-world prose only. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, storage shape, or that a technical state write succeeded.
@@ -1569,7 +1587,7 @@ Use this before opening large examples for repair mode.
 - If `harnessRepairPackets[].kind` is `afterlife_chronicle_string_array_repair`, repair the listed `persistentConsequences[]` / `openThreads[]` fields into arrays of non-empty strings; do not add `eventDescriptions[]`, do not substitute Mortal memory files, and do not create a new turn.
 - If `harnessRepairPackets[].kind` is `afterlife_spiritual_conflict_action_cost_repair`, repair the listed `actionCostAudit` / `actionEconomy` fields sequentially in the already written spiritual conflict file; do not create a new exchange, reroll dice, or edit pending snapshots.
 - If `harnessRepairPackets[].kind` is `afterlife_spiritual_conflict_reward_repair`, repair only the listed `rewardAudit` / currency reward fields in `game_state/meta/afterlife_spiritual_conflict_state.json`. Currency rewards require a contested player victory with `diceAudit.outcomeBand = player_success|decisive_player_success`; for negotiated, training-only, withdrawn, failed, or non-contested outcomes, remove `rewardAudit` and matching currency deltas while preserving valid learning/chronicle consequences.
-- If `harnessRepairPackets[].kind` is `afterlife_entity_profile_scaffold_repair`, repair `game_state/meta/afterlife_entity_profiles.json` in place. Keep `goals` as an object with goal fields and `updatedAtTurn`, add/repair `progressionStrategy`, keep `ledger` as an array, and complete `profileCommands.specialArtLearningReceipts[]` with required teacher/player fields and `initialTier` absent or `0`.
+- If `harnessRepairPackets[].kind` is `afterlife_entity_profile_scaffold_repair`, repair `game_state/meta/afterlife_entity_profiles.json` in place. Keep `goals` as an object with goal fields and `updatedAtTurn`, add/repair `progressionStrategy`, keep `ledger` as an array, and complete `profileCommands.specialArtLearningReceipts[]` with required teacher/player fields and `initialTier` absent or `0`. For `afterlife_relevant_actor_missing_canonical_memory_owner`, materialize a complete profile only for a genuine actor; otherwise remove the invented/non-actor label from relevant actors and its standalone Actor Brain block.
 - If `harnessRepairPackets[].kind` is `guardian_pending_creation_materialization_repair`, repair `game_state/meta/guardians.json` in place from `pendingGuardianCreation`. For a New Game freeform startup request, write `UpdateGuardians.create` as the `UpdateGuardians[]` JSON array: `"UpdateGuardians": [{ "command": "create", "data": <full canonical Guardian> }]`; the required marker is `command=create data=<full canonical Guardian>`, and that create command is the authority. Start from `harnessRepairPackets[].canonicalCreateSkeleton` and `harnessRepairPackets[].allowedEnums` before improvising missing lore text. Then make `guardians[]`, matching `activeGuardian`, and `chaosSeaNavigation.currentAbodeId` mirror that create result and remove `pendingGuardianCreation`. Do not repair only materialized mirrors, do not keep `pendingGuardianCreation` as a pending-only fallback, do not delete it by itself, and do not leave the Guardian only in prose.
 - If `harnessRepairPackets[].kind` is `guardian_trade_inventory_resolution_repair`, repair `game_state/meta/guardians.json` in place. Prefer the GM helper `Complete-BoeGuardianTradeInventoryRequest -RequestId '<requestId>' -Items <items>` after dot-sourcing `game_state/control/gm_turn_helper.bootstrap.ps1`; it computes canonical Guardian trade tiers/prices, writes `guardian.tradeInventory`, syncs `activeGuardian`, and adds `UpdateGuardianTradeInventoryReceipts`. If you must repair manually, read `game_state/control/pending_guardian_trade_request.json` as read-only authority, keep it unchanged, patch the matching `guardian.tradeInventory` to the request `returnCycleId`, reputation tier, bonus signature, and slot count, then add a matching ready receipt through `UpdateGuardianTradeInventoryReceipts` or `guardians[].tradeInventoryReceipts[]`. Do not create a new turn, do not rewrite the pending request, and do not leave Guardian trade stock only in prose.
 
@@ -1628,17 +1646,37 @@ Do not invent any other scope mode.
 ### <exact actor display name from state or packet>
 - __ACTOR_LOCATION_LABEL__: where this actor is now and whether they stay there or relocate this turn.
 - __ACTOR_SITUATION_LABEL__: what situation/current position makes this actor relevant.
+- Данные профиля: which profile traits, relationships, memories, role, domain, and current state affect this choice.
+- Мотивация: what this actor wants now and why.
+- Ограничения: what this actor cannot know, cannot do, or refuses to do.
 - __ACTOR_THOUGHTS_LABEL__: what the actor wants, fears, evaluates, or decides internally.
+- Варианты стратегий:
+  1. <distinct strategy>. Выгода: <benefit>. Риск: <risk>.
+  2. <distinct strategy>. Выгода: <benefit>. Риск: <risk>.
+- Выбранная стратегия: <final behavior>.
+- Почему альтернативы отвергнуты: <why the other options lose in this context>.
 - __ACTOR_ACTIONS_LABEL__: what changed, what the actor did, or why no state change was needed.
+- Изменения состояния: exact canonical surfaces changed; when the actor reacts or decides, include their own thought journal.
 
 ### <next exact actor display name>
 - __ACTOR_LOCATION_LABEL__: ...
 - __ACTOR_SITUATION_LABEL__: ...
+- Данные профиля: ...
+- Мотивация: ...
+- Ограничения: ...
 - __ACTOR_THOUGHTS_LABEL__: ...
+- Варианты стратегий:
+  1. ... Выгода: ... Риск: ...
+  2. ... Выгода: ... Риск: ...
+- Выбранная стратегия: ...
+- Почему альтернативы отвергнуты: ...
 - __ACTOR_ACTIONS_LABEL__: ...
+- Изменения состояния: ...
 ```
 
 For EVERY relevant NPC block, the current-location line is mandatory. If the actor is a player character or non-spatial afterlife locus, state that explicitly instead of deleting the line.
+
+For every relevant non-player actor that receives the player action, reacts, speaks, fights, negotiates, or otherwise chooses behavior, use the full block above. First materialization of an NPC, resident, afterlife entity, political actor, or faction is also a relevant actor touch and cannot stay outside scope. Persist the resulting subjective reaction in the actor's own canonical thought journal in the same turn. If routing metadata provides `npcId`, `residentId`, `guardianId`, `actorId`, or `factionId`, bind the journal delta to that exact stable actor id even when another actor shares the display name. For a Guardian, prefer `guardianThoughtJournalUpdates` / `guardian_thought_journal.json`; `UpdateGuardians.addMusings` / `guardians[].musings` remains a valid alternative, but never duplicate the same reaction across both. Mortal NPCs use `NPCJournals[].journalEntries[]`; residents use `residentThoughtJournalUpdates`.
 
 Use exact actor names from state/validation packets. Keep punctuation stable; do not add punctuation that is not present in the canonical actor name.
 Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; if they are visible, acting, clue-giving, or receiving a player action, treat them as role-identifiable NPC candidates and use `MORTAL_NPC_UPDATE_TEMPLATE.md`.
@@ -1675,6 +1713,8 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
 
 Use `game_state/npcs/npc_journals.json` when the player can later inspect what the NPC thought, noticed, promised, hid, or remembered.
 
+For a relevant NPC that receives a player action or makes a decision, append a fresh first-person current-turn entry in the same accepted turn. Never edit an old `journalEntries[]` object to imitate a new thought.
+
 NPC journal shape is not the same as inventory item journal shape:
 
 ```json
@@ -1686,7 +1726,8 @@ NPC journal shape is not the same as inventory item journal shape:
       "lastJournalNote": "<latest player-facing note>",
       "journalEntries": [
         {
-          "description": "<what this NPC thought, noticed, or remembered>",
+          "entryId": "npc_thought_<stable_current_turn_id>",
+          "description": "<concise first-person thought: what I noticed, feared, concluded, or intend>",
           "timestamp": "<ISO 8601 UTC timestamp>",
           "event": "<short optional event label>",
           "emotionalImpact": "<optional emotional shift>",

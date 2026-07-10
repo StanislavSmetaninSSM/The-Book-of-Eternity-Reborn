@@ -304,7 +304,8 @@ public partial class GameEngine
         IReadOnlyCollection<ValidationIssue> repairedErrors)
     {
         var canonicalRepairCodes = repairedErrors
-            .Where(IsCanonicalStateRepairIssue)
+            .Where(issue => IsCanonicalStateRepairIssue(issue) &&
+                            !IsPlayerFacingNeutralActorMemoryRepairIssue(issue))
             .Select(issue => string.IsNullOrWhiteSpace(issue.Code) ? issue.Category.ToString() : issue.Code!)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(code => code, StringComparer.OrdinalIgnoreCase)
@@ -351,6 +352,23 @@ public partial class GameEngine
         var path = NormalizeRepairTargetPath(issue.FilePath);
         return path.StartsWith("game_state/", StringComparison.OrdinalIgnoreCase) ||
                path.StartsWith("lore/", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsPlayerFacingNeutralActorMemoryRepairIssue(ValidationIssue issue)
+    {
+        if (IsGuardianThoughtJournalShapeRepairIssue(issue))
+            return true;
+
+        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
+        {
+            "guardian_relevant_actor_missing_thought_journal_delta" => true,
+            "mortal_npc_relevant_actor_missing_thought_journal_delta" => true,
+            "afterlife_resident_relevant_actor_missing_thought_journal_delta" => true,
+            "afterlife_entity_relevant_actor_missing_memory_ledger_delta" => true,
+            "shining_faction_relevant_actor_missing_strategic_memory_delta" => true,
+            "actor_thought_journal_not_first_person" => true,
+            _ => false
+        };
     }
 
     private async Task<bool> TryAutoRollbackRealmSegregationViolationsAsync(
@@ -1297,6 +1315,7 @@ public partial class GameEngine
             .Where(IsActorReasoningSubpointRepairIssue)
             .Where(issue => !guardianScopeActorNames.Contains(NormalizeRepairActorName(issue.Actor)))
             .ToList();
+        var actorMemoryPersistenceErrors = errors.Where(IsActorMemoryPersistenceRepairIssue).ToList();
         var factionIdentityErrors = errors.Where(IsFactionIdentityRepairIssue).ToList();
         var mortalFactionResourceErrors = errors.Where(IsMortalFactionResourceRepairIssue).ToList();
         var mortalBootstrapMaterializationErrors = errors.Where(IsMortalBootstrapMaterializationRepairIssue).ToList();
@@ -1334,6 +1353,9 @@ public partial class GameEngine
 
         if (actorReasoningSubpointErrors.Count > 0)
             packets.Add(BuildActorReasoningSubpointRepairPacket(actorReasoningSubpointErrors));
+
+        if (actorMemoryPersistenceErrors.Count > 0)
+            packets.Add(BuildActorMemoryPersistenceRepairPacket(actorMemoryPersistenceErrors, guardianActorNameHints));
 
         if (factionIdentityErrors.Count > 0)
             packets.Add(BuildFactionIdentityRepairPacket(factionIdentityErrors));
@@ -1416,11 +1438,40 @@ public partial class GameEngine
 
     private static bool IsActorReasoningSubpointRepairIssue(ValidationIssue issue)
     {
+        var code = issue.Code ?? string.Empty;
         return IsGuardianReasoningSection(issue.Section) &&
-               (string.Equals(issue.Code, "missing_actor_block", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(issue.Code, "missing_actor_situation", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(issue.Code, "missing_actor_thoughts", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(issue.Code, "missing_actor_actions", StringComparison.OrdinalIgnoreCase));
+               (string.Equals(code, "missing_actor_block", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(code, "missing_actor_situation", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(code, "missing_actor_thoughts", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(code, "missing_actor_actions", StringComparison.OrdinalIgnoreCase) ||
+                code.StartsWith("actor_brain_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsActorMemoryPersistenceRepairIssue(ValidationIssue issue)
+    {
+        return string.Equals(issue.Code, "guardian_relevant_actor_missing_thought_journal_delta", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "mortal_npc_relevant_actor_missing_thought_journal_delta", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "afterlife_resident_relevant_actor_missing_thought_journal_delta", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "afterlife_entity_relevant_actor_missing_memory_ledger_delta", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "shining_faction_relevant_actor_missing_strategic_memory_delta", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(issue.Code, "actor_thought_journal_not_first_person", StringComparison.OrdinalIgnoreCase) ||
+               IsGuardianThoughtJournalShapeRepairIssue(issue);
+    }
+
+    private static bool IsGuardianThoughtJournalShapeRepairIssue(ValidationIssue issue)
+    {
+        var path = NormalizeRepairTargetPath(issue.FilePath);
+        if (!path.StartsWith(GuardianThoughtJournalState.StatePath, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
+        {
+            "strict_state_missing_allowed_top_level_key" => true,
+            "missing_allowed_top_level_key" => true,
+            "flexible_state_unknown_top_level_key" => true,
+            "expected_array" => true,
+            _ => false
+        };
     }
 
     private static bool IsAfterlifeChronicleStringArrayRepairIssue(ValidationIssue issue)
@@ -1539,6 +1590,11 @@ public partial class GameEngine
             "missing_out_of_scope_actors_field" => true,
             "missing_scope_out_of_scope_reason" => true,
             "missing_actor_reasoning_section" => true,
+            "directly_addressed_actor_missing_from_scope" => true,
+            "structured_resident_update_out_of_scope" => true,
+            "structured_shining_actor_update_out_of_scope" => true,
+            "structured_shining_faction_update_out_of_scope" => true,
+            "structured_afterlife_entity_update_out_of_scope" => true,
             _ => false
         };
     }
@@ -1566,7 +1622,7 @@ public partial class GameEngine
             "world_map_active_threat_missing_archetype" => true,
             "codex_related_entry_unknown_target" => true,
             "npc_contract_unknown_top_level_key" => true,
-            "flexible_state_unknown_top_level_key" => true,
+            "flexible_state_unknown_top_level_key" => IsMortalBootstrapGenericShapeRepairIssue(issue),
             "mortal_bootstrap_requested_teacher_missing" => true,
             "mortal_bootstrap_requested_trade_missing" => true,
             "missing_required_string" => IsMortalBootstrapGenericShapeRepairIssue(issue),
@@ -1716,7 +1772,8 @@ public partial class GameEngine
     private static bool IsAfterlifeEntityProfileScaffoldRepairIssue(ValidationIssue issue)
     {
         var code = issue.Code ?? string.Empty;
-        return code.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) ||
+        return string.Equals(code, "afterlife_relevant_actor_missing_canonical_memory_owner", StringComparison.OrdinalIgnoreCase) ||
+               code.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(code, "afterlife_entity_profile_agency_goals_not_object", StringComparison.OrdinalIgnoreCase) ||
                code.StartsWith("afterlife_entity_profile_agency_goal_", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(code, "afterlife_entity_profile_missing_progression_strategy", StringComparison.OrdinalIgnoreCase) ||
@@ -1835,6 +1892,9 @@ public partial class GameEngine
     private static ValidationRepairHarnessPacket BuildNpcScopeDeclarationRepairPacket(
         IReadOnlyList<ValidationIssue> npcScopeErrors)
     {
+        var actorNames = CollectRepairActorNames(npcScopeErrors)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
         var missingFields = npcScopeErrors
             .Select(issue => issue.Code ?? "npc_scope_validation_error")
             .Where(code => !string.IsNullOrWhiteSpace(code))
@@ -1865,7 +1925,7 @@ public partial class GameEngine
                 "The NPC Scope block must declare Mode, Relevant actors, Why relevant, Actors outside scope, and Why outside scope.",
                 "World-progression, Guardian-centric, and Mixed modes require at least one actor in Relevant actors.",
                 "Scene-local may use Relevant actors: нет / none only when no NPC, Guardian, faction, resident, opponent, or other actor-specific structured state changed.",
-                "If Relevant actors is not empty, add a reasoning section with a `### <actor name>` block for every listed actor."
+                "If Relevant actors is not empty, add a reasoning section with an exact `### <actor name>` block and a full Actor Brain decision audit for every listed actor."
             },
             SafeCorrectionRules = new List<string>
             {
@@ -1880,24 +1940,11 @@ public partial class GameEngine
                 "Replace or patch only gm_thoughts_markdown so it starts with a complete `## NPC Scope` block.",
                 "Choose the narrowest correct mode: Scene-local, World-progression, Guardian-centric, or Mixed.",
                 "Fill Relevant actors as comma-separated canonical names, or `нет` only if Scene-local and no actor-specific state changed.",
-                "Add one reasoning block per relevant actor with current location when applicable, situation, thoughts, and actions.",
+                "Add one full Actor Brain block per relevant actor using every field in debugLogTemplate, including two distinct strategies with explicit benefit/risk and exact state changes.",
                 "After the markdown is repaired, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from validation_repair_request.json."
             },
-            DebugLogTemplate = string.Join(
-                Environment.NewLine,
-                "## NPC Scope",
-                "- Mode: Scene-local | World-progression | Guardian-centric | Mixed",
-                "- Relevant actors: <actor name 1>, <actor name 2> OR нет",
-                "- Why relevant: <why these actors directly act, react, anchor the scene, or receive structured state>",
-                "- Actors outside scope: <names or нет>",
-                "- Why outside scope: <why other mentioned actors do not receive structured updates>",
-                "",
-                "## Reasoning",
-                "### <actor name>",
-                "- Current location: <where the actor is now, if applicable>",
-                "- Situation: <what changed or what the actor faces this turn>",
-                "- Thoughts: <short internal motive or reaction>",
-                "- Actions: <what the actor does or preserves this turn>"),
+            CanonicalActorNames = actorNames,
+            DebugLogTemplate = BuildNpcScopeDeclarationDebugLogTemplate(actorNames),
             DoNotDo = new List<string>
             {
                 "Do not create a new turn, reroll dice, advance time, or change the player choice while repairing NPC Scope.",
@@ -2270,8 +2317,11 @@ public partial class GameEngine
             Steps = new List<string>
             {
                 $"In output/debug_logs.json.gm_thoughts_markdown, repair or create a missing reasoning block for exactly these actors: {actorList}.",
-                "Inside every listed actor block, include separate bullet subpoints with these exact client-recognized labels: - Текущая локация:, - Ситуация:, - Мысли:, and - Действия:.",
+                "Inside every listed actor block, include separate bullet subpoints with these exact client-recognized labels: - Текущая локация:, - Ситуация:, - Данные профиля:, - Мотивация:, - Ограничения:, - Мысли:, - Варианты стратегий:, - Выбранная стратегия:, - Почему альтернативы отвергнуты:, - Действия:, and - Изменения состояния:.",
                 "Use - Текущая локация: to state where the NPC is now, whether it remains there, or whether it moves to a known current/same-turn location.",
+                "Under - Варианты стратегий: list at least two genuinely different numbered strategies; each strategy must explicitly contain Выгода: and Риск: on the same numbered line.",
+                "Name the final choice under - Выбранная стратегия: and explain why the other options lost under - Почему альтернативы отвергнуты:.",
+                "Under - Изменения состояния: name the exact canonical journal/state delta, or explicitly state that no state delta is justified; never hide an intended change only in prose.",
                 "Keep the actor heading shape as ### <actor name>. Do not merge the required subpoints into one paragraph or one bullet.",
                 "Preserve unrelated accepted debug log content and do not create a new turn.",
                 "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from the current validation_repair_request.json."
@@ -2282,6 +2332,106 @@ public partial class GameEngine
                 "Do not write ready/turn_complete.json for validation repair.",
                 "Do not use slash-only labels or a single combined sentence when the validator requested separate subpoints.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, the validation request, GM docs, and session files."
+            }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildActorMemoryPersistenceRepairPacket(
+        IReadOnlyList<ValidationIssue> actorMemoryErrors,
+        IReadOnlyCollection<string>? guardianActorNameHints = null)
+    {
+        var actorNames = CollectRepairActorNames(actorMemoryErrors, guardianActorNameHints)
+            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var targetFiles = actorMemoryErrors
+            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var hasGuardianMemoryError = actorMemoryErrors.Any(issue =>
+            string.Equals(issue.Code, "guardian_relevant_actor_missing_thought_journal_delta", StringComparison.OrdinalIgnoreCase) ||
+            IsGuardianThoughtJournalShapeRepairIssue(issue));
+        if (hasGuardianMemoryError)
+        {
+            targetFiles.RemoveAll(path =>
+                string.Equals(path, "game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith(GuardianThoughtJournalState.StatePath, StringComparison.OrdinalIgnoreCase));
+        }
+        if (hasGuardianMemoryError &&
+            !targetFiles.Contains(GuardianThoughtJournalState.StatePath, StringComparer.OrdinalIgnoreCase))
+        {
+            targetFiles.Add(GuardianThoughtJournalState.StatePath);
+        }
+
+        if (actorMemoryErrors.Any(issue =>
+                string.Equals(issue.Code, "mortal_npc_relevant_actor_missing_thought_journal_delta", StringComparison.OrdinalIgnoreCase)) &&
+            !targetFiles.Contains("game_state/npcs/npc_journals.json", StringComparer.OrdinalIgnoreCase))
+        {
+            targetFiles.Add("game_state/npcs/npc_journals.json");
+        }
+
+        if (actorMemoryErrors.Any(issue =>
+                string.Equals(issue.Code, "afterlife_resident_relevant_actor_missing_thought_journal_delta", StringComparison.OrdinalIgnoreCase)) &&
+            !targetFiles.Contains(GuardianAbodeResidentState.StatePath, StringComparer.OrdinalIgnoreCase))
+        {
+            targetFiles.Add(GuardianAbodeResidentState.StatePath);
+        }
+
+        if (!targetFiles.Contains("output/debug_logs.json", StringComparer.OrdinalIgnoreCase))
+            targetFiles.Add("output/debug_logs.json");
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "actor_memory_persistence_repair",
+            Priority = "high",
+            Title = "Relevant actor thought-journal persistence repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = new List<string>
+            {
+                "OtherGuides/Actor_Brain_2_0.md",
+                "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+                "OtherGuides/Afterlife_Contract_Matrix.md",
+                "Examples/E_CLI_Afterlife_Turns.txt"
+            },
+            CanonicalActorNames = actorNames,
+            ExpectedShape = new List<string>
+            {
+                "A relevant actor that evaluated the player action and chose a strategy must gain a new canonical thought-journal entry in the same accepted turn.",
+                $"Guardian memory repair writes canonical on-disk shape directly to {GuardianThoughtJournalState.StatePath}: {{ \"entries\": [ {{ \"entryId\": \"fresh-stable-id\", \"guardianId\": \"existing-guardian-id\", \"title\": \"short title\", \"summary\": \"Я ...\", \"turn\": <current turn>, \"timestamp\": \"ISO-8601 UTC\" }} ] }}. Preserve every old entry.",
+                "guardianThoughtJournalUpdates is a first-pass response command surface, not the sole top-level canonical repair shape for a newly created journal file.",
+                "Mortal NPC inner thoughts are appended to game_state/npcs/npc_journals.json NPCJournals[].journalEntries[] for the matching canonical NPC id/name.",
+                $"Guardian Abode resident inner thoughts are appended through {GuardianAbodeResidentState.UpdateThoughtJournalProperty} and normalize into {GuardianAbodeResidentState.ThoughtJournalProperty}.",
+                $"Other afterlife entity memory initializes gmThoughtsSummary when a profile is first materialized; every later decision appends ledger/progressionLedger evidence in {AfterlifeEntityProfileState.StatePath}, even when the current gmThoughtsSummary also changes.",
+                $"A newly created Shining faction may initialize {ShiningAbodeState.FactionStrategicMemoryProperty}; every later decision appends {ShiningAbodeState.FactionChronicleProperty} through {ShiningAbodeState.FactionChronicleUpdatesProperty} in {ShiningAbodeState.StatePath}."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Add one concise first-person thought describing the actor's reaction, conclusion, fear, intent, or changed expectation; keep the Actor Brain strategy audit in debug logs and the actor's subjective memory in canonical state.",
+                "Append a new entry with a fresh stable entryId/turn/timestamp where that journal contract supports them; do not mutate an old entry to imitate a new thought.",
+                "Use the actor id and display name already present in canonical state; do not create a duplicate actor or rename the actor during memory repair.",
+                "Patch only the listed actor journal surface and the matching Actor Brain state-change line in output/debug_logs.json; preserve the already accepted narrative, decision, relationships, inventory, currencies, and unrelated state."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json and use errors[].actor plus errors[].code to choose the exact journal surface.",
+                $"For Guardian thought-memory errors, append one valid first-person entry directly to the packet-listed {GuardianThoughtJournalState.StatePath} entries[] array. If the file is absent or malformed, create/repair the canonical root as {{ \"entries\": [...] }}; do not edit guardians.json unless a separate current repair error explicitly lists it.",
+                "For mortal_npc_relevant_actor_missing_thought_journal_delta, append a new journalEntries[] object to the matching NPCJournals record; keep the thought in first person.",
+                $"For afterlife_resident_relevant_actor_missing_thought_journal_delta, append a complete {GuardianAbodeResidentState.UpdateThoughtJournalProperty} entry for the matching residentId.",
+                "For afterlife_entity_relevant_actor_missing_memory_ledger_delta, append actor-owned ledger/progressionLedger evidence to an existing profile; gmThoughtsSummary-only memory is valid only while first materializing a new profile.",
+                $"For shining_faction_relevant_actor_missing_strategic_memory_delta, append one current-turn faction memory entry through {ShiningAbodeState.FactionChronicleUpdatesProperty}; preserve every previous chronicle entry. Do not treat a mutable strategicMemory rewrite as historical persistence for an existing faction.",
+                "In output/debug_logs.json, update only the listed actor's - Изменения состояния: line so it names the exact journal command and canonical journal surface that this repair actually used.",
+                "Do not rewrite output/narrative_response.json or re-resolve the actor decision; this repair persists the missing internal memory of the already authored response.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not replace the actor's first-person thought journal with an external chronicle, interaction log, or third-person scene summary.",
+                "Do not persist schemaVersion or a guardianThoughtJournalUpdates-only root in game_state/meta/guardian_thought_journal.json; the repaired canonical file must contain entries[].",
+                "Do not edit or delete previous journal entries; append a new entry for the current turn.",
+                "Do not modify unrelated actors, prose, quests, factions, inventory, combat, currencies, or world state.",
+                "Do not read implementation source to infer the repair; use this packet, its templateRefs, canonical state, and the validated repair request."
             }
         };
     }
@@ -3453,6 +3603,10 @@ public partial class GameEngine
         var issueSummary = issueDetails.Count == 0
             ? "see validation_repair_request.json.errors for exact profile fields and expected/actual values"
             : string.Join("; ", issueDetails);
+        var hasMissingMemoryOwner = profileErrors.Any(issue => string.Equals(
+            issue.Code,
+            "afterlife_relevant_actor_missing_canonical_memory_owner",
+            StringComparison.OrdinalIgnoreCase));
 
         return new ValidationRepairHarnessPacket
         {
@@ -3472,18 +3626,23 @@ public partial class GameEngine
                 "progressionStrategy is a required object with strategyId, summary, priorityOrder[], resourceReserve, allowedSpends[], forbiddenSpends[], and optional lastUpdatedAtTurn.",
                 "ledger is a required array; use [] when no visible profile events exist yet. progressionLedger is optional but must be an array of complete entries if present.",
                 "profileCommands.specialArtLearningReceipts[] entries require receiptId, artId, teacherActorType, teacherActorId, playerActorId, trainingConditionSatisfied=true, learnedAtTurn, roleplayEvidence, summary, and initialTier absent or 0.",
-                "A special-art learning receipt must not grant a higher tier; make sure the source teacher art canTeachPlayer=true."
+                "A special-art learning receipt must not grant a higher tier; make sure the source teacher art canTeachPlayer=true.",
+                "Every afterlife name kept in relevant actors as an independent decision-maker resolves to a canonical Guardian, resident, afterlife entity profile, or Shining faction with its own memory surface."
             },
             SafeCorrectionRules = new List<string>
             {
                 "Use validation_repair_request.json.errors as the immediate checklist; patch only the listed profile/receipt fields unless adjacent minimal scaffold is required to validate.",
                 "Repair missing profile scaffold in place; do not delete the profile, teacher, learned art, or relationship evidence to silence shape errors.",
+                "For a missing memory owner, either materialize the genuine independent actor with a stable id and complete afterlife profile, or remove a non-actor/invented label from relevant actors and its standalone Actor Brain block.",
                 "Use player-facing Russian prose in summaries/goals while keeping canonical JSON keys and enum-like values valid.",
                 "If special-art learning happened, preserve the learning proof and complete the receipt shape instead of converting it into unrelated narrative only."
             },
             Steps = new List<string>
             {
                 "Open game_state/control/validation_repair_request.json and game_state/meta/afterlife_entity_profiles.json first.",
+                hasMissingMemoryOwner
+                    ? "For afterlife_relevant_actor_missing_canonical_memory_owner, decide from existing canonical state whether the named independent actor is genuine: materialize it as a complete supported afterlife profile, or remove it from output/debug_logs.json relevant actors and the standalone Actor Brain block. Do not invent a profile merely to silence validation."
+                    : "Keep every already resolved canonical actor owner unchanged while repairing the listed profile fields.",
                 $"Patch this minimum profile scaffold and receipt checklist: {issueSummary}.",
                 "For every listed profile, make goals an object with goalId, shortTermGoal, longTermGoal, plan, gmThoughtsSummary, and updatedAtTurn; do not use an array for goals.",
                 "Add or repair progressionStrategy with strategyId, summary, priorityOrder[], resourceReserve, allowedSpends[], forbiddenSpends[], and lastUpdatedAtTurn when known.",
@@ -3935,6 +4094,8 @@ public partial class GameEngine
             return "game_state/meta/afterlife_chronicles.json";
         if (normalized.StartsWith("game_state/meta/afterlife_spiritual_conflict_state.json", StringComparison.OrdinalIgnoreCase))
             return "game_state/meta/afterlife_spiritual_conflict_state.json";
+        if (normalized.StartsWith(GuardianAbodeResidentState.StatePath, StringComparison.OrdinalIgnoreCase))
+            return GuardianAbodeResidentState.StatePath;
         if (normalized.StartsWith("game_state/world/current_location.json", StringComparison.OrdinalIgnoreCase))
             return "game_state/world/current_location.json";
         if (normalized.StartsWith("game_state/world/world_map.json", StringComparison.OrdinalIgnoreCase))
@@ -3946,6 +4107,7 @@ public partial class GameEngine
         foreach (var npcFile in new[]
                  {
                      "game_state/npcs/npc_core.json",
+                     "game_state/npcs/npc_journals.json",
                      "game_state/npcs/npc_interaction_journal.json",
                      "game_state/npcs/npc_masks.json",
                      "game_state/npcs/npc_memory.json"
@@ -3984,9 +4146,9 @@ public partial class GameEngine
         foreach (var actor in actorNames)
         {
             builder.AppendLine($"### {actor}");
+            builder.AppendLine("- Текущая локация: кратко укажи, где актор находится и остаётся ли он там или перемещается.");
             builder.AppendLine("- Ситуация: кратко опиши текущую ситуацию Хранителя в этом ходе.");
-            builder.AppendLine("- Мысли: кратко опиши мотивы/оценку Хранителя.");
-            builder.AppendLine("- Действия: кратко опиши, что Хранитель делает или меняет в состоянии.");
+            AppendFullActorBrainDecisionTemplate(builder);
             builder.AppendLine();
         }
 
@@ -4002,12 +4164,55 @@ public partial class GameEngine
             builder.AppendLine($"### {actor}");
             builder.AppendLine("- Текущая локация: кратко укажи, где NPC находится сейчас и остаётся ли он там или перемещается.");
             builder.AppendLine("- Ситуация: кратко опиши, в каком положении актор находится в этом ходе.");
-            builder.AppendLine("- Мысли: кратко опиши мотивы, оценку или внутреннюю реакцию актора.");
-            builder.AppendLine("- Действия: кратко опиши, что актор делает, решает или меняет в состоянии.");
+            AppendFullActorBrainDecisionTemplate(builder);
             builder.AppendLine();
         }
 
         return builder.ToString().TrimEnd();
+    }
+
+    private static string BuildNpcScopeDeclarationDebugLogTemplate(IReadOnlyList<string> actorNames)
+    {
+        var requiredActors = actorNames.Count > 0
+            ? actorNames
+            : new[] { "<actor name>" };
+        var actorList = actorNames.Count > 0
+            ? string.Join(", ", actorNames)
+            : "<actor name 1>, <actor name 2> OR нет only for a truly actorless Scene-local turn";
+        var builder = new StringBuilder();
+        builder.AppendLine("## NPC Scope");
+        builder.AppendLine("- Mode: Scene-local | World-progression | Guardian-centric | Mixed");
+        builder.AppendLine($"- Relevant actors: {actorList}");
+        builder.AppendLine("- Why relevant: <why these actors directly act, react, anchor the scene, or receive structured state>");
+        builder.AppendLine("- Actors outside scope: <names or нет>");
+        builder.AppendLine("- Why outside scope: <why other mentioned actors do not receive structured updates>");
+        builder.AppendLine();
+        builder.AppendLine("## Actor Brain 2.0");
+        foreach (var actor in requiredActors)
+        {
+            builder.AppendLine($"### {actor}");
+            builder.AppendLine("- Текущая локация: укажи, где актор находится и остаётся ли он там или перемещается.");
+            builder.AppendLine("- Ситуация: опиши, что актор воспринимает и решает в этом ходу.");
+            AppendFullActorBrainDecisionTemplate(builder);
+            builder.AppendLine();
+        }
+
+        return builder.ToString().TrimEnd();
+    }
+
+    private static void AppendFullActorBrainDecisionTemplate(StringBuilder builder)
+    {
+        builder.AppendLine("- Данные профиля: перечисли только релевантные черты, отношения, память, роль, домен и текущее состояние.");
+        builder.AppendLine("- Мотивация: чего актор хочет добиться именно сейчас и почему.");
+        builder.AppendLine("- Ограничения: чего актор не знает, не может или не станет делать.");
+        builder.AppendLine("- Мысли: кратко опиши внутреннюю оценку ситуации от лица актора.");
+        builder.AppendLine("- Варианты стратегий:");
+        builder.AppendLine("  1. <реально отличимая стратегия>. Выгода: <что получает актор>. Риск: <чем он рискует>.");
+        builder.AppendLine("  2. <реально отличимая стратегия>. Выгода: <что получает актор>. Риск: <чем он рискует>.");
+        builder.AppendLine("- Выбранная стратегия: назови итоговую линию поведения.");
+        builder.AppendLine("- Почему альтернативы отвергнуты: объясни, почему остальные стратегии хуже в текущем контексте.");
+        builder.AppendLine("- Действия: кратко опиши, что актор делает, решает или меняет.");
+        builder.AppendLine("- Изменения состояния: перечисли точные canonical surfaces, включая собственный журнал мыслей, или явно обоснуй отсутствие изменения.");
     }
 
     private async Task RunWorkerValidationRepairIfAvailableAsync(

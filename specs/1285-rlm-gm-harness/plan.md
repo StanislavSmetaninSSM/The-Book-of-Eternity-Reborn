@@ -61,6 +61,7 @@ Implement an RLM-inspired GM harness layer without adding unsafe arbitrary REPL 
 - #1419 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1419
 - #1420 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1420
 - #1485 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1485
+- #1486 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1486
 
 **Contract Scope**: GM-facing prompts, runtime-state, validation, docs, examples, agent-console, e2e.
 
