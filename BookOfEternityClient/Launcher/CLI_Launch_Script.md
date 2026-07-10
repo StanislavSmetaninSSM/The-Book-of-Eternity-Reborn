@@ -123,6 +123,7 @@ Read canonical `game_state/meta/soul_state.json.currentRealm`; the runtime also 
 ### PHASE 4: WRITE FILES
 1. Update game_state/ files as needed
 2. Write output/narrative_response.json: `{ "response": "narrative text", "timestamp": "ISO_8601" }`
+   - Use actual paragraph breaks. Never place literal PowerShell newline tokens such as backtick+n or backtick+r+backtick+n in `response`, dialogue `text`, or `inputValue`; helper normalization is only a safety fallback.
 3. If this turn changes `dialogueOptions` and/or `image_prompt`, write output/interface_updates.json: `{ "dialogueOptions": [...], "image_prompt": "...", "timestamp": "ISO_8601" }`; otherwise omit the file
    - Each dialogue option is an object with clean player-facing `text`; if an exact hidden submitted value or control tag is needed, put it in optional `inputValue`, not in `text`. Do not show `[AFTERLIFE_SPIRITUAL_ACTION: ...]`, `[INK_FEATHER_ACTION: ...]`, or other `*_ACTION` / `*_CONTROL` markers in player-facing `text`.
 4. Write output/debug_logs.json: `{ "gm_thoughts_markdown": "...", "timestamp": "ISO_8601" }`

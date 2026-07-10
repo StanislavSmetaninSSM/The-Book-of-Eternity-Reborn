@@ -1336,6 +1336,7 @@ Use this before opening large examples for ordinary live turns.
 ## Pre-turn validation guard
 
 - Always include timestamp in both output/narrative_response.json and output/debug_logs.json.
+- Use actual paragraph breaks in player-facing strings. Never place literal PowerShell newline tokens such as backtick+n or backtick+r+backtick+n in `response`, dialogue `text`, or `inputValue`; `Write-BoeJson` normalizes them only as a safety fallback.
 - Do not skip NPC Scope during incarnation bootstrap, even if the scene looks like a simple transition; write relevant actors or explicitly state that no actor is relevant.
 - Copy exact sessionId/requestId/turnNumber and include every processed-count field even when value is 0 when `progressionControl` requires a progression report.
 - If afterlife memory mentions a mortal destination, use localized player-facing realm terms in visible prose; do not write internal labels such as `MortalWorld`, `Mortal World`, `ChaosSea`, or `ShiningAbode`.
@@ -1495,6 +1496,7 @@ only in `output/debug_logs.json` or repair evidence.
 - Preserve the exact memory surface already used: Mortal NPC `NPCJournals[].journalEntries[]`; Guardian `guardianThoughtJournalUpdates` or `UpdateGuardians.addMusings`; resident `residentThoughtJournalUpdates`; existing afterlife entity `ledger/progressionLedger`; existing Shining faction `shiningFactionChronicleUpdates`. Never replace one with generic `state unchanged` wording.
 - If the accepted scope was genuinely actorless, preserve that actorless explanation and do not invent an actor.
 - Keep player-facing `text` clean; put exact machine input in `inputValue` only when needed.
+- Use actual paragraph breaks. Never place literal PowerShell newline tokens such as backtick+n or backtick+r+backtick+n in player-facing output; the helper/validator normalization is only a safety fallback.
 - Do not write `ready/turn_complete.json` in validation repair mode.
 - Do not search implementation source for output schema. This template and `validation_repair_request.json` are enough.
 

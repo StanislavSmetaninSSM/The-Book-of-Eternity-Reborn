@@ -7,7 +7,22 @@ JSON/PowerShell reminder:
 - write JSON/state files in UTF-8 explicitly
 - use `[ordered]@{}` and `@()` for data objects
 - never use `{ ... }` where you mean JSON data
+- use actual paragraph breaks in player-facing strings; Never place literal PowerShell newline tokens such as backtick+n or backtick+r+backtick+n in `response`, dialogue `text`, or `inputValue`
 - if JSON suddenly contains `Ast`, `StartPosition`, `Extent`, or `PipelineElements`, you serialized a PowerShell runtime object instead of game data
+
+Safe player-facing paragraph example:
+
+```powershell
+$narrative = [ordered]@{
+    response = @'
+Первый абзац сцены.
+
+Второй абзац сцены с настоящим переносом строки.
+'@
+    timestamp = [DateTimeOffset]::UtcNow.ToString('O')
+}
+Write-BoeJson -RelativePath 'output/narrative_response.json' -Data $narrative
+```
 
 ==================================================
 1. SCENE-LOCAL TURN WITH NPC SCOPE

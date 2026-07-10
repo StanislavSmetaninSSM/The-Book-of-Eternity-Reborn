@@ -627,6 +627,7 @@
                - these output/*.json files are fresh per-turn transient artifacts for the current request only
                - rewrite them fully for the current turn; do not append cross-turn history there and do not leave stale previous-turn payloads in place
                - for an ordinary accepted GM turn, `response` is mandatory and must be non-empty player-facing narrative text
+               - use actual paragraph breaks in player-facing strings; Never place literal PowerShell newline tokens such as backtick+n or backtick+r+backtick+n in `response`, dialogue `text`, or `inputValue` (the harness normalizer is only a safety fallback)
                - `output/narrative_response.json` and `output/debug_logs.json` must both include fresh ISO timestamps for the current request
                - `output/debug_logs.json.gm_thoughts_markdown` must include `## NPC Scope` on every accepted turn, including incarnation/bootstrap transitions; list relevant actors or explicitly state that no actor is relevant
                - Prose/state delta rule: if player-facing narrative or dialogue says a known player skill helped, was used, revealed a detail, or changed the result, the accepted turn must also include a matching skill state delta such as `skillMasteryChanges`, `activeSkillChanges`, or `passiveSkillChanges`. If no progress is intentionally granted, add `## Prose State Delta Rationale` in `gm_thoughts_markdown` and name the skill with a clear no-progress rationale.

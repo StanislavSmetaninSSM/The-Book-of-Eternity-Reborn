@@ -81,6 +81,10 @@ public partial class ValidationService
             return issues;
         }
 
+        json = await NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync(
+            "output/narrative_response.json",
+            json);
+
         try
         {
             using var doc = JsonDocument.Parse(json);
@@ -181,6 +185,35 @@ public partial class ValidationService
         }
 
         return issues;
+    }
+
+    private async Task<string> NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync(
+        string narrativePath,
+        string json)
+    {
+        try
+        {
+            if (JsonNode.Parse(json) is not JsonObject root ||
+                !root.TryGetPropertyValue("response", out var responseNode) ||
+                responseNode is not JsonValue responseValue ||
+                !responseValue.TryGetValue<string>(out var response))
+            {
+                return json;
+            }
+
+            var normalizedResponse = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(response);
+            if (string.Equals(response, normalizedResponse, StringComparison.Ordinal))
+                return json;
+
+            root["response"] = normalizedResponse;
+            var normalizedJson = SerializeAcceptedOutputPayload(root);
+            await _fs.WriteFileAtomicAsync(narrativePath, normalizedJson);
+            return normalizedJson;
+        }
+        catch (JsonException)
+        {
+            return json;
+        }
     }
 
     private static bool TryFindTechnicalRepairLeakInNarrative(string responseText, out string matchedText)
@@ -661,6 +694,7 @@ public partial class ValidationService
                 {
                     if (option is JsonValue value && value.TryGetValue<string>(out var text))
                     {
+                        text = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(text) ?? text;
                         var normalizedOption = new JsonObject
                         {
                             ["text"] = text
@@ -679,6 +713,8 @@ public partial class ValidationService
                     if (option is JsonObject optionObject)
                     {
                         var normalizedOption = optionObject.DeepClone().AsObject();
+                        if (TryNormalizeDialogueOptionLineBreakArtifacts(normalizedOption))
+                            changed = true;
                         if (TryNormalizeDialogueOptionControlTag(normalizedOption))
                             changed = true;
 
@@ -702,11 +738,7 @@ public partial class ValidationService
             if (!changed)
                 return json;
 
-            var normalizedJson = root.ToJsonString(new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            });
+            var normalizedJson = SerializeAcceptedOutputPayload(root);
             await _fs.WriteFileAtomicAsync(interfacePath, normalizedJson);
             return normalizedJson;
         }
@@ -714,6 +746,36 @@ public partial class ValidationService
         {
             return json;
         }
+    }
+
+    private static string SerializeAcceptedOutputPayload(JsonObject root) =>
+        root.ToJsonString(new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
+
+    private static bool TryNormalizeDialogueOptionLineBreakArtifacts(JsonObject option)
+    {
+        var changed = false;
+        foreach (var propertyName in new[] { "text", "inputValue" })
+        {
+            if (!option.TryGetPropertyValue(propertyName, out var node) ||
+                node is not JsonValue value ||
+                !value.TryGetValue<string>(out var text))
+            {
+                continue;
+            }
+
+            var normalized = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(text);
+            if (string.Equals(text, normalized, StringComparison.Ordinal))
+                continue;
+
+            option[propertyName] = normalized;
+            changed = true;
+        }
+
+        return changed;
     }
 
     private static bool TryGetString(JsonObject option, string propertyName, out string value)

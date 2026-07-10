@@ -137,6 +137,38 @@ public sealed class StateManagerTests
         }
     }
 
+    [Fact]
+    public async Task RefreshGameStateAsync_NarrativeResponse_NormalizesPowerShellLineBreakArtifacts()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await fs.WriteFileAtomicAsync("output/narrative_response.json", """
+            {
+              "response": "Первый абзац`n`nВторой абзац с `обычным` словом, `name`, `new value`, `value`Next и `value`Result маркерами`r`nТретья строка`nnext english line"
+            }
+            """);
+            var manager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+
+            await manager.RefreshGameStateAsync();
+
+            Assert.Equal("Первый абзац\n\nВторой абзац с `обычным` словом, `name`, `new value`, `value`Next и `value`Result маркерами\nТретья строка\nnext english line", manager.CurrentState.Narrative);
+            Assert.DoesNotContain("`n`n", manager.CurrentState.Narrative, StringComparison.Ordinal);
+            Assert.DoesNotContain("`r`n", manager.CurrentState.Narrative, StringComparison.Ordinal);
+            Assert.Contains("`обычным`", manager.CurrentState.Narrative, StringComparison.Ordinal);
+            Assert.Contains("`name`", manager.CurrentState.Narrative, StringComparison.Ordinal);
+            Assert.Contains("`new value`", manager.CurrentState.Narrative, StringComparison.Ordinal);
+            Assert.Contains("`value`Next", manager.CurrentState.Narrative, StringComparison.Ordinal);
+            Assert.Contains("`value`Result", manager.CurrentState.Narrative, StringComparison.Ordinal);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     [Theory]
     [InlineData(-1, 15)]
     [InlineData(0, 15)]

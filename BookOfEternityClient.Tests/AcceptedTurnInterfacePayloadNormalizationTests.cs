@@ -137,4 +137,27 @@ public sealed class AcceptedTurnInterfacePayloadNormalizationTests : IDisposable
             "[INK_FEATHER_ACTION: LEARN_SKILL] Изучить духовный приём.",
             option["inputValue"]!.GetValue<string>());
     }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnInterfacePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace()
+    {
+        await _fs.WriteFileAtomicAsync("output/interface_updates.json", """
+        {
+          "timestamp": "2026-07-10T18:11:08Z",
+          "dialogueOptions": [
+            {
+              "text": "Первая строка`nВторая строка",
+              "inputValue": "[ДЕЙСТВИЕ] Первая`r`nВторая"
+            }
+          ]
+        }
+        """);
+
+        await _validator.ValidateAcceptedTurnInterfacePayloadAsync();
+
+        var normalized = JsonNode.Parse((await _fs.ReadFileAsync("output/interface_updates.json"))!)!.AsObject();
+        var option = Assert.IsType<JsonObject>(Assert.Single(normalized["dialogueOptions"]!.AsArray()));
+        Assert.Equal("Первая строка\nВторая строка", option["text"]!.GetValue<string>());
+        Assert.Equal("[ДЕЙСТВИЕ] Первая\nВторая", option["inputValue"]!.GetValue<string>());
+    }
 }

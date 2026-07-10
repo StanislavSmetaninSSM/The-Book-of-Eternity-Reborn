@@ -2096,6 +2096,125 @@ function Assert-BoeNoUnauthorizedSystemGuardianBootstrapMutation {
     }
 }
 
+function Convert-BoePlayerFacingLineBreakArtifacts {
+    param(
+        [AllowNull()]
+        [object]$Value
+    )
+
+    if ($Value -isnot [string] -or [string]::IsNullOrEmpty([string]$Value)) {
+        return $Value
+    }
+
+    $text = ([string]$Value).Replace('`r`n', "`n").Replace('`n`n', "`n`n")
+    $backtick = [char]0x60
+    $protectedBackticks = New-Object 'bool[]' $text.Length
+    $lineStart = 0
+    while ($lineStart -lt $text.Length) {
+        $lineEnd = $lineStart
+        while ($lineEnd -lt $text.Length -and $text[$lineEnd] -ne [char]13 -and $text[$lineEnd] -ne [char]10) {
+            $lineEnd++
+        }
+
+        $positions = [System.Collections.Generic.List[int]]::new()
+        for ($scan = $lineStart; $scan -lt $lineEnd; $scan++) {
+            if ($text[$scan] -eq $backtick) {
+                $positions.Add($scan)
+            }
+        }
+
+        for ($positionIndex = $positions.Count - 1; $positionIndex -ge 0; $positionIndex--) {
+            $closingPosition = $positions[$positionIndex]
+            $isCandidate = $closingPosition + 1 -lt $text.Length -and $text[$closingPosition + 1] -cin @('n', 'r')
+            if ($protectedBackticks[$closingPosition] -or $isCandidate) {
+                continue
+            }
+
+            for ($openingIndex = $positionIndex - 1; $openingIndex -ge 0; $openingIndex--) {
+                $openingPosition = $positions[$openingIndex]
+                if ($protectedBackticks[$openingPosition]) {
+                    continue
+                }
+
+                $protectedBackticks[$openingPosition] = $true
+                $protectedBackticks[$closingPosition] = $true
+                break
+            }
+        }
+
+        $lineStart = $lineEnd + 1
+    }
+
+    $builder = [System.Text.StringBuilder]::new($text.Length)
+    for ($index = 0; $index -lt $text.Length; $index++) {
+        if ($text[$index] -ne $backtick) {
+            [void]$builder.Append($text[$index])
+            continue
+        }
+
+        if (-not $protectedBackticks[$index] -and
+            $index + 1 -lt $text.Length -and
+            $text[$index + 1] -cin @('n', 'r')) {
+            [void]$builder.Append("`n")
+            $index++
+            continue
+        }
+
+        [void]$builder.Append($text[$index])
+    }
+
+    return $builder.ToString()
+}
+
+function Normalize-BoePlayerFacingOutputPayload {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RelativePath,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Data
+    )
+
+    $normalizedPath = $RelativePath.Replace('\', '/').TrimStart('/').ToLowerInvariant()
+    if ($normalizedPath -eq 'output/narrative_response.json') {
+        $response = Get-BoeJsonValue -Object $Data -Names @('response')
+        if ($response -is [string]) {
+            Set-BoeJsonProperty -Object $Data -Name 'response' -Value (Convert-BoePlayerFacingLineBreakArtifacts -Value $response)
+        }
+        return $Data
+    }
+
+    if ($normalizedPath -ne 'output/interface_updates.json') {
+        return $Data
+    }
+
+    $dialogueOptions = Get-BoeJsonValue -Object $Data -Names @('dialogueOptions')
+    if ($null -eq $dialogueOptions) {
+        return $Data
+    }
+
+    $normalizedOptions = @()
+    foreach ($option in @($dialogueOptions)) {
+        if ($option -is [string]) {
+            $normalizedOptions += ,(Convert-BoePlayerFacingLineBreakArtifacts -Value $option)
+            continue
+        }
+
+        if ($null -ne $option) {
+            foreach ($propertyName in @('text', 'inputValue')) {
+                $propertyValue = Get-BoeJsonValue -Object $option -Names @($propertyName)
+                if ($propertyValue -is [string]) {
+                    Set-BoeJsonProperty -Object $option -Name $propertyName -Value (Convert-BoePlayerFacingLineBreakArtifacts -Value $propertyValue)
+                }
+            }
+        }
+        $normalizedOptions += ,$option
+    }
+
+    Set-BoeJsonProperty -Object $Data -Name 'dialogueOptions' -Value ([object[]]$normalizedOptions)
+    return $Data
+}
+
 function Write-BoeJson {
     param(
         [Parameter(Mandatory = $true)]
@@ -2121,7 +2240,8 @@ function Write-BoeJson {
     }
 
     $effectiveDepth = [Math]::Max(1, [Math]::Min($Depth, 100))
-    $json = $Data | ConvertTo-Json -Depth $effectiveDepth
+    $normalizedData = Normalize-BoePlayerFacingOutputPayload -RelativePath $RelativePath -Data $Data
+    $json = $normalizedData | ConvertTo-Json -Depth $effectiveDepth
     $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
     [System.IO.File]::WriteAllText($path, $json + [Environment]::NewLine, $utf8NoBom)
 }

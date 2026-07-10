@@ -60,6 +60,25 @@ public sealed class AcceptedTurnNarrativePayloadValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnNarrativePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace()
+    {
+        await _fs.WriteFileAtomicAsync("output/narrative_response.json", """
+        {
+          "response": "Мирвен замыкает круг.`n`nПоединок начинается.`r`nОбычный `знак` сохранён.",
+          "timestamp": "2026-07-10T18:11:08Z"
+        }
+        """);
+
+        var issues = await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "accepted_turn_invalid_narrative_json", StringComparison.OrdinalIgnoreCase));
+        var normalized = JsonNode.Parse((await _fs.ReadFileAsync("output/narrative_response.json"))!)!.AsObject();
+        var response = normalized["response"]!.GetValue<string>();
+        Assert.Equal("Мирвен замыкает круг.\n\nПоединок начинается.\nОбычный `знак` сохранён.", response);
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnNarrativePayloadAsync_RejectsKnownSkillUseWithoutStateDeltaOrRationale()
     {
         await WriteKnownPassiveSkillAsync("skill_life_001_seal_reading", "Чтение печатей");

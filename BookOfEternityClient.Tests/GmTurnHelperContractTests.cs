@@ -486,6 +486,43 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void Helper_WriteBoeJsonNormalizesPlayerFacingPowerShellLineBreakArtifacts()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-player-text-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(session);
+
+        try
+        {
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$narrative = [ordered]@{ response = 'Первый`n`nВторой с `обычным` знаком, `new value` фрагментом, `value`Next и `value`Result'; timestamp = '2026-07-10T18:11:08Z' }",
+                "Write-BoeJson -RelativePath 'output/narrative_response.json' -Data $narrative",
+                "$ui = [ordered]@{ dialogueOptions = @([ordered]@{ text = 'Выбор`nстрока'; inputValue = 'Ввод`r`nстрока' }); timestamp = '2026-07-10T18:11:08Z' }",
+                "Write-BoeJson -RelativePath 'output/interface_updates.json' -Data $ui"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.True(string.IsNullOrWhiteSpace(result.StdErr), result.StdErr);
+            using var narrative = JsonDocument.Parse(File.ReadAllText(Path.Combine(session, "output", "narrative_response.json")));
+            using var ui = JsonDocument.Parse(File.ReadAllText(Path.Combine(session, "output", "interface_updates.json")));
+            Assert.Equal("Первый\n\nВторой с `обычным` знаком, `new value` фрагментом, `value`Next и `value`Result", narrative.RootElement.GetProperty("response").GetString()!.Replace("\r\n", "\n", StringComparison.Ordinal));
+            var option = ui.RootElement.GetProperty("dialogueOptions")[0];
+            Assert.Equal("Выбор\nстрока", option.GetProperty("text").GetString()!.Replace("\r\n", "\n", StringComparison.Ordinal));
+            Assert.Equal("Ввод\nстрока", option.GetProperty("inputValue").GetString()!.Replace("\r\n", "\n", StringComparison.Ordinal));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void Helper_WriteBoeJsonRejectsClientOwnedRuntimeFiles()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-client-owned-write-" + Guid.NewGuid().ToString("N"));
@@ -2292,6 +2329,7 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("For EVERY relevant NPC block, the current-location line is mandatory", turnTemplate, StringComparison.Ordinal);
             Assert.Contains("Only `response` and `timestamp` belong in `output/narrative_response.json`", turnTemplate, StringComparison.Ordinal);
             Assert.Contains("Never put `afterlifeChronicleUpdates` into `output/narrative_response.json`", turnTemplate, StringComparison.Ordinal);
+            Assert.Contains("Never place literal PowerShell newline tokens", turnTemplate, StringComparison.Ordinal);
 
             var actorTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "ACTOR_REASONING_TEMPLATE.md"), Encoding.UTF8);
             Assert.Contains("- Текущая локация / Current location:", actorTemplate, StringComparison.Ordinal);
@@ -4567,6 +4605,23 @@ public sealed class GmTurnHelperContractTests
         Assert.True(payloadProbeIndex > idleProbeIndex, "Expected output-without-terminal detection after the cheaper idle probe.");
         Assert.True(artifactProbeIndex > payloadProbeIndex, "Expected artifact-writing stall detection after concrete payload detection.");
         Assert.True(timeoutIndex > payloadProbeIndex, "Expected output-without-terminal detection before full timeout fallback.");
+    }
+
+    [Fact]
+    public void GmOutputGuidance_RequiresActualParagraphBreaksInsteadOfPowerShellTokens()
+    {
+        const string requiredGuidance = "Never place literal PowerShell newline tokens";
+        var sources = new[]
+        {
+            ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1"),
+            ReadRepoFile("TaskGuides/CLI_Step_Main.txt"),
+            ReadRepoFile("Examples/E_CLI_Step_Main.txt"),
+            ReadRepoFile("BookOfEternityClient/Launcher/CLI_Launch_Script.md"),
+            ReadRepoFile("BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1")
+        };
+
+        foreach (var source in sources)
+            Assert.Contains(requiredGuidance, source, StringComparison.Ordinal);
     }
 
     [Fact]
