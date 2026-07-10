@@ -113,5 +113,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs\1479-prose-state-delta-audit\plan.md
+at specs\1493-local-training-scope\plan.md
 <!-- SPECKIT END -->
