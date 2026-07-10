@@ -27,7 +27,7 @@
 - [x] **T015** Run afterlife documentation guards and the full C# test suite.
 - [x] **T016** Request an independent code review and address findings with new RED tests where behavior changes.
 - [x] **T017** Merge #1491 to `main`, restart the Golden Path runtime, and replay `/торговля` in Chaos Sea through Agent Console.
-- [ ] **T018** Comment verification evidence on #1491 and close it only after automated and live evidence pass.
+- [x] **T018** Comment verification evidence on #1491 and close it only after automated and live evidence pass.
 
 ## Phase 4 - Location-Aware Selection Amendment
 
@@ -36,7 +36,7 @@
 - [x] **T021** Implement location-aware console selection for Chaos Sea and direct Shining faction selection while preserving the existing Mortal selector.
 - [x] **T022** Implement browser trade-target cards/actions for all three realms and keep stable IDs internal to action commands.
 - [x] **T023** Remove player-facing ID instructions from universal trade help and empty states; retain explicit target arguments only as internal deep links.
-- [ ] **T024** Re-run independent review, focused/full verification, and the Chaos Sea Agent Console replay through the selection screen.
+- [x] **T024** Re-run independent review, focused/full verification, and the Chaos Sea Agent Console replay through the selection screen.
 
 ## Verification Notes
 
@@ -48,3 +48,4 @@
 - Final expanded verification: 232 focused C# tests passed; frontend typecheck, 138 player-facing tests, and production build passed. Three independent review passes found four behavioral gaps; each was reproduced with RED coverage and corrected. The final review reported no behavioral findings.
 - Golden Path replay on 2026-07-11: `/торговля` in Chaos Sea opened a named local-Guardian selector and then Mirven's existing trade panel. No Guardian id, pending trade file, pending turn, or daemon turn was produced by opening the selection or panel.
 - The replay exposed raw `Trade` in the Guardian choice. Console and browser RED tests now require `Торговый домен`; both passed after the shared player-facing domain formatter was applied. The expanded `*Trade*` run passed 293 tests; its five failures are the previously recorded baseline Realm Segregation fixture failures.
+- Final review found and then cleared two presentation gaps: browser trade details now use the same localized domain as the selector, and all known Guardian domain tokens are covered by focused tests. The final focused gate passed 167/167 tests, and the current-commit Agent Console replay again reached Mirven's localized trade panel with no pending file or daemon turn.
