@@ -26,7 +26,7 @@
 - [x] **T014** Review the diff for Mortal/afterlife GM-authored contract impact; update prompts/docs/examples if any contract changed, otherwise record the client-owned no-update rationale.
 - [x] **T015** Run afterlife documentation guards and the full C# test suite.
 - [x] **T016** Request an independent code review and address findings with new RED tests where behavior changes.
-- [ ] **T017** Merge #1491 to `main`, restart the Golden Path runtime, and replay `/торговля` in Chaos Sea through Agent Console.
+- [x] **T017** Merge #1491 to `main`, restart the Golden Path runtime, and replay `/торговля` in Chaos Sea through Agent Console.
 - [ ] **T018** Comment verification evidence on #1491 and close it only after automated and live evidence pass.
 
 ## Phase 4 - Location-Aware Selection Amendment
@@ -46,3 +46,5 @@
 - Full C# suite after the location-aware amendment: 5579 passed and 8 failed. Seven content failures reproduce unchanged on base `c1758e8b`. The remaining `AgentConsoleLiveSmokeTests` failure is an intermittent full-suite interaction; the exact test passes in isolation on both the feature branch and base (`1/1` each). No failure exercises or depends on the #1491 diff.
 - Location-aware amendment: 82 trade/service/client tests passed, including read-only named selection, exclusion of remote NPC/Guardian fixtures, no ID prompts, no premature lock/pending files, and successful purchases after selection.
 - Final expanded verification: 232 focused C# tests passed; frontend typecheck, 138 player-facing tests, and production build passed. Three independent review passes found four behavioral gaps; each was reproduced with RED coverage and corrected. The final review reported no behavioral findings.
+- Golden Path replay on 2026-07-11: `/торговля` in Chaos Sea opened a named local-Guardian selector and then Mirven's existing trade panel. No Guardian id, pending trade file, pending turn, or daemon turn was produced by opening the selection or panel.
+- The replay exposed raw `Trade` in the Guardian choice. Console and browser RED tests now require `Торговый домен`; both passed after the shared player-facing domain formatter was applied. The expanded `*Trade*` run passed 293 tests; its five failures are the previously recorded baseline Realm Segregation fixture failures.

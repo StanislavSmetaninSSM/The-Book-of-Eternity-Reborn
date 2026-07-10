@@ -488,6 +488,9 @@ public sealed class BrowserTradeParityTests : IDisposable
     {
         await SeedStoryTurnAsync(12);
         await SeedGuardianTradeStateAsync(includeTradeInventory: true, includeTradeReceipt: true, includeSellableRelic: false, includeBuybackEntry: false);
+        var guardians = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/guardians.json"))!)!.AsObject();
+        guardians["guardians"]!.AsArray()[0]!["domain"] = "Trade";
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardians.ToJsonString());
         await AddRemoteGuardianAsync();
         await AddInactiveGuardianInCurrentAbodeAsync();
 
@@ -504,6 +507,9 @@ public sealed class BrowserTradeParityTests : IDisposable
                 .SelectMany(dossier => dossier.Sections)
                 .SelectMany(section => section.Cards),
             card => card.Title.Contains("Азалия", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal("Торговый домен", guardianCard.Subtitle);
+        Assert.Contains(guardianCard.Facts, fact =>
+            fact.Label == "Сфера" && fact.Value == "Торговый домен");
         Assert.NotNull(guardianCard.PrimaryAction);
         var guardianAction = guardianCard.PrimaryAction!;
         Assert.Equal("/guardian_trade guardian_alpha", guardianAction.Command);

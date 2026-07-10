@@ -2247,7 +2247,7 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         var cards = targets.Select(target => new UiEntityCard
         {
             Title = target.GuardianName,
-            Subtitle = target.Domain,
+            Subtitle = target.DomainDisplay,
             Summary = $"Хранитель доступен для торговли в месте «{target.AbodeName}».",
             Icon = "sparkles",
             Badges =
@@ -2257,7 +2257,7 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
             Facts =
             [
                 new UiEntityFact { Label = "Обитель", Value = target.AbodeName },
-                new UiEntityFact { Label = "Сфера", Value = target.Domain }
+                new UiEntityFact { Label = "Сфера", Value = target.DomainDisplay }
             ],
             PrimaryAction = TradeTargetAction(
                 "guardian-trade-target",

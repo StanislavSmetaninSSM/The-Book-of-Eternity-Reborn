@@ -92,7 +92,7 @@ public sealed class GuardianTradeService
     public sealed record GuardianTradeTarget(
         string GuardianId,
         string GuardianName,
-        string Domain,
+        string DomainDisplay,
         string AbodeName);
 
     public GuardianTradeService(FileSystemManager fs, ILogger<GuardianTradeService> logger)
@@ -123,7 +123,7 @@ public sealed class GuardianTradeService
                 return new GuardianTradeTarget(
                     guardianId,
                     GuardianManifestation.GetDisplayName(guardian),
-                    GetNodeString(guardian["domain"]) ?? "Сфера не указана",
+                    GuardianDomainDisplay.ForPlayer(GetNodeString(guardian["domain"])),
                     GetNodeString(abode?["name"]) ?? "Текущая обитель");
             })
             .Where(static target => target != null)

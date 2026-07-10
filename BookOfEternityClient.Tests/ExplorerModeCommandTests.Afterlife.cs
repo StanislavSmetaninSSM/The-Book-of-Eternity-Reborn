@@ -2073,6 +2073,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_UniversalTradeInChaosSea_ListsLocalGuardianBeforeOpeningTrade()
     {
         await SeedGuardianTradeStateAsync();
+        var guardians = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/guardians.json"))!)!.AsObject();
+        guardians["guardians"]!.AsArray()[0]!["domain"] = "Trade";
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardians.ToJsonString());
         _console.QueueSelection("Выберите раздел", "← Назад");
         await _stateManager.RefreshGameStateAsync();
 
@@ -2084,6 +2087,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             title.Contains("Хранителя для торговли", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(_console.SelectionChoicesHistory, entry =>
             entry.Choices.Any(choice => choice.Contains("Азалия", StringComparison.OrdinalIgnoreCase)));
+        Assert.Contains(_console.SelectionChoicesHistory, entry =>
+            entry.Choices.Any(choice => choice.Contains("Торговый домен", StringComparison.OrdinalIgnoreCase)));
+        Assert.DoesNotContain(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices), choice =>
+            choice.Contains("| Trade |", StringComparison.Ordinal));
         Assert.Contains("Торговля с Хранителем Азалия", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
     }
 

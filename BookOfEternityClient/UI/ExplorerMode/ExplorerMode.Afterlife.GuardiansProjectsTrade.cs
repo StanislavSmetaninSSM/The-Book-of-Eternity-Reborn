@@ -4159,7 +4159,7 @@ public partial class ExplorerMode
             var choices = targets
                 .Select(target => ConsoleLayout.PlainChoiceLabel(
                     $"✦ {target.GuardianName}",
-                    target.Domain,
+                    target.DomainDisplay,
                     target.AbodeName))
                 .ToList();
             choices.Add("← Назад");
