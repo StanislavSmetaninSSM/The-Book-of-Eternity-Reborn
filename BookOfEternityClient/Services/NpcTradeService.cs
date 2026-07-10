@@ -30,6 +30,59 @@ public sealed partial class NpcTradeService
         _logger = logger;
     }
 
+    public async Task<IReadOnlyList<NpcTradeTarget>> GetCurrentLocationTradeTargetsAsync()
+    {
+        var root = await ReadNpcRootAsync();
+        if (root == null)
+            return Array.Empty<NpcTradeTarget>();
+
+        var (currentLocationId, currentLocationName) = ReadCurrentLocationIdentitySync();
+        if (string.IsNullOrWhiteSpace(currentLocationId) && string.IsNullOrWhiteSpace(currentLocationName))
+            return Array.Empty<NpcTradeTarget>();
+
+        var targets = new List<NpcTradeTarget>();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var array in EnumerateNpcArrays(root))
+        {
+            foreach (var npc in array.OfType<JsonObject>())
+            {
+                var npcId = GetNpcIdentity(npc);
+                if (string.IsNullOrWhiteSpace(npcId) || seen.Contains(npcId))
+                    continue;
+
+                var npcLocationId = GetNodeString(npc["currentLocationId"]) ?? string.Empty;
+                var npcLocationName = GetNodeString(npc["currentLocation"]) ?? string.Empty;
+                if (!IsSameTradeLocation(
+                        npcLocationId,
+                        npcLocationName,
+                        currentLocationId,
+                        currentLocationName))
+                {
+                    continue;
+                }
+
+                var availability = EvaluateTradeAvailability(npc, currentLocationId, currentLocationName);
+                if (!availability.IsMerchant)
+                    continue;
+
+                seen.Add(npcId);
+
+                targets.Add(new NpcTradeTarget(
+                    npcId,
+                    GetNodeString(npc["name"]) ?? GetNodeString(npc["npcName"]) ?? npcId,
+                    availability.MerchantProfileDisplay,
+                    string.IsNullOrWhiteSpace(npcLocationName) ? currentLocationName : npcLocationName,
+                    availability.TradeAvailable,
+                    availability.BlockReason));
+            }
+        }
+
+        return targets
+            .OrderByDescending(static target => target.TradeAvailable)
+            .ThenBy(static target => target.NpcName, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
     public async Task<NpcTradeView?> EnsureTradeInventoryAsync(string npcId, int currentTurn, bool createPendingRequests = true)
     {
         if (currentTurn <= 0)

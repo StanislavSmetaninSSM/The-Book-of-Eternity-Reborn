@@ -89,10 +89,48 @@ public sealed class GuardianTradeService
 
     public sealed record GuardianTradeOperationResult(bool Success, bool StateChanged, string Message);
 
+    public sealed record GuardianTradeTarget(
+        string GuardianId,
+        string GuardianName,
+        string Domain,
+        string AbodeName);
+
     public GuardianTradeService(FileSystemManager fs, ILogger<GuardianTradeService> logger)
     {
         _fs = fs;
         _logger = logger;
+    }
+
+    public async Task<IReadOnlyList<GuardianTradeTarget>> GetCurrentLocationTradeTargetsAsync()
+    {
+        var root = await ReadGuardiansRootAsync();
+        if (root == null)
+            return Array.Empty<GuardianTradeTarget>();
+
+        if (root["guardians"] is not JsonArray guardians)
+            return Array.Empty<GuardianTradeTarget>();
+
+        return guardians
+            .OfType<JsonObject>()
+            .Where(guardian => GuardianTradeAllowedHere(root, guardian))
+            .Select(guardian =>
+            {
+                var guardianId = GetNodeString(guardian["guardianId"]) ?? string.Empty;
+                var abode = guardian["abode"] as JsonObject;
+                if (string.IsNullOrWhiteSpace(guardianId))
+                    return null;
+
+                return new GuardianTradeTarget(
+                    guardianId,
+                    GuardianManifestation.GetDisplayName(guardian),
+                    GetNodeString(guardian["domain"]) ?? "Сфера не указана",
+                    GetNodeString(abode?["name"]) ?? "Текущая обитель");
+            })
+            .Where(static target => target != null)
+            .Cast<GuardianTradeTarget>()
+            .DistinctBy(static target => target.GuardianId, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(static target => target.GuardianName, StringComparer.OrdinalIgnoreCase)
+            .ToList();
     }
 
     public async Task<GuardianTradeView?> EnsureTradeInventoryAsync(string guardianId, int currentIncarnation, int currentTurn, bool createPendingRequests = true)

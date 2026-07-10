@@ -1,9 +1,9 @@
 # Feature Specification: Universal Realm-Aware Trade Command
 
-**Feature Branch**: `task/1491-universal-trade`  
-**Created**: 2026-07-10  
-**Status**: Approved for implementation  
-**Source Issue**: [#1491](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1491)  
+**Feature Branch**: `task/1491-universal-trade`
+**Created**: 2026-07-10
+**Status**: Approved for implementation
+**Source Issue**: [#1491](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1491)
 **Related Issues**: [#1469](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1469), [#1459](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1459), [#1476](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1476), [#805](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/805), [#1367](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1367)
 
 ## Context
@@ -18,10 +18,11 @@ As a player, I can enter `/торговля` or `/trade` in any playable realm a
 
 **Acceptance Scenarios**
 
-1. **Given** the soul is in a Mortal World, **when** the player enters `/торговля`, **then** the existing nearby NPC merchant flow opens.
-2. **Given** the soul is in the Chaos Sea, **when** the player enters `/торговля`, **then** the existing Guardian trade flow opens and uses the existing active/default Guardian selection behavior.
-3. **Given** the soul is in the Shining Abode, **when** the player enters `/торговля`, **then** the existing Shining faction trade flow opens.
-4. **Given** a target argument is supplied, **when** the selected realm-specific flow accepts a target, **then** the argument is preserved.
+1. **Given** the soul is in a Mortal World, **when** the player enters `/торговля`, **then** the client lists merchant NPCs in the player's current location by player-facing name and lets the player choose one.
+2. **Given** the soul is in the Chaos Sea, **when** the player enters `/торговля`, **then** the client lists Guardians available in the soul's current abode/location by player-facing name and lets the player choose one.
+3. **Given** the soul is in the Shining Abode, **when** the player enters `/торговля`, **then** the client lists player-visible Shining factions available for trade by player-facing name and lets the player choose one.
+4. **Given** the player selects a listed entity, **when** the client opens its trade surface, **then** the entity ID is carried only as an internal UI command value and is never requested as player input.
+5. **Given** an internal deep-link target argument is supplied, **when** the selected realm-specific flow accepts a target, **then** the argument is preserved for compatibility.
 
 ### User Story 2 - Existing trade behavior remains authoritative
 
@@ -55,12 +56,16 @@ As a player, I receive a clear localized explanation when the current realm cann
 - **FR-008**: The help surface MUST describe the universal command and explain that the destination depends on the current realm.
 - **FR-009**: An unresolved or unsupported realm MUST produce localized player-facing guidance and MUST NOT invoke any trade mutation or GM request.
 - **FR-010**: Existing in-place vitrine preparation and auto-refresh behavior MUST remain intact after routing.
+- **FR-011**: A no-argument universal command MUST first render a non-mutating player-facing selection of trade entities available in the current location/realm.
+- **FR-012**: Selection labels, cards, help, and prompts MUST use player-facing names and descriptions; they MUST NOT ask the player to know or type an entity ID.
+- **FR-013**: Selecting an entity MAY carry its stable ID in an internal action command, but the ID MUST remain hidden from ordinary player copy.
+- **FR-014**: Opening the selection list MUST NOT create a pending GM request or acquire a persistent local mutation lock; those begin only after the player chooses an entity and performs an applicable trade action.
 
 ## Edge Cases
 
 - `currentRealm` is absent, blank, or unrecognized.
 - The realm is Shining Abode pending bootstrap rather than ordinary active Shining play.
-- The routed system has no eligible merchant, Guardian, or Shining faction.
+- The routed system has no eligible merchant, Guardian, or Shining faction in the current location/realm.
 - An argument names a target that the routed specialized command cannot resolve.
 - A trade vitrine is already being prepared by the GM.
 
@@ -79,7 +84,7 @@ As a player, I receive a clear localized explanation when the current realm cann
 
 ## Success Criteria
 
-- **SC-001**: In automated coverage, both universal aliases reach the correct existing trade flow in all three playable realm categories.
+- **SC-001**: In automated coverage, both universal aliases list and open the correct location-aware trade entities in all three playable realm categories without player-entered IDs.
 - **SC-002**: In automated coverage, unresolved realm use produces an explicit localized message and zero state or pending-request changes.
 - **SC-003**: All existing focused trade tests continue to pass without changed expected economy values.
 - **SC-004**: In the Chaos Sea Agent Console replay, `/торговля` opens the Guardian trade panel on the first invocation instead of returning silently.

@@ -40,6 +40,15 @@ public sealed class ExplorerHelpCommandResultBuilderTests
             card.Facts.Any(static fact =>
                 fact.Label == "Русская команда" &&
                 fact.Value == "/вернуться_в_обитель"));
+        Assert.Contains(dossier.Sections.SelectMany(static section => section.Cards), static card =>
+            card.Facts.Any(static fact =>
+                fact.Label == "Команда" &&
+                fact.Value == "/trade") &&
+            card.Facts.Any(static fact =>
+                fact.Label == "Русская команда" &&
+                fact.Value == "/торговля") &&
+            card.Summary.Contains("текущ", StringComparison.OrdinalIgnoreCase) &&
+            card.Summary.Contains("реальност", StringComparison.OrdinalIgnoreCase));
 
         var text = CollectDossierText(dossier);
         Assert.DoesNotContain("[", text, StringComparison.Ordinal);

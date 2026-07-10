@@ -2070,6 +2070,24 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_UniversalTradeInChaosSea_ListsLocalGuardianBeforeOpeningTrade()
+    {
+        await SeedGuardianTradeStateAsync();
+        _console.QueueSelection("Выберите раздел", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/торговля");
+
+        Assert.Equal(string.Empty, result);
+        AssertNoHiddenExplorerErrors("universal_trade_chaos_sea");
+        Assert.Contains(_console.SelectionTitles, title =>
+            title.Contains("Хранителя для торговли", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(_console.SelectionChoicesHistory, entry =>
+            entry.Choices.Any(choice => choice.Contains("Азалия", StringComparison.OrdinalIgnoreCase)));
+        Assert.Contains("Торговля с Хранителем Азалия", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_GuardianTradeSell_SucceedsAndRemovesRelic()
     {
@@ -3391,6 +3409,41 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Последняя запись этого цикла", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Подтверждение исхода:\r\n    [dim]Строгое подтверждение текущего контракта не найдено", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_UniversalTradeInShiningAbode_ListsFactionDirectly()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/торговля");
+
+        Assert.Equal(string.Empty, result);
+        AssertNoHiddenExplorerErrors("universal_trade_shining_abode");
+        Assert.Contains(_console.SelectionTitles, title =>
+            title.Contains("Выберите сияющую фракцию для торговли", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(_console.SelectionChoicesHistory, entry =>
+            entry.Choices.Any(choice => choice.Contains("Хор Рассвета", StringComparison.OrdinalIgnoreCase)));
+        Assert.DoesNotContain(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices), choice =>
+            choice.Contains("faction_", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(_console.SelectionTitles, title =>
+            title.Contains("Торговля и кузня Сияющей Обители", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_UniversalTradeShiningInternalTarget_OpensSelectedFactionWithoutRepeatingSelector()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/торговля faction_dawn");
+
+        Assert.Equal(string.Empty, result);
+        AssertNoHiddenExplorerErrors("universal_trade_shining_internal_target");
+        Assert.Contains("Сияющая торговля: Хор Рассвета", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(_console.SelectionTitles, title =>
+            title.Contains("Выберите сияющую фракцию для торговли", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

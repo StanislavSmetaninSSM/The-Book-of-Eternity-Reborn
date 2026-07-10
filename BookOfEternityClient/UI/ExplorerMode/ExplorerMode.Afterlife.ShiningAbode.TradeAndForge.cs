@@ -57,6 +57,36 @@ public partial class ExplorerMode
         }
     }
 
+    private async Task ShowShiningTradeSelectionAsync()
+    {
+        if (!EnsureActiveShiningAbodeAvailable("Торговля Сияющей Обители"))
+            return;
+
+        var context = await LoadShiningContextAsync();
+        if (context == null)
+            return;
+
+        var requestedFaction = (_currentCommandRemainder ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(requestedFaction))
+        {
+            await HandleShiningTradeMenuAsync(context);
+            return;
+        }
+
+        var faction = SarefMainStoryState.GetPlayerVisibleShiningFactions(context.Root)
+            .FirstOrDefault(candidate =>
+                string.Equals(GetNodeString(candidate["factionId"]), requestedFaction, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(GetNodeString(candidate["charter"]?["factionName"]), requestedFaction, StringComparison.OrdinalIgnoreCase));
+        if (faction == null)
+        {
+            MarkupLine("[yellow]Выбранная сияющая фракция сейчас недоступна для торговли.[/]");
+            WaitForKey();
+            return;
+        }
+
+        await ShowShiningTradeForFactionAsync(faction);
+    }
+
     private async Task ShowShiningTradeLifecycleInspectionAsync(ShiningContext context)
     {
         var tradeRequests = await ShiningTradeRequestState.ReadRequestsAsync(_fs);
@@ -675,6 +705,11 @@ public partial class ExplorerMode
         if (faction == null)
             return;
 
+        await ShowShiningTradeForFactionAsync(faction);
+    }
+
+    private async Task ShowShiningTradeForFactionAsync(JsonObject faction)
+    {
         var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
         while (true)
         {

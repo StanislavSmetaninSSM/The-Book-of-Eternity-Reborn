@@ -680,10 +680,7 @@ public partial class ExplorerMode
             {
                 var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
                 var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? factionId;
-                var label = $"{factionName} [dim](сила {GetNodeInt(faction["factionStrength"])}";
-                if (!string.IsNullOrWhiteSpace(factionId))
-                    label += $" • идентификатор {factionId}";
-                label += ")[/]";
+                var label = $"{factionName} [dim](сила {GetNodeInt(faction["factionStrength"])})[/]";
                 return (label, faction);
             })
             .ToList();

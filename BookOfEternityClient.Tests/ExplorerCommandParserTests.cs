@@ -31,6 +31,24 @@ public sealed class ExplorerCommandParserTests
         Assert.Equal("2 + 3 * 5", parsed.Arguments);
     }
 
+    [Theory]
+    [InlineData("/торговля Мирвен", "/торговля", "Мирвен")]
+    [InlineData("/trade faction_dawn", "/trade", "faction_dawn")]
+    public void Parse_UniversalTradeAlias_IsRegisteredAndPreservesArguments(
+        string command,
+        string expectedToken,
+        string expectedArguments)
+    {
+        var parsed = ExplorerCommandParser.Parse(command);
+
+        Assert.True(parsed.Success);
+        Assert.Equal("trade", parsed.Descriptor?.Id);
+        Assert.Equal(expectedToken, parsed.CommandToken);
+        Assert.Equal("/trade", parsed.CanonicalCommand);
+        Assert.Equal(expectedArguments, parsed.Arguments);
+        Assert.True(parsed.Descriptor?.AcceptsArguments);
+    }
+
     [Fact]
     public void Parse_MemorySceneSubcommand_UsesCanonicalSubcommandRoute()
     {

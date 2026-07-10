@@ -27,6 +27,7 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
     {
         "/validate" or "/валидация" or
         "/training" or "/обучение" or
+        "/trade" or "/торговля" or
         "/world_setup" or "/настройка_мира" or
         "/distribute" or "/распределить" or
         "/companion_directive" or "/директива_компаньону" or
@@ -68,6 +69,36 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         bool includeRawDiagnostics = false)
     {
         var normalized = NormalizeCommand(command);
+        if (normalized is "/trade" or "/торговля")
+        {
+            var parsed = ExplorerCommandParser.Parse(command);
+            var resolution = ExplorerRealmTradeCommandResolver.Resolve(
+                stateManager.CurrentState.CurrentRealm,
+                parsed.Arguments);
+            if (!resolution.Success)
+            {
+                return new ExplorerCommandResult
+                {
+                    Command = command,
+                    State = CommandExecutionState.Failed,
+                    Blocks =
+                    [
+                        Message(
+                            UiNotificationSeverity.Warning,
+                            "Торговля недоступна",
+                            resolution.ErrorMessage)
+                    ]
+                };
+            }
+
+            return await TryBuildAsync(
+                resolution.Command,
+                stateManager,
+                fs,
+                validationService,
+                includeRawDiagnostics);
+        }
+
         return normalized switch
         {
             "/validate" or "/валидация" => await BuildValidationAsync(command, fs, validationService),
@@ -1947,42 +1978,13 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
     {
         var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         var npcId = ReadCommandArguments(command);
+        var service = new NpcTradeService(fs, NullLogger<NpcTradeService>.Instance);
         if (string.IsNullOrWhiteSpace(npcId))
         {
-            return Result(
-                command,
-                localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
-                [
-                    localTurn.Panel,
-                    Message(
-                        UiNotificationSeverity.Info,
-                        "Торговля с НПС",
-                        "Укажите торговца командой /npc_trade <npc_id> или введите ID торговца в форме.")
-                ],
-                prompts:
-                [
-                    new UiTextInputPrompt
-                    {
-                        Id = "npc_id",
-                        Prompt = "ID торговца",
-                        Required = true,
-                        Placeholder = "npcId"
-                    },
-                    new UiSelectionPrompt
-                    {
-                        Id = "npc_trade_choice",
-                        Prompt = "Действие торговли",
-                        Required = true,
-                        Options =
-                        [
-                            Option("request:__selected__", "Запросить витрину", "Попросить ГМа подготовить ассортимент выбранного торговца.")
-                        ]
-                    },
-                    TradeConfirmationPrompt()
-                ]);
+            var targets = await service.GetCurrentLocationTradeTargetsAsync();
+            return BuildNpcTradeTargetSelection(command, localTurn.Panel, targets);
         }
 
-        var service = new NpcTradeService(fs, NullLogger<NpcTradeService>.Instance);
         var currentTurn = Math.Max(1, stateManager.CurrentState.TurnNumber);
         var view = await service.EnsureTradeInventoryAsync(npcId, currentTurn);
         if (view == null)
@@ -2195,11 +2197,211 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         return view.InventoryRequestPending ? "ожидает ГМ" : "нужно запросить";
     }
 
+    private static ExplorerCommandResult BuildNpcTradeTargetSelection(
+        string command,
+        UiBlock localTurnPanel,
+        IReadOnlyList<NpcTradeService.NpcTradeTarget> targets)
+    {
+        var cards = targets.Select(target => new UiEntityCard
+        {
+            Title = target.NpcName,
+            Subtitle = target.MerchantProfileDisplay,
+            Summary = target.TradeAvailable
+                ? "Торговец находится рядом и готов открыть витрину."
+                : FirstNonEmpty(target.BlockReason, "Торговля сейчас недоступна."),
+            Icon = "store",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = target.TradeAvailable ? "Доступен" : "Недоступен",
+                    Tone = target.TradeAvailable ? UiTone.Success : UiTone.Warning,
+                    Icon = target.TradeAvailable ? "circle-check" : "circle-alert"
+                }
+            ],
+            Facts =
+            [
+                new UiEntityFact { Label = "Где находится", Value = FirstNonEmpty(target.LocationName, "Текущая локация") },
+                new UiEntityFact { Label = "Ассортимент", Value = target.MerchantProfileDisplay }
+            ],
+            PrimaryAction = target.TradeAvailable
+                ? TradeTargetAction("npc-trade-target", target.NpcId, $"Торговать с {target.NpcName}", "/npc_trade", target.NpcId)
+                : null
+        }).ToList();
+
+        return BuildTradeTargetSelection(
+            command,
+            localTurnPanel,
+            "Торговцы рядом",
+            "Выберите торговца, который находится в текущей локации.",
+            "npc-trade-targets",
+            cards,
+            "В текущей локации нет НПС, доступных для торговли.");
+    }
+
+    private static ExplorerCommandResult BuildGuardianTradeTargetSelection(
+        string command,
+        UiBlock localTurnPanel,
+        IReadOnlyList<GuardianTradeService.GuardianTradeTarget> targets)
+    {
+        var cards = targets.Select(target => new UiEntityCard
+        {
+            Title = target.GuardianName,
+            Subtitle = target.Domain,
+            Summary = $"Хранитель доступен для торговли в месте «{target.AbodeName}».",
+            Icon = "sparkles",
+            Badges =
+            [
+                new UiEntityBadge { Label = "Рядом", Tone = UiTone.Success, Icon = "map-pin" }
+            ],
+            Facts =
+            [
+                new UiEntityFact { Label = "Обитель", Value = target.AbodeName },
+                new UiEntityFact { Label = "Сфера", Value = target.Domain }
+            ],
+            PrimaryAction = TradeTargetAction(
+                "guardian-trade-target",
+                target.GuardianId,
+                $"Торговать с {target.GuardianName}",
+                "/guardian_trade",
+                target.GuardianId)
+        }).ToList();
+
+        return BuildTradeTargetSelection(
+            command,
+            localTurnPanel,
+            "Торговля в текущей обители",
+            "Выберите Хранителя, находящегося в текущей обители.",
+            "guardian-trade-targets",
+            cards,
+            "В текущей обители нет Хранителей, доступных для торговли.");
+    }
+
+    private static ExplorerCommandResult BuildShiningTradeTargetSelection(
+        string command,
+        UiBlock localTurnPanel,
+        IReadOnlyList<ShiningTradeService.ShiningTradeView> targets)
+    {
+        var cards = targets.Select(target => new UiEntityCard
+        {
+            Title = target.FactionName,
+            Subtitle = $"Сияющая фракция · уровень торговли {target.TradeTier}",
+            Summary = target.TradeBlocked
+                ? "Торговля с этой фракцией сейчас недоступна."
+                : "Фракция готова открыть свою сияющую витрину.",
+            Icon = "landmark",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = target.TradeBlocked ? "Недоступна" : "Доступна",
+                    Tone = target.TradeBlocked ? UiTone.Warning : UiTone.Success,
+                    Icon = target.TradeBlocked ? "circle-alert" : "circle-check"
+                }
+            ],
+            Facts =
+            [
+                new UiEntityFact { Label = "Сила фракции", Value = target.FactionStrength.ToString() },
+                new UiEntityFact { Label = "Уровень торговли", Value = target.TradeTier.ToString() },
+                new UiEntityFact { Label = "Предложений в цикле", Value = target.StockItemCount.ToString() }
+            ],
+            PrimaryAction = target.TradeBlocked
+                ? null
+                : TradeTargetAction(
+                    "shining-trade-target",
+                    target.FactionId,
+                    $"Торговать с фракцией «{target.FactionName}»",
+                    "/shining_trade",
+                    target.FactionId)
+        }).ToList();
+
+        return BuildTradeTargetSelection(
+            command,
+            localTurnPanel,
+            "Сияющие торговые фракции",
+            "Выберите фракцию, чья витрина доступна в Сияющей Обители.",
+            "shining-trade-targets",
+            cards,
+            "В Сияющей Обители пока нет раскрытых фракций, доступных для торговли.");
+    }
+
+    private static ExplorerCommandResult BuildTradeTargetSelection(
+        string command,
+        UiBlock localTurnPanel,
+        string title,
+        string summary,
+        string entityType,
+        IReadOnlyList<UiEntityCard> cards,
+        string emptyMessage)
+    {
+        if (cards.Count == 0)
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [localTurnPanel, Message(UiNotificationSeverity.Info, title, emptyMessage)]);
+        }
+
+        return Result(
+            command,
+            CommandExecutionState.Completed,
+            [
+                localTurnPanel,
+                new UiEntityDossierBlock
+                {
+                    EntityType = entityType,
+                    Title = title,
+                    Summary = summary,
+                    Sections =
+                    [
+                        new UiEntityDossierSection
+                        {
+                            Id = entityType + "-list",
+                            Title = "Доступные для торговли",
+                            Summary = summary,
+                            Icon = "store",
+                            Presentation = "cards",
+                            CollectionLabel = cards.Count == 1 ? "1 доступная сущность" : $"{cards.Count} доступных сущностей",
+                            Cards = cards.ToList()
+                        }
+                    ]
+                }
+            ]);
+    }
+
+    private static UiAction TradeTargetAction(
+        string idPrefix,
+        string identity,
+        string label,
+        string command,
+        string argument) =>
+        new()
+        {
+            Id = SoulRelicEquipmentService.BuildActionId(idPrefix, identity),
+            Label = label,
+            Command = command + " " + SoulRelicEquipmentService.FormatCommandArgument(argument),
+            Style = UiActionStyle.Primary,
+            RequiresConfirmation = false
+        };
+
     private static async Task<ExplorerCommandResult> BuildShiningTradeAsync(
         string command,
         FileSystemManager fs,
         StateManager stateManager)
     {
+        if (!stateManager.CurrentState.IsInShiningAbode)
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    Message(
+                        UiNotificationSeverity.Warning,
+                        "Сияющая торговля недоступна",
+                        "Эти действия доступны только в обычной активной Сияющей Обители.")
+                ]);
+        }
+
         var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         var commandArguments = ReadCommandArguments(command);
         var factionId = commandArguments;
@@ -2212,34 +2414,8 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
 
         if (string.IsNullOrWhiteSpace(factionId))
         {
-            return Result(
-                command,
-                localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
-                [
-                    localTurn.Panel,
-                    Message(UiNotificationSeverity.Info, "Сияющая торговля", "Укажите фракцию командой /shining_trade <faction_id> или введите ID фракции в форме.")
-                ],
-                prompts:
-                [
-                    new UiTextInputPrompt
-                    {
-                        Id = "faction_id",
-                        Prompt = "ID сияющей фракции",
-                        Required = true,
-                        Placeholder = "factionId"
-                    },
-                    new UiSelectionPrompt
-                    {
-                        Id = "shining_trade_choice",
-                        Prompt = "Действие торговли",
-                        Required = true,
-                        Options =
-                        [
-                            Option("request:__selected__", "Запросить витрину", "Попросить ГМа подготовить ассортимент выбранной сияющей фракции.")
-                        ]
-                    },
-                    TradeConfirmationPrompt()
-                ]);
+            var targets = await ShiningTradeService.GetCurrentRealmTradeTargetsAsync(fs);
+            return BuildShiningTradeTargetSelection(command, localTurn.Panel, targets);
         }
 
         var view = await ShiningTradeService.ReadTradeViewAsync(fs, factionId);
@@ -2480,39 +2656,13 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
     {
         var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         var guardianId = ReadCommandArguments(command);
+        var service = new GuardianTradeService(fs, NullLogger<GuardianTradeService>.Instance);
         if (string.IsNullOrWhiteSpace(guardianId))
         {
-            return Result(
-                command,
-                localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
-                [
-                    localTurn.Panel,
-                    Message(UiNotificationSeverity.Info, "Торговля хранителя", "Укажите Хранителя командой /guardian_trade <guardian_id> или введите ID Хранителя в форме.")
-                ],
-                prompts:
-                [
-                    new UiTextInputPrompt
-                    {
-                        Id = "guardian_id",
-                        Prompt = "ID хранителя",
-                        Required = true,
-                        Placeholder = "guardianId"
-                    },
-                    new UiSelectionPrompt
-                    {
-                        Id = "guardian_trade_choice",
-                        Prompt = "Действие торговли",
-                        Required = true,
-                        Options =
-                        [
-                            Option("request:__selected__", "Запросить витрину", "Попросить ГМа подготовить ассортимент выбранного Хранителя.")
-                        ]
-                    },
-                    TradeConfirmationPrompt()
-                ]);
+            var targets = await service.GetCurrentLocationTradeTargetsAsync();
+            return BuildGuardianTradeTargetSelection(command, localTurn.Panel, targets);
         }
 
-        var service = new GuardianTradeService(fs, NullLogger<GuardianTradeService>.Instance);
         var currentTurn = Math.Max(1, stateManager.CurrentState.TurnNumber);
         var currentIncarnation = Math.Max(1, stateManager.CurrentState.Incarnation);
         var view = await service.EnsureTradeInventoryAsync(guardianId, currentIncarnation, currentTurn, createPendingRequests: false);

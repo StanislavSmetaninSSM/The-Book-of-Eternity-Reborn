@@ -103,6 +103,14 @@ public sealed partial class NpcTradeService
 
     public sealed record NpcTradeOperationResult(bool Success, bool StateChanged, string Message);
 
+    public sealed record NpcTradeTarget(
+        string NpcId,
+        string NpcName,
+        string MerchantProfileDisplay,
+        string LocationName,
+        bool TradeAvailable,
+        string? BlockReason);
+
     internal readonly record struct NpcTradeAvailability(
         string? MerchantProfile,
         string MerchantProfileDisplay,

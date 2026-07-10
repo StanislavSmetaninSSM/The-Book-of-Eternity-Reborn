@@ -49,6 +49,57 @@ public sealed class ConsoleNpcTradeCommandTests : IDisposable
 
     [Fact]
     [Trait("Category", "ConsoleNpcTrade")]
+    public async Task TryProcessCommand_UniversalTradeInMortalWorld_ListsLocalMerchantAndOpensNpcTradePanel()
+    {
+        await SeedNpcTradeStateAsync();
+        await _stateManager.RefreshGameStateAsync();
+        var console = new TestExplorerConsole();
+        console.QueueSelection("Выберите раздел", "← Назад");
+        var explorer = new ExplorerMode(
+            _stateManager,
+            _fs,
+            new LocalizationManager(),
+            npcTradeService: new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance),
+            console: console);
+
+        var result = await explorer.TryProcessCommand("/торговля");
+
+        Assert.Equal(string.Empty, result);
+        Assert.Contains(console.SelectionTitles, title =>
+            title.Contains("Торговля с НПС", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(console.SelectionChoicesHistory, entry =>
+            entry.Choices.Any(choice => choice.Contains("Марек", StringComparison.OrdinalIgnoreCase)));
+        Assert.Contains(console.SelectionChoicesHistory, entry =>
+            entry.Choices.Any(choice => choice.Contains("Купить товары", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [Fact]
+    [Trait("Category", "ConsoleNpcTrade")]
+    public async Task TryProcessCommand_UniversalTradeWithoutResolvedRealm_ShowsLocalizedFailureWithoutPendingRequest()
+    {
+        await SeedNpcTradeStateAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{}");
+        await _stateManager.RefreshGameStateAsync();
+        var console = new TestExplorerConsole();
+        var explorer = new ExplorerMode(
+            _stateManager,
+            _fs,
+            new LocalizationManager(),
+            npcTradeService: new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance),
+            console: console);
+
+        var result = await explorer.TryProcessCommand("/торговля");
+
+        Assert.Equal(string.Empty, result);
+        Assert.Contains(console.MarkupLines, line =>
+            line.Contains("реальность не определена", StringComparison.OrdinalIgnoreCase));
+        Assert.False(_fs.FileExists(NpcTradeRequestState.PendingRequestPath));
+        Assert.False(_fs.FileExists(GuardianTradeRequestState.PendingRequestPath));
+        Assert.False(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+    }
+
+    [Fact]
+    [Trait("Category", "ConsoleNpcTrade")]
     public async Task TryProcessCommand_NpcTradeWithoutInventory_WaitsInPlaceForGmVitrine()
     {
         await SeedNpcTradeStateWithoutInventoryAsync();

@@ -51,6 +51,7 @@ Scope: ordinary console-client commands from `ExplorerCommandCatalog`. Browser U
 | `feathers` | `/feathers`, `/перья` | ReadOnly | Mortal/Chaos/Shining practical previews; afterlife action tests | Ink feather status/actions are readable and realm-aware. | Dry sweep target |
 | `world_rules` | `/world_rules`, `/правила_мира` | ReadOnly | Mortal/Chaos/Shining practical previews; general tests | Player sees world rules, not file/directive internals. | Dry sweep target |
 | `gallery` | `/gallery`, `/галерея` | ReadOnly | Mortal/Chaos/Shining practical previews | Gallery output is readable or clearly empty. | Dry sweep target |
+| `trade` | `/trade`, `/торговля` | LocalTurn | Mortal/Chaos/Shining trade tests; Golden Path replay | Routes to the current realm's existing trade surface and never fails silently. | Verified by #1491 |
 | `status` | `/status`, `/статус`; subcommand `audit` | ReadOnly | All fixtures; many focused tests | Default status is player-facing; `audit` is explicit diagnostic. | Dry sweep target |
 | `gm` | `/gm`, `/гм` | ReadOnly | General tests | Shows bridge/GM state without agent internals unless diagnostic. | Gap: add to dry sweep |
 | `debug` | `/debug`, `/отладка` | ReadOnly | General tests | Explicit diagnostic surface; raw/internal output allowed only here. | Diagnostic, sweep separately |

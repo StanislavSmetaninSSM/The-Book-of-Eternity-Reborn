@@ -10,34 +10,37 @@ Register a universal `/trade` / `/торговля` command and resolve it at ea
 
 ## Technical Context
 
-**Language/Version**: C# / .NET 8  
-**Primary Dependencies**: `ExplorerCommandCatalog`, `ExplorerCommandParser`, `RealmSemantics`, `ExplorerMode`, `ExplorerWebCommandService`, existing trade result builders and write services  
-**Storage**: No new storage; existing game-session JSON state and pending requests remain unchanged  
-**Testing**: xUnit focused catalog, parser, console trade, browser trade, help, and afterlife documentation guard tests  
-**Target Platform**: Windows console client and local browser client  
+**Language/Version**: C# / .NET 8
+**Primary Dependencies**: `ExplorerCommandCatalog`, `ExplorerCommandParser`, `RealmSemantics`, `ExplorerMode`, `ExplorerWebCommandService`, existing trade result builders and write services
+**Storage**: No new storage; existing game-session JSON state and pending requests remain unchanged
+**Testing**: xUnit focused catalog, parser, console trade, browser trade, help, and afterlife documentation guard tests
+**Target Platform**: Windows console client and local browser client
 **Constraints**: TDD; no new economy rules; no duplicated trade flow; no raw technical player copy; preserve in-place GM wait contract
 
 ## Architecture
 
-1. Add a small shared command-protocol resolver that maps a resolved realm and optional arguments to the existing canonical trade command.
+1. Add a small shared command-protocol resolver that maps a resolved realm and optional internal arguments to the existing canonical trade command.
 2. Register the universal aliases in the command catalog as a local-turn, browser-executable command.
-3. At the console boundary, rewrite the generic parsed command before existing realm-scoped dispatch and lock handling.
-4. At the browser boundary, refresh state, rewrite and reparse the generic command before selecting the existing result builder and write service. Store the canonical routed command in prompt sessions so submissions continue through current write services.
-5. Add one help row for the universal command while retaining specialized rows.
+3. At the console boundary, dispatch the generic command through a small adapter that resolves the realm and invokes the existing realm-specific handler while the ordinary local-turn lock remains authoritative.
+4. At the browser result-builder boundary, resolve and reparse the generic command before selecting the existing result builder. Return the canonical routed command so prompt sessions and submissions continue through current write services.
+5. For no-argument entry, project location-aware NPC, Guardian, or Shining-faction choices with player-facing labels and internal deep-link actions; do not create a write session until an entity is chosen.
+6. Add one help row for the universal command while retaining specialized rows.
 
 ## File Map
 
 - Create `BookOfEternityClient/CommandProtocol/ExplorerRealmTradeCommandResolver.cs`: shared, side-effect-free realm-to-command routing.
 - Modify `BookOfEternityClient/CommandProtocol/ExplorerCommandCatalog.cs`: register `trade` aliases.
-- Modify `BookOfEternityClient/UI/ExplorerMode.cs`: rewrite generic command before existing console dispatch.
-- Modify `BookOfEternityClient/WebUi/ExplorerWebCommandService.cs`: rewrite generic command before existing browser dispatch/session creation.
+- Modify `BookOfEternityClient/UI/ExplorerMode.cs` and add `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Trade.cs`: register a generic console adapter that delegates to existing trade handlers.
+- Modify `BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs`: resolve the generic browser command into the existing realm-specific result builder and canonical prompt command.
 - Modify `BookOfEternityClient/CommandProtocol/ExplorerHelpCommandResultBuilder.cs`: document universal command.
 - Modify `BookOfEternityClient/WebUi/BrowserPlayerCommandMenuBuilder.cs`: provide player-facing metadata for the generic command.
 - Add or modify focused tests under `BookOfEternityClient.Tests/` and `BookOfEternityClient.Tests/WebUi/`.
 
 ## Data Flow
 
-`/торговля [target]` -> parser recognizes universal descriptor -> shared resolver reads current realm -> canonical command (`/npc_trade`, `/guardian_trade`, or `/shining_trade`) with the untouched target -> existing parser and handler -> existing trade view/write service -> existing in-place pending GM wait where required.
+`/торговля` -> parser recognizes universal descriptor -> shared resolver reads current realm -> realm-specific location-aware target list -> player selects a named entity -> internal canonical command (`/npc_trade`, `/guardian_trade`, or `/shining_trade`) carries its stable ID -> existing trade view/write service -> existing in-place pending GM wait where required.
+
+An explicit target remains a supported internal deep link and skips the selection list. Ordinary player copy never asks for that ID.
 
 An unresolved realm stops at the boundary with localized guidance and no downstream handler invocation.
 
@@ -68,5 +71,6 @@ Manual Agent Console replay:
 ## Risks
 
 - Browser prompt submissions can fail if the prompt session stores `/торговля` instead of the canonical routed command. The browser test must submit an operation, not only inspect the initial form.
+- A selection screen can accidentally acquire the local mutation lock or create a pending vitrine request before the player has chosen a merchant. Tests must assert both remain absent.
 - Shining Abode pending-bootstrap state is not ordinary trade availability. Existing Shining guards must remain authoritative.
 - Generic command arguments must be copied, not parsed or reinterpreted by the resolver.

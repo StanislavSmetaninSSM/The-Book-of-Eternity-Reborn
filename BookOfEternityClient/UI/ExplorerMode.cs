@@ -94,6 +94,7 @@ public partial class ExplorerMode
             ("gallery", ShowGallery),
             ("status", ShowDetailedStatus),
             ("training", ShowTrainingAsync),
+            ("trade", ShowRealmTradeAsync),
             ("saref_story", ShowSarefStoryAsync));
 
         _chaosSeaOnlyCommands = BuildCommandMap(

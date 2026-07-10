@@ -84,6 +84,51 @@ public sealed class BrowserTradeParityTests : IDisposable
         Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    [Trait("Category", "BrowserTradeParity")]
+    public async Task UniversalTradeInMortalWorld_ListsLocalMerchantThenSubmitsThroughNpcTradeService()
+    {
+        await SeedStoryTurnAsync(12);
+        await SeedNpcTradeStateAsync(includeTradeInventory: true, includeTradeReceipt: true, includeSellableInventoryItem: false, includeBuybackInventory: false);
+        await AddRemoteNpcMerchantAsync();
+
+        var selection = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/торговля",
+            OwnerId: "browser-trade-test",
+            OwnerLabel: "Browser trade test"));
+
+        Assert.Equal(CommandExecutionState.Completed, selection.State);
+        Assert.Null(selection.InteractiveSession);
+        Assert.Empty(selection.Prompts);
+        var merchantCard = Assert.Single(
+            selection.Blocks.SelectMany(EnumerateEntityDossiers)
+                .SelectMany(dossier => dossier.Sections)
+                .SelectMany(section => section.Cards),
+            card => card.Title.Contains("Марек", StringComparison.OrdinalIgnoreCase));
+        Assert.NotNull(merchantCard.PrimaryAction);
+        var merchantAction = merchantCard.PrimaryAction!;
+        Assert.Equal("/npc_trade npc_merchant_001", merchantAction.Command);
+        Assert.DoesNotContain("npc_merchant_001", CollectResultText(selection), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Дальний торговец", CollectResultText(selection), StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+        Assert.False(_fs.FileExists(NpcTradeRequestState.PendingRequestPath));
+
+        var prompt = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest(
+            merchantAction.Command,
+            OwnerId: "browser-trade-test",
+            OwnerLabel: "Browser trade test"));
+        Assert.Equal("/npc_trade npc_merchant_001", prompt.Command);
+        Assert.NotNull(prompt.InteractiveSession);
+        var result = await _promptSessions.SubmitAsync(new ExplorerPromptSessionSubmitRequest(
+            prompt.InteractiveSession!.SessionId,
+            Answers(("npc_trade_choice", "buy:npc_trade_slot_001"), ("confirm_trade_write", true)),
+            OwnerId: "browser-trade-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var playerStatus = JsonNode.Parse((await _fs.ReadFileAsync("game_state/core/player_status.json"))!)!.AsObject();
+        Assert.Equal(390, playerStatus["money"]!.GetValue<int>());
+    }
+
     [Theory]
     [Trait("Category", "BrowserTradeParity")]
     [InlineData("buy:npc_trade_slot_001", "npc_item_merchant_001", 390)]
@@ -175,6 +220,70 @@ public sealed class BrowserTradeParityTests : IDisposable
         Assert.DoesNotContain("endpoint", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("raw JSON", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserTradeParity")]
+    public async Task UniversalTradeInShiningAbode_ListsFactionThenSubmitsThroughShiningTradeService()
+    {
+        await SeedStoryTurnAsync(12);
+        await SeedShiningTradeStateAsync(withReadyInventory: true);
+
+        var selection = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/торговля",
+            OwnerId: "browser-trade-test",
+            OwnerLabel: "Browser trade test"));
+
+        Assert.Equal(CommandExecutionState.Completed, selection.State);
+        Assert.Null(selection.InteractiveSession);
+        Assert.Empty(selection.Prompts);
+        var factionCard = Assert.Single(
+            selection.Blocks.SelectMany(EnumerateEntityDossiers)
+                .SelectMany(dossier => dossier.Sections)
+                .SelectMany(section => section.Cards),
+            card => card.Title.Contains("Старый Дом", StringComparison.OrdinalIgnoreCase));
+        Assert.NotNull(factionCard.PrimaryAction);
+        var factionAction = factionCard.PrimaryAction!;
+        Assert.Equal("/shining_trade faction_old", factionAction.Command);
+        Assert.DoesNotContain("faction_old", CollectResultText(selection), StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+        Assert.False(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+
+        var prompt = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest(
+            factionAction.Command,
+            OwnerId: "browser-trade-test",
+            OwnerLabel: "Browser trade test"));
+        Assert.Equal("/shining_trade faction_old", prompt.Command);
+        Assert.NotNull(prompt.InteractiveSession);
+        var result = await _promptSessions.SubmitAsync(new ExplorerPromptSessionSubmitRequest(
+            prompt.InteractiveSession!.SessionId,
+            Answers(("shining_trade_choice", "buy:slot_1"), ("confirm_trade_write", true)),
+            OwnerId: "browser-trade-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Contains(soul["soulRelics"]!["stored"]!.AsArray(), relic =>
+            relic!["relicId"]!.GetValue<string>() == "relic_trade_1");
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserTradeParity")]
+    public async Task UniversalTradeDuringShiningPendingBootstrap_BlocksWithoutPromptSessionOrLock()
+    {
+        await SeedStoryTurnAsync(12);
+        await SeedShiningTradeStateAsync(withReadyInventory: true);
+        await SetShiningPendingBootstrapAsync();
+
+        var result = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/торговля",
+            OwnerId: "browser-trade-test",
+            OwnerLabel: "Browser trade test"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Null(result.InteractiveSession);
+        Assert.Empty(result.Prompts);
+        Assert.Contains("обычной активной Сияющей Обители", CollectResultText(result), StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
     [Fact]
@@ -371,6 +480,70 @@ public sealed class BrowserTradeParityTests : IDisposable
         Assert.DoesNotContain("api", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("DTO", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserTradeParity")]
+    public async Task UniversalTradeInChaosSea_ListsLocalGuardianThenSubmitsThroughGuardianTradeService()
+    {
+        await SeedStoryTurnAsync(12);
+        await SeedGuardianTradeStateAsync(includeTradeInventory: true, includeTradeReceipt: true, includeSellableRelic: false, includeBuybackEntry: false);
+        await AddRemoteGuardianAsync();
+        await AddInactiveGuardianInCurrentAbodeAsync();
+
+        var selection = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/торговля",
+            OwnerId: "browser-trade-test",
+            OwnerLabel: "Browser trade test"));
+
+        Assert.Equal(CommandExecutionState.Completed, selection.State);
+        Assert.Null(selection.InteractiveSession);
+        Assert.Empty(selection.Prompts);
+        var guardianCard = Assert.Single(
+            selection.Blocks.SelectMany(EnumerateEntityDossiers)
+                .SelectMany(dossier => dossier.Sections)
+                .SelectMany(section => section.Cards),
+            card => card.Title.Contains("Азалия", StringComparison.OrdinalIgnoreCase));
+        Assert.NotNull(guardianCard.PrimaryAction);
+        var guardianAction = guardianCard.PrimaryAction!;
+        Assert.Equal("/guardian_trade guardian_alpha", guardianAction.Command);
+        Assert.DoesNotContain("guardian_alpha", CollectResultText(selection), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Хранитель Дальнего Берега", CollectResultText(selection), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Соседний Хранитель", CollectResultText(selection), StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+        Assert.False(_fs.FileExists(GuardianTradeRequestState.PendingRequestPath));
+
+        var prompt = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest(
+            guardianAction.Command,
+            OwnerId: "browser-trade-test",
+            OwnerLabel: "Browser trade test"));
+        Assert.Equal("/guardian_trade guardian_alpha", prompt.Command);
+        Assert.NotNull(prompt.InteractiveSession);
+        Assert.DoesNotContain(prompt.Prompts, item => item.Id == "guardian_id");
+        var result = await _promptSessions.SubmitAsync(new ExplorerPromptSessionSubmitRequest(
+            prompt.InteractiveSession!.SessionId,
+            Answers(("guardian_trade_choice", "buy:trade_1"), ("confirm_trade_write", true)),
+            OwnerId: "browser-trade-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Contains(soul["soulRelics"]!["stored"]!.AsArray(), relic =>
+            relic!["relicId"]!.GetValue<string>() == "relic_1");
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserTradeParity")]
+    public async Task UniversalTradeWithoutResolvedRealm_ReturnsLocalizedFailureWithoutPendingRequest()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{}");
+
+        var result = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest("/торговля"));
+
+        Assert.Equal(CommandExecutionState.Failed, result.State);
+        Assert.Contains("реальность не определена", CollectResultText(result), StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(NpcTradeRequestState.PendingRequestPath));
+        Assert.False(_fs.FileExists(GuardianTradeRequestState.PendingRequestPath));
+        Assert.False(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
     }
 
     [Fact]
@@ -898,6 +1071,40 @@ public sealed class BrowserTradeParityTests : IDisposable
         }.ToJsonString());
     }
 
+    private async Task SetShiningPendingBootstrapAsync()
+    {
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
+        root["preparedIncarnationPackage"] = new JsonObject
+        {
+            ["generatedFromDraftVersion"] = 4,
+            ["preparedAtTurn"] = 12,
+            ["preparedAtUtc"] = "2026-04-19T10:00:00Z",
+            ["selectedCardIds"] = new JsonArray("card_route_dawn"),
+            ["selectedCards"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["cardId"] = "card_route_dawn",
+                    ["dedupeKey"] = "route_dawn",
+                    ["sourceType"] = "project",
+                    ["sourceFactionId"] = "faction_old",
+                    ["sourceActorId"] = "project_passage",
+                    ["effectFamily"] = "route",
+                    ["rarity"] = "Epic",
+                    ["displayName"] = "Тропа возвращения",
+                    ["displaySummary"] = "Открывает путь через память.",
+                    ["effectPayload"] = new JsonObject
+                    {
+                        ["routeSeedId"] = "route_dawn",
+                        ["remainingUses"] = 1
+                    }
+                }
+            }
+        };
+
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString());
+    }
+
     private static JsonObject CreateShiningTradeSlot(string slotId, string relicId, string name, string quality, int price) => new()
     {
         ["slotId"] = slotId,
@@ -1125,6 +1332,66 @@ public sealed class BrowserTradeParityTests : IDisposable
             items[1]!.AsObject()["slotId"] = "trade_1";
         }
 
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", root.ToJsonString());
+    }
+
+    private async Task AddRemoteNpcMerchantAsync()
+    {
+        var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+        root["UpdateNPCs"]!.AsArray().Add(new JsonObject
+        {
+            ["npcId"] = "npc_remote_merchant",
+            ["name"] = "Дальний торговец",
+            ["currentLocationId"] = "loc_remote_market",
+            ["currentLocation"] = "Дальний рынок",
+            ["tradeState"] = new JsonObject
+            {
+                ["canTrade"] = true,
+                ["merchantProfile"] = "GeneralGoods"
+            }
+        });
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", root.ToJsonString());
+    }
+
+    private async Task AddRemoteGuardianAsync()
+    {
+        var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/guardians.json"))!)!.AsObject();
+        root["guardians"]!.AsArray().Add(new JsonObject
+        {
+            ["guardianId"] = "guardian_remote",
+            ["canonicalName"] = "Хранитель Дальнего Берега",
+            ["domain"] = "Дальние пути",
+            ["manifestation"] = new JsonObject
+            {
+                ["currentDisplayName"] = "Хранитель Дальнего Берега"
+            },
+            ["abode"] = new JsonObject
+            {
+                ["abodeId"] = "abode_remote",
+                ["name"] = "Дальний берег"
+            }
+        });
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", root.ToJsonString());
+    }
+
+    private async Task AddInactiveGuardianInCurrentAbodeAsync()
+    {
+        var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/guardians.json"))!)!.AsObject();
+        root["guardians"]!.AsArray().Add(new JsonObject
+        {
+            ["guardianId"] = "guardian_same_abode_inactive",
+            ["canonicalName"] = "Соседний Хранитель",
+            ["domain"] = "Отражения",
+            ["manifestation"] = new JsonObject
+            {
+                ["currentDisplayName"] = "Соседний Хранитель"
+            },
+            ["abode"] = new JsonObject
+            {
+                ["abodeId"] = "abode_alpha",
+                ["name"] = "Тестовая обитель"
+            }
+        });
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", root.ToJsonString());
     }
 

@@ -4133,48 +4133,55 @@ public partial class ExplorerMode
 
     private async Task ShowGuardianTradeCommand()
     {
-        var guardianId = (_currentCommandRemainder ?? string.Empty).Trim();
-        if (string.IsNullOrWhiteSpace(guardianId))
-            guardianId = await ResolveDefaultGuardianTradeTargetAsync();
-
-        if (string.IsNullOrWhiteSpace(guardianId))
+        if (_guardianTradeService == null)
         {
-            MarkupLine("[yellow]Не удалось определить активного Хранителя для торговли.[/]");
-            MarkupLine("[dim]Откройте /хранители и выберите действие «Торговать» у нужного Хранителя.[/]");
+            MarkupLine("[red]❌ Сервис торговли недоступен.[/]");
             WaitForKey();
             return;
         }
 
-        await ShowGuardianTradePanel(guardianId);
-    }
-
-    private async Task<string> ResolveDefaultGuardianTradeTargetAsync()
-    {
-        var doc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
-        if (doc == null || doc.RootElement.ValueKind != JsonValueKind.Object)
-            return string.Empty;
-
-        var root = doc.RootElement;
-        if (root.TryGetProperty("activeGuardian", out var activeGuardian) &&
-            activeGuardian.ValueKind == JsonValueKind.Object)
+        var guardianId = (_currentCommandRemainder ?? string.Empty).Trim();
+        if (!string.IsNullOrWhiteSpace(guardianId))
         {
-            var activeGuardianId = GetStr(activeGuardian, "guardianId", "");
-            if (!string.IsNullOrWhiteSpace(activeGuardianId))
-                return activeGuardianId;
+            await ShowGuardianTradePanel(guardianId);
+            return;
         }
 
-        if (root.TryGetProperty("chaosSeaNavigation", out var navigation) &&
-            navigation.ValueKind == JsonValueKind.Object)
+        var targets = await _guardianTradeService.GetCurrentLocationTradeTargetsAsync();
+        if (targets.Count == 0)
         {
-            var currentGuardianId = GetStr(navigation, "currentGuardianId", "");
-            if (!string.IsNullOrWhiteSpace(currentGuardianId))
-                return currentGuardianId;
+            ShowEmptyPanel("Торговля с Хранителем", "В текущей обители нет Хранителей, доступных для торговли.");
+            return;
         }
 
-        var guardians = CollectGuardianDisplayEntries(root);
-        return guardians.Count == 1
-            ? GetStr(guardians[0], "guardianId", "")
-            : string.Empty;
+        while (true)
+        {
+            var choices = targets
+                .Select(target => ConsoleLayout.PlainChoiceLabel(
+                    $"✦ {target.GuardianName}",
+                    target.Domain,
+                    target.AbodeName))
+                .ToList();
+            choices.Add("← Назад");
+            var selected = Prompt(new SelectionPrompt<string>()
+                .Title("[bold cyan]Выберите Хранителя для торговли[/]")
+                .PageSize(12)
+                .HighlightStyle(new Style(Color.Cyan1))
+                .AddChoices(choices));
+
+            if (selected == "← Назад")
+                return;
+
+            var index = choices.IndexOf(selected);
+            if (index < 0 || index >= targets.Count)
+                return;
+
+            await ShowGuardianTradePanel(targets[index].GuardianId);
+            if (_pendingInPlaceGmRequest is not null)
+                return;
+
+            Clear();
+        }
     }
 
     private async Task ShowGuardianTradePanel(string guardianId)

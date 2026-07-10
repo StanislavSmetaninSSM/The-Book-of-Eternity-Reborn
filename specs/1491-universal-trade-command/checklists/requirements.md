@@ -1,7 +1,7 @@
 # Specification Quality Checklist: Universal Realm-Aware Trade Command
 
-**Purpose**: Validate specification completeness and quality before implementation  
-**Created**: 2026-07-10  
+**Purpose**: Validate specification completeness and quality before implementation
+**Created**: 2026-07-10
 **Feature**: [spec.md](../spec.md)
 
 ## Content Quality

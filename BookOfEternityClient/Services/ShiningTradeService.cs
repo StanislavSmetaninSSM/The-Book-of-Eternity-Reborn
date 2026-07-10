@@ -43,6 +43,30 @@ internal static class ShiningTradeService
         string TradeCycleId,
         IReadOnlyList<ShiningTradeRequestState.PendingShiningTradeInventoryRequest> Requests);
 
+    public static async Task<IReadOnlyList<ShiningTradeView>> GetCurrentRealmTradeTargetsAsync(FileSystemManager fs)
+    {
+        var root = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
+        if (root == null)
+            return Array.Empty<ShiningTradeView>();
+
+        var targets = new List<ShiningTradeView>();
+        foreach (var faction in SarefMainStoryState.GetPlayerVisibleShiningFactions(root))
+        {
+            var factionId = GetNodeString(faction["factionId"]);
+            if (string.IsNullOrWhiteSpace(factionId))
+                continue;
+
+            var view = await ReadTradeViewAsync(fs, factionId);
+            if (view != null)
+                targets.Add(view);
+        }
+
+        return targets
+            .OrderByDescending(static target => target.FactionStrength)
+            .ThenBy(static target => target.FactionName, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
     public static async Task<ShiningTradeView?> ReadTradeViewAsync(FileSystemManager fs, string factionId)
     {
         var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
