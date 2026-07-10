@@ -751,7 +751,7 @@ public sealed class GuardianTradeService
             guardianId,
             guardianName,
             domain,
-            domain,
+            GuardianDomainDisplay.ForPlayer(domain),
             rep,
             GetReputationTierLabel(rep),
             blocked,

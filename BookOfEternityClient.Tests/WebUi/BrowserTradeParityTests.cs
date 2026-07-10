@@ -526,6 +526,9 @@ public sealed class BrowserTradeParityTests : IDisposable
         Assert.Equal("/guardian_trade guardian_alpha", prompt.Command);
         Assert.NotNull(prompt.InteractiveSession);
         Assert.DoesNotContain(prompt.Prompts, item => item.Id == "guardian_id");
+        var promptText = CollectResultText(prompt);
+        Assert.Contains("Торговый домен", promptText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Trade", promptText, StringComparison.Ordinal);
         var result = await _promptSessions.SubmitAsync(new ExplorerPromptSessionSubmitRequest(
             prompt.InteractiveSession!.SessionId,
             Answers(("guardian_trade_choice", "buy:trade_1"), ("confirm_trade_write", true)),
