@@ -59,7 +59,7 @@
 - [x] T030 Run documentation/source-guard tests from `specs/1493-local-training-scope/quickstart.md`.
 - [x] T031 Run `git diff --check`, inspect the complete diff, and request independent code review.
 - [x] T032 Smoke-test `/обучение` and `/торговля` through fixture-backed Mortal, Chaos Sea, and Shining console/browser command handlers.
-- [ ] T033 Comment verification on #1493, merge/push, close the issue, and resume the Golden Path live test.
+- [x] T033 Comment verification on #1493, merge/push, close the issue, and resume the Golden Path live test.
 
 ## Dependencies And Execution Order
 
