@@ -1629,6 +1629,8 @@ public partial class GameEngine
             "flexible_state_unknown_top_level_key" => IsMortalBootstrapGenericShapeRepairIssue(issue),
             "mortal_bootstrap_requested_teacher_missing" => true,
             "mortal_bootstrap_requested_trade_missing" => true,
+            "mortal_bootstrap_explicit_competency_missing" => true,
+            "mortal_bootstrap_world_event_missing" => true,
             "missing_required_string" => IsMortalBootstrapGenericShapeRepairIssue(issue),
             "missing_required_boolean_field" => IsMortalBootstrapGenericShapeRepairIssue(issue),
             "expected_string_array" => IsMortalBootstrapGenericShapeRepairIssue(issue),
@@ -2802,7 +2804,8 @@ public partial class GameEngine
             {
                 "Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md",
                 "Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md",
-                "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md"
+                "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+                "Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md"
             },
             ExpectedShape = new List<string>
             {
@@ -2819,6 +2822,8 @@ public partial class GameEngine
             "NPCsInScene is only for actors physically present in currentLocationData. Offscreen voices, people behind a door, nearbyExitLocationId actors, and route pressure do not belong in NPCsInScene for the current room.",
             "If mortal_bootstrap_scaffold.json or the opening scene promises a teacher, mentor, paid lesson, training yard, learn-to/научиться hook, or /обучение surface, game_state/npcs/npc_core.json must materialize at least one matching NPC with teacherProfile.canTeach=true and non-empty teacherProfile.skills[].",
             "If mortal_bootstrap_scaffold.json or the opening scene promises a trader, merchant, vendor, shop, stall, купить/продать, or /торговля_нпс surface, game_state/npcs/npc_core.json must materialize at least one matching NPC with tradeState.canTrade=true, a valid merchantProfile, relationshipLevel, and summary. Leave tradeInventory absent until a trade vitrine is actually ready; if tradeInventory is present, it must be a full object, never a scalar/string/array placeholder.",
+            "Every starterCompetencyRequirements[] entry is client-authored authority derived from the player's explicit character concept. Preserve each matching active/passive skill and the active-skill mastery entry; do not replace permanent competence with prose.",
+            "worldEventRequirements requires the client-authored opening event to remain in game_state/world/world_events.json.worldEventsLog so /новости_мира is useful immediately after incarnation.",
             "Faction custom sidecars must carry full Custom State Objects: stateId/name, currentValue, minValue, maxValue, description, progressionRule { changePerTurn, description }, and thresholds[]; if you only need a narrative note, use faction_core chronicle instead.",
             "Active threats must be full objects, not strings: threatId/name/longTermGoal plus threatArchetype { motivation, method } and impactProfile { primaryTargetType, primaryTargetId, primaryTargetName, primaryImpact, baseImpactValue }. Use canonical enum values or keep activeThreats empty for vague pressure.",
             "current_location coordinates/factionControl must match world_map and use object-shaped faction-control data."
@@ -2841,6 +2846,8 @@ public partial class GameEngine
                 "Patch output/debug_logs.json Relevant actors: keep the current protagonist as player character, materialize real non-player Mortal actors through NPC/faction/quest/inventory surfaces, or move background objects to Actors outside scope with a clear reason.",
                 "Patch requested training anchors: if the player-authored start names a teacher/mentor/trainer or promises paid lessons/training showcase/learn-to intent, add that NPC to NPCsInScene or UpdateNPCs with teacherProfile.canTeach=true, relationshipLevel, summary, and skills[] entries containing skillId, skillName, displayName, skillKind, and masteryLevel.",
                 "Patch requested trade anchors: if the player-authored start names a trader/merchant/vendor/shop or promises immediate buying/selling, add that NPC to NPCsInScene or UpdateNPCs with tradeState.canTrade=true, tradeState.merchantProfile such as GeneralGoods/BlackMarket/Apothecary/Armorer/FoodAndSupplies, relationshipLevel, summary, and a player-facing role that makes /торговля_нпс discoverable.",
+                "Patch explicit starter competencies: copy every starterCompetencyRequirements[] entry into the matching skills_active.json or skills_passive.json canonical collection, preserve its concrete playable fields from the pre-turn baseline, and restore matching skill_mastery.json data for active skills.",
+                "Patch opening world news: restore each worldEventRequirements.requiredEventIds entry in world_events.json.worldEventsLog and keep its title/description grounded in playerAuthoredStart.startingCircumstances.",
                 "For a promised trader, use tradeBlockedReason only when canTrade=false, and keep it a string explaining the story gate. When canTrade=true, omit tradeBlockedReason or keep it as an empty string; never write null/object/array.",
                 "For a promised trader, do not include inventory in UpdateNPCs when updating an existing NPC. Use inventory: [] only for a genuinely new full NPC object; use NPC inventory delta commands for existing NPC inventory changes.",
                 "For a promised trader, do not fabricate a partial tradeInventory just to prove the NPC can trade. Leave tradeInventory absent so /торговля_нпс can request a vitrine, unless you are writing a complete canonical tradeInventory object with valid items and matching receipts.",
@@ -2858,6 +2865,7 @@ public partial class GameEngine
                 "Do not write item journalEntries as objects; journalEntries[] entries must be non-empty strings.",
                 "Do not remove a promised teacher, mentor, lesson, learn-to intent, or /обучение hook from the player-facing scene just to avoid creating teacherProfile.",
                 "Do not remove a promised trader, shop, buying/selling hook, or /торговля_нпс hook from the player-facing scene just to avoid creating tradeState.",
+                "Do not delete a client-authored starter competency or opening world event to reduce bootstrap scope.",
                 "Do not write tradeInventory as a scalar, string, array, or empty placeholder; omit it until a complete trade vitrine exists.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer bootstrap rules; use this packet, the scaffold, templates, and validation errors."
             }
@@ -4146,7 +4154,11 @@ public partial class GameEngine
                      "lore/codex_entries.json",
                      "game_state/inventory/items.json",
                      "game_state/world/current_location.json",
-                     "game_state/world/world_map.json"
+                     "game_state/world/world_map.json",
+                     "game_state/world/world_events.json",
+                     "game_state/player/skills_active.json",
+                     "game_state/player/skills_passive.json",
+                     "game_state/player/skill_mastery.json"
                  })
         {
             if (normalized.StartsWith(bootstrapFile, StringComparison.OrdinalIgnoreCase))

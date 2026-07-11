@@ -190,6 +190,22 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void MortalBootstrapScaffold_MustPublishClientOwnedCompetencyAndWorldEventRequirements()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
+
+        Assert.Contains("\"starterCompetencyRequirements\"", method, StringComparison.Ordinal);
+        Assert.Contains("MortalBootstrapStateBuilder.BuildStarterCompetencyRequirements", method, StringComparison.Ordinal);
+        Assert.Contains("\"worldEventRequirements\"", method, StringComparison.Ordinal);
+        Assert.Contains("world_event_{idSuffix}_opening", method, StringComparison.Ordinal);
+        Assert.Contains("\"game_state/world/world_events.json\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"game_state/player/skills_active.json\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"game_state/player/skills_passive.json\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"game_state/player/skill_mastery.json\"", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MortalBootstrap_MustGrantStarterResourcesWhenPaidTrainingOrTradeIsRequested()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");

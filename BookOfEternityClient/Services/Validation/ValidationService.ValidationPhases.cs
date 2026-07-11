@@ -27,6 +27,7 @@ public partial class ValidationService
         await ValidateRequiredFields(issues);
         await ValidateLoreBootstrapRequiredFilesAsync(issues);
         await ValidateMortalBootstrapPlayerVisibleNamesAsync(issues);
+        await ValidateMortalBootstrapContentAnchorsAsync(issues);
         await ValidateCrossReferences(issues);
         await ValidateSoulStateConsistency(issues);
     }

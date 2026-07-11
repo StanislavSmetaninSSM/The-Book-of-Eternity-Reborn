@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 
 namespace BookOfEternityClient.Services;
 
@@ -47,6 +48,7 @@ public static class MortalBootstrapStateBuilder
         var factionName = "Силы стартовой сцены";
         var shortCircumstances = TrimSentence(circumstances, 180);
         var turnAnchor = $"#[{turn}].";
+        var starterActiveSkills = BuildStarterActiveSkills(character);
         var starterPassiveSkills = BuildStarterPassiveSkills(character);
         var starterResourceGrant = InferStarterResourceGrant(character, world, circumstances);
 
@@ -127,10 +129,15 @@ public static class MortalBootstrapStateBuilder
                 currentLocationId,
                 locationName,
                 shortCircumstances),
+            ["game_state/world/world_events.json"] = BuildWorldEvents(
+                idSuffix,
+                turn,
+                timestamp,
+                circumstances),
             ["game_state/player/experience.json"] = BuildExperience(starterResourceGrant.CurrentLevelExperience),
-            ["game_state/player/skills_active.json"] = BuildActiveSkills(),
+            ["game_state/player/skills_active.json"] = BuildActiveSkills(starterActiveSkills),
             ["game_state/player/skills_passive.json"] = BuildPassiveSkills(starterPassiveSkills),
-            ["game_state/player/skill_mastery.json"] = BuildSkillMastery(),
+            ["game_state/player/skill_mastery.json"] = BuildSkillMastery(starterActiveSkills),
             ["game_state/factions/faction_core.json"] = BuildFactionCore(factionId, factionName, shortCircumstances, turn, timestamp),
             ["game_state/factions/faction_resources.json"] = new()
             {
@@ -209,6 +216,9 @@ public static class MortalBootstrapStateBuilder
             "mentor",
             "training",
             "lesson",
+            "ученик",
+            "учениц",
+            "подмастерь",
             "apprentice");
 
     private static JsonObject BuildExperience(int starterCurrentLevelExperience)
@@ -226,10 +236,10 @@ public static class MortalBootstrapStateBuilder
         };
     }
 
-    private static JsonObject BuildActiveSkills() =>
+    private static JsonObject BuildActiveSkills(JsonArray starterActiveSkills) =>
         new()
         {
-            ["activeSkillChanges"] = new JsonArray(),
+            ["activeSkillChanges"] = starterActiveSkills,
             ["removeActiveSkills"] = new JsonArray()
         };
 
@@ -240,11 +250,27 @@ public static class MortalBootstrapStateBuilder
             ["removePassiveSkills"] = new JsonArray()
         };
 
-    private static JsonObject BuildSkillMastery() =>
-        new()
+    private static JsonObject BuildSkillMastery(JsonArray starterActiveSkills)
+    {
+        var mastery = new JsonArray();
+        foreach (var skill in starterActiveSkills.OfType<JsonObject>())
         {
-            ["skillMasteryChanges"] = new JsonArray()
+            mastery.Add(new JsonObject
+            {
+                ["skillId"] = skill["skillId"]?.GetValue<string>(),
+                ["skillName"] = skill["skillName"]?.GetValue<string>(),
+                ["newMasteryLevel"] = 1,
+                ["newCurrentMasteryProgress"] = 0,
+                ["newMasteryProgressNeeded"] = 100,
+                ["masteryLeveledUp"] = false
+            });
+        }
+
+        return new JsonObject
+        {
+            ["skillMasteryChanges"] = mastery
         };
+    }
 
     private static JsonObject BuildStarterTeacherNpcCore(
         string idSuffix,
@@ -256,9 +282,12 @@ public static class MortalBootstrapStateBuilder
         var teacherId = $"npc_{idSuffix}_start_teacher";
         var skill = BuildStarterTeacherSkill(idSuffix, circumstances);
         var skillName = skill["skillName"]!.GetValue<string>();
+        var isCartographyTeacher = string.Equals(skillName, "Картография", StringComparison.Ordinal);
         var trainingPhrase = string.Equals(skillName, "Чтение печатей", StringComparison.Ordinal)
             ? "чтению печатей"
             : $"навыку «{skillName}»";
+        var role = isCartographyTeacher ? "Мастер-картограф" : "Наставник";
+        var npcClass = isCartographyTeacher ? "Картограф-наставник" : "Наставник";
 
         return new JsonObject
         {
@@ -269,17 +298,17 @@ public static class MortalBootstrapStateBuilder
                     ["npcId"] = teacherId,
                     ["NPCId"] = teacherId,
                     ["name"] = BuildStarterTeacherName(circumstances),
-                    ["role"] = "Стартовый наставник",
-                    ["summary"] = $"Наставник из стартовой сцены делает обещанное обучение доступным через витрину навыков: {shortCircumstances}",
+                    ["role"] = role,
+                    ["summary"] = $"{role} делает обещанное обучение доступным через витрину навыков: {shortCircumstances}",
                     ["image_prompt"] = "dark fantasy mentor in an old archive room, candlelight, practical medieval clothes, realistic portrait",
                     ["rarity"] = "Common",
                     ["worldview"] = "Знание полезно только тому, кто готов заплатить цену вниманием, временем и осторожностью.",
                     ["personalityArchetype"] = "строгий практичный наставник",
                     ["culturalStance"] = "Pragmatist",
                     ["race"] = "Человек",
-                    ["class"] = "Наставник",
-                    ["appearanceDescription"] = "Сдержанный наставник стартовой сцены: внимательный взгляд, рабочая одежда и привычка оценивать ученика по первым вопросам.",
-                    ["history"] = "Первый наставник закреплён в выбранных обстоятельствах новой жизни и готов провести практический урок.",
+                    ["class"] = npcClass,
+                    ["appearanceDescription"] = "Сдержанный ремесленник с внимательным взглядом, рабочей одеждой и привычкой оценивать ученика по первым вопросам.",
+                    ["history"] = "Наставник связан с выбранными обстоятельствами новой жизни и готов провести практический урок.",
                     ["progressionType"] = "static_teacher_npc",
                     ["currentLocationId"] = currentLocationId,
                     ["currentLocationName"] = currentLocationName,
@@ -291,7 +320,7 @@ public static class MortalBootstrapStateBuilder
                     ["relationshipLevel"] = 25,
                     ["attitude"] = "Нейтралитет",
                     ["playerCompanionDirective"] = "not_companion",
-                    ["culturalLayer"] = "локальная школа стартовой сцены",
+                    ["culturalLayer"] = "местная ремесленная школа",
                     ["personalityTraits"] = new JsonArray(),
                     ["maxWeight"] = 35,
                     ["totalWeight"] = 0,
@@ -325,7 +354,7 @@ public static class MortalBootstrapStateBuilder
                     {
                         ["canTeach"] = true,
                         ["relationshipLevel"] = 25,
-                        ["summary"] = $"Может обучить {trainingPhrase} через витрину обучения, пока герой находится в стартовой сцене.",
+                        ["summary"] = $"Может обучить {trainingPhrase} через витрину обучения, пока герой находится в локации «{currentLocationName}».",
                         ["skills"] = new JsonArray(skill)
                     }
                 }
@@ -335,6 +364,21 @@ public static class MortalBootstrapStateBuilder
 
     private static JsonObject BuildStarterTeacherSkill(string idSuffix, string circumstances)
     {
+        if (ContainsAny(circumstances, "картограф", "карт", "чертёж", "map", "cartograph"))
+        {
+            return new JsonObject
+            {
+                ["skillId"] = "starter_cartography",
+                ["skillName"] = "Картография",
+                ["displayName"] = "Картография",
+                ["skillKind"] = "passive_skill_mastery",
+                ["masteryLevel"] = 3,
+                ["currentMasteryLevel"] = 3,
+                ["maxMasteryLevel"] = 3,
+                ["summary"] = "Чтение карт, проверка масштаба и восстановление маршрута по ориентирам."
+            };
+        }
+
         if (ContainsAny(circumstances, "печат", "seal", "sigil"))
         {
             return new JsonObject
@@ -365,6 +409,10 @@ public static class MortalBootstrapStateBuilder
 
     private static string BuildStarterTeacherName(string circumstances)
     {
+        var explicitName = TryExtractNamedSceneOwner(circumstances);
+        if (!string.IsNullOrWhiteSpace(explicitName))
+            return explicitName;
+
         if (ContainsAny(circumstances, "семейн", "архив"))
             return "Наставница семейного архива";
 
@@ -377,6 +425,75 @@ public static class MortalBootstrapStateBuilder
         return "Наставник стартовой сцены";
     }
 
+    private static string? TryExtractNamedSceneOwner(string circumstances)
+    {
+        var match = Regex.Match(
+            circumstances,
+            @"(?:владельц[а-яё]*|хозя(?:ин|ина)|мастер[а-яё]*)\s+(?<first>[А-ЯЁ][а-яё]+)\s+(?<last>[А-ЯЁ][а-яё]+)",
+            RegexOptions.CultureInvariant);
+        if (!match.Success)
+            return null;
+
+        return $"{NormalizeSimpleGenitiveNamePart(match.Groups["first"].Value)} {NormalizeSimpleGenitiveNamePart(match.Groups["last"].Value)}";
+    }
+
+    private static string NormalizeSimpleGenitiveNamePart(string value) =>
+        value.Length > 3 && value.EndsWith('а') ? value[..^1] : value;
+
+    private static JsonArray BuildStarterActiveSkills(string characterDescription)
+    {
+        var skills = new JsonArray();
+        if (ContainsKnifeCompetencyCue(characterDescription))
+        {
+            skills.Add(new JsonObject
+            {
+                ["skillId"] = "starter_knife_handling",
+                ["skillName"] = "Обращение с ножом",
+                ["skillDescription"] = "Персонаж умеет держать короткий клинок, выполнять быстрый выпад и защищаться в тесном пространстве.",
+                ["rarity"] = "Common",
+                ["actionCost"] = "Fast",
+                ["scalingCharacteristic"] = "dexterity",
+                ["scalesValue"] = true,
+                ["scalesDuration"] = false,
+                ["scalesChance"] = false,
+                ["currentMasteryLevel"] = 1,
+                ["maxMasteryLevel"] = 5,
+                ["combatEffect"] = new JsonObject
+                {
+                    ["isActivatedEffect"] = true,
+                    ["actionName"] = "Обращение с ножом",
+                    ["actionDescription"] = "Короткий контролируемый выпад ножом по открывшейся цели.",
+                    ["damageType"] = "piercing",
+                    ["baseDamage"] = 6,
+                    ["range"] = "melee",
+                    ["actionCost"] = "Fast",
+                    ["actionPointCost"] = 1,
+                    ["cooldown"] = 0,
+                    ["duration"] = 0,
+                    ["scalesValue"] = true,
+                    ["scalesDuration"] = false,
+                    ["scalesChance"] = false
+                }
+            });
+        }
+
+        return skills;
+    }
+
+    private static bool ContainsKnifeCompetencyCue(string characterDescription) =>
+        ContainsAny(
+            characterDescription,
+            "обращаться с нож",
+            "обращение с нож",
+            "владеет нож",
+            "владеть нож",
+            "ножев",
+            "кинжальн",
+            "knife handling",
+            "knife fighter",
+            "skilled with a knife",
+            "dagger fighting");
+
     private static JsonArray BuildStarterPassiveSkills(string characterDescription)
     {
         var skills = new JsonArray();
@@ -385,6 +502,7 @@ public static class MortalBootstrapStateBuilder
             characterDescription,
             new[] { "следопыт", "следы", "след", "tracker", "tracking" },
             BuildPassiveSkill(
+                "starter_tracking",
                 "Чтение следов",
                 "Персонаж умеет замечать свежие следы, повреждённую грязь, потерянные мелочи и слабые признаки чужого маршрута.",
                 "Полевые навыки",
@@ -397,6 +515,7 @@ public static class MortalBootstrapStateBuilder
             characterDescription,
             new[] { "дворян", "аристократ", "этикет", "вежлив", "noble", "etiquette" },
             BuildPassiveSkill(
+                "starter_aristocratic_etiquette",
                 "Аристократический этикет",
                 "Героиня умеет держать лицо, выбирать допустимую форму обращения и скрывать страх за вежливой речью.",
                 "Социальные навыки",
@@ -409,6 +528,7 @@ public static class MortalBootstrapStateBuilder
             characterDescription,
             new[] { "скрытност", "прят", "крад", "вор", "stealth", "thief" },
             BuildPassiveSkill(
+                "starter_stealth",
                 "Тихая поступь",
                 "Герой привык двигаться осторожно, выбирать тень и не привлекать лишнего внимания.",
                 "Полевые навыки",
@@ -421,12 +541,39 @@ public static class MortalBootstrapStateBuilder
             characterDescription,
             new[] { "охотник", "лук", "стрел", "hunter", "bow", "archer" },
             BuildPassiveSkill(
+                "starter_hunting_training",
                 "Охотничья выучка",
                 "Герой знает повадки зверя, дорожные приметы и осторожную работу с добычей.",
                 "Полевые навыки",
                 "perception",
                 "Восприятие",
                 "Бонус к поиску следов, засад, звериных троп и природных опасностей."));
+
+        AddIfMatched(
+            skills,
+            characterDescription,
+            new[] { "картограф", "составля", "чертёж", "mapmaker", "cartographer" },
+            BuildPassiveSkill(
+                "starter_cartography",
+                "Картография",
+                "Персонаж умеет читать планы, сопоставлять ориентиры и замечать ошибки в маршрутах и масштабах.",
+                "Ремесленные навыки",
+                "intelligence",
+                "Интеллект",
+                "Бонус к чтению карт, восстановлению маршрутов и проверке чертежей."));
+
+        AddIfMatched(
+            skills,
+            characterDescription,
+            new[] { "курьер", "посыльн", "гонец", "courier", "messenger" },
+            BuildPassiveSkill(
+                "starter_courier_training",
+                "Курьерская выучка",
+                "Персонаж умеет выбирать быстрый путь, беречь поручение и запоминать городские ориентиры.",
+                "Полевые навыки",
+                "speed",
+                "Скорость",
+                "Бонус к доставке, поиску короткого маршрута и сохранению темпа в дороге."));
 
         return skills;
     }
@@ -443,6 +590,7 @@ public static class MortalBootstrapStateBuilder
             string.Equals(skill["skillName"]?.GetValue<string>(), skillName, StringComparison.Ordinal));
 
     private static JsonObject BuildPassiveSkill(
+        string skillId,
         string skillName,
         string skillDescription,
         string group,
@@ -451,6 +599,7 @@ public static class MortalBootstrapStateBuilder
         string bonusDescription) =>
         new()
         {
+            ["skillId"] = skillId,
             ["skillName"] = skillName,
             ["skillDescription"] = skillDescription,
             ["rarity"] = "Common",
@@ -475,6 +624,62 @@ public static class MortalBootstrapStateBuilder
                 }
             }
         };
+
+    public static JsonArray BuildStarterCompetencyRequirements(string? characterDescription)
+    {
+        var character = characterDescription ?? string.Empty;
+        var requirements = new JsonArray();
+        foreach (var skill in BuildStarterActiveSkills(character).OfType<JsonObject>())
+            requirements.Add(BuildStarterCompetencyRequirement(skill, "active"));
+        foreach (var skill in BuildStarterPassiveSkills(character).OfType<JsonObject>())
+            requirements.Add(BuildStarterCompetencyRequirement(skill, "passive"));
+        return requirements;
+    }
+
+    private static JsonObject BuildStarterCompetencyRequirement(JsonObject skill, string skillKind) =>
+        new()
+        {
+            ["skillId"] = skill["skillId"]?.GetValue<string>(),
+            ["skillName"] = skill["skillName"]?.GetValue<string>(),
+            ["skillKind"] = skillKind
+        };
+
+    private static JsonObject BuildWorldEvents(
+        string idSuffix,
+        int turn,
+        string timestamp,
+        string circumstances) =>
+        new()
+        {
+            ["worldEventsLog"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["eventId"] = $"world_event_{idSuffix}_opening",
+                    ["timestamp"] = timestamp,
+                    ["turn"] = turn,
+                    ["title"] = BuildOpeningWorldEventTitle(circumstances),
+                    ["description"] = TrimSentence(circumstances, 320),
+                    ["visibility"] = "local",
+                    ["status"] = "active"
+                }
+            }
+        };
+
+    private static string BuildOpeningWorldEventTitle(string circumstances)
+    {
+        foreach (var clause in Regex.Split(circumstances, @"[,:;.!?]+"))
+        {
+            var trimmed = clause.Trim();
+            if (!ContainsAny(trimmed, "пропал", "исчез", "похищ", "убит", "напад", "пожар", "бунт", "войн"))
+                continue;
+
+            var title = TrimSentence(trimmed, 100).TrimEnd('.');
+            return title.Length == 0 ? "Первое известие новой жизни" : char.ToUpperInvariant(title[0]) + title[1..];
+        }
+
+        return "Первое известие новой жизни";
+    }
 
     private static JsonObject BuildInventory(
         string idSuffix,

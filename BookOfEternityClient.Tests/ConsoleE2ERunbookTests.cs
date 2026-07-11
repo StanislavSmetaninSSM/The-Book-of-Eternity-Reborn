@@ -59,6 +59,8 @@ public sealed class ConsoleE2ERunbookTests
         {
             Assert.Contains(requiredText, runbook, StringComparison.OrdinalIgnoreCase);
         }
+
+        Assert.DoesNotContain("Join-Path $env:TEMP", runbook, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -163,7 +165,9 @@ public sealed class ConsoleE2ERunbookTests
             "starts the GM bridge",
             "ready=true",
             "live-meta.json",
-            "before selecting New Game"
+            "before selecting New Game",
+            "boe-live-runs",
+            "same drive as the repository"
         })
         {
             Assert.Contains(requiredText, runbook, StringComparison.OrdinalIgnoreCase);
@@ -241,6 +245,9 @@ public sealed class ConsoleE2ERunbookTests
         }
 
         Assert.DoesNotContain("Remove-Item", script, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Split-Path $repoRoot -Parent", script, StringComparison.Ordinal);
+        Assert.Contains("boe-live-runs", script, StringComparison.Ordinal);
+        Assert.DoesNotContain("Join-Path $env:TEMP", script, StringComparison.Ordinal);
     }
 
     [Fact]

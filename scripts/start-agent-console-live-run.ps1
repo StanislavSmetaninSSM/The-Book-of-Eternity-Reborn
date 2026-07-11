@@ -90,7 +90,8 @@ $repoRoot = (Resolve-Path ".").Path
 $fixture = (Resolve-Path $FixtureSessionPath).Path
 
 if ([string]::IsNullOrWhiteSpace($RunRoot)) {
-    $RunRoot = Join-Path $env:TEMP ("boe-agent-console-" + (Get-Date -Format "yyyyMMdd-HHmmss"))
+    $liveRunsRoot = Join-Path (Split-Path $repoRoot -Parent) "boe-live-runs"
+    $RunRoot = Join-Path $liveRunsRoot ("agent-console-" + (Get-Date -Format "yyyyMMdd-HHmmss"))
 }
 
 $RunRoot = [System.IO.Path]::GetFullPath($RunRoot)

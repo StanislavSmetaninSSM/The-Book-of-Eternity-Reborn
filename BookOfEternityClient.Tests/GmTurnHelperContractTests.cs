@@ -4203,7 +4203,8 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("skillMasteryChanges", template, StringComparison.Ordinal);
             Assert.Contains("attribute-only check", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("prose-only learning", template, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("starter passive skills", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("starter active and passive skills", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("starterCompetencyRequirements", template, StringComparison.Ordinal);
             Assert.Contains("fresh Mortal bootstrap", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("Чтение свидетельских меток", template, StringComparison.Ordinal);
             Assert.DoesNotContain("Р§С‚РµРЅРёРµ", template, StringComparison.Ordinal);
@@ -4638,6 +4639,30 @@ public sealed class GmTurnHelperContractTests
 
         foreach (var source in sources)
             Assert.Contains(requiredGuidance, source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MortalBootstrapGuidance_PreservesClientAuthoredCompetenciesNpcAndOpeningWorldEvent()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        Assert.Contains("starterCompetencyRequirements", daemon, StringComparison.Ordinal);
+        Assert.Contains("worldEventRequirements", daemon, StringComparison.Ordinal);
+        Assert.Contains("preMaterializedBaselineFiles includes game_state/npcs/npc_core.json", daemon, StringComparison.Ordinal);
+
+        var gmFacingSources = new[]
+        {
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md"),
+            ReadRepoFile("TaskGuides/CLI_Step_Main.txt"),
+            ReadRepoFile("Examples/E_CLI_Step_Main.txt"),
+            ReadRepoFile("BookOfEternityClient/Launcher/CLI_Launch_Script.md"),
+            ReadRepoFile("BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1")
+        };
+
+        foreach (var source in gmFacingSources)
+        {
+            Assert.Contains("starterCompetencyRequirements", source, StringComparison.Ordinal);
+            Assert.Contains("worldEventRequirements", source, StringComparison.Ordinal);
+        }
     }
 
     [Fact]
