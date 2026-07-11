@@ -4608,6 +4608,22 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonOutputWithoutTerminalWatch_TreatsActiveBridgeOutputAsProgress()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var functionBlock = ExtractFunctionBlock(daemon, "function Test-GmOutputWithoutTerminalSignal");
+        Assert.Contains("Get-GmBridgeDiagnosticsSnapshot", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("bridgeOutputVersion", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("lastBridgeOutputVersion", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("$WatchState.lastProgressElapsed = $ElapsedSeconds", functionBlock, StringComparison.Ordinal);
+
+        var progressIndex = functionBlock.IndexOf("$WatchState.lastProgressElapsed = $ElapsedSeconds", StringComparison.Ordinal);
+        var stallIndex = functionBlock.IndexOf("$isStalled = (", StringComparison.Ordinal);
+        Assert.True(progressIndex >= 0, "Expected changing bridge output to refresh the watchdog progress timestamp.");
+        Assert.True(stallIndex > progressIndex, "Expected bridge output progress to be applied before the stall decision.");
+    }
+
+    [Fact]
     public void GmOutputGuidance_RequiresActualParagraphBreaksInsteadOfPowerShellTokens()
     {
         const string requiredGuidance = "Never place literal PowerShell newline tokens";

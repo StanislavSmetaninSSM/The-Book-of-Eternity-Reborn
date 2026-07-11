@@ -2835,6 +2835,21 @@ function Test-GmOutputWithoutTerminalSignal {
         }
     }
 
+    $bridgeOutputVersion = -1
+    $bridgeOutputChanged = $false
+    $bridgeSnapshot = Get-GmBridgeDiagnosticsSnapshot
+    if ($null -ne $bridgeSnapshot -and
+        $null -ne $bridgeSnapshot.diagnostics -and
+        $null -ne $bridgeSnapshot.diagnostics.outputVersion) {
+        $bridgeOutputVersion = [int]$bridgeSnapshot.diagnostics.outputVersion
+        $bridgeOutputChanged = -not $WatchState.ContainsKey("lastBridgeOutputVersion") -or
+            [int]$WatchState.lastBridgeOutputVersion -ne $bridgeOutputVersion
+        if ($bridgeOutputChanged) {
+            $WatchState.lastBridgeOutputVersion = $bridgeOutputVersion
+            $WatchState.lastProgressElapsed = $ElapsedSeconds
+        }
+    }
+
     $firstPayloadElapsed = if ($WatchState.ContainsKey("firstPayloadElapsed")) { [int]$WatchState.firstPayloadElapsed } else { -1 }
     $lastProgressElapsed = if ($WatchState.ContainsKey("lastProgressElapsed")) { [int]$WatchState.lastProgressElapsed } else { $ElapsedSeconds }
     $payloadAgeSeconds = if ($firstPayloadElapsed -ge 0) { [Math]::Max(0, $ElapsedSeconds - $firstPayloadElapsed) } else { 0 }
@@ -2854,6 +2869,8 @@ function Test-GmOutputWithoutTerminalSignal {
         noProgressSeconds = $NoProgressSeconds
         payloadAgeSeconds = $payloadAgeSeconds
         noProgressElapsedSeconds = $noProgressElapsed
+        bridgeOutputVersion = $bridgeOutputVersion
+        bridgeOutputChanged = $bridgeOutputChanged
         changedFileCount = $changedFiles.Count
         changedFiles = @($changedFiles | Select-Object -First 40)
     })
