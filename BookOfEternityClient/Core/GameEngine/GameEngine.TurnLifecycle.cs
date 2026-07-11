@@ -2772,8 +2772,12 @@ public partial class GameEngine
             "lore/codex_entries.json",
             "game_state/world/current_location.json",
             "game_state/world/world_map.json",
+            "game_state/world/world_events.json",
             "game_state/inventory/items.json",
             "game_state/player/experience.json",
+            "game_state/player/skills_active.json",
+            "game_state/player/skills_passive.json",
+            "game_state/player/skill_mastery.json",
             "game_state/factions/faction_core.json"
         };
         var preMaterializedBaselineFiles = new JsonArray
@@ -2786,8 +2790,12 @@ public partial class GameEngine
             "lore/codex_entries.json",
             "game_state/world/current_location.json",
             "game_state/world/world_map.json",
+            "game_state/world/world_events.json",
             "game_state/inventory/items.json",
             "game_state/player/experience.json",
+            "game_state/player/skills_active.json",
+            "game_state/player/skills_passive.json",
+            "game_state/player/skill_mastery.json",
             "game_state/factions/faction_core.json",
             "game_state/factions/faction_resources.json",
             "game_state/quests/regular_quests.json"
@@ -2815,6 +2823,13 @@ public partial class GameEngine
                 ["characterDescription"] = characterDescription ?? string.Empty,
                 ["worldDescription"] = worldDescription ?? string.Empty,
                 ["startingCircumstances"] = startingCircumstances ?? string.Empty
+            },
+            ["starterCompetencyRequirements"] = MortalBootstrapStateBuilder.BuildStarterCompetencyRequirements(characterDescription),
+            ["worldEventRequirements"] = new JsonObject
+            {
+                ["minimumCount"] = 1,
+                ["requiredEventIds"] = new JsonArray($"world_event_{idSuffix}_opening"),
+                ["rule"] = "Preserve the client-authored opening event in game_state/world/world_events.json and enrich it when useful; do not leave /новости_мира empty after bootstrap."
             },
             ["suggestedStableIds"] = new JsonObject
             {
@@ -2883,12 +2898,12 @@ public partial class GameEngine
                 ["startingQuestIfNarrated"] = "If the opening scene creates an obvious investigation, escape, delivery, social, or survival hook, create a readable starting quest/objective instead of relying on narrative only.",
                 ["mapExitIfNarrated"] = "If the scene implies a door, corridor, road, gate, or route, create at least one known exit and map link.",
                 ["factionHookIfNarrated"] = "If the scene names an organization, house, guild, cult, guard, or authority, materialize it with a permanent factionId.",
-                ["trainingMentorIfNarrated"] = "If the player-authored start asks for a teacher, mentor, trainer, paid lesson, school, practice, обучение, научиться/научить, тренировка, урок, наставник, or учитель, materialize at least one matching NPC teacher instead of leaving training only in prose."
+                ["trainingMentorIfNarrated"] = "If the player-authored start asks for a teacher, mentor, trainer, paid lesson, school, practice, apprenticeship/ученик/подмастерье, обучение, научиться/научить, тренировка, урок, наставник, or учитель, materialize at least one matching NPC teacher instead of leaving training only in prose."
             },
             ["trainingAnchorRequirements"] = new JsonObject
             {
                 ["purpose"] = "Make requested Mortal training usable through /обучение instead of only narrated by the GM.",
-                ["trigger"] = "Apply when characterDescription, worldDescription, startingCircumstances, or first scene narration promises a teacher, mentor, paid lesson, drill, school, training yard, apprenticeship, обучение, научиться/научить, тренировка, урок, наставник, or учитель.",
+                ["trigger"] = "Apply when characterDescription, worldDescription, startingCircumstances, or first scene narration promises a teacher, mentor, paid lesson, drill, school, training yard, apprenticeship/ученик/подмастерье, обучение, научиться/научить, тренировка, урок, наставник, or учитель.",
                 ["requiredNpcShape"] = "The relevant NPC in NPCsInScene/UpdateNPCs must include teacherProfile with canTeach=true. Do not advertise paid training only in prose.",
                 ["requiredTeacherProfileFields"] = new JsonArray
                 {

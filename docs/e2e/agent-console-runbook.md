@@ -27,12 +27,15 @@ For GM-bound live routes, prefer the preflighted launcher. It starts the console
 .\scripts\start-agent-console-live-run.ps1
 ```
 
+Without `-RunRoot`, the preflighted launcher stores the disposable run under the `boe-live-runs` sibling directory on the same drive as the repository (for this checkout, `E:\Games\boe-live-runs`). This avoids OS cleanup of `%TEMP%` on `C:` during long live tests. Pass an explicit fresh `-RunRoot` when a different durable location is required.
+
 The returned object contains `runRoot`, `sessionPath`, `base`, `token`, `clientPid`, `daemonPid`, `bridgeReady`, and `initialScreenId`. Keep the token in local shell variables only; do not paste it into issues or committed files.
 
 This starts the real console client in the background with an explicit local token. The token is kept in a shell variable and is not written into repo files.
 
 ```powershell
-$RunRoot = Join-Path $env:TEMP ("boe-agent-console-" + [guid]::NewGuid().ToString("N"))
+$LiveRunsRoot = Join-Path (Split-Path (Get-Location).Path -Parent) "boe-live-runs"
+$RunRoot = Join-Path $LiveRunsRoot ("agent-console-" + [guid]::NewGuid().ToString("N"))
 New-Item -ItemType Directory -Force -Path $RunRoot | Out-Null
 Copy-Item -Recurse -Path "FileSystemExample\game_session" -Destination (Join-Path $RunRoot "game_session")
 

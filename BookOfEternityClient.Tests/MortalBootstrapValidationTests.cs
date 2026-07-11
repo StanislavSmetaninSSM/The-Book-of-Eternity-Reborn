@@ -327,6 +327,229 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task MortalBootstrapStateBuilder_MaterializesExplicitRenarCompetenciesNpcAndWorldEvent()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 4,
+            characterDescription: "Ренар Тис, 24-летний ученик картографа и курьер, умеющий обращаться с ножом.",
+            worldDescription: "Мрачное низкое фэнтези, речной город Кальдер с гильдиями, домами и орденами.",
+            startingCircumstances: "Картографическая мастерская «Медная стрелка» владельца Орта Веннера: пришёл курьер Речной гильдии, пропал землемер, на столе лежит запечатанный футляр карты Северной дамбы.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-11T10:59:27Z"));
+
+        var activeSkills = files["game_state/player/skills_active.json"]["activeSkillChanges"]!.AsArray();
+        var knife = Assert.Single(activeSkills.OfType<JsonObject>());
+        Assert.Equal("starter_knife_handling", knife["skillId"]!.GetValue<string>());
+        Assert.Equal("Обращение с ножом", knife["skillName"]!.GetValue<string>());
+        Assert.Equal("dexterity", knife["scalingCharacteristic"]!.GetValue<string>());
+        Assert.True(knife["combatEffect"]!["isActivatedEffect"]!.GetValue<bool>());
+
+        var passiveSkills = files["game_state/player/skills_passive.json"]["passiveSkillChanges"]!.AsArray();
+        Assert.Contains(passiveSkills.OfType<JsonObject>(), skill =>
+            string.Equals(skill["skillName"]?.GetValue<string>(), "Картография", StringComparison.Ordinal));
+        Assert.Contains(passiveSkills.OfType<JsonObject>(), skill =>
+            string.Equals(skill["skillName"]?.GetValue<string>(), "Курьерская выучка", StringComparison.Ordinal));
+
+        var mastery = Assert.Single(
+            files["game_state/player/skill_mastery.json"]["skillMasteryChanges"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("starter_knife_handling", mastery["skillId"]!.GetValue<string>());
+        Assert.Equal(1, mastery["newMasteryLevel"]!.GetValue<int>());
+
+        var npcCore = Assert.IsType<JsonObject>(files["game_state/npcs/npc_core.json"]);
+        var teacher = Assert.Single(npcCore["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("Орт Веннер", teacher["name"]!.GetValue<string>());
+        Assert.Equal("Мастер-картограф", teacher["role"]!.GetValue<string>());
+        Assert.True(teacher["teacherProfile"]!["canTeach"]!.GetValue<bool>());
+        var taughtSkill = Assert.Single(teacher["teacherProfile"]!["skills"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("Картография", taughtSkill["skillName"]!.GetValue<string>());
+
+        var worldEvents = files["game_state/world/world_events.json"]["worldEventsLog"]!.AsArray();
+        var openingEvent = Assert.Single(worldEvents.OfType<JsonObject>());
+        Assert.Equal("world_event_life_001_opening", openingEvent["eventId"]!.GetValue<string>());
+        Assert.Contains("землемер", openingEvent["title"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Северной дамбы", openingEvent["description"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("local", openingEvent["visibility"]!.GetValue<string>());
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Элиан Безмолвный",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/control/mortal_bootstrap_scaffold.json", """
+        {
+          "schemaVersion": 1,
+          "purpose": "fresh_mortal_world_bootstrap",
+          "requestId": "request_renar_bootstrap",
+          "turnNumber": 4,
+          "playerAuthoredStart": {
+            "characterDescription": "Ренар Тис, 24-летний ученик картографа и курьер, умеющий обращаться с ножом.",
+            "worldDescription": "Мрачное низкое фэнтези, речной город Кальдер.",
+            "startingCircumstances": "Мастерская владельца Орта Веннера: пропал землемер у Северной дамбы."
+          },
+          "starterCompetencyRequirements": [
+            { "skillId": "starter_knife_handling", "skillName": "Обращение с ножом", "skillKind": "active" },
+            { "skillId": "starter_cartography", "skillName": "Картография", "skillKind": "passive" },
+            { "skillId": "starter_courier_training", "skillName": "Курьерская выучка", "skillKind": "passive" }
+          ],
+          "worldEventRequirements": {
+            "minimumCount": 1,
+            "requiredEventIds": ["world_event_life_001_opening"]
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "sessionId": "session_renar_bootstrap",
+          "requestId": "request_renar_bootstrap",
+          "turnNumber": 4,
+          "status": "success"
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_explicit_competency_missing", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "mortal_bootstrap_world_event_missing", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            issue.FilePath.Contains("game_state/player/skills_", StringComparison.OrdinalIgnoreCase) ||
+            issue.FilePath.Contains("game_state/player/skill_mastery.json", StringComparison.OrdinalIgnoreCase) ||
+            issue.FilePath.Contains("game_state/world/world_events.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MortalBootstrapRejectsRemovedRequiredCompetenciesNpcAndWorldEvent()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 4,
+            characterDescription: "Ренар Тис, 24-летний ученик картографа и курьер, умеющий обращаться с ножом.",
+            worldDescription: "Мрачное низкое фэнтези, речной город Кальдер.",
+            startingCircumstances: "Мастерская владельца Орта Веннера: пропал землемер у Северной дамбы.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-11T10:59:27Z"));
+
+        foreach (var (path, node) in files)
+        {
+            if (!string.Equals(path, "game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase))
+                await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+        }
+
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_active.json", """
+        { "activeSkillChanges": [], "removeActiveSkills": [] }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_passive.json", """
+        { "passiveSkillChanges": [], "removePassiveSkills": [] }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """
+        { "skillMasteryChanges": [] }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        { "worldEventsLog": [] }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Элиан Безмолвный",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/control/mortal_bootstrap_scaffold.json", """
+        {
+          "schemaVersion": 1,
+          "purpose": "fresh_mortal_world_bootstrap",
+          "requestId": "request_renar_missing_anchors",
+          "turnNumber": 4,
+          "playerAuthoredStart": {
+            "characterDescription": "Ренар Тис, 24-летний ученик картографа и курьер, умеющий обращаться с ножом.",
+            "worldDescription": "Мрачное низкое фэнтези, речной город Кальдер.",
+            "startingCircumstances": "Мастерская владельца Орта Веннера: пропал землемер у Северной дамбы."
+          },
+          "starterCompetencyRequirements": [
+            { "skillId": "starter_knife_handling", "skillName": "Обращение с ножом", "skillKind": "active" },
+            { "skillId": "starter_cartography", "skillName": "Картография", "skillKind": "passive" },
+            { "skillId": "starter_courier_training", "skillName": "Курьерская выучка", "skillKind": "passive" }
+          ],
+          "worldEventRequirements": {
+            "minimumCount": 1,
+            "requiredEventIds": ["world_event_life_001_opening"]
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "sessionId": "session_renar_missing_anchors",
+          "requestId": "request_renar_missing_anchors",
+          "turnNumber": 4,
+          "status": "success"
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_explicit_competency_missing", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("skills_active.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_explicit_competency_missing", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("skills_passive.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_explicit_competency_missing", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("skill_mastery.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_world_event_missing", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LaterMortalTurnDoesNotReapplyBootstrapCompetencyAndEventRequirements()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        { "soulName": "Элиан Безмолвный", "currentRealm": "Mortal World", "currentIncarnation": 1 }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/control/mortal_bootstrap_scaffold.json", """
+        {
+          "schemaVersion": 1,
+          "purpose": "fresh_mortal_world_bootstrap",
+          "requestId": "request_bootstrap_turn_4",
+          "turnNumber": 4,
+          "starterCompetencyRequirements": [
+            { "skillId": "starter_knife_handling", "skillName": "Обращение с ножом", "skillKind": "active" }
+          ],
+          "worldEventRequirements": {
+            "minimumCount": 1,
+            "requiredEventIds": ["world_event_life_001_opening"]
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "sessionId": "session_later_turn",
+          "requestId": "request_later_turn_5",
+          "turnNumber": 5,
+          "status": "success"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_active.json", """
+        { "activeSkillChanges": [], "removeActiveSkills": [] }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        { "worldEventsLog": [] }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_explicit_competency_missing", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "mortal_bootstrap_world_event_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void MortalBootstrapStateBuilder_StarterPassiveSkillTextDoesNotLeakOldCharacterName()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(

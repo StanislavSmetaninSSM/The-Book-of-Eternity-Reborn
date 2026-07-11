@@ -166,6 +166,7 @@ Read canonical `game_state/meta/soul_state.json.currentRealm`; the runtime also 
 
 ### PHASE 1: WORLD ASSESSMENT
 - Mortal World: analyze elapsed time, NPC thoughts, world/faction progression
+- First Mortal bootstrap: when `game_state/control/mortal_bootstrap_scaffold.json` exists, preserve every `starterCompetencyRequirements[]` active/passive skill (and active mastery), every `worldEventRequirements.requiredEventIds[]` opening event, and every pre-materialized starter NPC. Enrich or rename these anchors from `playerAuthoredStart`; do not delete them or leave `/навыки`, `/нпс`, or `/новости_мира` empty.
 - Chaos Sea / active Shining Abode: review Guardian/afterlife state and update only the Guardian mood, projects, musings, lore unlocks or other meta surfaces that this turn actually changes
 - Shining Abode pending-bootstrap handoff: do not advance ordinary afterlife systems; write only `TriggerIncarnation` and preserve the prepared package for client-side Mortal bootstrap
 - Shining Abode package fault: if `preparedIncarnationPackage` is present but invalid, preserve it and all pending Shining files for repair; do not process ordinary Shining gameplay

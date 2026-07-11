@@ -84,6 +84,19 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 ---
 
+## Первый Mortal bootstrap: client-owned anchors
+
+Перед первым ходом новой смертной жизни клиент создаёт `game_state/control/mortal_bootstrap_scaffold.json` и канонический baseline. Это не черновик, который можно сократить до одной прозы:
+
+- `starterCompetencyRequirements[]` перечисляет навыки, напрямую выведенные из описания персонажа игроком. Каждый active/passive навык должен остаться в соответствующем player skill file; active skill также сохраняет matching `skill_mastery.json` entry.
+- `worldEventRequirements.requiredEventIds[]` перечисляет стартовые события, которые должны остаться в `game_state/world/world_events.json.worldEventsLog`, чтобы `/новости_мира` было полезно сразу после воплощения.
+- `preMaterializedBaselineFiles` может включать `game_state/npcs/npc_core.json`. Такой NPC уже является client-owned якорем учителя/ученичества; его нужно художественно уточнить и согласовать с текущей локацией, а не удалить.
+- Технические scaffold-названия локаций, выходов, фракций и NPC нужно заменить конкретными названиями из `playerAuthoredStart`, сохранив стабильные id и сами сущности.
+
+Если один из этих якорей потерян, repair packet `mortal_bootstrap_materialization_repair` указывает точные `targetFiles` и требует восстановить baseline in place. Не удаляй явно заданную компетенцию, NPC или первую новость ради уменьшения объёма первого хода.
+
+---
+
 ## Обработка хода — 5 фаз
 
 ### ФАЗА 0: ПРОВЕРКА РЕАЛМА (АБСОЛЮТНЫЙ ЗАКОН — НИКОГДА НЕ ПРОПУСКАЙ)
