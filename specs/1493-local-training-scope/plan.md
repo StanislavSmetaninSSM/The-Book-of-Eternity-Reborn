@@ -6,7 +6,7 @@
 
 ## Summary
 
-Replace global teacher discovery with a shared fail-closed local interaction scope. Mortal World resolves the canonical current location; Chaos Sea resolves the active Guardian and current abode; Shining Abode uses its active realm-wide scope until canonical sublocations exist. Apply the same predicate to listing, pending showcase creation, and purchase-time enforcement, then prove console/browser parity and trade regression.
+Replace global teacher discovery with a shared fail-closed local interaction scope. Mortal World resolves the canonical current location; Chaos Sea resolves the active Guardian and current abode; Shining Abode resolves `currentHallId` and actor/faction hall relationships. Apply the same predicate to listing, pending showcase creation, purchase-time enforcement, and Shining faction trade, then prove console/browser parity and trade regression.
 
 ## Technical Context
 
@@ -24,7 +24,7 @@ Replace global teacher discovery with a shared fail-closed local interaction sco
 
 **Performance Goals**: resolve local targets in one bounded pass over ordinary actor collections; no player-visible wait beyond existing showcase preparation.
 
-**Constraints**: offline-capable, fail closed, no internal IDs in visible UI, no invented Shining sublocation authority, no resource mutation from remote actions.
+**Constraints**: offline-capable, fail closed, no internal IDs in visible UI, use existing Shining hall authority, no resource mutation from remote actions.
 
 **Scale/Scope**: dozens of NPCs/afterlife profiles and factions in one local session.
 
@@ -39,19 +39,20 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 ## Technical Approach
 
-1. Add a shared `LocalInteractionScopeService` under `BookOfEternityClient/Services/` that resolves realm-specific authority and exposes exact ID/name matching helpers.
+1. Add a shared `LocalInteractionScopeService` under `BookOfEternityClient/Services/` that resolves realm-specific authority, including Shining current-hall actor/faction links, and exposes exact ID/name matching helpers.
 2. Reuse its Mortal matcher in `NpcTradeService` and `TrainingService` rather than maintaining command-specific comparison logic.
 3. Filter teachers before showcase freshness evaluation and before pending request creation.
 4. Re-resolve locality inside `BuyTrainingAsync` before any resource, skill/art, receipt, or pending mutation.
-5. Keep console/browser UI rendering unchanged except for useful empty/block messages; both already consume the shared service view.
-6. Add explicit tests for every realm and trade route, then update GM guidance and examples.
+5. Filter Shining faction trade by the same resolved current hall in console and structured browser command paths.
+6. Keep other console/browser UI rendering unchanged except for useful empty/block messages; both already consume shared service views.
+7. Add explicit tests for every realm and trade route, then update GM guidance and examples.
 
 ## Constitution Check
 
 - **GitHub traceability**: PASS; issue #1493 is linked throughout.
 - **Spec Kit fit**: PASS; cross-realm, cross-client, pending/control and GM contract behavior.
 - **Player-facing integrity**: PASS; named Russian selectors and no IDs/debug terms.
-- **Contract/state authority**: PASS; realm-specific authority and no invented Shining state are explicit.
+- **Contract/state authority**: PASS; realm-specific authority and existing Shining hall state are explicit.
 - **Test-first path**: PASS; RED service and parity tests precede implementation.
 - **Verification evidence**: PASS; focused C# and docs/source-guard commands are defined.
 - **Agent orchestration**: PASS; implementation remains local and independently reviewed before merge.

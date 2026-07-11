@@ -12,6 +12,7 @@ public sealed class GuardianTradeService
 {
     private readonly FileSystemManager _fs;
     private readonly ILogger<GuardianTradeService> _logger;
+    private readonly ILocalInteractionScopeResolver _localScopeService;
 
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
@@ -96,23 +97,49 @@ public sealed class GuardianTradeService
         string AbodeName);
 
     public GuardianTradeService(FileSystemManager fs, ILogger<GuardianTradeService> logger)
+        : this(fs, logger, new LocalInteractionScopeService(fs))
+    {
+    }
+
+    internal GuardianTradeService(
+        FileSystemManager fs,
+        ILogger<GuardianTradeService> logger,
+        ILocalInteractionScopeResolver localScopeService)
     {
         _fs = fs;
         _logger = logger;
+        _localScopeService = localScopeService;
     }
 
     public async Task<IReadOnlyList<GuardianTradeTarget>> GetCurrentLocationTradeTargetsAsync()
     {
+        var localScope = await ResolveChaosTradeScopeAsync();
+        if (localScope == null)
+            return Array.Empty<GuardianTradeTarget>();
+
         var root = await ReadGuardiansRootAsync();
         if (root == null)
             return Array.Empty<GuardianTradeTarget>();
 
+        var finalScope = await ResolveChaosTradeScopeAsync();
+        var finalRoot = await ReadGuardiansRootAsync();
+        return finalScope == null || finalRoot == null
+            ? Array.Empty<GuardianTradeTarget>()
+            : BuildCurrentLocationTradeTargets(finalRoot, finalScope);
+    }
+
+    private static IReadOnlyList<GuardianTradeTarget> BuildCurrentLocationTradeTargets(
+        JsonObject root,
+        LocalInteractionScope localScope)
+    {
         if (root["guardians"] is not JsonArray guardians)
             return Array.Empty<GuardianTradeTarget>();
 
         return guardians
             .OfType<JsonObject>()
-            .Where(guardian => GuardianTradeAllowedHere(root, guardian))
+            .Where(guardian =>
+                LocalInteractionScopeService.IsAfterlifeActorLocal(localScope, guardian) &&
+                GuardianTradeAllowedHere(root, guardian))
             .Select(guardian =>
             {
                 var guardianId = GetNodeString(guardian["guardianId"]) ?? string.Empty;
@@ -138,30 +165,48 @@ public sealed class GuardianTradeService
         if (currentTurn <= 0)
             throw new ArgumentOutOfRangeException(nameof(currentTurn), "Подготовка или проверка витрины Хранителя требует актуальный номер хода.");
 
+        var localScope = await ResolveChaosTradeScopeAsync();
+        if (localScope == null)
+            return null;
+
         var root = await ReadGuardiansRootAsync();
         if (root == null)
             return null;
         var trackerRoot = await ReadGuardianProjectTrackerRootAsync();
 
         var guardian = FindGuardian(root, guardianId);
-        if (guardian == null)
+        if (guardian == null || !LocalInteractionScopeService.IsAfterlifeActorLocal(localScope, guardian))
             return null;
 
         var preGuardiansJson = root.ToJsonString(JsonOpts);
         var preTrackerJson = trackerRoot?.ToJsonString(JsonOpts);
-        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(root, guardian, currentIncarnation, currentTurn, trackerRoot, createPendingRequests);
+        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(
+            root,
+            guardian,
+            currentIncarnation,
+            currentTurn,
+            trackerRoot,
+            preGuardiansJson,
+            createPendingRequests);
         if (changed || trackerChanged)
         {
-            var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
-            {
-                new(GuardiansPath, preGuardiansJson, root.ToJsonString(JsonOpts))
-            };
+            var commitScope = await ResolveCurrentGuardianTradeTargetScopeAsync(guardianId, preGuardiansJson);
+            if (commitScope == null)
+                return null;
+
+            var writes = CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope).ToList();
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                GuardiansPath,
+                preGuardiansJson,
+                root.ToJsonString(JsonOpts),
+                true));
             if (trackerChanged && trackerRoot != null)
             {
                 writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
                     GuardianProjectState.TrackerPath,
                     preTrackerJson,
-                    trackerRoot.ToJsonString(JsonOpts)));
+                    trackerRoot.ToJsonString(JsonOpts),
+                    true));
             }
 
             if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, writes.ToArray()))
@@ -175,18 +220,25 @@ public sealed class GuardianTradeService
             }
         }
 
+        if (!await IsCurrentGuardianTradeTargetAsync(guardianId, root.ToJsonString(JsonOpts)))
+            return null;
+
         return view;
     }
 
     public async Task<IReadOnlyList<GuardianSellOffer>> GetSellableRelicsAsync(string guardianId)
     {
+        var localScope = await ResolveChaosTradeScopeAsync();
+        if (localScope == null)
+            return Array.Empty<GuardianSellOffer>();
+
         var guardiansRoot = await ReadGuardiansRootAsync();
         var soulRoot = await ReadSoulStateRootAsync();
         if (guardiansRoot == null || soulRoot == null)
             return Array.Empty<GuardianSellOffer>();
 
         var guardian = FindGuardian(guardiansRoot, guardianId);
-        if (guardian == null)
+        if (guardian == null || !LocalInteractionScopeService.IsAfterlifeActorLocal(localScope, guardian))
             return Array.Empty<GuardianSellOffer>();
 
         if (!GuardianTradeAllowedHere(guardiansRoot, guardian))
@@ -201,7 +253,7 @@ public sealed class GuardianTradeService
         if (stored == null)
             return Array.Empty<GuardianSellOffer>();
 
-        return stored.OfType<JsonObject>()
+        var offers = stored.OfType<JsonObject>()
             .Select(relic =>
             {
                 var rarity = GetRelicRarity(relic);
@@ -217,12 +269,20 @@ public sealed class GuardianTradeService
             .OrderByDescending(offer => GetRarityRank(offer.Rarity))
             .ThenBy(offer => offer.Name, StringComparer.OrdinalIgnoreCase)
             .ToList();
+
+        return await IsCurrentGuardianTradeTargetAsync(guardianId, guardiansRoot.ToJsonString(JsonOpts))
+            ? offers
+            : Array.Empty<GuardianSellOffer>();
     }
 
     public async Task<GuardianTradeOperationResult> BuyAsync(string guardianId, string slotId, int currentIncarnation, int currentTurn)
     {
         if (currentTurn <= 0)
             return new GuardianTradeOperationResult(false, false, "Локальная покупка реликвии требует актуальный номер хода.");
+
+        var localScope = await ResolveChaosTradeScopeAsync();
+        if (localScope == null)
+            return new GuardianTradeOperationResult(false, false, "Торговля с Хранителем недоступна в текущем мире или обители.");
 
         var guardiansRoot = await ReadGuardiansRootAsync();
         var soulRoot = await ReadSoulStateRootAsync();
@@ -237,11 +297,20 @@ public sealed class GuardianTradeService
         var guardian = FindGuardian(guardiansRoot, guardianId);
         if (guardian == null)
             return new GuardianTradeOperationResult(false, false, "Хранитель не найден.");
+        if (!LocalInteractionScopeService.IsAfterlifeActorLocal(localScope, guardian))
+            return new GuardianTradeOperationResult(false, false, "Этот Хранитель не находится в вашей текущей обители.");
 
         if (!GuardianTradeAllowedHere(guardiansRoot, guardian))
             return new GuardianTradeOperationResult(false, false, "Торговать можно только с текущим активным Хранителем в обители, где вы сейчас находитесь.");
 
-        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(guardiansRoot, guardian, currentIncarnation, currentTurn, trackerRoot, createPendingRequests: true);
+        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(
+            guardiansRoot,
+            guardian,
+            currentIncarnation,
+            currentTurn,
+            trackerRoot,
+            preBuyGuardiansJson,
+            createPendingRequests: true);
         if (view.TradeBlocked)
             return new GuardianTradeOperationResult(false, false, view.BlockReason ?? "Торговля недоступна.");
         if (!view.InventoryReady)
@@ -273,6 +342,10 @@ public sealed class GuardianTradeService
         if (slot["relicData"] is not JsonObject relicData)
             return new GuardianTradeOperationResult(false, false, "Данные реликвии повреждены.");
 
+        var commitScope = await ResolveCurrentGuardianTradeTargetScopeAsync(guardianId, preBuyGuardiansJson);
+        if (commitScope == null)
+            return new GuardianTradeOperationResult(false, false, "Хранитель покинул текущую обитель до завершения покупки. Перья не списаны.");
+
         NormalizeSoulRelicsShape(soulRoot);
         var stored = ((JsonObject)soulRoot["soulRelics"]!)["stored"]!.AsArray();
         UpsertRelic(stored, CloneObject(relicData));
@@ -285,17 +358,24 @@ public sealed class GuardianTradeService
                 GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
                 GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
                 upsertedSoulRelicIds: new[] { GetNodeString(relicData["relicId"]) ?? string.Empty })).ToJsonString(JsonOpts);
-        var coordinatedWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>
-        {
-            new(SoulStatePath, preBuySoulJson, postBuySoulJson),
-            new(GuardiansPath, preBuyGuardiansJson, guardiansRoot.ToJsonString(JsonOpts))
-        };
+        var coordinatedWrites = CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope).ToList();
+        coordinatedWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+            SoulStatePath,
+            preBuySoulJson,
+            postBuySoulJson,
+            true));
+        coordinatedWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+            GuardiansPath,
+            preBuyGuardiansJson,
+            guardiansRoot.ToJsonString(JsonOpts),
+            true));
         if ((changed || trackerChanged) && trackerRoot != null)
         {
             coordinatedWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
                 GuardianProjectState.TrackerPath,
                 preBuyTrackerJson,
-                trackerRoot.ToJsonString(JsonOpts)));
+                trackerRoot.ToJsonString(JsonOpts),
+                true));
         }
 
         if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, coordinatedWrites.ToArray()))
@@ -315,6 +395,10 @@ public sealed class GuardianTradeService
         if (currentTurn <= 0)
             return new GuardianTradeOperationResult(false, false, "Локальная продажа реликвии требует актуальный номер хода.");
 
+        var localScope = await ResolveChaosTradeScopeAsync();
+        if (localScope == null)
+            return new GuardianTradeOperationResult(false, false, "Торговля с Хранителем недоступна в текущем мире или обители.");
+
         var guardiansRoot = await ReadGuardiansRootAsync();
         var soulRoot = await ReadSoulStateRootAsync();
         if (guardiansRoot == null || soulRoot == null)
@@ -326,6 +410,8 @@ public sealed class GuardianTradeService
         var guardian = FindGuardian(guardiansRoot, guardianId);
         if (guardian == null)
             return new GuardianTradeOperationResult(false, false, "Хранитель не найден.");
+        if (!LocalInteractionScopeService.IsAfterlifeActorLocal(localScope, guardian))
+            return new GuardianTradeOperationResult(false, false, "Этот Хранитель не находится в вашей текущей обители.");
 
         if (!GuardianTradeAllowedHere(guardiansRoot, guardian))
             return new GuardianTradeOperationResult(false, false, "Торговать можно только с текущим активным Хранителем в обители, где вы сейчас находитесь.");
@@ -333,6 +419,10 @@ public sealed class GuardianTradeService
         var tier = GetTradeReputationTier(ReadGuardianReputation(guardian));
         if (tier == TradeReputationTier.Hostile)
             return new GuardianTradeOperationResult(false, false, "Этот Хранитель отказывается торговать с вами.");
+
+        var commitScope = await ResolveCurrentGuardianTradeTargetScopeAsync(guardianId, preSellGuardiansJson);
+        if (commitScope == null)
+            return new GuardianTradeOperationResult(false, false, "Хранитель покинул текущую обитель до завершения продажи. Реликвия не изменена.");
 
         GuardianPolicyContracts.EnsureStrictCanonicalSoulStateRootsForPolicySensitiveWrite(soulRoot);
         NormalizeSoulRelicsShape(soulRoot);
@@ -365,8 +455,13 @@ public sealed class GuardianTradeService
                 removedSoulRelicIds: new[] { relicId })).ToJsonString(JsonOpts);
         if (!await CoordinatedStateWriteHelper.TryCommitAsync(
                 _fs,
-                new CoordinatedStateWriteHelper.PlannedWrite(SoulStatePath, preSellSoulJson, postSellSoulJson),
-                new CoordinatedStateWriteHelper.PlannedWrite(GuardiansPath, preSellGuardiansJson, guardiansRoot.ToJsonString(JsonOpts))))
+                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)
+                    .Concat(new[]
+                    {
+                        new CoordinatedStateWriteHelper.PlannedWrite(SoulStatePath, preSellSoulJson, postSellSoulJson, true),
+                        new CoordinatedStateWriteHelper.PlannedWrite(GuardiansPath, preSellGuardiansJson, guardiansRoot.ToJsonString(JsonOpts), true)
+                    })
+                    .ToArray()))
         {
             return new GuardianTradeOperationResult(
                 false,
@@ -383,6 +478,10 @@ public sealed class GuardianTradeService
         if (currentTurn <= 0)
             return new GuardianTradeOperationResult(false, false, "Локальный выкуп реликвии требует актуальный номер хода.");
 
+        var localScope = await ResolveChaosTradeScopeAsync();
+        if (localScope == null)
+            return new GuardianTradeOperationResult(false, false, "Торговля с Хранителем недоступна в текущем мире или обители.");
+
         var guardiansRoot = await ReadGuardiansRootAsync();
         var soulRoot = await ReadSoulStateRootAsync();
         if (guardiansRoot == null || soulRoot == null)
@@ -394,6 +493,8 @@ public sealed class GuardianTradeService
         var guardian = FindGuardian(guardiansRoot, guardianId);
         if (guardian == null)
             return new GuardianTradeOperationResult(false, false, "Хранитель не найден.");
+        if (!LocalInteractionScopeService.IsAfterlifeActorLocal(localScope, guardian))
+            return new GuardianTradeOperationResult(false, false, "Этот Хранитель не находится в вашей текущей обители.");
 
         if (!GuardianTradeAllowedHere(guardiansRoot, guardian))
             return new GuardianTradeOperationResult(false, false, "Торговать можно только с текущим активным Хранителем в обители, где вы сейчас находитесь.");
@@ -420,6 +521,10 @@ public sealed class GuardianTradeService
         if (price <= 0)
             return new GuardianTradeOperationResult(false, false, "Цена обратного выкупа повреждена.");
 
+        var commitScope = await ResolveCurrentGuardianTradeTargetScopeAsync(guardianId, preBuybackGuardiansJson);
+        if (commitScope == null)
+            return new GuardianTradeOperationResult(false, false, "Хранитель покинул текущую обитель до завершения выкупа. Перья не списаны.");
+
         GuardianPolicyContracts.EnsureStrictCanonicalSoulStateRootsForPolicySensitiveWrite(soulRoot);
         if (!TryModifyInkFeathers(soulRoot, -price))
             return new GuardianTradeOperationResult(false, false, "Недостаточно Чернильных Перьев.");
@@ -441,8 +546,13 @@ public sealed class GuardianTradeService
                 upsertedSoulRelicIds: new[] { GetNodeString(relicData["relicId"]) ?? string.Empty })).ToJsonString(JsonOpts);
         if (!await CoordinatedStateWriteHelper.TryCommitAsync(
                 _fs,
-                new CoordinatedStateWriteHelper.PlannedWrite(SoulStatePath, preBuybackSoulJson, postBuybackSoulJson),
-                new CoordinatedStateWriteHelper.PlannedWrite(GuardiansPath, preBuybackGuardiansJson, guardiansRoot.ToJsonString(JsonOpts))))
+                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)
+                    .Concat(new[]
+                    {
+                        new CoordinatedStateWriteHelper.PlannedWrite(SoulStatePath, preBuybackSoulJson, postBuybackSoulJson, true),
+                        new CoordinatedStateWriteHelper.PlannedWrite(GuardiansPath, preBuybackGuardiansJson, guardiansRoot.ToJsonString(JsonOpts), true)
+                    })
+                    .ToArray()))
         {
             return new GuardianTradeOperationResult(
                 false,
@@ -460,6 +570,7 @@ public sealed class GuardianTradeService
         int currentIncarnation,
         int currentTurn,
         JsonObject? trackerRoot,
+        string expectedGuardiansRootJson,
         bool createPendingRequests)
     {
         var guardianId = GetNodeString(guardian["guardianId"]) ?? "";
@@ -587,22 +698,54 @@ public sealed class GuardianTradeService
                         pendingInventoryRequestJson = JsonSerializer.Serialize(pendingRequest, JsonOpts);
                         if (createPendingRequests)
                         {
-                            await GuardianTradeRequestState.WriteAsync(_fs, pendingRequest);
-                            inventoryRequestPending = true;
-                            inventoryRequestCreatedThisCall = true;
+                            var requestScope = await ResolveCurrentGuardianTradeTargetScopeAsync(
+                                guardianId,
+                                expectedGuardiansRootJson);
+                            if (requestScope == null)
+                            {
+                                blocked = true;
+                                blockedReason = "Хранитель покинул текущую обитель до создания запроса. Состояние не изменено.";
+                                inventoryStatusMessage = blockedReason;
+                                pendingInventoryRequestJson = null;
+                            }
+                            else
+                            {
+                                if (await GuardianTradeRequestState.TryWriteScopedAsync(
+                                        _fs,
+                                        pendingRequest,
+                                        requestScope,
+                                        expectedGuardiansRootJson))
+                                {
+                                    inventoryRequestPending = true;
+                                    inventoryRequestCreatedThisCall = true;
+                                }
+                                else
+                                {
+                                    blocked = true;
+                                    blockedReason = "Мир или обитель изменились до создания запроса. Состояние не изменено.";
+                                    inventoryStatusMessage = blockedReason;
+                                    pendingInventoryRequestJson = null;
+                                }
+                            }
                         }
                     }
 
-                    inventoryStatusMessage = inventoryRequestCreatedThisCall
-                        ? "Витрина Хранителя уже проявлена, но ещё не подтверждена каноническим итогом. Запрос на закрытие ассортимента отправлен GM."
-                        : "Витрина Хранителя ожидает канонического подтверждения. Повторите после ответа GM.";
-                    pendingGmAction ??=
-                        $"[{GuardianTradeRequestState.ActionTag}] У Хранителя {guardianName} ({guardianId}) уже materialized витрина текущего return cycle, но отсутствует canonical ready receipt. " +
-                        $"Обязательно закрой текущий контракт через {GuardianTradeRequestState.UpdateReceiptsProperty} в guardians.json вместо повторной генерации новой витрины.";
+                    if (!blocked)
+                    {
+                        inventoryStatusMessage = inventoryRequestCreatedThisCall
+                            ? "Витрина Хранителя уже проявлена, но ещё не подтверждена каноническим итогом. Запрос на закрытие ассортимента отправлен GM."
+                            : "Витрина Хранителя ожидает канонического подтверждения. Повторите после ответа GM.";
+                        pendingGmAction ??=
+                            $"[{GuardianTradeRequestState.ActionTag}] У Хранителя {guardianName} ({guardianId}) уже materialized витрина текущего return cycle, но отсутствует canonical ready receipt. " +
+                            $"Обязательно закрой текущий контракт через {GuardianTradeRequestState.UpdateReceiptsProperty} в guardians.json вместо повторной генерации новой витрины.";
+                    }
                 }
 
                 if (pendingRequest != null && requestMatchesCurrentContract && (hasMatchingReceipt || hasCanonicalReadyReceipt))
-                    GuardianTradeRequestState.Clear(_fs);
+                {
+                    if (await IsCurrentGuardianTradeTargetAsync(guardianId))
+                        await GuardianTradeRequestState.ClearIfMatchesAsync(_fs, pendingRequest);
+                }
             }
             else
             {
@@ -670,21 +813,53 @@ public sealed class GuardianTradeService
                     pendingInventoryRequestJson = JsonSerializer.Serialize(pendingRequest, JsonOpts);
                     if (createPendingRequests)
                     {
-                        await GuardianTradeRequestState.WriteAsync(_fs, pendingRequest);
-                        inventoryRequestPending = true;
-                        inventoryRequestCreatedThisCall = true;
+                        var requestScope = await ResolveCurrentGuardianTradeTargetScopeAsync(
+                            guardianId,
+                            expectedGuardiansRootJson);
+                        if (requestScope == null)
+                        {
+                            blocked = true;
+                            blockedReason = "Хранитель покинул текущую обитель до создания запроса. Состояние не изменено.";
+                            inventoryStatusMessage = blockedReason;
+                            pendingInventoryRequestJson = null;
+                        }
+                        else
+                        {
+                            if (await GuardianTradeRequestState.TryWriteScopedAsync(
+                                    _fs,
+                                    pendingRequest,
+                                    requestScope,
+                                    expectedGuardiansRootJson))
+                            {
+                                inventoryRequestPending = true;
+                                inventoryRequestCreatedThisCall = true;
+                            }
+                            else
+                            {
+                                blocked = true;
+                                blockedReason = "Мир или обитель изменились до создания запроса. Состояние не изменено.";
+                                inventoryStatusMessage = blockedReason;
+                                pendingInventoryRequestJson = null;
+                            }
+                        }
                     }
-                    pendingGmAction =
-                        $"[{GuardianTradeRequestState.ActionTag}] Игрок открывает торговлю с Хранителем {guardianName} ({guardianId}), но актуальная витрина отсутствует или устарела. " +
-                        $"Обязательно прочитай {GuardianTradeRequestState.PendingRequestPath} как client-authored contract. " +
-                        "Сгенерируй explicit guardian.tradeInventory для текущего return cycle, а не выводи ассортимент из guardian.domain. " +
-                        $"После materialization закрой запрос canonical receipt через {GuardianTradeRequestState.UpdateReceiptsProperty} в guardians.json. " +
-                        "Витрина должна уважать derivedTradeSlotCount, generation/pricing reputation tier и projectBonusSignature из request.";
+                    if (!blocked)
+                    {
+                        pendingGmAction =
+                            $"[{GuardianTradeRequestState.ActionTag}] Игрок открывает торговлю с Хранителем {guardianName} ({guardianId}), но актуальная витрина отсутствует или устарела. " +
+                            $"Обязательно прочитай {GuardianTradeRequestState.PendingRequestPath} как client-authored contract. " +
+                            "Сгенерируй explicit guardian.tradeInventory для текущего return cycle, а не выводи ассортимент из guardian.domain. " +
+                            $"После materialization закрой запрос canonical receipt через {GuardianTradeRequestState.UpdateReceiptsProperty} в guardians.json. " +
+                            "Витрина должна уважать derivedTradeSlotCount, generation/pricing reputation tier и projectBonusSignature из request.";
+                    }
                 }
 
-                inventoryStatusMessage = inventoryRequestCreatedThisCall
-                    ? "Витрина Хранителя подготавливается. Запрос на формирование ассортимента отправлен GM."
-                    : "Витрина Хранителя ещё подготавливается. Повторите после ответа GM.";
+                if (!blocked)
+                {
+                    inventoryStatusMessage = inventoryRequestCreatedThisCall
+                        ? "Витрина Хранителя подготавливается. Запрос на формирование ассортимента отправлен GM."
+                        : "Витрина Хранителя ещё подготавливается. Повторите после ответа GM.";
+                }
             }
         }
 
@@ -891,6 +1066,46 @@ public sealed class GuardianTradeService
         var abodeId = GetNodeString(abode["abodeId"]);
         return !string.IsNullOrWhiteSpace(abodeId) &&
                string.Equals(abodeId, currentAbodeId, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task<LocalInteractionScope?> ResolveChaosTradeScopeAsync()
+    {
+        var scope = await _localScopeService.ResolveAsync();
+        return scope.IsResolved && scope.RealmKind == LocalInteractionRealmKind.ChaosSea ? scope : null;
+    }
+
+    private async Task<bool> IsCurrentGuardianTradeTargetAsync(string guardianId, string? expectedGuardiansRootJson = null) =>
+        await ResolveCurrentGuardianTradeTargetScopeAsync(guardianId, expectedGuardiansRootJson) != null;
+
+    private async Task<LocalInteractionScope?> ResolveCurrentGuardianTradeTargetScopeAsync(
+        string guardianId,
+        string? expectedGuardiansRootJson = null)
+    {
+        var scope = await ResolveChaosTradeScopeAsync();
+        if (scope == null)
+            return null;
+
+        var root = await ReadGuardiansRootAsync();
+        if (root == null ||
+            (expectedGuardiansRootJson != null &&
+             !string.Equals(root.ToJsonString(JsonOpts), expectedGuardiansRootJson, StringComparison.Ordinal)))
+        {
+            return null;
+        }
+
+        var guardian = FindGuardian(root, guardianId);
+        if (guardian == null ||
+            !LocalInteractionScopeService.IsAfterlifeActorLocal(scope, guardian) ||
+            !GuardianTradeAllowedHere(root, guardian))
+        {
+            return null;
+        }
+
+        return await CoordinatedStateWriteHelper.TryCommitAsync(
+            _fs,
+            CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(scope))
+            ? scope
+            : null;
     }
 
     private static string BuildTradeBlockedReason(JsonObject root, JsonObject guardian, int reputation)

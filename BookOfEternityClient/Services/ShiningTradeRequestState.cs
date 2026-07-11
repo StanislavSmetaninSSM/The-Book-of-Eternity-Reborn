@@ -16,6 +16,7 @@ internal static class ShiningTradeRequestState
     public const string ReceiptStatusReady = "ready";
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
+    private static readonly SemaphoreSlim RequestWriteGate = new(1, 1);
 
     public sealed class PendingShiningTradeInventoryRequest
     {
@@ -88,6 +89,10 @@ internal static class ShiningTradeRequestState
         bool IsMalformed,
         IReadOnlyList<PendingShiningTradeInventoryRequest> Requests);
 
+    internal sealed record PendingRequestSnapshot(
+        string? Json,
+        PendingRequestReadState State);
+
     public static async Task<IReadOnlyList<PendingShiningTradeInventoryRequest>> ReadRequestsAsync(FileSystemManager fs)
     {
         return (await ReadRequestsStateAsync(fs)).Requests;
@@ -102,6 +107,14 @@ internal static class ShiningTradeRequestState
     {
         var json = await fs.ReadFileAsync(PendingRequestsPath);
         return AnalyzeRequests(json, fs.FileExists(PendingRequestsPath));
+    }
+
+    internal static async Task<PendingRequestSnapshot> ReadRequestsSnapshotAsync(FileSystemManager fs)
+    {
+        var json = await fs.ReadFileAsync(PendingRequestsPath);
+        return new PendingRequestSnapshot(
+            json,
+            AnalyzeRequests(json, fs.FileExists(PendingRequestsPath)));
     }
 
     private static PendingRequestReadState AnalyzeRequests(string? json, bool filePresent)
@@ -140,7 +153,96 @@ internal static class ShiningTradeRequestState
 
     public static async Task WriteRequestAsync(FileSystemManager fs, PendingShiningTradeInventoryRequest request)
     {
-        var existingState = await ReadRequestsStateAsync(fs);
+        await RequestWriteGate.WaitAsync();
+        try
+        {
+            var existingState = await ReadRequestsStateAsync(fs);
+            ValidateRequestReplacement(existingState, request);
+            var requests = UpsertRequest(existingState.Requests, request);
+            await WriteRequestsCoreAsync(fs, requests);
+        }
+        finally
+        {
+            RequestWriteGate.Release();
+        }
+    }
+
+    public static async Task<bool> TryWriteScopedRequestAsync(
+        FileSystemManager fs,
+        PendingShiningTradeInventoryRequest request,
+        LocalInteractionScope scope)
+    {
+        await RequestWriteGate.WaitAsync();
+        try
+        {
+            var previousJson = await fs.ReadFileAsync(PendingRequestsPath);
+            var existingState = AnalyzeRequests(previousJson, fs.FileExists(PendingRequestsPath));
+            ValidateRequestReplacement(existingState, request);
+            var requests = UpsertRequest(existingState.Requests, request);
+            var nextJson = SerializeRequests(requests);
+            var writes = CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(scope)
+                .Concat(new[]
+                {
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        PendingRequestsPath,
+                        previousJson,
+                        nextJson,
+                        RequireCurrentBaseline: true)
+                })
+                .ToArray();
+
+            return await CoordinatedStateWriteHelper.TryCommitAsync(fs, writes);
+        }
+        finally
+        {
+            RequestWriteGate.Release();
+        }
+    }
+
+    public static async Task WriteRequestsAsync(FileSystemManager fs, IReadOnlyList<PendingShiningTradeInventoryRequest> requests)
+    {
+        await RequestWriteGate.WaitAsync();
+        try
+        {
+            var existingState = await ReadRequestsStateAsync(fs);
+            if (existingState.IsMalformed)
+                throw new InvalidOperationException("pending_shining_trade_inventory_requests.json повреждён и должен быть исправлен или очищен до записи новых торговых запросов.");
+            await WriteRequestsCoreAsync(fs, requests);
+        }
+        finally
+        {
+            RequestWriteGate.Release();
+        }
+    }
+
+    internal static async Task<bool> TryReplaceRequestsSnapshotAsync(
+        FileSystemManager fs,
+        string? expectedJson,
+        IReadOnlyList<PendingShiningTradeInventoryRequest> requests)
+    {
+        await RequestWriteGate.WaitAsync();
+        try
+        {
+            ValidateRequestCollection(requests);
+            var nextJson = requests.Count == 0 ? null : SerializeRequests(requests);
+            return await CoordinatedStateWriteHelper.TryCommitAsync(
+                fs,
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    PendingRequestsPath,
+                    expectedJson,
+                    nextJson,
+                    RequireCurrentBaseline: true));
+        }
+        finally
+        {
+            RequestWriteGate.Release();
+        }
+    }
+
+    private static void ValidateRequestReplacement(
+        PendingRequestReadState existingState,
+        PendingShiningTradeInventoryRequest request)
+    {
         if (existingState.IsMalformed)
             throw new InvalidOperationException("pending_shining_trade_inventory_requests.json повреждён и должен быть исправлен или очищен до записи новых торговых запросов.");
         if (existingState.Requests.Any(existing =>
@@ -158,28 +260,37 @@ internal static class ShiningTradeRequestState
         {
             throw new InvalidOperationException("pending_shining_trade_inventory_requests.json уже содержит live foreign trade contract with the same requestId; guarded writer не создаёт ambiguous notification identity.");
         }
-
-        var requests = (await ReadRequestsAsync(fs)).ToList();
-        requests.RemoveAll(existing =>
-            string.Equals(existing.FactionId, request.FactionId, StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(existing.TradeCycleId, request.TradeCycleId, StringComparison.OrdinalIgnoreCase));
-        requests.Add(request);
-
-        await WriteRequestsAsync(fs, requests);
     }
 
-    public static async Task WriteRequestsAsync(FileSystemManager fs, IReadOnlyList<PendingShiningTradeInventoryRequest> requests)
+    private static List<PendingShiningTradeInventoryRequest> UpsertRequest(
+        IReadOnlyList<PendingShiningTradeInventoryRequest> existing,
+        PendingShiningTradeInventoryRequest request)
     {
-        var existingState = await ReadRequestsStateAsync(fs);
-        if (existingState.IsMalformed)
-            throw new InvalidOperationException("pending_shining_trade_inventory_requests.json повреждён и должен быть исправлен или очищен до записи новых торговых запросов.");
+        var requests = existing.ToList();
+        requests.RemoveAll(candidate =>
+            string.Equals(candidate.FactionId, request.FactionId, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(candidate.TradeCycleId, request.TradeCycleId, StringComparison.OrdinalIgnoreCase));
+        requests.Add(request);
+        return requests;
+    }
 
+    private static async Task WriteRequestsCoreAsync(
+        FileSystemManager fs,
+        IReadOnlyList<PendingShiningTradeInventoryRequest> requests)
+    {
         if (requests.Count == 0)
         {
             fs.DeleteFile(PendingRequestsPath);
             return;
         }
 
+        ValidateRequestCollection(requests);
+        await fs.WriteFileAtomicAsync(PendingRequestsPath, SerializeRequests(requests));
+    }
+
+    private static void ValidateRequestCollection(
+        IReadOnlyList<PendingShiningTradeInventoryRequest> requests)
+    {
         var duplicateRequestIds = requests
             .Where(request => !string.IsNullOrWhiteSpace(request.RequestId))
             .GroupBy(request => request.RequestId, StringComparer.OrdinalIgnoreCase)
@@ -188,12 +299,13 @@ internal static class ShiningTradeRequestState
             .ToList();
         if (duplicateRequestIds.Count > 0)
             throw new InvalidOperationException($"pending_shining_trade_inventory_requests.json не допускает duplicated requestId: {string.Join(", ", duplicateRequestIds)}.");
+    }
 
-        await fs.WriteFileAtomicAsync(PendingRequestsPath, JsonSerializer.Serialize(new Dictionary<string, object?>
+    private static string SerializeRequests(IReadOnlyList<PendingShiningTradeInventoryRequest> requests) =>
+        JsonSerializer.Serialize(new Dictionary<string, object?>
         {
             [RequestsProperty] = requests
-        }, JsonOpts));
-    }
+        }, JsonOpts);
 
     public static void ClearRequests(FileSystemManager fs) => fs.DeleteFile(PendingRequestsPath);
 
@@ -387,74 +499,93 @@ internal static class ShiningTradeRequestState
         if (!RealmSemantics.HasResolvedRealm(currentRealm))
             return;
 
-        if (!IsShiningRealm(currentRealm))
-        {
-            var state = await ReadRequestsStateAsync(fs);
-            if (!state.IsMalformed && state.Requests.Count == 0)
-                fs.DeleteFile(PendingRequestsPath);
-            return;
-        }
-
-        var requestState = await ReadRequestsStateAsync(fs);
-        if (requestState.IsMalformed)
-            return;
-
-        var requests = requestState.Requests.ToList();
-        if (requests.Count == 0)
-        {
-            fs.DeleteFile(PendingRequestsPath);
-            return;
-        }
-
-        var shiningJson = await fs.ReadFileAsync(ShiningAbodeState.StatePath);
-        var residentJson = await fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
-        var guardiansJson = await fs.ReadFileAsync("game_state/meta/guardians.json");
-        if (string.IsNullOrWhiteSpace(shiningJson))
-            return;
-
+        await RequestWriteGate.WaitAsync();
         try
         {
-            var shiningRoot = JsonNode.Parse(shiningJson) as JsonObject;
-            var residentRoot = !string.IsNullOrWhiteSpace(residentJson) ? JsonNode.Parse(residentJson) as JsonObject : null;
-            var guardiansRoot = !string.IsNullOrWhiteSpace(guardiansJson) ? JsonNode.Parse(guardiansJson) as JsonObject : null;
-            if (shiningRoot == null)
-                return;
-            if (ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot) != null)
-                return;
-
-            ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
-            if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
+            var previousJson = await fs.ReadFileAsync(PendingRequestsPath);
+            var requestState = AnalyzeRequests(previousJson, fs.FileExists(PendingRequestsPath));
+            if (!IsShiningRealm(currentRealm))
             {
-                if (requestState.Requests.Count == 0)
-                    fs.DeleteFile(PendingRequestsPath);
+                if (!requestState.IsMalformed && requestState.Requests.Count == 0)
+                {
+                    await CoordinatedStateWriteHelper.TryCommitAsync(
+                        fs,
+                        new CoordinatedStateWriteHelper.PlannedWrite(
+                            PendingRequestsPath,
+                            previousJson,
+                            NextJson: null,
+                            RequireCurrentBaseline: true));
+                }
                 return;
             }
-            if (ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+
+            if (requestState.IsMalformed)
                 return;
 
-            requests.RemoveAll(request =>
-            {
-                var faction = ShiningAbodeState.FindFaction(shiningRoot, request.FactionId);
-                if (faction == null)
-                    return false;
-
-                return FindMatchingReceipt(faction, request) != null;
-            });
-
+            var requests = requestState.Requests.ToList();
             if (requests.Count == 0)
             {
-                fs.DeleteFile(PendingRequestsPath);
+                await CoordinatedStateWriteHelper.TryCommitAsync(
+                    fs,
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        PendingRequestsPath,
+                        previousJson,
+                        NextJson: null,
+                        RequireCurrentBaseline: true));
                 return;
             }
 
-            await fs.WriteFileAtomicAsync(PendingRequestsPath, JsonSerializer.Serialize(new Dictionary<string, object?>
+            var shiningJson = await fs.ReadFileAsync(ShiningAbodeState.StatePath);
+            var residentJson = await fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+            var guardiansJson = await fs.ReadFileAsync("game_state/meta/guardians.json");
+            if (string.IsNullOrWhiteSpace(shiningJson))
+                return;
+
+            try
             {
-                [RequestsProperty] = requests
-            }, JsonOpts));
+                var shiningRoot = JsonNode.Parse(shiningJson) as JsonObject;
+                var residentRoot = !string.IsNullOrWhiteSpace(residentJson) ? JsonNode.Parse(residentJson) as JsonObject : null;
+                var guardiansRoot = !string.IsNullOrWhiteSpace(guardiansJson) ? JsonNode.Parse(guardiansJson) as JsonObject : null;
+                if (shiningRoot == null)
+                    return;
+                if (ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot) != null)
+                    return;
+
+                ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
+                if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
+                    return;
+                if (ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+                    return;
+
+                requests.RemoveAll(request =>
+                {
+                    var faction = ShiningAbodeState.FindFaction(shiningRoot, request.FactionId);
+                    if (faction == null)
+                        return false;
+
+                    return FindMatchingReceipt(faction, request) != null;
+                });
+
+                if (requests.Count == requestState.Requests.Count)
+                    return;
+
+                var nextJson = requests.Count == 0 ? null : SerializeRequests(requests);
+                await CoordinatedStateWriteHelper.TryCommitAsync(
+                    fs,
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        PendingRequestsPath,
+                        previousJson,
+                        nextJson,
+                        RequireCurrentBaseline: true));
+            }
+            catch
+            {
+                // keep pending requests until canonical state is readable again
+            }
         }
-        catch
+        finally
         {
-            // keep pending requests until canonical state is readable again
+            RequestWriteGate.Release();
         }
     }
 

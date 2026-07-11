@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -44,6 +45,95 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
     }
 
     [Fact]
+    public async Task GetCurrentLocationTradeTargetsAsync_ScopeChangesBeforeReturn_HidesMerchant()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.Mortal, "Локация изменилась."));
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance, resolver);
+
+        var targets = await service.GetCurrentLocationTradeTargetsAsync();
+
+        Assert.Empty(targets);
+        Assert.True(resolver.ResolveCallCount >= 2);
+    }
+
+    [Fact]
+    public async Task EnsureTradeInventoryAsync_ScopeChangesBeforeReturn_HidesMerchantDetails()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.Mortal, "Локация изменилась."));
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance, resolver);
+
+        var view = await service.EnsureTradeInventoryAsync(
+            "npc_merchant_001",
+            currentTurn: 7,
+            createPendingRequests: false);
+
+        Assert.Null(view);
+        Assert.True(resolver.ResolveCallCount >= 2);
+    }
+
+    [Fact]
+    public async Task EnsureTradeInventoryAsync_MerchantChangesBeforeRepriceCommit_PreservesConcurrentUpdate()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);
+        var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+        root["UpdateNPCs"]!.AsArray()[0]!.AsObject()["relationshipLevel"] = 150;
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", root.ToJsonString());
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var latest = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+                latest["UpdateNPCs"]!.AsArray()[0]!.AsObject()["concurrentGmMarker"] = "preserve";
+                await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", latest.ToJsonString());
+            },
+            initialScope,
+            initialScope,
+            initialScope);
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance, resolver);
+
+        var view = await service.EnsureTradeInventoryAsync(
+            "npc_merchant_001",
+            currentTurn: 7,
+            createPendingRequests: false);
+
+        Assert.Null(view);
+        Assert.Contains(
+            "concurrentGmMarker",
+            await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? string.Empty,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task GetSellableItemsAsync_ScopeChangesBeforeReturn_HidesMerchantOffers()
+    {
+        await SeedBaseStateAsync(
+            includeTradeInventory: true,
+            includeTradeReceipt: true,
+            includeSellableInventoryItem: true);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.Mortal, "Локация изменилась."));
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance, resolver);
+
+        var offers = await service.GetSellableItemsAsync("npc_merchant_001");
+
+        Assert.Empty(offers);
+        Assert.True(resolver.ResolveCallCount >= 2);
+    }
+
+    [Fact]
     public async Task EnsureTradeInventoryAsync_SameTurnInitialIdMerchant_CreatesPendingRequestForInitialId()
     {
         await SeedBaseStateAsync(includeTradeInventory: false, includeTradeReceipt: false, useSameTurnInitialId: true);
@@ -60,6 +150,35 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
         Assert.NotNull(pendingRaw);
         Assert.Contains("\"npcId\": \"npc_merchant_initial_001\"", pendingRaw, StringComparison.Ordinal);
         Assert.Contains("\"tradeCycleId\": \"world_trade_0\"", pendingRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task EnsureTradeInventoryAsync_MortalAuthorityChangesBeforeRequestCommit_DoesNotCreatePending()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: false, includeTradeReceipt: false);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+                {
+                  "locationId": "loc_remote",
+                  "name": "Дальний тракт"
+                }
+                """);
+            },
+            initialScope,
+            initialScope,
+            initialScope);
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance, resolver);
+
+        var view = await service.EnsureTradeInventoryAsync("npc_merchant_001", currentTurn: 7);
+
+        Assert.Null(view);
+        Assert.False(_fs.FileExists(NpcTradeRequestState.PendingRequestPath));
     }
 
     [Fact]
@@ -194,6 +313,85 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
         Assert.Equal(1, item.GetProperty("count").GetInt32());
         Assert.Equal(JsonValueKind.Number, item.GetProperty("weight").ValueKind);
         Assert.Equal(JsonValueKind.Number, item.GetProperty("volume").ValueKind);
+    }
+
+    [Fact]
+    public async Task BuyAsync_MortalScopeChangesBeforeCommit_BlocksWithoutMutation()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.Mortal, "Локация изменилась."));
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance, resolver);
+        var inventoryBefore = await _fs.ReadFileAsync("game_state/inventory/items.json");
+        var statusBefore = await _fs.ReadFileAsync("game_state/core/player_status.json");
+        var npcBefore = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
+
+        var result = await service.BuyAsync("npc_merchant_001", "npc_trade_slot_001", currentTurn: 8);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.True(resolver.ResolveCallCount >= 2);
+        Assert.Equal(inventoryBefore, await _fs.ReadFileAsync("game_state/inventory/items.json"));
+        Assert.Equal(statusBefore, await _fs.ReadFileAsync("game_state/core/player_status.json"));
+        Assert.Equal(npcBefore, await _fs.ReadFileAsync("game_state/npcs/npc_core.json"));
+    }
+
+    [Fact]
+    public async Task BuyAsync_MerchantChangesBeforeCommit_BlocksWithoutOverwritingActor()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+                root["UpdateNPCs"]!.AsArray()[0]!.AsObject()["concurrentGmMarker"] = "preserve";
+                await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", root.ToJsonString());
+            },
+            initialScope,
+            initialScope);
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance, resolver);
+        var inventoryBefore = await _fs.ReadFileAsync("game_state/inventory/items.json");
+        var statusBefore = await _fs.ReadFileAsync("game_state/core/player_status.json");
+
+        var result = await service.BuyAsync("npc_merchant_001", "npc_trade_slot_001", currentTurn: 8);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Equal(inventoryBefore, await _fs.ReadFileAsync("game_state/inventory/items.json"));
+        Assert.Equal(statusBefore, await _fs.ReadFileAsync("game_state/core/player_status.json"));
+        Assert.Contains("concurrentGmMarker", await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? string.Empty, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuyAsync_AmbiguousAfterlifeRealm_BlocksWithoutMutation()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            """
+            {
+              "currentRealm": "afterlife",
+              "currentIncarnation": 0
+            }
+            """);
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
+        var inventoryBefore = await _fs.ReadFileAsync("game_state/inventory/items.json");
+        var statusBefore = await _fs.ReadFileAsync("game_state/core/player_status.json");
+        var npcBefore = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
+
+        var result = await service.BuyAsync("npc_merchant_001", "npc_trade_slot_001", currentTurn: 8);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Equal(inventoryBefore, await _fs.ReadFileAsync("game_state/inventory/items.json"));
+        Assert.Equal(statusBefore, await _fs.ReadFileAsync("game_state/core/player_status.json"));
+        Assert.Equal(npcBefore, await _fs.ReadFileAsync("game_state/npcs/npc_core.json"));
     }
 
     [Fact]

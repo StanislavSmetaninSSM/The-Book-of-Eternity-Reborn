@@ -11,6 +11,7 @@ public sealed partial class NpcTradeService
 {
     private readonly FileSystemManager _fs;
     private readonly ILogger<NpcTradeService> _logger;
+    private readonly ILocalInteractionScopeResolver _localScopeService;
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
@@ -25,21 +26,43 @@ public sealed partial class NpcTradeService
     private const string BuybackStatusRemoved = "removed";
 
     public NpcTradeService(FileSystemManager fs, ILogger<NpcTradeService> logger)
+        : this(fs, logger, new LocalInteractionScopeService(fs))
+    {
+    }
+
+    internal NpcTradeService(
+        FileSystemManager fs,
+        ILogger<NpcTradeService> logger,
+        ILocalInteractionScopeResolver localScopeService)
     {
         _fs = fs;
         _logger = logger;
+        _localScopeService = localScopeService;
     }
 
     public async Task<IReadOnlyList<NpcTradeTarget>> GetCurrentLocationTradeTargetsAsync()
     {
+        var localScope = await ResolveMortalTradeScopeAsync();
+        if (localScope == null)
+            return Array.Empty<NpcTradeTarget>();
+
         var root = await ReadNpcRootAsync();
         if (root == null)
             return Array.Empty<NpcTradeTarget>();
 
-        var (currentLocationId, currentLocationName) = ReadCurrentLocationIdentitySync();
-        if (string.IsNullOrWhiteSpace(currentLocationId) && string.IsNullOrWhiteSpace(currentLocationName))
-            return Array.Empty<NpcTradeTarget>();
+        var finalScope = await ResolveMortalTradeScopeAsync();
+        var finalRoot = await ReadNpcRootAsync();
+        return finalScope == null || finalRoot == null
+            ? Array.Empty<NpcTradeTarget>()
+            : BuildCurrentLocationTradeTargets(finalRoot, finalScope);
+    }
 
+    private static IReadOnlyList<NpcTradeTarget> BuildCurrentLocationTradeTargets(
+        JsonObject root,
+        LocalInteractionScope localScope)
+    {
+        var currentLocationId = localScope.LocationId;
+        var currentLocationName = localScope.LocationName;
         var targets = new List<NpcTradeTarget>();
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var array in EnumerateNpcArrays(root))
@@ -52,11 +75,7 @@ public sealed partial class NpcTradeService
 
                 var npcLocationId = GetNodeString(npc["currentLocationId"]) ?? string.Empty;
                 var npcLocationName = GetNodeString(npc["currentLocation"]) ?? string.Empty;
-                if (!IsSameTradeLocation(
-                        npcLocationId,
-                        npcLocationName,
-                        currentLocationId,
-                        currentLocationName))
+                if (!LocalInteractionScopeService.IsMortalActorLocal(localScope, npc))
                 {
                     continue;
                 }
@@ -88,14 +107,19 @@ public sealed partial class NpcTradeService
         if (currentTurn <= 0)
             throw new ArgumentOutOfRangeException(nameof(currentTurn), "Подготовка или проверка витрины НПС требует актуальный номер хода.");
 
+        var localScope = await ResolveMortalTradeScopeAsync();
+        if (localScope == null)
+            return null;
+
         var npcRoot = await ReadNpcRootAsync();
         var itemsRoot = await ReadInventoryRootAsync();
         var statusRoot = await ReadPlayerStatusRootAsync();
         if (npcRoot == null || itemsRoot == null || statusRoot == null)
             return null;
+        var npcRootBaseline = npcRoot.ToJsonString(JsonOpts);
 
         var npc = FindNpcEntry(npcRoot, npcId);
-        if (npc == null)
+        if (npc == null || !LocalInteractionScopeService.IsMortalActorLocal(localScope, npc))
             return null;
 
         var currentWorldMinutes = await ResolveCurrentWorldMinutesAsync();
@@ -105,15 +129,43 @@ public sealed partial class NpcTradeService
             statusRoot,
             currentWorldMinutes,
             currentTurn,
+            npcRootBaseline,
             createPendingRequests);
         if (changed)
-            await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
+        {
+            var commitScope = await ResolveCurrentMortalTradeTargetScopeAsync(npcId, npcRootBaseline);
+            if (commitScope == null)
+                return null;
+
+            if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                    _fs,
+                    CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)
+                        .Concat(new[]
+                        {
+                            new CoordinatedStateWriteHelper.PlannedWrite(
+                                NpcCorePath,
+                                npcRootBaseline,
+                                npcRoot.ToJsonString(JsonOpts),
+                                true)
+                        })
+                        .ToArray()))
+            {
+                return null;
+            }
+        }
+
+        if (!await IsCurrentMortalTradeTargetAsync(npcId, npcRoot.ToJsonString(JsonOpts)))
+            return null;
 
         return view;
     }
 
     public async Task<IReadOnlyList<NpcSellOffer>> GetSellableItemsAsync(string npcId)
     {
+        var localScope = await ResolveMortalTradeScopeAsync();
+        if (localScope == null)
+            return Array.Empty<NpcSellOffer>();
+
         var npcRoot = await ReadNpcRootAsync();
         var itemsRoot = await ReadInventoryRootAsync();
         var statusRoot = await ReadPlayerStatusRootAsync();
@@ -121,7 +173,7 @@ public sealed partial class NpcTradeService
             return Array.Empty<NpcSellOffer>();
 
         var npc = FindNpcEntry(npcRoot, npcId);
-        if (npc == null)
+        if (npc == null || !LocalInteractionScopeService.IsMortalActorLocal(localScope, npc))
             return Array.Empty<NpcSellOffer>();
 
         if (!NpcTradeAllowedHere(npc, out _))
@@ -138,7 +190,7 @@ public sealed partial class NpcTradeService
             return Array.Empty<NpcSellOffer>();
 
         var equippedRefs = CollectEquippedItemReferences(itemsRoot);
-        return items.OfType<JsonObject>()
+        var offers = items.OfType<JsonObject>()
             .Where(item => !IsQuestBoundItem(item))
             .Where(item => !IsSoulRelicLikeItem(item))
             .Where(item =>
@@ -162,6 +214,10 @@ public sealed partial class NpcTradeService
             .OrderByDescending(offer => GetRarityRank(offer.Rarity))
             .ThenBy(offer => offer.Name, StringComparer.OrdinalIgnoreCase)
             .ToList();
+
+        return await IsCurrentMortalTradeTargetAsync(npcId, npcRoot.ToJsonString(JsonOpts))
+            ? offers
+            : Array.Empty<NpcSellOffer>();
     }
 
     public async Task<NpcTradeOperationResult> BuyAsync(string npcId, string slotId, int currentTurn)
@@ -169,18 +225,33 @@ public sealed partial class NpcTradeService
         if (currentTurn <= 0)
             return new NpcTradeOperationResult(false, false, "Локальная покупка товара требует актуальный номер хода.");
 
+        var localScope = await ResolveMortalTradeScopeAsync();
+        if (localScope == null)
+            return new NpcTradeOperationResult(false, false, "Торговля с НПС недоступна в текущем мире или локации.");
+
         var npcRoot = await ReadNpcRootAsync();
         var itemsRoot = await ReadInventoryRootAsync();
         var statusRoot = await ReadPlayerStatusRootAsync();
         if (npcRoot == null || itemsRoot == null || statusRoot == null)
             return new NpcTradeOperationResult(false, false, "Не удалось прочитать состояние торговли, инвентаря или денег.");
+        var npcRootBaseline = npcRoot.ToJsonString(JsonOpts);
+        var itemsRootBaseline = itemsRoot.ToJsonString(JsonOpts);
+        var statusRootBaseline = statusRoot.ToJsonString(JsonOpts);
 
         var npc = FindNpcEntry(npcRoot, npcId);
         if (npc == null)
             return new NpcTradeOperationResult(false, false, "Торговец не найден.");
+        if (!LocalInteractionScopeService.IsMortalActorLocal(localScope, npc))
+            return new NpcTradeOperationResult(false, false, "Этот торговец не находится в вашей текущей локации.");
 
         var currentWorldMinutes = await ResolveCurrentWorldMinutesAsync();
-        var (changed, view) = await EnsureNpcTradeInventoryStateAsync(npcRoot, npc, statusRoot, currentWorldMinutes, currentTurn);
+        var (changed, view) = await EnsureNpcTradeInventoryStateAsync(
+            npcRoot,
+            npc,
+            statusRoot,
+            currentWorldMinutes,
+            currentTurn,
+            npcRootBaseline);
         if (view == null)
             return new NpcTradeOperationResult(false, false, "Не удалось подготовить витрину торговца.");
         if (view.TradeBlocked)
@@ -210,6 +281,10 @@ public sealed partial class NpcTradeService
         if (slot["itemData"] is not JsonObject itemData)
             return new NpcTradeOperationResult(false, false, "Данные товара повреждены.");
 
+        var commitScope = await ResolveCurrentMortalTradeTargetScopeAsync(npcId, npcRootBaseline);
+        if (commitScope == null)
+            return new NpcTradeOperationResult(false, false, "Торговец покинул текущую локацию до завершения покупки. Деньги не списаны.");
+
         NormalizeInventoryShape(itemsRoot);
         var inventoryItems = itemsRoot["items"]!.AsArray();
         UpsertInventoryItem(inventoryItems, BuildCanonicalInventoryItemForLocalPurchase(CloneObject(itemData), slot));
@@ -217,9 +292,19 @@ public sealed partial class NpcTradeService
         slot["soldOut"] = true;
         SyncNpcEntries(npcRoot, GetNpcIdentity(npc), npc);
 
-        await _fs.WriteFileAtomicAsync(ItemsPath, itemsRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(PlayerStatusPath, statusRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)
+                    .Concat(new[]
+                    {
+                new CoordinatedStateWriteHelper.PlannedWrite(ItemsPath, itemsRootBaseline, itemsRoot.ToJsonString(JsonOpts), true),
+                new CoordinatedStateWriteHelper.PlannedWrite(PlayerStatusPath, statusRootBaseline, statusRoot.ToJsonString(JsonOpts), true),
+                new CoordinatedStateWriteHelper.PlannedWrite(NpcCorePath, npcRootBaseline, npcRoot.ToJsonString(JsonOpts), true)
+                    })
+                    .ToArray()))
+        {
+            return new NpcTradeOperationResult(false, false, "Состояние торговли изменилось до фиксации покупки. Деньги и инвентарь не изменены.");
+        }
 
         var itemName = GetNodeString(itemData["name"]) ?? "Товар";
         return new NpcTradeOperationResult(true, true, $"Куплен товар «{itemName}» за {price}.");
@@ -230,15 +315,24 @@ public sealed partial class NpcTradeService
         if (currentTurn <= 0)
             return new NpcTradeOperationResult(false, false, "Локальная продажа товара требует актуальный номер хода.");
 
+        var localScope = await ResolveMortalTradeScopeAsync();
+        if (localScope == null)
+            return new NpcTradeOperationResult(false, false, "Торговля с НПС недоступна в текущем мире или локации.");
+
         var npcRoot = await ReadNpcRootAsync();
         var itemsRoot = await ReadInventoryRootAsync();
         var statusRoot = await ReadPlayerStatusRootAsync();
         if (npcRoot == null || itemsRoot == null || statusRoot == null)
             return new NpcTradeOperationResult(false, false, "Не удалось прочитать состояние торговли, инвентаря или денег.");
+        var npcRootBaseline = npcRoot.ToJsonString(JsonOpts);
+        var itemsRootBaseline = itemsRoot.ToJsonString(JsonOpts);
+        var statusRootBaseline = statusRoot.ToJsonString(JsonOpts);
 
         var npc = FindNpcEntry(npcRoot, npcId);
         if (npc == null)
             return new NpcTradeOperationResult(false, false, "Торговец не найден.");
+        if (!LocalInteractionScopeService.IsMortalActorLocal(localScope, npc))
+            return new NpcTradeOperationResult(false, false, "Этот торговец не находится в вашей текущей локации.");
 
         if (!NpcTradeAllowedHere(npc, out var blockedReason))
             return new NpcTradeOperationResult(false, false, blockedReason ?? "Торговля недоступна.");
@@ -274,6 +368,10 @@ public sealed partial class NpcTradeService
         if (price <= 0)
             return new NpcTradeOperationResult(false, false, "Цена продажи повреждена.");
 
+        var commitScope = await ResolveCurrentMortalTradeTargetScopeAsync(npcId, npcRootBaseline);
+        if (commitScope == null)
+            return new NpcTradeOperationResult(false, false, "Торговец покинул текущую локацию до завершения продажи. Предмет не изменён.");
+
         var merchantProfile = ResolveMerchantProfile(npc)?.Key ?? DefaultMerchantProfileKey;
         var buybackInventory = EnsureBuybackInventoryArray(npc);
         buybackInventory.Add(CreateBuybackEntry(
@@ -289,9 +387,19 @@ public sealed partial class NpcTradeService
         statusRoot["money"] = GetNodeInt(statusRoot["money"], 0) + price;
         SyncNpcEntries(npcRoot, npcId, npc);
 
-        await _fs.WriteFileAtomicAsync(ItemsPath, itemsRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(PlayerStatusPath, statusRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)
+                    .Concat(new[]
+                    {
+                new CoordinatedStateWriteHelper.PlannedWrite(ItemsPath, itemsRootBaseline, itemsRoot.ToJsonString(JsonOpts), true),
+                new CoordinatedStateWriteHelper.PlannedWrite(PlayerStatusPath, statusRootBaseline, statusRoot.ToJsonString(JsonOpts), true),
+                new CoordinatedStateWriteHelper.PlannedWrite(NpcCorePath, npcRootBaseline, npcRoot.ToJsonString(JsonOpts), true)
+                    })
+                    .ToArray()))
+        {
+            return new NpcTradeOperationResult(false, false, "Состояние торговли изменилось до фиксации продажи. Предмет и деньги не изменены.");
+        }
 
         var itemName = GetNodeString(item["name"]) ?? "Товар";
         return new NpcTradeOperationResult(true, true, $"Продан товар «{itemName}» за {price}.");
@@ -302,15 +410,24 @@ public sealed partial class NpcTradeService
         if (currentTurn <= 0)
             return new NpcTradeOperationResult(false, false, "Локальный выкуп товара требует актуальный номер хода.");
 
+        var localScope = await ResolveMortalTradeScopeAsync();
+        if (localScope == null)
+            return new NpcTradeOperationResult(false, false, "Торговля с НПС недоступна в текущем мире или локации.");
+
         var npcRoot = await ReadNpcRootAsync();
         var itemsRoot = await ReadInventoryRootAsync();
         var statusRoot = await ReadPlayerStatusRootAsync();
         if (npcRoot == null || itemsRoot == null || statusRoot == null)
             return new NpcTradeOperationResult(false, false, "Не удалось прочитать состояние торговли, инвентаря или денег.");
+        var npcRootBaseline = npcRoot.ToJsonString(JsonOpts);
+        var itemsRootBaseline = itemsRoot.ToJsonString(JsonOpts);
+        var statusRootBaseline = statusRoot.ToJsonString(JsonOpts);
 
         var npc = FindNpcEntry(npcRoot, npcId);
         if (npc == null)
             return new NpcTradeOperationResult(false, false, "Торговец не найден.");
+        if (!LocalInteractionScopeService.IsMortalActorLocal(localScope, npc))
+            return new NpcTradeOperationResult(false, false, "Этот торговец не находится в вашей текущей локации.");
 
         if (!NpcTradeAllowedHere(npc, out var blockedReason))
             return new NpcTradeOperationResult(false, false, blockedReason ?? "Торговля недоступна.");
@@ -337,6 +454,10 @@ public sealed partial class NpcTradeService
         if (money < price)
             return new NpcTradeOperationResult(false, false, "Недостаточно денег.");
 
+        var commitScope = await ResolveCurrentMortalTradeTargetScopeAsync(npcId, npcRootBaseline);
+        if (commitScope == null)
+            return new NpcTradeOperationResult(false, false, "Торговец покинул текущую локацию до завершения выкупа. Деньги не списаны.");
+
         NormalizeInventoryShape(itemsRoot);
         var inventoryItems = itemsRoot["items"]!.AsArray();
         UpsertInventoryItem(inventoryItems, BuildCanonicalInventoryItemForLocalPurchase(CloneObject(itemData), buybackEntry));
@@ -347,9 +468,19 @@ public sealed partial class NpcTradeService
         buybackEntry["reboughtAtUtc"] = DateTimeOffset.UtcNow.ToString("O");
         SyncNpcEntries(npcRoot, npcId, npc);
 
-        await _fs.WriteFileAtomicAsync(ItemsPath, itemsRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(PlayerStatusPath, statusRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)
+                    .Concat(new[]
+                    {
+                new CoordinatedStateWriteHelper.PlannedWrite(ItemsPath, itemsRootBaseline, itemsRoot.ToJsonString(JsonOpts), true),
+                new CoordinatedStateWriteHelper.PlannedWrite(PlayerStatusPath, statusRootBaseline, statusRoot.ToJsonString(JsonOpts), true),
+                new CoordinatedStateWriteHelper.PlannedWrite(NpcCorePath, npcRootBaseline, npcRoot.ToJsonString(JsonOpts), true)
+                    })
+                    .ToArray()))
+        {
+            return new NpcTradeOperationResult(false, false, "Состояние торговли изменилось до фиксации выкупа. Деньги и инвентарь не изменены.");
+        }
 
         var itemName = GetNodeString(itemData["name"]) ?? "Товар";
         return new NpcTradeOperationResult(true, true, $"Выкуплен обратно товар «{itemName}» за {price}.");
@@ -507,6 +638,7 @@ public sealed partial class NpcTradeService
         JsonObject statusRoot,
         int currentWorldMinutes,
         int currentTurn,
+        string npcRootBaseline,
         bool createPendingRequests = true)
     {
         var npcId = GetNpcIdentity(npc);
@@ -556,7 +688,13 @@ public sealed partial class NpcTradeService
                         inventory);
 
                 if (request != null && (!requestMatchesCurrentContract || hasMatchingReceipt))
+                {
+                    var requestScope = await ResolveCurrentMortalTradeTargetScopeAsync(npcId, npcRootBaseline);
+                    if (requestScope == null)
+                        return (false, null);
+
                     await NpcTradeRequestState.EnsureHealthyAsync(_fs, "Mortal World");
+                }
             }
             else
             {
@@ -572,6 +710,10 @@ public sealed partial class NpcTradeService
 
                 if (!inventoryRequestPending && createPendingRequests)
                 {
+                    var requestScope = await ResolveCurrentMortalTradeTargetScopeAsync(npcId, npcRootBaseline);
+                    if (requestScope == null)
+                        return (false, null);
+
                     request = new NpcTradeRequestState.PendingNpcTradeInventoryRequest
                     {
                         NpcId = npcId,
@@ -583,7 +725,14 @@ public sealed partial class NpcTradeService
                         CreatedAtWorldDate = currentWorldMinutes,
                         RefreshAfterWorldDate = refreshAfterWorldMinutes
                     };
-                    await NpcTradeRequestState.WriteRequestAsync(_fs, request);
+                    if (!await NpcTradeRequestState.TryWriteScopedRequestAsync(
+                            _fs,
+                            request,
+                            requestScope,
+                            npcRootBaseline))
+                    {
+                        return (false, null);
+                    }
                     inventoryRequestPending = true;
                     inventoryRequestCreatedThisCall = true;
                 }
@@ -880,6 +1029,37 @@ public sealed partial class NpcTradeService
         return availability.TradeAvailable;
     }
 
+    private async Task<LocalInteractionScope?> ResolveMortalTradeScopeAsync()
+    {
+        var scope = await _localScopeService.ResolveAsync();
+        return scope.IsResolved && scope.RealmKind == LocalInteractionRealmKind.Mortal ? scope : null;
+    }
+
+    private async Task<bool> IsCurrentMortalTradeTargetAsync(string npcId, string? expectedNpcRootJson = null) =>
+        await ResolveCurrentMortalTradeTargetScopeAsync(npcId, expectedNpcRootJson) != null;
+
+    private async Task<LocalInteractionScope?> ResolveCurrentMortalTradeTargetScopeAsync(
+        string npcId,
+        string? expectedNpcRootJson = null)
+    {
+        var scope = await ResolveMortalTradeScopeAsync();
+        if (scope == null)
+            return null;
+
+        var root = await ReadNpcRootAsync();
+        if (root == null ||
+            (expectedNpcRootJson != null &&
+             !string.Equals(root.ToJsonString(JsonOpts), expectedNpcRootJson, StringComparison.Ordinal)))
+        {
+            return null;
+        }
+
+        var npc = FindNpcEntry(root, npcId);
+        return npc != null && LocalInteractionScopeService.IsMortalActorLocal(scope, npc)
+            ? scope
+            : null;
+    }
+
     private (string locationId, string locationName) ReadCurrentLocationIdentitySync()
     {
         try
@@ -1029,11 +1209,11 @@ public sealed partial class NpcTradeService
 
     private static bool IsSameTradeLocation(string npcLocationId, string npcLocationName, string currentLocationId, string currentLocationName)
     {
-        return
-            (!string.IsNullOrWhiteSpace(currentLocationId) && string.Equals(currentLocationId, npcLocationId, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(currentLocationName) && string.Equals(currentLocationName, npcLocationName, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(currentLocationId) && string.Equals(currentLocationId, npcLocationName, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(currentLocationName) && string.Equals(currentLocationName, npcLocationId, StringComparison.OrdinalIgnoreCase));
+        return LocalInteractionScopeService.MatchesLocation(
+            npcLocationId,
+            npcLocationName,
+            currentLocationId,
+            currentLocationName);
     }
 
     private static GenerationTradeTier GetGenerationTier(int level, int npcTrade, int relationshipLevel)

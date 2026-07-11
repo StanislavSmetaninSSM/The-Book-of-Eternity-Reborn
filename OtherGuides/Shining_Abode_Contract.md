@@ -62,6 +62,27 @@ faction loyalty, restlessness, and realignment state.
 Do not duplicate resident membership into `faction.residents[]`; faction
 membership is derived from resident state.
 
+## Current Hall Local Interactions
+
+`shining_abode_state.currentHallId` is the location authority for local
+`/обучение` and `/торговля` interactions. It must identify an entry in
+`halls[]`; missing or unknown values fail closed instead of exposing every
+Shining actor or faction.
+
+- A mentor is local when its direct `hallId` matches, or when its canonical
+  resident/faction/leadership/political-actor relationship resolves to a
+  faction whose `hallId` is current.
+- Resident membership comes from
+  `guardian_abode_residents.json.entries[].shiningFactionId`.
+- Faction heads may resolve through `leadership.headActorId`; political actors
+  may resolve through `currentFactionId` or `originFactionId`.
+- Shining `/торговля` lists only player-visible factions in the current hall.
+- A cached `mentorTrainingShowcase` or trade inventory does not override
+  locality. Direct actions targeting a faction or mentor from another hall are
+  rejected before any currency or progression state changes.
+- Player-triggered training and trade recheck the actual realm and current hall
+  immediately before commit, after reading showcase, price, and pending state.
+
 ## Pending And Receipt Surfaces
 
 Shining political and core actions must close through explicit pending/control

@@ -53,6 +53,32 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
 
     [Fact]
     [Trait("Category", "ConsoleTraining")]
+    public async Task TryProcessCommand_MortalTraining_ListsOnlyTeachersInCurrentLocation()
+    {
+        await SeedMortalTrainingTeachersByLocationAsync();
+        await _stateManager.RefreshGameStateAsync();
+        var console = new TestExplorerConsole();
+        console.QueueSelection("Выберите учителя", "← Закрыть обучение");
+        var explorer = new ExplorerMode(
+            _stateManager,
+            _fs,
+            new LocalizationManager(),
+            trainingService: new TrainingService(_fs, NullLogger<TrainingService>.Instance),
+            console: console);
+
+        var result = await explorer.TryProcessCommand("/обучение");
+
+        Assert.Equal(string.Empty, result);
+        var choices = console.SelectionChoicesHistory
+            .Single(entry => entry.Title.Contains("Выберите учителя", StringComparison.OrdinalIgnoreCase))
+            .Choices;
+        Assert.Contains(choices, choice => choice.Contains("Рейна Быстрый Нож", StringComparison.Ordinal));
+        Assert.DoesNotContain(choices, choice => choice.Contains("Дальний наставник", StringComparison.Ordinal));
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    [Trait("Category", "ConsoleTraining")]
     public async Task TryProcessCommand_AfterlifeSelfTraining_UsesLocalizedLockedOfferNames()
     {
         await SeedAfterlifeSelfTrainingAsync();
@@ -138,12 +164,22 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
         }
         """);
 
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "currentLocationData": {
+            "locationId": "loc_training_yard",
+            "name": "Тренировочный двор"
+          }
+        }
+        """);
+
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
         {
           "UpdateNPCs": [
             {
               "npcId": "npc_teacher_knife",
               "name": "Рейна Быстрый Нож",
+              "currentLocationId": "loc_training_yard",
               "teacherProfile": {
                 "canTeach": true,
                 "relationshipLevel": 45,
@@ -184,6 +220,66 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
           "turnNumber": 1
         }
         """);
+    }
+
+    private async Task SeedMortalTrainingTeachersByLocationAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("stories/console-training-test.json", """
+        {
+          "turnNumber": 9
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "currentLocationData": {
+            "locationId": "loc_training_yard",
+            "name": "Тренировочный двор"
+          }
+        }
+        """);
+
+        var localTeacher = BuildTeacher("npc_teacher_local", "Рейна Быстрый Нож", "loc_training_yard");
+        var remoteTeacher = BuildTeacher("npc_teacher_remote", "Дальний наставник", "loc_remote_tower");
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", new System.Text.Json.Nodes.JsonObject
+        {
+            ["NPCs"] = new System.Text.Json.Nodes.JsonArray(localTeacher, remoteTeacher)
+        }.ToJsonString());
+    }
+
+    private static System.Text.Json.Nodes.JsonObject BuildTeacher(string actorId, string name, string locationId)
+    {
+        var teacher = new System.Text.Json.Nodes.JsonObject
+        {
+            ["npcId"] = actorId,
+            ["name"] = name,
+            ["currentLocationId"] = locationId,
+            ["teacherProfile"] = new System.Text.Json.Nodes.JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 45,
+                ["skills"] = new System.Text.Json.Nodes.JsonArray
+                {
+                    new System.Text.Json.Nodes.JsonObject
+                    {
+                        ["skillId"] = "knife",
+                        ["skillName"] = "Ножевой бой",
+                        ["masteryLevel"] = 3
+                    }
+                }
+            }
+        };
+        teacher["trainingShowcase"] = new System.Text.Json.Nodes.JsonObject
+        {
+            ["sourceActorSnapshotHash"] = TrainingService.ComputeSourceSnapshotHash(teacher),
+            ["offers"] = new System.Text.Json.Nodes.JsonArray()
+        };
+        return teacher;
     }
 
     private static string ExtractRenderableText(IRenderable renderable)

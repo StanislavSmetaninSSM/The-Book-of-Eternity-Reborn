@@ -16,10 +16,11 @@
 - **Spec Kit justification**: The fix crosses Mortal World, Chaos Sea, Shining Abode, console/browser parity, client-owned purchase authority, pending GM requests, and GM-authored actor location contracts.
 - **Contract scope**: player-facing, runtime-state, pending/control, GM-facing prompts, docs, examples, console, browser, validation/source guards.
 - **Out of scope**:
-  - Adding a new Shining Abode sublocation model. Until such authority exists, the active Shining Abode realm is the local interaction scope.
+  - Adding a new Shining Abode location model. Existing `currentHallId`, `halls[]`, and faction `hallId` are the location authority for this feature.
   - Removing internal ID-bearing actions. IDs may remain hidden machine values after the player chooses a named entity.
   - Redesigning training or trade prices, offers, cards, or purchase mechanics.
   - Making remote teachers available through teleportation, letters, or asynchronous lessons.
+  - Changing the existing realm-wide, client-owned Shining return-cycle trade auto-refresh; it is world-lifecycle work, while player-triggered requests remain local.
 
 ## User Scenarios & Testing
 
@@ -57,17 +58,17 @@ As a soul in the Chaos Sea, I see training only from the active Guardian or othe
 
 ### User Story 3 - Choose A Shining Abode Mentor (Priority: P1)
 
-As a soul in the Shining Abode, I see mentors available in the active Shining Abode context and never see archived Chaos Sea or Mortal actors.
+As a soul in the Shining Abode, I see mentors and faction trade available in my current hall and never see actors from another hall or realm.
 
 **Why this priority**: Shining profiles share the same file with actors from other realms, and the current implementation does not filter them.
 
-**Independent Test**: Seed one Shining mentor and one Chaos Sea mentor while the soul is in Shining Abode.
+**Independent Test**: Seed two Shining mentors in different halls plus one Chaos Sea mentor, set `currentHallId`, and open training and trade.
 
 **Acceptance Scenarios**:
 
-1. **Given** mentors from Shining Abode and Chaos Sea, **When** `/обучение` opens in Shining Abode, **Then** only the Shining mentor appears.
-2. **Given** no canonical Shining sublocation authority exists, **When** local scope is resolved, **Then** the active Shining Abode realm is treated as the location and no finer location is invented.
-3. **Given** current realm is unresolved, **When** `/обучение` opens, **Then** the system fails closed instead of showing all profiles.
+1. **Given** mentors from two Shining halls and Chaos Sea, **When** `/обучение` opens, **Then** only the mentor linked to `currentHallId` appears.
+2. **Given** two player-visible factions in different halls, **When** `/торговля` opens, **Then** only factions whose `hallId` equals `currentHallId` appear.
+3. **Given** `currentHallId` is absent or does not resolve to `halls[]`, **When** a hall-local command opens, **Then** the system fails closed instead of showing all profiles/factions.
 
 ---
 
@@ -89,10 +90,14 @@ As a player, I receive the same named local entity choices in console and browse
 ### Edge Cases
 
 - A Mortal NPC has a matching location name but no ID, or matching ID but no name.
+- A Mortal NPC supplies both a location ID and name, but they identify different locations; the actor is rejected rather than accepting the one matching alias.
 - A same-turn Mortal NPC has only an `initialId` plus current location aliases.
 - Current location JSON is malformed, absent, or has neither ID nor name.
 - The active Guardian and `currentAbodeId` disagree; interaction fails closed rather than guessing.
 - An afterlife profile omits `realm`; only an exact active-Guardian identity may establish Chaos Sea locality.
+- A non-canonical generic `afterlife` realm value does not identify Chaos Sea or Shining Abode and fails closed.
+- A Shining mentor profile has no direct hall, but its actor is a resident, faction leader, political actor, or faction member whose canonical faction resolves to the current hall.
+- A Shining mentor has an indirect local faction association but an explicit direct hall in another hall; the explicit contradiction rejects the mentor.
 - A stale pending training request exists for a now-remote teacher; it remains historical/pending state but is not dispatched from the local screen.
 - A teacher moves after the screen was opened but before purchase; purchase rechecks location and blocks.
 - Dynamic names and block reasons contain Spectre markup characters or HTML-sensitive text.
@@ -102,23 +107,24 @@ As a player, I receive the same named local entity choices in console and browse
 ### Functional Requirements
 
 - **FR-001**: The system MUST resolve one canonical local interaction scope for the active realm and MUST fail closed when required location authority is missing or contradictory.
-- **FR-002**: Mortal locality MUST derive from `game_state/world/current_location.json` and match NPC `currentLocationId`/`currentLocation` by canonical ID-or-name aliases.
+- **FR-002**: Mortal locality MUST derive from `game_state/world/current_location.json` and match NPC `currentLocationId`/`currentLocation` by canonical exact aliases. One supplied alias MAY establish locality, but when both sides provide ID and name every supplied alias MUST agree; contradictory aliases MUST fail closed.
 - **FR-003**: Mortal `/обучение` MUST list only co-located NPCs with a usable teacher profile.
 - **FR-004**: Chaos Sea locality MUST derive from the active Guardian and `chaosSeaNavigation.currentAbodeId`; other mentors require explicit matching abode location evidence.
-- **FR-005**: Shining Abode locality MUST include only Shining Abode mentor profiles while the project has no finer canonical Shining sublocation authority.
+- **FR-005**: Shining Abode locality MUST derive from `shining_abode_state.currentHallId`, require that hall in `halls[]`, and include only mentors whose direct hall or canonical resident/faction/leadership/political-actor association resolves to that hall.
 - **FR-006**: Missing/stale showcase requests MUST be created or dispatched only for teachers in the resolved local scope.
-- **FR-007**: Training purchase execution MUST re-resolve locality and reject remote sources before spending resources, updating skills/arts, writing receipts, or creating skill-evolution requests.
+- **FR-007**: Training purchase execution MUST re-resolve locality immediately before commit and reject remote sources before spending resources, updating skills/arts, writing receipts, or creating skill-evolution requests.
 - **FR-008**: Player-facing selection MUST use entity names and summaries; internal IDs MAY be carried only in hidden command/action values after selection.
 - **FR-009**: Console and browser command flows MUST consume the same service-level local target set.
-- **FR-010**: Mortal and Chaos Sea trade target discovery and direct purchase operations MUST retain location enforcement through the same canonical location matcher where applicable.
-- **FR-011**: Shining trade MUST remain scoped to the active Shining Abode realm and player-visible factions.
+- **FR-010**: Mortal and Chaos Sea trade target discovery and every direct inventory, purchase, sale, and buyback operation MUST re-resolve the actual current realm and location through the shared local scope immediately before commit. A stale specialized command alias MUST NOT bypass realm or location enforcement.
+- **FR-011**: Shining trade MUST list only player-visible factions whose `hallId` equals the valid `currentHallId`.
 - **FR-012**: Player-facing empty/error states MUST be localized, useful, and free from JSON paths, DTO names, IDs, and agent/validation terminology.
 - **FR-013**: GM guidance and worked examples MUST explain that an actor is actionable through `/обучение` only when its canonical realm/location agrees with the player's local interaction scope.
 - **FR-014**: Dynamic teacher, mentor, location, and error text MUST remain escaped/sanitized in console and browser rendering.
+- **FR-015**: Training and trade detail/list reads MUST reconcile against fresh scope and actor state before returning local targets or details, and MUST NOT persist client refreshes for a source that is no longer local.
 
 ### Key Entities
 
-- **LocalInteractionScope**: Resolved realm plus the location authority relevant to that realm: Mortal location ID/name, Chaos Sea active Guardian/abode, or active Shining Abode realm.
+- **LocalInteractionScope**: Resolved realm plus the location authority relevant to that realm: Mortal location ID/name, Chaos Sea active Guardian/abode, or Shining Abode current hall.
 - **LocalInteractionTarget**: A teacher, mentor, merchant, Guardian, or Shining faction proven available in the resolved scope.
 - **TrainingTeacherView**: Existing named teacher/mentor presentation filtered by locality before showcase evaluation or pending request creation.
 - **PendingTrainingShowcaseRequest**: Existing GM request surface; local screens may create/dispatch it only for a local source actor.
@@ -152,7 +158,7 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 ## Assumptions
 
-- The active Shining Abode is currently one realm-wide interaction location because canonical Shining sublocations are not modeled.
+- Shining `currentHallId` is the current location for hall-bound training and trade; an absent hall means no hall-local targets rather than global access.
 - Existing internal ID-bearing commands remain implementation details used after a named selection; the player is never instructed to type IDs.
 - Existing pending requests for remote actors are not silently deleted; they simply cannot be created or dispatched by the current local screen.
 - Training and trade keep their current price, showcase, receipt, and refresh semantics.
