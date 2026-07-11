@@ -84,6 +84,14 @@ public partial class ExplorerMode
             return;
         }
 
+        var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
+        if (!await ShiningTradeService.IsFactionAvailableInCurrentHallAsync(_fs, factionId))
+        {
+            MarkupLine("[yellow]Выбранная сияющая фракция не находится в вашем текущем зале.[/]");
+            WaitForKey();
+            return;
+        }
+
         await ShowShiningTradeForFactionAsync(faction);
     }
 
@@ -701,7 +709,37 @@ public partial class ExplorerMode
 
     private async Task HandleShiningTradeMenuAsync(ShiningContext context)
     {
-        var faction = PromptForFaction(context.Root, "Выберите сияющую фракцию для торговли");
+        var targets = await ShiningTradeService.GetCurrentRealmTradeTargetsAsync(_fs);
+        if (targets.Count == 0)
+        {
+            MarkupLine("[yellow]В текущем зале нет доступных сияющих фракций для торговли.[/]");
+            WaitForKey();
+            return;
+        }
+
+        var duplicateNames = targets
+            .GroupBy(target => target.FactionName, StringComparer.OrdinalIgnoreCase)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var targetLabels = targets
+            .Select(target => duplicateNames.Contains(target.FactionName)
+                ? $"{target.FactionName} (сила {target.FactionStrength})"
+                : target.FactionName)
+            .ToArray();
+        var labels = targetLabels.Append("← Назад").ToArray();
+        var selected = Prompt(new SelectionPrompt<string>()
+            .Title("[bold yellow]Выберите сияющую фракцию для торговли[/]")
+            .HighlightStyle(new Style(Color.Gold1))
+            .AddChoices(labels));
+        if (selected.Contains("Назад", StringComparison.Ordinal))
+            return;
+
+        var targetIndex = Array.IndexOf(targetLabels, selected);
+        if (targetIndex < 0 || targetIndex >= targets.Count)
+            return;
+
+        var faction = ShiningAbodeState.FindFaction(context.Root, targets[targetIndex].FactionId);
         if (faction == null)
             return;
 
@@ -711,6 +749,13 @@ public partial class ExplorerMode
     private async Task ShowShiningTradeForFactionAsync(JsonObject faction)
     {
         var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
+        if (!await ShiningTradeService.IsFactionAvailableInCurrentHallAsync(_fs, factionId))
+        {
+            MarkupLine("[yellow]Эта сияющая фракция не находится в вашем текущем зале.[/]");
+            WaitForKey();
+            return;
+        }
+
         while (true)
         {
             var view = await ShiningTradeService.ReadTradeViewAsync(_fs, factionId);
@@ -796,7 +841,20 @@ public partial class ExplorerMode
                     continue;
                 }
 
-                await ShiningTradeRequestState.WriteRequestAsync(_fs, request);
+                if (!await ShiningTradeService.IsFactionAvailableInCurrentHallAsync(_fs, factionId))
+                {
+                    MarkupLine("[yellow]Эта фракция больше не находится в вашем текущем зале.[/]");
+                    WaitForKey();
+                    return;
+                }
+
+                var requestResult = await ShiningTradeService.RequestInventoryAsync(_fs, factionId, currentTurn);
+                if (!requestResult.Success)
+                {
+                    MarkupLine($"[red]❌ {Markup.Escape(requestResult.Message)}[/]");
+                    WaitForKey();
+                    continue;
+                }
                 var actionText = await ShiningTradeRequestState.BuildSystemReminderFragmentAsync(
                     _fs,
                     _stateManager.CurrentState.CurrentRealm);
@@ -882,6 +940,13 @@ public partial class ExplorerMode
     {
         while (true)
         {
+            if (!await ShiningTradeService.IsFactionAvailableInCurrentHallAsync(_fs, factionId))
+            {
+                MarkupLine("[yellow]Эта фракция больше не находится в вашем текущем зале.[/]");
+                WaitForKey();
+                return;
+            }
+
             var view = await ShiningTradeService.ReadTradeViewAsync(_fs, factionId);
             if (view == null)
             {

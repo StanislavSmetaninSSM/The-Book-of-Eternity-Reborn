@@ -10,6 +10,350 @@ namespace BookOfEternityClient.Tests;
 public sealed class ShiningTradeRequestStateTests
 {
     [Fact]
+    public async Task GetCurrentRealmTradeTargetsAsync_ListsOnlyCurrentHallFactions()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+            await AddRemoteShiningTradeFactionAsync(fs);
+            await AddHiddenCurrentHallTradeFactionAsync(fs);
+
+            var targets = await ShiningTradeService.GetCurrentRealmTradeTargetsAsync(fs);
+            var hiddenRequest = await ShiningTradeService.RequestInventoryAsync(
+                fs,
+                "faction_hidden_wings",
+                currentTurn: 11);
+
+            var target = Assert.Single(targets);
+            Assert.Equal("faction_old", target.FactionId);
+            Assert.Equal("Старый Дом", target.FactionName);
+            Assert.False(hiddenRequest.Success);
+            Assert.False(hiddenRequest.StateChanged);
+            Assert.Contains("текущ", hiddenRequest.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.False(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task GetCurrentRealmTradeTargetsAsync_MissingCurrentHallFailsClosedWithoutRequest()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
+            shiningRoot.Remove("currentHallId");
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            var targets = await ShiningTradeService.GetCurrentRealmTradeTargetsAsync(fs);
+            var request = await ShiningTradeService.RequestInventoryAsync(fs, "faction_old", currentTurn: 11);
+
+            Assert.Empty(targets);
+            Assert.False(request.Success);
+            Assert.False(request.StateChanged);
+            Assert.Contains("текущ", request.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.False(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RequestInventoryAsync_RemoteHallFactionFailsWithoutPendingMutation()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
+            await AddRemoteShiningTradeFactionAsync(fs);
+
+            var result = await ShiningTradeService.RequestInventoryAsync(fs, "faction_remote", currentTurn: 11);
+
+            Assert.False(result.Success);
+            Assert.False(result.StateChanged);
+            Assert.Contains("текущ", result.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.False(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RequestInventoryAsync_ShiningScopeChangesBeforeCommit_BlocksWithoutMutation()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
+            var initialScope = await new LocalInteractionScopeService(fs).ResolveAsync();
+            var resolver = new SequenceLocalInteractionScopeResolver(
+                initialScope,
+                LocalInteractionScope.Unresolved(LocalInteractionRealmKind.ShiningAbode, "Зал изменился."));
+
+            var result = await ShiningTradeService.RequestInventoryAsync(
+                fs,
+                "faction_old",
+                currentTurn: 11,
+                resolver);
+
+            Assert.False(result.Success);
+            Assert.False(result.StateChanged);
+            Assert.True(resolver.ResolveCallCount >= 2);
+            Assert.False(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RequestInventoryAsync_ShiningAuthorityChangesBeforeRequestWrite_DoesNotCreatePending()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
+            var initialScope = await new LocalInteractionScopeService(fs).ResolveAsync();
+            var resolver = new SequenceLocalInteractionScopeResolver(
+                async callCount =>
+                {
+                    if (callCount != 2)
+                        return;
+
+                    var soul = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+                    soul["currentRealm"] = "Chaos Sea";
+                    await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString());
+                },
+                initialScope,
+                initialScope);
+
+            var result = await ShiningTradeService.RequestInventoryAsync(
+                fs,
+                "faction_old",
+                currentTurn: 11,
+                resolver);
+
+            Assert.False(result.Success);
+            Assert.False(result.StateChanged);
+            Assert.False(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task BuyAsync_ShiningScopeChangesBeforeCommit_BlocksWithoutMutation()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+            var initialScope = await new LocalInteractionScopeService(fs).ResolveAsync();
+            var resolver = new SequenceLocalInteractionScopeResolver(
+                initialScope,
+                LocalInteractionScope.Unresolved(LocalInteractionRealmKind.ShiningAbode, "Зал изменился."));
+            var shiningBefore = await fs.ReadFileAsync(ShiningAbodeState.StatePath);
+            var soulBefore = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+            var result = await ShiningTradeService.BuyAsync(
+                fs,
+                "faction_old",
+                "slot_1",
+                currentTurn: 11,
+                resolver);
+
+            Assert.False(result.Success);
+            Assert.False(result.StateChanged);
+            Assert.True(resolver.ResolveCallCount >= 2);
+            Assert.Equal(shiningBefore, await fs.ReadFileAsync(ShiningAbodeState.StatePath));
+            Assert.Equal(soulBefore, await fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task BuyAsync_FactionChangesBeforeCommit_BlocksWithoutOverwritingState()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+            var initialScope = await new LocalInteractionScopeService(fs).ResolveAsync();
+            var resolver = new SequenceLocalInteractionScopeResolver(
+                async callCount =>
+                {
+                    if (callCount != 2)
+                        return;
+
+                    var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
+                    shiningRoot["factions"]!.AsArray()[0]!.AsObject()["concurrentGmMarker"] = "preserve";
+                    await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+                },
+                initialScope,
+                initialScope);
+            var soulBefore = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+            var result = await ShiningTradeService.BuyAsync(
+                fs,
+                "faction_old",
+                "slot_1",
+                currentTurn: 11,
+                resolver);
+
+            Assert.False(result.Success);
+            Assert.False(result.StateChanged);
+            Assert.Equal(soulBefore, await fs.ReadFileAsync("game_state/meta/soul_state.json"));
+            Assert.Contains("concurrentGmMarker", await fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? string.Empty, StringComparison.Ordinal);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ReadTradeViewAsync_RemoteHallFactionIsNotExposed()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+            await AddRemoteShiningTradeFactionAsync(fs);
+
+            var view = await ShiningTradeService.ReadTradeViewAsync(fs, "faction_remote");
+
+            Assert.Null(view);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ReadTradeViewAsync_ShiningScopeChangesBeforeReturn_DoesNotExposeDetails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+            var initialScope = await new LocalInteractionScopeService(fs).ResolveAsync();
+            var resolver = new SequenceLocalInteractionScopeResolver(
+                initialScope,
+                LocalInteractionScope.Unresolved(LocalInteractionRealmKind.ShiningAbode, "Зал изменился."));
+
+            var view = await ShiningTradeService.ReadTradeViewAsync(fs, "faction_old", resolver);
+
+            Assert.Null(view);
+            Assert.True(resolver.ResolveCallCount >= 2);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task PlayerTriggeredTradeOutsideShiningRealmFailsClosedWithoutMutation()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+            soulRoot["currentRealm"] = "Chaos Sea";
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
+            var shiningBefore = await fs.ReadFileAsync(ShiningAbodeState.StatePath);
+            var soulBefore = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+            var targets = await ShiningTradeService.GetCurrentRealmTradeTargetsAsync(fs);
+            var request = await ShiningTradeService.RequestInventoryAsync(fs, "faction_old", currentTurn: 11);
+            var purchase = await ShiningTradeService.BuyAsync(fs, "faction_old", "slot_1", currentTurn: 11);
+
+            Assert.Empty(targets);
+            Assert.False(request.Success);
+            Assert.False(request.StateChanged);
+            Assert.Contains("текущ", request.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.False(purchase.Success);
+            Assert.False(purchase.StateChanged);
+            Assert.Contains("текущ", purchase.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal(shiningBefore, await fs.ReadFileAsync(ShiningAbodeState.StatePath));
+            Assert.Equal(soulBefore, await fs.ReadFileAsync("game_state/meta/soul_state.json"));
+            Assert.False(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task BuyAsync_RemoteHallFactionFailsWithoutMutatingState()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+            await AddRemoteShiningTradeFactionAsync(fs);
+            var shiningBefore = await fs.ReadFileAsync(ShiningAbodeState.StatePath);
+            var soulBefore = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+            var result = await ShiningTradeService.BuyAsync(
+                fs,
+                "faction_remote",
+                "slot_remote",
+                currentTurn: 11);
+
+            Assert.False(result.Success);
+            Assert.False(result.StateChanged);
+            Assert.Contains("текущ", result.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal(shiningBefore, await fs.ReadFileAsync(ShiningAbodeState.StatePath));
+            Assert.Equal(soulBefore, await fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task BuildSystemReminderFragmentAsync_ListsPendingTradeRequests()
     {
         var root = CreateTempRoot();
@@ -1255,6 +1599,59 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
+    public async Task TryReplaceRequestsSnapshotAsync_StalePlanPreservesConcurrentPlayerRequest()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var observedRequest = new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+            {
+                RequestId = "observed_request",
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TradeCycleId = "shining_return_1",
+                DerivedTradeTier = 2,
+                DerivedTradeSlotCount = 6,
+                DerivedRarityCeiling = "rare",
+                DerivedServiceMultiplier = 1.25,
+                CreatedAtTurn = 5
+            };
+            await ShiningTradeRequestState.WriteRequestsAsync(fs, new[] { observedRequest });
+            var staleSnapshot = await fs.ReadFileAsync(ShiningTradeRequestState.PendingRequestsPath);
+
+            var concurrentRequest = new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+            {
+                RequestId = "concurrent_player_request",
+                FactionId = "faction_concurrent",
+                FactionName = "Новый Дом",
+                TradeCycleId = "shining_return_2",
+                DerivedTradeTier = 3,
+                DerivedTradeSlotCount = 7,
+                DerivedRarityCeiling = "epic",
+                DerivedServiceMultiplier = 1.5,
+                CreatedAtTurn = 10
+            };
+            await ShiningTradeRequestState.WriteRequestAsync(fs, concurrentRequest);
+
+            var replaced = await ShiningTradeRequestState.TryReplaceRequestsSnapshotAsync(
+                fs,
+                staleSnapshot,
+                Array.Empty<ShiningTradeRequestState.PendingShiningTradeInventoryRequest>());
+
+            Assert.False(replaced);
+            var requests = await ShiningTradeRequestState.ReadRequestsAsync(fs);
+            Assert.Contains(requests, request => request.RequestId == "observed_request");
+            Assert.Contains(requests, request => request.RequestId == "concurrent_player_request");
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task PreviewAutoRefreshRequestsForCurrentCycleAsync_UsesProjectedReentryStateWithoutWriting()
     {
         var root = CreateTempRoot();
@@ -1351,6 +1748,17 @@ public sealed class ShiningTradeRequestStateTests
 
         var shiningRoot = ShiningAbodeState.CreateDefaultState();
         shiningRoot["availability"] = ShiningAbodeState.AvailabilityActive;
+        shiningRoot["currentHallId"] = "hall_old";
+        shiningRoot["halls"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["hallId"] = "hall_old",
+                ["hallName"] = "Старый зал",
+                ["description"] = "Текущий торговый зал.",
+                ["serviceTags"] = new JsonArray()
+            }
+        };
         shiningRoot["radiance"] = new JsonObject
         {
             ["experience"] = 250,
@@ -1507,6 +1915,58 @@ public sealed class ShiningTradeRequestStateTests
                 }
             }
         }.ToJsonString());
+    }
+
+    private static async Task AddRemoteShiningTradeFactionAsync(FileSystemManager fs)
+    {
+        var root = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
+        root["halls"]!.AsArray().Add(new JsonObject
+        {
+            ["hallId"] = "hall_remote",
+            ["hallName"] = "Дальний зал",
+            ["description"] = "Другой зал Сияющей обители.",
+            ["serviceTags"] = new JsonArray()
+        });
+
+        var remoteFaction = root["factions"]!.AsArray()[0]!.DeepClone().AsObject();
+        remoteFaction["factionId"] = "faction_remote";
+        remoteFaction["hallId"] = "hall_remote";
+        remoteFaction["charter"]!["factionName"] = "Дальний Дом";
+        remoteFaction["leadership"]!["headActorId"] = "guardian_remote";
+        if (remoteFaction["tradeInventory"] is JsonObject inventory && inventory["items"] is JsonArray items)
+        {
+            var first = items[0]!.AsObject();
+            first["slotId"] = "slot_remote";
+            first["relicData"]!["relicId"] = "relic_remote";
+            first["relicData"]!["name"] = "Дальняя реликвия";
+        }
+
+        if (remoteFaction["tradeInventoryReceipts"] is JsonArray receipts)
+        {
+            foreach (var receipt in receipts.OfType<JsonObject>())
+            {
+                receipt["requestId"] = "shining_trade_remote";
+                receipt["factionId"] = "faction_remote";
+                receipt["factionName"] = "Дальний Дом";
+            }
+        }
+
+        root["factions"]!.AsArray().Add(remoteFaction);
+        await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString());
+    }
+
+    private static async Task AddHiddenCurrentHallTradeFactionAsync(FileSystemManager fs)
+    {
+        var root = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
+        var hiddenFaction = root["factions"]!.AsArray()[0]!.DeepClone().AsObject();
+        hiddenFaction["factionId"] = "faction_hidden_wings";
+        hiddenFaction["hallId"] = "hall_old";
+        hiddenFaction["sarefFactionRole"] = SarefMainStoryState.WingsFactionRole;
+        hiddenFaction["sarefVisibility"] = "hidden";
+        hiddenFaction["charter"]!["factionName"] = "Скрытые Крылья";
+        hiddenFaction["leadership"]!["headActorId"] = "guardian_hidden";
+        root["factions"]!.AsArray().Add(hiddenFaction);
+        await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString());
     }
 
     private static JsonObject CreateValidPreparedPackage() => new()

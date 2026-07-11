@@ -15,6 +15,7 @@ internal static class GuardianTradeRequestState
     public const string ReceiptStatusReady = "ready";
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
+    private static readonly SemaphoreSlim RequestWriteGate = new(1, 1);
 
     internal enum PendingGuardianTradeRequestReadStatus
     {
@@ -99,16 +100,48 @@ internal static class GuardianTradeRequestState
 
     public static async Task WriteAsync(FileSystemManager fs, PendingGuardianTradeRequest request)
     {
-        var existingState = await ReadStateAsync(fs);
-        if (existingState.IsMalformed)
-            throw new InvalidOperationException("pending_guardian_trade_request.json повреждён и должен быть исправлен или очищен до записи нового запроса.");
-        if (existingState.Request != null &&
-            !string.Equals(existingState.Request.RequestId, request.RequestId, StringComparison.OrdinalIgnoreCase))
+        await RequestWriteGate.WaitAsync();
+        try
         {
-            throw new InvalidOperationException("pending_guardian_trade_request.json already contains a live guardian trade contract and cannot be overwritten without explicit canonical closure.");
+            ValidateReplacement(await ReadStateAsync(fs), request);
+            await fs.WriteFileAtomicAsync(PendingRequestPath, JsonSerializer.Serialize(request, JsonOpts));
         }
+        finally
+        {
+            RequestWriteGate.Release();
+        }
+    }
 
-        await fs.WriteFileAtomicAsync(PendingRequestPath, JsonSerializer.Serialize(request, JsonOpts));
+    public static async Task<bool> TryWriteScopedAsync(
+        FileSystemManager fs,
+        PendingGuardianTradeRequest request,
+        LocalInteractionScope scope,
+        string expectedGuardiansRootJson)
+    {
+        await RequestWriteGate.WaitAsync();
+        try
+        {
+            var previousJson = await fs.ReadFileAsync(PendingRequestPath);
+            ValidateReplacement(ParseState(previousJson, fs.FileExists(PendingRequestPath)), request);
+            var nextJson = JsonSerializer.Serialize(request, JsonOpts);
+            var writes = CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(scope)
+                .Concat(new[]
+                {
+                    CoordinatedStateWriteHelper.CreateGuardWrite("game_state/meta/guardians.json", expectedGuardiansRootJson),
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        PendingRequestPath,
+                        previousJson,
+                        nextJson,
+                        RequireCurrentBaseline: true)
+                })
+                .ToArray();
+
+            return await CoordinatedStateWriteHelper.TryCommitAsync(fs, writes);
+        }
+        finally
+        {
+            RequestWriteGate.Release();
+        }
     }
 
     public static async Task WritePreparedJsonAsync(FileSystemManager fs, string requestJson)
@@ -164,6 +197,50 @@ internal static class GuardianTradeRequestState
     }
 
     public static void Clear(FileSystemManager fs) => fs.DeleteFile(PendingRequestPath);
+
+    public static async Task<bool> ClearIfMatchesAsync(
+        FileSystemManager fs,
+        PendingGuardianTradeRequest expectedRequest)
+    {
+        await RequestWriteGate.WaitAsync();
+        try
+        {
+            var previousJson = await fs.ReadFileAsync(PendingRequestPath);
+            var current = ParseState(previousJson, fs.FileExists(PendingRequestPath));
+            if (current.Request == null ||
+                !JsonNode.DeepEquals(
+                    JsonSerializer.SerializeToNode(current.Request, JsonOpts),
+                    JsonSerializer.SerializeToNode(expectedRequest, JsonOpts)))
+            {
+                return false;
+            }
+
+            return await CoordinatedStateWriteHelper.TryCommitAsync(
+                fs,
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    PendingRequestPath,
+                    previousJson,
+                    NextJson: null,
+                    RequireCurrentBaseline: true));
+        }
+        finally
+        {
+            RequestWriteGate.Release();
+        }
+    }
+
+    private static void ValidateReplacement(
+        PendingGuardianTradeRequestReadResult existingState,
+        PendingGuardianTradeRequest request)
+    {
+        if (existingState.IsMalformed)
+            throw new InvalidOperationException("pending_guardian_trade_request.json повреждён и должен быть исправлен или очищен до записи нового запроса.");
+        if (existingState.Request != null &&
+            !string.Equals(existingState.Request.RequestId, request.RequestId, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("pending_guardian_trade_request.json already contains a live guardian trade contract and cannot be overwritten without explicit canonical closure.");
+        }
+    }
 
     public static JsonArray EnsureReceiptsArray(JsonObject guardian)
     {
@@ -338,66 +415,86 @@ internal static class GuardianTradeRequestState
         if (!RealmSemantics.HasResolvedRealm(currentRealm))
             return;
 
-        if (!IsAfterlifeRealm(currentRealm))
-        {
-            fs.DeleteFile(PendingRequestPath);
-            return;
-        }
-
-        var json = await fs.ReadFileAsync(PendingRequestPath);
-        if (string.IsNullOrWhiteSpace(json))
-            return;
-
-        PendingGuardianTradeRequest? request;
+        await RequestWriteGate.WaitAsync();
         try
         {
-            request = JsonSerializer.Deserialize<PendingGuardianTradeRequest>(json, JsonOpts);
-        }
-        catch
-        {
-            return;
-        }
+            var json = await fs.ReadFileAsync(PendingRequestPath);
+            if (!IsAfterlifeRealm(currentRealm))
+            {
+                await CoordinatedStateWriteHelper.TryCommitAsync(
+                    fs,
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        PendingRequestPath,
+                        json,
+                        NextJson: null,
+                        RequireCurrentBaseline: true));
+                return;
+            }
 
-        if (request == null ||
-            string.IsNullOrWhiteSpace(request.RequestId) ||
-            string.IsNullOrWhiteSpace(request.GuardianId) ||
-            string.IsNullOrWhiteSpace(request.GuardianName) ||
-            string.IsNullOrWhiteSpace(request.AbodeId) ||
-            string.IsNullOrWhiteSpace(request.ReturnCycleId) ||
-            request.DerivedTradeSlotCount <= 0)
-        {
-            return;
-        }
+            if (string.IsNullOrWhiteSpace(json))
+                return;
 
-        var guardiansJson = await fs.ReadFileAsync("game_state/meta/guardians.json");
-        if (string.IsNullOrWhiteSpace(guardiansJson))
-            return;
-
-        try
-        {
-            if (JsonNode.Parse(guardiansJson) is not JsonObject guardiansRoot ||
-                guardiansRoot["guardians"] is not JsonArray guardians)
+            PendingGuardianTradeRequest? request;
+            try
+            {
+                request = JsonSerializer.Deserialize<PendingGuardianTradeRequest>(json, JsonOpts);
+            }
+            catch
             {
                 return;
             }
 
-            var guardian = guardians.OfType<JsonObject>()
-                .FirstOrDefault(item =>
-                    string.Equals(GetNodeString(item["guardianId"]), request.GuardianId, StringComparison.OrdinalIgnoreCase));
-            if (guardian?["tradeInventory"] is not JsonObject tradeInventory)
+            if (request == null ||
+                string.IsNullOrWhiteSpace(request.RequestId) ||
+                string.IsNullOrWhiteSpace(request.GuardianId) ||
+                string.IsNullOrWhiteSpace(request.GuardianName) ||
+                string.IsNullOrWhiteSpace(request.AbodeId) ||
+                string.IsNullOrWhiteSpace(request.ReturnCycleId) ||
+                request.DerivedTradeSlotCount <= 0)
+            {
+                return;
+            }
+
+            var guardiansJson = await fs.ReadFileAsync("game_state/meta/guardians.json");
+            if (string.IsNullOrWhiteSpace(guardiansJson))
                 return;
 
-            if (!InventoryMatchesRequestContract(tradeInventory, request))
-                return;
+            try
+            {
+                if (JsonNode.Parse(guardiansJson) is not JsonObject guardiansRoot ||
+                    guardiansRoot["guardians"] is not JsonArray guardians)
+                {
+                    return;
+                }
 
-            if (!ReceiptMatchesRequestContract(FindMatchingReceipt(guardian, request), request, tradeInventory))
-                return;
+                var guardian = guardians.OfType<JsonObject>()
+                    .FirstOrDefault(item =>
+                        string.Equals(GetNodeString(item["guardianId"]), request.GuardianId, StringComparison.OrdinalIgnoreCase));
+                if (guardian?["tradeInventory"] is not JsonObject tradeInventory)
+                    return;
 
-            fs.DeleteFile(PendingRequestPath);
+                if (!InventoryMatchesRequestContract(tradeInventory, request))
+                    return;
+
+                if (!ReceiptMatchesRequestContract(FindMatchingReceipt(guardian, request), request, tradeInventory))
+                    return;
+
+                await CoordinatedStateWriteHelper.TryCommitAsync(
+                    fs,
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        PendingRequestPath,
+                        json,
+                        NextJson: null,
+                        RequireCurrentBaseline: true));
+            }
+            catch
+            {
+                // keep pending request until canonical state is readable again
+            }
         }
-        catch
+        finally
         {
-            // keep pending request until canonical state is readable again
+            RequestWriteGate.Release();
         }
     }
 

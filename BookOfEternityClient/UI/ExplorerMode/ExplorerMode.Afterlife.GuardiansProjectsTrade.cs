@@ -4228,21 +4228,27 @@ public partial class ExplorerMode
                     Expand = true
                 });
 
-                try
+                var requestView = await _guardianTradeService.EnsureTradeInventoryAsync(
+                    guardianId,
+                    _stateManager.CurrentState.Incarnation,
+                    await TryReadCurrentTurnNumberAsync(),
+                    createPendingRequests: true);
+                if (requestView == null)
                 {
-                    await GuardianTradeRequestState.WritePreparedJsonAsync(_fs, view.PendingInventoryRequestJson);
+                    MarkupLine("[red]❌ Не удалось отправить запрос на подготовку витрины Хранителя.[/]");
+                    WaitForKey();
+                    return;
                 }
-                catch (InvalidOperationException ex)
+                if (requestView.TradeBlocked || !requestView.InventoryRequestPending)
                 {
-                    MarkupLine($"[red]❌ Не удалось записать pending_guardian_trade_request.json: {Markup.Escape(ex.Message)}[/]");
-                    MarkupLine("[yellow]Проверьте текущий pending-файл и откройте торговлю заново после исправления конфликта.[/]");
+                    MarkupLine($"[red]❌ {Markup.Escape(requestView.BlockReason ?? requestView.InventoryStatusMessage ?? "Запрос витрины не был создан.")}[/]");
                     WaitForKey();
                     return;
                 }
 
-                if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
+                if (!string.IsNullOrWhiteSpace(requestView.PendingGmAction))
                     MarkPendingInPlaceVitrineRequest(
-                        view.PendingGmAction,
+                        requestView.PendingGmAction,
                         "Подготовка торговой витрины Хранителя",
                         $"/торговля_хранителя {guardianId}");
                 MarkupLine($"[cyan]{Markup.Escape(VitrinePreparationWaitingMessage)}.[/]");

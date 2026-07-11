@@ -178,6 +178,36 @@ public sealed class BrowserTradeParityTests : IDisposable
 
     [Fact]
     [Trait("Category", "BrowserTradeParity")]
+    public async Task TryApplyAsync_StaleNpcTradeActionOutsideMortalRealmFailsWithoutMutation()
+    {
+        await SeedStoryTurnAsync(12);
+        await SeedNpcTradeStateAsync(
+            includeTradeInventory: true,
+            includeTradeReceipt: true,
+            includeSellableInventoryItem: false,
+            includeBuybackInventory: false);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        soul["currentRealm"] = "Chaos Sea";
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString());
+        var inventoryBefore = await _fs.ReadFileAsync("game_state/inventory/items.json");
+        var statusBefore = await _fs.ReadFileAsync("game_state/core/player_status.json");
+        var npcBefore = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
+
+        var result = await _mortalWriteService.TryApplyAsync(
+            "/npc_trade npc_merchant_001",
+            Answers(("npc_trade_choice", "buy:npc_trade_slot_001"), ("confirm_trade_write", true)),
+            Owner("browser-trade-test"));
+
+        Assert.True(result.Handled);
+        Assert.False(result.Success);
+        Assert.Equal(inventoryBefore, await _fs.ReadFileAsync("game_state/inventory/items.json"));
+        Assert.Equal(statusBefore, await _fs.ReadFileAsync("game_state/core/player_status.json"));
+        Assert.Equal(npcBefore, await _fs.ReadFileAsync("game_state/npcs/npc_core.json"));
+        Assert.False(_fs.FileExists(NpcTradeRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserTradeParity")]
     public async Task ExecuteAsync_NpcTradeWithoutInventory_ReturnsPendingGmAction()
     {
         await SeedStoryTurnAsync(12);
@@ -264,6 +294,42 @@ public sealed class BrowserTradeParityTests : IDisposable
         var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         Assert.Contains(soul["soulRelics"]!["stored"]!.AsArray(), relic =>
             relic!["relicId"]!.GetValue<string>() == "relic_trade_1");
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserTradeParity")]
+    public async Task UniversalTradeInShiningAbode_ExcludesFactionFromAnotherHall()
+    {
+        await SeedStoryTurnAsync(12);
+        await SeedShiningTradeStateAsync(withReadyInventory: true);
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
+        root["halls"]!.AsArray().Add(new JsonObject
+        {
+            ["hallId"] = "hall_remote",
+            ["hallName"] = "Дальний зал",
+            ["description"] = "Другой зал Сияющей обители.",
+            ["serviceTags"] = new JsonArray()
+        });
+        var remoteFaction = root["factions"]!.AsArray()[0]!.DeepClone().AsObject();
+        remoteFaction["factionId"] = "faction_remote";
+        remoteFaction["hallId"] = "hall_remote";
+        remoteFaction["charter"]!["factionName"] = "Дальний Дом";
+        root["factions"]!.AsArray().Add(remoteFaction);
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString());
+
+        var result = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/торговля",
+            OwnerId: "browser-trade-test",
+            OwnerLabel: "Browser trade test"));
+
+        var cards = result.Blocks.SelectMany(EnumerateEntityDossiers)
+            .SelectMany(dossier => dossier.Sections)
+            .SelectMany(section => section.Cards)
+            .ToList();
+        Assert.Contains(cards, card => card.Title.Contains("Старый Дом", StringComparison.Ordinal));
+        Assert.DoesNotContain(cards, card => card.Title.Contains("Дальний Дом", StringComparison.Ordinal));
+        Assert.DoesNotContain(result.Actions, action =>
+            action.Command.Contains("faction_remote", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -359,6 +425,37 @@ public sealed class BrowserTradeParityTests : IDisposable
         var stored = soul["soulRelics"]!["stored"]!.AsArray();
         Assert.Contains(stored, relic => relic!["relicId"]!.GetValue<string>() == "relic_trade_1");
         Assert.Equal(10, soul["inkFeathers"]!["current"]!.GetValue<int>());
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserTradeParity")]
+    public async Task TryApplyAsync_StaleShiningTradeActionOutsideShiningRealmFailsWithoutMutation()
+    {
+        await SeedStoryTurnAsync(12);
+        await SeedShiningTradeStateAsync(withReadyInventory: true);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        soul["currentRealm"] = "Chaos Sea";
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString());
+        await _stateManager.RefreshGameStateAsync();
+        var soulBefore = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var shiningBefore = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+
+        var request = await _afterlifeWriteService.TryApplyAsync(
+            "/shining_trade faction_old",
+            Answers(("shining_trade_choice", "request:faction_old"), ("confirm_trade_write", true)),
+            Owner("browser-trade-test"));
+        var purchase = await _afterlifeWriteService.TryApplyAsync(
+            "/shining_trade faction_old",
+            Answers(("shining_trade_choice", "buy:slot_1"), ("confirm_trade_write", true)),
+            Owner("browser-trade-test"));
+
+        Assert.True(request.Handled);
+        Assert.False(request.Success);
+        Assert.True(purchase.Handled);
+        Assert.False(purchase.Success);
+        Assert.Equal(soulBefore, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(shiningBefore, await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
+        Assert.False(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
     }
 
     [Fact]
@@ -624,6 +721,35 @@ public sealed class BrowserTradeParityTests : IDisposable
         {
             Assert.Contains(stored, relic => relic!["relicId"]!.GetValue<string>() == affectedRelicId);
         }
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserTradeParity")]
+    public async Task TryApplyAsync_StaleGuardianTradeActionOutsideChaosSeaFailsWithoutMutation()
+    {
+        await SeedStoryTurnAsync(12);
+        await SeedGuardianTradeStateAsync(
+            includeTradeInventory: true,
+            includeTradeReceipt: true,
+            includeSellableRelic: false,
+            includeBuybackEntry: false);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        soul["currentRealm"] = "Mortal World";
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString());
+        await _stateManager.RefreshGameStateAsync();
+        var soulBefore = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var guardiansBefore = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+
+        var result = await _afterlifeWriteService.TryApplyAsync(
+            "/guardian_trade guardian_alpha",
+            Answers(("guardian_trade_choice", "buy:trade_1"), ("confirm_trade_write", true)),
+            Owner("browser-trade-test"));
+
+        Assert.True(result.Handled);
+        Assert.False(result.Success);
+        Assert.Equal(soulBefore, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(guardiansBefore, await _fs.ReadFileAsync("game_state/meta/guardians.json"));
+        Assert.False(_fs.FileExists(GuardianTradeRequestState.PendingRequestPath));
     }
 
     [Fact]
@@ -988,6 +1114,17 @@ public sealed class BrowserTradeParityTests : IDisposable
 
         var shiningRoot = ShiningAbodeState.CreateDefaultState();
         shiningRoot["availability"] = ShiningAbodeState.AvailabilityActive;
+        shiningRoot["currentHallId"] = "hall_old";
+        shiningRoot["halls"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["hallId"] = "hall_old",
+                ["hallName"] = "Старый зал",
+                ["description"] = "Текущий торговый зал.",
+                ["serviceTags"] = new JsonArray()
+            }
+        };
         shiningRoot["radiance"] = new JsonObject
         {
             ["experience"] = 250,

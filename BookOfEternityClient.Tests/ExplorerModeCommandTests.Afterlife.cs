@@ -1473,6 +1473,28 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public void TradeConsoleRequestPaths_UseScopedServicesInsteadOfRawPendingWriters()
+    {
+        var guardianSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            "ExplorerMode.Afterlife.GuardiansProjectsTrade.cs"));
+        var shiningSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            "ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs"));
+
+        Assert.DoesNotContain("GuardianTradeRequestState.WritePreparedJsonAsync", guardianSource, StringComparison.Ordinal);
+        Assert.Contains("createPendingRequests: true", guardianSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("ShiningTradeRequestState.WriteRequestAsync(_fs, request)", shiningSource, StringComparison.Ordinal);
+        Assert.Contains("ShiningTradeService.RequestInventoryAsync", shiningSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_AbodePower_DetailUsesPlayerFacingWording()
     {
         await SeedSessionForCommandAsync("/сила_обители");
@@ -6489,6 +6511,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         await WriteJsonAsync(ShiningAbodeState.StatePath, new
         {
             availability = "active",
+            currentHallId = "hall_dawn",
             radiance = new
             {
                 experience = 540,

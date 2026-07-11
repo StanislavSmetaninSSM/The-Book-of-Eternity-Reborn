@@ -2418,6 +2418,17 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
             return BuildShiningTradeTargetSelection(command, localTurn.Panel, targets);
         }
 
+        if (!await ShiningTradeService.IsFactionAvailableInCurrentHallAsync(fs, factionId))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Warning, "Фракция недоступна", "Эта сияющая фракция не находится в вашем текущем зале.")
+                ]);
+        }
+
         var view = await ShiningTradeService.ReadTradeViewAsync(fs, factionId);
         if (view == null)
         {

@@ -6,7 +6,7 @@
       "file": "E_CLI_Training_Showcases.txt",
       "statePath": "game_state/control/pending_training_showcase_requests.json",
       "responseSurface": "trainingShowcase / mentorTrainingShowcase",
-      "description": "Mortal teacher and afterlife mentor training vitrines, requested sourceActorSnapshotHash freshness, stale showcase purchase blocking, historical client-owned purchase receipts, expensive self fallback multipliers, and afterlifeSpecialArtLearningReceipts limited to roleplay learning of new special arts."
+      "description": "Mortal teacher and afterlife mentor training vitrines, realm-specific currentLocationId/currentAbodeId/currentHallId locality, requested sourceActorSnapshotHash freshness, stale showcase purchase blocking, historical client-owned purchase receipts, expensive self fallback multipliers, and afterlifeSpecialArtLearningReceipts limited to roleplay learning of new special arts."
     },
     {
       "contractId": "mortal_teacher_showcase",
@@ -27,7 +27,7 @@
       "file": "E_CLI_Training_Showcases.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "afterlifeEntityProfileUpdates[].mentorTrainingShowcase",
-      "description": "Afterlife mentor showcase with discounted standard spiritual-art training, sourceCap, relationship gates, no direct GM tier upgrades, Fresh New Game system/freeform Guardian starter mentor profiles, and client_system_guardian_starter_showcase bootstrap for built-in system Guardians."
+      "description": "Afterlife mentor showcase with current-abode/current-hall locality, discounted standard spiritual-art training, sourceCap, relationship gates, no direct GM tier upgrades, Fresh New Game system/freeform Guardian starter mentor profiles, and client_system_guardian_starter_showcase bootstrap for built-in system Guardians."
     }
   ],
   "gmWorkerBridgeCoverage": [

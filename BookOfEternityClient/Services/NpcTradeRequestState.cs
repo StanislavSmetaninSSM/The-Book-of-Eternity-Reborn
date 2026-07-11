@@ -16,6 +16,7 @@ internal static class NpcTradeRequestState
     public const string ReceiptStatusReady = "ready";
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
+    private static readonly SemaphoreSlim RequestWriteGate = new(1, 1);
 
     public sealed class PendingNpcTradeInventoryRequest
     {
@@ -82,21 +83,69 @@ internal static class NpcTradeRequestState
 
     public static async Task WriteRequestsAsync(FileSystemManager fs, IReadOnlyCollection<PendingNpcTradeInventoryRequest> requests)
     {
-        if (requests.Count == 0)
+        await RequestWriteGate.WaitAsync();
+        try
         {
-            ClearRequests(fs);
-            return;
+            await WriteRequestsCoreAsync(fs, requests);
         }
-
-        await fs.WriteFileAtomicAsync(
-            PendingRequestPath,
-            JsonSerializer.Serialize(new Dictionary<string, object?> { [RequestsProperty] = requests }, JsonOpts));
+        finally
+        {
+            RequestWriteGate.Release();
+        }
     }
 
     public static async Task WriteRequestAsync(FileSystemManager fs, PendingNpcTradeInventoryRequest request)
     {
-        var existing = (await ReadRequestsAsync(fs)).ToList();
-        var replaced = false;
+        await RequestWriteGate.WaitAsync();
+        try
+        {
+            var existing = (await ReadRequestsAsync(fs)).ToList();
+            UpsertRequest(existing, request);
+            await WriteRequestsCoreAsync(fs, existing);
+        }
+        finally
+        {
+            RequestWriteGate.Release();
+        }
+    }
+
+    public static async Task<bool> TryWriteScopedRequestAsync(
+        FileSystemManager fs,
+        PendingNpcTradeInventoryRequest request,
+        LocalInteractionScope scope,
+        string expectedNpcRootJson)
+    {
+        await RequestWriteGate.WaitAsync();
+        try
+        {
+            var previousJson = await fs.ReadFileAsync(PendingRequestPath);
+            var requests = ParseRequests(previousJson).ToList();
+            UpsertRequest(requests, request);
+            var nextJson = SerializeRequests(requests);
+            var writes = CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(scope)
+                .Concat(new[]
+                {
+                    CoordinatedStateWriteHelper.CreateGuardWrite("game_state/npcs/npc_core.json", expectedNpcRootJson),
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        PendingRequestPath,
+                        previousJson,
+                        nextJson,
+                        RequireCurrentBaseline: true)
+                })
+                .ToArray();
+
+            return await CoordinatedStateWriteHelper.TryCommitAsync(fs, writes);
+        }
+        finally
+        {
+            RequestWriteGate.Release();
+        }
+    }
+
+    private static void UpsertRequest(
+        IList<PendingNpcTradeInventoryRequest> existing,
+        PendingNpcTradeInventoryRequest request)
+    {
         for (var i = 0; i < existing.Count; i++)
         {
             if (!string.Equals(existing[i].NpcId, request.NpcId, StringComparison.OrdinalIgnoreCase) ||
@@ -106,15 +155,27 @@ internal static class NpcTradeRequestState
             }
 
             existing[i] = request;
-            replaced = true;
-            break;
+            return;
         }
 
-        if (!replaced)
-            existing.Add(request);
-
-        await WriteRequestsAsync(fs, existing);
+        existing.Add(request);
     }
+
+    private static async Task WriteRequestsCoreAsync(
+        FileSystemManager fs,
+        IReadOnlyCollection<PendingNpcTradeInventoryRequest> requests)
+    {
+        if (requests.Count == 0)
+        {
+            ClearRequests(fs);
+            return;
+        }
+
+        await fs.WriteFileAtomicAsync(PendingRequestPath, SerializeRequests(requests));
+    }
+
+    private static string SerializeRequests(IReadOnlyCollection<PendingNpcTradeInventoryRequest> requests) =>
+        JsonSerializer.Serialize(new Dictionary<string, object?> { [RequestsProperty] = requests }, JsonOpts);
 
     public static async Task<IReadOnlyList<PendingNpcTradeInventoryRequest>> ReadRequestsAsync(FileSystemManager fs)
     {
@@ -337,50 +398,81 @@ internal static class NpcTradeRequestState
         if (!IsMortalRealm(currentRealm))
             return;
 
-        var requests = (await ReadRequestsAsync(fs)).ToList();
-        if (requests.Count == 0)
-        {
-            fs.DeleteFile(PendingRequestPath);
-            return;
-        }
-
-        var npcJson = await fs.ReadFileAsync("game_state/npcs/npc_core.json");
-        if (string.IsNullOrWhiteSpace(npcJson))
-            return;
-
+        await RequestWriteGate.WaitAsync();
         try
         {
-            if (JsonNode.Parse(npcJson) is not JsonObject npcRoot)
-                return;
-
-            var remaining = new List<PendingNpcTradeInventoryRequest>();
-            foreach (var request in requests)
+            var previousJson = await fs.ReadFileAsync(PendingRequestPath);
+            var requests = ParseRequests(previousJson).ToList();
+            if (requests.Count == 0)
             {
-                if (string.IsNullOrWhiteSpace(request.RequestId) ||
-                    string.IsNullOrWhiteSpace(request.NpcId) ||
-                    string.IsNullOrWhiteSpace(request.NpcName) ||
-                    string.IsNullOrWhiteSpace(request.MerchantProfile) ||
-                    string.IsNullOrWhiteSpace(request.TradeCycleId) ||
-                    request.DerivedTradeSlotCount <= 0 ||
-                    request.RefreshAfterWorldDate <= request.CreatedAtWorldDate)
-                {
-                    continue;
-                }
-
-                var npc = FindNpcEntry(npcRoot, request.NpcId);
-                if (npc?["tradeInventory"] is not JsonObject tradeInventory ||
-                    !InventoryMatchesRequestContract(tradeInventory, request) ||
-                    !ReceiptMatchesRequestContract(FindMatchingReceipt(npc, request), request, tradeInventory))
-                {
-                    remaining.Add(request);
-                }
+                await CoordinatedStateWriteHelper.TryCommitAsync(
+                    fs,
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        PendingRequestPath,
+                        previousJson,
+                        NextJson: null,
+                        RequireCurrentBaseline: true));
+                return;
             }
 
-            await WriteRequestsAsync(fs, remaining);
+            var npcJson = await fs.ReadFileAsync("game_state/npcs/npc_core.json");
+            if (string.IsNullOrWhiteSpace(npcJson))
+                return;
+
+            try
+            {
+                if (JsonNode.Parse(npcJson) is not JsonObject npcRoot)
+                    return;
+
+                var requestsToRemove = new List<PendingNpcTradeInventoryRequest>();
+                foreach (var request in requests)
+                {
+                    if (string.IsNullOrWhiteSpace(request.RequestId) ||
+                        string.IsNullOrWhiteSpace(request.NpcId) ||
+                        string.IsNullOrWhiteSpace(request.NpcName) ||
+                        string.IsNullOrWhiteSpace(request.MerchantProfile) ||
+                        string.IsNullOrWhiteSpace(request.TradeCycleId) ||
+                        request.DerivedTradeSlotCount <= 0 ||
+                        request.RefreshAfterWorldDate <= request.CreatedAtWorldDate)
+                    {
+                        requestsToRemove.Add(request);
+                        continue;
+                    }
+
+                    var npc = FindNpcEntry(npcRoot, request.NpcId);
+                    if (npc?["tradeInventory"] is not JsonObject tradeInventory ||
+                        !InventoryMatchesRequestContract(tradeInventory, request) ||
+                        !ReceiptMatchesRequestContract(FindMatchingReceipt(npc, request), request, tradeInventory))
+                    {
+                        continue;
+                    }
+
+                    requestsToRemove.Add(request);
+                }
+
+                if (requestsToRemove.Count == 0)
+                    return;
+
+                var remaining = requests
+                    .Where(request => !requestsToRemove.Contains(request))
+                    .ToList();
+                var nextJson = remaining.Count == 0 ? null : SerializeRequests(remaining);
+                await CoordinatedStateWriteHelper.TryCommitAsync(
+                    fs,
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        PendingRequestPath,
+                        previousJson,
+                        nextJson,
+                        RequireCurrentBaseline: true));
+            }
+            catch
+            {
+                // keep pending requests until canonical npc state is readable again
+            }
         }
-        catch
+        finally
         {
-            // keep pending requests until canonical npc state is readable again
+            RequestWriteGate.Release();
         }
     }
 

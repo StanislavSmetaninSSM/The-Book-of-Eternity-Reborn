@@ -40,7 +40,9 @@ public partial class ExplorerMode
     {
         if (view.Teachers.Count == 0)
         {
-            ShowEmptyPanel("Обучение", "В текущих данных нет NPC, помеченных как учителя.");
+            ShowEmptyPanel(
+                "Обучение",
+                view.ScopeUnavailableReason ?? "В текущей локации нет доступных учителей.");
             WaitForKey();
             return;
         }
@@ -293,6 +295,8 @@ public partial class ExplorerMode
             "",
             $"[dim]Наставников: {view.Teachers.Count} • готовых витрин: {ready} • ожидают ГМ: {pending} • самостоятельных предложений: {view.SelfTrainingOffers.Count}[/]"
         };
+        if (!string.IsNullOrWhiteSpace(view.ScopeUnavailableReason))
+            lines.Add($"[yellow]{Markup.Escape(view.ScopeUnavailableReason)}[/]");
         if (view.RequestPending)
             lines.Add("[yellow]⏳ Есть ожидающий запрос к ГМ на подготовку или обновление витрины наставника.[/]");
 

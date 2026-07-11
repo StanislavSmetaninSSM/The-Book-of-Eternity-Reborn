@@ -43,6 +43,947 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureTrainingAsync_MortalTeachers_ListsOnlyCurrentLocationAndDoesNotRequestRemoteShowcase()
+    {
+        await SeedMortalSoulStateWithoutLocationAsync();
+        await SeedMortalCurrentLocationAsync("loc_market", "Рыночная площадь");
+        var localTeacher = BuildMortalTeacher(
+            "npc_teacher_local",
+            "Мастер Радан",
+            "loc_market",
+            "Рыночная площадь",
+            includeShowcase: true);
+        var remoteTeacher = BuildMortalTeacher(
+            "npc_teacher_remote",
+            "Охотница Иара",
+            "loc_forest",
+            "Лесная сторожка",
+            includeShowcase: false);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["NPCs"] = new JsonArray(localTeacher, remoteTeacher) }.ToJsonString());
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 12);
+
+        var teacher = Assert.Single(view.Teachers);
+        Assert.Equal("npc_teacher_local", teacher.SourceActorId);
+        Assert.False(view.RequestPending);
+        Assert.False(view.RequestCreatedThisCall);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalTeacherWithContradictoryLocationAliasesFailsClosed()
+    {
+        await SeedMortalSoulStateWithoutLocationAsync();
+        await SeedMortalCurrentLocationAsync("loc_market", "Рыночная площадь");
+        var contradictoryTeacher = BuildMortalTeacher(
+            "npc_teacher_contradictory",
+            "Наставник двух дорог",
+            "loc_market",
+            "Лесная сторожка",
+            includeShowcase: false);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["NPCs"] = new JsonArray(contradictoryTeacher) }.ToJsonString());
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 12);
+
+        Assert.Empty(view.Teachers);
+        Assert.False(view.RequestPending);
+        Assert.False(view.RequestCreatedThisCall);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalTeacherWithConflictingIdAliasesFailsClosed()
+    {
+        await SeedMortalSoulStateWithoutLocationAsync();
+        await SeedMortalCurrentLocationAsync("loc_market", "Рыночная площадь");
+        var contradictoryTeacher = BuildMortalTeacher(
+            "npc_teacher_contradictory_ids",
+            "Наставник двух дорог",
+            "loc_market",
+            "Рыночная площадь",
+            includeShowcase: false);
+        contradictoryTeacher["initialLocationId"] = "loc_remote";
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["NPCs"] = new JsonArray(contradictoryTeacher) }.ToJsonString());
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 12);
+
+        Assert.Empty(view.Teachers);
+        Assert.False(view.RequestPending);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalIdMatch_RemainsLocalWhenAuthorityHasNoName()
+    {
+        await SeedMortalSoulStateWithoutLocationAsync();
+        await _fs.WriteFileAtomicAsync(
+            "game_state/world/current_location.json",
+            new JsonObject { ["locationId"] = "loc_market" }.ToJsonString());
+        var teacher = BuildMortalTeacher(
+            "npc_teacher_id_only_authority",
+            "Наставник рыночной школы",
+            "loc_market",
+            "Рыночная площадь",
+            includeShowcase: true);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["NPCs"] = new JsonArray(teacher) }.ToJsonString());
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 12, createPendingRequests: false);
+
+        var localTeacher = Assert.Single(view.Teachers);
+        Assert.Equal("npc_teacher_id_only_authority", localTeacher.SourceActorId);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_RemotePendingShowcase_DoesNotRewriteRemoteTeacher()
+    {
+        await SeedMortalSoulStateWithoutLocationAsync();
+        await SeedMortalCurrentLocationAsync("loc_market", "Рыночная площадь");
+        var localTeacher = BuildMortalTeacher(
+            "npc_teacher_local",
+            "Мастер Радан",
+            "loc_market",
+            "Рыночная площадь",
+            includeShowcase: true);
+        var remoteTeacher = BuildMortalTeacher(
+            "npc_teacher_remote",
+            "Охотница Иара",
+            "loc_forest",
+            "Лесная сторожка",
+            includeShowcase: true);
+        var requestedHash = remoteTeacher["trainingShowcase"]!["sourceActorSnapshotHash"]!.GetValue<string>();
+        remoteTeacher["role"] = "Смотрительница дальнего тракта";
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["NPCs"] = new JsonArray(localTeacher, remoteTeacher) }.ToJsonString());
+        await TrainingRequestState.WriteRequestAsync(
+            _fs,
+            "mortal_teacher_showcase",
+            "npc_teacher_remote",
+            "Охотница Иара",
+            "npc_teacher",
+            "mortal",
+            createdAtTurn: 11,
+            sourceActorSnapshotHash: requestedHash,
+            reason: "stale_source_actor_snapshot");
+        var npcBefore = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 12);
+
+        Assert.Equal("npc_teacher_local", Assert.Single(view.Teachers).SourceActorId);
+        Assert.Equal(npcBefore, await _fs.ReadFileAsync("game_state/npcs/npc_core.json"));
+        Assert.True(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+        Assert.False(view.RequestPending);
+        Assert.Null(view.PendingGmAction);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_RemoteSkillEvolutionPending_IsNotDispatchedFromLocalScreen()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        await TrainingRequestState.WriteRequestAsync(
+            _fs,
+            "mortal_training_skill_evolution",
+            "npc_remote_teacher",
+            "Удалённый наставник",
+            "npc_teacher",
+            "mortal",
+            createdAtTurn: 11,
+            sourceActorSnapshotHash: "remote-paid-lesson",
+            reason: "mastery_threshold_crossed",
+            details: new JsonObject
+            {
+                ["targetId"] = "remote_skill",
+                ["targetName"] = "Дальний навык",
+                ["targetKind"] = "active_skill_mastery",
+                ["targetValue"] = 2
+            });
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 12, createPendingRequests: false);
+
+        Assert.False(view.RequestPending);
+        Assert.Null(view.PendingGmAction);
+        Assert.True(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_ScopeChangesBeforeSatisfiedPendingCleanup_PreservesRequest()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: false);
+        await CreateService().EnsureTrainingAsync(currentTurn: 12);
+        Assert.True(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.Mortal, "Локация изменилась."));
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+
+        await service.EnsureTrainingAsync(currentTurn: 13, createPendingRequests: false);
+
+        var request = Assert.Single(await TrainingRequestState.ReadRequestsAsync(_fs));
+        Assert.Equal("npc_hunter_001", request.SourceActorId);
+        Assert.True(resolver.ResolveCallCount >= 2);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_ConcurrentPendingRequestDuringCleanup_PreservesNewRequest()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        await TrainingRequestState.WriteRequestAsync(
+            _fs,
+            "mortal_teacher_showcase",
+            "npc_hunter_001",
+            "Старый охотник",
+            "npc_teacher",
+            "mortal",
+            createdAtTurn: 8,
+            sourceActorSnapshotHash: "older-request-hash",
+            reason: "missing_showcase");
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                await TrainingRequestState.WriteRequestAsync(
+                    _fs,
+                    "mortal_teacher_showcase",
+                    "npc_new_teacher",
+                    "Новый учитель",
+                    "npc_teacher",
+                    "mortal",
+                    createdAtTurn: 9,
+                    sourceActorSnapshotHash: "new-request-hash",
+                    reason: "missing_showcase");
+            },
+            initialScope,
+            initialScope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+
+        await service.EnsureTrainingAsync(currentTurn: 12, createPendingRequests: false);
+
+        var request = Assert.Single(await TrainingRequestState.ReadRequestsAsync(_fs));
+        Assert.Equal("npc_new_teacher", request.SourceActorId);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalTeacherWithoutCurrentLocation_FailsClosedWithoutPendingRequest()
+    {
+        await SeedMortalSoulStateWithoutLocationAsync();
+        var teacher = BuildMortalTeacher(
+            "npc_teacher_unknown_scope",
+            "Наставница без дороги",
+            "loc_unknown",
+            "Неизвестное место",
+            includeShowcase: false);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["NPCs"] = new JsonArray(teacher) }.ToJsonString());
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 12);
+
+        Assert.Empty(view.Teachers);
+        Assert.False(view.RequestPending);
+        Assert.False(view.RequestCreatedThisCall);
+        Assert.Contains("локац", view.ScopeUnavailableReason, StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalRemoteTeacher_BlocksBeforeAnyStateMutation()
+    {
+        await SeedMortalSoulStateWithoutLocationAsync();
+        await SeedMortalCurrentLocationAsync("loc_market", "Рыночная площадь");
+        var remoteTeacher = BuildMortalTeacher(
+            "npc_teacher_remote",
+            "Охотница Иара",
+            "loc_forest",
+            "Лесная сторожка",
+            includeShowcase: true);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["NPCs"] = new JsonArray(remoteTeacher) }.ToJsonString());
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+
+        var statusBefore = await _fs.ReadFileAsync("game_state/core/player_status.json");
+        var experienceBefore = await _fs.ReadFileAsync("game_state/player/experience.json");
+        var npcBefore = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
+
+        var result = await CreateService().BuyTrainingAsync(
+            "npc_teacher_remote",
+            "offer_npc_teacher_remote",
+            currentTurn: 13);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Contains("текущ", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(statusBefore, await _fs.ReadFileAsync("game_state/core/player_status.json"));
+        Assert.Equal(experienceBefore, await _fs.ReadFileAsync("game_state/player/experience.json"));
+        Assert.Equal(npcBefore, await _fs.ReadFileAsync("game_state/npcs/npc_core.json"));
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalScopeChangesBeforeCommit_BlocksWithoutMutation()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedPlayerActiveSkillAsync(skillName: "Ножи", masteryLevel: 1, currentProgress: 4, progressNeeded: 5);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.Mortal, "Локация изменилась."));
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+        var statusBefore = await _fs.ReadFileAsync("game_state/core/player_status.json");
+        var experienceBefore = await _fs.ReadFileAsync("game_state/player/experience.json");
+        var npcBefore = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
+        var activeBefore = await _fs.ReadFileAsync("game_state/player/skills_active.json");
+        var masteryBefore = await _fs.ReadFileAsync("game_state/player/skill_mastery.json");
+
+        var result = await service.BuyTrainingAsync("npc_hunter_001", "offer_knife_mastery_2", currentTurn: 13);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.True(resolver.ResolveCallCount >= 2);
+        Assert.Equal(statusBefore, await _fs.ReadFileAsync("game_state/core/player_status.json"));
+        Assert.Equal(experienceBefore, await _fs.ReadFileAsync("game_state/player/experience.json"));
+        Assert.Equal(npcBefore, await _fs.ReadFileAsync("game_state/npcs/npc_core.json"));
+        Assert.Equal(activeBefore, await _fs.ReadFileAsync("game_state/player/skills_active.json"));
+        Assert.Equal(masteryBefore, await _fs.ReadFileAsync("game_state/player/skill_mastery.json"));
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalLocationAuthorityChangesAfterResolution_BlocksWithoutMutation()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedPlayerActiveSkillAsync(skillName: "Ножи", masteryLevel: 1, currentProgress: 1, progressNeeded: 5);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount == 2)
+                    await SeedMortalCurrentLocationAsync("loc_remote", "Дальний тракт");
+            },
+            initialScope,
+            initialScope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+        var statusBefore = await _fs.ReadFileAsync("game_state/core/player_status.json");
+        var experienceBefore = await _fs.ReadFileAsync("game_state/player/experience.json");
+
+        var result = await service.BuyTrainingAsync("npc_hunter_001", "offer_knife_mastery_2", currentTurn: 13);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Equal(statusBefore, await _fs.ReadFileAsync("game_state/core/player_status.json"));
+        Assert.Equal(experienceBefore, await _fs.ReadFileAsync("game_state/player/experience.json"));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalLocationAuthorityChangesBeforePendingWrite_DoesNotCreateRequest()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: false);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount == 2)
+                    await SeedMortalCurrentLocationAsync("loc_remote", "Дальний тракт");
+            },
+            initialScope,
+            initialScope,
+            initialScope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+
+        var view = await service.EnsureTrainingAsync(currentTurn: 13);
+
+        Assert.False(view.RequestPending);
+        Assert.False(view.RequestCreatedThisCall);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalTeacherChangesBeforeCommit_BlocksWithoutOverwritingActor()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedPlayerActiveSkillAsync(skillName: "Ножи", masteryLevel: 1, currentProgress: 1, progressNeeded: 5);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+                root["UpdateNPCs"]!.AsArray()[0]!.AsObject()["concurrentGmMarker"] = "preserve";
+                await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", root.ToJsonString());
+            },
+            initialScope,
+            initialScope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+        var statusBefore = await _fs.ReadFileAsync("game_state/core/player_status.json");
+        var experienceBefore = await _fs.ReadFileAsync("game_state/player/experience.json");
+
+        var result = await service.BuyTrainingAsync("npc_hunter_001", "offer_knife_mastery_2", currentTurn: 13);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Equal(statusBefore, await _fs.ReadFileAsync("game_state/core/player_status.json"));
+        Assert.Equal(experienceBefore, await _fs.ReadFileAsync("game_state/player/experience.json"));
+        Assert.Contains("concurrentGmMarker", await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? string.Empty, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalPlayerStateChangesBeforeCommit_BlocksWithoutOverwritingPlayer()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedPlayerActiveSkillAsync(skillName: "Ножи", masteryLevel: 1, currentProgress: 1, progressNeeded: 5);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/core/player_status.json"))!)!.AsObject();
+                root["money"] = 777;
+                root["concurrentGmMarker"] = "preserve";
+                await _fs.WriteFileAtomicAsync("game_state/core/player_status.json", root.ToJsonString());
+            },
+            initialScope,
+            initialScope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+        var experienceBefore = await _fs.ReadFileAsync("game_state/player/experience.json");
+        var masteryBefore = await _fs.ReadFileAsync("game_state/player/skill_mastery.json");
+
+        var result = await service.BuyTrainingAsync("npc_hunter_001", "offer_knife_mastery_2", currentTurn: 13);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        var statusAfter = JsonNode.Parse((await _fs.ReadFileAsync("game_state/core/player_status.json"))!)!.AsObject();
+        Assert.Equal(777, statusAfter["money"]!.GetValue<int>());
+        Assert.Equal("preserve", statusAfter["concurrentGmMarker"]!.GetValue<string>());
+        Assert.Equal(experienceBefore, await _fs.ReadFileAsync("game_state/player/experience.json"));
+        Assert.Equal(masteryBefore, await _fs.ReadFileAsync("game_state/player/skill_mastery.json"));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_ChaosSeaMentors_ListsOnlyActiveGuardianInCurrentAbode()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        await SeedChaosSeaScopeAsync(
+            activeGuardianId: "guardian_local",
+            activeGuardianName: "Мирвен",
+            activeAbodeId: "abode_local",
+            activeAbodeName: "Каменный Маяк");
+        var localMentor = BuildAfterlifeMentor(
+            "guardian_local",
+            "Мирвен",
+            "Chaos Sea",
+            "abode_local",
+            "Каменный Маяк");
+        var remoteMentor = BuildAfterlifeMentor(
+            "guardian_remote",
+            "Лиора",
+            "Chaos Sea",
+            "abode_remote",
+            "Тихая Башня");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/afterlife_entity_profiles.json",
+            new JsonObject { ["profiles"] = new JsonArray(localMentor, remoteMentor) }.ToJsonString());
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 31);
+
+        var mentor = Assert.Single(view.Teachers);
+        Assert.Equal("guardian_local", mentor.SourceActorId);
+        Assert.False(view.RequestPending);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_ChaosSeaRealmLessProfile_OnlyAcceptsExactActiveGuardian()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        await SeedChaosSeaScopeAsync(
+            activeGuardianId: "guardian_local",
+            activeGuardianName: "Мирвен",
+            activeAbodeId: "abode_local",
+            activeAbodeName: "Каменный Маяк");
+        var activeGuardian = BuildAfterlifeMentor(
+            "guardian_local",
+            "Мирвен",
+            string.Empty,
+            "abode_local",
+            "Каменный Маяк");
+        var unclassifiedResident = BuildAfterlifeMentor(
+            "resident_unclassified",
+            "Безымянный послушник",
+            string.Empty,
+            "abode_local",
+            "Каменный Маяк",
+            actorType: "resident");
+        unclassifiedResident.Remove("mentorTrainingShowcase");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/afterlife_entity_profiles.json",
+            new JsonObject { ["profiles"] = new JsonArray(activeGuardian, unclassifiedResident) }.ToJsonString());
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 31);
+
+        var mentor = Assert.Single(view.Teachers);
+        Assert.Equal("guardian_local", mentor.SourceActorId);
+        Assert.False(view.RequestPending);
+        Assert.False(view.RequestCreatedThisCall);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_ShiningAbodeMentors_ExcludesOtherRealms()
+    {
+        await SeedShiningSoulStateAsync(inkFeathers: 2500);
+        var shiningMentor = BuildAfterlifeMentor(
+            "resident_shining",
+            "Сестра Элиана",
+            "Shining Abode",
+            null,
+            null,
+            actorType: "resident");
+        var remoteShiningMentor = BuildAfterlifeMentor(
+            "resident_remote_shining",
+            "Мастер Тарен",
+            "Shining Abode",
+            null,
+            null,
+            actorType: "resident");
+        var chaosMentor = BuildAfterlifeMentor(
+            "guardian_chaos",
+            "Хранитель Бездны",
+            "Chaos Sea",
+            "abode_chaos",
+            "Башня Бездны");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/afterlife_entity_profiles.json",
+            new JsonObject { ["profiles"] = new JsonArray(shiningMentor, remoteShiningMentor, chaosMentor) }.ToJsonString());
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardian_abode_residents.json", """
+        {
+          "entries": [
+            {
+              "residentId": "resident_shining",
+              "displayName": "Сестра Элиана",
+              "isPresent": true,
+              "shiningFactionId": "faction_lanterns"
+            },
+            {
+              "residentId": "resident_remote_shining",
+              "displayName": "Мастер Тарен",
+              "isPresent": true,
+              "shiningFactionId": "faction_forge"
+            }
+          ]
+        }
+        """);
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 31);
+
+        var mentor = Assert.Single(view.Teachers);
+        Assert.Equal("resident_shining", mentor.SourceActorId);
+        Assert.False(view.RequestPending);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_ShiningMentorWithConflictingHallAndFaction_IsExcluded()
+    {
+        await SeedShiningSoulStateAsync(inkFeathers: 2500);
+        var mentor = BuildAfterlifeMentor(
+            "resident_conflicting_shining",
+            "Мастер противоречивого зала",
+            "Shining Abode",
+            "hall_forge",
+            "Зал Ремесла",
+            actorType: "resident");
+        mentor["shiningFactionId"] = "faction_lanterns";
+        mentor["mentorTrainingShowcase"]!["sourceActorSnapshotHash"] =
+            TrainingService.ComputeSourceSnapshotHash(mentor);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/afterlife_entity_profiles.json",
+            new JsonObject { ["profiles"] = new JsonArray(mentor) }.ToJsonString());
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 31);
+
+        Assert.Empty(view.Teachers);
+        Assert.False(view.RequestPending);
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_ShiningMentorWithConflictingHallAndFaction_BlocksWithoutMutation()
+    {
+        await SeedShiningSoulStateAsync(inkFeathers: 2500);
+        var mentor = BuildAfterlifeMentor(
+            "resident_conflicting_shining",
+            "Мастер противоречивого зала",
+            "Shining Abode",
+            "hall_forge",
+            "Зал Ремесла",
+            actorType: "resident");
+        mentor["shiningFactionId"] = "faction_lanterns";
+        mentor["mentorTrainingShowcase"]!["sourceActorSnapshotHash"] =
+            TrainingService.ComputeSourceSnapshotHash(mentor);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/afterlife_entity_profiles.json",
+            new JsonObject { ["profiles"] = new JsonArray(mentor) }.ToJsonString());
+        var soulBefore = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var profilesBefore = await _fs.ReadFileAsync("game_state/meta/afterlife_entity_profiles.json");
+
+        var result = await CreateService().BuyTrainingAsync(
+            "resident_conflicting_shining",
+            "offer_resident_conflicting_shining",
+            currentTurn: 32);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Equal(soulBefore, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(profilesBefore, await _fs.ReadFileAsync("game_state/meta/afterlife_entity_profiles.json"));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_ShiningResidentWithRemoteHallAndLocalFaction_IsExcluded()
+    {
+        await SeedShiningSoulStateAsync(inkFeathers: 2500);
+        var mentor = BuildAfterlifeMentor(
+            "resident_conflicting_record",
+            "Наставник противоречивой записи",
+            "Shining Abode",
+            null,
+            null,
+            actorType: "resident");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/afterlife_entity_profiles.json",
+            new JsonObject { ["profiles"] = new JsonArray(mentor) }.ToJsonString());
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardian_abode_residents.json", """
+        {
+          "entries": [
+            {
+              "residentId": "resident_conflicting_record",
+              "displayName": "Наставник противоречивой записи",
+              "isPresent": true,
+              "hallId": "hall_forge",
+              "shiningFactionId": "faction_lanterns"
+            }
+          ]
+        }
+        """);
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 31, createPendingRequests: false);
+
+        Assert.Empty(view.Teachers);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_ShiningMentorWithConflictingDirectHallAliases_IsExcluded()
+    {
+        await SeedShiningSoulStateAsync(inkFeathers: 2500);
+        var mentor = BuildAfterlifeMentor(
+            "resident_conflicting_aliases",
+            "Наставник противоречивых координат",
+            "Shining Abode",
+            null,
+            null,
+            actorType: "resident");
+        mentor["hallId"] = "hall_lanterns";
+        mentor["currentHallId"] = "hall_forge";
+        mentor["shiningFactionId"] = "faction_lanterns";
+        mentor["mentorTrainingShowcase"]!["sourceActorSnapshotHash"] =
+            TrainingService.ComputeSourceSnapshotHash(mentor);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/afterlife_entity_profiles.json",
+            new JsonObject { ["profiles"] = new JsonArray(mentor) }.ToJsonString());
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 31, createPendingRequests: false);
+
+        Assert.Empty(view.Teachers);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_ShiningAbodeMentors_ExcludesRealmLessAndHiddenFactionProfiles()
+    {
+        await SeedShiningSoulStateAsync(inkFeathers: 2500);
+        var validMentor = BuildAfterlifeMentor(
+            "resident_shining",
+            "Сестра Элиана",
+            "Shining Abode",
+            null,
+            null,
+            actorType: "resident");
+        validMentor["shiningFactionId"] = "faction_lanterns";
+        validMentor["mentorTrainingShowcase"]!["sourceActorSnapshotHash"] =
+            TrainingService.ComputeSourceSnapshotHash(validMentor);
+
+        var realmLessMentor = BuildAfterlifeMentor(
+            "resident_realm_less",
+            "Странник без мира",
+            string.Empty,
+            "hall_lanterns",
+            "Зал Фонарей",
+            actorType: "resident");
+        realmLessMentor.Remove("mentorTrainingShowcase");
+
+        var hiddenFactionMentor = BuildAfterlifeMentor(
+            "resident_hidden_wings",
+            "Скрытый наставник",
+            "Shining Abode",
+            "hall_lanterns",
+            "Зал Фонарей",
+            actorType: "resident");
+        hiddenFactionMentor["shiningFactionId"] = "faction_hidden_wings";
+        hiddenFactionMentor.Remove("mentorTrainingShowcase");
+
+        var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json"))!)!.AsObject();
+        shiningRoot["factions"]!.AsArray().Add(new JsonObject
+        {
+            ["factionId"] = "faction_hidden_wings",
+            ["hallId"] = "hall_lanterns",
+            ["sarefFactionRole"] = SarefMainStoryState.WingsFactionRole,
+            ["sarefVisibility"] = "hidden",
+            ["charter"] = new JsonObject { ["factionName"] = "Скрытые Крылья" },
+            ["leadership"] = new JsonObject { ["headActorId"] = "resident_hidden_wings" }
+        });
+        await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", shiningRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/afterlife_entity_profiles.json",
+            new JsonObject
+            {
+                ["profiles"] = new JsonArray(validMentor, realmLessMentor, hiddenFactionMentor)
+            }.ToJsonString());
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 31);
+
+        var mentor = Assert.Single(view.Teachers);
+        Assert.Equal("resident_shining", mentor.SourceActorId);
+        Assert.False(view.RequestPending);
+        Assert.False(view.RequestCreatedThisCall);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_ChaosSeaRemoteMentor_BlocksBeforeAnyStateMutation()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        await SeedChaosSeaScopeAsync(
+            activeGuardianId: "guardian_local",
+            activeGuardianName: "Мирвен",
+            activeAbodeId: "abode_local",
+            activeAbodeName: "Каменный Маяк");
+        var remoteMentor = BuildAfterlifeMentor(
+            "guardian_remote",
+            "Лиора",
+            "Chaos Sea",
+            "abode_remote",
+            "Тихая Башня");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/afterlife_entity_profiles.json",
+            new JsonObject { ["profiles"] = new JsonArray(remoteMentor) }.ToJsonString());
+        var soulBefore = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var profilesBefore = await _fs.ReadFileAsync("game_state/meta/afterlife_entity_profiles.json");
+
+        var result = await CreateService().BuyTrainingAsync(
+            "guardian_remote",
+            "offer_guardian_remote",
+            currentTurn: 32);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Contains("текущ", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(soulBefore, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(profilesBefore, await _fs.ReadFileAsync("game_state/meta/afterlife_entity_profiles.json"));
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_AfterlifeMentorChangesBeforeCommit_BlocksWithoutSpending()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        await SeedAfterlifeMentorAsync(includeShowcase: true);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+                root[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray()[0]!.AsObject()["concurrentGmMarker"] = "preserve";
+                await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, root.ToJsonString());
+            },
+            initialScope,
+            initialScope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+        var soulBefore = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await service.BuyTrainingAsync("guardian_liora", "mentor_liora_guard_2", currentTurn: 32);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Equal(soulBefore, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Contains("concurrentGmMarker", await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath) ?? string.Empty, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_AfterlifeSoulChangesBeforeCommit_BlocksWithoutOverwritingSoul()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        await SeedAfterlifeMentorAsync(includeShowcase: true);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+                root["concurrentGmMarker"] = "preserve";
+                root["inkFeathers"]!["current"] = 2600;
+                await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", root.ToJsonString());
+            },
+            initialScope,
+            initialScope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+
+        var result = await service.BuyTrainingAsync("guardian_liora", "mentor_liora_guard_2", currentTurn: 32);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        var soulAfter = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Equal("preserve", soulAfter["concurrentGmMarker"]!.GetValue<string>());
+        Assert.Equal(2600, soulAfter["inkFeathers"]!["current"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_ChaosAuthorityChangesAfterResolution_BlocksWithoutSpending()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        await SeedAfterlifeMentorAsync(includeShowcase: true);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var guardians = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/guardians.json"))!)!.AsObject();
+                guardians["chaosSeaNavigation"]!["currentAbodeId"] = "abode_remote";
+                await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardians.ToJsonString());
+            },
+            initialScope,
+            initialScope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+        var soulBefore = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await service.BuyTrainingAsync("guardian_liora", "mentor_liora_guard_2", currentTurn: 32);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Equal(soulBefore, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_ShiningHallAuthorityChangesAfterResolution_BlocksWithoutSpending()
+    {
+        await SeedShiningSoulStateAsync(inkFeathers: 2500);
+        var mentor = BuildAfterlifeMentor(
+            "resident_shining",
+            "Сестра Элиана",
+            "Shining Abode",
+            null,
+            null,
+            actorType: "resident");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/afterlife_entity_profiles.json",
+            new JsonObject { ["profiles"] = new JsonArray(mentor) }.ToJsonString());
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var shining = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json"))!)!.AsObject();
+                shining["currentHallId"] = "hall_forge";
+                await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", shining.ToJsonString());
+            },
+            initialScope,
+            initialScope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+        var soulBefore = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await service.BuyTrainingAsync("resident_shining", "offer_resident_shining", currentTurn: 32);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Equal(soulBefore, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_ShiningAbodeRemoteHallMentor_BlocksBeforeAnyStateMutation()
+    {
+        await SeedShiningSoulStateAsync(inkFeathers: 2500);
+        var remoteMentor = BuildAfterlifeMentor(
+            "resident_remote_shining",
+            "Мастер Тарен",
+            "Shining Abode",
+            null,
+            null,
+            actorType: "resident");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/afterlife_entity_profiles.json",
+            new JsonObject { ["profiles"] = new JsonArray(remoteMentor) }.ToJsonString());
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardian_abode_residents.json", """
+        {
+          "entries": [
+            {
+              "residentId": "resident_remote_shining",
+              "displayName": "Мастер Тарен",
+              "isPresent": true,
+              "shiningFactionId": "faction_forge"
+            }
+          ]
+        }
+        """);
+        var soulBefore = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var profilesBefore = await _fs.ReadFileAsync("game_state/meta/afterlife_entity_profiles.json");
+
+        var result = await CreateService().BuyTrainingAsync(
+            "resident_remote_shining",
+            "offer_resident_remote_shining",
+            currentTurn: 32);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Contains("текущ", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(soulBefore, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(profilesBefore, await _fs.ReadFileAsync("game_state/meta/afterlife_entity_profiles.json"));
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
     public async Task EnsureTrainingAsync_MortalPendingShowcaseRefreshesHashAndDeduplicatesTeacher()
     {
         await SeedMortalSoulStateAsync();
@@ -52,6 +993,7 @@ public sealed class TrainingServiceTests : IDisposable
             ["npcId"] = "npc_selina_001",
             ["initialId"] = "npc_selina_001",
             ["name"] = "Наставница Селина",
+            ["currentLocationId"] = "forest_lodge",
             ["teacherProfile"] = new JsonObject
             {
                 ["canTeach"] = true,
@@ -151,6 +1093,103 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureTrainingAsync_MortalScopeChangesBeforeReturn_HidesTeacher()
+    {
+        await SeedMortalTeacherWithPendingHashRefreshAsync();
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.Mortal, "Локация изменилась."));
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+
+        var view = await service.EnsureTrainingAsync(currentTurn: 4, createPendingRequests: false);
+
+        Assert.Empty(view.Teachers);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalScopeChangesBeforeHashRefreshWrite_PreservesNpcFile()
+    {
+        var npcBefore = await SeedMortalTeacherWithPendingHashRefreshAsync();
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.Mortal, "Локация изменилась."));
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+
+        await service.EnsureTrainingAsync(currentTurn: 4, createPendingRequests: false);
+
+        Assert.Equal(npcBefore, await _fs.ReadFileAsync("game_state/npcs/npc_core.json"));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalHashRefreshCommitFailure_HidesUnpersistedTeacherView()
+    {
+        var npcBefore = await SeedMortalTeacherWithPendingHashRefreshAsync();
+        var scope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var service = new TrainingService(
+            _fs,
+            NullLogger<TrainingService>.Instance,
+            new SequenceLocalInteractionScopeResolver(scope, scope),
+            _ => Task.FromResult(false));
+
+        var view = await service.EnsureTrainingAsync(currentTurn: 4, createPendingRequests: false);
+
+        Assert.Empty(view.Teachers);
+        Assert.Equal(npcBefore, await _fs.ReadFileAsync("game_state/npcs/npc_core.json"));
+        Assert.True(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalActorChangesBeforeReturn_HidesStaleTeacherView()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+                root["UpdateNPCs"]!.AsArray()[0]!.AsObject()["role"] = "Учитель изменился во время чтения";
+                await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", root.ToJsonString());
+            },
+            initialScope,
+            initialScope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+
+        var view = await service.EnsureTrainingAsync(currentTurn: 4, createPendingRequests: false);
+
+        Assert.Empty(view.Teachers);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalActorChangesAfterFinalRead_IsRejectedByVisibilityGuard()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        var scope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var service = new TrainingService(
+            _fs,
+            NullLogger<TrainingService>.Instance,
+            new SequenceLocalInteractionScopeResolver(scope, scope),
+            tryRefreshCommit: null,
+            tryVisibilityGuard: async writes =>
+            {
+                var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+                root["UpdateNPCs"]!.AsArray()[0]!.AsObject()["role"] = "Учитель изменился после финального чтения";
+                await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", root.ToJsonString());
+                return await CoordinatedStateWriteHelper.TryCommitAsync(_fs, writes);
+            });
+
+        var view = await service.EnsureTrainingAsync(currentTurn: 4, createPendingRequests: false);
+
+        Assert.Empty(view.Teachers);
+    }
+
+    [Fact]
     public async Task BuyTrainingAsync_MortalLevelUpOffer_DeductsResourcesAndCreatesPendingGmEvolutionRequest()
     {
         await SeedMortalSoulStateAsync();
@@ -201,6 +1240,52 @@ public sealed class TrainingServiceTests : IDisposable
         var viewAfterPurchase = await service.EnsureTrainingAsync(currentTurn: 13, createPendingRequests: false);
         Assert.True(viewAfterPurchase.RequestPending);
         Assert.Contains("заверши оплаченное обучение", viewAfterPurchase.PendingGmAction, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_ConcurrentEvolutionRequestSurvivesFailedStateCommit()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedPlayerActiveSkillAsync(skillName: "Ножи", masteryLevel: 1, currentProgress: 4, progressNeeded: 5);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var status = JsonNode.Parse((await _fs.ReadFileAsync("game_state/core/player_status.json"))!)!.AsObject();
+                status["concurrentGmMarker"] = "preserve";
+                await _fs.WriteFileAtomicAsync("game_state/core/player_status.json", status.ToJsonString());
+                await TrainingRequestState.WriteRequestAsync(
+                    _fs,
+                    "mortal_training_skill_evolution",
+                    "npc_hunter_001",
+                    "Старый охотник",
+                    "npc_teacher",
+                    "mortal",
+                    createdAtTurn: 13,
+                    sourceActorSnapshotHash: "concurrent-request",
+                    reason: "mastery_threshold_crossed",
+                    details: new JsonObject
+                    {
+                        ["dedupeKey"] = "offer_knife_mastery_2:skill_knife:2"
+                    });
+            },
+            initialScope,
+            initialScope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+
+        var result = await service.BuyTrainingAsync("npc_hunter_001", "offer_knife_mastery_2", currentTurn: 13);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        var requests = await TrainingRequestState.ReadRequestsAsync(_fs);
+        var request = Assert.Single(requests);
+        Assert.Equal("concurrent-request", request.SourceActorSnapshotHash);
+        Assert.Contains("concurrentGmMarker", await _fs.ReadFileAsync("game_state/core/player_status.json") ?? string.Empty, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -529,6 +1614,15 @@ public sealed class TrainingServiceTests : IDisposable
     public async Task EnsureTrainingAsync_MortalLegacyPassiveEvolutionRequest_DoesNotSendSkillMasteryInstruction()
     {
         await SeedMortalSoulStateAsync();
+        var localTeacher = BuildMortalTeacher(
+            "npc_teacher_archivist",
+            "Наставница семейного архива",
+            "forest_lodge",
+            "Лесная сторожка",
+            includeShowcase: true);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["NPCs"] = new JsonArray(localTeacher) }.ToJsonString());
         await TrainingRequestState.WriteRequestAsync(
             _fs,
             "mortal_training_skill_evolution",
@@ -685,6 +1779,37 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuyTrainingAsync_NonCanonicalAfterlifeSelfTraining_BlocksWithoutMutation()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        soulRoot["currentRealm"] = "afterlife";
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
+        var soulBefore = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await CreateService().BuyTrainingAsync("self", "self_art_pressure_tier_1", currentTurn: 22);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Equal(soulBefore, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_CustomMortalRealmContainingSea_UsesMortalTeacher()
+    {
+        await SeedMortalSoulStateAsync();
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        soulRoot["currentRealm"] = "Море Туманов";
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
+        await SeedMortalTeacherAsync(includeShowcase: true);
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 12, createPendingRequests: false);
+
+        Assert.Equal("npc_hunter_001", Assert.Single(view.Teachers).SourceActorId);
+        Assert.Empty(view.SelfTrainingOffers);
+    }
+
+    [Fact]
     public async Task EnsureTrainingAsync_AfterlifeMentorShowcase_ReturnsFreshDiscountedOffers()
     {
         await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
@@ -764,6 +1889,11 @@ public sealed class TrainingServiceTests : IDisposable
             turnNumber: 1,
             createdAtUtc: DateTimeOffset.Parse("2026-07-06T05:00:00Z"));
         await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, profileRoot.ToJsonString());
+        await SeedChaosSeaScopeAsync(
+            "guard_system_myriel_001",
+            "Мириэль Пепельная Звезда",
+            "abode_myriel",
+            "Пепельная Обитель");
 
         var service = CreateService();
         var view = await service.EnsureTrainingAsync(currentTurn: 2);
@@ -794,6 +1924,205 @@ public sealed class TrainingServiceTests : IDisposable
         Assert.NotNull(profileRootRaw);
         Assert.Contains("\"mentorTrainingShowcase\"", profileRootRaw, StringComparison.Ordinal);
         Assert.Contains("\"generatedBy\": \"client_system_guardian_starter_showcase\"", profileRootRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_AfterlifeScopeChangesBeforeReturn_HidesMentor()
+    {
+        await SeedClientOwnedSystemGuardianWithoutShowcaseAsync();
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.ChaosSea, "Обитель изменилась."));
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+
+        var view = await service.EnsureTrainingAsync(currentTurn: 2, createPendingRequests: false);
+
+        Assert.Empty(view.Teachers);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_AfterlifeScopeChangesBeforeStarterShowcaseWrite_PreservesProfileFile()
+    {
+        var profilesBefore = await SeedClientOwnedSystemGuardianWithoutShowcaseAsync();
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.ChaosSea, "Обитель изменилась."));
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+
+        await service.EnsureTrainingAsync(currentTurn: 2, createPendingRequests: false);
+
+        Assert.Equal(profilesBefore, await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_AfterlifeStarterShowcaseCommitFailure_HidesUnpersistedMentorView()
+    {
+        var profilesBefore = await SeedClientOwnedSystemGuardianWithoutShowcaseAsync();
+        var scope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var service = new TrainingService(
+            _fs,
+            NullLogger<TrainingService>.Instance,
+            new SequenceLocalInteractionScopeResolver(scope, scope),
+            _ => Task.FromResult(false));
+
+        var view = await service.EnsureTrainingAsync(currentTurn: 2, createPendingRequests: false);
+
+        Assert.Empty(view.Teachers);
+        Assert.NotEmpty(view.SelfTrainingOffers);
+        Assert.Equal(profilesBefore, await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalRefreshCommitFailure_KeepsUnchangedPersistedTeacher()
+    {
+        await SeedMortalTeacherWithPendingHashRefreshAsync();
+        var npcRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+        var stableTeacher = npcRoot["UpdateNPCs"]!.AsArray()[0]!.DeepClone().AsObject();
+        stableTeacher["npcId"] = "npc_scribe_002";
+        stableTeacher["name"] = "Хранитель архивов";
+        stableTeacher["role"] = "Наставник архивистов";
+        var stableShowcase = stableTeacher["trainingShowcase"]!.AsObject();
+        stableShowcase["sourceActorId"] = "npc_scribe_002";
+        stableShowcase["sourceActorName"] = "Хранитель архивов";
+        stableShowcase["sourceActorSnapshotHash"] = TrainingService.ComputeSourceSnapshotHash(stableTeacher);
+        npcRoot["UpdateNPCs"]!.AsArray().Add(stableTeacher);
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", npcRoot.ToJsonString());
+        var scope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var service = new TrainingService(
+            _fs,
+            NullLogger<TrainingService>.Instance,
+            new SequenceLocalInteractionScopeResolver(scope, scope, scope),
+            _ => Task.FromResult(false));
+
+        var view = await service.EnsureTrainingAsync(currentTurn: 4, createPendingRequests: false);
+
+        var teacher = Assert.Single(view.Teachers);
+        Assert.Equal("npc_scribe_002", teacher.SourceActorId);
+        Assert.True(teacher.ShowcaseReady);
+        Assert.True(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_AfterlifeRefreshCommitFailure_KeepsUnchangedMentorAndSelfTraining()
+    {
+        await SeedClientOwnedSystemGuardianWithoutShowcaseAsync();
+        var profilesRoot = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var stableMentor = new JsonObject
+        {
+            ["actorType"] = "resident",
+            ["actorId"] = "resident_archivist_002",
+            ["displayName"] = "Архивист Эйра",
+            ["realm"] = "Chaos Sea",
+            ["locationId"] = "abode_myriel",
+            ["locationName"] = "Пепельная Обитель",
+            ["mentorProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 70,
+                ["summary"] = "Эйра учит удерживать духовную защиту."
+            },
+            ["standardArts"] = new JsonObject
+            {
+                ["guard"] = 3
+            }
+        };
+        stableMentor["mentorTrainingShowcase"] = new JsonObject
+        {
+            ["showcaseId"] = "mentor_showcase_eira_002",
+            ["requestKind"] = "afterlife_teacher_showcase",
+            ["sourceActorId"] = "resident_archivist_002",
+            ["sourceActorName"] = "Архивист Эйра",
+            ["sourceActorSnapshotHash"] = TrainingService.ComputeSourceSnapshotHash(stableMentor),
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "mentor_eira_guard_2",
+                    ["targetKind"] = "standard_spiritual_art",
+                    ["targetId"] = "guard",
+                    ["targetName"] = "Защита",
+                    ["currentValue"] = 1,
+                    ["targetValue"] = 2,
+                    ["sourceCap"] = 3,
+                    ["cost"] = new JsonObject
+                    {
+                        ["inkFeathers"] = 90,
+                        ["lightSparks"] = 0
+                    },
+                    ["requirements"] = new JsonObject
+                    {
+                        ["minimumRelationship"] = 50,
+                        ["maxPlayerUnlockedTier"] = 2
+                    }
+                }
+            }
+        };
+        profilesRoot[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray().Add(stableMentor);
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, profilesRoot.ToJsonString());
+        var scope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var service = new TrainingService(
+            _fs,
+            NullLogger<TrainingService>.Instance,
+            new SequenceLocalInteractionScopeResolver(scope, scope, scope),
+            _ => Task.FromResult(false));
+
+        var view = await service.EnsureTrainingAsync(currentTurn: 2, createPendingRequests: false);
+
+        var mentor = Assert.Single(view.Teachers);
+        Assert.Equal("resident_archivist_002", mentor.SourceActorId);
+        Assert.True(mentor.ShowcaseReady);
+        Assert.NotEmpty(view.SelfTrainingOffers);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_AfterlifeActorChangesBeforeReturn_HidesStaleMentorView()
+    {
+        await SeedClientOwnedSystemGuardianWithoutShowcaseAsync();
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+                root[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray()[0]!.AsObject()["mood"] =
+                    "Профиль изменился во время чтения";
+                await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, root.ToJsonString());
+            },
+            initialScope,
+            initialScope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+
+        var view = await service.EnsureTrainingAsync(currentTurn: 2, createPendingRequests: false);
+
+        Assert.Empty(view.Teachers);
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_AfterlifeActorChangesAfterFinalRead_IsRejectedByVisibilityGuard()
+    {
+        await SeedAfterlifeMentorAsync(includeShowcase: true);
+        var scope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var service = new TrainingService(
+            _fs,
+            NullLogger<TrainingService>.Instance,
+            new SequenceLocalInteractionScopeResolver(scope, scope),
+            tryRefreshCommit: null,
+            tryVisibilityGuard: async writes =>
+            {
+                var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+                root[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray()[0]!.AsObject()["mood"] =
+                    "Наставник изменился после финального чтения";
+                await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, root.ToJsonString());
+                return await CoordinatedStateWriteHelper.TryCommitAsync(_fs, writes);
+            });
+
+        var view = await service.EnsureTrainingAsync(currentTurn: 2, createPendingRequests: false);
+
+        Assert.Empty(view.Teachers);
     }
 
     [Fact]
@@ -858,6 +2187,42 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureTrainingAsync_MortalSkillEvolutionScopeChangesBeforeCleanup_PreservesRequest()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        await SeedPlayerActiveSkillAsync(skillName: "Ножи", masteryLevel: 2, currentProgress: 0, progressNeeded: 8);
+        await TrainingRequestState.WriteRequestAsync(
+            _fs,
+            "mortal_training_skill_evolution",
+            "npc_hunter_001",
+            "Старый охотник",
+            "npc_teacher",
+            "mortal",
+            createdAtTurn: 13,
+            sourceActorSnapshotHash: "paid-lesson-hash",
+            reason: "mastery_threshold_crossed",
+            details: new JsonObject
+            {
+                ["targetId"] = "skill_knife",
+                ["targetName"] = "Ножи",
+                ["targetKind"] = "active_skill_mastery",
+                ["targetValue"] = 2
+            });
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.Mortal, "Локация изменилась."));
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+
+        await service.EnsureTrainingAsync(currentTurn: 16, createPendingRequests: false);
+
+        var request = Assert.Single(await TrainingRequestState.ReadRequestsAsync(_fs));
+        Assert.Equal("mortal_training_skill_evolution", request.RequestKind);
+        Assert.True(resolver.ResolveCallCount >= 2);
+    }
+
+    [Fact]
     public async Task EnsureTrainingAsync_AfterlifeMentorShowcase_AppliesGoodRelationshipDiscount()
     {
         await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
@@ -917,6 +2282,217 @@ public sealed class TrainingServiceTests : IDisposable
     private TrainingService CreateService() =>
         new(_fs, NullLogger<TrainingService>.Instance);
 
+    private async Task SeedMortalSoulStateWithoutLocationAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 2
+        }
+        """);
+    }
+
+    private async Task SeedMortalCurrentLocationAsync(string locationId, string locationName)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", new JsonObject
+        {
+            ["currentLocationData"] = new JsonObject
+            {
+                ["locationId"] = locationId,
+                ["name"] = locationName
+            }
+        }.ToJsonString());
+    }
+
+    private static JsonObject BuildMortalTeacher(
+        string actorId,
+        string name,
+        string locationId,
+        string locationName,
+        bool includeShowcase)
+    {
+        var teacher = new JsonObject
+        {
+            ["npcId"] = actorId,
+            ["name"] = name,
+            ["currentLocationId"] = locationId,
+            ["currentLocation"] = locationName,
+            ["teacherProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 50,
+                ["skills"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["skillId"] = "skill_knife",
+                        ["skillName"] = "Ножи",
+                        ["skillKind"] = "active",
+                        ["masteryLevel"] = 3
+                    }
+                }
+            }
+        };
+
+        if (!includeShowcase)
+            return teacher;
+
+        var snapshotHash = TrainingService.ComputeSourceSnapshotHash(teacher);
+        teacher["trainingShowcase"] = new JsonObject
+        {
+            ["sourceActorSnapshotHash"] = snapshotHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = $"offer_{actorId}",
+                    ["targetId"] = "skill_knife",
+                    ["targetName"] = "Ножи",
+                    ["targetKind"] = "active_skill_unlock",
+                    ["currentValue"] = 0,
+                    ["targetValue"] = 1,
+                    ["sourceCap"] = 3,
+                    ["cost"] = new JsonObject
+                    {
+                        ["money"] = 100,
+                        ["currentLevelExperiencePercent"] = 10
+                    },
+                    ["requirements"] = new JsonObject { ["minimumRelationship"] = 0 },
+                    ["summary"] = "Первый урок обращения с ножом."
+                }
+            }
+        };
+        return teacher;
+    }
+
+    private async Task SeedChaosSeaScopeAsync(
+        string activeGuardianId,
+        string activeGuardianName,
+        string activeAbodeId,
+        string activeAbodeName)
+    {
+        var activeGuardian = new JsonObject
+        {
+            ["guardianId"] = activeGuardianId,
+            ["canonicalName"] = activeGuardianName,
+            ["abode"] = new JsonObject
+            {
+                ["abodeId"] = activeAbodeId,
+                ["name"] = activeAbodeName
+            }
+        };
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", new JsonObject
+        {
+            ["guardians"] = new JsonArray(activeGuardian.DeepClone()),
+            ["activeGuardian"] = activeGuardian.DeepClone(),
+            ["chaosSeaNavigation"] = new JsonObject
+            {
+                ["currentGuardianId"] = activeGuardianId,
+                ["currentAbodeId"] = activeAbodeId
+            }
+        }.ToJsonString());
+    }
+
+    private static JsonObject BuildAfterlifeMentor(
+        string actorId,
+        string name,
+        string realm,
+        string? locationId,
+        string? locationName,
+        string actorType = "guardian")
+    {
+        var mentor = new JsonObject
+        {
+            ["actorType"] = actorType,
+            ["actorId"] = actorId,
+            ["displayName"] = name,
+            ["realm"] = realm,
+            ["mentorProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = 62
+            },
+            ["standardArts"] = new JsonObject { ["guard"] = 4 }
+        };
+        if (!string.IsNullOrWhiteSpace(locationId))
+            mentor["locationId"] = locationId;
+        if (!string.IsNullOrWhiteSpace(locationName))
+            mentor["locationName"] = locationName;
+
+        var snapshotHash = TrainingService.ComputeSourceSnapshotHash(mentor);
+        mentor["mentorTrainingShowcase"] = new JsonObject
+        {
+            ["sourceActorSnapshotHash"] = snapshotHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = $"offer_{actorId}",
+                    ["targetKind"] = "standard_spiritual_art",
+                    ["targetId"] = "guard",
+                    ["targetName"] = "Защита",
+                    ["currentValue"] = 0,
+                    ["targetValue"] = 1,
+                    ["sourceCap"] = 4,
+                    ["cost"] = new JsonObject { ["inkFeathers"] = 100, ["lightSparks"] = 0 },
+                    ["requirements"] = new JsonObject
+                    {
+                        ["minimumRelationship"] = 0,
+                        ["maxPlayerUnlockedTier"] = 3
+                    },
+                    ["summary"] = "Наставник показывает защитную стойку."
+                }
+            }
+        };
+        return mentor;
+    }
+
+    private async Task SeedShiningSoulStateAsync(int inkFeathers)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", $$"""
+        {
+          "currentRealm": "Shining Abode",
+          "currentIncarnation": 2,
+          "inkFeathers": { "current": {{inkFeathers}}, "total": {{inkFeathers}} },
+          "afterlifeCombatProfile": {
+            "enlightenmentRank": 3,
+            "radianceRank": 1,
+            "retainedRadianceRank": 0,
+            "spiritFocusTier": 1,
+            "artTiers": {}
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", """
+        {
+          "availability": "active",
+          "currentHallId": "hall_lanterns",
+          "lightSparks": 100,
+          "radiance": { "tier": 1, "experience": 0 },
+          "halls": [
+            { "hallId": "hall_lanterns", "hallName": "Зал Фонарей" },
+            { "hallId": "hall_forge", "hallName": "Зал Ремесла" }
+          ],
+          "factions": [
+            {
+              "factionId": "faction_lanterns",
+              "hallId": "hall_lanterns",
+              "isPlayerVisible": true,
+              "charter": { "factionName": "Дом Фонарей" },
+              "leadership": { "headActorId": "resident_shining" }
+            },
+            {
+              "factionId": "faction_forge",
+              "hallId": "hall_forge",
+              "isPlayerVisible": true,
+              "charter": { "factionName": "Дом Ремесла" },
+              "leadership": { "headActorId": "resident_remote_shining" }
+            }
+          ]
+        }
+        """);
+    }
+
     private static SystemGuardianLibraryService.SystemGuardianPresetDescriptor CreateSystemGuardianPreset(
         string presetId,
         string displayName,
@@ -945,6 +2521,7 @@ public sealed class TrainingServiceTests : IDisposable
           "currentIncarnation": 2
         }
         """);
+        await SeedMortalCurrentLocationAsync("forest_lodge", "Лесная сторожка");
     }
 
     private async Task SeedAfterlifeSoulStateAsync(int inkFeathers)
@@ -1041,8 +2618,49 @@ public sealed class TrainingServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", root.ToJsonString());
     }
 
+    private async Task<string> SeedMortalTeacherWithPendingHashRefreshAsync()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+        var teacher = root["UpdateNPCs"]!.AsArray()[0]!.AsObject();
+        var requestedHash = teacher["trainingShowcase"]!["sourceActorSnapshotHash"]!.GetValue<string>();
+        teacher["role"] = "Наставник у северной стены";
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", root.ToJsonString());
+        await TrainingRequestState.WriteRequestAsync(
+            _fs,
+            "mortal_teacher_showcase",
+            "npc_hunter_001",
+            "Старый охотник",
+            "npc_teacher",
+            "mortal",
+            createdAtTurn: 4,
+            sourceActorSnapshotHash: requestedHash,
+            reason: "stale_source_actor_snapshot");
+        return (await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!;
+    }
+
+    private async Task<string> SeedClientOwnedSystemGuardianWithoutShowcaseAsync()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 0);
+        var guardianLibrary = new SystemGuardianLibraryService(_fs, NullLogger<SystemGuardianLibraryService>.Instance);
+        var profileRoot = guardianLibrary.BuildAfterlifeEntityProfileRootForFreshNewGame(
+            CreateSystemGuardianPreset("myriel", "Мириэль Пепельная Звезда", "Magic"),
+            "Северная Искра",
+            turnNumber: 1,
+            createdAtUtc: DateTimeOffset.Parse("2026-07-06T05:00:00Z"));
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, profileRoot.ToJsonString());
+        await SeedChaosSeaScopeAsync(
+            "guard_system_myriel_001",
+            "Мириэль Пепельная Звезда",
+            "abode_myriel",
+            "Пепельная Обитель");
+        return (await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!;
+    }
+
     private async Task SeedMortalTeacherWithInitialIdOnlyAsync()
     {
+        await SeedMortalCurrentLocationAsync("academy_hall", "Зал академии");
         var teacher = new JsonObject
         {
             ["initialId"] = "npc_selene_initial",
@@ -1110,11 +2728,19 @@ public sealed class TrainingServiceTests : IDisposable
         int relationshipLevel = 62,
         int offerInkFeathers = 180)
     {
+        await SeedChaosSeaScopeAsync(
+            "guardian_liora",
+            "Лиора, Хранительница Тихого Света",
+            "abode_liora",
+            "Обитель Тихого Света");
         var mentor = new JsonObject
         {
             ["actorType"] = "guardian",
             ["actorId"] = "guardian_liora",
             ["displayName"] = "Лиора, Хранительница Тихого Света",
+            ["realm"] = "Chaos Sea",
+            ["locationId"] = "abode_liora",
+            ["locationName"] = "Обитель Тихого Света",
             ["mentorProfile"] = new JsonObject
             {
                 ["canTeach"] = true,
@@ -1183,11 +2809,19 @@ public sealed class TrainingServiceTests : IDisposable
 
     private async Task SeedAfterlifeMentorWithNaturalShowcaseShapeAsync()
     {
+        await SeedChaosSeaScopeAsync(
+            "guardian_myriel",
+            "Мириэль Пепельная Звезда",
+            "abode_myriel",
+            "Пепельная Обитель");
         var mentor = new JsonObject
         {
             ["actorType"] = "guardian",
             ["actorId"] = "guardian_myriel",
             ["displayName"] = "Мириэль Пепельная Звезда",
+            ["realm"] = "Chaos Sea",
+            ["locationId"] = "abode_myriel",
+            ["locationName"] = "Пепельная Обитель",
             ["mentorProfile"] = new JsonObject
             {
                 ["canTeach"] = true,
@@ -1241,12 +2875,19 @@ public sealed class TrainingServiceTests : IDisposable
 
     private async Task SeedAfterlifeMentorWithTeachableSpecialArtOnlyAsync()
     {
+        await SeedChaosSeaScopeAsync(
+            "guard_system_myriel_001",
+            "Мириэль Пепельная Звезда",
+            "abode_myriel",
+            "Пепельная Обитель");
         var mentor = new JsonObject
         {
             ["actorType"] = "guardian",
             ["actorId"] = "guard_system_myriel_001",
             ["displayName"] = "Мириэль Пепельная Звезда",
             ["realm"] = "Chaos Sea",
+            ["locationId"] = "abode_myriel",
+            ["locationName"] = "Пепельная Обитель",
             ["standardArts"] = new JsonObject
             {
                 ["guard"] = 2,
@@ -1334,6 +2975,7 @@ public sealed class TrainingServiceTests : IDisposable
         {
             ["npcId"] = "npc_skinner_001",
             ["name"] = "Старый кожевник",
+            ["currentLocationId"] = "forest_lodge",
             ["teacherProfile"] = new JsonObject
             {
                 ["canTeach"] = true,
@@ -1432,6 +3074,7 @@ public sealed class TrainingServiceTests : IDisposable
         {
             ["npcId"] = "npc_duelist_001",
             ["name"] = "Старый дуэлянт",
+            ["currentLocationId"] = "forest_lodge",
             ["teacherProfile"] = new JsonObject
             {
                 ["canTeach"] = true,
@@ -1470,6 +3113,7 @@ public sealed class TrainingServiceTests : IDisposable
         {
             ["npcId"] = "npc_hunter_001",
             ["name"] = "Старый охотник",
+            ["currentLocationId"] = "forest_lodge",
             ["teacherProfile"] = new JsonObject
             {
                 ["canTeach"] = true,
@@ -1531,6 +3175,7 @@ public sealed class TrainingServiceTests : IDisposable
         {
             ["npcId"] = "npc_hunter_001",
             ["name"] = "Старый охотник",
+            ["currentLocationId"] = "forest_lodge",
             ["teacherProfile"] = new JsonObject
             {
                 ["canTeach"] = true,

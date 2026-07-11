@@ -16,6 +16,33 @@ Shared rules
 ------------
 
 - `pending_training_showcase_requests.json` is a client-authored request file.
+  Do not edit it from the GM bridge. Client writers serialize updates, and
+  fulfilled-request cleanup rereads the latest file and removes only the
+  unchanged fulfilled request snapshot so another newly queued lesson is not
+  lost.
+- Locality is checked before the client lists a teacher, creates a showcase
+  request, or spends resources. In Mortal World, the NPC's
+  `currentLocationId`/`initialLocationId` or canonical location name must match
+  `game_state/world/current_location.json.currentLocationData`. If both an ID
+  and name are present, both must identify the same place: contradictory
+  location aliases fail closed even when one field matches. In Chaos Sea,
+  the mentor must be the active Guardian in
+  `chaosSeaNavigation.currentAbodeId` or a profile/present resident explicitly
+  attached to that abode. In Shining Abode, `currentHallId` must resolve to a
+  real `halls[]` entry and the mentor must resolve to that hall directly or
+  through a resident, faction, faction leader, or political actor. A showcase
+  never overrides locality. Do not move a remote teacher merely to answer a
+  request, and do not offer a mentor or trade faction from другого зала.
+- Explicit hall evidence overrides indirect association: when a mentor carries
+  a direct `hallId`/hall name that points to another hall, a local faction or
+  resident link cannot make that mentor local. A non-canonical `afterlife`
+  realm value is unresolved because it does not select Chaos Sea or Shining
+  Abode and therefore cannot authorize either location model or self-training.
+- The client will recheck locality immediately before commit after reading the
+  showcase, price, currencies, and pending state. If the actor, abode, hall, or
+  realm changes during that window, do not expect a purchase or new request.
+  It also rechecks before returning local targets or details and preserves
+  actor/profile files instead of publishing or refreshing a now-remote source.
 - When `/обучение` creates or finds a pending showcase request, the console and
   browser clients send the matching dedicated GM action immediately. Treat that
   received action as the current request to resolve now; do not wait for the
@@ -451,6 +478,57 @@ and not active-skill mastery:
       "maxMasteryLevel": 4
     }
   ]
+}
+```
+
+Shining Abode current-hall mentor example
+------------------------------------------
+
+The following canonical relationship makes Sister Eliana available while the
+soul is in `hall_lanterns`. The mentor profile itself does not need a duplicate
+location string because the resident's `shiningFactionId` resolves through the
+faction's `hallId`. A mentor attached to `faction_forge` in `hall_forge` is not
+available from this screen and must not receive a local showcase request.
+
+```json
+{
+  "shining_abode_state": {
+    "currentHallId": "hall_lanterns",
+    "halls": [
+      { "hallId": "hall_lanterns", "hallName": "Зал Фонарей" },
+      { "hallId": "hall_forge", "hallName": "Зал Ремесла" }
+    ],
+    "factions": [
+      {
+        "factionId": "faction_lanterns",
+        "hallId": "hall_lanterns",
+        "charter": { "factionName": "Дом Фонарей" },
+        "leadership": { "headActorId": "resident_eliana" }
+      }
+    ]
+  },
+  "guardian_abode_residents": {
+    "entries": [
+      {
+        "residentId": "resident_eliana",
+        "displayName": "Сестра Элиана",
+        "isPresent": true,
+        "shiningFactionId": "faction_lanterns"
+      }
+    ]
+  },
+  "afterlife_entity_profiles": {
+    "profiles": [
+      {
+        "actorType": "resident",
+        "actorId": "resident_eliana",
+        "displayName": "Сестра Элиана",
+        "realm": "Shining Abode",
+        "mentorProfile": { "canTeach": true, "relationshipLevel": 55 },
+        "standardArts": { "guard": 3 }
+      }
+    ]
+  }
 }
 ```
 

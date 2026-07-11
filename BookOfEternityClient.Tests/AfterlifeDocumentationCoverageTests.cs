@@ -86,6 +86,9 @@ public sealed class AfterlifeDocumentationCoverageTests
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
         var example = ReadRepoFile("Examples", "E_CLI_Training_Showcases.txt");
         var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var mortalGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var launcher = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
+        var shiningContract = ReadRepoFile("OtherGuides", "Shining_Abode_Contract.md");
 
         foreach (var text in new[] { matrix, example, manifest })
         {
@@ -98,6 +101,16 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("mortal_training_skill_evolution", example + manifest + matrix, StringComparison.Ordinal);
         Assert.Contains("client has already charged", example, StringComparison.Ordinal);
         Assert.Contains("afterlife_teacher_showcase", example + manifest, StringComparison.Ordinal);
+        Assert.Contains("currentLocationId", example + mortalGuide, StringComparison.Ordinal);
+        Assert.Contains("currentAbodeId", example + matrix + launcher, StringComparison.Ordinal);
+        Assert.Contains("currentHallId", example + matrix + launcher + shiningContract, StringComparison.Ordinal);
+        Assert.Contains("contradictory location aliases fail closed", example + mortalGuide + launcher, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("direct trade actions require the actual currentRealm", matrix + launcher, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("recheck locality immediately before commit", example + mortalGuide + matrix + launcher, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("explicit hall evidence overrides indirect association", example + matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("non-canonical `afterlife`", example + matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("before returning local targets or details", example + matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("другого зала", example + matrix + shiningContract, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("SelfStandardArtMultiplierPercent = 400", example, StringComparison.Ordinal);
         Assert.Contains("SelfSpiritFocusMultiplierPercent = 300", example, StringComparison.Ordinal);
         Assert.Contains("SelfSpecialArtMultiplierPercent = 500", example, StringComparison.Ordinal);

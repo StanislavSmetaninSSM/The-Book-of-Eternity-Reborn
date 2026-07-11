@@ -231,6 +231,13 @@ public sealed class GuardianTradeServiceTests : IDisposable
           }
         }
         """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "inkFeathers": { "current": 100 }
+        }
+        """);
 
         var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
         var view = await service.EnsureTradeInventoryAsync("guardian_alpha", 1, currentTurn: 7);
@@ -315,6 +322,13 @@ public sealed class GuardianTradeServiceTests : IDisposable
           "chaosSeaNavigation": {
             "currentAbodeId": "abode_alpha"
           }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "inkFeathers": { "current": 100 }
         }
         """);
 
@@ -697,6 +711,149 @@ public sealed class GuardianTradeServiceTests : IDisposable
         Assert.Contains("номер хода", result.Message, StringComparison.OrdinalIgnoreCase);
         Assert.Equal(beforeGuardians, await _fs.ReadFileAsync("game_state/meta/guardians.json"));
         Assert.Equal(beforeSoul, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public async Task EnsureTradeInventoryAsync_ChaosScopeChangesBeforeRequestCommit_BlocksWithoutMutation()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeBuybackEntry: false);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.ChaosSea, "Обитель изменилась."));
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance, resolver);
+        var guardiansBefore = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+
+        var view = await service.EnsureTradeInventoryAsync("guardian_alpha", currentIncarnation: 1, currentTurn: 13);
+
+        Assert.Null(view);
+        Assert.True(resolver.ResolveCallCount >= 2);
+        Assert.Equal(guardiansBefore, await _fs.ReadFileAsync("game_state/meta/guardians.json"));
+        Assert.False(_fs.FileExists(GuardianTradeRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task EnsureTradeInventoryAsync_ChaosAuthorityChangesBeforeRequestWrite_DoesNotCreatePending()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeBuybackEntry: false);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+                soul["currentRealm"] = "Shining Abode";
+                await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString());
+            },
+            initialScope,
+            initialScope,
+            initialScope);
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance, resolver);
+
+        var view = await service.EnsureTradeInventoryAsync("guardian_alpha", currentIncarnation: 1, currentTurn: 13);
+
+        Assert.Null(view);
+        Assert.False(_fs.FileExists(GuardianTradeRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task GetCurrentLocationTradeTargetsAsync_ScopeChangesBeforeReturn_HidesGuardian()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: true, includeTradeReceipt: true, includeBuybackEntry: false);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.ChaosSea, "Обитель изменилась."));
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance, resolver);
+
+        var targets = await service.GetCurrentLocationTradeTargetsAsync();
+
+        Assert.Empty(targets);
+        Assert.True(resolver.ResolveCallCount >= 2);
+    }
+
+    [Fact]
+    public async Task EnsureTradeInventoryAsync_ScopeChangesBeforeReturn_HidesGuardianDetails()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: true, includeTradeReceipt: true, includeBuybackEntry: false);
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.ChaosSea, "Обитель изменилась."));
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance, resolver);
+
+        var view = await service.EnsureTradeInventoryAsync(
+            "guardian_alpha",
+            currentIncarnation: 1,
+            currentTurn: 13,
+            createPendingRequests: false);
+
+        Assert.Null(view);
+        Assert.True(resolver.ResolveCallCount >= 2);
+    }
+
+    [Fact]
+    public async Task GetSellableRelicsAsync_ScopeChangesBeforeReturn_HidesGuardianOffers()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: true, includeTradeReceipt: true, includeBuybackEntry: false);
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        soulRoot["soulRelics"]!["stored"]!.AsArray().Add(new JsonObject
+        {
+            ["relicId"] = "relic_sell_001",
+            ["name"] = "Отзвук для продажи",
+            ["rarity"] = "Common",
+            ["description"] = "Тестовая реликвия."
+        });
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            initialScope,
+            LocalInteractionScope.Unresolved(LocalInteractionRealmKind.ChaosSea, "Обитель изменилась."));
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance, resolver);
+
+        var offers = await service.GetSellableRelicsAsync("guardian_alpha");
+
+        Assert.Empty(offers);
+        Assert.True(resolver.ResolveCallCount >= 2);
+    }
+
+    [Fact]
+    public async Task SellAsync_GuardianChangesBeforeCommit_BlocksWithoutOverwritingActor()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeBuybackEntry: false);
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        soulRoot["soulRelics"]!["stored"]!.AsArray().Add(new JsonObject
+        {
+            ["relicId"] = "relic_sell_001",
+            ["name"] = "Реликвия для продажи",
+            ["rarity"] = "Rare",
+            ["description"] = "Тестовая реликвия."
+        });
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
+        var initialScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async callCount =>
+            {
+                if (callCount != 2)
+                    return;
+
+                var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/guardians.json"))!)!.AsObject();
+                root["guardians"]!.AsArray()[0]!.AsObject()["concurrentGmMarker"] = "preserve";
+                await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", root.ToJsonString());
+            },
+            initialScope,
+            initialScope);
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance, resolver);
+        var soulBefore = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await service.SellAsync("guardian_alpha", "relic_sell_001", currentTurn: 14);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Equal(soulBefore, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Contains("concurrentGmMarker", await _fs.ReadFileAsync("game_state/meta/guardians.json") ?? string.Empty, StringComparison.Ordinal);
     }
 
     [Fact]

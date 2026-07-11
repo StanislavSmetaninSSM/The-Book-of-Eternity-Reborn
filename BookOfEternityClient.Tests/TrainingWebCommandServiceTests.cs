@@ -62,6 +62,30 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_TrainingMortalOverview_ExcludesRemoteTeacherFromCardsAndActions()
+    {
+        await SeedMortalTrainingAsync();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+        var localTeacher = root["NPCs"]!.AsArray()[0]!.AsObject();
+        var remoteTeacher = localTeacher.DeepClone().AsObject();
+        remoteTeacher["npcId"] = "npc_teacher_remote";
+        remoteTeacher["name"] = "Дальний наставник";
+        remoteTeacher["currentLocationId"] = "loc_remote_tower";
+        remoteTeacher["trainingShowcase"]!["sourceActorSnapshotHash"] = TrainingService.ComputeSourceSnapshotHash(remoteTeacher);
+        root["NPCs"]!.AsArray().Add(remoteTeacher);
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", root.ToJsonString());
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/обучение"));
+
+        var text = CollectText(result);
+        Assert.Contains("Рейна Быстрый Нож", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Дальний наставник", text, StringComparison.Ordinal);
+        Assert.DoesNotContain(result.Actions, action =>
+            action.Command.Contains("npc_teacher_remote", StringComparison.OrdinalIgnoreCase));
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+    }
+
+    [Fact]
     public async Task ExecuteAsync_TrainingMortalWithoutShowcase_ReturnsPendingGmAction()
     {
         await SeedMortalTrainingTeacherWithoutShowcaseAsync();
@@ -136,6 +160,7 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
 
     private async Task SeedMortalTrainingAsync()
     {
+        await SeedMortalLocationAsync();
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
           "currentRealm": "Eternia",
@@ -186,6 +211,7 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
             ["npcId"] = "npc_teacher_reina",
             ["name"] = "Рейна Быстрый Нож",
             ["role"] = "охотница-наставница",
+            ["currentLocationId"] = "loc_training_yard",
             ["teacherProfile"] = new JsonObject
             {
                 ["canTeach"] = true,
@@ -258,6 +284,7 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
 
     private async Task SeedMortalTrainingTeacherWithoutShowcaseAsync()
     {
+        await SeedMortalLocationAsync();
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
           "currentRealm": "Eternia",
@@ -271,6 +298,7 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
             {
               "npcId": "npc_teacher_reina",
               "name": "Рейна Быстрый Нож",
+              "currentLocationId": "loc_training_yard",
               "teacherProfile": {
                 "canTeach": true,
                 "relationshipLevel": 45,
@@ -329,6 +357,8 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
             ["displayName"] = "Архонт Лиора",
             ["actorType"] = "guardian",
             ["realm"] = "Chaos Sea",
+            ["locationId"] = "abode_liora",
+            ["locationName"] = "Обитель Лиоры",
             ["standardArts"] = new JsonObject
             {
                 ["guard"] = 3,
@@ -365,6 +395,39 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
         {
             ["profiles"] = new JsonArray(mentor)
         }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var guardian = new JsonObject
+        {
+            ["guardianId"] = "guardian_liora",
+            ["canonicalName"] = "Архонт Лиора",
+            ["abode"] = new JsonObject
+            {
+                ["abodeId"] = "abode_liora",
+                ["name"] = "Обитель Лиоры"
+            }
+        };
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", new JsonObject
+        {
+            ["guardians"] = new JsonArray(guardian.DeepClone()),
+            ["activeGuardian"] = guardian.DeepClone(),
+            ["chaosSeaNavigation"] = new JsonObject
+            {
+                ["currentGuardianId"] = "guardian_liora",
+                ["currentAbodeId"] = "abode_liora"
+            }
+        }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private async Task SeedMortalLocationAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "currentLocationData": {
+            "locationId": "loc_training_yard",
+            "name": "Тренировочный двор"
+          }
+        }
+        """);
     }
 
     private static string CollectText(ExplorerCommandResult result)

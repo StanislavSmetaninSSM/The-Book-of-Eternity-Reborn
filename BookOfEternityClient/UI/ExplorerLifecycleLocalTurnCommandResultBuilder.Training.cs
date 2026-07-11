@@ -222,6 +222,15 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
             facts.Add(new UiEntityFact { Label = "Самостоятельных предложений", Value = view.SelfTrainingOffers.Count.ToString() });
 
         var hints = new List<UiEntityHint>();
+        if (!string.IsNullOrWhiteSpace(view.ScopeUnavailableReason))
+        {
+            hints.Add(new UiEntityHint
+            {
+                Title = "Локальные наставники недоступны",
+                Text = view.ScopeUnavailableReason,
+                Tone = UiTone.Warning
+            });
+        }
         if (view.RequestPending)
         {
             hints.Add(new UiEntityHint

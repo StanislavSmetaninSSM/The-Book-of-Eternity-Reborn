@@ -23,6 +23,7 @@ public sealed class TrainingService
 
     private const string RealmMortal = "mortal";
     private const string RealmAfterlife = "afterlife";
+    private const string RealmUnknown = "unknown";
     private const string MortalRequestKind = "mortal_teacher_showcase";
     private const string MortalSkillEvolutionRequestKind = "mortal_training_skill_evolution";
     private const string AfterlifeRequestKind = "afterlife_teacher_showcase";
@@ -32,11 +33,29 @@ public sealed class TrainingService
 
     private readonly FileSystemManager _fs;
     private readonly ILogger<TrainingService> _logger;
+    private readonly ILocalInteractionScopeResolver _localScopeService;
+    private readonly Func<CoordinatedStateWriteHelper.PlannedWrite[], Task<bool>> _tryRefreshCommit;
+    private readonly Func<CoordinatedStateWriteHelper.PlannedWrite[], Task<bool>> _tryVisibilityGuard;
 
     public TrainingService(FileSystemManager fs, ILogger<TrainingService> logger)
+        : this(fs, logger, new LocalInteractionScopeService(fs))
+    {
+    }
+
+    internal TrainingService(
+        FileSystemManager fs,
+        ILogger<TrainingService> logger,
+        ILocalInteractionScopeResolver localScopeService,
+        Func<CoordinatedStateWriteHelper.PlannedWrite[], Task<bool>>? tryRefreshCommit = null,
+        Func<CoordinatedStateWriteHelper.PlannedWrite[], Task<bool>>? tryVisibilityGuard = null)
     {
         _fs = fs;
         _logger = logger;
+        _localScopeService = localScopeService;
+        _tryRefreshCommit = tryRefreshCommit ??
+            (writes => CoordinatedStateWriteHelper.TryCommitAsync(_fs, writes));
+        _tryVisibilityGuard = tryVisibilityGuard ??
+            (writes => CoordinatedStateWriteHelper.TryCommitAsync(_fs, writes));
     }
 
     public sealed record TrainingView(
@@ -45,7 +64,8 @@ public sealed class TrainingService
         IReadOnlyList<TrainingOffer> SelfTrainingOffers,
         bool RequestPending,
         bool RequestCreatedThisCall,
-        string? PendingGmAction);
+        string? PendingGmAction,
+        string? ScopeUnavailableReason = null);
 
     public sealed record TrainingTeacherView(
         string SourceActorId,
@@ -102,15 +122,35 @@ public sealed class TrainingService
         int MasteryProgressNeeded,
         int MasteryProgressGain);
 
+    private sealed record MortalTeacherSnapshot(
+        LocalInteractionScope Scope,
+        JsonObject? ActorRoot,
+        IReadOnlySet<string> LocalTeacherIds);
+
+    private sealed record AfterlifeMentorSnapshot(
+        LocalInteractionScope Scope,
+        JsonObject? ActorRoot,
+        IReadOnlySet<string> LocalMentorIds);
+
     public async Task<TrainingView> EnsureTrainingAsync(int currentTurn, bool createPendingRequests = true)
     {
         if (currentTurn <= 0)
             throw new ArgumentOutOfRangeException(nameof(currentTurn), "Проверка витрины обучения требует актуальный номер хода.");
 
         var realm = NormalizeRealm(await ReadCurrentRealmAsync());
-        return realm == RealmAfterlife
-            ? await BuildAfterlifeTrainingViewAsync(currentTurn, createPendingRequests)
-            : await BuildMortalTrainingViewAsync(currentTurn, createPendingRequests);
+        if (realm == RealmAfterlife)
+            return await BuildAfterlifeTrainingViewAsync(currentTurn, createPendingRequests);
+        if (realm == RealmMortal)
+            return await BuildMortalTrainingViewAsync(currentTurn, createPendingRequests);
+
+        return new TrainingView(
+            RealmUnknown,
+            Array.Empty<TrainingTeacherView>(),
+            Array.Empty<TrainingOffer>(),
+            RequestPending: false,
+            RequestCreatedThisCall: false,
+            PendingGmAction: null,
+            ScopeUnavailableReason: "Текущий мир не определён, поэтому локальное обучение недоступно.");
     }
 
     public async Task<TrainingOperationResult> BuyTrainingAsync(string sourceActorId, string offerId, int currentTurn)
@@ -136,15 +176,24 @@ public sealed class TrainingService
         var npcRoot = await ReadObjectAsync(NpcCorePath);
         if (npcRoot == null)
             return new TrainingOperationResult(false, false, "Нет данных НПС для обучения.");
-
-        RefreshMortalShowcaseHashesForPendingRequests(
-            npcRoot,
-            await TrainingRequestState.ReadRequestsAsync(_fs));
+        var npcRootBaseline = npcRoot.ToJsonString(JsonOpts);
 
         var teacher = DeduplicateMortalTeachers(EnumerateNpcObjects(npcRoot).Where(IsMortalTeacher))
             .FirstOrDefault(npc => string.Equals(ResolveMortalTeacherActorId(npc), sourceActorId, StringComparison.OrdinalIgnoreCase));
         if (teacher == null)
             return new TrainingOperationResult(false, false, "Учитель не найден.");
+
+        var localScope = await _localScopeService.ResolveAsync();
+        if (!LocalInteractionScopeService.IsMortalActorLocal(localScope, teacher))
+            return new TrainingOperationResult(false, false, "Этот учитель сейчас не находится в вашей текущей локации.");
+
+        RefreshMortalShowcaseHashesForPendingRequests(
+            npcRoot,
+            await TrainingRequestState.ReadRequestsAsync(_fs),
+            candidate => string.Equals(
+                ResolveMortalTeacherActorId(candidate),
+                ResolveMortalTeacherActorId(teacher),
+                StringComparison.OrdinalIgnoreCase));
 
         var offer = TryReadFreshShowcaseOffer(teacher, offerId, out var showcaseBlockReason);
         if (offer == null)
@@ -154,8 +203,12 @@ public sealed class TrainingService
         if (!evaluatedOffer.Available)
             return new TrainingOperationResult(false, false, evaluatedOffer.BlockReason ?? "Это обучение сейчас недоступно.");
 
-        var statusRoot = await ReadObjectAsync(PlayerStatusPath) ?? new JsonObject();
-        var experienceRoot = await ReadObjectAsync(PlayerExperiencePath) ?? new JsonObject();
+        var statusRoot = await ReadObjectAsync(PlayerStatusPath);
+        var statusRootBaseline = statusRoot?.ToJsonString(JsonOpts);
+        statusRoot ??= new JsonObject();
+        var experienceRoot = await ReadObjectAsync(PlayerExperiencePath);
+        var experienceRootBaseline = experienceRoot?.ToJsonString(JsonOpts);
+        experienceRoot ??= new JsonObject();
         var currentMoney = GetNodeInt(statusRoot["money"]);
         if (currentMoney < evaluatedOffer.Cost.Money)
             return new TrainingOperationResult(false, false, "Недостаточно денег для обучения.");
@@ -169,9 +222,15 @@ public sealed class TrainingService
                 "Недостаточно опыта текущего уровня для обучения: клиент не списывает опыт в минус и не понижает уровень.");
         }
 
-        var activeRoot = await ReadObjectAsync(ActiveSkillsPath) ?? new JsonObject { ["activeSkillChanges"] = new JsonArray() };
-        var passiveRoot = await ReadObjectAsync(PassiveSkillsPath) ?? new JsonObject { ["passiveSkillChanges"] = new JsonArray() };
-        var masteryRoot = await ReadObjectAsync(SkillMasteryPath) ?? new JsonObject { ["skillMasteryChanges"] = new JsonArray() };
+        var activeRoot = await ReadObjectAsync(ActiveSkillsPath);
+        var activeRootBaseline = activeRoot?.ToJsonString(JsonOpts);
+        activeRoot ??= new JsonObject { ["activeSkillChanges"] = new JsonArray() };
+        var passiveRoot = await ReadObjectAsync(PassiveSkillsPath);
+        var passiveRootBaseline = passiveRoot?.ToJsonString(JsonOpts);
+        passiveRoot ??= new JsonObject { ["passiveSkillChanges"] = new JsonArray() };
+        var masteryRoot = await ReadObjectAsync(SkillMasteryPath);
+        var masteryRootBaseline = masteryRoot?.ToJsonString(JsonOpts);
+        masteryRoot ??= new JsonObject { ["skillMasteryChanges"] = new JsonArray() };
         var applicationPlan = BuildMortalTrainingApplicationPlan(evaluatedOffer, activeRoot, passiveRoot, masteryRoot);
         var sourceActorIdForPlan = ResolveMortalTeacherActorId(teacher);
 
@@ -191,6 +250,10 @@ public sealed class TrainingService
             }
         }
 
+        var purchaseScope = await ResolveMortalTeacherScopeAsync(sourceActorIdForPlan, npcRootBaseline);
+        if (purchaseScope == null)
+            return new TrainingOperationResult(false, false, "Учитель покинул текущую локацию до завершения покупки. Ресурсы не списаны.");
+
         statusRoot["money"] = currentMoney - evaluatedOffer.Cost.Money;
         ApplyMortalTrainingExperienceSpend(
             experienceRoot,
@@ -201,11 +264,20 @@ public sealed class TrainingService
 
         if (applicationPlan.RequiresGmEvolution)
         {
-            var request = await WriteMortalSkillEvolutionRequestAsync(
+            var requestWrite = await WriteMortalSkillEvolutionRequestAsync(
                 teacher,
                 evaluatedOffer,
                 applicationPlan,
-                currentTurn);
+                currentTurn,
+                purchaseScope);
+            if (requestWrite == null)
+            {
+                return new TrainingOperationResult(
+                    false,
+                    false,
+                    "Локация или состояние мира изменились до создания запроса на развитие навыка. Ресурсы не списаны.");
+            }
+            var request = requestWrite.Request;
             AppendMortalTrainingReceipt(
                 npcRoot,
                 teacher,
@@ -216,9 +288,24 @@ public sealed class TrainingService
                 pendingRequestKind: MortalSkillEvolutionRequestKind,
                 pendingReason: applicationPlan.Reason);
 
-            await _fs.WriteFileAtomicAsync(PlayerStatusPath, statusRoot.ToJsonString(JsonOpts));
-            await _fs.WriteFileAtomicAsync(PlayerExperiencePath, experienceRoot.ToJsonString(JsonOpts));
-            await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
+            if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                    _fs,
+                    CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(purchaseScope)
+                        .Concat(new[]
+                        {
+                    new CoordinatedStateWriteHelper.PlannedWrite(PlayerStatusPath, statusRootBaseline, statusRoot.ToJsonString(JsonOpts), true),
+                    new CoordinatedStateWriteHelper.PlannedWrite(PlayerExperiencePath, experienceRootBaseline, experienceRoot.ToJsonString(JsonOpts), true),
+                    new CoordinatedStateWriteHelper.PlannedWrite(NpcCorePath, npcRootBaseline, npcRoot.ToJsonString(JsonOpts), true)
+                        })
+                        .ToArray()))
+            {
+                if (requestWrite.CreatedByThisCall)
+                    await TrainingRequestState.RemoveRequestsAsync(_fs, new[] { request });
+                return new TrainingOperationResult(
+                    false,
+                    false,
+                    "Состояние обучения изменилось до фиксации занятия. Деньги, опыт и навыки не изменены.");
+            }
 
             return new TrainingOperationResult(
                 true,
@@ -247,12 +334,25 @@ public sealed class TrainingService
             currentTurn,
             resolutionState: localResolutionState);
 
-        await _fs.WriteFileAtomicAsync(PlayerStatusPath, statusRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(PlayerExperiencePath, experienceRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(ActiveSkillsPath, activeRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(PassiveSkillsPath, passiveRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(SkillMasteryPath, masteryRoot.ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(purchaseScope)
+                    .Concat(new[]
+                    {
+                new CoordinatedStateWriteHelper.PlannedWrite(PlayerStatusPath, statusRootBaseline, statusRoot.ToJsonString(JsonOpts), true),
+                new CoordinatedStateWriteHelper.PlannedWrite(PlayerExperiencePath, experienceRootBaseline, experienceRoot.ToJsonString(JsonOpts), true),
+                new CoordinatedStateWriteHelper.PlannedWrite(ActiveSkillsPath, activeRootBaseline, activeRoot.ToJsonString(JsonOpts), true),
+                new CoordinatedStateWriteHelper.PlannedWrite(PassiveSkillsPath, passiveRootBaseline, passiveRoot.ToJsonString(JsonOpts), true),
+                new CoordinatedStateWriteHelper.PlannedWrite(SkillMasteryPath, masteryRootBaseline, masteryRoot.ToJsonString(JsonOpts), true),
+                new CoordinatedStateWriteHelper.PlannedWrite(NpcCorePath, npcRootBaseline, npcRoot.ToJsonString(JsonOpts), true)
+                    })
+                    .ToArray()))
+        {
+            return new TrainingOperationResult(
+                false,
+                false,
+                "Состояние обучения изменилось до фиксации занятия. Деньги, опыт и навыки не изменены.");
+        }
 
         return new TrainingOperationResult(true, true, localMessage);
     }
@@ -268,8 +368,10 @@ public sealed class TrainingService
         var soulRoot = await ReadObjectAsync(SoulStatePath);
         if (soulRoot == null)
             return new TrainingOperationResult(false, false, "Нет состояния души для обучения.");
+        var soulRootBaseline = soulRoot.ToJsonString(JsonOpts);
 
         var shiningRoot = await ReadObjectAsync(ShiningAbodeStatePath);
+        var shiningRootBaseline = shiningRoot?.ToJsonString(JsonOpts);
         var profile = EnsureAfterlifeCombatProfile(soulRoot, shiningRoot);
         soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty] = profile;
 
@@ -288,11 +390,14 @@ public sealed class TrainingService
         var currentSparks = 0;
         if (offer.Cost.LightSparks > 0)
         {
-            var shiningState = await ReadObjectAsync(ShiningAbodeStatePath) ?? new JsonObject();
+            var shiningState = shiningRoot ?? new JsonObject();
             currentSparks = Math.Max(0, GetNodeInt(shiningState["lightSparks"]));
             if (currentSparks < offer.Cost.LightSparks)
                 return new TrainingOperationResult(false, false, "Недостаточно Искр Света для самостоятельной прокачки.");
         }
+
+        if (NormalizeRealm(await ReadCurrentRealmAsync()) != RealmAfterlife)
+            return new TrainingOperationResult(false, false, "Мир изменился до завершения самостоятельной прокачки. Ресурсы не списаны.");
 
         inkFeathers["current"] = currentFeathers - offer.Cost.InkFeathers;
         soulRoot["inkFeathers"] = inkFeathers;
@@ -300,12 +405,27 @@ public sealed class TrainingService
         ApplyAfterlifeTraining(profile, offer);
         AppendAfterlifeTrainingReceipt(soulRoot, offer, currentTurn);
 
-        await _fs.WriteFileAtomicAsync(SoulStatePath, GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts));
+        var selfTrainingWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>
+        {
+            new(SoulStatePath, soulRootBaseline, GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts), true)
+        };
         if (offer.Cost.LightSparks > 0)
         {
-            var shiningState = await ReadObjectAsync(ShiningAbodeStatePath) ?? new JsonObject();
+            var shiningState = shiningRoot ?? new JsonObject();
             shiningState["lightSparks"] = currentSparks - offer.Cost.LightSparks;
-            await _fs.WriteFileAtomicAsync(ShiningAbodeStatePath, shiningState.ToJsonString(JsonOpts));
+            selfTrainingWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                ShiningAbodeStatePath,
+                shiningRootBaseline,
+                shiningState.ToJsonString(JsonOpts),
+                true));
+        }
+
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, selfTrainingWrites.ToArray()))
+        {
+            return new TrainingOperationResult(
+                false,
+                false,
+                "Состояние души изменилось до фиксации самостоятельной прокачки. Ресурсы не списаны.");
         }
 
         return new TrainingOperationResult(true, true, "Самостоятельная прокачка завершена.");
@@ -316,18 +436,25 @@ public sealed class TrainingService
         var soulRoot = await ReadObjectAsync(SoulStatePath);
         if (soulRoot == null)
             return new TrainingOperationResult(false, false, "Нет состояния души для обучения.");
+        var soulRootBaseline = soulRoot.ToJsonString(JsonOpts);
 
         var afterlifeProfilesRoot = await ReadObjectAsync(AfterlifeEntityProfilesPath);
         var mentor = EnumerateAfterlifeProfiles(afterlifeProfilesRoot)
             .FirstOrDefault(profile => string.Equals(ResolveAfterlifeActorId(profile), sourceActorId, StringComparison.OrdinalIgnoreCase));
         if (mentor == null)
             return new TrainingOperationResult(false, false, "Наставник не найден.");
+        var afterlifeProfilesBaseline = afterlifeProfilesRoot?.ToJsonString(JsonOpts);
+
+        var localScope = await _localScopeService.ResolveAsync();
+        if (!LocalInteractionScopeService.IsAfterlifeActorLocal(localScope, mentor))
+            return new TrainingOperationResult(false, false, "Этот наставник сейчас не находится в вашей текущей локации.");
 
         var offer = TryReadFreshMentorShowcaseOffer(mentor, offerId, out var showcaseBlockReason);
         if (offer == null)
             return new TrainingOperationResult(false, false, showcaseBlockReason ?? "Предложение наставника не найдено или витрина устарела.");
 
         var shiningRoot = await ReadObjectAsync(ShiningAbodeStatePath);
+        var shiningRootBaseline = shiningRoot?.ToJsonString(JsonOpts);
         var profile = EnsureAfterlifeCombatProfile(soulRoot, shiningRoot);
         soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty] = profile;
 
@@ -349,6 +476,10 @@ public sealed class TrainingService
                 return new TrainingOperationResult(false, false, "Недостаточно Искр Света для обучения у наставника.");
         }
 
+        var purchaseScope = await ResolveAfterlifeMentorScopeAsync(sourceActorId, afterlifeProfilesBaseline);
+        if (purchaseScope == null)
+            return new TrainingOperationResult(false, false, "Наставник покинул текущую локацию до завершения покупки. Ресурсы не списаны.");
+
         inkFeathers["current"] = currentFeathers - evaluatedOffer.Cost.InkFeathers;
         soulRoot["inkFeathers"] = inkFeathers;
 
@@ -363,12 +494,31 @@ public sealed class TrainingService
             "afterlife_mentor",
             ComputeSourceSnapshotHash(mentor));
 
-        await _fs.WriteFileAtomicAsync(SoulStatePath, GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts));
+        var mentorTrainingWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>
+        {
+            new(SoulStatePath, soulRootBaseline, GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts), true)
+        };
         if (evaluatedOffer.Cost.LightSparks > 0)
         {
             var shiningState = shiningRoot ?? new JsonObject();
             shiningState["lightSparks"] = currentSparks - evaluatedOffer.Cost.LightSparks;
-            await _fs.WriteFileAtomicAsync(ShiningAbodeStatePath, shiningState.ToJsonString(JsonOpts));
+            mentorTrainingWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                ShiningAbodeStatePath,
+                shiningRootBaseline,
+                shiningState.ToJsonString(JsonOpts),
+                true));
+        }
+
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(purchaseScope)
+                    .Concat(mentorTrainingWrites)
+                    .ToArray()))
+        {
+            return new TrainingOperationResult(
+                false,
+                false,
+                "Состояние души изменилось до фиксации обучения. Ресурсы не списаны.");
         }
 
         return new TrainingOperationResult(true, true, "Обучение у наставника завершено.");
@@ -384,17 +534,23 @@ public sealed class TrainingService
 
     private async Task<TrainingView> BuildMortalTrainingViewAsync(int currentTurn, bool createPendingRequests)
     {
+        var localScope = await _localScopeService.ResolveAsync();
         var npcRoot = await ReadObjectAsync(NpcCorePath);
+        var npcRootSnapshot = npcRoot?.ToJsonString(JsonOpts);
+        var refreshedTeacherIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var npcRootChanged = RefreshMortalShowcaseHashesForPendingRequests(
             npcRoot,
-            await TrainingRequestState.ReadRequestsAsync(_fs));
+            await TrainingRequestState.ReadRequestsAsync(_fs),
+            teacher => LocalInteractionScopeService.IsMortalActorLocal(localScope, teacher),
+            refreshedTeacherIds);
         var teachers = new List<TrainingTeacherView>();
         var satisfiedRequests = new List<(string SourceActorId, string RequestKind)>();
         var requestPending = false;
         var requestCreated = false;
         string? pendingGmAction = null;
 
-        foreach (var teacher in DeduplicateMortalTeachers(EnumerateNpcObjects(npcRoot).Where(IsMortalTeacher)))
+        foreach (var teacher in DeduplicateMortalTeachers(EnumerateNpcObjects(npcRoot).Where(IsMortalTeacher))
+                     .Where(teacher => LocalInteractionScopeService.IsMortalActorLocal(localScope, teacher)))
         {
             var sourceActorId = ResolveMortalTeacherActorId(teacher);
             var sourceActorName = GetNodeString(teacher["name"]) ?? sourceActorId;
@@ -410,7 +566,11 @@ public sealed class TrainingService
                 var existing = await TrainingRequestState.FindPendingRequestAsync(_fs, sourceActorId, MortalRequestKind);
                 if (existing == null && createPendingRequests)
                 {
-                    existing = await TrainingRequestState.WriteRequestAsync(
+                    var requestScope = await ResolveMortalTeacherScopeAsync(sourceActorId);
+                    if (requestScope == null)
+                        continue;
+
+                    var requestWrite = await TrainingRequestState.TryWriteScopedRequestAsync(
                         _fs,
                         MortalRequestKind,
                         sourceActorId,
@@ -419,8 +579,12 @@ public sealed class TrainingService
                         RealmMortal,
                         currentTurn,
                         expectedHash,
-                        reason);
-                    requestCreated = true;
+                        reason,
+                        requestScope);
+                    if (requestWrite == null)
+                        continue;
+                    existing = requestWrite.Request;
+                    requestCreated |= requestWrite.CreatedByThisCall;
                 }
 
                 if (existing != null)
@@ -457,44 +621,121 @@ public sealed class TrainingService
                 Offers: offers));
         }
 
-        await CleanupSatisfiedMortalSkillEvolutionRequestsAsync();
-        await ClearSatisfiedTrainingShowcaseRequestsAsync(satisfiedRequests);
-        var remainingRequests = await TrainingRequestState.ReadRequestsAsync(_fs);
-        var pendingSkillEvolution = remainingRequests.FirstOrDefault(request =>
-            string.Equals(request.RequestKind, MortalSkillEvolutionRequestKind, StringComparison.OrdinalIgnoreCase));
-        if (pendingSkillEvolution != null)
+        await CleanupSatisfiedMortalSkillEvolutionRequestsAsync(requireLocalSource: true);
+        var finalSnapshot = await ResolveMortalTeacherSnapshotAsync();
+        var actorStateUnchanged = npcRootSnapshot != null &&
+                                  string.Equals(
+                                      finalSnapshot.ActorRoot?.ToJsonString(JsonOpts),
+                                      npcRootSnapshot,
+                                      StringComparison.Ordinal) &&
+                                  await VisibilitySnapshotsAreCurrentAsync(
+                                      finalSnapshot.Scope,
+                                      NpcCorePath,
+                                      npcRootSnapshot);
+        var visibleTeachers = actorStateUnchanged
+            ? teachers
+                .Where(teacher => finalSnapshot.LocalTeacherIds.Contains(teacher.SourceActorId))
+                .ToArray()
+            : Array.Empty<TrainingTeacherView>();
+        var scopeUnavailableReason = finalSnapshot.Scope.IsResolved
+            ? null
+            : finalSnapshot.Scope.UnavailableReason;
+
+        var refreshCommitSucceeded = true;
+        if (npcRootChanged)
         {
-            requestPending = true;
-            pendingGmAction ??= BuildMortalSkillEvolutionPendingGmAction(pendingSkillEvolution);
+            refreshCommitSucceeded = npcRoot != null &&
+                                     npcRootSnapshot != null &&
+                                     actorStateUnchanged &&
+                                     refreshedTeacherIds.Count > 0 &&
+                                     refreshedTeacherIds.All(finalSnapshot.LocalTeacherIds.Contains) &&
+                                     await _tryRefreshCommit(
+                                         CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(finalSnapshot.Scope)
+                                             .Concat(new[]
+                                             {
+                                                 new CoordinatedStateWriteHelper.PlannedWrite(
+                                                     NpcCorePath,
+                                                     npcRootSnapshot,
+                                                     npcRoot.ToJsonString(JsonOpts),
+                                                     true)
+                                             })
+                                             .ToArray());
         }
 
-        if (npcRootChanged && npcRoot != null)
-            await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
+        if (!refreshCommitSucceeded)
+        {
+            var latestSnapshot = await ResolveMortalTeacherSnapshotAsync();
+            var actorRootIsStillObserved = npcRootSnapshot != null &&
+                                           string.Equals(
+                                               latestSnapshot.ActorRoot?.ToJsonString(JsonOpts),
+                                               npcRootSnapshot,
+                                               StringComparison.Ordinal) &&
+                                           await VisibilitySnapshotsAreCurrentAsync(
+                                               latestSnapshot.Scope,
+                                               NpcCorePath,
+                                               npcRootSnapshot);
+            visibleTeachers = actorRootIsStillObserved
+                ? visibleTeachers
+                    .Where(teacher =>
+                        !refreshedTeacherIds.Contains(teacher.SourceActorId) &&
+                        latestSnapshot.LocalTeacherIds.Contains(teacher.SourceActorId))
+                    .ToArray()
+                : Array.Empty<TrainingTeacherView>();
+            scopeUnavailableReason = latestSnapshot.Scope.IsResolved
+                ? "Часть витрин учителей изменилась во время обновления. Откройте обучение повторно."
+                : latestSnapshot.Scope.UnavailableReason;
+        }
+
+        var visibleTeacherIds = visibleTeachers
+            .Select(teacher => teacher.SourceActorId)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        await ClearSatisfiedTrainingShowcaseRequestsAsync(
+            satisfiedRequests.Where(request => visibleTeacherIds.Contains(request.SourceActorId)).ToArray());
+        var remainingRequests = await TrainingRequestState.ReadRequestsAsync(_fs);
+        var pendingShowcase = remainingRequests.FirstOrDefault(request =>
+            string.Equals(request.RequestKind, MortalRequestKind, StringComparison.OrdinalIgnoreCase) &&
+            visibleTeacherIds.Contains(request.SourceActorId));
+        var pendingSkillEvolution = remainingRequests.FirstOrDefault(request =>
+            string.Equals(request.RequestKind, MortalSkillEvolutionRequestKind, StringComparison.OrdinalIgnoreCase) &&
+            visibleTeacherIds.Contains(request.SourceActorId));
+        var visiblePendingRequest = pendingShowcase ?? pendingSkillEvolution;
+        requestPending = visiblePendingRequest != null;
+        requestCreated &= requestPending;
+        pendingGmAction = pendingShowcase != null
+            ? BuildMortalTrainingPendingGmAction(pendingShowcase)
+            : pendingSkillEvolution != null
+                ? BuildMortalSkillEvolutionPendingGmAction(pendingSkillEvolution)
+                : null;
 
         return new TrainingView(
             RealmMortal,
-            teachers,
+            visibleTeachers,
             Array.Empty<TrainingOffer>(),
             requestPending,
             requestCreated,
-            pendingGmAction);
+            pendingGmAction,
+            scopeUnavailableReason);
     }
 
     private async Task<TrainingView> BuildAfterlifeTrainingViewAsync(int currentTurn, bool createPendingRequests)
     {
+        var localScope = await _localScopeService.ResolveAsync();
         var soulRoot = await ReadObjectAsync(SoulStatePath) ?? new JsonObject();
         var shiningRoot = await ReadObjectAsync(ShiningAbodeStatePath);
         var afterlifeProfilesRoot = await ReadObjectAsync(AfterlifeEntityProfilesPath);
+        var afterlifeProfilesSnapshot = afterlifeProfilesRoot?.ToJsonString(JsonOpts);
         var profile = EnsureAfterlifeCombatProfile(soulRoot, shiningRoot);
         var selfOffers = BuildAfterlifeSelfTrainingOffers(profile, soulRoot, shiningRoot).ToArray();
         var teachers = new List<TrainingTeacherView>();
         var satisfiedRequests = new List<(string SourceActorId, string RequestKind)>();
+        var generatedShowcaseMentorIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var afterlifeProfilesChanged = false;
         var requestPending = false;
         var requestCreated = false;
         string? pendingGmAction = null;
 
-        foreach (var mentor in EnumerateAfterlifeProfiles(afterlifeProfilesRoot).Where(IsAfterlifeMentor))
+        foreach (var mentor in EnumerateAfterlifeProfiles(afterlifeProfilesRoot).Where(IsAfterlifeMentor)
+                     .Where(mentor => LocalInteractionScopeService.IsAfterlifeActorLocal(localScope, mentor)))
         {
             var sourceActorId = ResolveAfterlifeActorId(mentor);
             if (string.IsNullOrWhiteSpace(sourceActorId))
@@ -522,6 +763,7 @@ public sealed class TrainingService
                 showcase = clientOwnedShowcase;
                 hasFreshShowcase = true;
                 afterlifeProfilesChanged = true;
+                generatedShowcaseMentorIds.Add(sourceActorId);
             }
 
             if (!hasFreshShowcase)
@@ -530,7 +772,11 @@ public sealed class TrainingService
                 var existing = await TrainingRequestState.FindPendingRequestAsync(_fs, sourceActorId, AfterlifeRequestKind);
                 if (existing == null && createPendingRequests)
                 {
-                    existing = await TrainingRequestState.WriteRequestAsync(
+                    var requestScope = await ResolveAfterlifeMentorScopeAsync(sourceActorId);
+                    if (requestScope == null)
+                        continue;
+
+                    var requestWrite = await TrainingRequestState.TryWriteScopedRequestAsync(
                         _fs,
                         AfterlifeRequestKind,
                         sourceActorId,
@@ -539,8 +785,12 @@ public sealed class TrainingService
                         RealmAfterlife,
                         currentTurn,
                         expectedHash,
-                        reason);
-                    requestCreated = true;
+                        reason,
+                        requestScope);
+                    if (requestWrite == null)
+                        continue;
+                    existing = requestWrite.Request;
+                    requestCreated |= requestWrite.CreatedByThisCall;
                 }
 
                 if (existing != null)
@@ -577,17 +827,95 @@ public sealed class TrainingService
                 Offers: offers));
         }
 
-        await ClearSatisfiedTrainingShowcaseRequestsAsync(satisfiedRequests);
-        if (afterlifeProfilesChanged && afterlifeProfilesRoot != null)
-            await _fs.WriteFileAtomicAsync(AfterlifeEntityProfilesPath, afterlifeProfilesRoot.ToJsonString(JsonOpts));
+        var finalSnapshot = await ResolveAfterlifeMentorSnapshotAsync();
+        var selfTrainingAvailable = RealmSemantics.IsAfterlifeRealm(await ReadCurrentRealmAsync());
+        var actorStateUnchanged = afterlifeProfilesSnapshot != null &&
+                                  string.Equals(
+                                      finalSnapshot.ActorRoot?.ToJsonString(JsonOpts),
+                                      afterlifeProfilesSnapshot,
+                                      StringComparison.Ordinal) &&
+                                  await VisibilitySnapshotsAreCurrentAsync(
+                                      finalSnapshot.Scope,
+                                      AfterlifeEntityProfilesPath,
+                                      afterlifeProfilesSnapshot);
+        var visibleTeachers = actorStateUnchanged
+            ? teachers
+                .Where(teacher => finalSnapshot.LocalMentorIds.Contains(teacher.SourceActorId))
+                .ToArray()
+            : Array.Empty<TrainingTeacherView>();
+        var scopeUnavailableReason = finalSnapshot.Scope.IsResolved
+            ? null
+            : finalSnapshot.Scope.UnavailableReason;
+
+        var refreshCommitSucceeded = true;
+        if (afterlifeProfilesChanged)
+        {
+            refreshCommitSucceeded = afterlifeProfilesRoot != null &&
+                                     afterlifeProfilesSnapshot != null &&
+                                     actorStateUnchanged &&
+                                     generatedShowcaseMentorIds.Count > 0 &&
+                                     generatedShowcaseMentorIds.All(finalSnapshot.LocalMentorIds.Contains) &&
+                                     await _tryRefreshCommit(
+                                         CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(finalSnapshot.Scope)
+                                             .Concat(new[]
+                                             {
+                                                 new CoordinatedStateWriteHelper.PlannedWrite(
+                                                     AfterlifeEntityProfilesPath,
+                                                     afterlifeProfilesSnapshot,
+                                                     afterlifeProfilesRoot.ToJsonString(JsonOpts),
+                                                     true)
+                                             })
+                                             .ToArray());
+        }
+
+        if (!refreshCommitSucceeded)
+        {
+            var latestSnapshot = await ResolveAfterlifeMentorSnapshotAsync();
+            var actorRootIsStillObserved = afterlifeProfilesSnapshot != null &&
+                                           string.Equals(
+                                               latestSnapshot.ActorRoot?.ToJsonString(JsonOpts),
+                                               afterlifeProfilesSnapshot,
+                                               StringComparison.Ordinal) &&
+                                           await VisibilitySnapshotsAreCurrentAsync(
+                                               latestSnapshot.Scope,
+                                               AfterlifeEntityProfilesPath,
+                                               afterlifeProfilesSnapshot);
+            visibleTeachers = actorRootIsStillObserved
+                ? visibleTeachers
+                    .Where(teacher =>
+                        !generatedShowcaseMentorIds.Contains(teacher.SourceActorId) &&
+                        latestSnapshot.LocalMentorIds.Contains(teacher.SourceActorId))
+                    .ToArray()
+                : Array.Empty<TrainingTeacherView>();
+            selfTrainingAvailable = RealmSemantics.IsAfterlifeRealm(await ReadCurrentRealmAsync());
+            scopeUnavailableReason = latestSnapshot.Scope.IsResolved
+                ? "Часть витрин наставников изменилась во время обновления. Откройте обучение повторно."
+                : latestSnapshot.Scope.UnavailableReason;
+        }
+
+        var visibleTeacherIds = visibleTeachers
+            .Select(teacher => teacher.SourceActorId)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        await ClearSatisfiedTrainingShowcaseRequestsAsync(
+            satisfiedRequests.Where(request => visibleTeacherIds.Contains(request.SourceActorId)).ToArray());
+        var remainingRequests = await TrainingRequestState.ReadRequestsAsync(_fs);
+        var visiblePendingRequest = remainingRequests.FirstOrDefault(request =>
+            string.Equals(request.RequestKind, AfterlifeRequestKind, StringComparison.OrdinalIgnoreCase) &&
+            visibleTeacherIds.Contains(request.SourceActorId));
+        requestPending = visiblePendingRequest != null;
+        requestCreated &= requestPending;
+        pendingGmAction = visiblePendingRequest != null
+            ? BuildAfterlifeTrainingPendingGmAction(visiblePendingRequest)
+            : null;
 
         return new TrainingView(
             RealmAfterlife,
-            teachers,
-            selfOffers,
+            visibleTeachers,
+            selfTrainingAvailable ? selfOffers : Array.Empty<TrainingOffer>(),
             requestPending,
             requestCreated,
-            pendingGmAction);
+            pendingGmAction,
+            scopeUnavailableReason);
     }
 
     private async Task ClearSatisfiedTrainingShowcaseRequestsAsync(
@@ -600,17 +928,39 @@ public sealed class TrainingService
         if (existing.Count == 0)
             return;
 
-        var remaining = existing
-            .Where(request => !satisfiedRequests.Any(satisfied =>
-                string.Equals(request.SourceActorId, satisfied.SourceActorId, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(request.RequestKind, satisfied.RequestKind, StringComparison.OrdinalIgnoreCase)))
-            .ToArray();
+        var removableRequests = new HashSet<(string SourceActorId, string RequestKind)>();
+        foreach (var satisfied in satisfiedRequests)
+        {
+            var requestKey = NormalizeTrainingRequestKey(satisfied.SourceActorId, satisfied.RequestKind);
+            if (removableRequests.Contains(requestKey))
+                continue;
 
-        if (remaining.Length != existing.Count)
-            await TrainingRequestState.WriteRequestsAsync(_fs, remaining);
+            var sourceIsStillLocal = satisfied.RequestKind switch
+            {
+                MortalRequestKind => await IsMortalTeacherCurrentlyLocalAsync(satisfied.SourceActorId),
+                AfterlifeRequestKind => await IsAfterlifeMentorCurrentlyLocalAsync(satisfied.SourceActorId),
+                _ => false
+            };
+            if (sourceIsStillLocal)
+                removableRequests.Add(requestKey);
+        }
+
+        var requestsToRemove = existing
+            .Where(request => removableRequests.Contains(
+                NormalizeTrainingRequestKey(request.SourceActorId, request.RequestKind)))
+            .ToArray();
+        await TrainingRequestState.RemoveRequestsAsync(_fs, requestsToRemove);
     }
 
-    public async Task CleanupSatisfiedMortalSkillEvolutionRequestsAsync()
+    private static (string SourceActorId, string RequestKind) NormalizeTrainingRequestKey(
+        string sourceActorId,
+        string requestKind) =>
+        (sourceActorId.ToUpperInvariant(), requestKind.ToUpperInvariant());
+
+    public Task CleanupSatisfiedMortalSkillEvolutionRequestsAsync() =>
+        CleanupSatisfiedMortalSkillEvolutionRequestsAsync(requireLocalSource: false);
+
+    private async Task CleanupSatisfiedMortalSkillEvolutionRequestsAsync(bool requireLocalSource)
     {
         var existing = await TrainingRequestState.ReadRequestsAsync(_fs);
         if (existing.Count == 0)
@@ -620,13 +970,23 @@ public sealed class TrainingService
         var passiveRoot = await ReadObjectAsync(PassiveSkillsPath) ?? new JsonObject();
         var masteryRoot = await ReadObjectAsync(SkillMasteryPath) ?? new JsonObject();
 
-        var remaining = existing
-            .Where(request => !string.Equals(request.RequestKind, MortalSkillEvolutionRequestKind, StringComparison.OrdinalIgnoreCase) ||
-                              !IsMortalSkillEvolutionRequestSatisfied(request, activeRoot, passiveRoot, masteryRoot))
-            .ToArray();
+        var removableRequestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var request in existing)
+        {
+            if (!string.Equals(request.RequestKind, MortalSkillEvolutionRequestKind, StringComparison.OrdinalIgnoreCase) ||
+                !IsMortalSkillEvolutionRequestSatisfied(request, activeRoot, passiveRoot, masteryRoot))
+            {
+                continue;
+            }
 
-        if (remaining.Length != existing.Count)
-            await TrainingRequestState.WriteRequestsAsync(_fs, remaining);
+            if (!requireLocalSource || await IsMortalTeacherCurrentlyLocalAsync(request.SourceActorId))
+                removableRequestIds.Add(request.RequestId);
+        }
+
+        var requestsToRemove = existing
+            .Where(request => removableRequestIds.Contains(request.RequestId))
+            .ToArray();
+        await TrainingRequestState.RemoveRequestsAsync(_fs, requestsToRemove);
     }
 
     private static bool IsMortalSkillEvolutionRequestSatisfied(
@@ -1122,16 +1482,17 @@ public sealed class TrainingService
             MasteryProgressGain: progressGain);
     }
 
-    private async Task<TrainingRequestState.PendingTrainingShowcaseRequest> WriteMortalSkillEvolutionRequestAsync(
+    private async Task<TrainingRequestState.PendingTrainingShowcaseRequestWriteResult?> WriteMortalSkillEvolutionRequestAsync(
         JsonObject teacher,
         TrainingOffer offer,
         MortalTrainingApplicationPlan plan,
-        int currentTurn)
+        int currentTurn,
+        LocalInteractionScope scope)
     {
         var sourceActorId = ResolveMortalTeacherActorId(teacher);
         var sourceActorName = GetNodeString(teacher["name"]) ?? sourceActorId;
         var details = BuildMortalSkillEvolutionRequestDetails(teacher, offer, plan);
-        return await TrainingRequestState.WriteRequestAsync(
+        return await TrainingRequestState.TryWriteScopedRequestAsync(
             _fs,
             MortalSkillEvolutionRequestKind,
             sourceActorId,
@@ -1141,6 +1502,7 @@ public sealed class TrainingService
             currentTurn,
             ComputeSourceSnapshotHash(teacher),
             plan.Reason,
+            scope,
             details);
     }
 
@@ -1560,7 +1922,9 @@ public sealed class TrainingService
 
     private static bool RefreshMortalShowcaseHashesForPendingRequests(
         JsonObject? npcRoot,
-        IReadOnlyList<TrainingRequestState.PendingTrainingShowcaseRequest> pendingRequests)
+        IReadOnlyList<TrainingRequestState.PendingTrainingShowcaseRequest> pendingRequests,
+        Func<JsonObject, bool>? teacherFilter = null,
+        ISet<string>? changedTeacherIds = null)
     {
         if (npcRoot == null || pendingRequests.Count == 0)
             return false;
@@ -1568,6 +1932,9 @@ public sealed class TrainingService
         var changed = false;
         foreach (var teacher in EnumerateNpcObjects(npcRoot).Where(IsMortalTeacher))
         {
+            if (teacherFilter != null && !teacherFilter(teacher))
+                continue;
+
             if (teacher["trainingShowcase"] is not JsonObject showcase)
                 continue;
 
@@ -1597,10 +1964,113 @@ public sealed class TrainingService
                 continue;
 
             showcase["sourceActorSnapshotHash"] = expectedHash;
+            changedTeacherIds?.Add(sourceActorId);
             changed = true;
         }
 
         return changed;
+    }
+
+    private async Task<MortalTeacherSnapshot> ResolveMortalTeacherSnapshotAsync()
+    {
+        var scope = await _localScopeService.ResolveAsync();
+        var root = await ReadObjectAsync(NpcCorePath);
+        var localTeacherIds = DeduplicateMortalTeachers(EnumerateNpcObjects(root).Where(IsMortalTeacher))
+            .Where(teacher => LocalInteractionScopeService.IsMortalActorLocal(scope, teacher))
+            .Select(ResolveMortalTeacherActorId)
+            .Where(sourceActorId => !string.IsNullOrWhiteSpace(sourceActorId))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return new MortalTeacherSnapshot(scope, root, localTeacherIds);
+    }
+
+    private async Task<AfterlifeMentorSnapshot> ResolveAfterlifeMentorSnapshotAsync()
+    {
+        var scope = await _localScopeService.ResolveAsync();
+        var root = await ReadObjectAsync(AfterlifeEntityProfilesPath);
+        var localMentorIds = EnumerateAfterlifeProfiles(root)
+            .Where(IsAfterlifeMentor)
+            .Where(mentor => LocalInteractionScopeService.IsAfterlifeActorLocal(scope, mentor))
+            .Select(ResolveAfterlifeActorId)
+            .Where(sourceActorId => !string.IsNullOrWhiteSpace(sourceActorId))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return new AfterlifeMentorSnapshot(scope, root, localMentorIds);
+    }
+
+    private Task<bool> VisibilitySnapshotsAreCurrentAsync(
+        LocalInteractionScope scope,
+        string actorRootPath,
+        string actorRootJson) =>
+        _tryVisibilityGuard(
+            CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(scope)
+                .Concat(new[]
+                {
+                    CoordinatedStateWriteHelper.CreateGuardWrite(actorRootPath, actorRootJson)
+                })
+                .ToArray());
+
+    private async Task<bool> IsMortalTeacherCurrentlyLocalAsync(
+        string sourceActorId,
+        string? expectedActorRootJson = null) =>
+        await ResolveMortalTeacherScopeAsync(sourceActorId, expectedActorRootJson) != null;
+
+    private async Task<LocalInteractionScope?> ResolveMortalTeacherScopeAsync(
+        string sourceActorId,
+        string? expectedActorRootJson = null)
+    {
+        var scope = await _localScopeService.ResolveAsync();
+        if (!scope.IsResolved || scope.RealmKind != LocalInteractionRealmKind.Mortal)
+            return null;
+
+        var root = await ReadObjectAsync(NpcCorePath);
+        if (root == null ||
+            (expectedActorRootJson != null &&
+             !string.Equals(root.ToJsonString(JsonOpts), expectedActorRootJson, StringComparison.Ordinal)))
+        {
+            return null;
+        }
+
+        var teacher = DeduplicateMortalTeachers(EnumerateNpcObjects(root).Where(IsMortalTeacher))
+            .FirstOrDefault(candidate => string.Equals(
+                ResolveMortalTeacherActorId(candidate),
+                sourceActorId,
+                StringComparison.OrdinalIgnoreCase));
+        return teacher != null && LocalInteractionScopeService.IsMortalActorLocal(scope, teacher)
+            ? scope
+            : null;
+    }
+
+    private async Task<bool> IsAfterlifeMentorCurrentlyLocalAsync(
+        string sourceActorId,
+        string? expectedActorRootJson = null) =>
+        await ResolveAfterlifeMentorScopeAsync(sourceActorId, expectedActorRootJson) != null;
+
+    private async Task<LocalInteractionScope?> ResolveAfterlifeMentorScopeAsync(
+        string sourceActorId,
+        string? expectedActorRootJson = null)
+    {
+        var scope = await _localScopeService.ResolveAsync();
+        if (!scope.IsResolved ||
+            scope.RealmKind is not (LocalInteractionRealmKind.ChaosSea or LocalInteractionRealmKind.ShiningAbode))
+        {
+            return null;
+        }
+
+        var root = await ReadObjectAsync(AfterlifeEntityProfilesPath);
+        if (root == null ||
+            (expectedActorRootJson != null &&
+             !string.Equals(root.ToJsonString(JsonOpts), expectedActorRootJson, StringComparison.Ordinal)))
+        {
+            return null;
+        }
+
+        var mentor = EnumerateAfterlifeProfiles(root)
+            .FirstOrDefault(candidate => string.Equals(
+                ResolveAfterlifeActorId(candidate),
+                sourceActorId,
+                StringComparison.OrdinalIgnoreCase));
+        return mentor != null && LocalInteractionScopeService.IsAfterlifeActorLocal(scope, mentor)
+            ? scope
+            : null;
     }
 
     private static IEnumerable<JsonObject> EnumerateAfterlifeProfiles(JsonObject? root)
@@ -1985,18 +2455,13 @@ public sealed class TrainingService
 
     private static string NormalizeRealm(string? realm)
     {
-        if (string.IsNullOrWhiteSpace(realm))
-            return RealmMortal;
-        if (realm.Contains("chaos", StringComparison.OrdinalIgnoreCase) ||
-            realm.Contains("afterlife", StringComparison.OrdinalIgnoreCase) ||
-            realm.Contains("shining", StringComparison.OrdinalIgnoreCase) ||
-            realm.Contains("обитель", StringComparison.OrdinalIgnoreCase) ||
-            realm.Contains("море", StringComparison.OrdinalIgnoreCase))
+        var realmKind = LocalInteractionScopeService.ClassifyRealm(realm);
+        if (realmKind is LocalInteractionRealmKind.ChaosSea or LocalInteractionRealmKind.ShiningAbode)
         {
             return RealmAfterlife;
         }
 
-        return RealmMortal;
+        return realmKind == LocalInteractionRealmKind.Mortal ? RealmMortal : RealmUnknown;
     }
 
     private async Task<JsonObject?> ReadObjectAsync(string relativePath)
