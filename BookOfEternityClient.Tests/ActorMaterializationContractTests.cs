@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -350,7 +351,7 @@ public sealed class ActorMaterializationContractTests
     }
 
     [Fact]
-    public void ValidateMortalNpc_ExistingUpdateResendsEnvelope_ReturnsResendIssue()
+    public void ValidateMortalNpc_UpdateWithPermanentId_DoesNotInferResendWithoutPreTurnAuthority()
     {
         using var document = JsonDocument.Parse(CreateMortalEnvelope()
             .Replace("{\n  \"materialization\"", "{\n  \"NPCId\": \"npc_arden\",\n  \"materialization\""));
@@ -360,7 +361,7 @@ public sealed class ActorMaterializationContractTests
             "npc",
             "UpdateNPCs");
 
-        Assert.Contains(issues, issue => issue.Code == "actor_materialization_existing_resend_forbidden");
+        Assert.DoesNotContain(issues, issue => issue.Code == "actor_materialization_existing_resend_forbidden");
     }
 
     [Fact]
@@ -476,6 +477,320 @@ public sealed class ActorMaterializationContractTests
             issue.Section == "canFight");
     }
 
+    [Theory]
+    [InlineData("envelope")]
+    [InlineData("capabilities")]
+    [InlineData("sections")]
+    [InlineData("disposition")]
+    public void Validate_DuplicateClosedContractProperty_ReturnsDuplicatePropertyIssue(string duplicateLocation)
+    {
+        var json = duplicateLocation switch
+        {
+            "envelope" => CreateMortalEnvelope().Replace(
+                "\"schemaVersion\": 1,",
+                "\"schemaVersion\": 1, \"schemaVersion\": 1,"),
+            "capabilities" => CreateMortalEnvelope().Replace(
+                "\"canFight\": true,",
+                "\"canFight\": true, \"canFight\": true,"),
+            "sections" => CreateMortalEnvelope().Replace(
+                "\"skills\": { \"state\": \"populated\" },",
+                "\"skills\": { \"state\": \"populated\" }, \"skills\": { \"state\": \"populated\" },"),
+            "disposition" => CreateMortalEnvelope().Replace(
+                "\"skills\": { \"state\": \"populated\" }",
+                "\"skills\": { \"state\": \"populated\", \"state\": \"populated\" }"),
+            _ => throw new ArgumentOutOfRangeException(nameof(duplicateLocation))
+        };
+        using var document = JsonDocument.Parse(json);
+
+        var issues = ActorMaterializationContract.Validate(
+            document.RootElement,
+            "npc",
+            ActorMaterializationFamily.Mortal,
+            CreateMortalEvidence(),
+            requireEnvelope: true);
+
+        Assert.Contains(issues, issue => issue.Code == "actor_materialization_duplicate_property");
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_InventoryContainingOnlyNull_DoesNotCountAsInventoryContent()
+    {
+        var actor = CreateMortalNpcWithEnvelope();
+        actor["inventory"] = new JsonArray { null };
+        using var document = JsonDocument.Parse(actor.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_section_content_mismatch" &&
+            issue.Section == "inventory");
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "ownsItems");
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_EquippedItemOutsideNpcInventory_ReturnsReferenceIssue()
+    {
+        var actor = CreateMortalNpcWithEnvelope();
+        actor["equippedItems"] = new JsonObject
+        {
+            ["MainHand"] = "item_not_owned_by_actor"
+        };
+        using var document = JsonDocument.Parse(actor.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_inventory_reference_mismatch" &&
+            issue.Section == "inventory");
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_TeacherSkillsContainingOnlyNull_DoNotSatisfyTeachingCapability()
+    {
+        var actor = CreateMortalNpcWithEnvelope();
+        actor["teacherProfile"] = new JsonObject
+        {
+            ["canTeach"] = true,
+            ["skills"] = new JsonArray { null }
+        };
+        actor["materialization"]!["capabilities"]!["canTeach"] = true;
+        using var document = JsonDocument.Parse(actor.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canTeach");
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_UsableTeacherSkillObject_SatisfiesTeachingCapability()
+    {
+        var actor = CreateMortalNpcWithEnvelope();
+        actor["teacherProfile"] = new JsonObject
+        {
+            ["canTeach"] = true,
+            ["skills"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["skillId"] = "skill_archive_cipher",
+                    ["skillName"] = "Архивный шифр",
+                    ["displayName"] = "Архивный шифр",
+                    ["skillKind"] = "passive_skill_mastery",
+                    ["masteryLevel"] = 2
+                }
+            }
+        };
+        actor["materialization"]!["capabilities"]!["canTeach"] = true;
+        using var document = JsonDocument.Parse(actor.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.DoesNotContain(issues, issue => issue.Code?.StartsWith("actor_materialization_", StringComparison.Ordinal) == true);
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_InvalidExplicitMerchantProfile_IsNotRescuedByNpcProse()
+    {
+        var actor = CreateMortalNpcWithEnvelope();
+        actor["name"] = "Торговец, лавочник и merchant vendor";
+        actor["role"] = "Торговец";
+        actor["occupation"] = "Продаёт товары";
+        actor["tradeState"] = new JsonObject
+        {
+            ["canTrade"] = true,
+            ["merchantProfile"] = "NotARealMerchantProfile"
+        };
+        actor["materialization"]!["capabilities"]!["canTrade"] = true;
+        using var document = JsonDocument.Parse(actor.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canTrade");
+    }
+
+    [Fact]
+    public void ValidateAfterlifeProfile_TierZeroArtsOccupySectionsWithoutGrantingCombatCapability()
+    {
+        var profile = CreateAfterlifeProfile();
+        profile["standardArts"] = new JsonObject { ["guard"] = 0 };
+        profile["specialArts"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["artId"] = "quiet_archive_ward",
+                ["displayName"] = "Тихий архивный оберег",
+                ["tier"] = 0
+            }
+        };
+        profile["materialization"]!["capabilities"]!["canFight"] = false;
+        profile["materialization"]!["sections"]!["standardArts"] = new JsonObject { ["state"] = "populated" };
+        profile["materialization"]!["sections"]!["specialArts"] = new JsonObject { ["state"] = "populated" };
+        using var document = JsonDocument.Parse(profile.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            document.RootElement,
+            "profile",
+            requireEnvelope: true,
+            canTradeEvidence: false);
+
+        Assert.DoesNotContain(issues, issue => issue.Code?.StartsWith("actor_materialization_", StringComparison.Ordinal) == true);
+    }
+
+    [Fact]
+    public void ValidateAfterlifeProfile_StructuredMentorShowcase_SatisfiesTeachingCapability()
+    {
+        var profile = CreateAfterlifeProfile();
+        profile["standardArts"] = new JsonObject { ["guard"] = 0 };
+        profile["mentorTrainingShowcase"] = new JsonObject
+        {
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "mentor_guard_1",
+                    ["targetKind"] = "standard_spiritual_art",
+                    ["targetId"] = "guard",
+                    ["targetName"] = "Защита",
+                    ["sourceCap"] = 1
+                }
+            }
+        };
+        profile["materialization"]!["capabilities"]!["canFight"] = false;
+        profile["materialization"]!["capabilities"]!["canTeach"] = true;
+        using var document = JsonDocument.Parse(profile.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            document.RootElement,
+            "profile",
+            requireEnvelope: true,
+            canTradeEvidence: false);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canTeach");
+    }
+
+    [Theory]
+    [InlineData("masks")]
+    [InlineData("progressionStrategy")]
+    public void ValidateAfterlifeProfile_StructuredAgencySurface_OccupiesAgencySection(string agencySurface)
+    {
+        var profile = CreateAfterlifeProfile();
+        profile.Remove("goals");
+        if (agencySurface == "masks")
+        {
+            profile["masks"] = new JsonArray
+            {
+                new JsonObject { ["maskId"] = "mask_archive_keeper" }
+            };
+        }
+        else
+        {
+            profile["progressionStrategy"] = new JsonObject
+            {
+                ["strategyId"] = "strategy_archive_keeper",
+                ["summary"] = "Сохранять архив.",
+                ["priorityOrder"] = new JsonArray("guard")
+            };
+        }
+        using var document = JsonDocument.Parse(profile.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            document.RootElement,
+            "profile",
+            requireEnvelope: true,
+            canTradeEvidence: false);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "actor_materialization_section_content_mismatch" &&
+            issue.Section == "agency");
+    }
+
+    [Fact]
+    public void ValidateAfterlifeProfile_UnavailableTradeEvidence_DoesNotForceCanTradeFalse()
+    {
+        var profile = CreateAfterlifeProfile();
+        profile["materialization"]!["capabilities"]!["canTrade"] = true;
+        using var document = JsonDocument.Parse(profile.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            document.RootElement,
+            "profile",
+            requireEnvelope: true,
+            canTradeEvidence: false);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canTrade");
+    }
+
+    [Theory]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    public void Validate_AuthoritativeAfterlifeTradeEvidence_IsComparedWhenKnown(
+        bool authoritativeCanTrade,
+        bool expectMismatch)
+    {
+        var profile = CreateAfterlifeProfile();
+        profile["materialization"]!["capabilities"]!["canTrade"] = true;
+        using var document = JsonDocument.Parse(profile.ToJsonString());
+        var evidence = CreateAfterlifeEvidence(authoritativeCanTrade);
+
+        var issues = ActorMaterializationContract.Validate(
+            document.RootElement,
+            "profile",
+            ActorMaterializationFamily.Afterlife,
+            evidence,
+            requireEnvelope: true,
+            deferEvidenceConsistency: false);
+
+        Assert.Equal(
+            expectMismatch,
+            issues.Any(issue =>
+                issue.Code == "actor_materialization_capability_mismatch" &&
+                issue.Section == "canTrade"));
+    }
+
+    [Theory]
+    [InlineData("Guardian", "guardian_case_variant")]
+    [InlineData("player_soul", "player_soul")]
+    public void ValidateAfterlifeProfile_NonCanonicalOrPlayerActorType_ReturnsActorTypeIssue(
+        string actorType,
+        string actorId)
+    {
+        var profile = CreateAfterlifeProfile(actorType, actorId);
+        using var document = JsonDocument.Parse(profile.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            document.RootElement,
+            "profile",
+            requireEnvelope: true,
+            canTradeEvidence: false);
+
+        Assert.Contains(issues, issue => issue.Code == "actor_materialization_invalid_actor_type");
+    }
+
     private static ActorMaterializationEvidence CreateMortalEvidence() => new(
         ActorType: "mortal_npc",
         ActorId: "npc_arden",
@@ -494,6 +809,113 @@ public sealed class ActorMaterializationContractTests
             ["canTrade"] = false,
             ["ownsItems"] = true
         });
+
+    private static ActorMaterializationEvidence CreateAfterlifeEvidence(bool canTrade) => new(
+        ActorType: "guardian",
+        ActorId: "guardian_archive_keeper",
+        SectionHasContent: new Dictionary<string, bool>(StringComparer.Ordinal)
+        {
+            ["standardArts"] = true,
+            ["specialArts"] = false,
+            ["customStates"] = false,
+            ["fateCards"] = false,
+            ["relationships"] = false,
+            ["agency"] = true,
+            ["progressionHistory"] = true
+        },
+        CapabilityEvidence: new Dictionary<string, bool>(StringComparer.Ordinal)
+        {
+            ["canFight"] = true,
+            ["canTeach"] = false,
+            ["canTrade"] = canTrade
+        });
+
+    private static JsonObject CreateMortalNpcWithEnvelope()
+    {
+        var actor = JsonNode.Parse(CreateMortalEnvelope())!.AsObject();
+        actor["NPCId"] = null;
+        actor["initialId"] = "npc_arden";
+        actor["activeSkills"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["skillId"] = "skill_arden_guard",
+                ["name"] = "Стойка хранителя"
+            }
+        };
+        actor["passiveSkills"] = new JsonArray();
+        actor["inventory"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["itemId"] = "item_arden_blade",
+                ["existedId"] = "item_arden_blade",
+                ["name"] = "Клинок Ардена"
+            }
+        };
+        actor["equippedItems"] = new JsonObject();
+        actor["fateCards"] = new JsonArray();
+        actor["personalQuests"] = new JsonArray
+        {
+            new JsonObject { ["questId"] = "quest_arden_archive" }
+        };
+        actor["relationshipLevel"] = 10;
+        actor["attitude"] = "Нейтралитет";
+        actor["relationshipLock"] = new JsonObject { ["isLocked"] = false };
+        return actor;
+    }
+
+    private static JsonObject CreateAfterlifeProfile(
+        string actorType = "guardian",
+        string actorId = "guardian_archive_keeper")
+    {
+        var profile = JsonNode.Parse(
+            """
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_archive_keeper",
+              "standardArts": { "guard": 1 },
+              "specialArts": [],
+              "customStates": [],
+              "fateCards": [],
+              "relationships": [],
+              "goals": {
+                "goalId": "goal_preserve_archive"
+              },
+              "ledger": [
+                { "entryId": "entry_archive_keeper" }
+              ],
+              "progressionLedger": [],
+              "materialization": {
+                "schemaVersion": 1,
+                "materializationId": "mat_guardian_archive_keeper_turn_1",
+                "actorType": "guardian",
+                "actorId": "guardian_archive_keeper",
+                "materializedAtTurn": 1,
+                "state": "complete",
+                "capabilities": {
+                  "canFight": true,
+                  "canTeach": false,
+                  "canTrade": false
+                },
+                "sections": {
+                  "standardArts": { "state": "populated" },
+                  "specialArts": { "state": "empty_by_design", "reason": "Личное искусство ещё не создано." },
+                  "customStates": { "state": "empty_by_design", "reason": "Особых состояний сейчас нет." },
+                  "fateCards": { "state": "empty_by_design", "reason": "Карта судьбы ещё не открыта." },
+                  "relationships": { "state": "empty_by_design", "reason": "Устойчивые связи ещё не сложились." },
+                  "agency": { "state": "populated" },
+                  "progressionHistory": { "state": "populated" }
+                }
+              }
+            }
+            """)!.AsObject();
+        profile["actorType"] = actorType;
+        profile["actorId"] = actorId;
+        profile["materialization"]!["actorType"] = actorType;
+        profile["materialization"]!["actorId"] = actorId;
+        return profile;
+    }
 
     private static string CreateMortalEnvelope() => """
     {

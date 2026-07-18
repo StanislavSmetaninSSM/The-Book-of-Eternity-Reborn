@@ -3214,6 +3214,155 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Empty(player["specialArts"]!.AsArray());
     }
 
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_PreservesOmittedHistoricalAfterlifeMaterializationEnvelope()
+    {
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json";
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            BuildAfterlifeNormalizerState(includeEnvelope: false));
+        await _fs.WriteFileAtomicAsync(
+            backupPath,
+            BuildAfterlifeNormalizerState(includeEnvelope: true));
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [AfterlifeEntityProfileState.StatePath] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var profile = root[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray()
+            .OfType<JsonObject>()
+            .Single(candidate => candidate["actorId"]?.GetValue<string>() == "guardian_normalizer_materialization");
+        Assert.Equal(
+            "mat_normalizer_afterlife_historical",
+            profile[ActorMaterializationContract.PropertyName]?["materializationId"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotOverwriteExplicitChangedAfterlifeMaterializationEnvelope()
+    {
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json";
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            BuildAfterlifeNormalizerState(includeEnvelope: true, materializationId: "mat_normalizer_afterlife_changed"));
+        await _fs.WriteFileAtomicAsync(
+            backupPath,
+            BuildAfterlifeNormalizerState(includeEnvelope: true));
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [AfterlifeEntityProfileState.StatePath] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var profile = root[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray()
+            .OfType<JsonObject>()
+            .Single(candidate => candidate["actorId"]?.GetValue<string>() == "guardian_normalizer_materialization");
+        Assert.Equal(
+            "mat_normalizer_afterlife_changed",
+            profile[ActorMaterializationContract.PropertyName]?["materializationId"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotPreserveAfterlifeEnvelopeAcrossNonExactIdentity()
+    {
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json";
+        var currentRoot = JsonNode.Parse(BuildAfterlifeNormalizerState(includeEnvelope: false))!.AsObject();
+        currentRoot[AfterlifeEntityProfileState.ProfilesProperty]![0]!["actorId"] =
+            "GUARDIAN_NORMALIZER_MATERIALIZATION";
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, currentRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            backupPath,
+            BuildAfterlifeNormalizerState(includeEnvelope: true));
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [AfterlifeEntityProfileState.StatePath] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var profile = root[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray()
+            .OfType<JsonObject>()
+            .Single(candidate =>
+                candidate["actorId"]?.GetValue<string>() == "GUARDIAN_NORMALIZER_MATERIALIZATION");
+        Assert.False(profile.ContainsKey(ActorMaterializationContract.PropertyName));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotInventAfterlifeMaterializationEnvelope(
+        bool actorExistedPreviously)
+    {
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json";
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            BuildAfterlifeNormalizerState(includeEnvelope: false));
+        await _fs.WriteFileAtomicAsync(
+            backupPath,
+            actorExistedPreviously
+                ? BuildAfterlifeNormalizerState(includeEnvelope: false)
+                : """{ "schemaVersion": 1, "profiles": [] }""");
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [AfterlifeEntityProfileState.StatePath] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var profile = root[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray()
+            .OfType<JsonObject>()
+            .Single(candidate => candidate["actorId"]?.GetValue<string>() == "guardian_normalizer_materialization");
+        Assert.False(profile.ContainsKey(ActorMaterializationContract.PropertyName));
+    }
+
+    private static string BuildAfterlifeNormalizerState(
+        bool includeEnvelope,
+        string materializationId = "mat_normalizer_afterlife_historical")
+    {
+        var profile = new JsonObject
+        {
+            ["actorType"] = "guardian",
+            ["actorId"] = "guardian_normalizer_materialization",
+            ["displayName"] = "Хранитель записи",
+            ["realm"] = "Chaos Sea",
+            ["currencies"] = new JsonObject { ["inkFeathers"] = 0, ["lightSparks"] = 0 },
+            ["progression"] = new JsonObject(),
+            ["standardArts"] = new JsonObject(),
+            ["specialArts"] = new JsonArray(),
+            ["customStates"] = new JsonArray(),
+            ["fateCards"] = new JsonArray(),
+            ["relationships"] = new JsonArray(),
+            ["ledger"] = new JsonArray(),
+            ["progressionLedger"] = new JsonArray()
+        };
+        if (includeEnvelope)
+        {
+            profile[ActorMaterializationContract.PropertyName] = new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["materializationId"] = materializationId,
+                ["actorType"] = "guardian",
+                ["actorId"] = "guardian_normalizer_materialization",
+                ["materializedAtTurn"] = 4,
+                ["state"] = "complete",
+                ["capabilities"] = new JsonObject(),
+                ["sections"] = new JsonObject()
+            };
+        }
+
+        return new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray(profile)
+        }.ToJsonString();
+    }
+
     private async Task CorrelateAfterlifeProgressionReportWithTurnRequestAsync()
     {
         var reportRoot = JsonNode.Parse(

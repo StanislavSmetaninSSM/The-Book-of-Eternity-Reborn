@@ -133,8 +133,9 @@ public partial class CanonicalStateNormalizer
         if (currentNode is not JsonObject currentObj)
             return;
 
+        var previousObj = await ReadBackupObjectAsync(path, backups);
         var result = CloneObject(currentObj);
-        var changed = false;
+        var changed = PreserveHistoricalMortalMaterialization(result, previousObj);
 
         changed |= NormalizeMortalTeacherTrainingShowcasePatches(result);
 
@@ -158,6 +159,52 @@ public partial class CanonicalStateNormalizer
 
         if (changed)
             await WriteIfChangedAsync(path, currentNode, result);
+    }
+
+    private static bool PreserveHistoricalMortalMaterialization(
+        JsonObject currentRoot,
+        JsonObject? previousRoot)
+    {
+        if (previousRoot == null ||
+            currentRoot[GuardianPolicyContracts.NpcCoreSceneSectionName] is not JsonArray currentActors)
+        {
+            return false;
+        }
+
+        var historicalEnvelopeByActorId = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        foreach (var previousActor in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(previousRoot))
+        {
+            var actorId = ResolveNpcPatchIdentity(previousActor);
+            if (string.IsNullOrWhiteSpace(actorId) ||
+                previousActor[ActorMaterializationContract.PropertyName] is not JsonObject historicalEnvelope)
+            {
+                continue;
+            }
+
+            historicalEnvelopeByActorId.TryAdd(actorId, historicalEnvelope);
+        }
+
+        var changed = false;
+        foreach (var currentActor in currentActors.OfType<JsonObject>())
+        {
+            if (!HasCompleteNpcCoreSurface(currentActor) ||
+                currentActor.ContainsKey(ActorMaterializationContract.PropertyName))
+            {
+                continue;
+            }
+
+            var actorId = ResolveNpcPatchIdentity(currentActor);
+            if (string.IsNullOrWhiteSpace(actorId) ||
+                !historicalEnvelopeByActorId.TryGetValue(actorId, out var historicalEnvelope))
+            {
+                continue;
+            }
+
+            currentActor[ActorMaterializationContract.PropertyName] = historicalEnvelope.DeepClone();
+            changed = true;
+        }
+
+        return changed;
     }
 
     private static bool NormalizeMortalTeacherTrainingShowcasePatches(JsonObject root)

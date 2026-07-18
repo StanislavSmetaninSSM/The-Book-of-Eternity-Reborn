@@ -67,6 +67,26 @@ internal static class ActorMaterializationContract
         "progressionHistory"
     };
 
+    private static readonly HashSet<string> AfterlifeActorTypes = new(StringComparer.Ordinal)
+    {
+        "guardian",
+        "resident",
+        "shining_resident",
+        "shining_faction_head",
+        "radiant_actor",
+        "saref_agent",
+        "system_actor",
+        "custom_afterlife_actor"
+    };
+
+    private static readonly string[] InventoryIdentityFields =
+    {
+        "itemId",
+        "existedId",
+        "initialId",
+        "id"
+    };
+
     internal static IReadOnlyList<ValidationIssue> Validate(
         JsonElement actor,
         string context,
@@ -76,6 +96,7 @@ internal static class ActorMaterializationContract
         bool deferEvidenceConsistency = false)
     {
         var issues = new List<ValidationIssue>();
+        ValidateCanonicalActorType(family, context, evidence, issues);
         if (actor.ValueKind != JsonValueKind.Object ||
             !actor.TryGetProperty(PropertyName, out var envelope))
         {
@@ -133,16 +154,56 @@ internal static class ActorMaterializationContract
         return issues;
     }
 
+    internal static IReadOnlyList<ValidationIssue> ValidateUniqueMaterializationIds(
+        IReadOnlyList<(JsonElement Actor, string Context, string ActorType, string ActorId)> actors)
+    {
+        var issues = new List<ValidationIssue>();
+        var firstContextById = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var (actor, context, actorType, actorId) in actors)
+        {
+            if (actor.ValueKind != JsonValueKind.Object ||
+                !actor.TryGetProperty(PropertyName, out var envelope) ||
+                envelope.ValueKind != JsonValueKind.Object)
+            {
+                continue;
+            }
+
+            var materializationId = ReadNonEmptyString(envelope, "materializationId");
+            if (materializationId == null)
+                continue;
+
+            if (firstContextById.TryAdd(materializationId, context))
+                continue;
+
+            var evidence = new ActorMaterializationEvidence(
+                actorType,
+                actorId,
+                new Dictionary<string, bool>(StringComparer.Ordinal),
+                new Dictionary<string, bool>(StringComparer.Ordinal));
+            issues.Add(CreateIssue(
+                $"{context}.{PropertyName}.materializationId",
+                "actor_materialization_duplicate_id",
+                "materializationId должен быть уникален в пределах проверяемого набора персонажей.",
+                evidence,
+                expected: $"unique value; first declared at {firstContextById[materializationId]}",
+                actual: materializationId,
+                repairHint: "Назначь этой первичной материализации новый стабильный materializationId; не меняй идентификатор уже принятого исторического envelope."));
+        }
+
+        return issues;
+    }
+
     internal static IReadOnlyList<ValidationIssue> ValidateMortalNpc(
         JsonElement npc,
         string context,
         string sectionName)
     {
+        _ = sectionName;
         return ValidateMortalNpc(
             npc,
             context,
-            sectionName,
-            requireEnvelopeOverride: null);
+            requireEnvelopeOverride: null,
+            deferEvidenceConsistencyOverride: null);
     }
 
     internal static IReadOnlyList<ValidationIssue> ValidateCanonicalMortalNpc(
@@ -153,15 +214,24 @@ internal static class ActorMaterializationContract
         return ValidateMortalNpc(
             npc,
             context,
-            sectionName: null,
-            requireEnvelopeOverride: requireEnvelope);
+            requireEnvelopeOverride: requireEnvelope,
+            deferEvidenceConsistencyOverride: false);
     }
+
+    internal static IReadOnlyList<ValidationIssue> ValidateHistoricalMortalNpc(
+        JsonElement npc,
+        string context) =>
+        ValidateMortalNpc(
+            npc,
+            context,
+            requireEnvelopeOverride: true,
+            deferEvidenceConsistencyOverride: true);
 
     private static IReadOnlyList<ValidationIssue> ValidateMortalNpc(
         JsonElement npc,
         string context,
-        string? sectionName,
-        bool? requireEnvelopeOverride)
+        bool? requireEnvelopeOverride,
+        bool? deferEvidenceConsistencyOverride)
     {
         var hasIdentityNode = TryGetFirstProperty(npc, out var identityNode, "NPCId", "npcId", "id");
         var isNewNpc = hasIdentityNode && identityNode.ValueKind == JsonValueKind.Null;
@@ -173,22 +243,16 @@ internal static class ActorMaterializationContract
         if (string.IsNullOrWhiteSpace(actorId))
             return Array.Empty<ValidationIssue>();
 
-        var hasSkills = HasArrayEntries(npc, "activeSkills") || HasArrayEntries(npc, "passiveSkills");
-        var hasInventory = HasArrayEntries(npc, "inventory");
+        var hasSkills = HasUsableMortalCombatSkill(npc);
+        var inventoryItemIds = ReadStructuredInventoryItemIds(npc);
+        var hasInventory = inventoryItemIds.Count > 0;
         var hasRelationships = npc.TryGetProperty("relationshipLevel", out var relationshipLevel) &&
                                relationshipLevel.ValueKind == JsonValueKind.Number &&
                                !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(npc, "attitude")) &&
                                npc.TryGetProperty("relationshipLock", out var relationshipLock) &&
                                relationshipLock.ValueKind == JsonValueKind.Object;
-        var canTeach = npc.TryGetProperty("teacherProfile", out var teacherProfile) &&
-                       teacherProfile.ValueKind == JsonValueKind.Object &&
-                       teacherProfile.TryGetProperty("canTeach", out var canTeachNode) &&
-                       canTeachNode.ValueKind == JsonValueKind.True &&
-                       HasArrayEntries(teacherProfile, "skills");
-        var canTrade = npc.TryGetProperty("tradeState", out var tradeState) &&
-                       tradeState.ValueKind == JsonValueKind.Object &&
-                       tradeState.TryGetProperty("canTrade", out var canTradeNode) &&
-                       canTradeNode.ValueKind == JsonValueKind.True;
+        var canTeach = HasUsableMortalTeacherAuthority(npc);
+        var canTrade = HasExplicitMortalTradeAuthority(npc);
 
         var evidence = new ActorMaterializationEvidence(
             "mortal_npc",
@@ -197,8 +261,8 @@ internal static class ActorMaterializationContract
             {
                 ["skills"] = hasSkills,
                 ["inventory"] = hasInventory,
-                ["fateCards"] = HasArrayEntries(npc, "fateCards"),
-                ["personalQuests"] = HasArrayEntries(npc, "personalQuests"),
+                ["fateCards"] = HasObjectArrayEntries(npc, "fateCards"),
+                ["personalQuests"] = HasObjectArrayEntries(npc, "personalQuests"),
                 ["relationships"] = hasRelationships
             },
             new Dictionary<string, bool>(StringComparer.Ordinal)
@@ -215,22 +279,11 @@ internal static class ActorMaterializationContract
                 ActorMaterializationFamily.Mortal,
                 evidence,
                 requireEnvelope: requireEnvelopeOverride ?? isNewNpc,
-                deferEvidenceConsistency: !requireEnvelopeOverride.HasValue && !isNewNpc)
+                deferEvidenceConsistency: deferEvidenceConsistencyOverride ??
+                                          (!requireEnvelopeOverride.HasValue && !isNewNpc))
             .ToList();
 
-        if (!isNewNpc &&
-            string.Equals(sectionName, "UpdateNPCs", StringComparison.OrdinalIgnoreCase) &&
-            npc.TryGetProperty(PropertyName, out _))
-        {
-            issues.Add(CreateIssue(
-                $"{context}.{PropertyName}",
-                "actor_materialization_existing_resend_forbidden",
-                "UpdateNPCs не должен повторно пересылать first-materialization envelope существующего NPC.",
-                evidence,
-                expected: "dedicated NPC delta commands without materialization",
-                actual: "materialization resent in UpdateNPCs",
-                repairHint: "Убери materialization из UpdateNPCs и меняй существующего NPC через соответствующие dedicated delta commands. Не удаляй materialization из его canonical NPCsInScene record."));
-        }
+        ValidateEquippedItemReferences(npc, context, inventoryItemIds, evidence, issues);
 
         return issues;
     }
@@ -245,7 +298,7 @@ internal static class ActorMaterializationContract
             profile,
             context,
             requireEnvelope,
-            canTradeEvidence,
+            canTradeEvidence ? true : null,
             deferEvidenceConsistency: !requireEnvelope);
     }
 
@@ -262,6 +315,16 @@ internal static class ActorMaterializationContract
             deferEvidenceConsistency: false);
     }
 
+    internal static IReadOnlyList<ValidationIssue> ValidateHistoricalAfterlifeProfile(
+        JsonElement profile,
+        string context) =>
+        ValidateAfterlifeProfileCore(
+            profile,
+            context,
+            requireEnvelope: true,
+            canTradeEvidence: null,
+            deferEvidenceConsistency: true);
+
     private static IReadOnlyList<ValidationIssue> ValidateAfterlifeProfileCore(
         JsonElement profile,
         string context,
@@ -274,23 +337,25 @@ internal static class ActorMaterializationContract
         if (string.IsNullOrWhiteSpace(actorType) || string.IsNullOrWhiteSpace(actorId))
             return Array.Empty<ValidationIssue>();
 
-        var hasStandardArts = HasPositiveNumericObjectValue(profile, "standardArts");
-        var hasSpecialArts = HasUsableSpecialArt(profile);
-        var hasAnyArt = hasStandardArts || hasSpecialArts;
-        var hasMentorAuthority = HasTrueBoolean(profile, "canTeachPlayer") ||
-                                 HasNestedTrueBoolean(profile, "mentorProfile", "canTeach") ||
-                                 HasTeachableSpecialArt(profile);
-        var hasAgency = HasObjectWithNonEmptyString(profile, "goals", "goalId") ||
-                        HasArrayEntries(profile, "personalQuests") ||
-                        HasNonNullObject(profile, "currentActivity") ||
-                        HasArrayEntries(profile, "completedActivities");
-        var hasProgressionHistory = HasArrayEntries(profile, "ledger") ||
-                                    HasArrayEntries(profile, "progressionLedger");
+        if (string.Equals(actorType, "player_soul", StringComparison.Ordinal) &&
+            string.Equals(actorId, "player_soul", StringComparison.Ordinal) &&
+            !profile.TryGetProperty(PropertyName, out _))
+        {
+            return Array.Empty<ValidationIssue>();
+        }
+
+        var hasStandardArts = HasStructuredStandardArt(profile);
+        var hasSpecialArts = HasStructuredSpecialArt(profile);
+        var canFight = HasUsableAfterlifeCombatArt(profile);
+        var canTeach = HasUsableAfterlifeMentorAuthority(profile);
+        var hasAgency = HasAfterlifeAgency(profile);
+        var hasProgressionHistory = HasObjectArrayEntries(profile, "ledger") ||
+                                    HasObjectArrayEntries(profile, "progressionLedger");
 
         var capabilityEvidence = new Dictionary<string, bool>(StringComparer.Ordinal)
         {
-            ["canFight"] = hasAnyArt,
-            ["canTeach"] = hasMentorAuthority && hasAnyArt
+            ["canFight"] = canFight,
+            ["canTeach"] = canTeach
         };
         IReadOnlySet<string>? deferredCapabilityEvidence = null;
         if (canTradeEvidence.HasValue)
@@ -309,9 +374,9 @@ internal static class ActorMaterializationContract
             {
                 ["standardArts"] = hasStandardArts,
                 ["specialArts"] = hasSpecialArts,
-                ["customStates"] = HasArrayEntries(profile, "customStates"),
-                ["fateCards"] = HasArrayEntries(profile, "fateCards"),
-                ["relationships"] = HasArrayEntries(profile, "relationships"),
+                ["customStates"] = HasObjectArrayEntries(profile, "customStates"),
+                ["fateCards"] = HasObjectArrayEntries(profile, "fateCards"),
+                ["relationships"] = HasObjectArrayEntries(profile, "relationships"),
                 ["agency"] = hasAgency,
                 ["progressionHistory"] = hasProgressionHistory
             },
@@ -465,18 +530,7 @@ internal static class ActorMaterializationContract
             return;
         }
 
-        foreach (var property in sections.EnumerateObject())
-        {
-            if (!requiredSections.Contains(property.Name))
-            {
-                issues.Add(CreateInvalidEnvelopeIssue(
-                    $"{sectionsContext}.{property.Name}",
-                    evidence,
-                    "materialization.sections содержит неизвестную секцию.",
-                    string.Join(", ", requiredSections),
-                    property.Name));
-            }
-        }
+        ValidateExactFields(sections, requiredSections, sectionsContext, evidence, issues);
 
         foreach (var section in requiredSections)
         {
@@ -578,8 +632,21 @@ internal static class ActorMaterializationContract
         ActorMaterializationEvidence evidence,
         List<ValidationIssue> issues)
     {
+        var seenFields = new HashSet<string>(StringComparer.Ordinal);
         foreach (var property in value.EnumerateObject())
         {
+            if (!seenFields.Add(property.Name))
+            {
+                issues.Add(CreateIssue(
+                    $"{context}.{property.Name}",
+                    "actor_materialization_duplicate_property",
+                    "Закрытый materialization contract не допускает повторяющиеся JSON properties.",
+                    evidence,
+                    expected: "each property appears exactly once",
+                    actual: property.Name,
+                    repairHint: "Оставь ровно одно поле с этим exact именем в текущем объекте materialization; не объединяй конфликтующие значения эвристически."));
+            }
+
             if (allowedFields.Contains(property.Name))
                 continue;
 
@@ -590,6 +657,31 @@ internal static class ActorMaterializationContract
                 string.Join(", ", allowedFields),
                 property.Name));
         }
+    }
+
+    private static void ValidateCanonicalActorType(
+        ActorMaterializationFamily family,
+        string context,
+        ActorMaterializationEvidence evidence,
+        List<ValidationIssue> issues)
+    {
+        var isValid = family == ActorMaterializationFamily.Mortal
+            ? string.Equals(evidence.ActorType, "mortal_npc", StringComparison.Ordinal)
+            : AfterlifeActorTypes.Contains(evidence.ActorType);
+        if (isValid)
+            return;
+
+        var expected = family == ActorMaterializationFamily.Mortal
+            ? "mortal_npc"
+            : string.Join(", ", AfterlifeActorTypes.OrderBy(value => value, StringComparer.Ordinal));
+        issues.Add(CreateIssue(
+            $"{context}.actorType",
+            "actor_materialization_invalid_actor_type",
+            "Actor Materialization использует неподдерживаемый или неканонический actorType.",
+            evidence,
+            expected: expected,
+            actual: evidence.ActorType,
+            repairHint: "Используй exact canonical non-player actorType token. player_soul не участвует в Actor Materialization contract."));
     }
 
     private static void ValidateNonEmptyString(
@@ -643,10 +735,202 @@ internal static class ActorMaterializationContract
         return false;
     }
 
-    private static bool HasArrayEntries(JsonElement value, string propertyName) =>
-        value.TryGetProperty(propertyName, out var property) &&
-        property.ValueKind == JsonValueKind.Array &&
-        property.GetArrayLength() > 0;
+    internal static bool HasUsableMortalCombatSkill(JsonElement npc) =>
+        HasArrayObjectMatching(npc, "activeSkills", IsStructuredMortalSkill) ||
+        HasArrayObjectMatching(npc, "passiveSkills", IsStructuredMortalSkill);
+
+    internal static bool HasUsableMortalTeacherAuthority(JsonElement npc)
+    {
+        if (!npc.TryGetProperty("teacherProfile", out var teacherProfile) ||
+            teacherProfile.ValueKind != JsonValueKind.Object ||
+            !HasTrueBoolean(teacherProfile, "canTeach"))
+        {
+            return false;
+        }
+
+        return HasArrayObjectMatching(teacherProfile, "skills", IsUsableMortalTeacherSkill);
+    }
+
+    internal static bool HasExplicitMortalTradeAuthority(JsonElement npc)
+    {
+        if (!npc.TryGetProperty("tradeState", out var tradeState) ||
+            tradeState.ValueKind != JsonValueKind.Object ||
+            !HasTrueBoolean(tradeState, "canTrade"))
+        {
+            return false;
+        }
+
+        return NpcTradeService.IsValidMerchantProfileCode(
+            ReadFirstNonEmptyString(tradeState, "merchantProfile"));
+    }
+
+    internal static bool HasUsableAfterlifeCombatArt(JsonElement profile) =>
+        HasPositiveNumericObjectValue(profile, "standardArts") ||
+        HasArrayObjectMatching(profile, "specialArts", specialArt =>
+            IsStructuredSpecialArt(specialArt) &&
+            specialArt.TryGetProperty("tier", out var tier) &&
+            tier.TryGetInt32(out var tierValue) &&
+            tierValue > 0);
+
+    internal static bool HasUsableAfterlifeMentorAuthority(JsonElement profile)
+    {
+        var hasShowcase = HasStructuredMentorShowcase(profile);
+        var hasRootAuthority = HasTrueBoolean(profile, "canTeachPlayer");
+        var hasMentorProfileAuthority = HasNestedTrueBoolean(profile, "mentorProfile", "canTeach");
+        var hasTeachableSpecialArt = HasArrayObjectMatching(profile, "specialArts", specialArt =>
+            IsStructuredSpecialArt(specialArt) && HasTrueBoolean(specialArt, "canTeachPlayer"));
+        var hasDeclaredAuthority = hasShowcase ||
+                                   hasRootAuthority ||
+                                   hasMentorProfileAuthority ||
+                                   hasTeachableSpecialArt;
+        var hasTeachableContent = hasShowcase ||
+                                  hasTeachableSpecialArt ||
+                                  ((hasRootAuthority || hasMentorProfileAuthority) &&
+                                   (HasStructuredStandardArt(profile) || HasStructuredSpecialArt(profile)));
+        return hasDeclaredAuthority && hasTeachableContent;
+    }
+
+    internal static bool HasAfterlifeAgency(JsonElement profile) =>
+        HasMeaningfulObject(profile, "goals") ||
+        HasObjectArrayEntries(profile, "personalQuests") ||
+        HasMeaningfulObject(profile, "currentActivity") ||
+        HasObjectArrayEntries(profile, "completedActivities") ||
+        HasObjectArrayEntries(profile, "masks") ||
+        !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(profile, "activeMaskId")) ||
+        HasMeaningfulObject(profile, "progressionStrategy") ||
+        HasMeaningfulDisposition(profile);
+
+    private static HashSet<string> ReadStructuredInventoryItemIds(JsonElement npc)
+    {
+        var ids = new HashSet<string>(StringComparer.Ordinal);
+        if (!npc.TryGetProperty("inventory", out var inventory) || inventory.ValueKind != JsonValueKind.Array)
+            return ids;
+
+        foreach (var item in inventory.EnumerateArray())
+        {
+            if (item.ValueKind != JsonValueKind.Object)
+                continue;
+
+            foreach (var identityField in InventoryIdentityFields)
+            {
+                var itemId = ReadNonEmptyString(item, identityField);
+                if (itemId != null)
+                    ids.Add(itemId);
+            }
+        }
+
+        return ids;
+    }
+
+    private static void ValidateEquippedItemReferences(
+        JsonElement npc,
+        string context,
+        IReadOnlySet<string> inventoryItemIds,
+        ActorMaterializationEvidence evidence,
+        List<ValidationIssue> issues)
+    {
+        if (!npc.TryGetProperty("equippedItems", out var equippedItems) ||
+            equippedItems.ValueKind != JsonValueKind.Object)
+        {
+            return;
+        }
+
+        foreach (var slot in equippedItems.EnumerateObject())
+        {
+            if (slot.Value.ValueKind == JsonValueKind.Null)
+                continue;
+
+            var reference = slot.Value.ValueKind == JsonValueKind.String
+                ? slot.Value.GetString()
+                : null;
+            if (!string.IsNullOrWhiteSpace(reference) && inventoryItemIds.Contains(reference))
+                continue;
+
+            issues.Add(CreateIssue(
+                $"{context}.equippedItems.{slot.Name}",
+                "actor_materialization_inventory_reference_mismatch",
+                "Каждая непустая ссылка equippedItems должна разрешаться в структурированный предмет inventory этого NPC.",
+                evidence,
+                section: "inventory",
+                expected: "exact itemId/existedId/initialId/id from this NPC inventory",
+                actual: reference ?? slot.Value.ToString(),
+                repairHint: "Исправь equippedItems на exact ID существующего предмета этого NPC либо очисти слот; не создавай предмет в materialization metadata."));
+        }
+    }
+
+    private static bool IsStructuredMortalSkill(JsonElement skill) =>
+        skill.ValueKind == JsonValueKind.Object &&
+        !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(skill, "skillId", "id"));
+
+    private static bool IsUsableMortalTeacherSkill(JsonElement skill)
+    {
+        if (!IsStructuredMortalSkill(skill) ||
+            string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(skill, "skillName", "displayName", "name")) ||
+            !skill.TryGetProperty("masteryLevel", out var masteryLevel) ||
+            masteryLevel.ValueKind != JsonValueKind.Number ||
+            !masteryLevel.TryGetInt32(out var mastery) ||
+            mastery <= 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool HasStructuredStandardArt(JsonElement profile)
+    {
+        if (!profile.TryGetProperty("standardArts", out var standardArts) ||
+            standardArts.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        return standardArts.EnumerateObject().Any(entry =>
+            entry.Value.ValueKind == JsonValueKind.Number &&
+            entry.Value.TryGetInt32(out var tier) &&
+            tier >= 0);
+    }
+
+    private static bool HasStructuredSpecialArt(JsonElement profile) =>
+        HasArrayObjectMatching(profile, "specialArts", IsStructuredSpecialArt);
+
+    private static bool IsStructuredSpecialArt(JsonElement specialArt) =>
+        specialArt.ValueKind == JsonValueKind.Object &&
+        !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(specialArt, "artId", "specialArtId", "id")) &&
+        specialArt.TryGetProperty("tier", out var tier) &&
+        tier.ValueKind == JsonValueKind.Number &&
+        tier.TryGetInt32(out var tierValue) &&
+        tierValue >= 0;
+
+    private static bool HasStructuredMentorShowcase(JsonElement profile)
+    {
+        if (!profile.TryGetProperty("mentorTrainingShowcase", out var showcase) ||
+            showcase.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        return HasArrayObjectMatching(showcase, "offers", offer =>
+            !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(offer, "offerId")) &&
+            !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(offer, "targetKind")) &&
+            !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(offer, "targetId")) &&
+            !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(offer, "targetName", "displayName", "name")));
+    }
+
+    private static bool HasObjectArrayEntries(JsonElement value, string propertyName) =>
+        HasArrayObjectMatching(value, propertyName, item => item.EnumerateObject().Any());
+
+    private static bool HasArrayObjectMatching(
+        JsonElement value,
+        string propertyName,
+        Func<JsonElement, bool> predicate)
+    {
+        if (!value.TryGetProperty(propertyName, out var array) || array.ValueKind != JsonValueKind.Array)
+            return false;
+
+        return array.EnumerateArray().Any(item =>
+            item.ValueKind == JsonValueKind.Object && predicate(item));
+    }
 
     private static bool HasPositiveNumericObjectValue(JsonElement value, string propertyName)
     {
@@ -659,38 +943,6 @@ internal static class ActorMaterializationContract
             number > 0);
     }
 
-    private static bool HasUsableSpecialArt(JsonElement profile)
-    {
-        if (!profile.TryGetProperty("specialArts", out var specialArts) || specialArts.ValueKind != JsonValueKind.Array)
-            return false;
-
-        foreach (var specialArt in specialArts.EnumerateArray())
-        {
-            if (specialArt.ValueKind != JsonValueKind.Object)
-                continue;
-
-            if (specialArt.TryGetProperty("tier", out var tier) &&
-                tier.ValueKind == JsonValueKind.Number &&
-                tier.TryGetInt32(out var tierValue) &&
-                tierValue > 0)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static bool HasTeachableSpecialArt(JsonElement profile)
-    {
-        if (!profile.TryGetProperty("specialArts", out var specialArts) || specialArts.ValueKind != JsonValueKind.Array)
-            return false;
-
-        return specialArts.EnumerateArray().Any(specialArt =>
-            specialArt.ValueKind == JsonValueKind.Object &&
-            HasTrueBoolean(specialArt, "canTeachPlayer"));
-    }
-
     private static bool HasTrueBoolean(JsonElement value, string propertyName) =>
         value.TryGetProperty(propertyName, out var property) && property.ValueKind == JsonValueKind.True;
 
@@ -699,16 +951,24 @@ internal static class ActorMaterializationContract
         nested.ValueKind == JsonValueKind.Object &&
         HasTrueBoolean(nested, booleanPropertyName);
 
-    private static bool HasObjectWithNonEmptyString(
-        JsonElement value,
-        string objectPropertyName,
-        string stringPropertyName) =>
-        value.TryGetProperty(objectPropertyName, out var nested) &&
-        nested.ValueKind == JsonValueKind.Object &&
-        !string.IsNullOrWhiteSpace(ReadNonEmptyString(nested, stringPropertyName));
+    private static bool HasMeaningfulObject(JsonElement value, string propertyName) =>
+        value.TryGetProperty(propertyName, out var property) &&
+        property.ValueKind == JsonValueKind.Object &&
+        property.EnumerateObject().Any(entry => entry.Value.ValueKind != JsonValueKind.Null);
 
-    private static bool HasNonNullObject(JsonElement value, string propertyName) =>
-        value.TryGetProperty(propertyName, out var property) && property.ValueKind == JsonValueKind.Object;
+    private static bool HasMeaningfulDisposition(JsonElement profile)
+    {
+        if (!profile.TryGetProperty("disposition", out var disposition))
+            return false;
+
+        return disposition.ValueKind switch
+        {
+            JsonValueKind.Object => disposition.EnumerateObject().Any(entry =>
+                entry.Value.ValueKind != JsonValueKind.Null),
+            JsonValueKind.String => !string.IsNullOrWhiteSpace(disposition.GetString()),
+            _ => false
+        };
+    }
 
     private static string Describe(JsonElement value, string propertyName) =>
         value.TryGetProperty(propertyName, out var property)

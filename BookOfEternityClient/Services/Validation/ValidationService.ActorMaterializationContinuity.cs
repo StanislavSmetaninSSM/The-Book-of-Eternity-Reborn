@@ -48,22 +48,74 @@ public partial class ValidationService
 
     private readonly record struct MortalActorMaterializationPreTurnState(
         ActorMaterializationPromotionSignals PromotionSignals,
-        string? HistoricalEnvelopeJson)
+        string? HistoricalEnvelopeJson,
+        IReadOnlySet<string> HistoricalEnvelopeSections)
     {
         public MortalActorMaterializationPreTurnState Merge(MortalActorMaterializationPreTurnState other) =>
             new(
                 PromotionSignals.Merge(other.PromotionSignals),
-                HistoricalEnvelopeJson ?? other.HistoricalEnvelopeJson);
+                HistoricalEnvelopeJson ?? other.HistoricalEnvelopeJson,
+                MergeActorMaterializationSectionSets(
+                    HistoricalEnvelopeSections,
+                    other.HistoricalEnvelopeSections));
     }
 
     private readonly record struct AfterlifeActorMaterializationPreTurnState(
         AfterlifeActorMaterializationPromotionSignals PromotionSignals,
-        string? HistoricalEnvelopeJson)
+        string? HistoricalEnvelopeJson,
+        string ActorType,
+        string ActorId)
     {
         public AfterlifeActorMaterializationPreTurnState Merge(AfterlifeActorMaterializationPreTurnState other) =>
             new(
                 PromotionSignals.Merge(other.PromotionSignals),
-                HistoricalEnvelopeJson ?? other.HistoricalEnvelopeJson);
+                HistoricalEnvelopeJson ?? other.HistoricalEnvelopeJson,
+                ActorType,
+                ActorId);
+    }
+
+    private static IReadOnlySet<string> MergeActorMaterializationSectionSets(
+        IReadOnlySet<string> left,
+        IReadOnlySet<string> right)
+    {
+        var result = new HashSet<string>(left, StringComparer.Ordinal);
+        result.UnionWith(right);
+        return result;
+    }
+
+    private static void AddExistingMortalActorMaterializationResendIssue(
+        string context,
+        string actorId,
+        List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            $"{context}.{ActorMaterializationContract.PropertyName}",
+            IssueSeverity.Error,
+            "UpdateNPCs не должен повторно пересылать first-materialization envelope персонажа, уже материализованного в validated pre-turn authority.",
+            code: "actor_materialization_existing_resend_forbidden",
+            actor: $"mortal_npc:{actorId}",
+            section: "ActorMaterialization",
+            expected: "dedicated NPC delta without materialization",
+            actual: "materialization resent for validated pre-turn actor",
+            repairHint: "Убери materialization из UpdateNPCs и сохрани исторический envelope в canonical NPCsInScene record без изменений."));
+    }
+
+    private static void AddMissingHistoricalActorMaterializationEnvelopeIssue(
+        string statePath,
+        string actorType,
+        string actorId,
+        List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            $"{statePath}.{ActorMaterializationContract.PropertyName}",
+            IssueSeverity.Error,
+            "Исторический materialization envelope существующего персонажа нельзя удалять вместе с его canonical carrier.",
+            code: "actor_materialization_historical_envelope_changed",
+            actor: $"{actorType}:{actorId}",
+            section: "ActorMaterialization",
+            expected: "canonical actor carrier with validated pre-turn materialization envelope",
+            actual: "canonical actor carrier missing",
+            repairHint: "Восстанови canonical actor record и materialization из validated pre-turn authority; отдельный delta без canonical carrier не сохраняет историческую authority."));
     }
 
     private async Task ValidateAcceptedTurnActorMaterializationCompletenessAsync(List<ValidationIssue> issues)
@@ -74,24 +126,26 @@ public partial class ValidationService
 
     private async Task ValidateAcceptedTurnMortalActorMaterializationCompletenessAsync(List<ValidationIssue> issues)
     {
-        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(MortalActorMaterializationStatePath);
-        if (preTurnJson == null)
-            return;
-
         var currentJson = await _fs.ReadFileAsync(MortalActorMaterializationStatePath);
         if (string.IsNullOrWhiteSpace(currentJson))
             return;
+        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(MortalActorMaterializationStatePath);
 
         try
         {
-            using var preTurnDocument = JsonDocument.Parse(preTurnJson);
             using var currentDocument = JsonDocument.Parse(currentJson);
-            if (currentDocument.RootElement.ValueKind != JsonValueKind.Object ||
-                !TryReadCanonicalMortalActorStates(preTurnDocument.RootElement, out var preTurnActors))
-            {
+            if (currentDocument.RootElement.ValueKind != JsonValueKind.Object)
                 return;
-            }
 
+            issues.AddRange(ValidateCurrentMortalMaterializationIds(currentDocument.RootElement));
+            if (preTurnJson == null)
+                return;
+
+            using var preTurnDocument = JsonDocument.Parse(preTurnJson);
+            if (!TryReadCanonicalMortalActorStates(preTurnDocument.RootElement, out var preTurnActors))
+                return;
+
+            var evaluatedHistoricalActors = new HashSet<string>(StringComparer.Ordinal);
             foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
             {
                 if (!currentDocument.RootElement.TryGetProperty(sectionName, out var actors) ||
@@ -113,6 +167,31 @@ public partial class ValidationService
                     {
                         if (previousState.HistoricalEnvelopeJson != null)
                         {
+                            var hasCurrentEnvelope = actor.TryGetProperty(
+                                ActorMaterializationContract.PropertyName,
+                                out _);
+                            var isUpdateSection = string.Equals(
+                                sectionName,
+                                GuardianPolicyContracts.NpcCoreUpdateSectionName,
+                                StringComparison.Ordinal);
+                            var wasHistoricalCarrierInSameSection =
+                                previousState.HistoricalEnvelopeSections.Contains(sectionName);
+                            if (isUpdateSection && !wasHistoricalCarrierInSameSection)
+                            {
+                                if (!hasCurrentEnvelope)
+                                    continue;
+
+                                AddExistingMortalActorMaterializationResendIssue(
+                                    context,
+                                    actorId,
+                                    issues);
+                                continue;
+                            }
+
+                            evaluatedHistoricalActors.Add(actorId);
+                            issues.AddRange(ActorMaterializationContract.ValidateHistoricalMortalNpc(
+                                actor,
+                                context));
                             ValidateHistoricalActorMaterializationEnvelope(
                                 actor,
                                 context,
@@ -134,6 +213,20 @@ public partial class ValidationService
                         requireEnvelope: true));
                 }
             }
+
+            foreach (var (actorId, previousState) in preTurnActors)
+            {
+                if (previousState.HistoricalEnvelopeJson != null &&
+                    !evaluatedHistoricalActors.Contains(actorId))
+                {
+                    AddMissingHistoricalActorMaterializationEnvelopeIssue(
+                        MortalActorMaterializationStatePath,
+                        "mortal_npc",
+                        actorId,
+                        issues);
+                }
+            }
+
         }
         catch (JsonException)
         {
@@ -141,11 +234,32 @@ public partial class ValidationService
         }
     }
 
+    private static IReadOnlyList<ValidationIssue> ValidateCurrentMortalMaterializationIds(JsonElement root)
+    {
+        var currentActors = new List<(JsonElement Actor, string Context, string ActorType, string ActorId)>();
+        foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+        {
+            if (!root.TryGetProperty(sectionName, out var actors) || actors.ValueKind != JsonValueKind.Array)
+                continue;
+
+            var index = 0;
+            foreach (var actor in actors.EnumerateArray())
+            {
+                var context = $"{MortalActorMaterializationStatePath}.{sectionName}[{index++}]";
+                var actorId = ReadCanonicalMortalActorId(actor);
+                if (actorId != null)
+                    currentActors.Add((actor, context, "mortal_npc", actorId));
+            }
+        }
+
+        return ActorMaterializationContract.ValidateUniqueMaterializationIds(currentActors);
+    }
+
     private static bool TryReadCanonicalMortalActorStates(
         JsonElement root,
         out Dictionary<string, MortalActorMaterializationPreTurnState> result)
     {
-        result = new Dictionary<string, MortalActorMaterializationPreTurnState>(StringComparer.OrdinalIgnoreCase);
+        result = new Dictionary<string, MortalActorMaterializationPreTurnState>(StringComparer.Ordinal);
         if (root.ValueKind != JsonValueKind.Object)
             return false;
 
@@ -162,9 +276,13 @@ public partial class ValidationService
                 if (actorId == null)
                     continue;
 
+                var historicalEnvelopeJson = ReadHistoricalActorMaterializationEnvelopeJson(actor);
                 var state = new MortalActorMaterializationPreTurnState(
                     ReadMortalActorMaterializationPromotionSignals(actor),
-                    ReadHistoricalActorMaterializationEnvelopeJson(actor));
+                    historicalEnvelopeJson,
+                    historicalEnvelopeJson == null
+                        ? new HashSet<string>(StringComparer.Ordinal)
+                        : new HashSet<string>(StringComparer.Ordinal) { sectionName });
                 result[actorId] = result.TryGetValue(actorId, out var existing)
                     ? existing.Merge(state)
                     : state;
@@ -186,7 +304,7 @@ public partial class ValidationService
 
             var actorId = value.GetString();
             if (!string.IsNullOrWhiteSpace(actorId))
-                return actorId.Trim();
+                return actorId;
         }
 
         return null;
@@ -202,23 +320,13 @@ public partial class ValidationService
                                  currentActivity.ValueKind == JsonValueKind.Object;
 
         return new ActorMaterializationPromotionSignals(
-            CanTeach: HasActorMaterializationNestedTrueBoolean(actor, "teacherProfile", "canTeach"),
-            CanTrade: HasActorMaterializationNestedTrueBoolean(actor, "tradeState", "canTrade"),
-            CanFight: HasActorMaterializationArrayEntries(actor, "activeSkills") ||
-                      HasActorMaterializationArrayEntries(actor, "passiveSkills"),
+            CanTeach: ActorMaterializationContract.HasUsableMortalTeacherAuthority(actor),
+            CanTrade: ActorMaterializationContract.HasExplicitMortalTradeAuthority(actor),
+            CanFight: ActorMaterializationContract.HasUsableMortalCombatSkill(actor),
             HasActorBrainScope: hasPlans ||
                                 hasCurrentActivity ||
                                 HasActorMaterializationArrayEntries(actor, "completedActivities"));
     }
-
-    private static bool HasActorMaterializationNestedTrueBoolean(
-        JsonElement value,
-        string objectPropertyName,
-        string booleanPropertyName) =>
-        value.TryGetProperty(objectPropertyName, out var nested) &&
-        nested.ValueKind == JsonValueKind.Object &&
-        nested.TryGetProperty(booleanPropertyName, out var booleanValue) &&
-        booleanValue.ValueKind == JsonValueKind.True;
 
     private static bool HasActorMaterializationArrayEntries(JsonElement value, string propertyName) =>
         value.TryGetProperty(propertyName, out var array) &&
@@ -228,20 +336,23 @@ public partial class ValidationService
     private async Task ValidateAcceptedTurnAfterlifeActorMaterializationCompletenessAsync(
         List<ValidationIssue> issues)
     {
-        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(AfterlifeActorMaterializationStatePath);
-        if (preTurnJson == null)
-            return;
-
         var currentJson = await _fs.ReadFileAsync(AfterlifeActorMaterializationStatePath);
         if (string.IsNullOrWhiteSpace(currentJson))
             return;
+        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(AfterlifeActorMaterializationStatePath);
 
         try
         {
-            using var preTurnDocument = JsonDocument.Parse(preTurnJson);
             using var currentDocument = JsonDocument.Parse(currentJson);
-            if (currentDocument.RootElement.ValueKind != JsonValueKind.Object ||
-                !TryReadCanonicalAfterlifeActorStates(preTurnDocument.RootElement, out var preTurnActors) ||
+            if (currentDocument.RootElement.ValueKind != JsonValueKind.Object)
+                return;
+
+            issues.AddRange(ValidateCurrentAfterlifeMaterializationIds(currentDocument.RootElement));
+            if (preTurnJson == null)
+                return;
+
+            using var preTurnDocument = JsonDocument.Parse(preTurnJson);
+            if (!TryReadCanonicalAfterlifeActorStates(preTurnDocument.RootElement, out var preTurnActors) ||
                 !currentDocument.RootElement.TryGetProperty(
                     AfterlifeEntityProfileState.ProfilesProperty,
                     out var profiles) ||
@@ -250,6 +361,7 @@ public partial class ValidationService
                 return;
             }
 
+            var evaluatedHistoricalActors = new HashSet<string>(StringComparer.Ordinal);
             var index = 0;
             foreach (var profile in profiles.EnumerateArray())
             {
@@ -259,8 +371,8 @@ public partial class ValidationService
                         out var actorType,
                         out var actorId,
                         out var identityKey) ||
-                    (string.Equals(actorType, "player_soul", StringComparison.OrdinalIgnoreCase) &&
-                     string.Equals(actorId, "player_soul", StringComparison.OrdinalIgnoreCase)))
+                    (string.Equals(actorType, "player_soul", StringComparison.Ordinal) &&
+                     string.Equals(actorId, "player_soul", StringComparison.Ordinal)))
                 {
                     continue;
                 }
@@ -270,6 +382,10 @@ public partial class ValidationService
                 {
                     if (previousState.HistoricalEnvelopeJson != null)
                     {
+                        evaluatedHistoricalActors.Add(identityKey);
+                        issues.AddRange(ActorMaterializationContract.ValidateHistoricalAfterlifeProfile(
+                            profile,
+                            context));
                         ValidateHistoricalActorMaterializationEnvelope(
                             profile,
                             context,
@@ -290,6 +406,20 @@ public partial class ValidationService
                     context,
                     requireEnvelope: true));
             }
+
+            foreach (var (identityKey, previousState) in preTurnActors)
+            {
+                if (previousState.HistoricalEnvelopeJson != null &&
+                    !evaluatedHistoricalActors.Contains(identityKey))
+                {
+                    AddMissingHistoricalActorMaterializationEnvelopeIssue(
+                        AfterlifeActorMaterializationStatePath,
+                        previousState.ActorType,
+                        previousState.ActorId,
+                        issues);
+                }
+            }
+
         }
         catch (JsonException)
         {
@@ -297,12 +427,42 @@ public partial class ValidationService
         }
     }
 
+    private static IReadOnlyList<ValidationIssue> ValidateCurrentAfterlifeMaterializationIds(JsonElement root)
+    {
+        var currentActors = new List<(JsonElement Actor, string Context, string ActorType, string ActorId)>();
+        if (!root.TryGetProperty(AfterlifeEntityProfileState.ProfilesProperty, out var profiles) ||
+            profiles.ValueKind != JsonValueKind.Array)
+        {
+            return Array.Empty<ValidationIssue>();
+        }
+
+        var index = 0;
+        foreach (var profile in profiles.EnumerateArray())
+        {
+            var context = $"{AfterlifeActorMaterializationStatePath}.{AfterlifeEntityProfileState.ProfilesProperty}[{index++}]";
+            if (!TryReadCanonicalAfterlifeActorIdentity(
+                    profile,
+                    out var actorType,
+                    out var actorId,
+                    out _) ||
+                (string.Equals(actorType, "player_soul", StringComparison.Ordinal) &&
+                 string.Equals(actorId, "player_soul", StringComparison.Ordinal)))
+            {
+                continue;
+            }
+
+            currentActors.Add((profile, context, actorType, actorId));
+        }
+
+        return ActorMaterializationContract.ValidateUniqueMaterializationIds(currentActors);
+    }
+
     private static bool TryReadCanonicalAfterlifeActorStates(
         JsonElement root,
         out Dictionary<string, AfterlifeActorMaterializationPreTurnState> result)
     {
         result = new Dictionary<string, AfterlifeActorMaterializationPreTurnState>(
-            StringComparer.OrdinalIgnoreCase);
+            StringComparer.Ordinal);
         if (root.ValueKind != JsonValueKind.Object)
             return false;
         if (!root.TryGetProperty(AfterlifeEntityProfileState.ProfilesProperty, out var profiles))
@@ -314,16 +474,20 @@ public partial class ValidationService
         {
             if (!TryReadCanonicalAfterlifeActorIdentity(
                     profile,
-                    out _,
-                    out _,
-                    out var identityKey))
+                    out var actorType,
+                    out var actorId,
+                    out var identityKey) ||
+                (string.Equals(actorType, "player_soul", StringComparison.Ordinal) &&
+                 string.Equals(actorId, "player_soul", StringComparison.Ordinal)))
             {
                 continue;
             }
 
             var state = new AfterlifeActorMaterializationPreTurnState(
                 ReadAfterlifeActorMaterializationPromotionSignals(profile),
-                ReadHistoricalActorMaterializationEnvelopeJson(profile));
+                ReadHistoricalActorMaterializationEnvelopeJson(profile),
+                actorType,
+                actorId);
             result[identityKey] = result.TryGetValue(identityKey, out var existing)
                 ? existing.Merge(state)
                 : state;
@@ -363,7 +527,7 @@ public partial class ValidationService
 
             var text = property.GetString();
             if (!string.IsNullOrWhiteSpace(text))
-                return text.Trim();
+                return text;
         }
 
         return null;
@@ -372,69 +536,14 @@ public partial class ValidationService
     private static AfterlifeActorMaterializationPromotionSignals
         ReadAfterlifeActorMaterializationPromotionSignals(JsonElement profile)
     {
-        var hasMentorAuthority = HasActorMaterializationTrueBoolean(profile, "canTeachPlayer") ||
-                                 HasActorMaterializationNestedTrueBoolean(profile, "mentorProfile", "canTeach") ||
-                                 HasActorMaterializationTeachableSpecialArt(profile);
-        var hasCombatAuthority = HasActorMaterializationPositiveNumericObjectValue(profile, "standardArts") ||
-                                 HasActorMaterializationUsableSpecialArt(profile);
-        var hasActorBrainScope =
-            (profile.TryGetProperty("goals", out var goals) && goals.ValueKind == JsonValueKind.Object) ||
-            (profile.TryGetProperty("currentActivity", out var currentActivity) &&
-             currentActivity.ValueKind == JsonValueKind.Object) ||
-            HasActorMaterializationArrayEntries(profile, "personalQuests") ||
-            HasActorMaterializationArrayEntries(profile, "completedActivities") ||
+        var hasActorBrainScope = ActorMaterializationContract.HasAfterlifeAgency(profile) ||
             HasActorMaterializationArrayEntries(profile, "ledger") ||
             HasActorMaterializationArrayEntries(profile, "progressionLedger");
 
         return new AfterlifeActorMaterializationPromotionSignals(
-            CanTeach: hasMentorAuthority,
-            CanFight: hasCombatAuthority,
+            CanTeach: ActorMaterializationContract.HasUsableAfterlifeMentorAuthority(profile),
+            CanFight: ActorMaterializationContract.HasUsableAfterlifeCombatArt(profile),
             HasActorBrainScope: hasActorBrainScope);
-    }
-
-    private static bool HasActorMaterializationTrueBoolean(JsonElement value, string propertyName) =>
-        value.TryGetProperty(propertyName, out var property) && property.ValueKind == JsonValueKind.True;
-
-    private static bool HasActorMaterializationPositiveNumericObjectValue(
-        JsonElement value,
-        string propertyName)
-    {
-        if (!value.TryGetProperty(propertyName, out var property) || property.ValueKind != JsonValueKind.Object)
-            return false;
-
-        return property.EnumerateObject().Any(entry =>
-            entry.Value.ValueKind == JsonValueKind.Number &&
-            entry.Value.TryGetInt32(out var number) &&
-            number > 0);
-    }
-
-    private static bool HasActorMaterializationUsableSpecialArt(JsonElement profile)
-    {
-        if (!profile.TryGetProperty("specialArts", out var specialArts) ||
-            specialArts.ValueKind != JsonValueKind.Array)
-        {
-            return false;
-        }
-
-        return specialArts.EnumerateArray().Any(specialArt =>
-            specialArt.ValueKind == JsonValueKind.Object &&
-            specialArt.TryGetProperty("tier", out var tier) &&
-            tier.ValueKind == JsonValueKind.Number &&
-            tier.TryGetInt32(out var tierValue) &&
-            tierValue > 0);
-    }
-
-    private static bool HasActorMaterializationTeachableSpecialArt(JsonElement profile)
-    {
-        if (!profile.TryGetProperty("specialArts", out var specialArts) ||
-            specialArts.ValueKind != JsonValueKind.Array)
-        {
-            return false;
-        }
-
-        return specialArts.EnumerateArray().Any(specialArt =>
-            specialArt.ValueKind == JsonValueKind.Object &&
-            HasActorMaterializationTrueBoolean(specialArt, "canTeachPlayer"));
     }
 
     private static string? ReadHistoricalActorMaterializationEnvelopeJson(JsonElement actor) =>
