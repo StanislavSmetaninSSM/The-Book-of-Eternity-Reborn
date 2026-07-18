@@ -817,6 +817,62 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         Assert.False(CanReadCanonicalMortalActorSnapshotAuthority(root.ToJsonString()));
     }
 
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_UnusableMortalSnapshot_ReportsAuthorityError()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var preTurnRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "ambiguous_snapshot_actor",
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false))!.AsObject();
+        preTurnRoot["NPCsInScene"]!.AsArray().Add(
+            preTurnRoot["NPCsInScene"]![0]!.DeepClone());
+        var currentJson = BuildMortalActorStateJson(
+            "ambiguous_snapshot_actor",
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false);
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnRoot.ToJsonString());
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_pre_turn_authority_unusable" &&
+            issue.FilePath == path);
+    }
+
+    [Fact]
+    public async Task ValidateResponse_HistoricalCarrierWithEnvelopeFreeDelta_RemainsUsableNextTurn()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var preTurnRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "historical_actor_with_delta",
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        preTurnRoot["UpdateNPCs"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["NPCId"] = "historical_actor_with_delta",
+                ["plans"] = "Продолжить работу после принятого хода."
+            }
+        };
+        var currentJson = BuildMortalActorStateJson(
+            "new_actor_after_historical_delta",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnRoot.ToJsonString());
+
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+    }
+
     [Theory]
     [InlineData(63, true)]
     [InlineData(64, false)]

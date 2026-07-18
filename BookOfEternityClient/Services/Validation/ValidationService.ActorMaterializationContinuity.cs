@@ -21,13 +21,53 @@ public partial class ValidationService
             (CanTrade && !previous.CanTrade) ||
             (CanFight && !previous.CanFight) ||
             (HasActorBrainScope && !previous.HasActorBrainScope);
+    }
 
-        public ActorMaterializationPromotionSignals Merge(ActorMaterializationPromotionSignals other) =>
+    private readonly record struct MortalActorMaterializationPromotionAuthority(
+        bool? CanTeach,
+        bool? CanTrade,
+        bool? CanFight,
+        bool? HasActorBrainScope)
+    {
+        public ActorMaterializationPromotionSignals ToSignals() =>
             new(
-                CanTeach || other.CanTeach,
-                CanTrade || other.CanTrade,
-                CanFight || other.CanFight,
-                HasActorBrainScope || other.HasActorBrainScope);
+                CanTeach == true,
+                CanTrade == true,
+                CanFight == true,
+                HasActorBrainScope == true);
+
+        public bool TryMerge(
+            MortalActorMaterializationPromotionAuthority other,
+            out MortalActorMaterializationPromotionAuthority merged)
+        {
+            merged = default;
+            if (!TryMergeOptionalSignal(CanTeach, other.CanTeach, out var canTeach) ||
+                !TryMergeOptionalSignal(CanTrade, other.CanTrade, out var canTrade) ||
+                !TryMergeOptionalSignal(CanFight, other.CanFight, out var canFight) ||
+                !TryMergeOptionalSignal(
+                    HasActorBrainScope,
+                    other.HasActorBrainScope,
+                    out var hasActorBrainScope))
+            {
+                return false;
+            }
+
+            merged = new MortalActorMaterializationPromotionAuthority(
+                canTeach,
+                canTrade,
+                canFight,
+                hasActorBrainScope);
+            return true;
+        }
+
+        private static bool TryMergeOptionalSignal(
+            bool? left,
+            bool? right,
+            out bool? merged)
+        {
+            merged = left ?? right;
+            return !left.HasValue || !right.HasValue || left.Value == right.Value;
+        }
     }
 
     private readonly record struct AfterlifeActorMaterializationPromotionSignals(
@@ -49,9 +89,13 @@ public partial class ValidationService
     }
 
     private readonly record struct MortalActorMaterializationPreTurnState(
-        ActorMaterializationPromotionSignals PromotionSignals,
+        MortalActorMaterializationPromotionAuthority PromotionAuthority,
         string? HistoricalEnvelopeJson,
-        IReadOnlySet<string> HistoricalEnvelopeSections);
+        IReadOnlySet<string> HistoricalEnvelopeSections)
+    {
+        public ActorMaterializationPromotionSignals PromotionSignals =>
+            PromotionAuthority.ToSignals();
+    }
 
     private readonly record struct MortalActorMaterializationPreTurnAuthority(
         ValidatedPendingTurnSnapshotStatus Status,
@@ -115,6 +159,20 @@ public partial class ValidationService
             repairHint: "Восстанови canonical actor record и materialization из validated pre-turn authority; отдельный delta без canonical carrier не сохраняет историческую authority."));
     }
 
+    private static void AddUnusableMortalActorMaterializationPreTurnAuthorityIssue(
+        List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            MortalActorMaterializationStatePath,
+            IssueSeverity.Error,
+            "Validated pre-turn authority персонажей неоднозначна или повреждена; проверка materialization continuity не может быть пропущена.",
+            code: "actor_materialization_pre_turn_authority_unusable",
+            section: "ActorMaterialization",
+            expected: "readable unambiguous validated pre-turn NPC authority",
+            actual: "malformed, duplicate, conflicting, or lossy NPC authority",
+            repairHint: "Откати текущий ход к client-owned validated snapshot и восстанови snapshot через штатный rollback/recovery; не переписывай pre-turn authority догадками ГМа."));
+    }
+
     private async Task ValidateAcceptedTurnActorMaterializationCompletenessAsync(List<ValidationIssue> issues)
     {
         await ValidateAcceptedTurnMortalActorMaterializationCompletenessAsync(issues);
@@ -127,10 +185,12 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(currentJson))
             return;
         var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(MortalActorMaterializationStatePath);
+        var currentDocumentParsed = false;
 
         try
         {
             using var currentDocument = JsonDocument.Parse(currentJson);
+            currentDocumentParsed = true;
             if (currentDocument.RootElement.ValueKind != JsonValueKind.Object)
                 return;
 
@@ -140,7 +200,10 @@ public partial class ValidationService
 
             using var preTurnDocument = JsonDocument.Parse(preTurnJson);
             if (!TryReadCanonicalMortalActorStates(preTurnDocument.RootElement, out var preTurnActors))
+            {
+                AddUnusableMortalActorMaterializationPreTurnAuthorityIssue(issues);
                 return;
+            }
 
             var evaluatedHistoricalActors = new HashSet<string>(StringComparer.Ordinal);
             foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
@@ -227,7 +290,9 @@ public partial class ValidationService
         }
         catch (JsonException)
         {
-            // Ordinary canonical-state validation reports malformed current or pre-turn JSON.
+            if (currentDocumentParsed && preTurnJson != null)
+                AddUnusableMortalActorMaterializationPreTurnAuthorityIssue(issues);
+            // Ordinary canonical-state validation separately reports malformed current JSON.
         }
     }
 
@@ -354,7 +419,7 @@ public partial class ValidationService
 
                 var historicalEnvelopeJson = ReadHistoricalActorMaterializationEnvelopeJson(actor);
                 var state = new MortalActorMaterializationPreTurnState(
-                    ReadMortalActorMaterializationPromotionSignals(actor),
+                    ReadMortalActorMaterializationPromotionAuthority(actor),
                     historicalEnvelopeJson,
                     historicalEnvelopeJson == null
                         ? new HashSet<string>(StringComparer.Ordinal)
@@ -388,29 +453,34 @@ public partial class ValidationService
         out MortalActorMaterializationPreTurnState merged)
     {
         merged = default;
-        if (left.PromotionSignals != right.PromotionSignals ||
-            !HistoricalActorMaterializationEnvelopesCompatible(
+        if (!left.PromotionAuthority.TryMerge(
+                right.PromotionAuthority,
+                out var mergedPromotionAuthority) ||
+            !TryMergeHistoricalActorMaterializationEnvelopes(
                 left.HistoricalEnvelopeJson,
-                right.HistoricalEnvelopeJson))
+                right.HistoricalEnvelopeJson,
+                out var mergedEnvelopeJson))
         {
             return false;
         }
 
         merged = new MortalActorMaterializationPreTurnState(
-            left.PromotionSignals,
-            left.HistoricalEnvelopeJson ?? right.HistoricalEnvelopeJson,
+            mergedPromotionAuthority,
+            mergedEnvelopeJson,
             MergeActorMaterializationSectionSets(
                 left.HistoricalEnvelopeSections,
                 right.HistoricalEnvelopeSections));
         return true;
     }
 
-    private static bool HistoricalActorMaterializationEnvelopesCompatible(
+    private static bool TryMergeHistoricalActorMaterializationEnvelopes(
         string? leftJson,
-        string? rightJson)
+        string? rightJson,
+        out string? mergedJson)
     {
+        mergedJson = leftJson ?? rightJson;
         if (leftJson == null || rightJson == null)
-            return leftJson == null && rightJson == null;
+            return true;
 
         return ActorMaterializationEnvelopesSemanticallyEqual(leftJson, rightJson);
     }
@@ -548,21 +618,37 @@ public partial class ValidationService
         ReadCanonicalMortalActorId(actor) ?? ReadActorMaterializationString(actor, "initialId");
 
     private static ActorMaterializationPromotionSignals ReadMortalActorMaterializationPromotionSignals(
-        JsonElement actor)
+        JsonElement actor) =>
+        ReadMortalActorMaterializationPromotionAuthority(actor).ToSignals();
+
+    private static MortalActorMaterializationPromotionAuthority
+        ReadMortalActorMaterializationPromotionAuthority(JsonElement actor)
     {
         var hasPlans = actor.TryGetProperty("plans", out var plans) &&
                        plans.ValueKind == JsonValueKind.String &&
                        !string.IsNullOrWhiteSpace(plans.GetString());
         var hasCurrentActivity = actor.TryGetProperty("currentActivity", out var currentActivity) &&
                                  currentActivity.ValueKind == JsonValueKind.Object;
+        var hasActorBrainAuthority = actor.TryGetProperty("plans", out _) ||
+                                     actor.TryGetProperty("currentActivity", out _) ||
+                                     actor.TryGetProperty("completedActivities", out _);
 
-        return new ActorMaterializationPromotionSignals(
-            CanTeach: ActorMaterializationContract.HasUsableMortalTeacherAuthority(actor),
-            CanTrade: ActorMaterializationContract.HasExplicitMortalTradeAuthority(actor),
-            CanFight: ActorMaterializationContract.HasUsableMortalCombatSkill(actor),
-            HasActorBrainScope: hasPlans ||
-                                hasCurrentActivity ||
-                                HasActorMaterializationArrayEntries(actor, "completedActivities"));
+        return new MortalActorMaterializationPromotionAuthority(
+            CanTeach: actor.TryGetProperty("teacherProfile", out _)
+                ? ActorMaterializationContract.HasUsableMortalTeacherAuthority(actor)
+                : null,
+            CanTrade: actor.TryGetProperty("tradeState", out _)
+                ? ActorMaterializationContract.HasExplicitMortalTradeAuthority(actor)
+                : null,
+            CanFight: actor.TryGetProperty("activeSkills", out _) ||
+                      actor.TryGetProperty("passiveSkills", out _)
+                ? ActorMaterializationContract.HasUsableMortalCombatSkill(actor)
+                : null,
+            HasActorBrainScope: hasActorBrainAuthority
+                ? hasPlans ||
+                  hasCurrentActivity ||
+                  HasActorMaterializationArrayEntries(actor, "completedActivities")
+                : null);
     }
 
     private static bool HasActorMaterializationArrayEntries(JsonElement value, string propertyName) =>
