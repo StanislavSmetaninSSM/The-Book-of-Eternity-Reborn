@@ -90,6 +90,20 @@
   ],
   "afterlifeEntityProfileCoverage": [
     {
+      "contractId": "afterlife_actor_materialization_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "afterlifeEntityProfileUpdates[].materialization",
+      "description": "First significant afterlife actor profile carries an immutable exact identity envelope, capability truth, complete section dispositions, and actor-owned memory."
+    },
+    {
+      "contractId": "afterlife_actor_profile_binding_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "Guardian/resident/radiant_actor/saref_agent/Shining leadership source identity -> exact profiles actorType + actorId",
+      "description": "Source actors bind to exactly one complete profile without display-name, prose, role, or genre inference; player_soul and vacant leadership are explicit exceptions."
+    },
+    {
       "contractId": "afterlife_entity_profiles_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",

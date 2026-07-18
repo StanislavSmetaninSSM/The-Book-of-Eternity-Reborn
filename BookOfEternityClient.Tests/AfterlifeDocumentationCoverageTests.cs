@@ -3897,6 +3897,49 @@ public sealed class AfterlifeDocumentationCoverageTests
         }
     }
 
+    [Fact]
+    public void AfterlifeActorMaterializationContract_IsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+
+        foreach (var text in new[] { matrix, examples, daemon })
+        {
+            foreach (var requiredText in new[]
+                     {
+                         "Actor Materialization v1",
+                         "materializationId",
+                         "materializedAtTurn",
+                         "actorType",
+                         "actorId",
+                         "capabilities",
+                         "sections",
+                         "populated",
+                         "empty_by_design",
+                         "actor-owned memory",
+                         "exact actorType:actorId"
+                     })
+            {
+                Assert.Contains(requiredText, text, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        Assert.Contains("Guardian", matrix, StringComparison.Ordinal);
+        Assert.Contains("resident", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("radiant_actor", matrix, StringComparison.Ordinal);
+        Assert.Contains("saref_agent", matrix, StringComparison.Ordinal);
+        Assert.Contains("non-vacant Shining", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("player_soul", matrix, StringComparison.Ordinal);
+
+        Assert.Contains("AFTERLIFE ACTOR MATERIALIZATION V1", examples, StringComparison.Ordinal);
+        Assert.Contains("\"relationships\": { \"state\": \"populated\" }", examples, StringComparison.Ordinal);
+        Assert.Contains("\"state\": \"empty_by_design\"", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_actor_materialization_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("afterlife_actor_profile_binding_v1", manifest, StringComparison.Ordinal);
+    }
+
     private static string[] ShiningConstantValues(params string[] prefixes) =>
         typeof(ShiningAbodeState)
             .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)

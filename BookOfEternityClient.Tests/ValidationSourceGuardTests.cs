@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.RegularExpressions;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -6,6 +7,62 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ValidationSourceGuardTests
 {
+    [Fact]
+    public void ActorMaterializationAuthority_MustNotUseProseOrGenreKeywordInference()
+    {
+        var sourceFiles = new[]
+        {
+            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "ActorMaterializationContract.cs"),
+            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "Validation", "ValidationService.ActorMaterializationContinuity.cs"),
+            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "Validation", "ValidationService.ActorMaterializationBinding.cs")
+        };
+        var source = string.Join(Environment.NewLine, sourceFiles.Select(File.ReadAllText));
+
+        var proseAuthorityRead = new Regex(
+            "(?:TryGetProperty|ReadActorMaterializationString|TryReadExactNonEmptyString)\\s*\\([^\\r\\n;]*\\\"(?:displayName|name|description|occupation|profession|tags|history)\\\"",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        var genreKeywordTable = new Regex(
+            "(?:keyword|genre|fantasy|science.?fiction|post.?apoc|occupation|profession)[^\\r\\n]*(?:Dictionary|HashSet)|(?:Dictionary|HashSet)[^\\r\\n]*(?:keyword|genre|fantasy|science.?fiction|post.?apoc|occupation|profession)",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+        Assert.DoesNotMatch(proseAuthorityRead, source);
+        Assert.DoesNotMatch(genreKeywordTable, source);
+    }
+
+    [Fact]
+    public void PlayerFacingActorViews_MustNotReferencePrivateMaterializationMetadata()
+    {
+        var sourceRoots = new[]
+        {
+            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "UI"),
+            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "src")
+        };
+        var extensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ".cs", ".ts", ".tsx", ".js", ".jsx"
+        };
+        var privateTokens = new[]
+        {
+            "materializationId",
+            "materializedAtTurn",
+            "empty_by_design",
+            "actor_materialization_"
+        };
+
+        foreach (var sourceRoot in sourceRoots.Where(Directory.Exists))
+        {
+            foreach (var file in Directory.EnumerateFiles(sourceRoot, "*", SearchOption.AllDirectories)
+                         .Where(file => extensions.Contains(Path.GetExtension(file))))
+            {
+                var source = File.ReadAllText(file);
+                foreach (var token in privateTokens)
+                {
+                    Assert.DoesNotContain(token, source, StringComparison.OrdinalIgnoreCase);
+                }
+            }
+        }
+    }
+
     [Fact]
     public void ClientOwnedSurfaceFilter_MustCoverAllValidatedAfterlifePendingContracts()
     {

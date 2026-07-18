@@ -8339,6 +8339,43 @@ Scenario:
 - Chaos Sea profiles must keep `currencies.lightSparks = 0`. Do not add Light Sparks to Chaos Sea profiles through `afterlifeEntityProfileUpdates[]`, full canonical `profiles[]`, or `afterlifeEntityProgressionOverrides[].currencyDeltas`; only ordinary active Shining Abode profiles may hold/use Light Sparks.
 - Forced `currencyDeltas` may name only `inkFeathers` / `lightSparks`, and forced `progressionExperienceDeltas` may name only `enlightenment` / `radiance`; delta objects must be non-empty, and unsupported keys or non-integer deltas are repair-blocking.
 
+==================================================
+AFTERLIFE ACTOR MATERIALIZATION V1
+==================================================
+
+Before writing the first durable profile, bind the source actor and profile by exact actorType:actorId. Do not infer the identity, `capabilities`, arts, inventory-like resources, teaching authority, or trade authority from a display name or prose. The first profile carries one immutable `materializationId`, `materializedAtTurn`, and complete `sections` disposition. Every intentional absence uses `empty_by_design` with an in-world reason.
+
+This compact envelope fragment shows a legitimate partly empty resident. The complete profile beside it still contains all required core fields and actor-owned memory; the fragment does not replace those fields:
+
+```json
+{
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_resident_quiet_witness_turn_23",
+    "actorType": "resident",
+    "actorId": "resident_quiet_witness",
+    "materializedAtTurn": 23,
+    "state": "complete",
+    "capabilities": {
+      "canFight": false,
+      "canTeach": false,
+      "canTrade": false
+    },
+    "sections": {
+      "standardArts": { "state": "empty_by_design", "reason": "Резидент не владеет оформленными духовными приёмами." },
+      "specialArts": { "state": "empty_by_design", "reason": "Личное духовное искусство ещё не возникло." },
+      "customStates": { "state": "empty_by_design", "reason": "Особое духовное состояние пока не проявилось." },
+      "fateCards": { "state": "empty_by_design", "reason": "Связанный узел судьбы ещё не открылся." },
+      "relationships": { "state": "populated" },
+      "agency": { "state": "populated" },
+      "progressionHistory": { "state": "empty_by_design", "reason": "История развития начинается с этой встречи." }
+    }
+  }
+}
+```
+
+The full Guardian response below demonstrates the `populated` path. After acceptance, preserve this envelope and use dedicated deltas for later profile changes instead of resending it.
+
 Valid response fragment:
 
 ```json
@@ -8353,6 +8390,28 @@ Valid response fragment:
       "displayName": "Хранитель Зеркал",
       "realm": "Chaos Sea",
       "locationName": "Зеркальная Обитель",
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_guardian_mirror_turn_23",
+        "actorType": "guardian",
+        "actorId": "guardian_mirror",
+        "materializedAtTurn": 23,
+        "state": "complete",
+        "capabilities": {
+          "canFight": true,
+          "canTeach": true,
+          "canTrade": false
+        },
+        "sections": {
+          "standardArts": { "state": "populated" },
+          "specialArts": { "state": "populated" },
+          "customStates": { "state": "populated" },
+          "fateCards": { "state": "populated" },
+          "relationships": { "state": "populated" },
+          "agency": { "state": "populated" },
+          "progressionHistory": { "state": "populated" }
+        }
+      },
       "currencies": {
         "inkFeathers": 120,
         "lightSparks": 0

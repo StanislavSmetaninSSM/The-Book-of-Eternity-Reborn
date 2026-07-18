@@ -518,6 +518,37 @@ public sealed class PromptDocumentationCoverageTests
         }
     }
 
+    [Fact]
+    public void MortalActorMaterializationContract_IsDocumentedForGm()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+
+        foreach (var requiredText in new[]
+                 {
+                     "Actor Materialization v1",
+                     "materializationId",
+                     "materializedAtTurn",
+                     "actorType",
+                     "actorId",
+                     "capabilities",
+                     "sections",
+                     "populated",
+                     "empty_by_design",
+                     "in-world reason",
+                     "display name, prose, occupation, or setting genre",
+                     "existing NPC",
+                     "dedicated delta"
+                 })
+        {
+            Assert.Contains(requiredText, daemon, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("\"actorType\": \"mortal_npc\"", daemon, StringComparison.Ordinal);
+        Assert.Contains("\"relationships\": { \"state\": \"populated\" }", daemon, StringComparison.Ordinal);
+        Assert.Contains("\"inventory\": {", daemon, StringComparison.Ordinal);
+        Assert.Contains("\"state\": \"empty_by_design\"", daemon, StringComparison.Ordinal);
+    }
+
     private static string ReadRepoFile(params string[] parts) =>
         File.ReadAllText(Path.Combine(new[] { TestRepoPaths.RepoRoot }.Concat(parts).ToArray()));
 }

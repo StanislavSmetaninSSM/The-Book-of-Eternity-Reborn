@@ -55,6 +55,55 @@ The GM normally does not need to read client code. Use this matrix to decide whi
 - If an accepted afterlife turn violates that file-level rule, the client may restore/delete the forbidden wrong-realm files from the validated `game_state/control/pending_turn_snapshot` before asking the GM for repair. The audit is written to `game_state/control/validation_auto_rollback_report.json`; it is client-owned diagnostic evidence, not a GM-authored state surface and not permission to use Mortal World substitutions.
 - If restored forbidden files exactly match the validated snapshot, snapshot-matched baseline validation errors from those files are suppressed from the current afterlife repair request. Treat them as pre-existing baseline hygiene outside the current turn, not as permission or obligation to edit MortalWorldProfile files.
 
+## Actor Materialization v1
+
+The first durable appearance of a significant non-player afterlife actor is one atomic contract. The source actor and its complete `game_state/meta/afterlife_entity_profiles.json` profile must bind by exact actorType:actorId; display name, prose, role, and realm genre are never identity or capability authority.
+
+This applies to:
+
+- every newly created Guardian;
+- every newly created `resident`/`shining_resident`;
+- every newly created `radiant_actor`;
+- every newly discovered `saref_agent` that becomes a durable actor;
+- every non-vacant Shining faction head whose `headActorType` is `guardian`, `resident`, or `radiant_actor`.
+
+`player_soul:player_soul` and a genuinely vacant Shining leadership slot are explicit exceptions. Untouched legacy actors without this envelope remain readable, but any newly created actor or legacy actor promoted into significant structured play must use the current contract.
+
+The profile has exactly one canonical `actorType` and exactly one canonical `actorId`. Current materialized profiles must not carry the legacy `actorRef` alias. Duplicate, case-variant, missing, or contradictory identity properties make authority unusable; never repair them by matching names or descriptions.
+
+The immutable envelope is stored as `materialization` on the same profile:
+
+```json
+{
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_guardian_quiet_lantern_turn_12",
+    "actorType": "guardian",
+    "actorId": "guardian_quiet_lantern",
+    "materializedAtTurn": 12,
+    "state": "complete",
+    "capabilities": {
+      "canFight": true,
+      "canTeach": false,
+      "canTrade": false
+    },
+    "sections": {
+      "standardArts": { "state": "populated" },
+      "specialArts": { "state": "empty_by_design", "reason": "Хранитель ещё не создал личного духовного искусства." },
+      "customStates": { "state": "empty_by_design", "reason": "Особое духовное состояние пока не проявилось." },
+      "fateCards": { "state": "empty_by_design", "reason": "Связанный узел судьбы ещё не открылся." },
+      "relationships": { "state": "populated" },
+      "agency": { "state": "populated" },
+      "progressionHistory": { "state": "empty_by_design", "reason": "История развития начинается с текущего цикла." }
+    }
+  }
+}
+```
+
+Every required section is declared `populated` when the canonical profile contains meaningful structured data, or `empty_by_design` with a non-empty in-world reason when absence is intentional. `capabilities` must agree with actual combat arts, mentor authority, and trade authority. A significant actor also needs actor-owned memory: Guardian or resident thought journal where that dedicated surface exists, otherwise a non-empty profile `gmThoughtsSummary` plus durable agency/progression history.
+
+After first materialization, preserve the historical envelope unchanged. Use dedicated deltas such as goal, quest, activity, relationship, art, custom-state, journal, or progression commands. Do not rewrite a complete actor merely to update one section. A bounded `actor_materialization_repair` packet authorizes only the exact listed actor, missing section, and target file; it does not authorize deleting valid sections, inventing capabilities, or rebuilding the profile from prose.
+
 ## GM Decision Loop
 
 Use this loop for every `Chaos Sea` / `Shining Abode` turn before writing files:
