@@ -106,6 +106,33 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public void ValidateResponse_NewAfterlifeProfileWithDuplicateCanonicalActorId_ReportsBindingMismatch()
+    {
+        const string actorType = "custom_afterlife_actor";
+        const string actorId = "custom_actor_exact_identity";
+        var profileState = JsonNode.Parse(BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true))!.AsObject();
+        var profileJson = profileState[AfterlifeEntityProfileState.ProfilesProperty]![0]!.ToJsonString();
+        var actorIdMarker = $"\"actorId\":\"{actorId}\"";
+        var actorIdOffset = profileJson.IndexOf(actorIdMarker, StringComparison.Ordinal);
+        Assert.True(actorIdOffset >= 0);
+        profileJson = profileJson.Insert(actorIdOffset, "\"actorId\":\"shadow_identity\",");
+        using var document = JsonDocument.Parse($$"""
+        {
+          "afterlifeEntityProfiles": [{{profileJson}}]
+        }
+        """);
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_actor_binding_mismatch" &&
+            issue.Actor == $"{actorType}:{actorId}");
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_NewCanonicalMortalNpcWithPermanentIdAndValidatedPreTurnAuthority_ReportsMissingMaterialization()
     {
         const string path = "game_state/npcs/npc_core.json";
@@ -280,6 +307,28 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
             issue.Actor == "radiant_actor:mentor_combatant_legacy_profile");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_UntouchedLegacyActorRefProfile_DoesNotRequireMaterialization()
+    {
+        const string path = "game_state/meta/afterlife_entity_profiles.json";
+        const string actorId = "mentor_combatant_legacy_actor_ref";
+        var legacyRoot = JsonNode.Parse(BuildAfterlifeProfileStateJson(
+            includeProfile: true,
+            actorId: actorId))!.AsObject();
+        var legacyProfile = legacyRoot[AfterlifeEntityProfileState.ProfilesProperty]![0]!.AsObject();
+        legacyProfile.Remove("actorId");
+        legacyProfile["actorRef"] = actorId;
+        var legacyJson = legacyRoot.ToJsonString();
+        await WriteCurrentAndValidatedPreTurnAsync(path, legacyJson, legacyJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is "actor_materialization_missing" or
+                "actor_materialization_actor_binding_mismatch" &&
+            issue.Actor == $"radiant_actor:{actorId}");
     }
 
     [Fact]
@@ -723,6 +772,55 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             ShiningAbodeState.StatePath,
             currentShining,
             preTurnShiningRoot.ToJsonString(),
+            legacyProfiles,
+            legacyProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_pre_turn_authority_unusable" &&
+            issue.FilePath == ShiningAbodeState.StatePath);
+    }
+
+    [Theory]
+    [InlineData("missing_head_actor_id")]
+    [InlineData("duplicate_head_actor_id")]
+    public async Task ValidateAcceptedTurnContinuity_MalformedPreTurnShiningLeadershipIdentity_IsRejectedAsUnusableAuthority(
+        string mutation)
+    {
+        const string actorType = "guardian";
+        const string actorId = "guardian_malformed_identity_baseline";
+        var preTurnShining = BuildShiningLeadershipBindingStateJson(
+            actorType,
+            actorId,
+            ShiningAbodeState.LeadershipStateSecure);
+        if (mutation == "missing_head_actor_id")
+        {
+            var preTurnRoot = JsonNode.Parse(preTurnShining)!.AsObject();
+            preTurnRoot["factions"]![0]!["leadership"]!.AsObject().Remove("headActorId");
+            preTurnShining = preTurnRoot.ToJsonString();
+        }
+        else
+        {
+            var marker = $"\"headActorId\":\"{actorId}\"";
+            var offset = preTurnShining.IndexOf(marker, StringComparison.Ordinal);
+            Assert.True(offset >= 0);
+            preTurnShining = preTurnShining.Insert(offset, "\"headActorId\":\"shadow_identity\",");
+        }
+
+        var currentShining = BuildShiningLeadershipBindingStateJson(
+            actorType,
+            actorId,
+            ShiningAbodeState.LeadershipStateVacant);
+        var legacyProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true,
+            includeEnvelope: false);
+        await WriteAfterlifeBindingScenarioAsync(
+            ShiningAbodeState.StatePath,
+            currentShining,
+            preTurnShining,
             legacyProfiles,
             legacyProfiles);
 

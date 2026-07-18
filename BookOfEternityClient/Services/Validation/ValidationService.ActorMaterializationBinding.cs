@@ -337,21 +337,45 @@ public partial class ValidationService
             {
                 var context = $"{ShiningAbodeState.StatePath}.factions[{index++}].leadership";
                 if (faction.ValueKind != JsonValueKind.Object ||
-                    !faction.TryGetProperty("leadership", out var leadership) ||
-                    leadership.ValueKind != JsonValueKind.Object ||
-                    !TryReadExactNonEmptyString(leadership, "leadershipState", out var state) ||
-                    string.Equals(state, ShiningAbodeState.LeadershipStateVacant, StringComparison.Ordinal))
+                    !TryReadExactOptionalProperty(faction, "leadership", out var leadership, out var hasLeadership))
                 {
+                    return false;
+                }
+
+                if (!hasLeadership)
+                    continue;
+                if (leadership.ValueKind != JsonValueKind.Object ||
+                    !TryReadExactNonEmptyString(leadership, "leadershipState", out var state))
+                {
+                    return false;
+                }
+
+                if (string.Equals(state, ShiningAbodeState.LeadershipStateVacant, StringComparison.Ordinal))
+                {
+                    if (!TryReadExactOptionalProperty(leadership, "headActorType", out var vacantActorType, out var hasVacantActorType) ||
+                        !TryReadExactOptionalProperty(leadership, "headActorId", out var vacantActorId, out var hasVacantActorId) ||
+                        hasVacantActorType && !IsEmptyLeadershipSlot(vacantActorType) ||
+                        hasVacantActorId && !IsEmptyLeadershipSlot(vacantActorId))
+                    {
+                        return false;
+                    }
+
                     continue;
                 }
 
+                if (state is not (ShiningAbodeState.LeadershipStateSecure or ShiningAbodeState.LeadershipStateContested))
+                    return false;
+
                 if (!TryReadExactNonEmptyString(leadership, "headActorType", out var actorType) ||
-                    !TryReadExactNonEmptyString(leadership, "headActorId", out var actorId) ||
-                    IsPlayerSoulIdentity(actorType, actorId) ||
-                    actorType is not ("guardian" or "resident" or "radiant_actor"))
+                    !TryReadExactNonEmptyString(leadership, "headActorId", out var actorId))
                 {
-                    continue;
+                    return false;
                 }
+
+                if (IsPlayerSoulIdentity(actorType, actorId))
+                    continue;
+                if (actorType is not ("guardian" or "resident" or "radiant_actor"))
+                    return false;
 
                 var binding = new AfterlifeActorBinding(actorType, actorId, context, false);
                 if (!result.TryAdd(binding.IdentityKey, binding))
@@ -466,6 +490,35 @@ public partial class ValidationService
 
         return matches == 1 && !string.IsNullOrWhiteSpace(value);
     }
+
+    private static bool TryReadExactOptionalProperty(
+        JsonElement root,
+        string propertyName,
+        out JsonElement value,
+        out bool exists)
+    {
+        value = default;
+        exists = false;
+        if (root.ValueKind != JsonValueKind.Object)
+            return false;
+
+        foreach (var property in root.EnumerateObject())
+        {
+            if (!string.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase))
+                continue;
+            if (!string.Equals(property.Name, propertyName, StringComparison.Ordinal) || exists)
+                return false;
+
+            exists = true;
+            value = property.Value;
+        }
+
+        return true;
+    }
+
+    private static bool IsEmptyLeadershipSlot(JsonElement value) =>
+        value.ValueKind == JsonValueKind.Null ||
+        value.ValueKind == JsonValueKind.String && string.IsNullOrWhiteSpace(value.GetString());
 
     private static bool IsPlayerSoulIdentity(string actorType, string actorId) =>
         string.Equals(actorType, "player_soul", StringComparison.Ordinal) &&

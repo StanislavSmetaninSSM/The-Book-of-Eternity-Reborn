@@ -341,6 +341,8 @@ internal static class ActorMaterializationContract
         var actorType = ReadFirstNonEmptyString(profile, "actorType");
         var canonicalActorId = ReadNonEmptyString(profile, "actorId");
         var legacyActorRef = ReadNonEmptyString(profile, "actorRef");
+        var hasExactCanonicalActorType = TryReadExactNonEmptyString(profile, "actorType", out _);
+        var hasExactCanonicalActorId = TryReadExactNonEmptyString(profile, "actorId", out _);
         var actorId = canonicalActorId ?? legacyActorRef;
         if (string.IsNullOrWhiteSpace(actorType) || string.IsNullOrWhiteSpace(actorId))
             return Array.Empty<ValidationIssue>();
@@ -400,9 +402,9 @@ internal static class ActorMaterializationContract
             deferEvidenceConsistency).ToList();
 
         var hasMaterializationEnvelope = profile.TryGetProperty(PropertyName, out _);
-        var hasLegacyActorRefProperty = profile.TryGetProperty("actorRef", out _);
+        var hasLegacyActorRefProperty = HasPropertyIgnoringCase(profile, "actorRef");
         if ((requireEnvelope || hasMaterializationEnvelope) &&
-            (canonicalActorId == null || hasLegacyActorRefProperty))
+            (!hasExactCanonicalActorType || !hasExactCanonicalActorId || hasLegacyActorRefProperty))
         {
             issues.Add(CreateIssue(
                 $"{context}.actorId",
@@ -738,6 +740,38 @@ internal static class ActorMaterializationContract
         var text = property.GetString();
         return string.IsNullOrWhiteSpace(text) ? null : text;
     }
+
+    private static bool TryReadExactNonEmptyString(
+        JsonElement value,
+        string propertyName,
+        out string result)
+    {
+        result = string.Empty;
+        if (value.ValueKind != JsonValueKind.Object)
+            return false;
+
+        var matches = 0;
+        foreach (var property in value.EnumerateObject())
+        {
+            if (!string.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase))
+                continue;
+            if (!string.Equals(property.Name, propertyName, StringComparison.Ordinal) ||
+                property.Value.ValueKind != JsonValueKind.String)
+            {
+                return false;
+            }
+
+            matches++;
+            result = property.Value.GetString() ?? string.Empty;
+        }
+
+        return matches == 1 && !string.IsNullOrWhiteSpace(result);
+    }
+
+    private static bool HasPropertyIgnoringCase(JsonElement value, string propertyName) =>
+        value.ValueKind == JsonValueKind.Object &&
+        value.EnumerateObject().Any(property =>
+            string.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase));
 
     private static string? ReadFirstNonEmptyString(JsonElement value, params string[] propertyNames)
     {
