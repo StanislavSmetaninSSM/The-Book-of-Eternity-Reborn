@@ -614,6 +614,47 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
     }
 
+    [Theory]
+    [InlineData("UpdateNPCs", "UpdateNPCs")]
+    [InlineData("NPCsInScene", "NPCsInScene")]
+    [InlineData("UpdateNPCs", "updatenpcs")]
+    [InlineData("NPCsInScene", "npcsinscene")]
+    public async Task ValidateResponse_HashValidSnapshotWithDuplicateCanonicalNpcCarrier_IsBlockedFailClosed(
+        string canonicalSectionName,
+        string duplicateSectionName)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "duplicate_carrier_snapshot_actor";
+        var currentJson = BuildMortalActorStateJson(
+            actorId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        var otherSectionName = canonicalSectionName == "UpdateNPCs" ? "NPCsInScene" : "UpdateNPCs";
+        var preTurnJson = duplicateSectionName == canonicalSectionName
+            ? $$"""
+              {
+                "{{canonicalSectionName}}": [{ "NPCId": "{{actorId}}" }],
+                "{{duplicateSectionName}}": [],
+                "{{otherSectionName}}": []
+              }
+              """
+            : $$"""
+              {
+                "{{canonicalSectionName}}": [],
+                "{{duplicateSectionName}}": [{ "NPCId": "{{actorId}}" }],
+                "{{otherSectionName}}": []
+              }
+              """;
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+    }
+
     [Fact]
     public async Task ValidateResponse_MissingSnapshot_NewPermanentIdWithEnvelopeAndInventory_IsBlockedFailClosed()
     {

@@ -330,6 +330,17 @@ public partial class ValidationService
 
         foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
         {
+            var carrierOccurrences = 0;
+            foreach (var property in root.EnumerateObject())
+            {
+                if (!string.Equals(property.Name, sectionName, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                carrierOccurrences++;
+                if (carrierOccurrences > 1)
+                    return false;
+            }
+
             if (!root.TryGetProperty(sectionName, out var actors))
                 continue;
             if (actors.ValueKind != JsonValueKind.Array)
