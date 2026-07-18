@@ -712,6 +712,144 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public void CanonicalMortalActorSnapshotAuthority_RealBootstrapNpcIdPair_IsAccepted()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 8,
+            characterDescription: "Архивист новой жизни.",
+            worldDescription: "Нейтральный испытательный мир.",
+            startingCircumstances: "Наставник готов провести первый урок.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-19T00:00:00Z"));
+
+        var snapshotJson = files["game_state/npcs/npc_core.json"].ToJsonString();
+
+        Assert.True(CanReadCanonicalMortalActorSnapshotAuthority(snapshotJson));
+    }
+
+    [Theory]
+    [InlineData("conflicting_pair")]
+    [InlineData("generic_id_with_pair")]
+    public void CanonicalMortalActorSnapshotAuthority_AmbiguousIdentityAliases_AreRejected(
+        string mutation)
+    {
+        var actorJson = mutation switch
+        {
+            "conflicting_pair" => """{ "NPCId": "actor_alpha", "npcId": "actor_beta" }""",
+            "generic_id_with_pair" => """{ "NPCId": "actor_alpha", "npcId": "actor_alpha", "id": "actor_alpha" }""",
+            _ => throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null)
+        };
+        var snapshotJson = $$"""
+        {
+          "UpdateNPCs": [{{actorJson}}],
+          "NPCsInScene": []
+        }
+        """;
+
+        Assert.False(CanReadCanonicalMortalActorSnapshotAuthority(snapshotJson));
+    }
+
+    [Fact]
+    public void CanonicalMortalActorSnapshotAuthority_DuplicateActorInSameCarrier_IsRejected()
+    {
+        var root = JsonNode.Parse(BuildMortalActorStateJson(
+            "same_carrier_duplicate_actor",
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false))!.AsObject();
+        root["NPCsInScene"]!.AsArray().Add(root["NPCsInScene"]![0]!.DeepClone());
+
+        Assert.False(CanReadCanonicalMortalActorSnapshotAuthority(root.ToJsonString()));
+    }
+
+    [Fact]
+    public void CanonicalMortalActorSnapshotAuthority_IdenticalCrossCarrierActors_AreAccepted()
+    {
+        var root = JsonNode.Parse(BuildMortalActorStateJson(
+            "compatible_cross_carrier_actor",
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false))!.AsObject();
+        root["UpdateNPCs"]!.AsArray().Add(root["NPCsInScene"]![0]!.DeepClone());
+
+        Assert.True(CanReadCanonicalMortalActorSnapshotAuthority(root.ToJsonString()));
+    }
+
+    [Fact]
+    public void CanonicalMortalActorSnapshotAuthority_ConflictingCrossCarrierPromotionSignals_AreRejected()
+    {
+        var root = JsonNode.Parse(BuildMortalActorStateJson(
+            "conflicting_cross_carrier_signals_actor",
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false))!.AsObject();
+        var conflictingActor = root["NPCsInScene"]![0]!.DeepClone().AsObject();
+        conflictingActor["teacherProfile"] = new JsonObject
+        {
+            ["canTeach"] = true,
+            ["skills"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["skillId"] = "setting_neutral_instruction",
+                    ["skillName"] = "Практическое наставничество",
+                    ["masteryLevel"] = 1
+                }
+            }
+        };
+        root["UpdateNPCs"]!.AsArray().Add(conflictingActor);
+
+        Assert.False(CanReadCanonicalMortalActorSnapshotAuthority(root.ToJsonString()));
+    }
+
+    [Fact]
+    public void CanonicalMortalActorSnapshotAuthority_ConflictingCrossCarrierEnvelopes_AreRejected()
+    {
+        var root = JsonNode.Parse(BuildMortalActorStateJson(
+            "conflicting_cross_carrier_envelope_actor",
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        var conflictingActor = root["NPCsInScene"]![0]!.DeepClone().AsObject();
+        conflictingActor["materialization"]!["materializationId"] = "mat_conflicting_cross_carrier";
+        root["UpdateNPCs"]!.AsArray().Add(conflictingActor);
+
+        Assert.False(CanReadCanonicalMortalActorSnapshotAuthority(root.ToJsonString()));
+    }
+
+    [Theory]
+    [InlineData(63, true)]
+    [InlineData(64, false)]
+    public void CanonicalMortalActorSnapshotAuthority_DepthBudget_IsEnforcedAtBoundary(
+        int nestedObjectCount,
+        bool expected)
+    {
+        JsonNode nested = JsonValue.Create("leaf")!;
+        for (var index = 0; index < nestedObjectCount; index++)
+            nested = new JsonObject { ["child"] = nested };
+
+        var snapshotJson = BuildMortalActorAuthoritySnapshotWithPayload(nested);
+
+        Assert.Equal(expected, CanReadCanonicalMortalActorSnapshotAuthority(snapshotJson));
+    }
+
+    [Theory]
+    [InlineData(32765, true)]
+    [InlineData(32766, false)]
+    public void CanonicalMortalActorSnapshotAuthority_NodeBudget_IsEnforcedAtBoundary(
+        int payloadNodeCount,
+        bool expected)
+    {
+        var payload = new JsonArray();
+        for (var index = 0; index < payloadNodeCount; index++)
+            payload.Add(index);
+
+        var snapshotJson = BuildMortalActorAuthoritySnapshotWithPayload(payload);
+
+        Assert.Equal(expected, CanReadCanonicalMortalActorSnapshotAuthority(snapshotJson));
+    }
+
+    [Fact]
     public async Task ValidateResponse_ValidCrossSectionSameActorMerge_TruePromotionHasNoErrors()
     {
         const string path = "game_state/npcs/npc_core.json";
@@ -1343,6 +1481,34 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             ["state"] = "empty_by_design",
             ["reason"] = reason
         };
+
+    private static string BuildMortalActorAuthoritySnapshotWithPayload(JsonNode payload) =>
+        new JsonObject
+        {
+            ["UpdateNPCs"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["NPCId"] = "authority_budget_actor",
+                    ["payload"] = payload
+                }
+            },
+            ["NPCsInScene"] = new JsonArray()
+        }.ToJsonString();
+
+    private static bool CanReadCanonicalMortalActorSnapshotAuthority(string snapshotJson)
+    {
+        var method = typeof(ValidationService).GetMethod(
+            "TryReadCanonicalMortalActorStates",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        using var document = JsonDocument.Parse(
+            snapshotJson,
+            new JsonDocumentOptions { MaxDepth = 256 });
+        var arguments = new object?[] { document.RootElement, null };
+        return Assert.IsType<bool>(method.Invoke(null, arguments));
+    }
 
     private static string BuildHistoricalEnvelopeStateJson(string family, string? mutation)
     {

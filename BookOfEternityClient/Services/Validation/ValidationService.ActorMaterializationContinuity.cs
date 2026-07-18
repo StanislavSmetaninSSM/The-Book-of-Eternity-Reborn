@@ -51,16 +51,7 @@ public partial class ValidationService
     private readonly record struct MortalActorMaterializationPreTurnState(
         ActorMaterializationPromotionSignals PromotionSignals,
         string? HistoricalEnvelopeJson,
-        IReadOnlySet<string> HistoricalEnvelopeSections)
-    {
-        public MortalActorMaterializationPreTurnState Merge(MortalActorMaterializationPreTurnState other) =>
-            new(
-                PromotionSignals.Merge(other.PromotionSignals),
-                HistoricalEnvelopeJson ?? other.HistoricalEnvelopeJson,
-                MergeActorMaterializationSectionSets(
-                    HistoricalEnvelopeSections,
-                    other.HistoricalEnvelopeSections));
-    }
+        IReadOnlySet<string> HistoricalEnvelopeSections);
 
     private readonly record struct MortalActorMaterializationPreTurnAuthority(
         ValidatedPendingTurnSnapshotStatus Status,
@@ -327,6 +318,7 @@ public partial class ValidationService
         out Dictionary<string, MortalActorMaterializationPreTurnState> result)
     {
         result = new Dictionary<string, MortalActorMaterializationPreTurnState>(StringComparer.Ordinal);
+        var actorSections = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
         if (root.ValueKind != JsonValueKind.Object)
             return false;
 
@@ -367,13 +359,60 @@ public partial class ValidationService
                     historicalEnvelopeJson == null
                         ? new HashSet<string>(StringComparer.Ordinal)
                         : new HashSet<string>(StringComparer.Ordinal) { sectionName });
-                result[actorId] = result.TryGetValue(actorId, out var existing)
-                    ? existing.Merge(state)
-                    : state;
+                if (!actorSections.TryGetValue(actorId, out var seenSections))
+                {
+                    actorSections[actorId] = new HashSet<string>(StringComparer.Ordinal)
+                    {
+                        sectionName
+                    };
+                    result[actorId] = state;
+                    continue;
+                }
+
+                if (!seenSections.Add(sectionName) ||
+                    !TryMergeCompatibleMortalActorStates(result[actorId], state, out var mergedState))
+                {
+                    return false;
+                }
+
+                result[actorId] = mergedState;
             }
         }
 
         return true;
+    }
+
+    private static bool TryMergeCompatibleMortalActorStates(
+        MortalActorMaterializationPreTurnState left,
+        MortalActorMaterializationPreTurnState right,
+        out MortalActorMaterializationPreTurnState merged)
+    {
+        merged = default;
+        if (left.PromotionSignals != right.PromotionSignals ||
+            !HistoricalActorMaterializationEnvelopesCompatible(
+                left.HistoricalEnvelopeJson,
+                right.HistoricalEnvelopeJson))
+        {
+            return false;
+        }
+
+        merged = new MortalActorMaterializationPreTurnState(
+            left.PromotionSignals,
+            left.HistoricalEnvelopeJson ?? right.HistoricalEnvelopeJson,
+            MergeActorMaterializationSectionSets(
+                left.HistoricalEnvelopeSections,
+                right.HistoricalEnvelopeSections));
+        return true;
+    }
+
+    private static bool HistoricalActorMaterializationEnvelopesCompatible(
+        string? leftJson,
+        string? rightJson)
+    {
+        if (leftJson == null || rightJson == null)
+            return leftJson == null && rightJson == null;
+
+        return ActorMaterializationEnvelopesSemanticallyEqual(leftJson, rightJson);
     }
 
     private static bool IsLosslessJsonAuthoritySubtree(JsonElement value)
@@ -393,9 +432,18 @@ public partial class ValidationService
         if (value.ValueKind == JsonValueKind.Object)
         {
             var propertyNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var canonicalRootIdentityNames = depth == 0
+                ? new HashSet<string>(StringComparer.Ordinal)
+                : null;
             foreach (var property in value.EnumerateObject())
             {
-                if (!propertyNames.Add(property.Name) ||
+                var isCanonicalNpcIdPairMember = depth == 0 &&
+                    (string.Equals(property.Name, "NPCId", StringComparison.Ordinal) ||
+                     string.Equals(property.Name, "npcId", StringComparison.Ordinal));
+                var hasUniquePropertyName = isCanonicalNpcIdPairMember
+                    ? canonicalRootIdentityNames!.Add(property.Name)
+                    : propertyNames.Add(property.Name);
+                if (!hasUniquePropertyName ||
                     !IsLosslessJsonAuthoritySubtree(property.Value, depth + 1, ref remainingNodes))
                 {
                     return false;
@@ -419,27 +467,63 @@ public partial class ValidationService
         out string actorId)
     {
         actorId = string.Empty;
-        var identityAliases = 0;
+        string? upperNpcId = null;
+        string? lowerNpcId = null;
+        string? genericId = null;
+        var hasUpperNpcId = false;
+        var hasLowerNpcId = false;
+        var hasGenericId = false;
         foreach (var property in actor.EnumerateObject())
         {
-            var isIdentityAlias = string.Equals(property.Name, "NPCId", StringComparison.Ordinal) ||
-                                  string.Equals(property.Name, "npcId", StringComparison.Ordinal) ||
-                                  string.Equals(property.Name, "id", StringComparison.Ordinal);
-            if (!isIdentityAlias)
+            var resemblesIdentityAlias =
+                string.Equals(property.Name, "NPCId", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(property.Name, "id", StringComparison.OrdinalIgnoreCase);
+            if (!resemblesIdentityAlias)
                 continue;
-
-            identityAliases++;
-            if (identityAliases > 1 || property.Value.ValueKind != JsonValueKind.String)
+            if (property.Value.ValueKind != JsonValueKind.String)
                 return false;
 
             var value = property.Value.GetString();
             if (string.IsNullOrWhiteSpace(value))
                 return false;
 
-            actorId = value;
+            if (string.Equals(property.Name, "NPCId", StringComparison.Ordinal))
+            {
+                if (hasUpperNpcId)
+                    return false;
+                hasUpperNpcId = true;
+                upperNpcId = value;
+            }
+            else if (string.Equals(property.Name, "npcId", StringComparison.Ordinal))
+            {
+                if (hasLowerNpcId)
+                    return false;
+                hasLowerNpcId = true;
+                lowerNpcId = value;
+            }
+            else if (string.Equals(property.Name, "id", StringComparison.Ordinal))
+            {
+                if (hasGenericId)
+                    return false;
+                hasGenericId = true;
+                genericId = value;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        return identityAliases == 1;
+        if (hasGenericId && (hasUpperNpcId || hasLowerNpcId))
+            return false;
+        if (hasUpperNpcId && hasLowerNpcId &&
+            !string.Equals(upperNpcId, lowerNpcId, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        actorId = genericId ?? upperNpcId ?? lowerNpcId ?? string.Empty;
+        return actorId.Length > 0;
     }
 
     private static string? ReadCanonicalMortalActorId(JsonElement actor)
