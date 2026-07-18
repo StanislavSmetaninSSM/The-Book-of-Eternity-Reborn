@@ -334,7 +334,7 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     [Theory]
     [InlineData("mortal")]
     [InlineData("afterlife")]
-    public async Task ValidateGameStateAsync_MissingValidatedPreTurnFileAuthority_SkipsOnlyContinuityValidation(
+    public async Task ValidateGameStateAsync_MissingValidatedPreTurnFileAuthority_DoesNotBlanketRequireLegacyMaterialization(
         string family)
     {
         var targetPath = family == "mortal"
@@ -377,6 +377,12 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             issue.Code == "actor_materialization_missing" &&
             issue.Actor == expectedActor);
         Assert.Contains(issues, issue => issue.Code == expectedShapeIssue);
+        if (family == "mortal")
+        {
+            Assert.Contains(issues, issue =>
+                issue.Code == "actor_materialization_pre_turn_authority_unusable" &&
+                issue.FilePath == targetPath);
+        }
     }
 
     [Theory]
@@ -840,6 +846,85 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_pre_turn_authority_unusable" &&
             issue.FilePath == path);
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_UnusableMortalSnapshotTransport_ReportsAuthorityError()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentJson = BuildMortalActorStateJson(
+            "transport_guard_actor",
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false);
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, currentJson);
+        await _fs.WriteFileAtomicAsync(
+            PendingTurnSnapshotAuthority.AuthorityPath,
+            """{ "schemaVersion": 1, "manifestPayloadHash": "tampered" }""");
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_pre_turn_authority_unusable" &&
+            issue.FilePath == path);
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_NoSnapshotManifest_DoesNotReportAuthorityError()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentJson = BuildMortalActorStateJson(
+            "ordinary_load_actor",
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false);
+        await _fs.WriteFileAtomicAsync(path, currentJson);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "actor_materialization_pre_turn_authority_unusable");
+    }
+
+    [Theory]
+    [InlineData("partial_combat")]
+    [InlineData("partial_teacher")]
+    public void CanonicalMortalActorSnapshotAuthority_PartialCompositeDelta_DoesNotContradictCarrier(
+        string partialDelta)
+    {
+        var root = JsonNode.Parse(BuildMortalActorStateJson(
+            "partial_composite_delta_actor",
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: false))!.AsObject();
+        var actor = root["NPCsInScene"]![0]!.AsObject();
+        actor["activeSkills"] = new JsonArray
+        {
+            new JsonObject { ["skillId"] = "setting_neutral_practice" }
+        };
+        actor["passiveSkills"] = new JsonArray();
+        root["UpdateNPCs"] = new JsonArray
+        {
+            partialDelta switch
+            {
+                "partial_combat" => new JsonObject
+                {
+                    ["NPCId"] = "partial_composite_delta_actor",
+                    ["activeSkills"] = new JsonArray()
+                },
+                "partial_teacher" => new JsonObject
+                {
+                    ["NPCId"] = "partial_composite_delta_actor",
+                    ["teacherProfile"] = new JsonObject
+                    {
+                        ["summary"] = "Уточнено расписание занятий."
+                    }
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(partialDelta), partialDelta, null)
+            }
+        };
+
+        Assert.True(CanReadCanonicalMortalActorSnapshotAuthority(root.ToJsonString()));
     }
 
     [Fact]

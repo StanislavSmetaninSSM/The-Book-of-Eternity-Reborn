@@ -184,7 +184,7 @@ public partial class ValidationService
         var currentJson = await _fs.ReadFileAsync(MortalActorMaterializationStatePath);
         if (string.IsNullOrWhiteSpace(currentJson))
             return;
-        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(MortalActorMaterializationStatePath);
+        string? preTurnJson = null;
         var currentDocumentParsed = false;
 
         try
@@ -195,8 +195,24 @@ public partial class ValidationService
                 return;
 
             issues.AddRange(ValidateCurrentMortalMaterializationIds(currentDocument.RootElement));
-            if (preTurnJson == null)
+            var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+            if (snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Missing)
                 return;
+            if (snapshotLookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
+                snapshotLookup.Manifest == null)
+            {
+                AddUnusableMortalActorMaterializationPreTurnAuthorityIssue(issues);
+                return;
+            }
+
+            preTurnJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+                snapshotLookup.Manifest,
+                MortalActorMaterializationStatePath);
+            if (preTurnJson == null)
+            {
+                AddUnusableMortalActorMaterializationPreTurnAuthorityIssue(issues);
+                return;
+            }
 
             using var preTurnDocument = JsonDocument.Parse(preTurnJson);
             if (!TryReadCanonicalMortalActorStates(preTurnDocument.RootElement, out var preTurnActors))
@@ -629,26 +645,73 @@ public partial class ValidationService
                        !string.IsNullOrWhiteSpace(plans.GetString());
         var hasCurrentActivity = actor.TryGetProperty("currentActivity", out var currentActivity) &&
                                  currentActivity.ValueKind == JsonValueKind.Object;
-        var hasActorBrainAuthority = actor.TryGetProperty("plans", out _) ||
-                                     actor.TryGetProperty("currentActivity", out _) ||
-                                     actor.TryGetProperty("completedActivities", out _);
+        var hasPlansAuthority = actor.TryGetProperty("plans", out _);
+        var hasCurrentActivityAuthority = actor.TryGetProperty("currentActivity", out _);
+        var hasCompletedActivitiesAuthority = actor.TryGetProperty("completedActivities", out _);
+        var hasCompletedActivities = HasActorMaterializationArrayEntries(
+            actor,
+            "completedActivities");
+        var hasActorBrainScope = hasPlans || hasCurrentActivity || hasCompletedActivities;
 
         return new MortalActorMaterializationPromotionAuthority(
-            CanTeach: actor.TryGetProperty("teacherProfile", out _)
-                ? ActorMaterializationContract.HasUsableMortalTeacherAuthority(actor)
-                : null,
-            CanTrade: actor.TryGetProperty("tradeState", out _)
-                ? ActorMaterializationContract.HasExplicitMortalTradeAuthority(actor)
-                : null,
-            CanFight: actor.TryGetProperty("activeSkills", out _) ||
-                      actor.TryGetProperty("passiveSkills", out _)
-                ? ActorMaterializationContract.HasUsableMortalCombatSkill(actor)
-                : null,
-            HasActorBrainScope: hasActorBrainAuthority
-                ? hasPlans ||
-                  hasCurrentActivity ||
-                  HasActorMaterializationArrayEntries(actor, "completedActivities")
-                : null);
+            CanTeach: ReadMortalTeacherPromotionAuthority(actor),
+            CanTrade: ReadMortalTradePromotionAuthority(actor),
+            CanFight: ReadMortalCombatPromotionAuthority(actor),
+            HasActorBrainScope: hasActorBrainScope
+                ? true
+                : hasPlansAuthority &&
+                  hasCurrentActivityAuthority &&
+                  hasCompletedActivitiesAuthority
+                    ? false
+                    : null);
+    }
+
+    private static bool? ReadMortalTeacherPromotionAuthority(JsonElement actor)
+    {
+        if (!actor.TryGetProperty("teacherProfile", out var teacherProfile) ||
+            teacherProfile.ValueKind != JsonValueKind.Object ||
+            !teacherProfile.TryGetProperty("canTeach", out var canTeach) ||
+            canTeach.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+        {
+            return null;
+        }
+
+        if (canTeach.ValueKind == JsonValueKind.False)
+            return false;
+        if (!teacherProfile.TryGetProperty("skills", out _))
+            return null;
+
+        return ActorMaterializationContract.HasUsableMortalTeacherAuthority(actor);
+    }
+
+    private static bool? ReadMortalTradePromotionAuthority(JsonElement actor)
+    {
+        if (!actor.TryGetProperty("tradeState", out var tradeState) ||
+            tradeState.ValueKind != JsonValueKind.Object ||
+            !tradeState.TryGetProperty("canTrade", out var canTrade) ||
+            canTrade.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+        {
+            return null;
+        }
+
+        if (canTrade.ValueKind == JsonValueKind.False)
+            return false;
+        if (!tradeState.TryGetProperty("merchantProfile", out _))
+            return null;
+
+        return ActorMaterializationContract.HasExplicitMortalTradeAuthority(actor);
+    }
+
+    private static bool? ReadMortalCombatPromotionAuthority(JsonElement actor)
+    {
+        var hasActiveSkillsAuthority = actor.TryGetProperty("activeSkills", out _);
+        var hasPassiveSkillsAuthority = actor.TryGetProperty("passiveSkills", out _);
+        if (ActorMaterializationContract.HasUsableMortalCombatSkill(actor))
+            return true;
+
+        return hasActiveSkillsAuthority && hasPassiveSkillsAuthority
+            ? false
+            : null;
     }
 
     private static bool HasActorMaterializationArrayEntries(JsonElement value, string propertyName) =>
