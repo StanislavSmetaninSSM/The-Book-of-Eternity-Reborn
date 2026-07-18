@@ -339,7 +339,9 @@ internal static class ActorMaterializationContract
         bool deferEvidenceConsistency)
     {
         var actorType = ReadFirstNonEmptyString(profile, "actorType");
-        var actorId = ReadFirstNonEmptyString(profile, "actorId", "actorRef");
+        var canonicalActorId = ReadNonEmptyString(profile, "actorId");
+        var legacyActorRef = ReadNonEmptyString(profile, "actorRef");
+        var actorId = canonicalActorId ?? legacyActorRef;
         if (string.IsNullOrWhiteSpace(actorType) || string.IsNullOrWhiteSpace(actorId))
             return Array.Empty<ValidationIssue>();
 
@@ -389,14 +391,34 @@ internal static class ActorMaterializationContract
             capabilityEvidence,
             deferredCapabilityEvidence);
 
-        return Validate(
+        var issues = Validate(
             profile,
             context,
             ActorMaterializationFamily.Afterlife,
             evidence,
             requireEnvelope,
-            deferEvidenceConsistency);
+            deferEvidenceConsistency).ToList();
+
+        var hasMaterializationEnvelope = profile.TryGetProperty(PropertyName, out _);
+        var hasLegacyActorRefProperty = profile.TryGetProperty("actorRef", out _);
+        if ((requireEnvelope || hasMaterializationEnvelope) &&
+            (canonicalActorId == null || hasLegacyActorRefProperty))
+        {
+            issues.Add(CreateIssue(
+                $"{context}.actorId",
+                "actor_materialization_actor_binding_mismatch",
+                "Профиль с Actor Materialization должен использовать единственный канонический actorId без legacy actorRef.",
+                evidence,
+                expected: $"exclusive actorId={actorId}",
+                actual: DescribeAfterlifeProfileIdentity(profile),
+                repairHint: "Сохрани exact canonical actorId профиля и удали legacy actorRef только из текущего materialized-профиля; не переименовывай персонажа и не меняй его канонические данные."));
+        }
+
+        return issues;
     }
+
+    private static string DescribeAfterlifeProfileIdentity(JsonElement profile) =>
+        $"actorId={Describe(profile, "actorId")}; actorRef={Describe(profile, "actorRef")}";
 
     private static void ValidateEnvelopeScalars(
         JsonElement envelope,

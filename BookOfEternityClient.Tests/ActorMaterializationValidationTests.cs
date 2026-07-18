@@ -64,6 +64,47 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         Assert.Contains(issues, issue => issue.Code == "actor_materialization_missing");
     }
 
+    [Theory]
+    [InlineData("actor_ref_only")]
+    [InlineData("same_actor_ref_alias")]
+    [InlineData("conflicting_actor_ref_alias")]
+    public void ValidateResponse_NewAfterlifeProfileWithoutExclusiveCanonicalActorId_ReportsBindingMismatch(
+        string mutation)
+    {
+        const string actorType = "custom_afterlife_actor";
+        const string actorId = "custom_actor_exact_identity";
+        var profileState = JsonNode.Parse(BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true))!.AsObject();
+        var profile = profileState[AfterlifeEntityProfileState.ProfilesProperty]![0]!.AsObject();
+        switch (mutation)
+        {
+            case "actor_ref_only":
+                profile.Remove("actorId");
+                profile["actorRef"] = actorId;
+                break;
+            case "same_actor_ref_alias":
+                profile["actorRef"] = actorId;
+                break;
+            case "conflicting_actor_ref_alias":
+                profile["actorRef"] = "different_actor";
+                break;
+        }
+
+        var response = new JsonObject
+        {
+            [AfterlifeEntityProfileState.ResponseProfilesProperty] = new JsonArray(profile.DeepClone())
+        };
+        using var document = JsonDocument.Parse(response.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_actor_binding_mismatch" &&
+            issue.Actor == $"{actorType}:{actorId}");
+    }
+
     [Fact]
     public async Task ValidateGameStateAsync_NewCanonicalMortalNpcWithPermanentIdAndValidatedPreTurnAuthority_ReportsMissingMaterialization()
     {
@@ -660,6 +701,68 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_pre_turn_authority_unusable" &&
             issue.FilePath == AfterlifeEntityProfileState.StatePath);
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_MalformedPreTurnShiningLeadership_IsRejectedAsUnusableAuthority()
+    {
+        const string actorType = "guardian";
+        const string actorId = "guardian_malformed_leadership_baseline";
+        var preTurnShiningRoot = JsonNode.Parse(BuildShiningLeadershipBindingStateJson(
+            actorType,
+            actorId,
+            ShiningAbodeState.LeadershipStateVacant))!.AsObject();
+        preTurnShiningRoot["factions"] = new JsonObject();
+        var currentShining = BuildShiningLeadershipBindingStateJson(actorType, actorId, ShiningAbodeState.LeadershipStateSecure);
+        var legacyProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true,
+            includeEnvelope: false);
+        await WriteAfterlifeBindingScenarioAsync(
+            ShiningAbodeState.StatePath,
+            currentShining,
+            preTurnShiningRoot.ToJsonString(),
+            legacyProfiles,
+            legacyProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_pre_turn_authority_unusable" &&
+            issue.FilePath == ShiningAbodeState.StatePath);
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_DuplicatePreTurnShiningHeadIdentity_IsRejectedAsUnusableAuthority()
+    {
+        const string actorType = "guardian";
+        const string actorId = "guardian_duplicate_head_baseline";
+        var preTurnShiningRoot = JsonNode.Parse(BuildShiningLeadershipBindingStateJson(
+            actorType,
+            actorId,
+            ShiningAbodeState.LeadershipStateSecure))!.AsObject();
+        var duplicateFaction = preTurnShiningRoot["factions"]![0]!.DeepClone().AsObject();
+        duplicateFaction["factionId"] = "faction_materialization_binding_duplicate";
+        preTurnShiningRoot["factions"]!.AsArray().Add(duplicateFaction);
+        var currentShining = BuildShiningLeadershipBindingStateJson(actorType, actorId, ShiningAbodeState.LeadershipStateSecure);
+        var legacyProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true,
+            includeEnvelope: false);
+        await WriteAfterlifeBindingScenarioAsync(
+            ShiningAbodeState.StatePath,
+            currentShining,
+            preTurnShiningRoot.ToJsonString(),
+            legacyProfiles,
+            legacyProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_pre_turn_authority_unusable" &&
+            issue.FilePath == ShiningAbodeState.StatePath);
     }
 
     private static string GetAfterlifeBindingSourcePath(string sourceKind) => sourceKind switch

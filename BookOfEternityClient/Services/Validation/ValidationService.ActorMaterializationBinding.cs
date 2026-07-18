@@ -76,10 +76,16 @@ public partial class ValidationService
                     requiredBindings[actor.IdentityKey] = actor;
             }
 
-            if (kind == AfterlifeBindingSourceKind.RadiantActor &&
-                TryReadShiningLeadershipBindings(authority.CurrentJson, out var currentLeadership) &&
-                TryReadShiningLeadershipBindings(authority.PreTurnJson, out var preTurnLeadership))
+            if (kind == AfterlifeBindingSourceKind.RadiantActor)
             {
+                if (!TryReadShiningLeadershipBindings(authority.CurrentJson, out var currentLeadership))
+                    continue;
+                if (!TryReadShiningLeadershipBindings(authority.PreTurnJson, out var preTurnLeadership))
+                {
+                    AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(path, issues);
+                    return;
+                }
+
                 foreach (var actor in currentLeadership.Values)
                 {
                     if (!preTurnLeadership.ContainsKey(actor.IdentityKey))
