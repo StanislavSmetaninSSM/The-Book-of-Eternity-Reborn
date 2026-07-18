@@ -6,7 +6,7 @@
 
 - [x] T001 Add focused failing tests for envelope parsing, exact actor binding, allowed fields, dispositions, and capability shape.
 - [x] T002 Implement `ActorMaterializationContract` constants, parser, and reusable structural validation without genre/prose inference.
-- [ ] T003 Add source-guard tests that forbid genre keyword dictionaries and player-facing rendering of materialization metadata.
+- [x] T003 Add source-guard tests that forbid genre keyword dictionaries and player-facing rendering of materialization metadata.
 
 ## Phase 2 - Mortal NPC materialization
 
@@ -19,22 +19,22 @@
 
 - [x] T008 Add failing tests for new common profiles, section completeness, capabilities, actor memory, and untouched legacy profiles.
 - [x] T009 Integrate afterlife profile envelope validation and normalizer preservation without content invention.
-- [ ] T010 Add failing cross-file tests for Guardians, abode residents, radiant/Saref/custom actors, and non-vacant Shining faction heads.
-- [ ] T011 Implement exact type-and-ID profile binding and current-turn promotion detection, including player/vacancy/client-owned exceptions.
+- [x] T010 Add failing cross-file tests for Guardians, abode residents, radiant/Saref/custom actors, and non-vacant Shining faction heads.
+- [x] T011 Implement exact type-and-ID profile binding and current-turn promotion detection, including player/vacancy/client-owned exceptions.
 - [x] T012 Add deterministic System Guardian envelope tests and update the fresh-game builder.
 
 ## Phase 4 - Harness repair behavior
 
-- [ ] T013 Add failing tests for materialization issue classification and bounded repair packets.
-- [ ] T014 Implement a dedicated repair packet that preserves valid actor sections and names only missing/contradictory targets.
-- [ ] T015 Verify repair packets do not request implementation-code inspection, broad actor rewrites, deletion, or client invention.
+- [x] T013 Add failing tests for materialization issue classification and bounded repair packets.
+- [x] T014 Implement a dedicated repair packet that preserves valid actor sections and names only missing/contradictory targets.
+- [x] T015 Verify repair packets do not request implementation-code inspection, broad actor rewrites, deletion, or client invention.
 
 ## Phase 5 - GM contract synchronization
 
-- [ ] T016 Update Mortal GM prompt/docs with the first-materialization contract and a complete setting-neutral worked NPC example.
-- [ ] T017 Update afterlife prompt entrypoints, `Afterlife_Contract_Matrix.md`, and worked Chaos Sea/Shining examples.
-- [ ] T018 Update `example_validation_manifest.json` and documentation/source-guard tests for both realms.
-- [ ] T019 Record explicit no-frontend-change rationale and test that console/browser player projections do not expose private metadata.
+- [x] T016 Update Mortal GM prompt/docs with the first-materialization contract and a complete setting-neutral worked NPC example.
+- [x] T017 Update afterlife prompt entrypoints, `Afterlife_Contract_Matrix.md`, and worked Chaos Sea/Shining examples.
+- [x] T018 Update `example_validation_manifest.json` and documentation/source-guard tests for both realms.
+- [x] T019 Record explicit no-frontend-change rationale and test that console/browser player projections do not expose private metadata.
 
 ## Phase 6 - Verification and integration
 
