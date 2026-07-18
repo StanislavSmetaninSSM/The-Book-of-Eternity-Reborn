@@ -655,6 +655,88 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
     }
 
+    [Theory]
+    [InlineData("updatenpcs", "NPCsInScene")]
+    [InlineData("npcsinscene", "UpdateNPCs")]
+    public async Task ValidateResponse_HashValidSnapshotWithSingleNonCanonicalCaseNpcCarrier_IsBlockedFailClosed(
+        string nonCanonicalSectionName,
+        string otherCanonicalSectionName)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "noncanonical_carrier_snapshot_actor";
+        var currentJson = BuildMortalActorStateJson(
+            actorId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        var preTurnJson = $$"""
+        {
+          "{{nonCanonicalSectionName}}": [{ "NPCId": "{{actorId}}" }],
+          "{{otherCanonicalSectionName}}": []
+        }
+        """;
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+    }
+
+    [Theory]
+    [InlineData("duplicate_npc_id")]
+    [InlineData("conflicting_identity_aliases")]
+    [InlineData("duplicate_materialization")]
+    [InlineData("duplicate_teacher_profile")]
+    [InlineData("duplicate_nested_can_teach")]
+    [InlineData("case_variant_nested_can_teach")]
+    public async Task ValidateResponse_HashValidSnapshotWithLossyActorAuthoritySubtree_IsBlockedFailClosed(
+        string lossyMutation)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "lossy_actor_authority_snapshot_actor";
+        var currentJson = BuildMortalActorStateJson(
+            actorId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        var preTurnJson = BuildLossyMortalActorAuthoritySnapshotJson(actorId, lossyMutation);
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+    }
+
+    [Fact]
+    public async Task ValidateResponse_ValidCrossSectionSameActorMerge_TruePromotionHasNoErrors()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "cross_section_merge_actor";
+        var preTurnRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            actorId,
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false))!.AsObject();
+        var duplicateActor = preTurnRoot["NPCsInScene"]![0]!.DeepClone();
+        preTurnRoot["UpdateNPCs"] = new JsonArray(duplicateActor);
+        var currentJson = BuildMortalActorStateJson(
+            actorId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnRoot.ToJsonString());
+
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+    }
+
     [Fact]
     public async Task ValidateResponse_MissingSnapshot_NewPermanentIdWithEnvelopeAndInventory_IsBlockedFailClosed()
     {
@@ -1080,6 +1162,86 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             issue.Actual == "mat_same_turn_duplicate");
     }
 
+    private static string BuildLossyMortalActorAuthoritySnapshotJson(
+        string actorId,
+        string lossyMutation) => lossyMutation switch
+    {
+        "duplicate_npc_id" => $$"""
+        {
+          "UpdateNPCs": [
+            { "NPCId": "{{actorId}}", "NPCId": "{{actorId}}" }
+          ],
+          "NPCsInScene": []
+        }
+        """,
+        "conflicting_identity_aliases" => $$"""
+        {
+          "UpdateNPCs": [
+            { "NPCId": "different_snapshot_actor", "id": "{{actorId}}" }
+          ],
+          "NPCsInScene": []
+        }
+        """,
+        "duplicate_materialization" => $$"""
+        {
+          "UpdateNPCs": [
+            {
+              "NPCId": "{{actorId}}",
+              "materialization": { "schemaVersion": 1 },
+              "materialization": null
+            }
+          ],
+          "NPCsInScene": []
+        }
+        """,
+        "duplicate_teacher_profile" => $$"""
+        {
+          "UpdateNPCs": [
+            {
+              "NPCId": "{{actorId}}",
+              "teacherProfile": {
+                "canTeach": true,
+                "skills": [{ "skillId": "seal_reading", "skillName": "Чтение печатей", "masteryLevel": 1 }]
+              },
+              "teacherProfile": { "canTeach": false, "skills": [] }
+            }
+          ],
+          "NPCsInScene": []
+        }
+        """,
+        "duplicate_nested_can_teach" => $$"""
+        {
+          "UpdateNPCs": [
+            {
+              "NPCId": "{{actorId}}",
+              "teacherProfile": {
+                "canTeach": true,
+                "canTeach": false,
+                "skills": [{ "skillId": "seal_reading", "skillName": "Чтение печатей", "masteryLevel": 1 }]
+              }
+            }
+          ],
+          "NPCsInScene": []
+        }
+        """,
+        "case_variant_nested_can_teach" => $$"""
+        {
+          "UpdateNPCs": [
+            {
+              "NPCId": "{{actorId}}",
+              "teacherProfile": {
+                "canTeach": false,
+                "CanTeach": true,
+                "skills": []
+              }
+            }
+          ],
+          "NPCsInScene": []
+        }
+        """,
+        _ => throw new ArgumentOutOfRangeException(nameof(lossyMutation), lossyMutation, null)
+    };
+
     private static string BuildMortalActorStateJson(
         string actorId,
         string sectionName,
@@ -1097,7 +1259,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var sourceRoot = files["game_state/npcs/npc_core.json"].AsObject();
         var actor = sourceRoot["NPCsInScene"]![0]!.DeepClone().AsObject();
         actor["NPCId"] = actorId;
-        actor["npcId"] = actorId;
+        actor.Remove("npcId");
+        actor.Remove("id");
         if (!canTeach)
         {
             actor["teacherProfile"] = new JsonObject

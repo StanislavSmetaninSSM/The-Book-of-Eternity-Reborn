@@ -7,6 +7,8 @@ public partial class ValidationService
 {
     private const string MortalActorMaterializationStatePath = "game_state/npcs/npc_core.json";
     private const string AfterlifeActorMaterializationStatePath = "game_state/meta/afterlife_entity_profiles.json";
+    private const int JsonAuthoritySubtreeMaxDepth = 64;
+    private const int JsonAuthoritySubtreeMaxNodes = 32768;
 
     private readonly record struct ActorMaterializationPromotionSignals(
         bool CanTeach,
@@ -335,6 +337,8 @@ public partial class ValidationService
             {
                 if (!string.Equals(property.Name, sectionName, StringComparison.OrdinalIgnoreCase))
                     continue;
+                if (!string.Equals(property.Name, sectionName, StringComparison.Ordinal))
+                    return false;
 
                 carrierOccurrences++;
                 if (carrierOccurrences > 1)
@@ -350,9 +354,10 @@ public partial class ValidationService
             {
                 if (actor.ValueKind != JsonValueKind.Object)
                     return false;
+                if (!IsLosslessJsonAuthoritySubtree(actor))
+                    return false;
 
-                var actorId = ReadCanonicalMortalActorId(actor);
-                if (actorId == null)
+                if (!TryReadSingleCanonicalMortalActorId(actor, out var actorId))
                     return false;
 
                 var historicalEnvelopeJson = ReadHistoricalActorMaterializationEnvelopeJson(actor);
@@ -369,6 +374,72 @@ public partial class ValidationService
         }
 
         return true;
+    }
+
+    private static bool IsLosslessJsonAuthoritySubtree(JsonElement value)
+    {
+        var remainingNodes = JsonAuthoritySubtreeMaxNodes;
+        return IsLosslessJsonAuthoritySubtree(value, depth: 0, ref remainingNodes);
+    }
+
+    private static bool IsLosslessJsonAuthoritySubtree(
+        JsonElement value,
+        int depth,
+        ref int remainingNodes)
+    {
+        if (depth > JsonAuthoritySubtreeMaxDepth || remainingNodes-- <= 0)
+            return false;
+
+        if (value.ValueKind == JsonValueKind.Object)
+        {
+            var propertyNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var property in value.EnumerateObject())
+            {
+                if (!propertyNames.Add(property.Name) ||
+                    !IsLosslessJsonAuthoritySubtree(property.Value, depth + 1, ref remainingNodes))
+                {
+                    return false;
+                }
+            }
+        }
+        else if (value.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in value.EnumerateArray())
+            {
+                if (!IsLosslessJsonAuthoritySubtree(item, depth + 1, ref remainingNodes))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool TryReadSingleCanonicalMortalActorId(
+        JsonElement actor,
+        out string actorId)
+    {
+        actorId = string.Empty;
+        var identityAliases = 0;
+        foreach (var property in actor.EnumerateObject())
+        {
+            var isIdentityAlias = string.Equals(property.Name, "NPCId", StringComparison.Ordinal) ||
+                                  string.Equals(property.Name, "npcId", StringComparison.Ordinal) ||
+                                  string.Equals(property.Name, "id", StringComparison.Ordinal);
+            if (!isIdentityAlias)
+                continue;
+
+            identityAliases++;
+            if (identityAliases > 1 || property.Value.ValueKind != JsonValueKind.String)
+                return false;
+
+            var value = property.Value.GetString();
+            if (string.IsNullOrWhiteSpace(value))
+                return false;
+
+            actorId = value;
+        }
+
+        return identityAliases == 1;
     }
 
     private static string? ReadCanonicalMortalActorId(JsonElement actor)
