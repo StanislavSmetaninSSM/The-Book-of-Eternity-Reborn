@@ -4,24 +4,24 @@
 
 ## Phase 1 - Contract foundation
 
-- [ ] T001 Add focused failing tests for envelope parsing, exact actor binding, allowed fields, dispositions, and capability shape.
-- [ ] T002 Implement `ActorMaterializationContract` constants, parser, and reusable structural validation without genre/prose inference.
+- [x] T001 Add focused failing tests for envelope parsing, exact actor binding, allowed fields, dispositions, and capability shape.
+- [x] T002 Implement `ActorMaterializationContract` constants, parser, and reusable structural validation without genre/prose inference.
 - [ ] T003 Add source-guard tests that forbid genre keyword dictionaries and player-facing rendering of materialization metadata.
 
 ## Phase 2 - Mortal NPC materialization
 
-- [ ] T004 Add failing tests for new Mortal NPCs: missing envelope, valid populated sections, deliberate emptiness, section/content conflicts, and capability contradictions.
-- [ ] T005 Integrate Mortal materialization validation with full first-object validation and stable same-turn/permanent identity binding.
-- [ ] T006 Add failing tests and enforcement preventing first-materialization envelopes from bypassing dedicated existing-NPC delta commands.
-- [ ] T007 Add legacy/new/promotion tests using validated pre-turn authority; preserve untouched legacy NPCs.
+- [x] T004 Add failing tests for new Mortal NPCs: missing envelope, valid populated sections, deliberate emptiness, section/content conflicts, and capability contradictions.
+- [x] T005 Integrate Mortal materialization validation with full first-object validation and stable same-turn/permanent identity binding.
+- [x] T006 Add failing tests and enforcement preventing first-materialization envelopes from bypassing dedicated existing-NPC delta commands.
+- [x] T007 Add legacy/new/promotion tests using validated pre-turn authority; preserve untouched legacy NPCs.
 
 ## Phase 3 - Afterlife materialization and cross-file binding
 
-- [ ] T008 Add failing tests for new common profiles, section completeness, capabilities, actor memory, and untouched legacy profiles.
-- [ ] T009 Integrate afterlife profile envelope validation and normalizer preservation without content invention.
+- [x] T008 Add failing tests for new common profiles, section completeness, capabilities, actor memory, and untouched legacy profiles.
+- [x] T009 Integrate afterlife profile envelope validation and normalizer preservation without content invention.
 - [ ] T010 Add failing cross-file tests for Guardians, abode residents, radiant/Saref/custom actors, and non-vacant Shining faction heads.
 - [ ] T011 Implement exact type-and-ID profile binding and current-turn promotion detection, including player/vacancy/client-owned exceptions.
-- [ ] T012 Add deterministic System Guardian envelope tests and update the fresh-game builder.
+- [x] T012 Add deterministic System Guardian envelope tests and update the fresh-game builder.
 
 ## Phase 4 - Harness repair behavior
 
