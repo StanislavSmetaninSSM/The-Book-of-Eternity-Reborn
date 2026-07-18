@@ -277,10 +277,79 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
     }
 
     [Fact]
+    public void FreshFreeformGuardianMaterialization_UsesNeutralSemanticSeedIndependentOfDescription()
+    {
+        const string knowledgeTradeDescription =
+            "Хранительница Селена Теневая: покровительница библиотек, архивов, мудрости и торговых сделок.";
+        const string combatHealingDescription =
+            "Хранительница Селена Теневая: воительница клинков, битв, охоты и исцеления.";
+        const int turnNumber = 7;
+        var createdAtUtc = DateTimeOffset.Parse("2026-06-29T00:00:00Z");
+
+        var knowledgeGuardianRoot = _service.BuildCanonicalGuardianRootForFreshNewGame(
+            knowledgeTradeDescription,
+            "Искра Перед Рассветом",
+            turnNumber,
+            createdAtUtc);
+        var combatGuardianRoot = _service.BuildCanonicalGuardianRootForFreshNewGame(
+            combatHealingDescription,
+            "Искра Перед Рассветом",
+            turnNumber,
+            createdAtUtc);
+        var knowledgeGuardian = Assert.IsType<JsonObject>(
+            Assert.Single(Assert.IsType<JsonArray>(knowledgeGuardianRoot["guardians"])));
+        var combatGuardian = Assert.IsType<JsonObject>(
+            Assert.Single(Assert.IsType<JsonArray>(combatGuardianRoot["guardians"])));
+
+        Assert.Equal(knowledgeTradeDescription, knowledgeGuardian["freeformSourceDescription"]?.GetValue<string>());
+        Assert.Equal(combatHealingDescription, combatGuardian["freeformSourceDescription"]?.GetValue<string>());
+        Assert.Equal("General", knowledgeGuardian["domain"]?.GetValue<string>());
+        Assert.Equal(
+            knowledgeGuardian["domain"]?.GetValue<string>(),
+            combatGuardian["domain"]?.GetValue<string>());
+
+        var knowledgeProfile = GetOnlyAfterlifeProfile(
+            _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+                knowledgeTradeDescription,
+                "Искра Перед Рассветом",
+                turnNumber,
+                createdAtUtc));
+        var combatProfile = GetOnlyAfterlifeProfile(
+            _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+                combatHealingDescription,
+                "Искра Перед Рассветом",
+                turnNumber,
+                createdAtUtc));
+
+        Assert.Equal(knowledgeTradeDescription, knowledgeProfile["freeformSourceDescription"]?.GetValue<string>());
+        Assert.Equal(combatHealingDescription, combatProfile["freeformSourceDescription"]?.GetValue<string>());
+        var expectedStandardArts = new JsonObject
+        {
+            ["guard"] = 2,
+            ["maneuver"] = 1
+        };
+        Assert.True(JsonNode.DeepEquals(expectedStandardArts, knowledgeProfile["standardArts"]));
+        Assert.True(JsonNode.DeepEquals(knowledgeProfile["standardArts"], combatProfile["standardArts"]));
+
+        var knowledgeCapabilities = Assert.IsType<JsonObject>(
+            knowledgeProfile[ActorMaterializationContract.PropertyName]?["capabilities"]);
+        var combatCapabilities = Assert.IsType<JsonObject>(
+            combatProfile[ActorMaterializationContract.PropertyName]?["capabilities"]);
+        var expectedCapabilities = new JsonObject
+        {
+            ["canFight"] = true,
+            ["canTeach"] = true,
+            ["canTrade"] = false
+        };
+        Assert.True(JsonNode.DeepEquals(expectedCapabilities, knowledgeCapabilities));
+        Assert.True(JsonNode.DeepEquals(knowledgeCapabilities, combatCapabilities));
+    }
+
+    [Fact]
     public async Task BuildAfterlifeEntityProfileRootForFreshNewGame_Freeform_CreatesValidMentorProfile()
     {
         const string description = "Хранительница Селена Теневая: покровительница забытых библиотек, тайных сделок и осторожной мудрости.";
-        const int turnNumber = 1;
+        const int turnNumber = 7;
         var createdAtUtc = DateTimeOffset.Parse("2026-06-29T00:00:00Z");
 
         var root = _service.BuildAfterlifeEntityProfileRootForFreshNewGame(

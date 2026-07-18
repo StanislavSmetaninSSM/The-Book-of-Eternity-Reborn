@@ -20,6 +20,7 @@ public sealed class SystemGuardianLibraryService
     public const string BuiltInDirectoryName = "built_in";
     public const string UserDirectoryName = "user";
     public const string AttractionRequestPath = "game_state/control/system_guardian_attraction.json";
+    private const string FreeformGuardianDomain = "General";
 
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
@@ -396,7 +397,7 @@ public sealed class SystemGuardianLibraryService
         var timestamp = createdAtUtc.ToUniversalTime().ToString("o");
         var normalizedDescription = NormalizeFreeformDescription(freeformDescription);
         var displayName = ExtractFreeformGuardianName(normalizedDescription);
-        var domain = InferFreeformDomain(normalizedDescription);
+        var domain = FreeformGuardianDomain;
         var guardianId = BuildFreeformGuardianId(displayName, normalizedDescription);
         var abodeId = BuildFreeformGuardianAbodeId(guardianId);
         var abodeName = BuildFreeformAbodeName(displayName, normalizedDescription);
@@ -684,7 +685,7 @@ public sealed class SystemGuardianLibraryService
         var materializationTurn = Math.Max(0, turnNumber);
         var normalizedDescription = NormalizeFreeformDescription(freeformDescription);
         var displayName = ExtractFreeformGuardianName(normalizedDescription);
-        var domain = InferFreeformDomain(normalizedDescription);
+        var domain = FreeformGuardianDomain;
         var guardianId = BuildFreeformGuardianId(displayName, normalizedDescription);
         var abodeName = BuildFreeformAbodeName(displayName, normalizedDescription);
         var seedSegment = SanitizeIdSegment(guardianId);
@@ -1003,25 +1004,6 @@ public sealed class SystemGuardianLibraryService
             return string.Join(' ', words.Take(Math.Min(words.Length, 4))).Trim(' ', '"', '\'', '«', '»');
 
         return FirstNonEmpty(firstLine, "Свободный Хранитель");
-    }
-
-    private static string InferFreeformDomain(string description)
-    {
-        var source = description.ToLowerInvariant();
-        if (ContainsAny(source, "библиот", "архив", "знан", "мудрост", "книг", "тайн"))
-            return "Knowledge";
-        if (ContainsAny(source, "сдел", "торг", "куп", "долг", "цен", "обмен"))
-            return "Trade";
-        if (ContainsAny(source, "бой", "меч", "клин", "воин", "битв", "охот"))
-            return "Combat";
-        if (ContainsAny(source, "исцел", "леч", "милосерд", "забот"))
-            return "Healing";
-        if (ContainsAny(source, "лес", "дорог", "выжив", "пустош", "след"))
-            return "Survival";
-        if (ContainsAny(source, "интриг", "лож", "маск", "тайн", "договор"))
-            return "Intrigue";
-
-        return "Knowledge";
     }
 
     private static string BuildFreeformAbodeName(string displayName, string description)
