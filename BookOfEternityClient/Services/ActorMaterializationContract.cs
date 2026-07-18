@@ -12,7 +12,8 @@ internal sealed record ActorMaterializationEvidence(
     string ActorType,
     string ActorId,
     IReadOnlyDictionary<string, bool> SectionHasContent,
-    IReadOnlyDictionary<string, bool> CapabilityEvidence);
+    IReadOnlyDictionary<string, bool> CapabilityEvidence,
+    IReadOnlySet<string>? DeferredCapabilityEvidence = null);
 
 internal static class ActorMaterializationContract
 {
@@ -71,7 +72,8 @@ internal static class ActorMaterializationContract
         string context,
         ActorMaterializationFamily family,
         ActorMaterializationEvidence evidence,
-        bool requireEnvelope)
+        bool requireEnvelope,
+        bool deferEvidenceConsistency = false)
     {
         var issues = new List<ValidationIssue>();
         if (actor.ValueKind != JsonValueKind.Object ||
@@ -109,12 +111,24 @@ internal static class ActorMaterializationContract
         var capabilities = family == ActorMaterializationFamily.Mortal
             ? MortalCapabilities
             : AfterlifeCapabilities;
-        ValidateCapabilities(envelope, context, capabilities, evidence, issues);
+        ValidateCapabilities(
+            envelope,
+            context,
+            capabilities,
+            evidence,
+            issues,
+            deferEvidenceConsistency);
 
         var sections = family == ActorMaterializationFamily.Mortal
             ? MortalSections
             : AfterlifeSections;
-        ValidateSections(envelope, context, sections, evidence, issues);
+        ValidateSections(
+            envelope,
+            context,
+            sections,
+            evidence,
+            issues,
+            deferEvidenceConsistency);
 
         return issues;
     }
@@ -123,6 +137,31 @@ internal static class ActorMaterializationContract
         JsonElement npc,
         string context,
         string sectionName)
+    {
+        return ValidateMortalNpc(
+            npc,
+            context,
+            sectionName,
+            requireEnvelopeOverride: null);
+    }
+
+    internal static IReadOnlyList<ValidationIssue> ValidateCanonicalMortalNpc(
+        JsonElement npc,
+        string context,
+        bool requireEnvelope)
+    {
+        return ValidateMortalNpc(
+            npc,
+            context,
+            sectionName: null,
+            requireEnvelopeOverride: requireEnvelope);
+    }
+
+    private static IReadOnlyList<ValidationIssue> ValidateMortalNpc(
+        JsonElement npc,
+        string context,
+        string? sectionName,
+        bool? requireEnvelopeOverride)
     {
         var hasIdentityNode = TryGetFirstProperty(npc, out var identityNode, "NPCId", "npcId", "id");
         var isNewNpc = hasIdentityNode && identityNode.ValueKind == JsonValueKind.Null;
@@ -175,7 +214,8 @@ internal static class ActorMaterializationContract
                 context,
                 ActorMaterializationFamily.Mortal,
                 evidence,
-                requireEnvelope: isNewNpc)
+                requireEnvelope: requireEnvelopeOverride ?? isNewNpc,
+                deferEvidenceConsistency: !requireEnvelopeOverride.HasValue && !isNewNpc)
             .ToList();
 
         if (!isNewNpc &&
@@ -201,6 +241,34 @@ internal static class ActorMaterializationContract
         bool requireEnvelope,
         bool canTradeEvidence)
     {
+        return ValidateAfterlifeProfileCore(
+            profile,
+            context,
+            requireEnvelope,
+            canTradeEvidence,
+            deferEvidenceConsistency: !requireEnvelope);
+    }
+
+    internal static IReadOnlyList<ValidationIssue> ValidateCanonicalAfterlifeProfile(
+        JsonElement profile,
+        string context,
+        bool requireEnvelope)
+    {
+        return ValidateAfterlifeProfileCore(
+            profile,
+            context,
+            requireEnvelope,
+            canTradeEvidence: null,
+            deferEvidenceConsistency: false);
+    }
+
+    private static IReadOnlyList<ValidationIssue> ValidateAfterlifeProfileCore(
+        JsonElement profile,
+        string context,
+        bool requireEnvelope,
+        bool? canTradeEvidence,
+        bool deferEvidenceConsistency)
+    {
         var actorType = ReadFirstNonEmptyString(profile, "actorType");
         var actorId = ReadFirstNonEmptyString(profile, "actorId", "actorRef");
         if (string.IsNullOrWhiteSpace(actorType) || string.IsNullOrWhiteSpace(actorId))
@@ -219,6 +287,21 @@ internal static class ActorMaterializationContract
         var hasProgressionHistory = HasArrayEntries(profile, "ledger") ||
                                     HasArrayEntries(profile, "progressionLedger");
 
+        var capabilityEvidence = new Dictionary<string, bool>(StringComparer.Ordinal)
+        {
+            ["canFight"] = hasAnyArt,
+            ["canTeach"] = hasMentorAuthority && hasAnyArt
+        };
+        IReadOnlySet<string>? deferredCapabilityEvidence = null;
+        if (canTradeEvidence.HasValue)
+        {
+            capabilityEvidence["canTrade"] = canTradeEvidence.Value;
+        }
+        else
+        {
+            deferredCapabilityEvidence = new HashSet<string>(StringComparer.Ordinal) { "canTrade" };
+        }
+
         var evidence = new ActorMaterializationEvidence(
             actorType,
             actorId,
@@ -232,19 +315,16 @@ internal static class ActorMaterializationContract
                 ["agency"] = hasAgency,
                 ["progressionHistory"] = hasProgressionHistory
             },
-            new Dictionary<string, bool>(StringComparer.Ordinal)
-            {
-                ["canFight"] = hasAnyArt,
-                ["canTeach"] = hasMentorAuthority && hasAnyArt,
-                ["canTrade"] = canTradeEvidence
-            });
+            capabilityEvidence,
+            deferredCapabilityEvidence);
 
         return Validate(
             profile,
             context,
             ActorMaterializationFamily.Afterlife,
             evidence,
-            requireEnvelope);
+            requireEnvelope,
+            deferEvidenceConsistency);
     }
 
     private static void ValidateEnvelopeScalars(
@@ -314,7 +394,8 @@ internal static class ActorMaterializationContract
         string context,
         HashSet<string> requiredCapabilities,
         ActorMaterializationEvidence evidence,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        bool deferEvidenceConsistency)
     {
         var capabilityContext = $"{context}.{PropertyName}.capabilities";
         if (!envelope.TryGetProperty("capabilities", out var capabilities) ||
@@ -344,6 +425,10 @@ internal static class ActorMaterializationContract
                 continue;
             }
 
+            if (deferEvidenceConsistency ||
+                evidence.DeferredCapabilityEvidence?.Contains(capability) == true)
+                continue;
+
             if (!evidence.CapabilityEvidence.TryGetValue(capability, out var actualEvidence) ||
                 declared.GetBoolean() != actualEvidence)
             {
@@ -365,7 +450,8 @@ internal static class ActorMaterializationContract
         string context,
         HashSet<string> requiredSections,
         ActorMaterializationEvidence evidence,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        bool deferEvidenceConsistency)
     {
         var sectionsContext = $"{context}.{PropertyName}.sections";
         if (!envelope.TryGetProperty("sections", out var sections) || sections.ValueKind != JsonValueKind.Object)
@@ -408,7 +494,13 @@ internal static class ActorMaterializationContract
                 continue;
             }
 
-            ValidateSectionDisposition(disposition, sectionsContext, section, evidence, issues);
+            ValidateSectionDisposition(
+                disposition,
+                sectionsContext,
+                section,
+                evidence,
+                issues,
+                deferEvidenceConsistency);
         }
     }
 
@@ -417,7 +509,8 @@ internal static class ActorMaterializationContract
         string sectionsContext,
         string section,
         ActorMaterializationEvidence evidence,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        bool deferEvidenceConsistency)
     {
         var sectionContext = $"{sectionsContext}.{section}";
         if (disposition.ValueKind != JsonValueKind.Object)
@@ -459,6 +552,9 @@ internal static class ActorMaterializationContract
                 "non-empty in-world reason",
                 "missing or blank"));
         }
+
+        if (deferEvidenceConsistency)
+            return;
 
         var hasContent = evidence.SectionHasContent.TryGetValue(section, out var sectionHasContent) && sectionHasContent;
         if ((isPopulated && !hasContent) || (isEmptyByDesign && hasContent))
