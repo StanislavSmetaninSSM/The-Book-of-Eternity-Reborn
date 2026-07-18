@@ -5082,6 +5082,7 @@ public partial class ValidationService
 
                 ValidateNpcSceneIdentity(item, itemContext, issues);
                 RequireString(item, itemContext, issues, "name");
+                issues.AddRange(ActorMaterializationContract.ValidateMortalNpc(item, itemContext, sectionName));
                 ValidateNpcCoreObjectShape(item, itemContext, issues, sectionName);
                 ValidateNpcTradeState(item, itemContext, issues);
 
@@ -8013,6 +8014,12 @@ public partial class ValidationService
         ValidatePendingShiningBlessingEffects(root, contextPrefix, issues);
         ValidateAfterlifeCombatProfile(root, contextPrefix, issues);
         ValidateAfterlifeSpiritualConflictUpdateContract(root, contextPrefix, issues);
+        if (root.TryGetProperty(AfterlifeEntityProfileState.ProfilesProperty, out _) ||
+            root.TryGetProperty(AfterlifeEntityProfileState.ResponseProfilesProperty, out _) ||
+            root.TryGetProperty(AfterlifeEntityProfileState.UpdateProperty, out _))
+        {
+            ValidateAfterlifeEntityProfileStateFile(root, contextPrefix, issues);
+        }
         ValidatePlayerGuardianFoundationSoulStateFields(root, contextPrefix, issues);
         ValidateGuardianCommands(root, contextPrefix, issues);
         ValidateGuardianQuestProgressUpdates(root, contextPrefix, issues);
