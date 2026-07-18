@@ -570,6 +570,51 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateResponse_HashValidSnapshotWithNonObjectNpcEntry_NewPermanentIdInventory_IsBlockedFailClosed()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentJson = BuildMortalActorStateJson(
+            "non_object_snapshot_actor",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        const string preTurnJson = """{ "UpdateNPCs": [null], "NPCsInScene": [] }""";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+    }
+
+    [Fact]
+    public async Task ValidateResponse_HashValidSnapshotWithUnreadablePermanentIdentity_NewPermanentIdInventory_IsBlockedFailClosed()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentJson = BuildMortalActorStateJson(
+            "unreadable_identity_snapshot_actor",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        const string preTurnJson = """
+        {
+          "UpdateNPCs": [
+            { "NPCId": 42, "npcId": null, "id": " " }
+          ],
+          "NPCsInScene": []
+        }
+        """;
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+    }
+
+    [Fact]
     public async Task ValidateResponse_MissingSnapshot_NewPermanentIdWithEnvelopeAndInventory_IsBlockedFailClosed()
     {
         const string path = "game_state/npcs/npc_core.json";

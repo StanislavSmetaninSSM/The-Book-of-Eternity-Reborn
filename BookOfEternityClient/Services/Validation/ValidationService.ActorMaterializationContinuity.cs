@@ -337,9 +337,12 @@ public partial class ValidationService
 
             foreach (var actor in actors.EnumerateArray())
             {
+                if (actor.ValueKind != JsonValueKind.Object)
+                    return false;
+
                 var actorId = ReadCanonicalMortalActorId(actor);
                 if (actorId == null)
-                    continue;
+                    return false;
 
                 var historicalEnvelopeJson = ReadHistoricalActorMaterializationEnvelopeJson(actor);
                 var state = new MortalActorMaterializationPreTurnState(
