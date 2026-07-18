@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://book-of-eternity.local/contracts/actor-materialization-v1.schema.json",
+  "title": "Actor Materialization Envelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "materializationId",
+    "actorType",
+    "actorId",
+    "materializedAtTurn",
+    "state",
+    "capabilities",
+    "sections"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "materializationId": { "type": "string", "minLength": 1 },
+    "actorType": {
+      "enum": [
+        "mortal_npc",
+        "guardian",
+        "resident",
+        "shining_resident",
+        "shining_faction_head",
+        "radiant_actor",
+        "saref_agent",
+        "system_actor",
+        "custom_afterlife_actor"
+      ]
+    },
+    "actorId": { "type": "string", "minLength": 1 },
+    "materializedAtTurn": { "type": "integer", "minimum": 0 },
+    "state": { "const": "complete" },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canFight", "canTeach", "canTrade"],
+      "properties": {
+        "canFight": { "type": "boolean" },
+        "canTeach": { "type": "boolean" },
+        "canTrade": { "type": "boolean" },
+        "ownsItems": { "type": "boolean" }
+      }
+    },
+    "sections": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/sectionDisposition" }
+    }
+  },
+  "$defs": {
+    "sectionDisposition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "const": "populated" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "reason"],
+          "properties": {
+            "state": { "const": "empty_by_design" },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    }
+  }
+}
