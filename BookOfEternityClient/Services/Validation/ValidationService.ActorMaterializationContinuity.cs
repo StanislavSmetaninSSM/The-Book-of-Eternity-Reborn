@@ -725,7 +725,6 @@ public partial class ValidationService
         var currentJson = await _fs.ReadFileAsync(AfterlifeActorMaterializationStatePath);
         if (string.IsNullOrWhiteSpace(currentJson))
             return;
-        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(AfterlifeActorMaterializationStatePath);
 
         try
         {
@@ -734,12 +733,38 @@ public partial class ValidationService
                 return;
 
             issues.AddRange(ValidateCurrentAfterlifeMaterializationIds(currentDocument.RootElement));
-            if (preTurnJson == null)
+            var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+            if (snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Missing)
                 return;
+            if (snapshotLookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
+                snapshotLookup.Manifest == null)
+            {
+                AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(
+                    AfterlifeActorMaterializationStatePath,
+                    issues);
+                return;
+            }
+
+            var preTurnJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+                snapshotLookup.Manifest,
+                AfterlifeActorMaterializationStatePath);
+            if (preTurnJson == null)
+            {
+                AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(
+                    AfterlifeActorMaterializationStatePath,
+                    issues);
+                return;
+            }
 
             using var preTurnDocument = JsonDocument.Parse(preTurnJson);
-            if (!TryReadCanonicalAfterlifeActorStates(preTurnDocument.RootElement, out var preTurnActors) ||
-                !currentDocument.RootElement.TryGetProperty(
+            if (!TryReadCanonicalAfterlifeActorStates(preTurnDocument.RootElement, out var preTurnActors))
+            {
+                AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(
+                    AfterlifeActorMaterializationStatePath,
+                    issues);
+                return;
+            }
+            if (!currentDocument.RootElement.TryGetProperty(
                     AfterlifeEntityProfileState.ProfilesProperty,
                     out var profiles) ||
                 profiles.ValueKind != JsonValueKind.Array)
@@ -806,6 +831,11 @@ public partial class ValidationService
                 }
             }
 
+            await ValidateAcceptedTurnAfterlifeActorProfileBindingsAsync(
+                currentDocument.RootElement,
+                snapshotLookup.Manifest,
+                issues);
+
         }
         catch (JsonException)
         {
@@ -858,27 +888,50 @@ public partial class ValidationService
 
         foreach (var profile in profiles.EnumerateArray())
         {
-            if (!TryReadCanonicalAfterlifeActorIdentity(
+            if (profile.ValueKind != JsonValueKind.Object ||
+                !TryReadCanonicalAfterlifePreTurnActorIdentity(
                     profile,
                     out var actorType,
                     out var actorId,
-                    out var identityKey) ||
-                (string.Equals(actorType, "player_soul", StringComparison.Ordinal) &&
-                 string.Equals(actorId, "player_soul", StringComparison.Ordinal)))
+                    out var identityKey))
             {
-                continue;
+                return false;
             }
+            if (string.Equals(actorType, "player_soul", StringComparison.Ordinal) &&
+                string.Equals(actorId, "player_soul", StringComparison.Ordinal))
+                continue;
 
             var state = new AfterlifeActorMaterializationPreTurnState(
                 ReadAfterlifeActorMaterializationPromotionSignals(profile),
                 ReadHistoricalActorMaterializationEnvelopeJson(profile),
                 actorType,
                 actorId);
-            result[identityKey] = result.TryGetValue(identityKey, out var existing)
-                ? existing.Merge(state)
-                : state;
+            if (!result.TryAdd(identityKey, state))
+                return false;
         }
 
+        return true;
+    }
+
+    private static bool TryReadCanonicalAfterlifePreTurnActorIdentity(
+        JsonElement profile,
+        out string actorType,
+        out string actorId,
+        out string identityKey)
+    {
+        actorType = string.Empty;
+        actorId = string.Empty;
+        identityKey = string.Empty;
+        if (!TryReadExactNonEmptyString(profile, "actorType", out actorType))
+            return false;
+
+        var hasActorId = TryReadExactNonEmptyString(profile, "actorId", out var canonicalActorId);
+        var hasActorRef = TryReadExactNonEmptyString(profile, "actorRef", out var legacyActorRef);
+        if (hasActorId == hasActorRef)
+            return false;
+
+        actorId = hasActorId ? canonicalActorId : legacyActorRef;
+        identityKey = $"{actorType}\u001f{actorId}";
         return true;
     }
 
