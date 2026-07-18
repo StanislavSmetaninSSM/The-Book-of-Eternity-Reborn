@@ -587,11 +587,14 @@ public sealed class SystemGuardianLibraryService
         DateTimeOffset createdAtUtc)
     {
         var timestamp = createdAtUtc.ToUniversalTime().ToString("o");
+        var materializationTurn = Math.Max(0, turnNumber);
         var presetId = FirstNonEmpty(preset.PresetId, "system_guardian");
         var guardianId = BuildSystemGuardianId(presetId);
         var defaultName = FirstNonEmpty(preset.DefaultNameVariant, preset.DisplayName, presetId);
         var abodeName = FirstNonEmpty(preset.AbodeName, $"{defaultName} — Обитель");
         var domain = FirstNonEmpty(preset.Domain, "Knowledge");
+        const string progressionStrategySummary =
+            "Стартовый системный Хранитель держит запас духовных техник для обучения души через витрину наставника.";
 
         return new JsonObject
         {
@@ -636,13 +639,14 @@ public sealed class SystemGuardianLibraryService
             ["specialArts"] = new JsonArray(),
             ["customStates"] = new JsonArray(),
             ["fateCards"] = new JsonArray(),
+            ["relationships"] = new JsonArray(),
             ["soulDissipationTier"] = 0,
             ["progressionStrategy"] = new JsonObject
             {
                 ["strategyId"] = $"strategy_system_guardian_{SanitizeIdSegment(presetId)}",
-                ["summary"] = "Стартовый системный Хранитель держит запас духовных техник для обучения души через витрину наставника.",
+                ["summary"] = progressionStrategySummary,
                 ["priorityOrder"] = new JsonArray("guard", "maneuver"),
-                ["lastUpdatedAtTurn"] = Math.Max(0, turnNumber),
+                ["lastUpdatedAtTurn"] = materializationTurn,
                 ["resourceReserve"] = new JsonObject
                 {
                     ["inkFeathers"] = 0,
@@ -650,18 +654,23 @@ public sealed class SystemGuardianLibraryService
                 },
                 ["allowedSpends"] = new JsonArray("standardArts", "specialArts")
             },
+            ["gmThoughtsSummary"] = progressionStrategySummary,
+            ["progressionLedger"] = new JsonArray(),
             ["ledger"] = new JsonArray
             {
                 new JsonObject
                 {
                     ["entryId"] = $"system_guardian_profile_bootstrap_{SanitizeIdSegment(presetId)}",
-                    ["turnNumber"] = Math.Max(0, turnNumber),
+                    ["turnNumber"] = materializationTurn,
                     ["reason"] = "fresh_new_game_system_guardian_bootstrap",
                     ["summary"] = $"Клиент создал стартовый профиль наставника для системного Хранителя {defaultName}, чтобы команда /обучение могла запросить витрину у ГМ.",
                     ["createdAt"] = timestamp,
                     ["soulName"] = soulName
                 }
-            }
+            },
+            [ActorMaterializationContract.PropertyName] = BuildSystemGuardianMaterialization(
+                guardianId,
+                materializationTurn)
         };
     }
 
@@ -672,12 +681,15 @@ public sealed class SystemGuardianLibraryService
         DateTimeOffset createdAtUtc)
     {
         var timestamp = createdAtUtc.ToUniversalTime().ToString("o");
+        var materializationTurn = Math.Max(0, turnNumber);
         var normalizedDescription = NormalizeFreeformDescription(freeformDescription);
         var displayName = ExtractFreeformGuardianName(normalizedDescription);
         var domain = InferFreeformDomain(normalizedDescription);
         var guardianId = BuildFreeformGuardianId(displayName, normalizedDescription);
         var abodeName = BuildFreeformAbodeName(displayName, normalizedDescription);
         var seedSegment = SanitizeIdSegment(guardianId);
+        const string progressionStrategySummary =
+            "Стартовый свободно описанный Хранитель держит безопасный набор духовных техник для первых уроков души.";
 
         return new JsonObject
         {
@@ -722,9 +734,9 @@ public sealed class SystemGuardianLibraryService
             ["progressionStrategy"] = new JsonObject
             {
                 ["strategyId"] = $"strategy_{seedSegment}",
-                ["summary"] = "Стартовый свободно описанный Хранитель держит безопасный набор духовных техник для первых уроков души.",
+                ["summary"] = progressionStrategySummary,
                 ["priorityOrder"] = new JsonArray("guard", "maneuver"),
-                ["lastUpdatedAtTurn"] = Math.Max(0, turnNumber),
+                ["lastUpdatedAtTurn"] = materializationTurn,
                 ["resourceReserve"] = new JsonObject
                 {
                     ["inkFeathers"] = 0,
@@ -732,21 +744,68 @@ public sealed class SystemGuardianLibraryService
                 },
                 ["allowedSpends"] = new JsonArray("standardArts", "specialArts")
             },
+            ["gmThoughtsSummary"] = progressionStrategySummary,
             ["progressionLedger"] = new JsonArray(),
             ["ledger"] = new JsonArray
             {
                 new JsonObject
                 {
                     ["entryId"] = $"freeform_guardian_profile_bootstrap_{seedSegment}",
-                    ["turnNumber"] = Math.Max(0, turnNumber),
+                    ["turnNumber"] = materializationTurn,
                     ["reason"] = "fresh_new_game_freeform_guardian_bootstrap",
                     ["summary"] = $"Клиент создал стартовый профиль наставника для свободно описанного Хранителя {displayName}, чтобы первый ход не зависел от технической материализации.",
                     ["createdAt"] = timestamp,
                     ["soulName"] = soulName
                 }
-            }
+            },
+            [ActorMaterializationContract.PropertyName] = BuildSystemGuardianMaterialization(
+                guardianId,
+                materializationTurn)
         };
     }
+
+    private static JsonObject BuildSystemGuardianMaterialization(string guardianId, int materializationTurn) =>
+        new()
+        {
+            ["schemaVersion"] = ActorMaterializationContract.SchemaVersion,
+            ["materializationId"] = $"mat_{guardianId}_turn_{materializationTurn}",
+            ["actorType"] = "guardian",
+            ["actorId"] = guardianId,
+            ["materializedAtTurn"] = materializationTurn,
+            ["state"] = "complete",
+            ["capabilities"] = new JsonObject
+            {
+                ["canFight"] = true,
+                ["canTeach"] = true,
+                ["canTrade"] = false
+            },
+            ["sections"] = new JsonObject
+            {
+                ["standardArts"] = new JsonObject { ["state"] = "populated" },
+                ["specialArts"] = new JsonObject
+                {
+                    ["state"] = "empty_by_design",
+                    ["reason"] = "Хранитель ещё не создал личного особого искусства."
+                },
+                ["customStates"] = new JsonObject
+                {
+                    ["state"] = "empty_by_design",
+                    ["reason"] = "На Хранителе нет особых духовных состояний."
+                },
+                ["fateCards"] = new JsonObject
+                {
+                    ["state"] = "empty_by_design",
+                    ["reason"] = "Карта Судьбы Хранителя ещё не открыта."
+                },
+                ["relationships"] = new JsonObject
+                {
+                    ["state"] = "empty_by_design",
+                    ["reason"] = "Устойчивые связи Хранителя ещё не сформировались."
+                },
+                ["agency"] = new JsonObject { ["state"] = "populated" },
+                ["progressionHistory"] = new JsonObject { ["state"] = "populated" }
+            }
+        };
 
     private static JsonObject BuildInitialMentorStandardArts(string domain)
     {
