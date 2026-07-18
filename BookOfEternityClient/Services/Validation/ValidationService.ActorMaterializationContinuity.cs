@@ -246,13 +246,49 @@ public partial class ValidationService
             foreach (var actor in actors.EnumerateArray())
             {
                 var context = $"{MortalActorMaterializationStatePath}.{sectionName}[{index++}]";
-                var actorId = ReadCanonicalMortalActorId(actor);
+                var actorId = ReadCurrentMortalActorMaterializationId(actor);
                 if (actorId != null)
                     currentActors.Add((actor, context, "mortal_npc", actorId));
             }
         }
 
         return ActorMaterializationContract.ValidateUniqueMaterializationIds(currentActors);
+    }
+
+    private IReadOnlyDictionary<string, MortalActorMaterializationPreTurnState>?
+        ReadValidatedMortalActorMaterializationPreTurnStatesSync()
+    {
+        var preTurnJson = ReadValidatedCurrentPreTurnTrackedFileSync(MortalActorMaterializationStatePath);
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return null;
+
+        try
+        {
+            using var document = JsonDocument.Parse(preTurnJson);
+            return TryReadCanonicalMortalActorStates(document.RootElement, out var states)
+                ? states
+                : null;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    private static bool IsExistingMortalActorInventoryResend(
+        JsonElement actor,
+        string actorId,
+        IReadOnlyDictionary<string, MortalActorMaterializationPreTurnState>? preTurnActors)
+    {
+        if (preTurnActors == null || !preTurnActors.TryGetValue(actorId, out var previousState))
+            return false;
+        if (previousState.HistoricalEnvelopeJson != null)
+            return true;
+        if (actor.TryGetProperty(ActorMaterializationContract.PropertyName, out _))
+            return false;
+
+        var currentSignals = ReadMortalActorMaterializationPromotionSignals(actor);
+        return !currentSignals.IsPromotionFrom(previousState.PromotionSignals);
     }
 
     private static bool TryReadCanonicalMortalActorStates(
@@ -309,6 +345,9 @@ public partial class ValidationService
 
         return null;
     }
+
+    private static string? ReadCurrentMortalActorMaterializationId(JsonElement actor) =>
+        ReadCanonicalMortalActorId(actor) ?? ReadActorMaterializationString(actor, "initialId");
 
     private static ActorMaterializationPromotionSignals ReadMortalActorMaterializationPromotionSignals(
         JsonElement actor)

@@ -5047,6 +5047,7 @@ public partial class ValidationService
         var currentSceneLocationId = currentSceneAnchor.LocationId;
         var currentSceneInitialId = currentSceneAnchor.InitialId;
         var currentSceneMissingInitialAnchor = IsCurrentSceneNewLocationWithoutInitialIdSync();
+        var validatedPreTurnActors = ReadValidatedMortalActorMaterializationPreTurnStatesSync();
         if (!skipManifestedCompanionSourceValidation)
             ValidateCompanionManifestationNpcSources(root, contextPrefix, issues);
 
@@ -5149,7 +5150,8 @@ public partial class ValidationService
                 }
                 if (string.Equals(sectionName, "UpdateNPCs", StringComparison.OrdinalIgnoreCase) &&
                     !string.IsNullOrWhiteSpace(npcId) &&
-                    item.TryGetProperty("inventory", out _))
+                    item.TryGetProperty("inventory", out _) &&
+                    IsExistingMortalActorInventoryResend(item, npcId, validatedPreTurnActors))
                 {
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.inventory",

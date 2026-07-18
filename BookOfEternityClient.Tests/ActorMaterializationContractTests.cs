@@ -553,6 +553,29 @@ public sealed class ActorMaterializationContractTests
     }
 
     [Fact]
+    public void ValidateMortalNpc_UntouchedLegacyEquippedItemOutsideInventory_DoesNotApplyMaterializationReferenceRule()
+    {
+        var actor = new JsonObject
+        {
+            ["NPCId"] = "legacy_equipped_actor",
+            ["inventory"] = new JsonArray(),
+            ["equippedItems"] = new JsonObject
+            {
+                ["MainHand"] = "legacy_item_outside_embedded_inventory"
+            }
+        };
+        using var document = JsonDocument.Parse(actor.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "actor_materialization_inventory_reference_mismatch");
+    }
+
+    [Fact]
     public void ValidateMortalNpc_TeacherSkillsContainingOnlyNull_DoNotSatisfyTeachingCapability()
     {
         var actor = CreateMortalNpcWithEnvelope();
@@ -738,7 +761,7 @@ public sealed class ActorMaterializationContractTests
             document.RootElement,
             "profile",
             requireEnvelope: true,
-            canTradeEvidence: false);
+            canTradeEvidence: null);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "actor_materialization_capability_mismatch" &&
@@ -748,22 +771,19 @@ public sealed class ActorMaterializationContractTests
     [Theory]
     [InlineData(false, true)]
     [InlineData(true, false)]
-    public void Validate_AuthoritativeAfterlifeTradeEvidence_IsComparedWhenKnown(
+    public void ValidateAfterlifeProfile_AuthoritativeTradeEvidence_IsComparedWhenKnown(
         bool authoritativeCanTrade,
         bool expectMismatch)
     {
         var profile = CreateAfterlifeProfile();
         profile["materialization"]!["capabilities"]!["canTrade"] = true;
         using var document = JsonDocument.Parse(profile.ToJsonString());
-        var evidence = CreateAfterlifeEvidence(authoritativeCanTrade);
 
-        var issues = ActorMaterializationContract.Validate(
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
             document.RootElement,
             "profile",
-            ActorMaterializationFamily.Afterlife,
-            evidence,
             requireEnvelope: true,
-            deferEvidenceConsistency: false);
+            canTradeEvidence: authoritativeCanTrade);
 
         Assert.Equal(
             expectMismatch,
@@ -808,26 +828,6 @@ public sealed class ActorMaterializationContractTests
             ["canTeach"] = false,
             ["canTrade"] = false,
             ["ownsItems"] = true
-        });
-
-    private static ActorMaterializationEvidence CreateAfterlifeEvidence(bool canTrade) => new(
-        ActorType: "guardian",
-        ActorId: "guardian_archive_keeper",
-        SectionHasContent: new Dictionary<string, bool>(StringComparer.Ordinal)
-        {
-            ["standardArts"] = true,
-            ["specialArts"] = false,
-            ["customStates"] = false,
-            ["fateCards"] = false,
-            ["relationships"] = false,
-            ["agency"] = true,
-            ["progressionHistory"] = true
-        },
-        CapabilityEvidence: new Dictionary<string, bool>(StringComparer.Ordinal)
-        {
-            ["canFight"] = true,
-            ["canTeach"] = false,
-            ["canTrade"] = canTrade
         });
 
     private static JsonObject CreateMortalNpcWithEnvelope()

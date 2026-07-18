@@ -241,6 +241,23 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             issue.Actor == "radiant_actor:mentor_combatant_legacy_profile");
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_UntouchedLegacyAfterlifeProfileWithCaseVariantActorType_DoesNotApplyStrictMaterializationTokenRule()
+    {
+        const string path = "game_state/meta/afterlife_entity_profiles.json";
+        var legacyJson = BuildAfterlifeProfileStateJson(
+            includeProfile: true,
+            actorType: "Radiant_Actor",
+            actorId: "legacy_case_variant_profile");
+        await WriteCurrentAndValidatedPreTurnAsync(path, legacyJson, legacyJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "actor_materialization_invalid_actor_type" &&
+            issue.Actor == "Radiant_Actor:legacy_case_variant_profile");
+    }
+
     [Theory]
     [InlineData("mentor")]
     [InlineData("combat")]
@@ -534,26 +551,26 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task ValidateGameStateAsync_NewPermanentIdUpdateNpcWithValidEnvelope_PassesMaterializationPipeline()
+    public async Task ValidateResponse_NewPermanentIdUpdateNpcWithValidEnvelopeAndInventory_PassesMaterializationPipeline()
     {
         const string path = "game_state/npcs/npc_core.json";
         var currentJson = BuildMortalActorStateJson(
             "permanent_update_actor",
             sectionName: "UpdateNPCs",
             canTeach: true,
-            includeEnvelope: true);
+            includeEnvelope: true,
+            includeInventory: true);
         const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
 
-        Assert.DoesNotContain(issues, issue =>
-            issue.Actor == "mortal_npc:permanent_update_actor" &&
-            issue.Code?.StartsWith("actor_materialization_", StringComparison.Ordinal) == true);
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
     }
 
     [Fact]
-    public async Task ValidateGameStateAsync_LegacyPromotionWithNewValidEnvelope_PassesMaterializationPipeline()
+    public async Task ValidateResponse_LegacyPromotionWithNewValidEnvelopeAndInventory_PassesMaterializationPipeline()
     {
         const string path = "game_state/npcs/npc_core.json";
         var preTurnJson = BuildMortalActorStateJson(
@@ -565,14 +582,14 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             "legacy_promoted_actor",
             sectionName: "UpdateNPCs",
             canTeach: true,
-            includeEnvelope: true);
+            includeEnvelope: true,
+            includeInventory: true);
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
 
-        Assert.DoesNotContain(issues, issue =>
-            issue.Actor == "mortal_npc:legacy_promoted_actor" &&
-            issue.Code?.StartsWith("actor_materialization_", StringComparison.Ordinal) == true);
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
     }
 
     [Fact]
@@ -594,6 +611,7 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_existing_resend_forbidden" &&
             issue.Actor == "mortal_npc:existing_resend_actor");
+        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
     }
 
     [Fact]
@@ -798,6 +816,28 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         Assert.Empty(issues);
     }
 
+    [Fact]
+    public void ValidateResponse_AfterlifeMaterializationWithAuthoritativeFalseTradeEvidence_ReportsMismatchThroughProductionCaller()
+    {
+        var stateRoot = JsonNode.Parse(BuildHistoricalEnvelopeStateJson("afterlife", mutation: null))!.AsObject();
+        var profile = stateRoot[AfterlifeEntityProfileState.ProfilesProperty]![0]!.DeepClone().AsObject();
+        profile["materialization"]!["capabilities"]!["canTrade"] = true;
+        var responseRoot = new JsonObject
+        {
+            [AfterlifeEntityProfileState.ResponseProfilesProperty] = new JsonArray(profile)
+        };
+        using var document = JsonDocument.Parse(responseRoot.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Actor == "radiant_actor:historical_afterlife_actor" &&
+            issue.Section == "canTrade" &&
+            issue.Expected == bool.FalseString &&
+            issue.Actual == bool.TrueString);
+    }
+
     [Theory]
     [InlineData("mortal")]
     [InlineData("afterlife")]
@@ -869,11 +909,37 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             issue.Actual == (family == "mortal" ? "mat_mortal_historical" : "mat_afterlife_historical"));
     }
 
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_SameTurnMortalActorsWithDifferentInitialIdsAndDuplicateMaterializationId_IsRejected()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "same_turn_seed",
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        var firstActor = currentRoot["NPCsInScene"]![0]!.DeepClone().AsObject();
+        ConfigureSameTurnMortalActor(firstActor, "same_turn_actor_alpha", "mat_same_turn_duplicate");
+        var secondActor = firstActor.DeepClone().AsObject();
+        ConfigureSameTurnMortalActor(secondActor, "same_turn_actor_beta", "mat_same_turn_duplicate");
+        currentRoot["NPCsInScene"] = new JsonArray(firstActor, secondActor);
+        const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_duplicate_id" &&
+            issue.Actor == "mortal_npc:same_turn_actor_beta" &&
+            issue.Actual == "mat_same_turn_duplicate");
+    }
+
     private static string BuildMortalActorStateJson(
         string actorId,
         string sectionName,
         bool canTeach,
-        bool includeEnvelope)
+        bool includeEnvelope,
+        bool includeInventory = false)
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber: 1,
@@ -895,8 +961,17 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             };
         }
 
+        if (includeInventory)
+        {
+            var inventoryItem = files["game_state/inventory/items.json"]["items"]![0]!.DeepClone().AsObject();
+            var inventoryItemId = $"item_{actorId}_archive_key";
+            inventoryItem["itemId"] = inventoryItemId;
+            inventoryItem["existedId"] = inventoryItemId;
+            actor["inventory"] = new JsonArray(inventoryItem);
+        }
+
         if (includeEnvelope)
-            actor["materialization"] = BuildCompleteMortalEnvelope(actorId, canTeach);
+            actor["materialization"] = BuildCompleteMortalEnvelope(actorId, canTeach, includeInventory);
         else
             actor.Remove("materialization");
 
@@ -909,7 +984,23 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         return root.ToJsonString();
     }
 
-    private static JsonObject BuildCompleteMortalEnvelope(string actorId, bool canTeach) =>
+    private static void ConfigureSameTurnMortalActor(
+        JsonObject actor,
+        string initialId,
+        string materializationId)
+    {
+        actor["NPCId"] = null;
+        actor.Remove("npcId");
+        actor.Remove("id");
+        actor["initialId"] = initialId;
+        actor["materialization"]!["actorId"] = initialId;
+        actor["materialization"]!["materializationId"] = materializationId;
+    }
+
+    private static JsonObject BuildCompleteMortalEnvelope(
+        string actorId,
+        bool canTeach,
+        bool ownsItems = false) =>
         new()
         {
             ["schemaVersion"] = 1,
@@ -923,12 +1014,14 @@ public sealed class ActorMaterializationValidationTests : IDisposable
                 ["canFight"] = false,
                 ["canTeach"] = canTeach,
                 ["canTrade"] = false,
-                ["ownsItems"] = false
+                ["ownsItems"] = ownsItems
             },
             ["sections"] = new JsonObject
             {
                 ["skills"] = EmptyMortalSection("Этот NPC не использует боевые навыки."),
-                ["inventory"] = EmptyMortalSection("Этот NPC не носит личных предметов."),
+                ["inventory"] = ownsItems
+                    ? new JsonObject { ["state"] = "populated" }
+                    : EmptyMortalSection("Этот NPC не носит личных предметов."),
                 ["fateCards"] = EmptyMortalSection("Карта судьбы ещё не открыта."),
                 ["personalQuests"] = EmptyMortalSection("Личная просьба пока не сформировалась."),
                 ["relationships"] = new JsonObject { ["state"] = "populated" }

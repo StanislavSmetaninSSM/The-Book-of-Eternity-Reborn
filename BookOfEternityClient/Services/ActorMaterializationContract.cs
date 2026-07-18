@@ -96,9 +96,13 @@ internal static class ActorMaterializationContract
         bool deferEvidenceConsistency = false)
     {
         var issues = new List<ValidationIssue>();
-        ValidateCanonicalActorType(family, context, evidence, issues);
-        if (actor.ValueKind != JsonValueKind.Object ||
-            !actor.TryGetProperty(PropertyName, out var envelope))
+        var envelope = default(JsonElement);
+        var hasEnvelope = actor.ValueKind == JsonValueKind.Object &&
+                          actor.TryGetProperty(PropertyName, out envelope);
+        if (requireEnvelope || hasEnvelope)
+            ValidateCanonicalActorType(family, context, evidence, issues);
+
+        if (!hasEnvelope)
         {
             if (requireEnvelope)
             {
@@ -273,17 +277,19 @@ internal static class ActorMaterializationContract
                 ["ownsItems"] = hasInventory
             });
 
+        var requireEnvelope = requireEnvelopeOverride ?? isNewNpc;
         var issues = Validate(
                 npc,
                 context,
                 ActorMaterializationFamily.Mortal,
                 evidence,
-                requireEnvelope: requireEnvelopeOverride ?? isNewNpc,
+                requireEnvelope,
                 deferEvidenceConsistency: deferEvidenceConsistencyOverride ??
                                           (!requireEnvelopeOverride.HasValue && !isNewNpc))
             .ToList();
 
-        ValidateEquippedItemReferences(npc, context, inventoryItemIds, evidence, issues);
+        if (requireEnvelope || npc.TryGetProperty(PropertyName, out _))
+            ValidateEquippedItemReferences(npc, context, inventoryItemIds, evidence, issues);
 
         return issues;
     }
@@ -292,13 +298,13 @@ internal static class ActorMaterializationContract
         JsonElement profile,
         string context,
         bool requireEnvelope,
-        bool canTradeEvidence)
+        bool? canTradeEvidence)
     {
         return ValidateAfterlifeProfileCore(
             profile,
             context,
             requireEnvelope,
-            canTradeEvidence ? true : null,
+            canTradeEvidence,
             deferEvidenceConsistency: !requireEnvelope);
     }
 
