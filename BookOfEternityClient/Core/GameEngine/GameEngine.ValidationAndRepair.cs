@@ -1316,6 +1316,7 @@ public partial class GameEngine
             .Where(issue => !guardianScopeActorNames.Contains(NormalizeRepairActorName(issue.Actor)))
             .ToList();
         var actorMemoryPersistenceErrors = errors.Where(IsActorMemoryPersistenceRepairIssue).ToList();
+        var actorMaterializationErrors = errors.Where(IsActorMaterializationRepairIssue).ToList();
         var factionIdentityErrors = errors.Where(IsFactionIdentityRepairIssue).ToList();
         var mortalFactionResourceErrors = errors.Where(IsMortalFactionResourceRepairIssue).ToList();
         var mortalBootstrapMaterializationErrors = errors.Where(IsMortalBootstrapMaterializationRepairIssue).ToList();
@@ -1360,6 +1361,9 @@ public partial class GameEngine
 
         if (actorMemoryPersistenceErrors.Count > 0)
             packets.Add(BuildActorMemoryPersistenceRepairPacket(actorMemoryPersistenceErrors, guardianActorNameHints));
+
+        if (actorMaterializationErrors.Count > 0)
+            packets.Add(BuildActorMaterializationRepairPacket(actorMaterializationErrors));
 
         if (factionIdentityErrors.Count > 0)
             packets.Add(BuildFactionIdentityRepairPacket(factionIdentityErrors));
@@ -1460,6 +1464,29 @@ public partial class GameEngine
                string.Equals(issue.Code, "shining_faction_relevant_actor_missing_strategic_memory_delta", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "actor_thought_journal_not_first_person", StringComparison.OrdinalIgnoreCase) ||
                IsGuardianThoughtJournalShapeRepairIssue(issue);
+    }
+
+    private static bool IsActorMaterializationRepairIssue(ValidationIssue issue)
+    {
+        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
+        {
+            "actor_materialization_missing" => true,
+            "actor_materialization_invalid_envelope" => true,
+            "actor_materialization_actor_binding_mismatch" => true,
+            "actor_materialization_duplicate_id" => true,
+            "actor_materialization_duplicate_property" => true,
+            "actor_materialization_invalid_actor_type" => true,
+            "actor_materialization_inventory_reference_mismatch" => true,
+            "actor_materialization_section_missing" => true,
+            "actor_materialization_section_content_mismatch" => true,
+            "actor_materialization_capability_mismatch" => true,
+            "actor_materialization_existing_resend_forbidden" => true,
+            "actor_materialization_historical_envelope_changed" => true,
+            "afterlife_actor_materialization_profile_missing" => true,
+            "afterlife_actor_materialization_profile_ambiguous" => true,
+            "afterlife_actor_materialization_memory_missing" => true,
+            _ => false
+        };
     }
 
     private static bool IsGuardianThoughtJournalShapeRepairIssue(ValidationIssue issue)
@@ -3120,6 +3147,131 @@ public partial class GameEngine
                 "Do not use raw nulls for required strings or collapse single-item arrays into scalars.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer NPC object rules."
             }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildActorMaterializationRepairPacket(
+        IReadOnlyList<ValidationIssue> materializationErrors)
+    {
+        var actorIdentities = CollectRepairActorNames(materializationErrors)
+            .OrderBy(actor => actor, StringComparer.Ordinal)
+            .ToList();
+        var targetFiles = materializationErrors
+            .SelectMany(ResolveActorMaterializationRepairTargetFiles)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .ToList();
+        var missingTargets = materializationErrors
+            .Select(DescribeMissingActorMaterializationTarget)
+            .Where(target => !string.IsNullOrWhiteSpace(target))
+            .Select(target => target!)
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(target => target, StringComparer.Ordinal)
+            .ToList();
+        var hasMortalTargets = targetFiles.Contains(
+            "game_state/npcs/npc_core.json",
+            StringComparer.OrdinalIgnoreCase);
+        var hasAfterlifeTargets = targetFiles.Contains(
+            AfterlifeEntityProfileState.StatePath,
+            StringComparer.OrdinalIgnoreCase);
+        var templateRefs = new List<string>();
+        if (hasMortalTargets)
+            templateRefs.Add("Templates/MORTAL_NPC_UPDATE_TEMPLATE.md");
+        if (hasAfterlifeTargets)
+        {
+            templateRefs.Add("OtherGuides/Afterlife_Contract_Matrix.md");
+            templateRefs.Add("Examples/E_CLI_Afterlife_Turns.txt");
+        }
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "actor_materialization_repair",
+            Priority = "critical",
+            Title = "Bounded actor materialization repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = templateRefs,
+            CanonicalActorNames = actorIdentities,
+            MissingFields = missingTargets.Count == 0 ? null : missingTargets,
+            ExactFieldCorrections = materializationErrors
+                .Select(BuildExactFieldCorrection)
+                .OrderBy(correction => correction.Path, StringComparer.Ordinal)
+                .ThenBy(correction => correction.Code, StringComparer.Ordinal)
+                .ToList(),
+            ExpectedShape = new List<string>
+            {
+                "Each listed actor uses one exact canonical actorType:actorId identity; display names, prose, and setting genre are never identity authority.",
+                "A new or promoted significant actor has one complete actor-bound materialization v1 envelope with exact capabilities and every required section disposition.",
+                "A section with canonical content uses state=populated; a deliberately empty section uses state=empty_by_design plus a non-empty in-world reason.",
+                "Existing valid actor fields, valid sections, and accepted historical materialization envelopes remain unchanged unless an exact correction explicitly targets them."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Repair only the actors and materialization sections listed in canonicalActorNames, missingFields, and exactFieldCorrections.",
+                "Preserve every valid actor field and valid materialization section that is not named by an exact validation error.",
+                "For afterlife_actor_materialization_profile_missing, add exactly one common profile for the listed exact actorType:actorId in game_state/meta/afterlife_entity_profiles.json.",
+                "For profile ambiguity, keep one canonical exact type-and-ID profile and preserve its valid sections; do not merge records by displayName.",
+                "For actor-owned memory errors, initialize memory from facts of the current accepted turn in the exact actor profile or documented type-specific journal."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json and only the packet-listed targetFiles/templates first.",
+                "Locate each actor by the exact actorType:actorId value in canonicalActorNames; do not resolve an actor by displayName or narrative description.",
+                "Apply missingFields and exactFieldCorrections one by one, changing only the named envelope/profile/section target.",
+                "Recheck that all unrelated actor data, already valid materialization sections, and historical envelopes are byte-for-byte or semantically preserved as required by the listed error.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer Actor Materialization rules; use this packet, validation_repair_request.json, templates, docs, examples, and canonical state.",
+                "Do not rewrite the whole actor, entire profile collection, or unrelated materialization sections to fix one listed target.",
+                "Do not delete an actor, profile, item, memory record, or valid section merely to silence a materialization error.",
+                "Do not infer identity, capabilities, skills, inventory, or section content from an actor name, prose keywords, or the setting genre.",
+                "Do not ask the client to invent GM-authored actor content or fabricate missing narrative facts; the GM must author only the exact bounded repair from current canonical evidence.",
+                "Do not create a new turn or write ready/turn_complete.json during validation repair."
+            }
+        };
+    }
+
+    private static IEnumerable<string> ResolveActorMaterializationRepairTargetFiles(ValidationIssue issue)
+    {
+        var actor = NormalizeRepairActorName(issue.Actor);
+        if (actor.StartsWith("mortal_npc:", StringComparison.Ordinal))
+        {
+            yield return "game_state/npcs/npc_core.json";
+            yield break;
+        }
+
+        if ((issue.Code ?? string.Empty).StartsWith("afterlife_actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
+            (!string.IsNullOrWhiteSpace(actor) && actor.Contains(':', StringComparison.Ordinal)))
+        {
+            yield return AfterlifeEntityProfileState.StatePath;
+            yield break;
+        }
+
+        var normalizedPath = NormalizeRepairTargetPath(issue.FilePath);
+        if (normalizedPath.StartsWith("game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase))
+        {
+            yield return "game_state/npcs/npc_core.json";
+            yield break;
+        }
+
+        if (normalizedPath.StartsWith(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase))
+            yield return AfterlifeEntityProfileState.StatePath;
+    }
+
+    private static string? DescribeMissingActorMaterializationTarget(ValidationIssue issue)
+    {
+        var actor = NormalizeRepairActorName(issue.Actor);
+        if (string.IsNullOrWhiteSpace(actor))
+            actor = "exact actor from errors[]";
+
+        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
+        {
+            "actor_materialization_missing" => $"{actor} / materialization",
+            "actor_materialization_section_missing" => $"{actor} / {issue.Section ?? "required section"}",
+            "afterlife_actor_materialization_profile_missing" => $"{actor} / common profile",
+            "afterlife_actor_materialization_memory_missing" => $"{actor} / actor-owned memory",
+            _ => null
         };
     }
 

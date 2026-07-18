@@ -3211,6 +3211,183 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteValidationRepairRequestAsync_ActorMaterializationErrors_AddsBoundedHarnessPacket()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/npcs/npc_core.json.UpdateNPCs[0].materialization.sections.inventory",
+                IssueSeverity.Error,
+                "Первичная материализация не объясняет секцию inventory.",
+                code: "actor_materialization_section_missing",
+                actor: "mortal_npc:npc_iren_sol",
+                section: "inventory",
+                expected: "populated or empty_by_design with reason",
+                actual: "missing"),
+            new(
+                "game_state/meta/guardians.json.guardians[0]",
+                IssueSeverity.Error,
+                "Новая значимая сущность посмертия не связана с точным common profile.",
+                code: "afterlife_actor_materialization_profile_missing",
+                actor: "guardian:guardian_selena",
+                section: "ActorMaterialization",
+                expected: "exact guardian:guardian_selena profile in game_state/meta/afterlife_entity_profiles.json",
+                actual: "no exact actorType + actorId profile"),
+            new(
+                "game_state/meta/afterlife_entity_profiles.json.profiles[0].materialization.sections.fateCards",
+                IssueSeverity.Error,
+                "Disposition секции fateCards противоречит её каноническому содержимому.",
+                code: "actor_materialization_section_content_mismatch",
+                actor: "guardian:guardian_selena",
+                section: "fateCards",
+                expected: "empty_by_design with reason",
+                actual: "populated")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "повторной проверки repair", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("actor_materialization_repair", packet.GetProperty("kind").GetString());
+        Assert.Equal(
+            new[]
+            {
+                "game_state/meta/afterlife_entity_profiles.json",
+                "game_state/npcs/npc_core.json"
+            },
+            packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()).OrderBy(item => item, StringComparer.Ordinal));
+        Assert.Equal(
+            new[] { "guardian:guardian_selena", "mortal_npc:npc_iren_sol" },
+            packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()).OrderBy(item => item, StringComparer.Ordinal));
+
+        var missingFields = packet.GetProperty("missingFields").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(missingFields, item => item.Contains("mortal_npc:npc_iren_sol", StringComparison.Ordinal) &&
+                                               item.Contains("inventory", StringComparison.Ordinal));
+        Assert.Contains(missingFields, item => item.Contains("guardian:guardian_selena", StringComparison.Ordinal) &&
+                                               item.Contains("profile", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(missingFields, item => item.Contains("fateCards", StringComparison.Ordinal));
+
+        var corrections = packet.GetProperty("exactFieldCorrections").EnumerateArray().ToArray();
+        Assert.Equal(3, corrections.Length);
+        Assert.Contains(corrections, correction =>
+            correction.GetProperty("code").GetString() == "actor_materialization_section_content_mismatch" &&
+            correction.GetProperty("path").GetString()!.EndsWith("sections.fateCards", StringComparison.Ordinal));
+
+        var safeRules = packet.GetProperty("safeCorrectionRules").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(safeRules, rule => rule.Contains("only", StringComparison.OrdinalIgnoreCase) &&
+                                          rule.Contains("listed", StringComparison.OrdinalIgnoreCase) &&
+                                          rule.Contains("section", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(safeRules, rule => rule.Contains("preserve", StringComparison.OrdinalIgnoreCase) &&
+                                          rule.Contains("valid", StringComparison.OrdinalIgnoreCase));
+
+        var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(doNotDo, item => item.Contains("implementation code", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("whole actor", StringComparison.OrdinalIgnoreCase) ||
+                                         item.Contains("entire actor", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("delete", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("name", StringComparison.OrdinalIgnoreCase) &&
+                                         item.Contains("prose", StringComparison.OrdinalIgnoreCase) &&
+                                         item.Contains("genre", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("client", StringComparison.OrdinalIgnoreCase) &&
+                                         item.Contains("invent", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_UnusableActorMaterializationPreTurnAuthority_DoesNotAskGmToRewriteActors()
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/meta/afterlife_entity_profiles.json",
+                IssueSeverity.Error,
+                "Validated pre-turn authority отсутствует или повреждена.",
+                code: "actor_materialization_pre_turn_authority_unusable",
+                section: "ActorMaterialization",
+                expected: "readable validated pre-turn afterlife actor authority",
+                actual: "missing, unreadable, hash-invalid, or ambiguous source authority")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "повторной проверки repair", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        Assert.Empty(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+    }
+
+    [Theory]
+    [InlineData("actor_materialization_missing")]
+    [InlineData("actor_materialization_invalid_envelope")]
+    [InlineData("actor_materialization_actor_binding_mismatch")]
+    [InlineData("actor_materialization_duplicate_id")]
+    [InlineData("actor_materialization_duplicate_property")]
+    [InlineData("actor_materialization_invalid_actor_type")]
+    [InlineData("actor_materialization_inventory_reference_mismatch")]
+    [InlineData("actor_materialization_section_missing")]
+    [InlineData("actor_materialization_section_content_mismatch")]
+    [InlineData("actor_materialization_capability_mismatch")]
+    [InlineData("actor_materialization_existing_resend_forbidden")]
+    [InlineData("actor_materialization_historical_envelope_changed")]
+    [InlineData("afterlife_actor_materialization_profile_missing")]
+    [InlineData("afterlife_actor_materialization_profile_ambiguous")]
+    [InlineData("afterlife_actor_materialization_memory_missing")]
+    public async Task WriteValidationRepairRequestAsync_ActionableActorMaterializationCode_IsClassified(
+        string code)
+    {
+        var isAfterlife = code.StartsWith("afterlife_", StringComparison.Ordinal);
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                isAfterlife
+                    ? "game_state/meta/guardians.json.guardians[0]"
+                    : "game_state/npcs/npc_core.json.UpdateNPCs[0].materialization",
+                IssueSeverity.Error,
+                "Actor Materialization validation error.",
+                code: code,
+                actor: isAfterlife ? "guardian:guardian_classification" : "mortal_npc:npc_classification",
+                section: "ActorMaterialization",
+                expected: "valid bounded target",
+                actual: "invalid")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "повторной проверки repair", issues, 1 })!);
+
+        await task;
+
+        using var doc = JsonDocument.Parse(
+            (await _fs.ReadFileAsync("game_state/control/validation_repair_request.json"))!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("actor_materialization_repair", packet.GetProperty("kind").GetString());
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_MortalNpcSkillStringShapeErrors_AddsFullObjectHarnessPacket()
     {
         var engine = CreateGameEngine();
