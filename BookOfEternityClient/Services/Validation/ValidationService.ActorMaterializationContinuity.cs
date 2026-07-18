@@ -60,6 +60,10 @@ public partial class ValidationService
                     other.HistoricalEnvelopeSections));
     }
 
+    private readonly record struct MortalActorMaterializationPreTurnAuthority(
+        ValidatedPendingTurnSnapshotStatus Status,
+        IReadOnlyDictionary<string, MortalActorMaterializationPreTurnState>? Actors);
+
     private readonly record struct AfterlifeActorMaterializationPreTurnState(
         AfterlifeActorMaterializationPromotionSignals PromotionSignals,
         string? HistoricalEnvelopeJson,
@@ -255,40 +259,65 @@ public partial class ValidationService
         return ActorMaterializationContract.ValidateUniqueMaterializationIds(currentActors);
     }
 
-    private IReadOnlyDictionary<string, MortalActorMaterializationPreTurnState>?
-        ReadValidatedMortalActorMaterializationPreTurnStatesSync()
+    private MortalActorMaterializationPreTurnAuthority
+        ReadValidatedMortalActorMaterializationPreTurnAuthoritySync()
     {
-        var preTurnJson = ReadValidatedCurrentPreTurnTrackedFileSync(MortalActorMaterializationStatePath);
+        var lookup = LoadValidatedPendingTurnSnapshotLookupSync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
+            return new MortalActorMaterializationPreTurnAuthority(lookup.Status, null);
+
+        var preTurnJson = ReadValidatedPendingTurnSnapshotFileSync(
+            lookup.Manifest,
+            MortalActorMaterializationStatePath);
         if (string.IsNullOrWhiteSpace(preTurnJson))
-            return null;
+        {
+            return new MortalActorMaterializationPreTurnAuthority(
+                ValidatedPendingTurnSnapshotStatus.Unusable,
+                null);
+        }
 
         try
         {
             using var document = JsonDocument.Parse(preTurnJson);
             return TryReadCanonicalMortalActorStates(document.RootElement, out var states)
-                ? states
-                : null;
+                ? new MortalActorMaterializationPreTurnAuthority(
+                    ValidatedPendingTurnSnapshotStatus.Usable,
+                    states)
+                : new MortalActorMaterializationPreTurnAuthority(
+                    ValidatedPendingTurnSnapshotStatus.Unusable,
+                    null);
         }
         catch (JsonException)
         {
-            return null;
+            return new MortalActorMaterializationPreTurnAuthority(
+                ValidatedPendingTurnSnapshotStatus.Unusable,
+                null);
         }
     }
 
-    private static bool IsExistingMortalActorInventoryResend(
+    private static bool ShouldBlockMortalActorInventoryResend(
         JsonElement actor,
         string actorId,
-        IReadOnlyDictionary<string, MortalActorMaterializationPreTurnState>? preTurnActors)
+        MortalActorMaterializationPreTurnAuthority preTurnAuthority)
     {
-        if (preTurnActors == null || !preTurnActors.TryGetValue(actorId, out var previousState))
+        if (preTurnAuthority.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
+            preTurnAuthority.Actors == null)
+        {
+            return true;
+        }
+
+        if (!preTurnAuthority.Actors.TryGetValue(actorId, out var previousState))
             return false;
         if (previousState.HistoricalEnvelopeJson != null)
             return true;
-        if (actor.TryGetProperty(ActorMaterializationContract.PropertyName, out _))
-            return false;
 
         var currentSignals = ReadMortalActorMaterializationPromotionSignals(actor);
-        return !currentSignals.IsPromotionFrom(previousState.PromotionSignals);
+        var hasMaterializationEnvelope = actor.TryGetProperty(
+            ActorMaterializationContract.PropertyName,
+            out var envelope) &&
+            envelope.ValueKind == JsonValueKind.Object;
+        return !hasMaterializationEnvelope ||
+               !currentSignals.IsPromotionFrom(previousState.PromotionSignals);
     }
 
     private static bool TryReadCanonicalMortalActorStates(

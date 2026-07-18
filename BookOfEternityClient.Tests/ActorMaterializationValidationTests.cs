@@ -551,7 +551,7 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task ValidateResponse_NewPermanentIdUpdateNpcWithValidEnvelopeAndInventory_PassesMaterializationPipeline()
+    public async Task ValidateResponse_UsableSnapshotWithoutActor_NewPermanentIdWithEnvelopeAndInventory_HasNoErrors()
     {
         const string path = "game_state/npcs/npc_core.json";
         var currentJson = BuildMortalActorStateJson(
@@ -570,7 +570,66 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task ValidateResponse_LegacyPromotionWithNewValidEnvelopeAndInventory_PassesMaterializationPipeline()
+    public async Task ValidateResponse_MissingSnapshot_NewPermanentIdWithEnvelopeAndInventory_IsBlockedFailClosed()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentJson = BuildMortalActorStateJson(
+            "missing_snapshot_actor",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        await _fs.WriteFileAtomicAsync(path, currentJson);
+
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+    }
+
+    [Fact]
+    public async Task ValidateResponse_MalformedValidatedNpcSnapshot_NewPermanentIdWithEnvelopeAndInventory_IsBlockedFailClosed()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentJson = BuildMortalActorStateJson(
+            "malformed_snapshot_actor",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, "{ malformed validated npc snapshot");
+
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+    }
+
+    [Fact]
+    public async Task ValidateResponse_UnchangedLegacyActorAddingEnvelopeAndInventory_IsBlockedAsExistingResend()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var preTurnJson = BuildMortalActorStateJson(
+            "unchanged_legacy_envelope_actor",
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false);
+        var currentJson = BuildMortalActorStateJson(
+            "unchanged_legacy_envelope_actor",
+            sectionName: "UpdateNPCs",
+            canTeach: false,
+            includeEnvelope: true,
+            includeInventory: true);
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+    }
+
+    [Fact]
+    public async Task ValidateResponse_TrueLegacyPromotionWithEnvelopeAndInventory_HasNoErrors()
     {
         const string path = "game_state/npcs/npc_core.json";
         var preTurnJson = BuildMortalActorStateJson(
@@ -593,14 +652,15 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task ValidateGameStateAsync_ExistingActorResendingEnvelopeThroughUpdateNpc_IsRejectedPreTurnAware()
+    public async Task ValidateGameStateAsync_MaterializedExistingActorResendingEnvelopeAndInventory_IsRejectedPreTurnAware()
     {
         const string path = "game_state/npcs/npc_core.json";
         var preTurnJson = BuildMortalActorStateJson(
             "existing_resend_actor",
             sectionName: "NPCsInScene",
             canTeach: true,
-            includeEnvelope: true);
+            includeEnvelope: true,
+            includeInventory: true);
         var currentRoot = JsonNode.Parse(preTurnJson)!.AsObject();
         var retainedActor = currentRoot["NPCsInScene"]![0]!.DeepClone();
         currentRoot["UpdateNPCs"] = new JsonArray(retainedActor);
