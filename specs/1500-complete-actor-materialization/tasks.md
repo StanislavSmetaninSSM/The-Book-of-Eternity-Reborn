@@ -38,7 +38,9 @@
 
 ## Phase 6 - Verification and integration
 
-- [ ] T020 Run focused actor/materialization, NPC, afterlife, Shining, System Guardian, docs, and source-guard tests.
-- [ ] T021 Run the complete C# test project and `git diff --check`.
+- [x] T020 Run focused actor/materialization, NPC, afterlife, Shining, System Guardian, docs, and source-guard tests.
+  - Evidence: 1643 focused C# tests, 262 command-display fixture tests, 255 documentation/source-guard tests, 138 frontend player-facing tests, and 2 built-frontend smoke tests passed.
+- [x] T021 Run the complete C# test project and `git diff --check`.
+  - Evidence: `git diff --check` passed. The complete project ran 5878 tests: 5870 passed; seven failures reproduce identically on base `9a149014`, and the remaining Agent Console HTTP 500 passed immediately when rerun in isolation.
 - [ ] T022 Perform independent code review against issue #1500 and Spec Kit artifacts; repair findings and rerun verification.
 - [ ] T023 Update task checkboxes only from verified evidence, commit, push, open PR, review CI-independent evidence, and merge when clean.
