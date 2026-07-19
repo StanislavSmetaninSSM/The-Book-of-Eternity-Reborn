@@ -474,7 +474,16 @@ public sealed class SystemGuardianLibraryService
                 ["gachaHistory"] = new JsonArray()
             },
             ["loreFragments"] = BuildInitialFreeformLoreFragments(guardianId, displayName, domain, abodeName, normalizedDescription),
-            ["musings"] = new JsonArray(),
+            ["musings"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["turn"] = Math.Max(0, turnNumber),
+                    ["topic"] = "soul_assessment",
+                    ["mood"] = "intrigued",
+                    ["thought"] = $"Душа «{soulName}» сама задала мой первый облик. Нужно понять, чего она ждёт от нашей встречи."
+                }
+            },
             ["tradeInventoryReceipts"] = new JsonArray(),
             ["displayName"] = displayName
         };
@@ -573,7 +582,16 @@ public sealed class SystemGuardianLibraryService
                 ["gachaHistory"] = new JsonArray()
             },
             ["loreFragments"] = BuildInitialLoreFragments(preset),
-            ["musings"] = new JsonArray(),
+            ["musings"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["turn"] = Math.Max(0, turnNumber),
+                    ["topic"] = "soul_assessment",
+                    ["mood"] = "contemplative",
+                    ["thought"] = $"Душа «{soulName}» впервые вошла в мою обитель. Я присмотрюсь к её выбору и намерениям."
+                }
+            },
             ["tradeInventoryReceipts"] = new JsonArray(),
             ["displayName"] = defaultName
         };
@@ -809,7 +827,7 @@ public sealed class SystemGuardianLibraryService
             {
                 ["canFight"] = true,
                 ["canTeach"] = true,
-                ["canTrade"] = false
+                ["canTrade"] = true
             },
             ["sections"] = new JsonObject
             {

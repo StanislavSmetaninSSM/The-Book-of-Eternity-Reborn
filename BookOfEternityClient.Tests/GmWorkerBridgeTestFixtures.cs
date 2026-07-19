@@ -56,7 +56,7 @@ internal static class GmWorkerBridgeTestFixtures
             new WorkerFileReference
             {
                 Path = "game_state/world/weather.json",
-                Sha256 = "example"
+                Sha256 = new string('a', 64)
             }
         ],
         AllowedProposalPaths = ["game_state/world/weather.json"],
@@ -71,6 +71,34 @@ internal static class GmWorkerBridgeTestFixtures
             "Do not create terminal signals manually."
         ],
         Instructions = "Return a minimal repair proposal. Do not change files outside allowedProposalPaths."
+    };
+
+    public static WorkerTaskPacket AnalysisTask() => new()
+    {
+        TaskId = "worker_task_20260620_analysis",
+        WorkerId = "analysis_codex",
+        Role = WorkerRole.Analysis,
+        TaskType = WorkerTaskType.Analysis,
+        CreatedAtUtc = "2026-06-20T00:00:00Z",
+        TimeoutSeconds = 150,
+        SourceTurn = new WorkerTurnReference
+        {
+            SessionId = "test-session",
+            RequestId = "test-request",
+            TurnNumber = 12
+        },
+        ContextFiles =
+        [
+            new WorkerFileReference
+            {
+                Path = "game_state/world/weather.json",
+                Sha256 = "read-only-analysis-context"
+            }
+        ],
+        AllowedProposalPaths = [],
+        AcceptanceCriteria = ["Return findings in a worker-proposal-v1 proposal."],
+        ForbiddenActions = ["Do not edit canonical game_session files directly."],
+        Instructions = "Return compact findings without changedFiles."
     };
 
     public static WorkerTaskPacket NarrativeDraftTask() => new()
@@ -575,8 +603,8 @@ internal static class GmWorkerBridgeTestFixtures
             {
                 Path = "game_state/world/weather.json",
                 ChangeKind = WorkerFileChangeKind.Replace,
-                BeforeSha256 = "example",
-                AfterSha256 = "example-after",
+                BeforeSha256 = new string('a', 64),
+                AfterSha256 = new string('b', 64),
                 ContentRef = "worker_proposals/worker_proposal_20260620_0001/game_state/world/weather.json"
             }
         ],

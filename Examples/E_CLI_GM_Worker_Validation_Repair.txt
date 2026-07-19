@@ -2,9 +2,10 @@
 
 This example shows the live worker flow for a validation repair. The worker is
 a hidden/background subordinate process; the player does not see a new console.
-The client still writes `game_state/control/validation_repair_request.json`
-first. If no enabled worker exists or the worker fails, the legacy repair loop
-continues unchanged.
+The client first removes stale repair request/ready/stall artifacts and tries the
+worker. It writes `game_state/control/validation_repair_request.json` only when
+no enabled worker exists or worker dispatch/apply fails, so the worker and main
+GM never own the same repair concurrently.
 
 Worker profile:
 
@@ -66,7 +67,7 @@ packet from `BOE_WORKER_TASK_PATH`, writes the proposal JSON to
   "contextFiles": [
     {
       "path": "game_state/world/weather.json",
-      "sha256": "sha256-weather-before"
+      "sha256": "6cc0139810cee57e761b4f0549d4300004989eaceaf72e880be9265e5517947b"
     }
   ],
   "allowedProposalPaths": ["game_state/world/weather.json"],
@@ -85,6 +86,14 @@ packet from `BOE_WORKER_TASK_PATH`, writes the proposal JSON to
 }
 ```
 
+Validation-repair uses exact byte authority. Every context hash and
+`beforeSha256` is an exact 64-character SHA-256 digest of canonical bytes;
+every non-delete `afterSha256` is the exact 64-character SHA-256 digest of its
+own proposal content. For an afterlife validation-repair task,
+`afterlifeProposal` is optional; bounded `changedFiles` must still be inside
+both `allowedProposalPaths` and `afterlifeContract.allowedAfterlifeSurfaces`.
+Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
+
 Worker response proposal:
 
 ```json
@@ -99,8 +108,8 @@ Worker response proposal:
     {
       "path": "game_state/world/weather.json",
       "changeKind": "replace",
-      "beforeSha256": "sha256-weather-before",
-      "afterSha256": "sha256-weather-after",
+      "beforeSha256": "6cc0139810cee57e761b4f0549d4300004989eaceaf72e880be9265e5517947b",
+      "afterSha256": "6691bcf05a185d27168baad72602bf3a4faea235646948b7d84c5d9eede4b8be",
       "contentRef": "worker_proposals/worker_proposal_20260620_0001/game_state/world/weather.json"
     }
   ],
@@ -149,6 +158,24 @@ loop signal itself. The worker must not write this control file directly.
   "turnNumber": 12,
   "updatedAtUtc": "2026-06-20T00:00:31Z",
   "note": "GM worker proposal worker_proposal_20260620_0001 accepted by apply gate."
+}
+```
+
+If canonical apply succeeds but the ready control file cannot be published, the
+client does not expose a legacy request. It revalidates the accepted canonical
+state directly and records a trajectory terminal like this:
+
+```json
+{
+  "mode": "validation_repair",
+  "validation": {
+    "status": "accepted",
+    "acceptanceScope": "worker_apply_gate"
+  },
+  "terminal": {
+    "kind": "worker_apply_gate_accepted",
+    "signalPath": null
+  }
 }
 ```
 

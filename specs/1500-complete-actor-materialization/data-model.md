@@ -139,7 +139,7 @@ Exceptions:
 
 - A vacant Shining seat has no head profile.
 - The player soul resolves to its existing client-owned profile.
-- A System Guardian fresh-game seed remains `actorType=guardian`, is recognized through its existing client-owned source authority, and still receives a deterministic valid envelope.
+- A System Guardian fresh-game seed remains `actorType=guardian`, is recognized through its existing client-owned source authority, and receives a deterministic valid envelope whose capability booleans, including `canTrade`, match that exact seeded current authority.
 
 ## State transitions
 
@@ -169,3 +169,9 @@ Exceptions:
 Every issue records actor type/ID, section or capability where applicable, expected canonical target, and a bounded repair hint.
 
 Before applying a worker-authored actor materialization repair, the apply gate removes only the exact mutable subtree named by the issue and semantically compares the remaining canonical JSON. Any change to protected actor data, another actor, or unrelated root state rejects the proposal. An ambiguous-profile repair may only remove duplicates while retaining one otherwise unchanged canonical profile. Dedicated Guardian/resident memory repair is stricter than ordinary scalar repair: all existing journal entries remain an exact prefix, and the worker may append exactly one meaningful thought for the issue-bound actor without rewriting or deleting history.
+
+Every validation-repair context path has one exact byte state: a 64-character SHA-256 digest or `missing`. A changed-file entry repeats that state as `beforeSha256`; add is legal only from `missing`, replace/delete only from an existing digest. Non-delete content lives only at `worker_proposals/<proposalId>/<path>` and its bytes must match `afterSha256`; delete uses `afterSha256=missing` and no content reference. Apply and rollback both compare expected bytes under the shared canonical-write lock. A mismatch is a conflict and never overwrites the newer owner.
+
+Only `status=completed` proposals may reach that apply path. `failed`, `timed-out`, and `rejected` proposals carry no `changedFiles` and remain diagnostic records. Worker audit lines use one lock-protected read-and-append operation so concurrent writers preserve every event; an audit publication failure is telemetry loss and cannot revoke an already accepted canonical commit.
+
+Repair handoff has one owner state. Before dispatch, request/ready/stall artifacts from older cycles are removed. `Applied + ReadySignalCreated` enters the correlated ready path; `Applied + !ReadySignalCreated` records `worker_apply_gate_accepted` and immediately revalidates; every non-applied result writes one fresh legacy request. Player-facing output freshness is compared with the explicit start time of the accepted canonical repair, including worker-only cycles where no legacy request exists.

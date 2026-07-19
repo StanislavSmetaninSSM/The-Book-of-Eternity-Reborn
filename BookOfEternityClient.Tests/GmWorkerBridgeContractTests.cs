@@ -118,6 +118,169 @@ public sealed class GmWorkerBridgeContractTests
     }
 
     [Fact]
+    public void ValidationRepairProposal_RejectsDuplicateChangedFilePaths()
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var valid = GmWorkerBridgeTestFixtures.ValidationRepairProposal();
+        var proposal = valid with
+        {
+            ChangedFiles = [valid.ChangedFiles[0], valid.ChangedFiles[0]]
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("duplicate", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains(valid.ChangedFiles[0].Path, StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("not-a-sha256")]
+    public void ValidationRepairProposal_RejectsMissingOrMalformedAfterSha256(string? afterSha256)
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var valid = GmWorkerBridgeTestFixtures.ValidationRepairProposal();
+        var proposal = valid with
+        {
+            ChangedFiles =
+            [
+                valid.ChangedFiles[0] with { AfterSha256 = afterSha256 }
+            ]
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("afterSha256", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("64", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ValidationRepairProposal_RejectsContentRefOutsideOwnProposalDirectory()
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var valid = GmWorkerBridgeTestFixtures.ValidationRepairProposal();
+        var proposal = valid with
+        {
+            ChangedFiles =
+            [
+                valid.ChangedFiles[0] with
+                {
+                    ContentRef = "worker_proposals/another_proposal/game_state/world/weather.json"
+                }
+            ]
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("contentRef", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains(proposal.ProposalId, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ValidationRepairTask_RejectsMalformedContextHash()
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var valid = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var task = valid with
+        {
+            ContextFiles = [valid.ContextFiles[0] with { Sha256 = "sha256-placeholder" }]
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("contextFiles.sha256", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("64", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void CompletedValidationRepairProposal_RejectsEmptyChangedFiles()
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var proposal = GmWorkerBridgeTestFixtures.ValidationRepairProposal() with
+        {
+            ChangedFiles = []
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("validation-repair", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("changedFiles", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData(WorkerProposalStatus.Failed)]
+    [InlineData(WorkerProposalStatus.TimedOut)]
+    [InlineData(WorkerProposalStatus.Rejected)]
+    public void NonCompletedProposal_RejectsCanonicalChangedFiles(WorkerProposalStatus status)
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var proposal = GmWorkerBridgeTestFixtures.ValidationRepairProposal() with { Status = status };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("non-completed", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("changedFiles", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("not-a-sha256")]
+    public void ValidationRepairProposal_RejectsMissingMalformedOrUnpinnedBeforeSha256(string? beforeSha256)
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var valid = GmWorkerBridgeTestFixtures.ValidationRepairProposal();
+        var proposal = valid with
+        {
+            ChangedFiles = [valid.ChangedFiles[0] with { BeforeSha256 = beforeSha256 }]
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("beforeSha256", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidationRepairProposal_RejectsBeforeSha256DifferentFromTaskContext()
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var valid = GmWorkerBridgeTestFixtures.ValidationRepairProposal();
+        var proposal = valid with
+        {
+            ChangedFiles = [valid.ChangedFiles[0] with { BeforeSha256 = new string('c', 64) }]
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("beforeSha256", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("context", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void GuardianAbodeContentTaskAndProposal_RequireAfterlifeTypedProposal()
     {
         var profile = GmWorkerBridgeTestFixtures.GuardianAbodeContentCodexProfile();

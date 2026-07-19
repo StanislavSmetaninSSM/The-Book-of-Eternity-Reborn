@@ -161,6 +161,31 @@ public sealed class GmWorkerBridgeDocumentationTests
     }
 
     [Fact]
+    public void ValidationRepairDocs_DocumentExclusiveHandoffExactHashesAndAfterlifeRepairShape()
+    {
+        var guide = ReadRepoFile("OtherGuides/GM_Worker_Bridges.md");
+        var contract = ReadRepoFile("specs/1113-gm-worker-bridges/contracts/gm-worker-bridge-contract.md");
+        var repair = ReadRepoFile("Examples/E_CLI_GM_Worker_Validation_Repair.txt");
+        var afterlifeMatrix = ReadRepoFile("OtherGuides/Afterlife_Contract_Matrix.md");
+
+        foreach (var source in new[] { guide, contract, repair })
+        {
+            Assert.Contains("64-character SHA-256", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("afterlifeProposal", source, StringComparison.Ordinal);
+            Assert.Contains("optional", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("validation-repair", source, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("before the legacy", guide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ready signal publication fails", guide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("worker_apply_gate_accepted", repair, StringComparison.Ordinal);
+        Assert.DoesNotContain("sha256-weather-before", repair, StringComparison.Ordinal);
+        Assert.DoesNotContain("sha256-weather-after", repair, StringComparison.Ordinal);
+        Assert.Contains("guardian_thought_journal.json", afterlifeMatrix, StringComparison.Ordinal);
+        Assert.Contains("append-only", afterlifeMatrix, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void GmWorkerBridgeDocs_DocumentCliRunnerEntrypoint()
     {
         var guide = ReadRepoFile("OtherGuides/GM_Worker_Bridges.md");
@@ -196,6 +221,21 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("guardianAbodeRequest", runner, StringComparison.Ordinal);
         Assert.Contains("soulContentProposal", runner, StringComparison.Ordinal);
         Assert.Contains("soulContentRequest", runner, StringComparison.Ordinal);
+        Assert.Contains("taskType is not validation-repair", runner, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("For validation-repair tasks", runner, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("afterSha256", runner, StringComparison.Ordinal);
+        Assert.Contains(
+            "Delete changes require path, changeKind, beforeSha256, afterSha256 exactly 'missing', and no contentRef.",
+            runner,
+            StringComparison.Ordinal);
+        const string terminalStatusRule =
+            "Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].";
+        foreach (var source in new[] { guide, contract, repair, runner })
+            Assert.Contains(terminalStatusRule, source, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "If the task contains afterlifeContract, keep changedFiles empty",
+            runner,
+            StringComparison.Ordinal);
     }
 
     [Fact]

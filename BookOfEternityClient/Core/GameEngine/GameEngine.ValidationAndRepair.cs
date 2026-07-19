@@ -72,11 +72,13 @@ public partial class GameEngine
     private async Task<bool> ValidateCurrentGameStateOrShowErrorsAsync(string source,
         RollbackSnapshot? rollbackSnapshot = null,
         ProgressionControl? progressionControl = null,
-        bool allowRepairLoop = false)
+        bool allowRepairLoop = false,
+        DateTime? initialCanonicalRepairStartedAtUtc = null)
     {
         var repairAttempt = 0;
         List<ValidationIssue>? lastRepairErrors = null;
         var lastRepairAttempt = 0;
+        var lastCanonicalRepairStartedAtUtc = initialCanonicalRepairStartedAtUtc;
 
         while (true)
         {
@@ -93,8 +95,14 @@ public partial class GameEngine
                 issues.AddRange(await _validator.ValidateAcceptedTurnMortalCombatMaterializationAsync());
                 issues.AddRange(await _validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());
             }
-            if (allowRepairLoop && lastRepairErrors is { Count: > 0 })
-                issues.AddRange(CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues(lastRepairErrors));
+            if (allowRepairLoop &&
+                lastRepairErrors is { Count: > 0 } &&
+                lastCanonicalRepairStartedAtUtc.HasValue)
+            {
+                issues.AddRange(CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues(
+                    lastRepairErrors,
+                    lastCanonicalRepairStartedAtUtc.Value));
+            }
             issues.AddRange(await _validator.ValidatePendingMemoryLegacyApplicationAsync());
             if (progressionControl != null)
                 issues.AddRange(await _progressionSchedule.ValidateAcceptedTurnOutcomeAsync(progressionControl));
@@ -143,8 +151,10 @@ public partial class GameEngine
             repairAttempt++;
             lastRepairErrors = errors;
             lastRepairAttempt = repairAttempt;
+            var repairStartedAtUtc = DateTime.UtcNow;
             if (!await WaitForContractRepairAsync(source, errors, repairAttempt, rollbackSnapshot))
                 return false;
+            lastCanonicalRepairStartedAtUtc = repairStartedAtUtc;
         }
     }
 
@@ -158,6 +168,7 @@ public partial class GameEngine
         var criticalRepairAttempt = 0;
         List<ValidationIssue>? lastCriticalRepairErrors = null;
         var lastCriticalRepairAttempt = 0;
+        DateTime? lastCriticalRepairStartedAtUtc = null;
         using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);
 
         while (true)
@@ -175,8 +186,10 @@ public partial class GameEngine
 
                 lastCriticalRepairErrors = rawErrors;
                 lastCriticalRepairAttempt = criticalRepairAttempt;
+                var rawRepairStartedAtUtc = DateTime.UtcNow;
                 if (!await WaitForContractRepairAsync(source, rawErrors, criticalRepairAttempt, rollbackSnapshot))
                     return false;
+                lastCriticalRepairStartedAtUtc = rawRepairStartedAtUtc;
 
                 continue;
             }
@@ -204,8 +217,10 @@ public partial class GameEngine
 
                 lastCriticalRepairErrors = baselineErrors;
                 lastCriticalRepairAttempt = criticalRepairAttempt;
+                var baselineRepairStartedAtUtc = DateTime.UtcNow;
                 if (!await WaitForContractRepairAsync(source, baselineErrors, criticalRepairAttempt, rollbackSnapshot))
                     return false;
+                lastCriticalRepairStartedAtUtc = baselineRepairStartedAtUtc;
 
                 continue;
             }
@@ -223,13 +238,20 @@ public partial class GameEngine
 
                 lastCriticalRepairErrors = canonicalErrors;
                 lastCriticalRepairAttempt = criticalRepairAttempt;
+                var canonicalRepairStartedAtUtc = DateTime.UtcNow;
                 if (!await WaitForContractRepairAsync(source, canonicalErrors, criticalRepairAttempt, rollbackSnapshot))
                     return false;
+                lastCriticalRepairStartedAtUtc = canonicalRepairStartedAtUtc;
 
                 continue;
             }
 
-            if (!await ValidateCurrentGameStateOrShowErrorsAsync(source, rollbackSnapshot, progressionControl, allowRepairLoop: true))
+            if (!await ValidateCurrentGameStateOrShowErrorsAsync(
+                    source,
+                    rollbackSnapshot,
+                    progressionControl,
+                    allowRepairLoop: true,
+                    initialCanonicalRepairStartedAtUtc: lastCriticalRepairStartedAtUtc))
                 return false;
 
             if (lastCriticalRepairErrors is { Count: > 0 })
@@ -301,7 +323,8 @@ public partial class GameEngine
     }
 
     private List<ValidationIssue> CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues(
-        IReadOnlyCollection<ValidationIssue> repairedErrors)
+        IReadOnlyCollection<ValidationIssue> repairedErrors,
+        DateTime repairStartedAtUtc)
     {
         var canonicalRepairCodes = repairedErrors
             .Where(issue => IsCanonicalStateRepairIssue(issue) &&
@@ -313,11 +336,6 @@ public partial class GameEngine
         if (canonicalRepairCodes.Length == 0)
             return [];
 
-        var requestFullPath = _fs.ResolvePath(ValidationRepairRequestPath);
-        if (!File.Exists(requestFullPath))
-            return [];
-
-        var requestWrittenAtUtc = File.GetLastWriteTimeUtc(requestFullPath);
         var issues = new List<ValidationIssue>();
         foreach (var outputPath in new[]
                  {
@@ -330,7 +348,7 @@ public partial class GameEngine
                 continue;
 
             var outputWrittenAtUtc = File.GetLastWriteTimeUtc(outputFullPath);
-            if (outputWrittenAtUtc >= requestWrittenAtUtc)
+            if (outputWrittenAtUtc >= repairStartedAtUtc)
                 continue;
 
             issues.Add(new ValidationIssue(
@@ -339,7 +357,7 @@ public partial class GameEngine
                 $"{outputPath} был записан до canonical validation repair и может противоречить исправленному состоянию.",
                 code: "accepted_turn_stale_player_facing_output_after_canonical_repair",
                 section: "PlayerFacingOutput",
-                expected: $"player-facing output rewritten after canonical state repair request at {requestWrittenAtUtc:o}",
+                expected: $"player-facing output rewritten after canonical state repair started at {repairStartedAtUtc:o}",
                 actual: $"{outputPath} last write {outputWrittenAtUtc:o}; repaired canonical issues: {string.Join(", ", canonicalRepairCodes)}",
                 repairHint: "Перепиши player-facing output под уже исправленное canonical state: обнови output/narrative_response.json.response и, если есть варианты выбора, output/interface_updates.json.dialogueOptions. Не меняй canonical state повторно, если validation_repair_request.json не перечисляет новые canonical ошибки."));
         }
@@ -741,9 +759,15 @@ public partial class GameEngine
     private async Task<bool> WaitForContractRepairAsync(string source, List<ValidationIssue> errors,
         int attempt, RollbackSnapshot? rollbackSnapshot)
     {
-        var metadataDiagnosticOnly = await WriteValidationRepairRequestAsync(source, errors, attempt);
-        if (metadataDiagnosticOnly)
+        var dispatch = await WriteValidationRepairRequestAsync(source, errors, attempt);
+        if (dispatch.MetadataDiagnosticOnly)
             return await FailClosedDiagnosticOnlyValidationRepairAsync(source, errors, attempt, rollbackSnapshot);
+
+        if (dispatch.WorkerApplyAccepted && !dispatch.ReadySignalCreated)
+        {
+            await AppendWorkerAcceptedValidationRepairTrajectoryAsync(source, errors, attempt, dispatch);
+            return true;
+        }
 
         using var agentConsoleRepairInputBlock = BeginAgentConsoleInputBlockFromCurrentSnapshot(
             "Validation repair is active. Agent Console input is blocked until GM finishes data repair.");
@@ -847,8 +871,23 @@ public partial class GameEngine
                     "Valid JSON object with matching sessionId/requestId/turnNumber for the active repair cycle",
                     string.IsNullOrWhiteSpace(readyJson) ? "missing or empty file" : TruncateDiagnosticValue(readyJson),
                     BuildInvalidRepairReadyRepairHint(pendingSnapshot));
-                if (rejectedReadyRepair.MetadataDiagnosticOnly)
+                if (rejectedReadyRepair.Dispatch.MetadataDiagnosticOnly)
                     return await FailClosedDiagnosticOnlyValidationRepairAsync(source, rejectedReadyRepair.ReportErrors, attempt, rollbackSnapshot);
+
+                if (rejectedReadyRepair.Dispatch.WorkerApplyAccepted)
+                {
+                    if (!rejectedReadyRepair.Dispatch.ReadySignalCreated)
+                    {
+                        await AppendWorkerAcceptedValidationRepairTrajectoryAsync(
+                            source,
+                            rejectedReadyRepair.ReportErrors,
+                            attempt,
+                            rejectedReadyRepair.Dispatch);
+                        return true;
+                    }
+
+                    continue;
+                }
 
                 await DeleteValidationRepairReadyAsync();
                 AnsiConsole.MarkupLine("[yellow]⚠ Клиент запросил новую попытку исправления. GM продолжает корректировать данные.[/]");
@@ -876,8 +915,23 @@ public partial class GameEngine
                     BuildExpectedRepairContext(pendingSnapshot),
                     BuildActualRepairContext(ready, pendingSnapshot),
                     BuildMismatchedRepairReadyRepairHint(pendingSnapshot));
-                if (rejectedReadyRepair.MetadataDiagnosticOnly)
+                if (rejectedReadyRepair.Dispatch.MetadataDiagnosticOnly)
                     return await FailClosedDiagnosticOnlyValidationRepairAsync(source, rejectedReadyRepair.ReportErrors, attempt, rollbackSnapshot);
+
+                if (rejectedReadyRepair.Dispatch.WorkerApplyAccepted)
+                {
+                    if (!rejectedReadyRepair.Dispatch.ReadySignalCreated)
+                    {
+                        await AppendWorkerAcceptedValidationRepairTrajectoryAsync(
+                            source,
+                            rejectedReadyRepair.ReportErrors,
+                            attempt,
+                            rejectedReadyRepair.Dispatch);
+                        return true;
+                    }
+
+                    continue;
+                }
 
                 await DeleteValidationRepairReadyAsync();
                 AnsiConsole.MarkupLine("[yellow]⚠ Клиент запросил новую попытку исправления. GM продолжает корректировать данные.[/]");
@@ -896,7 +950,11 @@ public partial class GameEngine
         List<ValidationIssue> errors,
         int attempt,
         ValidationRepairReady ready,
-        PendingTurnSnapshotResolution pendingSnapshot)
+        PendingTurnSnapshotResolution pendingSnapshot,
+        string acceptanceScope = "correlated_repair_ready",
+        string terminalKind = "validation_repair_ready",
+        string? signalPath = ValidationRepairReadyPath,
+        string dispatchStatus = "client_observed_terminal")
     {
         const string ledgerPath = "game_state/control/gm_trajectory_ledger.jsonl";
 
@@ -932,13 +990,13 @@ public partial class GameEngine
                     attempts = 0,
                     busyRetries = 0,
                     timeout = false,
-                    status = "client_observed_terminal"
+                    status = dispatchStatus
                 },
                 validation = new
                 {
                     status = "accepted",
                     source,
-                    acceptanceScope = "correlated_repair_ready",
+                    acceptanceScope,
                     fullCanonicalStateAccepted = false,
                     issueKinds = BuildValidationRepairTrajectoryIssueKinds(errors),
                     repairPacketRefs
@@ -952,8 +1010,8 @@ public partial class GameEngine
                 rollbackEvents = Array.Empty<object>(),
                 terminal = new
                 {
-                    kind = "validation_repair_ready",
-                    signalPath = ValidationRepairReadyPath
+                    kind = terminalKind,
+                    signalPath
                 },
                 durationSeconds = (double?)null,
                 rubric = new
@@ -987,6 +1045,35 @@ public partial class GameEngine
                 "Failed to append accepted validation repair trajectory after {Source}. Gameplay continues without ledger entry.",
                 source);
         }
+    }
+
+    private async Task AppendWorkerAcceptedValidationRepairTrajectoryAsync(
+        string source,
+        List<ValidationIssue> errors,
+        int attempt,
+        ValidationRepairDispatchState dispatch)
+    {
+        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+        var sourceTurn = dispatch.WorkerResult?.Task?.SourceTurn;
+        var ready = new ValidationRepairReady
+        {
+            SessionId = sourceTurn?.SessionId ?? pendingSnapshot.Context?.SessionId ?? string.Empty,
+            RequestId = sourceTurn?.RequestId ?? pendingSnapshot.Context?.RequestId ?? string.Empty,
+            TurnNumber = sourceTurn?.TurnNumber ?? pendingSnapshot.Context?.TurnNumber ?? 0,
+            UpdatedAtUtc = DateTime.UtcNow.ToString("o"),
+            Note = dispatch.WorkerResult?.FallbackReason
+        };
+
+        await AppendAcceptedValidationRepairTrajectoryAsync(
+            source,
+            errors,
+            attempt,
+            ready,
+            pendingSnapshot,
+            acceptanceScope: "worker_apply_gate",
+            terminalKind: "worker_apply_gate_accepted",
+            signalPath: null,
+            dispatchStatus: "worker_applied_without_ready_signal");
     }
 
     private async Task AppendClearedValidationRepairTrajectoryAsync(
@@ -1208,8 +1295,12 @@ public partial class GameEngine
         return "Unknown";
     }
 
-    private async Task<bool> WriteValidationRepairRequestAsync(string source, List<ValidationIssue> errors, int attempt)
+    private async Task<ValidationRepairDispatchState> WriteValidationRepairRequestAsync(
+        string source,
+        List<ValidationIssue> errors,
+        int attempt)
     {
+        await DeleteValidationRepairFilesAsync();
         var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
         var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
         var requestMetadata = BuildProtocolRequestMetadata(pendingSnapshot);
@@ -1245,11 +1336,32 @@ public partial class GameEngine
             }).ToList()
         };
 
-        await _fs.WriteFileAtomicAsync(ValidationRepairRequestPath, JsonSerializer.Serialize(request, JsonOpts));
         PublishAgentConsoleValidationRepairSnapshot(request);
+        GmWorkerValidationRepairDispatchResult? workerResult = null;
         if (!metadataDiagnosticOnly)
-            await RunWorkerValidationRepairIfAvailableAsync(prioritizedErrors, requestMetadata, request.DetectedAtUtc, attempt);
-        return metadataDiagnosticOnly;
+        {
+            workerResult = await RunWorkerValidationRepairIfAvailableAsync(
+                prioritizedErrors,
+                requestMetadata,
+                request.DetectedAtUtc,
+                attempt);
+            if (workerResult.Outcome == GmWorkerValidationRepairOutcome.Applied)
+            {
+                return new ValidationRepairDispatchState
+                {
+                    WorkerApplyAccepted = true,
+                    ReadySignalCreated = workerResult.ReadySignalCreated,
+                    WorkerResult = workerResult
+                };
+            }
+        }
+
+        await _fs.WriteFileAtomicAsync(ValidationRepairRequestPath, JsonSerializer.Serialize(request, JsonOpts));
+        return new ValidationRepairDispatchState
+        {
+            MetadataDiagnosticOnly = metadataDiagnosticOnly,
+            WorkerResult = workerResult
+        };
     }
 
     private async Task<bool> FailClosedDiagnosticOnlyValidationRepairAsync(
@@ -3234,13 +3346,14 @@ public partial class GameEngine
 
     private static IEnumerable<string> ResolveActorMaterializationRepairTargetFiles(ValidationIssue issue)
     {
-        var actor = NormalizeRepairActorName(issue.Actor);
-        if (actor.StartsWith("mortal_npc:", StringComparison.Ordinal))
+        var authorityPath = GmWorkerTaskPacketBuilder.ResolveActorMaterializationAuthorityPath(issue);
+        if (authorityPath != null)
         {
-            yield return "game_state/npcs/npc_core.json";
+            yield return authorityPath;
             yield break;
         }
 
+        var actor = NormalizeRepairActorName(issue.Actor);
         if ((issue.Code ?? string.Empty).StartsWith("afterlife_actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
             (!string.IsNullOrWhiteSpace(actor) && actor.Contains(':', StringComparison.Ordinal)))
         {
@@ -4480,7 +4593,7 @@ public partial class GameEngine
         builder.AppendLine("- Изменения состояния: перечисли точные canonical surfaces, включая собственный журнал мыслей, или явно обоснуй отсутствие изменения.");
     }
 
-    private async Task RunWorkerValidationRepairIfAvailableAsync(
+    private async Task<GmWorkerValidationRepairDispatchResult> RunWorkerValidationRepairIfAvailableAsync(
         IReadOnlyList<ValidationIssue> prioritizedErrors,
         (string SessionId, string RequestId, int TurnNumber) requestMetadata,
         string createdAtUtc,
@@ -4517,10 +4630,17 @@ public partial class GameEngine
                     result.Outcome,
                     result.FallbackReason);
             }
+
+            return result;
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to run GM worker validation repair. Legacy repair loop remains active.");
+            return new GmWorkerValidationRepairDispatchResult
+            {
+                Outcome = GmWorkerValidationRepairOutcome.WorkerFailed,
+                FallbackReason = ex.Message
+            };
         }
     }
 
@@ -4722,7 +4842,7 @@ public partial class GameEngine
         _ => "State"
     };
 
-    private async Task<(bool MetadataDiagnosticOnly, List<ValidationIssue> ReportErrors)> ReportRejectedRepairReadyAsync(
+    private async Task<(ValidationRepairDispatchState Dispatch, List<ValidationIssue> ReportErrors)> ReportRejectedRepairReadyAsync(
         string source, List<ValidationIssue> baseErrors, int attempt,
         string code, string message, string expected, string actual, string repairHint)
     {
@@ -4739,8 +4859,8 @@ public partial class GameEngine
                 repairHint: repairHint)
         };
 
-        var metadataDiagnosticOnly = await WriteValidationRepairRequestAsync(source, reportErrors, attempt);
-        return (metadataDiagnosticOnly, reportErrors);
+        var dispatch = await WriteValidationRepairRequestAsync(source, reportErrors, attempt);
+        return (dispatch, reportErrors);
     }
 
     private async Task<ValidationRepairReady?> ReadValidationRepairReadyAsync()
@@ -4813,6 +4933,8 @@ public partial class GameEngine
         await DeleteValidationRepairReadyAsync();
         if (_fs.FileExists(ValidationRepairRequestPath))
             _fs.DeleteFile(ValidationRepairRequestPath);
+        if (_fs.FileExists(ValidationRepairArtifactStallReportPath))
+            _fs.DeleteFile(ValidationRepairArtifactStallReportPath);
     }
 
     private Task DeleteTerminalProtocolFailureRequestAsync()

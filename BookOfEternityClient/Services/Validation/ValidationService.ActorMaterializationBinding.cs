@@ -45,7 +45,10 @@ public partial class ValidationService
             manifest,
             AfterlifeEntityProfileState.StatePath);
         if (preTurnProfilesJson == null ||
-            !TryParseExactAfterlifeProfileIdentityKeys(preTurnProfilesJson, out var preTurnProfileIdentityKeys))
+            !TryParseExactAfterlifeProfileIdentityKeys(
+                preTurnProfilesJson,
+                out var preTurnProfileIdentityKeys,
+                out var preTurnMaterializedProfileIdentityKeys))
         {
             AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(
                 AfterlifeEntityProfileState.StatePath,
@@ -55,6 +58,9 @@ public partial class ValidationService
 
         var currentSourceActors = new Dictionary<string, AfterlifeActorBinding>(StringComparer.Ordinal);
         var requiredBindings = new Dictionary<string, AfterlifeActorBinding>(StringComparer.Ordinal);
+        var dedicatedMemorySourceActors = new HashSet<string>(StringComparer.Ordinal);
+        var currentTradeAuthorities = await LoadCurrentAfterlifeActorTradeAuthoritiesAsync();
+        var preTurnTradeAuthorities = await LoadValidatedPreTurnAfterlifeActorTradeAuthoritiesAsync(manifest);
         foreach (var (path, kind) in new[]
                  {
                      (GuardiansStatePath, AfterlifeBindingSourceKind.Guardian),
@@ -97,10 +103,16 @@ public partial class ValidationService
 
             foreach (var actor in currentActors.Values)
             {
-                currentSourceActors[actor.IdentityKey] = actor;
+                AddOrMergeCurrentSourceActor(currentSourceActors, actor);
+                if (kind is AfterlifeBindingSourceKind.Guardian or AfterlifeBindingSourceKind.Resident)
+                    dedicatedMemorySourceActors.Add(actor.IdentityKey);
                 if (!preTurnActors.ContainsKey(actor.IdentityKey) ||
                     (profilesByIdentity.ContainsKey(actor.IdentityKey) &&
-                     !preTurnProfileIdentityKeys.Contains(actor.IdentityKey)))
+                     !preTurnProfileIdentityKeys.Contains(actor.IdentityKey)) ||
+                    (!preTurnMaterializedProfileIdentityKeys.Contains(actor.IdentityKey) &&
+                     kind == AfterlifeBindingSourceKind.Guardian &&
+                     HasAfterlifeTradeAuthority(ChaosSeaTradeRealm, actor, currentTradeAuthorities) &&
+                     !HasAfterlifeTradeAuthority(ChaosSeaTradeRealm, actor, preTurnTradeAuthorities)))
                     requiredBindings[actor.IdentityKey] = actor;
             }
 
@@ -119,9 +131,13 @@ public partial class ValidationService
 
                 foreach (var actor in currentLeadership.Values)
                 {
+                    AddOrMergeCurrentSourceActor(currentSourceActors, actor);
                     if (!preTurnLeadership.ContainsKey(actor.IdentityKey) ||
                         (profilesByIdentity.ContainsKey(actor.IdentityKey) &&
-                         !preTurnProfileIdentityKeys.Contains(actor.IdentityKey)))
+                         !preTurnProfileIdentityKeys.Contains(actor.IdentityKey)) ||
+                        (!preTurnMaterializedProfileIdentityKeys.Contains(actor.IdentityKey) &&
+                         HasAfterlifeTradeAuthority(ShiningAbodeTradeRealm, actor, currentTradeAuthorities) &&
+                         !HasAfterlifeTradeAuthority(ShiningAbodeTradeRealm, actor, preTurnTradeAuthorities)))
                         requiredBindings[actor.IdentityKey] = actor;
                 }
             }
@@ -137,7 +153,6 @@ public partial class ValidationService
         }
 
         var guardianJournalMemory = await ReadGuardianThoughtJournalMemoryActorIdsAsync();
-        var tradeAuthorities = await LoadCurrentAfterlifeActorTradeAuthoritiesAsync();
         foreach (var required in requiredBindings.Values)
         {
             if (!profilesByIdentity.TryGetValue(required.IdentityKey, out var matches) || matches.Count == 0)
@@ -159,15 +174,14 @@ public partial class ValidationService
                 requireEnvelope: true,
                 canTradeEvidence: HasCurrentAfterlifeActorTradeAuthority(
                     profile,
-                    tradeAuthorities)));
+                    currentTradeAuthorities)));
 
             var hasSourceActor = currentSourceActors.TryGetValue(required.IdentityKey, out var sourceActor);
             var hasTypeSpecificMemory = required.HasTypeSpecificMemory ||
                                         (hasSourceActor && sourceActor.HasTypeSpecificMemory) ||
                                         (string.Equals(required.ActorType, "guardian", StringComparison.Ordinal) &&
                                          guardianJournalMemory.Contains(required.ActorId));
-            var requiresDedicatedMemory = hasSourceActor &&
-                                          required.ActorType is "guardian" or "resident";
+            var requiresDedicatedMemory = dedicatedMemorySourceActors.Contains(required.IdentityKey);
             if (requiresDedicatedMemory
                     ? !hasTypeSpecificMemory
                     : !hasTypeSpecificMemory && !HasCommonAfterlifeActorMemory(profile))
@@ -175,11 +189,37 @@ public partial class ValidationService
         }
     }
 
+    private static void AddOrMergeCurrentSourceActor(
+        IDictionary<string, AfterlifeActorBinding> currentSourceActors,
+        AfterlifeActorBinding actor)
+    {
+        if (currentSourceActors.TryGetValue(actor.IdentityKey, out var existing))
+        {
+            actor = actor with
+            {
+                HasTypeSpecificMemory = actor.HasTypeSpecificMemory || existing.HasTypeSpecificMemory
+            };
+        }
+
+        currentSourceActors[actor.IdentityKey] = actor;
+    }
+
+    private static bool HasAfterlifeTradeAuthority(
+        string realm,
+        AfterlifeActorBinding actor,
+        IReadOnlySet<string> authorities) =>
+        authorities.Contains(BuildAfterlifeTradeAuthorityKey(
+            realm,
+            actor.ActorType,
+            actor.ActorId));
+
     private static bool TryParseExactAfterlifeProfileIdentityKeys(
         string json,
-        out HashSet<string> result)
+        out HashSet<string> result,
+        out HashSet<string> materializedResult)
     {
         result = new HashSet<string>(StringComparer.Ordinal);
+        materializedResult = new HashSet<string>(StringComparer.Ordinal);
         try
         {
             using var document = JsonDocument.Parse(json);
@@ -187,6 +227,16 @@ public partial class ValidationService
                 return false;
 
             result.UnionWith(profilesByIdentity.Keys);
+            foreach (var (identityKey, profiles) in profilesByIdentity)
+            {
+                if (profiles.Any(profile => profile.Profile.TryGetProperty(
+                        ActorMaterializationContract.PropertyName,
+                        out _)))
+                {
+                    materializedResult.Add(identityKey);
+                }
+            }
+
             return true;
         }
         catch (JsonException)

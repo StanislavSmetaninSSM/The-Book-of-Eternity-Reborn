@@ -30,6 +30,21 @@ internal static class ActorMaterializationRepairPreservationGuard
         string? proposedJson,
         IReadOnlyList<WorkerValidationIssue> issues)
     {
+        var unscopedIssues = issues
+            .Where(issue => IsActorMaterializationIssue(issue.Code) &&
+                            !RepairCodes.Contains(issue.Code) &&
+                            IssueTargetsPath(issue, path))
+            .ToArray();
+        if (unscopedIssues.Length > 0)
+        {
+            return
+            [
+                $"Actor materialization repair cannot safely scope authority issue(s) for {path}: " +
+                string.Join(", ", unscopedIssues.Select(issue => issue.Code).Distinct(StringComparer.OrdinalIgnoreCase)) +
+                ". Use the main GM rollback/repair path instead."
+            ];
+        }
+
         var relevantIssues = issues
             .Where(issue => RepairCodes.Contains(issue.Code) && IssueTargetsPath(issue, path))
             .ToArray();
@@ -65,6 +80,13 @@ internal static class ActorMaterializationRepairPreservationGuard
 
                 var baselineActors = FindActors(baselineCopy, path, actorType, actorId);
                 var proposedActors = FindActors(proposedCopy, path, actorType, actorId);
+                var isDedicatedGuardianJournalRepair =
+                    path.Equals(GuardianThoughtJournalState.StatePath, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(actorType, "guardian", StringComparison.Ordinal) &&
+                    actorGroup.Any(issue => string.Equals(
+                        issue.Code,
+                        "afterlife_actor_materialization_memory_missing",
+                        StringComparison.OrdinalIgnoreCase));
                 if (actorGroup.Any(issue => string.Equals(
                         issue.Code,
                         "afterlife_actor_materialization_profile_missing",
@@ -95,7 +117,8 @@ internal static class ActorMaterializationRepairPreservationGuard
                     continue;
                 }
 
-                if (baselineActors.Count == 0 || baselineActors.Count != proposedActors.Count)
+                if (!isDedicatedGuardianJournalRepair &&
+                    (baselineActors.Count == 0 || baselineActors.Count != proposedActors.Count))
                 {
                     errors.Add(
                         $"Actor materialization repair cannot prove protected actor data for {actorType}:{actorId}: baseline={baselineActors.Count}, proposal={proposedActors.Count}.");
@@ -146,6 +169,11 @@ internal static class ActorMaterializationRepairPreservationGuard
             return [$"Actor materialization preservation check requires valid JSON for {path}."];
         }
     }
+
+    private static bool IsActorMaterializationIssue(string code) =>
+        code.StartsWith("actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
+        code.StartsWith("afterlife_actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
+        code.StartsWith("afterlife_actor_binding_", StringComparison.OrdinalIgnoreCase);
 
     private static bool TryNormalizeAmbiguousProfiles(
         IReadOnlyList<ActorNode> baselineActors,
@@ -282,6 +310,21 @@ internal static class ActorMaterializationRepairPreservationGuard
                     "residentId",
                     actorId,
                     allowOtherAppendedEntries: true,
+                    out error))
+            {
+                return false;
+            }
+        }
+        else if (path.Equals(GuardianThoughtJournalState.StatePath, StringComparison.OrdinalIgnoreCase) &&
+                 string.Equals(actorType, "guardian", StringComparison.Ordinal))
+        {
+            if (!TryRemoveOneAppendedJournalEntry(
+                    baselineRoot,
+                    proposedRoot,
+                    "entries",
+                    GuardianThoughtJournalState.ActorIdProperty,
+                    actorId,
+                    allowOtherAppendedEntries: false,
                     out error))
             {
                 return false;
@@ -504,6 +547,15 @@ internal static class ActorMaterializationRepairPreservationGuard
         if (issue.Code is "afterlife_actor_materialization_profile_missing" or
             "afterlife_actor_materialization_profile_ambiguous")
             return path.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase);
+        if (string.Equals(
+                issue.Code,
+                "afterlife_actor_materialization_memory_missing",
+                StringComparison.OrdinalIgnoreCase) &&
+            issue.Actor?.StartsWith("guardian:", StringComparison.Ordinal) == true)
+        {
+            return path.Equals(GuardianThoughtJournalState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+                   path.Equals("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase);
+        }
         return issue.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase);
     }
 

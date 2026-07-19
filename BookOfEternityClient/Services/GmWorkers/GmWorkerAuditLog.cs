@@ -29,12 +29,15 @@ public sealed class GmWorkerAuditLog
         if (string.IsNullOrWhiteSpace(auditEvent.WorkerId))
             throw new ArgumentException("Audit worker id is required.", nameof(auditEvent));
 
-        var current = await _fs.ReadFileAsync(AuditLogPath) ?? "";
         var line = JsonSerializer.Serialize(auditEvent, CompactJsonOptions);
-        var next = string.IsNullOrWhiteSpace(current)
-            ? line + Environment.NewLine
-            : current.TrimEnd() + Environment.NewLine + line + Environment.NewLine;
-        await _fs.WriteFileAtomicAsync(AuditLogPath, next);
+        try
+        {
+            await _fs.AppendFileAtomicAsync(AuditLogPath, line + Environment.NewLine);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // Audit is diagnostic telemetry and must not revoke an accepted canonical operation.
+        }
     }
 
     public Task RecordTaskDispatchedAsync(WorkerTaskPacket task) =>

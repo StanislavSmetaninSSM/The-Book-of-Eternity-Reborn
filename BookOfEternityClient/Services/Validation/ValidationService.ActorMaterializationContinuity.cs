@@ -836,7 +836,14 @@ public partial class ValidationService
                 return;
             }
 
-            using var preTurnDocument = JsonDocument.Parse(preTurnJson);
+            using var preTurnDocument = TryParseJsonDocument(preTurnJson);
+            if (preTurnDocument == null)
+            {
+                AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(
+                    AfterlifeActorMaterializationStatePath,
+                    issues);
+                return;
+            }
             var preTurnTradeAuthorities = await LoadValidatedPreTurnAfterlifeActorTradeAuthoritiesAsync(
                 snapshotLookup.Manifest);
             if (!TryReadCanonicalAfterlifeActorStates(

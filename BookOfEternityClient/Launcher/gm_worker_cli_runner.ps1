@@ -157,7 +157,8 @@ Output contract:
 - If the task allows changedFiles, write proposed content under worker_proposals/<proposalId>/... and reference it with contentRef.
 - If the task is proposal-only, keep changedFiles empty and return draftText and/or findings.
 - If the task contains authoringRequest, keep changedFiles empty and return authoringProposal with structured created/updated entities, requiredLinks, validatorRisks, and gmReviewNotes.
-- If the task contains afterlifeContract, keep changedFiles empty and return afterlifeProposal with realmGate, targetSurfaces, requiredReceipts, requiredReports, playerVisibleSummary, gmReviewNotes, and validatorRisks. Use only the listed afterlife surfaces; never substitute Mortal World state such as worldStateFlags, worldEventsLog, Mortal NPC relationships, Mortal combat HP/status, Mortal factions, or Mortal map files.
+- If the task contains afterlifeContract and taskType is not validation-repair, keep changedFiles empty and return afterlifeProposal with realmGate, targetSurfaces, requiredReceipts, requiredReports, playerVisibleSummary, gmReviewNotes, and validatorRisks. Use only the listed afterlife surfaces; never substitute Mortal World state such as worldStateFlags, worldEventsLog, Mortal NPC relationships, Mortal combat HP/status, Mortal factions, or Mortal map files.
+- For validation-repair tasks, return only bounded changedFiles inside allowedProposalPaths. Every replace/add item requires path, changeKind, beforeSha256, afterSha256, and a contentRef under worker_proposals/<proposalId>/<path>. When afterlifeContract is present, all changed files must also stay inside allowedAfterlifeSurfaces; afterlifeProposal is optional for this repair-only task.
 - If the task contains soulContentRequest, keep changedFiles empty and return soulContentProposal with safeSoulSummaries, progressionSuggestions, rewardNotes, nextLifePreparationHooks, forbiddenReadonlyFields, requiredReceipts, requiredReports, validatorRisks, and gmReviewNotes. Treat soulName and soulFormDescription as player-owned readonly identity; do not overwrite them.
 - Leave schema validation, scope checks, and canonical application to the main GM apply gate.
 
@@ -187,17 +188,18 @@ Required worker-proposal-v1 JSON shape:
 Required-field rules:
 - Do not omit summary, status, changedFiles, findings, selfCheck, or createdAtUtc.
 - Use exact taskId and workerId values from the WorkerTaskPacket below.
+- Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
 - For proposal-only tasks, changedFiles must be [].
 - For narrative-draft tasks, draftText must contain the proposed prose.
 - For analysis tasks, findings should contain compact objects with kind and message.
 - For content-authoring tasks, authoringProposal is required and must contain domain, goal, createdEntities or updatedEntities, requiredLinks, validatorRisks, and gmReviewNotes.
-- For afterlifeContract tasks, afterlifeProposal is required and must match task.afterlifeContract.realmGate; targetSurfaces must be inside task.afterlifeContract.allowedAfterlifeSurfaces; requiredReceipts and requiredReports must include task.afterlifeContract values; playerVisibleSummary must not expose technical substitute warnings.
+- For afterlifeContract tasks whose taskType is not validation-repair, afterlifeProposal is required and must match task.afterlifeContract.realmGate; targetSurfaces must be inside task.afterlifeContract.allowedAfterlifeSurfaces; requiredReceipts and requiredReports must include task.afterlifeContract values; playerVisibleSummary must not expose technical substitute warnings.
 - For guardianAbodeRequest tasks, guardianAbodeProposal is required and must include guardianUpdates, abodeUpdates, projectSuggestions, powerReputationConsequences, tradeFavorHooks, dossierNotes, requiredReceipts, requiredReports, validatorRisks, and gmReviewNotes. Use only Guardian/Abode/project/politics afterlife surfaces listed by afterlifeContract. Keep hidden Guardian facts GM-only and out of playerVisibleSummary. Do not model Guardians as Mortal NPCs or Abodes/Guardian politics as Mortal factions.
 - For soulContentRequest tasks, soulContentProposal is required and must include safeSoulSummaries, progressionSuggestions, rewardNotes, nextLifePreparationHooks, forbiddenReadonlyFields, requiredReceipts, requiredReports, validatorRisks, and gmReviewNotes. forbiddenReadonlyFields must include soulName and soulFormDescription. Do not model the soul as an ordinary Mortal character, Mortal inventory, item, or player state substitute.
 - For inventory-content tasks, each item proposal must include player-facing description, owner/storage or inventory link, and balance details such as value, price, quality, rarity, or balanceNote. Book/document items must link to readable content or explicitly flag that gap for main-GM review.
 - For skill-content tasks, each skill/effect proposal must include a detailed player-facing description, localized scaling details or noScalingReason, bonusExplanation for bonuses, and links to effects/status/combat/characteristic-check surfaces.
 - For npc-content tasks, each NPC proposal must include separate publicKnowledge, privateKnowledge, thoughtJournal, relationshipHooks, personalQuests, dialogueSeeds, detailSurfaces, and links to location plus faction/quest/relationship/thought/dialogue surfaces.
-- For validation-repair tasks that are allowed to propose files, every changedFiles item needs path, changeKind, and contentRef unless it is a delete.
+- For validation-repair tasks that are allowed to propose files, every replace/add changedFiles item needs path, changeKind, beforeSha256, afterSha256, and contentRef. The contentRef must be exactly worker_proposals/<proposalId>/<path>. Delete changes require path, changeKind, beforeSha256, afterSha256 exactly 'missing', and no contentRef.
 
 Raw WorkerTaskPacket JSON begins on the next line.
 BEGIN_WORKER_TASK_JSON

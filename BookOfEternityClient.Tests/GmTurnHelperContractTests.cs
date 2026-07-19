@@ -1340,6 +1340,41 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void Helper_WriteBoeJsonRejectsStaleReadModifyWrite()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-cas-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var statePath = Path.Combine(session, "game_state", "world", "weather.json");
+        Directory.CreateDirectory(Path.GetDirectoryName(statePath)!);
+        File.WriteAllText(statePath, "{\"generation\":1}", new UTF8Encoding(false));
+
+        try
+        {
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                "$ErrorActionPreference = 'Stop'",
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$state = Read-BoeJson -RelativePath 'game_state/world/weather.json'",
+                "[System.IO.File]::WriteAllText(" + QuotePowerShell(statePath) + ", '{\"generation\":2}', [System.Text.UTF8Encoding]::new($false))",
+                "$state.generation = 3",
+                "try { Write-BoeJson -RelativePath 'game_state/world/weather.json' -Data $state; exit 91 } catch { if ($_.Exception.Message -notlike '*changed since Read-BoeJson*') { throw } }"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.True(string.IsNullOrWhiteSpace(result.StdErr), result.StdErr);
+            Assert.Equal("{\"generation\":2}", File.ReadAllText(statePath, Encoding.UTF8));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void Helper_SetBoeJsonPropertyReplacesExistingNonPropertyMember()
     {
         var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");

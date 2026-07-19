@@ -24,6 +24,12 @@ main GM/daemon stores it under `worker_proposals/<proposalId>/proposal.json`.
 Workers that propose file changes write content under
 `worker_proposals/<proposalId>/...` and reference it with safe relative
 `contentRef` values. Workers do not write canonical `game_state/...` files.
+Validation-repair hashes bind exact bytes: `contextFiles.sha256` and
+`changedFiles.beforeSha256` are the same exact 64-character SHA-256 digest (or
+`missing` for an absent add target), while each non-delete `afterSha256` is the
+exact 64-character SHA-256 digest of its `contentRef` bytes. A delete uses
+`afterSha256=missing` and no `contentRef`. Every non-empty `contentRef` must be
+exactly `worker_proposals/<proposalId>/<changedFiles.path>`.
 
 ## Worker Profile Contract
 
@@ -111,7 +117,7 @@ Validation repair task:
   "contextFiles": [
     {
       "path": "game_state/world/weather.json",
-      "sha256": "example"
+      "sha256": "6cc0139810cee57e761b4f0549d4300004989eaceaf72e880be9265e5517947b"
     }
   ],
   "allowedProposalPaths": [
@@ -272,7 +278,15 @@ Guardian/Abode content-authoring task:
 }
 ```
 
+For proposal-only tasks, an `afterlifeContract` requires a matching
+`afterlifeProposal`. For `validation-repair`, `afterlifeProposal` is optional:
+the repair authority is the bounded `changedFiles` list, and every changed path
+must be included in both `allowedProposalPaths` and
+`afterlifeContract.allowedAfterlifeSurfaces`.
+
 ## Proposal Contract
+
+Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
 
 Validation repair proposal:
 
@@ -288,8 +302,8 @@ Validation repair proposal:
     {
       "path": "game_state/world/weather.json",
       "changeKind": "replace",
-      "beforeSha256": "example",
-      "afterSha256": "example-after",
+      "beforeSha256": "6cc0139810cee57e761b4f0549d4300004989eaceaf72e880be9265e5517947b",
+      "afterSha256": "6691bcf05a185d27168baad72602bf3a4faea235646948b7d84c5d9eede4b8be",
       "contentRef": "worker_proposals/worker_proposal_20260620_0001/game_state/world/weather.json"
     }
   ],
@@ -302,6 +316,14 @@ Validation repair proposal:
   "createdAtUtc": "2026-06-20T00:00:15Z"
 }
 ```
+
+Before dispatching a validation-repair worker, the client removes stale legacy
+request, ready, and stall artifacts. It exposes
+`validation_repair_request.json` only if worker dispatch or apply does not
+succeed. Once the apply gate accepts canonical bytes, worker ownership is
+final: a later ready signal publication failure triggers direct revalidation
+and a `worker_apply_gate_accepted` trajectory record, not a second legacy GM
+repair.
 
 Narrative draft proposal:
 

@@ -124,8 +124,12 @@ As the GM agent, I receive one bounded, setting-agnostic authoring contract and 
 - **FR-019**: Untouched legacy actors MUST remain loadable without invented data. Current-turn creation, promotion, or newly significant role assignment MUST trigger the current contract.
 - **FR-020**: Repair packets MUST preserve valid actor data and report only missing, empty, contradictory, or unbound sections for the exact stable actor identity.
 - **FR-020a**: The worker apply gate MUST compare a proposed actor repair with canonical JSON and MUST reject protected actor data changes outside the exact actor and named repair section.
+- **FR-020b**: Validation-repair proposals MUST pin exact canonical bytes with 64-character SHA-256 context/before hashes, bind every non-delete result to its own proposal-scoped content and exact after hash, and apply or roll back through one cross-process compare/exchange write protocol so a concurrent canonical writer cannot be overwritten.
+- **FR-020c**: Worker dispatch MUST happen before exposing the legacy main-GM repair request. Once the apply gate accepts a worker repair, the worker remains the sole repair owner even if ready-signal publication fails; the client MUST revalidate directly and MUST NOT start a second legacy repair. Player-facing output freshness MUST use an explicit repair boundary rather than depend on a legacy request file.
+- **FR-020d**: Only a worker proposal with `status=completed` MAY enter the apply gate. `failed`, `timed-out`, and `rejected` proposals MUST carry an empty `changedFiles` collection, remain diagnostic evidence only, and MUST NOT mutate canonical state.
+- **FR-020e**: Worker audit appends MUST serialize their read-and-append operation under the shared cross-process canonical-write lock. Failure to publish audit telemetry after a canonical apply is accepted MUST NOT roll back or revoke the accepted canonical bytes.
 - **FR-021**: Normalization MUST preserve valid materialization metadata but MUST NOT generate narrative reasons, capabilities, skills, inventory, Fate Cards, goals, relationships, or profile content.
-- **FR-022**: System Guardian fresh-game builders MUST emit deterministic valid envelopes for their client-owned Guardian/profile seeds.
+- **FR-022**: System Guardian fresh-game builders MUST emit deterministic valid envelopes for their client-owned Guardian/profile seeds, and every capability boolean, including `canTrade`, MUST match the exact current seeded authority.
 - **FR-023**: GM prompts, Mortal NPC documentation, afterlife contract documentation, worked examples, manifests, and source/documentation guards MUST be updated in the same change.
 - **FR-024**: Player-facing console and browser projections MUST ignore materialization metadata unless an explicit advanced/debug mode requests it.
 - **FR-025**: Tests and source guards MUST prove that no materialization decision uses genre-specific keyword dictionaries or prose inference.
@@ -147,14 +151,14 @@ As the GM agent, I receive one bounded, setting-agnostic authoring contract and 
 - **SC-002**: All supported valid minimal Mortal NPC fixtures pass without requiring a genre-specific skill, item, profession, or Fate Card.
 - **SC-003**: New Guardian, resident, radiant actor, and Shining faction-head fixtures cannot pass without exact common-profile binding or an explicitly documented client-owned equivalent.
 - **SC-004**: Existing unchanged legacy fixtures remain valid and no test observes client-authored narrative content added during normalization or repair preparation.
-- **SC-005**: Repair tests show that already valid actor sections remain semantically equivalent, only the exact named repair subtree may change, and proposals that alter protected actor data are rejected before apply.
+- **SC-005**: Repair tests show that already valid actor sections remain semantically equivalent, only the exact named repair subtree may change, stale-byte proposals and concurrent overwrite/rollback attempts are rejected, non-completed proposals cannot enter apply, audit append races lose no events, audit publication failure cannot revoke an accepted apply, and proposals that alter protected actor data are rejected before apply.
 - **SC-006**: Mortal World, Chaos Sea, and Shining Abode worked examples pass documentation validation and demonstrate at least one populated and one deliberately empty section.
 - **SC-007**: Source guards find no actor materialization branch based on genre-specific names, descriptions, occupations, tags, labels, IDs, or keyword tables.
 - **SC-008**: Existing console/browser actor detail tests continue to pass without rendering materialization metadata in player mode.
 
 ## Verification Plan
 
-- **C# verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ActorMaterialization|NpcFullObject|AfterlifeEntityProfile|GuardianAbodeResident|ShiningLeadership|SystemGuardianLibrary"`
+- **C# verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ActorMaterialization|NpcFullObject|AfterlifeEntityProfile|GuardianAbodeResident|ShiningLeadership|SystemGuardianLibrary|GmWorker|ValidationRepair"`
 - **Documentation/contract verification**: `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests|ValidationSourceGuardTests|GameEngineSourceGuardTests"`
 - **Frontend verification**: Existing browser projection tests affected by actor DTO changes; run `npm run verify` only if frontend source changes.
 - **Manual/player-facing verification**: Fresh Mortal opening with populated actor; intentionally minimal itemless actor; Chaos Sea Guardian/resident creation; Shining faction-head appointment; inspect `/нпс` and `/профили_загробья` to confirm no metadata leakage.

@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
@@ -137,6 +138,14 @@ public partial class GameEngine
         public int TurnNumber { get; set; }
         public string UpdatedAtUtc { get; set; } = "";
         public string? Note { get; set; }
+    }
+
+    private sealed record ValidationRepairDispatchState
+    {
+        public bool MetadataDiagnosticOnly { get; init; }
+        public bool WorkerApplyAccepted { get; init; }
+        public bool ReadySignalCreated { get; init; }
+        public GmWorkerValidationRepairDispatchResult? WorkerResult { get; init; }
     }
 
     private sealed class TerminalProtocolFailureRequest

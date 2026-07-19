@@ -89,6 +89,38 @@ public sealed class GmWorkerAuditLogTests
         }
     }
 
+    [Fact]
+    public async Task AppendEventAsync_ConcurrentWritersPreserveEveryEvent()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var audit = new GmWorkerAuditLog(fs);
+            var writes = Enumerable.Range(0, 32)
+                .Select(index => audit.AppendEventAsync(new WorkerAuditEvent
+                {
+                    EventId = $"worker_audit_concurrent_{index:D2}",
+                    EventType = "task-dispatched",
+                    WorkerId = "validation_repair_codex",
+                    TaskId = $"worker_task_concurrent_{index:D2}",
+                    TimestampUtc = "2026-06-20T00:00:00Z",
+                    Summary = $"Concurrent event {index}."
+                }))
+                .ToArray();
+
+            await Task.WhenAll(writes);
+            var events = await audit.ReadEventsAsync();
+
+            Assert.Equal(32, events.Count);
+            Assert.Equal(32, events.Select(item => item.EventId).Distinct(StringComparer.Ordinal).Count());
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     private static FileSystemManager CreateFileSystem(string root)
     {
         var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);

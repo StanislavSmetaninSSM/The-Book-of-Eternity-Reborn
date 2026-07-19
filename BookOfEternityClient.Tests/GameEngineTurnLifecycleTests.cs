@@ -233,9 +233,18 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             requestId,
             turnNumber
         });
+        await WriteJsonAsync("game_state/control/validation_repair_request.json", new { stale = true });
+        await WriteJsonAsync("game_state/control/validation_repair_ready.json", new { stale = true });
+        await WriteJsonAsync("game_state/control/gm_validation_repair_artifact_stall_report.json", new { stale = true });
 
         var scriptPath = Path.Combine(_rootPath, "fake-validation-repair-worker.ps1");
-        await File.WriteAllTextAsync(scriptPath, "exit 7", Encoding.UTF8);
+        await File.WriteAllTextAsync(scriptPath, """
+            $control = Join-Path $env:BOE_WORKER_SESSION_PATH 'game_state/control'
+            if (Test-Path (Join-Path $control 'validation_repair_request.json')) { exit 71 }
+            if (Test-Path (Join-Path $control 'validation_repair_ready.json')) { exit 72 }
+            if (Test-Path (Join-Path $control 'gm_validation_repair_artifact_stall_report.json')) { exit 73 }
+            exit 7
+            """, Encoding.UTF8);
         var engine = CreateGameEngine(configureSettings: settings =>
         {
             settings.GmWorkerBridgeProfiles.Add(GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
@@ -261,6 +270,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         await task;
 
         Assert.True(_fs.FileExists("game_state/control/validation_repair_request.json"));
+        Assert.False(_fs.FileExists("game_state/control/validation_repair_ready.json"));
+        Assert.False(_fs.FileExists("game_state/control/gm_validation_repair_artifact_stall_report.json"));
         var workerTaskJson = await _fs.ReadFileAsync("game_state/control/gm_worker_latest_validation_repair_task.json");
         Assert.False(string.IsNullOrWhiteSpace(workerTaskJson));
         var workerTask = GmWorkerJson.Deserialize<WorkerTaskPacket>(workerTaskJson!);
@@ -273,6 +284,120 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var events = await audit.ReadEventsAsync();
         var dispatch = Assert.Single(events, evt => evt.EventType == "task-dispatched");
         Assert.Equal(workerTask.TaskId, dispatch.TaskId);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task WriteValidationRepairRequestAsync_WhenWorkerApplies_DoesNotExposeLegacyRepairRequest(
+        bool auditPathWritable)
+    {
+        const string sessionId = "session-worker-repair-applied";
+        const string requestId = "request-worker-repair-applied";
+        const int turnNumber = 4;
+        const string trackedPath = "game_state/world/weather.json";
+        const string weatherJson = "{\"tendency\":\"NO_CHANGE\",\"description\":\"Погода не меняется.\"}";
+
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        _fs.DeleteFile("game_state/control/validation_repair_request.json");
+        _fs.DeleteFile("game_state/control/validation_repair_ready.json");
+        await _fs.WriteFileAtomicAsync(trackedPath, weatherJson);
+        var snapshotRoot = _fs.ResolvePath("game_state/control/pending_turn_snapshot");
+        if (Directory.Exists(snapshotRoot))
+            Directory.Delete(snapshotRoot, recursive: true);
+        var trackedPaths = Directory.GetFiles(_fs.GameSessionPath, "*.json", SearchOption.AllDirectories)
+            .Select(path => Path.GetRelativePath(_fs.GameSessionPath, path).Replace('\\', '/'))
+            .Where(path =>
+                (path.StartsWith("game_state/", StringComparison.Ordinal) &&
+                 !path.StartsWith("game_state/control/", StringComparison.Ordinal)) ||
+                path.StartsWith("lore/", StringComparison.Ordinal))
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+        foreach (var path in trackedPaths)
+        {
+            var destination = _fs.ResolvePath($"game_state/control/pending_turn_snapshot/{path}");
+            Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
+            File.Copy(_fs.ResolvePath(path), destination, overwrite: true);
+        }
+        await WritePendingTurnSnapshotManifestAsync(
+            sessionId,
+            requestId,
+            turnNumber,
+            trackedPaths);
+        await WriteJsonAsync("input/turn_request.json", new { sessionId, requestId, turnNumber });
+        if (!auditPathWritable)
+            Directory.CreateDirectory(_fs.ResolvePath(GmWorkerAuditLog.AuditLogPath));
+
+        var scriptPath = Path.Combine(_rootPath, "fake-validation-repair-worker-applied.ps1");
+        await File.WriteAllTextAsync(scriptPath, """
+            $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+            $proposalId = 'worker_proposal_game_engine_applied'
+            $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'
+            $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+            $canonicalPath = Join-Path $env:BOE_WORKER_SESSION_PATH 'game_state/world/weather.json'
+            New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
+            Copy-Item -Path $canonicalPath -Destination $contentPath -Force
+            $sha = [System.Security.Cryptography.SHA256]::Create()
+            try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+            finally { $sha.Dispose() }
+            $proposal = [ordered]@{
+                schemaVersion = 1
+                proposalId = $proposalId
+                taskId = $task.taskId
+                workerId = $task.workerId
+                status = 'completed'
+                summary = 'No-op repair used to verify exclusive worker ownership.'
+                changedFiles = @([ordered]@{
+                    path = 'game_state/world/weather.json'
+                    changeKind = 'replace'
+                    beforeSha256 = $task.contextFiles[0].sha256
+                    afterSha256 = $afterSha256
+                    contentRef = $contentRef
+                })
+                findings = @()
+                selfCheck = [ordered]@{
+                    scopeReviewed = $true
+                    validationExpectedToPass = $true
+                    notes = @('exclusive repair flow')
+                }
+                createdAtUtc = '2026-06-20T01:00:05Z'
+            }
+            $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+            """, Encoding.UTF8);
+        var engine = CreateGameEngine(configureSettings: settings =>
+        {
+            settings.GmWorkerBridgeProfiles.Add(GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            });
+        });
+        var issue = new ValidationIssue(
+            trackedPath,
+            IssueSeverity.Error,
+            "Synthetic repair request for worker ownership test.",
+            code: "normalized_weather_missing_description");
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "state validation", new List<ValidationIssue> { issue }, 1 })!);
+
+        await task;
+
+        var dispatch = task.GetType().GetProperty("Result")?.GetValue(task);
+        Assert.NotNull(dispatch);
+        Assert.True((bool)dispatch!.GetType().GetProperty("WorkerApplyAccepted")!.GetValue(dispatch)!);
+        Assert.True((bool)dispatch.GetType().GetProperty("ReadySignalCreated")!.GetValue(dispatch)!);
+
+        var auditDiagnostic = auditPathWritable
+            ? await _fs.ReadFileAsync(GmWorkerAuditLog.AuditLogPath) ?? "<missing audit>"
+            : "audit path intentionally unavailable";
+        Assert.True(_fs.FileExists("game_state/control/validation_repair_ready.json"), auditDiagnostic);
+        Assert.False(_fs.FileExists("game_state/control/validation_repair_request.json"));
     }
 
     [Fact]
@@ -646,21 +771,27 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             requestId,
             turnNumber
         });
-        await WriteJsonAsync("game_state/control/validation_repair_ready.json", new
-        {
-            sessionId,
-            requestId,
-            turnNumber,
-            updatedAtUtc = "2026-06-27T00:00:00Z",
-            note = "Repair accepted by test."
-        });
-
         var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
         var issue = new ValidationIssue(
             "game_state/world/current_location.json.locationId",
             IssueSeverity.Error,
             "Current location references an unknown location id.",
             code: "current_location_unknown_location_id");
+
+        var gmRepair = Task.Run(async () =>
+        {
+            await WaitForValidationRepairRequestContainingAsync(
+                "current_location_unknown_location_id",
+                TimeSpan.FromSeconds(5));
+            await WriteJsonAsync("game_state/control/validation_repair_ready.json", new
+            {
+                sessionId,
+                requestId,
+                turnNumber,
+                updatedAtUtc = "2026-06-27T00:00:00Z",
+                note = "Repair accepted by test."
+            });
+        });
 
         var accepted = await InvokePrivateAsync<bool>(
             engine,
@@ -669,6 +800,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             new List<ValidationIssue> { issue },
             2,
             null);
+
+        await gmRepair;
 
         Assert.True(accepted);
         Assert.False(_fs.FileExists("game_state/control/validation_repair_ready.json"));
@@ -704,6 +837,44 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             "game_state/control/validation_repair_ready.json",
             record.GetProperty("terminal").GetProperty("signalPath").GetString());
         Assert.True(record.GetProperty("rubric").GetProperty("validTurn").GetBoolean());
+    }
+
+    [Fact]
+    public async Task ReportRejectedRepairReadyAsync_ReturnsExclusiveDispatchStateToCaller()
+    {
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var issue = new ValidationIssue(
+            "game_state/control/validation_repair_ready.json",
+            IssueSeverity.Error,
+            "Synthetic rejected ready signal.",
+            code: "invalid_repair_ready_json");
+        var method = typeof(GameEngine).GetMethod(
+            "ReportRejectedRepairReadyAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[]
+            {
+                "state validation",
+                new List<ValidationIssue> { issue },
+                1,
+                "invalid_repair_ready_json",
+                "Malformed ready signal.",
+                "Valid correlated ready signal",
+                "Malformed JSON",
+                "Publish a fresh correlated ready signal."
+            })!);
+
+        await task;
+
+        var result = task.GetType().GetProperty("Result")?.GetValue(task);
+        Assert.NotNull(result);
+        var dispatch = result!.GetType().GetField("Item1")?.GetValue(result);
+        Assert.NotNull(dispatch);
+        Assert.NotNull(dispatch!.GetType().GetProperty("WorkerApplyAccepted"));
+        Assert.NotNull(dispatch.GetType().GetProperty("ReadySignalCreated"));
     }
 
     [Fact]
@@ -1082,7 +1253,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.NotNull(method);
         var issues = Assert.IsType<List<ValidationIssue>>(method!.Invoke(
             engine,
-            new object[] { repairedErrors }));
+            new object[] { repairedErrors, requestWrittenAt }));
 
         Assert.Empty(issues);
     }
@@ -1138,7 +1309,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.NotNull(method);
         var issues = Assert.IsType<List<ValidationIssue>>(method!.Invoke(
             engine,
-            new object[] { repairedErrors }));
+            new object[] { repairedErrors, requestWrittenAt }));
 
         Assert.Empty(issues);
     }
@@ -3208,6 +3379,42 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(steps, step => step.Contains("goals", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("personalityTraits", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("inventory", StringComparison.OrdinalIgnoreCase) && step.Contains("[]", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues_UsesExplicitBoundaryWithoutLegacyRequest()
+    {
+        await WriteJsonAsync("output/narrative_response.json", new
+        {
+            response = "Старый ответ до ремонта.",
+            timestamp = "2026-07-10T07:30:00Z"
+        });
+        var boundary = DateTime.UtcNow.AddMinutes(1);
+        File.SetLastWriteTimeUtc(_fs.ResolvePath("output/narrative_response.json"), boundary.AddMinutes(-1));
+        _fs.DeleteFile("game_state/control/validation_repair_request.json");
+        var repairedErrors = new List<ValidationIssue>
+        {
+            new(
+                "game_state/world/weather.json",
+                IssueSeverity.Error,
+                "Canonical weather was repaired.",
+                code: "normalized_weather_missing_description")
+        };
+        var engine = CreateGameEngine();
+        var method = typeof(GameEngine).GetMethod(
+            "CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.NotNull(method);
+        var issues = Assert.IsType<List<ValidationIssue>>(method!.Invoke(
+            engine,
+            new object[] { repairedErrors, boundary }));
+
+        Assert.Contains(issues, issue =>
+            string.Equals(
+                issue.Code,
+                "accepted_turn_stale_player_facing_output_after_canonical_repair",
+                StringComparison.Ordinal));
     }
 
     [Fact]

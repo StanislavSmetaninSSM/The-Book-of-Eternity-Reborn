@@ -140,6 +140,12 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.IsType<JsonObject>(guardian["questManagement"]);
         Assert.IsType<JsonObject>(guardian["gachaSystem"]);
 
+        var initialMusing = Assert.IsType<JsonObject>(Assert.Single(Assert.IsType<JsonArray>(guardian["musings"])));
+        Assert.Equal(1, initialMusing["turn"]?.GetValue<int>());
+        Assert.False(string.IsNullOrWhiteSpace(initialMusing["topic"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(initialMusing["mood"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(initialMusing["thought"]?.GetValue<string>()));
+
         var loreFragments = Assert.IsType<JsonArray>(guardian["loreFragments"]);
         Assert.True(loreFragments.Count >= 7);
         foreach (var fragmentNode in loreFragments)
@@ -228,6 +234,12 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
 
         AssertDirectSystemGuardianMaterializationValidationPasses(profile);
 
+        var guardianRoot = _service.BuildCanonicalGuardianRootForFreshNewGame(
+            preset,
+            "Тестовая Душа",
+            turnNumber,
+            createdAtUtc);
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardianRoot.ToJsonString());
         await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, root.ToJsonString());
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
         var issues = await validator.ValidateGameStateAsync();
@@ -270,6 +282,12 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
             Assert.False(string.IsNullOrWhiteSpace(fragment["summary"]?.GetValue<string>()));
             Assert.False(string.IsNullOrWhiteSpace(fragment["category"]?.GetValue<string>()));
         }
+
+        var initialMusing = Assert.IsType<JsonObject>(Assert.Single(Assert.IsType<JsonArray>(guardian["musings"])));
+        Assert.Equal(1, initialMusing["turn"]?.GetValue<int>());
+        Assert.False(string.IsNullOrWhiteSpace(initialMusing["topic"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(initialMusing["mood"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(initialMusing["thought"]?.GetValue<string>()));
 
         var navigation = Assert.IsType<JsonObject>(root["chaosSeaNavigation"]);
         Assert.Equal(guardian["abode"]?["abodeId"]?.GetValue<string>(), navigation["currentAbodeId"]?.GetValue<string>());
@@ -339,7 +357,7 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         {
             ["canFight"] = true,
             ["canTeach"] = true,
-            ["canTrade"] = false
+            ["canTrade"] = true
         };
         Assert.True(JsonNode.DeepEquals(expectedCapabilities, knowledgeCapabilities));
         Assert.True(JsonNode.DeepEquals(knowledgeCapabilities, combatCapabilities));
@@ -396,6 +414,12 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
 
         AssertDirectSystemGuardianMaterializationValidationPasses(profile);
 
+        var guardianRoot = _service.BuildCanonicalGuardianRootForFreshNewGame(
+            description,
+            "Искра Перед Рассветом",
+            turnNumber,
+            createdAtUtc);
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardianRoot.ToJsonString());
         await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, root.ToJsonString());
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
         var issues = await validator.ValidateGameStateAsync();
@@ -996,7 +1020,7 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
             {
                 ["canFight"] = true,
                 ["canTeach"] = true,
-                ["canTrade"] = false
+                ["canTrade"] = true
             },
             ["sections"] = new JsonObject
             {
@@ -1061,7 +1085,7 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
             document.RootElement,
             "systemGuardianProfile",
             requireEnvelope: true,
-            canTradeEvidence: false);
+            canTradeEvidence: true);
 
         Assert.Empty(issues);
     }

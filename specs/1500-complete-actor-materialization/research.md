@@ -53,7 +53,37 @@
 
 **Rationale**: This actor is already client-owned. Requiring the GM to rematerialize it would duplicate authority and make New Game brittle.
 
-## Decision 8: Metadata remains private
+## Decision 8: Exact-byte compare/exchange owns canonical repair writes
+
+**Decision**: Validation-repair tasks pin exact file bytes with SHA-256 hashes. The apply gate and rollback path use one cross-process canonical-write lock plus exact-byte compare/exchange; a write proceeds only when current bytes still equal the task or rollback baseline. Proposal content is bound to `worker_proposals/<proposalId>/<canonicalPath>` and its own exact after hash.
+
+**Rationale**: Semantic JSON comparison alone cannot prevent a concurrent daemon, helper, or external GM writer from being silently overwritten between validation and atomic replacement. Exact-byte CAS makes stale proposals and stale rollback ownership mechanically unrepresentable.
+
+## Decision 9: Worker repair ownership precedes legacy fallback
+
+**Decision**: Clear stale repair artifacts, attempt the worker first, and expose the legacy main-GM request only when worker dispatch/apply does not succeed. An accepted apply-gate decision remains authoritative if ready publication fails; the client records that terminal state and revalidates directly. Output freshness receives an explicit repair timestamp rather than discovering it from a request file.
+
+**Rationale**: Publishing the legacy request before worker completion creates two possible repair owners. Treating a post-apply ready failure as worker failure can cause a second GM to overwrite an already accepted repair.
+
+## Decision 10: Client-owned seeds project exact capability authority
+
+**Decision**: The deterministic System Guardian envelope copies capability truth from the exact seeded current Guardian/Abode authority. In particular, the active Guardian of the current Chaos Sea abode declares `canTrade=true`; no role-name or prose inference is involved.
+
+**Rationale**: A client-owned seed is exempt from GM authorship, not from capability consistency. Hardcoding a contradictory capability would make a fresh valid seed fail the same contract imposed on GM-authored actors.
+
+## Decision 11: Audit telemetry cannot revoke canonical authority
+
+**Decision**: Worker audit append performs its read-and-append while holding the shared cross-process canonical-write lock. I/O failure is contained as best-effort telemetry failure after argument validation and never rolls back an already accepted canonical apply.
+
+**Rationale**: Audit records must not lose concurrent events, but observability is not the owner of canonical state. Rolling back accepted bytes because telemetry publication failed creates a second, unsafe authority transition.
+
+## Decision 12: Terminal worker failures are never apply candidates
+
+**Decision**: Only `status=completed` proposals can enter the apply gate. `failed`, `timed-out`, and `rejected` proposals must use `changedFiles: []` and are retained only as diagnostics.
+
+**Rationale**: A terminal failure carrying mutations is contradictory. Rejecting that shape in both contract validation and the apply gate makes accidental application impossible even when one boundary is called directly.
+
+## Decision 10: Metadata remains private
 
 **Decision**: Console and browser projections continue to render gameplay fields and ignore `materialization`. Source/projection tests guard against exposing contract tokens in player mode.
 

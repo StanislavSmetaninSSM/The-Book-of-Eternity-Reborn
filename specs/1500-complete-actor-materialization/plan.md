@@ -6,7 +6,7 @@
 
 ## Summary
 
-Add a setting-agnostic, versioned first-materialization contract for persistent Mortal NPCs and significant afterlife actors. The validator will require an actor-bound private `materialization` envelope for current-turn creations and promotions, compare declared section dispositions and capabilities with canonical actor data, bind afterlife type-specific records to common profiles, preserve untouched legacy saves, and emit bounded repair packets. Positive afterlife trade authority is derived only from exact current Guardian/Shining state, while actor-owned memory and real goals/quests/activity prove agency. The worker apply gate mechanically preserves protected actor data outside the named repair scope. The client will never infer skills, possessions, roles, or capabilities from prose. System Guardian seeds remain client-owned and receive deterministic envelopes. Mortal and afterlife prompts, examples, manifests, contract documentation, and source guards are updated with the runtime change.
+Add a setting-agnostic, versioned first-materialization contract for persistent Mortal NPCs and significant afterlife actors. The validator will require an actor-bound private `materialization` envelope for current-turn creations and promotions, compare declared section dispositions and capabilities with canonical actor data, bind afterlife type-specific records to common profiles, preserve untouched legacy saves, and emit bounded repair packets. Positive afterlife trade authority is derived only from exact current Guardian/Shining state, while actor-owned memory and real goals/quests/activity prove agency. The worker apply gate mechanically preserves protected actor data outside the named repair scope, pins exact proposal bytes, and applies or rolls back through cross-process compare/exchange. Only completed proposals may enter apply; terminal failure proposals remain mutation-free diagnostics. Worker audit append is concurrency-safe and cannot revoke accepted canonical bytes on telemetry failure. Worker dispatch owns a repair before legacy fallback is exposed, including direct revalidation after an accepted apply whose ready publication fails. The client will never infer skills, possessions, roles, or capabilities from prose. System Guardian seeds remain client-owned and receive deterministic envelopes that match their exact seeded capabilities. Mortal and afterlife prompts, examples, manifests, contract documentation, and source guards are updated with the runtime change.
 
 ## Technical Context
 
@@ -35,7 +35,7 @@ Add a setting-agnostic, versioned first-materialization contract for persistent 
 **Verification Commands**:
 
 ```powershell
-dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ActorMaterialization|NpcFullObject|AfterlifeEntityProfile|GuardianAbodeResident|ShiningLeadership|SystemGuardianLibrary"
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ActorMaterialization|NpcFullObject|AfterlifeEntityProfile|GuardianAbodeResident|ShiningLeadership|SystemGuardianLibrary|GmWorker|ValidationRepair"
 dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests|PromptDocumentationCoverageTests|ValidationSourceGuardTests|GameEngineSourceGuardTests"
 dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore
 ```

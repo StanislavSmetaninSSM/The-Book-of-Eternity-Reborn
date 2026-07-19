@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using System.Text;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services.GmWorkers;
@@ -238,7 +237,7 @@ public sealed class GmWorkerProposalOnlyDispatchService
                      .Distinct(StringComparer.Ordinal)
                      .Order(StringComparer.Ordinal))
         {
-            var content = await _fs.ReadFileAsync(path);
+            var content = await _fs.ReadFileBytesAsync(path);
             result.Add(new WorkerFileReference
             {
                 Path = path,
@@ -307,9 +306,6 @@ public sealed class GmWorkerProposalOnlyDispatchService
             _ => taskType.ToString().ToLowerInvariant()
         };
 
-    private static string ComputeSha256(string content)
-    {
-        var bytes = Encoding.UTF8.GetBytes(content);
-        return Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
-    }
+    private static string ComputeSha256(byte[] content) =>
+        Convert.ToHexString(SHA256.HashData(content)).ToLowerInvariant();
 }

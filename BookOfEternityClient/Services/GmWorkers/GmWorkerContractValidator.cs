@@ -86,7 +86,15 @@ public static class GmWorkerContractValidator
         foreach (var file in task.ContextFiles)
         {
             ValidatePath(file.Path, "contextFiles.path", errors);
-            RequireText(file.Sha256, "contextFiles.sha256", errors);
+            if (task.TaskType == WorkerTaskType.ValidationRepair)
+            {
+                if (!IsSha256(file.Sha256) && !IsMissingHash(file.Sha256))
+                    errors.Add("contextFiles.sha256 must be an exact 64-character SHA-256 hex digest or 'missing'.");
+            }
+            else
+            {
+                RequireText(file.Sha256, "contextFiles.sha256", errors);
+            }
         }
 
         ValidateAfterlifeTaskPacket(task, errors);
@@ -152,6 +160,26 @@ public static class GmWorkerContractValidator
 
         if (profile.Permissions.ProposalOnly && proposal.ChangedFiles.Count > 0)
             errors.Add("proposal-only worker proposals must not include changedFiles.");
+        if (proposal.Status != WorkerProposalStatus.Completed && proposal.ChangedFiles.Count > 0)
+            errors.Add("non-completed worker proposals must not include changedFiles.");
+        if (task.TaskType == WorkerTaskType.ValidationRepair &&
+            proposal.Status == WorkerProposalStatus.Completed &&
+            proposal.ChangedFiles.Count == 0)
+        {
+            errors.Add("completed validation-repair proposals must include at least one changedFiles item.");
+        }
+
+        var contextByPath = task.ContextFiles
+            .GroupBy(file => file.Path, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+
+        foreach (var duplicatePath in proposal.ChangedFiles
+                     .GroupBy(file => file.Path, StringComparer.Ordinal)
+                     .Where(group => group.Count() > 1)
+                     .Select(group => group.Key))
+        {
+            errors.Add($"changedFiles contains duplicate path: {duplicatePath}");
+        }
 
         foreach (var changedFile in proposal.ChangedFiles)
         {
@@ -161,10 +189,69 @@ public static class GmWorkerContractValidator
             if (!profile.Permissions.ProposalOnly &&
                 !profile.Permissions.ProposalWritePaths.Any(pattern => PathMatches(pattern, changedFile.Path)))
                 errors.Add($"changedFiles contains a path outside profile write scope: {changedFile.Path}");
+
+            contextByPath.TryGetValue(changedFile.Path, out var contextFile);
+            if (contextFile == null)
+            {
+                errors.Add($"changedFiles path is not pinned by task.contextFiles: {changedFile.Path}.");
+            }
+            else
+            {
+                var beforeIsValid = IsSha256(changedFile.BeforeSha256) || IsMissingHash(changedFile.BeforeSha256);
+                if (!beforeIsValid)
+                {
+                    errors.Add(
+                        $"changedFiles.beforeSha256 must be an exact 64-character SHA-256 hex digest or 'missing' for {changedFile.Path}.");
+                }
+                else if (!string.Equals(
+                             changedFile.BeforeSha256,
+                             contextFile.Sha256,
+                             StringComparison.OrdinalIgnoreCase))
+                {
+                    errors.Add($"changedFiles.beforeSha256 must match task context for {changedFile.Path}.");
+                }
+            }
+
+            if (changedFile.ChangeKind == WorkerFileChangeKind.Add &&
+                contextFile != null &&
+                !IsMissingHash(contextFile.Sha256))
+            {
+                errors.Add($"changedFiles add requires a 'missing' task context for {changedFile.Path}.");
+            }
+            if (changedFile.ChangeKind is WorkerFileChangeKind.Replace or WorkerFileChangeKind.Delete &&
+                contextFile != null &&
+                IsMissingHash(contextFile.Sha256))
+            {
+                errors.Add(
+                    $"changedFiles {changedFile.ChangeKind.ToString().ToLowerInvariant()} requires an existing hashed task context for {changedFile.Path}.");
+            }
+
             if (changedFile.ChangeKind != WorkerFileChangeKind.Delete)
+            {
                 RequireText(changedFile.ContentRef, "changedFiles.contentRef", errors);
+                if (!IsSha256(changedFile.AfterSha256))
+                {
+                    errors.Add(
+                        $"changedFiles.afterSha256 must be an exact 64-character SHA-256 hex digest for {changedFile.Path}.");
+                }
+            }
+            else
+            {
+                if (!IsMissingHash(changedFile.AfterSha256))
+                    errors.Add($"changedFiles delete must use afterSha256 'missing' for {changedFile.Path}.");
+                if (!string.IsNullOrWhiteSpace(changedFile.ContentRef))
+                    errors.Add($"changedFiles delete must not include contentRef for {changedFile.Path}.");
+            }
             if (!string.IsNullOrWhiteSpace(changedFile.ContentRef))
+            {
                 ValidatePath(changedFile.ContentRef!, "changedFiles.contentRef", errors);
+                var expectedContentRef = $"worker_proposals/{proposal.ProposalId}/{changedFile.Path}";
+                if (!string.Equals(changedFile.ContentRef, expectedContentRef, StringComparison.Ordinal))
+                {
+                    errors.Add(
+                        $"changedFiles.contentRef must be bound to proposal {proposal.ProposalId}: {expectedContentRef}");
+                }
+            }
         }
 
         if (task.TaskType == WorkerTaskType.NarrativeDraft && string.IsNullOrWhiteSpace(proposal.DraftText))
@@ -206,6 +293,12 @@ public static class GmWorkerContractValidator
 
     private static WorkerContractValidationResult ToResult(List<string> errors) =>
         errors.Count == 0 ? WorkerContractValidationResult.Success : WorkerContractValidationResult.Failure(errors);
+
+    private static bool IsSha256(string? value) =>
+        value is { Length: 64 } && value.All(Uri.IsHexDigit);
+
+    private static bool IsMissingHash(string? value) =>
+        string.Equals(value, "missing", StringComparison.OrdinalIgnoreCase);
 
     private static void ValidateId(string value, string fieldName, List<string> errors)
     {
@@ -302,6 +395,15 @@ public static class GmWorkerContractValidator
             ValidatePathOrPattern(path, "afterlifeContract.allowedAfterlifeSurfaces", errors);
             if (IsMortalWorldSubstitutePath(path))
                 errors.Add($"afterlifeContract.allowedAfterlifeSurfaces contains a Mortal World substitute path: {path}");
+        }
+
+        foreach (var path in task.AllowedProposalPaths)
+        {
+            if (!contract.AllowedAfterlifeSurfaces.Any(pattern => PathMatches(pattern, path)))
+            {
+                errors.Add(
+                    $"allowedProposalPaths contains a path outside afterlifeContract.allowedAfterlifeSurfaces: {path}");
+            }
         }
 
         foreach (var path in contract.ProgressionControlPaths)
@@ -506,6 +608,15 @@ public static class GmWorkerContractValidator
         }
 
         var contract = task.AfterlifeContract;
+        foreach (var changedFile in proposal.ChangedFiles)
+        {
+            if (!contract.AllowedAfterlifeSurfaces.Any(pattern => PathMatches(pattern, changedFile.Path)))
+            {
+                errors.Add(
+                    $"changedFiles contains a path outside task.afterlifeContract.allowedAfterlifeSurfaces: {changedFile.Path}");
+            }
+        }
+
         var afterlife = proposal.AfterlifeProposal;
         if (afterlife.RealmGate != contract.RealmGate)
             errors.Add("afterlifeProposal.realmGate must match task.afterlifeContract.realmGate.");

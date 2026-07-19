@@ -2,6 +2,12 @@ using Microsoft.Extensions.Logging;
 
 namespace BookOfEternityClient.Core;
 
+public enum CanonicalFileMutationResult
+{
+    Applied,
+    Conflict
+}
+
 /// <summary>
 /// Manages the game_session directory structure per CLI API specification.
 /// Creates all required directories and validates file system integrity.
@@ -12,6 +18,7 @@ public class FileSystemManager
     private readonly ILogger<FileSystemManager> _logger;
     private const int TransientFileAccessRetryCount = 20;
     private static readonly TimeSpan TransientFileAccessRetryDelay = TimeSpan.FromMilliseconds(50);
+    private const int CanonicalWriteLockRetryCount = 200;
 
     private static readonly string[] RequiredDirectories =
     {
@@ -74,6 +81,80 @@ public class FileSystemManager
     /// </summary>
     public async Task WriteFileAtomicAsync(string relativePath, string content)
     {
+        var encoding = System.Text.Encoding.UTF8;
+        var preamble = encoding.GetPreamble();
+        var body = encoding.GetBytes(content);
+        var bytes = new byte[preamble.Length + body.Length];
+        Buffer.BlockCopy(preamble, 0, bytes, 0, preamble.Length);
+        Buffer.BlockCopy(body, 0, bytes, preamble.Length, body.Length);
+        await WriteFileAtomicBytesAsync(relativePath, bytes);
+    }
+
+    public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)
+    {
+        await using var writeLock = await AcquireCanonicalWriteLockAsync();
+        await WriteFileAtomicBytesCoreAsync(relativePath, content);
+    }
+
+    public async Task AppendFileAtomicAsync(string relativePath, string content)
+    {
+        await using var writeLock = await AcquireCanonicalWriteLockAsync();
+        var fullPath = ResolvePath(relativePath);
+        byte[] currentContent;
+        try
+        {
+            currentContent = await File.ReadAllBytesAsync(fullPath);
+        }
+        catch (FileNotFoundException)
+        {
+            currentContent = System.Text.Encoding.UTF8.GetPreamble();
+        }
+        catch (DirectoryNotFoundException)
+        {
+            currentContent = System.Text.Encoding.UTF8.GetPreamble();
+        }
+
+        var appendedContent = System.Text.Encoding.UTF8.GetBytes(content);
+        var nextContent = new byte[currentContent.Length + appendedContent.Length];
+        Buffer.BlockCopy(currentContent, 0, nextContent, 0, currentContent.Length);
+        Buffer.BlockCopy(appendedContent, 0, nextContent, currentContent.Length, appendedContent.Length);
+        await WriteFileAtomicBytesCoreAsync(relativePath, nextContent);
+    }
+
+    public async Task<CanonicalFileMutationResult> CompareExchangeFileBytesAsync(
+        string relativePath,
+        byte[]? expectedContent,
+        byte[]? desiredContent)
+    {
+        await using var writeLock = await AcquireCanonicalWriteLockAsync();
+        var fullPath = ResolvePath(relativePath);
+        byte[]? currentContent = null;
+        try
+        {
+            currentContent = await File.ReadAllBytesAsync(fullPath);
+        }
+        catch (FileNotFoundException)
+        {
+            // A missing file is a valid expected state for an add operation.
+        }
+        catch (DirectoryNotFoundException)
+        {
+            // A missing parent is also a valid expected state for an add operation.
+        }
+
+        if (!ExactBytesEqual(currentContent, expectedContent))
+            return CanonicalFileMutationResult.Conflict;
+
+        if (desiredContent == null)
+            DeleteFileCore(relativePath);
+        else
+            await WriteFileAtomicBytesCoreAsync(relativePath, desiredContent);
+
+        return CanonicalFileMutationResult.Applied;
+    }
+
+    private async Task WriteFileAtomicBytesCoreAsync(string relativePath, byte[] content)
+    {
         var fullPath = ResolvePath(relativePath);
         var dir = Path.GetDirectoryName(fullPath);
         if (dir != null && !Directory.Exists(dir))
@@ -82,7 +163,17 @@ public class FileSystemManager
         var tempPath = fullPath + ".tmp." + Guid.NewGuid().ToString("N")[..8];
         try
         {
-            await File.WriteAllTextAsync(tempPath, content, System.Text.Encoding.UTF8);
+            await using (var stream = new FileStream(
+                             tempPath,
+                             FileMode.CreateNew,
+                             FileAccess.Write,
+                             FileShare.None,
+                             bufferSize: 4096,
+                             FileOptions.Asynchronous | FileOptions.WriteThrough))
+            {
+                await stream.WriteAsync(content);
+                stream.Flush(flushToDisk: true);
+            }
             for (var attempt = 0; ; attempt++)
             {
                 try
@@ -122,6 +213,24 @@ public class FileSystemManager
         }
     }
 
+    public async Task<byte[]?> ReadFileBytesAsync(string relativePath)
+    {
+        var fullPath = ResolvePath(relativePath);
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                if (!File.Exists(fullPath))
+                    return null;
+                return await File.ReadAllBytesAsync(fullPath);
+            }
+            catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
+            {
+                await Task.Delay(TransientFileAccessRetryDelay);
+            }
+        }
+    }
+
     private static bool IsTransientFileAccessException(Exception ex) =>
         ex is IOException or UnauthorizedAccessException;
 
@@ -131,6 +240,17 @@ public class FileSystemManager
     }
 
     public void DeleteFile(string relativePath)
+    {
+        DeleteFileWithLockAsync(relativePath).GetAwaiter().GetResult();
+    }
+
+    private async Task DeleteFileWithLockAsync(string relativePath)
+    {
+        await using var writeLock = await AcquireCanonicalWriteLockAsync();
+        DeleteFileCore(relativePath);
+    }
+
+    private void DeleteFileCore(string relativePath)
     {
         var fullPath = ResolvePath(relativePath);
         for (var attempt = 0; ; attempt++)
@@ -147,6 +267,34 @@ public class FileSystemManager
             }
         }
     }
+
+    private async Task<FileStream> AcquireCanonicalWriteLockAsync()
+    {
+        var lockPath = Path.Combine(GameSessionPath, ".locks", "canonical-write.lock");
+        Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
+        for (var attempt = 0; attempt < CanonicalWriteLockRetryCount; attempt++)
+        {
+            try
+            {
+                return new FileStream(
+                    lockPath,
+                    FileMode.OpenOrCreate,
+                    FileAccess.ReadWrite,
+                    FileShare.None,
+                    bufferSize: 1,
+                    FileOptions.Asynchronous);
+            }
+            catch (IOException) when (attempt < CanonicalWriteLockRetryCount - 1)
+            {
+                await Task.Delay(TransientFileAccessRetryDelay);
+            }
+        }
+
+        throw new IOException("Timed out waiting for the canonical game-session write lock.");
+    }
+
+    private static bool ExactBytesEqual(byte[]? left, byte[]? right) =>
+        left == null ? right == null : right != null && left.AsSpan().SequenceEqual(right);
 
     /// <summary>
     /// Create a backup of a file before modification.

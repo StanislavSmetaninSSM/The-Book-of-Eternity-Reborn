@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -128,14 +127,15 @@ public sealed class GmWorkerValidationRepairDelegator
             };
         }
 
-        await WriteReadySignalAsync(sourceTurn, run.Proposal);
+        var readyPublication = await TryWriteReadySignalAsync(sourceTurn, run.Proposal);
         return new GmWorkerValidationRepairDispatchResult
         {
             Outcome = GmWorkerValidationRepairOutcome.Applied,
             Task = task,
             RunResult = run,
             ApplyDecision = decision,
-            ReadySignalCreated = true
+            ReadySignalCreated = readyPublication.Created,
+            FallbackReason = readyPublication.Diagnostic
         };
     }
 
@@ -152,7 +152,7 @@ public sealed class GmWorkerValidationRepairDelegator
                      .Where(GmWorkerContractValidator.IsSafeRelativePath)
                      .Distinct(StringComparer.Ordinal))
         {
-            var content = await _fs.ReadFileAsync(path);
+            var content = await _fs.ReadFileBytesAsync(path);
             contextHashes[path] = content == null ? "missing" : ComputeSha256(content);
         }
 
@@ -230,12 +230,15 @@ public sealed class GmWorkerValidationRepairDelegator
         var code = issue.Code ?? string.Empty;
         var actor = issue.Actor ?? string.Empty;
         return code.StartsWith("afterlife_actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
+               code.StartsWith("afterlife_actor_binding_", StringComparison.OrdinalIgnoreCase) ||
                (!actor.StartsWith("mortal_npc:", StringComparison.Ordinal) &&
                 actor.Contains(':', StringComparison.Ordinal) &&
                 code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task WriteReadySignalAsync(WorkerTurnReference sourceTurn, WorkerProposal proposal)
+    private async Task<(bool Created, string Diagnostic)> TryWriteReadySignalAsync(
+        WorkerTurnReference sourceTurn,
+        WorkerProposal proposal)
     {
         var ready = new ValidationRepairReadySignal
         {
@@ -245,21 +248,67 @@ public sealed class GmWorkerValidationRepairDelegator
             UpdatedAtUtc = DateTimeOffset.UtcNow.ToString("O"),
             Note = $"GM worker proposal {proposal.ProposalId} accepted by apply gate."
         };
-        await _fs.WriteFileAtomicAsync(ValidationRepairReadyPath, GmWorkerJson.Serialize(ready));
-        await _auditLog.AppendEventAsync(new WorkerAuditEvent
+
+        try
         {
-            EventId = CreateEventId(),
-            EventType = "validation-repair-ready-created",
-            WorkerId = proposal.WorkerId,
-            TaskId = proposal.TaskId,
-            ProposalId = proposal.ProposalId,
-            TimestampUtc = DateTimeOffset.UtcNow.ToString("O"),
-            Summary = "Created validation_repair_ready.json after accepted GM worker repair proposal.",
-            Details = new Dictionary<string, IReadOnlyList<string>>
+            await _fs.WriteFileAtomicAsync(ValidationRepairReadyPath, GmWorkerJson.Serialize(ready));
+        }
+        catch (Exception ex)
+        {
+            var diagnostic = $"Worker repair was applied, but ready signal publication failed: {ex.Message}";
+            await TryRecordPostApplyDiagnosticAsync(
+                "validation-repair-ready-failed",
+                proposal,
+                diagnostic);
+            return (false, diagnostic);
+        }
+
+        try
+        {
+            await _auditLog.AppendEventAsync(new WorkerAuditEvent
             {
-                ["readyPath"] = [ValidationRepairReadyPath]
-            }
-        });
+                EventId = CreateEventId(),
+                EventType = "validation-repair-ready-created",
+                WorkerId = proposal.WorkerId,
+                TaskId = proposal.TaskId,
+                ProposalId = proposal.ProposalId,
+                TimestampUtc = DateTimeOffset.UtcNow.ToString("O"),
+                Summary = "Created validation_repair_ready.json after accepted GM worker repair proposal.",
+                Details = new Dictionary<string, IReadOnlyList<string>>
+                {
+                    ["readyPath"] = [ValidationRepairReadyPath]
+                }
+            });
+            return (true, string.Empty);
+        }
+        catch (Exception ex)
+        {
+            return (true, $"Ready signal was created, but its audit event could not be recorded: {ex.Message}");
+        }
+    }
+
+    private async Task TryRecordPostApplyDiagnosticAsync(
+        string eventType,
+        WorkerProposal proposal,
+        string summary)
+    {
+        try
+        {
+            await _auditLog.AppendEventAsync(new WorkerAuditEvent
+            {
+                EventId = CreateEventId(),
+                EventType = eventType,
+                WorkerId = proposal.WorkerId,
+                TaskId = proposal.TaskId,
+                ProposalId = proposal.ProposalId,
+                TimestampUtc = DateTimeOffset.UtcNow.ToString("O"),
+                Summary = summary
+            });
+        }
+        catch
+        {
+            // The canonical repair already succeeded; diagnostics must not reclassify its ownership.
+        }
     }
 
     private Task RecordRouterEventAsync(string eventType, string? workerId, string? taskId, string summary) =>
@@ -273,11 +322,8 @@ public sealed class GmWorkerValidationRepairDelegator
             Summary = summary
         });
 
-    private static string ComputeSha256(string content)
-    {
-        var bytes = Encoding.UTF8.GetBytes(content);
-        return Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
-    }
+    private static string ComputeSha256(byte[] content) =>
+        Convert.ToHexString(SHA256.HashData(content)).ToLowerInvariant();
 
     private static string CreateEventId() =>
         "worker_audit_" + Guid.NewGuid().ToString("N");

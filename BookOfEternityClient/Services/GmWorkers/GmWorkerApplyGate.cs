@@ -1,5 +1,7 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace BookOfEternityClient.Services.GmWorkers;
 
@@ -43,7 +45,26 @@ public sealed class GmWorkerApplyGate
             return decision;
         }
 
-        var contentErrors = await VerifyProposalContentRefsAsync(proposal);
+        if (proposal.Status != WorkerProposalStatus.Completed)
+        {
+            var rejectionReasons = new[] { "Only completed worker proposals can enter the apply gate." };
+            var decision = BuildDecision(
+                proposal.ProposalId,
+                ApplyGateResult.Rejected,
+                checkedPaths,
+                scopePassed: false,
+                violations: rejectionReasons,
+                validationRequired: profile.Permissions.RequiresValidation,
+                validationPassed: false,
+                issueCount: 0,
+                appliedFiles: [],
+                rejectionReasons: rejectionReasons);
+            await RecordDecisionAsync(proposal, decision);
+            return decision;
+        }
+
+        var capturedContents = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+        var contentErrors = await VerifyProposalContentRefsAsync(proposal, capturedContents);
         if (contentErrors.Count > 0)
         {
             var decision = BuildDecision(
@@ -61,7 +82,30 @@ public sealed class GmWorkerApplyGate
             return decision;
         }
 
-        var preservationErrors = await VerifyActorMaterializationRepairPreservationAsync(proposal, task);
+        await using var applyLock = await AcquireApplyLockAsync();
+        var (contextErrors, baselines) = await CaptureAndVerifyTaskContextAsync(proposal, task);
+        if (contextErrors.Count > 0)
+        {
+            var decision = BuildDecision(
+                proposal.ProposalId,
+                ApplyGateResult.Rejected,
+                checkedPaths,
+                scopePassed: false,
+                violations: contextErrors,
+                validationRequired: profile.Permissions.RequiresValidation,
+                validationPassed: false,
+                issueCount: 0,
+                appliedFiles: [],
+                rejectionReasons: contextErrors);
+            await RecordDecisionAsync(proposal, decision);
+            return decision;
+        }
+
+        var preservationErrors = VerifyActorMaterializationRepairPreservation(
+            proposal,
+            task,
+            capturedContents,
+            baselines);
         if (preservationErrors.Count > 0)
         {
             var decision = BuildDecision(
@@ -85,21 +129,35 @@ public sealed class GmWorkerApplyGate
         {
             foreach (var changedFile in proposal.ChangedFiles)
             {
-                rollback.Add(new RollbackEntry(
+                baselines.TryGetValue(changedFile.Path, out var baselineBytes);
+                var appliedBytes = changedFile.ChangeKind == WorkerFileChangeKind.Delete
+                    ? null
+                    : capturedContents[changedFile.Path];
+                var mutationResult = await _fs.CompareExchangeFileBytesAsync(
                     changedFile.Path,
-                    _fs.FileExists(changedFile.Path),
-                    _fs.CreateBackup(changedFile.Path)));
-
-                if (changedFile.ChangeKind == WorkerFileChangeKind.Delete)
+                    baselineBytes,
+                    appliedBytes);
+                if (mutationResult == CanonicalFileMutationResult.Conflict)
                 {
-                    _fs.DeleteFile(changedFile.Path);
-                }
-                else
-                {
-                    var content = await _fs.ReadFileAsync(changedFile.ContentRef!);
-                    await _fs.WriteFileAtomicAsync(changedFile.Path, content!);
+                    var rollbackErrors = await RollbackOwnedChangesAsync(rollback);
+                    var conflict = $"canonical file changed concurrently before worker apply: {changedFile.Path}.";
+                    var rejectionReasons = new[] { conflict }.Concat(rollbackErrors).ToArray();
+                    var decision = BuildDecision(
+                        proposal.ProposalId,
+                        ApplyGateResult.Rejected,
+                        checkedPaths,
+                        scopePassed: false,
+                        violations: rejectionReasons,
+                        validationRequired: profile.Permissions.RequiresValidation,
+                        validationPassed: false,
+                        issueCount: 0,
+                        appliedFiles: [],
+                        rejectionReasons: rejectionReasons);
+                    await RecordDecisionAsync(proposal, decision);
+                    return decision;
                 }
 
+                rollback.Add(new RollbackEntry(changedFile.Path, baselineBytes, appliedBytes));
                 appliedFiles.Add(changedFile.Path);
             }
 
@@ -108,7 +166,11 @@ public sealed class GmWorkerApplyGate
                 : [];
             if (validationIssues.Count > 0)
             {
-                Rollback(rollback);
+                var rollbackErrors = await RollbackOwnedChangesAsync(rollback);
+                var rejectionReasons = validationIssues
+                    .Select(issue => issue.ToString())
+                    .Concat(rollbackErrors)
+                    .ToArray();
                 var decision = BuildDecision(
                     proposal.ProposalId,
                     ApplyGateResult.ValidationFailed,
@@ -119,12 +181,31 @@ public sealed class GmWorkerApplyGate
                     validationPassed: false,
                     issueCount: validationIssues.Count,
                     appliedFiles: [],
-                    rejectionReasons: validationIssues.Select(issue => issue.ToString()).ToArray());
+                    rejectionReasons: rejectionReasons);
                 await RecordDecisionAsync(proposal, decision);
                 return decision;
             }
 
-            CleanupBackups(rollback);
+            var ownershipErrors = await VerifyAppliedFilesRemainOwnedAsync(rollback);
+            if (ownershipErrors.Count > 0)
+            {
+                var rollbackErrors = await RollbackOwnedChangesAsync(rollback);
+                var rejectionReasons = ownershipErrors.Concat(rollbackErrors).ToArray();
+                var decision = BuildDecision(
+                    proposal.ProposalId,
+                    ApplyGateResult.ValidationFailed,
+                    checkedPaths,
+                    scopePassed: true,
+                    violations: rejectionReasons,
+                    validationRequired: profile.Permissions.RequiresValidation,
+                    validationPassed: false,
+                    issueCount: rejectionReasons.Length,
+                    appliedFiles: [],
+                    rejectionReasons: rejectionReasons);
+                await RecordDecisionAsync(proposal, decision);
+                return decision;
+            }
+
             var acceptedDecision = BuildDecision(
                 proposal.ProposalId,
                 ApplyGateResult.Accepted,
@@ -141,12 +222,14 @@ public sealed class GmWorkerApplyGate
         }
         catch
         {
-            Rollback(rollback);
+            await RollbackOwnedChangesAsync(rollback);
             throw;
         }
     }
 
-    private async Task<IReadOnlyList<string>> VerifyProposalContentRefsAsync(WorkerProposal proposal)
+    private async Task<IReadOnlyList<string>> VerifyProposalContentRefsAsync(
+        WorkerProposal proposal,
+        IDictionary<string, byte[]> capturedContents)
     {
         var errors = new List<string>();
         foreach (var changedFile in proposal.ChangedFiles)
@@ -159,17 +242,70 @@ public sealed class GmWorkerApplyGate
                 continue;
             }
 
-            var content = await _fs.ReadFileAsync(changedFile.ContentRef);
+            var content = await _fs.ReadFileBytesAsync(changedFile.ContentRef);
             if (content == null)
+            {
                 errors.Add($"changedFiles contentRef does not exist: {changedFile.ContentRef}");
+                continue;
+            }
+
+            var actualSha256 = ComputeSha256(content);
+            if (!string.IsNullOrWhiteSpace(changedFile.AfterSha256) &&
+                !string.Equals(actualSha256, changedFile.AfterSha256, StringComparison.OrdinalIgnoreCase))
+            {
+                errors.Add($"changedFiles contentRef hash changed for {changedFile.Path}.");
+                continue;
+            }
+
+            capturedContents[changedFile.Path] = content;
         }
 
         return errors;
     }
 
-    private async Task<IReadOnlyList<string>> VerifyActorMaterializationRepairPreservationAsync(
+    private async Task<(IReadOnlyList<string> Errors, IReadOnlyDictionary<string, byte[]?> Baselines)>
+        CaptureAndVerifyTaskContextAsync(
+            WorkerProposal proposal,
+            WorkerTaskPacket task)
+    {
+        var errors = new List<string>();
+        var baselines = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        var contextByPath = task.ContextFiles
+            .GroupBy(file => file.Path, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+
+        foreach (var contextFile in task.ContextFiles)
+        {
+            var content = await _fs.ReadFileBytesAsync(contextFile.Path);
+            baselines[contextFile.Path] = content;
+            var actualSha256 = content == null ? MissingFileSha256 : ComputeSha256(content);
+            if (!string.Equals(actualSha256, contextFile.Sha256, StringComparison.OrdinalIgnoreCase))
+                errors.Add($"task context changed since dispatch: {contextFile.Path}.");
+        }
+
+        foreach (var changedFile in proposal.ChangedFiles)
+        {
+            if (!contextByPath.TryGetValue(changedFile.Path, out var contextFile))
+            {
+                errors.Add($"changedFiles path is not pinned by task.contextFiles: {changedFile.Path}.");
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(changedFile.BeforeSha256) &&
+                !string.Equals(changedFile.BeforeSha256, contextFile.Sha256, StringComparison.OrdinalIgnoreCase))
+            {
+                errors.Add($"changedFiles beforeSha256 does not match task context for {changedFile.Path}.");
+            }
+        }
+
+        return (errors, baselines);
+    }
+
+    private static IReadOnlyList<string> VerifyActorMaterializationRepairPreservation(
         WorkerProposal proposal,
-        WorkerTaskPacket task)
+        WorkerTaskPacket task,
+        IReadOnlyDictionary<string, byte[]> capturedContents,
+        IReadOnlyDictionary<string, byte[]?> baselines)
     {
         if (task.TaskType != WorkerTaskType.ValidationRepair)
             return [];
@@ -177,10 +313,11 @@ public sealed class GmWorkerApplyGate
         var errors = new List<string>();
         foreach (var changedFile in proposal.ChangedFiles)
         {
-            var baseline = await _fs.ReadFileAsync(changedFile.Path);
+            baselines.TryGetValue(changedFile.Path, out var baselineBytes);
+            var baseline = DecodeUtf8(baselineBytes);
             var proposed = changedFile.ChangeKind == WorkerFileChangeKind.Delete
                 ? null
-                : await _fs.ReadFileAsync(changedFile.ContentRef!);
+                : DecodeUtf8(capturedContents[changedFile.Path]);
             errors.AddRange(ActorMaterializationRepairPreservationGuard.Validate(
                 changedFile.Path,
                 baseline,
@@ -191,25 +328,74 @@ public sealed class GmWorkerApplyGate
         return errors;
     }
 
-    private void Rollback(IReadOnlyList<RollbackEntry> rollback)
+    private async Task<IReadOnlyList<string>> VerifyAppliedFilesRemainOwnedAsync(
+        IReadOnlyList<RollbackEntry> rollback)
     {
-        foreach (var entry in rollback.AsEnumerable().Reverse())
-        {
-            if (entry.ExistedBefore && !string.IsNullOrWhiteSpace(entry.BackupFullPath))
-                _fs.RestoreBackup(entry.BackupFullPath!, entry.Path);
-            else
-                _fs.DeleteFile(entry.Path);
-        }
-    }
-
-    private void CleanupBackups(IReadOnlyList<RollbackEntry> rollback)
-    {
+        var errors = new List<string>();
         foreach (var entry in rollback)
         {
-            if (!string.IsNullOrWhiteSpace(entry.BackupFullPath))
-                _fs.CleanupBackup(entry.BackupFullPath!);
+            var current = await _fs.ReadFileBytesAsync(entry.Path);
+            if (!ExactBytesEqual(current, entry.AppliedBytes))
+                errors.Add($"canonical file changed concurrently after worker apply: {entry.Path}.");
         }
+
+        return errors;
     }
+
+    private async Task<IReadOnlyList<string>> RollbackOwnedChangesAsync(IReadOnlyList<RollbackEntry> rollback)
+    {
+        var errors = new List<string>();
+        foreach (var entry in rollback.AsEnumerable().Reverse())
+        {
+            var result = await _fs.CompareExchangeFileBytesAsync(
+                entry.Path,
+                entry.AppliedBytes,
+                entry.BaselineBytes);
+            if (result == CanonicalFileMutationResult.Conflict)
+                errors.Add($"rollback conflict preserved a newer canonical write: {entry.Path}.");
+        }
+
+        return errors;
+    }
+
+    private async Task<FileStream> AcquireApplyLockAsync()
+    {
+        var lockPath = _fs.ResolvePath("game_state/control/gm_worker_apply.lock");
+        Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
+        for (var attempt = 0; attempt < 200; attempt++)
+        {
+            try
+            {
+                return new FileStream(
+                    lockPath,
+                    FileMode.OpenOrCreate,
+                    FileAccess.ReadWrite,
+                    FileShare.None,
+                    bufferSize: 1,
+                    FileOptions.Asynchronous);
+            }
+            catch (IOException) when (attempt < 199)
+            {
+                await Task.Delay(50);
+            }
+        }
+
+        throw new IOException("Timed out waiting for the GM worker apply lock.");
+    }
+
+    private static string? DecodeUtf8(byte[]? content)
+    {
+        if (content == null)
+            return null;
+        var text = Encoding.UTF8.GetString(content);
+        return text.Length > 0 && text[0] == '\ufeff' ? text[1..] : text;
+    }
+
+    private static string ComputeSha256(byte[] content) =>
+        Convert.ToHexString(SHA256.HashData(content)).ToLowerInvariant();
+
+    private static bool ExactBytesEqual(byte[]? left, byte[]? right) =>
+        left == null ? right == null : right != null && left.AsSpan().SequenceEqual(right);
 
     private static ApplyGateDecision BuildDecision(
         string proposalId,
@@ -248,5 +434,7 @@ public sealed class GmWorkerApplyGate
     private Task RecordDecisionAsync(WorkerProposal proposal, ApplyGateDecision decision) =>
         _auditLog?.RecordApplyDecisionAsync(proposal, decision) ?? Task.CompletedTask;
 
-    private sealed record RollbackEntry(string Path, bool ExistedBefore, string? BackupFullPath);
+    private const string MissingFileSha256 = "missing";
+
+    private sealed record RollbackEntry(string Path, byte[]? BaselineBytes, byte[]? AppliedBytes);
 }

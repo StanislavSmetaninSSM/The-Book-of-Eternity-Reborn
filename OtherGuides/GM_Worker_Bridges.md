@@ -21,6 +21,7 @@ game state.
 - Workers return `worker-proposal-v1` proposals.
 - Workers must not edit canonical `game_session` files directly.
 - Canonical writes happen only through the apply gate.
+- Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
 - The apply gate checks scope, reads proposal `contentRef` files, applies
   allowed changes, runs validation when required, and rolls back failed repairs.
 - Stored proposals are inspectable through GM worker proposal inbox diagnostics.
@@ -66,6 +67,14 @@ After validation, the main GM/daemon stores it under
 `changedFiles` must write referenced content under `worker_proposals/<proposalId>/...`
 and use safe relative `contentRef` paths. The worker must not overwrite
 canonical files such as `game_state/...` directly.
+
+Every validation-repair `contextFiles.sha256` and `changedFiles.beforeSha256`
+must be the exact 64-character SHA-256 digest of the same canonical file bytes,
+or the literal `missing` for an absent add target. Every non-delete
+`afterSha256` must be the exact 64-character SHA-256 digest of its referenced
+content bytes. A delete uses `afterSha256=missing` and no `contentRef`.
+`contentRef` is proposal-bound and must be exactly
+`worker_proposals/<proposalId>/<changedFiles.path>`.
 
 If a worker CLI writes a valid proposal and only then times out or exits with a
 nonzero code, the worker pool preserves the proposal and records it as
@@ -306,11 +315,14 @@ the `WorkerTaskPacket` must include `afterlifeContract`.
   preserve if it accepts the proposal;
 - `forbiddenMortalSubstitutes`: explicit forbidden shortcuts.
 
-When a task contains `afterlifeContract`, the worker proposal must include
-`afterlifeProposal`. The proposal must repeat the same `realmGate`, list only
+For proposal-only tasks with `afterlifeContract`, the worker proposal must
+include `afterlifeProposal`. It must repeat the same `realmGate`, list only
 target surfaces allowed by `allowedAfterlifeSurfaces`, include required receipts
 and reports, provide a player-visible summary, and give `gmReviewNotes` plus
-`validatorRisks` for the main GM.
+`validatorRisks` for the main GM. For `validation-repair`, `afterlifeProposal`
+is optional: the authoritative repair payload is the bounded, hashed
+`changedFiles` list, and every changed path must also be allowed by
+`allowedAfterlifeSurfaces`.
 
 The validator rejects afterlife proposals that try to use Mortal World
 substitutes such as `worldStateFlags`, `worldEventsLog`, Mortal NPC
@@ -413,8 +425,10 @@ Live dispatch status:
 
 - As of #1143, validation-repair is the first task type wired into the live
   repair loop.
-- The client still writes `game_state/control/validation_repair_request.json`
-  first. This legacy request remains the fallback channel.
+- The client removes stale request/ready/stall artifacts and attempts worker
+  dispatch before the legacy `validation_repair_request.json` fallback is
+  exposed. There is never a worker and legacy GM writing the same repair in
+  parallel.
 - If no enabled validation-repair profile exists, behavior is unchanged: no
   worker task, worker inbox, or audit file is created.
 - If a worker is configured, the client launches it hidden/background through
@@ -423,6 +437,10 @@ Live dispatch status:
 - If the apply gate accepts the proposal, the client creates
   `game_state/control/validation_repair_ready.json` with the active
   session/request/turn metadata so the existing repair loop can revalidate.
+- If canonical apply succeeds but ready signal publication fails, the accepted
+  worker remains the sole repair owner. The client records
+  `worker_apply_gate_accepted` and revalidates directly instead of creating a
+  legacy request or asking the main GM to repeat the repair.
 - If the worker times out, exits with an error before writing a valid proposal,
   writes malformed JSON, returns a rejected proposal, or fails validation, the
   ready file is not created and the legacy repair loop remains active for the

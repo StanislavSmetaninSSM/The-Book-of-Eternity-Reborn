@@ -81,7 +81,7 @@ public static class GmWorkerTaskPacketBuilder
                 "Return a worker-proposal-v1 JSON proposal. Include changedFiles only for allowedProposalPaths. " +
                 "Use validationIssues actor/section/expected/actual coordinates as the exact repair scope. " +
                 "Do not edit canonical game_session files directly." +
-                BuildAfterlifeInstructions(afterlifeContract)
+                BuildAfterlifeInstructions(afterlifeContract, validationRepair: true)
         };
 
         var taskValidation = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
@@ -93,14 +93,12 @@ public static class GmWorkerTaskPacketBuilder
 
     internal static string ResolveValidationTargetPath(ValidationIssue issue)
     {
+        var actorMaterializationAuthority = ResolveActorMaterializationAuthorityPath(issue);
+        if (actorMaterializationAuthority != null)
+            return actorMaterializationAuthority;
+
         var code = issue.Code ?? string.Empty;
         var actor = issue.Actor ?? string.Empty;
-        if (code is "afterlife_actor_materialization_profile_missing" or
-            "afterlife_actor_materialization_profile_ambiguous")
-        {
-            return AfterlifeEntityProfileState.StatePath;
-        }
-
         var normalized = issue.FilePath.Replace('\\', '/');
         var jsonlEnd = FindExtensionEnd(normalized, ".jsonl");
         var jsonEnd = FindExtensionEnd(normalized, ".json");
@@ -119,6 +117,43 @@ public static class GmWorkerTaskPacketBuilder
         }
 
         return filePath;
+    }
+
+    internal static string? ResolveActorMaterializationAuthorityPath(ValidationIssue issue)
+    {
+        var code = issue.Code ?? string.Empty;
+        if (!code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        var actor = issue.Actor ?? string.Empty;
+        if (actor.StartsWith("mortal_npc:", StringComparison.Ordinal))
+            return "game_state/npcs/npc_core.json";
+        if (code is "afterlife_actor_materialization_profile_missing" or
+            "afterlife_actor_materialization_profile_ambiguous")
+        {
+            return AfterlifeEntityProfileState.StatePath;
+        }
+
+        if (!string.Equals(
+                code,
+                "afterlife_actor_materialization_memory_missing",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        if (actor.StartsWith("guardian:", StringComparison.Ordinal))
+            return GuardianThoughtJournalState.StatePath;
+        if (actor.StartsWith("resident:", StringComparison.Ordinal))
+            return GuardianAbodeResidentState.StatePath;
+        if (actor.StartsWith("radiant_actor:", StringComparison.Ordinal) ||
+            actor.StartsWith("saref_agent:", StringComparison.Ordinal) ||
+            actor.Contains(':', StringComparison.Ordinal))
+        {
+            return AfterlifeEntityProfileState.StatePath;
+        }
+
+        return null;
     }
 
     private static int FindExtensionEnd(string path, string extension)
@@ -370,7 +405,9 @@ public static class GmWorkerTaskPacketBuilder
         ]).ToArray();
     }
 
-    private static string BuildAfterlifeInstructions(WorkerAfterlifeTaskContract? afterlifeContract)
+    private static string BuildAfterlifeInstructions(
+        WorkerAfterlifeTaskContract? afterlifeContract,
+        bool validationRepair = false)
     {
         if (afterlifeContract == null)
             return "";
@@ -385,7 +422,10 @@ public static class GmWorkerTaskPacketBuilder
             $"- requiredReceipts: {FormatList(afterlifeContract.RequiredReceipts)}" + Environment.NewLine +
             $"- requiredReports: {FormatList(afterlifeContract.RequiredReports)}" + Environment.NewLine +
             $"- forbiddenMortalSubstitutes: {FormatList(afterlifeContract.ForbiddenMortalSubstitutes)}" + Environment.NewLine +
-            "Return afterlifeProposal when this contract is present. Use Afterlife_Contract_Matrix.md for exact state-surface meaning.";
+            (validationRepair
+                ? "For this bounded validation-repair task, changedFiles must stay inside allowedAfterlifeSurfaces and afterlifeProposal is optional. "
+                : "Return afterlifeProposal when this contract is present. ") +
+            "Use Afterlife_Contract_Matrix.md for exact state-surface meaning.";
     }
 
     private static IReadOnlyList<string> BuildGuardianAbodeAcceptanceCriteria(

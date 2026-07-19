@@ -1,6 +1,7 @@
 Set-StrictMode -Off
 
 $script:BoeGameSessionPath = $null
+$script:BoeReadBaselines = @{}
 
 function Initialize-BoeGmTurnHelper {
     param(
@@ -13,6 +14,7 @@ function Initialize-BoeGmTurnHelper {
     }
 
     $script:BoeGameSessionPath = (Resolve-Path -LiteralPath $GameSessionPath).Path
+    $script:BoeReadBaselines = @{}
 }
 
 function Assert-BoeGmTurnHelperInitialized {
@@ -56,8 +58,53 @@ function Read-BoeJson {
         throw "JSON file does not exist: $RelativePath"
     }
 
-    $json = Get-Content -LiteralPath $path -Raw -Encoding UTF8
+    $bytes = [System.IO.File]::ReadAllBytes($path)
+    $script:BoeReadBaselines[$path] = Get-BoeSha256Hex -Bytes $bytes
+    $json = [System.Text.Encoding]::UTF8.GetString($bytes)
+    if ($json.Length -gt 0 -and $json[0] -eq [char]0xFEFF) {
+        $json = $json.Substring(1)
+    }
     return ConvertFrom-BoeJsonMutable -Json $json
+}
+
+function Get-BoeSha256Hex {
+    param(
+        [Parameter(Mandatory = $true)]
+        [byte[]]$Bytes
+    )
+
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        return ([System.BitConverter]::ToString($sha.ComputeHash($Bytes))).Replace('-', '').ToLowerInvariant()
+    }
+    finally {
+        $sha.Dispose()
+    }
+}
+
+function Acquire-BoeCanonicalWriteLock {
+    $lockDirectory = Join-Path $script:BoeGameSessionPath '.locks'
+    if (!(Test-Path -LiteralPath $lockDirectory)) {
+        New-Item -ItemType Directory -Path $lockDirectory -Force | Out-Null
+    }
+    $lockPath = Join-Path $lockDirectory 'canonical-write.lock'
+    for ($attempt = 0; $attempt -lt 200; $attempt++) {
+        try {
+            return [System.IO.FileStream]::new(
+                $lockPath,
+                [System.IO.FileMode]::OpenOrCreate,
+                [System.IO.FileAccess]::ReadWrite,
+                [System.IO.FileShare]::None,
+                1,
+                [System.IO.FileOptions]::None)
+        }
+        catch [System.IO.IOException] {
+            if ($attempt -ge 199) { throw }
+            Start-Sleep -Milliseconds 50
+        }
+    }
+
+    throw 'Timed out waiting for the canonical game-session write lock.'
 }
 
 function ConvertFrom-BoeJsonMutable {
@@ -2243,7 +2290,59 @@ function Write-BoeJson {
     $normalizedData = Normalize-BoePlayerFacingOutputPayload -RelativePath $RelativePath -Data $Data
     $json = $normalizedData | ConvertTo-Json -Depth $effectiveDepth
     $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
-    [System.IO.File]::WriteAllText($path, $json + [Environment]::NewLine, $utf8NoBom)
+    $desiredBytes = $utf8NoBom.GetBytes($json + [Environment]::NewLine)
+    $tempPath = $path + '.tmp.' + [Guid]::NewGuid().ToString('N').Substring(0, 8)
+    $replaceBackupPath = $path + '.replace-backup.' + [Guid]::NewGuid().ToString('N').Substring(0, 8)
+    $writeLock = Acquire-BoeCanonicalWriteLock
+    try {
+        if ($script:BoeReadBaselines.ContainsKey($path)) {
+            $expectedSha256 = [string]$script:BoeReadBaselines[$path]
+            $currentSha256 = if ([System.IO.File]::Exists($path)) {
+                Get-BoeSha256Hex -Bytes ([System.IO.File]::ReadAllBytes($path))
+            }
+            else {
+                'missing'
+            }
+            if ($currentSha256 -ne $expectedSha256) {
+                throw "Canonical file changed since Read-BoeJson; refusing stale write: $RelativePath"
+            }
+        }
+
+        $stream = [System.IO.FileStream]::new(
+            $tempPath,
+            [System.IO.FileMode]::CreateNew,
+            [System.IO.FileAccess]::Write,
+            [System.IO.FileShare]::None,
+            4096,
+            [System.IO.FileOptions]::WriteThrough)
+        try {
+            $stream.Write($desiredBytes, 0, $desiredBytes.Length)
+            $stream.Flush($true)
+        }
+        finally {
+            $stream.Dispose()
+        }
+
+        if ([System.IO.File]::Exists($path)) {
+            [System.IO.File]::Replace($tempPath, $path, $replaceBackupPath, $true)
+            [System.IO.File]::Delete($replaceBackupPath)
+        }
+        else {
+            [System.IO.File]::Move($tempPath, $path)
+        }
+        $script:BoeReadBaselines[$path] = Get-BoeSha256Hex -Bytes $desiredBytes
+    }
+    finally {
+        if ([System.IO.File]::Exists($tempPath)) {
+            [System.IO.File]::Delete($tempPath)
+        }
+        if ([System.IO.File]::Exists($replaceBackupPath)) {
+            [System.IO.File]::Delete($replaceBackupPath)
+        }
+        if ($null -ne $writeLock) {
+            $writeLock.Dispose()
+        }
+    }
 }
 
 function Get-BoeCurrentTurnRequest {

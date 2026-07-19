@@ -2,6 +2,7 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Security.Cryptography;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -24,6 +25,9 @@ public sealed class GmWorkerLiveSmokeTests
                 $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
                 New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
                 Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
                 $proposal = [ordered]@{
                     schemaVersion = 1
                     proposalId = $proposalId
@@ -34,8 +38,8 @@ public sealed class GmWorkerLiveSmokeTests
                     changedFiles = @([ordered]@{
                         path = 'game_state/world/weather.json'
                         changeKind = 'replace'
-                        beforeSha256 = 'example'
-                        afterSha256 = 'example-after'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
                         contentRef = $contentRef
                     })
                     findings = @()
@@ -54,7 +58,21 @@ public sealed class GmWorkerLiveSmokeTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var canonicalSha256 = Convert.ToHexString(SHA256.HashData(
+                await File.ReadAllBytesAsync(fs.ResolvePath("game_state/world/weather.json"))))
+                .ToLowerInvariant();
+            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+            {
+                TimeoutSeconds = profile.TimeoutSeconds,
+                ContextFiles =
+                [
+                    new WorkerFileReference
+                    {
+                        Path = "game_state/world/weather.json",
+                        Sha256 = canonicalSha256
+                    }
+                ]
+            };
             var audit = new GmWorkerAuditLog(fs);
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit);
 

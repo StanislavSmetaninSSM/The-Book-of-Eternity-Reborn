@@ -1027,6 +1027,161 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnContinuity_ExistingLegacyGuardianWithoutProfileGainingTradeAuthority_RequiresProfile()
+    {
+        const string actorId = "guardian_without_profile_promoted_to_merchant";
+        const string abodeId = "abode_without_profile_promoted_to_merchant";
+        var sourcePath = GetAfterlifeBindingSourcePath("guardian");
+        var preTurnSource = JsonNode.Parse(BuildAfterlifeBindingSourceJson(
+            "guardian",
+            actorId,
+            includeActor: true))!.AsObject();
+        var currentSource = preTurnSource.DeepClone().AsObject();
+        var guardian = currentSource["guardians"]![0]!.AsObject();
+        guardian["abode"] = new JsonObject { ["abodeId"] = abodeId };
+        currentSource["activeGuardian"] = guardian.DeepClone();
+        currentSource["chaosSeaNavigation"] = new JsonObject { ["currentAbodeId"] = abodeId };
+        var emptyProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            "guardian",
+            actorId,
+            includeProfile: false);
+
+        await WriteAfterlifeBindingScenarioAsync(
+            sourcePath,
+            currentSource.ToJsonString(),
+            preTurnSource.ToJsonString(),
+            emptyProfiles,
+            emptyProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_actor_materialization_profile_missing" &&
+            issue.Actor == $"guardian:{actorId}");
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_MaterializedGuardianGainingTradeAuthority_DoesNotReinterpretHistoricalEnvelope()
+    {
+        const string actorId = "guardian_materialized_before_trade";
+        const string abodeId = "abode_materialized_before_trade";
+        var sourcePath = GetAfterlifeBindingSourcePath("guardian");
+        var preTurnSource = JsonNode.Parse(BuildAfterlifeBindingSourceJson(
+            "guardian",
+            actorId,
+            includeActor: true,
+            includeTypeSpecificMemory: true))!.AsObject();
+        var currentSource = preTurnSource.DeepClone().AsObject();
+        var guardian = currentSource["guardians"]![0]!.AsObject();
+        guardian["abode"] = new JsonObject { ["abodeId"] = abodeId };
+        currentSource["activeGuardian"] = guardian.DeepClone();
+        currentSource["chaosSeaNavigation"] = new JsonObject { ["currentAbodeId"] = abodeId };
+        var profilesRoot = JsonNode.Parse(BuildCompleteAfterlifeBindingProfileStateJson(
+            "guardian",
+            actorId,
+            includeProfile: true))!.AsObject();
+        profilesRoot[AfterlifeEntityProfileState.ProfilesProperty]![0]!["realm"] = "Chaos Sea";
+        var profiles = profilesRoot.ToJsonString();
+
+        await WriteAfterlifeBindingScenarioAsync(
+            sourcePath,
+            currentSource.ToJsonString(),
+            preTurnSource.ToJsonString(),
+            profiles,
+            profiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Actor == $"guardian:{actorId}" &&
+            issue.Code is "actor_materialization_capability_mismatch" or
+                "actor_materialization_historical_envelope_changed");
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_ExistingLegacyGuardianPromotionRequiresDedicatedMemory()
+    {
+        const string actorId = "guardian_promoted_without_dedicated_memory";
+        const string abodeId = "abode_promoted_without_dedicated_memory";
+        var sourcePath = GetAfterlifeBindingSourcePath("guardian");
+        var preTurnSource = JsonNode.Parse(BuildAfterlifeBindingSourceJson(
+            "guardian",
+            actorId,
+            includeActor: true))!.AsObject();
+        var currentSource = preTurnSource.DeepClone().AsObject();
+        var guardian = currentSource["guardians"]![0]!.AsObject();
+        guardian["abode"] = new JsonObject { ["abodeId"] = abodeId };
+        currentSource["activeGuardian"] = guardian.DeepClone();
+        currentSource["chaosSeaNavigation"] = new JsonObject { ["currentAbodeId"] = abodeId };
+        var legacyProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            "guardian",
+            actorId,
+            includeProfile: true,
+            includeEnvelope: false);
+
+        await WriteAfterlifeBindingScenarioAsync(
+            sourcePath,
+            currentSource.ToJsonString(),
+            preTurnSource.ToJsonString(),
+            legacyProfiles,
+            legacyProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_actor_materialization_memory_missing" &&
+            issue.Actor == $"guardian:{actorId}");
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_ResidentAppointedShiningHead_PreservesDedicatedMemoryEvidence()
+    {
+        const string actorType = "resident";
+        const string actorId = "resident_with_memory_appointed_head";
+        var residentPath = GetAfterlifeBindingSourcePath(actorType);
+        var residentState = BuildAfterlifeBindingSourceJson(
+            actorType,
+            actorId,
+            includeActor: true,
+            includeTypeSpecificMemory: true);
+        var preTurnShining = BuildShiningLeadershipBindingStateJson(
+            actorType,
+            actorId,
+            ShiningAbodeState.LeadershipStateVacant);
+        var currentShining = BuildShiningLeadershipBindingStateJson(
+            actorType,
+            actorId,
+            ShiningAbodeState.LeadershipStateSecure);
+        var profiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true);
+
+        await _fs.WriteFileAtomicAsync(residentPath, residentState);
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, currentShining);
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, profiles);
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{residentPath}",
+            residentState);
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{ShiningAbodeState.StatePath}",
+            preTurnShining);
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{AfterlifeEntityProfileState.StatePath}",
+            profiles);
+        await WriteValidatedSnapshotManifestAsync(
+            (residentPath, residentState),
+            (ShiningAbodeState.StatePath, preTurnShining),
+            (AfterlifeEntityProfileState.StatePath, profiles));
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "afterlife_actor_materialization_memory_missing" &&
+            issue.Actor == $"{actorType}:{actorId}");
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnContinuity_ExistingLegacyShiningHeadReachingTradeTier_RequiresMaterialization()
     {
         const string actorType = "radiant_actor";
@@ -1063,6 +1218,45 @@ public sealed class ActorMaterializationValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
+            issue.Actor == $"{actorType}:{actorId}");
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_ExistingLegacyShiningHeadWithoutProfileReachingTradeTier_RequiresProfile()
+    {
+        const string actorType = "radiant_actor";
+        const string actorId = "radiant_head_without_profile_promoted_to_merchant";
+        var preTurnShining = JsonNode.Parse(BuildShiningLeadershipBindingStateJson(
+            actorType,
+            actorId,
+            ShiningAbodeState.LeadershipStateSecure))!.AsObject();
+        var currentShining = preTurnShining.DeepClone().AsObject();
+        preTurnShining["factions"]![0]!["factionStrength"] = 24;
+        currentShining["factions"]![0]!["factionStrength"] = 25;
+        preTurnShining["factions"]![0]!["factionLifecycle"] = new JsonObject
+        {
+            ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+        };
+        currentShining["factions"]![0]!["factionLifecycle"] = new JsonObject
+        {
+            ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+        };
+        var emptyProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: false);
+
+        await WriteAfterlifeBindingScenarioAsync(
+            ShiningAbodeState.StatePath,
+            currentShining.ToJsonString(),
+            preTurnShining.ToJsonString(),
+            emptyProfiles,
+            emptyProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_actor_materialization_profile_missing" &&
             issue.Actor == $"{actorType}:{actorId}");
     }
 
@@ -1182,6 +1376,23 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         }
         """;
         const string currentProfiles = """{ "schemaVersion": 1, "profiles": [] }""";
+        await WriteCurrentAndValidatedPreTurnAsync(
+            AfterlifeEntityProfileState.StatePath,
+            currentProfiles,
+            malformedPreTurnProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_pre_turn_authority_unusable" &&
+            issue.FilePath == AfterlifeEntityProfileState.StatePath);
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_MalformedPreTurnAfterlifeProfileJson_IsRejectedAsUnusableAuthority()
+    {
+        const string currentProfiles = """{ "schemaVersion": 1, "profiles": [] }""";
+        const string malformedPreTurnProfiles = "{ \"schemaVersion\": 1, \"profiles\": [";
         await WriteCurrentAndValidatedPreTurnAsync(
             AfterlifeEntityProfileState.StatePath,
             currentProfiles,

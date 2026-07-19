@@ -2,6 +2,8 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Security.Cryptography;
+using System.Text;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -57,6 +59,9 @@ public sealed class GmWorkerValidationRepairDelegatorTests
                 $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
                 New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
                 Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
                 $proposal = [ordered]@{
                     schemaVersion = 1
                     proposalId = $proposalId
@@ -67,8 +72,8 @@ public sealed class GmWorkerValidationRepairDelegatorTests
                     changedFiles = @([ordered]@{
                         path = 'game_state/world/weather.json'
                         changeKind = 'replace'
-                        beforeSha256 = 'example-before'
-                        afterSha256 = 'example-after'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
                         contentRef = $contentRef
                     })
                     findings = @()
@@ -94,7 +99,10 @@ public sealed class GmWorkerValidationRepairDelegatorTests
             var latestTaskJson = await fs.ReadFileAsync(LatestTaskPath);
             var events = await audit.ReadEventsAsync();
 
-            Assert.Equal(GmWorkerValidationRepairOutcome.Applied, result.Outcome);
+            Assert.True(
+                result.Outcome == GmWorkerValidationRepairOutcome.Applied,
+                $"Expected Applied, got {result.Outcome}: " +
+                string.Join(" | ", result.ApplyDecision?.RejectionReasons ?? []));
             Assert.Equal(ApplyGateResult.Accepted, result.ApplyDecision?.Result);
             Assert.True(result.ReadySignalCreated);
             Assert.Equal("{\"after\":true}", await fs.ReadFileAsync(WeatherPath));
@@ -144,6 +152,70 @@ public sealed class GmWorkerValidationRepairDelegatorTests
     }
 
     [Fact]
+    public async Task TryRunAsync_ApplyAcceptedButReadyWriteFails_ReturnsAppliedWithoutReady()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            Directory.CreateDirectory(fs.ResolvePath(ReadyPath));
+            var profile = BuildProfile(root, "fake-validation-repair-ready-fails.ps1", """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposalId = 'worker_proposal_ready_write_fails'
+                $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'
+                $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+                New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
+                Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = $proposalId
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Repair applies before ready publication fails.'
+                    changedFiles = @([ordered]@{
+                        path = 'game_state/world/weather.json'
+                        changeKind = 'replace'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
+                        contentRef = $contentRef
+                    })
+                    findings = @()
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('ready failure regression')
+                    }
+                    createdAtUtc = '2026-06-20T01:00:05Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var delegator = CreateDelegator(fs);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 21);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.Applied, result.Outcome);
+            Assert.Equal(ApplyGateResult.Accepted, result.ApplyDecision?.Result);
+            Assert.False(result.ReadySignalCreated);
+            Assert.Contains("ready", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal("{\"after\":true}", await fs.ReadFileAsync(WeatherPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task TryRunAsync_CoordinateBearingActorIssue_HashesCanonicalContextFile()
     {
         var root = CreateTempRoot();
@@ -181,23 +253,65 @@ public sealed class GmWorkerValidationRepairDelegatorTests
     }
 
     [Fact]
+    public async Task TryRunAsync_ContextHashUsesExactCanonicalBytesIncludingBom()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string npcPath = "game_state/npcs/npc_core.json";
+            var fs = CreateFileSystem(root);
+            byte[] utf8Bom = [0xef, 0xbb, 0xbf];
+            var jsonBytes = Encoding.UTF8.GetBytes("{\"UpdateNPCs\":[],\"NPCsInScene\":[]}");
+            var canonicalBytes = new byte[utf8Bom.Length + jsonBytes.Length];
+            utf8Bom.CopyTo(canonicalBytes, 0);
+            jsonBytes.CopyTo(canonicalBytes, utf8Bom.Length);
+            Directory.CreateDirectory(Path.GetDirectoryName(fs.ResolvePath(npcPath))!);
+            await File.WriteAllBytesAsync(fs.ResolvePath(npcPath), canonicalBytes);
+            var profile = BuildProfile(root, "fake-byte-hash-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{npcPath}.NPCsInScene[0].materialization.sections.inventory",
+                IssueSeverity.Error,
+                "Первичная материализация не объясняет секцию inventory.",
+                code: "actor_materialization_section_missing",
+                actor: "mortal_npc:npc_byte_hash_target",
+                section: "inventory");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 311);
+
+            var context = Assert.Single(Assert.IsType<WorkerTaskPacket>(result.Task).ContextFiles);
+            var expectedSha256 = Convert.ToHexString(SHA256.HashData(canonicalBytes)).ToLowerInvariant();
+            Assert.Equal(expectedSha256, context.Sha256);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task TryRunAsync_AfterlifeActorRepair_BuildsRealmBoundTaskForCanonicalSource()
     {
         var root = CreateTempRoot();
         try
         {
-            const string guardianPath = "game_state/meta/guardians.json";
+            const string guardianPath = "game_state/meta/guardian_thought_journal.json";
             var fs = CreateFileSystem(root);
             await fs.WriteFileAtomicAsync(
                 "game_state/meta/soul_state.json",
                 "{\"currentRealm\":\"Chaos Sea\"}");
             await fs.WriteFileAtomicAsync(
                 guardianPath,
-                "{\"schemaVersion\":1,\"guardians\":[{\"guardianId\":\"guardian_repair_target\",\"musings\":[]}]}");
+                "{\"entries\":[]}");
             var profile = BuildProfile(root, "fake-afterlife-repair-worker.ps1", "exit 7");
             var delegator = CreateDelegator(fs);
             var issue = new ValidationIssue(
-                $"{guardianPath}.guardians[0]",
+                "game_state/meta/guardians.json.guardians[0]",
                 IssueSeverity.Error,
                 "Первичная материализация Хранителя не инициализировала память.",
                 code: "afterlife_actor_materialization_memory_missing",
@@ -228,6 +342,46 @@ public sealed class GmWorkerValidationRepairDelegatorTests
     }
 
     [Fact]
+    public async Task TryRunAsync_UnscopedAfterlifeBindingAuthorityIssue_RemainsRealmBound()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(
+                "game_state/meta/soul_state.json",
+                "{\"currentRealm\":\"Shining Abode\"}");
+            await fs.WriteFileAtomicAsync(
+                ShiningAbodeState.StatePath,
+                "{\"schemaVersion\":1,\"factions\":[],\"shiningPoliticalActors\":[]}");
+            var profile = BuildProfile(root, "fake-unscoped-afterlife-binding-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                ShiningAbodeState.StatePath,
+                IssueSeverity.Error,
+                "Текущая canonical authority сущностей посмертия повреждена.",
+                code: "afterlife_actor_binding_current_authority_unusable",
+                section: "ActorMaterialization");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 321);
+
+            var task = Assert.IsType<WorkerTaskPacket>(result.Task);
+            var afterlife = Assert.IsType<WorkerAfterlifeTaskContract>(task.AfterlifeContract);
+            Assert.Equal(WorkerAfterlifeRealmGate.ShiningAbode, afterlife.RealmGate);
+            Assert.Equal([ShiningAbodeState.StatePath], afterlife.AllowedAfterlifeSurfaces);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task TryRunAsync_ApplyGateValidationFails_RollsBackAndLeavesLegacyRepairLoopWaiting()
     {
         var root = CreateTempRoot();
@@ -242,6 +396,9 @@ public sealed class GmWorkerValidationRepairDelegatorTests
                 $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
                 New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
                 Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
                 $proposal = [ordered]@{
                     schemaVersion = 1
                     proposalId = $proposalId
@@ -252,8 +409,8 @@ public sealed class GmWorkerValidationRepairDelegatorTests
                     changedFiles = @([ordered]@{
                         path = 'game_state/world/weather.json'
                         changeKind = 'replace'
-                        beforeSha256 = 'example-before'
-                        afterSha256 = 'example-after'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
                         contentRef = $contentRef
                     })
                     findings = @()
@@ -280,7 +437,10 @@ public sealed class GmWorkerValidationRepairDelegatorTests
                 attempt: 4);
 
             Assert.Equal(GmWorkerValidationRepairOutcome.ApplyRejected, result.Outcome);
-            Assert.Equal(ApplyGateResult.ValidationFailed, result.ApplyDecision?.Result);
+            Assert.True(
+                result.ApplyDecision?.Result == ApplyGateResult.ValidationFailed,
+                $"Expected ValidationFailed, got {result.ApplyDecision?.Result}: " +
+                string.Join(" | ", result.ApplyDecision?.RejectionReasons ?? []));
             Assert.False(result.ReadySignalCreated);
             Assert.False(fs.FileExists(ReadyPath));
             Assert.Equal("{\"before\":true}", await fs.ReadFileAsync(WeatherPath));

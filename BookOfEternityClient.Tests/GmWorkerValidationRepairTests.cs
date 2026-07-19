@@ -27,7 +27,7 @@ public sealed class GmWorkerValidationRepairTests
         };
         var contextHashes = new Dictionary<string, string>
         {
-            ["game_state/world/weather.json"] = "sha256-weather"
+            ["game_state/world/weather.json"] = new string('a', 64)
         };
 
         var task = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
@@ -55,7 +55,7 @@ public sealed class GmWorkerValidationRepairTests
             issue.Path == "game_state/world/weather.json");
         Assert.Contains(task.ContextFiles, file =>
             file.Path == "game_state/world/weather.json" &&
-            file.Sha256 == "sha256-weather");
+            file.Sha256 == new string('a', 64));
 
         var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
         Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Errors));
@@ -85,7 +85,7 @@ public sealed class GmWorkerValidationRepairTests
         };
         var contextHashes = new Dictionary<string, string>
         {
-            ["game_state/npcs/npc_core.json"] = "sha256-npc-core"
+            ["game_state/npcs/npc_core.json"] = new string('b', 64)
         };
 
         var task = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
@@ -117,12 +117,20 @@ public sealed class GmWorkerValidationRepairTests
     [Theory]
     [InlineData(
         "game_state/meta/guardians.json.guardians[0]",
-        "game_state/meta/guardians.json",
+        "game_state/meta/guardian_thought_journal.json",
         "guardian:guardian_memory_target")]
     [InlineData(
         "game_state/meta/guardian_abode_residents.json.entries[0]",
         "game_state/meta/guardian_abode_residents.json",
         "resident:resident_memory_target")]
+    [InlineData(
+        "game_state/meta/shining_abode.json.radiantActors[0]",
+        "game_state/meta/afterlife_entity_profiles.json",
+        "radiant_actor:radiant_memory_target")]
+    [InlineData(
+        "game_state/meta/saref_main_story_state.json.agents[0]",
+        "game_state/meta/afterlife_entity_profiles.json",
+        "saref_agent:saref_memory_target")]
     public void BuildValidationRepairTask_AfterlifeMemoryTargetsExactDedicatedAuthority(
         string issuePath,
         string expectedTargetPath,
@@ -138,7 +146,7 @@ public sealed class GmWorkerValidationRepairTests
             section: "ActorMemory");
         var hashes = new Dictionary<string, string>
         {
-            [expectedTargetPath] = "sha256-memory-authority"
+            [expectedTargetPath] = new string('c', 64)
         };
 
         var task = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
@@ -158,7 +166,52 @@ public sealed class GmWorkerValidationRepairTests
         Assert.Equal(new[] { expectedTargetPath }, task.AllowedProposalPaths);
         var context = Assert.Single(task.ContextFiles);
         Assert.Equal(expectedTargetPath, context.Path);
-        Assert.Equal("sha256-memory-authority", context.Sha256);
+        Assert.Equal(new string('c', 64), context.Sha256);
+        Assert.Contains("afterlifeProposal is optional", task.Instructions, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Return afterlifeProposal when this contract is present", task.Instructions, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BuildValidationRepairTask_MixedMortalAndAfterlifeMaterializationIssues_FailsClosed()
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var issues = new[]
+        {
+            new ValidationIssue(
+                "game_state/npcs/npc_core.json.NPCsInScene[0].materialization",
+                IssueSeverity.Error,
+                "Mortal actor materialization is incomplete.",
+                code: "actor_materialization_missing",
+                actor: "mortal_npc:npc_mixed_target"),
+            new ValidationIssue(
+                "game_state/meta/afterlife_entity_profiles.json.profiles[0]",
+                IssueSeverity.Error,
+                "Afterlife actor profile is missing.",
+                code: "afterlife_actor_materialization_profile_missing",
+                actor: "guardian:guardian_mixed_target")
+        };
+        var hashes = new Dictionary<string, string>
+        {
+            ["game_state/npcs/npc_core.json"] = new string('d', 64),
+            [AfterlifeEntityProfileState.StatePath] = new string('e', 64)
+        };
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+                profile,
+                "worker_task_mixed_repair",
+                new WorkerTurnReference
+                {
+                    SessionId = "test-session",
+                    RequestId = "test-request",
+                    TurnNumber = 12
+                },
+                issues,
+                hashes,
+                "2026-06-20T00:00:00Z",
+                BuildAfterlifeRepairContract(AfterlifeEntityProfileState.StatePath)));
+
+        Assert.Contains("allowedAfterlifeSurfaces", exception.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     private static WorkerAfterlifeTaskContract BuildAfterlifeRepairContract(string targetPath) => new()

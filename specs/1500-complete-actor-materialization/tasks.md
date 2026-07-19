@@ -59,4 +59,20 @@
 - [x] T030 Treat exact trade-role acquisition as a materialization promotion, verify the negative trade-authority matrix, and defer response-carrier trade evidence only to accepted-turn exact authority checks.
 - [x] T031 Route afterlife actor repair through the realm-bound worker contract, mechanically preserve unrelated actor/scalar state, and enforce append-only Guardian/resident memory repair.
 - [x] T032 Expand setting-neutral source guards and add behavioral Mortal/afterlife UI tests proving private materialization metadata cannot leak.
+
+## Phase 9 - Concurrent repair and handoff hardening
+
+- [x] T034 Pin validation-repair context/proposal content to exact byte hashes, proposal-bound content refs, and explicit add/replace/delete preconditions.
+- [x] T035 Apply and roll back canonical files through one cross-process exact-byte compare/exchange protocol; reject stale apply and stale rollback ownership under deterministic race tests.
+- [x] T036 Route Guardian memory repairs to the dedicated append-only journal, preserve unrelated actor state, and distinguish afterlife proposal-only tasks from afterlife validation-repair changed-file tasks.
+- [x] T037 Make worker dispatch precede legacy fallback, clear stale repair artifacts, preserve accepted worker ownership across ready publication failure, and use an explicit player-output freshness boundary; synchronize bridge docs and worked examples.
+
+## Phase 10 - Final review remediation
+
+- [x] T038 Make the deterministic System Guardian envelope match exact current Guardian trade authority for preset and freeform fresh-game seeds.
+- [x] T039 Serialize worker audit read-and-append under the shared canonical lock and treat audit publication failure as non-authoritative telemetry after an accepted apply.
+- [x] T040 Reject canonical changes on `failed`, `timed-out`, or `rejected` proposals in both contract validation and the apply gate; synchronize the runtime prompt, guide, formal contract, worked example, and source guard.
+
+## Phase 11 - Final verification and integration
+
 - [ ] T033 Rerun focused/documentation/full verification, perform fresh independent review, then commit, open the PR, and merge only after the evidence is clean.

@@ -34,7 +34,10 @@ public sealed class CoordinatedStateWriteHelperTests : IDisposable
             {
                 if (string.Equals(await _fs.ReadFileAsync(firstPath), nextJson, StringComparison.Ordinal))
                 {
-                    await _fs.WriteFileAtomicAsync(firstPath, concurrentJson);
+                    await File.WriteAllTextAsync(
+                        _fs.ResolvePath(firstPath),
+                        concurrentJson,
+                        new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
                     return;
                 }
 

@@ -56,12 +56,12 @@ public sealed class GmWorkerBridgeLifecycleTests
                 $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
                 Write-Output 'fake-worker-ready'
                 """);
-            var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
             {
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var task = GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds };
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
@@ -108,12 +108,12 @@ public sealed class GmWorkerBridgeLifecycleTests
             var fs = CreateFileSystem(root);
             var scriptPath = Path.Combine(root, "fake-worker-failure.ps1");
             await File.WriteAllTextAsync(scriptPath, "Write-Error 'fake worker failed'; exit 7");
-            var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
             {
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var task = GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds };
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
@@ -174,12 +174,12 @@ public sealed class GmWorkerBridgeLifecycleTests
                 Write-Error 'worker cli failed after writing proposal'
                 exit 3
                 """);
-            var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
             {
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var task = GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds };
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
@@ -266,12 +266,12 @@ public sealed class GmWorkerBridgeLifecycleTests
                 $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
                 Start-Sleep -Seconds 30
                 """);
-            var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
             {
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 3
             };
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var task = GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds };
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
