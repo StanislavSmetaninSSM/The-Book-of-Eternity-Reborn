@@ -853,6 +853,7 @@ public partial class ValidationService
             }
 
             var tradeAuthorities = await LoadCurrentAfterlifeActorTradeAuthoritiesAsync();
+            var boundActorIdentities = await LoadCurrentAfterlifeBoundActorIdentityKeysAsync();
             var evaluatedHistoricalActors = new HashSet<string>(StringComparer.Ordinal);
             var index = 0;
             foreach (var profile in profiles.EnumerateArray())
@@ -904,6 +905,14 @@ public partial class ValidationService
                     canTradeEvidence: HasCurrentAfterlifeActorTradeAuthority(
                         profile,
                         tradeAuthorities)));
+
+                if (!boundActorIdentities.Contains(identityKey) &&
+                    !HasCommonAfterlifeActorMemory(profile))
+                {
+                    AddMissingAfterlifeActorMemoryIssue(
+                        new AfterlifeActorBinding(actorType, actorId, context, HasTypeSpecificMemory: false),
+                        issues);
+                }
             }
 
             foreach (var (identityKey, previousState) in preTurnActors)

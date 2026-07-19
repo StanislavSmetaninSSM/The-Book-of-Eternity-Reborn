@@ -898,11 +898,7 @@ internal static class ActorMaterializationContract
         HasMeaningfulObject(profile, "goals") ||
         HasObjectArrayEntries(profile, "personalQuests") ||
         HasMeaningfulObject(profile, "currentActivity") ||
-        HasObjectArrayEntries(profile, "completedActivities") ||
-        HasObjectArrayEntries(profile, "masks") ||
-        !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(profile, "activeMaskId")) ||
-        HasMeaningfulObject(profile, "progressionStrategy") ||
-        HasMeaningfulDisposition(profile);
+        HasObjectArrayEntries(profile, "completedActivities");
 
     private static HashSet<string> ReadStructuredInventoryItemIds(JsonElement npc)
     {

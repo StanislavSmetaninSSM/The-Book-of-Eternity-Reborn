@@ -641,6 +641,14 @@ public sealed class SystemGuardianLibraryService
             ["customStates"] = new JsonArray(),
             ["fateCards"] = new JsonArray(),
             ["relationships"] = new JsonArray(),
+            ["goals"] = BuildInitialGuardianGoals(
+                $"system_guardian_{SanitizeIdSegment(presetId)}",
+                defaultName,
+                progressionStrategySummary,
+                materializationTurn),
+            ["personalQuests"] = new JsonArray(),
+            ["currentActivity"] = null,
+            ["completedActivities"] = new JsonArray(),
             ["soulDissipationTier"] = 0,
             ["progressionStrategy"] = new JsonObject
             {
@@ -731,6 +739,14 @@ public sealed class SystemGuardianLibraryService
             ["customStates"] = new JsonArray(),
             ["fateCards"] = new JsonArray(),
             ["relationships"] = new JsonArray(),
+            ["goals"] = BuildInitialGuardianGoals(
+                seedSegment,
+                displayName,
+                progressionStrategySummary,
+                materializationTurn),
+            ["personalQuests"] = new JsonArray(),
+            ["currentActivity"] = null,
+            ["completedActivities"] = new JsonArray(),
             ["soulDissipationTier"] = 0,
             ["progressionStrategy"] = new JsonObject
             {
@@ -764,6 +780,21 @@ public sealed class SystemGuardianLibraryService
                 materializationTurn)
         };
     }
+
+    private static JsonObject BuildInitialGuardianGoals(
+        string seedSegment,
+        string guardianName,
+        string gmThoughtsSummary,
+        int materializationTurn) =>
+        new()
+        {
+            ["goalId"] = $"goal_{SanitizeIdSegment(seedSegment)}_first_guidance",
+            ["shortTermGoal"] = $"Подготовить для души первый безопасный урок у Хранителя {guardianName}.",
+            ["longTermGoal"] = "Помочь душе освоить самостоятельное развитие в посмертии.",
+            ["plan"] = "Сначала предложить базовые духовные искусства, затем учитывать выбор и прогресс души.",
+            ["gmThoughtsSummary"] = gmThoughtsSummary,
+            ["updatedAtTurn"] = materializationTurn
+        };
 
     private static JsonObject BuildSystemGuardianMaterialization(string guardianId, int materializationTurn) =>
         new()

@@ -809,7 +809,8 @@ public sealed class ActorMaterializationContractTests
     [Theory]
     [InlineData("masks")]
     [InlineData("progressionStrategy")]
-    public void ValidateAfterlifeProfile_StructuredAgencySurface_OccupiesAgencySection(string agencySurface)
+    public void ValidateAfterlifeProfile_PolicySurfaceWithoutGoalOrActivity_DoesNotOccupyAgencySection(
+        string agencySurface)
     {
         var profile = CreateAfterlifeProfile();
         profile.Remove("goals");
@@ -837,7 +838,7 @@ public sealed class ActorMaterializationContractTests
             requireEnvelope: true,
             canTradeEvidence: false);
 
-        Assert.DoesNotContain(issues, issue =>
+        Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_section_content_mismatch" &&
             issue.Section == "agency");
     }

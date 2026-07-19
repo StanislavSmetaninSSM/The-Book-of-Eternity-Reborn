@@ -162,6 +162,32 @@ public partial class ValidationService
         return new AfterlifeBindingSourceAuthority(currentJson, preTurnJson, preTurnJson != null);
     }
 
+    private async Task<HashSet<string>> LoadCurrentAfterlifeBoundActorIdentityKeysAsync()
+    {
+        var result = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var (path, kind) in new[]
+                 {
+                     (GuardiansStatePath, AfterlifeBindingSourceKind.Guardian),
+                     (GuardianAbodeResidentState.StatePath, AfterlifeBindingSourceKind.Resident),
+                     (ShiningAbodeState.StatePath, AfterlifeBindingSourceKind.RadiantActor),
+                     (SarefMainStoryState.StatePath, AfterlifeBindingSourceKind.SarefAgent)
+                 })
+        {
+            var json = await _fs.ReadFileAsync(path);
+            if (!TryReadAfterlifeBindingSourceActors(json, path, kind, out var actors))
+                continue;
+
+            result.UnionWith(actors.Keys);
+            if (kind == AfterlifeBindingSourceKind.RadiantActor &&
+                TryReadShiningLeadershipBindings(json, out var leadership))
+            {
+                result.UnionWith(leadership.Keys);
+            }
+        }
+
+        return result;
+    }
+
     private static bool TryBuildExactAfterlifeProfileIndex(
         JsonElement root,
         out Dictionary<string, List<(JsonElement Profile, string Context)>> result)

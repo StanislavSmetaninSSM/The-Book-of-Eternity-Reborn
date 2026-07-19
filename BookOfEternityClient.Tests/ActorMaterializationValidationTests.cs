@@ -589,6 +589,32 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             issue.Actor == $"{actorType}:{actorId}");
     }
 
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_NewProfileOnlyAfterlifeActorWithoutActorOwnedMemory_IsRejected()
+    {
+        const string actorType = "custom_afterlife_actor";
+        const string actorId = "custom_profile_only_memory_missing";
+        var preTurnProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: false);
+        var currentProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true,
+            includeMemory: false);
+        await WriteCurrentAndValidatedPreTurnAsync(
+            AfterlifeEntityProfileState.StatePath,
+            currentProfiles,
+            preTurnProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_actor_materialization_memory_missing" &&
+            issue.Actor == $"{actorType}:{actorId}");
+    }
+
     [Theory]
     [InlineData("guardian", "guardian", "guardian_type_memory")]
     [InlineData("resident", "resident", "resident_type_memory")]
@@ -1187,7 +1213,17 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             ["customStates"] = new JsonArray(),
             ["fateCards"] = new JsonArray(),
             ["relationships"] = new JsonArray(),
+            ["goals"] = new JsonObject
+            {
+                ["goalId"] = $"goal_{actorId}",
+                ["shortTermGoal"] = "Сохранить точную связь между источниками.",
+                ["longTermGoal"] = "Поддерживать целостность своей роли.",
+                ["plan"] = "Проверять собственные записи и действовать согласно роли.",
+                ["gmThoughtsSummary"] = "Я должен сохранить точную связь между источниками.",
+                ["updatedAtTurn"] = 42
+            },
             ["personalQuests"] = new JsonArray(),
+            ["currentActivity"] = null,
             ["completedActivities"] = new JsonArray(),
             ["progressionStrategy"] = new JsonObject
             {
@@ -2467,6 +2503,17 @@ public sealed class ActorMaterializationValidationTests : IDisposable
               "customStates": [],
               "fateCards": [],
               "relationships": [],
+              "goals": {
+                "goalId": "goal_radiant_complete_actor",
+                "shortTermGoal": "Сохранить светлый архив.",
+                "longTermGoal": "Удержать непрерывность памяти Обители.",
+                "plan": "Сначала укрепить защиту архива, затем проверить его записи.",
+                "gmThoughtsSummary": "Я должен сохранить архив и его память.",
+                "updatedAtTurn": 8
+              },
+              "personalQuests": [],
+              "currentActivity": null,
+              "completedActivities": [],
               "soulDissipationTier": 0,
               "progressionStrategy": {
                 "strategyId": "strategy_radiant_complete_actor",

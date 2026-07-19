@@ -1034,6 +1034,18 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.IsType<JsonArray>(profile[AfterlifeEntityProfileState.ProgressionLedgerProperty]);
         Assert.NotEmpty(Assert.IsType<JsonArray>(profile["ledger"]));
 
+        var goals = Assert.IsType<JsonObject>(profile["goals"]);
+        Assert.False(string.IsNullOrWhiteSpace(goals["goalId"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(goals["shortTermGoal"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(goals["longTermGoal"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(goals["plan"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(goals["gmThoughtsSummary"]?.GetValue<string>()));
+        Assert.Equal(expectedTurn, goals["updatedAtTurn"]?.GetValue<int>());
+        Assert.Empty(Assert.IsType<JsonArray>(profile["personalQuests"]));
+        Assert.True(profile.ContainsKey("currentActivity"));
+        Assert.Null(profile["currentActivity"]);
+        Assert.Empty(Assert.IsType<JsonArray>(profile["completedActivities"]));
+
         var strategy = Assert.IsType<JsonObject>(profile["progressionStrategy"]);
         var strategySummary = strategy["summary"]?.GetValue<string>();
         var gmThoughtsSummary = profile["gmThoughtsSummary"]?.GetValue<string>();
