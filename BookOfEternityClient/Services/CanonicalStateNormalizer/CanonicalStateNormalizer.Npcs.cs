@@ -172,15 +172,19 @@ public partial class CanonicalStateNormalizer
         }
 
         var historicalEnvelopeByActorId = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        var seenHistoricalActorIds = new HashSet<string>(StringComparer.Ordinal);
         var ambiguousHistoricalActorIds = new HashSet<string>(StringComparer.Ordinal);
         foreach (var previousActor in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(previousRoot))
         {
-            var actorId = ResolveNpcPatchIdentity(previousActor);
-            if (string.IsNullOrWhiteSpace(actorId) ||
-                previousActor[ActorMaterializationContract.PropertyName] is not JsonObject historicalEnvelope)
-            {
+            var actorId = ResolveMortalMaterializationIdentity(previousActor);
+            if (string.IsNullOrWhiteSpace(actorId))
                 continue;
-            }
+
+            if (!seenHistoricalActorIds.Add(actorId))
+                ambiguousHistoricalActorIds.Add(actorId);
+
+            if (previousActor[ActorMaterializationContract.PropertyName] is not JsonObject historicalEnvelope)
+                continue;
 
             if (!historicalEnvelopeByActorId.TryAdd(actorId, historicalEnvelope))
                 ambiguousHistoricalActorIds.Add(actorId);
@@ -193,7 +197,7 @@ public partial class CanonicalStateNormalizer
         var ambiguousCurrentActorIds = new HashSet<string>(StringComparer.Ordinal);
         foreach (var currentActor in currentActors.OfType<JsonObject>())
         {
-            var actorId = ResolveNpcPatchIdentity(currentActor);
+            var actorId = ResolveMortalMaterializationIdentity(currentActor);
             if (!string.IsNullOrWhiteSpace(actorId) && !seenCurrentActorIds.Add(actorId))
                 ambiguousCurrentActorIds.Add(actorId);
         }
@@ -207,7 +211,7 @@ public partial class CanonicalStateNormalizer
                 continue;
             }
 
-            var actorId = ResolveNpcPatchIdentity(currentActor);
+            var actorId = ResolveMortalMaterializationIdentity(currentActor);
             if (string.IsNullOrWhiteSpace(actorId) ||
                 ambiguousCurrentActorIds.Contains(actorId) ||
                 !historicalEnvelopeByActorId.TryGetValue(actorId, out var historicalEnvelope))
@@ -343,13 +347,19 @@ public partial class CanonicalStateNormalizer
         npc.ContainsKey("inventory") &&
         npc.ContainsKey("goals");
 
-    private static string? ResolveNpcPatchIdentity(JsonObject npc)
+    private static string? ResolveMortalMaterializationIdentity(JsonObject npc)
     {
         string? permanentId = null;
+        var hasNullPermanentAlias = false;
         foreach (var fieldName in new[] { "NPCId", "npcId", "id" })
         {
-            if (!npc.TryGetPropertyValue(fieldName, out var node) || node == null)
+            if (!npc.TryGetPropertyValue(fieldName, out var node))
                 continue;
+            if (node == null)
+            {
+                hasNullPermanentAlias = true;
+                continue;
+            }
             if (node is not JsonValue value ||
                 !value.TryGetValue<string>(out var candidate) ||
                 string.IsNullOrWhiteSpace(candidate))
@@ -364,7 +374,7 @@ public partial class CanonicalStateNormalizer
         }
 
         if (permanentId != null)
-            return permanentId;
+            return hasNullPermanentAlias ? null : permanentId;
 
         if (!npc.TryGetPropertyValue("initialId", out var initialIdNode) ||
             initialIdNode is not JsonValue initialIdValue ||
@@ -376,6 +386,12 @@ public partial class CanonicalStateNormalizer
 
         return initialId;
     }
+
+    private static string? ResolveNpcPatchIdentity(JsonObject npc) =>
+        GetNodeString(npc["NPCId"]) ??
+        GetNodeString(npc["npcId"]) ??
+        GetNodeString(npc["id"]) ??
+        GetNodeString(npc["initialId"]);
 
     private static bool IsNpcPatchIdentityField(string fieldName) =>
         string.Equals(fieldName, "NPCId", StringComparison.OrdinalIgnoreCase) ||
