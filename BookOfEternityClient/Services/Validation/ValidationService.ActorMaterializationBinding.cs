@@ -34,7 +34,12 @@ public partial class ValidationService
         List<ValidationIssue> issues)
     {
         if (!TryBuildExactAfterlifeProfileIndex(currentProfilesRoot, out var profilesByIdentity))
+        {
+            AddUnusableAfterlifeActorBindingCurrentAuthorityIssue(
+                AfterlifeEntityProfileState.StatePath,
+                issues);
             return;
+        }
 
         var currentSourceActors = new Dictionary<string, AfterlifeActorBinding>(StringComparer.Ordinal);
         var requiredBindings = new Dictionary<string, AfterlifeActorBinding>(StringComparer.Ordinal);
@@ -58,7 +63,10 @@ public partial class ValidationService
                     path,
                     kind,
                     out var currentActors))
-                continue;
+            {
+                AddUnusableAfterlifeActorBindingCurrentAuthorityIssue(path, issues);
+                return;
+            }
             if (!TryReadAfterlifeBindingSourceActors(
                     authority.PreTurnJson,
                     path,
@@ -79,7 +87,10 @@ public partial class ValidationService
             if (kind == AfterlifeBindingSourceKind.RadiantActor)
             {
                 if (!TryReadShiningLeadershipBindings(authority.CurrentJson, out var currentLeadership))
-                    continue;
+                {
+                    AddUnusableAfterlifeActorBindingCurrentAuthorityIssue(path, issues);
+                    return;
+                }
                 if (!TryReadShiningLeadershipBindings(authority.PreTurnJson, out var preTurnLeadership))
                 {
                     AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(path, issues);
@@ -132,12 +143,10 @@ public partial class ValidationService
         var currentJson = await _fs.ReadFileAsync(path);
         var hasSnapshotEntry = manifest.Files?.ContainsKey(path) == true;
         var wasBaselineTracked = manifest.RollbackBaselineFiles?.Contains(path, StringComparer.OrdinalIgnoreCase) == true;
+        if (hasSnapshotEntry != wasBaselineTracked)
+            return new AfterlifeBindingSourceAuthority(currentJson, null, IsUsable: false);
         if (!hasSnapshotEntry)
-        {
-            return wasBaselineTracked
-                ? new AfterlifeBindingSourceAuthority(currentJson, null, IsUsable: false)
-                : new AfterlifeBindingSourceAuthority(currentJson, null, IsUsable: true);
-        }
+            return new AfterlifeBindingSourceAuthority(currentJson, null, IsUsable: true);
 
         var preTurnJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path);
         return new AfterlifeBindingSourceAuthority(currentJson, preTurnJson, preTurnJson != null);
@@ -221,7 +230,7 @@ public partial class ValidationService
         {
             var context = $"{path}.guardians[{index++}]";
             if (!TryReadExactNonEmptyString(guardian, "guardianId", out var actorId))
-                continue;
+                return false;
             var binding = new AfterlifeActorBinding(
                 "guardian",
                 actorId,
@@ -251,7 +260,7 @@ public partial class ValidationService
         {
             var context = $"{path}.{GuardianAbodeResidentState.EntriesProperty}[{index++}]";
             if (!TryReadExactNonEmptyString(resident, "residentId", out var actorId))
-                continue;
+                return false;
             var binding = new AfterlifeActorBinding(
                 "resident",
                 actorId,
@@ -276,8 +285,12 @@ public partial class ValidationService
         foreach (var actor in actors.EnumerateArray())
         {
             var context = $"{path}.shiningPoliticalActors[{index++}]";
-            if (!TryReadExactNonEmptyString(actor, "actorId", out var actorId))
-                continue;
+            if (!TryReadExactNonEmptyString(actor, "actorType", out var actorType) ||
+                !string.Equals(actorType, "radiant_actor", StringComparison.Ordinal) ||
+                !TryReadExactNonEmptyString(actor, "actorId", out var actorId))
+            {
+                return false;
+            }
             var binding = new AfterlifeActorBinding("radiant_actor", actorId, context, false);
             if (!result.TryAdd(binding.IdentityKey, binding))
                 return false;
@@ -291,8 +304,9 @@ public partial class ValidationService
         string path,
         Dictionary<string, AfterlifeActorBinding> result)
     {
-        if (root.ValueKind != JsonValueKind.Object ||
-            !root.TryGetProperty("factionLinks", out var factionLinks) ||
+        if (root.ValueKind != JsonValueKind.Object)
+            return false;
+        if (!root.TryGetProperty("factionLinks", out var factionLinks) ||
             factionLinks.ValueKind == JsonValueKind.Null)
         {
             return true;
@@ -308,7 +322,7 @@ public partial class ValidationService
         {
             var context = $"{path}.factionLinks.knownAgents[{index++}]";
             if (!TryReadExactNonEmptyString(agent, "agentId", out var actorId))
-                continue;
+                return false;
             var binding = new AfterlifeActorBinding("saref_agent", actorId, context, false);
             if (!result.TryAdd(binding.IdentityKey, binding))
                 return false;
@@ -589,5 +603,20 @@ public partial class ValidationService
             expected: "readable validated pre-turn afterlife actor authority",
             actual: "missing, unreadable, hash-invalid, or ambiguous source authority",
             repairHint: "Откати ход к client-owned validated snapshot и восстанови authority штатным rollback/recovery; ГМ не должен реконструировать baseline из текущего состояния."));
+    }
+
+    private static void AddUnusableAfterlifeActorBindingCurrentAuthorityIssue(
+        string path,
+        List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            "Текущая canonical authority сущностей посмертия повреждена; exact actor binding нельзя вычислять по догадке.",
+            code: "afterlife_actor_binding_current_authority_unusable",
+            section: "ActorMaterialization",
+            expected: "object state with canonical arrays and exact ordinal actor identities",
+            actual: "malformed root, collection, actor identity, actor type, or duplicate identity",
+            repairHint: "Исправь только указанную canonical source/profile authority по её документированной схеме; не связывай сущности по имени, описанию или жанровым словам и не переписывай валидные записи."));
     }
 }

@@ -800,6 +800,9 @@ public partial class ValidationService
                     out var profiles) ||
                 profiles.ValueKind != JsonValueKind.Array)
             {
+                AddUnusableAfterlifeActorBindingCurrentAuthorityIssue(
+                    AfterlifeActorMaterializationStatePath,
+                    issues);
                 return;
             }
 

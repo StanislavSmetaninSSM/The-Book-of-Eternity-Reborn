@@ -8345,6 +8345,8 @@ AFTERLIFE ACTOR MATERIALIZATION V1
 
 Before writing the first durable profile, bind the source actor and profile by exact actorType:actorId. Do not infer the identity, `capabilities`, arts, inventory-like resources, teaching authority, or trade authority from a display name or prose. The first profile carries one immutable `materializationId`, `materializedAtTurn`, and complete `sections` disposition. Every intentional absence uses `empty_by_design` with an in-world reason.
 
+Validation derives actor newness only from the client-owned validated pre-turn baseline. A malformed current source authority, malformed `profiles[]` root, duplicate source ID, or source actor without its exact ID is a repair-blocking error; do not omit that record, guess from its name, or reconstruct the baseline.
+
 This compact envelope fragment shows a legitimate partly empty resident. The complete profile beside it still contains all required core fields and actor-owned memory; the fragment does not replace those fields:
 
 ```json

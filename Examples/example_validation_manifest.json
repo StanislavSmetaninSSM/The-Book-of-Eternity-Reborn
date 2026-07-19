@@ -101,7 +101,7 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "Guardian/resident/radiant_actor/saref_agent/Shining leadership source identity -> exact profiles actorType + actorId",
-      "description": "Source actors bind to exactly one complete profile without display-name, prose, role, or genre inference; player_soul and vacant leadership are explicit exceptions."
+      "description": "Source actors bind to exactly one complete profile without display-name, prose, role, or genre inference; actor newness comes only from the validated pre-turn baseline, and malformed current source authority is repair-blocking; player_soul and vacant leadership are explicit exceptions."
     },
     {
       "contractId": "afterlife_entity_profiles_v1",

@@ -3936,12 +3936,18 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("canTrade=false", matrix, StringComparison.Ordinal);
         Assert.Contains("authoritative trade evidence is unavailable", daemon, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("canTrade=false", daemon, StringComparison.Ordinal);
+        Assert.Contains("malformed current source authority", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("validated pre-turn baseline", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("malformed current source authority", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("validated pre-turn baseline", examples, StringComparison.OrdinalIgnoreCase);
 
         Assert.Contains("AFTERLIFE ACTOR MATERIALIZATION V1", examples, StringComparison.Ordinal);
         Assert.Contains("\"relationships\": { \"state\": \"populated\" }", examples, StringComparison.Ordinal);
         Assert.Contains("\"state\": \"empty_by_design\"", examples, StringComparison.Ordinal);
         Assert.Contains("afterlife_actor_materialization_v1", manifest, StringComparison.Ordinal);
         Assert.Contains("afterlife_actor_profile_binding_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("malformed current source authority", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("validated pre-turn baseline", manifest, StringComparison.OrdinalIgnoreCase);
     }
 
     private static string[] ShiningConstantValues(params string[] prefixes) =>

@@ -71,6 +71,8 @@ This applies to:
 
 The profile has exactly one canonical `actorType` and exactly one canonical `actorId`. Current materialized profiles must not carry the legacy `actorRef` alias. Duplicate, case-variant, missing, or contradictory identity properties make authority unusable; never repair them by matching names or descriptions.
 
+Exact newness and cross-file binding use only the client-owned validated pre-turn baseline. A malformed current source authority, malformed profile root, duplicate source identity, or source record without its exact canonical ID rejects the accepted turn instead of being skipped. Do not reconstruct missing baseline authority, repair an identity from display prose, or copy a profile from another actor.
+
 The immutable envelope is stored as `materialization` on the same profile:
 
 ```json

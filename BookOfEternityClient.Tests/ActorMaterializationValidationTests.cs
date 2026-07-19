@@ -420,9 +420,9 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var issues = await InvokeAcceptedTurnContinuityAsync();
 
         Assert.DoesNotContain(issues, issue =>
-            issue.Code is "afterlife_actor_materialization_profile_missing" or
+            (issue.Code is "afterlife_actor_materialization_profile_missing" or
                 "afterlife_actor_materialization_profile_ambiguous" or
-                "afterlife_actor_materialization_memory_missing" &&
+                "afterlife_actor_materialization_memory_missing") &&
             issue.Actor == $"{actorType}:{actorId}");
     }
 
@@ -503,9 +503,7 @@ public sealed class ActorMaterializationValidationTests : IDisposable
 
         var issues = await InvokeAcceptedTurnContinuityAsync();
 
-        Assert.DoesNotContain(issues, issue =>
-            issue.Code == "afterlife_actor_materialization_profile_missing" &&
-            issue.Actor == $"{actorType}:{actorId}");
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
     }
 
     [Fact]
@@ -651,6 +649,83 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnContinuity_AfterlifeSourceSnapshotWithoutBaselineRegistration_IsRejected()
+    {
+        const string sourceKind = "guardian";
+        const string actorId = "guardian_orphan_snapshot";
+        var sourcePath = GetAfterlifeBindingSourcePath(sourceKind);
+        var legacySource = BuildAfterlifeBindingSourceJson(sourceKind, actorId, includeActor: true);
+        var emptyProfiles = BuildCompleteAfterlifeBindingProfileStateJson("guardian", actorId, includeProfile: false);
+        await WriteAfterlifeBindingScenarioAsync(
+            sourcePath,
+            legacySource,
+            legacySource,
+            emptyProfiles,
+            emptyProfiles);
+        await RemovePendingTurnBaselineRegistrationAsync(sourcePath);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_pre_turn_authority_unusable" &&
+            issue.FilePath == sourcePath);
+    }
+
+    [Theory]
+    [InlineData("guardian", "missing_id")]
+    [InlineData("guardian", "duplicate_id")]
+    [InlineData("resident", "missing_id")]
+    [InlineData("radiant", "wrong_actor_type")]
+    [InlineData("saref", "non_object_root")]
+    public async Task ValidateAcceptedTurnContinuity_MalformedCurrentAfterlifeBindingSource_IsRejected(
+        string sourceKind,
+        string mutation)
+    {
+        const string actorId = "afterlife_malformed_current_source";
+        var sourcePath = GetAfterlifeBindingSourcePath(sourceKind);
+        var currentSource = BuildMalformedAfterlifeBindingSourceJson(sourceKind, actorId, mutation);
+        var preTurnSource = BuildAfterlifeBindingSourceJson(sourceKind, actorId, includeActor: false);
+        var emptyProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            sourceKind == "radiant" ? "radiant_actor" : sourceKind == "saref" ? "saref_agent" : sourceKind,
+            actorId,
+            includeProfile: false);
+        await WriteAfterlifeBindingScenarioAsync(
+            sourcePath,
+            currentSource,
+            preTurnSource,
+            emptyProfiles,
+            emptyProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_actor_binding_current_authority_unusable" &&
+            issue.FilePath == sourcePath);
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_MalformedCurrentAfterlifeProfileAuthority_IsRejected()
+    {
+        const string sourceKind = "guardian";
+        const string actorId = "guardian_malformed_profile_authority";
+        var sourcePath = GetAfterlifeBindingSourcePath(sourceKind);
+        var currentProfiles = """{ "schemaVersion": 1 }""";
+        var preTurnProfiles = BuildCompleteAfterlifeBindingProfileStateJson("guardian", actorId, includeProfile: false);
+        await WriteAfterlifeBindingScenarioAsync(
+            sourcePath,
+            BuildAfterlifeBindingSourceJson(sourceKind, actorId, includeActor: true),
+            BuildAfterlifeBindingSourceJson(sourceKind, actorId, includeActor: false),
+            currentProfiles,
+            preTurnProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_actor_binding_current_authority_unusable" &&
+            issue.FilePath == AfterlifeEntityProfileState.StatePath);
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnContinuity_ProfileWithCaseVariantIdentityAlias_DoesNotSatisfyExactBinding()
     {
         const string sourceKind = "guardian";
@@ -695,10 +770,10 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var issues = await InvokeAcceptedTurnContinuityAsync();
 
         Assert.DoesNotContain(issues, issue =>
-            issue.Code is "afterlife_actor_materialization_profile_missing" or
+            (issue.Code is "afterlife_actor_materialization_profile_missing" or
                 "afterlife_actor_materialization_profile_ambiguous" or
                 "afterlife_actor_materialization_memory_missing" or
-                "actor_materialization_missing" &&
+                "actor_materialization_missing") &&
             issue.Actor == "resident:resident_complete_head");
     }
 
@@ -940,6 +1015,42 @@ public sealed class ActorMaterializationValidationTests : IDisposable
                         })
                         : new JsonArray()
                 };
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(sourceKind), sourceKind, null);
+        }
+
+        return root.ToJsonString();
+    }
+
+    private static string BuildMalformedAfterlifeBindingSourceJson(
+        string sourceKind,
+        string actorId,
+        string mutation)
+    {
+        if (mutation == "non_object_root")
+            return "[]";
+
+        var root = JsonNode.Parse(BuildAfterlifeBindingSourceJson(sourceKind, actorId, includeActor: true))!.AsObject();
+        JsonObject actor;
+        switch (sourceKind)
+        {
+            case "guardian":
+                actor = root["guardians"]![0]!.AsObject();
+                if (mutation == "duplicate_id")
+                {
+                    root["guardians"]!.AsArray().Add(actor.DeepClone());
+                    break;
+                }
+                actor.Remove("guardianId");
+                break;
+            case "resident":
+                actor = root[GuardianAbodeResidentState.EntriesProperty]![0]!.AsObject();
+                actor.Remove("residentId");
+                break;
+            case "radiant":
+                actor = root["shiningPoliticalActors"]![0]!.AsObject();
+                actor["actorType"] = "guardian";
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(sourceKind), sourceKind, null);
@@ -2716,6 +2827,21 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
 
         await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+    }
+
+    private async Task RemovePendingTurnBaselineRegistrationAsync(string path)
+    {
+        const string manifestPath = "game_state/control/pending_turn_snapshot.json";
+        var manifest = JsonNode.Parse((await _fs.ReadFileAsync(manifestPath))!)!.AsObject();
+        var baselineFiles = manifest["rollbackBaselineFiles"]!.AsArray();
+        var entry = baselineFiles.FirstOrDefault(node =>
+            string.Equals(node?.GetValue<string>(), path, StringComparison.OrdinalIgnoreCase));
+        Assert.NotNull(entry);
+        baselineFiles.Remove(entry);
+        manifest["manifestPayloadHash"] = string.Empty;
+        manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+        await _fs.WriteFileAtomicAsync(manifestPath, manifest.ToJsonString());
         await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
