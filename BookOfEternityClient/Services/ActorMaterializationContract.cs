@@ -96,9 +96,23 @@ internal static class ActorMaterializationContract
         bool deferEvidenceConsistency = false)
     {
         var issues = new List<ValidationIssue>();
+        if (actor.ValueKind == JsonValueKind.Object &&
+            actor.EnumerateObject().Count(property =>
+                string.Equals(property.Name, PropertyName, StringComparison.Ordinal)) > 1)
+        {
+            issues.Add(CreateIssue(
+                $"{context}.{PropertyName}",
+                "actor_materialization_duplicate_property",
+                "Персонаж должен содержать ровно один materialization envelope.",
+                evidence,
+                expected: "exactly one materialization property",
+                actual: "duplicate materialization properties",
+                repairHint: "Оставь один exact materialization envelope этого персонажа; не объединяй конфликтующие envelopes и не выбирай значение по порядку JSON properties."));
+        }
+
         var envelope = default(JsonElement);
         var hasEnvelope = actor.ValueKind == JsonValueKind.Object &&
-                          actor.TryGetProperty(PropertyName, out envelope);
+                           actor.TryGetProperty(PropertyName, out envelope);
         if (requireEnvelope || hasEnvelope)
             ValidateCanonicalActorType(family, context, evidence, issues);
 
@@ -238,11 +252,12 @@ internal static class ActorMaterializationContract
         bool? deferEvidenceConsistencyOverride)
     {
         var hasIdentityNode = TryGetFirstProperty(npc, out var identityNode, "NPCId", "npcId", "id");
-        var isNewNpc = hasIdentityNode && identityNode.ValueKind == JsonValueKind.Null;
+        var initialId = ReadFirstNonEmptyString(npc, "initialId");
+        var isNewNpc = (hasIdentityNode && identityNode.ValueKind == JsonValueKind.Null) ||
+                       (!hasIdentityNode && !string.IsNullOrWhiteSpace(initialId));
         var permanentId = hasIdentityNode && identityNode.ValueKind == JsonValueKind.String
             ? identityNode.GetString()
             : null;
-        var initialId = ReadFirstNonEmptyString(npc, "initialId");
         var actorId = isNewNpc ? initialId : permanentId ?? initialId;
         if (string.IsNullOrWhiteSpace(actorId))
             return Array.Empty<ValidationIssue>();
@@ -317,7 +332,7 @@ internal static class ActorMaterializationContract
             profile,
             context,
             requireEnvelope,
-            canTradeEvidence: null,
+            canTradeEvidence: false,
             deferEvidenceConsistency: false);
     }
 
@@ -344,8 +359,36 @@ internal static class ActorMaterializationContract
         var hasExactCanonicalActorType = TryReadExactNonEmptyString(profile, "actorType", out _);
         var hasExactCanonicalActorId = TryReadExactNonEmptyString(profile, "actorId", out _);
         var actorId = canonicalActorId ?? legacyActorRef;
+        var hasMaterializationEnvelope = profile.ValueKind == JsonValueKind.Object &&
+                                         profile.TryGetProperty(PropertyName, out _);
         if (string.IsNullOrWhiteSpace(actorType) || string.IsNullOrWhiteSpace(actorId))
-            return Array.Empty<ValidationIssue>();
+        {
+            if (!requireEnvelope && !hasMaterializationEnvelope)
+                return Array.Empty<ValidationIssue>();
+
+            var incompleteEvidence = new ActorMaterializationEvidence(
+                actorType ?? "<missing>",
+                actorId ?? "<missing>",
+                new Dictionary<string, bool>(StringComparer.Ordinal),
+                new Dictionary<string, bool>(StringComparer.Ordinal));
+            var incompleteIssues = Validate(
+                    profile,
+                    context,
+                    ActorMaterializationFamily.Afterlife,
+                    incompleteEvidence,
+                    requireEnvelope,
+                    deferEvidenceConsistency: true)
+                .ToList();
+            incompleteIssues.Add(CreateIssue(
+                $"{context}.actorId",
+                "actor_materialization_actor_binding_mismatch",
+                "Профиль с Actor Materialization должен иметь exact canonical actorType и actorId во внешнем объекте.",
+                incompleteEvidence,
+                expected: "one exact non-empty actorType and actorId",
+                actual: DescribeAfterlifeProfileIdentity(profile),
+                repairHint: "Восстанови exact canonical actorType и actorId внешнего профиля из его текущей канонической authority; не копируй identity из другого персонажа и не используй имя/описание."));
+            return incompleteIssues;
+        }
 
         if (string.Equals(actorType, "player_soul", StringComparison.Ordinal) &&
             string.Equals(actorId, "player_soul", StringComparison.Ordinal) &&
@@ -401,7 +444,6 @@ internal static class ActorMaterializationContract
             requireEnvelope,
             deferEvidenceConsistency).ToList();
 
-        var hasMaterializationEnvelope = profile.TryGetProperty(PropertyName, out _);
         var hasLegacyActorRefProperty = HasPropertyIgnoringCase(profile, "actorRef");
         if ((requireEnvelope || hasMaterializationEnvelope) &&
             (!hasExactCanonicalActorType || !hasExactCanonicalActorId || hasLegacyActorRefProperty))
@@ -891,9 +933,20 @@ internal static class ActorMaterializationContract
         ActorMaterializationEvidence evidence,
         List<ValidationIssue> issues)
     {
-        if (!npc.TryGetProperty("equippedItems", out var equippedItems) ||
-            equippedItems.ValueKind != JsonValueKind.Object)
+        if (!npc.TryGetProperty("equippedItems", out var equippedItems))
+            return;
+
+        if (equippedItems.ValueKind != JsonValueKind.Object)
         {
+            issues.Add(CreateIssue(
+                $"{context}.equippedItems",
+                "actor_materialization_inventory_reference_mismatch",
+                "equippedItems первично materialized NPC должен быть object со ссылками на его inventory.",
+                evidence,
+                section: "inventory",
+                expected: "object whose non-null values resolve to this NPC inventory",
+                actual: equippedItems.ValueKind.ToString(),
+                repairHint: "Исправь equippedItems на object слотов; не прячь ссылку в scalar/array и не создавай предмет через materialization metadata."));
             return;
         }
 
@@ -980,7 +1033,7 @@ internal static class ActorMaterializationContract
     }
 
     private static bool HasObjectArrayEntries(JsonElement value, string propertyName) =>
-        HasArrayObjectMatching(value, propertyName, item => item.EnumerateObject().Any());
+        HasArrayObjectMatching(value, propertyName, HasMeaningfulJsonValue);
 
     private static bool HasArrayObjectMatching(
         JsonElement value,
@@ -1016,7 +1069,7 @@ internal static class ActorMaterializationContract
     private static bool HasMeaningfulObject(JsonElement value, string propertyName) =>
         value.TryGetProperty(propertyName, out var property) &&
         property.ValueKind == JsonValueKind.Object &&
-        property.EnumerateObject().Any(entry => entry.Value.ValueKind != JsonValueKind.Null);
+        HasMeaningfulJsonValue(property);
 
     private static bool HasMeaningfulDisposition(JsonElement profile)
     {
@@ -1025,12 +1078,22 @@ internal static class ActorMaterializationContract
 
         return disposition.ValueKind switch
         {
-            JsonValueKind.Object => disposition.EnumerateObject().Any(entry =>
-                entry.Value.ValueKind != JsonValueKind.Null),
+            JsonValueKind.Object => HasMeaningfulJsonValue(disposition),
             JsonValueKind.String => !string.IsNullOrWhiteSpace(disposition.GetString()),
             _ => false
         };
     }
+
+    private static bool HasMeaningfulJsonValue(JsonElement value) =>
+        value.ValueKind switch
+        {
+            JsonValueKind.String => !string.IsNullOrWhiteSpace(value.GetString()),
+            JsonValueKind.Number => true,
+            JsonValueKind.True or JsonValueKind.False => true,
+            JsonValueKind.Object => value.EnumerateObject().Any(entry => HasMeaningfulJsonValue(entry.Value)),
+            JsonValueKind.Array => value.EnumerateArray().Any(HasMeaningfulJsonValue),
+            _ => false
+        };
 
     private static string Describe(JsonElement value, string propertyName) =>
         value.TryGetProperty(propertyName, out var property)

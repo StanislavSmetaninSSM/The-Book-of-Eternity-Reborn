@@ -3932,6 +3932,10 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("saref_agent", matrix, StringComparison.Ordinal);
         Assert.Contains("non-vacant Shining", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("player_soul", matrix, StringComparison.Ordinal);
+        Assert.Contains("authoritative trade evidence is unavailable", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("canTrade=false", matrix, StringComparison.Ordinal);
+        Assert.Contains("authoritative trade evidence is unavailable", daemon, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("canTrade=false", daemon, StringComparison.Ordinal);
 
         Assert.Contains("AFTERLIFE ACTOR MATERIALIZATION V1", examples, StringComparison.Ordinal);
         Assert.Contains("\"relationships\": { \"state\": \"populated\" }", examples, StringComparison.Ordinal);

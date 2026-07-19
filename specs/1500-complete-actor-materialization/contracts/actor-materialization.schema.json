@@ -16,7 +16,7 @@
   ],
   "properties": {
     "schemaVersion": { "const": 1 },
-    "materializationId": { "type": "string", "minLength": 1 },
+    "materializationId": { "type": "string", "minLength": 1, "pattern": "^.*\\S.*$" },
     "actorType": {
       "enum": [
         "mortal_npc",
@@ -30,25 +30,79 @@
         "custom_afterlife_actor"
       ]
     },
-    "actorId": { "type": "string", "minLength": 1 },
+    "actorId": { "type": "string", "minLength": 1, "pattern": "^.*\\S.*$" },
     "materializedAtTurn": { "type": "integer", "minimum": 0 },
     "state": { "const": "complete" },
     "capabilities": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["canFight", "canTeach", "canTrade"],
-      "properties": {
-        "canFight": { "type": "boolean" },
-        "canTeach": { "type": "boolean" },
-        "canTrade": { "type": "boolean" },
-        "ownsItems": { "type": "boolean" }
-      }
+      "type": "object"
     },
     "sections": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#/$defs/sectionDisposition" }
+      "type": "object"
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "actorType": { "const": "mortal_npc" } },
+        "required": ["actorType"]
+      },
+      "then": {
+        "properties": {
+          "capabilities": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["canFight", "canTeach", "canTrade", "ownsItems"],
+            "properties": {
+              "canFight": { "type": "boolean" },
+              "canTeach": { "type": "boolean" },
+              "canTrade": { "type": "boolean" },
+              "ownsItems": { "type": "boolean" }
+            }
+          },
+          "sections": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["skills", "inventory", "fateCards", "personalQuests", "relationships"],
+            "properties": {
+              "skills": { "$ref": "#/$defs/sectionDisposition" },
+              "inventory": { "$ref": "#/$defs/sectionDisposition" },
+              "fateCards": { "$ref": "#/$defs/sectionDisposition" },
+              "personalQuests": { "$ref": "#/$defs/sectionDisposition" },
+              "relationships": { "$ref": "#/$defs/sectionDisposition" }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "capabilities": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["canFight", "canTeach", "canTrade"],
+            "properties": {
+              "canFight": { "type": "boolean" },
+              "canTeach": { "type": "boolean" },
+              "canTrade": { "type": "boolean" }
+            }
+          },
+          "sections": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["standardArts", "specialArts", "customStates", "fateCards", "relationships", "agency", "progressionHistory"],
+            "properties": {
+              "standardArts": { "$ref": "#/$defs/sectionDisposition" },
+              "specialArts": { "$ref": "#/$defs/sectionDisposition" },
+              "customStates": { "$ref": "#/$defs/sectionDisposition" },
+              "fateCards": { "$ref": "#/$defs/sectionDisposition" },
+              "relationships": { "$ref": "#/$defs/sectionDisposition" },
+              "agency": { "$ref": "#/$defs/sectionDisposition" },
+              "progressionHistory": { "$ref": "#/$defs/sectionDisposition" }
+            }
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
     "sectionDisposition": {
       "oneOf": [
@@ -64,7 +118,7 @@
           "required": ["state", "reason"],
           "properties": {
             "state": { "const": "empty_by_design" },
-            "reason": { "type": "string", "minLength": 1 }
+            "reason": { "type": "string", "minLength": 1, "pattern": "^.*\\S.*$" }
           }
         }
       ]

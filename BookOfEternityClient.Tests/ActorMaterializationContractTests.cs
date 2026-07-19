@@ -513,6 +513,61 @@ public sealed class ActorMaterializationContractTests
     }
 
     [Fact]
+    public void Validate_DuplicateTopLevelMaterialization_ReturnsDuplicatePropertyIssue()
+    {
+        var json = CreateMortalEnvelope().Replace(
+            "\"materialization\": {",
+            "\"materialization\": null, \"materialization\": {");
+        using var document = JsonDocument.Parse(json);
+
+        var issues = ActorMaterializationContract.Validate(
+            document.RootElement,
+            "npc",
+            ActorMaterializationFamily.Mortal,
+            CreateMortalEvidence(),
+            requireEnvelope: true);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_duplicate_property" &&
+            issue.FilePath == "npc.materialization");
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_InitialIdWithoutNpcId_RequiresFirstMaterializationEnvelope()
+    {
+        using var document = JsonDocument.Parse("""
+        {
+          "initialId": "npc_missing_identity_node"
+        }
+        """);
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.Contains(issues, issue => issue.Code == "actor_materialization_missing");
+    }
+
+    [Theory]
+    [InlineData("actorType")]
+    [InlineData("actorId")]
+    public void ValidateCanonicalAfterlifeProfile_MissingOuterCanonicalIdentity_ReturnsBindingIssue(
+        string propertyName)
+    {
+        var profile = CreateAfterlifeProfile();
+        profile.Remove(propertyName);
+        using var document = JsonDocument.Parse(profile.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateCanonicalAfterlifeProfile(
+            document.RootElement,
+            "profile",
+            requireEnvelope: true);
+
+        Assert.Contains(issues, issue => issue.Code == "actor_materialization_actor_binding_mismatch");
+    }
+
+    [Fact]
     public void ValidateMortalNpc_InventoryContainingOnlyNull_DoesNotCountAsInventoryContent()
     {
         var actor = CreateMortalNpcWithEnvelope();
@@ -550,6 +605,43 @@ public sealed class ActorMaterializationContractTests
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_inventory_reference_mismatch" &&
             issue.Section == "inventory");
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_NonObjectEquippedItems_ReturnsReferenceIssue()
+    {
+        var actor = CreateMortalNpcWithEnvelope();
+        actor["equippedItems"] = "item_arden_blade";
+        using var document = JsonDocument.Parse(actor.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_inventory_reference_mismatch" &&
+            issue.Section == "inventory");
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_NullPlaceholderQuest_DoesNotCountAsPopulatedContent()
+    {
+        var actor = CreateMortalNpcWithEnvelope();
+        actor["personalQuests"] = new JsonArray
+        {
+            new JsonObject { ["placeholder"] = null }
+        };
+        using var document = JsonDocument.Parse(actor.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_section_content_mismatch" &&
+            issue.Section == "personalQuests");
     }
 
     [Fact]
@@ -751,21 +843,83 @@ public sealed class ActorMaterializationContractTests
     }
 
     [Fact]
-    public void ValidateAfterlifeProfile_UnavailableTradeEvidence_DoesNotForceCanTradeFalse()
+    public void ValidateCanonicalAfterlifeProfile_UnavailableTradeEvidenceFailsClosed()
     {
         var profile = CreateAfterlifeProfile();
         profile["materialization"]!["capabilities"]!["canTrade"] = true;
+        using var document = JsonDocument.Parse(profile.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateCanonicalAfterlifeProfile(
+            document.RootElement,
+            "profile",
+            requireEnvelope: true);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canTrade");
+    }
+
+    [Fact]
+    public void ValidateAfterlifeProfile_WhitespaceOnlyGoal_DoesNotCountAsAgencyContent()
+    {
+        var profile = CreateAfterlifeProfile();
+        profile["goals"] = new JsonObject { ["goalId"] = " " };
+        profile["materialization"]!["sections"]!["agency"] = new JsonObject { ["state"] = "populated" };
         using var document = JsonDocument.Parse(profile.ToJsonString());
 
         var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
             document.RootElement,
             "profile",
             requireEnvelope: true,
-            canTradeEvidence: null);
+            canTradeEvidence: false);
 
-        Assert.DoesNotContain(issues, issue =>
-            issue.Code == "actor_materialization_capability_mismatch" &&
-            issue.Section == "canTrade");
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_section_content_mismatch" &&
+            issue.Section == "agency");
+    }
+
+    [Fact]
+    public void ActorMaterializationSchema_ClosesFamilySpecificKeysAndWhitespaceStrings()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var schemaPath = Path.Combine(
+            repositoryRoot,
+            "specs",
+            "1500-complete-actor-materialization",
+            "contracts",
+            "actor-materialization.schema.json");
+        using var document = JsonDocument.Parse(File.ReadAllText(schemaPath));
+        var root = document.RootElement;
+
+        Assert.Equal("^.*\\S.*$", root.GetProperty("properties").GetProperty("actorId").GetProperty("pattern").GetString());
+        Assert.Equal("^.*\\S.*$", root.GetProperty("properties").GetProperty("materializationId").GetProperty("pattern").GetString());
+        Assert.True(root.TryGetProperty("allOf", out var branches));
+        var familyBranch = Assert.Single(branches.EnumerateArray());
+        var mortal = familyBranch.GetProperty("then").GetProperty("properties");
+        var afterlife = familyBranch.GetProperty("else").GetProperty("properties");
+
+        Assert.Contains("ownsItems", mortal.GetProperty("capabilities").GetProperty("required").EnumerateArray().Select(item => item.GetString()));
+        Assert.DoesNotContain("ownsItems", afterlife.GetProperty("capabilities").GetProperty("properties").EnumerateObject().Select(item => item.Name));
+        Assert.Equal(5, mortal.GetProperty("sections").GetProperty("required").GetArrayLength());
+        Assert.Equal(7, afterlife.GetProperty("sections").GetProperty("required").GetArrayLength());
+        Assert.False(mortal.GetProperty("sections").GetProperty("additionalProperties").GetBoolean());
+        Assert.False(afterlife.GetProperty("sections").GetProperty("additionalProperties").GetBoolean());
+    }
+
+    [Fact]
+    public void ValidateUniqueMaterializationIds_DuplicateIdsReturnIssue()
+    {
+        using var first = JsonDocument.Parse(CreateMortalEnvelope());
+        using var second = JsonDocument.Parse(CreateMortalEnvelope());
+
+        var issues = ActorMaterializationContract.ValidateUniqueMaterializationIds(
+            new[]
+            {
+                (first.RootElement, "first", "mortal_npc", "npc_arden"),
+                (second.RootElement, "second", "mortal_npc", "npc_other")
+            });
+
+        Assert.Contains(issues, issue => issue.Code == "actor_materialization_duplicate_id");
     }
 
     [Theory]
@@ -942,4 +1096,24 @@ public sealed class ActorMaterializationContractTests
       }
     }
     """;
+
+    private static string FindRepositoryRoot()
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory != null)
+        {
+            if (Directory.Exists(Path.Combine(directory.FullName, "specs")) &&
+                File.Exists(Path.Combine(
+                    directory.FullName,
+                    "BookOfEternityClient.Tests",
+                    "BookOfEternityClient.Tests.csproj")))
+            {
+                return directory.FullName;
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new DirectoryNotFoundException("Repository root was not found.");
+    }
 }

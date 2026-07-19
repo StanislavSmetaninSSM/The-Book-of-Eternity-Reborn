@@ -115,7 +115,7 @@ Exact aliases already accepted by canonical profile identity are normalized only
 |---|---|
 | `canFight` | At least one usable standard or special spiritual art |
 | `canTeach` | Existing mentor authority and at least one teachable art/showcase entry |
-| `canTrade` | Realm-appropriate Guardian/Shining trade authority |
+| `canTrade` | Realm-appropriate Guardian/Shining trade authority. When that authoritative evidence is unavailable at the validation boundary, validation fails closed and requires `false`; it must never infer trade authority from prose, role names, or genre vocabulary. |
 
 Afterlife envelopes do not use `ownsItems`; Mortal inventory remains forbidden.
 
@@ -154,11 +154,14 @@ Exceptions:
 
 - `actor_materialization_missing`
 - `actor_materialization_invalid_envelope`
+- `actor_materialization_duplicate_property`
+- `actor_materialization_invalid_actor_type`
 - `actor_materialization_actor_binding_mismatch`
 - `actor_materialization_duplicate_id`
 - `actor_materialization_section_missing`
 - `actor_materialization_section_content_mismatch`
 - `actor_materialization_capability_mismatch`
+- `actor_materialization_inventory_reference_mismatch`
 - `afterlife_actor_materialization_profile_missing`
 - `afterlife_actor_materialization_profile_ambiguous`
 - `actor_materialization_existing_resend_forbidden`
