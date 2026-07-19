@@ -6,7 +6,7 @@
 
 ## Summary
 
-Add a setting-agnostic, versioned first-materialization contract for persistent Mortal NPCs and significant afterlife actors. The validator will require an actor-bound private `materialization` envelope for current-turn creations and promotions, compare declared section dispositions and capabilities with canonical actor data, bind afterlife type-specific records to common profiles, preserve untouched legacy saves, and emit bounded repair packets. The client will never infer skills, possessions, roles, or capabilities from prose. System Guardian seeds remain client-owned and receive deterministic envelopes. Mortal and afterlife prompts, examples, manifests, contract documentation, and source guards are updated with the runtime change.
+Add a setting-agnostic, versioned first-materialization contract for persistent Mortal NPCs and significant afterlife actors. The validator will require an actor-bound private `materialization` envelope for current-turn creations and promotions, compare declared section dispositions and capabilities with canonical actor data, bind afterlife type-specific records to common profiles, preserve untouched legacy saves, and emit bounded repair packets. Positive afterlife trade authority is derived only from exact current Guardian/Shining state, while actor-owned memory and real goals/quests/activity prove agency. The worker apply gate mechanically preserves protected actor data outside the named repair scope. The client will never infer skills, possessions, roles, or capabilities from prose. System Guardian seeds remain client-owned and receive deterministic envelopes. Mortal and afterlife prompts, examples, manifests, contract documentation, and source guards are updated with the runtime change.
 
 ## Technical Context
 
@@ -77,11 +77,12 @@ BookOfEternityClient/
 ├── Services/
 │   ├── ActorMaterializationContract.cs
 │   ├── SystemGuardianLibraryService.cs
-│   ├── Validation/ValidationService.ActorMaterialization.cs
-│   ├── Validation/ValidationService.NpcWorldAndMeta.cs
-│   ├── Validation/ValidationService.AfterlifeEntityProfiles.cs
-│   ├── Validation/ValidationService.GuardiansAndAfterlife.cs
-│   ├── Validation/ValidationService.ShiningAbode.cs
+│   ├── Validation/ValidationService.ActorMaterializationContinuity.cs
+│   ├── Validation/ValidationService.ActorMaterializationBinding.cs
+│   ├── Validation/ValidationService.ActorMaterializationTradeAuthority.cs
+│   ├── GmWorkers/ActorMaterializationRepairPreservationGuard.cs
+│   ├── GmWorkers/GmWorkerApplyGate.cs
+│   ├── GmWorkers/GmWorkerTaskPacketBuilder.cs
 │   └── CanonicalStateNormalizer/
 ├── Core/GameEngine/GameEngine.ValidationAndRepair.cs
 └── game_master_daemon.ps1

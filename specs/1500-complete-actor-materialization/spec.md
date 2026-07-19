@@ -147,7 +147,7 @@ As the GM agent, I receive one bounded, setting-agnostic authoring contract and 
 - **SC-002**: All supported valid minimal Mortal NPC fixtures pass without requiring a genre-specific skill, item, profession, or Fate Card.
 - **SC-003**: New Guardian, resident, radiant actor, and Shining faction-head fixtures cannot pass without exact common-profile binding or an explicitly documented client-owned equivalent.
 - **SC-004**: Existing unchanged legacy fixtures remain valid and no test observes client-authored narrative content added during normalization or repair preparation.
-- **SC-005**: Repair tests show that already valid actor sections remain byte/semantic-equivalent while only missing sections are requested.
+- **SC-005**: Repair tests show that already valid actor sections remain semantically equivalent, only the exact named repair subtree may change, and proposals that alter protected actor data are rejected before apply.
 - **SC-006**: Mortal World, Chaos Sea, and Shining Abode worked examples pass documentation validation and demonstrate at least one populated and one deliberately empty section.
 - **SC-007**: Source guards find no actor materialization branch based on genre-specific names, descriptions, occupations, tags, labels, IDs, or keyword tables.
 - **SC-008**: Existing console/browser actor detail tests continue to pass without rendering materialization metadata in player mode.
