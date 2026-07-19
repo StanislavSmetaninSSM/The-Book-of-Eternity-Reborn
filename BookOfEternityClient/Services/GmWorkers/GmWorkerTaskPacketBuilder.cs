@@ -21,7 +21,7 @@ public static class GmWorkerTaskPacketBuilder
             throw new ArgumentException("At least one validation issue is required.", nameof(validationIssues));
 
         var allowedPaths = validationIssues
-            .Select(issue => issue.FilePath.Replace('\\', '/'))
+            .Select(ResolveValidationTargetPath)
             .Where(GmWorkerContractValidator.IsSafeRelativePath)
             .Where(path => profile.Permissions.ProposalWritePaths.Any(pattern => GmWorkerContractValidator.PathMatches(pattern, path)))
             .Distinct(StringComparer.Ordinal)
@@ -52,7 +52,11 @@ public static class GmWorkerTaskPacketBuilder
             {
                 Code = string.IsNullOrWhiteSpace(issue.Code) ? "validation_issue" : issue.Code!,
                 Path = issue.FilePath.Replace('\\', '/'),
-                Message = issue.Message
+                Message = issue.Message,
+                Actor = issue.Actor,
+                Section = issue.Section,
+                Expected = issue.Expected,
+                Actual = issue.Actual
             }).ToArray(),
             ContextFiles = contextFiles,
             AllowedProposalPaths = allowedPaths,
@@ -61,16 +65,19 @@ public static class GmWorkerTaskPacketBuilder
                 "Return a worker-proposal-v1 JSON proposal.",
                 "Include changedFiles only for allowedProposalPaths.",
                 "Validation must pass after the apply gate applies proposed changes.",
+                "For actor materialization repair, preserve protected actor data and change only the exact actor/section coordinates carried by validationIssues.",
                 "Keep session/request/turn metadata tied to sourceTurn."
             ],
             ForbiddenActions =
             [
                 "Do not edit canonical game_session files directly.",
                 "Do not write outside allowedProposalPaths.",
+                "Do not rewrite untargeted actor fields, untargeted actors, or unrelated canonical root data.",
                 "Do not create terminal signals or validation ready files manually."
             ],
             Instructions =
                 "Return a worker-proposal-v1 JSON proposal. Include changedFiles only for allowedProposalPaths. " +
+                "Use validationIssues actor/section/expected/actual coordinates as the exact repair scope. " +
                 "Do not edit canonical game_session files directly."
         };
 
@@ -79,6 +86,37 @@ public static class GmWorkerTaskPacketBuilder
             throw new InvalidOperationException(string.Join(Environment.NewLine, taskValidation.Errors));
 
         return task;
+    }
+
+    private static string ResolveValidationTargetPath(ValidationIssue issue)
+    {
+        var code = issue.Code ?? string.Empty;
+        var actor = issue.Actor ?? string.Empty;
+        if (actor.StartsWith("mortal_npc:", StringComparison.Ordinal) &&
+            code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase))
+        {
+            return "game_state/npcs/npc_core.json";
+        }
+
+        if (code.StartsWith("afterlife_actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
+            (!string.IsNullOrWhiteSpace(actor) &&
+             actor.Contains(':', StringComparison.Ordinal) &&
+             code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase)))
+        {
+            return AfterlifeEntityProfileState.StatePath;
+        }
+
+        var normalized = issue.FilePath.Replace('\\', '/');
+        var jsonlEnd = FindExtensionEnd(normalized, ".jsonl");
+        var jsonEnd = FindExtensionEnd(normalized, ".json");
+        var end = jsonlEnd >= 0 ? jsonlEnd : jsonEnd;
+        return end >= 0 ? normalized[..end] : normalized;
+    }
+
+    private static int FindExtensionEnd(string path, string extension)
+    {
+        var index = path.IndexOf(extension, StringComparison.OrdinalIgnoreCase);
+        return index < 0 ? -1 : index + extension.Length;
     }
 
     public static WorkerTaskPacket BuildNarrativeDraftTask(

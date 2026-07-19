@@ -194,6 +194,10 @@ public sealed record WorkerValidationIssue
     public string Code { get; init; } = "";
     public string Path { get; init; } = "";
     public string Message { get; init; } = "";
+    public string? Actor { get; init; }
+    public string? Section { get; init; }
+    public string? Expected { get; init; }
+    public string? Actual { get; init; }
 }
 
 public sealed record WorkerFileReference

@@ -61,6 +61,24 @@ public sealed class GmWorkerApplyGate
             return decision;
         }
 
+        var preservationErrors = await VerifyActorMaterializationRepairPreservationAsync(proposal, task);
+        if (preservationErrors.Count > 0)
+        {
+            var decision = BuildDecision(
+                proposal.ProposalId,
+                ApplyGateResult.Rejected,
+                checkedPaths,
+                scopePassed: false,
+                violations: preservationErrors,
+                validationRequired: profile.Permissions.RequiresValidation,
+                validationPassed: false,
+                issueCount: 0,
+                appliedFiles: [],
+                rejectionReasons: preservationErrors);
+            await RecordDecisionAsync(proposal, decision);
+            return decision;
+        }
+
         var rollback = new List<RollbackEntry>();
         var appliedFiles = new List<string>();
         try
@@ -144,6 +162,30 @@ public sealed class GmWorkerApplyGate
             var content = await _fs.ReadFileAsync(changedFile.ContentRef);
             if (content == null)
                 errors.Add($"changedFiles contentRef does not exist: {changedFile.ContentRef}");
+        }
+
+        return errors;
+    }
+
+    private async Task<IReadOnlyList<string>> VerifyActorMaterializationRepairPreservationAsync(
+        WorkerProposal proposal,
+        WorkerTaskPacket task)
+    {
+        if (task.TaskType != WorkerTaskType.ValidationRepair)
+            return [];
+
+        var errors = new List<string>();
+        foreach (var changedFile in proposal.ChangedFiles)
+        {
+            var baseline = await _fs.ReadFileAsync(changedFile.Path);
+            var proposed = changedFile.ChangeKind == WorkerFileChangeKind.Delete
+                ? null
+                : await _fs.ReadFileAsync(changedFile.ContentRef!);
+            errors.AddRange(ActorMaterializationRepairPreservationGuard.Validate(
+                changedFile.Path,
+                baseline,
+                proposed,
+                task.ValidationIssues));
         }
 
         return errors;
