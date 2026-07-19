@@ -115,7 +115,7 @@ Exact aliases already accepted by canonical profile identity are normalized only
 |---|---|
 | `canFight` | At least one usable standard or special spiritual art |
 | `canTeach` | Existing mentor authority and at least one teachable art/showcase entry |
-| `canTrade` | Realm-appropriate Guardian/Shining trade authority. When that authoritative evidence is unavailable at the validation boundary, validation fails closed and requires `false`; it must never infer trade authority from prose, role names, or genre vocabulary. |
+| `canTrade` | Exact current realm authority: the one active Guardian whose abode is the current Chaos Sea abode, or a non-player secure/contested head of an operational Shining faction at trade tier 1 or higher. Missing or ambiguous authority fails closed to `false`; prose, role names, and genre vocabulary never count. |
 
 Afterlife envelopes do not use `ownsItems`; Mortal inventory remains forbidden.
 
@@ -128,12 +128,12 @@ Afterlife envelopes do not use `ownsItems`; Mortal inventory remains forbidden.
 | `customStates` | Common profile custom states |
 | `fateCards` | Common profile Fate Cards |
 | `relationships` | Common profile relationship records |
-| `agency` | Goals, personal quests, activities, masks/disposition, and current strategy inputs |
+| `agency` | Meaningful goals, non-empty personal quests, a meaningful current activity, or non-empty completed activity history. Masks, disposition, and progression strategy may inform behavior but do not satisfy this section alone. |
 | `progressionHistory` | Ledger and progression ledger evidence |
 
 ### Cross-file binding
 
-A significant non-player afterlife record must resolve by exact actor type and ID to one common profile. Guardians, residents, and Shining leadership retain their type-specific dossiers. The common profile is complementary authority for spiritual progression, Actor Brain inputs, relationships, and memory.
+A significant non-player afterlife record must resolve by exact actor type and ID to one common profile. Guardians, residents, and Shining leadership retain their type-specific dossiers. The common profile is complementary authority for spiritual progression, Actor Brain inputs, relationships, and memory. Every newly materialized profile must have actor-owned memory: the exact dedicated Guardian/resident thought journal when that surface exists, otherwise a non-empty profile `gmThoughtsSummary`.
 
 Exceptions:
 
@@ -167,3 +167,5 @@ Exceptions:
 - `actor_materialization_existing_resend_forbidden`
 
 Every issue records actor type/ID, section or capability where applicable, expected canonical target, and a bounded repair hint.
+
+Before applying a worker-authored actor materialization repair, the apply gate removes only the exact mutable subtree named by the issue and semantically compares the remaining canonical JSON. Any change to protected actor data, another actor, or unrelated root state rejects the proposal. An ambiguous-profile repair may only remove duplicates while retaining one otherwise unchanged canonical profile.

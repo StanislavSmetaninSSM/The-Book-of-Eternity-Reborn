@@ -8347,6 +8347,12 @@ Before writing the first durable profile, bind the source actor and profile by e
 
 Validation derives actor newness only from the client-owned validated pre-turn baseline. A malformed current source authority, malformed `profiles[]` root, duplicate source ID, or source actor without its exact ID is a repair-blocking error; do not omit that record, guess from its name, or reconstruct the baseline.
 
+Positive trade authority is exact and realm-local. In the Chaos Sea, `canTrade=true` is valid only for the one active Guardian whose abode is the exact current abode. In the Shining Abode, it is valid only for a non-player faction head whose leadership is secure or contested, whose faction is operational, and whose trade tier is at least 1. If that structured authority is absent or ambiguous, use `canTrade=false`.
+
+Actor-owned memory and agency are separate obligations. A new profile needs its exact Guardian/resident journal when such a dedicated journal exists, otherwise a non-empty `gmThoughtsSummary`. Mark agency `populated` only when the profile has meaningful `goals`, non-empty `personalQuests`, meaningful `currentActivity`, or non-empty `completedActivities`; `progressionStrategy or a mask alone` is not agency.
+
+Repairs are bounded. A repair packet may change only its exact actor and named section. The worker apply gate compares the proposal with canonical JSON and mechanically rejects protected actor data changes, including personality, unrelated sections, another actor, or root-level state.
+
 This compact envelope fragment shows a legitimate partly empty resident. The complete profile beside it still contains all required core fields and actor-owned memory; the fragment does not replace those fields:
 
 ```json
@@ -8534,6 +8540,30 @@ Valid response fragment:
           ]
         }
       ],
+      "goals": {
+        "goalId": "goal_guardian_mirror_preserve_truth",
+        "shortTermGoal": "Провести душу через суд зеркальной клятвы.",
+        "longTermGoal": "Сохранить в Обители правдивую память о нарушенных клятвах.",
+        "plan": "Сначала проверить готовность души отказаться от удобной лжи, затем открыть безопасное обучение.",
+        "gmThoughtsSummary": "Хранитель хочет помочь, но не позволит душе купить доверие одними обещаниями.",
+        "updatedAtTurn": 23
+      },
+      "personalQuests": [
+        {
+          "questId": "quest_mirror_oath_trial",
+          "title": "Суд зеркальной клятвы",
+          "status": "active",
+          "summary": "Проверить, откажется ли душа от выгодной лжи."
+        }
+      ],
+      "currentActivity": {
+        "activityId": "activity_prepare_mirror_trial",
+        "summary": "Хранитель готовит зал зеркал к испытанию души.",
+        "status": "active",
+        "updatedAtTurn": 23
+      },
+      "completedActivities": [],
+      "gmThoughtsSummary": "Я вижу, что душа ищет лёгкий ответ; сначала заставлю её назвать цену собственной правды.",
       "activeMaskId": "mask_wings_emissary",
       "masks": [
         {

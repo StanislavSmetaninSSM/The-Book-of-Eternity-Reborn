@@ -1,3 +1,5 @@
+using System.Text.Json;
+using BookOfEternityClient.Services;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -522,31 +524,59 @@ public sealed class PromptDocumentationCoverageTests
     public void MortalActorMaterializationContract_IsDocumentedForGm()
     {
         var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var example = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
 
-        foreach (var requiredText in new[]
-                 {
-                     "Actor Materialization v1",
-                     "materializationId",
-                     "materializedAtTurn",
-                     "actorType",
-                     "actorId",
-                     "capabilities",
-                     "sections",
-                     "populated",
-                     "empty_by_design",
-                     "in-world reason",
-                     "display name, prose, occupation, or setting genre",
-                     "existing NPC",
-                     "dedicated delta"
-                 })
+        foreach (var text in new[] { daemon, example })
         {
-            Assert.Contains(requiredText, daemon, StringComparison.OrdinalIgnoreCase);
+            foreach (var requiredText in new[]
+                     {
+                         "Actor Materialization v1",
+                         "materializationId",
+                         "materializedAtTurn",
+                         "actorType",
+                         "actorId",
+                         "capabilities",
+                         "sections",
+                         "populated",
+                         "empty_by_design",
+                         "in-world reason",
+                         "display name, prose, occupation, or setting genre",
+                         "existing NPC",
+                         "dedicated delta"
+                     })
+            {
+                Assert.Contains(requiredText, text, StringComparison.OrdinalIgnoreCase);
+            }
         }
 
-        Assert.Contains("\"actorType\": \"mortal_npc\"", daemon, StringComparison.Ordinal);
-        Assert.Contains("\"relationships\": { \"state\": \"populated\" }", daemon, StringComparison.Ordinal);
-        Assert.Contains("\"inventory\": {", daemon, StringComparison.Ordinal);
-        Assert.Contains("\"state\": \"empty_by_design\"", daemon, StringComparison.Ordinal);
+        foreach (var text in new[] { daemon, example })
+        {
+            Assert.Contains("\"actorType\": \"mortal_npc\"", text, StringComparison.Ordinal);
+            Assert.Contains("\"relationships\": { \"state\": \"populated\" }", text, StringComparison.Ordinal);
+            Assert.Contains("\"inventory\": {", text, StringComparison.Ordinal);
+            Assert.Contains("\"state\": \"empty_by_design\"", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("mortal_actor_materialization_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("E_CLI_Step_Main.txt", manifest, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MortalActorMaterializationWorkedExample_PassesExecutableContract()
+    {
+        var snippet = Assert.Single(ExampleSnippetExtractor.ExtractAll(), candidate =>
+            string.Equals(candidate.File, "E_CLI_Step_Main.txt", StringComparison.OrdinalIgnoreCase) &&
+            candidate.RawText.Contains("mat_npc_orbital_xenobiologist_turn_4", StringComparison.Ordinal));
+        using var document = JsonDocument.Parse(snippet.RawText);
+        var npc = document.RootElement.GetProperty("NPCsInScene")[0];
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            npc,
+            "Examples/E_CLI_Step_Main.txt.NPCsInScene[0]",
+            "NPCsInScene");
+
+        Assert.Empty(issues);
     }
 
     private static string ReadRepoFile(params string[] parts) =>

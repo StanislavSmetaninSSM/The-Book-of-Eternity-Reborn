@@ -1234,3 +1234,127 @@ Only then:
 - narrate outcomes
 - update files
 - signal readiness
+
+==================================================
+11. MORTAL ACTOR MATERIALIZATION V1
+==================================================
+
+Actor Materialization v1 applies when a genuinely new significant Mortal NPC first becomes durable state. Bind the full NPC and its immutable envelope by exact `mortal_npc:<initialId>`. Do not infer skills, inventory, teaching, trade, combat ability, or identity from a display name, prose, occupation, or setting genre. The example world below is only evidence that the contract is setting-neutral; it is not a keyword template for other worlds.
+
+Every required section is either `populated` by structured NPC data or `empty_by_design` with a concise in-world reason. An existing NPC keeps the original envelope unchanged; later changes use a dedicated delta or command surface instead of resending the full object.
+
+Worked first-materialization fragment for `game_state/npcs/npc_core.json`:
+
+```json
+{
+  "NPCsInScene": [
+    {
+      "NPCId": null,
+      "initialId": "npc_orbital_xenobiologist",
+      "npcName": "Лиана Восс",
+      "name": "Лиана Восс",
+      "role": "ксенобиолог исследовательской станции",
+      "image_prompt": "orbital xenobiologist in a practical pressure suit beside a sealed specimen bay, cinematic science fiction portrait",
+      "rarity": "Rare",
+      "worldview": "Любое неизвестное явление следует сперва наблюдать, а уже затем пытаться использовать.",
+      "personalityArchetype": "cautious_field_scientist",
+      "culturalStance": "Pragmatist",
+      "race": "Человек",
+      "class": "Исследователь",
+      "appearanceDescription": "Женщина средних лет в рабочем комбинезоне с потёртым планшетом на предплечье.",
+      "history": "Руководит наблюдением за организмами, обнаруженными под ледяной корой спутника.",
+      "progressionType": "static_social_npc",
+      "initialLocationId": null,
+      "currentLocationId": "location_orbital_specimen_bay",
+      "currentLocationName": "Орбитальный ксенобиологический отсек",
+      "age": 43,
+      "level": 3,
+      "experience": 0,
+      "experienceForNextLevel": 300,
+      "relationshipLevel": 0,
+      "attitude": "Neutral",
+      "playerCompanionDirective": "not_companion",
+      "culturalLayer": "Научный экипаж дальнего орбитального комплекса",
+      "personalityTraits": [
+        {
+          "traitId": "trait_liana_methodical",
+          "name": "Методичность",
+          "summary": "Не делает выводов без проверяемых наблюдений.",
+          "traitName": "Методичность",
+          "description": "Лиана последовательно отделяет факты от предположений.",
+          "valueDescription": "Сложнее убедить её рисковать, но она замечает противоречия в доказательствах."
+        }
+      ],
+      "maxWeight": 0,
+      "totalWeight": 0,
+      "isOverloaded": false,
+      "progressionTrackers": {
+        "active": [],
+        "completed": [],
+        "summary": "Личная линия развития пока не началась."
+      },
+      "plans": "Проверить, почему образец реагирует на голос игрока.",
+      "personalQuests": [],
+      "relationshipLock": {
+        "isLocked": false,
+        "lockState": "none",
+        "reason": "",
+        "breakthroughQuestId": null
+      },
+      "characteristics": {
+        "strength": 7,
+        "dexterity": 9,
+        "constitution": 9,
+        "intelligence": 14,
+        "wisdom": 12,
+        "faith": 4,
+        "attractiveness": 10,
+        "trade": 6,
+        "persuasion": 9,
+        "perception": 13,
+        "luck": 8,
+        "speed": 8
+      },
+      "activeSkills": [],
+      "passiveSkills": [],
+      "equippedItems": {},
+      "fateCards": [],
+      "inventory": [],
+      "goals": {
+        "primary": {
+          "goalId": "goal_liana_understand_specimen",
+          "title": "Понять реакцию образца",
+          "status": "active",
+          "summary": "Установить, почему организм отвечает на присутствие игрока."
+        },
+        "shortTerm": "Получить безопасную запись реакции образца.",
+        "longTerm": "Определить, является ли организм разумным."
+      },
+      "sceneStatus": "present",
+      "turn": 4,
+      "lastSeenAtUtc": "2026-07-18T05:00:00Z",
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_npc_orbital_xenobiologist_turn_4",
+        "actorType": "mortal_npc",
+        "actorId": "npc_orbital_xenobiologist",
+        "materializedAtTurn": 4,
+        "state": "complete",
+        "capabilities": {
+          "canFight": false,
+          "canTeach": false,
+          "canTrade": false,
+          "ownsItems": false
+        },
+        "sections": {
+          "skills": { "state": "empty_by_design", "reason": "В этой встрече Лиана не раскрыла оформленных игровых навыков." },
+          "inventory": { "state": "empty_by_design", "reason": "Значимых переносимых предметов при ней сейчас нет." },
+          "fateCards": { "state": "empty_by_design", "reason": "Отдельный узел её судьбы ещё не проявился." },
+          "personalQuests": { "state": "empty_by_design", "reason": "Она пока не просит игрока о личной помощи." },
+          "relationships": { "state": "populated" }
+        }
+      }
+    }
+  ]
+}
+```

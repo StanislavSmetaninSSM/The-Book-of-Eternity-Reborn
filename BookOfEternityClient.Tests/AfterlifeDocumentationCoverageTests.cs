@@ -3936,6 +3936,18 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("canTrade=false", matrix, StringComparison.Ordinal);
         Assert.Contains("authoritative trade evidence is unavailable", daemon, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("canTrade=false", daemon, StringComparison.Ordinal);
+        foreach (var text in new[] { matrix, examples, daemon })
+        {
+            Assert.Contains("exact current abode", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("trade tier", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("secure or contested", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("goals", text, StringComparison.Ordinal);
+            Assert.Contains("personalQuests", text, StringComparison.Ordinal);
+            Assert.Contains("currentActivity", text, StringComparison.Ordinal);
+            Assert.Contains("completedActivities", text, StringComparison.Ordinal);
+            Assert.Contains("progressionStrategy or a mask alone", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("protected actor data", text, StringComparison.OrdinalIgnoreCase);
+        }
         Assert.Contains("malformed current source authority", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("validated pre-turn baseline", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("malformed current source authority", examples, StringComparison.OrdinalIgnoreCase);
@@ -3946,8 +3958,29 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("\"state\": \"empty_by_design\"", examples, StringComparison.Ordinal);
         Assert.Contains("afterlife_actor_materialization_v1", manifest, StringComparison.Ordinal);
         Assert.Contains("afterlife_actor_profile_binding_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("exact current abode", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("trade tier", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("protected actor data", manifest, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("malformed current source authority", manifest, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("validated pre-turn baseline", manifest, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void AfterlifeActorMaterializationWorkedExample_PassesExecutableContract()
+    {
+        var snippet = Assert.Single(ExampleSnippetExtractor.ExtractAll(), candidate =>
+            string.Equals(candidate.File, "E_CLI_Afterlife_Turns.txt", StringComparison.OrdinalIgnoreCase) &&
+            candidate.RawText.Contains("mat_guardian_mirror_turn_23", StringComparison.Ordinal));
+        using var document = JsonDocument.Parse(snippet.RawText);
+        var profile = document.RootElement.GetProperty("afterlifeEntityProfileUpdates")[0];
+
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            profile,
+            "Examples/E_CLI_Afterlife_Turns.txt.afterlifeEntityProfileUpdates[0]",
+            requireEnvelope: true,
+            canTradeEvidence: false);
+
+        Assert.Empty(issues);
     }
 
     private static string[] ShiningConstantValues(params string[] prefixes) =>

@@ -10,22 +10,39 @@ public sealed class ValidationSourceGuardTests
     [Fact]
     public void ActorMaterializationAuthority_MustNotUseProseOrGenreKeywordInference()
     {
+        var validationDirectory = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "Validation");
         var sourceFiles = new[]
-        {
-            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "ActorMaterializationContract.cs"),
-            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "Validation", "ValidationService.ActorMaterializationContinuity.cs"),
-            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "Validation", "ValidationService.ActorMaterializationBinding.cs")
-        };
+            {
+                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "ActorMaterializationContract.cs")
+            }
+            .Concat(Directory.EnumerateFiles(
+                validationDirectory,
+                "ValidationService.ActorMaterialization*.cs",
+                SearchOption.TopDirectoryOnly))
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .ToArray();
         var source = string.Join(Environment.NewLine, sourceFiles.Select(File.ReadAllText));
+
+        Assert.Contains(
+            sourceFiles,
+            path => path.EndsWith("ValidationService.ActorMaterializationTradeAuthority.cs", StringComparison.Ordinal));
 
         var proseAuthorityRead = new Regex(
             "(?:TryGetProperty|ReadActorMaterializationString|TryReadExactNonEmptyString)\\s*\\([^\\r\\n;]*\\\"(?:displayName|name|description|occupation|profession|tags|history)\\\"",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        var proseStringMatching = new Regex(
+            "(?:(?:displayName|name|description|occupation|profession|tags|history|role|genre)\\w*\\s*\\.\\s*(?:Contains|StartsWith|EndsWith|IndexOf)\\s*\\(|(?:Contains|StartsWith|EndsWith|IndexOf)\\s*\\(\\s*(?:displayName|name|description|occupation|profession|tags|history|role|genre)\\w*)",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         var genreKeywordTable = new Regex(
             "(?:keyword|genre|fantasy|science.?fiction|post.?apoc|occupation|profession)[^\\r\\n]*(?:Dictionary|HashSet)|(?:Dictionary|HashSet)[^\\r\\n]*(?:keyword|genre|fantasy|science.?fiction|post.?apoc|occupation|profession)",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
         Assert.DoesNotMatch(proseAuthorityRead, source);
+        Assert.DoesNotMatch(proseStringMatching, source);
         Assert.DoesNotMatch(genreKeywordTable, source);
     }
 

@@ -1,5 +1,14 @@
 {
   "version": 1,
+  "mortalActorMaterializationCoverage": [
+    {
+      "contractId": "mortal_actor_materialization_v1",
+      "file": "E_CLI_Step_Main.txt",
+      "statePath": "game_state/npcs/npc_core.json",
+      "responseSurface": "NPCsInScene[].materialization / UpdateNPCs[].materialization",
+      "description": "First significant Mortal NPC carries a complete setting-neutral full object, immutable exact identity envelope, structured capability truth, explicit section dispositions, and later changes use dedicated deltas instead of prose or genre inference."
+    }
+  ],
   "trainingShowcaseCoverage": [
     {
       "contractId": "training_showcases_v1",
@@ -94,7 +103,7 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "afterlifeEntityProfileUpdates[].materialization",
-      "description": "First significant afterlife actor profile carries an immutable exact identity envelope, capability truth, complete section dispositions, and actor-owned memory."
+      "description": "First significant afterlife actor profile carries an immutable exact identity envelope, capability truth, complete section dispositions, actor-owned memory, real goals/quests/activity agency, exact current abode Guardian trade authority or secure/contested operational Shining head trade tier authority, and bounded repairs that preserve protected actor data."
     },
     {
       "contractId": "afterlife_actor_profile_binding_v1",

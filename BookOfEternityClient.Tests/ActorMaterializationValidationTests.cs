@@ -533,7 +533,6 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Theory]
-    [InlineData("vacant", "")]
     [InlineData("player_soul", "player_soul")]
     public async Task ValidateAcceptedTurnContinuity_ShiningLeadershipExceptions_DoNotRequireNonPlayerProfile(
         string actorType,
@@ -554,6 +553,27 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         Assert.DoesNotContain(issues, issue =>
             issue.Code is "afterlife_actor_materialization_profile_missing" or "actor_materialization_missing" &&
             issue.Actor == $"{actorType}:{actorId}");
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_GenuinelyVacantShiningLeadership_DoesNotRequireProfile()
+    {
+        const string actorType = "guardian";
+        const string actorId = "unused_vacant_head";
+        var preTurnShining = BuildShiningLeadershipBindingStateJson(actorType, actorId, "vacant");
+        var currentShining = BuildShiningLeadershipBindingStateJson(actorType, actorId, "vacant");
+        var emptyProfiles = BuildCompleteAfterlifeBindingProfileStateJson(actorType, actorId, includeProfile: false);
+        await WriteAfterlifeBindingScenarioAsync(
+            ShiningAbodeState.StatePath,
+            currentShining,
+            preTurnShining,
+            emptyProfiles,
+            emptyProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is "afterlife_actor_materialization_profile_missing" or "actor_materialization_missing");
     }
 
     [Theory]

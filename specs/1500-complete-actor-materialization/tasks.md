@@ -44,3 +44,10 @@
   - Evidence: `git diff --check` passed. The complete project ran 5878 tests: 5870 passed; seven failures reproduce identically on base `9a149014`, and the remaining Agent Console HTTP 500 passed immediately when rerun in isolation.
 - [ ] T022 Perform independent code review against issue #1500 and Spec Kit artifacts; repair findings and rerun verification.
 - [ ] T023 Update task checkboxes only from verified evidence, commit, push, open PR, review CI-independent evidence, and merge when clean.
+
+## Phase 7 - Independent review remediation
+
+- [x] T024 Add exact positive afterlife trade-authority tests and fail closed on ambiguous current actor identity aliases.
+- [x] T025 Require actor-owned memory for every new afterlife profile and require goals, quests, or activity for populated agency.
+- [x] T026 Enforce bounded actor repair scope mechanically in the worker apply gate, including exact actor/section coordinates and protected-data comparison.
+- [x] T027 Add executable Mortal and afterlife worked examples, broaden source guards, document exact authority, and replace the false-positive vacant-leadership test with a genuinely vacant current slot.

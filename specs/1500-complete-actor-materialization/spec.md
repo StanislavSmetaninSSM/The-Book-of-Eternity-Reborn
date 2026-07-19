@@ -50,6 +50,8 @@ As a player, when a Guardian, resident, radiant actor, Shining faction head, Sar
 3. **Given** a profile section that is legitimately empty, **when** its materialization disposition is `empty_by_design` with a non-empty reason, **then** the profile can be accepted without client-authored narrative invention.
 4. **Given** non-vacant Shining leadership, **when** its Guardian, resident, or radiant head lacks matching complete actor-profile authority, **then** cross-file validation rejects the leadership state or requests profile materialization.
 5. **Given** a client-owned system Guardian created during New Game, **when** its canonical state is seeded, **then** the client deterministically writes a complete materialization envelope and does not ask the GM to replace it.
+6. **Given** a new afterlife profile whose agency disposition is `populated`, **when** it contains only a mask or progression strategy without a goal, personal quest, current activity, or completed activity, **then** validation rejects the agency disposition.
+7. **Given** an afterlife actor declares `canTrade=true`, **when** it is neither the exact active Guardian in the current Chaos Sea abode nor an operational secure/contested Shining faction head at trade tier 1 or higher, **then** validation fails closed without reading names, roles, or prose.
 
 ---
 
@@ -66,6 +68,7 @@ As a returning player, I can load an older save without the client silently inve
 1. **Given** an untouched legacy actor without a materialization envelope, **when** a save is loaded and the actor is not newly created or promoted in the current turn, **then** validation does not fabricate data or destroy the save.
 2. **Given** that legacy actor becomes newly relevant through a first canonical profile promotion, teacher/merchant enablement, or Shining leadership appointment, **when** the turn is validated, **then** current-contract materialization is required.
 3. **Given** a repair packet for an incomplete actor, **when** some sections are already valid, **then** repair preserves them and names only missing or contradictory sections.
+4. **Given** a worker proposes a bounded actor repair, **when** the proposal also changes personality, another section, another actor, or unrelated root state, **then** the apply gate rejects the proposal before canonical files are written.
 
 ---
 
@@ -111,15 +114,16 @@ As the GM agent, I receive one bounded, setting-agnostic authoring contract and 
 - **FR-009**: A Mortal NPC with `ownsItems=true` MUST have non-empty canonical inventory, and equipped item references MUST resolve to that inventory.
 - **FR-010**: Existing Mortal NPCs MUST continue to mutate through dedicated delta commands; validators MUST forbid using the first-materialization envelope to bypass existing update contracts.
 - **FR-011**: A newly significant non-player afterlife actor MUST have a matching common afterlife entity profile unless its actor type is explicitly client-owned and documented as equivalent authority.
-- **FR-012**: New afterlife profiles MUST govern standard arts, special arts, custom states, Fate Cards, relationships, actor agency, and progression history through dispositions and MUST initialize actor-owned memory.
+- **FR-012**: New afterlife profiles MUST govern standard arts, special arts, custom states, Fate Cards, relationships, actor agency, and progression history through dispositions and MUST initialize actor-owned memory. A populated agency section MUST contain meaningful goals, personal quests, a current activity, or completed activity history; masks, disposition, or progression strategy alone MUST NOT satisfy agency.
 - **FR-013**: An afterlife actor with `canFight=true` MUST have at least one usable standard or special spiritual art.
 - **FR-014**: An afterlife actor with `canTeach=true` MUST have canonical mentor authority and at least one teachable art or explicit supported teaching surface.
-- **FR-015**: An afterlife actor with `canTrade=true` MUST resolve to the existing realm-appropriate trade authority; Mortal NPC trade files MUST remain forbidden in afterlife realms.
+- **FR-015**: An afterlife actor with `canTrade=true` MUST resolve to exact current realm authority: the one active Guardian in the current Chaos Sea abode, or a non-player secure/contested head of an operational Shining faction at trade tier 1 or higher. Mortal NPC trade files MUST remain forbidden in afterlife realms, and names, roles, descriptions, or genre vocabulary MUST NOT create authority.
 - **FR-016**: Cross-file validation MUST bind Guardians, residents, Shining political actors, and non-vacant Shining faction heads to exact actor type and stable ID profile authority.
 - **FR-017**: Actor Brain inputs and actor-owned memory MUST be initialized on first materialization; later significant decisions remain append-only under existing memory rules.
 - **FR-018**: The client MUST determine new/current-turn materialization from validated pre-turn authority and current structured commands, not from display names, ID prefixes, prose, or current pathname state alone.
 - **FR-019**: Untouched legacy actors MUST remain loadable without invented data. Current-turn creation, promotion, or newly significant role assignment MUST trigger the current contract.
 - **FR-020**: Repair packets MUST preserve valid actor data and report only missing, empty, contradictory, or unbound sections for the exact stable actor identity.
+- **FR-020a**: The worker apply gate MUST compare a proposed actor repair with canonical JSON and MUST reject protected actor data changes outside the exact actor and named repair section.
 - **FR-021**: Normalization MUST preserve valid materialization metadata but MUST NOT generate narrative reasons, capabilities, skills, inventory, Fate Cards, goals, relationships, or profile content.
 - **FR-022**: System Guardian fresh-game builders MUST emit deterministic valid envelopes for their client-owned Guardian/profile seeds.
 - **FR-023**: GM prompts, Mortal NPC documentation, afterlife contract documentation, worked examples, manifests, and source/documentation guards MUST be updated in the same change.
