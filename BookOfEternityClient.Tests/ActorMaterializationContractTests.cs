@@ -897,13 +897,29 @@ public sealed class ActorMaterializationContractTests
         var familyBranch = Assert.Single(branches.EnumerateArray());
         var mortal = familyBranch.GetProperty("then").GetProperty("properties");
         var afterlife = familyBranch.GetProperty("else").GetProperty("properties");
+        var sectionDisposition = root.GetProperty("$defs").GetProperty("sectionDisposition");
+        var emptyByDesignDisposition = sectionDisposition
+            .GetProperty("oneOf")
+            .EnumerateArray()
+            .Single(option => option.GetProperty("properties").GetProperty("state").GetProperty("const").GetString() == "empty_by_design");
 
-        Assert.Contains("ownsItems", mortal.GetProperty("capabilities").GetProperty("required").EnumerateArray().Select(item => item.GetString()));
-        Assert.DoesNotContain("ownsItems", afterlife.GetProperty("capabilities").GetProperty("properties").EnumerateObject().Select(item => item.Name));
-        Assert.Equal(5, mortal.GetProperty("sections").GetProperty("required").GetArrayLength());
-        Assert.Equal(7, afterlife.GetProperty("sections").GetProperty("required").GetArrayLength());
+        AssertClosedObjectSchema(
+            mortal.GetProperty("capabilities"),
+            "canFight", "canTeach", "canTrade", "ownsItems");
+        AssertClosedObjectSchema(
+            afterlife.GetProperty("capabilities"),
+            "canFight", "canTeach", "canTrade");
+        AssertClosedObjectSchema(
+            mortal.GetProperty("sections"),
+            "skills", "inventory", "fateCards", "personalQuests", "relationships");
+        AssertClosedObjectSchema(
+            afterlife.GetProperty("sections"),
+            "standardArts", "specialArts", "customStates", "fateCards", "relationships", "agency", "progressionHistory");
         Assert.False(mortal.GetProperty("sections").GetProperty("additionalProperties").GetBoolean());
         Assert.False(afterlife.GetProperty("sections").GetProperty("additionalProperties").GetBoolean());
+        Assert.Equal(
+            "^.*\\S.*$",
+            emptyByDesignDisposition.GetProperty("properties").GetProperty("reason").GetProperty("pattern").GetString());
     }
 
     [Fact]
@@ -1115,5 +1131,22 @@ public sealed class ActorMaterializationContractTests
         }
 
         throw new DirectoryNotFoundException("Repository root was not found.");
+    }
+
+    private static void AssertClosedObjectSchema(JsonElement schema, params string[] expectedPropertyNames)
+    {
+        Assert.False(schema.GetProperty("additionalProperties").GetBoolean());
+        Assert.Equal(
+            expectedPropertyNames.OrderBy(name => name, StringComparer.Ordinal),
+            schema.GetProperty("required")
+                .EnumerateArray()
+                .Select(item => item.GetString() ?? string.Empty)
+                .OrderBy(name => name, StringComparer.Ordinal));
+        Assert.Equal(
+            expectedPropertyNames.OrderBy(name => name, StringComparer.Ordinal),
+            schema.GetProperty("properties")
+                .EnumerateObject()
+                .Select(property => property.Name)
+                .OrderBy(name => name, StringComparer.Ordinal));
     }
 }
