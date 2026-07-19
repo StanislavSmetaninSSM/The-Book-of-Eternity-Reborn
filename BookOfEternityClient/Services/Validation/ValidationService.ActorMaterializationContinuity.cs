@@ -91,7 +91,8 @@ public partial class ValidationService
     private readonly record struct MortalActorMaterializationPreTurnState(
         MortalActorMaterializationPromotionAuthority PromotionAuthority,
         string? HistoricalEnvelopeJson,
-        IReadOnlySet<string> HistoricalEnvelopeSections)
+        IReadOnlySet<string> HistoricalEnvelopeSections,
+        IReadOnlyDictionary<string, string> HistoricalActorJsonBySection)
     {
         public ActorMaterializationPromotionSignals PromotionSignals =>
             PromotionAuthority.ToSignals();
@@ -252,16 +253,27 @@ public partial class ValidationService
                                 StringComparison.Ordinal);
                             var wasHistoricalCarrierInSameSection =
                                 previousState.HistoricalEnvelopeSections.Contains(sectionName);
-                            if (isUpdateSection && !wasHistoricalCarrierInSameSection)
+                            if (isUpdateSection)
                             {
-                                if (!hasCurrentEnvelope)
-                                    continue;
+                                var isUnchangedHistoricalCarrier =
+                                    wasHistoricalCarrierInSameSection &&
+                                    previousState.HistoricalActorJsonBySection.TryGetValue(
+                                        sectionName,
+                                        out var historicalActorJson) &&
+                                    JsonValuesSemanticallyEqual(
+                                        historicalActorJson,
+                                        actor.GetRawText());
+                                if (!isUnchangedHistoricalCarrier)
+                                {
+                                    if (!hasCurrentEnvelope)
+                                        continue;
 
-                                AddExistingMortalActorMaterializationResendIssue(
-                                    context,
-                                    actorId,
-                                    issues);
-                                continue;
+                                    AddExistingMortalActorMaterializationResendIssue(
+                                        context,
+                                        actorId,
+                                        issues);
+                                    continue;
+                                }
                             }
 
                             evaluatedHistoricalActors.Add(actorId);
@@ -439,7 +451,13 @@ public partial class ValidationService
                     historicalEnvelopeJson,
                     historicalEnvelopeJson == null
                         ? new HashSet<string>(StringComparer.Ordinal)
-                        : new HashSet<string>(StringComparer.Ordinal) { sectionName });
+                        : new HashSet<string>(StringComparer.Ordinal) { sectionName },
+                    historicalEnvelopeJson == null
+                        ? new Dictionary<string, string>(StringComparer.Ordinal)
+                        : new Dictionary<string, string>(StringComparer.Ordinal)
+                        {
+                            [sectionName] = actor.GetRawText()
+                        });
                 if (!actorSections.TryGetValue(actorId, out var seenSections))
                 {
                     actorSections[actorId] = new HashSet<string>(StringComparer.Ordinal)
@@ -485,8 +503,21 @@ public partial class ValidationService
             mergedEnvelopeJson,
             MergeActorMaterializationSectionSets(
                 left.HistoricalEnvelopeSections,
-                right.HistoricalEnvelopeSections));
+                right.HistoricalEnvelopeSections),
+            MergeActorMaterializationSectionMaps(
+                left.HistoricalActorJsonBySection,
+                right.HistoricalActorJsonBySection));
         return true;
+    }
+
+    private static IReadOnlyDictionary<string, string> MergeActorMaterializationSectionMaps(
+        IReadOnlyDictionary<string, string> left,
+        IReadOnlyDictionary<string, string> right)
+    {
+        var result = new Dictionary<string, string>(left, StringComparer.Ordinal);
+        foreach (var (sectionName, actorJson) in right)
+            result[sectionName] = actorJson;
+        return result;
     }
 
     private static bool TryMergeHistoricalActorMaterializationEnvelopes(
@@ -498,7 +529,7 @@ public partial class ValidationService
         if (leftJson == null || rightJson == null)
             return true;
 
-        return ActorMaterializationEnvelopesSemanticallyEqual(leftJson, rightJson);
+        return JsonValuesSemanticallyEqual(leftJson, rightJson);
     }
 
     private static bool IsLosslessJsonAuthoritySubtree(JsonElement value)
@@ -1004,7 +1035,7 @@ public partial class ValidationService
             actor.ValueKind == JsonValueKind.Object &&
             actor.TryGetProperty(ActorMaterializationContract.PropertyName, out var currentEnvelope) &&
             currentEnvelope.ValueKind == JsonValueKind.Object &&
-            ActorMaterializationEnvelopesSemanticallyEqual(historicalEnvelopeJson, currentEnvelope.GetRawText());
+            JsonValuesSemanticallyEqual(historicalEnvelopeJson, currentEnvelope.GetRawText());
         if (hasEquivalentCurrentEnvelope)
             return;
 
@@ -1022,7 +1053,7 @@ public partial class ValidationService
             repairHint: "Восстанови materialization из validated pre-turn authority без изменений; текущие игровые данные меняй только через dedicated delta contracts."));
     }
 
-    private static bool ActorMaterializationEnvelopesSemanticallyEqual(string leftJson, string rightJson)
+    private static bool JsonValuesSemanticallyEqual(string leftJson, string rightJson)
     {
         try
         {

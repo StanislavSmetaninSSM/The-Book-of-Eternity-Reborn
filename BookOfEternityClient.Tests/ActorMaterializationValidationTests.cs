@@ -1961,6 +1961,44 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_UnchangedHistoricalUpdateCarrier_IsNotClassifiedAsResend()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var preTurnJson = BuildMortalActorStateJson(
+            "historical_update_carrier",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true);
+        await WriteCurrentAndValidatedPreTurnAsync(path, preTurnJson, preTurnJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Actor == "mortal_npc:historical_update_carrier" &&
+            issue.Code == "actor_materialization_existing_resend_forbidden");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ChangedHistoricalUpdateCarrierRetainingEnvelope_IsRejectedAsResend()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var preTurnJson = BuildMortalActorStateJson(
+            "changed_historical_update_carrier",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true);
+        var currentRoot = JsonNode.Parse(preTurnJson)!.AsObject();
+        currentRoot["UpdateNPCs"]![0]!["plans"] = "Новый план текущего хода.";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Actor == "mortal_npc:changed_historical_update_carrier" &&
+            issue.Code == "actor_materialization_existing_resend_forbidden");
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnContinuity_HistoricalActorDedicatedDeltaWithoutEnvelope_Passes()
     {
         const string path = "game_state/npcs/npc_core.json";
