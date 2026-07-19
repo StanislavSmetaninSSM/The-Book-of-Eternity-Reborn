@@ -19,6 +19,19 @@ public partial class ValidationService
         return result;
     }
 
+    private async Task<HashSet<string>> LoadValidatedPreTurnAfterlifeActorTradeAuthoritiesAsync(
+        ValidationPendingTurnSnapshotManifest manifest)
+    {
+        var result = new HashSet<string>(StringComparer.Ordinal);
+        AddCurrentGuardianTradeAuthority(
+            await ReadValidatedPendingTurnSnapshotFileAsync(manifest, GuardiansStatePath),
+            result);
+        AddCurrentShiningFactionHeadTradeAuthorities(
+            await ReadValidatedPendingTurnSnapshotFileAsync(manifest, ShiningAbodeState.StatePath),
+            result);
+        return result;
+    }
+
     private static bool HasCurrentAfterlifeActorTradeAuthority(
         JsonElement profile,
         IReadOnlySet<string> authorities)

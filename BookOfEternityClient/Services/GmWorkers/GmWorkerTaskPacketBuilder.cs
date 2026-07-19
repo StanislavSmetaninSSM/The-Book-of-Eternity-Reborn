@@ -10,7 +10,8 @@ public static class GmWorkerTaskPacketBuilder
         WorkerTurnReference sourceTurn,
         IReadOnlyList<ValidationIssue> validationIssues,
         IReadOnlyDictionary<string, string> contextFileHashes,
-        string createdAtUtc)
+        string createdAtUtc,
+        WorkerAfterlifeTaskContract? afterlifeContract = null)
     {
         var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
         if (!profileValidation.IsValid)
@@ -59,6 +60,7 @@ public static class GmWorkerTaskPacketBuilder
                 Actual = issue.Actual
             }).ToArray(),
             ContextFiles = contextFiles,
+            AfterlifeContract = afterlifeContract,
             AllowedProposalPaths = allowedPaths,
             AcceptanceCriteria =
             [
@@ -78,7 +80,8 @@ public static class GmWorkerTaskPacketBuilder
             Instructions =
                 "Return a worker-proposal-v1 JSON proposal. Include changedFiles only for allowedProposalPaths. " +
                 "Use validationIssues actor/section/expected/actual coordinates as the exact repair scope. " +
-                "Do not edit canonical game_session files directly."
+                "Do not edit canonical game_session files directly." +
+                BuildAfterlifeInstructions(afterlifeContract)
         };
 
         var taskValidation = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
@@ -88,20 +91,12 @@ public static class GmWorkerTaskPacketBuilder
         return task;
     }
 
-    private static string ResolveValidationTargetPath(ValidationIssue issue)
+    internal static string ResolveValidationTargetPath(ValidationIssue issue)
     {
         var code = issue.Code ?? string.Empty;
         var actor = issue.Actor ?? string.Empty;
-        if (actor.StartsWith("mortal_npc:", StringComparison.Ordinal) &&
-            code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase))
-        {
-            return "game_state/npcs/npc_core.json";
-        }
-
-        if (code.StartsWith("afterlife_actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
-            (!string.IsNullOrWhiteSpace(actor) &&
-             actor.Contains(':', StringComparison.Ordinal) &&
-             code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase)))
+        if (code is "afterlife_actor_materialization_profile_missing" or
+            "afterlife_actor_materialization_profile_ambiguous")
         {
             return AfterlifeEntityProfileState.StatePath;
         }
@@ -110,7 +105,20 @@ public static class GmWorkerTaskPacketBuilder
         var jsonlEnd = FindExtensionEnd(normalized, ".jsonl");
         var jsonEnd = FindExtensionEnd(normalized, ".json");
         var end = jsonlEnd >= 0 ? jsonlEnd : jsonEnd;
-        return end >= 0 ? normalized[..end] : normalized;
+        var filePath = end >= 0 ? normalized[..end] : normalized;
+        if (code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase) &&
+            GmWorkerContractValidator.IsSafeRelativePath(filePath))
+        {
+            return filePath;
+        }
+
+        if (actor.StartsWith("mortal_npc:", StringComparison.Ordinal) &&
+            code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase))
+        {
+            return "game_state/npcs/npc_core.json";
+        }
+
+        return filePath;
     }
 
     private static int FindExtensionEnd(string path, string extension)

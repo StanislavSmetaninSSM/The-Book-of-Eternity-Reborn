@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 
@@ -147,7 +148,7 @@ public sealed class GmWorkerValidationRepairDelegator
     {
         var contextHashes = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var path in prioritizedErrors
-                     .Select(issue => issue.FilePath.Replace('\\', '/'))
+                     .Select(GmWorkerTaskPacketBuilder.ResolveValidationTargetPath)
                      .Where(GmWorkerContractValidator.IsSafeRelativePath)
                      .Distinct(StringComparer.Ordinal))
         {
@@ -155,13 +156,83 @@ public sealed class GmWorkerValidationRepairDelegator
             contextHashes[path] = content == null ? "missing" : ComputeSha256(content);
         }
 
+        var afterlifeContract = await BuildAfterlifeRepairContractAsync(prioritizedErrors, contextHashes.Keys);
         return GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
             profile,
             $"worker_task_validation_repair_{attempt:D4}",
             sourceTurn,
             prioritizedErrors,
             contextHashes,
-            createdAtUtc);
+            createdAtUtc,
+            afterlifeContract);
+    }
+
+    private async Task<WorkerAfterlifeTaskContract?> BuildAfterlifeRepairContractAsync(
+        IReadOnlyList<ValidationIssue> issues,
+        IEnumerable<string> targetPaths)
+    {
+        if (!issues.Any(IsAfterlifeActorMaterializationIssue))
+            return null;
+
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulJson))
+            return null;
+
+        try
+        {
+            using var document = JsonDocument.Parse(soulJson);
+            if (!document.RootElement.TryGetProperty("currentRealm", out var currentRealmElement) ||
+                currentRealmElement.ValueKind != JsonValueKind.String)
+            {
+                return null;
+            }
+
+            var currentRealm = currentRealmElement.GetString();
+            var realmGate = RealmSemantics.IsChaosSea(currentRealm)
+                ? WorkerAfterlifeRealmGate.ChaosSea
+                : RealmSemantics.IsShiningRealm(currentRealm)
+                    ? WorkerAfterlifeRealmGate.ShiningAbode
+                    : WorkerAfterlifeRealmGate.None;
+            if (realmGate == WorkerAfterlifeRealmGate.None)
+                return null;
+
+            return new WorkerAfterlifeTaskContract
+            {
+                RealmGate = realmGate,
+                CurrentRealm = realmGate == WorkerAfterlifeRealmGate.ChaosSea
+                    ? "Chaos Sea"
+                    : "Shining Abode",
+                AllowedAfterlifeSurfaces = targetPaths
+                    .Where(path => path.StartsWith("game_state/meta/", StringComparison.OrdinalIgnoreCase))
+                    .Distinct(StringComparer.Ordinal)
+                    .Order(StringComparer.Ordinal)
+                    .ToArray(),
+                RequiredReceipts = ["No new receipt is required for this bounded validation repair."],
+                RequiredReports = ["The apply-gate validation decision is the required repair report."],
+                ForbiddenMortalSubstitutes =
+                [
+                    "worldStateFlags",
+                    "worldEventsLog",
+                    "Mortal NPC relationships",
+                    "Mortal combat HP/status",
+                    "Mortal factions or map files"
+                ]
+            };
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    private static bool IsAfterlifeActorMaterializationIssue(ValidationIssue issue)
+    {
+        var code = issue.Code ?? string.Empty;
+        var actor = issue.Actor ?? string.Empty;
+        return code.StartsWith("afterlife_actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
+               (!actor.StartsWith("mortal_npc:", StringComparison.Ordinal) &&
+                actor.Contains(':', StringComparison.Ordinal) &&
+                code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase));
     }
 
     private async Task WriteReadySignalAsync(WorkerTurnReference sourceTurn, WorkerProposal proposal)

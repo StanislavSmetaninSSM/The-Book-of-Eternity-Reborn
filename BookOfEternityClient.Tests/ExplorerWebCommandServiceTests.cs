@@ -4823,8 +4823,12 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("game_state/npcs", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(".json", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("npc_serafina", text, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("/npc_talk", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("/npc_trade", SerializeResult(result), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/npc_talk", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/npc_trade", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("private_mortal_materialization_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("materializationId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("materializedAtTurn", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("empty_by_design", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -5781,6 +5785,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("hidden_concealed_truth_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_mask_directive_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_saref_agent_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("private_afterlife_materialization_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("materializationId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("materializedAtTurn", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("empty_by_design", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -6939,7 +6947,31 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                   "summary": "Селена способна закрыть опасную ошибку ученика, но попросит за это трудную правду.",
                   "rarity": "Rare"
                 }
-              ]
+              ],
+              "materialization": {
+                "schemaVersion": 1,
+                "materializationId": "private_mortal_materialization_marker",
+                "actorType": "mortal_npc",
+                "actorId": "npc_serafina",
+                "materializedAtTurn": 3,
+                "state": "complete",
+                "capabilities": {
+                  "canFight": false,
+                  "canTeach": false,
+                  "canTrade": false,
+                  "ownsItems": false
+                },
+                "sections": {
+                  "skills": { "state": "populated" },
+                  "inventory": {
+                    "state": "empty_by_design",
+                    "reason": "private_mortal_empty_reason_marker"
+                  },
+                  "fateCards": { "state": "populated" },
+                  "personalQuests": { "state": "populated" },
+                  "relationships": { "state": "populated" }
+                }
+              }
             }
           ]
         }
@@ -9172,7 +9204,41 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 "summary": "Собирает видимые сведения",
                 "gmThoughtsSummary": "hidden_activity_motivation_marker"
               },
-              "soulDissipationTier": 0
+              "soulDissipationTier": 0,
+              "materialization": {
+                "schemaVersion": 1,
+                "materializationId": "private_afterlife_materialization_marker",
+                "actorType": "guardian",
+                "actorId": "guardian_open_rose",
+                "materializedAtTurn": 8,
+                "state": "complete",
+                "capabilities": {
+                  "canFight": true,
+                  "canTeach": false,
+                  "canTrade": false
+                },
+                "sections": {
+                  "standardArts": { "state": "populated" },
+                  "specialArts": {
+                    "state": "empty_by_design",
+                    "reason": "private_afterlife_empty_reason_marker"
+                  },
+                  "customStates": {
+                    "state": "empty_by_design",
+                    "reason": "private_afterlife_custom_state_reason_marker"
+                  },
+                  "fateCards": { "state": "populated" },
+                  "relationships": {
+                    "state": "empty_by_design",
+                    "reason": "private_afterlife_relationship_reason_marker"
+                  },
+                  "agency": { "state": "populated" },
+                  "progressionHistory": {
+                    "state": "empty_by_design",
+                    "reason": "private_afterlife_progression_reason_marker"
+                  }
+                }
+              }
             }
           ]
         }

@@ -44,90 +44,107 @@ internal static class ActorMaterializationRepairPreservationGuard
             ];
         }
 
-        JsonNode? baselineRoot;
-        JsonNode? proposedRoot;
         try
         {
-            baselineRoot = JsonNode.Parse(baselineJson);
-            proposedRoot = JsonNode.Parse(proposedJson);
-        }
-        catch (JsonException)
-        {
-            return [$"Actor materialization preservation check requires valid JSON for {path}."];
-        }
+            var baselineRoot = JsonNode.Parse(baselineJson);
+            var proposedRoot = JsonNode.Parse(proposedJson);
+            if (baselineRoot == null || proposedRoot == null)
+                return [$"Actor materialization preservation check requires JSON roots for {path}."];
 
-        if (baselineRoot == null || proposedRoot == null)
-            return [$"Actor materialization preservation check requires JSON roots for {path}."];
-
-        var baselineCopy = baselineRoot.DeepClone();
-        var proposedCopy = proposedRoot.DeepClone();
-        var errors = new List<string>();
-        foreach (var actorGroup in relevantIssues.GroupBy(issue => issue.Actor, StringComparer.Ordinal))
-        {
-            if (!TryParseActorIdentity(actorGroup.Key, out var actorType, out var actorId))
+            var baselineCopy = baselineRoot.DeepClone();
+            var proposedCopy = proposedRoot.DeepClone();
+            var errors = new List<string>();
+            foreach (var actorGroup in relevantIssues.GroupBy(issue => issue.Actor, StringComparer.Ordinal))
             {
-                errors.Add(
-                    $"Actor materialization repair issue must include exact actorType:actorId coordinates for {path}.");
-                continue;
-            }
-
-            var baselineActors = FindActors(baselineCopy, path, actorType, actorId);
-            var proposedActors = FindActors(proposedCopy, path, actorType, actorId);
-            if (actorGroup.Any(issue => string.Equals(
-                    issue.Code,
-                    "afterlife_actor_materialization_profile_missing",
-                    StringComparison.OrdinalIgnoreCase)) &&
-                baselineActors.Count == 0)
-            {
-                if (proposedActors.Count != 1)
+                if (!TryParseActorIdentity(actorGroup.Key, out var actorType, out var actorId))
                 {
                     errors.Add(
-                        $"Actor materialization repair may add exactly one missing profile for {actorType}:{actorId}; found {proposedActors.Count}.");
+                        $"Actor materialization repair issue must include exact actorType:actorId coordinates for {path}.");
                     continue;
                 }
 
-                proposedActors[0].Parent.Remove(proposedActors[0].Actor);
-                continue;
-            }
+                var baselineActors = FindActors(baselineCopy, path, actorType, actorId);
+                var proposedActors = FindActors(proposedCopy, path, actorType, actorId);
+                if (actorGroup.Any(issue => string.Equals(
+                        issue.Code,
+                        "afterlife_actor_materialization_profile_missing",
+                        StringComparison.OrdinalIgnoreCase)) &&
+                    baselineActors.Count == 0)
+                {
+                    if (proposedActors.Count != 1)
+                    {
+                        errors.Add(
+                            $"Actor materialization repair may add exactly one missing profile for {actorType}:{actorId}; found {proposedActors.Count}.");
+                        continue;
+                    }
 
-            if (actorGroup.Any(issue => string.Equals(
-                    issue.Code,
-                    "afterlife_actor_materialization_profile_ambiguous",
-                    StringComparison.OrdinalIgnoreCase)))
-            {
-                if (!TryNormalizeAmbiguousProfiles(baselineActors, proposedActors))
+                    proposedActors[0].Parent.Remove(proposedActors[0].Actor);
+                    continue;
+                }
+
+                if (actorGroup.Any(issue => string.Equals(
+                        issue.Code,
+                        "afterlife_actor_materialization_profile_ambiguous",
+                        StringComparison.OrdinalIgnoreCase)))
+                {
+                    if (!TryNormalizeAmbiguousProfiles(baselineActors, proposedActors))
+                    {
+                        errors.Add(
+                            $"Actor materialization ambiguity repair for {actorType}:{actorId} must keep one unchanged canonical profile and remove only duplicates.");
+                    }
+                    continue;
+                }
+
+                if (baselineActors.Count == 0 || baselineActors.Count != proposedActors.Count)
                 {
                     errors.Add(
-                        $"Actor materialization ambiguity repair for {actorType}:{actorId} must keep one unchanged canonical profile and remove only duplicates.");
+                        $"Actor materialization repair cannot prove protected actor data for {actorType}:{actorId}: baseline={baselineActors.Count}, proposal={proposedActors.Count}.");
+                    continue;
                 }
-                continue;
+
+                var scopedIssues = actorGroup.ToList();
+                if (!TryNormalizeAppendOnlyMemoryRepair(
+                    path,
+                    actorType,
+                    actorId,
+                    baselineCopy,
+                    proposedCopy,
+                    baselineActors,
+                    proposedActors,
+                    scopedIssues,
+                    out var memoryRepairError))
+                {
+                    errors.Add(memoryRepairError);
+                    continue;
+                }
+                if (!TryResolveMutablePaths(path, scopedIssues, out var mutablePaths, out var resolutionError))
+                {
+                    errors.Add(resolutionError);
+                    continue;
+                }
+
+                for (var index = 0; index < baselineActors.Count; index++)
+                {
+                    foreach (var mutablePath in mutablePaths)
+                    {
+                        RemovePath(baselineActors[index].Actor, mutablePath);
+                        RemovePath(proposedActors[index].Actor, mutablePath);
+                    }
+                }
             }
 
-            if (baselineActors.Count == 0 || baselineActors.Count != proposedActors.Count)
+            if (errors.Count == 0 && !JsonNode.DeepEquals(baselineCopy, proposedCopy))
             {
                 errors.Add(
-                    $"Actor materialization repair cannot prove protected actor data for {actorType}:{actorId}: baseline={baselineActors.Count}, proposal={proposedActors.Count}.");
-                continue;
+                    $"Actor materialization repair changed protected actor data or unrelated canonical data in {path}; only exact issue targets may change.");
             }
 
-            var mutablePaths = ResolveMutablePaths(actorGroup);
-            for (var index = 0; index < baselineActors.Count; index++)
-            {
-                foreach (var mutablePath in mutablePaths)
-                {
-                    RemovePath(baselineActors[index].Actor, mutablePath);
-                    RemovePath(proposedActors[index].Actor, mutablePath);
-                }
-            }
+            return errors;
         }
-
-        if (errors.Count == 0 && !JsonNode.DeepEquals(baselineCopy, proposedCopy))
+        catch (Exception exception) when (exception is JsonException or ArgumentException or InvalidOperationException)
         {
-            errors.Add(
-                $"Actor materialization repair changed protected actor data or unrelated canonical data in {path}; only exact issue targets may change.");
+            return [$"Actor materialization preservation check requires valid JSON for {path}."];
         }
-
-        return errors;
     }
 
     private static bool TryNormalizeAmbiguousProfiles(
@@ -146,7 +163,11 @@ internal static class ActorMaterializationRepairPreservationGuard
         return true;
     }
 
-    private static IReadOnlyList<string[]> ResolveMutablePaths(IEnumerable<WorkerValidationIssue> issues)
+    private static bool TryResolveMutablePaths(
+        string targetPath,
+        IEnumerable<WorkerValidationIssue> issues,
+        out IReadOnlyList<string[]> mutablePaths,
+        out string error)
     {
         var paths = new Dictionary<string, string[]>(StringComparer.Ordinal);
         foreach (var issue in issues)
@@ -165,23 +186,220 @@ internal static class ActorMaterializationRepairPreservationGuard
                         Add(["materialization", "capabilities", section]);
                     break;
                 case "actor_materialization_inventory_reference_mismatch":
-                    Add(["equippedItems"]);
+                    if (!TryExtractIssueSubpath(issue.Path, ".equippedItems", out var equipmentPath))
+                        return FailMutablePathResolution(issue, out mutablePaths, out error);
+                    Add(equipmentPath);
                     break;
                 case "afterlife_actor_materialization_memory_missing":
-                    Add(["gmThoughtsSummary"]);
-                    Add(["ledger"]);
-                    Add(["progressionLedger"]);
+                    if (targetPath.Equals("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase))
+                        Add(["musings"]);
+                    else if (targetPath.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase))
+                        Add(["gmThoughtsSummary"]);
+                    else
+                        return FailMutablePathResolution(issue, out mutablePaths, out error);
                     break;
-                default:
+                case "actor_materialization_missing":
                     Add(["materialization"]);
                     break;
+                case "actor_materialization_invalid_envelope":
+                case "actor_materialization_duplicate_id":
+                    if (!TryExtractIssueSubpath(issue.Path, ".materialization", out var envelopePath))
+                        return FailMutablePathResolution(issue, out mutablePaths, out error);
+                    Add(envelopePath);
+                    break;
+                case "actor_materialization_actor_binding_mismatch":
+                    if (!EndsAtMarker(issue.Path, ".materialization"))
+                        return FailMutablePathResolution(issue, out mutablePaths, out error);
+                    Add(["materialization", "actorType"]);
+                    Add(["materialization", "actorId"]);
+                    break;
+                default:
+                    return FailMutablePathResolution(issue, out mutablePaths, out error);
             }
         }
 
-        return paths.Values.ToArray();
+        mutablePaths = paths.Values.ToArray();
+        error = string.Empty;
+        return true;
 
         void Add(string[] path) => paths[string.Join('\u001f', path)] = path;
     }
+
+    private static bool FailMutablePathResolution(
+        WorkerValidationIssue issue,
+        out IReadOnlyList<string[]> mutablePaths,
+        out string error)
+    {
+        mutablePaths = [];
+        error = $"Actor materialization repair scope is not safely derivable for {issue.Code} at {issue.Path}.";
+        return false;
+    }
+
+    private static bool TryExtractIssueSubpath(string issuePath, string marker, out string[] path)
+    {
+        path = [];
+        var markerIndex = issuePath.LastIndexOf(marker, StringComparison.OrdinalIgnoreCase);
+        if (markerIndex < 0)
+            return false;
+
+        var suffix = issuePath[(markerIndex + marker.Length)..].TrimStart('.');
+        path = marker.TrimStart('.').Split('.', StringSplitOptions.RemoveEmptyEntries)
+            .Concat(suffix.Split('.', StringSplitOptions.RemoveEmptyEntries))
+            .ToArray();
+        return path.Length > 0;
+    }
+
+    private static bool EndsAtMarker(string issuePath, string marker) =>
+        issuePath.EndsWith(marker, StringComparison.OrdinalIgnoreCase);
+
+    private static bool TryNormalizeAppendOnlyMemoryRepair(
+        string path,
+        string actorType,
+        string actorId,
+        JsonNode baselineRoot,
+        JsonNode proposedRoot,
+        IReadOnlyList<ActorNode> baselineActors,
+        IReadOnlyList<ActorNode> proposedActors,
+        ICollection<WorkerValidationIssue> issues,
+        out string error)
+    {
+        error = string.Empty;
+        var memoryIssues = issues.Where(issue => string.Equals(
+                issue.Code,
+                "afterlife_actor_materialization_memory_missing",
+                StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        if (memoryIssues.Length == 0)
+            return true;
+
+        if (path.Equals(GuardianAbodeResidentState.StatePath, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(actorType, "resident", StringComparison.Ordinal))
+        {
+            if (!TryRemoveOneAppendedJournalEntry(
+                    baselineRoot,
+                    proposedRoot,
+                    GuardianAbodeResidentState.ThoughtJournalProperty,
+                    "residentId",
+                    actorId,
+                    allowOtherAppendedEntries: true,
+                    out error))
+            {
+                return false;
+            }
+        }
+        else if (path.Equals("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase) &&
+                 string.Equals(actorType, "guardian", StringComparison.Ordinal))
+        {
+            if (baselineActors.Count != 1 || proposedActors.Count != 1 ||
+                !TryRemoveOneAppendedJournalEntry(
+                    baselineActors[0].Actor,
+                    proposedActors[0].Actor,
+                    "musings",
+                    identityProperty: null,
+                    actorId,
+                    allowOtherAppendedEntries: false,
+                    out error))
+            {
+                error = string.IsNullOrWhiteSpace(error)
+                    ? $"Guardian memory repair for {actorType}:{actorId} must append exactly one musing without rewriting history."
+                    : error;
+                return false;
+            }
+        }
+        else if (path.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        else
+        {
+            error = $"Actor memory repair scope is not safely derivable for {actorType}:{actorId} in {path}.";
+            return false;
+        }
+
+        foreach (var issue in memoryIssues)
+            issues.Remove(issue);
+        return true;
+    }
+
+    private static bool TryRemoveOneAppendedJournalEntry(
+        JsonNode baselineOwner,
+        JsonNode proposedOwner,
+        string journalProperty,
+        string? identityProperty,
+        string actorId,
+        bool allowOtherAppendedEntries,
+        out string error)
+    {
+        error = string.Empty;
+        if (baselineOwner is not JsonObject baselineObject || proposedOwner is not JsonObject proposedObject)
+        {
+            error = $"Actor memory repair for {actorId} requires object journal owners.";
+            return false;
+        }
+
+        var baselineHadJournal = baselineObject.TryGetPropertyValue(journalProperty, out var baselineJournalNode);
+        if (baselineHadJournal && baselineJournalNode is not JsonArray)
+        {
+            error = $"Actor memory repair for {actorId} cannot replace malformed {journalProperty} authority.";
+            return false;
+        }
+        if (proposedObject[journalProperty] is not JsonArray proposedJournal)
+        {
+            error = $"Actor memory repair for {actorId} must append to {journalProperty}.";
+            return false;
+        }
+
+        var baselineJournal = baselineJournalNode as JsonArray;
+        var baselineCount = baselineJournal?.Count ?? 0;
+        if (proposedJournal.Count <= baselineCount)
+        {
+            error = $"Actor memory repair for {actorId} must append a new {journalProperty} entry.";
+            return false;
+        }
+
+        for (var index = 0; index < baselineCount; index++)
+        {
+            if (!JsonNode.DeepEquals(baselineJournal![index], proposedJournal[index]))
+            {
+                error = $"Actor memory repair for {actorId} must preserve existing {journalProperty} entries exactly and append only.";
+                return false;
+            }
+        }
+
+        var matchingAppendedIndexes = new List<int>();
+        for (var index = baselineCount; index < proposedJournal.Count; index++)
+        {
+            if (proposedJournal[index] is not JsonObject entry ||
+                identityProperty != null &&
+                !string.Equals(ReadString(entry, identityProperty), actorId, StringComparison.Ordinal) ||
+                !HasMeaningfulMemoryText(entry))
+            {
+                continue;
+            }
+
+            matchingAppendedIndexes.Add(index);
+        }
+
+        if (matchingAppendedIndexes.Count != 1 ||
+            !allowOtherAppendedEntries && proposedJournal.Count != baselineCount + 1)
+        {
+            error = $"Actor memory repair for {actorId} must append exactly one meaningful {journalProperty} entry without rewriting history.";
+            return false;
+        }
+
+        proposedJournal.RemoveAt(matchingAppendedIndexes[0]);
+        if (!baselineHadJournal && proposedJournal.Count == 0)
+            proposedObject.Remove(journalProperty);
+        return true;
+    }
+
+    private static bool HasMeaningfulMemoryText(JsonObject entry) =>
+        HasNonEmptyString(entry, "thought") || HasNonEmptyString(entry, "summary");
+
+    private static bool HasNonEmptyString(JsonObject entry, string propertyName) =>
+        entry[propertyName] is JsonValue value &&
+        value.TryGetValue<string>(out var text) &&
+        !string.IsNullOrWhiteSpace(text);
 
     private static void RemovePath(JsonObject actor, IReadOnlyList<string> path)
     {
@@ -215,8 +433,34 @@ internal static class ActorMaterializationRepairPreservationGuard
 
         if (path.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase))
             AddMatchingActors(rootObject, AfterlifeEntityProfileState.ProfilesProperty, actorId, mortal: false, actorType, result);
+        else if (path.Equals("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase) &&
+                 string.Equals(actorType, "guardian", StringComparison.Ordinal))
+            AddMatchingSourceActors(rootObject, "guardians", "guardianId", actorId, result);
+        else if (path.Equals(GuardianAbodeResidentState.StatePath, StringComparison.OrdinalIgnoreCase) &&
+                 string.Equals(actorType, "resident", StringComparison.Ordinal))
+            AddMatchingSourceActors(rootObject, GuardianAbodeResidentState.EntriesProperty, "residentId", actorId, result);
 
         return result;
+    }
+
+    private static void AddMatchingSourceActors(
+        JsonObject root,
+        string collectionName,
+        string identityProperty,
+        string actorId,
+        ICollection<ActorNode> result)
+    {
+        if (root[collectionName] is not JsonArray collection)
+            return;
+
+        foreach (var node in collection)
+        {
+            if (node is JsonObject actor &&
+                string.Equals(ReadString(actor, identityProperty), actorId, StringComparison.Ordinal))
+            {
+                result.Add(new ActorNode(actor, collection));
+            }
+        }
     }
 
     private static void AddMatchingActors(
@@ -257,10 +501,8 @@ internal static class ActorMaterializationRepairPreservationGuard
 
     private static bool IssueTargetsPath(WorkerValidationIssue issue, string path)
     {
-        var actor = issue.Actor ?? string.Empty;
-        if (actor.StartsWith("mortal_npc:", StringComparison.Ordinal))
-            return path.Equals("game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase);
-        if (actor.Contains(':', StringComparison.Ordinal))
+        if (issue.Code is "afterlife_actor_materialization_profile_missing" or
+            "afterlife_actor_materialization_profile_ambiguous")
             return path.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase);
         return issue.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase);
     }

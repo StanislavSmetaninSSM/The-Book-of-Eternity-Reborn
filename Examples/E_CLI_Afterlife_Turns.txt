@@ -193,7 +193,7 @@ Correct repair behavior:
 - In `game_state/meta/guardians.json`, treat `activeGuardian` and `guardians[]` as materialized mirrors. Reconstruct them from the validated pre-turn Guardian baseline plus authorized same-turn Guardian mutations. Do not treat the raw current mirror as the authority source.
 - If `game_state/meta/guardian_projects.json` is listed, treat `activeProjects` the same way: restore the kernel-authoritative tracker state from the validated pre-turn project baseline plus authorized same-turn project commands. Do not start or preserve a project only because the rejected materialized file contains it.
 - If the packet kind is `actor_reasoning_subpoint_repair`, do not rewrite the turn. Repair only `output/debug_logs.json.gm_thoughts_markdown`, preserve existing accepted content, create any missing `### <actor>` block from `canonicalActorNames[]`, and follow the full `debugLogTemplate`: location, situation, profile inputs, motivation, constraints, two strategies with explicit `Выгода:`/`Риск:`, chosen strategy, rejected alternatives, actions, and exact state changes.
-- If the packet kind is `actor_memory_persistence_repair`, the decision is already authored. Append one new first-person thought only to the listed Guardian/resident journal surface; for an existing afterlife entity profile append actor-owned `ledger`/`progressionLedger` evidence even when `gmThoughtsSummary` changes; for an existing Shining faction append `shiningFactionChronicleUpdates`, never a `shiningFactionStrategicMemoryUpdates` rewrite alone. Preserve all old entries and do not rewrite narrative or unrelated state.
+- If the packet kind is `actor_memory_persistence_repair`, the decision is already authored. Append one new first-person thought only to the listed Guardian/resident journal surface. For an afterlife entity without a dedicated journal, update only its actor-owned `gmThoughtsSummary`; `ledger` / `progressionLedger` may record separate progression history but never substitutes for thought memory. For an existing Shining faction append `shiningFactionChronicleUpdates`, never a `shiningFactionStrategicMemoryUpdates` rewrite alone. Preserve all old entries and do not rewrite narrative or unrelated state.
 - Every independent name in relevant actors needs a canonical memory owner. Materialize a genuine actor with a stable id and complete supported profile; otherwise remove the invented/non-actor label from relevant actors and its standalone Actor Brain block.
 - Do not read implementation code such as `BookOfEternityClient/**/*.cs` during repair. Use the repair packet, this example, GM guides, and session control/snapshot files.
 - After repairing the files, call `Complete-BoeValidationRepair` or create `game_state/control/validation_repair_ready.json` with exact `sessionId`, `requestId`, and `turnNumber` from the same current repair request.
@@ -8347,7 +8347,7 @@ Before writing the first durable profile, bind the source actor and profile by e
 
 Validation derives actor newness only from the client-owned validated pre-turn baseline. A malformed current source authority, malformed `profiles[]` root, duplicate source ID, or source actor without its exact ID is a repair-blocking error; do not omit that record, guess from its name, or reconstruct the baseline.
 
-Positive trade authority is exact and realm-local. In the Chaos Sea, `canTrade=true` is valid only for the one active Guardian whose abode is the exact current abode. In the Shining Abode, it is valid only for a non-player faction head whose leadership is secure or contested, whose faction is operational, and whose trade tier is at least 1. If that structured authority is absent or ambiguous, use `canTrade=false`.
+Positive trade authority is exact and realm-local. In the Chaos Sea, `canTrade=true` is valid only for the one active Guardian whose abode is the exact current abode. In the Shining Abode, it is valid only for a non-player faction head whose leadership is secure or contested, whose faction is operational, and whose trade tier is at least 1. If that structured authority is absent or ambiguous, use `canTrade=false`. A legacy actor that first gains trade authority is promoted into significant structured play and needs the complete envelope in the same accepted turn. A full response may carry that profile before canonical state is written, but accepted-turn validation still proves the claim from exact current or validated pre-turn authority.
 
 Actor-owned memory and agency are separate obligations. A new profile needs its exact Guardian/resident journal when such a dedicated journal exists, otherwise a non-empty `gmThoughtsSummary`. Mark agency `populated` only when the profile has meaningful `goals`, non-empty `personalQuests`, meaningful `currentActivity`, or non-empty `completedActivities`; `progressionStrategy or a mask alone` is not agency.
 
@@ -8551,16 +8551,23 @@ Valid response fragment:
       "personalQuests": [
         {
           "questId": "quest_mirror_oath_trial",
+          "goalId": "goal_guardian_mirror_preserve_truth",
           "title": "Суд зеркальной клятвы",
           "status": "active",
-          "summary": "Проверить, откажется ли душа от выгодной лжи."
+          "planSummary": "Провести душу через зеркальный суд и оставить ей реальный выбор между правдой и выгодной ложью.",
+          "successCondition": "Душа осознанно отвергает выгодную ложь без немедленной награды.",
+          "createdAtTurn": 23
         }
       ],
       "currentActivity": {
         "activityId": "activity_prepare_mirror_trial",
+        "goalId": "goal_guardian_mirror_preserve_truth",
+        "linkedQuestId": "quest_mirror_oath_trial",
+        "activityType": "offscreen_preparation",
         "summary": "Хранитель готовит зал зеркал к испытанию души.",
         "status": "active",
-        "updatedAtTurn": 23
+        "gmThoughtsSummary": "Я подготовлю испытание так, чтобы выбор души нельзя было свести к удобной формальности.",
+        "startedAtTurn": 23
       },
       "completedActivities": [],
       "gmThoughtsSummary": "Я вижу, что душа ищет лёгкий ответ; сначала заставлю её назвать цену собственной правды.",
@@ -8969,6 +8976,96 @@ Valid response fragment:
       "trainingConditionSatisfied": true,
       "roleplayEvidence": "Душа прошла сцену обучения и отразила давление собственным воспоминанием.",
       "summary": "Зеркальная Защита добавлена в профиль игрока как особое духовное искусство."
+    }
+  ]
+}
+```
+
+The Shining Abode uses the same complete profile contract. The following actor is already the exact non-player head of an operational faction with secure leadership and trade tier 1 or higher in `shining_abode_state.json`; therefore `canTrade=true` is permitted. Accepted-turn continuity verifies that external authority by exact `radiant_actor:radiant_archive_head`, never by title or prose.
+
+Valid Shining faction-head response fragment:
+
+```json
+{
+  "response": "Глава Архива Первого Света открывает душе своё досье и подтверждает право говорить от имени фракции.",
+  "afterlifeEntityProfileUpdates": [
+    {
+      "schemaVersion": 1,
+      "profileVersion": "afterlife_entity_profiles_v1",
+      "actorType": "radiant_actor",
+      "actorId": "radiant_archive_head",
+      "displayName": "Архивариус Первого Света",
+      "realm": "Shining Abode",
+      "locationName": "Зал Первого Архива",
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_radiant_archive_head_turn_24",
+        "actorType": "radiant_actor",
+        "actorId": "radiant_archive_head",
+        "materializedAtTurn": 24,
+        "state": "complete",
+        "capabilities": {
+          "canFight": true,
+          "canTeach": false,
+          "canTrade": true
+        },
+        "sections": {
+          "standardArts": { "state": "populated" },
+          "specialArts": { "state": "empty_by_design", "reason": "Архивариус пока не оформил личное духовное искусство." },
+          "customStates": { "state": "empty_by_design", "reason": "Особые духовные состояния сейчас не проявлены." },
+          "fateCards": { "state": "empty_by_design", "reason": "Связанная карта судьбы ещё не открылась." },
+          "relationships": { "state": "empty_by_design", "reason": "Личные устойчивые связи с душой ещё не сложились." },
+          "agency": { "state": "populated" },
+          "progressionHistory": { "state": "populated" }
+        }
+      },
+      "currencies": {
+        "inkFeathers": 0,
+        "lightSparks": 80
+      },
+      "progression": {
+        "enlightenment": { "experience": 20, "tier": 2 },
+        "radiance": { "experience": 55, "tier": 3 }
+      },
+      "standardArts": {
+        "guard": 2,
+        "maneuver": 1
+      },
+      "specialArts": [],
+      "customStates": [],
+      "fateCards": [],
+      "relationships": [],
+      "goals": {
+        "goalId": "goal_archive_head_preserve_testimony",
+        "shortTermGoal": "Проверить достоверность принесённого душой свидетельства.",
+        "longTermGoal": "Сохранить Архив Первого Света независимым от фракционных подлогов.",
+        "plan": "Сопоставить свидетельство с тремя архивными печатями и только затем открыть доступ к закрытому залу.",
+        "gmThoughtsSummary": "Я не отвергаю помощь души, но сначала должен исключить подлог соперничающей фракции.",
+        "updatedAtTurn": 24
+      },
+      "personalQuests": [],
+      "currentActivity": null,
+      "completedActivities": [],
+      "gmThoughtsSummary": "Эта душа может стать союзником Архива, если её свидетельство выдержит проверку.",
+      "soulDissipationTier": 0,
+      "progressionStrategy": {
+        "strategyId": "strategy_radiant_archive_head",
+        "summary": "Сначала укрепляет защиту Архива, затем развивает сияние.",
+        "priorityOrder": [
+          "guard",
+          "radiance"
+        ],
+        "lastUpdatedAtTurn": 24
+      },
+      "progressionLedger": [],
+      "warnings": [],
+      "ledger": [
+        {
+          "entryId": "profile_ledger_radiant_archive_head_001",
+          "turnNumber": 24,
+          "summary": "Архивариус принял руководство фракцией и сохранил первый план проверки свидетельств."
+        }
+      ]
     }
   ]
 }

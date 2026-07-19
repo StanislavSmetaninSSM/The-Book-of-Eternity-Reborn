@@ -78,6 +78,37 @@ public sealed class ExampleDocumentationValidationTests
     }
 
     [Fact]
+    public void ActorMaterializationManifestCoverage_IsLoadedAndCoversEveryRealm()
+    {
+        var manifest = ExampleValidationManifest.Load();
+
+        var mortal = Assert.Single(manifest.MortalActorMaterializationCoverage,
+            entry => string.Equals(entry.ContractId, "mortal_actor_materialization_v1", StringComparison.Ordinal));
+        AssertMaterializationCoverageEntry(mortal, "Mortal World");
+
+        var afterlife = manifest.AfterlifeEntityProfileCoverage
+            .Where(entry => entry.ContractId.StartsWith("afterlife_actor_materialization_", StringComparison.Ordinal))
+            .ToArray();
+        Assert.Contains(afterlife, entry => entry.Realms.Contains("Chaos Sea", StringComparer.Ordinal));
+        Assert.Contains(afterlife, entry => entry.Realms.Contains("Shining Abode", StringComparer.Ordinal));
+        foreach (var entry in afterlife)
+            AssertMaterializationCoverageEntry(entry, entry.Realms.Single());
+    }
+
+    private static void AssertMaterializationCoverageEntry(
+        ActorMaterializationExampleCoverage entry,
+        string expectedRealm)
+    {
+        Assert.False(string.IsNullOrWhiteSpace(entry.ContractId));
+        Assert.False(string.IsNullOrWhiteSpace(entry.File));
+        Assert.False(string.IsNullOrWhiteSpace(entry.StatePath));
+        Assert.False(string.IsNullOrWhiteSpace(entry.ResponseSurface));
+        Assert.False(string.IsNullOrWhiteSpace(entry.Description));
+        Assert.Contains(expectedRealm, entry.Realms, StringComparer.Ordinal);
+        Assert.True(File.Exists(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File)));
+    }
+
+    [Fact]
     public void GameResponseShapedExamples_DoNotUseUnknownTopLevelFields()
     {
         var manifest = ExampleValidationManifest.Load();
@@ -1702,6 +1733,8 @@ internal sealed class ExampleValidationManifest
     public List<InkFeatherReceiptCoverage> InkFeatherReceiptCoverage { get; set; } = new();
     public List<ExampleRuntimeScenario> RuntimeScenarios { get; set; } = new();
     public List<AfterlifeExampleCoverage> AfterlifeExampleCoverage { get; set; } = new();
+    public List<ActorMaterializationExampleCoverage> MortalActorMaterializationCoverage { get; set; } = new();
+    public List<ActorMaterializationExampleCoverage> AfterlifeEntityProfileCoverage { get; set; } = new();
 
     public static ExampleValidationManifest Load()
     {
@@ -1724,6 +1757,16 @@ internal sealed class ExampleValidationManifest
 
     public bool IsShapeExempt(ExampleSnippet snippet) =>
         ShapeExemptions.Any(exemption => exemption.Matches(snippet));
+}
+
+internal sealed class ActorMaterializationExampleCoverage
+{
+    public string ContractId { get; set; } = "";
+    public string File { get; set; } = "";
+    public string StatePath { get; set; } = "";
+    public string ResponseSurface { get; set; } = "";
+    public string Description { get; set; } = "";
+    public string[] Realms { get; set; } = [];
 }
 
 internal sealed class InkFeatherReceiptCoverage

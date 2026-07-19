@@ -499,6 +499,8 @@ public static class GmWorkerContractValidator
 
         if (proposal.AfterlifeProposal == null)
         {
+            if (task.TaskType == WorkerTaskType.ValidationRepair)
+                return;
             errors.Add("afterlife worker proposals must include afterlifeProposal.");
             return;
         }

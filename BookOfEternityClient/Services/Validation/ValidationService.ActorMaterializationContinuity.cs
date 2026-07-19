@@ -72,11 +72,13 @@ public partial class ValidationService
 
     private readonly record struct AfterlifeActorMaterializationPromotionSignals(
         bool CanTeach,
+        bool CanTrade,
         bool CanFight,
         bool HasActorBrainScope)
     {
         public bool IsPromotionFrom(AfterlifeActorMaterializationPromotionSignals previous) =>
             (CanTeach && !previous.CanTeach) ||
+            (CanTrade && !previous.CanTrade) ||
             (CanFight && !previous.CanFight) ||
             (HasActorBrainScope && !previous.HasActorBrainScope);
 
@@ -84,6 +86,7 @@ public partial class ValidationService
             AfterlifeActorMaterializationPromotionSignals other) =>
             new(
                 CanTeach || other.CanTeach,
+                CanTrade || other.CanTrade,
                 CanFight || other.CanFight,
                 HasActorBrainScope || other.HasActorBrainScope);
     }
@@ -834,7 +837,12 @@ public partial class ValidationService
             }
 
             using var preTurnDocument = JsonDocument.Parse(preTurnJson);
-            if (!TryReadCanonicalAfterlifeActorStates(preTurnDocument.RootElement, out var preTurnActors))
+            var preTurnTradeAuthorities = await LoadValidatedPreTurnAfterlifeActorTradeAuthoritiesAsync(
+                snapshotLookup.Manifest);
+            if (!TryReadCanonicalAfterlifeActorStates(
+                    preTurnDocument.RootElement,
+                    preTurnTradeAuthorities,
+                    out var preTurnActors))
             {
                 AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(
                     AfterlifeActorMaterializationStatePath,
@@ -874,7 +882,9 @@ public partial class ValidationService
                     string.Equals(actorId, "player_soul", StringComparison.Ordinal))
                     continue;
 
-                var currentSignals = ReadAfterlifeActorMaterializationPromotionSignals(profile);
+                var currentSignals = ReadAfterlifeActorMaterializationPromotionSignals(
+                    profile,
+                    tradeAuthorities);
                 if (preTurnActors.TryGetValue(identityKey, out var previousState))
                 {
                     if (previousState.HistoricalEnvelopeJson != null)
@@ -972,6 +982,7 @@ public partial class ValidationService
 
     private static bool TryReadCanonicalAfterlifeActorStates(
         JsonElement root,
+        IReadOnlySet<string> tradeAuthorities,
         out Dictionary<string, AfterlifeActorMaterializationPreTurnState> result)
     {
         result = new Dictionary<string, AfterlifeActorMaterializationPreTurnState>(
@@ -999,7 +1010,7 @@ public partial class ValidationService
                 continue;
 
             var state = new AfterlifeActorMaterializationPreTurnState(
-                ReadAfterlifeActorMaterializationPromotionSignals(profile),
+                ReadAfterlifeActorMaterializationPromotionSignals(profile, tradeAuthorities),
                 ReadHistoricalActorMaterializationEnvelopeJson(profile),
                 actorType,
                 actorId);
@@ -1022,12 +1033,22 @@ public partial class ValidationService
         if (!TryReadExactNonEmptyString(profile, "actorType", out actorType))
             return false;
 
-        var hasActorId = TryReadExactNonEmptyString(profile, "actorId", out var canonicalActorId);
-        var hasActorRef = TryReadExactNonEmptyString(profile, "actorRef", out var legacyActorRef);
+        if (!TryReadExactOptionalProperty(profile, "actorId", out var actorIdNode, out var hasActorId) ||
+            !TryReadExactOptionalProperty(profile, "actorRef", out var actorRefNode, out var hasActorRef))
+        {
+            return false;
+        }
         if (hasActorId == hasActorRef)
             return false;
 
-        actorId = hasActorId ? canonicalActorId : legacyActorRef;
+        var identityNode = hasActorId ? actorIdNode : actorRefNode;
+        if (identityNode.ValueKind != JsonValueKind.String ||
+            string.IsNullOrWhiteSpace(identityNode.GetString()))
+        {
+            return false;
+        }
+
+        actorId = identityNode.GetString()!.Trim();
         identityKey = $"{actorType}\u001f{actorId}";
         return true;
     }
@@ -1054,7 +1075,9 @@ public partial class ValidationService
     }
 
     private static AfterlifeActorMaterializationPromotionSignals
-        ReadAfterlifeActorMaterializationPromotionSignals(JsonElement profile)
+        ReadAfterlifeActorMaterializationPromotionSignals(
+            JsonElement profile,
+            IReadOnlySet<string> tradeAuthorities)
     {
         var hasActorBrainScope = ActorMaterializationContract.HasAfterlifeAgency(profile) ||
             HasActorMaterializationArrayEntries(profile, "ledger") ||
@@ -1062,6 +1085,7 @@ public partial class ValidationService
 
         return new AfterlifeActorMaterializationPromotionSignals(
             CanTeach: ActorMaterializationContract.HasUsableAfterlifeMentorAuthority(profile),
+            CanTrade: HasCurrentAfterlifeActorTradeAuthority(profile, tradeAuthorities),
             CanFight: ActorMaterializationContract.HasUsableAfterlifeCombatArt(profile),
             HasActorBrainScope: hasActorBrainScope);
     }

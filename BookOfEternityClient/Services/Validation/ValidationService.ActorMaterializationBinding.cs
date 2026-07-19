@@ -41,6 +41,18 @@ public partial class ValidationService
             return;
         }
 
+        var preTurnProfilesJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+            manifest,
+            AfterlifeEntityProfileState.StatePath);
+        if (preTurnProfilesJson == null ||
+            !TryParseExactAfterlifeProfileIdentityKeys(preTurnProfilesJson, out var preTurnProfileIdentityKeys))
+        {
+            AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(
+                AfterlifeEntityProfileState.StatePath,
+                issues);
+            return;
+        }
+
         var currentSourceActors = new Dictionary<string, AfterlifeActorBinding>(StringComparer.Ordinal);
         var requiredBindings = new Dictionary<string, AfterlifeActorBinding>(StringComparer.Ordinal);
         foreach (var (path, kind) in new[]
@@ -86,7 +98,9 @@ public partial class ValidationService
             foreach (var actor in currentActors.Values)
             {
                 currentSourceActors[actor.IdentityKey] = actor;
-                if (!preTurnActors.ContainsKey(actor.IdentityKey))
+                if (!preTurnActors.ContainsKey(actor.IdentityKey) ||
+                    (profilesByIdentity.ContainsKey(actor.IdentityKey) &&
+                     !preTurnProfileIdentityKeys.Contains(actor.IdentityKey)))
                     requiredBindings[actor.IdentityKey] = actor;
             }
 
@@ -105,9 +119,20 @@ public partial class ValidationService
 
                 foreach (var actor in currentLeadership.Values)
                 {
-                    if (!preTurnLeadership.ContainsKey(actor.IdentityKey))
+                    if (!preTurnLeadership.ContainsKey(actor.IdentityKey) ||
+                        (profilesByIdentity.ContainsKey(actor.IdentityKey) &&
+                         !preTurnProfileIdentityKeys.Contains(actor.IdentityKey)))
                         requiredBindings[actor.IdentityKey] = actor;
                 }
+            }
+        }
+
+        foreach (var identityKey in preTurnProfileIdentityKeys)
+        {
+            if (currentSourceActors.TryGetValue(identityKey, out var actor) &&
+                !profilesByIdentity.ContainsKey(identityKey))
+            {
+                AddMissingAfterlifeActorProfileIssue(actor, issues);
             }
         }
 
@@ -136,13 +161,37 @@ public partial class ValidationService
                     profile,
                     tradeAuthorities)));
 
+            var hasSourceActor = currentSourceActors.TryGetValue(required.IdentityKey, out var sourceActor);
             var hasTypeSpecificMemory = required.HasTypeSpecificMemory ||
-                                        (currentSourceActors.TryGetValue(required.IdentityKey, out var sourceActor) &&
-                                         sourceActor.HasTypeSpecificMemory) ||
+                                        (hasSourceActor && sourceActor.HasTypeSpecificMemory) ||
                                         (string.Equals(required.ActorType, "guardian", StringComparison.Ordinal) &&
                                          guardianJournalMemory.Contains(required.ActorId));
-            if (!hasTypeSpecificMemory && !HasCommonAfterlifeActorMemory(profile))
+            var requiresDedicatedMemory = hasSourceActor &&
+                                          required.ActorType is "guardian" or "resident";
+            if (requiresDedicatedMemory
+                    ? !hasTypeSpecificMemory
+                    : !hasTypeSpecificMemory && !HasCommonAfterlifeActorMemory(profile))
                 AddMissingAfterlifeActorMemoryIssue(required, issues);
+        }
+    }
+
+    private static bool TryParseExactAfterlifeProfileIdentityKeys(
+        string json,
+        out HashSet<string> result)
+    {
+        result = new HashSet<string>(StringComparer.Ordinal);
+        try
+        {
+            using var document = JsonDocument.Parse(json);
+            if (!TryBuildExactAfterlifeProfileIndex(document.RootElement, out var profilesByIdentity))
+                return false;
+
+            result.UnionWith(profilesByIdentity.Keys);
+            return true;
+        }
+        catch (JsonException)
+        {
+            return false;
         }
     }
 
@@ -486,9 +535,7 @@ public partial class ValidationService
             !string.IsNullOrWhiteSpace(property.Value.GetString()));
 
     private static bool HasCommonAfterlifeActorMemory(JsonElement profile) =>
-        TryReadExactNonEmptyString(profile, "gmThoughtsSummary", out _) ||
-        HasNonEmptyObjectArray(profile, "ledger") ||
-        HasNonEmptyObjectArray(profile, "progressionLedger");
+        TryReadExactNonEmptyString(profile, "gmThoughtsSummary", out _);
 
     private static bool HasNonEmptyObjectArray(JsonElement root, string propertyName)
     {
@@ -622,9 +669,9 @@ public partial class ValidationService
             code: "afterlife_actor_materialization_memory_missing",
             actor: $"{binding.ActorType}:{binding.ActorId}",
             section: "ActorMemory",
-            expected: "gmThoughtsSummary, ledger/progressionLedger entry, or exact type-specific thought journal entry",
+            expected: "new-profile gmThoughtsSummary or exact type-specific thought journal entry",
             actual: "actor-owned memory is empty",
-            repairHint: "Инициализируй память этой сущности в её common profile или точном type-specific журнале; не подменяй внутреннюю память внешней хроникой."));
+            repairHint: "Инициализируй память этой сущности: для Хранителя/резидента используй его exact type-specific журнал, для сущности без отдельного журнала — непустой gmThoughtsSummary нового common profile. Не подменяй первичную память progression ledger или внешней хроникой."));
     }
 
     private static void AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(

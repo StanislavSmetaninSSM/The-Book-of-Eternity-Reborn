@@ -397,7 +397,7 @@ public partial class ValidationService
                 profile,
                 context,
                 requireActorMaterialization,
-                canTradeEvidence: false));
+                canTradeEvidence: requireActorMaterialization ? null : false));
         }
 
         ValidateAfterlifeProfileCurrencies(profile, context, issues);

@@ -6,6 +6,9 @@
       "file": "E_CLI_Step_Main.txt",
       "statePath": "game_state/npcs/npc_core.json",
       "responseSurface": "NPCsInScene[].materialization / UpdateNPCs[].materialization",
+      "realms": [
+        "Mortal World"
+      ],
       "description": "First significant Mortal NPC carries a complete setting-neutral full object, immutable exact identity envelope, structured capability truth, explicit section dispositions, and later changes use dedicated deltas instead of prose or genre inference."
     }
   ],
@@ -103,7 +106,20 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "afterlifeEntityProfileUpdates[].materialization",
+      "realms": [
+        "Chaos Sea"
+      ],
       "description": "First significant afterlife actor profile carries an immutable exact identity envelope, capability truth, complete section dispositions, actor-owned memory, real goals/quests/activity agency, exact current abode Guardian trade authority or secure/contested operational Shining head trade tier authority, and bounded repairs that preserve protected actor data."
+    },
+    {
+      "contractId": "afterlife_actor_materialization_shining_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "afterlifeEntityProfileUpdates[].materialization for an exact non-player Shining faction head",
+      "realms": [
+        "Shining Abode"
+      ],
+      "description": "A complete Shining Abode faction-head profile binds exact structured leadership authority, actor-owned memory, agency, progression history, and realm-local positive trade capability without title, prose, or genre inference."
     },
     {
       "contractId": "afterlife_actor_profile_binding_v1",

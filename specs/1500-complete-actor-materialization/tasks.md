@@ -51,3 +51,12 @@
 - [x] T025 Require actor-owned memory for every new afterlife profile and require goals, quests, or activity for populated agency.
 - [x] T026 Enforce bounded actor repair scope mechanically in the worker apply gate, including exact actor/section coordinates and protected-data comparison.
 - [x] T027 Add executable Mortal and afterlife worked examples, broaden source guards, document exact authority, and replace the false-positive vacant-leadership test with a genuinely vacant current slot.
+
+## Phase 8 - Adversarial review closure
+
+- [x] T028 Make the Mortal, Chaos Sea, and Shining Abode worked examples executable under the runtime validator and deserialize their manifest coverage explicitly.
+- [x] T029 Reject malformed or contradictory optional identity aliases and deletion of one bound afterlife profile from an otherwise valid profile set.
+- [x] T030 Treat exact trade-role acquisition as a materialization promotion, verify the negative trade-authority matrix, and defer response-carrier trade evidence only to accepted-turn exact authority checks.
+- [x] T031 Route afterlife actor repair through the realm-bound worker contract, mechanically preserve unrelated actor/scalar state, and enforce append-only Guardian/resident memory repair.
+- [x] T032 Expand setting-neutral source guards and add behavioral Mortal/afterlife UI tests proving private materialization metadata cannot leak.
+- [ ] T033 Rerun focused/documentation/full verification, perform fresh independent review, then commit, open the PR, and merge only after the evidence is clean.

@@ -2,7 +2,9 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -3938,6 +3940,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("canTrade=false", daemon, StringComparison.Ordinal);
         foreach (var text in new[] { matrix, examples, daemon })
         {
+            Assert.Contains("promoted into significant structured play", text, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("exact current abode", text, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("trade tier", text, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("secure or contested", text, StringComparison.OrdinalIgnoreCase);
@@ -3947,6 +3950,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("completedActivities", text, StringComparison.Ordinal);
             Assert.Contains("progressionStrategy or a mask alone", text, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("protected actor data", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("never substitutes", text, StringComparison.OrdinalIgnoreCase);
         }
         Assert.Contains("malformed current source authority", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("validated pre-turn baseline", matrix, StringComparison.OrdinalIgnoreCase);
@@ -3974,13 +3978,54 @@ public sealed class AfterlifeDocumentationCoverageTests
         using var document = JsonDocument.Parse(snippet.RawText);
         var profile = document.RootElement.GetProperty("afterlifeEntityProfileUpdates")[0];
 
+        var runtimeIssues = ValidateResponseWithRuntimeValidator(document.RootElement);
+
         var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
             profile,
             "Examples/E_CLI_Afterlife_Turns.txt.afterlifeEntityProfileUpdates[0]",
             requireEnvelope: true,
             canTradeEvidence: false);
 
+        Assert.DoesNotContain(runtimeIssues, issue => issue.Severity == IssueSeverity.Error);
         Assert.Empty(issues);
+    }
+
+    [Fact]
+    public void ShiningFactionHeadMaterializationWorkedExample_PassesExecutableContract()
+    {
+        var snippet = Assert.Single(ExampleSnippetExtractor.ExtractAll(), candidate =>
+            string.Equals(candidate.File, "E_CLI_Afterlife_Turns.txt", StringComparison.OrdinalIgnoreCase) &&
+            candidate.RawText.Contains("mat_radiant_archive_head_turn_24", StringComparison.Ordinal));
+        using var document = JsonDocument.Parse(snippet.RawText);
+        var profile = Assert.Single(document.RootElement.GetProperty("afterlifeEntityProfileUpdates").EnumerateArray());
+
+        var runtimeIssues = ValidateResponseWithRuntimeValidator(document.RootElement);
+        var materializationIssues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            profile,
+            "Examples/E_CLI_Afterlife_Turns.txt.afterlifeEntityProfileUpdates[0]",
+            requireEnvelope: true,
+            canTradeEvidence: true);
+
+        Assert.Equal("Shining Abode", profile.GetProperty("realm").GetString());
+        Assert.DoesNotContain(runtimeIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.Empty(materializationIssues);
+    }
+
+    private static List<ValidationIssue> ValidateResponseWithRuntimeValidator(JsonElement response)
+    {
+        var rootPath = Path.Combine(Path.GetTempPath(), "boe-afterlife-doc-runtime-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            Directory.CreateDirectory(rootPath);
+            var fs = new FileSystemManager(rootPath, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            return new ValidationService(fs, NullLogger<ValidationService>.Instance).ValidateResponse(response);
+        }
+        finally
+        {
+            if (Directory.Exists(rootPath))
+                Directory.Delete(rootPath, recursive: true);
+        }
     }
 
     private static string[] ShiningConstantValues(params string[] prefixes) =>

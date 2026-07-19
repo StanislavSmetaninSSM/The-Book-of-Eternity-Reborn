@@ -144,6 +144,90 @@ public sealed class GmWorkerValidationRepairDelegatorTests
     }
 
     [Fact]
+    public async Task TryRunAsync_CoordinateBearingActorIssue_HashesCanonicalContextFile()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string npcPath = "game_state/npcs/npc_core.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(npcPath, "{\"UpdateNPCs\":[],\"NPCsInScene\":[]}");
+            var profile = BuildProfile(root, "fake-coordinate-repair-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{npcPath}.NPCsInScene[0].materialization.sections.inventory",
+                IssueSeverity.Error,
+                "Первичная материализация не объясняет секцию inventory.",
+                code: "actor_materialization_section_missing",
+                actor: "mortal_npc:npc_coordinate_target",
+                section: "inventory");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 31);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, result.Outcome);
+            var context = Assert.Single(Assert.IsType<WorkerTaskPacket>(result.Task).ContextFiles);
+            Assert.Equal(npcPath, context.Path);
+            Assert.Matches("^[0-9a-f]{64}$", context.Sha256);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_AfterlifeActorRepair_BuildsRealmBoundTaskForCanonicalSource()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string guardianPath = "game_state/meta/guardians.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(
+                "game_state/meta/soul_state.json",
+                "{\"currentRealm\":\"Chaos Sea\"}");
+            await fs.WriteFileAtomicAsync(
+                guardianPath,
+                "{\"schemaVersion\":1,\"guardians\":[{\"guardianId\":\"guardian_repair_target\",\"musings\":[]}]}");
+            var profile = BuildProfile(root, "fake-afterlife-repair-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{guardianPath}.guardians[0]",
+                IssueSeverity.Error,
+                "Первичная материализация Хранителя не инициализировала память.",
+                code: "afterlife_actor_materialization_memory_missing",
+                actor: "guardian:guardian_repair_target",
+                section: "ActorMemory");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 32);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, result.Outcome);
+            var task = Assert.IsType<WorkerTaskPacket>(result.Task);
+            var afterlife = Assert.IsType<WorkerAfterlifeTaskContract>(task.AfterlifeContract);
+            Assert.Equal(WorkerAfterlifeRealmGate.ChaosSea, afterlife.RealmGate);
+            Assert.Equal("Chaos Sea", afterlife.CurrentRealm);
+            Assert.Equal([guardianPath], afterlife.AllowedAfterlifeSurfaces);
+            var context = Assert.Single(task.ContextFiles);
+            Assert.Equal(guardianPath, context.Path);
+            Assert.Matches("^[0-9a-f]{64}$", context.Sha256);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task TryRunAsync_ApplyGateValidationFails_RollsBackAndLeavesLegacyRepairLoopWaiting()
     {
         var root = CreateTempRoot();

@@ -17,7 +17,16 @@ public sealed class ValidationSourceGuardTests
             "Validation");
         var sourceFiles = new[]
             {
-                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "ActorMaterializationContract.cs")
+                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "ActorMaterializationContract.cs"),
+                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "MortalBootstrapStateBuilder.cs"),
+                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "SystemGuardianLibraryService.cs"),
+                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "CanonicalStateNormalizer", "CanonicalStateNormalizer.Npcs.cs"),
+                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "CanonicalStateNormalizer", "CanonicalStateNormalizer.AfterlifeEntityProfiles.cs"),
+                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "GmWorkers", "ActorMaterializationRepairPreservationGuard.cs"),
+                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "GmWorkers", "GmWorkerApplyGate.cs"),
+                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "GmWorkers", "GmWorkerContractValidator.cs"),
+                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "GmWorkers", "GmWorkerTaskPacketBuilder.cs"),
+                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "GmWorkers", "GmWorkerValidationRepairDelegator.cs")
             }
             .Concat(Directory.EnumerateFiles(
                 validationDirectory,
@@ -30,6 +39,16 @@ public sealed class ValidationSourceGuardTests
         Assert.Contains(
             sourceFiles,
             path => path.EndsWith("ValidationService.ActorMaterializationTradeAuthority.cs", StringComparison.Ordinal));
+        Assert.Contains(
+            sourceFiles,
+            path => path.EndsWith("MortalBootstrapStateBuilder.cs", StringComparison.Ordinal));
+        Assert.Contains(
+            sourceFiles,
+            path => path.EndsWith("CanonicalStateNormalizer.AfterlifeEntityProfiles.cs", StringComparison.Ordinal));
+        Assert.Contains(
+            sourceFiles,
+            path => path.EndsWith("ActorMaterializationRepairPreservationGuard.cs", StringComparison.Ordinal));
+        Assert.All(sourceFiles, path => Assert.True(File.Exists(path), $"Missing guarded source file: {path}"));
 
         var proseAuthorityRead = new Regex(
             "(?:TryGetProperty|ReadActorMaterializationString|TryReadExactNonEmptyString)\\s*\\([^\\r\\n;]*\\\"(?:displayName|name|description|occupation|profession|tags|history)\\\"",
@@ -52,6 +71,7 @@ public sealed class ValidationSourceGuardTests
         var sourceRoots = new[]
         {
             Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "UI"),
+            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "WebUi"),
             Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "src")
         };
         var extensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)

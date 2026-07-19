@@ -113,4 +113,61 @@ public sealed class GmWorkerValidationRepairTests
         Assert.Contains(task.ForbiddenActions, action =>
             action.Contains("untargeted actor", StringComparison.OrdinalIgnoreCase));
     }
+
+    [Theory]
+    [InlineData(
+        "game_state/meta/guardians.json.guardians[0]",
+        "game_state/meta/guardians.json",
+        "guardian:guardian_memory_target")]
+    [InlineData(
+        "game_state/meta/guardian_abode_residents.json.entries[0]",
+        "game_state/meta/guardian_abode_residents.json",
+        "resident:resident_memory_target")]
+    public void BuildValidationRepairTask_AfterlifeMemoryTargetsExactDedicatedAuthority(
+        string issuePath,
+        string expectedTargetPath,
+        string actor)
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var issue = new ValidationIssue(
+            issuePath,
+            IssueSeverity.Error,
+            "Первичная материализация не инициализировала actor-owned memory.",
+            code: "afterlife_actor_materialization_memory_missing",
+            actor: actor,
+            section: "ActorMemory");
+        var hashes = new Dictionary<string, string>
+        {
+            [expectedTargetPath] = "sha256-memory-authority"
+        };
+
+        var task = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+            profile,
+            "worker_task_afterlife_memory",
+            new WorkerTurnReference
+            {
+                SessionId = "test-session",
+                RequestId = "test-request",
+                TurnNumber = 12
+            },
+            [issue],
+            hashes,
+            "2026-06-20T00:00:00Z",
+            BuildAfterlifeRepairContract(expectedTargetPath));
+
+        Assert.Equal(new[] { expectedTargetPath }, task.AllowedProposalPaths);
+        var context = Assert.Single(task.ContextFiles);
+        Assert.Equal(expectedTargetPath, context.Path);
+        Assert.Equal("sha256-memory-authority", context.Sha256);
+    }
+
+    private static WorkerAfterlifeTaskContract BuildAfterlifeRepairContract(string targetPath) => new()
+    {
+        RealmGate = WorkerAfterlifeRealmGate.ChaosSea,
+        CurrentRealm = "Chaos Sea",
+        AllowedAfterlifeSurfaces = [targetPath],
+        RequiredReceipts = ["No new receipt is required for bounded repair."],
+        RequiredReports = ["Apply-gate validation decision."],
+        ForbiddenMortalSubstitutes = ["worldStateFlags"]
+    };
 }
