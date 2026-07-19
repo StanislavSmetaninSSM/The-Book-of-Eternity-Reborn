@@ -172,6 +172,7 @@ public partial class CanonicalStateNormalizer
         }
 
         var historicalEnvelopeByActorId = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        var ambiguousHistoricalActorIds = new HashSet<string>(StringComparer.Ordinal);
         foreach (var previousActor in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(previousRoot))
         {
             var actorId = ResolveNpcPatchIdentity(previousActor);
@@ -181,7 +182,20 @@ public partial class CanonicalStateNormalizer
                 continue;
             }
 
-            historicalEnvelopeByActorId.TryAdd(actorId, historicalEnvelope);
+            if (!historicalEnvelopeByActorId.TryAdd(actorId, historicalEnvelope))
+                ambiguousHistoricalActorIds.Add(actorId);
+        }
+
+        foreach (var actorId in ambiguousHistoricalActorIds)
+            historicalEnvelopeByActorId.Remove(actorId);
+
+        var seenCurrentActorIds = new HashSet<string>(StringComparer.Ordinal);
+        var ambiguousCurrentActorIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var currentActor in currentActors.OfType<JsonObject>())
+        {
+            var actorId = ResolveNpcPatchIdentity(currentActor);
+            if (!string.IsNullOrWhiteSpace(actorId) && !seenCurrentActorIds.Add(actorId))
+                ambiguousCurrentActorIds.Add(actorId);
         }
 
         var changed = false;
@@ -195,6 +209,7 @@ public partial class CanonicalStateNormalizer
 
             var actorId = ResolveNpcPatchIdentity(currentActor);
             if (string.IsNullOrWhiteSpace(actorId) ||
+                ambiguousCurrentActorIds.Contains(actorId) ||
                 !historicalEnvelopeByActorId.TryGetValue(actorId, out var historicalEnvelope))
             {
                 continue;
@@ -328,11 +343,39 @@ public partial class CanonicalStateNormalizer
         npc.ContainsKey("inventory") &&
         npc.ContainsKey("goals");
 
-    private static string? ResolveNpcPatchIdentity(JsonObject npc) =>
-        GetNodeString(npc["NPCId"]) ??
-        GetNodeString(npc["npcId"]) ??
-        GetNodeString(npc["id"]) ??
-        GetNodeString(npc["initialId"]);
+    private static string? ResolveNpcPatchIdentity(JsonObject npc)
+    {
+        string? permanentId = null;
+        foreach (var fieldName in new[] { "NPCId", "npcId", "id" })
+        {
+            if (!npc.TryGetPropertyValue(fieldName, out var node) || node == null)
+                continue;
+            if (node is not JsonValue value ||
+                !value.TryGetValue<string>(out var candidate) ||
+                string.IsNullOrWhiteSpace(candidate))
+            {
+                return null;
+            }
+
+            if (permanentId != null && !string.Equals(permanentId, candidate, StringComparison.Ordinal))
+                return null;
+
+            permanentId = candidate;
+        }
+
+        if (permanentId != null)
+            return permanentId;
+
+        if (!npc.TryGetPropertyValue("initialId", out var initialIdNode) ||
+            initialIdNode is not JsonValue initialIdValue ||
+            !initialIdValue.TryGetValue<string>(out var initialId) ||
+            string.IsNullOrWhiteSpace(initialId))
+        {
+            return null;
+        }
+
+        return initialId;
+    }
 
     private static bool IsNpcPatchIdentityField(string fieldName) =>
         string.Equals(fieldName, "NPCId", StringComparison.OrdinalIgnoreCase) ||
