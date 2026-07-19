@@ -112,6 +112,7 @@ public partial class ValidationService
         }
 
         var guardianJournalMemory = await ReadGuardianThoughtJournalMemoryActorIdsAsync();
+        var tradeAuthorities = await LoadCurrentAfterlifeActorTradeAuthoritiesAsync();
         foreach (var required in requiredBindings.Values)
         {
             if (!profilesByIdentity.TryGetValue(required.IdentityKey, out var matches) || matches.Count == 0)
@@ -127,10 +128,13 @@ public partial class ValidationService
             }
 
             var (profile, context) = matches[0];
-            issues.AddRange(ActorMaterializationContract.ValidateCanonicalAfterlifeProfile(
+            issues.AddRange(ActorMaterializationContract.ValidateAfterlifeProfile(
                 profile,
                 context,
-                requireEnvelope: true));
+                requireEnvelope: true,
+                canTradeEvidence: HasCurrentAfterlifeActorTradeAuthority(
+                    profile,
+                    tradeAuthorities)));
 
             var hasTypeSpecificMemory = required.HasTypeSpecificMemory ||
                                         (currentSourceActors.TryGetValue(required.IdentityKey, out var sourceActor) &&

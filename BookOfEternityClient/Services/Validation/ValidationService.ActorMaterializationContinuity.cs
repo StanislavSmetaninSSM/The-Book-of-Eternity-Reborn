@@ -852,6 +852,7 @@ public partial class ValidationService
                 return;
             }
 
+            var tradeAuthorities = await LoadCurrentAfterlifeActorTradeAuthoritiesAsync();
             var evaluatedHistoricalActors = new HashSet<string>(StringComparer.Ordinal);
             var index = 0;
             foreach (var profile in profiles.EnumerateArray())
@@ -896,10 +897,13 @@ public partial class ValidationService
                         continue;
                 }
 
-                issues.AddRange(ActorMaterializationContract.ValidateCanonicalAfterlifeProfile(
+                issues.AddRange(ActorMaterializationContract.ValidateAfterlifeProfile(
                     profile,
                     context,
-                    requireEnvelope: true));
+                    requireEnvelope: true,
+                    canTradeEvidence: HasCurrentAfterlifeActorTradeAuthority(
+                        profile,
+                        tradeAuthorities)));
             }
 
             foreach (var (identityKey, previousState) in preTurnActors)

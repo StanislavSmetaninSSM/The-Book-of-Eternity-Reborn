@@ -1590,6 +1590,85 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnContinuity_NewActiveGuardianWithExactTradeAuthority_PassesCanTradeCapability()
+    {
+        const string actorId = "guardian_trade_authority";
+        const string abodeId = "abode_trade_authority";
+        var sourcePath = GetAfterlifeBindingSourcePath("guardian");
+        var currentSourceRoot = JsonNode.Parse(BuildAfterlifeBindingSourceJson(
+            "guardian",
+            actorId,
+            includeActor: true))!.AsObject();
+        var guardian = currentSourceRoot["guardians"]![0]!.AsObject();
+        guardian["abode"] = new JsonObject { ["abodeId"] = abodeId };
+        currentSourceRoot["activeGuardian"] = guardian.DeepClone();
+        currentSourceRoot["chaosSeaNavigation"] = new JsonObject
+        {
+            ["currentAbodeId"] = abodeId
+        };
+
+        var currentProfilesRoot = JsonNode.Parse(BuildCompleteAfterlifeBindingProfileStateJson(
+            "guardian",
+            actorId,
+            includeProfile: true))!.AsObject();
+        var profile = currentProfilesRoot[AfterlifeEntityProfileState.ProfilesProperty]![0]!.AsObject();
+        profile["realm"] = "Chaos Sea";
+        profile[ActorMaterializationContract.PropertyName]!["capabilities"]!["canTrade"] = true;
+
+        await WriteAfterlifeBindingScenarioAsync(
+            sourcePath,
+            currentSourceRoot.ToJsonString(),
+            BuildAfterlifeBindingSourceJson("guardian", actorId, includeActor: false),
+            currentProfilesRoot.ToJsonString(),
+            BuildCompleteAfterlifeBindingProfileStateJson("guardian", actorId, includeProfile: false));
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canTrade" &&
+            issue.Actor == $"guardian:{actorId}");
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_NewTradableShiningFactionHead_PassesCanTradeCapability()
+    {
+        const string actorType = "resident";
+        const string actorId = "resident_shining_trade_authority";
+        var currentShiningRoot = JsonNode.Parse(BuildShiningLeadershipBindingStateJson(
+            actorType,
+            actorId,
+            ShiningAbodeState.LeadershipStateSecure))!.AsObject();
+        var faction = currentShiningRoot["factions"]![0]!.AsObject();
+        faction["factionStrength"] = 50;
+        faction["lifecycleState"] = ShiningAbodeState.FactionLifecycleStateActive;
+
+        var currentProfilesRoot = JsonNode.Parse(BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true))!.AsObject();
+        currentProfilesRoot[AfterlifeEntityProfileState.ProfilesProperty]![0]!
+            [ActorMaterializationContract.PropertyName]!["capabilities"]!["canTrade"] = true;
+
+        await WriteAfterlifeBindingScenarioAsync(
+            ShiningAbodeState.StatePath,
+            currentShiningRoot.ToJsonString(),
+            BuildShiningLeadershipBindingStateJson(
+                actorType,
+                actorId,
+                ShiningAbodeState.LeadershipStateVacant),
+            currentProfilesRoot.ToJsonString(),
+            BuildCompleteAfterlifeBindingProfileStateJson(actorType, actorId, includeProfile: false));
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canTrade" &&
+            issue.Actor == $"{actorType}:{actorId}");
+    }
+
+    [Fact]
     public async Task ValidateResponse_HashValidSnapshotWithNonObjectNpcEntry_NewPermanentIdInventory_IsBlockedFailClosed()
     {
         const string path = "game_state/npcs/npc_core.json";
